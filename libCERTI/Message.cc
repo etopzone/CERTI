@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.14 2003/05/09 01:50:59 breholee Exp $
+// $Id: Message.cc,v 3.15 2003/05/09 02:31:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -259,6 +259,19 @@ void
 Message::setParameter(ParameterHandle the_parameter)
 {
     parameter = the_parameter ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setException(TypeException the_exception,
+                      const char *the_reason)
+{
+    exception = the_exception ;
+
+    if (strlen(the_reason) > MAX_EXCEPTION_REASON_LENGTH)
+        throw ValueLengthExceeded("Exception reason too long to fit in"
+                                  " Message.");
+    strcpy(exceptionReason, the_reason);
 }
 
 // ----------------------------------------------------------------------------
@@ -571,4 +584,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.14 2003/05/09 01:50:59 breholee Exp $
+// $Id: Message.cc,v 3.15 2003/05/09 02:31:14 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.7 2003/05/09 02:31:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
@@ -415,7 +415,7 @@ startRegistrationForObjectClass(ObjectClassHandle the_class,
         throw RTIinternalError();
     }
 
-    e = rep.exception ;
+    e = rep.getExceptionType();
 }
 
 // ----------------------------------------------------------------------------
@@ -444,7 +444,7 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
         throw RTIinternalError();
     }
 
-    e = rep.exception ;
+    e = rep.getExceptionType();
 }
 
 // ----------------------------------------------------------------------------
@@ -465,7 +465,7 @@ DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
         throw RTIinternalError();
     }
 
-    e = rep.exception ;
+    e = rep.getExceptionType();
 }
 
 // ----------------------------------------------------------------------------
@@ -487,9 +487,9 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
         throw RTIinternalError();
     }
 
-    e = rep.exception ;
+    e = rep.getExceptionType();
 }
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.7 2003/05/09 02:31:14 breholee Exp $

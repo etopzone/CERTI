@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.16 2003/05/09 01:50:59 breholee Exp $
+// $Id: Message.hh,v 3.17 2003/05/09 02:31:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -404,15 +404,22 @@ public:
     void setAttributes(AttributeHandle *, AttributeValue *, ushort);
     void setParameters(ParameterHandle *, ParameterValue *, ushort);
 
+    void setException(TypeException, const char *the_reason = "\0");
+    TypeException getExceptionType() const
+    { return exception ; };
+    const char *getExceptionReason() const
+    { return exceptionReason ; };
+
     // -----------------------
     // -- Public Attributes --
     // -----------------------
 
     TypeService type ;
+
+protected:
     TypeException exception ;
     char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
 
-protected:
     FederationTime date ;
     Boolean boolean ;
     FederationTimeDelta lookahead ;
@@ -504,4 +511,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.16 2003/05/09 01:50:59 breholee Exp $
+// $Id: Message.hh,v 3.17 2003/05/09 02:31:14 breholee Exp $
