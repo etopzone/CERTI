@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionSet.cc,v 3.3 2003/01/17 17:43:11 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -189,96 +189,76 @@ Interaction *InteractionSet::getByHandle(InteractionClassHandle theHandle)
   throw InteractionClassNotDefined();
 }
 
-
-// -------------------------------
-// -- GetInteractionClassHandle --
-// -------------------------------
-
-InteractionClassHandle InteractionSet::
-getInteractionClassHandle(const InteractionClassName theName)
-  throw(InteractionClassNotDefined,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! getInteractionClassHandle.
+InteractionClassHandle
+InteractionSet::getInteractionClassHandle(const char* the_name)
+    throw(InteractionClassNotDefined,
+          RTIinternalError)
 {
-  int           i;
-  Interaction *Interaction = NULL;
+    if(the_name == NULL)
+        throw RTIinternalError();
 
-  if(theName == NULL)
-    throw RTIinternalError();
+    Interaction *interaction = NULL;
+    for(int i = 1; i <= lg; i++) {
+        interaction = Ieme(i);
+        if(strcmp(interaction->getName(), the_name) == 0)
+            return interaction->handle;
+    }
 
-  for(i = 1; i <= lg; i++) {
-    Interaction = Ieme(i);
-    if(strcmp(Interaction->getName(), theName) == 0)
-      return Interaction->handle;
-  }
-
-  throw InteractionClassNotDefined();
+    throw InteractionClassNotDefined();
 }
 
-
-// -----------------------------
-// -- GetInteractionClassName --
-// -----------------------------
-
-const InteractionClassName InteractionSet::
-getInteractionClassName(InteractionClassHandle theHandle)
-  throw(InteractionClassNotDefined,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! getInteractionClassName.
+const char*
+InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
+    throw(InteractionClassNotDefined,
+          RTIinternalError)
 {
-  int           i;
-  Interaction *Interaction = NULL;
+    Interaction *interaction = NULL;
 
-  for(i = 1; i <= lg; i++) {
-    Interaction = Ieme(i);
-    if(Interaction->handle == theHandle)
-      return Interaction->getName();
-  }
+    for(int i = 1; i <= lg; i++) {
+        interaction = Ieme(i);
+        if(interaction->handle == the_handle)
+            return interaction->getName();
+    }
 
-  throw InteractionClassNotDefined();
+    throw InteractionClassNotDefined();
 }
 
-
-// ------------------------
-// -- GetParameterHandle --
-// ------------------------
-
-ParameterHandle InteractionSet::
-getParameterHandle(const ParameterName    theName,
-		    InteractionClassHandle theClass)
-  throw(InteractionParameterNotDefined,
-	 InteractionClassNotDefined,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! getParameterHandle.
+ParameterHandle
+InteractionSet::getParameterHandle(const char*    the_name,
+                                   InteractionClassHandle the_class)
+    throw(InteractionParameterNotDefined,
+          InteractionClassNotDefined,
+          RTIinternalError)
 {
-  Interaction *Interaction = NULL;
+    if(the_name == NULL)
+        throw RTIinternalError();
 
-  if(theName == NULL)
-    throw RTIinternalError();
+    // It may throw InteractionClassNotDefined
+    Interaction *interaction = getByHandle(the_class);
 
+    return interaction->getParameterHandle(the_name);
+}
+
+// ---------------------------------------------------------------------------
+//! getParameterName.
+const char*
+InteractionSet::getParameterName(ParameterHandle        the_handle,
+                                 InteractionClassHandle the_class)
+    throw(InteractionParameterNotDefined,
+          InteractionClassNotDefined,
+          RTIinternalError)
+{
   // It may throw InteractionClassNotDefined
-  Interaction = getByHandle(theClass);
+    Interaction *interaction = getByHandle(the_class);
 
-  return Interaction->getParameterHandle(theName);
+    return interaction->getParameterName(the_handle);
 }
-
-
-// ----------------------
-// -- GetParameterName --
-// ----------------------
-
-const ParameterName InteractionSet::
-getParameterName(ParameterHandle        theHandle,
-		  InteractionClassHandle theClass)
-  throw(InteractionParameterNotDefined,
-	 InteractionClassNotDefined,
-	 RTIinternalError)
-{
-  Interaction *Interaction = NULL;
-
-  // It may throw InteractionClassNotDefined
-  Interaction = getByHandle(theClass);
-
-  return Interaction->getParameterName(theHandle);
-}
-
 
 // -------------
 // -- IsReady --
@@ -367,4 +347,4 @@ subscribe(FederateHandle          theFederateHandle,
 
 }
 
-// $Id: InteractionSet.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionSet.cc,v 3.3 2003/01/17 17:43:11 breholee Exp $

@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionSet.hh,v 3.3 2003/01/17 17:43:11 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -67,28 +67,28 @@ public:
   // --------------------------
 
   InteractionClassHandle 
-  getInteractionClassHandle(const InteractionClassName theName)
-    throw(InteractionClassNotDefined,
-	  RTIinternalError);
+  getInteractionClassHandle(const char* the_name)
+      throw(InteractionClassNotDefined,
+            RTIinternalError);
 
-  const InteractionClassName 
-  getInteractionClassName(InteractionClassHandle theHandle)
-    throw(InteractionClassNotDefined,
-	  RTIinternalError);
+  const char* 
+  getInteractionClassName(InteractionClassHandle the_handle)
+      throw(InteractionClassNotDefined,
+            RTIinternalError);
 
   ParameterHandle 
-  getParameterHandle(const ParameterName theName,
-		     InteractionClassHandle theClass)
-    throw(InteractionParameterNotDefined,
-	  InteractionClassNotDefined,
-	  RTIinternalError);
+  getParameterHandle(const char*            the_name,
+                     InteractionClassHandle the_class)
+      throw(InteractionParameterNotDefined,
+            InteractionClassNotDefined,
+            RTIinternalError);
 
-  const ParameterName 
-  getParameterName(ParameterHandle theHandle,
-		   InteractionClassHandle theClass)
-    throw(InteractionParameterNotDefined,
-	  InteractionClassNotDefined,
-	  RTIinternalError);
+  const char*
+  getParameterName(ParameterHandle        the_handle,
+                   InteractionClassHandle the_class)
+      throw(InteractionParameterNotDefined,
+            InteractionClassNotDefined,
+            RTIinternalError);
 
   void killFederate(FederateHandle theFederate)
     throw();
@@ -165,4 +165,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionSet.hh,v 3.3 2003/01/17 17:43:11 breholee Exp $
