@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.9 2003/07/09 16:05:22 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.10 2003/07/10 13:19:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -42,33 +42,14 @@ namespace certi {
 class ObjectClassAttribute {
 
 public:
-    // -----------------------
-    // -- Public Attributes --
-    // -----------------------
-    SecurityLevelID LevelID ;
-
-    OrderType Order ;
-    TransportType Transport ;
-
-    // This Object help to find a TCPLink from a Federate Handle.
-    SecurityServer *server ;
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
     ObjectClassAttribute();
     ObjectClassAttribute(ObjectClassAttribute *source);
     ~ObjectClassAttribute();
 
     void display() const ;
 
-    /*! Name attribute access(GetName reference must be considered READ-ONLY).
-      NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
-    */
-    char *getName() const {return Name ; };
-
-    void setName(char *NewName)
-        throw (ValueLengthExceeded, RTIinternalError);
+    const char *getName() const { return name.c_str() ; };
+    void setName(char *NewName);
 
     void setHandle(AttributeHandle h);
     AttributeHandle getHandle() const ;
@@ -81,47 +62,43 @@ public:
         throw (SecurityError);
 
     // Publish & subscribe methods
-    Boolean isPublishing(FederateHandle the_handle) const ;
-    Boolean hasSubscribed(FederateHandle the_handle) const ;
+    bool isPublishing(FederateHandle) const ;
+    bool hasSubscribed(FederateHandle) const ;
 
-    void publish(FederateHandle theFederate, bool PubOrUnpub)
-        throw (RTIinternalError, SecurityError);
-
-    void subscribe(FederateHandle theFederate, bool SubOrUnsub)
-        throw (RTIinternalError, SecurityError);
-
+    void publish(FederateHandle) throw (RTIinternalError, SecurityError);
+    void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
+    
+    void subscribe(FederateHandle) throw (RTIinternalError, SecurityError);
     void subscribe(FederateHandle, RegionImp *);
+    void unsubscribe(FederateHandle) throw (RTIinternalError, SecurityError);
     void unsubscribe(FederateHandle, RegionImp *);
     
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list);
 
+    SecurityLevelID level ;
+    OrderType order ;
+    TransportType transport ;
+    SecurityServer *server ;
+
 private:
-    // The four next methods do the memory management stuff to
-    // add and delete publishers and subscribers.
-    void addPublisher(FederateHandle theFederate)
-        throw (RTIinternalError);
-
-    void addSubscriber(FederateHandle theFederate)
-        throw (RTIinternalError);
-
-    void deletePublisher(int PublisherRank);
-    void deleteSubscriber(int SubscriberRank);
+    void deletePublisher(FederateHandle);
+    void deleteSubscriber(FederateHandle);
 
     // Both following methods return the Rank of the Federate in the list,
     // or ZERO if not found.
-    int getPublisherRank(FederateHandle theFederate) const ;
-    int getSubscriberRank(FederateHandle theFederate) const ;
+//     int getPublisherRank(FederateHandle theFederate) const ;
+//     int getSubscriberRank(FederateHandle theFederate) const ;
 
     AttributeHandle handle ; //!< The attribute handle.
-    AttributeName Name ; //!< The attribute name, must be locally allocated.
+    std::string name ; //!< The attribute name, must be locally allocated.
     SpaceHandle space ; //!< Routing space
 
-    list<Subscriber *> subscribers ; //!< The subscriber's list.
-    list<Publisher *> publishers ; //!< The publisher's list.
+    std::list<Subscriber *> subscribers ; //!< The subscriber's list.
+    std::list<Publisher *> publishers ; //!< The publisher's list.
 };
 }
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.9 2003/07/09 16:05:22 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.10 2003/07/10 13:19:41 breholee Exp $

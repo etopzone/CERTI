@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.18 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClass.cc,v 3.19 2003/07/10 13:19:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     // If the attribute is inherited, it keeps its security level.
     // If not, it takes the default security level of the class.
     if (is_inherited != RTI_TRUE)
-        theAttribute->LevelID = LevelID ;
+        theAttribute->level = LevelID ;
 
     attributeSet.push_front(theAttribute);
 
@@ -132,8 +132,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
                   ocbList->addFederate(federate);
               }
           }
-      }
-        break ;
+      } break ;
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
@@ -143,8 +142,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
           for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
               (*a)->updateBroadcastList(ocbList);
           }
-      }
-        break ;
+      } break ;
 
       default:
         throw RTIinternalError("BroadcastClassMsg: Unknown type.");
@@ -557,8 +555,8 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isPublishing(theFederateHandle) == RTI_TRUE)
-            (*a)->publish(theFederateHandle, RTI_FALSE);
+        if ((*a)->isPublishing(theFederateHandle))
+            (*a)->unpublish(theFederateHandle);
     }
 
     // Publish attributes one by one.
@@ -567,7 +565,10 @@ ObjectClass::publish(FederateHandle theFederateHandle,
         D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.",
               handle, theFederateHandle, theAttributeList[i]);
         attribute = getAttributeWithHandle(theAttributeList[i]);
-        attribute->publish(theFederateHandle, PubOrUnpub);
+	if (PubOrUnpub)
+	    attribute->publish(theFederateHandle);
+	else
+	    attribute->unpublish(theFederateHandle);
     }
 }
 
@@ -779,8 +780,8 @@ ObjectClass::subscribe(FederateHandle theFederate,
     Boolean wasPreviousSubscriber = RTI_FALSE ;
     list<ObjectClassAttribute *>::iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->hasSubscribed(theFederate) == RTI_TRUE) {
-            (*a)->subscribe(theFederate, RTI_FALSE);
+        if ((*a)->hasSubscribed(theFederate)) {
+            (*a)->unsubscribe(theFederate);
             wasPreviousSubscriber = RTI_TRUE ;
         }
     }
@@ -792,7 +793,10 @@ ObjectClass::subscribe(FederateHandle theFederate,
               "ObjectClass %d: Federate %d subscribes to attribute %d.",
               handle, theFederate, theAttributeList[index]);
         attribute = getAttributeWithHandle(theAttributeList[index]);
-        attribute->subscribe(theFederate, SubOrUnsub);
+        if (SubOrUnsub)
+	    attribute->subscribe(theFederate);
+	else
+	    attribute->unsubscribe(theFederate);
     }
 
     // If the Federate was not a subscriber before, and has now subscribed
@@ -1627,4 +1631,4 @@ ObjectClass::getHandle() const
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.18 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClass.cc,v 3.19 2003/07/10 13:19:41 breholee Exp $

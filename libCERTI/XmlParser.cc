@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: XmlParser.cc,v 3.13 2003/07/10 13:19:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -184,16 +184,16 @@ XmlParser::parseClass(ObjectClass* parent)
             // Transportation
             if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
                            VALUE_RELIABLE))
-                attr->Transport = RELIABLE ;
+                attr->transport = RELIABLE ;
             else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
                                 VALUE_BESTEFFORT))
-                attr->Transport = BEST_EFFORT ;
+                attr->transport = BEST_EFFORT ;
 
             // Order
             if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_TSO))
-                attr->Order = TIMESTAMP ;
+                attr->order = TIMESTAMP ;
             else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
-                attr->Order = RECEIVE ;
+                attr->order = RECEIVE ;
 
             // Routing space
             char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
@@ -345,4 +345,4 @@ bool XmlParser::exists()
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: XmlParser.cc,v 3.13 2003/07/10 13:19:41 breholee Exp $

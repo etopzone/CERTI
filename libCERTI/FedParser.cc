@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.cc,v 3.0 2003/06/27 13:44:45 breholee Exp $
+// $Id: FedParser.cc,v 3.1 2003/07/10 13:19:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -717,16 +717,16 @@ FedParser::processTransportOrderAtom(Atom *x)
     if (TypeStack[Depth] == ATTRIB) {
 
         if (strcmp(x->name, FED_STR_RELIABLE) == 0)
-            attStack.back()->Transport = RELIABLE ;
+            attStack.back()->transport = RELIABLE ;
 
         else if (strcmp(x->name, FED_STR_BESTEFFORT) == 0)
-            attStack.back()->Transport = BEST_EFFORT ;
+            attStack.back()->transport = BEST_EFFORT ;
 
         else if (strcmp(x->name, FED_STR_RECEIVE) == 0)
-            attStack.back()->Order = RECEIVE ;
+            attStack.back()->order = RECEIVE ;
 
         else if (strcmp(x->name, FED_STR_TIMESTAMP) == 0)
-            attStack.back()->Order = TIMESTAMP ;
+            attStack.back()->order = TIMESTAMP ;
 
         else {
             D.Out(pdError,
@@ -944,4 +944,4 @@ FedParser::storeString(String *x)
 
 }}
 
-// $Id: FedParser.cc,v 3.0 2003/06/27 13:44:45 breholee Exp $
+// $Id: FedParser.cc,v 3.1 2003/07/10 13:19:41 breholee Exp $
