@@ -2,8 +2,9 @@
 
 Contributors: M. Adelantado, P. Bieber, S. Bonnet, B. Bréholée,
 P. Desseaux, F. Fayet, A. Harzi, Ph. Hautesserres, J. Latour,
-S. Lemanceau, P. Nortier, S. Prunet, V. Raulet, P. Siron and G. Zanon
+S. Lemanceau, P. Nortier, S. Prunet, V. Raulet, P. Siron, P. Torguet
+and G. Zanon
 
-* Some Autoconf macros come from the GNU Autoconf Macro Archive :
-ETR_SOCKET_NSL Copyright Warren Young <warren@etr-usa.com> 
-TYPE_SOCKLEN_T Copyright Lars Brinkhoff <lars@nocrew.org>
+* Some Autoconf macros from the GNU Autoconf Macro Archive. See acinclude.m4
+
+Authors: Lars Brinkhoff, Warren Young, Todd Veldhuizen, Luc Maisonobe
