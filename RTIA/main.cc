@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.6 2003/03/05 14:10:51 breholee Exp $
+// $Id: main.cc,v 3.7 2003/05/23 14:59:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -28,31 +27,29 @@ using namespace certi ;
 using namespace rtia ;
 
 extern "C" void SignalHandler(int Signal);
-void NewHandler(void);
+void NewHandler();
 
 // ----------------------------------------------------------------------------
 int
-main(void)
+main(int argc, char *argv[])
 {
     signal(SIGINT, SignalHandler);
     signal(SIGPIPE, SignalHandler);
 
     std::set_new_handler(NewHandler);
 
-    RTIA *rtia = new RTIA();
-
     try {
-        rtia->execute();
+        RTIA rtia ;
+        rtia.execute();
     }
     catch (Exception &e) {
-        printf("\nRTIA has thrown %s exception.\n", e._name);
-        if (e._reason != NULL)
-            printf("Reason: %s\n", e._reason);
-        delete rtia ;
+        cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
+        if (e._reason)
+            cerr << "Reason: " << e._reason << endl ;
+        
         return EXIT_FAILURE ;
     }
 
-    delete rtia ;
     return EXIT_SUCCESS ;
 }
 
@@ -68,9 +65,9 @@ SignalHandler(int Signal)
 
 // ----------------------------------------------------------------------------
 void
-NewHandler(void)
+NewHandler()
 {
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.6 2003/03/05 14:10:51 breholee Exp $
+// EOF $Id: main.cc,v 3.7 2003/05/23 14:59:32 breholee Exp $
