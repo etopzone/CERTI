@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.13 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIambassador.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -109,11 +109,11 @@ public:
     registerFederationSynchronizationPoint(const char *label,
                                            const char *theTag)
         throw (
-               FederateNotExecutionMember,
-               ConcurrentAccessAttempted,
-               SaveInProgress,
-               RestoreInProgress,
-               RTIinternalError);
+            FederateNotExecutionMember,
+            ConcurrentAccessAttempted,
+            SaveInProgress,
+            RestoreInProgress,
+            RTIinternalError);
 
     void
     registerFederationSynchronizationPoint(const char *label,
@@ -144,8 +144,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService); //CERTI
+               RTIinternalError);
 
     void
     requestFederationSave(const char *label)
@@ -153,8 +152,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService); //CERTI
+               RTIinternalError);
 
     void
     federateSaveBegun()
@@ -162,8 +160,7 @@ public:
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService); //CERTI
+               RTIinternalError);
 
     void
     federateSaveComplete()
@@ -171,8 +168,7 @@ public:
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService); //CERTI
+               RTIinternalError);
 
     void
     federateSaveNotComplete()
@@ -180,8 +176,7 @@ public:
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService); //CERTI
+               RTIinternalError);
 
     void
     requestFederationRestore(const char *label)
@@ -1304,4 +1299,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.13 2003/04/23 17:24:09 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $

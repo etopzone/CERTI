@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.9 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.10 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -248,7 +248,7 @@ RTIG::processMessageNull(NetworkMessage *msg)
 
 // ----------------------------------------------------------------------------
 //! processRegisterSynchronization.
-void 
+void
 RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 {
     auditServer->addToLinef("Label \"%s\" registered. Tag is \"%s\"",
@@ -261,8 +261,8 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
     // send synchronizationPointRegistrationSucceeded() to federate.
-    NetworkMessage rep;
-    rep.type = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+    NetworkMessage rep ;
+    rep.type = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     rep.federate = req->federate ;
     rep.federation = req->federation ;
     rep.setLabel(req->label);
@@ -276,7 +276,7 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 
 // ----------------------------------------------------------------------------
 //! processSynchronizationAchieved.
-void 
+void
 RTIG::processSynchronizationAchieved(Socket *link, NetworkMessage *req)
 {
     auditServer->addToLinef("Label \"%s\" ended.", req->label);
@@ -315,6 +315,26 @@ RTIG::processFederateSaveStatus(Socket *link, NetworkMessage *req)
 
     bool status = req->type == m_FEDERATE_SAVE_COMPLETE ;
     federations->federateSaveStatus(req->federation, req->federate, status);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTIG::processRequestFederationRestore(Socket *link, NetworkMessage *req)
+{
+    auditServer->addToLinef("Federate %u request restore.", req->federate);
+
+    federations->requestFederationRestore(req->federation, req->federate,
+                                          req->label);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTIG::processFederateRestoreStatus(Socket *link, NetworkMessage *req)
+{
+    auditServer->addToLinef("Federate %u restore ended.", req->federate);
+
+    bool status = (req->type == m_FEDERATE_RESTORE_COMPLETE) ? true : false ;
+    federations->federateRestoreStatus(req->federation, req->federate, status);
 }
 
 // ----------------------------------------------------------------------------
@@ -864,10 +884,10 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
                                            req->space,
                                            req->nbExtents);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation " 
-               << req->federation << " creates region " << rep.region 
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " creates region " << rep.region
                << endl ;
-   
+
     rep.type = m_CREATE_REGION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
@@ -883,7 +903,7 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
     federations->deleteRegion(req->federation, req->federate, req->region);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation " 
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " deletes region " << req->region
                << endl ;
 
@@ -897,4 +917,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.9 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.10 2003/05/05 20:21:39 breholee Exp $

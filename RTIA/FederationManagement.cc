@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.7 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationManagement.cc,v 3.8 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -454,7 +454,7 @@ FederationManagement::federateSaveBegun(TypeException &e)
 void
 FederationManagement::federateSaveStatus(bool status, TypeException &e)
 {
-    D.Out(pdInit, "Federation %ssaved.", status ? "" : "not ");
+    D.Out(pdInit, "Federate %ssaved.", status ? "" : "not ");
 
     if (!savingState)
         throw SaveNotInitiated("Federation did not initiate saving.");
@@ -501,6 +501,114 @@ FederationManagement::federationSavedStatus(bool status)
 
 // ----------------------------------------------------------------------------
 void
+FederationManagement::requestFederationRestore(const char *label,
+                                               TypeException &e)
+{
+    D.Out(pdInit, "Request for federation restore \"%s\".", label);
+
+    assert(label != NULL);
+
+    NetworkMessage req ;
+    req.type = m_REQUEST_FEDERATION_RESTORE ;
+    req.setLabel(label);
+    comm->sendMessage(&req);
+
+    // Should make sure that RTIG don't have any save or restore recently set.
+    // ...
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federateRestoreStatus(bool status, TypeException &e)
+{
+    D.Out(pdInit, "Federate %srestored.", status ? "" : "not ");
+
+    if (!restoringState)
+        throw RestoreNotRequested("Federation did not initiate restoring.");
+
+    NetworkMessage req ;
+
+    if (status)
+        req.type = m_FEDERATE_RESTORE_COMPLETE ;
+    else
+        req.type = m_FEDERATE_RESTORE_NOT_COMPLETE ;
+
+    comm->sendMessage(&req);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::requestFederationRestoreStatus(bool status,
+                                                     const char *label,
+                                                     const char *reason)
+{
+    D.Out(pdInit, "Federation restore request %saccepted",
+          status ? "" : "not ");
+
+    Message req, rep ;
+
+    req.setLabel(label);
+
+    if (status)
+        req.type = REQUEST_FEDERATION_RESTORE_SUCCEEDED ;
+    else {
+        req.type = REQUEST_FEDERATION_RESTORE_FAILED ;
+        req.setTag(reason);
+    }
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federationRestoreBegun(void)
+{
+    D.Out(pdInit, "Federation restore begun");
+
+    Message req, rep ;
+    req.type = FEDERATION_RESTORE_BEGUN ;
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::initiateFederateRestore(const char *label,
+                                              FederateHandle handle)
+{
+    D.Out(pdInit, "Initiate federate restore \"%s\" with federate handle %d.",
+          label, handle);
+
+    restoringState = true ;
+
+    Message req, rep ;
+    req.type = INITIATE_FEDERATE_RESTORE ;
+    req.federate = handle ;
+    req.setLabel(label);
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federationRestoredStatus(bool status)
+{
+    D.Out(pdInit, "Federation %srestored.", status ? "" : "not ");
+
+    restoringState = false ;
+
+    Message req, rep ;
+
+    if (status)
+        req.type = FEDERATION_RESTORED ;
+    else
+        req.type = FEDERATION_NOT_RESTORED ;
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
 FederationManagement::checkFederationSaving(void)
     throw (SaveInProgress)
 {
@@ -521,4 +629,4 @@ FederationManagement::checkFederationRestoring(void)
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.7 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationManagement.cc,v 3.8 2003/05/05 20:21:39 breholee Exp $

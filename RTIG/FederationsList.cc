@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationsList.cc,v 3.13 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -1087,7 +1087,37 @@ FederationsList::federateSaveStatus(FederationHandle the_federation,
     federation->federateSaveStatus(the_federate, the_status);
 }
 
+// ----------------------------------------------------------------------------
+void
+FederationsList::requestFederationRestore(FederationHandle the_federation,
+                                          FederateHandle the_federate,
+                                          const char *the_label)
+{
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(the_federation, federation);
+
+    federation->requestFederationRestore(the_federate, the_label);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::federateRestoreStatus(FederationHandle the_federation,
+                                       FederateHandle the_federate,
+                                       bool the_status)
+{
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(the_federation, federation);
+
+    federation->federateRestoreStatus(the_federate, the_status);
+}
+
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.13 2003/05/05 20:21:39 breholee Exp $
 

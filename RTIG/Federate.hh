@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federate.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -28,7 +28,7 @@
 #include <config.h>
 
 #include <list>
-using std::list;
+using std::list ;
 
 #include <cstring>
 
@@ -49,7 +49,7 @@ private:
     bool regulator ;
     bool constrained ; //!< = false by default.
 
-    list<char *> synchronizationLabels; // List of labels to synchronize.
+    list<char *> synchronizationLabels ; // List of labels to synchronize.
 
 public:
     Federate(const char *the_name, FederateHandle)
@@ -57,6 +57,8 @@ public:
     ~Federate(void);
 
     FederateHandle getHandle(void) const ;
+    void setHandle(FederateHandle the_handle);
+
     const char *getName(void) const ;
     bool isConstrained(void) const ;
     bool isRegulator(void) const ;
@@ -83,4 +85,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federate.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.10 2003/04/23 14:29:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.11 2003/05/05 20:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -57,7 +57,7 @@ Message::read(SocketUN *socket)
 #endif
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Read a Message Body from a Socket, should be called after ReadHeader.
 void
 Message::readBody(SocketUN *socket)
@@ -83,102 +83,106 @@ Message::readBody(SocketUN *socket)
 
             // --- No Variable Part, Body not empty ---
 
-        case CREATE_FEDERATION_EXECUTION:
-        case DESTROY_FEDERATION_EXECUTION:
+          case CREATE_FEDERATION_EXECUTION:
+          case DESTROY_FEDERATION_EXECUTION:
             readFederationName(&Body);
             break ;
 
-        case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case ANNOUNCE_SYNCHRONIZATION_POINT:
+          case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case ANNOUNCE_SYNCHRONIZATION_POINT:
+          case REQUEST_FEDERATION_RESTORE_FAILED:
             readLabel(&Body);
             readTag(&Body);
             break ;
 
-        case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case SYNCHRONIZATION_POINT_ACHIEVED:
-        case FEDERATION_SYNCHRONIZED:
-        case REQUEST_FEDERATION_SAVE:
-        case INITIATE_FEDERATE_SAVE:
+          case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case SYNCHRONIZATION_POINT_ACHIEVED:
+          case FEDERATION_SYNCHRONIZED:
+          case REQUEST_FEDERATION_SAVE:
+          case INITIATE_FEDERATE_SAVE:
+          case REQUEST_FEDERATION_RESTORE:
+          case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+          case INITIATE_FEDERATE_RESTORE:
             readLabel(&Body);
             break ;
 
-        case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case QUERY_ATTRIBUTE_OWNERSHIP:
+          case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case QUERY_ATTRIBUTE_OWNERSHIP:
             // B.c. Objectid, AttribHandle and Tag.
             object = Body.readLongInt();
             attribute = Body.readShortInt();
             readTag(&Body);
             break ;
 
-        case ATTRIBUTE_IS_NOT_OWNED:
-        case INFORM_ATTRIBUTE_OWNERSHIP:
+          case ATTRIBUTE_IS_NOT_OWNED:
+          case INFORM_ATTRIBUTE_OWNERSHIP:
             object = Body.readLongInt();
             attribute = Body.readShortInt();
             federate = Body.readShortInt();
             break ;
 
-        case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-        case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
             object = Body.readLongInt();
             handleArraySize = Body.readShortInt();
             readHandleArray(&Body);
             readTag(&Body);
             break ;
 
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             object = Body.readLongInt();
             handleArraySize = Body.readShortInt();
             readHandleArray(&Body);
             break ;
 
-        case GET_ATTRIBUTE_SPACE_HANDLE:
+          case GET_ATTRIBUTE_SPACE_HANDLE:
             objectClass = Body.readLongInt();
             attribute = Body.readLongInt();
             space = Body.readLongInt();
             break ;
 
-        case CREATE_REGION:
+          case CREATE_REGION:
             space = Body.readLongInt();
             number = Body.readLongInt();
             region = Body.readLongInt();
             break ;
 
-        case GET_INTERACTION_SPACE_HANDLE:
+          case GET_INTERACTION_SPACE_HANDLE:
             interactionClass = Body.readLongInt();
             space = Body.readLongInt();
             break ;
 
             // --- MessageJ_R_Struct --
 
-        case JOIN_FEDERATION_EXECUTION:
+          case JOIN_FEDERATION_EXECUTION:
             readFederationName(&Body);
             readFederateName(&Body);
             break ;
 
             // --- MessageO_I_Struct ---
 
-        case PUBLISH_OBJECT_CLASS:
-        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
+          case PUBLISH_OBJECT_CLASS:
+          case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
             readHandleArray(&Body);
             break ;
 
-        case REGISTER_OBJECT_INSTANCE:
+          case REGISTER_OBJECT_INSTANCE:
             object = Body.readLongInt();
             readName(&Body); /*FAYET 25.07.01*/
             break ;
 
-        case UPDATE_ATTRIBUTE_VALUES:
-        case REFLECT_ATTRIBUTE_VALUES:
+          case UPDATE_ATTRIBUTE_VALUES:
+          case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, HandleArray[], ValueArray[] and RAction.
             object = Body.readLongInt();
             readTag(&Body);
@@ -187,9 +191,9 @@ Message::readBody(SocketUN *socket)
             readResignAction(&Body);
             break ;
 
-        case DISCOVER_OBJECT_INSTANCE:
-        case DELETE_OBJECT_INSTANCE:
-        case REMOVE_OBJECT_INSTANCE:
+          case DISCOVER_OBJECT_INSTANCE:
+          case DELETE_OBJECT_INSTANCE:
+          case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, Label, RAction
             object = Body.readLongInt();
             readTag(&Body);
@@ -198,30 +202,30 @@ Message::readBody(SocketUN *socket)
             readResignAction(&Body);
             break ;
 
-        case GET_OBJECT_CLASS_HANDLE:
-        case GET_OBJECT_CLASS_NAME:
-        case GET_ATTRIBUTE_HANDLE:
-        case GET_ATTRIBUTE_NAME:
+          case GET_OBJECT_CLASS_HANDLE:
+          case GET_OBJECT_CLASS_NAME:
+          case GET_ATTRIBUTE_HANDLE:
+          case GET_ATTRIBUTE_NAME:
             // B.c. Name(and attribute)
             readName(&Body);
             attribute = Body.readShortInt();
             break ;
 
-        case GET_SPACE_HANDLE:
-        case GET_SPACE_NAME:
+          case GET_SPACE_HANDLE:
+          case GET_SPACE_NAME:
             this->readName(&Body);
             this->space = Body.readLongInt();
             break ;
 
-        case GET_DIMENSION_HANDLE:
-        case GET_DIMENSION_NAME:
+          case GET_DIMENSION_HANDLE:
+          case GET_DIMENSION_NAME:
             this->readName(&Body);
             this->dimension = Body.readLongInt();
             this->space = Body.readLongInt();
             break ;
 
-        case SEND_INTERACTION:
-        case RECEIVE_INTERACTION:
+          case SEND_INTERACTION:
+          case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], RAction
             readTag(&Body);
             readHandleArray(&Body);
@@ -229,10 +233,10 @@ Message::readBody(SocketUN *socket)
             readResignAction(&Body);
             break ;
 
-        case GET_INTERACTION_CLASS_HANDLE:
-        case GET_INTERACTION_CLASS_NAME:
-        case GET_PARAMETER_HANDLE:
-        case GET_PARAMETER_NAME:
+          case GET_INTERACTION_CLASS_HANDLE:
+          case GET_INTERACTION_CLASS_NAME:
+          case GET_PARAMETER_HANDLE:
+          case GET_PARAMETER_NAME:
             // Body contains Name and ParamHandle
             readName(&Body);
             parameter = Body.readShortInt();
@@ -241,8 +245,8 @@ Message::readBody(SocketUN *socket)
 
             // --- MessageT_O_Struct, Body not empty ---
 
-        case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
-        case CHANGE_ATTRIBUTE_ORDER_TYPE:
+          case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
+          case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
             object = Body.readLongInt();
             readHandleArray(&Body);
@@ -250,16 +254,16 @@ Message::readBody(SocketUN *socket)
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown Type %d in ReadBody.", header.type);
             throw RTIinternalError("Message: Unknown Type for Body(Read).");
         }
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Read a Header from a socket, and process it to read its content. Return
-    RTI_TRUE if the ReadBody Method has to be called.
+  RTI_TRUE if the ReadBody Method has to be called.
 */
 Boolean
 Message::readHeader(SocketUN *socket)
@@ -284,99 +288,108 @@ Message::readHeader(SocketUN *socket)
 
         // --- No Variable Part, Body not empty ---
 
-    case CREATE_FEDERATION_EXECUTION: // Body contains NomFederation
-    case DESTROY_FEDERATION_EXECUTION: // Body contains NomFedere
-    case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
-    case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-    case ANNOUNCE_SYNCHRONIZATION_POINT:
-    case SYNCHRONIZATION_POINT_ACHIEVED:            // Body contains Label
-    case FEDERATION_SYNCHRONIZED:
-    case INITIATE_FEDERATE_SAVE:
-    case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
-    case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
-    case ATTRIBUTE_IS_NOT_OWNED:
-    case INFORM_ATTRIBUTE_OWNERSHIP:
-    case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-    case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-    case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-    case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-    case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-    case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-    case GET_ATTRIBUTE_SPACE_HANDLE:
-    case GET_INTERACTION_SPACE_HANDLE:
-    case CREATE_REGION:
+      case CREATE_FEDERATION_EXECUTION: // Body contains NomFederation
+      case DESTROY_FEDERATION_EXECUTION: // Body contains NomFedere
+      case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
+      case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+      case ANNOUNCE_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_ACHIEVED: // Body contains Label
+      case FEDERATION_SYNCHRONIZED:
+      case INITIATE_FEDERATE_SAVE:
+      case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
+      case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
+      case ATTRIBUTE_IS_NOT_OWNED:
+      case INFORM_ATTRIBUTE_OWNERSHIP:
+      case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+      case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION:
+      case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+      case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+      case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+      case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+      case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      case GET_ATTRIBUTE_SPACE_HANDLE:
+      case GET_INTERACTION_SPACE_HANDLE:
+      case CREATE_REGION:
+      case REQUEST_FEDERATION_RESTORE:
+      case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case REQUEST_FEDERATION_RESTORE_FAILED:
+      case FEDERATE_RESTORE_COMPLETE:
+      case FEDERATE_RESTORE_NOT_COMPLETE:
+      case FEDERATION_RESTORED:
+      case FEDERATION_NOT_RESTORED:
+      case FEDERATION_RESTORE_BEGUN:
         break ;
 
         // --- MessageJ_R_Struct --
 
-    case RESIGN_FEDERATION_EXECUTION: // No Body
+      case RESIGN_FEDERATION_EXECUTION: // No Body
         resignAction = header.VP.J_R.action ;
         break ;
 
-    case JOIN_FEDERATION_EXECUTION: // Body contains NomFederation&NomFedere
+      case INITIATE_FEDERATE_RESTORE:
+      case JOIN_FEDERATION_EXECUTION: // Body contains NomFederation&NomFedere
         federate = header.VP.J_R.federate ;
         break ;
 
         // --- MessageO_I_Struct, No Body ---
 
-    case UNPUBLISH_OBJECT_CLASS:
-    case UNSUBSCRIBE_OBJECT_CLASS:
+      case UNPUBLISH_OBJECT_CLASS:
+      case UNSUBSCRIBE_OBJECT_CLASS:
         objectClass = header.VP.O_I.handle ;
         break ;
 
 
-    case PUBLISH_INTERACTION_CLASS:
-    case UNPUBLISH_INTERACTION_CLASS:
-    case SUBSCRIBE_INTERACTION_CLASS:
-    case UNSUBSCRIBE_INTERACTION_CLASS:
-    case TURN_INTERACTIONS_ON:
-    case TURN_INTERACTIONS_OFF:
+      case PUBLISH_INTERACTION_CLASS:
+      case UNPUBLISH_INTERACTION_CLASS:
+      case SUBSCRIBE_INTERACTION_CLASS:
+      case UNSUBSCRIBE_INTERACTION_CLASS:
+      case TURN_INTERACTIONS_ON:
+      case TURN_INTERACTIONS_OFF:
         interactionClass = header.VP.O_I.handle ;
         break ;
 
         // --- MessageO_I_Struct, Body not Empty ---
 
-    case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
-    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
-    case REGISTER_OBJECT_INSTANCE: // Body contains object
-    case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
+      case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
+      case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
+      case REGISTER_OBJECT_INSTANCE: // Body contains object
+      case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
         // ValueArray[] and resignAction.
-    case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
-    case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
+      case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
+      case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
         // and ValueArray[]
-    case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
-    case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, Label&resignAction
-    case GET_OBJECT_CLASS_HANDLE: // Body contains Name
-    case GET_OBJECT_CLASS_NAME: // Body contains Name
-    case GET_ATTRIBUTE_HANDLE: // B.c. Name and attribute.
-    case GET_ATTRIBUTE_NAME: // B.c. Name and attribute.
+      case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
+      case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, Label&resignAction
+      case GET_OBJECT_CLASS_HANDLE: // Body contains Name
+      case GET_OBJECT_CLASS_NAME: // Body contains Name
+      case GET_ATTRIBUTE_HANDLE: // B.c. Name and attribute.
+      case GET_ATTRIBUTE_NAME: // B.c. Name and attribute.
         objectClass = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         date = header.VP.O_I.date ;
         break ;
 
-    case SEND_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[]
-    case RECEIVE_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[], resignAction
-    case GET_INTERACTION_CLASS_HANDLE: // Body contains Name
-    case GET_INTERACTION_CLASS_NAME: // Body contains Name
-    case GET_PARAMETER_HANDLE: // Body contains Name and parameter
-    case GET_PARAMETER_NAME: // Body contains Name and parameter
+      case SEND_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[]
+      case RECEIVE_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[], resignAction
+      case GET_INTERACTION_CLASS_HANDLE: // Body contains Name
+      case GET_INTERACTION_CLASS_NAME: // Body contains Name
+      case GET_PARAMETER_HANDLE: // Body contains Name and parameter
+      case GET_PARAMETER_NAME: // Body contains Name and parameter
         interactionClass = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         date = header.VP.O_I.date ;
         break ;
 
-    case GET_SPACE_HANDLE:
-    case GET_SPACE_NAME:
-    case GET_DIMENSION_NAME:
-    case GET_DIMENSION_HANDLE:
+      case GET_SPACE_HANDLE:
+      case GET_SPACE_NAME:
+      case GET_DIMENSION_NAME:
+      case GET_DIMENSION_HANDLE:
         this->space = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         date = header.VP.O_I.date ;
@@ -384,7 +397,7 @@ Message::readHeader(SocketUN *socket)
 
         // --- ReqIDStruct, No Body ---
 
-    case REQUEST_ID:
+      case REQUEST_ID:
         idCount = header.VP.ReqID.count ;
         firstId = header.VP.ReqID.first ;
         lastId = header.VP.ReqID.last ;
@@ -392,54 +405,54 @@ Message::readHeader(SocketUN *socket)
 
         // --- MessageT_O_Struct, No Body ---
 
-    case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
-    case CHANGE_INTERACTION_ORDER_TYPE:
+      case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
+      case CHANGE_INTERACTION_ORDER_TYPE:
         interactionClass = header.VP.T_O.handle ;
         transport = header.VP.T_O.transport ;
         order = header.VP.T_O.order ;
         break ;
 
         // Message_DDM, no body
-    case DELETE_REGION:
+      case DELETE_REGION:
         region = header.VP.ddm.region ;
         break ;
 
         // --- MessageT_O_Struct, Body not empty ---
 
-    case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, HandleArray.
-    case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, HandleArray.
+      case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, HandleArray.
+      case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, HandleArray.
         handleArraySize = header.VP.T_O.size ;
         transport = header.VP.T_O.transport ;
         order = header.VP.T_O.order ;
         break ;
 
         // --- TimeStruct, No Body ---
-        //    case REQUEST_FEDERATION_TIME:
-    case QUERY_LBTS:
-    case QUERY_FEDERATE_TIME:
-    case TIME_ADVANCE_REQUEST:
-    case NEXT_EVENT_REQUEST:
-    case TIME_ADVANCE_GRANT:
+        // case REQUEST_FEDERATION_TIME:
+      case QUERY_LBTS:
+      case QUERY_FEDERATE_TIME:
+      case TIME_ADVANCE_REQUEST:
+      case NEXT_EVENT_REQUEST:
+      case TIME_ADVANCE_GRANT:
         date = header.VP.time.date ;
         break ;
 
-    case MODIFY_LOOKAHEAD:
-    case QUERY_LOOKAHEAD:
+      case MODIFY_LOOKAHEAD:
+      case QUERY_LOOKAHEAD:
         lookahead = header.VP.time.date ;
         break ;
 
-    case ENABLE_TIME_REGULATION:
-    case DISABLE_TIME_REGULATION:
-    case ENABLE_TIME_CONSTRAINED:
-    case DISABLE_TIME_CONSTRAINED:
-    case TICK_REQUEST:
+      case ENABLE_TIME_REGULATION:
+      case DISABLE_TIME_REGULATION:
+      case ENABLE_TIME_CONSTRAINED:
+      case DISABLE_TIME_CONSTRAINED:
+      case TICK_REQUEST:
         boolean = header.VP.time.mode ;
         break ;
 
 
         // -- Default Handler --
 
-    default:
+      default:
         D.Out(pdExcept, "Unknown type %d in ReadHeader.", header.type);
         throw RTIinternalError("Message: Received unknown Header type.");
     }
@@ -530,11 +543,8 @@ Message::readTag(MessageBody *Body)
     Body->readString(tag, MAX_USER_TAG_LENGTH);
 }
 
-
-// --------------------
-// -- ReadValueArray --
-// --------------------
-
+// ----------------------------------------------------------------------------
+//! readValueArray.
 void
 Message::readValueArray(MessageBody *Body)
 {
@@ -543,7 +553,7 @@ Message::readValueArray(MessageBody *Body)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Write NetworkMessage Objects to Socket objects.
 void
 Message::write(SocketUN *socket)
@@ -562,10 +572,10 @@ Message::write(SocketUN *socket)
 #endif
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Prepare and write a Body to a socket, should be called after WriteHeader.
-    The message is written onto the socket by WriteHeader if no body is
-    required, or by WriteBody is a body has been required by WriteHeader.
+  The message is written onto the socket by WriteHeader if no body is
+  required, or by WriteBody is a body has been required by WriteHeader.
 */
 void
 Message::writeBody(SocketUN *socket)
@@ -591,100 +601,101 @@ Message::writeBody(SocketUN *socket)
 
             // --- No Variable Part, Body not empty ---
 
-        case CREATE_FEDERATION_EXECUTION:
-        case DESTROY_FEDERATION_EXECUTION:
+          case CREATE_FEDERATION_EXECUTION:
+          case DESTROY_FEDERATION_EXECUTION:
             Body.writeString(federationName);
             break ;
 
-        case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case ANNOUNCE_SYNCHRONIZATION_POINT:
+          case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case ANNOUNCE_SYNCHRONIZATION_POINT:
+          case REQUEST_FEDERATION_RESTORE_FAILED:
             Body.writeString(label);
             Body.writeString(tag);
             break ;
 
-        case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case SYNCHRONIZATION_POINT_ACHIEVED:
-        case FEDERATION_SYNCHRONIZED:
+          case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case SYNCHRONIZATION_POINT_ACHIEVED:
+          case FEDERATION_SYNCHRONIZED:
             Body.writeString(label);
             break ;
 
-        case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case QUERY_ATTRIBUTE_OWNERSHIP:
+          case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case QUERY_ATTRIBUTE_OWNERSHIP:
             // B.c. object, attribute, Tag
             Body.writeLongInt(object);
             Body.writeShortInt(attribute);
             Body.writeString(tag);
             break ;
 
-        case ATTRIBUTE_IS_NOT_OWNED:
-        case INFORM_ATTRIBUTE_OWNERSHIP:
+          case ATTRIBUTE_IS_NOT_OWNED:
+          case INFORM_ATTRIBUTE_OWNERSHIP:
             Body.writeLongInt(object);
             Body.writeShortInt(attribute);
             Body.writeShortInt(federate);
             break ;
 
-        case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
             Body.writeLongInt(object);
             Body.writeShortInt(handleArraySize);
             writeHandleArray(&Body);
             Body.writeString(tag);
             break ;
 
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             Body.writeLongInt(object);
             Body.writeShortInt(handleArraySize);
             writeHandleArray(&Body);
             break ;
 
-        case GET_ATTRIBUTE_SPACE_HANDLE:
+          case GET_ATTRIBUTE_SPACE_HANDLE:
             Body.writeLongInt(objectClass);
             Body.writeLongInt(attribute);
             Body.writeLongInt(space);
             break ;
 
-        case CREATE_REGION:
+          case CREATE_REGION:
             Body.writeLongInt(space);
             Body.writeLongInt(number);
             Body.writeLongInt(region);
             break ;
 
-        case GET_INTERACTION_SPACE_HANDLE:
+          case GET_INTERACTION_SPACE_HANDLE:
             Body.writeLongInt(interactionClass);
             Body.writeLongInt(space);
             break ;
 
             // --- MessageJ_R_Struct --
 
-        case JOIN_FEDERATION_EXECUTION:
+          case JOIN_FEDERATION_EXECUTION:
             Body.writeString(federationName);
             Body.writeString(federateName);
             break ;
 
             // --- MessageO_I_Struct ---
 
-        case PUBLISH_OBJECT_CLASS:
-        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
+          case PUBLISH_OBJECT_CLASS:
+          case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
             writeHandleArray(&Body);
             break ;
 
-        case REGISTER_OBJECT_INSTANCE:
+          case REGISTER_OBJECT_INSTANCE:
             Body.writeLongInt(object);
             Body.writeString(name);
             break ;
 
-        case UPDATE_ATTRIBUTE_VALUES:
-        case REFLECT_ATTRIBUTE_VALUES:
+          case UPDATE_ATTRIBUTE_VALUES:
+          case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, handleArray[], ValueArray[] and resignAction.
             Body.writeLongInt(object);
             Body.writeString(tag);
@@ -693,9 +704,9 @@ Message::writeBody(SocketUN *socket)
             writeResignAction(&Body);
             break ;
 
-        case DISCOVER_OBJECT_INSTANCE:
-        case DELETE_OBJECT_INSTANCE:
-        case REMOVE_OBJECT_INSTANCE:
+          case DISCOVER_OBJECT_INSTANCE:
+          case DELETE_OBJECT_INSTANCE:
+          case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, label, resignAction
             Body.writeLongInt(object);
             Body.writeString(tag);
@@ -704,30 +715,30 @@ Message::writeBody(SocketUN *socket)
             writeResignAction(&Body);
             break ;
 
-        case GET_OBJECT_CLASS_HANDLE:
-        case GET_OBJECT_CLASS_NAME:
-        case GET_ATTRIBUTE_HANDLE:
-        case GET_ATTRIBUTE_NAME:
+          case GET_OBJECT_CLASS_HANDLE:
+          case GET_OBJECT_CLASS_NAME:
+          case GET_ATTRIBUTE_HANDLE:
+          case GET_ATTRIBUTE_NAME:
             // B.c. name(and attribute)
             Body.writeString(name);
             Body.writeShortInt(attribute);
             break ;
 
-        case GET_SPACE_HANDLE:
-        case GET_SPACE_NAME:
+          case GET_SPACE_HANDLE:
+          case GET_SPACE_NAME:
             Body.writeString(name);
             Body.writeLongInt(space);
             break ;
 
-        case GET_DIMENSION_HANDLE:
-        case GET_DIMENSION_NAME:
+          case GET_DIMENSION_HANDLE:
+          case GET_DIMENSION_NAME:
             Body.writeString(name);
             Body.writeLongInt(dimension);
             Body.writeLongInt(space);
             break ;
 
-        case SEND_INTERACTION:
-        case RECEIVE_INTERACTION:
+          case SEND_INTERACTION:
+          case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], resignAction
             Body.writeString(tag);
             writeHandleArray(&Body);
@@ -735,10 +746,10 @@ Message::writeBody(SocketUN *socket)
             writeResignAction(&Body);
             break ;
 
-        case GET_INTERACTION_CLASS_HANDLE:
-        case GET_INTERACTION_CLASS_NAME:
-        case GET_PARAMETER_HANDLE:
-        case GET_PARAMETER_NAME:
+          case GET_INTERACTION_CLASS_HANDLE:
+          case GET_INTERACTION_CLASS_NAME:
+          case GET_PARAMETER_HANDLE:
+          case GET_PARAMETER_NAME:
             // Body contains name and parameter
             Body.writeString(name);
             Body.writeShortInt(parameter);
@@ -747,8 +758,8 @@ Message::writeBody(SocketUN *socket)
 
             // --- MessageT_O_Struct, Body not empty ---
 
-        case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
-        case CHANGE_ATTRIBUTE_ORDER_TYPE:
+          case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
+          case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
             Body.writeLongInt(object);
             writeHandleArray(&Body);
@@ -756,7 +767,7 @@ Message::writeBody(SocketUN *socket)
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown type %d in WriteBody.", header.type);
             throw RTIinternalError("Message: Unknown type for Body.");
 
@@ -787,11 +798,11 @@ void Message::writeHandleArray(MessageBody *Body)
                      handleArraySize * sizeof(AttributeHandle));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Prepare and Write a Header to a Socket, and return RTI_TRUE if the
-    WriteBody method has to be called.
-    The message is written onto the socket by WriteHeader if no body is
-    required, or by WriteBody is a body has been required by WriteHeader.
+  WriteBody method has to be called.
+  The message is written onto the socket by WriteHeader if no body is
+  required, or by WriteBody is a body has been required by WriteHeader.
 */
 bool
 Message::writeHeader(SocketUN *socket)
@@ -819,95 +830,104 @@ Message::writeHeader(SocketUN *socket)
 
         // --- No Variable Part, Body not empty ---
 
-    case CREATE_FEDERATION_EXECUTION: // Body contains federationName
-    case DESTROY_FEDERATION_EXECUTION: // Body contains federationName
-    case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
-    case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-    case ANNOUNCE_SYNCHRONIZATION_POINT:
-    case SYNCHRONIZATION_POINT_ACHIEVED:            // Body contains Label
-    case FEDERATION_SYNCHRONIZED:
-    case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
-    case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
-    case ATTRIBUTE_IS_NOT_OWNED:
-    case INFORM_ATTRIBUTE_OWNERSHIP:
-    case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-    case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-    case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-    case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-    case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-    case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-    case GET_ATTRIBUTE_SPACE_HANDLE:
-    case GET_INTERACTION_SPACE_HANDLE:
-    case CREATE_REGION:
+      case CREATE_FEDERATION_EXECUTION: // Body contains federationName
+      case DESTROY_FEDERATION_EXECUTION: // Body contains federationName
+      case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
+      case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+      case ANNOUNCE_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_ACHIEVED: // Body contains Label
+      case FEDERATION_SYNCHRONIZED:
+      case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
+      case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
+      case ATTRIBUTE_IS_NOT_OWNED:
+      case INFORM_ATTRIBUTE_OWNERSHIP:
+      case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+      case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION:
+      case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+      case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+      case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+      case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+      case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+      case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      case GET_ATTRIBUTE_SPACE_HANDLE:
+      case GET_INTERACTION_SPACE_HANDLE:
+      case CREATE_REGION:
         header.bodySize = 1 ;
         break ;
 
-    case REQUEST_FEDERATION_SAVE:                   // Body contains Label
+      case REQUEST_FEDERATION_SAVE: // Body contains Label
         header.VP.O_I.date = date ;
         header.bodySize = 1 ;
         break ;
 
-    case FEDERATE_SAVE_BEGUN:
-    case FEDERATE_SAVE_COMPLETE:
-    case FEDERATE_SAVE_NOT_COMPLETE:
-    case FEDERATION_SAVED:
-    case FEDERATION_NOT_SAVED:
+      case FEDERATE_SAVE_BEGUN:
+      case FEDERATE_SAVE_COMPLETE:
+      case FEDERATE_SAVE_NOT_COMPLETE:
+      case FEDERATION_SAVED:
+      case FEDERATION_NOT_SAVED:
+      case REQUEST_FEDERATION_RESTORE:
+      case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case REQUEST_FEDERATION_RESTORE_FAILED:
+      case FEDERATE_RESTORE_COMPLETE:
+      case FEDERATE_RESTORE_NOT_COMPLETE:
+      case FEDERATION_RESTORED:
+      case FEDERATION_NOT_RESTORED:
+      case FEDERATION_RESTORE_BEGUN:
         header.bodySize = 0 ;
         break ;
 
         // --- MessageJ_R_Struct --
 
-    case RESIGN_FEDERATION_EXECUTION: // No Body
+      case RESIGN_FEDERATION_EXECUTION: // No Body
         header.VP.J_R.action = resignAction ;
         header.bodySize = 0 ;
         break ;
 
-    case JOIN_FEDERATION_EXECUTION: // Body contains federationName&federateName
+      case INITIATE_FEDERATE_RESTORE:
+      case JOIN_FEDERATION_EXECUTION: // Body contains federationName&federateName
         header.VP.J_R.federate = federate ;
         header.bodySize = 1 ;
         break ;
 
         // --- MessageO_I_Struct, No Body ---
 
-    case UNPUBLISH_OBJECT_CLASS:
-    case UNSUBSCRIBE_OBJECT_CLASS:
+      case UNPUBLISH_OBJECT_CLASS:
+      case UNSUBSCRIBE_OBJECT_CLASS:
         header.VP.O_I.handle = this->objectClass ;
         header.bodySize = 0 ;
         break ;
 
-    case PUBLISH_INTERACTION_CLASS:
-    case UNPUBLISH_INTERACTION_CLASS:
-    case SUBSCRIBE_INTERACTION_CLASS:
-    case UNSUBSCRIBE_INTERACTION_CLASS:
-    case TURN_INTERACTIONS_ON:
-    case TURN_INTERACTIONS_OFF:
+      case PUBLISH_INTERACTION_CLASS:
+      case UNPUBLISH_INTERACTION_CLASS:
+      case SUBSCRIBE_INTERACTION_CLASS:
+      case UNSUBSCRIBE_INTERACTION_CLASS:
+      case TURN_INTERACTIONS_ON:
+      case TURN_INTERACTIONS_OFF:
         header.VP.O_I.handle = this->interactionClass ;
         header.bodySize = 0 ;
         break ;
 
         // --- MessageO_I_Struct, Body not Empty ---
 
-    case PUBLISH_OBJECT_CLASS: // Body contains handleArray
-    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains handleArray
-    case REGISTER_OBJECT_INSTANCE: // Body contains object
-    case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
+      case PUBLISH_OBJECT_CLASS: // Body contains handleArray
+      case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains handleArray
+      case REGISTER_OBJECT_INSTANCE: // Body contains object
+      case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
         // ValueArray[] and resignAction.
-    case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
-    case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
+      case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
+      case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
         // and ValueArray[]
-    case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
-    case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, label&resignAction
-    case GET_OBJECT_CLASS_HANDLE: // Body contains name
-    case GET_OBJECT_CLASS_NAME: // Body contains name
-    case GET_ATTRIBUTE_HANDLE: // B.c. name and attribute.
-    case GET_ATTRIBUTE_NAME: // B.c. name and attribute.
+      case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
+      case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, label&resignAction
+      case GET_OBJECT_CLASS_HANDLE: // Body contains name
+      case GET_OBJECT_CLASS_NAME: // Body contains name
+      case GET_ATTRIBUTE_HANDLE: // B.c. name and attribute.
+      case GET_ATTRIBUTE_NAME: // B.c. name and attribute.
         header.VP.O_I.handle = objectClass ;
         header.VP.O_I.size = handleArraySize ;
         header.VP.O_I.date = date ;
@@ -915,23 +935,23 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
 
-    case SEND_INTERACTION: // B.c. Tag, handleArray[], ValueArray[]
-    case RECEIVE_INTERACTION: // B.c. Tag, handleArray[],
-                              // ValueArray[], resignAction
-    case GET_INTERACTION_CLASS_HANDLE: // Body contains name
-    case GET_INTERACTION_CLASS_NAME: // Body contains name
-    case GET_PARAMETER_HANDLE: // Body contains name and parameter
-    case GET_PARAMETER_NAME: // Body contains name and parameter
+      case SEND_INTERACTION: // B.c. Tag, handleArray[], ValueArray[]
+      case RECEIVE_INTERACTION: // B.c. Tag, handleArray[],
+        // ValueArray[], resignAction
+      case GET_INTERACTION_CLASS_HANDLE: // Body contains name
+      case GET_INTERACTION_CLASS_NAME: // Body contains name
+      case GET_PARAMETER_HANDLE: // Body contains name and parameter
+      case GET_PARAMETER_NAME: // Body contains name and parameter
         header.VP.O_I.handle = interactionClass ;
         header.VP.O_I.size = handleArraySize ;
         header.VP.O_I.date = date ;
         header.bodySize = 1 ;
         break ;
 
-    case GET_SPACE_HANDLE:
-    case GET_SPACE_NAME:
-    case GET_DIMENSION_HANDLE:
-    case GET_DIMENSION_NAME:
+      case GET_SPACE_HANDLE:
+      case GET_SPACE_NAME:
+      case GET_DIMENSION_HANDLE:
+      case GET_DIMENSION_NAME:
         header.VP.O_I.handle = space ;
         header.VP.O_I.size = handleArraySize ;
         header.VP.O_I.date = date ;
@@ -940,7 +960,7 @@ Message::writeHeader(SocketUN *socket)
 
         // --- ReqIDStruct, No Body ---
 
-    case REQUEST_ID:
+      case REQUEST_ID:
         header.VP.ReqID.count = idCount ;
         header.VP.ReqID.first = firstId ;
         header.VP.ReqID.last = lastId ;
@@ -949,8 +969,8 @@ Message::writeHeader(SocketUN *socket)
 
         // --- MessageT_O_Struct, No Body ---
 
-    case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
-    case CHANGE_INTERACTION_ORDER_TYPE:
+      case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
+      case CHANGE_INTERACTION_ORDER_TYPE:
         header.VP.T_O.handle = interactionClass ;
         header.VP.T_O.transport = transport ;
         header.VP.T_O.order = order ;
@@ -958,15 +978,15 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
         // Message_DDM, no body
-    case DELETE_REGION:
+      case DELETE_REGION:
         header.VP.ddm.region = region ;
         header.bodySize = 0 ;
         break ;
 
         // --- MessageT_O_Struct, Body not empty ---
 
-    case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, handleArray.
-    case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, handleArray.
+      case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, handleArray.
+      case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, handleArray.
         header.VP.T_O.size = handleArraySize ;
         header.VP.T_O.transport = transport ;
         header.VP.T_O.order = order ;
@@ -974,34 +994,34 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
         // --- TimeStruct, No Body ---
-        //    case REQUEST_FEDERATION_TIME:
-    case QUERY_LBTS:
-    case QUERY_FEDERATE_TIME:
-    case TIME_ADVANCE_REQUEST:
-    case NEXT_EVENT_REQUEST:
-    case TIME_ADVANCE_GRANT:
+        // case REQUEST_FEDERATION_TIME:
+      case QUERY_LBTS:
+      case QUERY_FEDERATE_TIME:
+      case TIME_ADVANCE_REQUEST:
+      case NEXT_EVENT_REQUEST:
+      case TIME_ADVANCE_GRANT:
         header.VP.time.date = date ;
         header.bodySize = 0 ;
         break ;
 
 
-    case MODIFY_LOOKAHEAD:
-    case QUERY_LOOKAHEAD:
+      case MODIFY_LOOKAHEAD:
+      case QUERY_LOOKAHEAD:
         header.VP.time.date = lookahead ;
         header.bodySize = 0 ;
         break ;
 
-    case ENABLE_TIME_REGULATION:
-    case DISABLE_TIME_REGULATION:
-    case ENABLE_TIME_CONSTRAINED:
-    case DISABLE_TIME_CONSTRAINED:
-    case TICK_REQUEST:
+      case ENABLE_TIME_REGULATION:
+      case DISABLE_TIME_REGULATION:
+      case ENABLE_TIME_CONSTRAINED:
+      case DISABLE_TIME_CONSTRAINED:
+      case TICK_REQUEST:
         header.VP.time.mode = boolean ;
         header.bodySize = 0 ;
         break ;
 
         // -- Default Handler --
-    default:
+      default:
         D.Out(pdExcept, "Unknown type %d in WriteHeader.", header.type);
         throw RTIinternalError("Message: Unknown type for Header.");
 
@@ -1045,4 +1065,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.10 2003/04/23 14:29:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.11 2003/05/05 20:19:43 breholee Exp $

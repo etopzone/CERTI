@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.6 2003/04/23 14:29:18 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.7 2003/05/05 20:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -98,8 +98,8 @@ NetworkMessage::readBody(Socket *socket)
         switch(Header.type) {
 
             // -- O_I Variable Part With Date(Body Not Empty) --
-        case m_SEND_INTERACTION:
-        case m_RECEIVE_INTERACTION:
+          case m_SEND_INTERACTION:
+          case m_RECEIVE_INTERACTION:
             readLabel(&Body);
             Body.readBlock((char *) handleArray,
                            handleArraySize * sizeof(AttributeHandle));
@@ -108,46 +108,54 @@ NetworkMessage::readBody(Socket *socket)
             }
             break ;
 
-        case m_CREATE_FEDERATION_EXECUTION:
-        case m_DESTROY_FEDERATION_EXECUTION:
+          case m_CREATE_FEDERATION_EXECUTION:
+          case m_DESTROY_FEDERATION_EXECUTION:
             readFederationName(&Body);
             break ;
 
-        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+          case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case m_ANNOUNCE_SYNCHRONIZATION_POINT:
             readLabel(&Body);
             readTag(&Body);
             break ;
 
-        case m_SYNCHRONIZATION_POINT_ACHIEVED:
-        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case m_FEDERATION_SYNCHRONIZED:
-        case m_REQUEST_FEDERATION_SAVE:
-        case m_INITIATE_FEDERATE_SAVE:
+          case m_SYNCHRONIZATION_POINT_ACHIEVED:
+          case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case m_FEDERATION_SYNCHRONIZED:
+          case m_REQUEST_FEDERATION_SAVE:
+          case m_INITIATE_FEDERATE_SAVE:
+          case m_REQUEST_FEDERATION_RESTORE:
+          case m_REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+          case m_INITIATE_FEDERATE_RESTORE:
             readLabel(&Body);
             break ;
 
-        case m_DELETE_OBJECT:
-        case m_REMOVE_OBJECT:
+          case m_REQUEST_FEDERATION_RESTORE_FAILED:
+            readLabel(&Body);
+            readTag(&Body);
+            break ;
+
+          case m_DELETE_OBJECT:
+          case m_REMOVE_OBJECT:
             object = Body.readLongInt();
             readLabel(&Body);
             break ;
 
             // -- No Variable Part --
 
-        case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case m_INFORM_ATTRIBUTE_OWNERSHIP:
-        case m_ATTRIBUTE_IS_NOT_OWNED:
-        case m_QUERY_ATTRIBUTE_OWNERSHIP:
+          case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case m_INFORM_ATTRIBUTE_OWNERSHIP:
+          case m_ATTRIBUTE_IS_NOT_OWNED:
+          case m_QUERY_ATTRIBUTE_OWNERSHIP:
             object = Body.readLongInt();
             handleArray[0] = Body.readShortInt();
             readLabel(&Body);
             break ;
 
-        case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
             object = Body.readLongInt();
             handleArraySize = Body.readShortInt();
             for (i = 0 ; i < handleArraySize ; i ++)
@@ -155,22 +163,22 @@ NetworkMessage::readBody(Socket *socket)
             readLabel(&Body);
             break ;
 
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             object = Body.readLongInt();
             handleArraySize = Body.readShortInt();
             for (i = 0 ; i < handleArraySize ; i ++)
                 handleArray[i] = Body.readShortInt();
             break ;
 
-        case m_CREATE_REGION:
+          case m_CREATE_REGION:
             space = Body.readLongInt();
             nbExtents = Body.readLongInt();
             region = Body.readLongInt();
@@ -178,28 +186,28 @@ NetworkMessage::readBody(Socket *socket)
 
             // -- Join Variable Part --
 
-        case m_JOIN_FEDERATION_EXECUTION:
+          case m_JOIN_FEDERATION_EXECUTION:
             readFederationName(&Body);
             readFederateName(&Body);
             break ;
 
             // -- O_I Variable Part(Body not empty) --
 
-        case m_PUBLISH_OBJECT_CLASS:
-        case m_SUBSCRIBE_OBJECT_CLASS:
+          case m_PUBLISH_OBJECT_CLASS:
+          case m_SUBSCRIBE_OBJECT_CLASS:
             for (i = 0 ; i < handleArraySize ; i ++)
                 handleArray[i] = Body.readShortInt();
             break ;
 
-        case m_REGISTER_OBJECT:
-        case m_DISCOVER_OBJECT:
+          case m_REGISTER_OBJECT:
+          case m_DISCOVER_OBJECT:
             object = Body.readLongInt();
             readLabel(&Body);
             break ;
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown type %d in ReadBody.", Header.type);
             throw RTIinternalError("Unknown/Unimplemented type for Body.");
         }
@@ -239,84 +247,93 @@ NetworkMessage::readHeader(Socket *socket)
     else
         switch(Header.type) {
 
-        case m_SEND_INTERACTION:
-        case m_RECEIVE_INTERACTION:
+          case m_SEND_INTERACTION:
+          case m_RECEIVE_INTERACTION:
             interactionClass = Header.VP.O_I.handle ;
             handleArraySize = Header.VP.O_I.size ;
             date = Header.VP.O_I.date ;
             break ;
 
-        case m_REQUEST_FEDERATION_SAVE:
+          case m_REQUEST_FEDERATION_SAVE:
             date = Header.VP.O_I.date ;
             break ;
 
-        case m_INITIATE_FEDERATE_SAVE:
+          case m_INITIATE_FEDERATE_SAVE:
+          case m_REQUEST_FEDERATION_RESTORE:
+          case m_INITIATE_FEDERATE_RESTORE:
+          case m_REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+          case m_REQUEST_FEDERATION_RESTORE_FAILED:
             break ;
 
             // -- No Variable Part --
 
-        case m_CREATE_FEDERATION_EXECUTION:
-        case m_DESTROY_FEDERATION_EXECUTION:
-        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case m_SYNCHRONIZATION_POINT_ACHIEVED:
-        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case m_FEDERATION_SYNCHRONIZED:
-        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
-        case m_DELETE_OBJECT:
-        case m_REMOVE_OBJECT:
-        case m_CLOSE_CONNEXION:
-        case m_RESIGN_FEDERATION_EXECUTION:
-        case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case m_INFORM_ATTRIBUTE_OWNERSHIP:
-        case m_ATTRIBUTE_IS_NOT_OWNED:
-        case m_QUERY_ATTRIBUTE_OWNERSHIP:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-        case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-        case m_CREATE_REGION:
+          case m_CREATE_FEDERATION_EXECUTION:
+          case m_DESTROY_FEDERATION_EXECUTION:
+          case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case m_SYNCHRONIZATION_POINT_ACHIEVED:
+          case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case m_FEDERATION_SYNCHRONIZED:
+          case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+          case m_DELETE_OBJECT:
+          case m_REMOVE_OBJECT:
+          case m_CLOSE_CONNEXION:
+          case m_RESIGN_FEDERATION_EXECUTION:
+          case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case m_INFORM_ATTRIBUTE_OWNERSHIP:
+          case m_ATTRIBUTE_IS_NOT_OWNED:
+          case m_QUERY_ATTRIBUTE_OWNERSHIP:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case m_CREATE_REGION:
+          case m_FEDERATE_RESTORE_COMPLETE:
+          case m_FEDERATE_RESTORE_NOT_COMPLETE:
+          case m_FEDERATION_RESTORE_BEGUN:
+          case m_FEDERATION_RESTORED:
+          case m_FEDERATION_NOT_RESTORED:
             break ;
 
             // -- time Variable Part(No Body)[Continued]--
 
-        case m_SET_TIME_REGULATING:
+          case m_SET_TIME_REGULATING:
             date = Header.VP.time.date ;
             regulator = Header.VP.time.R_or_C ;
             break ;
 
-        case m_SET_TIME_CONSTRAINED:
+          case m_SET_TIME_CONSTRAINED:
             date = Header.VP.time.date ;
             constrained = Header.VP.time.R_or_C ;
             break ;
 
             // -- ReqID Variable Part(No Body) --
 
-        case m_REQUEST_ID:
+          case m_REQUEST_ID:
             idCount = Header.VP.ReqID.count ;
             firstId = Header.VP.ReqID.first ;
             lastId = Header.VP.ReqID.last ;
             break ;
             // -- T_O Variable Part --
 
-        case m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
-        case m_CHANGE_ATTRIBUTE_ORDER_TYPE:
-        case m_CHANGE_INTERACTION_TRANSPORT_TYPE:
-        case m_CHANGE_INTERACTION_ORDER_TYPE:
+          case m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+          case m_CHANGE_ATTRIBUTE_ORDER_TYPE:
+          case m_CHANGE_INTERACTION_TRANSPORT_TYPE:
+          case m_CHANGE_INTERACTION_ORDER_TYPE:
             throw RTIinternalError("Read Message not implemented for T/O.");
             break ;
 
             // -- Join Variable Part(No Body) --
 
-        case m_JOIN_FEDERATION_EXECUTION:
+          case m_JOIN_FEDERATION_EXECUTION:
             numberOfRegulators = Header.VP.Join.NbReg ;
             multicastAddress = Header.VP.Join.AdrMC ;
             bestEffortAddress = Header.VP.Join.Addr ;
@@ -325,41 +342,41 @@ NetworkMessage::readHeader(Socket *socket)
 
             // -- O_I Variable Part(No Body) --
 
-        case m_UNPUBLISH_OBJECT_CLASS:
-        case m_UNSUBSCRIBE_OBJECT_CLASS:
+          case m_UNPUBLISH_OBJECT_CLASS:
+          case m_UNSUBSCRIBE_OBJECT_CLASS:
             objectClass = Header.VP.O_I.handle ;
             break ;
 
-        case m_PUBLISH_INTERACTION_CLASS:
-        case m_UNPUBLISH_INTERACTION_CLASS:
-        case m_SUBSCRIBE_INTERACTION_CLASS:
-        case m_UNSUBSCRIBE_INTERACTION_CLASS:
-        case m_TURN_INTERACTIONS_ON:
-        case m_TURN_INTERACTIONS_OFF:
+          case m_PUBLISH_INTERACTION_CLASS:
+          case m_UNPUBLISH_INTERACTION_CLASS:
+          case m_SUBSCRIBE_INTERACTION_CLASS:
+          case m_UNSUBSCRIBE_INTERACTION_CLASS:
+          case m_TURN_INTERACTIONS_ON:
+          case m_TURN_INTERACTIONS_OFF:
             interactionClass = Header.VP.O_I.handle ;
             break ;
 
             // DDM variable part
-        case m_DELETE_REGION:
+          case m_DELETE_REGION:
             region = Header.VP.ddm.region ;
             break ;
 
             // -- O_I Variable Part(Body not empty) --
 
-        case m_PUBLISH_OBJECT_CLASS:
-        case m_SUBSCRIBE_OBJECT_CLASS:
+          case m_PUBLISH_OBJECT_CLASS:
+          case m_SUBSCRIBE_OBJECT_CLASS:
             objectClass = Header.VP.O_I.handle ;
             handleArraySize = Header.VP.O_I.size ;
             break ;
 
-        case m_REGISTER_OBJECT:
-        case m_DISCOVER_OBJECT:
+          case m_REGISTER_OBJECT:
+          case m_DISCOVER_OBJECT:
             objectClass = Header.VP.O_I.handle ;
             break ;
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown type %d in ReadHeader.", Header.type);
             throw RTIinternalError("Received unknown Header type.");
         }
@@ -383,14 +400,14 @@ NetworkMessage::readLabel(MessageBody *Body)
     Body->readString(label, MAX_USER_TAG_LENGTH);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Read the tag contained into the message.
 void NetworkMessage::readTag(MessageBody *Body)
 {
     Body->readString(tag, MAX_USER_TAG_LENGTH);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Read the federation name.
 void
 NetworkMessage::readFederationName(MessageBody *Body)
@@ -470,8 +487,8 @@ NetworkMessage::writeBody(Socket *socket)
 
             // -- O_I Variable Part With date(Body Not Empty) --
 
-        case m_SEND_INTERACTION:
-        case m_RECEIVE_INTERACTION:
+          case m_SEND_INTERACTION:
+          case m_RECEIVE_INTERACTION:
             Body.writeString(label);
             Body.writeBlock((char *) handleArray,
                             handleArraySize * sizeof(AttributeHandle));
@@ -482,44 +499,52 @@ NetworkMessage::writeBody(Socket *socket)
 
             // -- No Variable Part --
 
-        case m_CREATE_FEDERATION_EXECUTION:
-        case m_DESTROY_FEDERATION_EXECUTION:
+          case m_CREATE_FEDERATION_EXECUTION:
+          case m_DESTROY_FEDERATION_EXECUTION:
             Body.writeString(federationName);
             break ;
 
-        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+          case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case m_ANNOUNCE_SYNCHRONIZATION_POINT:
             Body.writeString(label);
             Body.writeString(tag);
             break ;
 
-        case m_SYNCHRONIZATION_POINT_ACHIEVED:
-        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case m_FEDERATION_SYNCHRONIZED:
-        case m_REQUEST_FEDERATION_SAVE:
-        case m_INITIATE_FEDERATE_SAVE:
+          case m_SYNCHRONIZATION_POINT_ACHIEVED:
+          case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case m_FEDERATION_SYNCHRONIZED:
+          case m_REQUEST_FEDERATION_SAVE:
+          case m_INITIATE_FEDERATE_SAVE:
+          case m_REQUEST_FEDERATION_RESTORE:
+          case m_REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+          case m_INITIATE_FEDERATE_RESTORE:
             Body.writeString(label);
             break ;
 
-        case m_DELETE_OBJECT:
-        case m_REMOVE_OBJECT:
+          case m_REQUEST_FEDERATION_RESTORE_FAILED:
+            Body.writeString(label);
+            Body.writeString(tag);
+            break ;
+
+          case m_DELETE_OBJECT:
+          case m_REMOVE_OBJECT:
             Body.writeLongInt(object);
             Body.writeString(label);
             break ;
 
-        case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case m_INFORM_ATTRIBUTE_OWNERSHIP:
-        case m_ATTRIBUTE_IS_NOT_OWNED:
-        case m_QUERY_ATTRIBUTE_OWNERSHIP:
+          case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case m_INFORM_ATTRIBUTE_OWNERSHIP:
+          case m_ATTRIBUTE_IS_NOT_OWNED:
+          case m_QUERY_ATTRIBUTE_OWNERSHIP:
             Body.writeLongInt(object);
             Body.writeShortInt(handleArray[0]);
             Body.writeString(label);
             break ;
 
-        case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
             Body.writeLongInt(object);
             Body.writeShortInt(handleArraySize);
             for (i = 0 ; i < handleArraySize ; i ++)
@@ -528,22 +553,22 @@ NetworkMessage::writeBody(Socket *socket)
             break ;
 
 
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-        case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
             Body.writeLongInt(object);
             Body.writeShortInt(handleArraySize);
             for (i = 0 ; i < handleArraySize ; i ++)
                 Body.writeShortInt(handleArray[i]);
             break ;
 
-        case m_CREATE_REGION:
+          case m_CREATE_REGION:
             Body.writeLongInt(space);
             Body.writeLongInt(nbExtents);
             Body.writeLongInt(region);
@@ -551,28 +576,28 @@ NetworkMessage::writeBody(Socket *socket)
 
             // -- Join Variable Part --
 
-        case m_JOIN_FEDERATION_EXECUTION:
+          case m_JOIN_FEDERATION_EXECUTION:
             Body.writeString(federationName);
             Body.writeString(federateName);
             break ;
 
             // -- O_I Variable Part(Body not empty) --
 
-        case m_PUBLISH_OBJECT_CLASS:
-        case m_SUBSCRIBE_OBJECT_CLASS:
+          case m_PUBLISH_OBJECT_CLASS:
+          case m_SUBSCRIBE_OBJECT_CLASS:
             for (i = 0 ; i < handleArraySize ; i ++)
                 Body.writeShortInt(handleArray[i]);
             break ;
 
-        case m_REGISTER_OBJECT:
-        case m_DISCOVER_OBJECT:
+          case m_REGISTER_OBJECT:
+          case m_DISCOVER_OBJECT:
             Body.writeLongInt(object);
             Body.writeString(label);
             break ;
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown type %d in WriteBody.", Header.type);
             throw RTIinternalError("Unknown/Unimplemented type for Header.");
 
@@ -630,8 +655,8 @@ NetworkMessage::writeHeader(Socket *socket)
         switch(type) {
 
 
-        case m_SEND_INTERACTION:
-        case m_RECEIVE_INTERACTION:
+          case m_SEND_INTERACTION:
+          case m_RECEIVE_INTERACTION:
             // Body contains handleArray, ValueArray, label.
             Header.bodySize = 1 ;
             Header.VP.O_I.handle = interactionClass ;
@@ -639,80 +664,89 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.date = date ;
             break ;
 
-        case m_REQUEST_FEDERATION_SAVE:
+          case m_REQUEST_FEDERATION_SAVE:
             Header.bodySize = 1 ;
             Header.VP.O_I.date = date ;
             break ;
 
-        case m_INITIATE_FEDERATE_SAVE:
+          case m_INITIATE_FEDERATE_SAVE:
+          case m_REQUEST_FEDERATION_RESTORE:
+          case m_REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+          case m_REQUEST_FEDERATION_RESTORE_FAILED:
             Header.bodySize = 1 ;
             break ;
 
             // -- No Variable Part, No Body --
 
-        case m_CLOSE_CONNEXION:
-        case m_RESIGN_FEDERATION_EXECUTION:
-        case m_FEDERATE_SAVE_BEGUN:
-        case m_FEDERATE_SAVE_COMPLETE:
-        case m_FEDERATE_SAVE_NOT_COMPLETE:
-        case m_FEDERATION_SAVED:
-        case m_FEDERATION_NOT_SAVED:
+          case m_CLOSE_CONNEXION:
+          case m_RESIGN_FEDERATION_EXECUTION:
+          case m_FEDERATE_SAVE_BEGUN:
+          case m_FEDERATE_SAVE_COMPLETE:
+          case m_FEDERATE_SAVE_NOT_COMPLETE:
+          case m_FEDERATION_SAVED:
+          case m_FEDERATION_NOT_SAVED:
+          case m_FEDERATE_RESTORE_COMPLETE:
+          case m_FEDERATE_RESTORE_NOT_COMPLETE:
+          case m_FEDERATION_RESTORE_BEGUN:
+          case m_FEDERATION_RESTORED:
+          case m_FEDERATION_NOT_RESTORED:
             Header.bodySize = 0 ;
             break ;
 
             // -- No Variable Part, Body not empty --
 
-        case m_CREATE_FEDERATION_EXECUTION:
-        case m_DESTROY_FEDERATION_EXECUTION:
+          case m_CREATE_FEDERATION_EXECUTION:
+          case m_DESTROY_FEDERATION_EXECUTION:
             // Body Contains federationName.
-        case m_INFORM_ATTRIBUTE_OWNERSHIP:
-        case m_ATTRIBUTE_IS_NOT_OWNED:
-        case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-        case m_QUERY_ATTRIBUTE_OWNERSHIP:
+          case m_INFORM_ATTRIBUTE_OWNERSHIP:
+          case m_ATTRIBUTE_IS_NOT_OWNED:
+          case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+          case m_QUERY_ATTRIBUTE_OWNERSHIP:
             // Body Contains ObjectHandle and label
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-        case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+          case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
             // Body Contains ObjectHandle and handleArray
-        case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-        case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-        case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-        case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-        case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-        case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-        case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-        case m_CREATE_REGION:
+          case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          case m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+          case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+          case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
+          case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+          case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
+          case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case m_CREATE_REGION:
+          case m_INITIATE_FEDERATE_RESTORE:
             Header.bodySize = 1 ;
             break ;
 
-        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        case m_SYNCHRONIZATION_POINT_ACHIEVED:
-        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-        case m_FEDERATION_SYNCHRONIZED:
-        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+          case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+          case m_SYNCHRONIZATION_POINT_ACHIEVED:
+          case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+          case m_FEDERATION_SYNCHRONIZED:
+          case m_ANNOUNCE_SYNCHRONIZATION_POINT:
             // Body Contains Label(should be non-empty)
             // BUG: S'il fait moins de 16 octet, il passe dans le header.
             Header.bodySize = 1 ;
             break ;
 
-        case m_DELETE_OBJECT:
-        case m_REMOVE_OBJECT:
+          case m_DELETE_OBJECT:
+          case m_REMOVE_OBJECT:
             // Body Contains ObjectHandle, and label
             Header.bodySize = 1 ;
             break ;
 
             // -- time Variable Part(No Body)[Continued] --
 
-        case m_SET_TIME_REGULATING:
+          case m_SET_TIME_REGULATING:
             Header.bodySize = 0 ;
             Header.VP.time.date = date ;
             Header.VP.time.R_or_C = regulator ;
             break ;
 
-        case m_SET_TIME_CONSTRAINED:
+          case m_SET_TIME_CONSTRAINED:
             Header.bodySize = 0 ;
             Header.VP.time.date = date ;
             Header.VP.time.R_or_C = constrained ;
@@ -720,7 +754,7 @@ NetworkMessage::writeHeader(Socket *socket)
 
             // -- ReqID Variable Part(No Body) --
 
-        case m_REQUEST_ID:
+          case m_REQUEST_ID:
             Header.bodySize = 0 ;
             Header.VP.ReqID.count = idCount ;
             Header.VP.ReqID.first = firstId ;
@@ -729,16 +763,16 @@ NetworkMessage::writeHeader(Socket *socket)
 
             // -- T_O Variable Part --
 
-        case m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
-        case m_CHANGE_ATTRIBUTE_ORDER_TYPE:
-        case m_CHANGE_INTERACTION_TRANSPORT_TYPE:
-        case m_CHANGE_INTERACTION_ORDER_TYPE:
+          case m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+          case m_CHANGE_ATTRIBUTE_ORDER_TYPE:
+          case m_CHANGE_INTERACTION_TRANSPORT_TYPE:
+          case m_CHANGE_INTERACTION_ORDER_TYPE:
             throw RTIinternalError("Write Message not implemented for T/O.");
             break ;
 
             // -- Join Variable Part --
 
-        case m_JOIN_FEDERATION_EXECUTION:
+          case m_JOIN_FEDERATION_EXECUTION:
             // Body contains federationName and federateName
             Header.bodySize = 1 ;
             Header.VP.Join.NbReg = numberOfRegulators ;
@@ -749,32 +783,32 @@ NetworkMessage::writeHeader(Socket *socket)
 
             // -- O_I Variable Part(No Body) --
 
-        case m_UNPUBLISH_OBJECT_CLASS:
-        case m_UNSUBSCRIBE_OBJECT_CLASS:
+          case m_UNPUBLISH_OBJECT_CLASS:
+          case m_UNSUBSCRIBE_OBJECT_CLASS:
             Header.bodySize = 0 ;
             Header.VP.O_I.handle = objectClass ;
             break ;
 
-        case m_PUBLISH_INTERACTION_CLASS:
-        case m_UNPUBLISH_INTERACTION_CLASS:
-        case m_SUBSCRIBE_INTERACTION_CLASS:
-        case m_UNSUBSCRIBE_INTERACTION_CLASS:
-        case m_TURN_INTERACTIONS_ON:
-        case m_TURN_INTERACTIONS_OFF:
+          case m_PUBLISH_INTERACTION_CLASS:
+          case m_UNPUBLISH_INTERACTION_CLASS:
+          case m_SUBSCRIBE_INTERACTION_CLASS:
+          case m_UNSUBSCRIBE_INTERACTION_CLASS:
+          case m_TURN_INTERACTIONS_ON:
+          case m_TURN_INTERACTIONS_OFF:
             Header.bodySize = 0 ;
             Header.VP.O_I.handle = interactionClass ;
             break ;
 
             // DDM variable part, no body
-        case m_DELETE_REGION:
+          case m_DELETE_REGION:
             Header.bodySize = 0 ;
             Header.VP.ddm.region = region ;
             break ;
 
             // -- O_I Variable Part(Body not empty) --
 
-        case m_PUBLISH_OBJECT_CLASS:
-        case m_SUBSCRIBE_OBJECT_CLASS:
+          case m_PUBLISH_OBJECT_CLASS:
+          case m_SUBSCRIBE_OBJECT_CLASS:
             // Body contains handleArray[handleArraySize](if not empty)
 
             if (handleArraySize > 0)
@@ -786,8 +820,8 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.size = handleArraySize ;
             break ;
 
-        case m_REGISTER_OBJECT:
-        case m_DISCOVER_OBJECT:
+          case m_REGISTER_OBJECT:
+          case m_DISCOVER_OBJECT:
             // Body Contains ObjectHandle and label
             Header.bodySize = 1 ;
             Header.VP.O_I.handle = objectClass ;
@@ -795,7 +829,7 @@ NetworkMessage::writeHeader(Socket *socket)
 
             // -- Default Handler --
 
-        default:
+          default:
             D.Out(pdExcept, "Unknown type %d in WriteHeader.", Header.type);
             throw RTIinternalError("Unknown/Unimplemented type for Header.");
 
@@ -815,4 +849,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.6 2003/04/23 14:29:18 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.7 2003/05/05 20:19:43 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.9 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIG.hh,v 3.10 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -99,6 +99,8 @@ private:
     void processRequestFederationSave(Socket*, NetworkMessage*);
     void processFederateSaveBegun(Socket*, NetworkMessage*);
     void processFederateSaveStatus(Socket*, NetworkMessage*);
+    void processRequestFederationRestore(Socket*, NetworkMessage*);
+    void processFederateRestoreStatus(Socket*, NetworkMessage*);
     void processPublishObjectClass(Socket*, NetworkMessage*);
     void processSubscribeObjectClass(Socket*, NetworkMessage*);
     void processUnpublishObjectClass(Socket*, NetworkMessage*);
@@ -130,4 +132,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.9 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIG.hh,v 3.10 2003/05/05 20:21:39 breholee Exp $

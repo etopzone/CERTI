@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.16 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federation.cc,v 3.17 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -52,7 +52,7 @@ Federation::Federation(const char *federation_name,
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
     : list<Federate *>(), saveInProgress(false), saveStatus(true),
-      restoreInProgress(false)
+      restoreInProgress(false), restoreStatus(true)
 {
     fedparser::FedParser *fed_reader ;
     char file_name[MAX_FEDERATION_NAME_LENGTH + 5] ;
@@ -555,6 +555,7 @@ Federation::requestFederationSave(FederateHandle the_federate,
 
     saveStatus = true ;
     saveInProgress = true ;
+    saveLabel = the_label ;
 
     NetworkMessage msg ;
     msg.type = m_INITIATE_FEDERATE_SAVE ;
@@ -594,6 +595,11 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
             return ;
     }
 
+    // Save RTIG Data for future restoration.
+    if (saveStatus) {
+        saveXmlData();
+    }
+
     // Send end save message.
     NetworkMessage msg ;
 
@@ -607,6 +613,131 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     // Reinitialize state.
     saveStatus = true ;
     saveInProgress = false ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::requestFederationRestore(FederateHandle the_federate,
+                                     const char *the_label)
+    throw (FederateNotExecutionMember)
+{
+    check(the_federate);
+
+    if (restoreInProgress)
+        throw RestoreInProgress("Already in restoring state.");
+
+    Socket * socket ;
+
+    NetworkMessage * msg = new NetworkMessage ;
+    msg->federate = the_federate ;
+    msg->federation = handle ;
+    msg->setLabel(the_label);
+
+    // Informs sending federate of success/failure in restoring.
+    // At this point, only verify that file is present.
+    bool success = true ;
+#ifdef HAVE_XML
+    string filename = string(name) + "_" + string(the_label) + ".xcs" ;
+    doc = xmlParseFile(filename.c_str());
+
+    // Did libXML manage to parse the file ?
+    if (doc == 0) {
+        cerr << "XML restore file not parsed successfully" << endl ;
+        xmlFreeDoc(doc);
+        success = false ;
+    }
+#else
+    success = false ;
+#endif // HAVE_XML
+
+    if (success)
+        msg->type = m_REQUEST_FEDERATION_RESTORE_SUCCEEDED ;
+    else {
+        msg->type = m_REQUEST_FEDERATION_RESTORE_FAILED ;
+        msg->setTag("File reading error.");
+    }
+
+    socket = server->getSocketLink(msg->federate);
+    msg->write(socket);
+    delete msg ;
+
+    // Reading file failed: not restoring !
+    if (!success)
+        return ;
+
+    // Otherwise...
+    list<Federate *>::iterator j ;
+    for (j = begin(); j != end(); j++) {
+        (*j)->setRestoring(true);
+    }
+    restoreStatus = true ;
+    restoreInProgress = true ;
+
+    // Informs federates a new restore is being done.
+    msg = new NetworkMessage ;
+    msg->federate = the_federate ;
+    msg->federation = handle ;
+    msg->type = m_FEDERATION_RESTORE_BEGUN ;
+
+    broadcastAnyMessage(msg, 0);
+    delete msg ;
+
+    // Restore RTIG Data from older save.
+    // Should read a configuration file associated to federation name and
+    // label. Federate handles should be updated.
+    restoreXmlData();
+
+    // For each federate, send an initiateFederateRestore with correct handle.
+    msg = new NetworkMessage ;
+    msg->federation = handle ;
+    msg->setLabel(the_label);
+    msg->type = m_INITIATE_FEDERATE_RESTORE ;
+
+    list<Federate *>::const_iterator k ;
+    for (k = begin(); k != end(); k++) {
+        msg->federate = (*k)->getHandle();
+
+        // send message.
+        socket = server->getSocketLink(msg->federate);
+        msg->write(socket);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::federateRestoreStatus(FederateHandle the_federate,
+                                  bool the_status)
+    throw (FederateNotExecutionMember)
+{
+    Federate * federate = getByHandle(the_federate);
+    federate->setRestoring(false);
+
+    if (!the_status)
+        restoreStatus = false ;
+
+    // Verify that all federates save ended (complete or not).
+    list<Federate *>::iterator j ;
+    for (j = begin(); j != end(); j++) {
+        if ((*j)->isRestoring() == true)
+            return ;
+    }
+
+    // Send end restore message.
+    NetworkMessage msg ;
+
+    if (restoreStatus)
+        msg.type = m_FEDERATION_RESTORED ;
+    else
+        msg.type = m_FEDERATION_NOT_RESTORED ;
+
+    msg.federate = the_federate ;
+    msg.federation = handle ;
+
+    broadcastAnyMessage(&msg, 0);
+
+    // Reinitialize state.
+    restoreStatus = true ;
+    restoreInProgress = false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1363,7 +1494,114 @@ Federation::deleteRegion(FederateHandle federate,
     root->deleteRegion(region);
 }
 
+// ----------------------------------------------------------------------------
+void
+Federation::restoreXmlData(void)
+{
+    xmlNodePtr cur ;
+
+    cur = xmlDocGetRootElement(doc);
+    if (cur == 0) {
+        cerr << "XML file is empty" << endl ;
+        xmlFreeDoc(doc);
+        return ;
+    }
+
+    // Is this root element an ROOT_NODE ?
+    if (xmlStrcmp(cur->name, ROOT_NODE)) {
+        cerr << "Wrong XML file: not the expected root node" << endl ;
+        return ;
+    }
+
+    cur = cur->xmlChildrenNode ;
+    if (xmlStrcmp(cur->name, NODE_FEDERATION)) {
+        cerr << "Wrong XML file structure" << endl ;
+        return ;
+    }
+
+    char *tmp ;
+    tmp = (char *)xmlGetProp(cur, (const xmlChar*)"name");
+    if (strcmp(name, tmp) != 0) {
+        cerr << "Wrong federation name" << endl ;
+    }
+
+    cur = cur->xmlChildrenNode ;
+    list<Federate *>::iterator i ;
+    bool status ;
+    while (cur != NULL) {
+        if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
+            for (i = begin(); i != end(); i++) {
+                if (strcmp((*i)->getName(),
+                           (char *)xmlGetProp(cur, (const xmlChar*)"name")) == 0) {
+                    // Set federate constrained status
+                    if (strcmp("true",
+                               (char *)xmlGetProp(cur,
+                                                  (const xmlChar*)"constrained")) == 0)
+                        status = true ;
+                    else
+                        status = false ;
+
+                    (*i)->setConstrained(status);
+
+                    // Set federate regulating status
+                    if (strcmp("true",
+                               (char *)xmlGetProp(cur, (const xmlChar*)"regulator")) == 0)
+                        status = true ;
+                    else
+                        status = false ;
+
+                    (*i)->setRegulator(status);
+
+                    (*i)->setHandle(strtol((char *)xmlGetProp(cur, (const xmlChar*)"handle"),
+                                           (char **)NULL, 10));
+                    break ;
+                }
+            }
+        }
+        cur = cur->next ;
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::saveXmlData(void)
+{
+    doc = xmlNewDoc((const xmlChar *)"1.0");
+    doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
+
+    xmlNodePtr federation ;
+    federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
+
+    xmlSetProp(federation, (const xmlChar *)"name", (const xmlChar *)name);
+
+    char t[10] ;
+    sprintf(t, "%ld", handle);
+    xmlSetProp(federation, (const xmlChar *)"handle", (const xmlChar *) t);
+
+    xmlNodePtr federate ;
+
+    list<Federate *>::iterator i ;
+    for (i = begin(); i != end(); i++) {
+        federate = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
+
+        xmlSetProp(federate, (const xmlChar *)"name", (const xmlChar *)(*i)->getName());
+
+        sprintf(t, "%ld", (*i)->getHandle());
+        xmlSetProp(federate, (const xmlChar *)"handle", (const xmlChar *)t);
+
+        xmlSetProp(federate, (const xmlChar *)"constrained",
+                   (const xmlChar *)(((*i)->isConstrained()) ? "true" : "false"));
+        xmlSetProp(federate, (const xmlChar *)"regulator",
+                   (const xmlChar *)(((*i)->isRegulator()) ? "true" : "false"));
+    }
+
+    xmlSetDocCompressMode(doc, 9);
+
+    string filename = string(name) + "_" + string(saveLabel) + ".xcs" ;
+    xmlSaveFile(filename.c_str(), doc);
+}
+
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.16 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federation.cc,v 3.17 2003/05/05 20:21:39 breholee Exp $
 

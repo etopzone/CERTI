@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
+// $Id: TimeManagement.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -37,21 +37,21 @@ void
 TimeManagement::advance(Boolean &msg_restant, TypeException &e)
 {
     switch(_avancee_en_cours) {
-    case TAR:
+      case TAR:
         D.Out(pdTrace, "Call to TimeAdvance.");
         timeAdvance(msg_restant, e);
         break ;
-    case NER:
+      case NER:
         D.Out(pdTrace, "Call to NextEventAdvance.");
         nextEventAdvance(msg_restant, e);
         break ;
-    default:
+      default:
         D.Out(pdTrace, "Unexpected case in advance: %d.", _avancee_en_cours);
-                                       // No exception is raised, ca
-                                       // peut etre un cas ou on a
-                                       // rien a faire, par exemple en
-                                       // cas d'attente active pendant
-                                       // une pause.
+                                     // No exception is raised, ca
+                                     // peut etre un cas ou on a
+                                     // rien a faire, par exemple en
+                                     // cas d'attente active pendant
+                                     // une pause.
     }
 }
 
@@ -114,38 +114,38 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
 
     switch (msg.type) {
 
-    case m_FEDERATION_SYNCHRONIZED:
+      case m_FEDERATION_SYNCHRONIZED:
         try {
             fm->federationSynchronized(msg.label);
         }
-        catch(RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in federationSynchronized." << endl;
-            throw e;
+        catch (RTIinternalError &e) {
+            cout << "RTIA:RTIinternalError in federationSynchronized." << endl ;
+            throw e ;
         }
-        break;
+        break ;
 
-    case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+      case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         try {
             fm->synchronizationPointRegistrationSucceeded(msg.label);
         }
-        catch(RTIinternalError &e) {
+        catch (RTIinternalError &e) {
             cout << "RTIA:RTIinternalError in synchronizationPointRegistration"
-                "Succeeded." << endl;
-            throw e;
+                "Succeeded." << endl ;
+            throw e ;
         }
-        break;
+        break ;
 
-    case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+      case m_ANNOUNCE_SYNCHRONIZATION_POINT:
         try {
             fm->announceSynchronizationPoint(msg.label, msg.tag);
         }
-        catch(RTIinternalError &e) {
-            cout << "RTIA:RTIinternalError in announceSynchronizationPoint." << endl;
-            throw e;
+        catch (RTIinternalError &e) {
+            cout << "RTIA:RTIinternalError in announceSynchronizationPoint." << endl ;
+            throw e ;
         }
-        break;
+        break ;
 
-    case m_DISCOVER_OBJECT:
+      case m_DISCOVER_OBJECT:
         try {
             om->discoverObject(msg.object,
                                msg.objectClass,
@@ -161,40 +161,40 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
         }
         break ;
 
-    case m_REFLECT_ATTRIBUTE_VALUES:
-        {
-            AttributeValue *ValueArray = msg.getAttribValueArray();
+      case m_REFLECT_ATTRIBUTE_VALUES:
+      {
+          AttributeValue *ValueArray = msg.getAttribValueArray();
 
-            om->reflectAttributeValues(msg.object,
-                                       msg.handleArray,
-                                       ValueArray,
-                                       msg.handleArraySize,
-                                       msg.date,
-                                       msg.label,
-                                       msg.eventRetraction,
-                                       msg.exception);
-            free(ValueArray);
-            break ;
-        }
+          om->reflectAttributeValues(msg.object,
+                                     msg.handleArray,
+                                     ValueArray,
+                                     msg.handleArraySize,
+                                     msg.date,
+                                     msg.label,
+                                     msg.eventRetraction,
+                                     msg.exception);
+          free(ValueArray);
+          break ;
+      }
 
-    case m_RECEIVE_INTERACTION:
-        {
-            ParameterValue *ValueArray = msg.getParamValueArray();
+      case m_RECEIVE_INTERACTION:
+      {
+          ParameterValue *ValueArray = msg.getParamValueArray();
 
-            om->receiveInteraction(msg.interactionClass,
-                                   msg.handleArray,
-                                   ValueArray,
-                                   msg.handleArraySize,
-                                   msg.date,
-                                   msg.label,
-                                   msg.eventRetraction,
-                                   msg.exception);
-            free(ValueArray);
+          om->receiveInteraction(msg.interactionClass,
+                                 msg.handleArray,
+                                 ValueArray,
+                                 msg.handleArraySize,
+                                 msg.date,
+                                 msg.label,
+                                 msg.eventRetraction,
+                                 msg.exception);
+          free(ValueArray);
 
-            break ;
-        }
+          break ;
+      }
 
-    case m_REMOVE_OBJECT:
+      case m_REMOVE_OBJECT:
         om->removeObject(msg.object,
                          msg.federate,
                          msg.label,
@@ -202,7 +202,7 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                          msg.exception);
         break ;
 
-    case m_INFORM_ATTRIBUTE_OWNERSHIP:
+      case m_INFORM_ATTRIBUTE_OWNERSHIP:
 
         D.Out(pdInit, "m_REFLECT_ATTRIBUTE_VALUES Owner %u", msg.federate);
 
@@ -212,14 +212,14 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                                       msg.exception);
         break ;
 
-    case m_ATTRIBUTE_IS_NOT_OWNED:
+      case m_ATTRIBUTE_IS_NOT_OWNED:
         owm->attributeIsNotOwned(msg.object,
                                  msg.handleArray[0],
                                  msg.federate,
                                  msg.exception);
         break ;
 
-    case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         owm->requestAttributeOwnershipAssumption(msg.object,
                                                  msg.handleArray,
                                                  msg.handleArraySize,
@@ -228,7 +228,7 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                                                  msg.exception);
         break ;
 
-    case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+      case m_ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
         owm->attributeOwnershipUnavailable(msg.object,
                                            msg.handleArray,
                                            msg.handleArraySize,
@@ -236,7 +236,7 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                                            msg.exception);
         break ;
 
-    case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
         owm->attributeOwnershipAcquisitionNotification(msg.object,
                                                        msg.handleArray,
                                                        msg.handleArraySize,
@@ -244,14 +244,14 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                                                        msg.exception);
         break ;
 
-    case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+      case m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         owm->attributeOwnershipDivestitureNotification(msg.object,
                                                        msg.handleArray,
                                                        msg.handleArraySize,
                                                        msg.exception);
         break ;
 
-    case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+      case m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
         owm->requestAttributeOwnershipRelease(msg.object,
                                               msg.handleArray,
                                               msg.handleArraySize,
@@ -259,14 +259,48 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
                                               msg.exception);
         break ;
 
-    case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
         owm->confirmAttributeOwnershipAcquisitionCancellation(msg.object,
                                                               msg.handleArray,
                                                               msg.handleArraySize,
                                                               msg.exception);
         break ;
 
-    default:
+      case m_INITIATE_FEDERATE_SAVE:
+        fm->initiateFederateSave(msg.label);
+        break ;
+
+      case m_FEDERATION_SAVED:
+      case m_FEDERATION_NOT_SAVED: {
+          bool status = (msg.type == m_FEDERATION_SAVED) ? true : false ;
+          fm->federationSavedStatus(status);
+      }
+        break ;
+
+      case m_REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case m_REQUEST_FEDERATION_RESTORE_FAILED: {
+          bool status = (msg.type == m_REQUEST_FEDERATION_RESTORE_SUCCEEDED)
+              ? true : false ;
+          fm->requestFederationRestoreStatus(status, msg.label, msg.tag);
+      }
+        break ;
+
+      case m_FEDERATION_RESTORE_BEGUN:
+        fm->federationRestoreBegun();
+        break ;
+
+      case m_INITIATE_FEDERATE_RESTORE:
+        fm->initiateFederateRestore(msg.label, msg.federate);
+        break ;
+
+      case m_FEDERATION_RESTORED:
+      case m_FEDERATION_NOT_RESTORED: {
+          bool status = (msg.type == m_FEDERATION_RESTORED) ? true : false ;
+          fm->federationRestoredStatus(status);
+      }
+        break ;
+
+      default:
         D.Out(pdExcept, "Unknown message type in executeFederateService.");
         msg.display("ERROR");
         throw RTIinternalError("Unknown message in executeFederateService.");
@@ -687,4 +721,4 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
+// $Id: TimeManagement.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federate.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -63,6 +63,12 @@ Federate::getHandle(void) const
     return handle ;
 }
 
+void
+Federate::setHandle(FederateHandle the_handle)
+{
+    handle = the_handle ;
+}
+
 // ----------------------------------------------------------------------------
 //! getName.
 const char *
@@ -98,7 +104,7 @@ Federate::setRegulator(bool r)
     regulator = r ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 bool
 Federate::isSaving(void) const
 {
@@ -123,13 +129,13 @@ Federate::setRestoring(bool restore_status)
     restoring = restore_status ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
-Federate::addSynchronizationLabel(const char * label)
+Federate::addSynchronizationLabel(const char *label)
     throw (RTIinternalError)
 {
     list<char *>::const_iterator i = synchronizationLabels.begin();
-    for (; i != synchronizationLabels.end() ; i++) {
+    for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i), label)) {
             throw RTIinternalError("Synch. label pending in federate.");
         }
@@ -138,15 +144,15 @@ Federate::addSynchronizationLabel(const char * label)
     synchronizationLabels.push_back(strdup(label));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
-Federate::removeSynchronizationLabel(const char * label)
+Federate::removeSynchronizationLabel(const char *label)
     throw (RTIinternalError)
 {
     list<char *>::iterator i = synchronizationLabels.begin();
-    for (; i != synchronizationLabels.end() ; i++) {
+    for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i), label)) {
-            delete (*i) ;
+            delete (*i);
             synchronizationLabels.erase(i);
             return ;
         }
@@ -155,14 +161,14 @@ Federate::removeSynchronizationLabel(const char * label)
     throw RTIinternalError("Synch. label not in federate.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 bool
-Federate::isSynchronizationLabel(const char * label) const
+Federate::isSynchronizationLabel(const char *label) const
 {
     list<char *>::const_iterator i = synchronizationLabels.begin();
-    for (; i != synchronizationLabels.end() ; i++) {
+    for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i), label)) {
-            return true;
+            return true ;
         }
     }
 
@@ -171,4 +177,4 @@ Federate::isSynchronizationLabel(const char * label) const
 
 }}
 
-// $Id: Federate.cc,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federate.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.6 2003/04/23 14:29:18 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.7 2003/05/05 20:18:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -59,16 +59,25 @@ typedef enum {
     m_SET_TIME_CONSTRAINED,
     m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
     m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
-    m_ANNOUNCE_SYNCHRONIZATION_POINT,               // RTIG to RTIA
+    m_ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
     m_SYNCHRONIZATION_POINT_ACHIEVED,
-    m_FEDERATION_SYNCHRONIZED,                      // RTIG to RTIA
+    m_FEDERATION_SYNCHRONIZED, // RTIG to RTIA
     m_REQUEST_FEDERATION_SAVE,
     m_FEDERATE_SAVE_BEGUN,
     m_FEDERATE_SAVE_COMPLETE,
     m_FEDERATE_SAVE_NOT_COMPLETE,
-    m_INITIATE_FEDERATE_SAVE,
-    m_FEDERATION_SAVED,
-    m_FEDERATION_NOT_SAVED,
+    m_INITIATE_FEDERATE_SAVE, // RTIG to RTIA
+    m_FEDERATION_SAVED, // RTIG to RTIA
+    m_FEDERATION_NOT_SAVED, // RTIG to RTIA
+    m_REQUEST_FEDERATION_RESTORE,
+    m_FEDERATE_RESTORE_COMPLETE,
+    m_FEDERATE_RESTORE_NOT_COMPLETE,
+    m_REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
+    m_REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
+    m_FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
+    m_INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
+    m_FEDERATION_RESTORED, // RTIG to RTIA
+    m_FEDERATION_NOT_RESTORED, // RTIG to RTIA
     m_PUBLISH_OBJECT_CLASS,
     m_UNPUBLISH_OBJECT_CLASS,
     m_PUBLISH_INTERACTION_CLASS,
@@ -114,7 +123,7 @@ typedef enum {
     m_CREATE_REGION,
     m_MODIFY_REGION,
     m_DELETE_REGION
-    
+
 } TypeNetworkMessage ;
 
 typedef struct {
@@ -287,8 +296,8 @@ public :
     long nbExtents ;
     long region ;
 
-    void setLabel(const char* new_label) { strcpy(label, new_label); }
-    void setTag(const char* new_tag) { strcpy(tag, new_tag); }
+    void setLabel(const char *new_label) { strcpy(label, new_label); }
+    void setTag(const char *new_tag) { strcpy(tag, new_tag); }
 
 private:
 
@@ -336,4 +345,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.6 2003/04/23 14:29:18 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.7 2003/05/05 20:18:44 breholee Exp $

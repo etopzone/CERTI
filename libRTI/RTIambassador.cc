@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.23 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIambassador.cc,v 3.24 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -115,12 +115,12 @@ RTIambassador::RTIambassador(void)
 
     // creating RTIA process.
     switch((pid_RTIA = fork())) {
-    case -1: // fork failed.
+      case -1: // fork failed.
         perror("fork");
         throw RTIinternalError("fork failed in RTIambassador constructor");
         break ;
 
-    case 0: // child process (RTIA).
+      case 0: // child process (RTIA).
         execlp(rtiacall, NULL);
         perror("execlp");
 
@@ -129,7 +129,7 @@ RTIambassador::RTIambassador(void)
 
         exit(-1);
 
-    default: // father process (Federe).
+      default: // father process (Federe).
         sleep(1);
         connectUN(pid_RTIA);
         break ;
@@ -215,8 +215,8 @@ joinFederationExecution(const char *yourName,
            CouldNotOpenFED, //not implemented
            ErrorReadingFED, //not implemented
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -321,8 +321,7 @@ RTIambassador::requestFederationSave(const char *label,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService) //CERTI
+           RTIinternalError)
 {
     throw UnimplementedService();
     Message req, rep ;
@@ -342,8 +341,7 @@ RTIambassador::requestFederationSave(const char *label)
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService) //CERTI
+           RTIinternalError)
 {
     throw UnimplementedService();
     Message req, rep ;
@@ -363,8 +361,7 @@ RTIambassador::federateSaveBegun(void)
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService) //CERTI
+           RTIinternalError)
 {
     throw UnimplementedService();
     Message req, rep ;
@@ -382,8 +379,7 @@ RTIambassador::federateSaveComplete()
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService) //CERTI
+           RTIinternalError)
 {
     throw UnimplementedService();
     Message req, rep ;
@@ -401,8 +397,7 @@ RTIambassador::federateSaveNotComplete()
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService) //CERTI
+           RTIinternalError)
 {
     throw UnimplementedService();
     Message req, rep ;
@@ -413,14 +408,14 @@ RTIambassador::federateSaveNotComplete()
 }
 
 // ----------------------------------------------------------------------------
-//! Request Restore (not implemented)
+//! Request Restore.
 void
 RTIambassador::requestFederationRestore(const char *label)
     throw (SpecifiedSaveLabelDoesNotExist, //CERTI
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -434,15 +429,15 @@ RTIambassador::requestFederationRestore(const char *label)
 }
 
 // ----------------------------------------------------------------------------
-//! Restore Complete (not implemented)
+//! Restore Complete.
 void
-RTIambassador::federateRestoreComplete()
+RTIambassador::federateRestoreComplete(void)
     throw (UnknownLabel,
            RestoreNotRequested,
            RTICannotRestore,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
+           SaveInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -455,15 +450,15 @@ RTIambassador::federateRestoreComplete()
 }
 
 // ----------------------------------------------------------------------------
-//! Federate Restore Not Complete (not implemented).
+//! Federate Restore Not Complete.
 void
-RTIambassador::federateRestoreNotComplete()
+RTIambassador::federateRestoreNotComplete(void)
     throw (UnknownLabel,
            RestoreNotRequested,
            FederateNotExecutionMember,
            RTICannotRestore,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
+           SaveInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -489,8 +484,8 @@ RTIambassador::publishObjectClass(ObjectClassHandle theClass,
            OwnershipAcquisitionPending, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemeted
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //CERTI
            RTIinternalError)
 {
@@ -522,8 +517,8 @@ RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
            FederateOwnsAttributes, //CERTI
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemeted
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //CERTI
            RTIinternalError)
 {
@@ -564,8 +559,8 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
            InteractionClassNotPublished, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //RTI
            RTIinternalError)
 {
@@ -588,8 +583,8 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
            AttributeNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //RTI
            RTIinternalError)
 {
@@ -619,8 +614,8 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
            ObjectClassNotSubscribed, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //RTI
            RTIinternalError)
 {
@@ -663,8 +658,8 @@ RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
            InteractionClassNotSubscribed, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            SecurityError, //RTI
            RTIinternalError)
 {
@@ -691,8 +686,8 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
            ObjectAlreadyRegistered,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -715,8 +710,8 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
            ObjectAlreadyRegistered,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -745,8 +740,8 @@ updateAttributeValues(ObjectHandle theObject,
            InvalidFederationTime,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     ULong longueur ;
@@ -792,8 +787,8 @@ RTIambassador::updateAttributeValues(ObjectHandle,
            AttributeNotOwned,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -813,8 +808,8 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
            InvalidFederationTime,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     ULong longueur ;
@@ -858,8 +853,8 @@ RTIambassador::sendInteraction(InteractionClassHandle,
            InteractionParameterNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -878,8 +873,8 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
            InvalidFederationTime,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -902,8 +897,8 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -925,8 +920,8 @@ RTIambassador::localDeleteObjectInstance(ObjectHandle theObject)
            FederateOwnsAttributes, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -954,8 +949,8 @@ changeAttributeTransportationType(ObjectHandle theObject,
            InvalidTransportationHandle, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -993,8 +988,8 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
            InvalidTransportationHandle, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1018,8 +1013,8 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
            AttributeNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -1051,8 +1046,8 @@ RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
            AttributeNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -1329,8 +1324,8 @@ queryAttributeOwnership(ObjectHandle theObject,
            AttributeNotKnown,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1352,8 +1347,8 @@ RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
            AttributeNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1385,8 +1380,8 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
            InvalidLookahead, //not implemented
            ConcurrentAccessAttempted, //not implemented
            FederateNotExecutionMember,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1405,8 +1400,8 @@ RTIambassador::disableTimeRegulation(void)
            TimeRegulationWasNotEnabled, //not implemented
            ConcurrentAccessAttempted,
            FederateNotExecutionMember,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1426,8 +1421,8 @@ RTIambassador::enableTimeConstrained(void)
            TimeAdvanceAlreadyInProgress, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1445,8 +1440,8 @@ RTIambassador::disableTimeConstrained(void)
     throw (TimeConstrainedWasNotEnabled, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1468,8 +1463,8 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
            EnableTimeConstrainedPending, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1510,8 +1505,8 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
            EnableTimeConstrainedPending, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1558,8 +1553,8 @@ RTIambassador::flushQueueRequest(const FedTime& theTime)
            EnableTimeConstrainedPending, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     throw UnimplementedService();
@@ -1617,8 +1612,8 @@ void
 RTIambassador::queryLBTS(FedTime& theTime)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1636,8 +1631,8 @@ void
 RTIambassador::queryFederateTime(FedTime& theTime)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1655,8 +1650,8 @@ void
 RTIambassador::queryMinNextEventTime(FedTime& theTime)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     theTime = RTIfedTime(0.0);
@@ -1670,8 +1665,8 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
            InvalidLookahead, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1689,8 +1684,8 @@ void
 RTIambassador::queryLookahead(FedTime& theTime)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1710,8 +1705,8 @@ RTIambassador::retract(EventRetractionHandle theHandle)
     throw (InvalidRetractionHandle,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -1719,7 +1714,7 @@ RTIambassador::retract(EventRetractionHandle theHandle)
     Message req, rep ;
 
     req.type = RETRACT ;
-    req.eventRetraction = theHandle;
+    req.eventRetraction = theHandle ;
 
     executeService(&req, &rep);
 }
@@ -1737,8 +1732,8 @@ RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
            InvalidOrderingHandle, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1775,8 +1770,8 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
            InvalidOrderingHandle, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError)
 {
     Message req, rep ;
@@ -1815,7 +1810,7 @@ RTIambassador::createRegion(SpaceHandle space,
     req.setNumber(nb_extents);
     executeService(&req, &rep);
 
-    Region *region = new RegionImp(rep.getRegion(), rep.getNumber(), 
+    Region *region = new RegionImp(rep.getRegion(), rep.getNumber(),
                                    space, nb_extents);
 
     return region ;
@@ -2326,7 +2321,7 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
     req.setName(name);
     this->executeService(&req, &rep);
 
-    return rep.getSpace() ;
+    return rep.getSpace();
 }
 
 // ----------------------------------------------------------------------------
@@ -2341,7 +2336,7 @@ RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     Message req, rep ;
 
     req.type = GET_SPACE_NAME ;
-    req.setSpace(handle) ;
+    req.setSpace(handle);
     this->executeService(&req, &rep);
 
     return strdup(rep.getName());
@@ -2394,7 +2389,7 @@ RTIambassador::getDimensionName(DimensionHandle dimension,
 SpaceHandle
 RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
                                               ObjectClassHandle objectClass)
-    throw (ObjectClassNotDefined, AttributeNotDefined, 
+    throw (ObjectClassNotDefined, AttributeNotDefined,
            FederateNotExecutionMember, ConcurrentAccessAttempted,
            RTIinternalError, UnimplementedService)
 {
@@ -2423,7 +2418,7 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
     Message req, rep ;
 
     req.type = GET_OBJECT_CLASS ;
-    req.object = theObject;
+    req.object = theObject ;
 
     executeService(&req, &rep);
 
@@ -2745,243 +2740,270 @@ RTIambassador::tick(void)
         try {
             switch (vers_Fed.type) {
 
-            case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+              case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
                 fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
                 break ;
 
-            case ANNOUNCE_SYNCHRONIZATION_POINT:
+              case ANNOUNCE_SYNCHRONIZATION_POINT:
                 fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
                                                       vers_Fed.getTag());
-                break;
+                break ;
 
-            case FEDERATION_SYNCHRONIZED:
+              case FEDERATION_SYNCHRONIZED:
                 fed_amb->federationSynchronized(vers_Fed.getLabel());
-                break;
+                break ;
 
-            case INITIATE_FEDERATE_SAVE:
+              case INITIATE_FEDERATE_SAVE:
                 fed_amb->initiateFederateSave(vers_Fed.getLabel());
                 break ;
 
-            case FEDERATION_SAVED:
+              case FEDERATION_SAVED:
                 fed_amb->federationSaved();
                 break ;
 
-            case START_REGISTRATION_FOR_OBJECT_CLASS: {
-                fed_amb->
-                    startRegistrationForObjectClass(vers_Fed.objectClass);
-            } break ;
+              case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+                fed_amb->requestFederationRestoreSucceeded(
+                    vers_Fed.getLabel());
+                break ;
 
-            case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
-                fed_amb->
-                    stopRegistrationForObjectClass(vers_Fed.objectClass);
-            } break ;
+              case REQUEST_FEDERATION_RESTORE_FAILED:
+                fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
+                                                        vers_Fed.getTag());
+                break ;
 
-            case TURN_INTERACTIONS_ON: {
-                fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
-            } break ;
+              case FEDERATION_RESTORE_BEGUN:
+                fed_amb->federationRestoreBegun();
+                break ;
 
-            case TURN_INTERACTIONS_OFF: {
-                fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
-            } break ;
+              case INITIATE_FEDERATE_RESTORE:
+                fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
+                                                 vers_Fed.federate);
+                break ;
 
-            case DISCOVER_OBJECT_INSTANCE: {
-                fed_amb->
-                    discoverObjectInstance(vers_Fed.object,
-                                           vers_Fed.objectClass,
-                                           (char *) (vers_Fed.getName()));
-            } break ;
+              case FEDERATION_RESTORED:
+                fed_amb->federationRestored();
+                break ;
 
-            case REFLECT_ATTRIBUTE_VALUES: {
-                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    CAttributeHandleValuePair *att =
-                        new CAttributeHandleValuePair ;
+              case FEDERATION_NOT_RESTORED:
+                fed_amb->federationNotRestored();
+                break ;
 
-                    att->_attrib = vers_Fed.handleArray[i] ;
+              case START_REGISTRATION_FOR_OBJECT_CLASS: {
+                  fed_amb->
+                      startRegistrationForObjectClass(vers_Fed.objectClass);
+              } break ;
 
-                    // BUG: Federate may be expecting to find value name
-                    // (a call to GetWithName for example).
-                    strcpy(att->_value.name, "");
-                    vers_Fed.getValue(i, att->_value.value);
+              case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
+                  fed_amb->
+                      stopRegistrationForObjectClass(vers_Fed.objectClass);
+              } break ;
 
-                    // BUG: Federate is expecting to find value type.
-                    strcpy(att->_value.type, "");
+              case TURN_INTERACTIONS_ON: {
+                  fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
+              } break ;
 
-                    theAttributes.add(att);
-                }
+              case TURN_INTERACTIONS_OFF: {
+                  fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
+              } break ;
 
-                AttributeHandleValuePairSet* theAttributes_aux =
-                    theAttributes.toAHVPS();
+              case DISCOVER_OBJECT_INSTANCE: {
+                  fed_amb->
+                      discoverObjectInstance(vers_Fed.object,
+                                             vers_Fed.objectClass,
+                                             (char *) (vers_Fed.getName()));
+              } break ;
 
-                fed_amb->
-                    reflectAttributeValues(vers_Fed.object,
-                                           *theAttributes_aux,
-                                           RTIfedTime(vers_Fed.date),
-                                           (char *) vers_Fed.getTag(),
-                                           vers_Fed.eventRetraction);
+              case REFLECT_ATTRIBUTE_VALUES: {
+                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      CAttributeHandleValuePair *att =
+                          new CAttributeHandleValuePair ;
 
-                delete theAttributes_aux ;
-            } break ;
+                      att->_attrib = vers_Fed.handleArray[i] ;
 
-            case RECEIVE_INTERACTION: {
-                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    CParameterHandleValuePair *par =
-                        new CParameterHandleValuePair ;
+                      // BUG: Federate may be expecting to find value name
+                      // (a call to GetWithName for example).
+                      strcpy(att->_value.name, "");
+                      vers_Fed.getValue(i, att->_value.value);
 
-                    par->_param = vers_Fed.handleArray[i] ;
+                      // BUG: Federate is expecting to find value type.
+                      strcpy(att->_value.type, "");
 
-                    // BUG: Federate may be expecting to find value name
-                    // (a call to GetWithName for example).
-                    strcpy(par->_value.name, "");
+                      theAttributes.add(att);
+                  }
 
-                    vers_Fed.getValue(i, par->_value.value);
+                  AttributeHandleValuePairSet* theAttributes_aux =
+                      theAttributes.toAHVPS();
 
-                    // BUG: Federate is expecting to find value type.
-                    strcpy(par->_value.type, "");
+                  fed_amb->
+                      reflectAttributeValues(vers_Fed.object,
+                                             *theAttributes_aux,
+                                             RTIfedTime(vers_Fed.date),
+                                             (char *) vers_Fed.getTag(),
+                                             vers_Fed.eventRetraction);
 
-                    theParameters.add(par);
-                }
+                  delete theAttributes_aux ;
+              } break ;
 
-                ParameterHandleValuePairSet *theParameters_aux ;
-                theParameters_aux = theParameters.toPHVPS();
+              case RECEIVE_INTERACTION: {
+                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      CParameterHandleValuePair *par =
+                          new CParameterHandleValuePair ;
 
-                fed_amb->receiveInteraction(vers_Fed.interactionClass,
-                                            *theParameters_aux,
-                                            RTIfedTime(vers_Fed.date),
-                                            (char *) vers_Fed.getTag(),
-                                            vers_Fed.eventRetraction);
+                      par->_param = vers_Fed.handleArray[i] ;
 
-                delete theParameters_aux ;
-            } break ;
+                      // BUG: Federate may be expecting to find value name
+                      // (a call to GetWithName for example).
+                      strcpy(par->_value.name, "");
 
-            case REMOVE_OBJECT_INSTANCE: {
-                fed_amb->removeObjectInstance(vers_Fed.object,
+                      vers_Fed.getValue(i, par->_value.value);
+
+                      // BUG: Federate is expecting to find value type.
+                      strcpy(par->_value.type, "");
+
+                      theParameters.add(par);
+                  }
+
+                  ParameterHandleValuePairSet *theParameters_aux ;
+                  theParameters_aux = theParameters.toPHVPS();
+
+                  fed_amb->receiveInteraction(vers_Fed.interactionClass,
+                                              *theParameters_aux,
                                               RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
                                               vers_Fed.eventRetraction);
-            } break ;
 
-            case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
-                // fed_amb->provideAttributeValueUpdate();
-            } break ;
+                  delete theParameters_aux ;
+              } break ;
 
-            case REQUEST_RETRACTION: {
-                // fed_amb->reflectRetraction();
-            } break ;
+              case REMOVE_OBJECT_INSTANCE: {
+                  fed_amb->removeObjectInstance(vers_Fed.object,
+                                                RTIfedTime(vers_Fed.date),
+                                                (char *) vers_Fed.getTag(),
+                                                vers_Fed.eventRetraction);
+              } break ;
 
-            case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+              case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+                  // fed_amb->provideAttributeValueUpdate();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case REQUEST_RETRACTION: {
+                  // fed_amb->reflectRetraction();
+              } break ;
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
+              case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
 
-                fed_amb->
-                    requestAttributeOwnershipAssumption(vers_Fed.object,
-                                                        *AttributeSet,
-                                                        (char *)
-                                                        vers_Fed.getTag());
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-
-                fed_amb->requestAttributeOwnershipRelease(vers_Fed.object,
+                  fed_amb->
+                      requestAttributeOwnershipAssumption(vers_Fed.object,
                                                           *AttributeSet,
                                                           (char *)
                                                           vers_Fed.getTag());
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeSet->empty();
-            } break ;
+              case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
 
-            case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->attributeOwnershipUnavailable(vers_Fed.object,
-                                                       *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  fed_amb->requestAttributeOwnershipRelease(vers_Fed.object,
+                                                            *AttributeSet,
+                                                            (char *)
+                                                            vers_Fed.getTag());
 
-            case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    attributeOwnershipAcquisitionNotification(vers_Fed.object,
-                                                              *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->attributeOwnershipUnavailable(vers_Fed.object,
+                                                         *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    attributeOwnershipDivestitureNotification(vers_Fed.object,
-                                                              *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      attributeOwnershipAcquisitionNotification(vers_Fed.object,
+                                                                *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    confirmAttributeOwnershipAcquisitionCancellation
-                    (vers_Fed.object, *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case INFORM_ATTRIBUTE_OWNERSHIP: {
-                fed_amb->
-                    informAttributeOwnership(vers_Fed.object,
-                                             vers_Fed.attribute,
-                                             vers_Fed.federate);
-            } break ;
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      attributeOwnershipDivestitureNotification(vers_Fed.object,
+                                                                *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-            case ATTRIBUTE_IS_NOT_OWNED: {
-                fed_amb->attributeIsNotOwned(vers_Fed.object,
-                                             vers_Fed.attribute);
-            } break ;
+              case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
 
-            case TIME_ADVANCE_GRANT: {
-                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            default: {
-                leave("RTI service requested by RTI is unknown.");
-            }
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      confirmAttributeOwnershipAcquisitionCancellation
+                      (vers_Fed.object, *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
+
+              case INFORM_ATTRIBUTE_OWNERSHIP: {
+                  fed_amb->
+                      informAttributeOwnership(vers_Fed.object,
+                                               vers_Fed.attribute,
+                                               vers_Fed.federate);
+              } break ;
+
+              case ATTRIBUTE_IS_NOT_OWNED: {
+                  fed_amb->attributeIsNotOwned(vers_Fed.object,
+                                               vers_Fed.attribute);
+              } break ;
+
+              case TIME_ADVANCE_GRANT: {
+                  fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
+              } break ;
+
+              default: {
+                  leave("RTI service requested by RTI is unknown.");
+              }
             }
         }
         catch (InvalidFederationTime &e) {
@@ -3079,238 +3101,265 @@ RTIambassador::tick(TickTime /*minimum*/,
         try {
             switch(vers_Fed.type) {
 
-            case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+              case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
                 fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
                 break ;
 
-            case ANNOUNCE_SYNCHRONIZATION_POINT:
+              case ANNOUNCE_SYNCHRONIZATION_POINT:
                 fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
                                                       vers_Fed.getTag());
-                break;
+                break ;
 
-            case FEDERATION_SYNCHRONIZED:
+              case FEDERATION_SYNCHRONIZED:
                 fed_amb->federationSynchronized(vers_Fed.getLabel());
-                break;
+                break ;
 
-            case INITIATE_FEDERATE_SAVE:
+              case INITIATE_FEDERATE_SAVE:
                 fed_amb->initiateFederateSave(vers_Fed.getLabel());
                 break ;
 
-            case FEDERATION_SAVED:
+              case FEDERATION_SAVED:
                 fed_amb->federationSaved();
                 break ;
 
-            case START_REGISTRATION_FOR_OBJECT_CLASS: {
-                fed_amb->
-                    startRegistrationForObjectClass(vers_Fed.objectClass);
-            } break ;
+              case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+                fed_amb->requestFederationRestoreSucceeded(
+                    vers_Fed.getLabel());
+                break ;
 
-            case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
-                fed_amb->
-                    stopRegistrationForObjectClass(vers_Fed.objectClass);
-            } break ;
+              case REQUEST_FEDERATION_RESTORE_FAILED:
+                fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
+                                                        vers_Fed.getTag());
+                break ;
 
-            case TURN_INTERACTIONS_ON: {
-                fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
-            } break ;
+              case FEDERATION_RESTORE_BEGUN:
+                fed_amb->federationRestoreBegun();
+                break ;
 
-            case TURN_INTERACTIONS_OFF: {
-                fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
-            } break ;
+              case INITIATE_FEDERATE_RESTORE:
+                fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
+                                                 vers_Fed.federate);
+                break ;
 
-            case DISCOVER_OBJECT_INSTANCE: {
-                fed_amb->
-                    discoverObjectInstance(vers_Fed.object,
-                                           vers_Fed.objectClass,
-                                           (char *) (vers_Fed.getName()));
-            } break ;
+              case FEDERATION_RESTORED:
+                fed_amb->federationRestored();
+                break ;
 
-            case REFLECT_ATTRIBUTE_VALUES: {
+              case FEDERATION_NOT_RESTORED:
+                fed_amb->federationNotRestored();
+                break ;
 
-                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    CAttributeHandleValuePair *att =
-                        new CAttributeHandleValuePair ;
+              case START_REGISTRATION_FOR_OBJECT_CLASS: {
+                  fed_amb->
+                      startRegistrationForObjectClass(vers_Fed.objectClass);
+              } break ;
 
-                    att->_attrib = vers_Fed.handleArray[i] ;
-                    strcpy(att->_value.name, "");
-                    vers_Fed.getValue(i, att->_value.value);
+              case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
+                  fed_amb->
+                      stopRegistrationForObjectClass(vers_Fed.objectClass);
+              } break ;
 
-                    // BUG: Le federe s'attend surement a trouver le
-                    // type de la valeur.
-                    strcpy(att->_value.type, "");
-                    theAttributes.add(att);
-                }
+              case TURN_INTERACTIONS_ON: {
+                  fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
+              } break ;
 
-                AttributeHandleValuePairSet *theAttributes_aux =
-                    theAttributes.toAHVPS();
+              case TURN_INTERACTIONS_OFF: {
+                  fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
+              } break ;
 
-                fed_amb->
-                    reflectAttributeValues(vers_Fed.object,
-                                           *theAttributes_aux,
-                                           RTIfedTime(vers_Fed.date),
-                                           (char *) vers_Fed.getTag(),
-                                           vers_Fed.eventRetraction);
-            } break ;
+              case DISCOVER_OBJECT_INSTANCE: {
+                  fed_amb->
+                      discoverObjectInstance(vers_Fed.object,
+                                             vers_Fed.objectClass,
+                                             (char *) (vers_Fed.getName()));
+              } break ;
 
-            case RECEIVE_INTERACTION: {
+              case REFLECT_ATTRIBUTE_VALUES: {
 
-                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      CAttributeHandleValuePair *att =
+                          new CAttributeHandleValuePair ;
 
-                    CParameterHandleValuePair *par =
-                        new CParameterHandleValuePair ;
+                      att->_attrib = vers_Fed.handleArray[i] ;
+                      strcpy(att->_value.name, "");
+                      vers_Fed.getValue(i, att->_value.value);
 
-                    par->_param = vers_Fed.handleArray[i] ;
-                    strcpy(par->_value.name, "");
-                    vers_Fed.getValue(i, par->_value.value);
+                      // BUG: Le federe s'attend surement a trouver le
+                      // type de la valeur.
+                      strcpy(att->_value.type, "");
+                      theAttributes.add(att);
+                  }
 
-                    // Pareil pour le type de la valeur.
-                    strcpy(par->_value.type, "");
-                    theParameters.add(par);
-                }
+                  AttributeHandleValuePairSet *theAttributes_aux =
+                      theAttributes.toAHVPS();
 
-                ParameterHandleValuePairSet *theParameters_aux =
-                    theParameters.toPHVPS();
+                  fed_amb->
+                      reflectAttributeValues(vers_Fed.object,
+                                             *theAttributes_aux,
+                                             RTIfedTime(vers_Fed.date),
+                                             (char *) vers_Fed.getTag(),
+                                             vers_Fed.eventRetraction);
+              } break ;
 
-                fed_amb->receiveInteraction(vers_Fed.interactionClass,
-                                            *theParameters_aux,
-                                            RTIfedTime(vers_Fed.date),
-                                            (char *) vers_Fed.getTag(),
-                                            vers_Fed.eventRetraction);
-            } break ;
+              case RECEIVE_INTERACTION: {
 
-            case REMOVE_OBJECT_INSTANCE: {
-                fed_amb->removeObjectInstance(vers_Fed.object,
+                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+
+                      CParameterHandleValuePair *par =
+                          new CParameterHandleValuePair ;
+
+                      par->_param = vers_Fed.handleArray[i] ;
+                      strcpy(par->_value.name, "");
+                      vers_Fed.getValue(i, par->_value.value);
+
+                      // Pareil pour le type de la valeur.
+                      strcpy(par->_value.type, "");
+                      theParameters.add(par);
+                  }
+
+                  ParameterHandleValuePairSet *theParameters_aux =
+                      theParameters.toPHVPS();
+
+                  fed_amb->receiveInteraction(vers_Fed.interactionClass,
+                                              *theParameters_aux,
                                               RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
                                               vers_Fed.eventRetraction);
-            } break ;
+              } break ;
 
-            case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
-                // fed_amb->provideAttributeValueUpdate();
-            } break ;
+              case REMOVE_OBJECT_INSTANCE: {
+                  fed_amb->removeObjectInstance(vers_Fed.object,
+                                                RTIfedTime(vers_Fed.date),
+                                                (char *) vers_Fed.getTag(),
+                                                vers_Fed.eventRetraction);
+              } break ;
 
-            case REQUEST_RETRACTION: {
-                // fed_amb->reflectRetraction();
-            } break ;
+              case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+                  // fed_amb->provideAttributeValueUpdate();
+              } break ;
 
-            case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+              case REQUEST_RETRACTION: {
+                  // fed_amb->reflectRetraction();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                fed_amb->
-                    requestAttributeOwnershipAssumption(vers_Fed.object,
-                                                        *AttributeSet,
-                                                        (char *)
-                                                        vers_Fed.getTag());
-                AttributeSet->empty();
-            } break ;
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
 
-            case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
+                  fed_amb->
+                      requestAttributeOwnershipAssumption(vers_Fed.object,
+                                                          *AttributeSet,
+                                                          (char *)
+                                                          vers_Fed.getTag());
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    attributeOwnershipUnavailable(vers_Fed.object,
-                                                  *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      attributeOwnershipUnavailable(vers_Fed.object,
+                                                    *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                fed_amb->
-                    requestAttributeOwnershipRelease((ObjectHandle)
-                                                     vers_Fed.object,
-                                                     *AttributeSet,
-                                                     (char *)
-                                                     vers_Fed.getTag());
-                AttributeSet->empty();
-            } break ;
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
 
-            case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
+                  fed_amb->
+                      requestAttributeOwnershipRelease((ObjectHandle)
+                                                       vers_Fed.object,
+                                                       *AttributeSet,
+                                                       (char *)
+                                                       vers_Fed.getTag());
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    attributeOwnershipAcquisitionNotification((ObjectHandle)
-                                                              vers_Fed.object,
-                                                              *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      attributeOwnershipAcquisitionNotification((ObjectHandle)
+                                                                vers_Fed.object,
+                                                                *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    attributeOwnershipDivestitureNotification((ObjectHandle)
-                                                              vers_Fed.object,
-                                                              *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      attributeOwnershipDivestitureNotification((ObjectHandle)
+                                                                vers_Fed.object,
+                                                                *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-                AttributeHandleSet *AttributeSet ;
-                AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
+              case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
 
-                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.handleArray[i]);
-                }
-                fed_amb->
-                    confirmAttributeOwnershipAcquisitionCancellation
-                    ((ObjectHandle) vers_Fed.object, *AttributeSet);
-                AttributeSet->empty();
-            } break ;
+                  AttributeHandleSet *AttributeSet ;
+                  AttributeSet =
+                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-            case INFORM_ATTRIBUTE_OWNERSHIP: {
-                fed_amb->
-                    informAttributeOwnership((ObjectHandle) vers_Fed.object,
-                                             vers_Fed.attribute,
-                                             vers_Fed.federate);
-            } break ;
+                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                      AttributeSet->add(vers_Fed.handleArray[i]);
+                  }
+                  fed_amb->
+                      confirmAttributeOwnershipAcquisitionCancellation
+                      ((ObjectHandle) vers_Fed.object, *AttributeSet);
+                  AttributeSet->empty();
+              } break ;
 
-            case ATTRIBUTE_IS_NOT_OWNED: {
-                fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.object,
-                                             vers_Fed.attribute);
-            } break ;
+              case INFORM_ATTRIBUTE_OWNERSHIP: {
+                  fed_amb->
+                      informAttributeOwnership((ObjectHandle) vers_Fed.object,
+                                               vers_Fed.attribute,
+                                               vers_Fed.federate);
+              } break ;
 
-            case TIME_ADVANCE_GRANT: {
-                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
-            } break ;
+              case ATTRIBUTE_IS_NOT_OWNED: {
+                  fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.object,
+                                               vers_Fed.attribute);
+              } break ;
 
-            default: {
-                leave("RTI service requested by RTI is unknown.");
-            }
+              case TIME_ADVANCE_GRANT: {
+                  fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
+              } break ;
+
+              default: {
+                  leave("RTI service requested by RTI is unknown.");
+              }
             }
         }
         catch (InvalidFederationTime &e) {
@@ -3359,412 +3408,412 @@ RTIambassador::processException(Message *msg)
 {
     D.Out(pdExcept, "nom de l'exception : %d .", msg->exception);
     switch(msg->exception) {
-    case e_NO_EXCEPTION: {
-    } break ;
-
-    case e_ArrayIndexOutOfBounds: {
-        D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
-        throw ArrayIndexOutOfBounds(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeAlreadyOwned: {
-        D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
-        throw AttributeAlreadyOwned(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeAlreadyBeingAcquired: {
-        D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingAcquired exception.");
-        throw AttributeAlreadyBeingAcquired(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeAlreadyBeingDivested: {
-        D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingDivested exception.");
-        throw AttributeAlreadyBeingDivested(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeDivestitureWasNotRequested: {
-        D.Out(pdExcept,
-              "Throwing e_AttributeDivestitureWasNotRequested exception.");
-        throw AttributeDivestitureWasNotRequested(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeAcquisitionWasNotRequested: {
-        D.Out(pdExcept,
-              "Throwing e_AttributeAcquisitionWasNotRequested exception.");
-        throw AttributeAcquisitionWasNotRequested(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeNotDefined: {
-        D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
-        throw AttributeNotDefined(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeNotKnown: {
-        D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
-        throw AttributeNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeNotOwned: {
-        D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
-        throw AttributeNotOwned(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeNotPublished: {
-        D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
-        throw AttributeNotPublished(msg->exceptionReason);
-    } break ;
-
-    case e_AttributeNotSubscribed: {
-        D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
-        throw AttributeNotSubscribed(msg->exceptionReason);
-    } break ;
-
-    case e_ConcurrentAccessAttempted: {
-        D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
-        throw ConcurrentAccessAttempted(msg->exceptionReason);
-    } break ;
-
-    case e_CouldNotDiscover: {
-        D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
-        throw CouldNotDiscover(msg->exceptionReason);
-    } break ;
-
-    case e_CouldNotOpenRID: {
-        D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
-        throw CouldNotOpenRID(msg->exceptionReason);
-    } break ;
-
-    case e_CouldNotRestore: {
-        D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
-        throw CouldNotRestore(msg->exceptionReason);
-    } break ;
-
-    case e_DeletePrivilegeNotHeld: {
-        D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
-        throw DeletePrivilegeNotHeld(msg->exceptionReason);
-    } break ;
-
-    case e_ErrorReadingRID: {
-        D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
-        throw ErrorReadingRID(msg->exceptionReason);
-    } break ;
-
-    case e_EventNotKnown: {
-        D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
-        throw EventNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_FederateAlreadyPaused: {
-        D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
-        throw FederateAlreadyPaused(msg->exceptionReason);
-    } break ;
-
-    case e_FederateAlreadyExecutionMember: {
-        D.Out(pdExcept, "Throwing e_FederateAlreadyExecutionMember exception.");
-        throw FederateAlreadyExecutionMember(msg->exceptionReason);
-    } break ;
-
-    case e_FederateDoesNotExist: {
-        D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
-        throw FederateDoesNotExist(msg->exceptionReason);
-    } break ;
-
-    case e_FederateInternalError: {
-        D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
-        throw FederateInternalError(msg->exceptionReason);
-    } break ;
-
-    case e_FederateNameAlreadyInUse: {
-        D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
-        throw FederateNameAlreadyInUse(msg->exceptionReason);
-    } break ;
-
-    case e_FederateNotExecutionMember: {
-        D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
-        throw FederateNotExecutionMember(msg->exceptionReason);
-    } break ;
-
-    case e_FederateNotPaused: {
-        D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
-        throw FederateNotPaused(msg->exceptionReason);
-    } break ;
-
-    case e_FederateOwnsAttributes: {
-        D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
-        throw FederateOwnsAttributes(msg->exceptionReason);
-    } break ;
-
-    case e_FederatesCurrentlyJoined: {
-        D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
-        throw FederatesCurrentlyJoined(msg->exceptionReason);
-    } break ;
-
-    case e_FederateWasNotAskedToReleaseAttribute: {
-        D.Out(pdExcept,
-              "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-        D.Out(pdDebug,
-              "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-        throw FederateWasNotAskedToReleaseAttribute(msg->exceptionReason);
-    } break ;
-
-    case e_FederationAlreadyPaused: {
-        D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
-        throw FederationAlreadyPaused(msg->exceptionReason);
-    } break ;
-
-    case e_FederationExecutionAlreadyExists: {
-        D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
-        throw FederationExecutionAlreadyExists(msg->exceptionReason);
-    } break ;
-
-    case e_FederationExecutionDoesNotExist: {
-        D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
-        throw FederationExecutionDoesNotExist(msg->exceptionReason);
-    } break ;
-
-    case e_FederationNotPaused: {
-        D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
-        throw FederationNotPaused(msg->exceptionReason);
-    } break ;
-
-    case e_FederationTimeAlreadyPassed: {
-        D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
-        throw FederationTimeAlreadyPassed(msg->exceptionReason);
-    } break ;
-
-    case e_FederateNotPublishing: {
-        D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
-        throw FederateNotPublishing(msg->exceptionReason);
-    } break ;
-
-    case e_FederateNotSubscribing: {
-        D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
-        throw FederateNotSubscribing(msg->exceptionReason);
-    } break ;
-
-    case e_RegionNotKnown: {
-        D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
-        throw RegionNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_IDsupplyExhausted: {
-        D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
-        throw IDsupplyExhausted(msg->exceptionReason);
-    } break ;
-
-    case e_InteractionClassNotDefined: {
-        D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
-        throw InteractionClassNotDefined(msg->exceptionReason);
-    } break ;
-
-    case e_InteractionClassNotKnown: {
-        D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
-        throw InteractionClassNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_InteractionClassNotPublished: {
-        D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
-        throw InteractionClassNotPublished(msg->exceptionReason);
-    } break ;
-
-    case e_InteractionParameterNotDefined: {
-        D.Out(pdExcept, "Throwing e_InteractionParameterNotDefined exception.");
-        throw InteractionParameterNotDefined(msg->exceptionReason);
-    } break ;
-
-    case e_InteractionParameterNotKnown: {
-        D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
-        throw InteractionParameterNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidDivestitureCondition: {
-        D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
-        throw InvalidDivestitureCondition(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidExtents: {
-        D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
-        throw InvalidExtents(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidFederationTime: {
-        D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
-        throw InvalidFederationTime(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidFederationTimeDelta: {
-        D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
-        throw InvalidFederationTimeDelta(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidObjectHandle: {
-        D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
-        throw InvalidObjectHandle(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidOrderType: {
-        D.Out(pdExcept, "Throwing e_InvalidOrderType exception.");
-        throw InvalidOrderType(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidResignAction: {
-        D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
-        throw InvalidResignAction(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidRetractionHandle: {
-        D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
-        throw InvalidRetractionHandle(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidRoutingSpace: {
-        D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
-        throw InvalidRoutingSpace(msg->exceptionReason);
-    } break ;
-
-    case e_InvalidTransportType: {
-        D.Out(pdExcept, "Throwing e_InvalidTransportType exception.");
-        throw InvalidTransportType(msg->exceptionReason);
-    } break ;
-
-    case e_MemoryExhausted: {
-        D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
-        throw MemoryExhausted(msg->exceptionReason);
-    } break ;
-
-    case e_NameNotFound: {
-        D.Out(pdExcept, "Throwing e_NameNotFound exception.");
-        throw NameNotFound(msg->exceptionReason);
-    } break ;
-
-    case e_NoPauseRequested: {
-        D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
-        throw NoPauseRequested(msg->exceptionReason);
-    } break ;
-
-    case e_NoResumeRequested: {
-        D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
-        throw NoResumeRequested(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectClassNotDefined: {
-        D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
-        throw ObjectClassNotDefined(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectClassNotKnown: {
-        D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
-        throw ObjectClassNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectClassNotPublished: {
-        D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
-        throw ObjectClassNotPublished(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectClassNotSubscribed: {
-        D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
-        throw ObjectClassNotSubscribed(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectNotKnown: {
-        D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
-        throw ObjectNotKnown(msg->exceptionReason);
-    } break ;
-
-    case e_ObjectAlreadyRegistered: {
-        D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
-        throw ObjectAlreadyRegistered(msg->exceptionReason);
-    } break ;
-
-    case e_RestoreInProgress: {
-        D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
-        throw RestoreInProgress(msg->exceptionReason);
-    } break ;
-
-    case e_RestoreNotRequested: {
-        D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
-        throw RestoreNotRequested(msg->exceptionReason);
-    } break ;
-
-    case e_RTIinternalError: {
-        D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
-        throw RTIinternalError(msg->exceptionReason);
-    } break ;
-
-    case e_SpaceNotDefined: {
-        D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
-        throw SpaceNotDefined(msg->exceptionReason);
-    } break ;
-
-    case e_SaveInProgress: {
-        D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
-        throw SaveInProgress(msg->exceptionReason);
-    } break ;
-
-    case e_SaveNotInitiated: {
-        D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
-        throw SaveNotInitiated(msg->exceptionReason);
-    } break ;
-
-    case e_SecurityError: {
-        D.Out(pdExcept, "Throwing e_SecurityError exception.");
-        throw SecurityError(msg->exceptionReason);
-    } break ;
-
-    case e_SpecifiedSaveLabelDoesNotExist: {
-        D.Out(pdExcept, "Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
-        throw SpecifiedSaveLabelDoesNotExist(msg->exceptionReason);
-    } break ;
-
-    case e_TimeAdvanceAlreadyInProgress: {
-        D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
-        throw TimeAdvanceAlreadyInProgress(msg->exceptionReason);
-    } break ;
-
-    case e_TimeAdvanceWasNotInProgress: {
-        D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
-        throw TimeAdvanceWasNotInProgress(msg->exceptionReason);
-    } break ;
-
-    case e_TooManyIDsRequested: {
-        D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
-        throw TooManyIDsRequested(msg->exceptionReason);
-    } break ;
-
-    case e_UnableToPerformSave: {
-        D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
-        throw UnableToPerformSave(msg->exceptionReason);
-    } break ;
-
-    case e_UnimplementedService: {
-        D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
-        throw UnimplementedService(msg->exceptionReason);
-    } break ;
-
-    case e_UnknownLabel: {
-        D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
-        throw UnknownLabel(msg->exceptionReason);
-    } break ;
-
-    case e_ValueCountExceeded: {
-        D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
-        throw ValueCountExceeded(msg->exceptionReason);
-    } break ;
-
-    case e_ValueLengthExceeded: {
-        D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
-        throw ValueLengthExceeded(msg->exceptionReason);
-    } break ;
-
-    default: {
-        D.Out(pdExcept, "Throwing unknown exception !");
-        cout << "LibRTI: Receiving unknown exception." << endl ;
-        throw RTIinternalError(msg->exceptionReason);
-    } break ;
+      case e_NO_EXCEPTION: {
+      } break ;
+
+      case e_ArrayIndexOutOfBounds: {
+          D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
+          throw ArrayIndexOutOfBounds(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeAlreadyOwned: {
+          D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
+          throw AttributeAlreadyOwned(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeAlreadyBeingAcquired: {
+          D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingAcquired exception.");
+          throw AttributeAlreadyBeingAcquired(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeAlreadyBeingDivested: {
+          D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingDivested exception.");
+          throw AttributeAlreadyBeingDivested(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeDivestitureWasNotRequested: {
+          D.Out(pdExcept,
+                "Throwing e_AttributeDivestitureWasNotRequested exception.");
+          throw AttributeDivestitureWasNotRequested(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeAcquisitionWasNotRequested: {
+          D.Out(pdExcept,
+                "Throwing e_AttributeAcquisitionWasNotRequested exception.");
+          throw AttributeAcquisitionWasNotRequested(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeNotDefined: {
+          D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
+          throw AttributeNotDefined(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeNotKnown: {
+          D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
+          throw AttributeNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeNotOwned: {
+          D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
+          throw AttributeNotOwned(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeNotPublished: {
+          D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
+          throw AttributeNotPublished(msg->exceptionReason);
+      } break ;
+
+      case e_AttributeNotSubscribed: {
+          D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
+          throw AttributeNotSubscribed(msg->exceptionReason);
+      } break ;
+
+      case e_ConcurrentAccessAttempted: {
+          D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
+          throw ConcurrentAccessAttempted(msg->exceptionReason);
+      } break ;
+
+      case e_CouldNotDiscover: {
+          D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
+          throw CouldNotDiscover(msg->exceptionReason);
+      } break ;
+
+      case e_CouldNotOpenRID: {
+          D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
+          throw CouldNotOpenRID(msg->exceptionReason);
+      } break ;
+
+      case e_CouldNotRestore: {
+          D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
+          throw CouldNotRestore(msg->exceptionReason);
+      } break ;
+
+      case e_DeletePrivilegeNotHeld: {
+          D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
+          throw DeletePrivilegeNotHeld(msg->exceptionReason);
+      } break ;
+
+      case e_ErrorReadingRID: {
+          D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
+          throw ErrorReadingRID(msg->exceptionReason);
+      } break ;
+
+      case e_EventNotKnown: {
+          D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
+          throw EventNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_FederateAlreadyPaused: {
+          D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
+          throw FederateAlreadyPaused(msg->exceptionReason);
+      } break ;
+
+      case e_FederateAlreadyExecutionMember: {
+          D.Out(pdExcept, "Throwing e_FederateAlreadyExecutionMember exception.");
+          throw FederateAlreadyExecutionMember(msg->exceptionReason);
+      } break ;
+
+      case e_FederateDoesNotExist: {
+          D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
+          throw FederateDoesNotExist(msg->exceptionReason);
+      } break ;
+
+      case e_FederateInternalError: {
+          D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
+          throw FederateInternalError(msg->exceptionReason);
+      } break ;
+
+      case e_FederateNameAlreadyInUse: {
+          D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
+          throw FederateNameAlreadyInUse(msg->exceptionReason);
+      } break ;
+
+      case e_FederateNotExecutionMember: {
+          D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
+          throw FederateNotExecutionMember(msg->exceptionReason);
+      } break ;
+
+      case e_FederateNotPaused: {
+          D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
+          throw FederateNotPaused(msg->exceptionReason);
+      } break ;
+
+      case e_FederateOwnsAttributes: {
+          D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
+          throw FederateOwnsAttributes(msg->exceptionReason);
+      } break ;
+
+      case e_FederatesCurrentlyJoined: {
+          D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
+          throw FederatesCurrentlyJoined(msg->exceptionReason);
+      } break ;
+
+      case e_FederateWasNotAskedToReleaseAttribute: {
+          D.Out(pdExcept,
+                "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
+          D.Out(pdDebug,
+                "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
+          throw FederateWasNotAskedToReleaseAttribute(msg->exceptionReason);
+      } break ;
+
+      case e_FederationAlreadyPaused: {
+          D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
+          throw FederationAlreadyPaused(msg->exceptionReason);
+      } break ;
+
+      case e_FederationExecutionAlreadyExists: {
+          D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
+          throw FederationExecutionAlreadyExists(msg->exceptionReason);
+      } break ;
+
+      case e_FederationExecutionDoesNotExist: {
+          D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
+          throw FederationExecutionDoesNotExist(msg->exceptionReason);
+      } break ;
+
+      case e_FederationNotPaused: {
+          D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
+          throw FederationNotPaused(msg->exceptionReason);
+      } break ;
+
+      case e_FederationTimeAlreadyPassed: {
+          D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
+          throw FederationTimeAlreadyPassed(msg->exceptionReason);
+      } break ;
+
+      case e_FederateNotPublishing: {
+          D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
+          throw FederateNotPublishing(msg->exceptionReason);
+      } break ;
+
+      case e_FederateNotSubscribing: {
+          D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
+          throw FederateNotSubscribing(msg->exceptionReason);
+      } break ;
+
+      case e_RegionNotKnown: {
+          D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
+          throw RegionNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_IDsupplyExhausted: {
+          D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
+          throw IDsupplyExhausted(msg->exceptionReason);
+      } break ;
+
+      case e_InteractionClassNotDefined: {
+          D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
+          throw InteractionClassNotDefined(msg->exceptionReason);
+      } break ;
+
+      case e_InteractionClassNotKnown: {
+          D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
+          throw InteractionClassNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_InteractionClassNotPublished: {
+          D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
+          throw InteractionClassNotPublished(msg->exceptionReason);
+      } break ;
+
+      case e_InteractionParameterNotDefined: {
+          D.Out(pdExcept, "Throwing e_InteractionParameterNotDefined exception.");
+          throw InteractionParameterNotDefined(msg->exceptionReason);
+      } break ;
+
+      case e_InteractionParameterNotKnown: {
+          D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
+          throw InteractionParameterNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidDivestitureCondition: {
+          D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
+          throw InvalidDivestitureCondition(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidExtents: {
+          D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
+          throw InvalidExtents(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidFederationTime: {
+          D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
+          throw InvalidFederationTime(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidFederationTimeDelta: {
+          D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
+          throw InvalidFederationTimeDelta(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidObjectHandle: {
+          D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
+          throw InvalidObjectHandle(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidOrderType: {
+          D.Out(pdExcept, "Throwing e_InvalidOrderType exception.");
+          throw InvalidOrderType(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidResignAction: {
+          D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
+          throw InvalidResignAction(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidRetractionHandle: {
+          D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
+          throw InvalidRetractionHandle(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidRoutingSpace: {
+          D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
+          throw InvalidRoutingSpace(msg->exceptionReason);
+      } break ;
+
+      case e_InvalidTransportType: {
+          D.Out(pdExcept, "Throwing e_InvalidTransportType exception.");
+          throw InvalidTransportType(msg->exceptionReason);
+      } break ;
+
+      case e_MemoryExhausted: {
+          D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
+          throw MemoryExhausted(msg->exceptionReason);
+      } break ;
+
+      case e_NameNotFound: {
+          D.Out(pdExcept, "Throwing e_NameNotFound exception.");
+          throw NameNotFound(msg->exceptionReason);
+      } break ;
+
+      case e_NoPauseRequested: {
+          D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
+          throw NoPauseRequested(msg->exceptionReason);
+      } break ;
+
+      case e_NoResumeRequested: {
+          D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
+          throw NoResumeRequested(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectClassNotDefined: {
+          D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
+          throw ObjectClassNotDefined(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectClassNotKnown: {
+          D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
+          throw ObjectClassNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectClassNotPublished: {
+          D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
+          throw ObjectClassNotPublished(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectClassNotSubscribed: {
+          D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
+          throw ObjectClassNotSubscribed(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectNotKnown: {
+          D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
+          throw ObjectNotKnown(msg->exceptionReason);
+      } break ;
+
+      case e_ObjectAlreadyRegistered: {
+          D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
+          throw ObjectAlreadyRegistered(msg->exceptionReason);
+      } break ;
+
+      case e_RestoreInProgress: {
+          D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
+          throw RestoreInProgress(msg->exceptionReason);
+      } break ;
+
+      case e_RestoreNotRequested: {
+          D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
+          throw RestoreNotRequested(msg->exceptionReason);
+      } break ;
+
+      case e_RTIinternalError: {
+          D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
+          throw RTIinternalError(msg->exceptionReason);
+      } break ;
+
+      case e_SpaceNotDefined: {
+          D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
+          throw SpaceNotDefined(msg->exceptionReason);
+      } break ;
+
+      case e_SaveInProgress: {
+          D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
+          throw SaveInProgress(msg->exceptionReason);
+      } break ;
+
+      case e_SaveNotInitiated: {
+          D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
+          throw SaveNotInitiated(msg->exceptionReason);
+      } break ;
+
+      case e_SecurityError: {
+          D.Out(pdExcept, "Throwing e_SecurityError exception.");
+          throw SecurityError(msg->exceptionReason);
+      } break ;
+
+      case e_SpecifiedSaveLabelDoesNotExist: {
+          D.Out(pdExcept, "Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
+          throw SpecifiedSaveLabelDoesNotExist(msg->exceptionReason);
+      } break ;
+
+      case e_TimeAdvanceAlreadyInProgress: {
+          D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
+          throw TimeAdvanceAlreadyInProgress(msg->exceptionReason);
+      } break ;
+
+      case e_TimeAdvanceWasNotInProgress: {
+          D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
+          throw TimeAdvanceWasNotInProgress(msg->exceptionReason);
+      } break ;
+
+      case e_TooManyIDsRequested: {
+          D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
+          throw TooManyIDsRequested(msg->exceptionReason);
+      } break ;
+
+      case e_UnableToPerformSave: {
+          D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
+          throw UnableToPerformSave(msg->exceptionReason);
+      } break ;
+
+      case e_UnimplementedService: {
+          D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
+          throw UnimplementedService(msg->exceptionReason);
+      } break ;
+
+      case e_UnknownLabel: {
+          D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
+          throw UnknownLabel(msg->exceptionReason);
+      } break ;
+
+      case e_ValueCountExceeded: {
+          D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
+          throw ValueCountExceeded(msg->exceptionReason);
+      } break ;
+
+      case e_ValueLengthExceeded: {
+          D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
+          throw ValueLengthExceeded(msg->exceptionReason);
+      } break ;
+
+      default: {
+          D.Out(pdExcept, "Throwing unknown exception !");
+          cout << "LibRTI: Receiving unknown exception." << endl ;
+          throw RTIinternalError(msg->exceptionReason);
+      } break ;
     }
 }
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.23 2003/04/23 17:24:09 breholee Exp $
+// $Id: RTIambassador.cc,v 3.24 2003/05/05 20:21:39 breholee Exp $

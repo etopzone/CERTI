@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationManagement.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -94,22 +94,34 @@ public:
                                    TypeException &e);
 
     // Synchronization.
-    void registerSynchronization(const char* label,
-                                 const char* tag,
+    void registerSynchronization(const char *label,
+                                 const char *tag,
                                  TypeException &e);
-    void unregisterSynchronization(const char* label,
+    void unregisterSynchronization(const char *label,
                                    TypeException &e);
-    void synchronizationPointRegistrationSucceeded(const char* label);
-    void federationSynchronized(const char* label);
-    void announceSynchronizationPoint(const char* label,
-                                      const char* tag);
+    void synchronizationPointRegistrationSucceeded(const char *label);
+    void federationSynchronized(const char *label);
+    void announceSynchronizationPoint(const char *label,
+                                      const char *tag);
 
-    // Saving
-    void requestFederationSave(const char*, FederationTime, TypeException &);
+    // Saving.
+    void requestFederationSave(const char *, FederationTime, TypeException &);
     void federateSaveBegun(TypeException &);
     void federateSaveStatus(bool, TypeException &);
     void initiateFederateSave(const char *);
     void federationSavedStatus(bool);
+
+    // Restoring.
+    void requestFederationRestore(const char *label,
+                                  TypeException &e);
+    void federateRestoreStatus(bool status, TypeException &e);
+    void requestFederationRestoreStatus(bool status,
+                                        const char *label,
+                                        const char *reason);
+    void federationRestoreBegun(void);
+    void initiateFederateRestore(const char *label,
+                                 FederateHandle handle);
+    void federationRestoredStatus(bool status);
 
 private:
 
@@ -125,7 +137,7 @@ private:
     bool savingState ;
     bool restoringState ;
 
-    list<char *> synchronizationLabels; //!< Labels being synchronized.
+    list<char *> synchronizationLabels ; //!< Labels being synchronized.
 
     char _nom_federation[MAX_FEDERATION_NAME_LENGTH] ;
     char _nom_federe[MAX_FEDERATE_NAME_LENGTH] ;
@@ -135,4 +147,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationManagement.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.13 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federation.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -42,6 +42,16 @@
 #include <fstream>
 #include <iostream>
 #include <string.h> // strlen
+
+#ifdef HAVE_XML
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
+#define ROOT_NODE (const xmlChar*) "rtigSaveData"
+#define NODE_FEDERATION (const xmlChar*) "federation"
+#define NODE_FEDERATE (const xmlChar*) "federate"
+#endif // HAVE_XML
 
 using std::map ;
 using std::pair ;
@@ -79,6 +89,13 @@ private:
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC *MCLink ;
 #endif
+
+#ifdef HAVE_XML
+    xmlDocPtr doc ;
+#endif // HAVE_XML
+
+    void saveXmlData(void);
+    void restoreXmlData(void);
 
     // METHODS -----------------------------------------------------------------
 public:
@@ -189,6 +206,14 @@ public:
         throw (FederateNotExecutionMember);
 
     void federateSaveStatus(FederateHandle, bool)
+        throw (FederateNotExecutionMember);
+
+    void requestFederationRestore(FederateHandle the_federate,
+                                  const char *the_label)
+        throw (FederateNotExecutionMember);
+
+    void federateRestoreStatus(FederateHandle the_federate,
+                               bool the_status)
         throw (FederateNotExecutionMember);
 
     // -----------------------
@@ -444,10 +469,12 @@ private:
     bool saveInProgress ;
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
+    bool restoreStatus ; //!< True if restoring was correctly done.
+    string saveLabel ; //!< The label associated with the save request.
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.13 2003/04/23 17:24:08 breholee Exp $
+// $Id: Federation.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.7 2003/04/23 17:24:09 breholee Exp $
+// $Id: my_fed.hh,v 3.8 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -102,6 +102,28 @@ public:
     void federationSaved(void)
         throw (FederateInternalError) {}
 
+    void requestFederationRestoreSucceeded(const char *label)
+        throw (FederateInternalError) {}
+
+    void requestFederationRestoreFailed(const char *label,
+                                        const char *reason)
+        throw (FederateInternalError) {}
+
+    void federationRestoreBegun(void)
+        throw (FederateInternalError) {}
+
+    void initiateFederateRestore(const char *label,
+                                 RTI::FederateHandle handle)
+        throw (SpecifiedSaveLabelDoesNotExist,
+               CouldNotRestore,
+               FederateInternalError) {}
+
+    void federationRestored(void)
+        throw (FederateInternalError) {}
+
+    void federationNotRestored(void)
+        throw (FederateInternalError) {}
+
     void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
                               const char *theTag,
                               EventRetractionHandle theHandle)
@@ -155,101 +177,101 @@ public:
                FederateInternalError);
 
     Boolean isAttributeOwnedByFederate(
-                                       ObjectHandle theObject,
-                                       AttributeHandle theAttribute)
+        ObjectHandle theObject,
+        AttributeHandle theAttribute)
         throw (
-               ObjectNotKnown,
-               AttributeNotDefined,
-               FederateNotExecutionMember,
-               ConcurrentAccessAttempted,
-               SaveInProgress,
-               RestoreInProgress,
-               RTIinternalError);
+            ObjectNotKnown,
+            AttributeNotDefined,
+            FederateNotExecutionMember,
+            ConcurrentAccessAttempted,
+            SaveInProgress,
+            RestoreInProgress,
+            RTIinternalError);
 
 
     void attributeIsNotOwned(
-                             ObjectHandle theObject, // supplied C1
-                             AttributeHandle theAttribute) // supplied C1
+        ObjectHandle theObject, // supplied C1
+        AttributeHandle theAttribute) // supplied C1
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            FederateInternalError);
 
     void informAttributeOwnership(
-                                  ObjectHandle theObject, // supplied C1
-                                  AttributeHandle theAttribute, // supplied C1
-                                  FederateHandle theOwner) // supplied C1
+        ObjectHandle theObject, // supplied C1
+        AttributeHandle theAttribute, // supplied C1
+        FederateHandle theOwner) // supplied C1
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            FederateInternalError);
 
     void attributeOwnershipUnavailable(
-                                       ObjectHandle theObject,
-                                       const AttributeHandleSet& offeredAttributes)
+        ObjectHandle theObject,
+        const AttributeHandleSet& offeredAttributes)
         throw (
-               ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeAlreadyOwned,
-               AttributeAcquisitionWasNotRequested,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotDefined,
+            AttributeAlreadyOwned,
+            AttributeAcquisitionWasNotRequested,
+            FederateInternalError);
 
     void attributeOwnershipAcquisitionNotification(
-                                                   ObjectHandle theObject,
-                                                   const AttributeHandleSet& securedAttributes)
+        ObjectHandle theObject,
+        const AttributeHandleSet& securedAttributes)
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               AttributeAcquisitionWasNotRequested,
-               AttributeAlreadyOwned,
-               AttributeNotPublished,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            AttributeAcquisitionWasNotRequested,
+            AttributeAlreadyOwned,
+            AttributeNotPublished,
+            FederateInternalError);
 
 
 
     void requestAttributeOwnershipAssumption(
-                                             ObjectHandle theObject,
-                                             const AttributeHandleSet& offeredAttributes,
-                                             const char *theTag)
+        ObjectHandle theObject,
+        const AttributeHandleSet& offeredAttributes,
+        const char *theTag)
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               AttributeAlreadyOwned,
-               AttributeNotPublished,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            AttributeAlreadyOwned,
+            AttributeNotPublished,
+            FederateInternalError);
 
 
 
     void attributeOwnershipDivestitureNotification(
-                                                   ObjectHandle theObject,
-                                                   const AttributeHandleSet& releasedAttributes)
+        ObjectHandle theObject,
+        const AttributeHandleSet& releasedAttributes)
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               AttributeNotOwned,
-               AttributeDivestitureWasNotRequested,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            AttributeNotOwned,
+            AttributeDivestitureWasNotRequested,
+            FederateInternalError);
 
 
     void requestAttributeOwnershipRelease(
-                                          ObjectHandle theObject, // supplied C1
-                                          const AttributeHandleSet& candidateAttributes, // supplied C4
-                                          const char *theTag) // supplied C4
+        ObjectHandle theObject, // supplied C1
+        const AttributeHandleSet& candidateAttributes, // supplied C4
+        const char *theTag) // supplied C4
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               AttributeNotOwned,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            AttributeNotOwned,
+            FederateInternalError);
 
     void confirmAttributeOwnershipAcquisitionCancellation(
-                                                          ObjectHandle theObject, // supplied C1
-                                                          const AttributeHandleSet& theAttributes) // supplied C4
+        ObjectHandle theObject, // supplied C1
+        const AttributeHandleSet& theAttributes) // supplied C4
         throw (
-               ObjectNotKnown,
-               AttributeNotKnown,
-               AttributeAlreadyOwned,
-               AttributeAcquisitionWasNotCanceled,
-               FederateInternalError);
+            ObjectNotKnown,
+            AttributeNotKnown,
+            AttributeAlreadyOwned,
+            AttributeAcquisitionWasNotCanceled,
+            FederateInternalError);
 
 
     // ------------------

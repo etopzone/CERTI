@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateAmbassador.hh,v 3.3 2003/04/23 17:24:09 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.4 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_AMBASSADOR_HH
@@ -63,6 +63,34 @@ public:
 
     virtual void
     federationSaved(void)
+        throw (FederateInternalError) = 0 ;
+
+    virtual void
+    requestFederationRestoreSucceeded(const char *label)
+        throw (FederateInternalError) = 0 ;
+
+    virtual void
+    requestFederationRestoreFailed(const char *label,
+                                   const char *reason)
+        throw (FederateInternalError) = 0 ;
+
+    virtual void
+    federationRestoreBegun(void)
+        throw (FederateInternalError) = 0 ;
+
+    virtual void
+    initiateFederateRestore(const char *label,
+                            FederateHandle handle)
+        throw (SpecifiedSaveLabelDoesNotExist,
+               CouldNotRestore,
+               FederateInternalError) = 0 ;
+
+    virtual void
+    federationRestored(void)
+        throw (FederateInternalError) = 0 ;
+
+    virtual void
+    federationNotRestored(void)
         throw (FederateInternalError) = 0 ;
 
     // Declaration Management ------------------------------------------------
@@ -212,4 +240,4 @@ public:
 
 #endif // _CERTI_FEDERATE_AMBASSADOR_HH
 
-// $Id: FederateAmbassador.hh,v 3.3 2003/04/23 17:24:09 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.4 2003/05/05 20:21:39 breholee Exp $

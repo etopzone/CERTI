@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.12 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationsList.hh,v 3.13 2003/05/05 20:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -124,6 +124,14 @@ public:
 
     void federateSaveBegun(FederationHandle, FederateHandle);
     void federateSaveStatus(FederationHandle, FederateHandle, bool);
+
+    void requestFederationRestore(FederationHandle the_federation,
+                                  FederateHandle the_federate,
+                                  const char *the_label);
+
+    void federateRestoreStatus(FederationHandle the_federation,
+                               FederateHandle the_federate,
+                               bool the_status);
 
     // -------------------------
     // -- Federate Management --
@@ -459,4 +467,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.12 2003/04/23 17:24:08 breholee Exp $
+// $Id: FederationsList.hh,v 3.13 2003/05/05 20:21:39 breholee Exp $
