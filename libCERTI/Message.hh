@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Message.hh,v 3.4 2003/01/29 18:27:52 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -84,20 +84,20 @@ public:
   // All the Get* methods return a pointer on the actual stored value.
   // This pointer is READ-ONLY, and should not be de-allocated.
 
-  char *getLabel() { return Label; };
-  void setLabel(const char *NewLabel);
+  const char *getLabel(void) const { return Label; };
+  void setLabel(const char *new_label);
 
-  char *getName() { return Name; };
-  void setName(const char *NewName);
+  const char *getName(void) const { return Name; };
+  void setName(const char *new_name);
 
-  char *getFederationName() { return NomFederation; };
-  void setFederationName(char *NewNomFederation);
+  const char *getFederationName(void) const { return NomFederation; };
+  void setFederationName(const char *federation_name);
 
-  char *getFederateName() { return NomFedere; };
-  void setFederateName(char *NewNomFedere);
+  const char *getFederateName(void) const { return NomFedere; };
+  void setFederateName(const char *federate_name);
 
-  char *getTag() { return Tag; };
-  void setTag(const char *NewTag);
+  const char *getTag(void) const { return Tag; };
+  void setTag(const char *new_tag);
 
   // -----------------------
   // -- Public Attributes --
@@ -191,5 +191,5 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Message.hh,v 3.4 2003/01/29 18:27:52 breholee Exp $
 

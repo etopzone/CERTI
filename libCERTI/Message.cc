@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Message.cc,v 3.4 2003/01/29 18:27:52 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -129,7 +129,7 @@ void Message::setName(const char *NewName)
 // -- SetNomFederation --
 // ----------------------
 
-void Message::setFederationName(char *NewNomFederation)
+void Message::setFederationName(const char *NewNomFederation)
 {
   if(strlen(NewNomFederation) > MAX_FEDERATION_NAME_LENGTH)
     throw ValueLengthExceeded("NomFederation too long to fit in Message.");
@@ -142,7 +142,7 @@ void Message::setFederationName(char *NewNomFederation)
 // -- SetNomFedere --
 // ----------------------
 
-void Message::setFederateName(char *NewNomFedere)
+void Message::setFederateName(const char *NewNomFedere)
 {
   if(strlen(NewNomFedere) > MAX_FEDERATE_NAME_LENGTH)
     throw ValueLengthExceeded("NomFedere too long to fit in Message.");
@@ -250,4 +250,4 @@ void Message::display(char *s)
 
 }
 
-// $Id: Message.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Message.cc,v 3.4 2003/01/29 18:27:52 breholee Exp $
