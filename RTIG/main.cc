@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: main.cc,v 3.7 2003/10/20 11:48:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,14 +31,17 @@
 
 using namespace certi ;
 using namespace certi::rtig ;
+using std::cerr ;
+using std::cout ;
+using std::endl ;
 
-static RTIG *rtip ;
+static RTIG *rti ;
 
 // ----------------------------------------------------------------------------
 //! SignalHandler.
 extern "C" void SignalHandler(int sig)
 {
-    rtip->signalHandler(sig);
+    rti->signalHandler(sig);
 
     // Catch signal again.
     std::signal(sig, SignalHandler);
@@ -48,6 +51,7 @@ extern "C" void SignalHandler(int sig)
 //! NewHandler
 void
 NewHandler()
+    throw (MemoryExhausted)
 {
     throw MemoryExhausted();
 }
@@ -56,13 +60,17 @@ NewHandler()
 //! RTIG server entry point.
 int main(int argc, char *argv[])
 {
-    gengetopt_args_info args_info ;
-    if (cmdline_parser(argc, argv, &args_info) != 0) exit(EXIT_FAILURE);
+    gengetopt_args_info args ;
+    if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
+    bool verbose = args.verbose_flag ;
 
-    cout << "CERTI " VERSION " - Copyright 2002, 2003  ONERA" << endl ;
-    cout << "This is free software ; see the source for copying conditions. "
-         << "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS "
-         << "FOR A PARTICULAR PURPOSE." << endl << endl ;
+    if (verbose) {
+	cout << "CERTI RTIG " VERSION " - Copyright 2002, 2003  ONERA" << endl ;
+	cout << "This is free software ; see the source for copying "
+	     << "conditions. There is NO\nwarranty ; not even for "
+	     << "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+	     << endl << endl ;
+    }
 
     signal(SIGINT, SignalHandler);
     signal(SIGPIPE, SignalHandler);
@@ -70,21 +78,20 @@ int main(int argc, char *argv[])
     std::set_new_handler(NewHandler);
 
     try {
-        rtip = new RTIG();
-        rtip->execute();
-        delete rtip ;
-    }
-    catch (MemoryExhausted &e) {
-        cerr << "RTIG: not enough memory. Exiting." << endl ;
-        exit(EXIT_FAILURE);
+        rti = new RTIG();
+	rti->setVerbose(args.verbose_flag);
+        rti->execute();
+        delete rti ;
     }
     catch (Exception &e) {
-        cerr << "Unhandled exception in RTIG. Exiting." << endl ;
+        cerr << "RTIG: exception: " << e._name << " -- Exiting." << endl ;
         exit(EXIT_FAILURE);
     }
 
-    cout << "RTIG exiting." << endl ;
+    if (verbose) {
+	cout << "CERTI RTIG exiting." << endl ;
+    }
     exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: main.cc,v 3.7 2003/10/20 11:48:23 breholee Exp $
