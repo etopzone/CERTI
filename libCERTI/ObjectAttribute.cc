@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.8 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.9 2003/06/25 15:09:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectAttribute.hh"
@@ -31,8 +30,8 @@ static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 
 // ----------------------------------------------------------------------------
 //! Default constructor (all atttributes to default state).
-// ObjectAttribute::ObjectAttribute(void)
-//     : handle(0), owner(0), divesting(RTI_FALSE), space(0)
+// ObjectAttribute::ObjectAttribute()
+// : handle(0), owner(0), divesting(RTI_FALSE), space(0)
 // {
 // }
 
@@ -48,14 +47,14 @@ ObjectAttribute::ObjectAttribute(AttributeHandle new_handle,
 
 // ----------------------------------------------------------------------------
 //! Destructor (nothing to do).
-ObjectAttribute::~ObjectAttribute(void)
+ObjectAttribute::~ObjectAttribute()
 {
 }
 
 // ----------------------------------------------------------------------------
 //! Displays the object attribute information.
 void
-ObjectAttribute::display(void) const
+ObjectAttribute::display() const
 {
     if (handle != 0)
         cout << "Attribute " << handle << " ; Owner " << owner << endl ;
@@ -64,7 +63,7 @@ ObjectAttribute::display(void) const
 // ----------------------------------------------------------------------------
 //! Returns the owner
 FederateHandle
-ObjectAttribute::getOwner(void) const
+ObjectAttribute::getOwner() const
 {
     return owner ;
 }
@@ -80,7 +79,7 @@ ObjectAttribute::setOwner(FederateHandle newOwner)
 // ----------------------------------------------------------------------------
 //! Returns attribute divesting state.
 Boolean
-ObjectAttribute::beingDivested(void) const
+ObjectAttribute::beingDivested() const
 {
     return(divesting);
 }
@@ -126,29 +125,30 @@ ObjectAttribute::removeCandidate(FederateHandle candidate)
 // ----------------------------------------------------------------------------
 // Returns the federate candidate at position in list.
 FederateHandle
-ObjectAttribute::getCandidate(int indice) const
+ObjectAttribute::getCandidate(unsigned int indice) const
     throw (RTIinternalError)
 {
     if ((indice <= 0) || (indice > ownerCandidates.size()))
         throw RTIinternalError();
 
     list<FederateHandle>::const_iterator i = ownerCandidates.begin();
-    for (int j = 1 ; i != ownerCandidates.end(); i++, j++) {
+    for (unsigned int j = 1 ; i != ownerCandidates.end(); i++, j++) {
         if (j == indice)
             return (*i);
     }
+    throw RTIinternalError();
 }
 
 // ----------------------------------------------------------------------------
 bool
-ObjectAttribute::hasCandidates(void) const
+ObjectAttribute::hasCandidates() const
 {
     return (!ownerCandidates.empty());
 }
 
 // ----------------------------------------------------------------------------
 AttributeHandle
-ObjectAttribute::getHandle(void) const
+ObjectAttribute::getHandle() const
 {
     return handle ;
 }
@@ -162,7 +162,7 @@ ObjectAttribute::setHandle(AttributeHandle h)
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-ObjectAttribute::getSpace(void) const
+ObjectAttribute::getSpace() const
 {
     return space ;
 }
@@ -177,4 +177,4 @@ ObjectAttribute::setSpace(SpaceHandle h)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.8 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.9 2003/06/25 15:09:28 breholee Exp $
