@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.9 2005/03/13 17:45:16 breholee Exp $
+// $Id: BillardDDM.hh,v 3.10 2005/03/28 19:03:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_DDM_HH
@@ -51,8 +51,10 @@ protected:
     int subRegion ;
     int pubRegion ;
     SpaceHandle GeoID ;
+    DimensionHandle dimX ;
+    DimensionHandle dimY ;
 };
 
 #endif // CERTI_BILLARD_DDM_HH
 
-// $Id: BillardDDM.hh,v 3.9 2005/03/13 17:45:16 breholee Exp $
+// $Id: BillardDDM.hh,v 3.10 2005/03/28 19:03:29 breholee Exp $

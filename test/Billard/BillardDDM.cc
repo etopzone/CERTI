@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.13 2005/03/25 17:44:16 breholee Exp $
+// $Id: BillardDDM.cc,v 3.14 2005/03/28 19:03:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -29,6 +29,7 @@
 
 using std::string ;
 using std::auto_ptr ;
+using std::vector ;
 
 // ----------------------------------------------------------------------------
 namespace {
@@ -55,7 +56,7 @@ drawRegion(bool display, int position, int width)
 /** Constructor
  */
 BillardDDM::BillardDDM(string federate_name)
-    : Billard(federate_name), numberOfRegions(5), subRegion(-1), pubRegion(-1)
+    : Billard(federate_name), numberOfRegions(4), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardDDM" << std::endl ;
 }
@@ -76,7 +77,8 @@ BillardDDM::declare()
     int width = XMAX / numberOfRegions ;
 
     GeoID = rtiamb.getRoutingSpaceHandle("Geo");
-    std::cout << "Geo space handle : " << GeoID << std::endl ;
+    dimX = rtiamb.getDimensionHandle("X", GeoID);
+    dimY = rtiamb.getDimensionHandle("Y", GeoID);
 
     areas.clear();
     for (int i = 0 ; i < numberOfRegions ; ++i) {
@@ -87,18 +89,16 @@ BillardDDM::declare()
 	area.size = width ;
 	std::cout << "Region " << i << "... " ;
 	area.region = rtiamb.createRegion(GeoID, 1);
+	area.region->setRangeLowerBound(0, dimX, area.x);
+	area.region->setRangeUpperBound(0, dimX, area.x + width - 1);
+	area.region->setRangeLowerBound(0, dimY, 0);
+	area.region->setRangeUpperBound(0, dimY, YMAX);
+	rtiamb.notifyAboutRegionModification(*area.region);
 	std::cout << "ok" << std::endl ;
     }
 
-    int region = (int) local.x / width ;
-    AttributeHandle attrs[] = { AttrXID, AttrYID } ;
-    Region *regs[] = { areas[region].region, areas[region].region } ;
-    std::cout << "Register ball with region..." << std::endl ;
-    local.ID = rtiamb.registerObjectInstanceWithRegion(BouleClassID,
-						       federateName.c_str(),
-						       attrs, regs, 2);
+    local.ID = registerBallInstance(federateName.c_str());
     D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
-    pubRegion = region ;
 }
 
 // ----------------------------------------------------------------------------
@@ -113,9 +113,6 @@ BillardDDM::checkRegions()
     if (region != subRegion || region != pubRegion) {
 	std::cout << "Updating regions ..." << std::endl ;
 
-	if (subRegion != -1)
-	    drawRegion(true, subRegion, width);
-	drawRegion(false, region, width);
 	auto_ptr<AttributeHandleSet> a(AttributeHandleSetFactory::create(3));
 	a->add(AttrXID);
 	a->add(AttrYID);
@@ -131,11 +128,9 @@ BillardDDM::checkRegions()
   	subRegion = region ;
 
 	// Update region
-	rtiamb.associateRegionForUpdates(*(areas[region].region),
-					 local.ID, *a);
+	rtiamb.associateRegionForUpdates(*areas[region].region, local.ID, *a);
 	if (pubRegion != -1) {
-	    rtiamb.unassociateRegionForUpdates(*(areas[pubRegion].region),
-					       local.ID);
+	    rtiamb.unassociateRegionForUpdates(*areas[pubRegion].region, local.ID);
 	}
 	pubRegion = region ;	
     }
@@ -162,4 +157,4 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.13 2005/03/25 17:44:16 breholee Exp $
+// $Id: BillardDDM.cc,v 3.14 2005/03/28 19:03:29 breholee Exp $
