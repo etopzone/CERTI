@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.6 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -143,11 +143,11 @@ void FedParser::processAttributeAtom(Atom *)
 {
     AttStack[AttIndex] = new ObjectClassAttribute();
 
-    AttStack[AttIndex]->Handle
-        = ObjStack[ObjIndex - 1]->addAttribute(AttStack[AttIndex]);
+    AttStack[AttIndex]->setHandle(ObjStack[ObjIndex - 1]
+                                  ->addAttribute(AttStack[AttIndex]));
 
     D.Out(pdRegister, "Adding new attribute %u to ObjectClass %u.",
-          AttStack[AttIndex]->Handle, ObjStack[ObjIndex - 1]->Handle);
+          AttStack[AttIndex]->getHandle(), ObjStack[ObjIndex - 1]->Handle);
 
     AttIndex++ ;
     TypeStack[Depth] = ATTRIB ;
@@ -581,4 +581,4 @@ void FedParser::storeString(String *x)
 
 }} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.6 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $

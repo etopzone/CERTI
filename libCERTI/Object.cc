@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Object.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -30,7 +30,7 @@ namespace certi {
 // ----------------------------------------------------------------------------
 //! Constructor.
 Object::Object(FederateHandle the_owner, const char *the_name)
-    : ID(0), Owner(the_owner), UR(0)
+    : handle(0), Owner(the_owner), UR(0)
 {
     setName(the_name);
 }
@@ -39,9 +39,9 @@ Object::Object(FederateHandle the_owner, const char *the_name)
 //! Destructor.
 Object::~Object(void)
 {
-    if (Name != NULL) {
-        free(Name);
-        Name = NULL ;
+    if (name != NULL) {
+        free(name);
+        name = NULL ;
     }
 
     while (!sf.empty()) {
@@ -55,12 +55,12 @@ Object::~Object(void)
 void
 Object::display(void) const
 {
-    cout << " Instance: ID=" << ID ;
+    cout << " Instance: handle =" << handle ;
 
-    if (Name != NULL)
-        cout << ", Name=\"" << Name << "\"" << endl ;
+    if (name != NULL)
+        cout << ", name=\"" << name << "\"" << endl ;
     else
-        cout << ", (No Name)." << endl ;
+        cout << ", (No name)." << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ Object::getAttribute(AttributeHandle the_attribute) const
 {
     deque<ObjectAttribute *>::const_iterator i ;
     for (i = attributeState.begin(); i != attributeState.end(); i++) {
-        if ((*i)->Handle == the_attribute)
+        if ((*i)->getHandle() == the_attribute)
             return (*i);
     }
 
@@ -79,12 +79,12 @@ Object::getAttribute(AttributeHandle the_attribute) const
 }
 
 // ----------------------------------------------------------------------------
-//! Copy the Object Name(or '\0' if there is no Name) in the_name.
+//! Copy the Object name(or '\0' if there is no name) in the_name.
 void
 Object::getName(ObjectName the_name) const
 {
-    if (Name != NULL)
-        strcpy(the_name, Name);
+    if (name != NULL)
+        strcpy(the_name, name);
     else
         the_name[0] = '\0' ;
 }
@@ -94,25 +94,39 @@ Object::getName(ObjectName the_name) const
 void
 Object::setName(const char *the_object_name)
 {
-    if (Name != NULL)
-        free(Name);
+    if (name != NULL)
+        free(name);
 
     if (the_object_name != NULL) {
         int length = strlen(the_object_name);
 
         if (length > MAX_USER_TAG_LENGTH) {
-            cout << "Bad Object Name." << endl ;
-            throw RTIinternalError("Object Name too long.");
+            cout << "Bad Object name." << endl ;
+            throw RTIinternalError("Object name too long.");
         }
         else if (length == 0)
-            Name = NULL ;
+            name = NULL ;
         else
-            Name = strdup(the_object_name);
+            name = strdup(the_object_name);
     }
     else
-        Name = NULL ;
+        name = NULL ;
+}
+
+// ----------------------------------------------------------------------------
+ObjectHandle
+Object::getHandle(void) const
+{
+    return handle ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Object::setHandle(ObjectHandle h)
+{
+    handle = h ;
 }
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Object.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $

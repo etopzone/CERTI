@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: Object.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -52,8 +52,6 @@ public:
     // -----------------------
     // -- Public Attributes --
     // ----------------------
-    ObjectHandle ID ; //<! Object Instance ID
-
     /*! Owner Handle
       BUG: Should be handled at the attribute level, not instance level.
     */
@@ -68,7 +66,7 @@ public:
     // -- Public Methods --
     // --------------------
     Object(FederateHandle the_owner)
-        : Owner(the_owner), UR(0), Name(NULL) { ID = 0 ; };
+        : Owner(the_owner), UR(0), name(NULL) { handle = 0 ; };
 
     Object(FederateHandle the_owner, const char *the_name);
     ~Object(void);
@@ -87,6 +85,9 @@ public:
     void setName(const char *the_object_name);
     void getName(ObjectName the_name) const ;
 
+    ObjectHandle getHandle(void) const ;
+    void setHandle(ObjectHandle h);
+
     // BUG: Prevoir un jour une methode pour changer SF...
 
 private:
@@ -94,8 +95,8 @@ private:
     // ------------------------
     // -- Private Attributes --
     // ------------------------
-
-    ObjectName Name ; //!< Instance name.
+    ObjectHandle handle ; //!< Object Instance ID
+    ObjectName name ; //!< Instance name.
 
     /*! federate list subscribed to this class and with subscription region
       intersect with UR.
@@ -107,4 +108,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: Object.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $

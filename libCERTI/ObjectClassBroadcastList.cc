@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassBroadcastList.hh"
@@ -379,4 +379,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $

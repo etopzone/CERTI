@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -55,8 +55,6 @@ public:
     // -----------------------
     // -- Public Attributes --
     // -----------------------
-
-    AttributeHandle Handle ;
     SecurityLevelID LevelID ;
 
     OrderType Order ;
@@ -68,45 +66,36 @@ public:
     // --------------------
     // -- Public Methods --
     // --------------------
+    ObjectClassAttribute(void);
+    ObjectClassAttribute(ObjectClassAttribute *source);
+    ~ObjectClassAttribute(void);
 
-    // Constructors
-    ObjectClassAttribute();
-
-    // Constructor : Copy Handle, Name, Order and Transport.
-    ObjectClassAttribute(ObjectClassAttribute *Source);
-
-    // Destructor(Empty private Lists, and free Name memory.)
-    ~ObjectClassAttribute();
-
-    // Display the content of this class(see RootObj::Display)
     void display(void) const ;
 
-    // Name attribute access(GetName reference must be considered READ-ONLY).
-    // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
+    /*! Name attribute access(GetName reference must be considered READ-ONLY).
+      NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
+    */
     inline char *getName(void) const {return Name ; };
 
     void setName(char *NewName)
         throw (ValueLengthExceeded, RTIinternalError);
 
+    void setHandle(AttributeHandle h);
+    AttributeHandle getHandle(void) const ;
+
     // ----------------------
     // -- Security Methods --
     // ----------------------
 
-    // Throw SecurityError if the Federate is not allowed to access the
-    // Object Class, and print an Audit message containing Reason.
-    void checkFederateAccess(FederateHandle theFederate, const char *Reason)
+    void checkFederateAccess(FederateHandle the_federate, const char *reason)
         throw (SecurityError);
 
     // ---------------------------
     // -- Publish and Subscribe --
     // ---------------------------
 
-    // Return RTI_TRUE if the Federate is publishing the attribute,
-    // else return RTI_FALSE.
-    Boolean IsPublishing(FederateHandle theHandle) const ;
-
-    // Return RTI_TRUE if the Federate has subscribed to this attribue.
-    Boolean hasSubscribed(FederateHandle theHandle) const ;
+    Boolean isPublishing(FederateHandle the_handle) const ;
+    Boolean hasSubscribed(FederateHandle the_handle) const ;
 
     void publish(FederateHandle theFederate, bool PubOrUnpub)
         throw (RTIinternalError, SecurityError);
@@ -120,15 +109,14 @@ public:
     // -- Update Attribute Values --
     // -----------------------------
 
-    // Add all attribute's subscribers to the broadcast list.
-    void updateBroadcastList(ObjectClassBroadcastList *List);
+    void updateBroadcastList(ObjectClassBroadcastList *ocb_list);
 
 private:
 
     // ------------------
     // -- Private Part --
     // ------------------
-
+    AttributeHandle handle ; //!< The attribute handle.
     AttributeName Name ; //!< The attribute name, must be locally allocated.
 
     list<Subscriber *> subscribers ; //!< The subscriber's list.
@@ -156,4 +144,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $

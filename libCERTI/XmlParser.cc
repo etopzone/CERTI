@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.3 2003/02/19 18:07:31 breholee Exp $
+// $Id: XmlParser.cc,v 3.4 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -144,7 +144,7 @@ XmlParser::parseClass(ObjectClass* parent)
             attr->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
 
             // Handle
-            attr->Handle = freeAttributeHandle++ ;
+            attr->setHandle(freeAttributeHandle++);
 
             // Transportation
             if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
@@ -271,4 +271,4 @@ bool XmlParser::exists(void) { return false ; }
 }
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.3 2003/02/19 18:07:31 breholee Exp $
+// $Id: XmlParser.cc,v 3.4 2003/02/21 17:36:39 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
@@ -104,4 +104,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $

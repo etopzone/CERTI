@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.6 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectAttribute.hh"
@@ -32,7 +32,7 @@ static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 // ----------------------------------------------------------------------------
 //! Default constructor (all atttributes to default state).
 ObjectAttribute::ObjectAttribute(void)
-    : Handle(0), owner(0), divesting(RTI_FALSE)
+    : handle(0), owner(0), divesting(RTI_FALSE)
 {
 }
 
@@ -40,7 +40,7 @@ ObjectAttribute::ObjectAttribute(void)
 //! Constructor that sets handle and attribute owner.
 ObjectAttribute::ObjectAttribute(AttributeHandle newHandle,
                                  FederateHandle newOwner)
-    : Handle(newHandle), owner(newOwner), divesting(RTI_FALSE)
+    : handle(newHandle), owner(newOwner), divesting(RTI_FALSE)
 {
 }
 
@@ -55,8 +55,8 @@ ObjectAttribute::~ObjectAttribute(void)
 void
 ObjectAttribute::display(void) const
 {
-    if (Handle != 0)
-        cout << "Attribute " << Handle << " ; Owner " << owner << endl ;
+    if (handle != 0)
+        cout << "Attribute " << handle << " ; Owner " << owner << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -148,16 +148,16 @@ ObjectAttribute::hasCandidates(void) const
 AttributeHandle
 ObjectAttribute::getHandle(void) const
 {
-    return Handle ;
+    return handle ;
 }
 
 // ----------------------------------------------------------------------------
 void
 ObjectAttribute::setHandle(AttributeHandle h)
 {
-    Handle = h ;
+    handle = h ;
 }
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.6 2003/02/21 17:36:39 breholee Exp $

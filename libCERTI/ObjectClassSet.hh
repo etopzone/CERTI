@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.8 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.9 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -300,4 +300,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.8 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.9 2003/02/21 17:36:39 breholee Exp $

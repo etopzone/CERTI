@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.7 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.8 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -61,12 +61,10 @@ ObjectClassAttribute::addSubscriber(FederateHandle theFederate)
     subscribers.push_front(subscriber);
 }
 
-
-
-// -------------------------
-// -- CheckFederateAccess --
-// -------------------------
-
+// ----------------------------------------------------------------------------
+/*! Throw SecurityError if the Federate is not allowed to access the Object
+  Class, and print an Audit message containing Reason.
+*/
 void
 ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
                                           const char *Reason)
@@ -82,7 +80,7 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
 
     // BUG: Should use Audit.
     if (Result != RTI_TRUE) {
-        cout << "Attribute " << Handle << " : SecurityError for federate "
+        cout << "Attribute " << handle << " : SecurityError for federate "
              << theFederate << '(' << Reason << ")." << endl ;
         throw SecurityError("Federate should not access Object Class Attribute.");
     }
@@ -93,23 +91,20 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
 /*! This constructor initialize the attribute with default parameters.
  */
 ObjectClassAttribute::ObjectClassAttribute(void)
-    : Handle(0), LevelID(PublicLevelID), Order(RECEIVE), Transport(BEST_EFFORT)
+    : handle(0), LevelID(PublicLevelID), Order(RECEIVE), Transport(BEST_EFFORT)
 {
     Name = 0 ;
     server = 0 ;
 }
 
-
-// ---------------------------
-// -- ObjectClassAttribute --
-// ---------------------------
-
+// ----------------------------------------------------------------------------
+//! Constructor : Copy Handle, Name, Order and Transport.
 ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *Source)
 {
     if (Source == NULL)
         throw RTIinternalError("NULL Attribute when copying it.");
 
-    Handle = Source->Handle ;
+    handle = Source->getHandle();
     LevelID = Source->LevelID ;
 
     if (Source->Name != NULL)
@@ -121,11 +116,8 @@ ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *Source)
     server = Source->server ;
 }
 
-
-// ---------------------------
-// -- ObjectClassAttribute --
-// ---------------------------
-
+// ----------------------------------------------------------------------------
+//! Destructor (Empty private Lists, and free Name memory).
 ObjectClassAttribute::~ObjectClassAttribute(void)
 {
     if (Name != NULL) {
@@ -136,7 +128,8 @@ ObjectClassAttribute::~ObjectClassAttribute(void)
     // Deleting Publishers
     if (!publishers.empty())
         D.Out(pdError,
-              "Attribute %d: Publishers list not empty at termination.", Handle);
+              "Attribute %d: Publishers list not empty at termination.",
+              handle);
 
     list<Publisher *>::iterator p ;
     for (p = publishers.begin(); p != publishers.end(); p++) {
@@ -147,7 +140,8 @@ ObjectClassAttribute::~ObjectClassAttribute(void)
     // Deleting Subscribers
     if (!subscribers.empty())
         D.Out(pdError,
-              "Attribute %d: Subscribers list not empty at termination.", Handle);
+              "Attribute %d: Subscribers list not empty at termination.",
+              handle);
 
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); s++) {
@@ -191,11 +185,11 @@ ObjectClassAttribute::deleteSubscriber(int rank)
 }
 
 // ----------------------------------------------------------------------------
-//! Displays the attribute information (handle, name and level id)
+//! Displays the attribute information (handle, name and level id).
 void
 ObjectClassAttribute::display(void) const
 {
-    cout << " Attribute " << Handle << ':' ;
+    cout << " Attribute " << handle << ':' ;
 
     if (Name != 0)
         cout << '\"' << Name << '\"' ;
@@ -208,7 +202,7 @@ ObjectClassAttribute::display(void) const
 // ----------------------------------------------------------------------------
 //! returns true if federate is publishing this attribute.
 Boolean
-ObjectClassAttribute::IsPublishing(FederateHandle theHandle) const
+ObjectClassAttribute::isPublishing(FederateHandle theHandle) const
 {
     return ((getPublisherRank(theHandle) != 0) ? RTI_TRUE : RTI_FALSE);
 }
@@ -250,17 +244,14 @@ ObjectClassAttribute::hasSubscribed(FederateHandle theHandle) const
     return ((getSubscriberRank(theHandle) != 0) ? RTI_TRUE : RTI_FALSE);
 }
 
-
-// -------------
-// -- Publish --
-// -------------
-
+// ----------------------------------------------------------------------------
+//! publish.
 void ObjectClassAttribute::publish(FederateHandle theFederate,
                                    bool PubOrUnpub)
     throw (RTIinternalError,
            SecurityError)
 {
-    Boolean AlreadyPublishing = IsPublishing(theFederate);
+    Boolean AlreadyPublishing = isPublishing(theFederate);
 
     if ((PubOrUnpub == RTI_TRUE) && (AlreadyPublishing == RTI_FALSE)) {
         // Federate wants to Publish
@@ -269,23 +260,25 @@ void ObjectClassAttribute::publish(FederateHandle theFederate,
         checkFederateAccess(theFederate, "Publish");
 
         D.Out(pdInit, "Attribute %d: Added Federate %d to publishers list.",
-              Handle, theFederate);
+              handle, theFederate);
         addPublisher(theFederate);
     }
 
     else if ((PubOrUnpub == RTI_FALSE) && (AlreadyPublishing == RTI_TRUE)) {
         // Federate wants to unpublish
-        D.Out(pdTerm, "Attribute %d: Removed Federate %d from publishers list.",
-              Handle, theFederate);
+        D.Out(pdTerm,
+              "Attribute %d: Removed Federate %d from publishers list.",
+              handle, theFederate);
         deletePublisher(getPublisherRank(theFederate));
     }
 
     else
         D.Out(pdError,
               "Attribute %d: Inconsistent publish request from Federate %d.",
-              Handle, theFederate);
+              handle, theFederate);
 }
 
+// ----------------------------------------------------------------------------
 //! Sets the name of this attribute
 void ObjectClassAttribute::setName(char *NewName)
     throw (ValueLengthExceeded, RTIinternalError)
@@ -306,11 +299,22 @@ void ObjectClassAttribute::setName(char *NewName)
         throw RTIinternalError("Memory Exhausted.");
 }
 
+// ----------------------------------------------------------------------------
+void
+ObjectClassAttribute::setHandle(AttributeHandle h)
+{
+    handle = h ;
+}
 
-// ---------------
-// -- Subscribe --
-// ---------------
+// ----------------------------------------------------------------------------
+AttributeHandle
+ObjectClassAttribute::getHandle(void) const
+{
+    return handle ;
+}
 
+// ----------------------------------------------------------------------------
+//! subscribe.
 void ObjectClassAttribute::subscribe(FederateHandle theFederate,
                                      bool SubOrUnsub)
     throw (RTIinternalError,
@@ -326,27 +330,25 @@ void ObjectClassAttribute::subscribe(FederateHandle theFederate,
 
         addSubscriber(theFederate);
         D.Out(pdInit, "Attribute %d: Added Federate %d to subscribers list.",
-              Handle, theFederate);
+              handle, theFederate);
     }
 
     else if ((SubOrUnsub == RTI_FALSE) && (AlreadySubscribed == RTI_TRUE)) {
         // Federate wants to unsubscribe
         deleteSubscriber(getSubscriberRank(theFederate));
-        D.Out(pdTerm, "Attribute %d: Removed Federate %d from subscribers list.",
-              Handle, theFederate);
+        D.Out(pdTerm,
+              "Attribute %d: Removed Federate %d from subscribers list.",
+              handle, theFederate);
     }
 
     else
         D.Out(pdError,
               "Attribute %d: Unconsistent subscribe request from federate %d.",
-              Handle, theFederate);
+              handle, theFederate);
 }
 
-
-// -------------------------
-// -- UpdateBroadcastList --
-// -------------------------
-
+// ----------------------------------------------------------------------------
+//! Add all attribute's subscribers to the broadcast list.
 void
 ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 {
@@ -355,7 +357,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
     case m_REFLECT_ATTRIBUTE_VALUES: {
         list<Subscriber *>::iterator i ;
         for (i = subscribers.begin(); i != subscribers.end(); i++) {
-            ocblist->addFederate((*i)->getHandle(), Handle); // Attribute handle
+            ocblist->addFederate((*i)->getHandle(), handle);
         }
     }
         break ;
@@ -363,7 +365,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
     case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
         list<Publisher *>::iterator i ;
         for (i = publishers.begin(); i != publishers.end(); i++) {
-            ocblist->addFederate((*i)->getHandle(), Handle); // Attribute handle
+            ocblist->addFederate((*i)->getHandle(), handle);
         }
     }
         break ;
@@ -374,4 +376,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.7 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.8 2003/02/21 17:36:39 breholee Exp $

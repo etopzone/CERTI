@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.9 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.10 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -748,4 +748,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.9 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.10 2003/02/21 17:36:39 breholee Exp $

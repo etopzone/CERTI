@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
@@ -50,14 +50,11 @@ namespace certi {
 class ObjectAttribute {
 
 public:
-    // Public Attributes
-    AttributeHandle Handle ; //!< The object attribute handle.
-
     // Public Methods
 
     // Constructors & Destructors
     ObjectAttribute(void);
-    ObjectAttribute(AttributeHandle Handle, FederateHandle NewOwner);
+    ObjectAttribute(AttributeHandle new_handle, FederateHandle new_owner);
     ~ObjectAttribute(void);
 
     void display(void) const ;
@@ -65,13 +62,13 @@ public:
     FederateHandle getOwner(void) const ;
     void setOwner(FederateHandle NewOwner);
 
-    void setDivesting(Boolean DivestingState);
+    void setDivesting(Boolean divesting_state);
     Boolean beingDivested(void) const ;
 
     int isCandidate(FederateHandle candidate) const ;
     void addCandidate(FederateHandle candidate);
     void removeCandidate(FederateHandle candidate);
-    FederateHandle getCandidate(int indice) const
+    FederateHandle getCandidate(int rank) const
         throw (RTIinternalError);
     bool hasCandidates(void) const ;
 
@@ -80,6 +77,7 @@ public:
 
 private:
     // Private Attributes
+    AttributeHandle handle ; //!< The object attribute handle.
     FederateHandle owner ; //!< Federate who owns the attribute.
     Boolean divesting ; //!< Divesting state.
     list<FederateHandle> ownerCandidates ; //!< Federates candidate.
@@ -89,4 +87,4 @@ private:
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
