@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: RootObject.cc,v 3.5 2003/03/04 18:09:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -30,38 +30,39 @@ namespace certi {
 static pdCDebug D("ROOTOBJECT", "(RootObject) ");
 
 // ----------------------------------------------------------------------------
+//! The SocketServer can be NULL on the RTIA.
 RootObject::RootObject(SecurityServer *security_server)
     : server(security_server)
 {
     ObjectClasses = new ObjectClassSet(server);
-    if (ObjectClasses == NULL)
-        throw RTIinternalError();
-
     Interactions = new InteractionSet(server);
-    if (Interactions == NULL)
-        throw RTIinternalError();
+    objects = new ObjectSet(server);
 }
 
 // ----------------------------------------------------------------------------
-RootObject::~RootObject()
+//! Delete object classes, interactions, objects and routing spaces.
+RootObject::~RootObject(void)
 {
     delete ObjectClasses ;
     delete Interactions ;
+    delete objects ;
+
     for (int i = 1 ; i < routingSpaces.size(); i++)
         delete routingSpaces[i] ;
     routingSpaces.clear();
 }
 
 // ----------------------------------------------------------------------------
+//! Print the Root Object tree to the standard output.
 void
-RootObject::display(void)
+RootObject::display(void) const
 {
-    printf("\nRoot Object Tree :\n");
+    cout << endl << "Root Object Tree :" << endl ;
     ObjectClasses->display();
     Interactions->display();
     if (routingSpaces.size() > 0) {
-        printf("+ Routing Spaces :\n");
-        for (vector<RoutingSpace *>::iterator i = routingSpaces.begin();
+        cout << "+ Routing Spaces :" << endl ;
+        for (vector<RoutingSpace *>::const_iterator i = routingSpaces.begin();
              i != routingSpaces.end();
              i++) {
             (*i)->display();
@@ -70,6 +71,9 @@ RootObject::display(void)
 }
 
 // ----------------------------------------------------------------------------
+/*! Return the LevelID of the level whose name is 'theLevelName' if the
+  security server is defined, else return PublicLevelID(on the RTIA).
+*/
 SecurityLevelID
 RootObject::GetSecurityLevelID(SecurityLevelName theLevelName)
 {
@@ -102,10 +106,10 @@ RootObject::addRoutingSpace(RoutingSpace *rs)
 // ----------------------------------------------------------------------------
 //! get a routing space handle[HLA 1.3]
 SpaceHandle
-RootObject::getRoutingSpaceHandle(const char *rs)
+RootObject::getRoutingSpaceHandle(const char *rs) const
     throw (NameNotFound)
 {
-    vector<RoutingSpace *>::iterator i ;
+    vector<RoutingSpace *>::const_iterator i ;
 
     cout << "GET ROUTING SPACE HANDLE : " << rs << endl ;
     for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
@@ -120,4 +124,4 @@ RootObject::getRoutingSpaceHandle(const char *rs)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: RootObject.cc,v 3.5 2003/03/04 18:09:32 breholee Exp $

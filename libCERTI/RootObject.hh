@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: RootObject.hh,v 3.5 2003/03/04 18:09:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -30,6 +30,7 @@
 #include <config.h>
 #include "InteractionSet.hh"
 #include "ObjectClassSet.hh"
+#include "ObjectSet.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
 #include "PrettyDebug.hh"
@@ -50,26 +51,21 @@ public:
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
+    ObjectSet *objects ;
 
     // -- Methods
-    // The SocketServer can be NULL on the RTIA.
-    RootObject(SecurityServer *theSecurityServer);
+    RootObject(SecurityServer *the_server);
+    ~RootObject(void);
 
-    // Delete ObjectClasses and Interactions.
-    ~RootObject();
+    void display(void) const ;
 
-    // Print the Root Object tree to the standard output.
-    void display(void);
-
-    // Return the LevelID of the level whose name is 'theLevelName' if
-    // the security server is defined, else return PublicLevelID(on the RTIA).
-    SecurityLevelID GetSecurityLevelID(SecurityLevelName theLevelName);
+    SecurityLevelID GetSecurityLevelID(SecurityLevelName the_name);
 
     void registerFederate(const char *the_federate,
                           SecurityLevelID the_level_id);
 
     void addRoutingSpace(RoutingSpace *);
-    SpaceHandle getRoutingSpaceHandle(const char *)
+    SpaceHandle getRoutingSpaceHandle(const char *) const
         throw (NameNotFound);
 
 private:
@@ -81,4 +77,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: RootObject.hh,v 3.5 2003/03/04 18:09:32 breholee Exp $
