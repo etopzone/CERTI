@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.19 2005/03/25 17:37:53 breholee Exp $
+// $Id: DataDistribution.cc,v 3.20 2005/03/28 19:08:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -113,7 +113,7 @@ DataDistribution::createRegion(SpaceHandle space,
                                TypeException &e)
     throw (SpaceNotDefined)
 {
-    D[pdDebug] << "Create region in space " << space << "..." << endl ;
+    D[pdDebug] << "Start creating region in space " << space << "..." << endl ;
 
     NetworkMessage req, rep ;
 
@@ -128,6 +128,7 @@ DataDistribution::createRegion(SpaceHandle space,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
+	D[pdDebug] << "Create region " << rep.region << endl ;
         RTIRegion *region = new RTIRegion(rep.region,
 					  rootObject->getRoutingSpace(space),
 					  nb_extents);
@@ -135,7 +136,6 @@ DataDistribution::createRegion(SpaceHandle space,
 	assert(region->getNumberOfExtents() == nb_extents);
         rootObject->addRegion(region);
 
-        D[pdDebug] << "Created region " << rep.region << endl ;
         return rep.region ;
     }
     else
@@ -158,6 +158,8 @@ DataDistribution::modifyRegion(RegionHandle handle,
     // Request to RTIG
     NetworkMessage req, rep ;
     req.type = NetworkMessage::DDM_MODIFY_REGION ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
     req.region = handle ;
     req.setExtents(extents);
 
@@ -411,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.19 2005/03/25 17:37:53 breholee Exp $
+// $Id: DataDistribution.cc,v 3.20 2005/03/28 19:08:02 breholee Exp $
