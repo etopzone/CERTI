@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.17 2003/10/27 10:15:12 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.18 2005/03/11 13:47:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -323,14 +323,17 @@ ObjectClassAttribute::subscribe(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! Add all attribute's subscribers to the broadcast list
 void
-ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
+ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
+					  const RegionImp *region)
 {
     switch(ocblist->message->type) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           list<Subscriber *>::iterator i ;
           for (i = subscribers.begin(); i != subscribers.end(); i++) {
-              ocblist->addFederate((*i)->getHandle(), handle);
+	      if ((*i)->match(region))
+		  ocblist->addFederate((*i)->getHandle(), handle);
+	      
           }
       } break ;
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
@@ -346,4 +349,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.17 2003/10/27 10:15:12 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.18 2005/03/11 13:47:18 breholee Exp $

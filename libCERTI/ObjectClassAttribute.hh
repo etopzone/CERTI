@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.14 2004/05/18 13:18:55 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.15 2005/03/11 13:47:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -76,7 +76,8 @@ public:
     void unsubscribe(FederateHandle, RegionImp *) throw (RTIinternalError);
     
     // Update attribute values
-    void updateBroadcastList(ObjectClassBroadcastList *ocb_list);
+    void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
+			     const RegionImp *region = 0);
 
     // Attributes
     SecurityLevelID level ;
@@ -94,10 +95,11 @@ private:
 
     std::list<Subscriber *> subscribers ; //!< The subscriber's list.
     std::list<Publisher *> publishers ; //!< The publisher's list.
+
 };
 
 } // namespace
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.14 2004/05/18 13:18:55 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.15 2005/03/11 13:47:18 breholee Exp $
