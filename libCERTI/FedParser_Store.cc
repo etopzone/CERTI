@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,15 +20,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.3 2003/01/15 15:37:19 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "FedParser.hh"
 
 namespace certi {
-  namespace fedparser {
+namespace fedparser {
 
 static pdCDebug D("CREAD", "(cread)    - ");
 
@@ -71,12 +69,13 @@ void FedParser::allocateAndRegisterInteractionClass(int index)
   RootObj->Interactions->addClass(IntStack [index]);
 }
 
-
-// ----------------
-// -- FreeObject --
-// ----------------
-
-void FreeObject(Object *x)
+// ---------------------------------------------------------------------------
+//! Frees the allocated memory for object.
+/*! Atom and String objects store a name. In these case, memory allocated to
+    object name is freed. Object memory is freed.
+*/
+void
+FreeObject(Object *x)
 {
   switch(x->type) {
   case ATOM_TYPE: {
@@ -159,15 +158,13 @@ void FedParser::processAttributeAtom(Atom *)
   TypeStack [Depth] = ATTRIB;
 }
 
-
-// ----------------------
-// -- ProcessClassAtom --
-// ----------------------
-
-void FedParser::processClassAtom(Atom *)
-  throw(RTIinternalError)
+// ---------------------------------------------------------------------------
+//! Called by storeAtom to process class atom.
+void
+FedParser::processClassAtom(Atom *)
+    throw(RTIinternalError)
 {
-  int                ParentIndex = 0; // Index of the Parent Class(if needed)
+  int ParentIndex = 0; // Index of the Parent Class(if needed)
   
   switch(TypeStack [Depth - 1])
     {
@@ -177,21 +174,21 @@ void FedParser::processClassAtom(Atom *)
 
       ObjIndex ++;
       if(ObjIndex >= CREAD_MAX_OBJ_COUNT) {
-	D.Out(pdError, "Maximum Object Class count reached.");
-	throw RTIinternalError("Maximum Object Class count reached in FED.");
+          D.Out(pdError, "Maximum Object Class count reached.");
+          throw RTIinternalError("Maximum Object Class count reached in FED.");
       }
 
       TypeStack [Depth] = CLASSOBJ;
       break;
-      
+
     case INT: // Root Interaction Class(no parent class)
       D.Out(pdRegister, "Allocating Root Interaction Class.");
       allocateAndRegisterInteractionClass(IntIndex);
 
       IntIndex ++;
       if(IntIndex >= CREAD_MAX_OBJ_COUNT) {
-	D.Out(pdError, "Maximum Interaction Class count reached.");
-	throw RTIinternalError("Maximum Inter. Class count reached in FED.");
+          D.Out(pdError, "Maximum Interaction Class count reached.");
+          throw RTIinternalError("Maximum Inter. Class count reached in FED.");
       }
 
       TypeStack [Depth] = CLASSINT;
@@ -211,8 +208,8 @@ void FedParser::processClassAtom(Atom *)
 
       ObjIndex++;
       if(ObjIndex >= CREAD_MAX_OBJ_COUNT) {
-	D.Out(pdError, "Maximum Object Class count reached.");
-	throw RTIinternalError("Maximum Object Class count reached in FED.");
+          D.Out(pdError, "Maximum Object Class count reached.");
+          throw RTIinternalError("Maximum Object Class count reached in FED.");
       }
 
       TypeStack [Depth] = CLASSOBJ;
@@ -231,8 +228,8 @@ void FedParser::processClassAtom(Atom *)
 						      IntStack [ParentIndex]);
       IntIndex ++;
       if(IntIndex >= CREAD_MAX_OBJ_COUNT) {
-	D.Out(pdError, "Maximum Interaction Class count reached.");
-	throw RTIinternalError("Maximum Inter. Class count reached in FED.");
+          D.Out(pdError, "Maximum Interaction Class count reached.");
+          throw RTIinternalError("Maximum Inter. Class count reached in FED.");
       }
 
       TypeStack [Depth] = CLASSINT;
@@ -243,8 +240,6 @@ void FedParser::processClassAtom(Atom *)
       throw RTIinternalError("Unknown type ProcessClassAtom's switch.");
       break;
     }
-
-  return;
 }
 
 
@@ -262,7 +257,7 @@ void FedParser::processFederateString(String *x)
   case FEDERATE_NAME:
     // Check and store federate name
     if(strlen(x->name) > MAX_FEDERATE_NAME_LENGTH) {
-      printf("Federate Name too long in FED file : %s\n", x->name);
+        cout << "Federate Name too long in FED file : " << x->name << endl;
       throw RTIinternalError("Federate Name too long in FED file.");
     }
 
@@ -415,32 +410,26 @@ void FedParser::processTransportOrderAtom(Atom *x)
   }
 }
 
-
-// -----------
-// -- Store --
-// -----------
-
-void FedParser::store(Object *Root)
-  throw(SecurityError,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! Entry point for creating object instances (called by readFile module).
+void
+FedParser::store(Object *Root)
+    throw(SecurityError, RTIinternalError)
 {
-  storeObject(Root, "");
-  printf("\n");
+    storeObject(Root, "");
+    cout << endl;
 }
 
-
-// ---------------
-// -- StoreAtom --
-// ---------------
-
-void FedParser::storeAtom(Atom *x)
-  throw(SecurityError,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! Recognize atom name and store type or process atom.
+void
+FedParser::storeAtom(Atom *x)
+  throw(SecurityError, RTIinternalError)
 {
 
   D.Out(pdDebug, "Storing Atom %s.", x->name);
+  cout << ' ' << x->name;
 
-  printf(" %s",x->name);
   if(strcmp(x->name, FED_STR_FED) == 0)
     TypeStack [Depth] = FED;
 
@@ -467,8 +456,6 @@ void FedParser::storeAtom(Atom *x)
 
   else
     processTransportOrderAtom(x);
-
-  return;
 }
 
 
@@ -490,7 +477,7 @@ void FedParser::storeList(List *x, const char *Header)
 
   if(next->type == NIL_TYPE) {
     Depth--;
-    printf(" ]");
+    cout << " ]";
   }
   // There are remaining elements in the list.
   else if(next->type == LIST_TYPE)
@@ -502,37 +489,32 @@ void FedParser::storeList(List *x, const char *Header)
   }
 
   FreeObject(next);
-  return;
 }
 
-
-// -----------------
-// -- StoreObject --
-// -----------------
-
-void FedParser::storeObject(Object *x, const char *Header)
-  throw(SecurityError,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! storeObject calls the right store module depending on object type.
+void
+FedParser::storeObject(Object *x, const char *Header)
+    throw(SecurityError, RTIinternalError)
 {
-  char *NewHeader;
-
   switch(x->type) {
-  case LIST_TYPE:
-    printf("\n%s[", Header);
-    Depth++;
+  case LIST_TYPE: {
+      cout << endl << Header << '[';
+      Depth++;
 
-    // Increment Header
-    NewHeader =(char *) malloc(strlen(Header) + 4);
-    if(NewHeader == NULL)
-      storeList((struct List *) x, Header);
-    else {
-      strcpy(NewHeader, Header);
-      strcat(NewHeader, "   ");
-      storeList((struct List *) x, NewHeader);
-      free(NewHeader);
-    }
-
-    break;
+      // Increment Header
+      char *NewHeader;
+      NewHeader =(char *) malloc(strlen(Header) + 4);
+      if(NewHeader == NULL)
+          storeList((struct List *) x, Header);
+      else {
+          strcpy(NewHeader, Header);
+          strcat(NewHeader, "   ");
+          storeList((struct List *) x, NewHeader);
+          free(NewHeader);
+      }
+  }
+      break;
 
   case ATOM_TYPE:
     storeAtom((struct Atom *) x);
@@ -541,13 +523,11 @@ void FedParser::storeObject(Object *x, const char *Header)
     storeString((struct String *) x);
     break;
   case NIL_TYPE:
-    printf("%s[]\n", Header);
+    cout << Header << "[]" << endl;
     break;
   }
 
   FreeObject(x);
-  return;
-
 }
 
 
@@ -562,7 +542,7 @@ void FedParser::storeString(String *x)
 
   D.Out(pdDebug, "Storing String %s.", x->name);
 
-  printf(" \"%s\"",x->name);
+  cout << " \"" << x->name << '\"';
 
   try {
     switch(TypeStack [Depth]) {
@@ -600,14 +580,13 @@ void FedParser::storeString(String *x)
     }
   }
   catch(ValueLengthExceeded) {
-    printf("\n\nName Token too long : %s.\n", x->name);
-    printf("You must shorten your string or increase the MAX_USER_TAG_LENGTH constant.\n");
+      cout << endl << endl << "Name Token too long : " << x->name << '.'
+           << endl;
+      cout << "You must shorten your string or increase the MAX_USER_TAG_LENGTH constant." << endl;
     throw RTIinternalError("Name too long.");
   }
-
-  return;
 }
 
 }}
 
-// $Id: FedParser_Store.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.3 2003/01/15 15:37:19 breholee Exp $

@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,18 +20,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser.hh,v 3.2 2003/01/15 15:37:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
 #define _CERTI_FED_PARSER_HH
+
+#include <config.h>
+
+#include <fstream>
+using std::ifstream;
+using std::ios;
+
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #include "RootObject.hh"
 #include "fed_file.hh"
 #include "parser.hh"
 #include "PrettyDebug.hh"
 
-#define ZEOF -1
+#define ZEOF ~0u // -1 for unsigned type (Standard C)
 
 #define CREAD_MAX_BUF_LENGTH 4096 // File buffer length
 #define CREAD_MAX_ATOM_LENGTH 256 // Max length of an atom in the FED file.
@@ -224,7 +234,7 @@ private:
   int AttIndex; // Object Attribute Stack Index
   int ParIndex; // Interaction Parameter Stack Index
 
-  int Depth; // Current Depth in the FED tree.
+  int Depth;    //<! Current Depth in the FED tree.
   // TypeStack[Depth] is the type of the last read List.
 
   // Stacks Doc : For example, the current Object Class is pointed
@@ -238,12 +248,12 @@ private:
   // -- FED File objects and buffer --(used in the read part)
   // ---------------------------------
 
-  FILE *FEDFile;
+  ifstream *FEDFile; //!< Pointer to file stream for reading data.
  
-  char InBuffer[CREAD_MAX_BUF_LENGTH];
-  int InBufferPos;
-  int InBufferLength;
-  int CurrentChar;
+  char InBuffer[CREAD_MAX_BUF_LENGTH]; //!< Buffer used to store piece of file.
+  int InBufferPos; //!< Position in InBuffer currently being treated.
+  int InBufferLength; //!< Size of the useful part of InBuffer buffer.
+  int CurrentChar; //!< char value being currently treated by file reading.
 
   // To temporaly store a federate name before giving it a sec level.
   char FederateNameBuffer[MAX_FEDERATE_NAME_LENGTH+1];
@@ -254,4 +264,4 @@ private:
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser.hh,v 3.2 2003/01/15 15:37:19 breholee Exp $

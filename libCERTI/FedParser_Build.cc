@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,13 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Build.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.2 2003/01/15 15:37:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Classe FedParser chargee de lire les fichiers .fed, partie lecture
 // du fichier et construction de la liste.
-
-#include <config.h>
 
 #include "FedParser.hh"
 
@@ -36,12 +34,16 @@ namespace fedparser {
 static pdCDebug D("CREAD", "(FedParser   ) - ");
 
 // ---------------------------------------------------------------------------
-// advance
-//
-void FedParser::advance()
-  throw(ErrorReadingRID)
+//! Moves forward one character in file.
+/*! advance moves forward one character in the file being read. Instead of
+    advancing character by character in the file, a whole piece of
+    CREAD_MAX_BUF_LENGTH is read into a buffer. When buffer is fully examined,
+    a new piece is read from file.
+ */
+void
+FedParser::advance(void)
+    throw(ErrorReadingRID)
 {
-  int LengthRead;
   if(InBufferPos < InBufferLength)
     {
       CurrentChar = InBuffer [InBufferPos];
@@ -49,8 +51,9 @@ void FedParser::advance()
       return;
     }
 
-  LengthRead = fread(InBuffer, 1, CREAD_MAX_BUF_LENGTH, FEDFile);
+  FEDFile->read(InBuffer, CREAD_MAX_BUF_LENGTH);
 
+  int LengthRead = FEDFile->gcount();
   if(LengthRead == 0)
     {
       CurrentChar = ZEOF;
@@ -69,10 +72,8 @@ void FedParser::advance()
   throw ErrorReadingRID("Negative Length returned by fread on FED file.");
 }
 
-
 // ---------------------------------------------------------------------------
-// FedParser
-// 
+//! FedParser is a class for reading a federate file and creating a structure.
 FedParser::FedParser(RootObject *theRootObj)
 {
   for(int i=0; i < CREAD_MAX_OBJ_COUNT; i++)
@@ -103,14 +104,14 @@ FedParser::FedParser(RootObject *theRootObj)
   D.Out(pdInit, "FedParser Object created.");
 }
 
-
 // ---------------------------------------------------------------------------
-// ~FedParser
-// 
-FedParser::~FedParser()
+/*! Closes the file and display tree structure created in RootObject class
+    instance.
+*/
+FedParser::~FedParser(void)
 {
   if(FEDFile != NULL)
-    fclose(FEDFile);
+    FEDFile->close();
 
 #ifdef CREAD_DISPLAYS_ROOTOBJ
   if(ErrorWhileReading == RTI_FALSE)
@@ -120,12 +121,11 @@ FedParser::~FedParser()
   D.Out(pdTerm, "FedParser object destroyed.");
 }
 
-
 // ---------------------------------------------------------------------------
-// makeList
-// 
-fedparser::Object *FedParser::makeList(Object *x, Object *y)
-  throw(MemoryExhausted)
+//! Creates a new object which aggregates two objects.
+fedparser::Object*
+FedParser::makeList(Object *x, Object *y)
+    throw(MemoryExhausted)
 {
   struct List *p;
 
@@ -141,12 +141,11 @@ fedparser::Object *FedParser::makeList(Object *x, Object *y)
   return((Object *)p);
 }
 
-
 // ---------------------------------------------------------------------------
-// makeNil
-// 
-fedparser::Object *FedParser::makeNil()
-  throw(MemoryExhausted)
+//! Creates a nil object to detect the end of a list.
+fedparser::Object*
+FedParser::makeNil(void)
+    throw(MemoryExhausted)
 {
   struct Nil *p;
 
@@ -160,13 +159,11 @@ fedparser::Object *FedParser::makeNil()
   return((fedparser::Object *)p);
 }
 
-
 // ---------------------------------------------------------------------------
-// readAtom
-// 
-fedparser::Object *FedParser::readAtom()
-  throw(ErrorReadingRID,
-	MemoryExhausted)
+//! read an atom string until a separator or a brace character is encountered.
+fedparser::Object*
+FedParser::readAtom(void)
+    throw(ErrorReadingRID, MemoryExhausted)
 {
   int Length = 0;
   char CompString [] = {' ', ZEOF, '\t', '\n', '(', ')', '\0'}; 
@@ -178,11 +175,15 @@ fedparser::Object *FedParser::readAtom()
     TempString[Length] = CurrentChar;
     Length++;
     advance();
+
+    if (Length > CREAD_MAX_ATOM_LENGTH) {
+        D.Out(pdError, "TempString too small to store string in readAtom.");
+        throw MemoryExhausted("Could not store temporary string in readAtom.");
+    }
   }
-    
   TempString [Length] = '\0';
 
-  TempAtom           =(struct Atom *) malloc(sizeof(struct Atom));
+  TempAtom =(struct Atom *) malloc(sizeof(struct Atom));
   if(TempAtom == NULL) {
     D.Out(pdError, "Memory Exhausted in ReadAtom.");
     throw MemoryExhausted("Could not allow Atom Object.");
@@ -190,29 +191,28 @@ fedparser::Object *FedParser::readAtom()
 
   TempAtom->type   = ATOM_TYPE;
   TempAtom->length = Length+1;
-  TempAtom->name   =(char *) malloc(Length+1);
+  TempAtom->name   = strdup(TempString);
   if(TempAtom->name == NULL) {
     D.Out(pdError, "Memory Exhausted in ReadAtom for atom name.");
     throw MemoryExhausted("Could not allow Atom Object.");
   }
-  strcpy(TempAtom->name,TempString);
 
   return((fedparser::Object *) TempAtom);
 }
 
-
 // ---------------------------------------------------------------------------
-// readFile
-// 
-void FedParser::readFile(char *FedFile)
-  throw(CouldNotOpenRID,
-	ErrorReadingRID,
-	SecurityError,
-	RTIinternalError)
+//! Open a file, read data, initialize data and close it.
+/*! readFile takes a filename as parameter. This file is used to retrieve data
+    used by federate. After opening it, datas are retrieved by the
+    readListFirst module and stored by store module.
+*/
+void
+FedParser::readFile(char *FedFile)
+    throw(CouldNotOpenRID, ErrorReadingRID, SecurityError, RTIinternalError)
 {
-  FEDFile = fopen(FedFile, "r");
+  FEDFile = new ifstream(FedFile, ios::in);
   
-  if(FEDFile == NULL)
+  if(!FEDFile->is_open())
     {
       D.Out(pdError, "Unable to open \"%s\".", FedFile);
       throw CouldNotOpenRID(FedFile);
@@ -222,13 +222,13 @@ void FedParser::readFile(char *FedFile)
     store(readListFirst());
   }
   catch(MemoryExhausted &e) {
-    fclose(FEDFile);
+    FEDFile->close();
     ErrorWhileReading = RTI_TRUE;
     D.Out(pdError, "FedParser throwing RTIinternalError.");
     throw RTIinternalError(e._serial, e._reason);
   }
   catch(Exception &e) {
-    fclose(FEDFile);
+    FEDFile->close();
     ErrorWhileReading = RTI_TRUE;
     D.Out(pdError, "FedParser throwing exception %s.", e._name);
     if(e._reason != NULL)
@@ -236,18 +236,18 @@ void FedParser::readFile(char *FedFile)
     throw ErrorReadingRID(e._serial, e._reason);
   }
 
-  fclose(FEDFile);
+  FEDFile->close();
   FEDFile = NULL;
-  
 }
 
-
 // ---------------------------------------------------------------------------
-// readList
-// 
-fedparser::Object *FedParser::readList()
-  throw(ErrorReadingRID,
-	MemoryExhausted)
+//! called when an opening brace is encountered.
+/*! Two objects are built by this module.
+    Go deeper in tree structure until a closing brace is encountered.
+ */
+fedparser::Object*
+FedParser::readList(void)
+    throw(ErrorReadingRID, MemoryExhausted)
 {
   fedparser::Object* object1 ;
   fedparser::Object* object2 ;
@@ -264,13 +264,11 @@ fedparser::Object *FedParser::readList()
   return(makeList(object1, object2));
 }
 
-
 // ---------------------------------------------------------------------------
-// readListFirst
-// 
-fedparser::Object *FedParser::readListFirst()
-  throw(ErrorReadingRID,
-	MemoryExhausted)
+//! Returns an Object which depends on character being read.
+fedparser::Object*
+FedParser::readListFirst(void)
+    throw(ErrorReadingRID, MemoryExhausted)
 {
   readSeparators();
 
@@ -292,16 +290,16 @@ fedparser::Object *FedParser::readListFirst()
   }
 }
 
-
 // ---------------------------------------------------------------------------
-// readSeparators
-// 
-void FedParser::readSeparators()
-  throw(ErrorReadingRID) // Inherited from advance()
+//! advance in file if a comment (;) or a separator is read.
+/*! This module advances in the file being read while an empty character or a
+    ';' is read. Module returns when another character is read.
+*/
+void
+FedParser::readSeparators(void)
+    throw(ErrorReadingRID) // Inherited from advance()
 {
-  int EndSeparators = RTI_FALSE;
-
-  while(! EndSeparators) 
+  while(true) 
     switch(CurrentChar) {
       
     case ' ':   // Separators
@@ -315,42 +313,49 @@ void FedParser::readSeparators()
       break;
       
     default:
-      EndSeparators = RTI_TRUE;
+      return;
     }
-
-  return;
 }
 
-
 // ---------------------------------------------------------------------------
-// readString
-// 
-fedparser::Object *FedParser::readString()
-  throw(ErrorReadingRID,
-	MemoryExhausted)
+//! Called when a quote is encountered.
+/*! This module is used to read a string when a quote is encountered until an
+    unquote is encoutered.
+ */
+fedparser::Object*
+FedParser::readString(void)
+    throw(ErrorReadingRID, MemoryExhausted)
 {
   int            Length = 0; 
   char           TempString [CREAD_MAX_ATOM_LENGTH];
-  struct String *ResultString;
 
-  while((CurrentChar != '"') &&(CurrentChar != ZEOF)) {
-    TempString [Length] = CurrentChar;
-    Length ++;
-    advance();
+  bool end = false;
+  while (!end) {
+      switch (CurrentChar) {
+      case '"':
+          advance();
+          end = true;
+          break;
+      case ZEOF:
+          TempString [Length] = '\0';
+          D.Out(pdError, "EOF while reading string \"%s\".", TempString);
+          throw ErrorReadingRID("Unexpected EOF while reading string.");
+          break;
+      default:
+          TempString [Length] = CurrentChar;
+          Length++;
+          advance();
+      }
+
+      if (Length > CREAD_MAX_ATOM_LENGTH) {
+          D.Out(pdError, "String too long for ReadString.");
+          throw MemoryExhausted("String couldn't be read due to size.");
+      }
   }
+  TempString [Length] = '\0';
 
-  if(CurrentChar == '"')
-    advance();
+  struct String *ResultString =(struct String *) malloc(sizeof(struct String));
 
-  if(CurrentChar == ZEOF) {
-    TempString [Length] = '\0';
-    D.Out(pdError, "EOF while reading string \"%s\".", TempString);
-    throw ErrorReadingRID("Unexpected EOF while reading string.");
-  }
-
-  TempString [Length] = 0;
-
-  ResultString =(struct String *) malloc(sizeof(struct String));
   if(ResultString == NULL) {
     D.Out(pdError, "Memory Exhausted in ReadString.");
     throw MemoryExhausted("Could not allow String Object.");
@@ -358,33 +363,39 @@ fedparser::Object *FedParser::readString()
 
   ResultString->type   = STRING_TYPE;
   ResultString->length = Length+1;
-  ResultString->name   =(char *)malloc(Length+1);;
+  ResultString->name   = strdup(TempString);
   if(ResultString->name == NULL) {
     D.Out(pdError, "Memory Exhausted in ReadString for string name.");
     throw MemoryExhausted("Could not allow String Object.");
   }
-  strcpy(ResultString->name, TempString);
 
   return((fedparser::Object *)ResultString);
 }
 
-
 // ---------------------------------------------------------------------------
-// skipLine
-// 
-void FedParser::skipLine()
-  throw(ErrorReadingRID) // Inherited from advance()
+//! Called when a comment (semicolon) is encountered.
+/*! A semicolom marks a comment. A comment ends when a newline is encountered.
+ */
+void
+FedParser::skipLine(void)
+    throw(ErrorReadingRID) // Inherited from advance()
 {
-  while((CurrentChar != '\n') &&(CurrentChar != ZEOF))
-    advance();
-
-  if(CurrentChar == '\n')
-    advance();
-
-  return;
+    while(true) {
+        switch(CurrentChar) {
+        case '\n':
+            advance();
+            return;
+            break;
+        case ZEOF:
+            return;
+            break;
+        default:
+            advance();
+        }
+    }
 }
 
 }}
 
-// $Id: FedParser_Build.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.2 2003/01/15 15:37:19 breholee Exp $
 
