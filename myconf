@@ -1,0 +1,62 @@
+#! /bin/sh
+# $Id: myconf,v 3.0 2002/11/21 01:27:51 breholee Exp $
+
+case $1 in
+    sun) 
+	echo Sun CC Workshop5.0 Configuration ;
+	CC=cc ;
+	CXX=CC ;
+#	CXXFLAGS="-g -RTTI -features=no%conststrings -I/opt/SUNWspro/SC5.0/include/CC " ;
+	CXXFLAGS=" -g -I/opt/SUNWspro/SC5.0/include/CC " ;
+	LDFLAGS="-L/opt/SUNWspro/SC5.0/lib/CC4 -L/opt/SUNWspro/SC5.0/lib/CC4/libp -lC " ;
+	export CC CXX CXXFLAGS LDFLAGS
+	;;
+
+    sun-ws42) 
+	echo Sun CC Workshop4.2 Configuration ;
+	CC=cc ;
+	CXX=CC ;
+	CXXFLAGS="-g -RTTI -I/opt/SUNWspro/SC4.2/include/CC " ;
+	LDFLAGS=" -lC " ;
+	export CC CXX CXXFLAGS LDFLAGS
+	;;
+
+    sun-gcc) 
+	echo Sun default gcc Configuration ;
+	CXXFLAGS=" -fpermissive " 
+	export CXXFLAGS
+	;;
+
+    linux-gcc3) 
+	echo GNU/Linux gcc3 Configuration
+	CXXFLAGS=" -fpermissive " ;
+	CC=gcc-3.0 ;
+	CXX=g++-3.0 ;
+	export CC CXX CXXFLAGS
+	;;
+
+    linux) 
+	echo GNU/Linux default gcc Configuration ;
+	;;
+
+    hpux)
+        echo HPUX aCC Configuration
+	CC=cc ;
+        CXX=aCC ;
+        export CC CXX
+	;;
+
+    hpux-gcc)
+        echo HPUX default gcc Configuration  
+        CC=gcc ;
+        CXX=g++ ;
+        export CC CXX
+	;;
+    *)
+	echo --- WARNING: Default installation ---
+	;;
+esac
+
+./configure --prefix=$HOME/CERTI $2 $3 $4 $5
+
+# EOF $Id: myconf,v 3.0 2002/11/21 01:27:51 breholee Exp $

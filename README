@@ -1,0 +1,41 @@
+
+License
+-------
+
+See COPYING file for use/modification/distribution conditions.
+The main license (GPL) can be found in the file "gpl.txt". The license
+for libraries librti and libcerti (LGPL) can be found in the file
+"lesser.txt".
+
+Installation
+------------
+
+See INSTALL for detailed generic installation instructions. This
+program uses GNU Autoconf/Automake, so your standard ./configure /
+make / make install procedure should work, if you're used to this kind
+of installation.
+
+If not, your ./configure command should look like: 
+
+[env {definitions}] ./configure [options] 
+
+for non-standard include/lib path. The installation directory can be
+set with the --prefix option (default: /usr/local).
+
+- Example 1: This line launches the configuration, with standard
+defaults and "$HOME/CERTI" as the target directory:
+
+./configure --prefix=$HOME/CERTI
+
+- Example 2: Using a recent GCC and a quite old X library, we had to use
+a "-fpermissive" option in each compilation command. This can be done
+by modifying the CXXFLAGS variable:
+
+env CXXFLAGS="-fpermissive " ./configure --prefix=$HOME/CERTI
+
+- Example 3: This is the line we use on Solaris 6 stations, note how the
+default compiler names and directory values can be modified:
+
+env CC=cc CXX=CC CXXFLAGS="-RTTI -g -features=no%conststrings -I/opt/SUNWspro/SC5.0/include/CC " LDFLAGS="-L/opt/SUNWspro/SC5.0/lib/CC4 -L/opt/SUNWspro/SC5.0/lib/CC4/libp -lC " ./configure --prefix=$HOME/CERTI
+
+

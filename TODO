@@ -1,0 +1,262 @@
+1. Utiliser des pipes pour les communications Federe - RTIA, ce qui
+   permettra de ne plus avoir de problemes de fichiers qui existent deja.
+
+   >>  Attention, je ne sais pas si on peut faire un select sur un pipe !
+
+2. FAIT
+
+3. FAIT
+
+4. FAIT
+
+5. FAIT
+
+6. FAIT
+
+7. Faire des tests avec des User Supplied Tags, pour les SendInteraction,
+   les UAV, etc. Voir 21.
+
+8. FAIT
+
+9. Utiliser la liste de Federes Abonnes pour une instance d'objet,
+   afin de limiter l'usage des BroadcastList. (voir CObject.hh)
+
+10. FAIT
+
+11. Si un federe fournit un nom d'instance lors du RegisterObject, alors
+    ce nom doit etre unique (sinon exception "ObjectInstanceNotUnique").
+
+    >> Pour l'instant on ne peut pas fournir de nom d'instance.
+
+12. FAIT
+
+13. FAIT
+
+14. FAIT
+
+15. FAIT
+
+16. FAIT
+
+17. Quand on fait un subscribe ou un unsubscribe alors que des instances 
+    sont declarees dans la classe, faire des discover/remove object.
+
+    >> Fait pour le subscribe.
+	
+    >> Attention pour le subscribe dans le cas des KillFederate. Tester par
+	exemple un SecurityServer->GetSocket avant de renvoyer une liste.
+
+18. Si le RTIA recoit un message UAV pour un objet qu'il ne connait pas,
+    il le vire sans planter, car il peut tout simplement avoir fait
+    passer un RemoveObject avant les UAV en attente. 
+    On peut penser a la meme chose pour le RemoveObject, mais dans ce cas,
+    c'est quand meme un autre probleme.
+
+19. Fait
+
+20. FAIT
+
+21. Verifier que les tags soient bien passe. Notamment, pour les UAV, le
+    Tag recu est RAV, c'est pas normal. Pour les RemoveObject, pas de
+    Reason, par de Tag. Pour les Discover, le Tag vaut "discover_reason" 
+    et pour Recevie Interaction "RI" ! 
+    >> FAIT
+
+    De meme, le Time vaut toujours 0.
+    >> Pas fait.
+
+22. Fait.
+
+23. Dans GetInteractionName de la LibRTI, on utilise dans le CMessage
+    le champ ObjectHandle et pas la champ InteractionHandle. Ca doit chier
+    quelque part. Je n'ai pas regarde comment le RTIa decodait le CMessage,
+    c'est a dire s'il lit vraiment le champ ObjectHandle.
+
+24. CRead devrait verifier la longueur des chaines qu'il lit, et de meme
+    pour les interactions et classes d'objets. Commencer par faire les
+    verifs dans les classes, puis dans CRead.
+
+25. Ca pourrait etre une bonne idee, si on dispose d'une bibliotheque
+    de cryto, de calculer la signature du fichier FED pour verifier que
+    tout le monde a bien lu le meme. Il m'est arrive de lancer le RTIP
+    dans le mauvais repertoire, qui possedait un fichier Test.fed bien nomme
+    mais avec un contenu different de celui lu par le RTIA.
+
+26. Probleme avec les exceptions Network Signal : elles ne figurent pas 
+    dans la liste des exceptions renvoyees par les methodes qui utilisent
+    le reseau (comme les DiscoverObject, etc.).
+
+    Pour l'instant, on a jamais eu le cas ou l'exception NetworkSignal
+    etait renvoyee. Elle est censee etre interceptee par le RTIP, mais
+    en fait elle fera surement tout planter avant, vu qu'elle n'est pas
+    prevue (chaque methode declare les exceptions qu'elle peut renvoyer,
+    et les methodes utilisant le reseau comme UAV ne le font pas pour Network
+    Signal.).
+
+27. Pendant que l'on lit le fichier FED, on ne verifie pas les doublons,
+    par exemple deux classes avec le meme nom, ou deux attributs/parametres
+    homonymes. (voir aussi les niveaux de securite).
+
+28. Les "reason"s des Exceptions levees sur le RTIP ne parviennent pas
+    au RTIA. Faudrait quand meme voir si c'est possible. Envisager un systeme
+    equivalent a celui de la LibRTI ou on appelle TraiterException pour la
+    recpetion au niveau du RTIA.
+
+29. Pour eviter la duplication des noms de classes ou d'attributs, il faut
+    verifier que les noms sont bien uniques, apres la lecture de l'arborescence
+    complete. En effet, cela sera beaucoup plus dur a faire au fur et a mesure
+    de la lecture, car les classes sont inserees dans l'arborescence avant 
+    meme d'etre nommees. Peut-etre pourrait-on seulement les inserer lorsqu'on
+    trouve le nom, ce qui eviterait du meme coup d'inserer des classes 
+    non-nommees.
+
+30. Verifier le point suivant : quand un federe quitte une federation,
+    est-ce qu'on met bien dans le serveur de socket ses references a 0 ?
+
+    Cela a deux consequences : si elles sont mises a zero, l'entree ne sera
+    pas gardee apres le CloseConnection, mais la federation cherchant a lui
+    communiquer qquechose levera une FederateNotExecutionMember, au lieu
+    d'une RTIinternalError pour les Killed Federates. Est-ce gere ?
+
+    Si elle n'est pas mise a zero, l'entree est gardee eternellement...
+
+31. Un probleme rencontre par Afiff : Si un federe n'est pas regulateur,
+    la federation ne l'attend pas pour avancer. Du coup, il peut se
+    retrouver noyer par les messages en provenance du RTIP.
+
+    Explication : Dans GCom::LireMsg, on choisit systematiquement les 
+    messages venant du RTIP d'abord, donc si il y en a toujours, le RTIA
+    ne lit pas ceux du Federe.
+
+    Solution : Mettre en place un systeme d'alternance 1 message du RTIP
+    puis un Message du Federe etc... Ca me parait le plus simple et le
+    plus efficace pour des cas pas trop tordus.
+
+32. La libRTI, dans son destructeur, devrait attendre la mort de son fils
+    RTIA, par un appel systeme a wait(). Cela pose encore le probleme dans
+    le cas ou le fils refuse de mourir parce qu'il est createur d'une 
+    federation et qu'il attend de pouvoir la detruire, mais quand meme ca
+    permettrait de regler certaines choses.
+
+    De plus, le federe n'a pas a faire de Wait, puisque ca veut dire que ca
+    depend de l'implementation du RTI.
+
+33. Pour permettre l'echange facile des moyens de communications, c'est-a-dire
+    passer facilement d'un socket TCP a un socket UDP entre le RTIP et le
+    RTIA, faire ceci :
+
+       - Migrer les socket UNIX vers un heritage de CSocket. (pour l'instant,
+	 c'est completement independant).
+
+       - Sur le RTIA, CGestionCom ne doit plus heriter des deux classes
+	 CSocketUN et CSecureTCPSocket, mais juste garder deux pointeurs
+	 CSocket, qui est rapelons-le, une classe virtuelle. Ces deux
+	 pointeurs seront SocketFed et SocketRTIP. Les objets pointes,
+	 qui representeront en fait des protocoles, seront alloues dans le
+	 constructeur, en se servant de noms de classes definis dans
+	 RTI_config.hh. Par exemple, on peut avoir :
+ 
+ 		#define HLA_RTIP_RTIA_SOCKET_CLASS CSecureTCPSocket
+		#define HLA_FED_RTIA_SOCKET_CLASS  CSocketUN
+
+	Cela permet ainsi de pouvoir facilement changer un type de socket
+	par un autre.
+
+      - Des amenagements similaires sont a prevoir dans la libRTI et sur le
+	RTIP, plus specialement au niveau du serveur de socket qui alloue
+	les nouveaux objets sockets.
+
+    Ca pourrait meme permettre d'utiliser des pipes, non ? Non pas forcement,
+    parce que ca demande quand meme des initialisations differentes de celles
+    des sockets.
+
+----- FAIT ---------------------------------------------------------------
+
+2. Gerer l'heritage des interactions dans CRead.
+
+3. Gerer les interruptions pour les Sockets (Interrupted system Call)
+   non pas comme des NetworkError mais autrement.
+
+4. Verifier lors d'un UAV que le federe possede bien l'objet. Cela veut dire
+   qu'il faudrait d'ailleurs memoriser a qui sont les objets...
+
+5. Pour l'optimisation des communications, decoupe le message reseau
+   en deux parties, un en-tete fixe, puis un corps de taille variable.
+   Ce corps peut par exemple etre choisi parmi trois structures, une
+   minimale, une qui contient juste NomFederation et NomFedere, et une
+   troisieme comprenant un certain nombre de couple (NumeroAttribut, Valeur)
+   par exemple.
+
+   Cette optimisation passe par un redecoupage des methodes des objets
+   CMessageReseau, auquel on ajoutera une methode Send (Socket), qui 
+   s'occupera entierement de l'ecriture du message sur le socket, ainsi
+   qu'une methode receive.
+
+6. Un autre optimisation peut etre de gerer la memoire des messages par
+   un grand 'pool' alloue au depart, ou l'on alloue ensuite les messages.
+   au debut de ce pool, on peut prevoir un seul emplacement pour preparer
+   les en-tetes et les corps.
+
+   >>> En fait les allocs ne prennent pas tant de temps que ca, donc
+   c'est pas hyper grave.
+
+8. Gerer les tableaux de Values en interne pour les CMessage et CMessageReseau,
+   en ajoutant deux methodes SetValue et GetValue.
+
+10. Deux appels successifs a SubscribeObjectClassAttributes doivent
+    effacer les effets du premier, et ne tenir compte que du second.
+    Autrement dit, a la reception d'un subscribe sur un objet, on efface
+    d'abord les abonnements et ensuite on lit le message.
+
+12. Gerer le signal SIGPIPE au moins sur le RTIP (voir la doc de socket :
+     [...] The  protocols
+     optionally  keep  sockets  "warm"  by  forcing transmissions
+     roughly every minute in the absence of other  activity.   An
+     error is then indicated if no response can be elicited on an
+     otherwise  idle  connection  for  a  extended  period   (for
+     instance  5  minutes).  A SIGPIPE signal is raised if a pro-
+     cess sends on a broken stream; this causes naive  processes,
+     which do not handle the signal, to exit.
+
+    Ca arrive hyper souvent maintenant sur le RTIP.
+
+	>> Fait, mais il fallu d'une part ignorer le signal au niveau
+	   du SignalHandler de RTIP.cc, et d'autre part, gerer les erreurs
+	   de reseau qui en resultait et qui faisait crasher le RTIP
+	  (unexpected exception thrown). 
+
+	>> VOIR POINT #26.
+
+13. Dans RTIP::ChooseProcessingMethod, mettre les cas de m_MESSAGE_NULL
+    et de m_UAV devant dans le switch.
+
+14. Regarder pourquoi, dans le CSocketServer, quand on fait un CloseConnection,
+    et que l'option RTI_PRINTS_STATISTICS est presente, le socket n'affiche
+    pas les nombres d'octets envoyes et recus. En gros, normalement, en
+    faisant un delete socket ca affiche des trucs mais la non. Bug ?
+
+    >>> C'etait un probleme de destructeur avec la classe abstraire CSocket.
+
+15. Regarder si l'objet CRead libere bien toute sa memoire. (ou n'en alloue
+    pas trop).
+
+    >>> Les parametres et les attributs etaient alloues 100 par 100,
+    et les objets de l'arbre de lecture n'etaient jamais liberes.
+
+16. Regarder encore une fois et verifier que CRead libere bien toute sa
+    memoire. 
+  
+    >>> OK, c'etait StoreList qui ne liberait pas son deuxieme element.
+
+19. Sur le RTIP, ajouter au KillFederate de quoi enlever les objets
+    possedes par le federe tue.
+
+20. Pour le connect des sockets UNIX, se donner quelques essais.
+
+22. Dans GO.cc, pour les messages que l'on envoie au federe, on met le
+    Numero de federe a _GF->NumeroFedere. Pourquoi ? De plus, des fois on
+    met de meme le numero de federation du CMessage a _GF->NumeroFederation,
+    et des fois non. J'espere que personne ne compte dessus...
+
+    >> Fait pendant la mise en place des Messages a taille variable pour les
+	sockets UNIX.

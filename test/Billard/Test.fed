@@ -1,0 +1,37 @@
+;; ---------------------------------------------------------------------------
+;; Description de la Federation pour l'exemple Test Heritage
+;; ---------------------------------------------------------------------------
+;;
+;; Cet exemple contient une classe Bille, avec deux attributs X et Y.
+;; Cette classe est celle a laquelle les federes s'abonnent pour recevoir
+;; les informations des autres federes.
+;;
+;; De cette classe herite la classe Boule, qui contient en plus l'attribut
+;; Couleur. Chaque Federe gere son propre objet Boule, mais voit les Boules
+;; des autres sous la forme de Bille, c'est en dire en noir.
+;;
+;; Pour ajouter des niveaux de securite, placer juste apres le nom d'une
+;; classe [cad AVANT la declaration de ses attributs] une ligne du style
+;; (sec_level "Secret"). Le niveau public est pris par defaut, et nomme
+;; "Public".
+(fed
+	(federate "prunet" "Public")
+	(federate "fed"      "Public")
+	(objects
+		(class "Bille"
+			(attribute "PositionX" FED_RELIABLE FED_TIMESTAMP)
+			(attribute "PositionY" FED_RELIABLE FED_TIMESTAMP)
+			(class "Boule"
+				(attribute "Color" FED_RELIABLE FED_TIMESTAMP)
+			)
+		)
+	)
+	(interactions
+		(class "Bing" FED_RELIABLE FED_TIMESTAMP
+			(sec_level "Public")
+			(parameter "BoulNum")
+			(parameter "DX")
+			(parameter "DY")
+		)
+	)
+)

@@ -1,0 +1,90 @@
+## $Id: configure.in,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+## ---------------------------------------------------------------------------
+
+## Process this file with autoconf to produce `configure'
+
+# ========== Init ============================================================
+AC_INIT([RTIG/RTIG.cc])
+AC_PREREQ(2.53)
+AC_REVISION($Revision: 3.0 $)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
+
+# ========== Programs ========================================================
+AC_PROG_CC
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_DISABLE_SHARED
+AC_PROG_LIBTOOL
+
+# ========== Autoheader ======================================================
+AH_TEMPLATE([socklen_t], [Define the type for socklen_t])
+
+# ========== Libraries =======================================================
+
+# ---------- UNIX/C++ --------------------------------------------------------
+AC_ETR_SOCKET_NSL
+AC_TYPE_SOCKLEN_T
+AC_CXX_IOSTREAM_HEADER
+AC_CXX_NAMESPACES
+AC_CXX_BOOL
+AC_FUNC_SELECT_ARGTYPES
+
+# ---------- GSSAPI ----------------------------------------------------------
+#ACX_WITH_GSSAPI
+
+# ---------- X11 -------------------------------------------------------------
+AC_PATH_XTRA
+if test $no_x; then
+    	AC_MSG_WARN([X11 files not found]);
+else
+	X_LIBRARY_PATH=$x_libraries
+	XCFLAGS="$X_CFLAGS"	
+	XLFLAGS="$X_LIBS"
+	XLIBS="-lX11 -L$X_LIBRARY_PATH $X_EXTRA_LIBS"
+	WITH_X11="-DWITH_X11"
+	lib_search_path="$lib_search_path $XLFLAGS"
+	inc_search_path="$inc_search_path $XCFLAGS"
+	AC_SUBST(X_LIBRARY_PATH)
+	AC_SUBST(XLIBS)
+	AC_SUBST(XCFLAGS)
+	AC_SUBST(WITH_X11)
+fi
+
+# ---------- GTK -------------------------------------------------------------
+# maybe not used in this version of CERTI
+AM_PATH_GTK(
+	[1.0.6],
+	WITH_GTK="-DWITH_GTK"
+	AC_SUBST(WITH_GTK),
+	AC_MSG_WARN([GTK files not found])
+)	
+
+# ========== Checks for header files =========================================
+#AC_HEADER_STDC
+#AC_CHECK_HEADERS([errno.h memory.h stdlib.h string.h sys/socket.h
+#sys/types.h unistd.h exception.h signal.h])
+
+# ========== Checks for typedefs, structures, and compiler characteristics ===
+#AC_C_CONST
+#AC_C_INLINE
+#AC_TYPE_PID_T
+#AC_HEADER_TIME
+#AC_TYPE_UID_T
+
+# ========== Checks for library functions ====================================
+#AC_FUNC_MALLOC
+#AC_TYPE_SIGNAL
+#AC_FUNC_STAT
+#AC_FUNC_VPRINTF
+
+#AC_CHECK_FUNCS([alarm sigset gethostbyname gethostname inet_ntoa
+#memmove memset select socket recvfrom sqrt strchr strdup])
+
+# ========== Output ==========================================================
+AC_OUTPUT([Makefile include/Makefile libpdebug/Makefile
+libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
+test/Makefile test/include/Makefile test/libgraphc/Makefile
+test/Billard/Makefile doc/Makefile])
+
+## $Id: configure.in,v 3.0 2002/11/21 01:27:51 breholee Exp $
