@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,48 +19,48 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: LBTS.hh,v 3.5 2004/05/17 22:10:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_LBTS_HH
-#define _CERTI_LBTS_HH
+#ifndef LIBCERTI_LBTS_HH
+#define LIBCERTI_LBTS_HH
 
 #include "RTItypes.hh"
-#include "FederateClock.hh"
 
-#include <deque>
+#include <map>
+#include <vector>
 
 namespace certi {
 
-class LBTS : public std::deque<FederateClock *>
+class LBTS
 {
 public:
-    FederationTime _LBTS ;
-    FederateHandle MyFederateNumber ;
+    typedef std::pair<FederateHandle, FederationTime> FederateClock ;
 
-    // ------------------------------
-    // -- Constructor & Destructor --
-    // ------------------------------
     LBTS();
     ~LBTS();
 
-    // ---------------------
-    // -- Insert & Delete --
-    // ---------------------
+    void compute();
+    bool exists(FederateHandle) const ;
+    void get(std::vector<FederateClock> &) const ;
     void insert(FederateHandle num_fed, FederationTime the_time);
     void remove(FederateHandle num_fed);
-
-    // ---------------------
-    // -- Update & Access --
-    // ---------------------
+    void setFederate(FederateHandle handle) { MyFederateNumber = handle ; };
+    size_t size() const { return clocks.size(); };
     void update(FederateHandle num_fed, FederationTime the_time);
-    void get(int i, FederateHandle &num_fed, FederationTime &the_time) const ;
 
-    void exists(FederateHandle num_fed, Boolean &found, int &rank) const ;
-    void compute();
+protected:
+    FederationTime _LBTS ;
+    FederateHandle MyFederateNumber ;
+
+private:
+    typedef std::map<FederateHandle, FederationTime> ClockSet ;
+
+    ClockSet clocks ;
 };
+
 }
 
-#endif // _CERTI_LBTS_HH
+#endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: LBTS.hh,v 3.5 2004/05/17 22:10:10 breholee Exp $

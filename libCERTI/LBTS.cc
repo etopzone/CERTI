@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: LBTS.cc,v 3.5 2004/05/17 22:10:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,11 +33,25 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-using std::deque ;
+using std::vector ;  
 
 namespace certi {
 
-static pdCDebug D("LBTS", "(LBTS) - ");
+static pdCDebug D("LBTS", __FILE__);
+
+// ----------------------------------------------------------------------------
+/** Constructor.  LBTS is set to infinite in case of constrained
+  federate without any regulating federate.
+*/
+LBTS::LBTS()
+    : _LBTS(DBL_MAX), MyFederateNumber(0)
+{
+}
+
+// ----------------------------------------------------------------------------
+LBTS::~LBTS()
+{
+}
 
 // ----------------------------------------------------------------------------
 //! Compute the LBTS.
@@ -49,10 +63,10 @@ LBTS::compute()
     // LBTS = + l'infini
     _LBTS = DBL_MAX ;
 
-    deque<FederateClock *>::iterator i ;
-    for (i = begin(); i != end(); i++) {
-        if ((*i)->federate != MyFederateNumber) {
-            hl = (*i)->lastNullMessageDate ;
+    ClockSet::iterator i ;
+    for (i = clocks.begin(); i != clocks.end(); ++i) {
+        if (i->first != MyFederateNumber) {
+            hl = i->second ;
             if (hl < _LBTS)
                 _LBTS = hl ;
         }
@@ -60,136 +74,81 @@ LBTS::compute()
 }
 
 // ----------------------------------------------------------------------------
-/*! Constructor.
-  _LBTS is set to infinite in case of constrained federate without any
-  regulating federate.
+/** Check if a federate exists
+ */
+bool
+LBTS::exists(FederateHandle federate) const
+{
+    return clocks.find(federate) != clocks.end();
+}
+
+// ----------------------------------------------------------------------------
+/** Get all the federate handle and time in a list of pairs
+    @param l Output parameter, list receiving values
 */
-LBTS::LBTS()
-    : deque<FederateClock *>(), _LBTS(DBL_MAX), MyFederateNumber(0)
-{
-}
-
-// ----------------------------------------------------------------------------
-//! Empty deque and frees memory allocated to FederateClock.
-LBTS::~LBTS()
-{
-    while (!empty()) {
-        delete front();
-        pop_front();
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! Find a federate by federate handle.
 void
-LBTS::exists(FederateHandle fed_num, Boolean &found, int &rank) const
+LBTS::get(vector<FederateClock> &v) const
 {
-    found = RTI_FALSE ;
-    rank = 0 ;
-
-    deque<FederateClock *>::const_iterator i = begin();
-    for (int j = 1 ; i != end(); i++, j++) {
-        if ((*i)->federate == fed_num) {
-            found = RTI_TRUE ;
-            rank = j ;
-            return ;
-        }
-    }
+    v.reserve(v.size() + clocks.size());
+    std::copy(clocks.begin(), clocks.end(), std::back_inserter(v));
 }
 
 // ----------------------------------------------------------------------------
-//! Get the federate handle and time at rank rank.
-void
-LBTS::get(int i, FederateHandle &num_fed, FederationTime &time) const
-{
-    deque<FederateClock *>::const_iterator k = begin();
-    for (int j = 1 ; k != end(); k++, j++) {
-        if (j == i) {
-            num_fed = (*k)->federate ;
-            time = (*k)->lastNullMessageDate ;
-            return ;
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
+/** Insert a new federate and time
+ */
 void
 LBTS::insert(FederateHandle num_fed, FederationTime time)
 {
-    Boolean found ;
-    int rank ;
-
-    exists(num_fed, found, rank);
-
-    if (found != RTI_FALSE)
+    // TODO: is this check really required ?
+    if (exists(num_fed))
         throw RTIinternalError("LBTS: Federate already present.");
 
     // BUG: We should verify that clock time is correct.
-    push_front(new FederateClock(num_fed, time));
+    clocks[num_fed] = time ;
     compute();
 }
 
 // ----------------------------------------------------------------------------
-//! update.
+//! update a federate
 void
 LBTS::update(FederateHandle num_fed, FederationTime time)
 {
     D.Out(pdDebug, "LBTS.update: Updating federate %d(%f).", num_fed, time);
 
-    Boolean found ;
-    int rank ;
-    exists(num_fed, found, rank);
+    ClockSet::iterator it = clocks.find(num_fed);
 
-    if (found != RTI_TRUE)
+    if (it == clocks.end())
         throw RTIinternalError("LBTS: Federate not found.");
 
-    deque<FederateClock *>::const_iterator k = begin();
-    for (int j = 1 ; k != end(); k++, j++) {
-        if (j == rank) {
-            break ;
-        }
-    }
-
     // Coherence test.
-    if ((*k)->lastNullMessageDate > time)
+    if (it->second > time)
         D.Out(pdDebug,
               "LBTS.update: federate %u, new time lower than oldest one.",
               num_fed);
     else {
         D.Out(pdDebug, "before LBTS.update: federate %u, old time %f.",
-              (*k)->federate, (*k)->lastNullMessageDate);
-        (*k)->lastNullMessageDate = time ;
+              it->first, it->second);
+        it->second = time ;
         D.Out(pdDebug, "after LBTS.update: federate %u, new time %f.",
-              (*k)->federate, (*k)->lastNullMessageDate);
+              it->first, it->second) ;
         compute();
     }
 }
 
 // ----------------------------------------------------------------------------
-//! Remove a FederateClock from list.
+//! Remove a federate
 void
 LBTS::remove(FederateHandle num_fed)
 {
-    Boolean found ;
-    int rank ;
+    ClockSet::iterator it = clocks.find(num_fed);
 
-    exists(num_fed, found, rank);
-
-    if (found != RTI_TRUE)
+    if (it == clocks.end())
         throw RTIinternalError("LBTS: Federate not found.");
 
-    deque<FederateClock *>::iterator k = begin();
-    for (int j = 1 ; k != end(); k++, j++) {
-        if (j == rank) {
-            delete (*k);
-            erase(k);
-            break ;
-        }
-    }
-
+    clocks.erase(it);
     compute();
 }
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: LBTS.cc,v 3.5 2004/05/17 22:10:10 breholee Exp $
