@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.8 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.9 2003/03/24 13:52:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -612,7 +612,15 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetObjectClassHandle.");
 
-        rep.objectClass = om->getObjectClassHandle(req->getName());
+        try {
+            rep.objectClass = om->getObjectClassHandle(req->getName());
+        }
+        catch (ObjectClassNotDefined) {
+            rep.exception = e_NameNotFound ;
+        }
+        catch (RTIinternalError) {
+            rep.exception = e_RTIinternalError ;
+        }
         break ;
 
         // 8.2
@@ -621,7 +629,15 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetObjectClassName.");
 
-        rep.setName(om->getObjectClassName(req->objectClass));
+        try {
+            rep.setName(om->getObjectClassName(req->objectClass));
+        }
+        catch (ObjectClassNotDefined) {
+            rep.exception = e_ObjectClassNotDefined ;
+        }
+        catch (RTIinternalError) {
+            rep.exception = e_RTIinternalError ;
+        }
         break ;
 
         // 8.3
@@ -630,8 +646,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetAttributeHandle.");
 
-        rep.attribute = om->getAttributeHandle(req->getName(),
-                                               req->objectClass);
+        try {
+            rep.attribute = om->getAttributeHandle(req->getName(),
+                                                   req->objectClass);
+        }
+        catch (AttributeNotDefined) {
+            rep.exception = e_NameNotFound ;
+        }
+        catch (ObjectClassNotDefined) {
+            rep.exception = e_ObjectClassNotDefined ;
+        }
+        catch (RTIinternalError) {
+            rep.exception = e_RTIinternalError ;
+        }
         break ;
 
         // 8.4
@@ -640,8 +667,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetAttributeName.");
 
-        rep.setName(om->getAttributeName(req->attribute,
-                                         req->objectClass));
+        try {
+            rep.setName(om->getAttributeName(req->attribute,
+                                             req->objectClass));
+        }
+        catch (AttributeNotDefined) {
+            rep.exception = e_AttributeNotDefined ;
+        }
+        catch (ObjectClassNotDefined) {
+            rep.exception = e_ObjectClassNotDefined ;
+        }
+        catch (RTIinternalError) {
+            rep.exception = e_RTIinternalError ;
+        }
         break ;
 
         // 8.5
@@ -1096,4 +1134,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.8 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.9 2003/03/24 13:52:18 breholee Exp $
