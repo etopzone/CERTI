@@ -1,6 +1,6 @@
 ## CERTI Makefile.am
 ## Copyright (C) 2001 ONERA
-## $Id: Makefile.am,v 3.2 2003/04/09 08:28:30 breholee Exp $
+## $Id: Makefile.am,v 3.3 2003/10/20 11:16:48 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -8,8 +8,8 @@
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in
 
-SUBDIRS = include libpdebug libCERTI RTIG RTIA libRTI test doc
+SUBDIRS = include libpdebug libCERTI RTIG RTIA libRTI scripts test doc
 
 EXTRA_DIST = myconf gpl.txt lesser.txt VERSION certi-small.xpm
 
-## EOF $Id: Makefile.am,v 3.2 2003/04/09 08:28:30 breholee Exp $
+## EOF $Id: Makefile.am,v 3.3 2003/10/20 11:16:48 breholee Exp $
