@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  Benoît Bréholée
+// Copyright (C) 2003, 2004  Benoît Bréholée
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.3 2003/11/13 10:45:56 breholee Exp $
+// $Id: fed.cc,v 3.4 2004/02/26 00:08:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -78,7 +78,8 @@ build(const char *filename, RootObject *root, bool v)
     verbose = v ;
     root_object = root ;
     FILE *file = fopen(filename, "r");
-    if (file == NULL) return 1 ;
+    if (file == NULL)
+	return 1 ;
     yyin = file ;
     indentation = 0 ;
     objectHandle = 1 ;
@@ -94,6 +95,7 @@ build(const char *filename, RootObject *root, bool v)
     parameter = 0 ;
     int result = yyparse();    
     fclose(file);
+    return result ;
 }
 
 // ----------------------------------------------------------------------------
@@ -381,4 +383,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.3 2003/11/13 10:45:56 breholee Exp $
+// $Id: fed.cc,v 3.4 2004/02/26 00:08:49 breholee Exp $
