@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.10 2005/03/11 14:01:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,7 +31,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("OBJBROADCASTLIST", "(broadcas) - ");
+static pdCDebug D("BROADCAST", __FILE__);
 
 // ----------------------------------------------------------------------------
 /*! Return a copy of the REFLECT_ATTRIBUTE_VALUES message 'Message' containing
@@ -126,15 +126,13 @@ ObjectClassBroadcastList::addFederate(FederateHandle theFederate,
               theFederate, theAttribute);
 }
 
-
-// -----------------------------
-// -- ObjectBroadcastLine --
-// -----------------------------
+// ----------------------------------------------------------------------------
+/** ObjectBroadcastLine  
+ */
 ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
                                          ObjectBroadcastLine::State init_state)
 {
     Federate = theFederate ;
-
     for (AttributeHandle i = 0 ; i <= MAX_ATTRIBUTES_PER_CLASS ; i++)
         state[i] = init_state ;
 }
@@ -191,9 +189,6 @@ ObjectClassBroadcastList::clear()
 }
 
 
-// -------------------------
-// -- GetLineWithFederate --
-// -------------------------
 
 ObjectBroadcastLine*
 ObjectClassBroadcastList::getLineWithFederate(FederateHandle theFederate)
@@ -207,11 +202,11 @@ ObjectClassBroadcastList::getLineWithFederate(FederateHandle theFederate)
     return 0 ;
 }
 
-// ---------------
-// -- IsWaiting --
-// ---------------
-
-Boolean
+// ----------------------------------------------------------------------------
+/** Check if some attributes in the provided line have the "waiting"
+    status.
+ */
+bool
 ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *line)
 {
     for (unsigned int attrIndex = 1 ; attrIndex <= maxHandle ; attrIndex++) {
@@ -302,9 +297,6 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 void
 ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 {
-    Boolean allWaiting ;
-    AttributeHandle currentAttrib ;
-
     Socket *socket = 0 ;
     NetworkMessage *currentMessage = 0 ;
 
@@ -313,20 +305,20 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
     for (i = lines.begin(); i != lines.end(); i++) {
 
         // Si AU MOINS UN des attributs est en ObjectBroadcastLine::waiting
-        if (isWaiting(*i) == RTI_TRUE) {
+        if (isWaiting(*i)) {
 
             // 1. Est-ce que tous les attributs du message sont en
             // ObjectBroadcastLine::waiting ?
-            allWaiting = RTI_TRUE ;
+            bool all_waiting = true ;
             for (unsigned int attrIndex = 0 ;
                  attrIndex < message->handleArraySize ;
                  attrIndex ++) {
-                currentAttrib = message->handleArray[attrIndex] ;
-                if ((*i)->state[currentAttrib] != ObjectBroadcastLine::waiting)
-                    allWaiting = RTI_FALSE ;
+                AttributeHandle attrib = message->handleArray[attrIndex] ;
+                if ((*i)->state[attrib] != ObjectBroadcastLine::waiting)
+                    all_waiting = false ;
             }
 
-            if (allWaiting == RTI_FALSE) {
+            if (!all_waiting) {
                 // NO: Create a new message containing only ObjectBroadcastLine::waiting
                 // attributes.
                 currentMessage = adaptMessage(*i);
@@ -383,4 +375,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.10 2005/03/11 14:01:31 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.7 2005/03/11 14:01:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
@@ -40,53 +40,28 @@ namespace certi {
 class ObjectClassBroadcastList {
 
 public:
-
-    // -----------------------
-    // -- Public Attributes --
-    // -----------------------
-
-    /*! First, the Message to be broadcast. This message must be allocated
-      before calling the constructor of the class, be is deleted by the
-      destructor.
-    */
-    NetworkMessage *message ;
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
-    ObjectClassBroadcastList(NetworkMessage *theMsg,
+    ObjectClassBroadcastList(NetworkMessage *msg,
                              AttributeHandle MaxAttHandle = 0);
     ~ObjectClassBroadcastList();
 
     void clear();
-
     void addFederate(FederateHandle theFederate,
                      AttributeHandle theAttribute = 0);
 
     void sendPendingMessage(SecurityServer *server);
 
+    NetworkMessage *message ;
+
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
     AttributeHandle maxHandle ;
-
     std::list<ObjectBroadcastLine *> lines ;
 
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
     NetworkMessage *adaptMessage(ObjectBroadcastLine *line);
 
     //! Return the line of the list describing federate 'theFederate', or NULL.
     ObjectBroadcastLine *getLineWithFederate(FederateHandle theFederate);
 
-    /*! Return RTI_TRUE is there is any Attribute in the bsWaiting state in
-      the line 'line', else RTI_FALSE.
-    */
-    Boolean isWaiting(ObjectBroadcastLine *line);
+    bool isWaiting(ObjectBroadcastLine *line);
 
     /*! The two next methods are called by the public SendPendingMessage
       methods. They respectively handle DiscoverObject and
@@ -95,8 +70,9 @@ private:
     void sendPendingDOMessage(SecurityServer *server);
     void sendPendingRAVMessage(SecurityServer *server);
 };
+
 }
 
 #endif // _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.7 2005/03/11 14:01:31 breholee Exp $
