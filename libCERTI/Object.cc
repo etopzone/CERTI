@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.10 2003/04/23 13:49:24 breholee Exp $
+// $Id: Object.cc,v 3.11 2003/06/25 15:06:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -30,14 +29,14 @@ namespace certi {
 // ----------------------------------------------------------------------------
 //! Constructor.
 Object::Object(FederateHandle the_owner, const char *the_name)
-    : handle(0), Owner(the_owner), UR(0)
+    : Owner(the_owner), UR(0), handle(0)
 {
     setName(the_name);
 }
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-Object::~Object(void)
+Object::~Object()
 {
     if (name != NULL) {
         free(name);
@@ -53,7 +52,7 @@ Object::~Object(void)
 // ----------------------------------------------------------------------------
 //! Display informations about this object (see RootObj::display).
 void
-Object::display(void) const
+Object::display() const
 {
     cout << " Instance: handle =" << handle ;
 
@@ -98,7 +97,7 @@ Object::getName(ObjectName the_name) const
 
 // ----------------------------------------------------------------------------
 const char *
-Object::getName(void) const
+Object::getName() const
 {
     return name ;
 }
@@ -129,7 +128,7 @@ Object::setName(const char *the_object_name)
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-Object::getHandle(void) const
+Object::getHandle() const
 {
     return handle ;
 }
@@ -143,7 +142,7 @@ Object::setHandle(ObjectHandle h)
 
 // ----------------------------------------------------------------------------
 FederateHandle
-Object::getOwner(void) const
+Object::getOwner() const
 {
     return Owner ;
 }
@@ -163,7 +162,7 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
     throw (AttributeNotDefined, RTIinternalError)
 {
     deque<ObjectAttribute *>::const_iterator i ;
-    for (i = attributeState.begin() ; i != attributeState.end() ; i++) {
+    for (i = attributeState.begin(); i != attributeState.end(); i++) {
         if ((*i)->getHandle() == the_attribute) {
             return (*i)->getOwner() == the_federate ;
         }
@@ -174,4 +173,4 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.10 2003/04/23 13:49:24 breholee Exp $
+// $Id: Object.cc,v 3.11 2003/06/25 15:06:42 breholee Exp $
