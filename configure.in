@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+## $Id: configure.in,v 3.0.2.1 2002/11/22 18:40:15 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 # ========== Init ============================================================
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.0 $)
+AC_REVISION($Revision: 3.0.2.1 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -53,12 +53,12 @@ fi
 
 # ---------- GTK -------------------------------------------------------------
 # maybe not used in this version of CERTI
-AM_PATH_GTK(
-	[1.0.6],
-	WITH_GTK="-DWITH_GTK"
-	AC_SUBST(WITH_GTK),
-	AC_MSG_WARN([GTK files not found])
-)	
+dnl AM_PATH_GTK(
+dnl 	[1.0.6],
+dnl 	WITH_GTK="-DWITH_GTK"
+dnl 	AC_SUBST(WITH_GTK),
+dnl 	AC_MSG_WARN([GTK files not found])
+dnl )	
 
 # ========== Checks for header files =========================================
 #AC_HEADER_STDC
@@ -87,4 +87,4 @@ libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
 test/Makefile test/include/Makefile test/libgraphc/Makefile
 test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.0 2002/11/21 01:27:51 breholee Exp $
+## $Id: configure.in,v 3.0.2.1 2002/11/22 18:40:15 breholee Exp $
