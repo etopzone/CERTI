@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,10 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Socket.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
-
-// $Id: Socket.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Socket.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_HH
@@ -59,15 +56,15 @@ RTI_EXCEPT(NetworkSignal) // Used when received a signal during system call.
     // This method may be used for implementation using Read Buffers,
     // because in that case 'select' system calls are not trustworthy.
     // See Important Note in SocketTCP.hh
-    virtual Boolean isDataReady() = 0;
+    virtual Boolean isDataReady() const = 0;
 
     // ---------------------
     // -- Get Descriptors --
     // ---------------------
 
-    virtual int getClass() = 0;
-    virtual int returnSocket() = 0;
-    virtual unsigned long returnAdress() = 0;
+    virtual int getClass() const = 0;
+    virtual int returnSocket() const = 0;
+    virtual unsigned long returnAdress() const = 0;
 
     // ----------------
     // -- Descructor --
@@ -80,4 +77,4 @@ RTI_EXCEPT(NetworkSignal) // Used when received a signal during system call.
 
 #endif // _CERTI_SOCKET_HH
 
-// $Id: Socket.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Socket.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $

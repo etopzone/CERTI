@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// $Id: SocketUDP.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,8 +80,9 @@ int SocketUDP::bind()
 // -- CreerClientUDP --(with hostname)
 // --------------------
 
-int SocketUDP::createUDPClient(unsigned int,  // port 
-			       char *)        // nom serveur
+void
+SocketUDP::createUDPClient(unsigned int,  // port 
+                           char *)        // nom serveur
   throw(NetworkError, NetworkSignal)
 {
   //  unsigned long addr = 0;
@@ -129,8 +130,6 @@ int SocketUDP::createUDPClient(unsigned int,  // port
   //HPUX: getsockname(_socket_udp,(sockaddr *)&sock_temp,(int*)&taille);
   sock_local.sin_port = sock_temp.sin_port;
   _est_init_udp = RTI_TRUE;
-
-  return 1;
 }
 
 
@@ -138,7 +137,8 @@ int SocketUDP::createUDPClient(unsigned int,  // port
 // -- CreerServeurUDP --
 // ---------------------
 
-int SocketUDP::createUDPServer(unsigned int port)
+void
+SocketUDP::createUDPServer(unsigned int port)
   throw(NetworkError,
 	 NetworkSignal)
 {
@@ -152,8 +152,8 @@ int SocketUDP::createUDPServer(unsigned int port)
 
   gethostname(localhost, 4096);
   
-  if((hp_local =(struct hostent *)gethostbyname(localhost)) == NULL)
-    {
+  hp_local = (struct hostent *) gethostbyname(localhost);
+  if(hp_local == 0) {
       perror("SocketUDP: gethostbyname");
        throw NetworkError();
     }
@@ -177,8 +177,6 @@ int SocketUDP::createUDPServer(unsigned int port)
     }
 
   _est_init_udp = RTI_TRUE;
-
-  return 1;
 }
 
 
@@ -271,7 +269,8 @@ void SocketUDP::close()
 // -- GetAddr --
 // -------------
 
-unsigned long SocketUDP::getAddr()
+unsigned long
+SocketUDP::getAddr(void) const
 {
   D.Out(pdDebug, "l'Adresse Machine est %ul...",sock_local.sin_addr.s_addr);
   return(sock_local.sin_addr.s_addr);
@@ -281,7 +280,8 @@ unsigned long SocketUDP::getAddr()
 // -- GetPort --
 // -------------
 
-unsigned int SocketUDP::getPort()
+unsigned int
+SocketUDP::getPort(void) const
 {
   D.Out(pdDebug, "le Port UDP est %ud...",sock_local.sin_port);
   return sock_local.sin_port;
@@ -291,12 +291,10 @@ unsigned int SocketUDP::getPort()
 // -- IsDataReady --
 // -----------------
 
-Boolean SocketUDP::isDataReady()
+Boolean
+SocketUDP::isDataReady(void) const
 {
-  if(BufferSize > 0)
-    return RTI_TRUE;
-  else
-    return RTI_FALSE;
+  return ((BufferSize > 0) ? RTI_TRUE : RTI_FALSE);
 }
 
 
@@ -313,44 +311,39 @@ int SocketUDP::open()
 // -- Recevoir --
 // --------------
 
-void SocketUDP::receive(void * Message, unsigned long Size)
-  throw(NetworkError,
-	 NetworkSignal)
+void
+SocketUDP::receive(void * Message, unsigned long Size)
+    throw(NetworkError, NetworkSignal)
 {
-  socklen_t taille = sizeof(struct sockaddr_in);
-  int CR;
+    socklen_t taille = sizeof(struct sockaddr_in);
+    int CR;
   
-  assert(_est_init_udp);
+    assert(_est_init_udp);
 
-  D.Out(pdDebug, "Beginning to receive UDP message...");
-  if(BufferSize == 0)
-    {
-      CR = recvfrom(_socket_udp, 
-		    Buffer, BUFFER_MAXSIZE, 0,
-		(struct sockaddr *)&sock_source, &taille);
-		    //HPUX:(struct sockaddr *)&sock_source,(int*) &taille);
-      if(CR <= 0)
-	{
-	  perror("Recvfrom");
-	  throw NetworkError();
-	}
-      else
-	{
-	  RcvdBytesCount += CR;
-	  BufferSize += CR;
-	} 
+    D.Out(pdDebug, "Beginning to receive UDP message...");
+    if (BufferSize == 0) {
+        CR = recvfrom(_socket_udp, 
+                      Buffer, BUFFER_MAXSIZE, 0,
+                      (struct sockaddr *)&sock_source, &taille);
+        //HPUX:(struct sockaddr *)&sock_source,(int*) &taille);
+        if (CR <= 0) {
+            perror("Recvfrom");
+            throw NetworkError();
+        }
+        else {
+            RcvdBytesCount += CR;
+            BufferSize += CR;
+        } 
     }
 
-  if(BufferSize < Size)
-    {
-      perror("Taille du Buffer inferieure a celle demandee");
-      throw NetworkError();
+    if (BufferSize < Size) {
+        perror("Taille du Buffer inferieure a celle demandee");
+        throw NetworkError();
     }
-  else
-    {
-      BufferSize -= Size;
-      memcpy(Message,(void *)Buffer, Size);
-      memmove((void *) Buffer,(void *)(Buffer + Size), BufferSize);
+    else {
+        BufferSize -= Size;
+        memcpy(Message,(void *)Buffer, Size);
+        memmove((void *) Buffer,(void *)(Buffer + Size), BufferSize);
     }
 }
 
@@ -359,7 +352,8 @@ void SocketUDP::receive(void * Message, unsigned long Size)
 // -- RetournerAdresse --
 // ----------------------
 
-unsigned long SocketUDP::returnAdress()
+unsigned long
+SocketUDP::returnAdress(void) const
 {
   D.Out(pdDebug, "Retourner Adresse Machine locale...");
   return getAddr();
@@ -370,7 +364,8 @@ unsigned long SocketUDP::returnAdress()
 // -- RetournerSocket --
 // ---------------------
 
-int SocketUDP::returnSocket()
+int
+SocketUDP::returnSocket(void) const
 {
   D.Out(pdDebug, "Retourner Socket UDP...");
   return _socket_udp;
@@ -389,4 +384,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// $Id: SocketUDP.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $

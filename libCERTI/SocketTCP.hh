@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,14 +20,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
-// ---------------------------------------------------------------------------
-
-// $Id: SocketTCP.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: SocketTCP.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
 #define _CERTI_SOCKET_TCP_HH
+
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -81,12 +82,12 @@ public :
 
   // Return RTI_TRUE if any data as already been read from the system
   // socket and is waiting in the internal buffer, else RTI_FALSE.
-  Boolean isDataReady();
+  Boolean isDataReady(void) const;
 
-  int getClass() { return SOCKET_TYPE_TCP; };
-  int returnSocket();
+  int getClass(void) const { return SOCKET_TYPE_TCP; };
+  int returnSocket(void) const;
 
-  unsigned long returnAdress();
+  unsigned long returnAdress(void) const;
 
   void close();
  
@@ -99,10 +100,9 @@ public :
 
   int accept(SocketTCP *serveur);
 
-  int createTCPClient(unsigned int port, char *nom_serveur);
-  int createTCPClient(unsigned int port, unsigned long addr);
-  int 
-  createTCPServer(unsigned int port = 0, unsigned long addr = INADDR_ANY);
+  void createTCPClient(unsigned int port, char *nom_serveur);
+  void createTCPClient(unsigned int port, unsigned long addr);
+  void createTCPServer(unsigned int port = 0, unsigned long addr = INADDR_ANY);
 
   SocketTCP & operator=(SocketTCP &theSocket);
 
@@ -133,15 +133,15 @@ private:
   // -- Private Methods --
   // ---------------------
 
-  unsigned int getPort();
-  unsigned long getAddr();
+  unsigned int getPort(void) const;
+  unsigned long getAddr(void) const;
   void setPort(unsigned int port);
  
   int bind(unsigned int port=0, unsigned long addr=INADDR_ANY);
   void changeReuseOption();
   int connect(unsigned int port, unsigned long addr);
   int listen(unsigned long howMuch=5);
-  int open();
+  int open(void);
   int timeoutTCP(int, int);
  
 };
@@ -149,4 +149,4 @@ private:
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: SocketTCP.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $

@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: SocketServer.cc,v 3.2 2003/01/15 10:12:29 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,10 +35,9 @@ namespace certi {
 
 void SocketServer::addToFDSet(fd_set *SelectFDSet)
 {
-  int           i;
   SocketTuple *Tuple;
 
-  for(i = 1; i <= lg; i++) {
+  for(int i = 1; i <= lg; i++) {
     Tuple = Ieme(i);
     if(Tuple->ReliableLink != NULL)
       FD_SET(Tuple->ReliableLink->returnSocket(), SelectFDSet);
@@ -50,26 +49,24 @@ void SocketServer::addToFDSet(fd_set *SelectFDSet)
 // -- CheckMessage --
 // ------------------
 
-void SocketServer::checkMessage(long            SocketNumber,
-				  NetworkMessage *Message)
+void
+SocketServer::checkMessage(long SocketNumber, NetworkMessage *Message)
   throw(SecurityError)
 {
-  Socket *Socket;
+  Socket *socket;
 
-  if((Message->NumeroFederation == 0) &&
-(Message->NumeroFedere     == 0))
+  if ((Message->NumeroFederation == 0) && (Message->NumeroFedere == 0))
     return;
 
   try {
-    Socket = getSocketLink(Message->NumeroFederation,
-			    Message->NumeroFedere);
+    socket = getSocketLink(Message->NumeroFederation, Message->NumeroFedere);
   }
   catch(Exception &e) {
     // BUG: Should put a line in the Audit.
     throw SecurityError("Message has a unknown origin.");
   }
   
-  if(Socket->returnSocket() != SocketNumber) {
+  if (socket->returnSocket() != SocketNumber) {
     // BUG: Should put a line in the Audit.
     throw SecurityError("Message has a forged origin.");
   }
@@ -80,12 +77,12 @@ void SocketServer::checkMessage(long            SocketNumber,
 // -- CloseConnection --
 // ---------------------
 
-void SocketServer::close(long              Socket,
-				     FederationHandle &FederationReferenced,
-				     FederateHandle   &FederateReferenced)
+void
+SocketServer::close(long Socket,
+                    FederationHandle &FederationReferenced,
+                    FederateHandle &FederateReferenced)
   throw(RTIinternalError)
 {
-  int           i;
   SocketTuple *Tuple = NULL;
 
   FederationReferenced = 0;
@@ -99,7 +96,7 @@ void SocketServer::close(long              Socket,
 
   // If the Tuple had no references, remove it, else just delete the socket.
   if(Tuple->Federation == 0)
-    for(i = 1; i <= lg; i++) {
+    for(int i = 1; i <= lg; i++) {
       Tuple = Ieme(i);
 
       if((Tuple->ReliableLink != NULL) && 
@@ -119,7 +116,6 @@ void SocketServer::close(long              Socket,
     Tuple->ReliableLink = NULL;
     Tuple->BestEffortLink = NULL;
   }
-
 }
 
 
@@ -129,7 +125,7 @@ void SocketServer::close(long              Socket,
 
 
 SocketServer::SocketServer(SocketTCP *theServerTCPSocket,
-			      SocketUDP *theServerUDPSocket, int Port)
+			   SocketUDP *theServerUDPSocket, int Port)
 {
   if(theServerTCPSocket == NULL)
     throw RTIinternalError();
@@ -205,10 +201,9 @@ SocketTuple::~SocketTuple()
 
 Socket *SocketServer::getActiveSocket(fd_set *SelectFDSet)
 {
-  int           i;
   SocketTuple *Tuple = NULL;
 
-  for(i = 1; i <= lg; i++) {
+  for(int i = 1; i <= lg; i++) {
     Tuple = Ieme(i);
     if((Tuple->ReliableLink != NULL) &&
 	(FD_ISSET(Tuple->ReliableLink->returnSocket(), SelectFDSet)))
@@ -223,28 +218,26 @@ Socket *SocketServer::getActiveSocket(fd_set *SelectFDSet)
 // -- GetSocketLink --
 // -------------------
 
-Socket *SocketServer::getSocketLink(FederationHandle theFederation,
-				       FederateHandle   theFederate,
-				       TransportType    theType)
-  throw(FederateNotExecutionMember,
-	 RTIinternalError)
+Socket*
+SocketServer::getSocketLink(FederationHandle theFederation,
+                            FederateHandle theFederate,
+                            TransportType theType)
+  throw(FederateNotExecutionMember, RTIinternalError)
 {
   SocketTuple *Tuple = NULL;
 
   // It may throw FederateNotExecutionMember
   Tuple = getWithReferences(theFederation, theFederate);
-  if(theType == RELIABLE)
-    {
-      if(Tuple->ReliableLink == NULL)
-	throw RTIinternalError("Reference to a killed Federate.");
+  if (theType == RELIABLE) {
+      if (Tuple->ReliableLink == 0)
+          throw RTIinternalError("Reference to a killed Federate.");
       return Tuple->ReliableLink;
-    }
-  else
-    {
-      if(Tuple->BestEffortLink == NULL)
-	throw RTIinternalError("Reference to a killed Federate.");
+  }
+  else {
+      if (Tuple->BestEffortLink == 0)
+          throw RTIinternalError("Reference to a killed Federate.");
       return Tuple->BestEffortLink;
-    }
+  }
 }
 
 
@@ -256,10 +249,9 @@ SocketTuple *SocketServer::getWithReferences(FederationHandle theFederation,
 						FederateHandle   theFederate)
   throw(FederateNotExecutionMember)
 {
-  int           i;
   SocketTuple *Tuple = NULL;
   
-  for(i = 1; i <= lg; i++) {
+  for(int i = 1; i <= lg; i++) {
     Tuple = Ieme(i);
     if((Tuple->Federation == theFederation) &&
 	(Tuple->Federate   == theFederate))
@@ -277,16 +269,15 @@ SocketTuple *SocketServer::getWithReferences(FederationHandle theFederation,
 SocketTuple *SocketServer::getWithSocket(long SocketDescriptor)
   throw(RTIinternalError)
 {
-  int           i;
   SocketTuple *Tuple = NULL;
   
-  for(i = 1; i <= lg; i++) {
+  for(int i = 1; i <= lg; i++) {
     Tuple = Ieme(i);
     if((Tuple->ReliableLink != NULL) && 
-	(Tuple->ReliableLink->returnSocket() == SocketDescriptor))
+       (Tuple->ReliableLink->returnSocket() == SocketDescriptor))
       return Tuple;
     if((Tuple->BestEffortLink != NULL) && 
-	(Tuple->BestEffortLink->returnSocket() == SocketDescriptor))
+       (Tuple->BestEffortLink->returnSocket() == SocketDescriptor))
       return Tuple;
   }
 
@@ -303,7 +294,6 @@ void SocketServer::open()
 {
   SecureTCPSocket *NewLink  = NULL;
   SocketTuple     *NewTuple = NULL;
-  
 
   NewLink = new SecureTCPSocket();
 
@@ -324,12 +314,13 @@ void SocketServer::open()
 // -- SetReferences --
 // -------------------
 
-void SocketServer::setReferences(long             Socket,
-				   FederationHandle FederationReference,
-				   FederateHandle   FederateReference,
-				   unsigned long Adresse,
-				   unsigned int Port)
-  throw(RTIinternalError)
+void
+SocketServer::setReferences(long Socket,
+                            FederationHandle FederationReference,
+                            FederateHandle FederateReference,
+                            unsigned long Adresse,
+                            unsigned int Port)
+    throw(RTIinternalError)
 {
   SocketTuple *Tuple = NULL;
 
@@ -343,9 +334,9 @@ void SocketServer::setReferences(long             Socket,
   Tuple->Federation = FederationReference;
   Tuple->Federate   = FederateReference;
   Tuple->BestEffortLink->attach(ServerSocketUDP->returnSocket(),
-				      Adresse, Port);
+				Adresse, Port);
 }
 
 }
 
-// $Id: SocketServer.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: SocketServer.cc,v 3.2 2003/01/15 10:12:29 breholee Exp $

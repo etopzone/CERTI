@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: SocketTCP.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,8 +49,7 @@ int SocketTCP::accept(SocketTCP *serveur)
   _socket_tcp = ::accept(serveur->_socket_tcp,(sockaddr*)&_sockIn, &l);
   //HPUX: _socket_tcp = accept(serveur->_socket_tcp,(sockaddr*)&_sockIn, 
   //(int*) &l);
-  if(_socket_tcp < 0)
-  {
+  if (_socket_tcp < 0) {
     perror("SocketTCP: Accept");
     exit(-1);
   }
@@ -58,16 +57,16 @@ int SocketTCP::accept(SocketTCP *serveur)
   // Set the TCP_NODELAY option(Server Side)
   TCPent = getprotobyname("tcp");
   if(TCPent == NULL) {
-    printf("Unable to retrieve TCP protocol number.\n");
+    cout << "Unable to retrieve TCP protocol number." << endl;
     return 0;
   }
 
   if(setsockopt(_socket_tcp, 
-		  TCPent->p_proto, 
-		  TCP_NODELAY,
+		TCPent->p_proto, 
+		TCP_NODELAY,
 		(char *) &optval, 
-		  sizeof(optval))) {
-    printf("Error while calling setsockopt.\n");
+		sizeof(optval))) {
+    cout << "Error while calling setsockopt." << endl;
     return 0;
   }
 
@@ -119,20 +118,21 @@ void SocketTCP::changeReuseOption()
 {
   int on = 1;
 
-  printf("\nTCP Server, Bind : Address already in use.\n");
-  printf("If you are sure no other RTIG is running, we can try to set\n");
-  printf("the \"Reuse Address\" option and try again.\n");
-  printf("\tPress ENTER to try again or CTRL-C to abort.\n");
+  cout << endl << "TCP Server, Bind : Address already in use." << endl;
+  cout << "If you are sure no other RTIG is running, we can try to set"
+       << endl;
+  cout << "the \"Reuse Address\" option and try again." << endl;
+  cout << "\tPress ENTER to try again or CTRL-C to abort." << endl;
 
   fflush(stdin);
   getchar();
   
   // Set the SO_REUSEADDR option(Server Side)
   if(setsockopt(_socket_tcp,
-		  SOL_SOCKET,
-		  SO_REUSEADDR,
+		SOL_SOCKET,
+		SO_REUSEADDR,
 		(char *)&on,
-		  sizeof(on))) {
+		sizeof(on))) {
     perror("Setsockopt");
   }
 }
@@ -163,7 +163,7 @@ int SocketTCP::connect(unsigned int port,unsigned long addr)
 
   TCPent = getprotobyname("tcp");
   if(TCPent == NULL) {
-    printf("Unable to retrieve TCP protocol number.\n");
+    cout << "Unable to retrieve TCP protocol number." << endl;
     return 0;
   }
 
@@ -172,7 +172,7 @@ int SocketTCP::connect(unsigned int port,unsigned long addr)
 		  TCP_NODELAY,
 		(char *) &optval, 
 		  sizeof(optval))) {
-    printf("Error while calling setsockopt.\n");
+    cout << "Error while calling setsockopt." << endl;
     return 0;
   }
 
@@ -187,25 +187,20 @@ int SocketTCP::connect(unsigned int port,unsigned long addr)
 // -- CreerClientTCP --(with hostname)
 // --------------------
 
-int SocketTCP::createTCPClient(unsigned int  port,
-			       char         *nom_serveur)
+void
+SocketTCP::createTCPClient(unsigned int port, char *nom_serveur)
 {
-  struct hostent *hptr = NULL;
-  unsigned long addr = 0;
-
-
-  // recuperer les infos sur le serveur a partir du nom
-  if((hptr = gethostbyname(nom_serveur)) == NULL)
-  {
-    perror("SocketTCP: gethostbyname");
-    exit(-1);
-  }
-
-  memcpy((void *) &addr,(void *) hptr->h_addr, hptr->h_length);
-
-  createTCPClient(port, addr);
-
-  return 1;
+    // recuperer les infos sur le serveur a partir du nom
+    struct hostent *hptr = gethostbyname(nom_serveur);
+    if (hptr == 0) {
+        perror("SocketTCP: gethostbyname");
+        exit(-1);
+    }
+    
+    unsigned long addr = 0;
+    memcpy((void *) &addr,(void *) hptr->h_addr, hptr->h_length);
+    
+    createTCPClient(port, addr);
 }
 
 
@@ -213,26 +208,22 @@ int SocketTCP::createTCPClient(unsigned int  port,
 // -- CreerClientTCP --(with address)
 // --------------------
 
-int SocketTCP::createTCPClient(unsigned int  port,
-			       unsigned long addr)
+void
+SocketTCP::createTCPClient(unsigned int  port, unsigned long addr)
 {
   assert(!_est_init_tcp);
 
-  if(!open())
-  {
+  if (!open()) {
     perror("SocketTCP: Open");
     exit(-1);
   }
 
-  if(!connect(port, addr))
-  {
+  if (!connect(port, addr)) {
     perror("SocketTCP: Connect");
     exit(-1);
   }
 
   _est_init_tcp = RTI_TRUE;
-
-  return 1;
 }
 
 
@@ -240,33 +231,28 @@ int SocketTCP::createTCPClient(unsigned int  port,
 // -- CreerServeurTCP --
 // ---------------------
 
-int SocketTCP::createTCPServer(unsigned int port,
-				unsigned long addr)
+void
+SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
 {
   assert(!_est_init_tcp);
 
-  if(!open())
-  {
+  if (!open()) {
     perror("SocketTCP: Open");
     exit(-1);
   }
 
-  if(!bind(port, addr))
-  { 
+  if (!bind(port, addr)) {
     perror("SocketTCP: Bind");
     exit(-1);
   }
 
   // BUG: On pourrait pas reduire ?
-  if(!listen(MAX_FEDERATION*MAX_FEDERATE))
-  {
+  if (!listen(MAX_FEDERATION*MAX_FEDERATE)) {
     perror("SocketTCP: Listen"); 
     exit(-1);
   }
 
   _est_init_tcp = RTI_TRUE;
-
-  return 1;
 }
 
 
@@ -298,12 +284,12 @@ SocketTCP::~SocketTCP()
     close();
 
 #ifdef RTI_PRINTS_STATISTICS
-  printf("\n");
-  printf("TCP Socket(%ld): Total Sent Bytes      : %lld.\n",
-	  _socket_tcp, SentBytesCount);
-  printf("TCP Socket(%ld): Total Received Bytes  : %lld.\n",
-	  _socket_tcp, RcvdBytesCount);
-  printf("\n");
+  cout << endl;
+  cout << "TCP Socket(" << _socket_tcp << "): Total Sent Bytes      : "
+       << SentBytesCount << '.' << endl;
+  cout << "TCP Socket(" << _socket_tcp << "): Total Received Bytes  : "
+       << RcvdBytesCount << '.' << endl;
+  cout << endl;
 #endif
 }
 
@@ -350,7 +336,6 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
   }
 
   SentBytesCount += total_sent;
-
 }
 
 
@@ -360,8 +345,7 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
 
 void SocketTCP::close()
 {
-  if(_est_init_tcp)
-  {
+  if (_est_init_tcp) {
     ::close(_socket_tcp);
     _est_init_tcp = RTI_FALSE;
   }
@@ -384,7 +368,8 @@ int SocketTCP::listen(unsigned long howMuch)
 // -- GetAddr --
 // -------------
 
-unsigned long SocketTCP::getAddr()
+unsigned long
+SocketTCP::getAddr(void) const
 {
   return(_sockIn.sin_addr.s_addr);
 }
@@ -394,7 +379,8 @@ unsigned long SocketTCP::getAddr()
 // -- GetPort --
 // -------------
 
-unsigned int SocketTCP::getPort()
+unsigned int
+SocketTCP::getPort(void) const
 {
   return _sockIn.sin_port;
 }
@@ -404,13 +390,11 @@ unsigned int SocketTCP::getPort()
 // -- IsDataReady --
 // -----------------
 
-Boolean SocketTCP::isDataReady()
+Boolean
+SocketTCP::isDataReady(void) const
 {
 #ifdef SOCKTCP_BUFFER_LENGTH
-  if(RBLength > 0)
-    return RTI_TRUE;
-  else
-    return RTI_FALSE;
+  return ((RBLength > 0) ? RTI_TRUE : RTI_FALSE);
 #else
   return RTI_FALSE;
 #endif
@@ -421,7 +405,8 @@ Boolean SocketTCP::isDataReady()
 // -- Open --
 // ----------
 
-int SocketTCP::open()
+int
+SocketTCP::open(void)
 {
   return(((_socket_tcp=socket(AF_INET,SOCK_STREAM,0))<0)?0:1);
 }
@@ -508,7 +493,8 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
 // -- RetournerAdresse --
 // ----------------------
 
-unsigned long SocketTCP::returnAdress()
+unsigned long
+SocketTCP::returnAdress(void) const
 {
   return getAddr();
 }
@@ -518,7 +504,8 @@ unsigned long SocketTCP::returnAdress()
 // -- RetournerSocket --
 // ---------------------
 
-int SocketTCP::returnSocket()
+int
+SocketTCP::returnSocket(void) const
 {
   return _socket_tcp;
 }
@@ -564,4 +551,4 @@ int SocketTCP::timeoutTCP(int sec, int usec)
 
 }
 
-// $Id: SocketTCP.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: SocketTCP.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $
