@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.17 2003/10/27 10:12:06 breholee Exp $
+// $Id: Interaction.cc,v 3.18 2004/02/16 13:44:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -445,7 +445,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
                              ParameterHandle *parameter_list,
                              ParameterValue *value_list,
                              UShort list_size,
-                             FederationTime,
+                             FederationTime time,
                              const char *the_tag)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
@@ -465,6 +465,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->federation = server->federation();
         answer->federate = federate_handle ;
         answer->interactionClass = handle ; // Interaction Class Handle
+	answer->date = time ;
 
         strcpy(answer->label, the_tag);
 
@@ -592,4 +593,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.17 2003/10/27 10:12:06 breholee Exp $
+// $Id: Interaction.cc,v 3.18 2004/02/16 13:44:52 breholee Exp $
