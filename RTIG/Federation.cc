@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.7 2003/01/20 17:45:49 breholee Exp $
+// $Id: Federation.cc,v 3.8 2003/01/29 18:05:40 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -1160,10 +1160,10 @@ Federation::respondRelease(FederateHandle federate,
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
-  D.Out(pdDebug,"Response sur Objet %u ", id);
+  D.Out(pdDebug,"RespondRelease on Object %u.", id);
 
   // It may throw *NotDefined
-  return(root->ObjectClasses->attributeOwnershipRealeaseResponse(federate,
+  return(root->ObjectClasses->attributeOwnershipReleaseResponse(federate,
 								 id,
 								 attributes,
 								 list_size));
@@ -1200,5 +1200,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }}
 
-// $Id: Federation.cc,v 3.7 2003/01/20 17:45:49 breholee Exp $
+// $Id: Federation.cc,v 3.8 2003/01/29 18:05:40 breholee Exp $
 
