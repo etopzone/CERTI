@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Object.cc,v 3.4 2003/01/17 17:54:30 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,14 +29,12 @@
 
 namespace certi {
 
-// -------------
-// -- Object --
-// -------------
-
-Object::Object(FederateHandle theOwner, ObjectName theName)
-  : ID(0), Owner(theOwner), UR(0), SF()
+// ---------------------------------------------------------------------------
+//! Constructor.
+Object::Object(FederateHandle the_owner, const char* the_name)
+    : ID(0), Owner(the_owner), UR(0), SF()
 {
-  setName(theName);
+    setName(the_name);
 }
 
 
@@ -92,45 +90,38 @@ throw(AttributeNotDefined)
 		
 }
 
-// -------------
-// -- GetName --
-// -------------
-
-void Object::getName(char *Buffer)
+// ---------------------------------------------------------------------------
+//! Copy the Object Name(or '\0' if there is no Name) in the_name.
+void Object::getName(ObjectName the_name)
 {
-  if(Name != NULL)
-    strcpy(Buffer, Name);
-  else
-    Buffer [0] = '\0';
-}
-
-
-// -------------
-// -- SetName --
-// -------------
-
-void Object::setName(ObjectName theObjectName)
-{
-  if(Name != NULL)
-    free(Name);
-
-  if(theObjectName != NULL) {
-
-    int Length = strlen(theObjectName);
-
-    if(Length > MAX_USER_TAG_LENGTH) {
-      printf("Bad Object Name.\n");
-      throw RTIinternalError("Object Name too long.");
-    }
-    else if(Length == 0)
-      Name = NULL;
+    if(Name != NULL)
+        strcpy(the_name, Name);
     else
-      Name = strdup(theObjectName);
-  }
-  else
-    Name = NULL;
-}
-    
+        the_name[0] = '\0';
 }
 
-// $Id: Object.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// ---------------------------------------------------------------------------
+//! As 'theObjectName' is duplicated, it can be deleted afterwards.
+void Object::setName(const char* the_object_name)
+{
+    if(Name != NULL)
+        free(Name);
+
+    if(the_object_name != NULL) {
+        int length = strlen(the_object_name);
+
+        if(length > MAX_USER_TAG_LENGTH) {
+            cout << "Bad Object Name." << endl;
+            throw RTIinternalError("Object Name too long.");
+        }
+        else if(length == 0)
+            Name = NULL;
+        else
+            Name = strdup(the_object_name);
+    }
+    else
+        Name = NULL;
+}
+}
+
+// $Id: Object.cc,v 3.4 2003/01/17 17:54:30 breholee Exp $
