@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.26 2003/11/10 14:28:18 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.27 2003/11/13 10:52:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,7 @@ using std::ifstream ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA", "(RTIA fed) ");
+static pdCDebug D("RTIA", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! Verify that federate is not in saving or restoring state.
@@ -1088,4 +1088,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.26 2003/11/10 14:28:18 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.27 2003/11/13 10:52:20 breholee Exp $
