@@ -1,5 +1,9 @@
 
-* CERTI Copyright ONERA <Pierre.Siron@cert.fr>
+* CERTI Copyright 2002  ONERA 		<Pierre.Siron@cert.fr>
+
+Contributors: M. Adelantado, P. Bieber, S. Bonnet, B. Bréholée,
+P. Desseaux, F. Fayet, A. Harzi, Ph. Hautesserres, S. Lemanceau,
+P. Nortier, S. Prunet, V. Raulet, P. Siron and G. Zanon
 
 * Some Autoconf macros come from the GNU Autoconf Macro Archive :
 ETR_SOCKET_NSL Copyright Warren Young <warren@etr-usa.com> 
@@ -7,4 +11,3 @@ TYPE_SOCKLEN_T Copyright Lars Brinkhoff <lars@nocrew.org>
 AC_CXX_NAMESPACES, AC_CXX_HAVE_STD Copyright Luc Maisonobe
 
 * GTK macros provided by the GTK Development Team
-
