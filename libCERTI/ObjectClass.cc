@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectClass.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -250,7 +250,7 @@ namespace certi {
   // -------------------------
 
   void ObjectClass::checkFederateAccess(FederateHandle  theFederate,
-					 char           *Reason)
+					 const char *Reason)
     throw(SecurityError)
   {
     Boolean Result;
@@ -343,7 +343,7 @@ namespace certi {
   ObjectClassBroadcastList *
   ObjectClass::deleteInstance(FederateHandle   theFederateHandle,
 			       ObjectHandle         theObjectHandle,
-			       UserSuppliedTag  theUserTag)
+			       const char*   theUserTag)
     throw(DeletePrivilegeNotHeld,
 	   ObjectNotKnown,
 	   RTIinternalError)
@@ -958,7 +958,7 @@ namespace certi {
 			 AttributeValue    *theValueArray,
 			 UShort             theArraySize,
 			 FederationTime     theTime,
-			 UserSuppliedTag    theUserTag)
+			 const char*     theUserTag)
     throw(ObjectNotKnown,
 	   AttributeNotDefined,
 	   AttributeNotOwned,
@@ -2111,4 +2111,4 @@ namespace certi {
 
 }
 
-// $Id: ObjectClass.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectClass.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

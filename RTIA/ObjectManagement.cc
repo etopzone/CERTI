@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: ObjectManagement.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.0.2.2 2002/11/22 18:44:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -129,7 +129,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 					AttributeValue *valueArray,
 					UShort attribArraySize,
 					FederationTime theTime, 
-					UserSuppliedTag theTag,
+					const char*  theTag,
 					TypeException &e)
 {
   NetworkMessage req, rep;
@@ -206,7 +206,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle theObjectHandle,
 					 AttributeValue *valueArray,
 					 UShort attribArraySize,
 					 FederationTime theTime, 
-					 const UserSuppliedTag theTag, 
+					 const char*  theTag, 
 					 EventRetractionHandle theHandle,
 					 TypeException &)
 {
@@ -241,7 +241,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  ParameterValue *valueArray,
 				  UShort paramArraySize,
 				  FederationTime theTime, 
-				  UserSuppliedTag theTag,
+				  const char*  theTag,
 				  TypeException &e)
 {
   NetworkMessage req,rep;
@@ -294,7 +294,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle theInteraction,
 				     ParameterValue *valueArray,
 				     UShort paramArraySize,
 				     FederationTime theTime, 
-				     const UserSuppliedTag theTag, 
+				     const char*  theTag, 
 				     EventRetractionHandle theHandle,
 				     TypeException &)
 {
@@ -324,7 +324,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle theInteraction,
 
 EventRetractionHandle 
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-			       UserSuppliedTag theTag,
+			       const char*  theTag,
 			       TypeException &e)
 {
   NetworkMessage req,rep;
@@ -358,7 +358,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 void 
 ObjectManagement::removeObject(ObjectHandle theObjectHandle,
 			       FederateHandle theFederateHandle,
-			       const UserSuppliedTag theTag, 
+			       const char*  theTag, 
 			       EventRetractionHandle theHandle,
 			       TypeException &)
 {
@@ -723,4 +723,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 }
 }
 
-// $Id: ObjectManagement.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.0.2.2 2002/11/22 18:44:00 breholee Exp $

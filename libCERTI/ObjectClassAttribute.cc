@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -71,8 +71,9 @@ void ObjectClassAttribute::addSubscriber(FederateHandle theFederate)
 // -- CheckFederateAccess --
 // -------------------------
 
-void ObjectClassAttribute::checkFederateAccess(FederateHandle  theFederate,
-						 char           *Reason)
+void 
+ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
+					  const char *Reason)
   throw(SecurityError)
 {
   Boolean Result;
@@ -415,4 +416,4 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: InteractionSet.cc,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -57,7 +57,7 @@ broadcastInteraction(FederateHandle          theFederateHandle,
 		      ParameterValue         *theValueList,
 		      UShort                  theListSize,
 		      FederationTime          theTime,
-		      UserSuppliedTag         theTag)
+		      const char*          theTag)
 
   throw(FederateNotPublishing,
 	 InteractionClassNotDefined,
@@ -366,4 +366,4 @@ subscribe(FederateHandle          theFederateHandle,
 
 }
 
-// $Id: InteractionSet.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: InteractionSet.cc,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

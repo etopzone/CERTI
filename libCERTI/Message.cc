@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: Message.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -115,7 +115,7 @@ void Message::setLabel(char *NewLabel)
 // -- SetName --
 // -------------
 
-void Message::setName(char *NewName)
+void Message::setName(const char *NewName)
 {
   if(strlen(NewName) > MAX_USER_TAG_LENGTH)
     throw ValueLengthExceeded("Name too long to fit in Message.");
@@ -248,4 +248,4 @@ void Message::display(char *s)
 
 }
 
-// $Id: Message.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: Message.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

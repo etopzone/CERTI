@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIG.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -38,8 +38,8 @@ RTIG::RTIG()
   nextFederationHandle = 1;
 
   // Start RTIG services
-  char* tcp_port_s = getenv("CERTI_TCP_PORT");
-  char* udp_port_s = getenv("CERTI_UDP_PORT");
+  const char* tcp_port_s = getenv("CERTI_TCP_PORT");
+  const char* udp_port_s = getenv("CERTI_UDP_PORT");
   if(tcp_port_s==NULL) tcp_port_s = PORT_TCP_RTIG ;
   if(udp_port_s==NULL) udp_port_s = PORT_UDP_RTIG ;
   tcpPort = atoi(tcp_port_s);
@@ -107,7 +107,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
   case m_CLOSE_CONNEXION:
     D.Out(pdTrace, "Fermer connexion %ld.", link->returnSocket());
     auditServer->setLevel(9);
-    auditServer->addToLine("Socket %ld", link->returnSocket());
+    auditServer->addToLinef("Socket %ld", link->returnSocket());
     closeConnection(link, false); 
     link = NULL;
     break;
@@ -869,4 +869,4 @@ RTIG::signalHandler(int sig)
 
 }}
 
-// $Id: RTIG.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIG.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

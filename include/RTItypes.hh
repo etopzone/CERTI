@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTItypes.hh,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Types utilises par le RTI : Constantes, exceptions, handles...
@@ -180,7 +180,7 @@ typedef char * FederateName; // See MAX_FEDERATE_NAME_LENGTH
 typedef char * FileName;
 typedef char * PauseLabel; // See MAX_USER_TAG_LENGTH
 typedef char * SaveLabel; // See MAX_USER_TAG_LENGTH
-typedef char * UserSuppliedTag; // See MAX_USER_TAG_LENGTH
+//typedef char * const char* ; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectClassName; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectName; // See MAX_USER_TAG_LENGTH
 typedef char * InteractionClassName; // See MAX_USER_TAG_LENGTH
@@ -607,4 +607,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTItypes.hh,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

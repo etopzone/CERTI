@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditFile.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
@@ -62,7 +62,7 @@ public:
   void startLine(FederationHandle, FederateHandle, unsigned short EventType);
   void setLevel(unsigned short EventLevel);
   void addToLine(const char *Comment);
-  void addToLine(char *Format, ...);
+  void addToLinef(const char *Format, ...);
   void endLine(unsigned short Eventstatus = e_NO_EXCEPTION,
 	       const char *Reason = NULL); 
 
@@ -81,4 +81,4 @@ public:
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditFile.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

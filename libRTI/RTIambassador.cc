@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
+// $Id: RTIambassador.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -108,9 +108,9 @@ RTIambassador::RTIambassador()
   throw(MemoryExhausted, RTIinternalError) : SocketUN(stIgnoreSignal)
 {
   en_service = RTI_FALSE;
-  char *rtiaexec = "rtia" ;
-  char *rtiaenv = getenv("CERTI_RTIA");
-  char *rtiacall ;
+  const char *rtiaexec = "rtia" ;
+  const char *rtiaenv = getenv("CERTI_RTIA");
+  const char *rtiacall ;
   if(rtiaenv) rtiacall = rtiaenv ;
   else rtiacall = rtiaexec ;
 
@@ -1542,7 +1542,7 @@ throw(
 void RTIambassador::attributeOwnershipAcquisition(
         ObjectHandle            theObject,         
   const AttributeHandleSet&     desiredAttributes, 
-  const UserSuppliedTag         theTag)            
+  const char*          theTag)            
 throw(
   ObjectNotKnown,
   ObjectClassNotPublished,
@@ -4228,4 +4228,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
+// $Id: RTIambassador.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $

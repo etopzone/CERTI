@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -104,7 +104,7 @@ ObjectClassSet::~ObjectClassSet()
 
 void ObjectClassSet::deleteObject(FederateHandle    theFederateHandle,
 				   ObjectHandle          theObjectHandle,
-				   UserSuppliedTag   theTag)
+				   const char*    theTag)
   throw(DeletePrivilegeNotHeld,
 	ObjectNotKnown,
 	RTIinternalError)
@@ -542,7 +542,7 @@ void ObjectClassSet::updateAttributeValues(FederateHandle   theFederateHandle,
 					    AttributeValue  *theValueArray,
 					    UShort           theArraySize,
 					    FederationTime   theTime,
-					    UserSuppliedTag  theUserTag)
+					    const char*   theUserTag)
   throw(ObjectNotKnown,
 	 AttributeNotDefined,
 	 AttributeNotOwned,
@@ -922,5 +922,5 @@ throw(
 
 }
 
-// $Id: ObjectClassSet.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 

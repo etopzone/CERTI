@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIambassador.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -557,7 +557,7 @@ public:
   void 
   attributeOwnershipAcquisition(ObjectHandle theObject, 
 				const AttributeHandleSet& desiredAttributes, 
-				const UserSuppliedTag theTag)
+				const char*  theTag)
     throw(ObjectNotKnown,
 	  ObjectClassNotPublished,
 	  AttributeNotDefined,
@@ -1338,4 +1338,4 @@ public:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditFile.cc,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -102,7 +102,7 @@ AuditFile::addToLine(const char *Comment)
 // addToLine
 //
 void 
-AuditFile::addToLine(char *Format, ...)
+AuditFile::addToLinef(const char *Format, ...)
 {
   va_list argptr; // Variable Argument list, see stdarg.h
 
@@ -173,4 +173,4 @@ AuditFile::setLevel(unsigned short EventLevel)
 
 }
 
-// $Id: AuditFile.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditFile.cc,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

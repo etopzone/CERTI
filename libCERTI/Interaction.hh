@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Interaction.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -171,7 +171,7 @@ public:
 		  ParameterValue *theValueList,
 		  UShort theListSize,
 		  FederationTime theTime,
-		  UserSuppliedTag theTag)
+		  const char*  theTag)
     throw(FederateNotPublishing,
 	  InteractionClassNotDefined,
 	  InteractionParameterNotDefined,
@@ -221,4 +221,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Interaction.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClass.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Class ObjectClass, qui decrit une classe d'objet. Elle contient
@@ -126,7 +126,7 @@ public:
   // Throw SecurityError if the Federate is not allowed to access the 
   // Object Class, and print an Audit message containing Reason.
   void checkFederateAccess(FederateHandle theFederate,
-			   char *Reason)
+			   const char *Reason)
     throw(SecurityError);
 
   SecurityLevelID getLevelId(void)
@@ -320,7 +320,7 @@ public:
   // class.
   ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 					   ObjectHandle theObjectHandle,
-					   UserSuppliedTag theUserTag)
+					   const char*  theUserTag)
     throw(DeletePrivilegeNotHeld,
 	  ObjectNotKnown,
 	  RTIinternalError);
@@ -353,7 +353,7 @@ public:
 			AttributeValue *theValueArray,
 			UShort theArraySize,
 			FederationTime theTime,
-			UserSuppliedTag theUserTag)
+			const char*  theUserTag)
     throw(ObjectNotKnown,
 	  AttributeNotDefined,
 	  AttributeNotOwned,
@@ -419,4 +419,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClass.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

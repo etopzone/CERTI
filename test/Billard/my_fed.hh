@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: my_fed.hh,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
+// $Id: my_fed.hh,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -96,7 +96,7 @@ public:
     throw(FederateInternalError);
 
   void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime, 
-				 const UserSuppliedTag theTag, 
+				 const char*  theTag, 
 				 EventRetractionHandle theHandle) 
     throw(ObjectNotKnown, InvalidFederationTime, FederateInternalError) ;
 
@@ -138,10 +138,10 @@ public:
     throw(InteractionClassNotKnown, InteractionParameterNotKnown, 
 	  InvalidFederationTime, FederateInternalError);
 
-  void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime, 
-			    const char *theTag, 
-			    EventRetractionHandle theHandle) 
-    throw(ObjectNotKnown, InvalidFederationTime, FederateInternalError);
+//   void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
+// 			    const char *theTag, 
+// 			    EventRetractionHandle theHandle) 
+//     throw(ObjectNotKnown, InvalidFederationTime, FederateInternalError);
 
   void timeRegulationEnabled(const FedTime& theTime) 
     throw(InvalidFederationTime, EnableTimeRegulationWasNotPending,

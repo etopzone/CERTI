@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIA.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIA.cc,v 3.0.2.2 2002/11/22 18:44:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -32,7 +32,7 @@ static pdCDebug D("RTIA", "(RTIA ) - ");
 
 #define MSG_RTIG_MAX 18
 
-char *Messages_RTIG [MSG_RTIG_MAX] = {
+const char *Messages_RTIG [MSG_RTIG_MAX] = {
   "MESSAGE NULL",
   "SET_TIME_REGULATING",
   "REQUEST_PAUSE",
@@ -57,7 +57,7 @@ char *Messages_RTIG [MSG_RTIG_MAX] = {
 
 #define MSG_FED_MAX 52
 
-char *Messages_Fed [MSG_FED_MAX] = {
+const char *Messages_Fed [MSG_FED_MAX] = {
   "CREATE_FEDERATION_EXECUTION",
   "DESTROY_FEDERATION_EXECUTION",
   "JOIN_FEDERATION_EXECUTION",
@@ -244,4 +244,4 @@ void RTIA::execute()
 }
 }
 
-// $Id: RTIA.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIA.cc,v 3.0.2.2 2002/11/22 18:44:00 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FederationsList.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -235,7 +235,7 @@ public:
   void destroyObject(FederationHandle theHandle,
 		     FederateHandle theFederateHandle,
 		     ObjectHandle theObjectHandle,
-		     UserSuppliedTag theUserTag)
+		     const char*  theUserTag)
     throw(FederateNotExecutionMember,
 	  FederationExecutionDoesNotExist,
 	  DeletePrivilegeNotHeld,
@@ -251,7 +251,7 @@ public:
 		       AttributeValue *theValueList,
 		       UShort theListSize,
 		       FederationTime theTime,
-		       UserSuppliedTag theTag)
+		       const char*  theTag)
     throw(FederateNotExecutionMember,
 	  FederationExecutionDoesNotExist,
 	  ObjectNotKnown,
@@ -296,7 +296,7 @@ public:
 		       ParameterValue *theValueList,
 		       UShort theListSize,
 		       FederationTime theTime,
-		       UserSuppliedTag theTag)
+		       const char*  theTag)
     throw(FederateNotExecutionMember,
 	  FederateNotPublishing,
 	  FederationExecutionDoesNotExist,
@@ -449,4 +449,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FederationsList.hh,v 3.0.2.1 2002/11/22 18:44:01 breholee Exp $

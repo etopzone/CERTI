@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG_processing.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -39,7 +39,7 @@ RTIG::processCreatefederation(Socket *link, NetworkMessage *req)
 
   if(federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
-  auditServer->addToLine("Federation Name : %s", federation);
+  auditServer->addToLinef("Federation Name : %s", federation);
 
 #ifdef FEDERATION_USES_MULTICAST
   // adresse de base pour le multicast
@@ -103,7 +103,7 @@ RTIG::processJoinfederation(Socket *link, NetworkMessage *req)
   if((federation == NULL)||(federate == NULL))
     throw RTIinternalError("Invalid Federation/Federate Name.");
 
-  auditServer->addToLine("Federate \"%s\" joins Federation \"%s\"",
+  auditServer->addToLinef("Federate \"%s\" joins Federation \"%s\"",
 			 federate, federation);
 
   federations->exists(federation, num_federation);
@@ -128,7 +128,7 @@ RTIG::processJoinfederation(Socket *link, NetworkMessage *req)
 			      address,
 			      peer);
  
-  auditServer->addToLine("(%d)with handle %d. Socket %d",
+  auditServer->addToLinef("(%d)with handle %d. Socket %d",
 			 num_federation, num_federe,
 			 link->returnSocket());
 
@@ -177,7 +177,7 @@ RTIG::processDestroyfederation(Socket *link, NetworkMessage *req)
   FederationExecutionName federation = req->NomFederation;
 
   if(federation == NULL) throw RTIinternalError("Invalid Federation Name.");
-  auditServer->addToLine("Name \"%s\"", federation);
+  auditServer->addToLinef("Name \"%s\"", federation);
   federations->exists(federation, num_federation);
   federations->destroyFederation(num_federation);
   D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation);
@@ -196,7 +196,7 @@ void
 RTIG::processSetTimeRegulating(NetworkMessage *msg)
 {
   if(msg->EstRegulateur){
-    auditServer->addToLine("ON at time %f", msg->Date);
+    auditServer->addToLinef("ON at time %f", msg->Date);
 
     federations->createRegulator(msg->NumeroFederation,
 				 msg->NumeroFedere,
@@ -221,7 +221,7 @@ void
 RTIG::processSetTimeConstrained(NetworkMessage *msg)
 {
   if(msg->EstContraint){
-    auditServer->addToLine("ON at time %f", msg->Date);
+    auditServer->addToLinef("ON at time %f", msg->Date);
 
     federations->addConstrained(msg->NumeroFederation,
 				msg->NumeroFedere);
@@ -244,7 +244,7 @@ RTIG::processSetTimeConstrained(NetworkMessage *msg)
 void 
 RTIG::processMessageNull(NetworkMessage *msg)
 {
-  auditServer->addToLine("Date %f", msg->Date);
+  auditServer->addToLinef("Date %f", msg->Date);
 
   // Catch all exceptions because RTIA does not expect an answer anyway.
   try {
@@ -262,7 +262,7 @@ RTIG::processRequestPause(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Label \"%s\"", req->Label);
+  auditServer->addToLinef("Label \"%s\"", req->Label);
   federations->setPause(req->NumeroFederation,
 			req->NumeroFedere,
 			true,
@@ -283,7 +283,7 @@ void
 RTIG::processRequestResume(Socket*, 
 			   NetworkMessage *msg)
 {
-  auditServer->addToLine("Label \"%s\"", msg->Label);
+  auditServer->addToLinef("Label \"%s\"", msg->Label);
   federations->setPause(msg->NumeroFederation,
 			msg->NumeroFedere,
 			false,
@@ -302,7 +302,7 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 
   pub = (req->Type == m_PUBLISH_OBJECT_CLASS) ;
 
-  auditServer->addToLine("Class = %u, # of att. = %u",
+  auditServer->addToLinef("Class = %u, # of att. = %u",
 			 req->objectClassHandle, 
 			 req->HandleArraySize);
 
@@ -337,7 +337,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 
   sub = (req->Type == m_SUBSCRIBE_OBJECT_CLASS) ;
  
-  auditServer->addToLine("Class = %u, # of att. = %u",
+  auditServer->addToLinef("Class = %u, # of att. = %u",
 			 req->objectClassHandle, 
 			 req->HandleArraySize);
 
@@ -374,7 +374,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
   assert(link != NULL && req != NULL);
   pub = (req->Type == m_PUBLISH_INTERACTION_CLASS) ;
  
-  auditServer->addToLine("Class = %u", req->InteractionHandle);
+  auditServer->addToLinef("Class = %u", req->InteractionHandle);
   federations->publishInteraction(req->NumeroFederation, 
 				  req->NumeroFedere, 
 				  req->InteractionHandle, 
@@ -405,7 +405,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 
   sub = (req->Type == m_SUBSCRIBE_INTERACTION_CLASS) ;
 
-  auditServer->addToLine("Class = %u", req->InteractionHandle);
+  auditServer->addToLinef("Class = %u", req->InteractionHandle);
   federations->subscribeInteraction(req->NumeroFederation, 
 				    req->NumeroFedere,
 				    req->InteractionHandle,
@@ -434,12 +434,12 @@ RTIG::processrequestId(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Asked %u", req->IDcount);
+  auditServer->addToLinef("Asked %u", req->IDcount);
   federations->requestId(req->NumeroFederation, 
 			 req->IDcount, 
 			 rep.FirstID, 
 			 rep.LastID);
-  auditServer->addToLine(", given range from %u to %u",
+  auditServer->addToLinef(", given range from %u to %u",
 			 rep.FirstID, rep.LastID);
 
   D.Out(pdInit, "%d IDs have been sent for Federation %u.",
@@ -461,12 +461,12 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Class = %u", req->objectClassHandle);
+  auditServer->addToLinef("Class = %u", req->objectClassHandle);
   rep.Objectid = federations->registerObject(req->NumeroFederation, 
 					     req->NumeroFedere, 
 					     req->objectClassHandle,
 					     req->Label);
-  auditServer->addToLine(", Handle = %u", rep.Objectid);
+  auditServer->addToLinef(", Handle = %u", rep.Objectid);
 
   D.Out(pdRegister, 
 	"Object \"%s\" of Federate %u has been registered under ID %u.",
@@ -491,7 +491,7 @@ RTIG::processupdateAttributeValues(Socket *link, NetworkMessage *req)
   NetworkMessage rep;
   AttributeValue *ValueArray = NULL;
 
-  auditServer->addToLine("ObjID = %u, Date = %f", req->Objectid, req->Date);
+  auditServer->addToLinef("ObjID = %u, Date = %f", req->Objectid, req->Date);
 
   // Prepare le Value Array
   ValueArray = req->getAttribValueArray();
@@ -530,7 +530,7 @@ RTIG::processsendInteraction(Socket *link, NetworkMessage *req)
   AttributeValue *values = NULL;
 
   // Prepare le Value Array
-  auditServer->addToLine("IntID = %u, Date = %f",
+  auditServer->addToLinef("IntID = %u, Date = %f",
 			 req->InteractionHandle, req->Date);
   values = req->getParamValueArray();
  
@@ -566,7 +566,7 @@ RTIG::processdeleteObject(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("ObjID = %u", req->Objectid);
+  auditServer->addToLinef("ObjID = %u", req->Objectid);
 
   federations->destroyObject(req->NumeroFederation,
 			     req->NumeroFedere,
@@ -597,7 +597,7 @@ RTIG::processqueryAttributeOwnership(Socket *link, NetworkMessage *req)
   D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
 	req->HandleArray[0], req->Objectid); 
 
-  auditServer->addToLine("AttributeHandle = %u", req->HandleArray[0]);
+  auditServer->addToLinef("AttributeHandle = %u", req->HandleArray[0]);
 
   federations->searchOwner(req->NumeroFederation,
 			   req->NumeroFedere,
@@ -627,7 +627,7 @@ RTIG::processattributeOwnedByFederate(Socket *link, NetworkMessage *req)
   D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
 	req->HandleArray[0], req->Objectid); 
 
-  auditServer->addToLine("AttributeHandle = %u", req->HandleArray[0]);
+  auditServer->addToLinef("AttributeHandle = %u", req->HandleArray[0]);
 
   if(federations->isOwner(req->NumeroFederation,
 			  req->NumeroFedere,
@@ -657,7 +657,7 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
   federations->negotiateDivestiture(req->NumeroFederation, 
@@ -689,7 +689,7 @@ RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -722,7 +722,7 @@ RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -755,7 +755,7 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -789,7 +789,7 @@ RTIG::processAnnulerNegotiatedDivestiture(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -822,7 +822,7 @@ RTIG::processRealeaseResponse(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -860,7 +860,7 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
 
-  auditServer->addToLine("Object = %u, # of att. = %u",
+  auditServer->addToLinef("Object = %u, # of att. = %u",
 			 req->Objectid, 
 			 req->HandleArraySize);
 
@@ -886,5 +886,5 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 
 }}
 
-// $Id: RTIG_processing.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.0.2.2 2002/11/22 18:44:01 breholee Exp $
 
