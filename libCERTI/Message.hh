@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message.hh,v 3.7 2003/03/06 13:34:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -200,8 +200,9 @@ typedef struct {
     MessageHeaderUnion VP ; // Variable Part
 } MessageHeader ;
 
-// Classe pour formaliser les messages qui vont etre
-// echanges entre le RTI et le federe
+/*! The Message class is used to formalize messages that are going to be
+    exchanged between the RTI and the federate.
+*/
 class Message
 {
     // Construction, Destruction
@@ -286,6 +287,9 @@ public:
     OrderType order ;
     EventRetractionHandle eventRetraction ;
     SpaceHandle space ;
+    DimensionHandle dimension ;
+    TransportationHandle transportation ;
+    OrderingHandle ordering ;
 
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
@@ -354,4 +358,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message.hh,v 3.7 2003/03/06 13:34:53 breholee Exp $

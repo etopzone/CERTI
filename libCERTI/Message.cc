@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message.cc,v 3.7 2003/03/06 13:34:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -210,6 +210,10 @@ Message::operator = (const Message& msg)
     attribute = msg.attribute ;
     parameter = msg.parameter ;
     object = msg.object ;
+    space = msg.space ;
+    dimension = msg.dimension ;
+    transportation = msg.transportation ;
+    ordering = msg.ordering ;
 
     strcpy(tag, msg.tag);
     strcpy(name, msg.name);
@@ -248,8 +252,12 @@ Message::display(char *s)
     printf(" parameter=%ld:\n", parameter);
     printf(" object=%ld:\n", object);
     printf(" handleArraySize=%d:\n", handleArraySize);
+    printf(" space %d:\n", space);
+    printf(" dimension %d:\n", dimension);
+    printf(" transportation %d:\n", transportation);
+    printf(" ordering %d:\n", ordering);
 }
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message.cc,v 3.7 2003/03/06 13:34:53 breholee Exp $
