@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUN.cc,v 3.6 2003/06/26 15:13:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketUN.hh"
+#include <config.h>
+
+#include "RTItypes.hh"
+
+#include <iostream>
+#include <unistd.h>
+#include <strings.h>
+#include <sstream>
+
+using std::ostringstream ;
 
 namespace certi {
 
@@ -31,7 +40,7 @@ namespace certi {
 
 // ----------------------------------------------------------------------------
 //! Called by server to open the socket and wait for the connection.
-void SocketUN::acceptUN(void)
+void SocketUN::acceptUN()
 {
     struct sockaddr_un nom_client, nom_serveur ;
     socklen_t lg_nom ;
@@ -51,8 +60,11 @@ void SocketUN::acceptUN(void)
 
     if (strlen(NOM_FICHIER_SOCKET) > 90)
         throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-    sprintf(SocketName, "%s.%d", NOM_FICHIER_SOCKET, getpid());
-    strcpy(nom_serveur.sun_path, SocketName);
+
+    ostringstream socket_name ;
+    socket_name << NOM_FICHIER_SOCKET << '.' << getpid();
+    name = socket_name.str();
+    strcpy(nom_serveur.sun_path, socket_name.str().c_str());
 
     // Bind
     if (bind(sock_connect, (struct sockaddr*)&nom_serveur,
@@ -107,8 +119,10 @@ void SocketUN::connectUN(pid_t Server_pid)
         if (strlen(NOM_FICHIER_SOCKET) > 90)
             throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
 
-        sprintf(SocketName, "%s.%d", NOM_FICHIER_SOCKET, Server_pid);
-        strcpy(nom_serveur.sun_path, SocketName);
+        ostringstream socket_name ;
+        socket_name << NOM_FICHIER_SOCKET << '.' << Server_pid ;
+        name = socket_name.str();
+        strcpy(nom_serveur.sun_path, socket_name.str().c_str());
 
         // Connect
         Result = connect(_socket_un,
@@ -139,36 +153,26 @@ void SocketUN::connectUN(pid_t Server_pid)
 // ----------------------------------------------------------------------------
 //! Does not open the socket, see Init methods.
 SocketUN::SocketUN(SignalHandlerType theType)
+    : _socket_un(0), _est_serveur(RTI_FALSE), _est_init_un(RTI_FALSE),
+      HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)      
 {
-    _socket_un = 0 ;
-    _est_serveur = RTI_FALSE ;
-    _est_init_un = RTI_FALSE ;
-
-    HandlerType = theType ;
-    SocketName[0] = '\0' ;
-
-    SentBytesCount = 0 ;
-    RcvdBytesCount = 0 ;
-
 #ifdef SOCKUN_BUFFER_LENGTH
     RBLength = 0 ;
 #endif
 
     pD = new pdCDebug("SOCKUN", "(SocketUN) - ");
-
     pD->Out(pdInit, "UNIX Socket created.");
-
 }
 
 // ----------------------------------------------------------------------------
 //! Close the socket.
-SocketUN::~SocketUN(void)
+SocketUN::~SocketUN()
 {
     if (_est_init_un) {
         close(_socket_un);
         if (_est_serveur == RTI_TRUE)
             close(sock_connect);
-        unlink(SocketName);
+        unlink(name.c_str());
         if (_est_serveur == RTI_TRUE)
             pD->Out(pdTerm, "Server: Closed all sockets.");
         else
@@ -178,12 +182,10 @@ SocketUN::~SocketUN(void)
     delete pD ;
 
 #ifdef RTI_PRINTS_STATISTICS
-    printf("\n");
-    printf("UNIX Socket(%d): Total Sent Bytes : %lld.\n",
-           _socket_un, SentBytesCount);
-    printf("UNIX Socket(%d): Total Received Bytes : %lld.\n",
-           _socket_un, RcvdBytesCount);
-    printf("\n");
+    cout << endl << "UNIX Socket(" << _socket_un << "): Total sent bytes: "
+         << SentBytesCount << "." << endl ;
+    cout << "UNIX Socket(" << _socket_un << "): Total received bytes: "
+         << RcvdBytesCount << endl << endl ;
 #endif
 }
 
@@ -249,7 +251,7 @@ void SocketUN::error(const char *msg)
 /*! Return RTI_TRUE if any data as already been read from the system socket
   and is waiting in the internal buffer, else RTI_FALSE.
 */
-Boolean SocketUN::isDataReady(void)
+Boolean SocketUN::isDataReady()
 {
 #ifdef SOCKUN_BUFFER_LENGTH
     if (RBLength > 0)
@@ -329,4 +331,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUN.cc,v 3.6 2003/06/26 15:13:38 breholee Exp $

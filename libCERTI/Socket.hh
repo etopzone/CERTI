@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Socket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: Socket.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_HH
@@ -41,40 +40,42 @@ namespace certi {
 RTI_EXCEPT(NetworkSignal) // Used when received a signal during system call.
     RTI_EXCEPT(NetworkError) // Used for all other errors(connection closed...)
 
-    class Socket
-    {
-    public:
+    typedef unsigned long ByteCount ;
 
-        // -----------------------
-        // -- Read/Write Method --
-        // -----------------------
+class Socket
+{
+public:
 
-        virtual void send(void *Buffer, unsigned long Size) = 0 ;
-        virtual void receive(void *Buffer, unsigned long Size) = 0 ;
-        virtual void close() = 0 ;
+    // -----------------------
+    // -- Read/Write Method --
+    // -----------------------
 
-        // This method may be used for implementation using Read Buffers,
-        // because in that case 'select' system calls are not trustworthy.
-        // See Important Note in SocketTCP.hh
-        virtual Boolean isDataReady() const = 0 ;
+    virtual void send(void *Buffer, unsigned long Size) = 0 ;
+    virtual void receive(void *Buffer, unsigned long Size) = 0 ;
+    virtual void close() = 0 ;
 
-        // ---------------------
-        // -- Get Descriptors --
-        // ---------------------
+    // This method may be used for implementation using Read Buffers,
+    // because in that case 'select' system calls are not trustworthy.
+    // See Important Note in SocketTCP.hh
+    virtual Boolean isDataReady() const = 0 ;
 
-        virtual int getClass() const = 0 ;
-        virtual int returnSocket() const = 0 ;
-        virtual unsigned long returnAdress() const = 0 ;
+    // ---------------------
+    // -- Get Descriptors --
+    // ---------------------
 
-        // ----------------
-        // -- Descructor --
-        // ----------------
+    virtual int getClass() const = 0 ;
+    virtual int returnSocket() const = 0 ;
+    virtual unsigned long returnAdress() const = 0 ;
 
-        virtual ~Socket() {};
-    };
+    // ----------------
+    // -- Descructor --
+    // ----------------
+
+    virtual ~Socket() {};
+};
 
 }
 
 #endif // _CERTI_SOCKET_HH
 
-// $Id: Socket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: Socket.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $

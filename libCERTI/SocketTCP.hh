@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketTCP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
@@ -82,21 +81,21 @@ public :
     void receive(void *Buffer, unsigned long Size)
         throw (NetworkError, NetworkSignal);
 
-    Boolean isDataReady(void) const ;
+    Boolean isDataReady() const ;
 
-    int getClass(void) const { return SOCKET_TYPE_TCP ; };
-    int returnSocket(void) const ;
+    int getClass() const { return SOCKET_TYPE_TCP ; };
+    int returnSocket() const ;
 
-    unsigned long returnAdress(void) const ;
+    unsigned long returnAdress() const ;
 
-    void close(void);
+    void close();
 
     // --------------------------
     // -- TCP Specific Methods --
     // --------------------------
 
-    SocketTCP(void);
-    ~SocketTCP(void);
+    SocketTCP();
+    ~SocketTCP();
 
     int accept(SocketTCP *serveur);
 
@@ -117,8 +116,8 @@ private:
     struct sockaddr_in _sockIn ;
     Boolean _est_init_tcp ;
 
-    unsigned long long SentBytesCount ;
-    unsigned long long RcvdBytesCount ;
+    ByteCount SentBytesCount ;
+    ByteCount RcvdBytesCount ;
 
 #ifdef SOCKTCP_BUFFER_LENGTH
     // This class can use a buffer to reduce the number of systems calls
@@ -133,15 +132,15 @@ private:
     // -- Private Methods --
     // ---------------------
 
-    unsigned int getPort(void) const ;
-    unsigned long getAddr(void) const ;
+    unsigned int getPort() const ;
+    unsigned long getAddr() const ;
     void setPort(unsigned int port);
 
     int bind(unsigned int port=0, unsigned long addr=INADDR_ANY);
     void changeReuseOption();
     int connect(unsigned int port, unsigned long addr);
     int listen(unsigned long howMuch=5);
-    int open(void);
+    int open();
     int timeoutTCP(int, int);
 
 };
@@ -149,4 +148,4 @@ private:
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketTCP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,27 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUN.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UN_HH
 #define _CERTI_SOCKET_UN_HH
 
-#include <config.h>
-
-#include <sys/types.h>
-#include <sys/un.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <cstring>
-#include <assert.h>
-#include <errno.h>
-
 #include "Socket.hh"
 #include "PrettyDebug.hh"
-#include "RTItypes.hh"
+
+#include <sys/socket.h>
+#include <netdb.h>
 
 #define NOM_FICHIER_SOCKET "ComFedRTI"
 
@@ -75,18 +64,18 @@ public:
     // -- Constructor / Destructor --
     // ------------------------------
     SocketUN(SignalHandlerType theType = stSignalInterrupt);
-    ~SocketUN(void);
+    ~SocketUN();
 
     // ----------------------------
     // -- Initialization Methods --
     // ----------------------------
     void connectUN(pid_t Server_pid);
-    void acceptUN(void);
+    void acceptUN();
 
     // -----------------
     // -- R/W Methods --
     // -----------------
-    Boolean isDataReady(void);
+    Boolean isDataReady();
 
     void send(void *Buffer, unsigned long Size)
         throw (NetworkError,
@@ -106,7 +95,7 @@ protected:
 
     SignalHandlerType HandlerType ;
 
-    char SocketName[108] ;
+    std::string name ;
 
 private:
 
@@ -114,8 +103,8 @@ private:
     // -- Private Attributes --
     // ------------------------
 
-    unsigned long long SentBytesCount ;
-    unsigned long long RcvdBytesCount ;
+    ByteCount SentBytesCount ;
+    ByteCount RcvdBytesCount ;
 
     // la socket du serveur RTIA qui a ete cree par le federe-client
     int sock_connect ;
@@ -136,4 +125,4 @@ private:
 
 #endif // _CERTI_SOCKET_UN_HH
 
-// $Id: SocketUN.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUN.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $

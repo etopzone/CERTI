@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,38 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUDP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UDP_HH
 #define _CERTI_SOCKET_UDP_HH
 
-#include <config.h>
-
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <errno.h>
-#include <cstring>
-#include <ulimit.h>
-#include <assert.h>
-#include <stdio.h>
-
-#include <unistd.h>
-#include <sys/param.h>
-#include <net/if.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <strings.h>
-
 #include "Socket.hh"
-#include "RTItypes.hh"
-#include "PrettyDebug.hh"
+
+#include <sys/socket.h>
+#include <netdb.h>
 
 namespace certi {
 
@@ -70,21 +47,21 @@ public :
         throw (NetworkError,
                NetworkSignal);
 
-    Boolean isDataReady(void) const ;
+    Boolean isDataReady() const ;
 
-    int getClass(void) const { return SOCKET_TYPE_UDP ; };
-    int returnSocket(void) const ;
+    int getClass() const { return SOCKET_TYPE_UDP ; };
+    int returnSocket() const ;
 
-    unsigned long returnAdress(void) const ;
+    unsigned long returnAdress() const ;
 
-    void close(void);
+    void close();
 
     // --------------------------
     // -- UDP Specific Methods --
     // --------------------------
 
-    SocketUDP(void);
-    ~SocketUDP(void);
+    SocketUDP();
+    ~SocketUDP();
 
     void createUDPClient(unsigned int port, char *nom_serveur)
         throw (NetworkError,
@@ -98,8 +75,8 @@ public :
         throw (NetworkError,
                NetworkSignal);
 
-    unsigned int getPort(void) const ;
-    unsigned long getAddr(void) const ;
+    unsigned int getPort() const ;
+    unsigned long getAddr() const ;
 
 private:
 
@@ -123,8 +100,8 @@ private:
     int _sock_local_length ;
     Boolean _est_init_udp ;
 
-    unsigned long long SentBytesCount ;
-    unsigned long long RcvdBytesCount ;
+    ByteCount SentBytesCount ;
+    ByteCount RcvdBytesCount ;
     unsigned long BufferSize ;
     char Buffer[4096] ;
 
@@ -143,5 +120,5 @@ private:
 
 #endif // _CERTI_SOCKET_UDP_HH
 
-// $Id: SocketUDP.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUDP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
 
