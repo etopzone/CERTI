@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.22 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClass.hh,v 3.23 2005/03/25 17:31:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -96,10 +96,10 @@ public:
                  bool PubOrUnpub)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-    bool subscribe(FederateHandle, AttributeHandle *, int, const RegionImp *)
+    bool subscribe(FederateHandle, AttributeHandle *, int, const RTIRegion *)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-    void unsubscribe(FederateHandle, const RegionImp *);
+    void unsubscribe(FederateHandle, const RTIRegion *);
     void unsubscribe(FederateHandle);
 
     // The second parameter is the Class of whose behalf the message
@@ -194,21 +194,19 @@ public:
                RTIinternalError);
 
     void broadcastClassMessage(ObjectClassBroadcastList *ocb_list,
-			       Object *source = 0);
+			       const Object * = 0);
 
     ObjectClassBroadcastList *
-    updateAttributeValues(FederateHandle theFederateHandle,
-                          ObjectHandle theObjectHandle,
-                          AttributeHandle *theAttributeArray,
-                          AttributeValue *theValueArray,
-                          UShort theArraySize,
-                          FederationTime theTime,
-                          const char *theUserTag)
+    updateAttributeValues(FederateHandle, Object *, AttributeHandle *,
+			  AttributeValue *, int, FederationTime, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
     void recursiveDiscovering(FederateHandle, ObjectClassHandle)
 	throw (ObjectClassNotDefined);
+
+    Object *getInstanceWithID(ObjectHandle the_id) const
+        throw (ObjectNotKnown);
 
     //! This Object help to find a TCPLink from a Federate Handle.
     SecurityServer *server ;
@@ -223,9 +221,6 @@ private:
                       NetworkMessage::Type type);
 
     void sendMessage(NetworkMessage *msg, FederateHandle theDest);
-
-    Object *getInstanceWithID(ObjectHandle the_id) const
-        throw (ObjectNotKnown);
 
     bool isFederatePublisher(FederateHandle the_federate) const ;
     bool isSubscribed(FederateHandle) const ;
@@ -245,4 +240,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.22 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClass.hh,v 3.23 2005/03/25 17:31:14 breholee Exp $
