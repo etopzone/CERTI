@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $
+// $Id: Interaction.hh,v 3.4 2003/01/17 23:21:27 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -137,11 +137,11 @@ public:
 
   // -- RTI Support Services --
 
-  ParameterHandle getParameterHandle(const ParameterName theName)
-    throw(InteractionParameterNotDefined, RTIinternalError);
+    ParameterHandle getParameterHandle(const char *)
+        throw(InteractionParameterNotDefined, RTIinternalError);
 
-  const ParameterName getParameterName(ParameterHandle theHandle)
-    throw(InteractionParameterNotDefined, RTIinternalError);
+    const char *getParameterName(ParameterHandle)
+        throw(InteractionParameterNotDefined, RTIinternalError);
 
   void killFederate(FederateHandle theFederate)
     throw();
@@ -224,4 +224,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $
+// $Id: Interaction.hh,v 3.4 2003/01/17 23:21:27 breholee Exp $
