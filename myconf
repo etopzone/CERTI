@@ -1,63 +1,37 @@
 #! /bin/sh
-# $Id: myconf,v 3.1 2002/11/26 15:45:14 breholee Exp $
+# CERTI myconf
+# $Id: myconf,v 3.2 2003/01/14 14:40:01 breholee Exp $
 
 case $1 in
     sun)
-	echo Sun CC Workshop6.0 Configuration ;
+	echo Sun Workshop configuration ;
 	CC=cc ;
 	CXX=CC ;
-#	CXXFLAGS="-g -RTTI -features=no%conststrings -I/opt/SUNWspro/WS6U2/include/CC " ;
-	CXXFLAGS=" -g -I/opt/SUNWspro/WS6U2/include/CC" ;
-	LDFLAGS="-L/opt/SUNWspro/WS6U2/lib/CC4 -L/opt/SUNWspro/WS6U2/lib/CC4/libp -lC " ;
-	export CC CXX CXXFLAGS LDFLAGS
-	;;
-
-    sun-ws5)
-	echo Sun CC Workshop5.0 Configuration ;
-	CC=cc ;
-	CXX=CC ;
-#	CXXFLAGS="-g -RTTI -features=no%conststrings -I/opt/SUNWspro/SC5.0/include/CC " ;
-	CXXFLAGS=" -g -I/opt/SUNWspro/SC5.0/include/CC " ;
-	LDFLAGS="-L/opt/SUNWspro/SC5.0/lib/CC4 -L/opt/SUNWspro/SC5.0/lib/CC4/libp -lC " ;
-	export CC CXX CXXFLAGS LDFLAGS
-	;;
-
-    sun-ws42) 
-	echo Sun CC Workshop4.2 Configuration ;
-	CC=cc ;
-	CXX=CC ;
-	CXXFLAGS="-g -RTTI -I/opt/SUNWspro/SC4.2/include/CC " ;
-	LDFLAGS=" -lC " ;
-	export CC CXX CXXFLAGS LDFLAGS
+	AR=CC ;
+	CXXFLAGS="-g" ;
+	AR_FLAGS=$CXXFLAGS" -xar -o" ;
+	export CC CXX AR CXXFLAGS LDFLAGS AR_FLAGS
 	;;
 
     sun-gcc) 
-	echo Sun default gcc Configuration ;
+	echo Sun / gcc configuration ;
 	CXXFLAGS=" -fpermissive " 
 	export CXXFLAGS
 	;;
 
-    linux-gcc3) 
-	echo GNU/Linux gcc3 Configuration
-	CXXFLAGS=" -fpermissive " ;
-	CC=gcc-3.0 ;
-	CXX=g++-3.0 ;
-	export CC CXX CXXFLAGS
-	;;
-
     linux) 
-	echo GNU/Linux default gcc Configuration ;
+	echo GNU/Linux / gcc configuration ;
 	;;
 
     hpux)
-        echo HPUX aCC Configuration
+        echo HPUX / aCC configuration
 	CC=cc ;
         CXX=aCC ;
         export CC CXX
 	;;
 
     hpux-gcc)
-        echo HPUX default gcc Configuration  
+        echo HPUX / gcc configuration  
         CC=gcc ;
         CXX=g++ ;
         export CC CXX
@@ -69,4 +43,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# EOF $Id: myconf,v 3.1 2002/11/26 15:45:14 breholee Exp $
+# $Id: myconf,v 3.2 2003/01/14 14:40:01 breholee Exp $
