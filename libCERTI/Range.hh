@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Range.hh,v 3.0 2003/03/21 13:43:40 breholee Exp $
+// $Id: Range.hh,v 3.1 2004/05/17 23:06:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RANGE_HH
@@ -30,7 +29,7 @@
 
 namespace certi {
 
-class Range
+class Range : public Handled<DimensionHandle>
 {
 public:
     Range(DimensionHandle);
@@ -39,18 +38,16 @@ public:
     void setLowerBound(ULong);
     void setUpperBound(ULong);
 
-    ULong getLowerBound(void);
-    ULong getUpperBound(void);
-    DimensionHandle getDimensionHandle(void);
+    ULong getLowerBound();
+    ULong getUpperBound();
 
 private:
     ULong lowerBound ;
     ULong upperBound ;
-    DimensionHandle dimension ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_RANGE_HH
 
-// $Id: Range.hh,v 3.0 2003/03/21 13:43:40 breholee Exp $
+// $Id: Range.hh,v 3.1 2004/05/17 23:06:58 breholee Exp $

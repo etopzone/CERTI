@@ -19,20 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.3 2003/11/10 14:54:11 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.4 2004/05/17 23:07:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
 #define _CERTI_ROUTING_SPACE
 
 #include "Dimension.hh"
+#include "Handled.hh"
 
 #include <vector>
 #include <string>
 
 namespace certi {
 
-class RoutingSpace
+class RoutingSpace : public Handled<SpaceHandle>
 {
 public:
     RoutingSpace();
@@ -40,8 +41,6 @@ public:
 
     void setName(std::string);
     std::string getName() const ;
-    void setHandle(SpaceHandle);
-    SpaceHandle getHandle() const ;
     DimensionHandle getDimensionHandle(std::string) const throw (NameNotFound);
     std::string getDimensionName(DimensionHandle) const
 	throw (DimensionNotDefined);
@@ -51,7 +50,6 @@ public:
     void addDimension(const Dimension &);
 
 private:
-    SpaceHandle handle ;
     std::string name ;
     std::vector<Dimension> dimensions ;
 };
@@ -60,5 +58,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.3 2003/11/10 14:54:11 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.4 2004/05/17 23:07:12 breholee Exp $
 

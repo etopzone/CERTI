@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.6 2004/01/09 16:17:43 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.7 2004/05/17 23:06:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,17 +55,7 @@ void
 RoutingSpace::addDimension(const Dimension &d)
 {
     dimensions.push_back(d);
-    assert(dimensions.back().getHandle() == dimensions.size());
-}
-
-// ----------------------------------------------------------------------------
-/** Set the routing space's handle
-    \param h Routing space handle
- */
-void
-RoutingSpace::setHandle(SpaceHandle h)
-{
-    handle = h ;
+    //    assert(dimensions.back().getHandle() == dimensions.size());
 }
 
 // ----------------------------------------------------------------------------
@@ -98,16 +88,6 @@ RoutingSpace::getName() const
 }
 
 // ----------------------------------------------------------------------------
-/** get the routing space's handle
-    \return Handle
- */
-SpaceHandle
-RoutingSpace::getHandle() const
-{
-    return handle ;
-}
-
-// ----------------------------------------------------------------------------
 /** Get the handle of the specified dimension
     \param dimension_name Dimension name
     \return Dimension handle
@@ -121,8 +101,10 @@ RoutingSpace::getDimensionHandle(string dimension_name) const
 	dimensions.end(),
 	NameComparator<Dimension>(dimension_name));
 
-    if (it == dimensions.end()) throw NameNotFound();
-    else return it->getHandle();
+    if (it == dimensions.end())
+	throw NameNotFound();
+    else
+	return it->getHandle();
 }
 
 // ----------------------------------------------------------------------------
@@ -139,8 +121,10 @@ RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
 	dimensions.end(),
 	HandleComparator<Dimension>(dimension_handle));
 
-    if (it == dimensions.end()) throw DimensionNotDefined();
-    else return it->getName();
+    if (it == dimensions.end())
+	throw DimensionNotDefined();
+    else
+	return it->getName();
 }
 
 // ----------------------------------------------------------------------------
@@ -155,4 +139,4 @@ RoutingSpace::size() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.6 2004/01/09 16:17:43 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.7 2004/05/17 23:06:59 breholee Exp $
