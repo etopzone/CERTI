@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 3.3 2003/03/25 17:32:25 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.4 2003/04/09 08:07:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_PRETTYDEBUG_HH
@@ -28,15 +28,17 @@
 
 #include <config.h>
 
+#include "DebugOStream.hh"
+
 #include <cstring>
 #include <iostream>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <iostream>
 
 using std::cout ;
 using std::cerr ;
-
-#include "DebugOStream.hh"
+using std::endl ;
 
 #define pdSEmptyMessage "Pretty Debug Server empty Message."
 
@@ -134,4 +136,4 @@ public:
 
 #endif // _CERTI_PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 3.3 2003/03/25 17:32:25 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.4 2003/04/09 08:07:58 breholee Exp $

@@ -20,16 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 3.0 2003/03/21 18:18:26 breholee Exp $
+// $Id: DebugOStream.hh,v 3.1 2003/04/09 08:04:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
 #define _CERTI_DEBUGOSTREAM_HH
 
 #include <config.h>
-#include <ostream>
-
-using namespace std;
+#include <iostream>
 
 // Attention, defining methods in the class declaration make them
 // inline. All methods in DebugOStream are inline.
@@ -37,12 +35,12 @@ using namespace std;
 class DebugOStream
 {
 private:
-    ostream& ostr;
+    std::ostream& ostr;
     
 public:
     static DebugOStream nullOutputStream;
     
-    DebugOStream(ostream& theostr) : ostr(theostr) {}
+    DebugOStream(std::ostream& theostr) : ostr(theostr) {}
     
     int isNullOstream(void) { 
         return(this != &(nullOutputStream));
@@ -173,7 +171,7 @@ public:
 #endif
 
     //Specifique gcc
-    DebugOStream& operator<<(streambuf* sb)
+    DebugOStream& operator<<(std::streambuf* sb)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << sb;
         return(*this);
@@ -188,21 +186,21 @@ public:
     //  return(*this);
     //}
 
-    DebugOStream& operator<<(ostream& (*pf)(ostream&))
+    DebugOStream& operator<<(std::ostream& (*pf)(std::ostream&))
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr << pf;
         return(*this);
     }
 
-    DebugOStream& operator<<(ios& (*pf)(ios&))
+    DebugOStream& operator<<(std::ios& (*pf)(std::ios&))
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr << pf;
         return(*this);
     }
 
-    DebugOStream& operator<<(ios_base& (*pf)(ios_base&))
+    DebugOStream& operator<<(std::ios_base& (*pf)(std::ios_base&))
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr << pf;
@@ -217,7 +215,7 @@ public:
         return(*this);
     }
    
-    DebugOStream& write(const char* str, streamsize n)
+    DebugOStream& write(const char* str, std::streamsize n)
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr.write(str, n);
@@ -232,21 +230,21 @@ public:
         return(*this);
     }
 
-    DebugOStream& seekp(streampos pos)
+    DebugOStream& seekp(std::streampos pos)
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr.seekp(pos);
         return(*this);
     }
 
-    DebugOStream& seekp(streamoff off, ios_base::seekdir dir)
+    DebugOStream& seekp(std::streamoff off, std::ios_base::seekdir dir)
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             ostr.seekp(off, dir);
         return(*this);
     }
 
-    streampos tellp(void)
+    std::streampos tellp(void)
     {
         if (this != &(DebugOStream::nullOutputStream)) 
             return(ostr.tellp());
@@ -262,4 +260,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 3.0 2003/03/21 18:18:26 breholee Exp $
+// $Id: DebugOStream.hh,v 3.1 2003/04/09 08:04:24 breholee Exp $
