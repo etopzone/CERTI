@@ -20,13 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.5 2003/03/19 08:54:18 breholee Exp $
+// $Id: XmlParser.hh,v 3.6 2003/03/21 12:47:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
 #define _CERTI_XML_PARSER_HH
-
-#ifdef HAVE_XML
 
 // Project
 #include <config.h>
@@ -37,14 +35,17 @@
 #include "PrettyDebug.hh"
 
 // Libraries
+#ifdef HAVE_XML
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#endif
 
 // Standard libraries
 #include <string>
 
 using std::string ;
 
+#ifdef HAVE_XML
 #define NODE_OBJECT_MODEL (const xmlChar*) "objectModel"
 #define NODE_OBJECTS (const xmlChar*) "objects"
 #define NODE_OBJECT_CLASS (const xmlChar*) "objectClass"
@@ -65,6 +66,7 @@ using std::string ;
 #define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
 #define VALUE_TSO (const xmlChar*) "TimeStamp"
 #define VALUE_RO (const xmlChar*) "Receive"
+#endif
 
 namespace certi {
 
@@ -95,7 +97,6 @@ private:
 
 } // namespace certi
 
-#endif // HAVE_XML
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.5 2003/03/19 08:54:18 breholee Exp $
+// $Id: XmlParser.hh,v 3.6 2003/03/21 12:47:56 breholee Exp $
