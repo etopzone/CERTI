@@ -34,8 +34,9 @@ using std::ostream ;
 using std::endl ;
 using std::vector ;
 
-#define FED_MSG_NAME(msg_) fedMessageName[msg_] = #msg_
-#define RTI_MSG_NAME(msg_) rtiMessageName[msg_] = #msg_
+#define STRINGIZE(m) #m
+#define FED_MSG_NAME(msg_) fedMessageName[msg_] = STRINGIZE(msg_)
+#define RTI_MSG_NAME(msg_) rtiMessageName[msg_] = STRINGIZE(msg_)
  
 namespace certi {
 namespace rtia {
@@ -359,4 +360,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.10 2004/03/04 20:19:04 breholee Exp $
+// $Id: Statistics.cc,v 3.11 2004/03/12 19:42:23 breholee Exp $
