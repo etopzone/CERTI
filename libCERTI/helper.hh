@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: helper.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $
+// $Id: helper.hh,v 3.0 2005/03/25 16:07:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HELPER_HH
@@ -61,4 +61,4 @@ private:
 
 #endif // LIBCERTI_HELPER_HH
 
-// $Id: helper.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $
+// $Id: helper.hh,v 3.0 2005/03/25 16:07:31 breholee Exp $
