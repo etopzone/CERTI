@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.5 2003/01/15 12:13:31 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "InteractionBroadcastList.hh"
@@ -85,11 +85,10 @@ InteractionBroadcastList::clear(void)
     delete message;
     message = 0 ;
 
-    list<InteractionBroadcastLine *>::iterator i ;
-    for (i = lines.begin(); i != lines.end() ; i++) {
-        delete (*i);
+    while (!lines.empty()) {
+        delete lines.front();
+        lines.pop_front();
     }
-    clear();
 
     D.Out(pdTerm, "List is now empty.");
 }
@@ -155,4 +154,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.5 2003/01/15 12:13:31 breholee Exp $
