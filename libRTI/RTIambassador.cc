@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.23 2003/04/23 17:24:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -311,7 +311,7 @@ RTIambassador::synchronizationPointAchieved(const char *label)
 }
 
 // ----------------------------------------------------------------------------
-//! Request Federation Save (not implemented)
+//! Request Federation Save.
 void
 RTIambassador::requestFederationSave(const char *label,
                                      const FedTime& theTime)
@@ -319,8 +319,8 @@ RTIambassador::requestFederationSave(const char *label,
            InvalidFederationTime,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -335,13 +335,13 @@ RTIambassador::requestFederationSave(const char *label,
 }
 
 // ----------------------------------------------------------------------------
-//! Request Federation Save (not implemented)
+//! Request Federation Save.
 void
 RTIambassador::requestFederationSave(const char *label)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           SaveInProgress, //not implemented
-           RestoreInProgress, //not implemented
+           SaveInProgress,
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -349,19 +349,20 @@ RTIambassador::requestFederationSave(const char *label)
     Message req, rep ;
 
     req.type = REQUEST_FEDERATION_SAVE ;
+    req.date = (FederationTime)0 ;
     req.setLabel(label);
 
     executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
-//! Federate Save Begun (not implemented).
+//! Federate Save Begun.
 void
 RTIambassador::federateSaveBegun(void)
     throw (SaveNotInitiated,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RestoreInProgress, //not implemented
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -374,13 +375,13 @@ RTIambassador::federateSaveBegun(void)
 }
 
 // ----------------------------------------------------------------------------
-//! Federate Save Complete (not implemented)
+//! Federate Save Complete.
 void
 RTIambassador::federateSaveComplete()
     throw (SaveNotInitiated,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RestoreInProgress, //not implemented
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -393,13 +394,13 @@ RTIambassador::federateSaveComplete()
 }
 
 // ----------------------------------------------------------------------------
-// Federate Save Not Complete (not implemented)
+// Federate Save Not Complete.
 void
 RTIambassador::federateSaveNotComplete()
     throw (SaveNotInitiated,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RestoreInProgress, //not implemented
+           RestoreInProgress,
            RTIinternalError,
            UnimplementedService) //CERTI
 {
@@ -2757,6 +2758,14 @@ RTIambassador::tick(void)
                 fed_amb->federationSynchronized(vers_Fed.getLabel());
                 break;
 
+            case INITIATE_FEDERATE_SAVE:
+                fed_amb->initiateFederateSave(vers_Fed.getLabel());
+                break ;
+
+            case FEDERATION_SAVED:
+                fed_amb->federationSaved();
+                break ;
+
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
                     startRegistrationForObjectClass(vers_Fed.objectClass);
@@ -3082,6 +3091,14 @@ RTIambassador::tick(TickTime /*minimum*/,
             case FEDERATION_SYNCHRONIZED:
                 fed_amb->federationSynchronized(vers_Fed.getLabel());
                 break;
+
+            case INITIATE_FEDERATE_SAVE:
+                fed_amb->initiateFederateSave(vers_Fed.getLabel());
+                break ;
+
+            case FEDERATION_SAVED:
+                fed_amb->federationSaved();
+                break ;
 
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
@@ -3750,4 +3767,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.23 2003/04/23 17:24:09 breholee Exp $

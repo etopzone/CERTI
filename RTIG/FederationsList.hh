@@ -19,22 +19,22 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: FederationsList.hh,v 3.12 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
 #include <config.h>
-
-#include <list>
-using std::list ;
-
 #include "Federation.hh"
 #include "SocketMC.hh"
 #include "SocketServer.hh"
 #include "AuditFile.hh"
 #include "PrettyDebug.hh"
+
+#include <list>
+
+using std::list ;
 
 namespace certi {
 namespace rtig {
@@ -119,6 +119,12 @@ public:
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
+    void requestFederationSave(FederationHandle, FederateHandle, const char *,
+                               FederationTime);
+
+    void federateSaveBegun(FederationHandle, FederateHandle);
+    void federateSaveStatus(FederationHandle, FederateHandle, bool);
+
     // -------------------------
     // -- Federate Management --
     // -------------------------
@@ -130,15 +136,13 @@ public:
                MemoryExhausted,
                RTIinternalError);
 
-    void remove(FederationHandle theHandle,
-                FederateHandle num_federe)
+    void remove(FederationHandle, FederateHandle)
         throw (FederationExecutionDoesNotExist,
                FederateOwnsAttributes,
                FederateNotExecutionMember,
                RTIinternalError);
 
-    void killFederate(FederationHandle theHandle,
-                      FederateHandle theFederateHandle)
+    void killFederate(FederationHandle, FederateHandle)
         throw ();
 
     // ---------------------
@@ -443,7 +447,7 @@ public:
     void deleteRegion(FederationHandle, FederateHandle, long)
         throw (RegionNotKnown, RegionInUse, FederateNotExecutionMember,
                SaveInProgress, RestoreInProgress, RTIinternalError);
-    
+
 private:
     // Private methods
     void checkHandle(FederationHandle theHandle) throw (RTIinternalError);
@@ -455,4 +459,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: FederationsList.hh,v 3.12 2003/04/23 17:24:08 breholee Exp $

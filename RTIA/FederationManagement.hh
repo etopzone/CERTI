@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationManagement.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -75,13 +75,13 @@ public:
     // -- RTI Methods --(Federation Management)
     // -----------------
 
+    void checkFederationSaving(void) throw (SaveInProgress);
+    void checkFederationRestoring(void) throw (RestoreInProgress);
+
     // -- Create/Destroy --
 
-    void createFederationExecution(const char *theName,
-                                   TypeException &e);
-
-    void destroyFederationExecution(const char *theName,
-                                    TypeException &e);
+    void createFederationExecution(const char *theName, TypeException &e);
+    void destroyFederationExecution(const char *theName, TypeException &e);
 
     // -- Join/Resign --
 
@@ -104,6 +104,13 @@ public:
     void announceSynchronizationPoint(const char* label,
                                       const char* tag);
 
+    // Saving
+    void requestFederationSave(const char*, FederationTime, TypeException &);
+    void federateSaveBegun(TypeException &);
+    void federateSaveStatus(bool, TypeException &);
+    void initiateFederateSave(const char *);
+    void federationSavedStatus(bool);
+
 private:
 
     // ------------------------
@@ -115,6 +122,9 @@ private:
     Boolean _est_createur_federation ;
     Boolean _est_membre_federation ;
 
+    bool savingState ;
+    bool restoringState ;
+
     list<char *> synchronizationLabels; //!< Labels being synchronized.
 
     char _nom_federation[MAX_FEDERATION_NAME_LENGTH] ;
@@ -125,4 +135,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationManagement.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $

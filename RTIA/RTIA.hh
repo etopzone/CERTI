@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA.hh,v 3.5 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -79,6 +79,9 @@ private:
     int TOTAL ;
     int nb_evenements ;
 
+    void saveAndRestoreStatus(TypeService type)
+        throw (SaveInProgress, RestoreInProgress);
+
     void processNetworkMessage(NetworkMessage*);
     void processFederateRequest(Message*);
     void chooseFederateProcessing(Message *req, Message &rep, TypeException &e);
@@ -90,4 +93,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA.hh,v 3.5 2003/04/23 17:24:08 breholee Exp $

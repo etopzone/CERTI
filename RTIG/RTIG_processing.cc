@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.8 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.9 2003/04/23 17:24:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -287,6 +287,34 @@ RTIG::processSynchronizationAchieved(Socket *link, NetworkMessage *req)
                                        req->label,
                                        "");
     D.Out(pdTerm, "Federate %u has synchronized.", req->federate);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTIG::processRequestFederationSave(Socket *link, NetworkMessage *req)
+{
+    auditServer->addToLinef("Federation save request.");
+
+    federations->requestFederationSave(req->federation, req->federate,
+                                       req->label, req->date);
+}
+// ----------------------------------------------------------------------------
+void
+RTIG::processFederateSaveBegun(Socket *link, NetworkMessage *req)
+{
+    auditServer->addToLinef("Federate %u save begun.", req->federate);
+
+    federations->federateSaveBegun(req->federation, req->federate);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTIG::processFederateSaveStatus(Socket *link, NetworkMessage *req)
+{
+    auditServer->addToLinef("Federate %u save ended.", req->federate);
+
+    bool status = req->type == m_FEDERATE_SAVE_COMPLETE ;
+    federations->federateSaveStatus(req->federation, req->federate, status);
 }
 
 // ----------------------------------------------------------------------------
@@ -869,4 +897,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.8 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.9 2003/04/23 17:24:09 breholee Exp $

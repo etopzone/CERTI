@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.9 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIG.cc,v 3.10 2003/04/23 17:24:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -157,6 +157,27 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
               msg->federation, msg->federate);
         auditServer->setLevel(8);
         processSynchronizationAchieved(link, msg);
+        break ;
+
+    case m_REQUEST_FEDERATION_SAVE:
+        D.Out(pdTrace, "Request federation save from federate %u.",
+              msg->federate);
+        auditServer->setLevel(8);
+        processRequestFederationSave(link, msg);
+        break ;
+
+    case m_FEDERATE_SAVE_BEGUN:
+        D.Out(pdTrace, "Federate %u begun save.", msg->federate);
+        auditServer->setLevel(8);
+        processFederateSaveBegun(link, msg);
+        break ;
+
+    case m_FEDERATE_SAVE_COMPLETE:
+    case m_FEDERATE_SAVE_NOT_COMPLETE:
+        D.Out(pdTrace, "Federate %u save complete/not complete.",
+              msg->federate);
+        auditServer->setLevel(8);
+        processFederateSaveStatus(link, msg);
         break ;
 
     case m_SET_TIME_REGULATING:
@@ -878,4 +899,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.9 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIG.cc,v 3.10 2003/04/23 17:24:09 breholee Exp $

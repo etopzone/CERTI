@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -30,10 +30,58 @@ namespace rtia {
 static pdCDebug D("RTIA", "(RTIA fed) ");
 
 // ----------------------------------------------------------------------------
+//! Verify that federate is not in saving or restoring state.
+void
+RTIA::saveAndRestoreStatus(TypeService type)
+    throw (SaveInProgress, RestoreInProgress)
+{
+    switch (type) {
+    case RESIGN_FEDERATION_EXECUTION:
+    case TICK_REQUEST:
+    case GET_OBJECT_CLASS_HANDLE:
+    case GET_OBJECT_CLASS_NAME:
+    case GET_ATTRIBUTE_HANDLE:
+    case GET_ATTRIBUTE_NAME:
+    case GET_INTERACTION_CLASS_HANDLE:
+    case GET_INTERACTION_CLASS_NAME:
+    case GET_PARAMETER_HANDLE:
+    case GET_PARAMETER_NAME:
+    case GET_OBJECT_INSTANCE_HANDLE:
+    case GET_OBJECT_INSTANCE_NAME:
+    case GET_SPACE_HANDLE:
+    case GET_SPACE_NAME:
+    case GET_DIMENSION_HANDLE:
+    case GET_DIMENSION_NAME:
+    case GET_ATTRIBUTE_SPACE_HANDLE:
+    case GET_OBJECT_CLASS:
+    case GET_INTERACTION_SPACE_HANDLE:
+    case GET_TRANSPORTATION_HANDLE:
+    case GET_TRANSPORTATION_NAME:
+    case GET_ORDERING_HANDLE:
+    case GET_ORDERING_NAME:
+        break ;
+    case FEDERATE_SAVE_BEGUN:
+    case FEDERATE_SAVE_COMPLETE:
+    case FEDERATE_SAVE_NOT_COMPLETE:
+        fm->checkFederationRestoring();
+        break ;
+    case FEDERATE_RESTORE_COMPLETE:
+    case FEDERATE_RESTORE_NOT_COMPLETE:
+        fm->checkFederationSaving();
+    default:
+        fm->checkFederationSaving();
+        fm->checkFederationRestoring();
+    }
+}
+
+// ----------------------------------------------------------------------------
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 {
+    // Verify not in saving or restoring state.
+    saveAndRestoreStatus(req->type);
+
     e = e_NO_EXCEPTION ;
 
     switch(req->type) {
@@ -119,39 +167,50 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         fm->unregisterSynchronization(req->getLabel(), e);
         break ;
 
+
         // 2.11
     case REQUEST_FEDERATION_SAVE:
-        // unimplemented
+        //nb_requetes[xx]++ ;
+        D.Out(pdTrace, "Receiving Message from Federate, type"
+              " RequestFederationSave.");
+
+        fm->requestFederationSave(req->getLabel(), req->date, e);
         break ;
 
         // 2.13
     case FEDERATE_SAVE_BEGUN:
-        // unimplemented
+        //nb_requetes[xx]++ ;
+        D.Out(pdTrace, "Receiving Message from Federate, type"
+              " FederateSaveBegun.");
+
+        fm->federateSaveBegun(e);
         break ;
 
-        // 2.14(1)
+        // 2.14
     case FEDERATE_SAVE_COMPLETE:
-        // unimplemented
-        break ;
+    case FEDERATE_SAVE_NOT_COMPLETE: {
+        //nb_requetes[xx]++ ;
+        D.Out(pdTrace, "Receiving Message from Federate, type"
+              " FederateSave(Not)Complete.");
 
-        // 2.14(2)
-    case FEDERATE_SAVE_NOT_COMPLETE:
-        // unimplemented
+        bool result = (req->type == FEDERATE_SAVE_COMPLETE) ? true : false ;
+        fm->federateSaveStatus(true, e);
+    }
         break ;
 
         // 2.15
     case REQUEST_FEDERATION_RESTORE:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 2.17(1)
     case FEDERATE_RESTORE_COMPLETE:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 2.17(2)
     case FEDERATE_RESTORE_NOT_COMPLETE:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 3.1(1)
@@ -365,17 +424,17 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         // 4.14(1)
     case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 4.14(2)
     case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 4.16
     case RETRACT:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 5.1
@@ -533,7 +592,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         // 6.4
     case QUERY_MIN_NEXT_EVENT_TIME:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 6.5
@@ -573,7 +632,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         // 6.9
     case FLUSH_QUEUE_REQUEST:
-        // unimplemented
+        e = e_UnimplementedService ;
         break ;
 
         // 7.5
@@ -1137,4 +1196,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $

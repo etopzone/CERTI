@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.6 2003/03/21 15:06:46 breholee Exp $
+// $Id: my_fed.hh,v 3.7 2003/04/23 17:24:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -95,6 +95,12 @@ public:
 
     void federationSynchronized(const char *label)
         throw (FederateInternalError);
+
+    void initiateFederateSave(const char *label)
+        throw (FederateInternalError) {}
+
+    void federationSaved(void)
+        throw (FederateInternalError) {}
 
     void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
                               const char *theTag,

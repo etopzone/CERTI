@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federate.cc,v 3.6 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -31,6 +31,8 @@ namespace rtig {
 //! A new FederateName is allocated. theLink must have been opened before.
 Federate::Federate(const char *the_name, FederateHandle the_handle)
     throw (MemoryExhausted, RTIinternalError)
+    : saving(false), restoring(false)
+
 {
     if ((the_name == NULL) || (the_handle == 0))
         throw RTIinternalError("Bad initialization param for Federate.");
@@ -97,6 +99,31 @@ Federate::setRegulator(bool r)
 }
 
 // ---------------------------------------------------------------------------
+bool
+Federate::isSaving(void) const
+{
+    return saving ;
+}
+
+bool
+Federate::isRestoring(void) const
+{
+    return restoring ;
+}
+
+void
+Federate::setSaving(bool save_status)
+{
+    saving = save_status ;
+}
+
+void
+Federate::setRestoring(bool restore_status)
+{
+    restoring = restore_status ;
+}
+
+// ---------------------------------------------------------------------------
 void
 Federate::addSynchronizationLabel(const char * label)
     throw (RTIinternalError)
@@ -144,4 +171,4 @@ Federate::isSynchronizationLabel(const char * label) const
 
 }}
 
-// $Id: Federate.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federate.cc,v 3.6 2003/04/23 17:24:08 breholee Exp $

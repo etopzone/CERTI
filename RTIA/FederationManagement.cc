@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationManagement.cc,v 3.7 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -29,11 +29,10 @@ namespace rtia {
 
 static pdCDebug D("RTIA_FM", "(RTIA FM) ");
 
-// ------------------------
-// -- FederationManagement --
-// ------------------------
-
+// ----------------------------------------------------------------------------
+//! FederationManagement.
 FederationManagement::FederationManagement(Communications *GC)
+    : savingState(false), restoringState(false)
 {
     comm = GC ;
     tm = NULL ;
@@ -266,7 +265,6 @@ FederationManagement::resignFederationExecution(ResignAction,
         // BUG: Voir DestroyFederation ou ~GF.
         if (!_est_createur_federation)
             _fin_execution = RTI_TRUE ;
-
     }
 }
 
@@ -300,14 +298,13 @@ FederationManagement::registerSynchronization(const char *label,
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        NetworkMessage req, rep ;
+        NetworkMessage req ;
         req.type = m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
         req.federation = _numero_federation ;
         req.federate = federate ;
         req.setLabel(label);
         req.setTag(tag);
         comm->sendMessage(&req);
-        e = rep.exception ;
     }
 }
 
@@ -340,7 +337,7 @@ FederationManagement::unregisterSynchronization(const char *label,
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        NetworkMessage req, rep ;
+        NetworkMessage req ;
 
         req.type = m_SYNCHRONIZATION_POINT_ACHIEVED ;
         req.federation = _numero_federation ;
@@ -348,8 +345,6 @@ FederationManagement::unregisterSynchronization(const char *label,
         req.setLabel(label);
 
         comm->sendMessage(&req);
-
-        e = rep.exception ;
     }
 }
 
@@ -417,6 +412,113 @@ FederationManagement::federationSynchronized(const char *label)
     comm->requestFederateService(&req, &rep);
 }
 
+// ----------------------------------------------------------------------------
+void
+FederationManagement::requestFederationSave(const char *label,
+                                            FederationTime the_time,
+                                            TypeException &e)
+{
+    D.Out(pdInit, "Request for federation save \"%s\".", label);
+
+    assert(label != 0);
+
+    NetworkMessage req ;
+    req.type = m_REQUEST_FEDERATION_SAVE ;
+    req.date = the_time ;
+    req.setLabel(label);
+    comm->sendMessage(&req);
+
+    // Should make sure that RTIG don't have any save or restore recently set.
+    // NetworkMessage rep ;
+    // comm->waitMessage(&rep, m_REQUEST_FEDERATION_SAVE, federate);
+    // e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federateSaveBegun(TypeException &e)
+{
+    D.Out(pdInit, "Beginning federate save.");
+
+    if (!savingState)
+        throw SaveNotInitiated("Federation did not initiate saving.");
+
+    NetworkMessage req ;
+
+    req.type = m_FEDERATE_SAVE_BEGUN ;
+
+    comm->sendMessage(&req);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federateSaveStatus(bool status, TypeException &e)
+{
+    D.Out(pdInit, "Federation %ssaved.", status ? "" : "not ");
+
+    if (!savingState)
+        throw SaveNotInitiated("Federation did not initiate saving.");
+
+    NetworkMessage req ;
+
+    req.type = status ? m_FEDERATE_SAVE_COMPLETE : m_FEDERATE_SAVE_NOT_COMPLETE ;
+
+    comm->sendMessage(&req);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::initiateFederateSave(const char *label)
+{
+    D.Out(pdInit, "Initiate a federate save \"%s\".", label);
+
+    savingState = true ;
+
+    Message req, rep ;
+
+    assert(label != 0);
+
+    req.type = INITIATE_FEDERATE_SAVE ;
+    req.setLabel(label);
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federationSavedStatus(bool status)
+{
+    D.Out(pdInit, "Federation %ssaved.", status ? "" : "not ");
+
+    savingState = false ;
+
+    Message req, rep ;
+
+    req.type = status ? FEDERATION_SAVED : FEDERATION_NOT_SAVED ;
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::checkFederationSaving(void)
+    throw (SaveInProgress)
+{
+    if (savingState) {
+        throw SaveInProgress("Federation is in saving state");
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationManagement::checkFederationRestoring(void)
+    throw (RestoreInProgress)
+{
+    if (restoringState) {
+        throw RestoreInProgress("Federation is in restoring state");
+    }
+}
+
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationManagement.cc,v 3.7 2003/04/23 17:24:08 breholee Exp $

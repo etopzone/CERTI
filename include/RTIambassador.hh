@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.12 2003/04/22 16:43:04 breholee Exp $
+// $Id: RTIambassador.hh,v 3.13 2003/04/23 17:24:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -93,8 +93,8 @@ public:
                CouldNotOpenFED, //not implemented
                ErrorReadingFED, //not implemented
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -142,8 +142,8 @@ public:
                InvalidFederationTime,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -151,8 +151,8 @@ public:
     requestFederationSave(const char *label)
         throw (FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -161,7 +161,7 @@ public:
         throw (SaveNotInitiated,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RestoreInProgress, //not implemented
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -170,7 +170,7 @@ public:
         throw (SaveNotInitiated,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RestoreInProgress, //not implemented
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -179,7 +179,7 @@ public:
         throw (SaveNotInitiated,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RestoreInProgress, //not implemented
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -188,8 +188,8 @@ public:
         throw (SpecifiedSaveLabelDoesNotExist, //CERTI
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -200,7 +200,7 @@ public:
                RTICannotRestore,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
+               SaveInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -211,7 +211,7 @@ public:
                FederateNotExecutionMember,
                RTICannotRestore,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
+               SaveInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -225,8 +225,8 @@ public:
                OwnershipAcquisitionPending, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemeted
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //CERTI
                RTIinternalError);
 
@@ -238,8 +238,8 @@ public:
                FederateOwnsAttributes, //CERTI
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemeted
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //CERTI
                RTIinternalError);
 
@@ -248,8 +248,8 @@ public:
         throw (InteractionClassNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -259,8 +259,8 @@ public:
                InteractionClassNotPublished, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -272,8 +272,8 @@ public:
                AttributeNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -283,8 +283,8 @@ public:
                ObjectClassNotSubscribed, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -295,8 +295,8 @@ public:
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
                FederateLoggingServiceCalls, //not implemented
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -306,8 +306,8 @@ public:
                InteractionClassNotSubscribed, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                SecurityError, //RTI
                RTIinternalError);
 
@@ -322,8 +322,8 @@ public:
                ObjectAlreadyRegistered,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     ObjectHandle
@@ -334,8 +334,8 @@ public:
                ObjectAlreadyRegistered,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     EventRetractionHandle
@@ -349,8 +349,8 @@ public:
                InvalidFederationTime,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -362,8 +362,8 @@ public:
                AttributeNotOwned,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -378,8 +378,8 @@ public:
                InvalidFederationTime,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -391,8 +391,8 @@ public:
                InteractionParameterNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -405,8 +405,8 @@ public:
                InvalidFederationTime,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -416,8 +416,8 @@ public:
                DeletePrivilegeNotHeld,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -427,8 +427,8 @@ public:
                FederateOwnsAttributes, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -443,8 +443,8 @@ public:
                InvalidTransportationHandle, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -456,8 +456,8 @@ public:
                InvalidTransportationHandle, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -467,8 +467,8 @@ public:
                AttributeNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -479,8 +479,8 @@ public:
                AttributeNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -590,8 +590,8 @@ public:
                AttributeNotKnown,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     Boolean
@@ -618,8 +618,8 @@ public:
                InvalidLookahead, //not implemented
                ConcurrentAccessAttempted,
                FederateNotExecutionMember,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -628,8 +628,8 @@ public:
                TimeRegulationWasNotEnabled, //not implemented
                ConcurrentAccessAttempted,
                FederateNotExecutionMember,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -639,8 +639,8 @@ public:
                TimeAdvanceAlreadyInProgress, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -648,13 +648,12 @@ public:
         throw (TimeConstrainedWasNotEnabled, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
-    timeAdvanceRequest(
-                       FedTime& theTime)
+    timeAdvanceRequest(FedTime& theTime)
         throw (TimeAdvanceAlreadyInProgress,
                FederationTimeAlreadyPassed,
                InvalidFederationTime,
@@ -662,8 +661,8 @@ public:
                EnableTimeConstrainedPending, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -689,8 +688,8 @@ public:
                EnableTimeConstrainedPending, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -716,8 +715,8 @@ public:
                EnableTimeConstrainedPending, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -744,24 +743,24 @@ public:
     queryLBTS(FedTime& theTime)
         throw (FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
     queryFederateTime(FedTime& theTime)
         throw (FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
     queryMinNextEventTime(FedTime& theTime)
         throw (FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -770,16 +769,16 @@ public:
                InvalidLookahead, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
     queryLookahead(FedTime& theTime)
         throw (FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -787,8 +786,8 @@ public:
         throw (InvalidRetractionHandle,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError,
                UnimplementedService); //CERTI
 
@@ -803,8 +802,8 @@ public:
                InvalidOrderingHandle, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void
@@ -816,8 +815,8 @@ public:
                InvalidOrderingHandle, //not implemented
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               SaveInProgress, //not implemented
-               RestoreInProgress, //not implemented
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     // Data Distribution Management ------------------------------------------
@@ -1305,4 +1304,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.12 2003/04/22 16:43:04 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.13 2003/04/23 17:24:09 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: FederationsList.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -448,14 +448,14 @@ FederationsList::updateParameter(FederationHandle handle,
 
 // ----------------------------------------------------------------------------
 /*! Called by processRegisterSynchronization and
-    processSynchronizationAchieved.
+  processSynchronizationAchieved.
 */
 void
 FederationsList::manageSynchronization(FederationHandle handle,
-                                       FederateHandle   federate,
-                                       bool             state,
-                                       const char *     label,
-                                       const char *     tag)
+                                       FederateHandle federate,
+                                       bool state,
+                                       const char *label,
+                                       const char *tag)
     throw (FederationAlreadyPaused,
            FederationNotPaused,
            FederateNotExecutionMember,
@@ -468,7 +468,7 @@ FederationsList::manageSynchronization(FederationHandle handle,
     // It may throw FederationExecutionDoesNotExist
     Federation *federation = NULL ;
     searchFederation(handle, federation);
- 
+
     // It may throw a bunch of exceptions.
     if (state)
         federation->registerSynchronization(federate, label, tag);
@@ -476,22 +476,22 @@ FederationsList::manageSynchronization(FederationHandle handle,
         federation->unregisterSynchronization(federate, label);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Called by processRegisterSynchronization.
 void
 FederationsList::broadcastSynchronization(FederationHandle handle,
-                                          FederateHandle   federate,
-                                          const char *     label,
-                                          const char *     tag)
+                                          FederateHandle federate,
+                                          const char *label,
+                                          const char *tag)
     throw (FederationExecutionDoesNotExist,
            RTIinternalError)
 {
     checkHandle(handle); // It may throw RTIinternalError
- 
+
     // It may throw FederationExecutionDoesNotExist
     Federation *federation = NULL ;
     searchFederation(handle, federation);
- 
+
     federation->broadcastSynchronization(federate, label, tag);
 }
 
@@ -1005,7 +1005,7 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 // ----------------------------------------------------------------------------
 long
 FederationsList::createRegion(FederationHandle federation,
-                              FederateHandle federate, 
+                              FederateHandle federate,
                               SpaceHandle space,
                               long nb_extents)
     throw (SpaceNotDefined, InvalidExtents, FederateNotExecutionMember,
@@ -1042,7 +1042,52 @@ FederationsList::deleteRegion(FederationHandle federation,
     f->deleteRegion(federate, region);
 }
 
+// ----------------------------------------------------------------------------
+void
+FederationsList::requestFederationSave(FederationHandle the_federation,
+                                       FederateHandle the_federate,
+                                       const char *the_label,
+                                       FederationTime the_time)
+{
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = 0 ;
+    searchFederation(the_federation, federation);
+
+    federation->requestFederationSave(the_federate, the_label, the_time);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::federateSaveBegun(FederationHandle the_federation,
+                                   FederateHandle the_federate)
+{
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = 0 ;
+    searchFederation(the_federation, federation);
+
+    federation->federateSaveBegun(the_federate);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::federateSaveStatus(FederationHandle the_federation,
+                                    FederateHandle the_federate,
+                                    bool the_status)
+{
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = 0 ;
+    searchFederation(the_federation, federation);
+
+    federation->federateSaveStatus(the_federate, the_status);
+}
+
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.12 2003/04/23 17:24:08 breholee Exp $
 

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.12 2003/04/18 14:03:06 breholee Exp $
+// $Id: Federation.hh,v 3.13 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -180,6 +180,16 @@ public:
                                   const char *label,
                                   const char *tag)
         throw (RTIinternalError);
+
+    // Save Management.
+    void requestFederationSave(FederateHandle, const char *, FederationTime)
+        throw (FederateNotExecutionMember, SaveInProgress);
+
+    void federateSaveBegun(FederateHandle)
+        throw (FederateNotExecutionMember);
+
+    void federateSaveStatus(FederateHandle, bool)
+        throw (FederateNotExecutionMember);
 
     // -----------------------
     // -- Object Management --
@@ -414,7 +424,7 @@ public:
                RestoreInProgress, RTIinternalError);
 
     void deleteRegion(FederateHandle, long)
-        throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, 
+        throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress,
                RTIinternalError);
 
 private:
@@ -433,10 +443,11 @@ private:
     // Private attributes
     bool saveInProgress ;
     bool restoreInProgress ;
+    bool saveStatus ; //!< True if saving was correctly done, false otherwise.
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.12 2003/04/18 14:03:06 breholee Exp $
+// $Id: Federation.hh,v 3.13 2003/04/23 17:24:08 breholee Exp $

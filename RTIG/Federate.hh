@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federate.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -40,7 +40,6 @@ namespace rtig {
 
 class Federate
 {
-    // ATTRIBUTES --------------------------------------------------------------
 private:
     FederateHandle handle ; //!< Federate ID.
     char *name ; //!< Federate name.
@@ -51,7 +50,7 @@ private:
     bool constrained ; //!< = false by default.
 
     list<char *> synchronizationLabels; // List of labels to synchronize.
-    // METHODS -----------------------------------------------------------------
+
 public:
     Federate(const char *the_name, FederateHandle)
         throw (MemoryExhausted, RTIinternalError);
@@ -64,15 +63,24 @@ public:
     void setConstrained(bool);
     void setRegulator(bool);
 
-    void addSynchronizationLabel(const char * label)
+    bool isSaving(void) const ;
+    bool isRestoring(void) const ;
+    void setSaving(bool);
+    void setRestoring(bool);
+
+    void addSynchronizationLabel(const char *)
         throw (RTIinternalError);
-    void removeSynchronizationLabel(const char * label)
+    void removeSynchronizationLabel(const char *)
         throw (RTIinternalError);
-    bool isSynchronizationLabel(const char * label) const ;
+    bool isSynchronizationLabel(const char *) const ;
+
+private:
+    bool saving ;
+    bool restoring ;
 };
 
 }}
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federate.hh,v 3.6 2003/04/23 17:24:08 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.15 2003/04/23 13:49:24 breholee Exp $
+// $Id: Federation.cc,v 3.16 2003/04/23 17:24:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -51,7 +51,8 @@ Federation::Federation(const char *federation_name,
 #endif
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
-    : list<Federate *>()
+    : list<Federate *>(), saveInProgress(false), saveStatus(true),
+      restoreInProgress(false)
 {
     fedparser::FedParser *fed_reader ;
     char file_name[MAX_FEDERATION_NAME_LENGTH + 5] ;
@@ -532,6 +533,80 @@ Federation::broadcastSynchronization(FederateHandle federate,
     msg.setTag(tag);
 
     broadcastAnyMessage(&msg, 0);
+}
+
+// ----------------------------------------------------------------------------
+//! the_time is not managed yet.
+void
+Federation::requestFederationSave(FederateHandle the_federate,
+                                  const char *the_label,
+                                  FederationTime the_time)
+    throw (FederateNotExecutionMember,
+           SaveInProgress)
+{
+    check(the_federate);
+
+    if (saveInProgress)
+        throw SaveInProgress("Already in saving state.");
+
+    for (list<Federate *>::iterator j = begin(); j != end(); j++) {
+        (*j)->setSaving(true);
+    }
+
+    saveStatus = true ;
+    saveInProgress = true ;
+
+    NetworkMessage msg ;
+    msg.type = m_INITIATE_FEDERATE_SAVE ;
+    msg.federate = the_federate ;
+    msg.federation = handle ;
+    msg.setLabel(the_label);
+
+    broadcastAnyMessage(&msg, 0);
+}
+
+// ----------------------------------------------------------------------------
+/*! Received from a federate to inform a save has been received and is being
+  processed.
+  Maybe, a timeout should be set to determine if federate still alive.
+*/
+void
+Federation::federateSaveBegun(FederateHandle the_federate)
+    throw (FederateNotExecutionMember)
+{
+    check(the_federate);
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
+    throw (FederateNotExecutionMember)
+{
+    Federate * federate = getByHandle(the_federate);
+    federate->setSaving(false);
+
+    if (!the_status)
+        saveStatus = false ;
+
+    // Verify that all federates save ended (complete or not).
+    for (list<Federate *>::iterator j = begin(); j != end(); j++) {
+        if ((*j)->isSaving())
+            return ;
+    }
+
+    // Send end save message.
+    NetworkMessage msg ;
+
+    msg.type = saveStatus ? m_FEDERATION_SAVED : m_FEDERATION_NOT_SAVED ;
+
+    msg.federate = the_federate ;
+    msg.federation = handle ;
+
+    broadcastAnyMessage(&msg, 0);
+
+    // Reinitialize state.
+    saveStatus = true ;
+    saveInProgress = false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1273,7 +1348,7 @@ Federation::createRegion(FederateHandle federate,
 void
 Federation::deleteRegion(FederateHandle federate,
                          long region)
-    throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, 
+    throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress,
            RTIinternalError)
 {
     this->check(federate);
@@ -1290,5 +1365,5 @@ Federation::deleteRegion(FederateHandle federate,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.15 2003/04/23 13:49:24 breholee Exp $
+// $Id: Federation.cc,v 3.16 2003/04/23 17:24:08 breholee Exp $
 
