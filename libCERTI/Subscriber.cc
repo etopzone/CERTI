@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.cc,v 3.7 2005/03/11 13:36:57 breholee Exp $
+// $Id: Subscriber.cc,v 3.8 2005/03/15 14:34:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,7 +36,7 @@ Subscriber::Subscriber(FederateHandle h)
 
 // ----------------------------------------------------------------------------
 // Constructor
-Subscriber::Subscriber(FederateHandle h, RegionImp *r)
+Subscriber::Subscriber(FederateHandle h, const RegionImp *r)
     : handle(h), region(r)
 {
 }
@@ -49,7 +49,7 @@ Subscriber::getHandle() const
 }
 
 // ----------------------------------------------------------------------------
-RegionImp *
+const RegionImp *
 Subscriber::getRegion() const
 {
     return region ;
@@ -57,7 +57,7 @@ Subscriber::getRegion() const
 
 // ----------------------------------------------------------------------------
 bool
-Subscriber::match(FederateHandle fed, RegionImp *r) const
+Subscriber::match(FederateHandle fed, const RegionImp *r) const
 {
     return fed == handle && r == region ;
 }
@@ -70,12 +70,9 @@ Subscriber::match(FederateHandle fed, RegionImp *r) const
 bool
 Subscriber::match(const RegionImp *r) const
 {
-    if (region == 0 || r == 0)
-	return true ;
-    else
-	return region->overlaps(*r);
+    return region == 0 || r == 0 || region->overlaps(*r);
 }
 
 } // namespace certi
 
-// $Id: Subscriber.cc,v 3.7 2005/03/11 13:36:57 breholee Exp $
+// $Id: Subscriber.cc,v 3.8 2005/03/15 14:34:51 breholee Exp $
