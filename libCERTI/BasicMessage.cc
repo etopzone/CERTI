@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.2 2003/11/21 16:14:34 breholee Exp $
+// $Id: BasicMessage.cc,v 3.3 2004/03/04 19:38:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
@@ -69,7 +69,7 @@ BasicMessage::writeExtents(MessageBody &body) const
 	body.writeLongInt(n);
 	D[pdDebug] << "Extent with " << n << " range(s)" << endl ;
 
-	for (int i = 0 ; i < extents.size(); ++i) {
+	for (unsigned int i = 0 ; i < extents.size(); ++i) {
 	    const Extent &e = extents[i] ;
 
 	    for (int h = 1 ; h <= n ; ++h) {
@@ -109,4 +109,4 @@ BasicMessage::readExtents(const MessageBody &body)
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.2 2003/11/21 16:14:34 breholee Exp $
+// $Id: BasicMessage.cc,v 3.3 2004/03/04 19:38:21 breholee Exp $
