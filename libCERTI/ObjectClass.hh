@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.15 2003/07/09 16:05:22 breholee Exp $
+// $Id: ObjectClass.hh,v 3.16 2003/07/10 21:42:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -258,12 +258,12 @@ private:
     //! This Handle is the greatest handle of the class' subscribers.
     FederateHandle MaxSubscriberHandle ;
 
-    list<ObjectClassAttribute *> attributeSet ;
-    list<Object *> objectSet ;
+    std::list<ObjectClassAttribute *> attributeSet ;
+    std::list<Object *> objectSet ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.15 2003/07/09 16:05:22 breholee Exp $
+// $Id: ObjectClass.hh,v 3.16 2003/07/10 21:42:44 breholee Exp $
