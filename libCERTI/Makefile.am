@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.11 2003/10/27 10:14:11 breholee Exp $ 
+## $Id: Makefile.am,v 3.12 2003/10/27 14:10:09 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -41,4 +41,6 @@ libCERTI_la_LDFLAGS = -release 3.0.1
 
 LDADD = @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.11 2003/10/27 10:14:11 breholee Exp $
+EXTRA_DIST = syntax.h
+
+## EOF $Id: Makefile.am,v 3.12 2003/10/27 14:10:09 breholee Exp $
