@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.cc,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: FedRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedRegion.hh"
@@ -31,8 +31,9 @@ namespace certi {
 
 // ----------------------------------------------------------------------------
 FedRegion::FedRegion(RegionHandle h, SpaceHandle s, const vector<Extent> &ext)
-    : BaseRegion(h, ext), space(s), coExtents(ext)
+    : BaseRegion(h), space(s), coExtents(ext)
 {
+    setExtents(ext);
 }
 
 // ----------------------------------------------------------------------------
@@ -139,4 +140,4 @@ FedRegion::commit()
 
 } // namespace certi
 
-// $Id: FedRegion.cc,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: FedRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
