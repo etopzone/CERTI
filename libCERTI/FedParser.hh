@@ -20,26 +20,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.4 2003/01/28 23:41:30 breholee Exp $
+// $Id: FedParser.hh,v 3.5 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
 #define _CERTI_FED_PARSER_HH
 
+// Project
 #include <config.h>
+#include "RootObject.hh"
+//#include "fed_file.hh"
+//#include "parser.hh"
+#include "PrettyDebug.hh"
 
+// Standard libraries
 #include <fstream>
+#include <iostream>
 using std::ifstream;
 using std::ios;
-
-#include <iostream>
 using std::cout;
 using std::endl;
-
-#include "RootObject.hh"
-#include "fed_file.hh"
-#include "parser.hh"
-#include "PrettyDebug.hh"
 
 #define ZEOF ~0u // -1 for unsigned type (Standard C)
 
@@ -48,8 +48,81 @@ using std::endl;
 #define CREAD_MAX_OBJ_COUNT 100 // Max number of Object classes, attributes,
 // Interaction Classes, etc.
 
+#define FED_STR_FED          "fed"
+#define FED_STR_OBJECTS      "objects"
+#define FED_STR_INTERACTIONS "interactions"
+#define FED_STR_CLASS        "class"
+#define FED_STR_ATTRIBUTE    "attribute"
+#define FED_STR_PARAMETER    "parameter"
+#define FED_STR_SECLEVEL     "sec_level"
+#define FED_STR_FEDERATE     "federate"
+
+#define FED_STR_RELIABLE     "FED_RELIABLE"
+#define FED_STR_BESTEFFORT   "FED_BEST_EFFORT"
+
+#define FED_STR_TIMESTAMP    "FED_TIMESTAMP"
+#define FED_STR_RECEIVE      "FED_RECEIVE"
+
 namespace certi {
 namespace fedparser {
+
+union Object;
+
+struct List {
+  int type;
+  union Object *first; // List(nested list) or Atom or String
+  union Object *next; // List(if there are other elements) or Nil
+};
+// A list is composed of a first element 'first', that can be an
+// Atom or a List, and of the rest of the elements, pointed by
+// Next. Next can be a List or a Nil object.
+
+struct Atom {
+  int type;
+  int length;
+  char *name;
+};
+
+struct Nil {
+  int type;
+};
+
+struct String {
+  int type;
+  int length;
+  char *name;
+};
+
+union Object {
+  int type;
+  struct List list;
+  struct Atom atom;
+  struct Nil nil;
+  struct String str;
+};
+
+typedef union Object Object;
+
+#define ATOM_TYPE 0
+#define LIST_TYPE 1
+#define STRING_TYPE 2
+#define NIL_TYPE 3
+
+typedef enum {
+  NONE,
+  FED, // Reading a FED list
+  OBJ, // Reading an object class definition
+  INT, // Reading an interaction class definition
+  CLASSOBJ, // Reading an object subclass definition
+  CLASSINT, // Reading an interaction subclass definition
+  ATTRIB, // Reading an attribute definition
+  PARAM, // Reading a parameter definition
+  SECLEVEL, // Waiting for a security level name
+  FEDERATE_NAME, // Waiting for a federate name
+  FEDERATE_LEVEL // Waiting for a federate level
+} AtomType;
+
+
 
 class FedParser
 {
@@ -70,6 +143,7 @@ public:
 	  SecurityError,
 	  RTIinternalError);
 
+    static void freeObject(Object *x);
 private:
 
   // ------------------------------------------
@@ -212,9 +286,8 @@ private:
   char FederateNameBuffer[MAX_FEDERATE_NAME_LENGTH+1];
 };
 
-}
-}
+}} // namespace certi/fedparser
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.4 2003/01/28 23:41:30 breholee Exp $
+// $Id: FedParser.hh,v 3.5 2003/02/17 09:17:03 breholee Exp $

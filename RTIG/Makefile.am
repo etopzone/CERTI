@@ -1,6 +1,5 @@
 ## CERTI RTIG Makefile.am 
-## Copyright (C) 2001, 2002, 2003 ONERA
-## $Id: Makefile.am,v 3.2 2003/01/20 17:45:49 breholee Exp $
+## $Id: Makefile.am,v 3.3 2003/02/17 09:17:03 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -22,4 +21,4 @@ RTIG.cc RTIG_processing.cc Trace.cc cmdline.c getopt1.c getopt.c
 LDADD = -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lCERTI	\
 -lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.2 2003/01/20 17:45:49 breholee Exp $
+## EOF $Id: Makefile.am,v 3.3 2003/02/17 09:17:03 breholee Exp $

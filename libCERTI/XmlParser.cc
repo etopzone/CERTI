@@ -5,12 +5,12 @@
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.1 2003/01/20 17:45:49 breholee Exp $
+// $Id: XmlParser.cc,v 3.2 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -29,7 +29,7 @@
 
 namespace certi {
 
-static pdCDebug D("XMLPARSER", "(xmlparser) ");
+static pdCDebug D("XMLPARSER", "(XmlParser) ");
 
 XmlParser::XmlParser(RootObject* r)
 {
@@ -39,6 +39,7 @@ XmlParser::XmlParser(RootObject* r)
     freeInteractionClassHandle = 1 ;
     freeAttributeHandle = 1 ;
     freeParameterHandle = 1 ;
+    freeSpaceHandle = 1 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -46,6 +47,7 @@ XmlParser::XmlParser(RootObject* r)
 RootObject*
 XmlParser::parse(string s)
 {
+    D.Out(pdTrace, "Starting to parse XML file");
     filename = s ;
 
     // transportation = HLAreliable
@@ -75,9 +77,11 @@ XmlParser::parse(string s)
     }
 
     // Main loop
+    D.Out(pdTrace, "XML file looks ok, starting main loop");
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_OBJECTS))) {
+            D.Out(pdTrace, "Found a group of object classes");
             xmlNodePtr prev = cur ;
             cur = cur->xmlChildrenNode ;
             while (cur != NULL) {
@@ -89,6 +93,7 @@ XmlParser::parse(string s)
             cur = prev ;
         }
         if ((!xmlStrcmp(cur->name, NODE_INTERACTIONS))) {
+            D.Out(pdTrace, "Found a group of interaction classes");
             xmlNodePtr prev = cur ;
             cur = cur->xmlChildrenNode ;
             while (cur != NULL) {
@@ -97,6 +102,12 @@ XmlParser::parse(string s)
                 }
                 cur = cur->next ;      
             }
+            cur = prev ;
+        }
+        if ((!xmlStrcmp(cur->name, NODE_ROUTING_SPACE))) {
+            D.Out(pdTrace, "Found a routing space");
+            xmlNodePtr prev = cur ;
+            this->parseRoutingSpace();
             cur = prev ;
         }
         cur = cur->next ;
@@ -167,7 +178,7 @@ void
 XmlParser::parseInteraction(Interaction* parent)
 {
     xmlNodePtr prev = cur ;
-    Interaction* current = new Interaction() ;
+    Interaction* current = new Interaction();
     if (current == 0) {
         D.Out(pdError, "Memory exhausted in InteractionClass allocation.");
         throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
@@ -214,8 +225,50 @@ XmlParser::parseInteraction(Interaction* parent)
     cur = prev ;
 }
 
+// ----------------------------------------------------------------------------
+//! Parse a routing space
+void
+XmlParser::parseRoutingSpace(void)
+{
+    xmlNodePtr prev = cur ;
+    RoutingSpace *current = new RoutingSpace();
+    if (current == 0) {
+        D.Out(pdError, "Memory exhausted in RoutingSpace allocation.");
+        throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
+    }
+    current->setHandle(freeSpaceHandle++);
+    current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+    root->addRoutingSpace(current);
+
+    // Dimensions
+    cur = cur->xmlChildrenNode ;
+    while (cur != NULL) {
+        if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
+            Dimension* dimension = new Dimension();
+            dimension->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+            current->addDimension(dimension);
+        }
+        cur = cur->next ;
+    }
+    cur = prev ;
+}
+
+// ----------------------------------------------------------------------------
+//! is the XML parser available ?
+bool
+XmlParser::exists(void)
+{
+    return true ;
+}
+
 } // namespace certi
 
+#else // !HAVE_XML
+namespace certi {
+XmlParser::XmlParser(RootObject *) { } ;
+RootObject *XmlParser::parse(string) { return 0 ; }
+bool XmlParser::exists(void) { return false ; }
+}
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.1 2003/01/20 17:45:49 breholee Exp $
+// $Id: XmlParser.cc,v 3.2 2003/02/17 09:17:04 breholee Exp $

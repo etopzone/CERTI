@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -72,7 +72,7 @@ void FedParser::allocateAndRegisterInteractionClass(int index)
     object name is freed. Object memory is freed.
 */
 void
-FreeObject(Object *x)
+FedParser::freeObject(Object *x)
 {
   switch(x->type) {
   case ATOM_TYPE: {
@@ -481,7 +481,7 @@ void FedParser::storeList(List *x, const char *Header)
     throw RTIinternalError("Illegal type for next in List Object.");
   }
 
-  FreeObject(next);
+  FedParser::freeObject(next);
 }
 
 // ---------------------------------------------------------------------------
@@ -523,7 +523,7 @@ FedParser::storeObject(Object *x, const char *Header)
     break;
   }
 
-  FreeObject(x);
+  FedParser::freeObject(x);
 }
 
 // ---------------------------------------------------------------------------
@@ -579,6 +579,6 @@ void FedParser::storeString(String *x)
   }
 }
 
-}}
+}} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $

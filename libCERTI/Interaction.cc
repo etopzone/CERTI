@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.8 2003/01/29 18:22:47 breholee Exp $
+// $Id: Interaction.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -120,13 +120,13 @@ void
 Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
 {
     // 1. Set InteractionHandle to local class Handle.
-    ibList->message->InteractionHandle = handle ;
+    ibList->message->interactionClass = handle ;
 
     // 2. Update message Parameters list by removing child's Parameters.
-    for (int i = 0  ; i < ibList->message->HandleArraySize  ; ) {
+    for (int i = 0  ; i < ibList->message->handleArraySize  ; ) {
         // If the Parameter is not in that class, remove it from the message.
         try {
-            getParameterByHandle(ibList->message->HandleArray[i]);
+            getParameterByHandle(ibList->message->handleArray[i]);
             i++ ;
         }
         catch(InteractionParameterNotDefined) {
@@ -506,17 +506,17 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
         NetworkMessage *answer = new NetworkMessage ;
-        answer->Type = m_RECEIVE_INTERACTION ;
-        answer->Exception = e_NO_EXCEPTION ;
-        answer->NumeroFederation = server->federation();
-        answer->NumeroFedere = federate_handle ;
-        answer->InteractionHandle = handle ; // Interaction Class Handle
+        answer->type = m_RECEIVE_INTERACTION ;
+        answer->exception = e_NO_EXCEPTION ;
+        answer->federation = server->federation();
+        answer->federate = federate_handle ;
+        answer->interactionClass = handle ; // Interaction Class Handle
 
-        strcpy(answer->Label, the_tag);
+        strcpy(answer->label, the_tag);
 
-        answer->HandleArraySize = list_size ;
+        answer->handleArraySize = list_size ;
         for (int i = 0  ; i < list_size  ; i++) {
-            answer->HandleArray[i] = parameter_list[i] ;
+            answer->handleArray[i] = parameter_list[i] ;
             answer->setValue(i, value_list[i]);
         }
 
@@ -636,4 +636,4 @@ Interaction::subscribe(bool, Subscriber*)
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.8 2003/01/29 18:22:47 breholee Exp $
+// $Id: Interaction.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $

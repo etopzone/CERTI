@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.5 2003/01/15 12:13:31 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.6 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "InteractionBroadcastList.hh"
@@ -43,7 +43,8 @@ InteractionBroadcastList::addFederate(FederateHandle federate)
 
     // If NO, add a new one, in the bsWaiting State.
     if (line == 0) {
-        line = new InteractionBroadcastLine(federate, bsWaiting);
+        line = new InteractionBroadcastLine(federate, 
+                                            InteractionBroadcastLine::waiting);
         lines.push_front(line);
         D.Out(pdRegister, "Adding new line in list for Federate %d.", federate);
     }
@@ -63,9 +64,11 @@ InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
     message  = theMsg;
 
     // Add reference of the sender(so it does not receive its own message).
-    if(message->NumeroFedere != 0) {
+    if(message->federate != 0) {
         InteractionBroadcastLine *firstLine;
-        firstLine = new InteractionBroadcastLine(message->NumeroFedere, bsSent);
+        firstLine = 
+            new InteractionBroadcastLine(message->federate, 
+                                         InteractionBroadcastLine::sent);
         lines.push_front(firstLine);
     }
 }
@@ -120,7 +123,7 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
     list<InteractionBroadcastLine *>::iterator i ;
     for (i = lines.begin(); i != lines.end() ; i++) {
         // If federate is waiting for a message.
-        if ((*i)->state == bsWaiting) {
+        if ((*i)->state == InteractionBroadcastLine::waiting) {
 
             // 1. Send message to federate.
             D.Out(pdProtocol, "Broadcasting message to Federate %d.", 
@@ -144,7 +147,7 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
             }
 
             // 2. Mark federate as having received the message.
-            (*i)->state = bsSent;
+            (*i)->state = InteractionBroadcastLine::sent;
         }
         else
             D.Out(pdProtocol, "No message sent to Federate %d.", 
@@ -154,4 +157,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.5 2003/01/15 12:13:31 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.6 2003/02/17 09:17:03 breholee Exp $

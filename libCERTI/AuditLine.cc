@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.3 2003/01/08 13:22:43 breholee Exp $
+// $Id: AuditLine.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,16 +67,16 @@ AuditLine::~AuditLine(void)
      - comment : detailed comment.
 */
 void 
-AuditLine::write(ofstream & AuditFile)
+AuditLine::write(ofstream &audit_file)
 {
-    AuditFile << date << ' ' << federation << ' ' << federate << ' '
-              << type << ' ' << level << ' ' << status << ' '
-              << comment << endl;
-
-    AuditFile.flush();
+    audit_file << date << ' ' << federation << ' ' << federate << ' '
+               << type << ' ' << level << ' ' << status << ' '
+               << comment << endl;
+    
+    audit_file.flush();
 }
 
-}
+} // namespace certi
 
-// $Id: AuditLine.cc,v 3.3 2003/01/08 13:22:43 breholee Exp $
+// $Id: AuditLine.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
 

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.2 2003/01/17 23:22:03 breholee Exp $
+// $Id: SocketServer.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
@@ -119,7 +119,7 @@ private:
     // The Server socket object(used for Accepts)
     SocketTCP *ServerSocketTCP;
     SocketUDP *ServerSocketUDP;
-    int port;
+    //    int port;
 
     // ---------------------
     // -- Private Methods --
@@ -132,4 +132,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.2 2003/01/17 23:22:03 breholee Exp $
+// $Id: SocketServer.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $

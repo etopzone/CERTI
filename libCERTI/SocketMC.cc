@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $
+// $Id: SocketMC.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -174,7 +174,7 @@ void SocketMC::sendMC(NetworkMessage *message)
 {
   int cnt;
 
-  message->NumeroMessage=_num_msg;
+  message->number=_num_msg;
   _num_msg++;
   assert(_est_init_mc);
   assert(message != NULL);
@@ -236,5 +236,5 @@ int SocketMC::timeoutMC(int sec, int usec)
 
 }
 
-// EOF $Id: SocketMC.cc,v 3.3 2003/01/15 10:12:29 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $
 

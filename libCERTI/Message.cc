@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.4 2003/01/29 18:27:52 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: Message.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include <config.h>
 
@@ -33,15 +33,15 @@ namespace certi {
 
 Message::Message()
 {
-  Date                = 0.0;
-  Exception           = e_NO_EXCEPTION;
-  RaisonException [0] = '\0';
-  NomFedere [0]       = '\0';
-  NomFederation [0]   = '\0';
-  Tag [0]             = '\0';
-  Name [0]            = '\0';
-  Label [0]           = '\0';
-  HandleArraySize     = 0;
+    date = 0.0 ;
+    exception = e_NO_EXCEPTION ;
+    exceptionReason[0] = '\0' ;
+    federateName[0] = '\0' ;
+    federationName[0] = '\0' ;
+    tag[0] = '\0' ;
+    name[0] = '\0' ;
+    label[0] = '\0' ;
+    handleArraySize = 0 ;
 }
 
 
@@ -59,20 +59,20 @@ Message::~Message()
 // --------------
 
 char *Message::getValue(int Rank, char *Value)
-    throw(RTIinternalError)
+    throw (RTIinternalError)
 {
-  // Pre-Checking
+    // Pre-Checking
 
-  if((Rank < 0) ||(Rank >= HandleArraySize))
-    throw RTIinternalError("Bad Rank in Message.");
+    if ((Rank < 0) ||(Rank >= handleArraySize))
+        throw RTIinternalError("Bad Rank in Message.");
 
-  // Getting Value
+    // Getting Value
 
-  if(Value != NULL) {
-    strcpy(Value, ValueArray [Rank]);
-    return NULL;
-  } else
-    return strdup(ValueArray [Rank]);
+    if (Value != NULL) {
+        strcpy(Value, valueArray[Rank]);
+        return NULL ;
+    } else
+        return strdup(valueArray[Rank]);
 
 }
 
@@ -83,20 +83,20 @@ char *Message::getValue(int Rank, char *Value)
 
 ParameterValue *Message::getValueArray()
 {
-  int             i;
-  ParameterValue *NewValueArray = NULL;
+    int i ;
+    ParameterValue *NewValueArray = NULL ;
 
-  NewValueArray =(ParameterValue *) calloc(HandleArraySize, 
-					     sizeof(ParameterValue));
+    NewValueArray = (ParameterValue *) calloc(handleArraySize,
+                                              sizeof(ParameterValue));
 
-  if(NewValueArray == NULL)
-    throw RTIinternalError("No memory.");
+    if (NewValueArray == NULL)
+        throw RTIinternalError("No memory.");
 
-  for(i = 0; i < HandleArraySize; i++)
-    getValue(i, NewValueArray [i]);
+    for (i = 0 ; i < handleArraySize ; i++)
+        getValue(i, NewValueArray[i]);
 
-  return NewValueArray;
-}  
+    return NewValueArray ;
+}
 
 
 // --------------
@@ -105,10 +105,10 @@ ParameterValue *Message::getValueArray()
 
 void Message::setLabel(const char *NewLabel)
 {
-  if(strlen(NewLabel) > MAX_USER_TAG_LENGTH)
-    throw ValueLengthExceeded("Label too long to fit in Message.");
+    if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
+        throw ValueLengthExceeded("Label too long to fit in Message.");
 
-  strcpy(Label, NewLabel);
+    strcpy(label, NewLabel);
 }
 
 
@@ -118,10 +118,10 @@ void Message::setLabel(const char *NewLabel)
 
 void Message::setName(const char *NewName)
 {
-  if(strlen(NewName) > MAX_USER_TAG_LENGTH)
-    throw ValueLengthExceeded("Name too long to fit in Message.");
+    if (strlen(NewName) > MAX_USER_TAG_LENGTH)
+        throw ValueLengthExceeded("Name too long to fit in Message.");
 
-  strcpy(Name, NewName);
+    strcpy(name, NewName);
 }
 
 
@@ -131,10 +131,10 @@ void Message::setName(const char *NewName)
 
 void Message::setFederationName(const char *NewNomFederation)
 {
-  if(strlen(NewNomFederation) > MAX_FEDERATION_NAME_LENGTH)
-    throw ValueLengthExceeded("NomFederation too long to fit in Message.");
+    if (strlen(NewNomFederation) > MAX_FEDERATION_NAME_LENGTH)
+        throw ValueLengthExceeded("NomFederation too long to fit in Message.");
 
-  strcpy(NomFederation, NewNomFederation);
+    strcpy(federationName, NewNomFederation);
 }
 
 
@@ -144,10 +144,10 @@ void Message::setFederationName(const char *NewNomFederation)
 
 void Message::setFederateName(const char *NewNomFedere)
 {
-  if(strlen(NewNomFedere) > MAX_FEDERATE_NAME_LENGTH)
-    throw ValueLengthExceeded("NomFedere too long to fit in Message.");
+    if (strlen(NewNomFedere) > MAX_FEDERATE_NAME_LENGTH)
+        throw ValueLengthExceeded("NomFedere too long to fit in Message.");
 
-  strcpy(NomFedere, NewNomFedere);
+    strcpy(federateName, NewNomFedere);
 }
 
 
@@ -157,11 +157,11 @@ void Message::setFederateName(const char *NewNomFedere)
 
 void Message::setTag(const char *NewTag)
 {
-  if(strlen(NewTag) > MAX_USER_TAG_LENGTH)
-    throw ValueLengthExceeded("Tag too long to fit in Message.");
-  
-  if(NewTag != NULL) strcpy(Tag, NewTag);
-  else strcpy(Tag, "");
+    if (strlen(NewTag) > MAX_USER_TAG_LENGTH)
+        throw ValueLengthExceeded("Tag too long to fit in Message.");
+
+    if (NewTag != NULL) strcpy(tag, NewTag);
+    else strcpy(tag, "");
 }
 
 
@@ -170,84 +170,86 @@ void Message::setTag(const char *NewTag)
 // --------------
 
 void Message::setValue(int Rank, const char *Value)
-  throw(RTIinternalError)
+    throw (RTIinternalError)
 {
-  // Pre-Checking
+    // Pre-Checking
 
-  if((Value == NULL) ||(strlen(Value) > MAX_BYTES_PER_VALUE))
-    throw RTIinternalError("Bad Value for message.");
+    if ((Value == NULL) ||(strlen(Value) > MAX_BYTES_PER_VALUE))
+        throw RTIinternalError("Bad Value for message.");
 
-  if((Rank < 0) ||(Rank >= HandleArraySize))
-    throw RTIinternalError("Bad Rank for message.");
+    if ((Rank < 0) ||(Rank >= handleArraySize))
+        throw RTIinternalError("Bad Rank for message.");
 
-  // Setting Value
+    // Setting Value
 
-  strcpy(ValueArray [Rank], Value);
+    strcpy(valueArray[Rank], Value);
 }
 
 
-Message& Message::operator =(const Message& msg)
+Message &
+Message::operator = (const Message& msg)
 {
-  Type          = msg.Type;
-  Date          = msg.Date;
-  Bool          = msg.Bool;
-  Lookahead     = msg.Lookahead;
-  Exception     = msg.Exception;
+    type = msg.type ;
+    date = msg.date ;
+    boolean = msg.boolean ;
+    lookahead = msg.lookahead ;
+    exception = msg.exception ;
 
-  strcpy(RaisonException, msg.RaisonException);
-  strcpy(NomFedere,       msg.NomFedere);
-  strcpy(NomFederation,   msg.NomFederation);
+    strcpy(exceptionReason, msg.exceptionReason);
+    strcpy(federateName, msg.federateName);
+    strcpy(federationName, msg.federationName);
 
-  NumeroFedere  = msg.NumeroFedere;
-  RAction       = msg.RAction;
-  IDcount       = msg.IDcount;
-  FirstID       = msg.FirstID;
-  LastID        = msg.LastID;
+    federate = msg.federate ;
+    resignAction = msg.resignAction ;
+    idCount = msg.idCount ;
+    firstId = msg.firstId ;
+    lastId = msg.lastId ;
 
-  objectClassHandle  = msg.objectClassHandle ;
-  InteractionHandle = msg.InteractionHandle;
-  AttribHandle  = msg.AttribHandle;
-  ParamHandle   = msg.ParamHandle;
-  Objectid      = msg.Objectid;
+    objectClass = msg.objectClass ;
+    interactionClass = msg.interactionClass ;
+    attribute = msg.attribute ;
+    parameter = msg.parameter ;
+    object = msg.object ;
 
-  strcpy(Tag,  msg.Tag);
-  strcpy(Name, msg.Name);
+    strcpy(tag, msg.tag);
+    strcpy(name, msg.name);
 
-  Transport     = msg.Transport;
-  Order         = msg.Order;
+    transport = msg.transport ;
+    order = msg.order ;
 
-  Retract.theEventTime    = msg.Retract.theEventTime;
-  Retract.theSerialNumber = msg.Retract.theSerialNumber;
-  Retract.sendingFederate = msg.Retract.sendingFederate;
+    eventRetraction.theEventTime = msg.eventRetraction.theEventTime ;
+    eventRetraction.theSerialNumber = msg.eventRetraction.theSerialNumber ;
+    eventRetraction.sendingFederate = msg.eventRetraction.sendingFederate ;
 
-  strcpy(Label, msg.Label);
+    strcpy(label, msg.label);
 
-  HandleArraySize = msg.HandleArraySize;
+    handleArraySize = msg.handleArraySize ;
 
-  int i;
-  for(i=0; i<HandleArraySize; i++)
-    HandleArray[i] = msg.HandleArray[i];
+    int i ;
+    for (i=0 ; i < handleArraySize ; i++)
+        handleArray[i] = msg.handleArray[i] ;
 
-  for(i=0; i<<HandleArraySize; i++)
-    strcpy(ValueArray[i], msg.ValueArray[i]);
+    for (i=0 ; i<<handleArraySize ; i++)
+        strcpy(valueArray[i], msg.valueArray[i]);
 
-  return *this;
+    return *this ;
 }
 
-void Message::display(char *s)
+void
+Message::display(char *s)
 {
-  printf("   --- MESSAGE --- %s ---\n", s);
-  printf("    Type=%d:\n", Type);
-  printf("    Date=%f:\n", Date);
-  printf("    Exception=%d:\n", Exception);
-  printf("    ObjectHandle=%ld:\n", objectClassHandle);
-  printf("    InteractionHandle=%ld:\n", InteractionHandle);
-  printf("    AttribHandle=%ld:\n", AttribHandle);
-  printf("    ParamHandle=%ld:\n", ParamHandle);
-  printf("    Objectid=%ld:\n", Objectid);
-  printf("    HandleArraySize=%d:\n", HandleArraySize);
+    printf(" --- MESSAGE --- %s ---\n", s);
+    printf(" type=%d:\n", type);
+    printf(" date=%f:\n", date);
+    printf(" exception=%d:\n", exception);
+    printf(" objectClass=%ld:\n", objectClass);
+    printf(" interactionClass=%ld:\n", interactionClass);
+    printf(" attribute=%ld:\n", attribute);
+    printf(" parameter=%ld:\n", parameter);
+    printf(" object=%ld:\n", object);
+    printf(" handleArraySize=%d:\n", handleArraySize);
 }
 
-}
+} // namespace certi
 
-// $Id: Message.cc,v 3.4 2003/01/29 18:27:52 breholee Exp $
+// $Id: Message.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $

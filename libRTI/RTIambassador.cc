@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.13 2003/01/29 21:33:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.14 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// classe RTIambassador
+#include <config.h>
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
@@ -83,10 +83,10 @@ RTIambassador::executeService(Message *req, Message *rep)
 
     D.Out(pdDebug, "RTIA reply received.");
 
-    if (rep->Type != req->Type) {
-        cout << "LibRTI: Assertion failed: rep->Type != req->Type" << endl ;
+    if (rep->type != req->type) {
+        cout << "LibRTI: Assertion failed: rep->type != req->type" << endl ;
         throw RTIinternalError("RTIambassador::executeService: "
-                               "rep->Type != req->Type");
+                               "rep->type != req->type");
     }
 
     is_reentrant = false ;
@@ -262,7 +262,7 @@ RTIambassador::createFederationExecution(const char *executionName,
     //   strcat(exeName,"\56");
     //   strcat(exeName,"fed");
     
-    req.Type = CREATE_FEDERATION_EXECUTION;
+    req.type = CREATE_FEDERATION_EXECUTION;
     req.setFederationName(executionName);
     
     //    if(!strcasecmp(FED,exeName)) {
@@ -286,7 +286,7 @@ RTIambassador::destroyFederationExecution(const char *executionName)
 {
     Message req, rep ;
 
-    req.Type = DESTROY_FEDERATION_EXECUTION ;
+    req.type = DESTROY_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
 
     executeService(&req, &rep);
@@ -314,12 +314,12 @@ joinFederationExecution(const char *yourName,
 
     fed_amb = (FederateAmbassador *) federateAmbassadorReference ;
 
-    req.Type = JOIN_FEDERATION_EXECUTION ;
+    req.type = JOIN_FEDERATION_EXECUTION ;
     req.setFederateName(yourName);
     req.setFederationName(executionName);
 
     executeService(&req, &rep);
-    return rep.NumeroFedere ;
+    return rep.federate ;
 }
 
 // ---------------------------------------------------------------------------
@@ -335,8 +335,8 @@ RTIambassador::resignFederationExecution(ResignAction theAction)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = RESIGN_FEDERATION_EXECUTION ;
-    req.RAction = theAction ;
+    req.type = RESIGN_FEDERATION_EXECUTION ;
+    req.resignAction = theAction ;
     executeService(&req, &rep);
 }
 
@@ -354,12 +354,12 @@ RTIambassador::registerFederationSynchronizationPoint(const char *label,
     Message req, rep ;
 
     if ((strcmp(label, "Freeze") == 0) || (strcmp(label, "Init") == 0)) {
-        req.Type = REQUEST_PAUSE ;
+        req.type = REQUEST_PAUSE ;
         req.setLabel(label);
     }
     else {
         if (strcmp(label, "Unfreeze") == 0) {
-            req.Type = REQUEST_RESUME ;
+            req.type = REQUEST_RESUME ;
             req.setLabel(label);
         }
         else
@@ -397,12 +397,12 @@ RTIambassador::synchronizationPointAchieved(const char *label)
     Message req, rep ;
 
     if ((strcmp(label, "Freeze") == 0) || (strcmp(label, "Init") == 0)) {
-        req.Type = PAUSE_ACHIEVED ;
+        req.type = PAUSE_ACHIEVED ;
         req.setLabel(label);
     }
     else {
         if (strcmp(label, "Unfreeze") == 0) {
-            req.Type = RESUME_ACHIEVED ;
+            req.type = RESUME_ACHIEVED ;
             req.setLabel(label);
         } else throw RTIinternalError();
     }
@@ -556,13 +556,13 @@ RTIambassador::publishObjectClass(ObjectClassHandle theClass,
     CAttributeHandleValuePair *tmp ;
 
     // Envoyer la requete au RTI
-    req.Type = PUBLISH_OBJECT_CLASS ;
-    req.objectClassHandle = theClass ;
-    req.HandleArraySize = attributeList_aux->_size ;
+    req.type = PUBLISH_OBJECT_CLASS ;
+    req.objectClass = theClass ;
+    req.handleArraySize = attributeList_aux->_size ;
 
     for (int i = 0 ; i < attributeList_aux->_size ; i++) {
         tmp = attributeList_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_attrib ;
+        req.handleArray[i] = tmp->_attrib ;
     }
 
     executeService(&req, &rep);
@@ -586,8 +586,8 @@ RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = UNPUBLISH_OBJECT_CLASS ;
-    req.objectClassHandle = theClass ;
+    req.type = UNPUBLISH_OBJECT_CLASS ;
+    req.objectClass = theClass ;
     executeService(&req, &rep);
 }
 
@@ -607,8 +607,8 @@ RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = PUBLISH_INTERACTION_CLASS ;
-    req.InteractionHandle = theInteraction ;
+    req.type = PUBLISH_INTERACTION_CLASS ;
+    req.interactionClass = theInteraction ;
     executeService(&req, &rep);
 }
 
@@ -628,8 +628,8 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = UNPUBLISH_INTERACTION_CLASS ;
-    req.InteractionHandle = theInteraction ;
+    req.type = UNPUBLISH_INTERACTION_CLASS ;
+    req.interactionClass = theInteraction ;
     executeService(&req, &rep);
 }
 
@@ -655,13 +655,13 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
     CAttributeHandleValuePair *tmp ;
 
     // envoyer la requete au RTI
-    req.Type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
-    req.objectClassHandle = theClass ;
-    req.HandleArraySize = attributeList_aux->_size ;
+    req.type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
+    req.objectClass = theClass ;
+    req.handleArraySize = attributeList_aux->_size ;
 
     for (int i = 0 ; i < attributeList_aux->_size ; i++) {
         tmp = attributeList_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_attrib ;
+        req.handleArray[i] = tmp->_attrib ;
     }
 
     executeService(&req, &rep);
@@ -683,8 +683,8 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
-    req.objectClassHandle = theClass ;
+    req.type = UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
+    req.objectClass = theClass ;
     executeService(&req, &rep);
 }
 
@@ -706,8 +706,8 @@ RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SUBSCRIBE_INTERACTION_CLASS ;
-    req.InteractionHandle = theClass ;
+    req.type = SUBSCRIBE_INTERACTION_CLASS ;
+    req.interactionClass = theClass ;
     executeService(&req, &rep);
 }
 
@@ -727,8 +727,8 @@ RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = UNSUBSCRIBE_INTERACTION_CLASS ;
-    req.InteractionHandle = theClass ;
+    req.type = UNSUBSCRIBE_INTERACTION_CLASS ;
+    req.interactionClass = theClass ;
     executeService(&req, &rep);
 }
 
@@ -754,12 +754,12 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = REGISTER_OBJECT ;
+    req.type = REGISTER_OBJECT ;
     req.setName((char*) theObjectName);
-    req.objectClassHandle = theClass ;
+    req.objectClass = theClass ;
     executeService(&req, &rep);
 
-    return rep.Objectid ;
+    return rep.object ;
 }
 
 // ---------------------------------------------------------------------------
@@ -778,13 +778,13 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = REGISTER_OBJECT ;
+    req.type = REGISTER_OBJECT ;
     req.setName("\0");
-    req.objectClassHandle = theClass ;
+    req.objectClass = theClass ;
 
     executeService(&req, &rep);
 
-    return rep.Objectid ;
+    return rep.object ;
 }
 
 // ---------------------------------------------------------------------------
@@ -814,15 +814,15 @@ updateAttributeValues(ObjectHandle theObject,
     CAttributeHandleValuePair *tmp ;
 
     // Envoyer la requete au RTI
-    req.Type = UPDATE_ATTRIBUTE_VALUES ;
-    req.Objectid = (ObjectHandle) theObject ;
-    req.Date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.type = UPDATE_ATTRIBUTE_VALUES ;
+    req.object = (ObjectHandle) theObject ;
+    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
     req.setTag(theTag);
-    req.HandleArraySize = theAttributes_aux->_size ;
+    req.handleArraySize = theAttributes_aux->_size ;
 
     for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
         tmp = theAttributes_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_attrib ;
+        req.handleArray[i] = tmp->_attrib ;
 
         // codage
         getObjectToStringLength(tmp->_value.value,
@@ -835,7 +835,7 @@ updateAttributeValues(ObjectHandle theObject,
 
     executeService(&req, &rep);
     delete theAttributes_aux ;
-    return(rep.Retract);
+    return rep.eventRetraction ;
 }
 
 // ---------------------------------------------------------------------------
@@ -880,15 +880,15 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     CParameterHandleValuePair *tmp ;
 
     // envoyer la requete au RTI
-    req.Type = SEND_INTERACTION ;
-    req.InteractionHandle = theInteraction ;
-    req.Date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.type = SEND_INTERACTION ;
+    req.interactionClass = theInteraction ;
+    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
     req.setTag(theTag);
-    req.HandleArraySize = theParameters_aux->_size ;
+    req.handleArraySize = theParameters_aux->_size ;
 
     for (int i = 0 ; i < theParameters_aux->_size ; i++) {
         tmp = theParameters_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_param ;
+        req.handleArray[i] = tmp->_param ;
 
         // codage
         getObjectToStringLength(tmp->_value.value,
@@ -901,7 +901,7 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 
     executeService(&req, &rep);
     delete theParameters_aux ;
-    return(rep.Retract);
+    return rep.eventRetraction ;
 }
 
 // ---------------------------------------------------------------------------
@@ -941,13 +941,13 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = DELETE_OBJECT ;
-    req.Objectid = (ObjectHandle) theObject ;
-    req.Date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.type = DELETE_OBJECT ;
+    req.object = (ObjectHandle) theObject ;
+    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
 
     req.setTag(theTag);
     executeService(&req, &rep);
-    return(rep.Retract);
+    return rep.eventRetraction ;
 }
 
 // ---------------------------------------------------------------------------
@@ -1010,15 +1010,15 @@ changeAttributeTransportationType(ObjectHandle theObject,
     theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
     // Envoyer la requete au RTI
-    req.Type = CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
-    req.Objectid = (ObjectHandle) theObject ;
-    req.Transport = theType_aux ;
+    req.type = CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
+    req.object = (ObjectHandle) theObject ;
+    req.transport = theType_aux ;
 
-    req.HandleArraySize = theAttributes_aux->_size ;
+    req.handleArraySize = theAttributes_aux->_size ;
 
     for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
         tmp = theAttributes_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_attrib ;
+        req.handleArray[i] = tmp->_attrib ;
     }
 
     executeService(&req, &rep);
@@ -1046,9 +1046,9 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
     theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
     // envoyer la requete au RTI
-    req.Type = CHANGE_INTERACTION_TRANSPORT_TYPE ;
-    req.InteractionHandle = theClass ;
-    req.Transport = theType_aux ;
+    req.type = CHANGE_INTERACTION_TRANSPORT_TYPE ;
+    req.interactionClass = theClass ;
+    req.transport = theType_aux ;
     executeService(&req, &rep);
 }
 
@@ -1107,13 +1107,13 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.object = (ObjectHandle) theObject ;
 
-    req.HandleArraySize = attrs.size();
+    req.handleArraySize = attrs.size();
 
     for (int i = 0 ; i < attrs.size(); i++) {
-        req.HandleArray[i] = attrs.getHandle(i);
+        req.handleArray[i] = attrs.getHandle(i);
     }
 
     executeService(&req, &rep);
@@ -1139,15 +1139,15 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.object = (ObjectHandle) theObject ;
 
     req.setTag(theTag);
 
-    req.HandleArraySize = attrs.size();
+    req.handleArraySize = attrs.size();
 
     for (int i = 0 ; i < attrs.size(); i++) {
-        req.HandleArray[i] = attrs.getHandle(i);
+        req.handleArray[i] = attrs.getHandle(i);
     }
 
     executeService(&req, &rep);
@@ -1174,15 +1174,15 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.object = (ObjectHandle) theObject ;
 
     req.setTag(theTag);
 
-    req.HandleArraySize = desiredAttributes.size();
+    req.handleArraySize = desiredAttributes.size();
 
     for (int i = 0 ; i < desiredAttributes.size(); i++) {
-        req.HandleArray[i] = desiredAttributes.getHandle(i);
+        req.handleArray[i] = desiredAttributes.getHandle(i);
     }
 
     executeService(&req, &rep);
@@ -1207,25 +1207,25 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
+    req.object = (ObjectHandle) theObject ;
 
-    req.HandleArraySize = attrs.size();
+    req.handleArraySize = attrs.size();
 
     for (int i = 0 ; i < attrs.size(); i++) {
-        req.HandleArray[i] = attrs.getHandle(i);
+        req.handleArray[i] = attrs.getHandle(i);
     }
 
     executeService(&req, &rep);
 
-    if (rep.Exception == e_NO_EXCEPTION) {
+    if (rep.exception == e_NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
-        AttributeSet = AttributeHandleSetFactory::create(rep.HandleArraySize);
+        AttributeSet = AttributeHandleSetFactory::create(rep.handleArraySize);
 
-        for (int i = 0 ; i < rep.HandleArraySize ; i++) {
-            AttributeSet->add(rep.HandleArray[i]);
+        for (int i = 0 ; i < rep.handleArraySize ; i++) {
+            AttributeSet->add(rep.handleArray[i]);
         }
-        return(AttributeSet);
+        return AttributeSet ;
     }
 
     return NULL ;
@@ -1250,13 +1250,13 @@ cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.object = (ObjectHandle) theObject ;
 
-    req.HandleArraySize = attrs.size();
+    req.handleArraySize = attrs.size();
 
     for (int i = 0 ; i < attrs.size(); i++) {
-        req.HandleArray[i] = attrs.getHandle(i);
+        req.handleArray[i] = attrs.getHandle(i);
     }
 
     executeService(&req, &rep);
@@ -1281,13 +1281,13 @@ cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.object = (ObjectHandle) theObject ;
 
-    req.HandleArraySize = attrs.size();
+    req.handleArraySize = attrs.size();
 
     for (int i = 0 ; i < attrs.size(); i++) {
-        req.HandleArray[i] = attrs.getHandle(i);
+        req.handleArray[i] = attrs.getHandle(i);
     }
 
     executeService(&req, &rep);
@@ -1314,14 +1314,14 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     Message req, rep ;
 
     // Envoyer la requete au RTI
-    req.Type = ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
-    req.Objectid = (ObjectHandle) theObject ;
+    req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
+    req.object = (ObjectHandle) theObject ;
 
-    req.HandleArraySize = desired.size();
+    req.handleArraySize = desired.size();
 
     for (int i = 0 ; i < desired.size(); i++) {
-        req.HandleArray[i] = desired.getHandle(i);
-        D.Out(pdTrace, "Objet %u Attribut %u", theObject, req.HandleArray[i]);
+        req.handleArray[i] = desired.getHandle(i);
+        D.Out(pdTrace, "Objet %u Attribut %u", theObject, req.handleArray[i]);
     }
 
     executeService(&req, &rep);
@@ -1345,9 +1345,9 @@ queryAttributeOwnership(ObjectHandle theObject,
     Message req, rep ;
 
     // envoyer la requete au RTIA/RTIG
-    req.Type = QUERY_ATTRIBUTE_OWNERSHIP ;
-    req.Objectid = theObject ;
-    req.AttribHandle = theAttribute ;
+    req.type = QUERY_ATTRIBUTE_OWNERSHIP ;
+    req.object = theObject ;
+    req.attribute = theAttribute ;
 
     executeService(&req, &rep);
 }
@@ -1368,9 +1368,9 @@ RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
     Message req, rep ;
 
     // envoyer la requete au RTIA
-    req.Type = IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
-    req.Objectid = theObject ;
-    req.AttribHandle = theAttribute ;
+    req.type = IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
+    req.object = theObject ;
+    req.attribute = theAttribute ;
 
     executeService(&req, &rep);
 
@@ -1401,8 +1401,8 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SET_TIME_REGULATING ;
-    req.Bool = RTI_TRUE ;
+    req.type = SET_TIME_REGULATING ;
+    req.boolean = RTI_TRUE ;
     executeService(&req, &rep);
 }
 
@@ -1421,8 +1421,8 @@ RTIambassador::disableTimeRegulation(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SET_TIME_REGULATING ;
-    req.Bool = RTI_FALSE ;
+    req.type = SET_TIME_REGULATING ;
+    req.boolean = RTI_FALSE ;
     executeService(&req, &rep);
 }
 
@@ -1442,8 +1442,8 @@ RTIambassador::enableTimeConstrained(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SET_TIME_CONSTRAINED ;
-    req.Bool = RTI_TRUE ;
+    req.type = SET_TIME_CONSTRAINED ;
+    req.boolean = RTI_TRUE ;
     executeService(&req, &rep);
 }
 
@@ -1462,8 +1462,8 @@ RTIambassador::disableTimeConstrained(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SET_TIME_CONSTRAINED ;
-    req.Bool = RTI_FALSE ;
+    req.type = SET_TIME_CONSTRAINED ;
+    req.boolean = RTI_FALSE ;
     executeService(&req, &rep);
 }
 
@@ -1485,8 +1485,8 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = TIME_ADVANCE_REQUEST ;
-    req.Date = (FederationTime) (RTIfedTime(theTime)._fedTime);
+    req.type = TIME_ADVANCE_REQUEST ;
+    req.date = (FederationTime) (RTIfedTime(theTime)._fedTime);
     executeService(&req, &rep);
 }
 
@@ -1527,8 +1527,8 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = NEXT_EVENT_REQUEST ;
-    req.Date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.type = NEXT_EVENT_REQUEST ;
+    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
     executeService(&req, &rep);
 }
 
@@ -1612,10 +1612,10 @@ RTIambassador::queryLBTS(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = REQUEST_LBTS ;
+    req.type = REQUEST_LBTS ;
     executeService(&req, &rep);
 
-    theTime = RTIfedTime(rep.Date);
+    theTime = RTIfedTime(rep.date);
 }
 
 // ---------------------------------------------------------------------------
@@ -1631,10 +1631,10 @@ RTIambassador::queryFederateTime(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = REQUEST_FEDERATE_TIME ;
+    req.type = REQUEST_FEDERATE_TIME ;
     executeService(&req, &rep);
 
-    theTime = RTIfedTime(rep.Date);
+    theTime = RTIfedTime(rep.date);
 }
 
 // ---------------------------------------------------------------------------
@@ -1665,8 +1665,8 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = SET_LOOKAHEAD ;
-    req.Lookahead =
+    req.type = SET_LOOKAHEAD ;
+    req.lookahead =
         (FederationTimeDelta) ((RTIfedTime&) theLookahead).getTime();
     executeService(&req, &rep);
 }
@@ -1684,10 +1684,10 @@ RTIambassador::queryLookahead(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = REQUEST_LOOKAHEAD ;
+    req.type = REQUEST_LOOKAHEAD ;
     executeService(&req, &rep);
 
-    RTIfedTime *tmp = new RTIfedTime((Double) rep.Lookahead);
+    RTIfedTime *tmp = new RTIfedTime((Double) rep.lookahead);
     theTime = *(dynamic_cast<FedTime *>(tmp));
 }
 
@@ -1732,15 +1732,15 @@ RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
     theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
 
     // Envoyer la requete au RTI
-    req.Type = CHANGE_ATTRIBUTE_ORDER_TYPE ;
-    req.Objectid = (ObjectHandle) theObject ;
-    req.Order = theType_aux ;
+    req.type = CHANGE_ATTRIBUTE_ORDER_TYPE ;
+    req.object = (ObjectHandle) theObject ;
+    req.order = theType_aux ;
 
-    req.HandleArraySize = attrs_aux->_size ;
+    req.handleArraySize = attrs_aux->_size ;
 
     for (int i = 0 ; i < attrs_aux->_size ; i++) {
         tmp = attrs_aux->getIeme(i);
-        req.HandleArray[i] = tmp->_attrib ;
+        req.handleArray[i] = tmp->_attrib ;
     }
 
     executeService(&req, &rep);
@@ -1767,9 +1767,9 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
     theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
 
     // envoyer la requete au RTI
-    req.Type = CHANGE_INTERACTION_ORDER_TYPE ;
-    req.InteractionHandle = theClass ;
-    req.Order = theType_aux ;
+    req.type = CHANGE_INTERACTION_ORDER_TYPE ;
+    req.interactionClass = theClass ;
+    req.order = theType_aux ;
     executeService(&req, &rep);
 }
 
@@ -2071,12 +2071,12 @@ RTIambassador::getObjectClassHandle(const char *theName)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = GET_OBJECT_CLASS_HANDLE ;
+    req.type = GET_OBJECT_CLASS_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
 
-    return(rep.objectClassHandle);
+    return rep.objectClass ;
 }
 
 // ---------------------------------------------------------------------------
@@ -2093,8 +2093,8 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
 {
     Message req, rep;
 
-    req.Type = GET_OBJECT_CLASS_NAME ;
-    req.objectClassHandle = handle ;
+    req.type = GET_OBJECT_CLASS_NAME ;
+    req.objectClass = handle ;
 
     executeService(&req, &rep);
 
@@ -2116,13 +2116,13 @@ RTIambassador::getAttributeHandle(const char *theName,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = GET_ATTRIBUTE_HANDLE ;
+    req.type = GET_ATTRIBUTE_HANDLE ;
     req.setName((AttributeName) theName);
-    req.objectClassHandle = whichClass ;
+    req.objectClass = whichClass ;
 
     executeService(&req, &rep);
 
-    return(rep.AttribHandle);
+    return rep.attribute ;
 }
 
 // ---------------------------------------------------------------------------
@@ -2138,13 +2138,13 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
 {
     Message req, rep;
 
-    req.Type = GET_ATTRIBUTE_NAME;
-    req.AttribHandle = theHandle;
-    req.objectClassHandle = whichClass;
+    req.type = GET_ATTRIBUTE_NAME;
+    req.attribute = theHandle;
+    req.objectClass = whichClass;
 
     executeService(&req, &rep); // Send request to RTI.
 
-    return(strdup(rep.getName()));
+    return strdup(rep.getName()) ;
 }
 
 // ---------------------------------------------------------------------------
@@ -2159,12 +2159,12 @@ RTIambassador::getInteractionClassHandle(const char *theName)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = GET_INTERACTION_CLASS_HANDLE ;
+    req.type = GET_INTERACTION_CLASS_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
 
-    return(rep.InteractionHandle);
+    return rep.interactionClass ;
 }
 
 
@@ -2179,12 +2179,12 @@ RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
 {
     Message req, rep;
 
-    req.Type = GET_INTERACTION_CLASS_NAME;
-    req.InteractionHandle = theHandle;
+    req.type = GET_INTERACTION_CLASS_NAME;
+    req.interactionClass = theHandle;
 
     executeService(&req, &rep); // Send request to RTI
 
-    return(strdup(rep.getName()));
+    return strdup(rep.getName());
 }
 
 // ---------------------------------------------------------------------------
@@ -2201,13 +2201,13 @@ RTIambassador::getParameterHandle(const char *theName,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.Type = GET_PARAMETER_HANDLE ;
+    req.type = GET_PARAMETER_HANDLE ;
     req.setName((ParameterName) theName);
-    req.InteractionHandle = whichClass ;
+    req.interactionClass = whichClass ;
 
     executeService(&req, &rep);
 
-    return(rep.ParamHandle);
+    return rep.parameter;
 }
 
 // ---------------------------------------------------------------------------
@@ -2223,13 +2223,13 @@ RTIambassador::getParameterName(ParameterHandle theHandle,
 {
     Message req, rep;
 
-    req.Type = GET_PARAMETER_NAME;
-    req.ParamHandle = theHandle;
-    req.InteractionHandle = whichClass;
+    req.type = GET_PARAMETER_NAME;
+    req.parameter = theHandle;
+    req.interactionClass = whichClass;
 
     executeService(&req, &rep); // Send request to RTI.
 
-    return(strdup(rep.getName()));
+    return strdup(rep.getName()) ;
 }
 
 // ---------------------------------------------------------------------------
@@ -2262,20 +2262,25 @@ RTIambassador::getObjectInstanceName(ObjectHandle /*theHandle*/)
 // ---------------------------------------------------------------------------
 // Get Routing Space Handle
 SpaceHandle
-RTIambassador::getRoutingSpaceHandle(const char */*theName*/)
+RTIambassador::getRoutingSpaceHandle(const char *name)
     throw (NameNotFound,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;    
+
+    req.type = GET_SPACE_HANDLE ;
+    req.setName(name);
+    this->executeService(&req, &rep);
+
+    return rep.space ;
 }
 
 // ---------------------------------------------------------------------------
 // Get Routing Space Name
 char *
-RTIambassador::getRoutingSpaceName(SpaceHandle /*theHandle*/)
+RTIambassador::getRoutingSpaceName(SpaceHandle)
     throw (SpaceNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2546,7 +2551,7 @@ RTIambassador::tick(void)
     is_reentrant = true ;
 
     // Prevenir le RTI
-    vers_RTI.Type = TICK_REQUEST ;
+    vers_RTI.type = TICK_REQUEST ;
 
     try {
         vers_RTI.write((SocketUN *) this);
@@ -2572,19 +2577,19 @@ RTIambassador::tick(void)
         }
 
         // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
-        if (vers_Fed.Type == TICK_REQUEST) {
+        if (vers_Fed.type == TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
-            return(vers_Fed.Bool);
+            return vers_Fed.boolean ;
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une methode
         // du FederateAmbassador.
 
-        vers_RTI.Exception = e_NO_EXCEPTION ;
-        vers_RTI.RaisonException[0] = 0 ;
+        vers_RTI.exception = e_NO_EXCEPTION ;
+        vers_RTI.exceptionReason[0] = 0 ;
         try {
-            switch (vers_Fed.Type) {
+            switch (vers_Fed.type) {
 
             case INITIATE_PAUSE: {
                 fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
@@ -2596,35 +2601,35 @@ RTIambassador::tick(void)
 
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
-                    startRegistrationForObjectClass(vers_Fed.objectClassHandle);
+                    startRegistrationForObjectClass(vers_Fed.objectClass);
             } break ;
 
             case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
-                    stopRegistrationForObjectClass(vers_Fed.objectClassHandle);
+                    stopRegistrationForObjectClass(vers_Fed.objectClass);
             } break ;
 
             case TURN_INTERACTIONS_ON: {
-                fed_amb->turnInteractionsOn(vers_Fed.InteractionHandle);
+                fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
             } break ;
 
             case TURN_INTERACTIONS_OFF: {
-                fed_amb->turnInteractionsOff(vers_Fed.InteractionHandle);
+                fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
             } break ;
 
             case DISCOVER_OBJECT: {
                 fed_amb->
-                    discoverObjectInstance((ObjectHandle) vers_Fed.Objectid,
-                                           vers_Fed.objectClassHandle,
+                    discoverObjectInstance((ObjectHandle) vers_Fed.object,
+                                           vers_Fed.objectClass,
                                            (char *) (vers_Fed.getName()));
             } break ;
 
             case REFLECT_ATTRIBUTE_VALUES: {
-                for (i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
+                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
                     CAttributeHandleValuePair *att =
                         new CAttributeHandleValuePair ;
 
-                    att->_attrib = vers_Fed.HandleArray[i] ;
+                    att->_attrib = vers_Fed.handleArray[i] ;
 
                     // BUG: Federate may be expecting to find value name
                     // (a call to GetWithName for example).
@@ -2641,21 +2646,21 @@ RTIambassador::tick(void)
                     theAttributes.toAHVPS();
 
                 fed_amb->
-                    reflectAttributeValues((ObjectHandle) vers_Fed.Objectid,
+                    reflectAttributeValues((ObjectHandle) vers_Fed.object,
                                            *theAttributes_aux,
-                                           RTIfedTime(vers_Fed.Date),
+                                           RTIfedTime(vers_Fed.date),
                                            (char *) vers_Fed.getTag(),
-                                           vers_Fed.Retract);
+                                           vers_Fed.eventRetraction);
 
                 delete theAttributes_aux ;
             } break ;
 
             case RECEIVE_INTERACTION: {
-                for (i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
+                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
                     CParameterHandleValuePair *par =
                         new CParameterHandleValuePair ;
 
-                    par->_param = vers_Fed.HandleArray[i] ;
+                    par->_param = vers_Fed.handleArray[i] ;
 
                     // BUG: Federate may be expecting to find value name
                     // (a call to GetWithName for example).
@@ -2672,20 +2677,20 @@ RTIambassador::tick(void)
                 ParameterHandleValuePairSet *theParameters_aux ;
                 theParameters_aux = theParameters.toPHVPS();
 
-                fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
+                fed_amb->receiveInteraction(vers_Fed.interactionClass,
                                             *theParameters_aux,
-                                            RTIfedTime(vers_Fed.Date),
+                                            RTIfedTime(vers_Fed.date),
                                             (char *) vers_Fed.getTag(),
-                                            vers_Fed.Retract);
+                                            vers_Fed.eventRetraction);
 
                 delete theParameters_aux ;
             } break ;
 
             case REMOVE_OBJECT: {
-                fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.Objectid,
-                                              RTIfedTime(vers_Fed.Date),
+                fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.object,
+                                              RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
-                                              vers_Fed.Retract);
+                                              vers_Fed.eventRetraction);
             } break ;
 
             case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
@@ -2700,15 +2705,15 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
 
                 fed_amb->
                     requestAttributeOwnershipAssumption((ObjectHandle)
-                                                        vers_Fed.Objectid,
+                                                        vers_Fed.object,
                                                         *AttributeSet,
                                                         (char *)
                                                         vers_Fed.getTag());
@@ -2719,14 +2724,14 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
 
                 fed_amb->requestAttributeOwnershipRelease((ObjectHandle)
-                                                          vers_Fed.Objectid,
+                                                          vers_Fed.object,
                                                           *AttributeSet,
                                                           (char *)
                                                           vers_Fed.getTag());
@@ -2738,13 +2743,13 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->attributeOwnershipUnavailable((ObjectHandle)
-                                                       vers_Fed.Objectid,
+                                                       vers_Fed.object,
                                                        *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -2753,14 +2758,14 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     attributeOwnershipAcquisitionNotification((ObjectHandle)
-                                                              vers_Fed.Objectid,
+                                                              vers_Fed.object,
                                                               *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -2769,14 +2774,14 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     attributeOwnershipDivestitureNotification((ObjectHandle)
-                                                              vers_Fed.Objectid,
+                                                              vers_Fed.object,
                                                               *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -2785,31 +2790,31 @@ RTIambassador::tick(void)
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     confirmAttributeOwnershipAcquisitionCancellation
-                    ((ObjectHandle) vers_Fed.Objectid, *AttributeSet);
+                    ((ObjectHandle) vers_Fed.object, *AttributeSet);
                 AttributeSet->empty();
             } break ;
 
             case INFORM_ATTRIBUTE_OWNERSHIP: {
                 fed_amb->
-                    informAttributeOwnership((ObjectHandle) vers_Fed.Objectid,
-                                             vers_Fed.AttribHandle,
-                                             vers_Fed.NumeroFedere);
+                    informAttributeOwnership((ObjectHandle) vers_Fed.object,
+                                             vers_Fed.attribute,
+                                             vers_Fed.federate);
             } break ;
 
             case ATTRIBUTE_IS_NOT_OWNED: {
-                fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.Objectid,
-                                             vers_Fed.AttribHandle);
+                fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.object,
+                                             vers_Fed.attribute);
             } break ;
 
             case TIME_ADVANCE_GRANT: {
-                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.Date));
+                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
             } break ;
 
             default: {
@@ -2818,28 +2823,28 @@ RTIambassador::tick(void)
             }
         }
         catch (InvalidFederationTime &e) {
-            vers_RTI.Exception = e_InvalidFederationTime ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_InvalidFederationTime ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (TimeAdvanceWasNotInProgress &e) {
-            vers_RTI.Exception = e_TimeAdvanceWasNotInProgress ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_TimeAdvanceWasNotInProgress ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (FederationTimeAlreadyPassed &e) {
-            vers_RTI.Exception = e_FederationTimeAlreadyPassed ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_FederationTimeAlreadyPassed ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (FederateInternalError &e) {
-            vers_RTI.Exception = e_FederateInternalError ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_FederateInternalError ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (Exception &e) {
-            vers_RTI.Exception = e_RTIinternalError ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_RTIinternalError ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
 
         // retourner au RTI la reponse du service demande
-        vers_RTI.Type = vers_Fed.Type ;
+        vers_RTI.type = vers_Fed.type ;
 
         try {
             vers_RTI.write((SocketUN *) this);
@@ -2874,7 +2879,7 @@ RTIambassador::tick(TickTime /*minimum*/,
     is_reentrant = true ;
 
     // Prevenir le RTI
-    vers_RTI.Type = TICK_REQUEST ;
+    vers_RTI.type = TICK_REQUEST ;
 
     try {
         vers_RTI.write((SocketUN *) this);
@@ -2898,19 +2903,19 @@ RTIambassador::tick(TickTime /*minimum*/,
         }
 
         // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
-        if (vers_Fed.Type == TICK_REQUEST) {
+        if (vers_Fed.type == TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
-            return(vers_Fed.Bool);
+            return vers_Fed.boolean;
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une
         // methode du FederateAmbassador.
-        vers_RTI.Exception = e_NO_EXCEPTION ;
-        vers_RTI.RaisonException[0] = 0 ;
+        vers_RTI.exception = e_NO_EXCEPTION ;
+        vers_RTI.exceptionReason[0] = 0 ;
 
         try {
-            switch(vers_Fed.Type) {
+            switch(vers_Fed.type) {
 
             case INITIATE_PAUSE: {
                 fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
@@ -2922,36 +2927,36 @@ RTIambassador::tick(TickTime /*minimum*/,
 
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
-                    startRegistrationForObjectClass(vers_Fed.objectClassHandle);
+                    startRegistrationForObjectClass(vers_Fed.objectClass);
             } break ;
 
             case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
-                    stopRegistrationForObjectClass(vers_Fed.objectClassHandle);
+                    stopRegistrationForObjectClass(vers_Fed.objectClass);
             } break ;
 
             case TURN_INTERACTIONS_ON: {
-                fed_amb->turnInteractionsOn(vers_Fed.InteractionHandle);
+                fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
             } break ;
 
             case TURN_INTERACTIONS_OFF: {
-                fed_amb->turnInteractionsOff(vers_Fed.InteractionHandle);
+                fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
             } break ;
 
             case DISCOVER_OBJECT: {
                 fed_amb->
-                    discoverObjectInstance((ObjectHandle) vers_Fed.Objectid,
-                                           vers_Fed.objectClassHandle,
+                    discoverObjectInstance((ObjectHandle) vers_Fed.object,
+                                           vers_Fed.objectClass,
                                            (char *) (vers_Fed.getName()));
             } break ;
 
             case REFLECT_ATTRIBUTE_VALUES: {
 
-                for (i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
+                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
                     CAttributeHandleValuePair *att =
                         new CAttributeHandleValuePair ;
 
-                    att->_attrib = vers_Fed.HandleArray[i] ;
+                    att->_attrib = vers_Fed.handleArray[i] ;
                     strcpy(att->_value.name, "");
                     vers_Fed.getValue(i, att->_value.value);
 
@@ -2965,21 +2970,21 @@ RTIambassador::tick(TickTime /*minimum*/,
                     theAttributes.toAHVPS();
 
                 fed_amb->
-                    reflectAttributeValues((ObjectHandle) vers_Fed.Objectid,
+                    reflectAttributeValues((ObjectHandle) vers_Fed.object,
                                            *theAttributes_aux,
-                                           RTIfedTime(vers_Fed.Date),
+                                           RTIfedTime(vers_Fed.date),
                                            (char *) vers_Fed.getTag(),
-                                           vers_Fed.Retract);
+                                           vers_Fed.eventRetraction);
             } break ;
 
             case RECEIVE_INTERACTION: {
 
-                for (i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
+                for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
 
                     CParameterHandleValuePair *par =
                         new CParameterHandleValuePair ;
 
-                    par->_param = vers_Fed.HandleArray[i] ;
+                    par->_param = vers_Fed.handleArray[i] ;
                     strcpy(par->_value.name, "");
                     vers_Fed.getValue(i, par->_value.value);
 
@@ -2991,18 +2996,18 @@ RTIambassador::tick(TickTime /*minimum*/,
                 ParameterHandleValuePairSet *theParameters_aux =
                     theParameters.toPHVPS();
 
-                fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
+                fed_amb->receiveInteraction(vers_Fed.interactionClass,
                                             *theParameters_aux,
-                                            RTIfedTime(vers_Fed.Date),
+                                            RTIfedTime(vers_Fed.date),
                                             (char *) vers_Fed.getTag(),
-                                            vers_Fed.Retract);
+                                            vers_Fed.eventRetraction);
             } break ;
 
             case REMOVE_OBJECT: {
-                fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.Objectid,
-                                              RTIfedTime(vers_Fed.Date),
+                fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.object,
+                                              RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
-                                              vers_Fed.Retract);
+                                              vers_Fed.eventRetraction);
             } break ;
 
             case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
@@ -3017,15 +3022,15 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
 
                 fed_amb->
                     requestAttributeOwnershipAssumption((ObjectHandle)
-                                                        vers_Fed.Objectid,
+                                                        vers_Fed.object,
                                                         *AttributeSet,
                                                         (char *)
                                                         vers_Fed.getTag());
@@ -3036,14 +3041,14 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     attributeOwnershipUnavailable((ObjectHandle)
-                                                  vers_Fed.Objectid,
+                                                  vers_Fed.object,
                                                   *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -3052,15 +3057,15 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
 
                 fed_amb->
                     requestAttributeOwnershipRelease((ObjectHandle)
-                                                     vers_Fed.Objectid,
+                                                     vers_Fed.object,
                                                      *AttributeSet,
                                                      (char *)
                                                      vers_Fed.getTag());
@@ -3071,14 +3076,14 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     attributeOwnershipAcquisitionNotification((ObjectHandle)
-                                                              vers_Fed.Objectid,
+                                                              vers_Fed.object,
                                                               *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -3087,14 +3092,14 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     attributeOwnershipDivestitureNotification((ObjectHandle)
-                                                              vers_Fed.Objectid,
+                                                              vers_Fed.object,
                                                               *AttributeSet);
                 AttributeSet->empty();
             } break ;
@@ -3103,31 +3108,31 @@ RTIambassador::tick(TickTime /*minimum*/,
 
                 AttributeHandleSet *AttributeSet ;
                 AttributeSet =
-                    AttributeHandleSetFactory::create(vers_Fed.HandleArraySize);
+                    AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
 
-                for (int i = 0 ; i < vers_Fed.HandleArraySize ; i++) {
-                    AttributeSet->add(vers_Fed.HandleArray[i]);
+                for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
+                    AttributeSet->add(vers_Fed.handleArray[i]);
                 }
                 fed_amb->
                     confirmAttributeOwnershipAcquisitionCancellation
-                    ((ObjectHandle) vers_Fed.Objectid, *AttributeSet);
+                    ((ObjectHandle) vers_Fed.object, *AttributeSet);
                 AttributeSet->empty();
             } break ;
 
             case INFORM_ATTRIBUTE_OWNERSHIP: {
                 fed_amb->
-                    informAttributeOwnership((ObjectHandle) vers_Fed.Objectid,
-                                             vers_Fed.AttribHandle,
-                                             vers_Fed.NumeroFedere);
+                    informAttributeOwnership((ObjectHandle) vers_Fed.object,
+                                             vers_Fed.attribute,
+                                             vers_Fed.federate);
             } break ;
 
             case ATTRIBUTE_IS_NOT_OWNED: {
-                fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.Objectid,
-                                             vers_Fed.AttribHandle);
+                fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.object,
+                                             vers_Fed.attribute);
             } break ;
 
             case TIME_ADVANCE_GRANT: {
-                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.Date));
+                fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
             } break ;
 
             default: {
@@ -3136,28 +3141,28 @@ RTIambassador::tick(TickTime /*minimum*/,
             }
         }
         catch (InvalidFederationTime &e) {
-            vers_RTI.Exception = e_InvalidFederationTime ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_InvalidFederationTime ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (TimeAdvanceWasNotInProgress &e) {
-            vers_RTI.Exception = e_TimeAdvanceWasNotInProgress ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_TimeAdvanceWasNotInProgress ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (FederationTimeAlreadyPassed &e) {
-            vers_RTI.Exception = e_FederationTimeAlreadyPassed ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_FederationTimeAlreadyPassed ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (FederateInternalError &e) {
-            vers_RTI.Exception = e_FederateInternalError ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_FederateInternalError ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
         catch (Exception &e) {
-            vers_RTI.Exception = e_RTIinternalError ;
-            strcpy(vers_RTI.RaisonException, e._reason);
+            vers_RTI.exception = e_RTIinternalError ;
+            strcpy(vers_RTI.exceptionReason, e._reason);
         }
 
         // retourner au RTI la reponse du service demande
-        vers_RTI.Type = vers_Fed.Type ;
+        vers_RTI.type = vers_Fed.type ;
 
         try {
             vers_RTI.write((SocketUN *) this);
@@ -3179,146 +3184,146 @@ RTIambassador::tick(TickTime /*minimum*/,
 void
 RTIambassador::processException(Message *msg)
 {
-    D.Out(pdExcept, "nom de l'exception : %d .", msg->Exception);
-    switch(msg->Exception) {
+    D.Out(pdExcept, "nom de l'exception : %d .", msg->exception);
+    switch(msg->exception) {
     case e_NO_EXCEPTION: {
     } break ;
 
     case e_ArrayIndexOutOfBounds: {
         D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
-        throw ArrayIndexOutOfBounds(msg->RaisonException);
+        throw ArrayIndexOutOfBounds(msg->exceptionReason);
     } break ;
 
     case e_AttributeAlreadyOwned: {
         D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
-        throw AttributeAlreadyOwned(msg->RaisonException);
+        throw AttributeAlreadyOwned(msg->exceptionReason);
     } break ;
 
     case e_AttributeAlreadyBeingAcquired: {
         D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingAcquired exception.");
-        throw AttributeAlreadyBeingAcquired(msg->RaisonException);
+        throw AttributeAlreadyBeingAcquired(msg->exceptionReason);
     } break ;
 
     case e_AttributeAlreadyBeingDivested: {
         D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingDivested exception.");
-        throw AttributeAlreadyBeingDivested(msg->RaisonException);
+        throw AttributeAlreadyBeingDivested(msg->exceptionReason);
     } break ;
 
     case e_AttributeDivestitureWasNotRequested: {
         D.Out(pdExcept,
               "Throwing e_AttributeDivestitureWasNotRequested exception.");
-        throw AttributeDivestitureWasNotRequested(msg->RaisonException);
+        throw AttributeDivestitureWasNotRequested(msg->exceptionReason);
     } break ;
 
     case e_AttributeAcquisitionWasNotRequested: {
         D.Out(pdExcept,
               "Throwing e_AttributeAcquisitionWasNotRequested exception.");
-        throw AttributeAcquisitionWasNotRequested(msg->RaisonException);
+        throw AttributeAcquisitionWasNotRequested(msg->exceptionReason);
     } break ;
 
     case e_AttributeNotDefined: {
         D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
-        throw AttributeNotDefined(msg->RaisonException);
+        throw AttributeNotDefined(msg->exceptionReason);
     } break ;
 
     case e_AttributeNotKnown: {
         D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
-        throw AttributeNotKnown(msg->RaisonException);
+        throw AttributeNotKnown(msg->exceptionReason);
     } break ;
 
     case e_AttributeNotOwned: {
         D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
-        throw AttributeNotOwned(msg->RaisonException);
+        throw AttributeNotOwned(msg->exceptionReason);
     } break ;
 
     case e_AttributeNotPublished: {
         D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
-        throw AttributeNotPublished(msg->RaisonException);
+        throw AttributeNotPublished(msg->exceptionReason);
     } break ;
 
     case e_AttributeNotSubscribed: {
         D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
-        throw AttributeNotSubscribed(msg->RaisonException);
+        throw AttributeNotSubscribed(msg->exceptionReason);
     } break ;
 
     case e_ConcurrentAccessAttempted: {
         D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
-        throw ConcurrentAccessAttempted(msg->RaisonException);
+        throw ConcurrentAccessAttempted(msg->exceptionReason);
     } break ;
 
     case e_CouldNotDiscover: {
         D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
-        throw CouldNotDiscover(msg->RaisonException);
+        throw CouldNotDiscover(msg->exceptionReason);
     } break ;
 
     case e_CouldNotOpenRID: {
         D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
-        throw CouldNotOpenRID(msg->RaisonException);
+        throw CouldNotOpenRID(msg->exceptionReason);
     } break ;
 
     case e_CouldNotRestore: {
         D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
-        throw CouldNotRestore(msg->RaisonException);
+        throw CouldNotRestore(msg->exceptionReason);
     } break ;
 
     case e_DeletePrivilegeNotHeld: {
         D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
-        throw DeletePrivilegeNotHeld(msg->RaisonException);
+        throw DeletePrivilegeNotHeld(msg->exceptionReason);
     } break ;
 
     case e_ErrorReadingRID: {
         D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
-        throw ErrorReadingRID(msg->RaisonException);
+        throw ErrorReadingRID(msg->exceptionReason);
     } break ;
 
     case e_EventNotKnown: {
         D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
-        throw EventNotKnown(msg->RaisonException);
+        throw EventNotKnown(msg->exceptionReason);
     } break ;
 
     case e_FederateAlreadyPaused: {
         D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
-        throw FederateAlreadyPaused(msg->RaisonException);
+        throw FederateAlreadyPaused(msg->exceptionReason);
     } break ;
 
     case e_FederateAlreadyExecutionMember: {
         D.Out(pdExcept, "Throwing e_FederateAlreadyExecutionMember exception.");
-        throw FederateAlreadyExecutionMember(msg->RaisonException);
+        throw FederateAlreadyExecutionMember(msg->exceptionReason);
     } break ;
 
     case e_FederateDoesNotExist: {
         D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
-        throw FederateDoesNotExist(msg->RaisonException);
+        throw FederateDoesNotExist(msg->exceptionReason);
     } break ;
 
     case e_FederateInternalError: {
         D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
-        throw FederateInternalError(msg->RaisonException);
+        throw FederateInternalError(msg->exceptionReason);
     } break ;
 
     case e_FederateNameAlreadyInUse: {
         D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
-        throw FederateNameAlreadyInUse(msg->RaisonException);
+        throw FederateNameAlreadyInUse(msg->exceptionReason);
     } break ;
 
     case e_FederateNotExecutionMember: {
         D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
-        throw FederateNotExecutionMember(msg->RaisonException);
+        throw FederateNotExecutionMember(msg->exceptionReason);
     } break ;
 
     case e_FederateNotPaused: {
         D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
-        throw FederateNotPaused(msg->RaisonException);
+        throw FederateNotPaused(msg->exceptionReason);
     } break ;
 
     case e_FederateOwnsAttributes: {
         D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
-        throw FederateOwnsAttributes(msg->RaisonException);
+        throw FederateOwnsAttributes(msg->exceptionReason);
     } break ;
 
     case e_FederatesCurrentlyJoined: {
         D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
-        throw FederatesCurrentlyJoined(msg->RaisonException);
+        throw FederatesCurrentlyJoined(msg->exceptionReason);
     } break ;
 
     case e_FederateWasNotAskedToReleaseAttribute: {
@@ -3326,263 +3331,263 @@ RTIambassador::processException(Message *msg)
               "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
         D.Out(pdDebug,
               "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-        throw FederateWasNotAskedToReleaseAttribute(msg->RaisonException);
+        throw FederateWasNotAskedToReleaseAttribute(msg->exceptionReason);
     } break ;
 
     case e_FederationAlreadyPaused: {
         D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
-        throw FederationAlreadyPaused(msg->RaisonException);
+        throw FederationAlreadyPaused(msg->exceptionReason);
     } break ;
 
     case e_FederationExecutionAlreadyExists: {
         D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
-        throw FederationExecutionAlreadyExists(msg->RaisonException);
+        throw FederationExecutionAlreadyExists(msg->exceptionReason);
     } break ;
 
     case e_FederationExecutionDoesNotExist: {
         D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
-        throw FederationExecutionDoesNotExist(msg->RaisonException);
+        throw FederationExecutionDoesNotExist(msg->exceptionReason);
     } break ;
 
     case e_FederationNotPaused: {
         D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
-        throw FederationNotPaused(msg->RaisonException);
+        throw FederationNotPaused(msg->exceptionReason);
     } break ;
 
     case e_FederationTimeAlreadyPassed: {
         D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
-        throw FederationTimeAlreadyPassed(msg->RaisonException);
+        throw FederationTimeAlreadyPassed(msg->exceptionReason);
     } break ;
 
     case e_FederateNotPublishing: {
         D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
-        throw FederateNotPublishing(msg->RaisonException);
+        throw FederateNotPublishing(msg->exceptionReason);
     } break ;
 
     case e_FederateNotSubscribing: {
         D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
-        throw FederateNotSubscribing(msg->RaisonException);
+        throw FederateNotSubscribing(msg->exceptionReason);
     } break ;
 
     case e_RegionNotKnown: {
         D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
-        throw RegionNotKnown(msg->RaisonException);
+        throw RegionNotKnown(msg->exceptionReason);
     } break ;
 
     case e_IDsupplyExhausted: {
         D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
-        throw IDsupplyExhausted(msg->RaisonException);
+        throw IDsupplyExhausted(msg->exceptionReason);
     } break ;
 
     case e_InteractionClassNotDefined: {
         D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
-        throw InteractionClassNotDefined(msg->RaisonException);
+        throw InteractionClassNotDefined(msg->exceptionReason);
     } break ;
 
     case e_InteractionClassNotKnown: {
         D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
-        throw InteractionClassNotKnown(msg->RaisonException);
+        throw InteractionClassNotKnown(msg->exceptionReason);
     } break ;
 
     case e_InteractionClassNotPublished: {
         D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
-        throw InteractionClassNotPublished(msg->RaisonException);
+        throw InteractionClassNotPublished(msg->exceptionReason);
     } break ;
 
     case e_InteractionParameterNotDefined: {
         D.Out(pdExcept, "Throwing e_InteractionParameterNotDefined exception.");
-        throw InteractionParameterNotDefined(msg->RaisonException);
+        throw InteractionParameterNotDefined(msg->exceptionReason);
     } break ;
 
     case e_InteractionParameterNotKnown: {
         D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
-        throw InteractionParameterNotKnown(msg->RaisonException);
+        throw InteractionParameterNotKnown(msg->exceptionReason);
     } break ;
 
     case e_InvalidDivestitureCondition: {
         D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
-        throw InvalidDivestitureCondition(msg->RaisonException);
+        throw InvalidDivestitureCondition(msg->exceptionReason);
     } break ;
 
     case e_InvalidExtents: {
         D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
-        throw InvalidExtents(msg->RaisonException);
+        throw InvalidExtents(msg->exceptionReason);
     } break ;
 
     case e_InvalidFederationTime: {
         D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
-        throw InvalidFederationTime(msg->RaisonException);
+        throw InvalidFederationTime(msg->exceptionReason);
     } break ;
 
     case e_InvalidFederationTimeDelta: {
         D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
-        throw InvalidFederationTimeDelta(msg->RaisonException);
+        throw InvalidFederationTimeDelta(msg->exceptionReason);
     } break ;
 
     case e_InvalidObjectHandle: {
         D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
-        throw InvalidObjectHandle(msg->RaisonException);
+        throw InvalidObjectHandle(msg->exceptionReason);
     } break ;
 
     case e_InvalidOrderType: {
         D.Out(pdExcept, "Throwing e_InvalidOrderType exception.");
-        throw InvalidOrderType(msg->RaisonException);
+        throw InvalidOrderType(msg->exceptionReason);
     } break ;
 
     case e_InvalidResignAction: {
         D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
-        throw InvalidResignAction(msg->RaisonException);
+        throw InvalidResignAction(msg->exceptionReason);
     } break ;
 
     case e_InvalidRetractionHandle: {
         D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
-        throw InvalidRetractionHandle(msg->RaisonException);
+        throw InvalidRetractionHandle(msg->exceptionReason);
     } break ;
 
     case e_InvalidRoutingSpace: {
         D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
-        throw InvalidRoutingSpace(msg->RaisonException);
+        throw InvalidRoutingSpace(msg->exceptionReason);
     } break ;
 
     case e_InvalidTransportType: {
         D.Out(pdExcept, "Throwing e_InvalidTransportType exception.");
-        throw InvalidTransportType(msg->RaisonException);
+        throw InvalidTransportType(msg->exceptionReason);
     } break ;
 
     case e_MemoryExhausted: {
         D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
-        throw MemoryExhausted(msg->RaisonException);
+        throw MemoryExhausted(msg->exceptionReason);
     } break ;
 
     case e_NameNotFound: {
         D.Out(pdExcept, "Throwing e_NameNotFound exception.");
-        throw NameNotFound(msg->RaisonException);
+        throw NameNotFound(msg->exceptionReason);
     } break ;
 
     case e_NoPauseRequested: {
         D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
-        throw NoPauseRequested(msg->RaisonException);
+        throw NoPauseRequested(msg->exceptionReason);
     } break ;
 
     case e_NoResumeRequested: {
         D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
-        throw NoResumeRequested(msg->RaisonException);
+        throw NoResumeRequested(msg->exceptionReason);
     } break ;
 
     case e_ObjectClassNotDefined: {
         D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
-        throw ObjectClassNotDefined(msg->RaisonException);
+        throw ObjectClassNotDefined(msg->exceptionReason);
     } break ;
 
     case e_ObjectClassNotKnown: {
         D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
-        throw ObjectClassNotKnown(msg->RaisonException);
+        throw ObjectClassNotKnown(msg->exceptionReason);
     } break ;
 
     case e_ObjectClassNotPublished: {
         D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
-        throw ObjectClassNotPublished(msg->RaisonException);
+        throw ObjectClassNotPublished(msg->exceptionReason);
     } break ;
 
     case e_ObjectClassNotSubscribed: {
         D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
-        throw ObjectClassNotSubscribed(msg->RaisonException);
+        throw ObjectClassNotSubscribed(msg->exceptionReason);
     } break ;
 
     case e_ObjectNotKnown: {
         D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
-        throw ObjectNotKnown(msg->RaisonException);
+        throw ObjectNotKnown(msg->exceptionReason);
     } break ;
 
     case e_ObjectAlreadyRegistered: {
         D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
-        throw ObjectAlreadyRegistered(msg->RaisonException);
+        throw ObjectAlreadyRegistered(msg->exceptionReason);
     } break ;
 
     case e_RestoreInProgress: {
         D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
-        throw RestoreInProgress(msg->RaisonException);
+        throw RestoreInProgress(msg->exceptionReason);
     } break ;
 
     case e_RestoreNotRequested: {
         D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
-        throw RestoreNotRequested(msg->RaisonException);
+        throw RestoreNotRequested(msg->exceptionReason);
     } break ;
 
     case e_RTIinternalError: {
         D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
-        throw RTIinternalError(msg->RaisonException);
+        throw RTIinternalError(msg->exceptionReason);
     } break ;
 
     case e_SpaceNotDefined: {
         D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
-        throw SpaceNotDefined(msg->RaisonException);
+        throw SpaceNotDefined(msg->exceptionReason);
     } break ;
 
     case e_SaveInProgress: {
         D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
-        throw SaveInProgress(msg->RaisonException);
+        throw SaveInProgress(msg->exceptionReason);
     } break ;
 
     case e_SaveNotInitiated: {
         D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
-        throw SaveNotInitiated(msg->RaisonException);
+        throw SaveNotInitiated(msg->exceptionReason);
     } break ;
 
     case e_SecurityError: {
         D.Out(pdExcept, "Throwing e_SecurityError exception.");
-        throw SecurityError(msg->RaisonException);
+        throw SecurityError(msg->exceptionReason);
     } break ;
 
     case e_SpecifiedSaveLabelDoesNotExist: {
         D.Out(pdExcept, "Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
-        throw SpecifiedSaveLabelDoesNotExist(msg->RaisonException);
+        throw SpecifiedSaveLabelDoesNotExist(msg->exceptionReason);
     } break ;
 
     case e_TimeAdvanceAlreadyInProgress: {
         D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
-        throw TimeAdvanceAlreadyInProgress(msg->RaisonException);
+        throw TimeAdvanceAlreadyInProgress(msg->exceptionReason);
     } break ;
 
     case e_TimeAdvanceWasNotInProgress: {
         D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
-        throw TimeAdvanceWasNotInProgress(msg->RaisonException);
+        throw TimeAdvanceWasNotInProgress(msg->exceptionReason);
     } break ;
 
     case e_TooManyIDsRequested: {
         D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
-        throw TooManyIDsRequested(msg->RaisonException);
+        throw TooManyIDsRequested(msg->exceptionReason);
     } break ;
 
     case e_UnableToPerformSave: {
         D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
-        throw UnableToPerformSave(msg->RaisonException);
+        throw UnableToPerformSave(msg->exceptionReason);
     } break ;
 
     case e_UnimplementedService: {
         D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
-        throw UnimplementedService(msg->RaisonException);
+        throw UnimplementedService(msg->exceptionReason);
     } break ;
 
     case e_UnknownLabel: {
         D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
-        throw UnknownLabel(msg->RaisonException);
+        throw UnknownLabel(msg->exceptionReason);
     } break ;
 
     case e_ValueCountExceeded: {
         D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
-        throw ValueCountExceeded(msg->RaisonException);
+        throw ValueCountExceeded(msg->exceptionReason);
     } break ;
 
     case e_ValueLengthExceeded: {
         D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
-        throw ValueLengthExceeded(msg->RaisonException);
+        throw ValueLengthExceeded(msg->exceptionReason);
     } break ;
 
     default: {
         D.Out(pdExcept, "Throwing unknown exception !");
         cout << "LibRTI: Receiving unknown exception." << endl ;
-        throw RTIinternalError(msg->RaisonException);
+        throw RTIinternalError(msg->exceptionReason);
     } break ;
     }
 }
@@ -3613,4 +3618,4 @@ RTIambassador::getRegion(RegionToken)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.13 2003/01/29 21:33:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.14 2003/02/17 09:17:04 breholee Exp $

@@ -1,6 +1,6 @@
 ## CERTI test/billard/Makefile.am
 ## Copyright (C) 2001, 2003 ONERA
-## $Id: Makefile.am,v 3.1 2003/01/20 17:45:49 breholee Exp $
+## $Id: Makefile.am,v 3.2 2003/02/17 09:17:04 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -19,8 +19,8 @@ bin_SCRIPTS = billard-init billard-1 billard-2 billard-3
 
 fed_DATA = Test.fed Test.xml
 
-noinst_HEADERS = bille.hh constants.hh my_fed.hh
-billard_SOURCES = bille.cc my_fed.cc billard.cc bille.hh constants.hh my_fed.hh
+noinst_HEADERS = bille.hh constants.hh my_fed.hh cmdline.h getopt.h 
+billard_SOURCES = bille.cc my_fed.cc billard.cc cmdline.c getopt.c getopt1.c
 
 LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
 -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lRTI -lgraph	\
@@ -28,4 +28,4 @@ LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
 
 EXTRA_DIST = Test.fed Test.xml billard-init billard-1 billard-2 billard-3
 
-## EOF $Id: Makefile.am,v 3.1 2003/01/20 17:45:49 breholee Exp $
+## EOF $Id: Makefile.am,v 3.2 2003/02/17 09:17:04 breholee Exp $

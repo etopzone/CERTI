@@ -19,12 +19,24 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.7 2003/01/31 10:47:52 breholee Exp $
+// $Id: billard.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
+// Project
 #include <config.h>
+#include "bille.hh"
+#include "my_fed.hh"
+#include "constants.hh"
+#include "cmdline.h"
 
-// Entetes systeme
+// Libraries
+#include "RTI.hh"
+#include "PrettyDebug.hh"
+#ifdef TEST_USES_GRAPHICS
+#include "graph_c.hh"
+#endif
+
+// Standard libraries
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -32,24 +44,9 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <math.h>
-
 #include <iostream>
 #include <signal.h>
 #include <exception>
-
-// Entetes RTI
-#include "RTI.hh"
-#include "PrettyDebug.hh"
-
-// Entetes specifiques
-#include "bille.hh" // Contient la description de la classe Bille
-#include "my_fed.hh" // Contient la classe Fed, surcharge de FederateAmbassador
-#include "constants.hh" // Les constantes de classes, attributs, etc.
-//#include "fedtime.hh"
-
-#ifdef TEST_USES_GRAPHICS
-#include "graph_c.hh"
-#endif
 
 using namespace std ;
 
@@ -65,7 +62,7 @@ const RTIfedTime TIME_STEP(1.0); // lookahead
 
 #define XMAX 500 /* dimensions fenetre graphique */
 #define YMAX 100
-#define XFEN 650 /* position de cette fenetre */
+#define XFEN 50 /* position de cette fenetre */
 #define YFEN 70
 #define TMAX 30
 
@@ -78,8 +75,8 @@ extern void InitGraphe(int X, int Y, unsigned WIDHT, unsigned HEIGHT);
 
 // Declaration des objets et variables globaux
 
-RTI::RTIambassador *rtiamb = new RTI::RTIambassador();
-Fed *fedamb = new Fed(rtiamb);
+RTI::RTIambassador *rtiamb ;
+Fed *fedamb ;
 
 static pdCDebug D("HERITAGE", "(main) - ");
 
@@ -88,7 +85,8 @@ int nbtick=0 ;
 unsigned int t, s ;
 char c ;
 
-int YOFFSET = 0 ;
+int YOFFSET ;
+int XOFFSET ;
 
 // ----------------------------------------
 // -- Declaration des fonctions internes --
@@ -111,23 +109,23 @@ main(int argc, char **argv)
     int i = 0 ; // Variable de boucle
     RTIfedTime localTime(0.0); // Temps local du federe
     RTIfedTime* time_aux ;
-    FederateHandle myFederateID = 0 ; // Mon numero de federe
-    bool creator = false ; // Suis-je le Createur ?
+    FederateHandle id = 0 ;
+    bool creator = false ;
     char *FederationName ;
     char *FederateName ;
     char *DotFedFile ;
 
-    printf("CERTI-Billard " VERSION " - Copyright 2002 ONERA\n");
+    printf("CERTI-Billard " VERSION " - Copyright (C) 2002, 2003  ONERA\n");
     printf("This is free software ; see the source for copying conditions. "
-           "There is NO\n");
-    printf("warranty ; not even for MERCHANTABILITY or FITNESS FOR A "
-           "PARTICULAR PURPOSE.\n\n");
+           "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS" 
+           " FOR A PARTICULAR PURPOSE.\n\n");
 
-    if (argc != 4 && argc != 5) {
-        cerr<<"usage: "<<argv[0]<<" <nom_federe> <coordonne on/off> "
-            "<nom_federation> [<y_display_offset>]\n" ;
-        exit(-1);
-    }
+    gengetopt_args_info args_info ;
+    if (cmdline_parser(argc, argv, &args_info) != 0)
+        exit(EXIT_FAILURE);
+
+    rtiamb = new RTI::RTIambassador();
+    fedamb = new Fed(rtiamb);
 
     // Handlers
     std::signal(SIGINT, sortir);
@@ -137,7 +135,7 @@ main(int argc, char **argv)
     set_unexpected(ExceptionHandler);
 
     // Nom de la fédération
-    FederationName = argv[3] ;
+    FederationName = args_info.federation_arg ;
     DotFedFile = new char[strlen(FederationName)+5] ;
     strcpy(DotFedFile, FederationName);
 #ifdef HAVE_XML // if compiled with XML, use the .xml description
@@ -147,7 +145,7 @@ main(int argc, char **argv)
 #endif
     printf("Using %s file\n", DotFedFile);
 
-    FederateName = argv[1] ;
+    FederateName = args_info.name_arg ;
 
     // Verifier que la federation existe
     try {
@@ -160,7 +158,6 @@ main(int argc, char **argv)
         D.Out(pdInit, "Federation execution already created.");
     }
 
-
     // Participer a la federation
     D.Out(pdInit, "Federate %s attempting to join the %s federation.",
           FederateName, FederationName);
@@ -170,40 +167,44 @@ main(int argc, char **argv)
 
     while (!joined) {
         try {
-            myFederateID=rtiamb->joinFederationExecution(FederateName,
+            id=rtiamb->joinFederationExecution(FederateName,
                                                          FederationName,
                                                          fedamb);
             joined = true ;
             D.Out(pdInit, "Federate %s joined the %s : I'm #%d .",
-                  argv[1], FederationName, myFederateID);
+                  FederateName, FederationName, id);
             break ;
         }
         catch (FederateAlreadyExecutionMember& e) {
             D.Out(pdExcept,
                   "Federate %s already exists in the Federation Execution.",
-                  argv[1]);
+                  FederateName);
             throw ;
         }
         catch (FederationExecutionDoesNotExist& e) {
             D.Out(pdExcept, "Federate %s : FederationExecutionDoesNotExist.",
-                  argv[1]);
+                  FederateName);
             // sleep(1);
         }
         catch (Exception& e) {
             D.Out(pdExcept,
                   "Federate %s :Join Federation Execution failed : %d .",
-                  argv[1], &e);
+                  FederateName, &e);
             throw ;
         }
     }
 
-    if (argc==5)
-        YOFFSET = atoi(argv[4]);
+    if (args_info.yoffset_given) 
+        YOFFSET = args_info.yoffset_arg ;
     else
-        YOFFSET = YMAX*(myFederateID-1)+25*myFederateID ;
+        YOFFSET = YMAX*(id-1)+25*id ;
+
+    if (args_info.xoffset_given) 
+        XOFFSET = args_info.xoffset_arg ;
+    else
+        XOFFSET = 0 ;
 
     // Le createur met la federation en pause.
-
     if (creator) {
         D.Out(pdInit, "Pause requested");
         try {
@@ -231,17 +232,17 @@ main(int argc, char **argv)
     // --------------------
 #ifdef TEST_USES_GRAPHICS
     // Ouvrir fenetre graphique
-    InitialisationGraphique(myFederateID);
+    InitialisationGraphique(id);
 #endif
 
     // Mettre en route la regulation, se declarer contraint etc.
-    if (strcmp(argv[2], "on") == 0) {
+    if (args_info.coordinated_flag) {
         SetTimeRegulation(rtiamb, creator, localTime);
-
+        
         // Waiting for callbacks
         try {
             rtiamb->tick(1.0, 2.0);
-            nbtick++ ;
+                nbtick++ ;
         }
         catch (Exception& e) {
             D.Out(pdExcept, "Exception ticking the RTI : %d", &e);
@@ -253,7 +254,7 @@ main(int argc, char **argv)
     D.Out(pdInit, "Initial synchronization done.");
 
     // Creer ma boule
-    fedamb->Local.Initialiser(myFederateID);
+    fedamb->Local.Initialiser(id);
     D.Out(pdTrace, "creation de la boule réussie.");
 
     // Declarer la boule aux autres federes
@@ -436,8 +437,8 @@ sortir(int SignalNumber)
     }
     else {
         D.Out(pdTerm, "Emergency stop, destroying Ambassadors.");
-        delete fedamb ;
-        delete rtiamb ;
+        if (fedamb != 0) delete fedamb ;
+        if (rtiamb != 0) delete rtiamb ;
         D.Out(pdTerm, "Federate terminated.");
         exit(EXIT_FAILURE);
     }
@@ -455,9 +456,9 @@ ExceptionHandler(void)
 // ---------------------------------------------------------------------------
 //! InitialisationGraphique.
 void
-InitialisationGraphique(FederateHandle myFederateID)
+InitialisationGraphique(FederateHandle id)
 {
-    int x = XFEN ;
+    int x = XFEN + XOFFSET ;
     int y = YFEN + YOFFSET ;
     unsigned int width = XMAX ;
     unsigned int height = YMAX ;
@@ -628,7 +629,6 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         alarm(TEMPS_SIMU_C);
     else
         alarm(TEMPS_SIMU_F);
-
 }
 
-// EOF $Id: billard.cc,v 3.7 2003/01/31 10:47:52 breholee Exp $
+// EOF $Id: billard.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $

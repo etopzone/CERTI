@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.5 2003/01/29 18:31:15 breholee Exp $
+// $Id: ObjectClass.hh,v 3.6 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -51,8 +51,8 @@ class CDiffusion {
 public:
 
   typedef struct {
-    FederateHandle NumeroFedere;
-    AttributeHandle AttribHandle;
+    FederateHandle federate ;
+    AttributeHandle attribute ;
 
   } DiffStruct;
 
@@ -368,4 +368,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.5 2003/01/29 18:31:15 breholee Exp $
+// $Id: ObjectClass.hh,v 3.6 2003/02/17 09:17:04 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.8 2003/01/29 18:15:04 breholee Exp $
+// $Id: RTItypes.hh,v 3.9 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_TYPES_HH
@@ -224,23 +224,23 @@ struct Value {
     ULong length ;
 };
  
-struct range_struct_s {
-    ULong first ;
-    ULong last ;
-};
-typedef struct range_struct_s Range ;
+// struct range_struct_s {
+//     ULong first ;
+//     ULong last ;
+// };
+// typedef struct range_struct_s Range ;
  
-struct Extents_s {
-    ULong _length ;
-    Range* _buffer ;
-};
-typedef struct Extents_s Extents ;
+// struct Extents_s {
+//     ULong _length ;
+//     Range* _buffer ;
+// };
+// typedef struct Extents_s Extents ;
  
-struct ExtentSet_s {
-    ULong _length ;
-    Extents* _buffer ;
-};
-typedef struct ExtentSet_s ExtentSet ;
+// struct ExtentSet_s {
+//     ULong _length ;
+//     Extents* _buffer ;
+// };
+// typedef struct ExtentSet_s ExtentSet ;
  
 typedef ULong HLA_Region ;
  
@@ -467,4 +467,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.8 2003/01/29 18:15:04 breholee Exp $
+// $Id: RTItypes.hh,v 3.9 2003/02/17 09:17:03 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.7 2003/01/29 18:32:34 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -206,8 +206,7 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 //! getObjectClassHandle.
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(const char* the_name) const
-    throw (ObjectClassNotDefined,
-           RTIinternalError)
+    throw (ObjectClassNotDefined, RTIinternalError)
 {
     if (the_name == NULL)
         throw RTIinternalError();
@@ -749,4 +748,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.7 2003/01/29 18:32:34 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $

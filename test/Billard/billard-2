@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: billard-2,v 3.0 2002/11/21 01:27:51 breholee Exp $
+# $Id: billard-2,v 3.1 2003/02/17 09:17:04 breholee Exp $
 
 # OBJECTCLASS="A:C:D:E:I:P:R:S:T:W:Z:X"
 # OBJECTCLASSSET="A:C:D:E:I:P:R:S:T:W:Z:X"
@@ -38,6 +38,6 @@
 # #DISPLAY=$CERTIDISPLAY
 # #export DISPLAY
 
-billard 2 on Test 300
+billard --name 2 --federation Test
 
 

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.3 2003/01/17 23:22:03 breholee Exp $
+// $Id: SocketServer.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,13 +53,13 @@ void
 SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
   throw(SecurityError)
 {
-    if ((message->NumeroFederation == 0) && (message->NumeroFedere == 0))
+    if ((message->federation == 0) && (message->federate == 0))
         return;
 
     Socket *socket;
     try {
-        socket = getSocketLink(message->NumeroFederation,
-                               message->NumeroFedere);
+        socket = getSocketLink(message->federation,
+                               message->federate);
     }
     catch (Exception &e) {
         // BUG: Should put a line in the Audit.
@@ -125,7 +125,7 @@ SocketServer::close(long socket,
 //! socketServer.
 SocketServer::SocketServer(SocketTCP *tcp_socket,
                            SocketUDP *udp_socket, int the_port)
-    : list<SocketTuple *>(), port(the_port)
+    : list<SocketTuple *>()
 {
     if (tcp_socket == NULL)
         throw RTIinternalError();
@@ -312,4 +312,4 @@ SocketServer::setReferences(long             socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.3 2003/01/17 23:22:03 breholee Exp $
+// $Id: SocketServer.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.5 2003/01/15 14:31:43 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.6 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -350,7 +350,7 @@ void ObjectClassAttribute::subscribe(FederateHandle theFederate,
 void
 ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 {
-	switch(ocblist->message->Type) {
+	switch(ocblist->message->type) {
 	
 	case m_REFLECT_ATTRIBUTE_VALUES: {
         list<Subscriber *>::iterator i ; 
@@ -374,4 +374,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.5 2003/01/15 14:31:43 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.6 2003/02/17 09:17:04 breholee Exp $

@@ -1,510 +1,507 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
-// CERTI is free software; you can redistribute it and/or modify
+// CERTI is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
 // CERTI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: DeclarationManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
 
 namespace certi {
 namespace rtia {
 
-pdCDebug D("RTIA_GD", "(RTIA GD ) - ");
+static pdCDebug D("RTIA_DM", "(RTIA DM) ");
 
-
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! DeclarationManagement
 DeclarationManagement::DeclarationManagement(Communications *GC,
-                                             Queues *GQueues,
                                              FederationManagement *GF,
                                              RootObject *theRootObj)
 {
-  _GC = GC;
-  _GQueues = GQueues;
-  _GF = GF;
-  _theRootObj = theRootObj;
+    comm = GC ;
+    fm = GF ;
+    rootObject = theRootObj ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // ~DeclarationManagement
 DeclarationManagement::~DeclarationManagement(void)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // publishObjectClass
 void
-DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle, 
+DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                           AttributeHandle *attribArray,
                                           UShort attribArraySize,
                                           TypeException &e)
 {
-  e = e_NO_EXCEPTION;
+    e = e_NO_EXCEPTION ;
 
-  // Partie Locale
+    // Partie Locale
 
-  try {
-    _theRootObj->ObjectClasses->publish(_GF->federate,
-					theClassHandle,
-					attribArray,
-					attribArraySize,
-					RTI_TRUE);
-  }
-  catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in PublishObjectClass.");
-    throw e;
-  }
- 
-  // Partie RTIG
-  NetworkMessage req;
-  req.Type = m_PUBLISH_OBJECT_CLASS;
-  req.objectClassHandle = theClassHandle; 
-  req.HandleArraySize = attribArraySize;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
- 
-  for(int i=0; i<attribArraySize; i++)
-    req.HandleArray[i] = attribArray[i];
- 
-  // Emission
-  _GC->sendMessage(&req);
- 
-  // Reception
-  NetworkMessage rep;
-  _GC->waitMessage(&rep, m_PUBLISH_OBJECT_CLASS, req.NumeroFedere);
- 
-  e = rep.Exception;
+    try {
+        rootObject->ObjectClasses->publish(fm->federate,
+                                           theClassHandle,
+                                           attribArray,
+                                           attribArraySize,
+                                           RTI_TRUE);
+    }
+    catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in PublishObjectClass.");
+        throw e ;
+    }
+
+    // Partie RTIG
+    NetworkMessage req ;
+    req.type = m_PUBLISH_OBJECT_CLASS ;
+    req.objectClass = theClassHandle ;
+    req.handleArraySize = attribArraySize ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+
+    for (int i=0 ; i<attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i] ;
+
+    // Emission
+    comm->sendMessage(&req);
+
+    // Reception
+    NetworkMessage rep ;
+    comm->waitMessage(&rep, m_PUBLISH_OBJECT_CLASS, req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unpublishObjectClass
 void
-DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle, 
+DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
                                             TypeException &e)
 {
-  // Variables leurres
-  AttributeHandle *attribArray = NULL;
-  UShort attribArraySize = 0;
+    // Variables leurres
+    AttributeHandle *attribArray = NULL ;
+    UShort attribArraySize = 0 ;
 
-  e = e_NO_EXCEPTION;
+    e = e_NO_EXCEPTION ;
 
-  // Partie Locale
+    // Partie Locale
 
-  try {
-    _theRootObj->ObjectClasses->publish(_GF->federate,
-					theClassHandle,
-					attribArray,
-					attribArraySize,
-					RTI_FALSE);
-  } catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
-    throw e;
-  }
+    try {
+        rootObject->ObjectClasses->publish(fm->federate,
+                                           theClassHandle,
+                                           attribArray,
+                                           attribArraySize,
+                                           RTI_FALSE);
+    } catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
+        throw e ;
+    }
 
-  // Partie RTIG
-  NetworkMessage req;
-  req.Type = m_UNPUBLISH_OBJECT_CLASS;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
-  req.objectClassHandle = theClassHandle; 
- 
-  // Emission de la requete vers le RTIG
-  _GC->sendMessage(&req);
- 
-  // On attend une reponse
-  NetworkMessage rep;
-  _GC->waitMessage(&rep, m_UNPUBLISH_OBJECT_CLASS, req.NumeroFedere);
+    // Partie RTIG
+    NetworkMessage req ;
+    req.type = m_UNPUBLISH_OBJECT_CLASS ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+    req.objectClass = theClassHandle ;
 
-  e = rep.Exception;
+    // Emission de la requete vers le RTIG
+    comm->sendMessage(&req);
+
+    // On attend une reponse
+    NetworkMessage rep ;
+    comm->waitMessage(&rep, m_UNPUBLISH_OBJECT_CLASS, req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // publishInteractionClass
 void
 DeclarationManagement::
 publishInteractionClass(InteractionClassHandle theInteractionHandle,
                         TypeException &e)
 {
-  e = e_NO_EXCEPTION;
+    e = e_NO_EXCEPTION ;
 
-  // Partie Locale
+    // Partie Locale
 
-  try {
-    _theRootObj->Interactions->publish(_GF->federate,
-				       theInteractionHandle,
-				       RTI_TRUE);
-  } catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in publishInteractionClass.");
-    throw e;
-  }
+    try {
+        rootObject->Interactions->publish(fm->federate,
+                                          theInteractionHandle,
+                                          RTI_TRUE);
+    } catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in publishInteractionClass.");
+        throw e ;
+    }
 
-  // Partie RTIG
-  NetworkMessage req;
-  req.Type = m_PUBLISH_INTERACTION_CLASS;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
-  req.InteractionHandle = theInteractionHandle; 
- 
-  _GC->sendMessage(&req);
+    // Partie RTIG
+    NetworkMessage req ;
+    req.type = m_PUBLISH_INTERACTION_CLASS ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+    req.interactionClass = theInteractionHandle ;
 
-  NetworkMessage rep;
-  _GC->waitMessage(&rep, m_PUBLISH_INTERACTION_CLASS, req.NumeroFedere);
+    comm->sendMessage(&req);
 
-  e = rep.Exception;
+    NetworkMessage rep ;
+    comm->waitMessage(&rep, m_PUBLISH_INTERACTION_CLASS, req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unpublishInteractionClass
 void
 DeclarationManagement::
-unpublishInteractionClass(InteractionClassHandle theInteractionHandle, 
+unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
                           TypeException &e)
 {
-  e = e_NO_EXCEPTION;
+    e = e_NO_EXCEPTION ;
 
-  // Partie Locale
+    // Partie Locale
 
-  try {
-    _theRootObj->Interactions->publish(_GF->federate,
-				       theInteractionHandle,
-				       RTI_FALSE);
-  } catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
-    throw e;
-  }
+    try {
+        rootObject->Interactions->publish(fm->federate,
+                                          theInteractionHandle,
+                                          RTI_FALSE);
+    } catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
+        throw e ;
+    }
 
-  // Partie RTIG
-  NetworkMessage req;
-  req.Type = m_UNPUBLISH_INTERACTION_CLASS;
-  req.InteractionHandle = theInteractionHandle; 
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
- 
-  _GC->sendMessage(&req);
+    // Partie RTIG
+    NetworkMessage req ;
+    req.type = m_UNPUBLISH_INTERACTION_CLASS ;
+    req.interactionClass = theInteractionHandle ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
 
-  NetworkMessage rep;
-  _GC->waitMessage(&rep, m_UNPUBLISH_INTERACTION_CLASS, req.NumeroFedere);
+    comm->sendMessage(&req);
 
-  e = rep.Exception;
+    NetworkMessage rep ;
+    comm->waitMessage(&rep, m_UNPUBLISH_INTERACTION_CLASS, req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeObjectClassAttribute
-void 
+void
 DeclarationManagement::
-subscribeObjectClassAttribute(ObjectClassHandle theClassHandle, 
+subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                               AttributeHandle *attribArray,
                               UShort attribArraySize,
                               TypeException &e)
 {
-  NetworkMessage req,rep;
+    NetworkMessage req, rep ;
 
-  // Pas de partie locale pour les abonnements
+    // Pas de partie locale pour les abonnements
 
-  // Partie RTIG
+    // Partie RTIG
 
-  req.Type = m_SUBSCRIBE_OBJECT_CLASS;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
-  req.objectClassHandle = theClassHandle; 
-  req.HandleArraySize = attribArraySize;
- 
-  for(int i=0; i<attribArraySize; i++)
-    req.HandleArray[i] = attribArray[i];
- 
-  // Emission
-  _GC->sendMessage(&req);
- 
-  // Reception
-  _GC->waitMessage(&rep,
-		   m_SUBSCRIBE_OBJECT_CLASS,
-		   req.NumeroFedere);
+    req.type = m_SUBSCRIBE_OBJECT_CLASS ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+    req.objectClass = theClassHandle ;
+    req.handleArraySize = attribArraySize ;
 
-  e = rep.Exception;
+    for (int i=0 ; i<attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i] ;
+
+    // Emission
+    comm->sendMessage(&req);
+
+    // Reception
+    comm->waitMessage(&rep,
+                      m_SUBSCRIBE_OBJECT_CLASS,
+                      req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeObjectClassAttribute (with Region)
-void 
+void
 DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle,
                                                      AttributeHandle,
                                                      HLA_Region,
                                                      TypeException &e)
 {
-  // BUG: Not implemented in F.0
-  e = e_UnimplementedService;
+    // BUG: Not implemented in F.0
+    e = e_UnimplementedService ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unsubscribeObjectClassAttribute
-void 
+void
 DeclarationManagement::
-unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle, 
+unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                                 TypeException &e)
 {
-  NetworkMessage req,rep;
- 
-  e = e_NO_EXCEPTION;
+    NetworkMessage req, rep ;
 
-  // Pas de Partie Locale pour les abonnements
+    e = e_NO_EXCEPTION ;
 
-  // Partie RTIG
-  req.Type = m_UNSUBSCRIBE_OBJECT_CLASS;
-  req.objectClassHandle = theClassHandle;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
- 
-  _GC->sendMessage(&req);
- 
-  _GC->waitMessage(&rep,
-		   m_UNSUBSCRIBE_OBJECT_CLASS,
-		   req.NumeroFedere);
- 
-  e = rep.Exception;
+    // Pas de Partie Locale pour les abonnements
+
+    // Partie RTIG
+    req.type = m_UNSUBSCRIBE_OBJECT_CLASS ;
+    req.objectClass = theClassHandle ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+
+    comm->sendMessage(&req);
+
+    comm->waitMessage(&rep,
+                      m_UNSUBSCRIBE_OBJECT_CLASS,
+                      req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unsubscribeObjectClassAttribute (with Region)
 void
 DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle,
                                                        HLA_Region,
                                                        TypeException &e)
 {
-  e = e_UnimplementedService;
+    e = e_UnimplementedService ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeInteractionClass
 void
 DeclarationManagement::
-subscribeInteractionClass(InteractionClassHandle theClassHandle, 
+subscribeInteractionClass(InteractionClassHandle theClassHandle,
                           TypeException &e)
 {
-  NetworkMessage req,rep;
+    NetworkMessage req, rep ;
 
-  e = e_NO_EXCEPTION;
+    e = e_NO_EXCEPTION ;
 
-  // Partie Locale
+    // Partie Locale
 
-  // BUG: Pourquoi il y a-t-il une partie locale pour un abonnement ?
-  // Ca ne va pas marcher avec les niveaux de securite !!!!
+    // BUG: Pourquoi il y a-t-il une partie locale pour un abonnement ?
+    // Ca ne va pas marcher avec les niveaux de securite !!!!
 
-  try {
-    _theRootObj->Interactions->subscribe(_GF->federate,
-					 theClassHandle,
-					 RTI_TRUE);
-  } catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
-    throw e;
-  }
+    try {
+        rootObject->Interactions->subscribe(fm->federate,
+                                            theClassHandle,
+                                            RTI_TRUE);
+    } catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
+        throw e ;
+    }
 
-  // Partie RTIG
+    // Partie RTIG
 
-  req.Type = m_SUBSCRIBE_INTERACTION_CLASS;
-  req.InteractionHandle = theClassHandle; 
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
- 
-  _GC->sendMessage(&req);
+    req.type = m_SUBSCRIBE_INTERACTION_CLASS ;
+    req.interactionClass = theClassHandle ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
 
-  _GC->waitMessage(&rep, m_SUBSCRIBE_INTERACTION_CLASS, req.NumeroFedere);
+    comm->sendMessage(&req);
 
-  e = rep.Exception;
+    comm->waitMessage(&rep, m_SUBSCRIBE_INTERACTION_CLASS, req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeInteractionClass (with Region)
-void 
+void
 DeclarationManagement::subscribeInteractionClass(InteractionClassHandle,
-                                                 HLA_Region, 
+                                                 HLA_Region,
                                                  TypeException &e)
 {
-  e = e_UnimplementedService;
+    e = e_UnimplementedService ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unsubscribeInteractionClass
 void
 DeclarationManagement::
-unsubscribeInteractionClass(InteractionClassHandle theClassHandle, 
+unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                             TypeException &e)
 {
-  NetworkMessage req,rep;
- 
-  e = e_NO_EXCEPTION;
- 
-  // Partie Locale
+    NetworkMessage req, rep ;
 
-  // BUG: Pourquoi il y a-t-il une partie locale pour un abonnement ?
-  // Ca ne va pas marcher avec les niveaux de securite !!!!
+    e = e_NO_EXCEPTION ;
 
-  try {
-    _theRootObj->Interactions->subscribe(_GF->federate,
-					 theClassHandle,
-					 RTI_FALSE);
-  } catch(Exception *e) {
-    D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
-    throw e;
-  }
+    // Partie Locale
 
-  // Partie RTIG
+    // BUG: Pourquoi il y a-t-il une partie locale pour un abonnement ?
+    // Ca ne va pas marcher avec les niveaux de securite !!!!
 
-  req.Type = m_UNSUBSCRIBE_INTERACTION_CLASS;
-  req.InteractionHandle = theClassHandle;
-  req.NumeroFederation = _GF->_numero_federation;
-  req.NumeroFedere = _GF->federate;
- 
-  _GC->sendMessage(&req);
- 
-  _GC->waitMessage(&rep,
-		   m_UNSUBSCRIBE_INTERACTION_CLASS,
-		   req.NumeroFedere);
- 
-  e = rep.Exception;
+    try {
+        rootObject->Interactions->subscribe(fm->federate,
+                                            theClassHandle,
+                                            RTI_FALSE);
+    } catch (Exception *e) {
+        D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
+        throw e ;
+    }
+
+    // Partie RTIG
+
+    req.type = m_UNSUBSCRIBE_INTERACTION_CLASS ;
+    req.interactionClass = theClassHandle ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+
+    comm->sendMessage(&req);
+
+    comm->waitMessage(&rep,
+                      m_UNSUBSCRIBE_INTERACTION_CLASS,
+                      req.federate);
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // unsubscribeInteractionClass (with Region)
 void
 DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle,
                                                    HLA_Region,
                                                    TypeException &e)
 {
-  e = e_UnimplementedService;
+    e = e_UnimplementedService ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // startRegistrationForObjectClass
 void
 DeclarationManagement::
-startRegistrationForObjectClass(ObjectClassHandle theClass, 
-                                // CAttributeHandleValuePairSet &theAttributes, 
+startRegistrationForObjectClass(ObjectClassHandle theClass,
+                                // CAttributeHandleValuePairSet &theAttributes,
                                 TypeException &e)
 {
-  Message req, rep;
+    Message req, rep ;
 
-  // Pas de partie locale
+    // Pas de partie locale
 
-  // Partie Federe
+    // Partie Federe
 
-  req.Type = START_REGISTRATION_FOR_OBJECT_CLASS;
-  req.objectClassHandle = theClass;
+    req.type = START_REGISTRATION_FOR_OBJECT_CLASS ;
+    req.objectClass = theClass ;
 
-  _GC->sendUN(&req);
+    comm->sendUN(&req);
 
-  _GC->receiveUN(&rep);
+    comm->receiveUN(&rep);
 
-  if(rep.Type != req.Type) {
-    D.Out(pdExcept, "Unknown response type when waiting for "
-	  "START_REGISTRATION_FOR_OBJECT_CLASS.");
-    throw RTIinternalError();
-  }
- 
-  e = rep.Exception;
+    if (rep.type != req.type) {
+        D.Out(pdExcept, "Unknown response type when waiting for "
+              "START_REGISTRATION_FOR_OBJECT_CLASS.");
+        throw RTIinternalError();
+    }
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // stopRegistrationForObjectClass
 void
 DeclarationManagement::
-stopRegistrationForObjectClass(ObjectClassHandle theClass, 		
+stopRegistrationForObjectClass(ObjectClassHandle theClass,
                                TypeException &e)
 {
-  Message req, rep;
+    Message req, rep ;
 
-  // Pas de partie Locale
+    // Pas de partie Locale
 
-  // Partie Federe
+    // Partie Federe
 
-  req.Type = STOP_REGISTRATION_FOR_OBJECT_CLASS;
-  req.objectClassHandle = theClass;
+    req.type = STOP_REGISTRATION_FOR_OBJECT_CLASS ;
+    req.objectClass = theClass ;
 
-  _GC->sendUN(&req);
+    comm->sendUN(&req);
 
-  _GC->receiveUN(&rep);
+    comm->receiveUN(&rep);
 
-  if(rep.Type != req.Type) {
-    D.Out(pdExcept, "Unknown response type when waiting for "
-	  "START_REGISTRATION_FOR_OBJECT_CLASS.");
-    throw RTIinternalError();
-  }
- 
-  e = rep.Exception;
+    if (rep.type != req.type) {
+        D.Out(pdExcept, "Unknown response type when waiting for "
+              "START_REGISTRATION_FOR_OBJECT_CLASS.");
+        throw RTIinternalError();
+    }
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // turnInteractionsOn
 void
-DeclarationManagement::turnInteractionsOn(InteractionClassHandle theHandle, 
+DeclarationManagement::turnInteractionsOn(InteractionClassHandle theHandle,
                                           TypeException &e)
 {
-  Message req, rep;
+    Message req, rep ;
 
-  // Pas de partie Locale
+    // Pas de partie Locale
 
-  // Partie Federe
+    // Partie Federe
 
-  req.Type = TURN_INTERACTIONS_ON;
-  req.InteractionHandle = theHandle;
+    req.type = TURN_INTERACTIONS_ON ;
+    req.interactionClass = theHandle ;
 
-  _GC->sendUN(&req);
+    comm->sendUN(&req);
 
-  _GC->receiveUN(&rep);
+    comm->receiveUN(&rep);
 
-  if(rep.Type != req.Type) {
-    D.Out(pdExcept, 
-	  "Unknown response type, expecting TURN_INTERACTIONS_ON.");
-    throw RTIinternalError();
-  }
- 
-  e = rep.Exception;
+    if (rep.type != req.type) {
+        D.Out(pdExcept,
+              "Unknown response type, expecting TURN_INTERACTIONS_ON.");
+        throw RTIinternalError();
+    }
+
+    e = rep.exception ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // turnInteractionsOff
 void
-DeclarationManagement::turnInteractionsOff(InteractionClassHandle theHandle, 
+DeclarationManagement::turnInteractionsOff(InteractionClassHandle theHandle,
                                            TypeException &e)
 {
-  // Pas de partie Locale
+    // Pas de partie Locale
 
-  // Partie Federe
-  Message req;
-  req.Type = TURN_INTERACTIONS_OFF;
-  req.InteractionHandle = theHandle;
+    // Partie Federe
+    Message req ;
+    req.type = TURN_INTERACTIONS_OFF ;
+    req.interactionClass = theHandle ;
 
-  _GC->sendUN(&req);
+    comm->sendUN(&req);
 
-  Message rep;
-  _GC->receiveUN(&rep);
+    Message rep ;
+    comm->receiveUN(&rep);
 
-  if(rep.Type != req.Type) {
-    D.Out(pdExcept, 
-	  "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
-    throw RTIinternalError();
-  }
+    if (rep.type != req.type) {
+        D.Out(pdExcept,
+              "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
+        throw RTIinternalError();
+    }
 
-  e = rep.Exception;
+    e = rep.exception ;
 }
 
-}} // namespaces
+}} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.6 2003/01/29 18:32:34 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.7 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -78,8 +78,7 @@ public:
             RTIinternalError);
 
   ObjectClassHandle getObjectClassHandle(const char* the_name) const
-      throw(ObjectClassNotDefined,
-            RTIinternalError);
+      throw(ObjectClassNotDefined, RTIinternalError);
 
   const char* getObjectClassName(ObjectClassHandle the_handle) const
       throw(ObjectClassNotDefined,
@@ -301,4 +300,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.6 2003/01/29 18:32:34 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.7 2003/02/17 09:17:04 breholee Exp $

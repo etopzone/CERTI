@@ -5,12 +5,12 @@
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.1 2003/01/20 17:45:49 breholee Exp $
+// $Id: XmlParser.hh,v 3.2 2003/02/17 09:17:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -28,14 +28,21 @@
 
 #ifdef HAVE_XML
 
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-
+// Project
+#include <config.h>
+#include "RoutingSpace.hh"
 #include "RootObject.hh"
 #include "ObjectClass.hh"
 #include "Interaction.hh"
+#include "PrettyDebug.hh"
 
+// Libraries
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+
+// Standard libraries
 #include <string>
+
 using std::string ;
 
 #define NODE_OBJECT_MODEL (const xmlChar*) "objectModel"
@@ -45,6 +52,9 @@ using std::string ;
 #define NODE_INTERACTION_CLASS (const xmlChar*) "interactionClass"
 #define NODE_ATTRIBUTE (const xmlChar*) "attribute"
 #define NODE_PARAMETER (const xmlChar*) "parameter"
+#define NODE_ROUTING_SPACE (const xmlChar*) "routingSpace"
+#define NODE_DIMENSIONS (const xmlChar*) "dimensions"
+#define NODE_DIMENSION (const xmlChar*) "dimension"
 
 #define ATTRIBUTE_NAME (const xmlChar*) "name"
 #define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
@@ -61,8 +71,8 @@ class XmlParser
 {
 public:
     XmlParser(RootObject*);
-
     RootObject* parse(string);
+    static bool exists(void);
 
 private:
     string filename ;
@@ -75,9 +85,11 @@ private:
     int freeInteractionClassHandle ;
     int freeAttributeHandle ;
     int freeParameterHandle ;
+    int freeSpaceHandle ;
 
     void parseClass(ObjectClass *);
     void parseInteraction(Interaction *);
+    void parseRoutingSpace(void);
 };
 
 } // namespace certi
@@ -85,4 +97,4 @@ private:
 #endif // HAVE_XML
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.1 2003/01/20 17:45:49 breholee Exp $
+// $Id: XmlParser.hh,v 3.2 2003/02/17 09:17:04 breholee Exp $

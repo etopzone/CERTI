@@ -1,85 +1,84 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $
-// ---------------------------------------------------------------------------
-
-// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: RootObject.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
 #define _CERTI_ROOT_OBJECT_HH
 
-#include <stdio.h>
-
-#include "ObjectClassSet.hh"
+// Project
+#include <config.h>
 #include "InteractionSet.hh"
+#include "ObjectClassSet.hh"
+#include "RoutingSpace.hh"
 #include "SecurityServer.hh"
+#include "PrettyDebug.hh"
+
+// Standard libraries
+#include <string>
+#include <cstring>
+#include <stdio.h>
+#include <vector>
+using std::string ;
+using std::vector ;
 
 namespace certi {
 
-class RootObject 
+class RootObject
 {
-
 public:
-  
-  // -----------------------
-  // -- Public Attributes --
-  // -----------------------
+    // -- Attributes
+    ObjectClassSet *ObjectClasses ;
+    InteractionSet *Interactions ;
 
-  ObjectClassSet *ObjectClasses;
-  InteractionSet *Interactions;
+    // -- Methods
+    // The SocketServer can be NULL on the RTIA.
+    RootObject(SecurityServer *theSecurityServer);
 
-  // -------------------
-  // -- Public Method --
-  // -------------------
+    // Delete ObjectClasses and Interactions.
+    ~RootObject();
 
-  // The SocketServer can be NULL on the RTIA.
-  RootObject(SecurityServer *theSecurityServer);
+    // Print the Root Object tree to the standard output.
+    void display(void);
 
-  // Delete ObjectClasses and Interactions. 
-  ~RootObject();
+    // Return the LevelID of the level whose name is 'theLevelName' if
+    // the security server is defined, else return PublicLevelID(on the RTIA).
+    SecurityLevelID GetSecurityLevelID(SecurityLevelName theLevelName);
 
-  // Print the Root Object tree to the standard output.
-  void display(void);
+    void registerFederate(const char *the_federate,
+                          SecurityLevelID the_level_id);
 
-  // ----------------------
-  // -- Security Methods --
-  // ----------------------
-
-  // Return the LevelID of the level whose name is 'theLevelName' if
-  // the security server is defined, else return PublicLevelID(on the RTIA).
-  SecurityLevelID GetSecurityLevelID(SecurityLevelName theLevelName);
-
-  void registerFederate(const char*     the_federate,
-                        SecurityLevelID the_level_id);
+    void addRoutingSpace(RoutingSpace *);
+    SpaceHandle getRoutingSpaceHandle(const char *)
+        throw (NameNotFound);
 
 private:
-
-  SecurityServer *server ;
+    vector<RoutingSpace *> routingSpaces ;
+    SecurityServer *server ;
 };
 
-}
+} // namespace certi
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $
+// $Id: RootObject.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $

@@ -20,14 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: MessageBody.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_BODY_HH
 #define _CERTI_MESSAGE_BODY_HH
 
 #include <cstring>
-#include "network.hh"
+//#include "network.hh"
 #include "RTItypes.hh"
 
 namespace certi {
@@ -174,4 +174,4 @@ private:
 
 #endif // _CERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: MessageBody.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $

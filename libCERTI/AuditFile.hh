@@ -20,27 +20,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.3 2003/01/08 13:22:43 breholee Exp $
+// $Id: AuditFile.hh,v 3.4 2003/02/17 09:17:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
 #define _CERTI_AUDIT_FILE_HH
 
+// Project
 #include <config.h>
+#include "AuditLine.hh"
+#include "RTItypes.hh"
+#include "Exception.hh"
 
+// Standard libraries
 #include <fstream>
+#include <iostream>
+#include <cstdarg>
+
 using std::ofstream;
 using std::ios;
-
-#include <iostream>
 using std::cerr;
 using std::endl;
 
-#include <cstdarg> // vsprintf, va_*
+#define AUDIT_MIN_LEVEL 0
+#define AUDIT_MAX_LEVEL 10
 
-#include "AuditLine.hh"
-#include "audit.hh"
-#include "RTItypes.hh"
+#define AUDITEVENT_START_AUDIT    128
+#define AUDITEVENT_STOP_AUDIT     129
+#define AUDITEVENT_START_RTIG     130
+#define AUDITEVENT_STOP_RTIG      131
 
 namespace certi {
 
@@ -79,8 +87,8 @@ protected:
     char va_Buffer [1024];  //!< Static buffer for va_printf operations.
 };
 
-}
+} // namespace certi
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.3 2003/01/08 13:22:43 breholee Exp $
+// $Id: AuditFile.hh,v 3.4 2003/02/17 09:17:03 breholee Exp $
