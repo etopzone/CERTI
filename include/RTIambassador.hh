@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.16 2003/07/05 14:34:22 breholee Exp $
+// $Id: RTIambassador.hh,v 3.17 2003/10/06 16:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -634,7 +634,7 @@ public:
                RTIinternalError);
 
     void
-    timeAdvanceRequest(FedTime& theTime)
+    timeAdvanceRequest(const FedTime& theTime)
         throw (TimeAdvanceAlreadyInProgress,
                FederationTimeAlreadyPassed,
                InvalidFederationTime,
@@ -1272,4 +1272,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.16 2003/07/05 14:34:22 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.17 2003/10/06 16:19:43 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTI.hh,v 3.3 2003/10/06 16:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_HH
@@ -35,4 +34,4 @@ namespace RTI = certi ;
 
 #endif // _CERTI_RTI_HH
 
-// $Id: RTI.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTI.hh,v 3.3 2003/10/06 16:19:43 breholee Exp $

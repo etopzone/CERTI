@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: baseTypes.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: baseTypes.hh,v 3.3 2003/10/06 16:19:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Declaration de la classe Exception et d'autres types de base Ulong
@@ -54,6 +53,8 @@ public:
     virtual ~Exception();
     Exception & operator = (const Exception &);
     // friend ostream& operator <<(ostream &, Exception *);
+    virtual Exception *cloneSelf() const throw() = 0;
+    virtual void throwSelf() const = 0;
 };
 
 #define RTI_EXCEPT(A) \
@@ -63,10 +64,12 @@ public: \
  A(const char *reason) : Exception(reason) { _name = "RTI::"#A ; } \
  A(ULong serial, const char *reason=NULL) \
  : Exception(serial, reason) { _name = "RTI::"#A ; } \
+ Exception *cloneSelf() const throw() { return (new A(_reason)); } \
+ void throwSelf() const { throw *this ; } \
 };
 
 }
 
 #endif // _CERTI_BASE_TYPES_HH
 
-// $Id: baseTypes.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: baseTypes.hh,v 3.3 2003/10/06 16:19:44 breholee Exp $

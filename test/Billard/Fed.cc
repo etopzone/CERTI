@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Fed.cc,v 3.3 2003/10/06 15:45:51 breholee Exp $
+// $Id: Fed.cc,v 3.4 2003/10/06 16:19:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Fed.hh"
@@ -175,8 +175,8 @@ Fed::getHandles()
           BingClassID, ParamDXID, ParamDYID);
 
     // Routing spaces
-//     GeoID = RTIA->getRoutingSpaceHandle(RS_GEO);
-//     D[pdInit] << "GeoID = " << GeoID << endl ;
+    GeoID = RTIA->getRoutingSpaceHandle(RS_GEO);
+    D[pdInit] << "GeoID = " << GeoID << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -822,4 +822,4 @@ Fed::registerBallInstance(const char *s)
     return RTIA->registerObjectInstance(BouleClassID, s);
 }
 
-// EOF $Id: Fed.cc,v 3.3 2003/10/06 15:45:51 breholee Exp $
+// EOF $Id: Fed.cc,v 3.4 2003/10/06 16:19:44 breholee Exp $

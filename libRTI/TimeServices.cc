@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TimeServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: TimeServices.cc,v 3.2 2003/10/06 16:19:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -120,7 +120,7 @@ RTIambassador::disableTimeConstrained()
 // ----------------------------------------------------------------------------
 // Time Advance Request
 void
-RTIambassador::timeAdvanceRequest(FedTime& theTime)
+RTIambassador::timeAdvanceRequest(const FedTime& theTime)
     throw (TimeAdvanceAlreadyInProgress,
            FederationTimeAlreadyPassed,
            InvalidFederationTime,
@@ -437,4 +437,4 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 
 }
 
-// $Id: TimeServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: TimeServices.cc,v 3.2 2003/10/06 16:19:44 breholee Exp $

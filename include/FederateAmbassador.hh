@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateAmbassador.hh,v 3.4 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.5 2003/10/06 16:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_AMBASSADOR_HH
@@ -59,7 +58,7 @@ public:
 
     virtual void
     initiateFederateSave(const char *)
-        throw (FederateInternalError) = 0 ;
+        throw (UnableToPerformSave, FederateInternalError) = 0 ;
 
     virtual void
     federationSaved(void)
@@ -168,6 +167,7 @@ public:
     attributeOwnershipUnavailable(ObjectHandle theObject,
                                   const AttributeHandleSet& offeredAttributes)
         throw (ObjectNotKnown,
+	       AttributeNotKnown,
                AttributeNotDefined,
                AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested,
@@ -236,8 +236,9 @@ public:
                FederationTimeAlreadyPassed,
                FederateInternalError) = 0 ;
 };
-}
+
+} // certi
 
 #endif // _CERTI_FEDERATE_AMBASSADOR_HH
 
-// $Id: FederateAmbassador.hh,v 3.4 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.5 2003/10/06 16:19:43 breholee Exp $
