@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  BenoÃ®t BrÃ©holÃ©e
+// Copyright (C) 2004  Benoît Bréholée
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleComparator.hh,v 1.2 2003/11/13 10:37:35 breholee Exp $
+// $Id: helper.hh,v 1.1 2004/01/09 15:57:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef LIBCERTI_HANDLE_COMPARATOR
-#define LIBCERTI_HANDLE_COMPARATOR
+#ifndef LIBCERTI_HELPER_HH
+#define LIBCERTI_HELPER_HH
+
+#include <string>
 
 namespace certi {
 
@@ -34,33 +36,29 @@ template<class T>
 class HandleComparator
 {
 public:
-    HandleComparator(long);
-    bool operator()(const T *) const ;
-    bool operator()(const T &) const ;
+    HandleComparator(long h) : handle(h) { };
+    bool operator()(const T *op) const { return op->getHandle() == handle ; };
+    bool operator()(const T &op) const { return op.getHandle() == handle ; };
 private:
     long handle ;
 };
 
+/** NameComparator is a comparison functor for objects having a getName()
+    method. 
+ */
 template<class T>
-HandleComparator<T>::HandleComparator(long h)
-    : handle(h) { }
-
-template <class T>
-bool 
-HandleComparator<T>::operator()(const T *op) const
+class NameComparator
 {
-    return op->getHandle() == handle ;
-}
+public:
+    NameComparator(std::string h) : name(h) { };
+    bool operator()(const T *op) const { return name == op->getName(); };
+    bool operator()(const T &op) const { return name == op.getName(); };
+private:
+    std::string name ;
+};
 
-template <class T>
-bool 
-HandleComparator<T>::operator()(const T &op) const
-{
-    return op.getHandle() == handle ;
-}
+} // certi
 
-}
+#endif // LIBCERTI_HELPER_HH
 
-#endif // LIBCERTI_HANDLE_COMPARATOR
-
-// $Id: HandleComparator.hh,v 1.2 2003/11/13 10:37:35 breholee Exp $
+// $Id: helper.hh,v 1.1 2004/01/09 15:57:12 breholee Exp $
