@@ -33,4 +33,8 @@
 			<parameter name="DY" />
 		</interactionClass>
   	</interactions>
+	<routingSpace name="geo">
+	        <dimension name="x" />
+		<dimension name="y" />
+	</routingSpace>
 </objectModel>
