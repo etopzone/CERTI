@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIG.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -73,12 +73,14 @@ RTIG::~RTIG()
   delete federations;
   delete auditServer;
 
-  printf("\nFin processus RTIG\n");
+  cout << endl << "Fin processus RTIG" << endl;
 }
 
 // ---------------------------------------------------------------------------
-// chooseProcessingMethod
-
+//! Choose the right processing module to call.
+/*! This module chooses the right processing module to call. This process is
+    done by examinating the message type.
+*/
 Socket*
 RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
@@ -96,17 +98,17 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
   case m_UPDATE_ATTRIBUTE_VALUES:
     D.Out(pdDebug, "UpdateAttributeValue.");
     auditServer->setLevel(1);
-    processupdateAttributeValues(link, msg);
+    processUpdateAttributeValues(link, msg);
     break;
  
   case m_SEND_INTERACTION:
-    D.Out(pdTrace, "sendInteraction.");
+    D.Out(pdTrace, "send interaction.");
     auditServer->setLevel(2);
-    processsendInteraction(link, msg);
+    processSendInteraction(link, msg);
     break;
  
   case m_CLOSE_CONNEXION:
-    D.Out(pdTrace, "Fermer connexion %ld.", link->returnSocket());
+    D.Out(pdTrace, "Close connection %ld.", link->returnSocket());
     auditServer->setLevel(9);
     auditServer->addToLinef("Socket %ld", link->returnSocket());
     closeConnection(link, false); 
@@ -114,29 +116,29 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
     break;
  
   case m_CREATE_FEDERATION_EXECUTION:
-    D.Out(pdTrace, "Creer federation \"%s\".", msg->NomFederation);
+    D.Out(pdTrace, "Create federation \"%s\".", msg->NomFederation);
     auditServer->setLevel(9);
-    processCreatefederation(link, msg);
+    processCreateFederation(link, msg);
     break;
  
   case m_DESTROY_FEDERATION_EXECUTION:
-    D.Out(pdTrace, "Detruire federation \"%s\".", msg->NomFederation);
+    D.Out(pdTrace, "Destroy federation \"%s\".", msg->NomFederation);
     auditServer->setLevel(9);
-    processDestroyfederation(link, msg);
+    processDestroyFederation(link, msg);
     break;
  
   case m_JOIN_FEDERATION_EXECUTION:
-    D.Out(pdTrace, "Join federation \"%s\" de federe \"%s\".",
-	  msg->NomFederation, msg->NomFedere);
+    D.Out(pdTrace, "federate \"%s\" joins federation \"%s\".",
+	  msg->NomFedere, msg->NomFederation);
     auditServer->setLevel(9);
-    processJoinfederation(link, msg);
+    processJoinFederation(link, msg);
     break;
  
   case m_RESIGN_FEDERATION_EXECUTION:
-    D.Out(pdTrace, "Le federe no %u quitte la federation no %u .",
+    D.Out(pdTrace, "Federate no %u leaves federation no %u .",
 	  msg->NumeroFedere,msg->NumeroFederation);
     auditServer->setLevel(9);
-    processResignfederation(msg->NumeroFederation, msg->NumeroFedere);
+    processResignFederation(msg->NumeroFederation, msg->NumeroFedere);
     break;
  
   case m_REQUEST_PAUSE:
@@ -198,7 +200,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
   case m_REQUEST_ID:
     D.Out(pdTrace, "requestID.");
     auditServer->setLevel(6);
-    processrequestId(link, msg);
+    processRequestId(link, msg);
     break;
  
   case m_REGISTER_OBJECT:
@@ -210,19 +212,19 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
   case m_DELETE_OBJECT:
     D.Out(pdTrace, "DeleteObject..");
     auditServer->setLevel(6);
-    processdeleteObject(link, msg);
+    processDeleteObject(link, msg);
     break;
  
   case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
     D.Out(pdTrace, "isAttributeOwnedByFederate..");
     auditServer->setLevel(2);
-    processattributeOwnedByFederate(link, msg);
+    processAttributeOwnedByFederate(link, msg);
     break;
 
   case m_QUERY_ATTRIBUTE_OWNERSHIP:
     D.Out(pdTrace, "queryAttributeOwnership..");
     auditServer->setLevel(2);
-    processqueryAttributeOwnership(link, msg);
+    processQueryAttributeOwnership(link, msg);
     break;
 
   case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
@@ -252,13 +254,13 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
   case m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
     D.Out(pdTrace, "cancelNegociatedAttributeOwnershipDivestiture..");
     auditServer->setLevel(6);
-    processAnnulerNegotiatedDivestiture(link, msg);
+    processCancelNegotiatedDivestiture(link, msg);
     break;
 
   case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-    D.Out(pdTrace, "attributeOwnershipRealeaseResponse..");
+    D.Out(pdTrace, "attributeOwnershipReleaseResponse..");
     auditServer->setLevel(6);
-    processRealeaseResponse(link, msg);
+    processReleaseResponse(link, msg);
     break; 
 
   case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
@@ -268,8 +270,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
     break;
  
   default:
-    // BUG: Devrait traiter les cas CHANGE_*_ORDER/TRANSPORT_TYPE
-    D.Out(pdError, "processMessageRecu: type inconnu %u.", msg->Type);
+    // FIXME: Sould treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
+    D.Out(pdError, "processMessageRecu: unknown type %u.", msg->Type);
     throw RTIinternalError("Unknown Message Type");
   }
 
@@ -277,8 +279,10 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 }
 
 // ---------------------------------------------------------------------------
-// closeConnection
-
+//! closeConnection
+/*! If a connection is closed in emergency, KillFederate will be called on
+    federations attribute to remove all references to this federate.
+*/
 void 
 RTIG::closeConnection(Socket *link, bool emergency)
 {
@@ -297,27 +301,25 @@ RTIG::closeConnection(Socket *link, bool emergency)
     federations->killFederate(federation, federate);
     D.Out(pdExcept, "Federate(%u, %u)Killed... ", federation, federate);
   }
-  return;
 }
 
 // ---------------------------------------------------------------------------
 // execute
-
 void 
-RTIG::execute()
+RTIG::execute(void)
 {
   int result;
   fd_set fd;
   Socket *link;
 
-  printf("Launching RTIG server...\n");
+  cout << "Launching RTIG server..." << endl;
 
-  // creer les liaison TCP et UDP du serveur RTIG 
+  // create TCP and UDP connections for the RTIG server
   udpSocketServer.createUDPServer(udpPort);
   tcpSocketServer.createTCPServer(tcpPort);
   // udpSocketServer.createUDPServer(PORT_UDP_RTIG);
  
-  printf("[" PACKAGE "-" VERSION "] RTIG up and running.\n");
+  cout << "[" << PACKAGE << "-" << VERSION << "] RTIG up and running." << endl;
  
   terminate = false ;
  
@@ -332,7 +334,7 @@ RTIG::execute()
     result = select(ulimit(4,0), &fd, NULL, NULL, NULL);
     if((result == -1)&&(errno == EINTR)) break;
  
-    // Is it a message from a already opened connection?
+    // Is it a message from an already opened connection?
     link = socketServer->getActiveSocket(&fd);
     if(link != NULL){
       D.Out(pdCom, "Incoming message on socket %ld.", link->returnSocket());
@@ -347,7 +349,8 @@ RTIG::execute()
 	  D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason);
 	else
 	  D.Out(pdExcept, "Catching Network Error, no reason string.");
-	printf("RTIG dropping client connection %d.\n", link->returnSocket());
+	cout << "RTIG dropping client connection " << link->returnSocket()
+         << '.' << endl;
 	closeConnection((SecureTCPSocket *)link, true);
 	link = NULL;
       }
@@ -378,8 +381,15 @@ RTIG::openConnection()
 }
 
 // ---------------------------------------------------------------------------
-// processIncomingMessage
+//! process incoming messages.
+/*! This module works as follows: 
 
+     Each processXXX module processes its own answer and any broadcast needed.
+     processXXX module calling is decided by the ChooseProcessingMethod module.
+     But if an exception occurs while processing a message, the exception is
+     caught by this module. Then a message, similar to the received one is sent
+     on the link. This message only holds the exception.
+*/
 Socket*
 RTIG::processIncomingMessage(Socket *link)
 {
@@ -394,25 +404,11 @@ RTIG::processIncomingMessage(Socket *link)
 
   msg.read(link);
 
-  // Le principe est le suivant : 
-  // 
-  // Chaque fonction processMachin gere l'envoi de sa reponse
-  // personnalisee, ainsi que la diffusion eventuelle du
-  // message. La fonction processMachin est choisie dans la
-  // methode ChooseProcessingMethod, appelee ci-dessous.
-  //
-  // Mais si elle laisse passer une exception, alors elle est
-  // recuperee ici, et un message du meme type que le message
-  // entrant est renvoye sur la liaison, contenant uniquement
-  // l'exception.
-
-  rep.Type = msg.Type;
-  rep.Exception = e_NO_EXCEPTION;
+  rep.Type         = msg.Type;
+  rep.Exception    = e_NO_EXCEPTION;
   rep.NumeroFedere = msg.NumeroFedere;
 
-  auditServer->startLine(msg.NumeroFederation,
-			 msg.NumeroFedere,
-			 msg.Type);
+  auditServer->startLine(msg.NumeroFederation, msg.NumeroFedere, msg.Type);
 
   // This macro is used to copy any non null exception reason
   // string into our buffer(used for Audit purpose).
@@ -763,7 +759,7 @@ RTIG::processIncomingMessage(Socket *link)
     rep.Exception = e_SaveNotInitiated;
   }
   catch(SecurityError &e){
-    printf("\nSecurity Error : %s\n", e._reason);
+    cout << endl << "Security Error : " << e._reason << endl;
     CPY_NOT_NULL(e);
     rep.Exception = e_SecurityError;
   }
@@ -857,17 +853,16 @@ RTIG::processIncomingMessage(Socket *link)
 }
 
 // ---------------------------------------------------------------------------
-// signalHandler
-
+//! process received signals.
 void 
 RTIG::signalHandler(int sig)
 { 
   D.Out(pdError, "Received Signal %d.", sig);
  
   if(sig == SIGINT) terminate = true ;
-  if(sig == SIGPIPE) printf("Ignoring 'Broken pipe' signal.\n");
+  if(sig == SIGPIPE) cout << "Ignoring 'Broken pipe' signal." << endl;
 }
 
 }}
 
-// $Id: RTIG.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIG.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $

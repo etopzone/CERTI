@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIG.hh,v 3.2 2003/01/10 10:37:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -27,12 +27,16 @@
 
 #include <config.h>
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <csignal>
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
-#include "SecureTCPSocket.hh" // SecureTCPSocket class
+#include "SecureTCPSocket.hh"
 #include "SocketMC.hh"
 #include "List.hh"
 
@@ -45,6 +49,13 @@
 namespace certi {
 namespace rtig {
 
+/*! This class manages the rtig server. Each time a message is received, it is
+    processed by a RTI_processing.cc module.
+
+    These modules called "processXXX" are divided into two parts :
+      - one part for treating the received message.
+      - another part generating and sending back a response.
+*/
 class RTIG
 {
   // ATTRIBUTES ----------------------------------------------------------
@@ -57,7 +68,7 @@ private:
   SocketUDP udpSocketServer ;
   SocketServer* socketServer ;
   AuditFile* auditServer;
-  FederationsList* federations;
+  FederationsList* federations; //!< Manages federations.
  
   // METHODS -------------------------------------------------------------
 public:
@@ -68,26 +79,20 @@ public:
   void execute();
  
 private:
-  // Both methods return the socket, because it may have been
-  // closed & deleted.
+  // Both methods return the socket, because it may have been closed & deleted.
   Socket* processIncomingMessage(Socket*);  
   Socket* chooseProcessingMethod(Socket*, NetworkMessage *);
 
   void openConnection(void);
- 
-  // If a connection is closed in emergency, KillFederate will be
-  // called on ListeFederation to remove all references to this
-  // Federate.
   void closeConnection(Socket*, bool emergency);
 
   // Event handlers
-  // FIXME: check for french/bad case names
-  void processCreatefederation(Socket*, NetworkMessage*); 
-  void processJoinfederation(Socket*, NetworkMessage*);
-  void processResignfederation(FederationHandle, FederateHandle);
-  void processDestroyfederation(Socket*, NetworkMessage*);
-  void processSetTimeRegulating(NetworkMessage*msg);
-  void processSetTimeConstrained(NetworkMessage*msg);
+  void processCreateFederation(Socket*, NetworkMessage*); 
+  void processJoinFederation(Socket*, NetworkMessage*);
+  void processResignFederation(FederationHandle, FederateHandle);
+  void processDestroyFederation(Socket*, NetworkMessage*);
+  void processSetTimeRegulating(NetworkMessage *msg);
+  void processSetTimeConstrained(NetworkMessage *msg);
   void processMessageNull(NetworkMessage*);
   void processRequestPause(Socket*, NetworkMessage*);
   void processRequestResume(Socket*, NetworkMessage*);
@@ -99,19 +104,19 @@ private:
   void processSubscribeInteractionClass(Socket*, NetworkMessage*);
   void processUnpublishInteractionClass(Socket*, NetworkMessage*);
   void processUnsubscribeInteractionClass(Socket*, NetworkMessage*msg);
-  void processrequestId(Socket*, NetworkMessage*);
+  void processRequestId(Socket*, NetworkMessage*);
   void processRegisterObject(Socket*, NetworkMessage*);
-  void processupdateAttributeValues(Socket*, NetworkMessage*);
-  void processsendInteraction(Socket*, NetworkMessage*);
-  void processdeleteObject(Socket*, NetworkMessage*);
-  void processqueryAttributeOwnership(Socket*, NetworkMessage*);
+  void processUpdateAttributeValues(Socket*, NetworkMessage*);
+  void processSendInteraction(Socket*, NetworkMessage*);
+  void processDeleteObject(Socket*, NetworkMessage*);
+  void processQueryAttributeOwnership(Socket*, NetworkMessage*);
   void processNegotiatedOwnershipDivestiture(Socket*, NetworkMessage*); 
   void processAcquisitionIfAvailable(Socket*, NetworkMessage*);  
   void processUnconditionalDivestiture(Socket*, NetworkMessage*); 
   void processOwnershipAcquisition(Socket*, NetworkMessage*); 
-  void processAnnulerNegotiatedDivestiture(Socket*, NetworkMessage*);
-  void processattributeOwnedByFederate(Socket*, NetworkMessage*);
-  void processRealeaseResponse(Socket*, NetworkMessage*);
+  void processCancelNegotiatedDivestiture(Socket*, NetworkMessage*);
+  void processAttributeOwnedByFederate(Socket*, NetworkMessage*);
+  void processReleaseResponse(Socket*, NetworkMessage*);
   void processCancelAcquisition(Socket*, NetworkMessage*);       
 };
 
@@ -120,4 +125,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ---------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIG.hh,v 3.2 2003/01/10 10:37:56 breholee Exp $
