@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: main.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: main.cc,v 3.2 2003/01/14 17:17:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -27,7 +27,7 @@
 using namespace certi ;
 using namespace rtig ;
 
-static RTIG rtip;
+static RTIG* rtip ;
 
 // -------------------
 // -- SignalHandler --
@@ -35,7 +35,7 @@ static RTIG rtip;
 
 extern "C" void SignalHandler(int sig)
 { 
-  rtip.signalHandler(sig);
+  rtip->signalHandler(sig);
 
   // Catch signal again.
   signal(sig, SignalHandler);
@@ -45,21 +45,25 @@ extern "C" void SignalHandler(int sig)
 // -- MAIN --
 // ----------
 
-int main()
+int main(int argc, char *argv[])
 {  
-  printf("CERTI " VERSION " - Copyright 2002 ONERA\n");
-  printf("This is free software; see the source for copying conditions.  "
-	 "There is NO\n");
-  printf("warranty; not even for MERCHANTABILITY or FITNESS FOR A "
-	 "PARTICULAR PURPOSE.\n\n");
+    gengetopt_args_info args_info;
+    if(cmdline_parser(argc, argv, &args_info) != 0) exit(EXIT_FAILURE) ;
 
-  signal(SIGINT,  SignalHandler);
-  signal(SIGPIPE, SignalHandler);
+    printf("CERTI " VERSION " - Copyright 2002, 2003  ONERA\n");
+    printf("This is free software; see the source for copying conditions. "
+           "There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS "
+           "FOR A PARTICULAR PURPOSE.\n\n");
 
-  rtip.execute();
+    signal(SIGINT,  SignalHandler);
+    signal(SIGPIPE, SignalHandler);
+    
+    rtip = new RTIG();
+    rtip->execute();
+    delete rtip ;
 
-  printf("\nRTIG exiting.\n");
-  exit(EXIT_SUCCESS);
+    cout << "RTIG exiting." << endl ;
+    exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: main.cc,v 3.2 2003/01/14 17:17:33 breholee Exp $

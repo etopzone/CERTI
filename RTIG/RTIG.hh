@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.hh,v 3.2 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG.hh,v 3.3 2003/01/14 17:17:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -45,6 +45,8 @@ using std::endl;
 #include "AuditFile.hh"
 
 #include "PrettyDebug.hh"
+
+#include "cmdline.h"
 
 namespace certi {
 namespace rtig {
@@ -125,4 +127,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ---------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.2 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG.hh,v 3.3 2003/01/14 17:17:33 breholee Exp $
