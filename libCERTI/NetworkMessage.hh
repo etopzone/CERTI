@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.8 2003/06/07 22:24:13 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.9 2003/06/25 15:05:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -176,7 +176,7 @@ public:
     struct HeaderStruct {
         Type type ;
         TypeException exception ;
-        FederationHandle federation ;
+        Handle federation ;
         FederateHandle federate ;
         UShort bodySize ;
         HeaderUnion VP ; // Variable Part
@@ -253,7 +253,7 @@ public :
 
     UShort number ;
 
-    FederationHandle federation ;
+    Handle federation ;
     FederateHandle federate ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
@@ -341,4 +341,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.8 2003/06/07 22:24:13 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.9 2003/06/25 15:05:08 breholee Exp $
