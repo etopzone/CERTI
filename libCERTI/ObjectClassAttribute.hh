@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.10 2003/07/10 13:19:41 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.11 2003/07/10 16:22:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
-#define _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
+#ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
+#define CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
 #include "RTItypes.hh"
 #include "SecurityLevel.hh"
@@ -48,8 +48,8 @@ public:
 
     void display() const ;
 
-    const char *getName() const { return name.c_str() ; };
-    void setName(char *NewName);
+    const char *getName() const { return name.c_str(); };
+    void setName(char *);
 
     void setHandle(AttributeHandle h);
     AttributeHandle getHandle() const ;
@@ -64,18 +64,21 @@ public:
     // Publish & subscribe methods
     bool isPublishing(FederateHandle) const ;
     bool hasSubscribed(FederateHandle) const ;
+    bool hasSubscribed(FederateHandle, RegionImp *) const ;
 
     void publish(FederateHandle) throw (RTIinternalError, SecurityError);
     void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
-    
+
     void subscribe(FederateHandle) throw (RTIinternalError, SecurityError);
-    void subscribe(FederateHandle, RegionImp *);
-    void unsubscribe(FederateHandle) throw (RTIinternalError, SecurityError);
-    void unsubscribe(FederateHandle, RegionImp *);
+    void subscribe(FederateHandle, RegionImp *)
+	throw (RTIinternalError, SecurityError);
+    void unsubscribe(FederateHandle) throw (RTIinternalError);
+    void unsubscribe(FederateHandle, RegionImp *) throw (RTIinternalError);
     
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list);
 
+    // Attributes
     SecurityLevelID level ;
     OrderType order ;
     TransportType transport ;
@@ -85,11 +88,6 @@ private:
     void deletePublisher(FederateHandle);
     void deleteSubscriber(FederateHandle);
 
-    // Both following methods return the Rank of the Federate in the list,
-    // or ZERO if not found.
-//     int getPublisherRank(FederateHandle theFederate) const ;
-//     int getSubscriberRank(FederateHandle theFederate) const ;
-
     AttributeHandle handle ; //!< The attribute handle.
     std::string name ; //!< The attribute name, must be locally allocated.
     SpaceHandle space ; //!< Routing space
@@ -97,8 +95,9 @@ private:
     std::list<Subscriber *> subscribers ; //!< The subscriber's list.
     std::list<Publisher *> publishers ; //!< The publisher's list.
 };
-}
 
-#endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
+} // namespace
 
-// $Id: ObjectClassAttribute.hh,v 3.10 2003/07/10 13:19:41 breholee Exp $
+#endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
+
+// $Id: ObjectClassAttribute.hh,v 3.11 2003/07/10 16:22:58 breholee Exp $
