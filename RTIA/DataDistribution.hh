@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.14 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistribution.hh,v 3.15 2005/03/25 17:37:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -53,7 +53,7 @@ public:
     SpaceHandle getInteractionSpace(InteractionClassHandle) const
         throw (InteractionClassNotDefined);
 
-    long createRegion(SpaceHandle, long, TypeException &)
+    long createRegion(SpaceHandle, unsigned long, TypeException &)
         throw (SpaceNotDefined);
 
     void modifyRegion(RegionHandle, const std::vector<Extent> &,
@@ -99,4 +99,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.14 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistribution.hh,v 3.15 2005/03/25 17:37:53 breholee Exp $

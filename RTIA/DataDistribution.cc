@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,14 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.18 2005/03/16 22:55:56 breholee Exp $
+// $Id: DataDistribution.cc,v 3.19 2005/03/25 17:37:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "DataDistribution.hh"
 
 #include "ObjectClassAttribute.hh"
-#include "RegionImp.hh"
+#include "FedRegion.hh"
 
 #include <cassert>
 
@@ -109,7 +109,7 @@ DataDistribution::getInteractionSpace(InteractionClassHandle interaction) const
 //
 long
 DataDistribution::createRegion(SpaceHandle space,
-                               long nb_extents,
+                               unsigned long nb_extents,
                                TypeException &e)
     throw (SpaceNotDefined)
 {
@@ -128,15 +128,15 @@ DataDistribution::createRegion(SpaceHandle space,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
-        long handle = rep.region ;
-        int nb = rootObject->getRoutingSpace(space).size();
-        RegionImp *region = new RegionImp(handle, space, nb_extents, nb);
+        RTIRegion *region = new RTIRegion(rep.region,
+					  rootObject->getRoutingSpace(space),
+					  nb_extents);
 
 	assert(region->getNumberOfExtents() == nb_extents);
         rootObject->addRegion(region);
 
-        D[pdDebug] << "Created region " << handle << endl ;
-        return handle ;
+        D[pdDebug] << "Created region " << rep.region << endl ;
+        return rep.region ;
     }
     else
         return 0 ;
@@ -153,7 +153,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
     D[pdDebug] << "Modify region " << handle << "..." << endl ;
 
     // check region
-    RegionImp *region = rootObject->getRegion(handle);
+    RTIRegion *region = rootObject->getRegion(handle);
 
     // Request to RTIG
     NetworkMessage req, rep ;
@@ -166,7 +166,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
-	region->setExtents(extents);	
+	region->replaceExtents(extents);	
 	D[pdDebug] << "Modified region " << handle << endl ;
     }
 }
@@ -212,7 +212,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 {
     D[pdDebug] << "Associate Region " << region << std::endl ;
 
-    RegionImp *r = rootObject->getRegion(region);
+    RTIRegion *r = rootObject->getRegion(region);
 
     D[pdDebug] << "- unassociate object " << object << std::endl ;
     rootObject->getObject(object)->unassociate(r);
@@ -273,7 +273,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 		       << " Region: " << regions[i] << std::endl ;
 		
 	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep.object, attrs[i]);
-	    RegionImp *region = rootObject->getRegion(regions[i]);
+	    RTIRegion *region = rootObject->getRegion(regions[i]);
 	    attribute->associate(region);
 	}
         return rep.object ;
@@ -290,7 +290,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 {
     D[pdDebug] << "Unassociate Region " << region << std::endl ;
 
-    RegionImp *r = rootObject->getRegion(region);
+    RTIRegion *r = rootObject->getRegion(region);
 
     rootObject->getObject(object)->unassociate(r);
 
@@ -411,4 +411,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.18 2005/03/16 22:55:56 breholee Exp $
+// $Id: DataDistribution.cc,v 3.19 2005/03/25 17:37:53 breholee Exp $
