@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.4 2002/12/16 10:12:59 breholee Exp $
+// $Id: Federation.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -34,16 +34,16 @@ static pdCDebug D("FEDERATION", "(Fed.tion) - ");
 
 #ifdef FEDERATION_USES_MULTICAST
 
-Federation::Federation(FederationExecutionName federation_name,
-		       FederationHandle federation_handle,
-		       SocketServer *socket_server,
-		       AuditFile *audit_server,
-		       SocketMC *mc_link)
+Federation::Federation(const char* federation_name,
+                       FederationHandle federation_handle,
+                       SocketServer *socket_server,
+                       AuditFile *audit_server,
+                       SocketMC *mc_link)
 #else
-Federation::Federation(FederationExecutionName federation_name,
-		       FederationHandle federation_handle,
-		       SocketServer *socket_server,
-		       AuditFile *audit_server)
+Federation::Federation(const char* federation_name,
+                       FederationHandle federation_handle,
+                       SocketServer *socket_server,
+                       AuditFile *audit_server)
 #endif
   throw(CouldNotOpenRID,
 	ErrorReadingRID,
@@ -187,7 +187,9 @@ Federation::getHandle(void)
     return handle;
 }
 
-FederationExecutionName
+// ---------------------------------------------------------------------------
+//! getName.
+const char*
 Federation::getName(void)
 {
     return name;
@@ -200,10 +202,13 @@ Federation::getNbRegulators(void)
 }
 
 // ---------------------------------------------------------------------------
-// add
-
+/*! Add the Federate to the Federation, and return its new federate handle.
+    MAX_FEDERATE is the maximum number of federates per federation. Also send
+    Null messages from all others federates to initialize its LBTS, and
+    finally a RequestPause message if the Federation is already paused.
+*/
 FederateHandle
-Federation::add(FederateName federate_name, SocketTCP *tcp_link)
+Federation::add(const char* federate_name, SocketTCP *tcp_link)
     throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 {
   if(federate_name == 0) {
@@ -422,12 +427,12 @@ Federation::deleteObject(FederateHandle federate,
 // enterPause
 
 void
-Federation::enterPause(FederateHandle federate, PauseLabel label)
-  throw(FederateNotExecutionMember,
-	FederationAlreadyPaused,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+Federation::enterPause(FederateHandle federate, const char* label)
+    throw(FederateNotExecutionMember,
+          FederationAlreadyPaused,
+          SaveInProgress,
+          RestoreInProgress,
+          RTIinternalError)
 {
   // It may throw FederateNotExecutionMember.
   this->check(federate);
@@ -469,10 +474,9 @@ Federation::getByHandle(FederateHandle federate_handle) const
 }
 
 // ---------------------------------------------------------------------------
-// getByName
-
+//! Return a pointer of the Federate whose Name is theName, if found.
 Federate*
-Federation::getByName(FederateName federate_name) const
+Federation::getByName(const char* federate_name) const
     throw(FederateNotExecutionMember)
 {
     for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
@@ -762,7 +766,7 @@ Federation::requestId(ObjectHandlecount id_count,
 // resumePause
 
 void
-Federation::resumePause(FederateHandle federate, PauseLabel label)
+Federation::resumePause(FederateHandle federate, const char* label)
     throw (FederateNotExecutionMember,
            FederationNotPaused,
            SaveInProgress,
@@ -1159,5 +1163,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }}
 
-// $Id: Federation.cc,v 3.4 2002/12/16 10:12:59 breholee Exp $
+// $Id: Federation.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
 

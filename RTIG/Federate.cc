@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federate.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federate.cc,v 3.2 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -28,21 +28,20 @@ namespace certi {
 namespace rtig {
 
 // ---------------------------------------------------------------------------
-// Constructor
-
-Federate::Federate(FederateName name_, FederateHandle handle_)
+//! A new FederateName is allocated. theLink must have been opened before.
+Federate::Federate(const char* the_name, FederateHandle the_handle)
   throw(MemoryExhausted, RTIinternalError)
 {
-  if((name_ == NULL) || (handle_ == 0))
-    throw RTIinternalError("Bad initialization param for Federate.");
+  if((the_name == NULL) || (the_handle == 0))
+      throw RTIinternalError("Bad initialization param for Federate.");
 
-  name = strdup(name_);
+  name = strdup(the_name);
   if(name == NULL) throw MemoryExhausted("Unable to allocate Federate name.");
 
-  handle = handle_;
+  handle = the_handle;
 
-  regulator = false ;
-  constrained = false ;
+  regulator = false;
+  constrained = false;
 }
 
 // ---------------------------------------------------------------------------
@@ -62,10 +61,12 @@ Federate::getHandle(void)
   return handle ;
 }
 
-FederateName
+// ---------------------------------------------------------------------------
+//! getName.
+const char*
 Federate::getName(void)
 {
-  return name ;
+  return name;
 }
 
 bool
@@ -97,4 +98,4 @@ Federate::setRegulator(bool r)
 
 }}
 
-// $Id: Federate.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federate.cc,v 3.2 2003/01/17 18:17:01 breholee Exp $

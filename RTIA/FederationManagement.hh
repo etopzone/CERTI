@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationManagement.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederationManagement.hh,v 3.2 2003/01/17 18:19:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef GF_HH
@@ -74,29 +74,29 @@ public:
 
   // -- Create/Destroy --
 
-  void createFederationExecution(const FederationExecutionName theName,
-			       TypeException &e);
+  void createFederationExecution(const char* theName,
+                                 TypeException &e);
 
-  void destroyFederationExecution(const FederationExecutionName theName,
-				TypeException &e);
+  void destroyFederationExecution(const char* theName,
+                                  TypeException &e);
 
   // -- Join/Resign --
 
   FederateHandle 
-  joinFederationExecution(const FederateName Federate,
-			const FederationExecutionName Federation,
-			TypeException &e);
+  joinFederationExecution(const char* Federate,
+                          const char* Federation,
+                          TypeException &e);
 
   void resignFederationExecution(ResignAction action,
 			       TypeException &e);
 
   // -- Pause/Resume --
-  void requestPause(const PauseLabel label, TypeException &e);
-  void pauseAchieved(const PauseLabel label, TypeException &e);
-  void requestResume(const PauseLabel label, TypeException &e);
+  void requestPause(const char* label, TypeException &e);
+  void pauseAchieved(const char* label, TypeException &e);
+  void requestResume(const char* label, TypeException &e);
   void resumeAchieved(TypeException &e);
-  void initiatePause(const PauseLabel label);
-  void initiateResume(const PauseLabel label);
+  void initiatePause(const char* label);
+  void initiateResume(const char* label);
 
 private:
 
@@ -122,4 +122,4 @@ private:
 
 #endif
 
-// $Id: FederationManagement.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederationManagement.hh,v 3.2 2003/01/17 18:19:47 breholee Exp $

@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: ObjectManagement.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.3 2003/01/17 18:19:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -625,70 +625,54 @@ ObjectManagement::reflectRetraction(EventRetractionHandle,
   throw RTIinternalError();
 }
 
-
-// ------------------------------
-// -- 8.1 getObjectClassHandle --
-// ------------------------------
-
+// ---------------------------------------------------------------------------
+//! 8.1 getObjectClassHandle.
 ObjectClassHandle 
-ObjectManagement::getObjectClassHandle(const ObjectClassName theName)
+ObjectManagement::getObjectClassHandle(const char* theName)
 {
   return _theRootObj->ObjectClasses->getObjectClassHandle(theName);
 }
 
 
-// ---------------------------- 
-// -- 8.2 getObjectClassName --
-// ----------------------------
-
-ObjectClassName 
+// ---------------------------------------------------------------------------
+//! 8.2 getObjectClassName.
+const char* 
 ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 {
   return _theRootObj->ObjectClasses->getObjectClassName(theHandle);
 }
  
-
-// ----------------------------
-// -- 8.3 getAttributeHandle --
-// ----------------------------
-
+// ---------------------------------------------------------------------------
+//! 8.3 getAttributeHandle.
 AttributeHandle 
-ObjectManagement::getAttributeHandle(const AttributeName theName, 
-				     ObjectClassHandle theClassHandle)
+ObjectManagement::getAttributeHandle(const char* theName, 
+                                     ObjectClassHandle theClassHandle)
 {
   return _theRootObj->ObjectClasses->getAttributeHandle(theName,
 							theClassHandle);
 }
  
-
-// --------------------------
-// -- 8.4 getAttributeName --
-// --------------------------
-
-AttributeName 
+// ---------------------------------------------------------------------------
+//! 8.4 getAttributeName.
+const char* 
 ObjectManagement::getAttributeName(AttributeHandle theHandle, 
-				   ObjectClassHandle theClassHandle)
+                                   ObjectClassHandle theClassHandle)
 {
   return _theRootObj->ObjectClasses->getAttributeName(theHandle,
 						      theClassHandle);
 }
 
-// ----------------------------------- 
-// -- 8.5 getInteractionClassHandle --
-// -----------------------------------
-
+// ---------------------------------------------------------------------------
+//! 8.5 getInteractionClassHandle.
 InteractionClassHandle 
-ObjectManagement::getInteractionClassHandle(const InteractionClassName theName)
+ObjectManagement::getInteractionClassHandle(const char* theName)
 {
   return _theRootObj->Interactions->getInteractionClassHandle(theName);
 }
  
-
-// ---------------------------------
-// -- 8.6 getInteractionClassName --
-// ---------------------------------
-
-InteractionClassName 
+// ---------------------------------------------------------------------------
+//! 8.6 getInteractionClassName.
+const char* 
 ObjectManagement::
 getInteractionClassName(InteractionClassHandle theClassHandle)
 {
@@ -696,27 +680,21 @@ getInteractionClassName(InteractionClassHandle theClassHandle)
     _theRootObj->Interactions->getInteractionClassName(theClassHandle);
 }
  
-
-// ----------------------------
-// -- 8.7 getParameterHandle --
-// ----------------------------
-
+// ---------------------------------------------------------------------------
+//! 8.7 getParameterHandle.
 ParameterHandle 
-ObjectManagement::getParameterHandle(const ParameterName theParameterName, 
-				     InteractionClassHandle theClassHandle)
+ObjectManagement::getParameterHandle(const char* theParameterName, 
+                                     InteractionClassHandle theClassHandle)
 {
   return _theRootObj->Interactions->getParameterHandle(theParameterName,
 						       theClassHandle);
 }
  
-
-// --------------------------
-// -- 8.8 getParameterName --
-// --------------------------
-
-ParameterName 
+// ---------------------------------------------------------------------------
+//! 8.8 getParameterName.
+const char* 
 ObjectManagement::getParameterName(ParameterHandle theParameterHandle, 
-				   InteractionClassHandle theClassHandle)
+                                   InteractionClassHandle theClassHandle)
 {
   return _theRootObj->Interactions->getParameterName(theParameterHandle,
 						     theClassHandle);
@@ -724,4 +702,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 }
 }
 
-// $Id: ObjectManagement.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.3 2003/01/17 18:19:47 breholee Exp $

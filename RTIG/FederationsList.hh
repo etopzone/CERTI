@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.hh,v 3.4 2003/01/10 10:03:13 breholee Exp $
+// $Id: FederationsList.hh,v 3.5 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -60,9 +60,9 @@ public:
 
   // MAX_FEDERATION is the maximum number of federations.
 #ifdef FEDERATION_USES_MULTICAST
-  void createFederation(FederationExecutionName, FederationHandle, SocketMC*)
+  void createFederation(const char *, FederationHandle, SocketMC*)
 #else
-  void createFederation(FederationExecutionName, FederationHandle)
+  void createFederation(const char *, FederationHandle)
 #endif
     throw(FederationExecutionAlreadyExists,
 	  CouldNotOpenRID,
@@ -71,10 +71,8 @@ public:
 	  SecurityError,
 	  RTIinternalError);
 
-  // Return the Handle of the Federation named "theName" if it is found
-  // in the FederationList, else throw FederationExecutionDoesNotExist.
-  void exists(FederationExecutionName theName, FederationHandle &theHandle)
-    throw(FederationExecutionDoesNotExist, RTIinternalError);
+  void exists(const char *name, FederationHandle &handle)
+      throw(FederationExecutionDoesNotExist, RTIinternalError);
  
   void destroyFederation(FederationHandle)
     throw(FederatesCurrentlyJoined,
@@ -106,15 +104,15 @@ public:
   // ----------------------
 
   void setPause(FederationHandle theHandle,
-		FederateHandle theFederate,
-		bool state,
-		PauseLabel theLabel)
-    throw(FederationAlreadyPaused,
-	  FederationNotPaused,
-	  FederateNotExecutionMember,
-	  SaveInProgress,
-	  RestoreInProgress,
-	  RTIinternalError);
+                FederateHandle theFederate,
+                bool state,
+                const char *theLabel)
+      throw(FederationAlreadyPaused,
+            FederationNotPaused,
+            FederateNotExecutionMember,
+            SaveInProgress,
+            RestoreInProgress,
+            RTIinternalError);
  
  
   // -------------------------
@@ -454,4 +452,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.4 2003/01/10 10:03:13 breholee Exp $
+// $Id: FederationsList.hh,v 3.5 2003/01/17 18:17:01 breholee Exp $

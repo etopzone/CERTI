@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// $Id: RootObject.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -70,8 +70,8 @@ public:
   // the security server is defined, else return PublicLevelID(on the RTIA).
   SecurityLevelID GetSecurityLevelID(SecurityLevelName theLevelName);
 
-  void registerFederate(FederateName theFederate,
-			SecurityLevelID theLevelID);
+  void registerFederate(const char*     the_federate,
+                        SecurityLevelID the_level_id);
 
 private:
 
@@ -82,4 +82,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RootObject.hh,v 3.2 2003/01/17 18:15:09 breholee Exp $

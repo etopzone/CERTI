@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RootObject.cc,v 3.2 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -85,18 +85,16 @@ SecurityLevelID RootObject::GetSecurityLevelID(SecurityLevelName theLevelName)
     return PublicLevelID;
 }
 
-
-// ------------------------
-// -- GetSecurityLevelID --
-// ------------------------
-
-void RootObject::registerFederate(FederateName      theFederate,
-				 SecurityLevelID   theLevelID)
+// ---------------------------------------------------------------------------
+//! registerFederate.
+void
+RootObject::registerFederate(const char*     the_federate,
+                             SecurityLevelID the_level_id)
 {
-  if(server != NULL)
-    server->registerFederate(theFederate, theLevelID);
+    if(server != NULL)
+        server->registerFederate(the_federate, the_level_id);
 }
 
 }
 
-// $Id: RootObject.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RootObject.cc,v 3.2 2003/01/17 18:15:09 breholee Exp $

@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationManagement.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederationManagement.cc,v 3.3 2003/01/17 18:19:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -86,15 +86,13 @@ FederationManagement::~FederationManagement()
     printf("RTIA: Federation detruite.\n");
   }
 }
- 
-// -------------------------------
-// -- createFederationExecution --
-// -------------------------------
 
+// ---------------------------------------------------------------------------
+//! createFederationExecution.
 void 
 FederationManagement::
-createFederationExecution(const FederationExecutionName theName,
-			TypeException &e)
+createFederationExecution(const char* theName,
+                          TypeException &e)
 {
   NetworkMessage requete, reponse;
 
@@ -132,14 +130,12 @@ createFederationExecution(const FederationExecutionName theName,
 }
 
 
-// --------------------------------
-// -- destroyFederationExecution --
-// --------------------------------
-
+// ---------------------------------------------------------------------------
+//! destroyFederationExecution.
 void 
 FederationManagement::
-destroyFederationExecution(const FederationExecutionName theName,
-			 TypeException &e)
+destroyFederationExecution(const char* theName,
+                           TypeException &e)
 {
   NetworkMessage requete, reponse;
 
@@ -178,16 +174,13 @@ destroyFederationExecution(const FederationExecutionName theName,
     }
 }
 
-
-// -----------------------------
-// -- joinFederationExecution --
-// -----------------------------
-
+// ---------------------------------------------------------------------------
+//! joinFederationExecution.
 FederateHandle 
 FederationManagement::
-joinFederationExecution(const FederateName Federate,
-		      const FederationExecutionName Federation,
-		      TypeException &e)
+joinFederationExecution(const char* Federate,
+                        const char* Federation,
+                        TypeException &e)
 {
   NetworkMessage requete, reponse;
   int i, nb;
@@ -292,14 +285,10 @@ FederationManagement::resignFederationExecution(ResignAction,
     }
 }
 
-
-// ------------------
-// -- requestPause --
-// ------------------
-
+// ---------------------------------------------------------------------------
+//! requestPause.
 void 
-FederationManagement::requestPause(const PauseLabel label,
-				   TypeException &e)
+FederationManagement::requestPause(const char* label, TypeException &e)
 {
   NetworkMessage req,rep;
 
@@ -340,14 +329,10 @@ FederationManagement::requestPause(const PauseLabel label,
     }
 }
 
-
-// -------------------
-// -- pauseAchieved --
-// -------------------
-
+// ---------------------------------------------------------------------------
+//! pauseAchieved.
 void 
-FederationManagement::pauseAchieved(const PauseLabel label,
-				    TypeException &e)
+FederationManagement::pauseAchieved(const char* label, TypeException &e)
 {
   assert(label != NULL);
 
@@ -377,14 +362,10 @@ FederationManagement::pauseAchieved(const PauseLabel label,
     }
 }
 
-
-// -------------------
-// -- requestResume --
-// -------------------
-
+// ---------------------------------------------------------------------------
+//! requestResume.
 void 
-FederationManagement::requestResume(const PauseLabel label,
-				    TypeException &e)
+FederationManagement::requestResume(const char* label, TypeException &e)
 {
   NetworkMessage req;
 
@@ -419,11 +400,8 @@ FederationManagement::requestResume(const PauseLabel label,
     }
 }
 
-
-// --------------------
-// -- resumeAchieved --
-// --------------------
-
+// ---------------------------------------------------------------------------
+//! resumeAchieved
 void 
 FederationManagement::resumeAchieved(TypeException &e)
 {
@@ -448,13 +426,10 @@ FederationManagement::resumeAchieved(TypeException &e)
     }
 }
 
-
-// -------------------
-// -- initiatePause --
-// -------------------
-
+// ---------------------------------------------------------------------------
+//! initiatePause.
 void 
-FederationManagement::initiatePause(const PauseLabel label)
+FederationManagement::initiatePause(const char* label)
 {
   Message req,rep;
 
@@ -481,13 +456,10 @@ FederationManagement::initiatePause(const PauseLabel label)
     }
 }
 
-
-// --------------------
-// -- initiateResume --
-// --------------------
-
+// ---------------------------------------------------------------------------
+//! initiateResume.
 void 
-FederationManagement::initiateResume(const PauseLabel label)
+FederationManagement::initiateResume(const char* label)
 {
   Message req,rep;
 
@@ -514,4 +486,4 @@ FederationManagement::initiateResume(const PauseLabel label)
 }
 }
 
-// $Id: FederationManagement.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederationManagement.cc,v 3.3 2003/01/17 18:19:47 breholee Exp $

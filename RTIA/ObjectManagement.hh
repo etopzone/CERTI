@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: ObjectManagement.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.3 2003/01/17 18:19:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef GO_HH
@@ -214,36 +214,36 @@ public:
   // --------------------------
 
   // 8.1 
-  ObjectClassHandle getObjectClassHandle(const ObjectClassName theName);
+  ObjectClassHandle getObjectClassHandle(const char* theName);
  
   // 8.2 
-  ObjectClassName getObjectClassName(ObjectClassHandle theHandle);
+  const char* getObjectClassName(ObjectClassHandle theHandle);
  
   // 8.3 
-  AttributeHandle getAttributeHandle(const AttributeName theName, 
-				     ObjectClassHandle theClassHandle);
+  AttributeHandle getAttributeHandle(const char* theName, 
+                                     ObjectClassHandle theClassHandle);
  
   // 8.4 
-  AttributeName getAttributeName(AttributeHandle theHandle, 
+  const char* getAttributeName(AttributeHandle theHandle, 
 				 ObjectClassHandle theClassHandle);
  
   // 8.5 
   InteractionClassHandle 
-  getInteractionClassHandle(const InteractionClassName theName);
+  getInteractionClassHandle(const char* theName);
  
   // 8.6 
-  InteractionClassName 
+  const char* 
   getInteractionClassName(InteractionClassHandle theClassHandle);
  
   // 8.7 
   ParameterHandle 
-  getParameterHandle(const ParameterName theParameterName, 
-		     InteractionClassHandle theClassHandle);
+  getParameterHandle(const char* theParameterName, 
+                     InteractionClassHandle theClassHandle);
  
   // 8.8 
-  ParameterName 
+  const char* 
   getParameterName(ParameterHandle theParameterHandle, 
-		   InteractionClassHandle theClassHandle);
+                   InteractionClassHandle theClassHandle);
 
 protected:
 
@@ -262,4 +262,4 @@ protected:
 
 #endif
 
-// $Id: ObjectManagement.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.3 2003/01/17 18:19:47 breholee Exp $

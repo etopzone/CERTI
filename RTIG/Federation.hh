@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.hh,v 3.3 2002/12/16 10:12:59 breholee Exp $
+// $Id: Federation.hh,v 3.4 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -77,19 +77,16 @@ public:
   // Allocates memory the Name's storage,
   // and read its FED file to store the result in RootObj.
 #ifdef FEDERATION_USES_MULTICAST
-  Federation(FederationExecutionName, 
-	     FederationHandle, 
-	     SocketServer*, 
-	     AuditFile*,
-	     SocketMC*)
+  Federation(const char*,
+             FederationHandle,
+             SocketServer*,
+             AuditFile*,
+             SocketMC*)
 #else
-  Federation(FederationExecutionName,
-	     FederationHandle,
-	     SocketServer*,
-	     AuditFile*)
+  Federation(const char*, FederationHandle, SocketServer*, AuditFile*)
 #endif
-    throw(CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
-	  RTIinternalError);
+      throw(CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
+            RTIinternalError);
 
   // Please check empty() before deleting a Federation.
   //(it can be bypassed in case of emergency, but then Federates will be 
@@ -106,18 +103,13 @@ public:
   int getNbRegulators(void);
   bool isPaused(void);
   FederationHandle getHandle(void);
-  FederationExecutionName getName(void);
+  const char* getName(void);
 
   // -------------------------
   // -- Federate Management --
   // -------------------------
 
-  // Add the Federate to the Federation, and return its new federate
-  // handle.  MAX_FEDERATE is the maximum number of federates per
-  // federation.  Also send Null messages from all others federates to
-  // initialize its LBTS, and finally a RequestPause message if the
-  // Federation is already paused.
-  FederateHandle add(FederateName theName, SocketTCP *theTCPLink)
+  FederateHandle add(const char * theName, SocketTCP *theTCPLink)
     throw(FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError);
 
   // Return true if there are no Federates left in the Federation,
@@ -181,14 +173,14 @@ public:
   // -- Pause Management --
   // ----------------------
 
-  void enterPause(FederateHandle theFederate, PauseLabel theLabel)
+  void enterPause(FederateHandle theFederate, const char* theLabel)
     throw(FederateNotExecutionMember,
 	  FederationAlreadyPaused,
 	  SaveInProgress,
 	  RestoreInProgress,
 	  RTIinternalError);
  
-  void resumePause(FederateHandle theFederate, PauseLabel theLabel)
+  void resumePause(FederateHandle theFederate, const char* theLabel)
     throw(FederateNotExecutionMember,
 	  FederationNotPaused,
 	  SaveInProgress,
@@ -428,8 +420,7 @@ private:
   // Broadcast 'msg' to all Federate except the one whose Handle is 'Except'.
   void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except); 
 
-  // Return a pointer of the Federate whose Name is theName, if found.
-  Federate *getByName(FederateName theName) const
+  Federate *getByName(const char* theName) const
     throw(FederateNotExecutionMember);
  
   // Return a pointer of the Federate whose Handle is theHandle, if found.
@@ -446,4 +437,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.3 2002/12/16 10:12:59 breholee Exp $
+// $Id: Federation.hh,v 3.4 2003/01/17 18:17:01 breholee Exp $

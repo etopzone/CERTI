@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federate.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federate.hh,v 3.2 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -46,13 +46,12 @@ private:
 
   // METHODS -----------------------------------------------------------------
 public:
-  // A new FederateName is allocated. theLink must have been opened before.
-  Federate(FederateName, FederateHandle) 
+  Federate(const char*, FederateHandle) 
     throw(MemoryExhausted, RTIinternalError);
   ~Federate();
 
   FederateHandle getHandle();
-  FederateName getName();
+  const char* getName(void);
   bool isConstrained(void) ;
   bool isRegulator(void);
   void setConstrained(bool);
@@ -63,4 +62,4 @@ public:
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federate.hh,v 3.2 2003/01/17 18:17:01 breholee Exp $

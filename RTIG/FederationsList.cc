@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.4 2003/01/10 10:03:13 breholee Exp $
+// $Id: FederationsList.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -145,12 +145,12 @@ FederationsList::searchFederation(FederationHandle handle,
 // createFederation
 
 #ifdef FEDERATION_USES_MULTICAST
-void FederationsList::createFederation(FederationExecutionName name,
-				       FederationHandle handle,
-				       SocketMC *mc_link)
+void FederationsList::createFederation(const char * name,
+                                       FederationHandle handle,
+                                       SocketMC *mc_link)
 #else
-void FederationsList::createFederation(FederationExecutionName name,
-				       FederationHandle handle)
+void FederationsList::createFederation(const char* name,
+                                       FederationHandle handle)
 #endif
   throw(FederationExecutionAlreadyExists,
 	CouldNotOpenRID,
@@ -274,11 +274,12 @@ FederationsList::destroyObject(FederationHandle handle,
 }
 
 // ---------------------------------------------------------------------------
-// exists
-
+/*! Return the Handle of the Federation named "name" if it is found in the
+    FederationList, else throw FederationExecutionDoesNotExist.
+*/
 void 
-FederationsList::exists(FederationExecutionName name,
-                        FederationHandle &handle)
+FederationsList::exists(const char * name,
+                        FederationHandle             &handle)
     throw(FederationExecutionDoesNotExist, RTIinternalError)
 {
     if(name == NULL) throw RTIinternalError("Null Federation Name.");
@@ -473,16 +474,15 @@ FederationsList::updateParameter(FederationHandle handle,
 
 void 
 FederationsList::setPause(FederationHandle handle,
-			  FederateHandle federate,
-			  bool state,
-			  PauseLabel label)
-  throw(FederationAlreadyPaused, 
-	FederationNotPaused,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
- 
+                          FederateHandle federate,
+                          bool state,
+                          const char * label)
+    throw(FederationAlreadyPaused, 
+          FederationNotPaused,
+          FederateNotExecutionMember,
+          SaveInProgress,
+          RestoreInProgress,
+          RTIinternalError)
 {
   Federation *federation = NULL;
   int rank;
@@ -1041,5 +1041,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.4 2003/01/10 10:03:13 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
 

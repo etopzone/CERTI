@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.3 2003/01/16 16:05:48 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.4 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -74,25 +74,25 @@ public:
   // -- RTI Support Services --
   // --------------------------
 
-  AttributeHandle getAttributeHandle(const AttributeName theName,
-                                     ObjectClassHandle theClass) const
-    throw(AttributeNotDefined,
-	  ObjectClassNotDefined,
-	  RTIinternalError);
+  AttributeHandle getAttributeHandle(const char*       the_name,
+                                     ObjectClassHandle the_class) const
+      throw(AttributeNotDefined,
+            ObjectClassNotDefined,
+            RTIinternalError);
 
-  const AttributeName getAttributeName(AttributeHandle theHandle,
-                                       ObjectClassHandle theClass) const
-    throw(AttributeNotDefined,
-	  ObjectClassNotDefined,
-	  RTIinternalError);
+  const char* getAttributeName(AttributeHandle   the_handle,
+                               ObjectClassHandle the_class) const
+      throw(AttributeNotDefined,
+            ObjectClassNotDefined,
+            RTIinternalError);
 
-  ObjectClassHandle getObjectClassHandle(const ObjectClassName theName) const
-    throw(ObjectClassNotDefined,
-	  RTIinternalError);
+  ObjectClassHandle getObjectClassHandle(const char* the_name) const
+      throw(ObjectClassNotDefined,
+            RTIinternalError);
 
-  const ObjectClassName getObjectClassName(ObjectClassHandle theHandle) const
-    throw(ObjectClassNotDefined,
-	  RTIinternalError);
+  const char* getObjectClassName(ObjectClassHandle the_handle) const
+      throw(ObjectClassNotDefined,
+            RTIinternalError);
  
   void killFederate(FederateHandle theFederate)
     throw();
@@ -159,9 +159,9 @@ public:
 	  RTIinternalError);
  
   void registerInstance(FederateHandle theFederateHandle,
-			ObjectClassHandle theClassHandle,
-			ObjectHandle theObjectHandle,
-			ObjectName theObjectName)
+                        ObjectClassHandle theClassHandle,
+                        ObjectHandle theObjectHandle,
+                        const char* theObjectName)
     throw(InvalidObjectHandle,
 	  ObjectClassNotDefined,
 	  ObjectClassNotPublished,
@@ -316,4 +316,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.3 2003/01/16 16:05:48 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.4 2003/01/17 18:15:09 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.2 2003/01/16 13:18:53 breholee Exp $
+// $Id: SecurityServer.cc,v 3.3 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "SecurityServer.hh"
@@ -168,13 +168,13 @@ SecurityServer::insertPublicLevel(void)
 // ---------------------------------------------------------------------------
 //! Register a new federate with security level id.
 void
-SecurityServer::registerFederate(FederateName theFederate,
-                                 SecurityLevelID theLevelID)
+SecurityServer::registerFederate(const char*     the_federate,
+                                 SecurityLevelID the_level_id)
 {
-  FedLevelList.addFederate(theFederate, theLevelID);
+    FedLevelList.addFederate(the_federate, the_level_id);
 }
 
 }
 
-// $Id: SecurityServer.cc,v 3.2 2003/01/16 13:18:53 breholee Exp $
+// $Id: SecurityServer.cc,v 3.3 2003/01/17 18:15:09 breholee Exp $
 

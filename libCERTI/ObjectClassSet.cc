@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.4 2003/01/16 16:05:48 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.5 2003/01/17 18:15:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -152,55 +152,48 @@ ObjectClassSet::display(void) const
     }
 }
 
-
-// ------------------------
-// -- GetAttributeHandle --
-// ------------------------
-
+// ---------------------------------------------------------------------------
+//! getAttributeHandle.
 AttributeHandle
-ObjectClassSet::getAttributeHandle(const AttributeName theName,
-                                   ObjectClassHandle   theClass) const
-  throw(AttributeNotDefined,
-	 ObjectClassNotDefined,
-	 RTIinternalError)
+ObjectClassSet::getAttributeHandle(const char*       the_name,
+                                   ObjectClassHandle the_class) const
+    throw(AttributeNotDefined,
+          ObjectClassNotDefined,
+          RTIinternalError)
 {
-  ObjectClass *ObjectClass = NULL;
+    ObjectClass *objectClass = NULL;
 
-  if(theName == NULL)
-    throw RTIinternalError();
+    if(the_name == NULL)
+        throw RTIinternalError();
 
-  D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
-	 theName, theClass);
+    D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
+          the_name, the_class);
 
-  // It may throw ObjectClassNotDefined.
-  ObjectClass = getWithHandle(theClass);
+    // It may throw ObjectClassNotDefined.
+    objectClass = getWithHandle(the_class);
 
-  return ObjectClass->getAttributeHandle(theName);
+    return objectClass->getAttributeHandle(the_name);
 }
 
-
-// ----------------------
-// -- GetAttributeName --
-// ----------------------
-
-const AttributeName
-ObjectClassSet::getAttributeName(AttributeHandle   theHandle,
-                                 ObjectClassHandle theClass) const
-  throw(AttributeNotDefined,
-	 ObjectClassNotDefined,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! getAttributeName.
+const char*
+ObjectClassSet::getAttributeName(AttributeHandle   the_handle,
+                                 ObjectClassHandle the_class) const
+    throw(AttributeNotDefined,
+          ObjectClassNotDefined,
+          RTIinternalError)
 {
-  ObjectClass *ObjectClass = NULL;
+    ObjectClass *objectClass = NULL;
 
-  D.Out(pdRequest, "Looking for attribute %u of class %u...",
-	 theHandle, theClass);
+    D.Out(pdRequest, "Looking for attribute %u of class %u...",
+          the_handle, the_class);
 
-  // It may throw ObjectClassNotDefined.
-  ObjectClass = getWithHandle(theClass);
+    // It may throw ObjectClassNotDefined.
+    objectClass = getWithHandle(the_class);
 
-  return ObjectClass->getAttributeName(theHandle);
+    return objectClass->getAttributeName(the_handle);
 }
-
 
 // ----------------------
 // -- GetInstanceClass --
@@ -222,45 +215,38 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
   throw ObjectNotKnown();
 }
 
-
-// --------------------------
-// -- GetObjectClassHandle --
-// --------------------------
-
+// ---------------------------------------------------------------------------
+//! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(const ObjectClassName theName) const
-  throw(ObjectClassNotDefined,
-	 RTIinternalError)
+ObjectClassSet::getObjectClassHandle(const char* the_name) const
+    throw(ObjectClassNotDefined,
+          RTIinternalError)
 {
-    if(theName == NULL)
+    if(the_name == NULL)
         throw RTIinternalError();
 
-  D.Out(pdRequest, "Looking for class \"%s\"...", theName);
+    D.Out(pdRequest, "Looking for class \"%s\"...", the_name);
 
-  list<ObjectClass *>::const_iterator i ;
-  for (i = begin(); i != end() ; i++) {
-      if (strcmp((*i)->getName(), theName) == 0)
-          return (*i)->Handle;
-  }
+    list<ObjectClass *>::const_iterator i ;
+    for (i = begin(); i != end() ; i++) {
+        if (strcmp((*i)->getName(), the_name) == 0)
+            return (*i)->Handle;
+    }
 
-  throw ObjectClassNotDefined();
+    throw ObjectClassNotDefined();
 }
 
-
-// ------------------------
-// -- GetObjectClassName --
-// ------------------------
-
-const ObjectClassName
-ObjectClassSet::getObjectClassName(ObjectClassHandle theHandle) const
-  throw(ObjectClassNotDefined,
-	 RTIinternalError)
+// ---------------------------------------------------------------------------
+//! getObjectClassName.
+const char*
+ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
+    throw(ObjectClassNotDefined,
+          RTIinternalError)
 {
-  D.Out(pdRequest, "Looking for class %u...", theHandle);
+    D.Out(pdRequest, "Looking for class %u...", the_handle);
 
-  return getWithHandle(theHandle)->getName();
+    return getWithHandle(the_handle)->getName();
 }
-    
 
 // -------------------
 // -- GetWithHandle --(privee)
@@ -381,16 +367,13 @@ void ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
   }
 }
 
-
-// ----------------------
-// -- RegisterInstance --
-// ----------------------
-
+// ---------------------------------------------------------------------------
+//! registerInstance.
 void
 ObjectClassSet::registerInstance(FederateHandle    theFederateHandle,
                                  ObjectClassHandle theClassHandle,
                                  ObjectHandle      theObjectHandle,
-                                 ObjectName        theObjectName)
+                                 const char*       the_object_name)
   throw(InvalidObjectHandle,
 	 ObjectClassNotDefined,
 	 ObjectClassNotPublished,
@@ -410,7 +393,7 @@ ObjectClassSet::registerInstance(FederateHandle    theFederateHandle,
   ObjectClassBroadcastList *ocbList = NULL;
   ocbList = theClass->registerInstance(theFederateHandle,
                                        theObjectHandle,
-                                       theObjectName);
+                                       the_object_name);
   
   // Broadcast DiscoverObject message recursively
   if (ocbList != 0) {
@@ -817,4 +800,4 @@ throw(
 
 }
 
-// $Id: ObjectClassSet.cc,v 3.4 2003/01/16 16:05:48 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.5 2003/01/17 18:15:09 breholee Exp $
