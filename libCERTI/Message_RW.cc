@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.13 2003/07/01 13:34:04 breholee Exp $
+// $Id: Message_RW.cc,v 3.14 2003/07/03 16:17:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -143,13 +143,35 @@ Message::readBody(SocketUN *socket)
             readHandleArray(&Body);
             break ;
 
+	  case DDM_ASSOCIATE_REGION:
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    handleArraySize = Body.readShortInt();
+            readHandleArray(&Body);
+	    break ;
+
+	  case DDM_UNASSOCIATE_REGION:
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    break ;
+
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:
+	    interactionClass = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    break ;
+	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
             objectClass = Body.readLongInt();
             attribute = Body.readLongInt();
             space = Body.readLongInt();
             break ;
 
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
             space = Body.readLongInt();
             number = Body.readLongInt();
             region = Body.readLongInt();
@@ -176,7 +198,7 @@ Message::readBody(SocketUN *socket)
 
           case REGISTER_OBJECT_INSTANCE:
             object = Body.readLongInt();
-            readName(&Body); /*FAYET 25.07.01*/
+            readName(&Body);
             break ;
 
           case UPDATE_ATTRIBUTE_VALUES:
@@ -240,7 +262,6 @@ Message::readBody(SocketUN *socket)
             parameter = Body.readShortInt();
             break ;
 
-
             // --- MessageT_O_Struct, Body not empty ---
 
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
@@ -250,7 +271,7 @@ Message::readBody(SocketUN *socket)
             readHandleArray(&Body);
             break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    readExtents(Body);
 	    break ;
 	    
@@ -317,7 +338,7 @@ Message::readHeader(SocketUN *socket)
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
       case GET_ATTRIBUTE_SPACE_HANDLE:
       case GET_INTERACTION_SPACE_HANDLE:
-      case CREATE_REGION:
+      case DDM_CREATE_REGION:
       case REQUEST_FEDERATION_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case REQUEST_FEDERATION_RESTORE_FAILED:
@@ -326,6 +347,12 @@ Message::readHeader(SocketUN *socket)
       case FEDERATION_RESTORED:
       case FEDERATION_NOT_RESTORED:
       case FEDERATION_RESTORE_BEGUN:
+      case DDM_ASSOCIATE_REGION:
+      case DDM_UNASSOCIATE_REGION:
+      case DDM_SUBSCRIBE_ATTRIBUTES:
+      case DDM_UNSUBSCRIBE_ATTRIBUTES:
+      case DDM_SUBSCRIBE_INTERACTION:
+      case DDM_UNSUBSCRIBE_INTERACTION:
         break ;
 
         // --- MessageJ_R_Struct --
@@ -415,12 +442,12 @@ Message::readHeader(SocketUN *socket)
         break ;
 
         // Message_DDM, no body
-      case DELETE_REGION:
+      case DDM_DELETE_REGION:
         region = header.VP.ddm.region ;
         break ;
 
 	// Message_DDM, Body
-      case MODIFY_REGION:
+      case DDM_MODIFY_REGION:
 	region = header.VP.ddm.region ;
 	break ;	
 	
@@ -665,13 +692,35 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
             break ;
 
+	  case DDM_ASSOCIATE_REGION:
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(object);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+            Body.writeShortInt(handleArraySize);
+            writeHandleArray(&Body);
+	    break ;
+
+	  case DDM_UNASSOCIATE_REGION:
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(object);
+	    Body.writeLongInt(region);
+	    break ;
+
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:
+	    Body.writeLongInt(interactionClass);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+	    break ;
+	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
             Body.writeLongInt(objectClass);
             Body.writeLongInt(attribute);
             Body.writeLongInt(space);
             break ;
 
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
             Body.writeLongInt(space);
             Body.writeLongInt(number);
             Body.writeLongInt(region);
@@ -772,7 +821,7 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
             break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    writeExtents(Body);
 	    break ;
 	    
@@ -867,7 +916,13 @@ Message::writeHeader(SocketUN *socket)
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
       case GET_ATTRIBUTE_SPACE_HANDLE:
       case GET_INTERACTION_SPACE_HANDLE:
-      case CREATE_REGION:
+      case DDM_CREATE_REGION:
+      case DDM_ASSOCIATE_REGION:
+      case DDM_UNASSOCIATE_REGION:
+      case DDM_SUBSCRIBE_ATTRIBUTES:
+      case DDM_UNSUBSCRIBE_ATTRIBUTES:
+      case DDM_SUBSCRIBE_INTERACTION:
+      case DDM_UNSUBSCRIBE_INTERACTION:
         header.bodySize = 1 ;
         break ;
 
@@ -989,13 +1044,13 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
         // Message_DDM, no body
-      case DELETE_REGION:
+      case DDM_DELETE_REGION:
         header.VP.ddm.region = region ;
         header.bodySize = 0 ;
         break ;
 
 	// Message_DDM, Body
-      case MODIFY_REGION:
+      case DDM_MODIFY_REGION:
 	header.VP.ddm.region = region ;
 	header.bodySize = 1 ;
 	break ;
@@ -1129,4 +1184,4 @@ Message::readExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.13 2003/07/01 13:34:04 breholee Exp $
+// $Id: Message_RW.cc,v 3.14 2003/07/03 16:17:10 breholee Exp $
