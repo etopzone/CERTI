@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.6 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.7 2003/06/25 15:10:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
@@ -54,29 +53,28 @@ public:
     // Public Methods
 
     // Constructors & Destructors
-    ObjectAttribute(void); //!< Declared by not defined (Don't call it).
+    ObjectAttribute(); //!< Declared by not defined (Don't call it).
     ObjectAttribute(AttributeHandle, FederateHandle, ObjectClassAttribute *);
-    ~ObjectAttribute(void);
+    ~ObjectAttribute();
 
-    void display(void) const ;
+    void display() const ;
 
-    FederateHandle getOwner(void) const ;
+    FederateHandle getOwner() const ;
     void setOwner(FederateHandle NewOwner);
 
     void setDivesting(Boolean divesting_state);
-    Boolean beingDivested(void) const ;
+    Boolean beingDivested() const ;
 
     int isCandidate(FederateHandle candidate) const ;
     void addCandidate(FederateHandle candidate);
     void removeCandidate(FederateHandle candidate);
-    FederateHandle getCandidate(int rank) const
-        throw (RTIinternalError);
-    bool hasCandidates(void) const ;
+    FederateHandle getCandidate(unsigned int) const throw (RTIinternalError);
+    bool hasCandidates() const ;
 
-    AttributeHandle getHandle(void) const ;
+    AttributeHandle getHandle() const ;
     void setHandle(AttributeHandle h);
 
-    SpaceHandle getSpace(void) const ;
+    SpaceHandle getSpace() const ;
     void setSpace(SpaceHandle);
 
 private:
@@ -93,4 +91,4 @@ private:
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.6 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.7 2003/06/25 15:10:50 breholee Exp $
