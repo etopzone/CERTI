@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
+// $Id: main.cc,v 3.6 2004/04/17 21:21:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "Billard.hh"
-#include "BillardDDM.hh"
+//#include "BillardDDM.hh"
 #include "Display.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
@@ -236,11 +236,11 @@ createBillard(bool demo, const char *s_demo, string name)
 {
     if (demo) {
 	D[pdDebug] << "Create billard " << s_demo << endl ;
-	if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
+	// if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
 	cout << "unknown keyword: " << s_demo << endl ;
     }
     
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
+// EOF $Id: main.cc,v 3.6 2004/04/17 21:21:27 breholee Exp $
