@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $
+// $Id: RootObject.hh,v 3.10 2003/06/25 15:48:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -56,9 +55,9 @@ public:
 
     // -- Methods
     RootObject(SecurityServer *the_server);
-    ~RootObject(void);
+    ~RootObject();
 
-    void display(void) const ;
+    void display() const ;
 
     SecurityLevelID GetSecurityLevelID(SecurityLevelName the_name);
 
@@ -100,4 +99,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $
+// $Id: RootObject.hh,v 3.10 2003/06/25 15:48:37 breholee Exp $

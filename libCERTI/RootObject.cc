@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.9 2003/04/23 13:49:24 breholee Exp $
+// $Id: RootObject.cc,v 3.10 2003/06/25 15:48:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -42,21 +41,24 @@ RootObject::RootObject(SecurityServer *security_server)
 
 // ----------------------------------------------------------------------------
 //! Delete object classes, interactions, objects and routing spaces.
-RootObject::~RootObject(void)
+RootObject::~RootObject()
 {
     delete ObjectClasses ;
     delete Interactions ;
     delete objects ;
 
-    for (int i = 1 ; i < routingSpaces.size(); i++)
-        delete routingSpaces[i] ;
+    vector<RoutingSpace *>::iterator i ;
+    vector<RoutingSpace *>::iterator end = routingSpaces.end();
+    for (i = routingSpaces.begin(); i < end ; ++i) {
+        delete *i ;
+    }
     routingSpaces.clear();
 }
 
 // ----------------------------------------------------------------------------
 //! Print the Root Object tree to the standard output.
 void
-RootObject::display(void) const
+RootObject::display() const
 {
     cout << endl << "Root Object Tree :" << endl ;
     ObjectClasses->display();
@@ -156,8 +158,8 @@ RootObject::getRoutingSpace(SpaceHandle handle)
 //! add a region
 void
 RootObject::addRegion(RegionImp *region)
-{    
-     regions.push_back(region);
+{
+    regions.push_back(region);
 }
 
 // ----------------------------------------------------------------------------
@@ -172,7 +174,7 @@ RootObject::createRegion(SpaceHandle handle, long nb_extents)
                                       space->getNbDimensions(), nb_extents);
 
     this->addRegion(region);
-    //this->getRoutingSpace(space)->addRegion(region);   
+    //this->getRoutingSpace(space)->addRegion(region);
 
     return region->getHandle();
 }
@@ -259,4 +261,4 @@ RootObject::killFederate(FederateHandle the_federate)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.9 2003/04/23 13:49:24 breholee Exp $
+// $Id: RootObject.cc,v 3.10 2003/06/25 15:48:37 breholee Exp $
