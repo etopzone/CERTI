@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.12 2003/01/29 18:16:40 breholee Exp $
+// $Id: RTIambassador.cc,v 3.13 2003/01/29 21:33:39 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -368,10 +368,11 @@ RTIambassador::registerFederationSynchronizationPoint(const char *label,
     executeService(&req, &rep);
 }
 
-void
-RTIambassador::registerFederationSynchronizationPoint(const char *,
-                                                      const char *,
-                                                      const FederateHandleSet &)
+// ---------------------------------------------------------------------------
+void RTIambassador::
+registerFederationSynchronizationPoint(const char */*label*/,
+                                       const char */*theTag*/,
+                                       const FederateHandleSet &/*syncSet*/)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -514,6 +515,7 @@ RTIambassador::federateRestoreComplete()
     throw UnimplementedService();
 }
 
+// ---------------------------------------------------------------------------
 //! Federate Restore Not Complete (not implemented).
 void
 RTIambassador::federateRestoreNotComplete()
@@ -760,6 +762,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
     return rep.Objectid ;
 }
 
+// ---------------------------------------------------------------------------
 ObjectHandle
 RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
     throw (ObjectClassNotDefined,
@@ -835,10 +838,11 @@ updateAttributeValues(ObjectHandle theObject,
     return(rep.Retract);
 }
 
+// ---------------------------------------------------------------------------
 void
-updateAttributeValues(ObjectHandle /*theObject*/,
-                      const AttributeHandleValuePairSet& /*theAttributes*/,
-                      const char */*theTag*/)
+RTIambassador::updateAttributeValues(ObjectHandle,
+                                     const AttributeHandleValuePairSet&,
+                                     const char *)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -900,10 +904,11 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     return(rep.Retract);
 }
 
+// ---------------------------------------------------------------------------
 void
-sendInteraction(InteractionClassHandle /*theInteraction*/,
-                const ParameterHandleValuePairSet& /*theParameters*/,
-                const char */*theTag*/)
+RTIambassador::sendInteraction(InteractionClassHandle,
+                               const ParameterHandleValuePairSet &,
+                               const char *)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -945,9 +950,10 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     return(rep.Retract);
 }
 
+// ---------------------------------------------------------------------------
 void
-deleteObjectInstance(ObjectHandle /*theObject*/,
-                     const char */*theTag*/)
+RTIambassador::deleteObjectInstance(ObjectHandle /*theObject*/,
+                                    const char */*theTag*/)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
@@ -963,7 +969,7 @@ deleteObjectInstance(ObjectHandle /*theObject*/,
 // ---------------------------------------------------------------------------
 // Local Delete Object Instance
 void
-localDeleteObjectInstance(ObjectHandle /*theObject*/)
+RTIambassador::localDeleteObjectInstance(ObjectHandle /*theObject*/)
     throw (ObjectNotKnown,
            FederateOwnsAttributes, //not implemented
            FederateNotExecutionMember,
@@ -1063,6 +1069,7 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle /*theObject*/,
     throw UnimplementedService();
 }
 
+// ---------------------------------------------------------------------------
 void
 RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle /*theClass*/,
                                                 const AttributeHandleSet&)
@@ -1225,10 +1232,10 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
 }
 
 // ---------------------------------------------------------------------------
-// Cancel Negociated Attribute Ownership Divestiture
+// Cancel Negotiated Attribute Ownership Divestiture
 void
 RTIambassador::
-cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
+cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                               const AttributeHandleSet& attrs)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -1259,7 +1266,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 // Cancel Attribute Ownership Acquisition
 void
 RTIambassador::
-cancelattributeOwnershipAcquisition(ObjectHandle theObject,
+cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
                                     const AttributeHandleSet& attrs)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -1790,7 +1797,7 @@ RTIambassador::createRegion(SpaceHandle /*theSpace*/,
 // ---------------------------------------------------------------------------
 // Notify About Region Modification
 void
-notifyAboutRegionModification(Region &/*theRegion*/)
+RTIambassador::notifyAboutRegionModification(Region &)
     throw (RegionNotKnown,
            InvalidExtents,
            FederateNotExecutionMember,
@@ -1807,7 +1814,7 @@ notifyAboutRegionModification(Region &/*theRegion*/)
 // ---------------------------------------------------------------------------
 // Delete Region
 void
-deleteRegion(Region */*theRegion*/)
+RTIambassador::deleteRegion(Region *)
     throw (RegionNotKnown,
            RegionInUse,
            FederateNotExecutionMember,
@@ -1823,11 +1830,11 @@ deleteRegion(Region */*theRegion*/)
 // ---------------------------------------------------------------------------
 // Register Object Instance With Region
 ObjectHandle
-registerObjectInstanceWithRegion(ObjectClassHandle /*theClass*/,
-                                 const char */*theObject*/,
-                                 AttributeHandle /*theAttributes1[]*/,
-                                 Region */*theRegions[]*/,
-                                 ULong /*theNumberOfHandles*/)
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
+                                                const char *,
+                                                AttributeHandle attrs[],
+                                                Region *regions[],
+                                                ULong)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1845,11 +1852,12 @@ registerObjectInstanceWithRegion(ObjectClassHandle /*theClass*/,
     throw UnimplementedService();
 }
 
+// ---------------------------------------------------------------------------
 ObjectHandle
-registerObjectInstanceWithRegion(ObjectClassHandle /*theClass*/,
-                                 AttributeHandle /*theAttributes[]*/,
-                                 Region */*theRegions[]*/,
-                                 ULong /*theNumberOfHandles*/)
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
+                                                AttributeHandle attrs[],
+                                                Region *regions[],
+                                                ULong)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1869,9 +1877,9 @@ registerObjectInstanceWithRegion(ObjectClassHandle /*theClass*/,
 // ---------------------------------------------------------------------------
 // Associate Region For Updates
 void
-associateRegionForUpdates(Region &/*theRegion*/,
-                          ObjectHandle /*theObject*/,
-                          const AttributeHandleSet &/*theAttributes*/)
+RTIambassador::associateRegionForUpdates(Region &,
+                                         ObjectHandle,
+                                         const AttributeHandleSet &)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            InvalidRegionContext,
@@ -1889,8 +1897,8 @@ associateRegionForUpdates(Region &/*theRegion*/,
 // ---------------------------------------------------------------------------
 // UnAssociate Region For Updates
 void
-unassociateRegionForUpdates(Region &/*theRegion*/,
-                            ObjectHandle /*theObject*/)
+RTIambassador::unassociateRegionForUpdates(Region &/*theRegion*/,
+                                           ObjectHandle /*theObject*/)
     throw (ObjectNotKnown,
            InvalidRegionContext,
            RegionNotKnown,
@@ -1907,10 +1915,11 @@ unassociateRegionForUpdates(Region &/*theRegion*/,
 // ---------------------------------------------------------------------------
 // Subscribe Object Class Attributes With Region
 void
-subscribeObjectClassAttributesWithRegion(ObjectClassHandle /*theClass*/,
-                                         Region &/*theRegion*/,
+RTIambassador::
+subscribeObjectClassAttributesWithRegion(ObjectClassHandle,
+                                         Region &,
                                          const AttributeHandleSet &,
-                                         Boolean /*active*/)
+                                         Boolean)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            RegionNotKnown,
@@ -1928,8 +1937,8 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle /*theClass*/,
 // ---------------------------------------------------------------------------
 // UnSubscribe Object Class Attributes With Region
 void
-unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
-                                 Region &/*theRegion*/)
+RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
+                                                Region &/*theRegion*/)
     throw (ObjectClassNotDefined,
            RegionNotKnown,
            ObjectClassNotSubscribed,
@@ -1946,9 +1955,9 @@ unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
 // ---------------------------------------------------------------------------
 // Subscribe Interaction Class With Region
 void
-subscribeInteractionClassWithRegion(InteractionClassHandle /*theClass*/,
-                                    Region &/*theRegion*/,
-                                    Boolean /*active*/)
+RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle,
+                                    Region &,
+                                    Boolean)
     throw (InteractionClassNotDefined,
            RegionNotKnown,
            InvalidRegionContext,
@@ -1967,8 +1976,8 @@ subscribeInteractionClassWithRegion(InteractionClassHandle /*theClass*/,
 // ---------------------------------------------------------------------------
 // UnSubscribe Interaction Class With Region
 void
-unsubscribeInteractionClassWithRegion(InteractionClassHandle /*theClass*/,
-                                      Region &/*theRegion*/)
+RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle,
+                                                     Region &)
     throw (InteractionClassNotDefined,
            InteractionClassNotSubscribed,
            RegionNotKnown,
@@ -1985,11 +1994,11 @@ unsubscribeInteractionClassWithRegion(InteractionClassHandle /*theClass*/,
 // ---------------------------------------------------------------------------
 // Send Interaction With Region
 EventRetractionHandle
-sendInteractionWithRegion(InteractionClassHandle /*theInteraction*/,
-                          const ParameterHandleValuePairSet &/*theParameters*/,
-                          const FedTime& /*theTime*/,
-                          const char */*theTag*/,
-                          const Region &/*theRegion*/)
+RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
+                                         const ParameterHandleValuePairSet &,
+                                         const FedTime &,
+                                         const char *,
+                                         const Region &)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -2006,11 +2015,11 @@ sendInteractionWithRegion(InteractionClassHandle /*theInteraction*/,
     throw UnimplementedService();
 }
 
-void
-sendInteractionWithRegion(InteractionClassHandle /*theInteraction*/,
-                          const ParameterHandleValuePairSet &/*theParameters*/,
-                          const char */*theTag*/,
-                          const Region &/*theRegion*/)
+void 
+RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
+                                         const ParameterHandleValuePairSet &,
+                                         const char *,
+                                         const Region &)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -2029,7 +2038,7 @@ sendInteractionWithRegion(InteractionClassHandle /*theInteraction*/,
 
 // ---------------------------------------------------------------------------
 // Request Class Attribute Value Update With Region
-void
+void RTIambassador::
 requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*theClass*/,
                                            const AttributeHandleSet &,
                                            const Region &/*theRegion*/)
@@ -2266,7 +2275,7 @@ RTIambassador::getRoutingSpaceHandle(const char */*theName*/)
 // ---------------------------------------------------------------------------
 // Get Routing Space Name
 char *
-RTIambassador::getRoutingSpaceName(const SpaceHandle /*theHandle*/)
+RTIambassador::getRoutingSpaceName(SpaceHandle /*theHandle*/)
     throw (SpaceNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2296,11 +2305,9 @@ RTIambassador::getDimensionHandle(const char */*theName*/,
 // ---------------------------------------------------------------------------
 // Get Dimension Name
 char *
-RTIambassador::getDimensionName(
-                                DimensionHandle /*theHandle*/,
+RTIambassador::getDimensionName(DimensionHandle /*theHandle*/,
                                 SpaceHandle /*whichSpace*/)
-    throw (
-           SpaceNotDefined,
+    throw (SpaceNotDefined,
            DimensionNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2846,6 +2853,7 @@ RTIambassador::tick(void)
     }
 }
 
+// ---------------------------------------------------------------------------
 Boolean
 RTIambassador::tick(TickTime /*minimum*/,
                     TickTime /*maximum*/)
@@ -3579,6 +3587,30 @@ RTIambassador::processException(Message *msg)
     }
 }
 
+// ---------------------------------------------------------------------------
+RegionToken
+RTIambassador::getRegionToken(Region *)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RegionNotKnown,
+           RTIinternalError,
+           UnimplementedService) //CERTI
+{
+    throw UnimplementedService();
+}
+
+// ---------------------------------------------------------------------------
+Region *
+RTIambassador::getRegion(RegionToken)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RegionNotKnown,
+           RTIinternalError,
+           UnimplementedService) //CERTI
+{
+    throw UnimplementedService();
+}
+
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.12 2003/01/29 18:16:40 breholee Exp $
+// $Id: RTIambassador.cc,v 3.13 2003/01/29 21:33:39 breholee Exp $
