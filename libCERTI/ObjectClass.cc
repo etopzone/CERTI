@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.22 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectClass.cc,v 3.23 2005/03/11 14:58:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -97,7 +97,7 @@ ObjectClass::addAttributesToChild(ObjectClass *the_child)
   what is going on...
 */
 void
-ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
+ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *source)
 {
     // 1. Set ObjectHandle to local class Handle.
     ocbList->message->objectClass = handle ;
@@ -134,7 +134,18 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
           }
       } break ;
 
-      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
+      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
+          // For each class attribute, update the list be adding federates who
+          // subscribed to the attribute.
+          list<ObjectClassAttribute *>::const_iterator a ;
+          for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
+	      const RegionImp *region = 0 ;
+	      if (source != 0)
+		  region = source->getAttribute((*a)->getHandle())->getRegion();
+              (*a)->updateBroadcastList(ocbList, region);
+          }
+      } break ;
+
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
@@ -1643,4 +1654,4 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.22 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectClass.cc,v 3.23 2005/03/11 14:58:44 breholee Exp $

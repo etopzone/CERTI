@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.18 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectClass.hh,v 3.19 2005/03/11 14:58:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -198,7 +198,8 @@ public:
         throw (ObjectClassNotPublished, ObjectAlreadyRegistered,
                RTIinternalError);
 
-    void broadcastClassMessage(ObjectClassBroadcastList *ocb_list);
+    void broadcastClassMessage(ObjectClassBroadcastList *ocb_list,
+			       Object *source = 0);
 
     ObjectClassBroadcastList *
     updateAttributeValues(FederateHandle theFederateHandle,
@@ -266,4 +267,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.18 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectClass.hh,v 3.19 2005/03/11 14:58:44 breholee Exp $
