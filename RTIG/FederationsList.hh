@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.19 2003/07/09 16:10:44 breholee Exp $
+// $Id: FederationsList.hh,v 3.20 2003/10/20 12:54:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -483,16 +483,20 @@ public:
 				  InteractionClassHandle, RegionHandle)
 	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
+
+    void setVerbose(bool flag) { verbose = flag ; }
     
 private:
     // Private methods
     void checkHandle(Handle theHandle) throw (RTIinternalError);
     int searchFederation(Handle the_handle, Federation* &federation)
         throw (FederationExecutionDoesNotExist, RTIinternalError);
+
+    bool verbose ;
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.19 2003/07/09 16:10:44 breholee Exp $
+// $Id: FederationsList.hh,v 3.20 2003/10/20 12:54:24 breholee Exp $
