@@ -20,28 +20,32 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Publisher.hh,v 3.2 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_PUBLISHER_HH
 #define _CERTI_PUBLISHER_HH
 
+#include <config.h>
+
 #include "RTItypes.hh"
 
 namespace certi {
 
+//! Contains the federate handle of a publisher.
 class Publisher
 {
 public:
     Publisher(FederateHandle);
 
     FederateHandle getHandle(void) const;
-    
-    FederateHandle Handle;
+
+protected:    
+    FederateHandle handle;
 };
   
 } // namespace certi
 
 #endif // _CERTI_PUBLISHER_HH
 
-// $Id: Publisher.hh,v 3.2 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $

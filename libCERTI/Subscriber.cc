@@ -20,35 +20,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.cc,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: Subscriber.cc,v 3.2 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "Subscriber.hh"
 
 namespace certi {
 
-// -----------------
-// -- Subscriber --
-// -----------------
-
+//! Initialise the Subscriber class.
+/*! As the Region stuff will be implemented, think to add a new constructor,
+    and maybe a destructor...
+*/
 Subscriber::Subscriber(FederateHandle theHandle)
 {
   handle = theHandle;
 }
 
-
-// -----------------
-// -- Subscriber --
-// -----------------
-
-FederateHandle Subscriber::getHandle() const
+//! Returns the Subscriber's Handle.
+FederateHandle Subscriber::getHandle(void) const
 {
   return handle;
 }
-
 }
 
-// $Id: Subscriber.cc,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: Subscriber.cc,v 3.2 2003/01/15 12:07:46 breholee Exp $
 

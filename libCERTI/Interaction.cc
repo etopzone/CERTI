@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
+// $Id: Interaction.cc,v 3.5 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -151,8 +151,8 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
 	ibList->message->removeParameter(ParamIndex);
       }
     }
-    //printf("(BroadcastInteractionMessage) handle : %d paramindex %d\n",
-    // Handle,ParamIndex); 
+    //cout << "(BroadcastInteractionMessage) handle : "<< Handle <<
+    //     << " paramindex " << ParamIndex << endl;
     // 3. Add Interaction subscribers to the list.
  
     for(SubIndex = 1; SubIndex <= subscribers.getLength(); SubIndex++) { 
@@ -230,8 +230,8 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
 
     // BUG: Should use Audit.
     if(!result) {
-      printf("Interaction %ld : SecurityError for federate %ld(%s).\n",
-	     handle, theFederate, Reason);
+        cout << "Interaction " << handle << " : SecurityError for federate "
+             << theFederate << '(' << Reason << ")." << endl;
       throw SecurityError("Federate should not access Interaction.");
     }
   }
@@ -345,56 +345,53 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
   // -- Display --
   // -------------
 
-  void Interaction::display(void)
-  {
-    int i;
-    InteractionChild *Son = NULL;
-    Parameter *Parameter = NULL;
+void
+Interaction::display(void)
+{
+    InteractionChild *child = NULL;
+    Parameter *parameter = NULL;
 
-    printf(" Interaction %ld \"%s\" :\n", handle, name);
+    cout << " Interaction " << handle << " \"" << name << "\" :" << endl;
 
     // Display inheritance
 
-    printf(" Parent Class Handle: %ld\n", parent);
-    printf(" Security Level: %d\n", id);
-    printf(" %d Child(s):\n", children.getLength());
+    cout << " Parent Class Handle: " << parent << endl;
+    cout << " Security Level: "      << id     << endl;
+    cout << " " << children.getLength() << " Child(s):" << endl;
 
-    for(i = 1; i <= children.getLength(); i++) {
-      Son = children.Ieme(i);
-      printf(" Son %d Handle: %ld\n", i, Son->handle);
+    for(int i = 1; i <= children.getLength(); i++) {
+      child = children.Ieme(i);
+      cout << " child " << i << " Handle: " << child->handle << endl;
     }
 
-    // Display Parameters
+    // Display parameters
 
-    printf(" %d Parameters:\n", parameterSet.getLength());
+    cout << " " << parameterSet.getLength() << " Parameters:" << endl;
 
-    for(i = 1; i <= parameterSet.getLength(); i++) {
-      Parameter = parameterSet.Ieme(i);
-      Parameter->display();
+    for (int i = 1; i <= parameterSet.getLength(); i++) {
+      parameter = parameterSet.Ieme(i);
+      parameter->display();
     }
-
-  }
+}
 
 
   // --------------------------
   // -- GetParameterByHandle --(private)
   // --------------------------
+Parameter*
+Interaction::getParameterByHandle(ParameterHandle theHandle)
+    throw(InteractionParameterNotDefined, RTIinternalError)
+{
+    Parameter *parameter = NULL;
 
-  Parameter *Interaction::getParameterByHandle(ParameterHandle theHandle)
-    throw(InteractionParameterNotDefined,
-	  RTIinternalError)
-  {
-    int i;
-    Parameter *Parameter = NULL;
-
-    for(i = 1; i <= parameterSet.getLength(); i++) {
-      Parameter = parameterSet.Ieme(i);
-      if(Parameter->Handle == theHandle) 
-	return Parameter;
+    for (int i = 1; i <= parameterSet.getLength(); i++) {
+      parameter = parameterSet.Ieme(i);
+      if(parameter->Handle == theHandle) 
+	return parameter;
     }
 
     throw InteractionParameterNotDefined();
-  }
+}
 
 
   // ------------------------
@@ -407,12 +404,12 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
 	  RTIinternalError)
   {
     int i;
-    Parameter *Parameter = NULL;
+    Parameter *parameter = NULL;
 
     for(i = 1; i <= parameterSet.getLength(); i++) {
-      Parameter = parameterSet.Ieme(i);
-      if(strcmp(Parameter->getName(), theName) == 0)
-	return Parameter->Handle;
+      parameter = parameterSet.Ieme(i);
+      if(strcmp(parameter->getName(), theName) == 0)
+	return parameter->Handle;
     }
  
     throw InteractionParameterNotDefined();
@@ -431,42 +428,39 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
   }
 
 
-  // ----------------------
-  // -- GetPublisherRank --(private)
-  // ----------------------
-
-  int Interaction::getPublisherRank(FederateHandle theFederate)
-  {
-    int i;
+// ----------------------
+// -- GetPublisherRank --(private)
+// ----------------------
+int
+Interaction::getPublisherRank(FederateHandle theFederate)
+{
     Publisher *publisher;
 
-    for(i = 1; i <= publishers.getLength(); i++) {
-      publisher = publishers.Ieme(i);
-      if(publisher->Handle == theFederate)
-	return i;
+    for (int i = 1; i <= publishers.getLength(); i++) {
+        publisher = publishers.Ieme(i);
+        if (publisher->getHandle() == theFederate)
+            return i;
     }
 
     return 0;
-  }
+}
 
+// -----------------------
+// -- GetSubscriberRank --(private)
+// -----------------------
+int
+Interaction::getSubscriberRank(FederateHandle theFederate)
+{
+    Subscriber *subscriber;
 
-  // -----------------------
-  // -- GetSubscriberRank --(private)
-  // -----------------------
-
-  int Interaction::getSubscriberRank(FederateHandle theFederate)
-  {
-    int i;
-    Subscriber *Subscriber;
-
-    for(i = 1; i <= subscribers.getLength(); i++) {
-      Subscriber = subscribers.Ieme(i);
-      if(Subscriber->getHandle() == theFederate)
-	return i;
+    for (int i = 1; i <= subscribers.getLength(); i++) {
+        subscriber = subscribers.Ieme(i);
+        if (subscriber->getHandle() == theFederate)
+            return i;
     }
 
     return 0;
-  }
+}
 
 
   // -------------------
@@ -728,4 +722,4 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
   }
 }
 
-// $Id: Interaction.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
+// $Id: Interaction.cc,v 3.5 2003/01/15 12:07:46 breholee Exp $

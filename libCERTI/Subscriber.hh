@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: Subscriber.hh,v 3.2 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// $Id: Subscriber.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: Subscriber.hh,v 3.2 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
 // Classe Subscriber, qui decrit un souscripteur a une classe
 // d'interaction ou a une classe d'objet.
@@ -31,32 +31,29 @@
 #ifndef _CERTI_SUBSCRIBER_HH
 #define _CERTI_SUBSCRIBER_HH
 
+#include <config.h>
 #include "RTItypes.hh"
 
 namespace certi {
 
+//! Contains the federate handle of a subscriber.
+/*! The description of the region of subscribtion, this attribute,
+    CSubscribeRegion Region, should exists. More to be implemented.
+*/
 class Subscriber {
-
   // ATTRIBUTES
-private:
-  FederateHandle handle;  // The ID of the Subscriber  
-
-  // The description of the region of subscribtion.
-  // CSubscribeRegion Region; // BUG: Should not be commented out.
+protected:
+  FederateHandle handle; //!< The ID of the Subscriber.
 
   // METHODS
 public:
   Subscriber(FederateHandle);
-  // As the Region stuff will be implemented, think to add a new
-  // constructor, and maybe a destructor...
-
-  // Return the Subscriber's Handle
-  FederateHandle getHandle() const;
+  FederateHandle getHandle(void) const;
 };
 
 }
 
 #endif // _CERTI_SUBSCRIBER_HH
 
-// $Id: Subscriber.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: Subscriber.hh,v 3.2 2003/01/15 12:07:46 breholee Exp $
 

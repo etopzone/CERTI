@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Publisher.cc,v 3.1 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.cc,v 3.2 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Publisher.hh"
@@ -34,7 +34,7 @@ namespace certi {
 */
 Publisher::Publisher(FederateHandle theHandle)
 {
-    Handle = theHandle;
+    handle = theHandle;
 }
 
 // ---------------------------------------------------------------------------
@@ -42,9 +42,9 @@ Publisher::Publisher(FederateHandle theHandle)
 FederateHandle
 Publisher::getHandle(void) const
 {
-    return Handle;
+    return handle;
 }
 
 } // namespace certi
 
-// $Id: Publisher.cc,v 3.1 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.cc,v 3.2 2003/01/15 12:07:46 breholee Exp $

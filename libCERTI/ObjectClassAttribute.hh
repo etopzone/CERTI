@@ -20,17 +20,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $
 // ---------------------------------------------------------------------------
-
-// Decrit un attribut d'une classe d'objet, et notamment la liste des
-// federes qui y sont abonnes.
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 #define _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
+#include <config.h>
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <list>
+using std::list;
+
 #include "RTItypes.hh"
-#include "List.hh"
 #include "SecurityLevel.hh"
 
 #include "Subscriber.hh"
@@ -40,6 +45,10 @@
 
 namespace certi {
 
+/*! This class descrives an object class attribute (handle, level id, ordering,
+    transportation mode and name). This class also keeps track of published and
+    subscribed federates.
+*/
 class ObjectClassAttribute {
 
 public:
@@ -70,11 +79,11 @@ public:
   ~ObjectClassAttribute();
 
   // Display the content of this class(see RootObj::Display)
-  void display(void);
+  void display(void) const;
 
   // Name attribute access(GetName reference must be considered READ-ONLY).
   // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
-  char *getName() {return Name; };
+  inline char *getName(void) const {return Name; };
 
   void setName(char *NewName)
     throw(ValueLengthExceeded, RTIinternalError);
@@ -94,10 +103,10 @@ public:
 
   // Return RTI_TRUE if the Federate is publishing the attribute,
   // else return RTI_FALSE.
-  Boolean IsPublishing(FederateHandle theHandle);
+  Boolean IsPublishing(FederateHandle theHandle) const;
 
   // Return RTI_TRUE if the Federate has subscribed to this attribue.
-  Boolean hasSubscribed(FederateHandle theHandle);
+  Boolean hasSubscribed(FederateHandle theHandle) const;
 
   void publish(FederateHandle theFederate, bool PubOrUnpub)
     throw(RTIinternalError, SecurityError);
@@ -120,10 +129,10 @@ private:
   // -- Private Part --
   // ------------------
 
-  AttributeName Name; // Must be locally allocated.
+  AttributeName Name; //!< The attribute name, must be locally allocated.
 
-  List <Subscriber*> Subscribers;
-  List <Publisher*> Publishers;
+  list<Subscriber *> subscribers; //!< The subscriber's list.
+  list<Publisher *>  publishers;  //!< The publisher's list.
 
   // The four next methods do the memory management stuff to
   // add and delete publishers and subscribers.
@@ -140,11 +149,11 @@ private:
   // Both following methods return the Rank of the Federate in the list, 
   // or ZERO if not found.
 
-  int getPublisherRank(FederateHandle theFederate);
-  int getSubscriberRank(FederateHandle theFederate);
+  int getPublisherRank(FederateHandle theFederate) const;
+  int getSubscriberRank(FederateHandle theFederate) const;
 };
 }
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.3 2003/01/15 12:07:46 breholee Exp $
