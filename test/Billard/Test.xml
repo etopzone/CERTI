@@ -13,10 +13,12 @@
 		<objectClass name="Bille">
 		      	<attribute name="PositionX"
 			           transportation="HLAreliable"
-				   order="TimeStamp" />
+				   order="TimeStamp"
+				   space="geo" />
 	      		<attribute name="PositionY"
 			           transportation="HLAreliable"
-				   order="TimeStamp" />
+				   order="TimeStamp"
+				   space="geo" />
 		      	<objectClass name="Boule">
 				<attribute name="Color" />
                                            transportation="HLAreliable"
