@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.14 2004/01/09 16:41:00 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.15 2005/03/21 13:17:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,11 +35,12 @@
 
 using std::cout ;
 using std::endl ;
+using std::string ;
 
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_OM", "(RTIA OM) ");
+static pdCDebug D("RTIA_OM", __FILE__);
 
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
@@ -489,7 +490,7 @@ ObjectManagement::getObjectClassHandle(const char *theName)
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
-const char *
+string
 ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 {
     return rootObject->ObjectClasses->getObjectClassName(theHandle);
@@ -579,4 +580,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.14 2004/01/09 16:41:00 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.15 2005/03/21 13:17:41 breholee Exp $

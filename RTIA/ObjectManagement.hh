@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.9 2004/01/09 16:41:00 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.10 2005/03/21 13:17:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -148,7 +148,7 @@ public:
 
     // RTI Support Services
     ObjectClassHandle getObjectClassHandle(const char *theName);
-    const char *getObjectClassName(ObjectClassHandle theHandle);
+    std::string getObjectClassName(ObjectClassHandle);
 
     ObjectHandle getObjectInstanceHandle(const char *);
     const char *getObjectInstanceName(ObjectHandle);
@@ -182,4 +182,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.9 2004/01/09 16:41:00 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.10 2005/03/21 13:17:41 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.28 2004/08/24 18:25:05 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.29 2005/03/21 13:17:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -548,7 +548,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetObjectClassName.");
 
         try {
-            rep.setName(om->getObjectClassName(req->getObjectClass()));
+            rep.setName(om->getObjectClassName(req->getObjectClass()).c_str());
         }
         catch (ObjectClassNotDefined) {
             rep.setException(e_ObjectClassNotDefined);
@@ -1100,4 +1100,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.28 2004/08/24 18:25:05 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.29 2005/03/21 13:17:41 breholee Exp $
