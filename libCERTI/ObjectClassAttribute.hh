@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.12 2003/07/10 22:44:42 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.13 2003/10/27 10:15:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -49,7 +49,7 @@ public:
     void display() const ;
 
     const char *getName() const { return name.c_str(); };
-    void setName(char *);
+    void setName(const char *);
 
     void setHandle(AttributeHandle h);
     AttributeHandle getHandle() const ;
@@ -100,4 +100,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.12 2003/07/10 22:44:42 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.13 2003/10/27 10:15:12 breholee Exp $

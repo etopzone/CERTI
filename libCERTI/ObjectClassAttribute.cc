@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.16 2003/07/10 22:44:41 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.17 2003/10/27 10:15:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -226,7 +226,7 @@ ObjectClassAttribute::unpublish(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! Sets the name of this attribute
 void
-ObjectClassAttribute::setName(char *new_name)
+ObjectClassAttribute::setName(const char *new_name)
 {
     name = new_name == 0 ? "" : new_name ;
 }
@@ -346,4 +346,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.16 2003/07/10 22:44:41 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.17 2003/10/27 10:15:12 breholee Exp $
