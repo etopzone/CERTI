@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.8 2004/05/18 13:18:55 breholee Exp $
+// $Id: RegionImp.hh,v 3.9 2005/03/11 13:34:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -78,6 +78,8 @@ public:
     long getNumberOfExtents();
     void notify();
 
+    bool overlaps(const RegionImp &) const ;
+
     //const Extent &getExtent(ExtentIndex) const throw (ArrayIndexOutOfBounds);
     const std::vector<Extent> &getExtents() const ;
     void setExtents(const std::vector<Extent> &) throw (InvalidExtents);
@@ -94,4 +96,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.8 2004/05/18 13:18:55 breholee Exp $
+// $Id: RegionImp.hh,v 3.9 2005/03/11 13:34:38 breholee Exp $

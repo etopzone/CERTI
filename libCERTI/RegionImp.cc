@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: RegionImp.cc,v 3.8 2005/03/11 13:34:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -240,6 +240,24 @@ RegionImp::setExtents(const vector<Extent> &e)
     extents = e ;
 }
 
+// ----------------------------------------------------------------------------
+/** Check if regions overlap
+ */
+bool
+RegionImp::overlaps(const RegionImp &region) const
+{
+    if (getSpaceHandle() != region.getSpaceHandle())
+	return false ;
+
+    for (unsigned int i = 0 ; i < getNumberOfExtents() ; ++i) {
+	for (unsigned int j = 0 ; j < region.getNumberOfExtents(); ++j) {
+	    if (extents[i].overlaps(region.extents[j]))
+		return true ;
+	}
+    }
+    return false ;
+}
+
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: RegionImp.cc,v 3.8 2005/03/11 13:34:37 breholee Exp $

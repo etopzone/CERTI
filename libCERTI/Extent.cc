@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.4 2003/11/10 14:36:43 breholee Exp $
+// $Id: Extent.cc,v 3.5 2005/03/11 13:32:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -100,19 +100,19 @@ Extent::size() const
 }
 
 // ----------------------------------------------------------------------------
-/** Get a range dimension handle.
+/** Check whether both extents overlap
  */
-// DimensionHandle
-// Extent::getDimensionHandle(size_t n) const
-//     throw (ArrayIndexOutOfBounds)
-// {
-//     RangeSet::const_iterator it = ranges.begin();
-//     for (int j = 0 ; j < size(); ++j, ++it) {
-// 	if (j == n) return it->first ;
-//     }
-//     throw ArrayIndexOutOfBounds();
-// }
+bool
+Extent::overlaps(const Extent &e) const
+{
+    for (unsigned int i = 1 ; i <= size(); ++i) {
+	if (e.getRangeLowerBound(i) > getRangeUpperBound(i) ||
+	    e.getRangeUpperBound(i) < getRangeLowerBound(i))
+	    return false ;
+    }
+    return true ;
+}
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.4 2003/11/10 14:36:43 breholee Exp $
+// $Id: Extent.cc,v 3.5 2005/03/11 13:32:46 breholee Exp $

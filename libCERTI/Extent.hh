@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: Extent.hh,v 3.7 2005/03/11 13:32:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_EXTENT_HH
-#define _CERTI_EXTENT_HH
+#ifndef CERTI_EXTENT_HH
+#define CERTI_EXTENT_HH
 
 #include "certi.hh"
 
@@ -36,10 +36,11 @@ namespace certi {
 typedef std::pair<ULong, ULong> Range ;
 typedef std::vector<Range> RangeSet ;
 
+// ----------------------------------------------------------------------------
 /** An extent is a subspace in a routing space. It is made of ranges in
     each dimension of the routing space. Routing regions are described
     using a set of extents.
-    \sa RoutingSpace, Dimension, RegionImp
+    @sa RoutingSpace, Dimension, RegionImp
  */
 class Extent
 {
@@ -58,6 +59,7 @@ public:
     void setRangeLowerBound(DimensionHandle, ULong)
         throw (ArrayIndexOutOfBounds);
 
+    bool overlaps(const Extent &) const ;
     size_t size() const ;
     
 private:
@@ -66,6 +68,6 @@ private:
 
 } // namespace certi
 
-#endif // _CERTI_EXTENT_HH
+#endif // CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: Extent.hh,v 3.7 2005/03/11 13:32:46 breholee Exp $
