@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,10 +18,25 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.9 2003/05/23 14:15:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
+
+// Project
+#include <config.h>
+#include "FederationManagement.hh"
+#include "PrettyDebug.hh"
+
+// Standard
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <iostream>
+
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 namespace rtia {
@@ -520,6 +534,22 @@ ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 }
 
 // ----------------------------------------------------------------------------
+//! Returns the object instance handle.
+ObjectHandle
+ObjectManagement::getObjectInstanceHandle(const char *the_name)
+{
+    return rootObject->objects->getObjectInstanceHandle(the_name);
+}
+
+// ----------------------------------------------------------------------------
+//! Returns the object instance name.
+const char *
+ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
+{
+    return rootObject->objects->getObjectInstanceName(the_object);
+}
+
+// ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
 ObjectManagement::getAttributeHandle(const char *theName,
@@ -579,4 +609,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.9 2003/05/23 14:15:17 breholee Exp $

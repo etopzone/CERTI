@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,31 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.6 2003/02/19 15:45:23 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.7 2003/05/23 14:15:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
 #define _CERTI_RTIA_OM
 
-#include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-#include "FederationManagement.hh"
-#include "Communications.hh"
-#include "Files.hh"
-#include "baseTypes.hh"
-#include "RTItypes.hh"
 #include "RootObject.hh"
-
-#include "PrettyDebug.hh"
 
 #define IDRESERVED 4294000000
 #define NOTLINKED -1
@@ -174,6 +155,9 @@ public:
     ObjectClassHandle getObjectClassHandle(const char *theName);
     const char *getObjectClassName(ObjectClassHandle theHandle);
 
+    ObjectHandle getObjectInstanceHandle(const char *);
+    const char *getObjectInstanceName(ObjectHandle);
+
     AttributeHandle getAttributeHandle(const char *theName,
                                        ObjectClassHandle theClassHandle);
 
@@ -201,4 +185,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.6 2003/02/19 15:45:23 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.7 2003/05/23 14:15:17 breholee Exp $
