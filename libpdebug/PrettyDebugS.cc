@@ -20,29 +20,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebugS.cc,v 3.1 2002/12/11 00:47:34 breholee Exp $
+// $Id: PrettyDebugS.cc,v 3.2 2003/01/14 14:41:43 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "PrettyDebugS.hh"
 
-#ifdef HAVE_NAMESPACES
 using namespace std ;
-#endif
 
 //---------------------------------------------------------------------------
 // CDebugServer Class
 //---------------------------------------------------------------------------
 
-// Print the message to the default output ostream
-void pdCDebugServer::Print(const char * Message)
+//! Print the message to the default output ostream
+void
+pdCDebugServer::Print(const char *message)
 {
-  if(Message != NULL)
-    cerr << Message;
-  else
-    cerr << pdSEmptyMessage;
+    if (message != 0)
+        cerr << message;
+    else
+        cerr << pdSEmptyMessage;
 }
 
-// EOF $Id: PrettyDebugS.cc,v 3.1 2002/12/11 00:47:34 breholee Exp $
- 
+// $Id: PrettyDebugS.cc,v 3.2 2003/01/14 14:41:43 breholee Exp $
