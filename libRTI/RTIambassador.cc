@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.24 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.25 2003/05/08 23:32:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -243,9 +243,8 @@ RTIambassador::resignFederationExecution(ResignAction theAction)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = RESIGN_FEDERATION_EXECUTION ;
-    req.resignAction = theAction ;
+    req.setResignAction(theAction);
     executeService(&req, &rep);
 }
 
@@ -327,8 +326,9 @@ RTIambassador::requestFederationSave(const char *label,
     Message req, rep ;
 
     req.type = REQUEST_FEDERATION_SAVE ;
-    req.date = (FederationTime) (RTIfedTime(theTime)._fedTime);
+    req.setFedTime(theTime);
     req.setLabel(label);
+    req.setBoolean(RTI_TRUE);
 
     executeService(&req, &rep);
 }
@@ -347,8 +347,8 @@ RTIambassador::requestFederationSave(const char *label)
     Message req, rep ;
 
     req.type = REQUEST_FEDERATION_SAVE ;
-    req.date = (FederationTime)0 ;
     req.setLabel(label);
+    req.setBoolean(RTI_FALSE);
 
     executeService(&req, &rep);
 }
@@ -490,19 +490,10 @@ RTIambassador::publishObjectClass(ObjectClassHandle theClass,
            RTIinternalError)
 {
     Message req, rep ;
-    CAttributeHandleValuePairSet *attributeList_aux ;
-    attributeList_aux = new CAttributeHandleValuePairSet(attributeList);
-    CAttributeHandleValuePair *tmp ;
 
-    // Envoyer la requete au RTI
     req.type = PUBLISH_OBJECT_CLASS ;
-    req.objectClass = theClass ;
-    req.handleArraySize = attributeList_aux->_size ;
-
-    for (int i = 0 ; i < attributeList_aux->_size ; i++) {
-        tmp = attributeList_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObjectClass(theClass);
+    req.setAHS(attributeList);
 
     executeService(&req, &rep);
 }
@@ -524,9 +515,8 @@ RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = UNPUBLISH_OBJECT_CLASS ;
-    req.objectClass = theClass ;
+    req.setObjectClass(theClass);
     executeService(&req, &rep);
 }
 
@@ -545,9 +535,8 @@ RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = PUBLISH_INTERACTION_CLASS ;
-    req.interactionClass = theInteraction ;
+    req.setInteractionClass(theInteraction);
     executeService(&req, &rep);
 }
 
@@ -566,9 +555,8 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = UNPUBLISH_INTERACTION_CLASS ;
-    req.interactionClass = theInteraction ;
+    req.setInteractionClass(theInteraction);
     executeService(&req, &rep);
 }
 
@@ -578,7 +566,7 @@ void
 RTIambassador::
 subscribeObjectClassAttributes(ObjectClassHandle theClass,
                                const AttributeHandleSet& attributeList,
-                               Boolean /*active*/)
+                               Boolean active)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            FederateNotExecutionMember,
@@ -589,19 +577,11 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
            RTIinternalError)
 {
     Message req, rep ;
-    CAttributeHandleValuePairSet *attributeList_aux ;
-    attributeList_aux = new CAttributeHandleValuePairSet(attributeList);
-    CAttributeHandleValuePair *tmp ;
 
-    // envoyer la requete au RTI
     req.type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
-    req.objectClass = theClass ;
-    req.handleArraySize = attributeList_aux->_size ;
-
-    for (int i = 0 ; i < attributeList_aux->_size ; i++) {
-        tmp = attributeList_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObjectClass(theClass);
+    req.setAHS(attributeList);
+    req.setBoolean(active);
 
     executeService(&req, &rep);
 }
@@ -621,9 +601,8 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = UNSUBSCRIBE_OBJECT_CLASS ;
-    req.objectClass = theClass ;
+    req.setObjectClass(theClass);
     executeService(&req, &rep);
 }
 
@@ -644,9 +623,8 @@ RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = SUBSCRIBE_INTERACTION_CLASS ;
-    req.interactionClass = theClass ;
+    req.setInteractionClass(theClass);
     executeService(&req, &rep);
 }
 
@@ -665,9 +643,8 @@ RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = UNSUBSCRIBE_INTERACTION_CLASS ;
-    req.interactionClass = theClass ;
+    req.setInteractionClass(theClass);
     executeService(&req, &rep);
 }
 
@@ -692,10 +669,9 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = REGISTER_OBJECT_INSTANCE ;
-    req.setName((char *) theObjectName);
-    req.objectClass = theClass ;
+    req.setName(theObjectName);
+    req.setObjectClass(theClass);
     executeService(&req, &rep);
 
     return rep.object ;
@@ -716,10 +692,9 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = REGISTER_OBJECT_INSTANCE ;
     req.setName("\0");
-    req.objectClass = theClass ;
+    req.setObjectClass(theClass);
 
     executeService(&req, &rep);
 
@@ -744,44 +719,25 @@ updateAttributeValues(ObjectHandle theObject,
            RestoreInProgress,
            RTIinternalError)
 {
-    ULong longueur ;
     Message req, rep ;
 
-    CAttributeHandleValuePairSet *theAttributes_aux ;
-    theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
-
-    CAttributeHandleValuePair *tmp ;
-
-    // Envoyer la requete au RTI
     req.type = UPDATE_ATTRIBUTE_VALUES ;
-    req.object = theObject ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.setObject(theObject);
+    req.setFedTime(theTime);
     req.setTag(theTag);
-    req.handleArraySize = theAttributes_aux->_size ;
-
-    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
-        tmp = theAttributes_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-
-        // codage
-        getObjectToStringLength(tmp->_value.value,
-                                tmp->_value.length,
-                                longueur);
-        char *valeur = new char[longueur] ;
-        objectToString(tmp->_value.value, tmp->_value.length, valeur);
-        req.setValue(i, valeur);
-    }
+    req.setAHVPS(theAttributes);
+    req.setBoolean(RTI_TRUE);
 
     executeService(&req, &rep);
-    delete theAttributes_aux ;
+
     return rep.eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIambassador::updateAttributeValues(ObjectHandle,
-                                     const AttributeHandleValuePairSet&,
-                                     const char *)
+RTIambassador::updateAttributeValues(ObjectHandle the_object,
+                                     const AttributeHandleValuePairSet& the_attributes,
+                                     const char *the_tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -793,6 +749,16 @@ RTIambassador::updateAttributeValues(ObjectHandle,
            UnimplementedService) //CERTI
 {
     throw UnimplementedService();
+
+    Message req, rep ;
+
+    req.type = UPDATE_ATTRIBUTE_VALUES ;
+    req.setObject(the_object);
+    req.setTag(the_tag);
+    req.setAHVPS(the_attributes);
+    req.setBoolean(RTI_FALSE);
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
@@ -812,42 +778,25 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
            RestoreInProgress,
            RTIinternalError)
 {
-    ULong longueur ;
     Message req, rep ;
-    CParameterHandleValuePairSet *theParameters_aux ;
-    theParameters_aux = new CParameterHandleValuePairSet(theParameters);
-    CParameterHandleValuePair *tmp ;
 
-    // envoyer la requete au RTI
     req.type = SEND_INTERACTION ;
-    req.interactionClass = theInteraction ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.setInteractionClass(theInteraction);
+    req.setFedTime(theTime);
     req.setTag(theTag);
-    req.handleArraySize = theParameters_aux->_size ;
-
-    for (int i = 0 ; i < theParameters_aux->_size ; i++) {
-        tmp = theParameters_aux->getIeme(i);
-        req.handleArray[i] = tmp->_param ;
-
-        // codage
-        getObjectToStringLength(tmp->_value.value,
-                                tmp->_value.length,
-                                longueur);
-        char *valeur = new char[longueur] ;
-        objectToString(tmp->_value.value, tmp->_value.length, valeur);
-        req.setValue(i, valeur);
-    }
+    req.setPHVPS(theParameters);
+    req.setBoolean(RTI_TRUE);
 
     executeService(&req, &rep);
-    delete theParameters_aux ;
+
     return rep.eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIambassador::sendInteraction(InteractionClassHandle,
-                               const ParameterHandleValuePairSet &,
-                               const char *)
+RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
+                               const ParameterHandleValuePairSet & the_parameters,
+                               const char *the_tag)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -859,6 +808,16 @@ RTIambassador::sendInteraction(InteractionClassHandle,
            UnimplementedService) //CERTI
 {
     throw UnimplementedService();
+
+    Message req, rep ;
+
+    req.type = SEND_INTERACTION ;
+    req.setInteractionClass(the_interaction);
+    req.setTag(the_tag);
+    req.setPHVPS(the_parameters);
+    req.setBoolean(RTI_FALSE);
+
+    executeService(&req, &rep);
 }
 
 
@@ -879,12 +838,11 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = DELETE_OBJECT_INSTANCE ;
-    req.object = theObject ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
-
+    req.setObject(theObject);
+    req.setFedTime(theTime);
     req.setTag(theTag);
+
     executeService(&req, &rep);
     return rep.eventRetraction ;
 }
@@ -906,7 +864,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     Message req, rep ;
 
     req.type = DELETE_OBJECT_INSTANCE ;
-    req.object = theObject ;
+    req.setObject(theObject);
     req.setTag(theTag);
 
     executeService(&req, &rep);
@@ -929,7 +887,7 @@ RTIambassador::localDeleteObjectInstance(ObjectHandle theObject)
     Message req, rep ;
 
     req.type = LOCAL_DELETE_OBJECT_INSTANCE ;
-    req.object = theObject ;
+    req.setObject(theObject);
 
     executeService(&req, &rep);
 }
@@ -954,24 +912,11 @@ changeAttributeTransportationType(ObjectHandle theObject,
            RTIinternalError)
 {
     Message req, rep ;
-    CAttributeHandleValuePairSet *theAttributes_aux ;
-    theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
-    CAttributeHandleValuePair *tmp ;
-    TransportType theType_aux ;
 
-    theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
-
-    // Envoyer la requete au RTI
     req.type = CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
-    req.object = theObject ;
-    req.transport = theType_aux ;
-
-    req.handleArraySize = theAttributes_aux->_size ;
-
-    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
-        tmp = theAttributes_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObject(theObject);
+    req.setTransportation(theType);
+    req.setAHS(theAttributes);
 
     executeService(&req, &rep);
 }
@@ -993,14 +938,11 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
            RTIinternalError)
 {
     Message req, rep ;
-    TransportType theType_aux ;
 
-    theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
-
-    // envoyer la requete au RTI
     req.type = CHANGE_INTERACTION_TRANSPORTATION_TYPE ;
-    req.interactionClass = theClass ;
-    req.transport = theType_aux ;
+    req.setInteractionClass(theClass);
+    req.setTransportation(theType);
+
     executeService(&req, &rep);
 }
 
@@ -1022,18 +964,8 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
     Message req, rep ;
 
     req.type = REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
-    req.object = theObject ;
-
-    CAttributeHandleValuePairSet *theAttributes_aux ;
-    theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
-    CAttributeHandleValuePair *tmp ;
-
-    req.handleArraySize = theAttributes_aux->_size ;
-
-    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
-        tmp = theAttributes_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObject(theObject);
+    req.setAHS(theAttributes);
 
     executeService(&req, &rep);
 }
@@ -1055,18 +987,8 @@ RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
     Message req, rep ;
 
     req.type = REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
-    req.objectClass = theClass ;
-
-    CAttributeHandleValuePairSet *theAttributes_aux ;
-    theAttributes_aux = new CAttributeHandleValuePairSet(attrs);
-    CAttributeHandleValuePair *tmp ;
-
-    req.handleArraySize = theAttributes_aux->_size ;
-
-    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
-        tmp = theAttributes_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObjectClass(theClass);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1092,15 +1014,9 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.object = theObject ;
-
-    req.handleArraySize = attrs.size();
-
-    for (int i = 0 ; i < attrs.size(); i++) {
-        req.handleArray[i] = attrs.getHandle(i);
-    }
+    req.setObject(theObject);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1124,17 +1040,10 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.object = theObject ;
-
+    req.setObject(theObject);
     req.setTag(theTag);
-
-    req.handleArraySize = attrs.size();
-
-    for (int i = 0 ; i < attrs.size(); i++) {
-        req.handleArray[i] = attrs.getHandle(i);
-    }
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1159,17 +1068,10 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    req.object = theObject ;
-
+    req.setObject(theObject);
     req.setTag(theTag);
-
-    req.handleArraySize = desiredAttributes.size();
-
-    for (int i = 0 ; i < desiredAttributes.size(); i++) {
-        req.handleArray[i] = desiredAttributes.getHandle(i);
-    }
+    req.setAHS(desiredAttributes);
 
     executeService(&req, &rep);
 }
@@ -1192,15 +1094,9 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
-    req.object = theObject ;
-
-    req.handleArraySize = attrs.size();
-
-    for (int i = 0 ; i < attrs.size(); i++) {
-        req.handleArray[i] = attrs.getHandle(i);
-    }
+    req.setObject(theObject);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 
@@ -1235,15 +1131,9 @@ cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    req.object = theObject ;
-
-    req.handleArraySize = attrs.size();
-
-    for (int i = 0 ; i < attrs.size(); i++) {
-        req.handleArray[i] = attrs.getHandle(i);
-    }
+    req.setObject(theObject);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1266,15 +1156,9 @@ cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    req.object = (ObjectHandle) theObject ;
-
-    req.handleArraySize = attrs.size();
-
-    for (int i = 0 ; i < attrs.size(); i++) {
-        req.handleArray[i] = attrs.getHandle(i);
-    }
+    req.setObject(theObject);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1299,16 +1183,9 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // Envoyer la requete au RTI
     req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
-    req.object = theObject ;
-
-    req.handleArraySize = desired.size();
-
-    for (int i = 0 ; i < desired.size(); i++) {
-        req.handleArray[i] = desired.getHandle(i);
-        D.Out(pdTrace, "Objet %u Attribut %u", theObject, req.handleArray[i]);
-    }
+    req.setObject(theObject);
+    req.setAHS(desired);
 
     executeService(&req, &rep);
 }
@@ -1330,10 +1207,9 @@ queryAttributeOwnership(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTIA/RTIG
     req.type = QUERY_ATTRIBUTE_OWNERSHIP ;
-    req.object = theObject ;
-    req.attribute = theAttribute ;
+    req.setObject(theObject);
+    req.setAttribute(theAttribute);
 
     executeService(&req, &rep);
 }
@@ -1353,10 +1229,9 @@ RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTIA
     req.type = IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
-    req.object = theObject ;
-    req.attribute = theAttribute ;
+    req.setObject(theObject);
+    req.setAttribute(theAttribute);
 
     executeService(&req, &rep);
 
@@ -1388,7 +1263,8 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
 
     // envoyer la requete au RTI
     req.type = ENABLE_TIME_REGULATION ;
-    req.boolean = RTI_TRUE ;
+    req.setBoolean(RTI_TRUE);
+
     executeService(&req, &rep);
 }
 
@@ -1408,7 +1284,7 @@ RTIambassador::disableTimeRegulation(void)
 
     // envoyer la requete au RTI
     req.type = DISABLE_TIME_REGULATION ;
-    req.boolean = RTI_FALSE ;
+    req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
 }
 
@@ -1429,7 +1305,7 @@ RTIambassador::enableTimeConstrained(void)
 
     // envoyer la requete au RTI
     req.type = ENABLE_TIME_CONSTRAINED ;
-    req.boolean = RTI_TRUE ;
+    req.setBoolean(RTI_TRUE);
     executeService(&req, &rep);
 }
 
@@ -1448,7 +1324,7 @@ RTIambassador::disableTimeConstrained(void)
 
     // envoyer la requete au RTI
     req.type = DISABLE_TIME_CONSTRAINED ;
-    req.boolean = RTI_FALSE ;
+    req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
 }
 
@@ -1471,14 +1347,14 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
 
     // envoyer la requete au RTI
     req.type = TIME_ADVANCE_REQUEST ;
-    req.date = (FederationTime) (RTIfedTime(theTime)._fedTime);
+    req.setFedTime(theTime);
     executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // Time Advance Request Available
 void
-RTIambassador::timeAdvanceRequestAvailable(const FedTime& /*theTime*/)
+RTIambassador::timeAdvanceRequestAvailable(const FedTime& theTime)
     throw (InvalidFederationTime,
            FederationTimeAlreadyPassed,
            TimeAdvanceAlreadyInProgress,
@@ -1492,6 +1368,14 @@ RTIambassador::timeAdvanceRequestAvailable(const FedTime& /*theTime*/)
            UnimplementedService)
 {
     throw UnimplementedService();
+
+    Message req, rep ;
+
+    // envoyer la requete au RTI
+    req.type = TIME_ADVANCE_REQUEST_AVAILABLE ;
+    req.setFedTime(theTime);
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
@@ -1513,7 +1397,7 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
 
     // envoyer la requete au RTI
     req.type = NEXT_EVENT_REQUEST ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.setFedTime(theTime);
     executeService(&req, &rep);
 }
 
@@ -1538,7 +1422,7 @@ RTIambassador::nextEventRequestAvailable(const FedTime& theTime)
 
     // envoyer la requete au RTI
     req.type = NEXT_EVENT_REQUEST ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.setFedTime(theTime);
     executeService(&req, &rep);
 }
 
@@ -1561,7 +1445,7 @@ RTIambassador::flushQueueRequest(const FedTime& theTime)
     Message req, rep ;
 
     req.type = FLUSH_QUEUE_REQUEST ;
-    req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
+    req.setFedTime(theTime);
 
     executeService(&req, &rep);
 }
@@ -1673,8 +1557,8 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
 
     // envoyer la requete au RTI
     req.type = MODIFY_LOOKAHEAD ;
-    req.lookahead =
-        (FederationTimeDelta) ((RTIfedTime&) theLookahead).getTime();
+    req.setLookahead(theLookahead);
+
     executeService(&req, &rep);
 }
 
@@ -1701,7 +1585,7 @@ RTIambassador::queryLookahead(FedTime& theTime)
 // ----------------------------------------------------------------------------
 // Retract
 void
-RTIambassador::retract(EventRetractionHandle theHandle)
+RTIambassador::retract(EventRetractionHandle handle)
     throw (InvalidRetractionHandle,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -1714,7 +1598,7 @@ RTIambassador::retract(EventRetractionHandle theHandle)
     Message req, rep ;
 
     req.type = RETRACT ;
-    req.eventRetraction = theHandle ;
+    req.setEventRetraction(handle);
 
     executeService(&req, &rep);
 }
@@ -1737,24 +1621,11 @@ RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
            RTIinternalError)
 {
     Message req, rep ;
-    CAttributeHandleValuePairSet *attrs_aux ;
-    attrs_aux = new CAttributeHandleValuePairSet(attrs);
-    CAttributeHandleValuePair *tmp ;
 
-    OrderType theType_aux ;
-    theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
-
-    // Envoyer la requete au RTI
     req.type = CHANGE_ATTRIBUTE_ORDER_TYPE ;
-    req.object = theObject ;
-    req.order = theType_aux ;
-
-    req.handleArraySize = attrs_aux->_size ;
-
-    for (int i = 0 ; i < attrs_aux->_size ; i++) {
-        tmp = attrs_aux->getIeme(i);
-        req.handleArray[i] = tmp->_attrib ;
-    }
+    req.setObject(theObject);
+    req.setOrdering(theType);
+    req.setAHS(attrs);
 
     executeService(&req, &rep);
 }
@@ -1776,13 +1647,11 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 {
     Message req, rep ;
 
-    OrderType theType_aux ;
-    theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
-
     // envoyer la requete au RTI
     req.type = CHANGE_INTERACTION_ORDER_TYPE ;
-    req.interactionClass = theClass ;
-    req.order = theType_aux ;
+    req.setInteractionClass(theClass);
+    req.setOrdering(theType);
+
     executeService(&req, &rep);
 }
 
@@ -2125,7 +1994,7 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
     Message req, rep ;
 
     req.type = GET_OBJECT_CLASS_NAME ;
-    req.objectClass = handle ;
+    req.setObjectClass(handle);
 
     executeService(&req, &rep);
 
@@ -2146,10 +2015,9 @@ RTIambassador::getAttributeHandle(const char *theName,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = GET_ATTRIBUTE_HANDLE ;
-    req.setName((AttributeName) theName);
-    req.objectClass = whichClass ;
+    req.setName(theName);
+    req.setObjectClass(whichClass);
 
     executeService(&req, &rep);
 
@@ -2170,8 +2038,8 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
     Message req, rep ;
 
     req.type = GET_ATTRIBUTE_NAME ;
-    req.attribute = theHandle ;
-    req.objectClass = whichClass ;
+    req.setAttribute(theHandle);
+    req.setObjectClass(whichClass);
 
     executeService(&req, &rep); // Send request to RTI.
 
@@ -2189,7 +2057,6 @@ RTIambassador::getInteractionClassHandle(const char *theName)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = GET_INTERACTION_CLASS_HANDLE ;
     req.setName(theName);
 
@@ -2211,9 +2078,9 @@ RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
     Message req, rep ;
 
     req.type = GET_INTERACTION_CLASS_NAME ;
-    req.interactionClass = theHandle ;
+    req.setInteractionClass(theHandle);
 
-    executeService(&req, &rep); // Send request to RTI
+    executeService(&req, &rep);
 
     return strdup(rep.getName());
 }
@@ -2231,10 +2098,9 @@ RTIambassador::getParameterHandle(const char *theName,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = GET_PARAMETER_HANDLE ;
-    req.setName((ParameterName) theName);
-    req.interactionClass = whichClass ;
+    req.setName(theName);
+    req.setInteractionClass(whichClass);
 
     executeService(&req, &rep);
 
@@ -2255,10 +2121,10 @@ RTIambassador::getParameterName(ParameterHandle theHandle,
     Message req, rep ;
 
     req.type = GET_PARAMETER_NAME ;
-    req.parameter = theHandle ;
-    req.interactionClass = whichClass ;
+    req.setParameter(theHandle);
+    req.setInteractionClass(whichClass);
 
-    executeService(&req, &rep); // Send request to RTI.
+    executeService(&req, &rep);
 
     return strdup(rep.getName());
 }
@@ -2299,7 +2165,7 @@ RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
     Message req, rep ;
 
     req.type = GET_OBJECT_INSTANCE_NAME ;
-    req.object = theHandle ;
+    req.setObject(theHandle);
 
     executeService(&req, &rep);
 
@@ -2418,7 +2284,7 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
     Message req, rep ;
 
     req.type = GET_OBJECT_CLASS ;
-    req.object = theObject ;
+    req.setObject(theObject);
 
     executeService(&req, &rep);
 
@@ -2477,7 +2343,7 @@ RTIambassador::getTransportationName(TransportationHandle theHandle)
     Message req, rep ;
 
     req.type = GET_TRANSPORTATION_NAME ;
-    req.transportation = theHandle ;
+    req.setTransportation(theHandle);
 
     executeService(&req, &rep);
 
@@ -2520,7 +2386,7 @@ RTIambassador::getOrderingName(OrderingHandle theHandle)
     Message req, rep ;
 
     req.type = GET_ORDERING_NAME ;
-    req.ordering = theHandle ;
+    req.setOrdering(theHandle);
 
     executeService(&req, &rep);
 
@@ -2564,7 +2430,6 @@ RTIambassador::disableClassRelevanceAdvisorySwitch(void)
 
     executeService(&req, &rep);
 }
-
 
 // ----------------------------------------------------------------------------
 // Enable Attribute Relevance Advisory Switch
@@ -3816,4 +3681,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.24 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.25 2003/05/08 23:32:54 breholee Exp $

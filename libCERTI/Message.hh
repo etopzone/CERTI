@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.12 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message.hh,v 3.13 2003/05/08 23:32:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -34,6 +34,8 @@
 #include "MessageBody.hh"
 #include "Exception.hh"
 #include "PrettyDebug.hh"
+#include "GAV.hh"
+#include "fedtime.hh"
 
 namespace certi {
 
@@ -138,7 +140,7 @@ typedef enum {
     QUERY_LOOKAHEAD,
     RETRACT,
     REQUEST_RETRACTION,
-    TIME_ADVANCE_REQUEST, 
+    TIME_ADVANCE_REQUEST,
     TIME_ADVANCE_REQUEST_AVAILABLE,
     NEXT_EVENT_REQUEST,
     NEXT_EVENT_REQUEST_AVAILABLE,
@@ -255,7 +257,7 @@ typedef struct {
 } MessageHeader ;
 
 /*! The Message class is used to formalize messages that are going to be
-    exchanged between the RTI and the federate.
+  exchanged between the RTI and the federate.
 */
 class Message
 {
@@ -331,17 +333,32 @@ public:
 
     long getRegion(void) const { return region ; };
     void setRegion(long);
-    
+
     void setAttribute(AttributeHandle);
     AttributeHandle getAttribute(void) const { return attribute ; };
 
     void setInteractionClass(InteractionClassHandle);
-    InteractionClassHandle getInteractionClass(void) const { 
+    InteractionClassHandle getInteractionClass(void) const {
         return interactionClass ;
     };
 
     void setObjectClass(ObjectClassHandle);
     ObjectClassHandle getObjectClass(void) const { return objectClass ; };
+
+    void setResignAction(ResignAction);
+    void setFedTime(const FedTime&);
+    void setLookahead(const FedTime&);
+
+    void setBoolean(Boolean);
+    void setObject(ObjectHandle);
+    void setTransportation(TransportationHandle);
+    void setOrdering(OrderingHandle);
+    void setEventRetraction(EventRetractionHandle);
+    void setParameter(ParameterHandle);
+
+    void setAHS(const AttributeHandleSet &);
+    void setAHVPS(const AttributeHandleValuePairSet &);
+    void setPHVPS(const ParameterHandleValuePairSet &);
 
     // -----------------------
     // -- Public Attributes --
@@ -440,4 +457,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.12 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message.hh,v 3.13 2003/05/08 23:32:54 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: Message.cc,v 3.11 2003/05/08 23:32:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -187,10 +187,135 @@ Message::setAttribute(AttributeHandle handle)
     attribute = handle ;
 }
 
-// ----------------------
-// -- SetNomFederation --
-// ----------------------
+// ----------------------------------------------------------------------------
+void
+Message::setResignAction(ResignAction the_action)
+{
+    resignAction = the_action ;
+}
 
+// ----------------------------------------------------------------------------
+void
+Message::setFedTime(const FedTime &the_time)
+{
+    date = (FederationTime) (RTIfedTime(the_time)._fedTime);
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setLookahead(const FedTime& the_lookahead)
+{
+    lookahead = (FederationTimeDelta) ((RTIfedTime&) the_lookahead).getTime();
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setBoolean(Boolean the_bool)
+{
+    boolean = the_bool ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setObject(ObjectHandle the_object)
+{
+    object = the_object ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setTransportation(TransportationHandle the_transport)
+{
+    transport = ((the_transport == 1) ? RELIABLE : BEST_EFFORT);
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setOrdering(OrderingHandle the_ordering)
+{
+    order = ((the_ordering == 1) ? RECEIVE : TIMESTAMP);
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setEventRetraction(EventRetractionHandle the_event)
+{
+    eventRetraction = the_event ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setParameter(ParameterHandle the_parameter)
+{
+    parameter = the_parameter ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setAHS(const AttributeHandleSet &the_attributes)
+{
+    handleArraySize = the_attributes.size();
+
+    for (int i = 0 ; i < the_attributes.size(); i++) {
+        handleArray[i] = the_attributes.getHandle(i);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
+{
+    ULong length ;
+    CAttributeHandleValuePairSet *theAttributes_aux ;
+    theAttributes_aux = new CAttributeHandleValuePairSet(the_attributes);
+    CAttributeHandleValuePair *tmp ;
+
+    handleArraySize = theAttributes_aux->_size ;
+
+    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
+        tmp = theAttributes_aux->getIeme(i);
+        handleArray[i] = tmp->_attrib ;
+
+        // codage
+        getObjectToStringLength(tmp->_value.value,
+                                tmp->_value.length,
+                                length);
+        char *value = new char[length] ;
+        objectToString(tmp->_value.value, tmp->_value.length, value);
+        setValue(i, value);
+    }
+    delete theAttributes_aux ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setPHVPS(const ParameterHandleValuePairSet &the_parameters)
+{
+    ULong length ;
+    CParameterHandleValuePairSet *theParameters_aux ;
+    theParameters_aux = new CParameterHandleValuePairSet(the_parameters);
+    CParameterHandleValuePair *tmp ;
+
+    handleArraySize = theParameters_aux->_size ;
+
+    for (int i = 0 ; i < theParameters_aux->_size ; i++) {
+        tmp = theParameters_aux->getIeme(i);
+        handleArray[i] = tmp->_param ;
+
+        // codage
+        getObjectToStringLength(tmp->_value.value,
+                                tmp->_value.length,
+                                length);
+        char *value = new char[length] ;
+        objectToString(tmp->_value.value, tmp->_value.length, value);
+        setValue(i, value);
+    }
+
+    delete theParameters_aux ;
+}
+
+// ----------------------------------------------------------------------------
+//! Sets the federation name.
 void Message::setFederationName(const char *NewNomFederation)
 {
     if (strlen(NewNomFederation) > MAX_FEDERATION_NAME_LENGTH)
@@ -322,4 +447,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: Message.cc,v 3.11 2003/05/08 23:32:54 breholee Exp $
