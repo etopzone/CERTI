@@ -1,8 +1,18 @@
 #! /bin/sh
-# $Id: myconf,v 3.0 2002/11/21 01:27:51 breholee Exp $
+# $Id: myconf,v 3.1 2002/11/26 15:45:14 breholee Exp $
 
 case $1 in
-    sun) 
+    sun)
+	echo Sun CC Workshop6.0 Configuration ;
+	CC=cc ;
+	CXX=CC ;
+#	CXXFLAGS="-g -RTTI -features=no%conststrings -I/opt/SUNWspro/WS6U2/include/CC " ;
+	CXXFLAGS=" -g -I/opt/SUNWspro/WS6U2/include/CC" ;
+	LDFLAGS="-L/opt/SUNWspro/WS6U2/lib/CC4 -L/opt/SUNWspro/WS6U2/lib/CC4/libp -lC " ;
+	export CC CXX CXXFLAGS LDFLAGS
+	;;
+
+    sun-ws5)
 	echo Sun CC Workshop5.0 Configuration ;
 	CC=cc ;
 	CXX=CC ;
@@ -59,4 +69,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# EOF $Id: myconf,v 3.0 2002/11/21 01:27:51 breholee Exp $
+# EOF $Id: myconf,v 3.1 2002/11/26 15:45:14 breholee Exp $
