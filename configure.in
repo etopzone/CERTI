@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.4 2003/01/20 20:11:17 breholee Exp $ 
+## $Id: configure.in,v 3.5 2003/10/02 16:57:47 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 # ========== Init ============================================================
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.4 $)
+AC_REVISION($Revision: 3.5 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -64,18 +64,10 @@ else
     AC_MSG_WARN([Libxml2 not found])
 fi
 
-# ---------- GTK -------------------------------------------------------------
-dnl AM_PATH_GTK(
-dnl 	[1.0.6],
-dnl 	WITH_GTK="-DWITH_GTK"
-dnl 	AC_SUBST(WITH_GTK),
-dnl 	AC_MSG_WARN([GTK files not found])
-dnl )	
-
 # ========== Output ==========================================================
 AC_OUTPUT([Makefile include/Makefile libpdebug/Makefile
 libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
 test/Makefile test/include/Makefile test/libgraphc/Makefile
 test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.4 2003/01/20 20:11:17 breholee Exp $
+## $Id: configure.in,v 3.5 2003/10/02 16:57:47 breholee Exp $
