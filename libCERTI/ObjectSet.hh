@@ -152,10 +152,10 @@ public:
         throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested, RTIinternalError);
 
-protected:
     Object *getObject(ObjectHandle the_object) const
         throw (ObjectNotKnown);
 
+protected:    
     void sendToFederate(NetworkMessage *msg,
                         FederateHandle the_federate) const ;
 
