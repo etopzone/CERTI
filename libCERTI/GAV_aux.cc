@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.2 2002/11/27 12:56:47 breholee Exp $
+// $Id: GAV_aux.cc,v 3.3 2002/11/27 17:45:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,6 +48,10 @@ AttributeHandleValuePair::~AttributeHandleValuePair()
 //-----------------------------------------------------------------------
 // AttributeHandleValuePairSet
 //-----------------------------------------------------------------------
+AttributeHandleValuePairSet::~AttributeHandleValuePairSet()
+{
+  empty();
+}
 
 inline ULong 
 AttributeHandleValuePairSet::size() const
@@ -253,6 +257,10 @@ HandlePair::~HandlePair()
 //-----------------------------------------------------------------------
 // AttributeHandleSet
 //-----------------------------------------------------------------------
+AttributeHandleSet::~AttributeHandleSet()
+{
+  empty();
+}
 
 inline ULong 
 AttributeHandleSet::size() const
@@ -377,6 +385,10 @@ ParameterHandleValuePair::~ParameterHandleValuePair()
 //-----------------------------------------------------------------------
 // ParameterHandleValuePairSet
 //-----------------------------------------------------------------------
+ParameterHandleValuePairSet::~ParameterHandleValuePairSet()
+{
+  empty();
+}
 
 inline ULong 
 ParameterHandleValuePairSet::size() const
@@ -571,4 +583,4 @@ ParameterSetFactory::create(ULong)
 
 }
 
-// $Id: GAV_aux.cc,v 3.2 2002/11/27 12:56:47 breholee Exp $
+// $Id: GAV_aux.cc,v 3.3 2002/11/27 17:45:33 breholee Exp $
