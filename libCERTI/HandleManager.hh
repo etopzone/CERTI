@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 1.3 2004/05/18 13:18:53 breholee Exp $
+// $Id: HandleManager.hh,v 1.2.2.1 2004/06/27 00:52:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
 #define LIBCERTI_HANDLE_MANAGER
 
-#include "certi.hh"
+#include "RTItypes.hh"
 
 #include <limits>
 
@@ -75,14 +75,14 @@ T
 HandleManager<T>::provide()
     throw (RTIinternalError)
 {
-    T handle ;
+    T handle = 0 ;
 
     if (available.size() > 0) {
 	handle = available.front();
 	available.pop_front();
     }
     else {
-	if (handle < maximum)
+	if (highest < maximum)
 	    handle = highest++ ;
 	else
 	    throw RTIinternalError("Maximum handle reached");
