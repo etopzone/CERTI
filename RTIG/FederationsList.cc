@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.24 2004/05/17 21:19:19 breholee Exp $
+// $Id: FederationsList.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,7 +30,7 @@ using std::endl ;
 namespace certi {
 namespace rtig {
 
-static pdCDebug D("FEDERATIONSLIST", "(ListFede) - ");
+static PrettyDebug D("FEDERATIONSLIST", __FILE__);
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -1049,13 +1049,15 @@ FederationsList::associateRegion(Handle federation,
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError)
 {
+    D[pdDebug] << "Associate region " << region << " for updates." << endl ;
+    D[pdDebug] << "F°:" << federation << ", F:" << federate << endl ;
+
     Federation *f = 0 ;
 
     searchFederation(federation, f);
+
     checkHandle(federation);
     checkHandle(federate);
-
-    D[pdDebug] << "Associate region for updates " << region << endl ;
 
     f->associateRegion(federate, object, region, nb_attributes, attributes);
 }
@@ -1239,5 +1241,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.24 2004/05/17 21:19:19 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.2 2003/11/13 10:35:19 breholee Exp $
+// $Id: BasicMessage.hh,v 3.3 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -27,8 +27,10 @@
 
 #include "Extent.hh"
 #include "MessageBody.hh"
-
+#include "RegionImp.hh"
 #include <vector>
+
+class RegionImp ;
 
 namespace certi {
 
@@ -42,15 +44,23 @@ public:
     void setExtents(const std::vector<Extent> &);
     const std::vector<Extent> &getExtents() const ;
 
+    void setRegions(const RegionImp **, int);
+    void setRegions(const std::vector<RegionHandle> &);
+    const std::vector<RegionHandle> &getRegions() const ;
+
 protected:
     void readExtents(const MessageBody &);
     void writeExtents(MessageBody &) const ;
 
+    void readRegions(const MessageBody &body);
+    void writeRegions(MessageBody &body);
+
     std::vector<Extent> extents ;
+    std::vector<RegionHandle> regions ;
 };
 
 } // namespace certi
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.2 2003/11/13 10:35:19 breholee Exp $
+// $Id: BasicMessage.hh,v 3.3 2004/08/24 18:25:05 breholee Exp $

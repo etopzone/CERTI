@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.23 2004/01/09 16:09:55 breholee Exp $
+// $Id: Message.hh,v 3.24 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -320,7 +320,6 @@ public:
     };
 
     void setObjectClass(ObjectClassHandle);
-
     ObjectClassHandle getObjectClass() const { return objectClass ; };
 
     void setResignAction(ResignAction);
@@ -367,8 +366,6 @@ public:
     AttributeHandleSet* getAHS() const ;
     void setAHS(const AttributeHandleSet &);
     void setAHS(const AttributeHandle *, int);
-
-    void setRegions(const RegionImp **, int);
 
     AttributeHandleValuePairSet* getAHVPS() const ;
     void setAHVPS(const AttributeHandleValuePairSet &);
@@ -465,6 +462,7 @@ private:
     void writeResignAction(MessageBody *Body);
     void writeValueArray(MessageBody *Body);
 
+
     // ------------------------
     // -- Private Attributes --
     // ------------------------
@@ -476,11 +474,10 @@ private:
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
     AttributeValue valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
-    std::vector<RegionHandle> regions ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.23 2004/01/09 16:09:55 breholee Exp $
+// $Id: Message.hh,v 3.24 2004/08/24 18:25:05 breholee Exp $

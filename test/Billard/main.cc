@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.6 2004/04/17 21:21:27 breholee Exp $
+// $Id: main.cc,v 3.7 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "Billard.hh"
-//#include "BillardDDM.hh"
+#include "BillardDDM.hh"
 #include "Display.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
@@ -84,7 +84,8 @@ main(int argc, char **argv)
 
 	// Command line
 	gengetopt_args_info args ;
-	if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
+	if (cmdline_parser(argc, argv, &args))
+	    exit(EXIT_FAILURE);
 
 	bool verbose = args.verbose_flag ;
 
@@ -109,9 +110,9 @@ main(int argc, char **argv)
 
 	// Display...
 	Display *display = Display::instance();
-	int y_default = 10 + (handle - 1) * (display->getHeight() + 20);
+	int y_default = 25 + (handle - 1) * (display->getHeight() + 20);
 	display->setWindow(
-	    args.xoffset_given ? args.xoffset_arg : 10,
+	    args.xoffset_given ? args.xoffset_arg : 400,
 	    args.yoffset_given ? args.yoffset_arg : y_default);
 
 	// Continue initialisation...
@@ -236,11 +237,12 @@ createBillard(bool demo, const char *s_demo, string name)
 {
     if (demo) {
 	D[pdDebug] << "Create billard " << s_demo << endl ;
-	// if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
+	if (!strcmp(s_demo, "DDM"))
+	    return new BillardDDM(name);
 	cout << "unknown keyword: " << s_demo << endl ;
     }
     
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.6 2004/04/17 21:21:27 breholee Exp $
+// EOF $Id: main.cc,v 3.7 2004/08/24 18:25:05 breholee Exp $

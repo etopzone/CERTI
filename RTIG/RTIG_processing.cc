@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.22 2004/05/17 21:14:59 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,7 +31,7 @@ using std::endl ;
 namespace certi {
 namespace rtig {
 
-static pdCDebug D("RTIG", "(RTIG)- ");
+static PrettyDebug D("RTIG", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! Creates a new federation.
@@ -912,13 +912,13 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations.associateRegion(req->federation, req->federate, req->object,
-				 req->region, req->handleArraySize,
-				 req->handleArray);
-
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " associates region " << req->region
                << " to some attributes of object " << req->object << endl ;
+
+    federations.associateRegion(req->federation, req->federate, req->object,
+				 req->region, req->handleArraySize,
+				 req->handleArray);
 
     NetworkMessage rep ;
     rep.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
@@ -954,14 +954,13 @@ void
 RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " subscribes with region " << req->region
+               << " to some attributes of class " << req->objectClass << endl ;
 
     federations.subscribeAttributesWR(req->federation, req->federate,
 				       req->objectClass, req->region,
 				       req->handleArraySize, req->handleArray);
-
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
-               << req->federation << " subscribes with region " << req->region
-               << " to some attributes of class " << req->objectClass << endl ;
 
     NetworkMessage rep ;
     rep.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
@@ -976,13 +975,12 @@ void
 RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
-
-    federations.unsubscribeAttributesWR(req->federation, req->federate,
-					 req->objectClass, req->region);
-
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " unsubscribes with region " << req->region
                << " from object class " << req->objectClass << endl ;
+
+    federations.unsubscribeAttributesWR(req->federation, req->federate,
+					 req->objectClass, req->region);
 
     NetworkMessage rep ;
     rep.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
@@ -1035,4 +1033,4 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.22 2004/05/17 21:14:59 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $

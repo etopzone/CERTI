@@ -18,13 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: Billard.cc,v 3.8 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
 
 #include <config.h>
-#include "Objects.hh"
 #include "PrettyDebug.hh"
 
 #include <unistd.h>
@@ -32,17 +31,26 @@
 using std::string ;
 using std::endl ;
 using std::cout ;
+using std::vector ;
 
 static pdCDebug D("BILLARD", __FILE__);
 
 /** Constructor
  */
 Billard::Billard(string federate_name)
-    : rtiamb(), objects(rtiamb, *this, 500, 100),
+    : rtiamb(),
+      local(0),
       federateName(federate_name),
-      handle(0), creator(false), nbTicks(0),
-      regulating(false), constrained(false), localTime(0.0), TIME_STEP(1.0),
-      XMAX(500), YMAX(100) { }
+      handle(0),
+      creator(false),
+      nbTicks(0),
+      regulating(false),
+      constrained(false),
+      localTime(0.0),
+      TIME_STEP(1.0),
+      XMAX(500),
+      YMAX(100)
+{ }
 
 /** Destructor
  */
@@ -315,7 +323,7 @@ Billard::synchronize(int autostart)
 void
 Billard::init(int seed)
 {
-    objects.init(seed);
+    local.init(seed);
 }
 
 // ----------------------------------------------------------------------------
@@ -326,7 +334,7 @@ Billard::init(int seed)
 void
 Billard::init(int x, int y)
 {
-    objects.init(x, y);
+    local.init(x, y);
 }
 
 // ----------------------------------------------------------------------------
@@ -335,8 +343,7 @@ Billard::init(int x, int y)
 void
 Billard::declare()
 {
-    // only objects in this class
-    objects.declare(federateName);
+    local.ID = registerBallInstance(federateName.c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -383,10 +390,48 @@ Billard::step()
 
     RTIfedTime next_step(localTime + TIME_STEP);
 
-    objects.erase();
-    objects.step(next_step);
-    objects.display();
-    objects.update(next_step);
+    local.erase();
+
+    vector<Ball>::iterator it ;
+
+    for (it = remote.begin(); it != remote.end(); ++it) {
+        if (it->ID != 0 && local.collision(&(*it))) {
+            sendInteraction(local.dx, local.dy, next_step, it->ID);
+            // On prend la vitesse de l'autre sauf dans le cas ou
+            // on avait deja la meme. Dans ce cas, on inverse la notre.
+            if ((local.dx == it->dx) && (local.dy == it->dy)) {
+                local.dx = -local.dx ;
+                local.dy = -local.dy ;
+            }
+            else
+                local.setDirection(it->dx, it->dy);
+        }
+        D.Out(pdTrace, "no collision.");
+    }
+
+    // Teste la collision avec le bord
+    local.collision(XMAX, YMAX);
+    D.Out(pdTrace, "Border collisions...");
+
+    local.x += local.dx ;
+    local.y += local.dy ;
+
+    local.display();
+
+    checkRegions();
+
+    sendUpdate(local.x, local.y, (int) local.color, next_step, local.ID);
+
+    D.Out(pdTrace, "fin tour de boucle.");
+}
+
+// ----------------------------------------------------------------------------
+/** Check 
+ */
+void
+Billard::checkRegions()
+{
+    // Nothing, in this default demo
 }
 
 // ----------------------------------------------------------------------------
@@ -395,7 +440,14 @@ Billard::step()
 void
 Billard::resign()
 {
-    objects.destroy(localTime);
+    try {
+        rtiamb.deleteObjectInstance(local.ID, localTime, "DO");
+        D.Out(pdRegister, "Local object deleted from federation.");
+    }
+    catch (Exception &e) {
+        D.Out(pdExcept, "**** Exception delete object : %d", &e);
+    }
+
     D.Out(pdTerm, "Local objects deleted.");
 
     setTimeRegulation(false, false);
@@ -459,7 +511,7 @@ Billard::publishAndSubscribe()
     rtiamb.publishInteractionClass(BingClassID);
 
     AttributeSet->empty();
-
+    delete AttributeSet ;
     D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
 }
 
@@ -616,7 +668,9 @@ Billard::discoverObjectInstance(ObjectHandle theObject,
         D.Out(pdError, "Object of Unknown Class discovered.");
         throw RTIinternalError();
     }
-    objects.discover(theObject);
+    
+    cout << "Discovered object " << theObject << endl ;
+    remote.push_back(Ball(theObject));
 }
 
 // ----------------------------------------------------------------------------
@@ -720,7 +774,10 @@ Billard::receiveInteraction(InteractionClassHandle theInteraction,
                 }
     }
     if (bille) {
-        objects.receive(h1, dx1, dy1);
+	if (h1 == local.ID) {
+	    local.dx = dx1 ;
+	    local.dy = dy1 ;
+	}
     }
 }
 
@@ -747,10 +804,8 @@ Billard::reflectAttributeValues(
     ULong valueLength ;
     char *attrValue ;
 
-
     D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
           theAttributes.size());
-
 
     for (unsigned int j=0 ; j<theAttributes.size(); j++) {
 
@@ -779,7 +834,28 @@ Billard::reflectAttributeValues(
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
 
-    objects.reflect(theObject, (int) x1, (int) y1);
+    vector<Ball>::iterator it ;
+
+    for (it = remote.begin(); it != remote.end(); ++it) {
+        if (it->ID == theObject)
+            break ;
+    }
+
+    if (it == remote.end())
+        D.Out(pdError, "Fed: error, id not found (%d).", theObject);
+    else {
+        it->erase();
+
+        float oldx = it->x ;
+        it->x = x1 ;
+        it->dx = it->x - oldx ;
+
+        float oldy = it->y ;
+        it->y = y1 ;
+        it->dy = it->y - oldy ;
+
+        it->display();
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -792,7 +868,15 @@ Billard::removeObjectInstance(ObjectHandle theObject,
                           EventRetractionHandle)
     throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError)
 {
-    objects.remove(theObject);
+    vector<Ball>::iterator it ;
+
+    for (it = remote.begin(); it != remote.end(); ++it) {
+        if (it->ID == theObject) {
+            it->erase();
+            remote.erase(it);
+            return ;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -806,4 +890,4 @@ Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: Billard.cc,v 3.8 2004/08/24 18:25:05 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.18 2004/01/09 16:09:55 breholee Exp $
+// $Id: Message_RW.cc,v 3.19 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -146,6 +146,15 @@ Message::readBody(SocketUN *socket)
             readHandleArray(&Body);
 	    break ;
 
+	  case DDM_REGISTER_OBJECT:
+	    objectClass = Body.readLongInt();
+	    object = Body.readLongInt();
+	    readTag(&Body);
+	    handleArraySize = Body.readShortInt();
+            readHandleArray(&Body);
+	    readRegions(Body);
+	    break ;
+
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    objectClass = Body.readLongInt();
 	    region = Body.readLongInt();
@@ -160,7 +169,7 @@ Message::readBody(SocketUN *socket)
 	    break ;
 
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:	    
-	    object = Body.readLongInt();
+	    objectClass = Body.readLongInt();
 	    region = Body.readLongInt();
 	    break ;
 
@@ -359,6 +368,7 @@ Message::readHeader(SocketUN *socket)
       case DDM_UNSUBSCRIBE_ATTRIBUTES:
       case DDM_SUBSCRIBE_INTERACTION:
       case DDM_UNSUBSCRIBE_INTERACTION:
+      case DDM_REGISTER_OBJECT:
         break ;
 
         // --- MessageJ_R_Struct --
@@ -689,6 +699,15 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
 	    break ;
 
+	  case DDM_REGISTER_OBJECT:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(object);
+	    Body.writeString(tag);
+            Body.writeShortInt(handleArraySize);
+            writeHandleArray(&Body);
+	    writeRegions(Body);
+	    break ;
+
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    Body.writeLongInt(objectClass);
 	    Body.writeLongInt(region);
@@ -923,6 +942,7 @@ Message::writeHeader(SocketUN *socket)
       case DDM_UNSUBSCRIBE_ATTRIBUTES:
       case DDM_SUBSCRIBE_INTERACTION:
       case DDM_UNSUBSCRIBE_INTERACTION:
+      case DDM_REGISTER_OBJECT:
         header.bodySize = 1 ;
         break ;
 
@@ -1107,7 +1127,7 @@ Message::writeHeader(SocketUN *socket)
 void
 Message::writeResignAction(MessageBody*)
 {
-    // BUG: Should do something.
+    assert(false);
 }
 
 
@@ -1125,4 +1145,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.18 2004/01/09 16:09:55 breholee Exp $
+// $Id: Message_RW.cc,v 3.19 2004/08/24 18:25:05 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.16 2004/01/09 16:13:49 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.17 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -164,6 +164,7 @@ public:
         DDM_MODIFY_REGION,
         DDM_DELETE_REGION,
         DDM_ASSOCIATE_REGION,
+	DDM_REGISTER_OBJECT,
 	DDM_UNASSOCIATE_REGION,
 	DDM_SUBSCRIBE_ATTRIBUTES,
 	DDM_UNSUBSCRIBE_ATTRIBUTES,
@@ -342,4 +343,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.16 2004/01/09 16:13:49 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.17 2004/08/24 18:25:05 breholee Exp $

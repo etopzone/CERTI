@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.15 2004/01/09 16:13:49 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -231,7 +231,7 @@ NetworkMessage::readBody(Socket *socket)
 	    break ;
 
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:	    
-	    object = Body.readLongInt();
+	    objectClass = Body.readLongInt();
 	    region = Body.readLongInt();
 	    break ;
 
@@ -919,4 +919,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.15 2004/01/09 16:13:49 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $

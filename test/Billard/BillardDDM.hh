@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,51 +18,40 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.hh,v 3.3 2003/10/27 10:51:39 breholee Exp $
+// $Id: BillardDDM.hh,v 3.7 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef BILLARD_OBJECTS_HH
-#define BILLARD_OBJECTS_HH
+#ifndef CERTI_BILLARD_DDM_HH
+#define CERTI_BILLARD_DDM_HH
 
-#include "Ball.hh"
-#include "ColoredBall.hh"
+#include "RTI.hh"
+#include "BillardNull.hh"
+#include "Billard.hh"
 
-#include <RTI.hh>
-
-#include <vector>
-#include <string>
-
-class Billard ;
-
-class Objects
-{
-public:
-    Objects(RTIambassador &, Billard &, int, int);
-
-    void declare(std::string);
-    void destroy(const FedTime &);
-    void discover(ObjectHandle);
-    void display();
-    void erase();
-    void init(int);
-    void init(int, int);
-    void receive(ObjectClassHandle, int, int);
-    void remove(ObjectHandle);
-    void reflect(ObjectHandle, int, int);
-    void step(RTIfedTime &);
-    void update(RTIfedTime &);
-
-private:
-    RTI::RTIambassador &rtiamb ;
-    Billard &billard ;
-
-    ColoredBall local ;
-    std::vector<Ball> remote ;
-
-    const int XMAX ;
-    const int YMAX ;
+struct Area {
+    Region *region ;
+    long x ;
+    long y ;
+    long size ;
 };
 
-#endif // BILLARD_OBJECTS_HH
+class BillardDDM : public Billard
+{
+public:
+    BillardDDM(std::string);
+    virtual ~BillardDDM();
 
-// $Id: Objects.hh,v 3.3 2003/10/27 10:51:39 breholee Exp $
+    virtual void checkRegions();
+    virtual void declare();
+    virtual void publishAndSubscribe();
+
+protected:
+    std::vector<Area> regions ;
+    int subRegion ;
+    int pubRegion ;
+    SpaceHandle GeoID ;
+};
+
+#endif // CERTI_BILLARD_DDM_HH
+
+// $Id: BillardDDM.hh,v 3.7 2004/08/24 18:25:05 breholee Exp $

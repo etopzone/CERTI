@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.13 2003/11/10 14:28:18 breholee Exp $
+// $Id: DataDistribution.hh,v 3.14 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -66,6 +66,11 @@ public:
 			 int, TypeException &)
 	throw (RegionNotKnown);
 
+    ObjectHandle registerObject(ObjectClassHandle, const std::string,
+				const AttributeHandle *, int,
+				const std::vector<RegionHandle>,
+				TypeException &);
+
     void unassociateRegion(ObjectHandle, RegionHandle, TypeException &e)
 	throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown);
 
@@ -76,7 +81,8 @@ public:
     void unsubscribeAttributes(ObjectClassHandle, RegionHandle, TypeException &)
 	throw (RegionNotKnown);
 
-    void subscribe(InteractionClassHandle, RegionHandle, TypeException &)
+    void subscribeInteraction(InteractionClassHandle, RegionHandle,
+			      TypeException &)
 	throw (RegionNotKnown);
 
     void unsubscribeInteraction(InteractionClassHandle, RegionHandle,
@@ -93,4 +99,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.13 2003/11/10 14:28:18 breholee Exp $
+// $Id: DataDistribution.hh,v 3.14 2004/08/24 18:25:05 breholee Exp $

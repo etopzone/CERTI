@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.8 2004/03/04 20:19:05 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -146,7 +146,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
     Message req, rep ;
 
     req.setType(Message::DDM_REGISTER_OBJECT);
-    req.setObject(object);
+    req.setObjectClass(object);
     req.setTag(tag);
     req.setAHS(attrs, nb);
     RegionImp *r = dynamic_cast<RegionImp *>(regions[0]);
@@ -208,14 +208,17 @@ RTIambassador::associateRegionForUpdates(Region &region,
            RestoreInProgress,
            RTIinternalError)
 {
-    Message req, rep ;
+    D[pdDebug] << "+ Associate Region for Updates" << endl ;
 
+    Message req, rep ;
+    
     req.type = Message::DDM_ASSOCIATE_REGION ;
     req.setObject(object);
     req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
     req.setAHS(attributes);
 
     executeService(&req, &rep);
+    D[pdDebug] << "- Associate Region for Updates" << endl ;
 }
 
 /** Unassociate region for updates. Make attributes of an object be updated
@@ -236,6 +239,7 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
            RestoreInProgress,
            RTIinternalError)
 {
+    D[pdDebug] << "+ Unassociate Region for Updates" << endl ;
     Message req, rep ;
 
     req.type = Message::DDM_UNASSOCIATE_REGION ;
@@ -243,6 +247,7 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
     req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
 
     executeService(&req, &rep);
+    D[pdDebug] << "- Unassociate Region for Updates" << endl ;
 }
 
 /** Subscribe object class attributes with region.
@@ -267,6 +272,7 @@ RTIambassador::subscribeObjectClassAttributesWithRegion(
            RestoreInProgress,
            RTIinternalError)
 {
+    D[pdDebug] << "+ Subscribe Object Class Attributes with Region" << endl ;
     Message req, rep ;
 
     req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
@@ -276,6 +282,7 @@ RTIambassador::subscribeObjectClassAttributesWithRegion(
     req.setBoolean(passive);
 
     executeService(&req, &rep);
+    D[pdDebug] << "- Subscribe Object Class Attributes with Region" << endl ;
 }
 
 /** Unsubscribe object class attributes with region.
@@ -295,6 +302,8 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
            RestoreInProgress,
            RTIinternalError)
 {
+    D[pdDebug] << "+ Unsubscribe Object Class " << object_class
+	       << " with Region" << endl ;
     Message req, rep ;
 
     req.type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES ;
@@ -302,6 +311,7 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
     req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
 
     executeService(&req, &rep);
+    D[pdDebug] << "- Unsubscribe Object Class with Region" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -441,4 +451,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.8 2004/03/04 20:19:05 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $

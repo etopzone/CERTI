@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.27 2003/11/13 10:52:20 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.28 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -682,8 +682,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 			     req->handleArray, req->handleArraySize, e);
 	break ;
 
+      case Message::DDM_REGISTER_OBJECT:
+	D[pdTrace] << "Receiving Message from Federate: Register with Region"
+		   << endl ;
+	rep.setObject(ddm->registerObject(req->getObjectClass(),
+					  req->getName(),
+					  req->handleArray,
+					  req->handleArraySize,
+					  req->getRegions(),
+					  e));
+	break ;
+
       case Message::DDM_UNASSOCIATE_REGION:
-	D[pdTrace] << "Receiving Message from Federate: Associate Region"
+	D[pdTrace] << "Receiving Message from Federate: Unassociate Region"
 		   << endl ;
 	ddm->unassociateRegion(req->getObject(), req->getRegion(), e);
 	break ;
@@ -696,15 +707,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 	break ;
 
       case Message::DDM_UNSUBSCRIBE_ATTRIBUTES:
-	D[pdTrace] << "Receiving Message from Federate: Unsubscribe Attributes"
-		   << endl ;
+	D[pdTrace] << "Receiving Message from Federate: Unsubscribe class "
+		   << req->getObjectClass() << endl ;
 	ddm->unsubscribeAttributes(req->getObjectClass(), req->getRegion(), e);
 	break ;
 
       case Message::DDM_SUBSCRIBE_INTERACTION:
 	D[pdTrace] << "Receiving Message from Federate: Subscribe Interaction"
 		   << endl ;
-	ddm->subscribe(req->getInteractionClass(), req->getRegion(), e);
+	ddm->subscribeInteraction(req->getInteractionClass(),
+				  req->getRegion(), e);
 	break ;
 
       case Message::DDM_UNSUBSCRIBE_INTERACTION:
@@ -1088,4 +1100,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.27 2003/11/13 10:52:20 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.28 2004/08/24 18:25:05 breholee Exp $

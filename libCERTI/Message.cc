@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.24 2004/05/18 13:18:53 breholee Exp $
+// $Id: Message.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -322,17 +322,6 @@ Message::setAHS(const AttributeHandle *attr, int size)
 }
 
 // ----------------------------------------------------------------------------
-void
-Message::setRegions(const RegionImp **reg, int size)
-{
-    regions.resize(size);
-    
-    for (int i = 0 ; i < size ; ++i) {
-        regions[i] = reg[i]->getHandle();
-    }
-}
-
-// ----------------------------------------------------------------------------
 AttributeHandleValuePairSet*
 Message::getAHVPS() const
 {
@@ -617,4 +606,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.24 2004/05/18 13:18:53 breholee Exp $
+// $Id: Message.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.38 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.cc,v 3.39 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1524,9 +1524,9 @@ Federation::subscribeAttributesWR(FederateHandle federate,
 				  unsigned short nb,
 				  AttributeHandle *attributes)
     throw (RegionNotKnown,
-	       SaveInProgress,
-	       RestoreInProgress,
-	       RTIinternalError)
+	   SaveInProgress,
+	   RestoreInProgress,
+	   RTIinternalError)
 {
     check(federate);
 
@@ -1534,7 +1534,10 @@ Federation::subscribeAttributesWR(FederateHandle federate,
     
     root->getObjectClass(c)->unsubscribe(federate, r);
     for (int i = 0 ; i < nb ; ++i) {
-	root->getObjectClassAttribute(c, attributes[i])->subscribe(federate, r);
+	D[pdDebug] << "Class " << c << " attribute " << i << ": "
+		   << attributes[i] << endl ;
+	root->getObjectClass(c)->getAttributeWithHandle(
+	    attributes[i])->subscribe(federate, r);
     } 
 }
 
@@ -1714,5 +1717,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.38 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.cc,v 3.39 2004/08/24 18:25:05 breholee Exp $
 

@@ -18,17 +18,18 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.5 2003/12/01 16:41:54 breholee Exp $
+// $Id: Billard.hh,v 3.6 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
 #define CERTI_BILLARD_HH
 
 #include "RTI.hh"
-#include "Objects.hh"
 #include "BillardNull.hh"
+#include "Ball.hh"
+#include "ColoredBall.hh"
 
-#include <string>
+#include <vector>
 
 // Classes
 #define CLA_BILLE "Bille"
@@ -62,11 +63,12 @@ public:
     virtual void declare();
     void join(std::string, std::string);
     void pause();
-    void publishAndSubscribe();
+    virtual void publishAndSubscribe();
     void resign();
     void setTimeRegulation(bool, bool);
     void setVerbose(bool flag) { verbose = flag ; }
     void step();
+    virtual void checkRegions();
     void synchronize(int);
     void tick();
 
@@ -114,10 +116,11 @@ public:
     void sendUpdate(double, double, int, const FedTime &, ObjectHandle);
 
 protected:
-    void getHandles();
+    virtual void getHandles();
  
     RTIambassador rtiamb ;
-    Objects objects ;
+    ColoredBall local ;
+    std::vector<Ball> remote ;
 
     std::string federateName ;
     std::string federationName ;
@@ -133,6 +136,7 @@ protected:
 
     const int XMAX ;
     const int YMAX ;
+
     bool paused ;
     bool granted ;
     bool verbose ;
@@ -147,9 +151,8 @@ protected:
     ParameterHandle ParamDXID ;
     ParameterHandle ParamDYID ;
     ParameterHandle ParamBoulID ;
-    SpaceHandle GeoID ;
 };
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.5 2003/12/01 16:41:54 breholee Exp $
+// $Id: Billard.hh,v 3.6 2004/08/24 18:25:05 breholee Exp $

@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.3 2004/03/04 19:38:21 breholee Exp $
+// $Id: BasicMessage.cc,v 3.4 2004/08/24 18:25:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
+#include "RegionImp.hh"
 #include "PrettyDebug.hh"
 
 #include <cassert>
@@ -107,6 +108,51 @@ BasicMessage::readExtents(const MessageBody &body)
     }
 }
 
+// ----------------------------------------------------------------------------
+void
+BasicMessage::writeRegions(MessageBody &body)
+{
+    long n = regions.size();
+    for (int i = 0 ; i < n ; ++i) {
+	body.writeLongInt(regions[i]);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+BasicMessage::readRegions(const MessageBody &body)
+{
+    long n = body.readLongInt();
+    regions.clear();
+    for (int i = 0; i < n; ++i) {
+	regions.push_back(body.readLongInt());
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+BasicMessage::setRegions(const RegionImp **reg, int size)
+{
+    regions.resize(size);
+    
+    for (int i = 0 ; i < size ; ++i) {
+        regions[i] = reg[i]->getHandle();
+    }
+}
+
+void
+BasicMessage::setRegions(const std::vector<RegionHandle> &src)
+{
+    regions = src ;
+}
+
+// ----------------------------------------------------------------------------
+const std::vector<RegionHandle> &
+BasicMessage::getRegions() const
+{
+    return regions ;
+}
+
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.3 2004/03/04 19:38:21 breholee Exp $
+// $Id: BasicMessage.cc,v 3.4 2004/08/24 18:25:05 breholee Exp $
