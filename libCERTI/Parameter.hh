@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: Parameter.hh,v 3.4 2003/10/27 10:16:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_PARAMETER_HH
@@ -32,16 +32,13 @@ namespace certi {
 
 class Parameter
 {
-
-    // ATTRIBUTES ------------------------------------------------------------
 public:
-    ParameterHandle Handle ;
     SecurityLevelID LevelID ;
 
 private:
+    ParameterHandle Handle ;
     ParameterName Name ; // The Name is always locally allocated and deleted.
 
-    // METHODS ---------------------------------------------------------------
 public:
     Parameter() { Name = NULL ; LevelID = PublicLevelID ; };
     Parameter(Parameter *Init) {
@@ -62,13 +59,15 @@ public:
     // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
     char *getName() {return Name ; };
 
-    void setName(char *NewName)
+    void setName(const char *NewName)
         throw (ValueLengthExceeded, RTIinternalError);
 
+    void setHandle(ParameterHandle p) { Handle = p ; }
+    ParameterHandle getHandle() const { return Handle ; }
 };
 
 }
 
 #endif // _CERTI_PARAMETER_HH
 
-// $Id: Parameter.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: Parameter.hh,v 3.4 2003/10/27 10:16:36 breholee Exp $

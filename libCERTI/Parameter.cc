@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: Parameter.cc,v 3.5 2003/10/27 10:16:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -65,8 +65,8 @@ void Parameter::display(void)
 // -------------
 // -- SetName --
 // -------------
-
-void Parameter::setName(char *NewName)
+void
+Parameter::setName(const char *NewName)
     throw (ValueLengthExceeded, RTIinternalError)
 {
     // Check Length
@@ -86,4 +86,4 @@ void Parameter::setName(char *NewName)
 
 }
 
-// $Id: Parameter.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: Parameter.cc,v 3.5 2003/10/27 10:16:36 breholee Exp $
