@@ -17,13 +17,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.1 2005/04/02 15:41:04 breholee Exp $
+// $Id: Subscribable.hh,v 3.2 2005/04/05 20:04:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
 #define CERTI_SUBSCRIBABLE_HH
 
 #include "Subscriber.hh"
+#include "ObjectClassBroadcastList.hh"
+#include "InteractionBroadcastList.hh"
 
 #include <list>
 
@@ -45,30 +47,15 @@ public:
     void unsubscribe(FederateHandle);
     void unsubscribe(FederateHandle, const RTIRegion *);
 
-    template <class T> void addFederatesIfOverlap(T &, const RTIRegion *, Handle) const ;
+    void addFederatesIfOverlap(ObjectClassBroadcastList &, const RTIRegion *, Handle) const ;
+    void addFederatesIfOverlap(InteractionBroadcastList &, const RTIRegion *) const ;
 
 private:
     std::list<Subscriber> subscribers ;
 };
 
-// ----------------------------------------------------------------------------
-/** Add federates and associated subscribable object handle to a broadcast list.
-    @param lst Broadcast list where federates/handles should be added
-    @param region Region to check for overlap
-    @param handle Handle of this object (Subscribable subclass)
- */
-template <class T> void
-Subscribable::addFederatesIfOverlap(T &lst, const RTIRegion *region, Handle handle) const
-{
-    std::list<Subscriber>::const_iterator it = subscribers.begin();
-    for (; it != subscribers.end(); ++it) {
-	if (it->match(region))
-	    lst.addFederate(it->getHandle(), handle);
-    }
-}
+} // namespace certi
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-} // namespace certi
-
-// $Id: Subscribable.hh,v 3.1 2005/04/02 15:41:04 breholee Exp $
+// $Id: Subscribable.hh,v 3.2 2005/04/05 20:04:29 breholee Exp $
