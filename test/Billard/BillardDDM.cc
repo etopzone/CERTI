@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2004, 2005  ONERA
+// Copyright (C) 2004-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.11 2005/03/13 17:45:16 breholee Exp $
+// $Id: BillardDDM.cc,v 3.12 2005/03/23 11:09:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -74,7 +74,7 @@ BillardDDM::~BillardDDM()
 void
 BillardDDM::declare()
 {
-    int width = 500 / numberOfRegions ;
+    int width = XMAX / numberOfRegions ;
 
     GeoID = rtiamb.getRoutingSpaceHandle("Geo");
     std::cout << "Geo space handle : " << GeoID << std::endl ;
@@ -108,35 +108,36 @@ BillardDDM::declare()
 void
 BillardDDM::checkRegions()
 {
-    int width = 500 / numberOfRegions ;
+    int width = XMAX / numberOfRegions ;
     int region = (int) local.x / width ;
 
     if (region != subRegion || region != pubRegion) {
+	std::cout << "Updating regions ..." << std::endl ;
+
 	if (subRegion != -1)
 	    drawRegion(true, subRegion, width);
 	drawRegion(false, region, width);
-	//	std::cout << "Connect to region " << region << std::endl ;
 	auto_ptr<AttributeHandleSet> a(AttributeHandleSetFactory::create(3));
 	a->add(AttrXID);
 	a->add(AttrYID);
 
  	// Subscription
+	rtiamb.subscribeObjectClassAttributesWithRegion(
+	    BilleClassID, *(areas[region].region), *a, RTI_TRUE);
 	if (subRegion != -1) {
 	    rtiamb.unsubscribeObjectClassWithRegion(
 		BilleClassID,
 		*(areas[subRegion].region));
 	}
-	rtiamb.subscribeObjectClassAttributesWithRegion(
-	    BilleClassID, *(areas[region].region), *a, RTI_TRUE);
   	subRegion = region ;
 
 	// Update region
+	rtiamb.associateRegionForUpdates(*(areas[region].region),
+					 local.ID, *a);
 	if (pubRegion != -1) {
 	    rtiamb.unassociateRegionForUpdates(*(areas[pubRegion].region),
 					       local.ID);
 	}
-	rtiamb.associateRegionForUpdates(*(areas[region].region),
-					 local.ID, *a);
 	pubRegion = region ;	
     }
 }
@@ -162,4 +163,4 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.11 2005/03/13 17:45:16 breholee Exp $
+// $Id: BillardDDM.cc,v 3.12 2005/03/23 11:09:10 breholee Exp $
