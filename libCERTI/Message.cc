@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Message.cc,v 3.2 2002/11/27 19:21:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -102,7 +102,7 @@ ParameterValue *Message::getValueArray()
 // -- SetLabel --
 // --------------
 
-void Message::setLabel(char *NewLabel)
+void Message::setLabel(const char *NewLabel)
 {
   if(strlen(NewLabel) > MAX_USER_TAG_LENGTH)
     throw ValueLengthExceeded("Label too long to fit in Message.");
@@ -158,8 +158,9 @@ void Message::setTag(const char *NewTag)
 {
   if(strlen(NewTag) > MAX_USER_TAG_LENGTH)
     throw ValueLengthExceeded("Tag too long to fit in Message.");
-
-  strcpy(Tag, NewTag);
+  
+  if(NewTag != NULL) strcpy(Tag, NewTag);
+  else strcpy(Tag, "");
 }
 
 
@@ -248,4 +249,4 @@ void Message::display(char *s)
 
 }
 
-// $Id: Message.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Message.cc,v 3.2 2002/11/27 19:21:57 breholee Exp $

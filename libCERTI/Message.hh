@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Message.hh,v 3.2 2002/11/27 19:21:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -84,7 +84,7 @@ public:
   // This pointer is READ-ONLY, and should not be de-allocated.
 
   char *getLabel() { return Label; };
-  void setLabel(char *NewLabel);
+  void setLabel(const char *NewLabel);
 
   char *getName() { return Name; };
   void setName(const char *NewName);
@@ -190,5 +190,5 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Message.hh,v 3.2 2002/11/27 19:21:57 breholee Exp $
 
