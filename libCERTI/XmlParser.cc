@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.5 2003/03/04 09:47:04 breholee Exp $
+// $Id: XmlParser.cc,v 3.6 2003/03/12 10:04:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -123,11 +123,6 @@ XmlParser::parseClass(ObjectClass* parent)
 {
     xmlNodePtr prev = cur ;
     ObjectClass* current = new ObjectClass();
-    if (current == 0) {
-        D.Out(pdError, "Memory exhausted in ObjectClass allocation.");
-        throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
-    }
-
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
     current->setHandle(freeObjectClassHandle++);
     root->ObjectClasses->addClass(current);
@@ -179,10 +174,6 @@ XmlParser::parseInteraction(Interaction* parent)
 {
     xmlNodePtr prev = cur ;
     Interaction* current = new Interaction();
-    if (current == 0) {
-        D.Out(pdError, "Memory exhausted in InteractionClass allocation.");
-        throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
-    }
 
     // Name
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
@@ -230,12 +221,9 @@ XmlParser::parseInteraction(Interaction* parent)
 void
 XmlParser::parseRoutingSpace(void)
 {
+    DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;
     RoutingSpace *current = new RoutingSpace();
-    if (current == 0) {
-        D.Out(pdError, "Memory exhausted in RoutingSpace allocation.");
-        throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
-    }
     current->setHandle(freeSpaceHandle++);
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
     root->addRoutingSpace(current);
@@ -244,7 +232,7 @@ XmlParser::parseRoutingSpace(void)
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
-            Dimension* dimension = new Dimension();
+            Dimension* dimension = new Dimension(freeDimensionHandle++);
             dimension->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
             current->addDimension(dimension);
         }
@@ -264,11 +252,25 @@ XmlParser::exists(void)
 } // namespace certi
 
 #else // !HAVE_XML
+
 namespace certi {
-XmlParser::XmlParser(RootObject *) { };
-RootObject *XmlParser::parse(string) { return 0 ; }
-bool XmlParser::exists(void) { return false ; }
+
+XmlParser::XmlParser(RootObject *) 
+{ 
+};
+
+RootObject *XmlParser::parse(string) 
+{ 
+    return 0 ; 
 }
+
+bool XmlParser::exists(void) 
+{ 
+    return false ; 
+}
+
+} // namespace certi
+
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.5 2003/03/04 09:47:04 breholee Exp $
+// $Id: XmlParser.cc,v 3.6 2003/03/12 10:04:43 breholee Exp $
