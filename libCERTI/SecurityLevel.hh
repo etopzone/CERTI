@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityLevel.hh,v 3.4 2003/03/04 17:26:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -46,7 +46,7 @@ public:
     SecurityLevel(const char *InitName,
                   SecurityLevelID InitLevelID)
     {
-        if ((InitName == NULL) || (std::strlen(InitName) > MAX_USER_TAG_LENGTH))
+        if ((InitName == NULL) || (strlen(InitName) > MAX_USER_TAG_LENGTH))
             throw RTIinternalError("Bad Security Level Name.");
         Name = strdup(InitName);
         LevelID = InitLevelID ;
@@ -59,4 +59,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityLevel.hh,v 3.4 2003/03/04 17:26:03 breholee Exp $
