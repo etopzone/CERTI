@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.11 2005/04/05 12:27:37 breholee Exp $
+// $Id: InteractionSet.cc,v 3.12 2005/04/05 20:01:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -286,6 +286,7 @@ InteractionSet::publish(FederateHandle federate_handle,
 void
 InteractionSet::subscribe(FederateHandle federate_handle,
                           InteractionClassHandle interaction_handle,
+			  const RTIRegion *region,
                           bool subscribe)
     throw (FederateNotSubscribing,
            InteractionClassNotDefined,
@@ -295,11 +296,11 @@ InteractionSet::subscribe(FederateHandle federate_handle,
     // It may throw InteractionClassNotDefined
     Interaction *interaction = getByHandle(interaction_handle);
     if (subscribe)
-	interaction->subscribe(federate_handle);
+	interaction->subscribe(federate_handle, region);
     else
-	interaction->unsubscribe(federate_handle);
+	interaction->unsubscribe(federate_handle, region);
 }
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.11 2005/04/05 12:27:37 breholee Exp $
+// $Id: InteractionSet.cc,v 3.12 2005/04/05 20:01:21 breholee Exp $

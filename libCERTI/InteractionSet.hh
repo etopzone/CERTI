@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.10 2005/04/05 12:27:37 breholee Exp $
+// $Id: InteractionSet.hh,v 3.11 2005/04/05 20:01:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -36,10 +36,6 @@ class InteractionSet : private std::list<Interaction *>
 {
 
 public:
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
     InteractionSet(SecurityServer *the_server);
     ~InteractionSet();
 
@@ -91,6 +87,7 @@ public:
 
     void subscribe(FederateHandle the_federate_handle,
                    InteractionClassHandle the_interaction_handle,
+		   const RTIRegion *,
                    bool subscribe)
         throw (FederateNotSubscribing,
                InteractionClassNotDefined,
@@ -130,4 +127,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.10 2005/04/05 12:27:37 breholee Exp $
+// $Id: InteractionSet.hh,v 3.11 2005/04/05 20:01:21 breholee Exp $
