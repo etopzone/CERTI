@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,13 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.5 2005/03/11 13:32:46 breholee Exp $
+// $Id: Extent.cc,v 3.6 2005/03/25 17:02:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Extent.hh"
+#include "PrettyDebug.hh"
 
 using std::vector ;
+
+namespace {
+
+PrettyDebug D("EXTENT", __FILE__);
+
+}
 
 namespace certi {
 
@@ -106,6 +113,9 @@ bool
 Extent::overlaps(const Extent &e) const
 {
     for (unsigned int i = 1 ; i <= size(); ++i) {
+	D[pdTrace] << e.getRangeLowerBound(i) << " < " << getRangeUpperBound(i)
+		   << " or " << e.getRangeUpperBound(i) << " < "
+		   << getRangeLowerBound(i) << " ?" << std::endl ;
 	if (e.getRangeLowerBound(i) > getRangeUpperBound(i) ||
 	    e.getRangeUpperBound(i) < getRangeLowerBound(i))
 	    return false ;
@@ -115,4 +125,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.5 2005/03/11 13:32:46 breholee Exp $
+// $Id: Extent.cc,v 3.6 2005/03/25 17:02:23 breholee Exp $
