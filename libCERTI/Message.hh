@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.8 2003/03/11 13:10:35 breholee Exp $
+// $Id: Message.hh,v 3.9 2003/03/12 10:07:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -147,6 +147,8 @@ typedef enum {
     GET_PARAMETER_NAME,
     GET_SPACE_HANDLE,
     GET_SPACE_NAME,
+    GET_DIMENSION_HANDLE,
+    GET_DIMENSION_NAME,
     GET_FEDERATE_HANDLE,
     GET_FEDERATE_NAME,
     SET_TIME_REGULATING,
@@ -254,7 +256,8 @@ public:
     const char *getName(void) const { return name ; };
     void setName(const char *new_name);
 
-    
+    DimensionHandle getDimension(void) const { return dimension ; };
+    void setDimension(DimensionHandle);
 
     const char *getFederationName(void) const { return federationName ; };
     void setFederationName(const char *federation_name);
@@ -363,4 +366,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.8 2003/03/11 13:10:35 breholee Exp $
+// $Id: Message.hh,v 3.9 2003/03/12 10:07:18 breholee Exp $

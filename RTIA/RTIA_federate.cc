@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.7 2003/03/12 10:09:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -709,7 +709,23 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
     case GET_SPACE_NAME:
         // nb_requetes...
         D.Out(pdTrace, "Receiving Message from Federate, type GetSpaceName.");
-        rep.setName(ddm->getRoutingSpaceName(req->getSpace()));
+        rep.setName(ddm->getRoutingSpaceName(req->getSpace()).c_str());
+        break ;
+
+    case GET_DIMENSION_HANDLE:
+        // nb_requetes...
+        D.Out(pdTrace, 
+              "Receiving Message from Federate, type GetDimensionHandle");
+        rep.setDimension(ddm->getDimensionHandle(string(req->getName()),
+                                                 req->getSpace()));
+        break ;
+
+    case GET_DIMENSION_NAME:
+        // nb_requetes...
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type GetDimensionName");
+        rep.setName(ddm->getDimensionName(req->getDimension(),
+                                          req->getSpace()).c_str());
         break ;
 
         // 8.11
@@ -1096,4 +1112,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.7 2003/03/12 10:09:49 breholee Exp $

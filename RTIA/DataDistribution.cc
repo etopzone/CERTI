@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.3 2003/03/11 13:10:35 breholee Exp $
+// $Id: DataDistribution.cc,v 3.4 2003/03/12 10:09:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DataDistribution.hh"
@@ -35,17 +35,31 @@ DataDistribution::DataDistribution(RootObject *ro)
 }
 
 SpaceHandle
-DataDistribution::getRoutingSpaceHandle(const char *name)
+DataDistribution::getRoutingSpaceHandle(string name)
 {
     return rootObject->getRoutingSpaceHandle(name);
 }
 
-const char *
+string
 DataDistribution::getRoutingSpaceName(SpaceHandle handle)
 {
     return rootObject->getRoutingSpaceName(handle);
 }
 
+DimensionHandle
+DataDistribution::getDimensionHandle(string dimension, SpaceHandle space)
+    throw (SpaceNotDefined, NameNotFound)
+{
+    return rootObject->getRoutingSpace(space)->getDimensionHandle(dimension);
+}
+
+string
+DataDistribution::getDimensionName(DimensionHandle dimension, SpaceHandle space)
+    throw (SpaceNotDefined, DimensionNotDefined)
+{
+    return rootObject->getRoutingSpace(space)->getDimensionName(dimension);
+}
+
 }} // namespace certi
 
-// $Id: DataDistribution.cc,v 3.3 2003/03/11 13:10:35 breholee Exp $
+// $Id: DataDistribution.cc,v 3.4 2003/03/12 10:09:49 breholee Exp $

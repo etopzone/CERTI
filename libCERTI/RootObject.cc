@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
+// $Id: RootObject.cc,v 3.7 2003/03/12 10:07:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -106,14 +106,13 @@ RootObject::addRoutingSpace(RoutingSpace *rs)
 // ----------------------------------------------------------------------------
 //! get a routing space handle
 SpaceHandle
-RootObject::getRoutingSpaceHandle(const char *rs)
+RootObject::getRoutingSpaceHandle(string rs)
     throw (NameNotFound)
 {
     vector<RoutingSpace *>::const_iterator i ;
 
     for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
-        cout << "routing space " << (*i)->getName() << endl ;
-        if (!strcmp((*i)->getName().c_str(), rs)) {
+        if ((*i)->getName() == rs) {
             return (*i)->getHandle();
         }
     }
@@ -122,7 +121,7 @@ RootObject::getRoutingSpaceHandle(const char *rs)
 
 // ----------------------------------------------------------------------------
 //! get a routing space name
-const char *
+string
 RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
@@ -136,6 +135,22 @@ RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw new SpaceNotDefined();
 }
 
+// ----------------------------------------------------------------------------
+//! get a routing space
+RoutingSpace *
+RootObject::getRoutingSpace(SpaceHandle handle)
+    throw (SpaceNotDefined)
+{
+    vector<RoutingSpace *>::const_iterator i ;
+
+    for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
+        if ((*i)->getHandle() == handle) {
+            return *i ;
+        }
+    }
+    throw new SpaceNotDefined();
+}
+
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
+// $Id: RootObject.cc,v 3.7 2003/03/12 10:07:18 breholee Exp $

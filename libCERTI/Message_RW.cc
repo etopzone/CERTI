@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.5 2003/03/06 13:22:36 breholee Exp $
+// $Id: Message_RW.cc,v 3.6 2003/03/12 10:07:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -194,6 +194,13 @@ Message::readBody(SocketUN *socket)
             this->space = Body.readLongInt();
             break ;
 
+        case GET_DIMENSION_HANDLE:
+        case GET_DIMENSION_NAME:
+            this->readName(&Body);
+            this->dimension = Body.readLongInt();
+            this->space = Body.readLongInt();
+            break ;
+
         case SEND_INTERACTION:
         case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], RAction
@@ -352,6 +359,8 @@ Message::readHeader(SocketUN *socket)
 
     case GET_SPACE_HANDLE:
     case GET_SPACE_NAME:
+    case GET_DIMENSION_NAME:
+    case GET_DIMENSION_HANDLE:
         this->space = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         date = header.VP.O_I.date ;
@@ -667,6 +676,13 @@ Message::writeBody(SocketUN *socket)
             Body.writeLongInt(space);
             break ;
 
+        case GET_DIMENSION_HANDLE:
+        case GET_DIMENSION_NAME:
+            Body.writeString(name);
+            Body.writeLongInt(dimension);
+            Body.writeLongInt(space);
+            break ;
+
         case SEND_INTERACTION:
         case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], resignAction
@@ -850,7 +866,8 @@ Message::writeHeader(SocketUN *socket)
 
 
     case SEND_INTERACTION: // B.c. Tag, handleArray[], ValueArray[]
-    case RECEIVE_INTERACTION: // B.c. Tag, handleArray[], ValueArray[], resignAction
+    case RECEIVE_INTERACTION: // B.c. Tag, handleArray[],
+                              // ValueArray[], resignAction
     case GET_INTERACTION_CLASS_HANDLE: // Body contains name
     case GET_INTERACTION_CLASS_NAME: // Body contains name
     case GET_PARAMETER_HANDLE: // Body contains name and parameter
@@ -863,6 +880,8 @@ Message::writeHeader(SocketUN *socket)
 
     case GET_SPACE_HANDLE:
     case GET_SPACE_NAME:
+    case GET_DIMENSION_HANDLE:
+    case GET_DIMENSION_NAME:
         header.VP.O_I.handle = space ;
         header.VP.O_I.size = handleArraySize ;
         header.VP.O_I.date = date ;
@@ -970,4 +989,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.5 2003/03/06 13:22:36 breholee Exp $
+// $Id: Message_RW.cc,v 3.6 2003/03/12 10:07:18 breholee Exp $

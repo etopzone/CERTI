@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.8 2003/03/11 13:10:35 breholee Exp $
+// $Id: Message.cc,v 3.9 2003/03/12 10:07:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,6 +130,14 @@ void
 Message::setSpace(SpaceHandle handle)
 {
     space = handle ;
+}
+
+// ----------------------------------------------------------------------------
+// setDimension
+void
+Message::setDimension(DimensionHandle handle)
+{
+    dimension = handle ;
 }
 
 // ----------------------
@@ -267,4 +275,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.8 2003/03/11 13:10:35 breholee Exp $
+// $Id: Message.cc,v 3.9 2003/03/12 10:07:18 breholee Exp $
