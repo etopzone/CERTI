@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.2 2003/06/27 17:26:28 breholee Exp $
+// $Id: Extent.hh,v 3.3 2003/07/01 13:32:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXTENT_HH
@@ -49,6 +49,8 @@ public:
     void setRangeLowerBound(DimensionHandle, ULong)
         throw (ArrayIndexOutOfBounds);
 
+    long getNumberOfRanges();
+    
 private:
     std::vector<Range*> ranges ;
 };
@@ -57,4 +59,4 @@ private:
 
 #endif // _CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.2 2003/06/27 17:26:28 breholee Exp $
+// $Id: Extent.hh,v 3.3 2003/07/01 13:32:58 breholee Exp $
