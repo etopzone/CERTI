@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.27 2005/04/05 12:24:20 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.28 2005/04/05 20:18:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1019,7 +1019,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations.unassociateRegion(req->federation, req->federate,
+    federations.unsubscribeInteractionWR(req->federation, req->federate,
 				   req->interactionClass, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -1061,4 +1061,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.27 2005/04/05 12:24:20 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.28 2005/04/05 20:18:54 breholee Exp $
