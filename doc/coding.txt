@@ -36,18 +36,19 @@ For the .cc files:
 - definitions
 
 Note:
-« using namespace std ; » should never be used, because some platforms
-have name conflicts with the STL (e.g std::map vs Sun map struct)
+"using namespace std ;" should never be used, because some platforms
+have name conflicts with the STL (e.g std::map vs Sun map struct).
 
 Identifiers
 -----------
 
-- identifiers should be meaningful
+- identifiers should be meaningful, and based on english words
 - allowed regexp: [A-Za-z][0-9A-Za-z_]*
 - case: - class           ClassName
+	- type		  TypedefedType
         - method          methodName()
         - attribute       attributeName
-        - variable        variable_name
+        - local variable  variable_name
         - namespace       namespacename
         - template type   T
 
@@ -85,6 +86,9 @@ Comments
 --------
 
 - should appear before code, not after 
+- exception for attributes, with the "///<" Doxygen comments
+- comments should be mainly in the class/methods documentation ; too much
+  comments in code often indicates methods that should have been split
 - comments before methods should start with a line of '-' (ending at
   column 78), and then use Doxygen conventions. eg:
 
