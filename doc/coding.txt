@@ -15,8 +15,7 @@ Files
 Content
 -------
 
-- copyright and license notice
-- CVS Id
+- copyright and license notice with CVS id
 
 Then for .hh files:
 - multiple inclusion check
@@ -55,10 +54,12 @@ Required:
 - after keyword : while (expr) ...
 - after commas : func(param1, param2, param3);
 - around operators : (a && (b || c || d))
+- before * and & (pointer and reference) : char *p ; int &a = b ;
 
 But no spaces:
 - after function/method name                 :   obj.mymethod(p);
 - after [, (, ., ->, before [, ], ), ., ->   :   tab[a + f(obj->ref() + 1)]
+- after * and & (pointer and reference)	     :   char *p ; int &a = b ;
 
 Indentation
 -----------
@@ -132,6 +133,19 @@ ClassName::methodName(long_param1,         // doesn't fit on 1 line
                       long_param2)
     throw (except1,                          // doesn't fit on 1 line
            except2)
+{
+    ...
+}
+
+OR (very long parameter types/names) :
+
+type
+ClassName::methodName(
+    long_param1,
+    long_param2)
+    throw (
+        except1,
+        except2)
 {
     ...
 }
