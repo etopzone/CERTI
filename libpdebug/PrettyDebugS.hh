@@ -19,23 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebugS.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: PrettyDebugS.hh,v 3.1 2002/11/27 17:43:16 breholee Exp $
 // ---------------------------------------------------------------------------
-
-// CERTI util/PrettyDebugS.hh
-// Copyright(C) 2001 ONERA
-// $Id: PrettyDebugS.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
 
 #ifndef PRETTYDEBUGS_HH_
 #define PRETTYDEBUGS_HH_
 
 #include <stdlib.h>
-
-#ifdef HAVE_IOSTREAM_HEADER
 #include <iostream>
-#else
-#include <iostream.h>
-#endif
 
 #define pdSEmptyMessage "Pretty Debug Server received empty Message."
 
@@ -54,4 +45,4 @@ public:
 
 #endif // PRETTYDEBUGS_HH_
  
-// EOF $Id: PrettyDebugS.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: PrettyDebugS.hh,v 3.1 2002/11/27 17:43:16 breholee Exp $
