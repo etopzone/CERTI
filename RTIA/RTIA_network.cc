@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA_network.cc,v 3.4 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -75,7 +75,7 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
     case m_REQUEST_RESUME:
         {
             nb_messages[3]++ ;
-            D.Out(pdTrace, 
+            D.Out(pdTrace,
                   "Receving Message from RTIG, type m_REQUEST_RESUME.");
 
             queues->insertLastCommand(msg);
@@ -232,4 +232,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA_network.cc,v 3.4 2003/02/19 15:45:23 breholee Exp $

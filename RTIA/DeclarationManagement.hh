@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -60,7 +60,7 @@ public:
                             AttributeHandle *attribArray,
                             UShort attribArraySize,
                             TypeException &e);
-    
+
     void unpublishObjectClass(ObjectClassHandle theClassHandle,
                               TypeException &e);
 
@@ -82,7 +82,7 @@ public:
 
     void unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                                          TypeException &e);
-    
+
     void unsubscribeObjectClassAttribute(ObjectClassHandle theClass,
                                          HLA_Region theRegion,
                                          TypeException &e);
@@ -124,4 +124,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $

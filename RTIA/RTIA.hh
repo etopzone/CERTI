@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -45,8 +45,8 @@
 #include <csignal>
 #include <string>
 #include <fstream>
-using std::ifstream;
-using std::ios;
+using std::ifstream ;
+using std::ios ;
 using std::cout ;
 using std::endl ;
 
@@ -73,7 +73,7 @@ private:
     OwnershipManagement *owm ;
     DeclarationManagement *dm ;
     DataDistribution *ddm ;
-    
+
     int nb_messages[18] ;
     int nb_requetes[52] ;
     int TOTAL ;
@@ -90,4 +90,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $

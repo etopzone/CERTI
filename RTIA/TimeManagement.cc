@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: TimeManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -296,7 +296,7 @@ TimeManagement::nextEventAdvance(Boolean &msg_restant, TypeException &e)
         // Select lower value between expected time and first TSO message time.
         queues->nextTsoDate(TSOPresent, dateTSO);
 
-        if ((TSOPresent) &&(dateTSO < date_avancee))
+        if ((TSOPresent) && (dateTSO < date_avancee))
             date_min = dateTSO ;
         else
             date_min = date_avancee ;
@@ -486,15 +486,15 @@ void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
     // Si aucune erreur, prevenir le RTIG et devenir regulateur.
     if (e == e_NO_EXCEPTION) {
         _est_regulateur = etat ;
-        
+
         msg.type = m_SET_TIME_REGULATING ;
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
         msg.regulator = etat ;
         msg.date = _heure_courante + _lookahead_courant ;
-        
+
         comm->sendMessage(&msg);
-        
+
         D.Out(pdRegister,
               "Demande de modif de TimeRegulating emise(etat=%d).", etat);
     }
@@ -571,7 +571,7 @@ TimeManagement::timeAdvance(Boolean &msg_restant, TypeException &e)
     if (_est_contraint) {
         // give a TSO message.
         D.Out(pdDebug, "Logical time : %f, LBTS : %f.", date_avancee, _LBTS);
-        min =(_LBTS<date_avancee)?(_LBTS):(date_avancee);
+        min = (_LBTS<date_avancee)?(_LBTS):(date_avancee);
         msg = queues->giveTsoMessage(min, msg_donne, msg_restant);
 
         // otherwise
@@ -665,4 +665,4 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: TimeManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $

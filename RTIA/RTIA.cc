@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -33,7 +33,7 @@ static pdCDebug D("RTIA", "(RTIA) ");
 
 #define MSG_RTIG_MAX 18
 
-const char *Messages_RTIG [MSG_RTIG_MAX] = {
+const char *Messages_RTIG[MSG_RTIG_MAX] = {
     "MESSAGE NULL",
     "SET_TIME_REGULATING",
     "REQUEST_PAUSE",
@@ -58,7 +58,7 @@ const char *Messages_RTIG [MSG_RTIG_MAX] = {
 
 #define MSG_FED_MAX 53
 
-const char *Messages_Fed [MSG_FED_MAX] = {
+const char *Messages_Fed[MSG_FED_MAX] = {
     "CREATE_FEDERATION_EXECUTION",
     "DESTROY_FEDERATION_EXECUTION",
     "JOIN_FEDERATION_EXECUTION",
@@ -116,7 +116,7 @@ const char *Messages_Fed [MSG_FED_MAX] = {
 
 // ----------------------------------------------------------------------------
 // Displays statistics (requests, rtig messages, ...).
-void 
+void
 RTIA::count(void)
 {
 #ifdef RTI_PRINTS_STATISTICS
@@ -235,4 +235,4 @@ RTIA::execute(void)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
@@ -163,7 +163,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
-        req.handleArray [i] = attribArray [i] ;
+        req.handleArray[i] = attribArray[i] ;
 
     D.Out(pdDebug, "CANCEL_NEGOTIATED_DIVESTITURE Federate %u ",
           fm->federate);
@@ -546,4 +546,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -136,8 +136,8 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.handleArraySize = attribArraySize ;
 
     for (i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray [i] = attribArray [i] ;
-        req.setValue(i, valueArray [i]);
+        req.handleArray[i] = attribArray[i] ;
+        req.setValue(i, valueArray[i]);
     }
 
     strcpy(req.label, theTag);
@@ -213,8 +213,8 @@ ObjectManagement::reflectAttributeValues(ObjectHandle theObjectHandle,
     req.handleArraySize = attribArraySize ;
 
     for (i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray [i] = attribArray[i] ;
-        req.setValue(i, valueArray [i]);
+        req.handleArray[i] = attribArray[i] ;
+        req.setValue(i, valueArray[i]);
     }
 
     // BUG: Et on fait quoi de la reponse ?
@@ -257,8 +257,8 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     for (int i=0 ; i<paramArraySize ; i++)
         {
-            req.handleArray [i] = paramArray [i] ;
-            req.setValue(i, valueArray [i]);
+            req.handleArray[i] = paramArray[i] ;
+            req.setValue(i, valueArray[i]);
         }
 
     strcpy(req.label, theTag);
@@ -658,4 +658,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: FederationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -110,9 +110,9 @@ private:
     Boolean _est_membre_federation ;
     Boolean _est_pause ;
 
-    char _nom_federation [MAX_FEDERATION_NAME_LENGTH] ;
-    char _nom_federe [MAX_FEDERATE_NAME_LENGTH] ;
-    char _label_pause [100] ;
+    char _nom_federation[MAX_FEDERATION_NAME_LENGTH] ;
+    char _nom_federe[MAX_FEDERATE_NAME_LENGTH] ;
+    char _label_pause[100] ;
 
     Boolean _RTI_demande_pause ;
     Boolean _RTI_demande_fin_pause ;
@@ -122,4 +122,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: FederationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $

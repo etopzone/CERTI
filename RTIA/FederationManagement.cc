@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: FederationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -470,4 +470,4 @@ FederationManagement::initiateResume(const char *label)
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: FederationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $

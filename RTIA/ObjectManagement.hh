@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.5 2003/02/17 16:00:06 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.6 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -59,146 +59,146 @@ class ObjectManagement
 {
 
 public:
- ObjectManagement(Communications *, FederationManagement *, RootObject *);
- ~ObjectManagement();
+    ObjectManagement(Communications *, FederationManagement *, RootObject *);
+    ~ObjectManagement();
 
- void requestID(ObjectHandlecount idCount,
- ObjectHandle &firstID,
- ObjectHandle &lastID,
- TypeException &e);
+    void requestID(ObjectHandlecount idCount,
+                   ObjectHandle &firstID,
+                   ObjectHandle &lastID,
+                   TypeException &e);
 
- // Object Management services
- ObjectHandle registerObject(ObjectClassHandle theClassHandle,
- const char *theObjectName,
- FederationTime date,
- FederationTime heure,
- TypeException &e);
+    // Object Management services
+    ObjectHandle registerObject(ObjectClassHandle theClassHandle,
+                                const char *theObjectName,
+                                FederationTime date,
+                                FederationTime heure,
+                                TypeException &e);
 
- EventRetractionHandle
- updateAttributeValues(ObjectHandle theObjectHandle,
- AttributeHandle *attribArray,
- AttributeValue *valueArray,
- UShort attribArraySize,
- FederationTime theTime,
- const char *theTag,
- TypeException &e);
+    EventRetractionHandle
+    updateAttributeValues(ObjectHandle theObjectHandle,
+                          AttributeHandle *attribArray,
+                          AttributeValue *valueArray,
+                          UShort attribArraySize,
+                          FederationTime theTime,
+                          const char *theTag,
+                          TypeException &e);
 
- void discoverObject(ObjectHandle theObjectHandle,
- ObjectClassHandle theObjectClassHandle,
- const char *theObjectName,
- FederationTime theTime,
- EventRetractionHandle theHandle,
- TypeException &e);
+    void discoverObject(ObjectHandle theObjectHandle,
+                        ObjectClassHandle theObjectClassHandle,
+                        const char *theObjectName,
+                        FederationTime theTime,
+                        EventRetractionHandle theHandle,
+                        TypeException &e);
 
- void reflectAttributeValues(ObjectHandle theObjectHandle,
- AttributeHandle *attribArray,
- AttributeValue *valueArray,
- UShort attribArraySize,
- FederationTime theTime,
- const char *theTag,
- EventRetractionHandle theHandle,
- TypeException &e);
+    void reflectAttributeValues(ObjectHandle theObjectHandle,
+                                AttributeHandle *attribArray,
+                                AttributeValue *valueArray,
+                                UShort attribArraySize,
+                                FederationTime theTime,
+                                const char *theTag,
+                                EventRetractionHandle theHandle,
+                                TypeException &e);
 
- EventRetractionHandle
- sendInteraction(InteractionClassHandle theInteraction,
- ParameterHandle *paramArray,
- ParameterValue *valueArray,
- UShort paramArraySize,
- FederationTime theTime,
- const char *theTag,
- TypeException &e);
+    EventRetractionHandle
+    sendInteraction(InteractionClassHandle theInteraction,
+                    ParameterHandle *paramArray,
+                    ParameterValue *valueArray,
+                    UShort paramArraySize,
+                    FederationTime theTime,
+                    const char *theTag,
+                    TypeException &e);
 
- void receiveInteraction(InteractionClassHandle theInteraction,
- ParameterHandle *paramArray,
- ParameterValue *valueArray,
- UShort paramArraySize,
- FederationTime theTime,
- const char *theTag,
- EventRetractionHandle theHandle,
- TypeException &e);
+    void receiveInteraction(InteractionClassHandle theInteraction,
+                            ParameterHandle *paramArray,
+                            ParameterValue *valueArray,
+                            UShort paramArraySize,
+                            FederationTime theTime,
+                            const char *theTag,
+                            EventRetractionHandle theHandle,
+                            TypeException &e);
 
- EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
- const char *theTag,
- TypeException &e);
+    EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
+                                       const char *theTag,
+                                       TypeException &e);
 
- void removeObject(ObjectHandle theObjectHandle,
- FederateHandle theFederateHandle,
- const char *theTag,
- EventRetractionHandle theHandle,
- TypeException &e);
+    void removeObject(ObjectHandle theObjectHandle,
+                      FederateHandle theFederateHandle,
+                      const char *theTag,
+                      EventRetractionHandle theHandle,
+                      TypeException &e);
 
- void removeObject(ObjectHandle theObject,
- ObjectRemovalReason theReason,
- TypeException &e);
+    void removeObject(ObjectHandle theObject,
+                      ObjectRemovalReason theReason,
+                      TypeException &e);
 
- EventRetractionHandle
- changeAttributeTransportType(ObjectHandle theObjectHandle,
- AttributeHandle *attribArray,
- UShort attribArraySize,
- TransportType theType,
- TypeException &e);
+    EventRetractionHandle
+    changeAttributeTransportType(ObjectHandle theObjectHandle,
+                                 AttributeHandle *attribArray,
+                                 UShort attribArraySize,
+                                 TransportType theType,
+                                 TypeException &e);
 
- EventRetractionHandle
- changeAttributeOrderType(ObjectHandle theObjectHandle,
- AttributeHandle *attribArray,
- UShort attribArraySize,
- OrderType theType,
- TypeException &e);
+    EventRetractionHandle
+    changeAttributeOrderType(ObjectHandle theObjectHandle,
+                             AttributeHandle *attribArray,
+                             UShort attribArraySize,
+                             OrderType theType,
+                             TypeException &e);
 
- EventRetractionHandle
- changeInteractionTransportType(InteractionClassHandle theClassID,
- TransportType theType,
- TypeException &e);
+    EventRetractionHandle
+    changeInteractionTransportType(InteractionClassHandle theClassID,
+                                   TransportType theType,
+                                   TypeException &e);
 
- EventRetractionHandle
- changeInteractionOrderType(InteractionClassHandle theClassID,
- OrderType theType,
- TypeException &e);
+    EventRetractionHandle
+    changeInteractionOrderType(InteractionClassHandle theClassID,
+                               OrderType theType,
+                               TypeException &e);
 
- EventRetractionHandle
- requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
- AttributeHandle *attribArray,
- UShort attribArraySize,
- TypeException &e);
+    EventRetractionHandle
+    requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
+                                      AttributeHandle *attribArray,
+                                      UShort attribArraySize,
+                                      TypeException &e);
 
- void provideAttributeValueUpdate(ObjectHandle theObject,
- AttributeValue &theAttributes,
- TypeException &e);
+    void provideAttributeValueUpdate(ObjectHandle theObject,
+                                     AttributeValue &theAttributes,
+                                     TypeException &e);
 
- void retract(EventRetractionHandle theHandle, TypeException &e);
+    void retract(EventRetractionHandle theHandle, TypeException &e);
 
- void reflectRetraction(EventRetractionHandle theHandle,
- TypeException &e);
+    void reflectRetraction(EventRetractionHandle theHandle,
+                           TypeException &e);
 
- // RTI Support Services
- ObjectClassHandle getObjectClassHandle(const char *theName);
- const char *getObjectClassName(ObjectClassHandle theHandle);
+    // RTI Support Services
+    ObjectClassHandle getObjectClassHandle(const char *theName);
+    const char *getObjectClassName(ObjectClassHandle theHandle);
 
- AttributeHandle getAttributeHandle(const char *theName,
- ObjectClassHandle theClassHandle);
+    AttributeHandle getAttributeHandle(const char *theName,
+                                       ObjectClassHandle theClassHandle);
 
- const char *getAttributeName(AttributeHandle theHandle,
- ObjectClassHandle theClassHandle);
+    const char *getAttributeName(AttributeHandle theHandle,
+                                 ObjectClassHandle theClassHandle);
 
- InteractionClassHandle getInteractionClassHandle(const char *theName);
+    InteractionClassHandle getInteractionClassHandle(const char *theName);
 
- const char *getInteractionClassName(InteractionClassHandle theClassHandle);
+    const char *getInteractionClassName(InteractionClassHandle theClassHandle);
 
- ParameterHandle getParameterHandle(const char *theParameterName,
- InteractionClassHandle theClassHandle);
+    ParameterHandle getParameterHandle(const char *theParameterName,
+                                       InteractionClassHandle theClassHandle);
 
- const char *getParameterName(ParameterHandle theParameterHandle,
- InteractionClassHandle theClassHandle);
+    const char *getParameterName(ParameterHandle theParameterHandle,
+                                 InteractionClassHandle theClassHandle);
 
 protected:
- Communications *comm ;
- Queues *queues ;
- FederationManagement *fm ;
- RootObject *rootObject ;
+    Communications *comm ;
+    Queues *queues ;
+    FederationManagement *fm ;
+    RootObject *rootObject ;
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.5 2003/02/17 16:00:06 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.6 2003/02/19 15:45:23 breholee Exp $

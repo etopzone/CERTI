@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: main.cc,v 3.4 2003/02/19 15:45:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -59,4 +59,4 @@ SignalHandler(int Signal)
 
 }
 
-// EOF $Id: main.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// EOF $Id: main.cc,v 3.4 2003/02/19 15:45:24 breholee Exp $

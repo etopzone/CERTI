@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -273,8 +273,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace, "Receiving Message from Federate, type RegisterObject.");
 
         rep.object = om->registerObject(req->objectClass,
-                                          req->getName(),
-                                          date, heure, e);
+                                        req->getName(),
+                                        date, heure, e);
         break ; /*FAYET 25.07.01*/
     }
 
@@ -288,12 +288,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         try {
             rep.eventRetraction = om->updateAttributeValues(req->object,
-                                                    req->handleArray,
-                                                    ValueArray,
-                                                    req->handleArraySize,
-                                                    req->date,
-                                                    req->getTag(),
-                                                    e);
+                                                            req->handleArray,
+                                                            ValueArray,
+                                                            req->handleArraySize,
+                                                            req->date,
+                                                            req->getTag(),
+                                                            e);
             free(ValueArray);
         } catch (Exception *e) {
             free(ValueArray);
@@ -308,16 +308,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type SendInteraction.");
 
-        ParameterValue *ValueArray =(ParameterValue *) req->getValueArray();
+        ParameterValue *ValueArray = (ParameterValue *) req->getValueArray();
 
         try {
             rep.eventRetraction = om->sendInteraction(req->interactionClass,
-                                              req->handleArray,
-                                              ValueArray,
-                                              req->handleArraySize,
-                                              req->date,
-                                              req->getTag(),
-                                              e);
+                                                      req->handleArray,
+                                                      ValueArray,
+                                                      req->handleArraySize,
+                                                      req->date,
+                                                      req->getTag(),
+                                                      e);
             free(ValueArray);
         } catch (Exception *e) {
             free(ValueArray);
@@ -647,7 +647,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetAttributeHandle.");
 
         rep.attribute = om->getAttributeHandle(req->getName(),
-                                                  req->objectClass);
+                                               req->objectClass);
         break ;
 
         // 8.4
@@ -685,7 +685,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetParameterHandle.");
 
         rep.parameter = om->getParameterHandle(req->getName(),
-                                                 req->interactionClass);
+                                               req->interactionClass);
         break ;
 
         // 8.8
@@ -1094,5 +1094,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.4 2003/02/17 09:17:03 breholee Exp $
-
+// $Id: RTIA_federate.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
