@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.3 2003/07/01 13:36:40 breholee Exp $
+// $Id: RegionImp.cc,v 3.4 2003/07/03 15:59:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -183,8 +183,8 @@ RegionImp::setRangeUpperBound(ExtentIndex index,
 // ----------------------------------------------------------------------------
 // getHandle
 //
-long
-RegionImp::getHandle()
+RegionHandle
+RegionImp::getHandle() const
 {
     return handle ;
 }
@@ -193,7 +193,7 @@ RegionImp::getHandle()
 // setHandle
 //
 void
-RegionImp::setHandle(long h)
+RegionImp::setHandle(RegionHandle h)
 {
     handle = h ;
 }
@@ -269,4 +269,4 @@ RegionImp::setExtents(const vector<Extent *> &e)
 
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.3 2003/07/01 13:36:40 breholee Exp $
+// $Id: RegionImp.cc,v 3.4 2003/07/03 15:59:21 breholee Exp $

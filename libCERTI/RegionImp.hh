@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.3 2003/07/01 13:36:40 breholee Exp $
+// $Id: RegionImp.hh,v 3.4 2003/07/03 15:59:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -32,7 +32,7 @@
 
 namespace certi {
 
-typedef long RegionHandle ;
+typedef unsigned long RegionHandle ;
 
 class RegionImp : public Region
 {
@@ -66,8 +66,8 @@ public:
                                                       DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    long getHandle();
-    void setHandle(long);
+    RegionHandle getHandle() const ;
+    void setHandle(RegionHandle);
     long getNumberOfExtents();
     void notify();
 
@@ -77,7 +77,7 @@ public:
 
 private:
     SpaceHandle space ;
-    long handle ;
+    RegionHandle handle ;
     std::vector<Extent*> extents ;
     std::vector<Extent*> coExtents ;
 };
@@ -86,4 +86,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.3 2003/07/01 13:36:40 breholee Exp $
+// $Id: RegionImp.hh,v 3.4 2003/07/03 15:59:20 breholee Exp $
