@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,10 +20,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.4 2003/01/16 14:02:13 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "ObjectAttribute.hh"
 
@@ -31,142 +29,135 @@ namespace certi {
 
 static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 
-// ---------------------------
-// -- ObjectAttribute --
-// ---------------------------
-
-ObjectAttribute::ObjectAttribute()
- 
+// ---------------------------------------------------------------------------
+//! Default constructor (all atttributes to default state).
+ObjectAttribute::ObjectAttribute(void)
+    : Handle(0), owner(0), divesting(RTI_FALSE)
 {
-  Handle    					= 0;
-  AttributeOwner	    = 0;
-	Divesting 					= RTI_FALSE;	
 }
 
-// ---------------------------
-// -- ObjectAttribute --
-// ---------------------------
-
-ObjectAttribute::ObjectAttribute(AttributeHandle NewHandle,
-				    FederateHandle NewOwner)
-
+// ---------------------------------------------------------------------------
+//! Constructor that sets handle and attribute owner.
+ObjectAttribute::ObjectAttribute(AttributeHandle newHandle,
+                                 FederateHandle  newOwner)
+    : Handle(newHandle), owner(newOwner), divesting(RTI_FALSE)
 {
-  Handle    					= NewHandle;
-  AttributeOwner	    = NewOwner;
-	Divesting 					= RTI_FALSE;
 }
 
-
-
-// ---------------------------
-// -- ObjectAttribute --
-// ---------------------------
-
-ObjectAttribute::~ObjectAttribute()
+// ---------------------------------------------------------------------------
+//! Destructor (nothing to do).
+ObjectAttribute::~ObjectAttribute(void)
 {
-
 }
-  
-// -------------
-// -- Display --
-// -------------
 
-void ObjectAttribute::display(void)
+// ---------------------------------------------------------------------------
+//! Displays the object attribute information.
+void
+ObjectAttribute::display(void) const
 {
   if(Handle != 0)
-    printf("Attribute %ld ; Owner %ld \n",Handle, AttributeOwner);
+      cout << "Attribute " << Handle << " ; Owner " << owner << endl;
 }
 
+// ---------------------------------------------------------------------------
+//! Returns the owner
+FederateHandle
+ObjectAttribute::getOwner(void) const
+{
+    return owner;
+}
 
-// --------------
-// -- SetOwner --
-// --------------
+// ---------------------------------------------------------------------------
+//! Change the federate owner.
+void
+ObjectAttribute::setOwner(FederateHandle newOwner)
+{
+	owner = newOwner;
+}
 
-void ObjectAttribute::setOwner(FederateHandle NewOwner)
+// ---------------------------------------------------------------------------
+//! Returns attribute divesting state.
+Boolean
+ObjectAttribute::beingDivested(void) const
+{
+    return(divesting);
+}
+
+// ---------------------------------------------------------------------------
+//! Put object attribute in divesting state.
+void
+ObjectAttribute::setDivesting(Boolean divestingState)
+{
+	divesting = divestingState;
+}
+
+// ---------------------------------------------------------------------------
+//! Return the candidate position in list, null otherwise.
+int
+ObjectAttribute::isCandidate(FederateHandle candidate) const
+{
+    list<FederateHandle>::const_iterator i = ownerCandidates.begin();
+    for (int j = 1 ; i != ownerCandidates.end() ; i++, j++) {
+        if ( (*i) == candidate )
+            return j;
+    }
+
+    return 0;
+}
+
+// ---------------------------------------------------------------------------
+//! Add a new candidate to list.
+void
+ObjectAttribute::addCandidate(FederateHandle candidate)
+{
+	ownerCandidates.push_front(candidate);
+}
+
+// ---------------------------------------------------------------------------
+// Removes a candidate from list.
+void
+ObjectAttribute::removeCandidate(FederateHandle candidate)
+{
+    ownerCandidates.remove(candidate);
+}
+
+// ---------------------------------------------------------------------------
+// Returns the federate candidate at position in list.
+FederateHandle
+ObjectAttribute::getCandidate(int indice) const
   throw(RTIinternalError)
 {
+  if ((indice <= 0) || (indice > ownerCandidates.size()))
+      throw RTIinternalError();
 
-	AttributeOwner = NewOwner;
+  list<FederateHandle>::const_iterator i = ownerCandidates.begin();
+  for (int j = 1 ; i != ownerCandidates.end() ; i++, j++) {
+      if (j == indice)
+          return (*i);
+  }
 }
 
-// -------------------
-// -- BeingDivested --
-// -------------------
-
-// Boolean ObjectAttribute::beingDivested()
-//   throw(RTIinternalError)
-// {
-// 	return(Divesting);
-// }
-
-// -------------------
-// -- SetDivesting --
-// -------------------
-
-void ObjectAttribute::setDivesting(Boolean DivestingState)
-  throw(RTIinternalError)
+// ---------------------------------------------------------------------------
+bool
+ObjectAttribute::hasCandidates(void) const
 {
-	Divesting = DivestingState;
+    return (!ownerCandidates.empty());
 }
 
-// -----------------
-// -- isCandidate --
-// -----------------
-
-int ObjectAttribute::isCandidate(FederateHandle candidate)
-  throw(RTIinternalError)
+// ---------------------------------------------------------------------------
+AttributeHandle
+ObjectAttribute::getHandle(void) const
 {
-	for(int k=1;k <= OwnerCandidate.getLength();k++)
-		{
-		if(getCandidate(k) == candidate)
-				return(k);
-		}
-	return(0);
+    return Handle;
 }
 
-// ------------------
-// -- AddCandidate --
-// ------------------
-
-void ObjectAttribute::addCandidate(FederateHandle candidate)
-  throw(RTIinternalError)
+// ---------------------------------------------------------------------------
+void
+ObjectAttribute::setHandle(AttributeHandle h)
 {
-
-	OwnerCandidate.Inserer(1,new FederateHandle(candidate));
-
+    Handle = h;
 }
 
-// ---------------------
-// -- DeleteCandidate --
-// ---------------------
+} //namespace certi
 
-void ObjectAttribute::removeCandidate(FederateHandle candidate)
-  throw(RTIinternalError)
-{
-	for(int k=1;k <= OwnerCandidate.getLength();k++)
-		{
-		if(getCandidate(k) == candidate)
-			{
-				OwnerCandidate.Supprimer(k);
-				break;
-			}
-		}
-}
-
-
-// -------------------
-// -- GetCandidate --
-// -------------------
-
-FederateHandle ObjectAttribute::getCandidate(int indice)
-  throw(RTIinternalError)
-{
-  if((indice <= 0)	||(indice > OwnerCandidate.getLength()))
-    throw RTIinternalError();
-  else
-    return(*(OwnerCandidate.Ieme(indice)));
-}
-
-}
-
-// $Id: ObjectAttribute.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.4 2003/01/16 14:02:13 breholee Exp $

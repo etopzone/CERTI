@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.5 2003/01/16 14:02:13 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -1223,9 +1223,8 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 	    attribute = Object->AttributeState.Ieme(k);     
 	    if(theAttributeList [i] == attribute->Handle )
 	      {
-		if( attribute->OwnerCandidate.getLength() != 0 )
-		  {//Un attributeOwnershipAcquisition est en cours sur cet
-		    //attribut
+		if (attribute->hasCandidates()) {
+            //Un attributeOwnershipAcquisition est en cours sur cet attribut
             
 		    //Le demandeur le plus récent devient propriétaire       
 		    NewOwner = attribute->getCandidate(1);
@@ -1571,8 +1570,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 	    attribute = Object->AttributeState.Ieme(k);      
 	    if(theAttributeList [i] == attribute->Handle )
 	      {
-		if( attribute->OwnerCandidate.getLength() != 0 )
-		  {
+		if (attribute->hasCandidates()) {
 		    //Un attributeOwnershipAcquisition est en cours sur cet
 		    //attribut
      
@@ -1930,8 +1928,8 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 	    {
 	      if( attribute->getOwner() != theFederateHandle )
 		throw AttributeNotOwned();
-	      if( attribute->OwnerCandidate.getLength() == 0 )           
-		throw FederateWasNotAskedToReleaseAttribute();
+	      if (!attribute->hasCandidates())           
+              throw FederateWasNotAskedToReleaseAttribute();
  
 	    }
 	}
@@ -2107,4 +2105,4 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 
 }
 
-// $Id: ObjectClass.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.5 2003/01/16 14:02:13 breholee Exp $
