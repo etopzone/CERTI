@@ -19,46 +19,20 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federation.hh,v 3.15 2003/05/22 12:26:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
 #define _CERTI_RTIG_FEDERATION_HH
 
-#include <config.h>
 #include "Federate.hh"
 #include "RootObject.hh"
 #include "LBTS.hh"
 #include "SecurityServer.hh"
 #include "RTItypes.hh"
-#include "FedParser.hh" // CRead : FED file reader.
-#include "XmlParser.hh"
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
 #endif
-#include "PrettyDebug.hh"
-
-#include <map>
-#include <fstream>
-#include <iostream>
-#include <string.h> // strlen
-
-#ifdef HAVE_XML
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
-#define ROOT_NODE (const xmlChar*) "rtigSaveData"
-#define NODE_FEDERATION (const xmlChar*) "federation"
-#define NODE_FEDERATE (const xmlChar*) "federate"
-#endif // HAVE_XML
-
-using std::map ;
-using std::pair ;
-using std::ifstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
 
 using namespace certi ;
 
@@ -94,8 +68,8 @@ private:
     xmlDocPtr doc ;
 #endif // HAVE_XML
 
-    void saveXmlData(void);
-    void restoreXmlData(void);
+    bool saveXmlData(void);
+    bool restoreXmlData(void);
 
     // METHODS -----------------------------------------------------------------
 public:
@@ -477,4 +451,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federation.hh,v 3.15 2003/05/22 12:26:17 breholee Exp $

@@ -19,10 +19,41 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.19 2003/05/15 20:57:41 breholee Exp $
+// $Id: Federation.cc,v 3.20 2003/05/22 12:26:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
+// Project
 #include "Federation.hh"
+#include <config.h>
+#include "FedParser.hh"
+#include "XmlParser.hh"
+#include "PrettyDebug.hh"
+
+// Libraries
+#ifdef HAVE_XML
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#endif // HAVE_XML
+
+// Standard libraries
+#include <map>
+#include <fstream>
+#include <iostream>
+#include <string.h>
+
+using std::pair ;
+using std::ifstream ;
+using std::ios ;
+using std::cout ;
+using std::endl ;
+
+// Definitions
+#ifdef HAVE_XML
+#define ROOT_NODE (const xmlChar*) "rtigSaveData"
+#define NODE_FEDERATION (const xmlChar*) "federation"
+#define NODE_FEDERATE (const xmlChar*) "federate"
+#endif // HAVE_XML
 
 namespace certi {
 
@@ -596,7 +627,7 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
 
     // Save RTIG Data for future restoration.
     if (saveStatus) {
-        saveXmlData();
+        saveStatus = saveXmlData();
     }
 
     // Send end save message.
@@ -645,18 +676,18 @@ Federation::requestFederationRestore(FederateHandle the_federate,
         xmlFreeDoc(doc);
         success = false ;
     }
+    if (success) {
+        success = restoreXmlData();
+    }
 #else
     success = false ;
 #endif // HAVE_XML
 
-    if (success)
-        msg->type = m_REQUEST_FEDERATION_RESTORE_SUCCEEDED ;
-    else {
-        msg->type = m_REQUEST_FEDERATION_RESTORE_FAILED ;
-        msg->setTag("File reading error.");
-    }
-
-    socket = server->getSocketLink(msg->federate);
+    msg->type = success ?
+        m_REQUEST_FEDERATION_RESTORE_SUCCEEDED
+        : m_REQUEST_FEDERATION_RESTORE_FAILED ;
+    
+    socket = server->getSocketLink(msg->federate);    
     msg->write(socket);
     delete msg ;
 
@@ -680,11 +711,6 @@ Federation::requestFederationRestore(FederateHandle the_federate,
 
     broadcastAnyMessage(msg, 0);
     delete msg ;
-
-    // Restore RTIG Data from older save.
-    // Should read a configuration file associated to federation name and
-    // label. Federate handles should be updated.
-    restoreXmlData();
 
     // For each federate, send an initiateFederateRestore with correct handle.
     msg = new NetworkMessage ;
@@ -1494,28 +1520,31 @@ Federation::deleteRegion(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-void
+bool
 Federation::restoreXmlData()
 {
+#ifndef HAVE_XML    
+        return false ;
+#else    
     xmlNodePtr cur ;
 
     cur = xmlDocGetRootElement(doc);
     if (cur == 0) {
         cerr << "XML file is empty" << endl ;
         xmlFreeDoc(doc);
-        return ;
+        return false ;
     }
 
     // Is this root element an ROOT_NODE ?
     if (xmlStrcmp(cur->name, ROOT_NODE)) {
         cerr << "Wrong XML file: not the expected root node" << endl ;
-        return ;
+        return false ;
     }
 
     cur = cur->xmlChildrenNode ;
     if (xmlStrcmp(cur->name, NODE_FEDERATION)) {
         cerr << "Wrong XML file structure" << endl ;
-        return ;
+        return false ;
     }
 
     char *tmp ;
@@ -1530,12 +1559,12 @@ Federation::restoreXmlData()
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
             for (i = begin(); i != end(); i++) {
-                if (strcmp((*i)->getName(),
-                           (char *)xmlGetProp(cur, (const xmlChar*)"name")) == 0) {
+                if (!strcmp(
+                        (*i)->getName(),
+                        (char *) xmlGetProp(cur, (const xmlChar*) "name"))) {
                     // Set federate constrained status
-                    if (strcmp("true",
-                               (char *)xmlGetProp(cur,
-                                                  (const xmlChar*)"constrained")) == 0)
+                    if (strcmp("true", (char *)xmlGetProp(
+                                   cur, (const xmlChar*)"constrained")) == 0)
                         status = true ;
                     else
                         status = false ;
@@ -1543,39 +1572,43 @@ Federation::restoreXmlData()
                     (*i)->setConstrained(status);
 
                     // Set federate regulating status
-                    if (strcmp("true",
-                               (char *)xmlGetProp(cur, (const xmlChar*)"regulator")) == 0)
-                        status = true ;
-                    else
-                        status = false ;
+                    status = !strcmp("true", (char *) xmlGetProp(
+                                         cur, (const xmlChar*)"regulator"));
 
                     (*i)->setRegulator(status);
 
-                    (*i)->setHandle(strtol((char *)xmlGetProp(cur, (const xmlChar*)"handle"),
-                                           (char **)NULL, 10));
+                    (*i)->setHandle(
+                        strtol((char *) xmlGetProp(
+                                   cur, (const xmlChar*)"handle"), 0 , 10));
                     break ;
                 }
             }
         }
         cur = cur->next ;
     }
+
+    return status ;
+#endif // HAVE_XML
 }
 
 // ----------------------------------------------------------------------------
-void
+bool
 Federation::saveXmlData()
 {
-    doc = xmlNewDoc((const xmlChar *)"1.0");
+#ifndef HAVE_XML
+        return false ;
+#else    
+    doc = xmlNewDoc((const xmlChar *) "1.0");
     doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
 
     xmlNodePtr federation ;
     federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
 
-    xmlSetProp(federation, (const xmlChar *)"name", (const xmlChar *)name);
+    xmlSetProp(federation, (const xmlChar *) "name", (const xmlChar *) name);
 
     char t[10] ;
     sprintf(t, "%ld", handle);
-    xmlSetProp(federation, (const xmlChar *)"handle", (const xmlChar *) t);
+    xmlSetProp(federation, (const xmlChar *) "handle", (const xmlChar *) t);
 
     xmlNodePtr federate ;
 
@@ -1583,13 +1616,16 @@ Federation::saveXmlData()
     for (i = begin(); i != end(); i++) {
         federate = xmlNewChild(federation, NULL, NODE_FEDERATE, NULL);
 
-        xmlSetProp(federate, (const xmlChar *)"name", (const xmlChar *)(*i)->getName());
+        xmlSetProp(federate,
+                   (const xmlChar *)"name",
+                   (const xmlChar *)(*i)->getName());
 
         sprintf(t, "%ld", (*i)->getHandle());
         xmlSetProp(federate, (const xmlChar *)"handle", (const xmlChar *)t);
 
-        xmlSetProp(federate, (const xmlChar *)"constrained",
-                   (const xmlChar *)(((*i)->isConstrained()) ? "true" : "false"));
+        xmlSetProp(federate,
+                   (const xmlChar *)"constrained", (const xmlChar *)
+                   (((*i)->isConstrained()) ? "true" : "false"));
         xmlSetProp(federate, (const xmlChar *)"regulator",
                    (const xmlChar *)(((*i)->isRegulator()) ? "true" : "false"));
     }
@@ -1598,9 +1634,14 @@ Federation::saveXmlData()
 
     string filename = string(name) + "_" + string(saveLabel) + ".xcs" ;
     xmlSaveFile(filename.c_str(), doc);
+
+    // TODO: tests
+    
+    return true ;
+#endif // HAVE_XML
 }
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.19 2003/05/15 20:57:41 breholee Exp $
+// $Id: Federation.cc,v 3.20 2003/05/22 12:26:17 breholee Exp $
 
