@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -431,9 +431,9 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 
     auditServer->addToLinef("Class = %u", req->objectClass);
     rep.object = federations->registerObject(req->federation,
-                                               req->federate,
-                                               req->objectClass,
-                                               req->label);
+                                             req->federate,
+                                             req->objectClass,
+                                             req->label);
     auditServer->addToLinef(", Handle = %u", rep.object);
 
     D.Out(pdRegister,
@@ -814,4 +814,4 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $

@@ -1,26 +1,26 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
-// CERTI is free software; you can redistribute it and/or modify
+// CERTI is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
 // CERTI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.7 2003/01/29 18:12:42 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: FederationsList.cc,v 3.8 2003/02/19 14:29:37 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
 
@@ -29,7 +29,7 @@ namespace rtig {
 
 static pdCDebug D("LISTEFEDERATIONS", "(ListFede) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Constructor
 FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
     : list<Federation *>()
@@ -44,7 +44,7 @@ FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
     auditFile = audit ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Destructor
 FederationsList::~FederationsList()
 {
@@ -57,7 +57,7 @@ FederationsList::~FederationsList()
     clear();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Adds a constrained federate to federation.
 void
 FederationsList::addConstrained(FederationHandle handle,
@@ -81,7 +81,7 @@ FederationsList::addConstrained(FederationHandle handle,
     federation->addConstrained(federate);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Creates a new Federate if its name is unique, and returns its new
   Federate Handle. Also sends Null messages from all other federates
   to initialize its LBTS, and finally a RequestPause message if the
@@ -109,7 +109,7 @@ FederationsList::addFederate(FederationHandle handle,
     return federate ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // searchFederation
 int
 FederationsList::searchFederation(FederationHandle handle,
@@ -133,14 +133,14 @@ FederationsList::searchFederation(FederationHandle handle,
     throw FederationExecutionDoesNotExist("Bad Federation Handle.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // createFederation
 #ifdef FEDERATION_USES_MULTICAST
-void FederationsList::createFederation(const char * name,
+void FederationsList::createFederation(const char *name,
                                        FederationHandle handle,
                                        SocketMC *mc_link)
 #else
-    void FederationsList::createFederation(const char* name,
+    void FederationsList::createFederation(const char *name,
                                            FederationHandle handle)
 #endif
     throw (FederationExecutionAlreadyExists,
@@ -164,7 +164,7 @@ void FederationsList::createFederation(const char * name,
         D.Out(pdExcept, "Federation %s already present.", name);
         throw FederationExecutionAlreadyExists();
     }
-    catch(FederationExecutionDoesNotExist &e) {
+    catch (FederationExecutionDoesNotExist &e) {
         D.Out(pdDebug,
               "CreerFederation catches FederationExecutionDoesNotExist.");
     }
@@ -186,7 +186,7 @@ void FederationsList::createFederation(const char * name,
     D.Out(pdInit, "New Federation created with Handle %d.", handle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // createRegulator
 void
 FederationsList::createRegulator(FederationHandle handle,
@@ -211,7 +211,7 @@ FederationsList::createRegulator(FederationHandle handle,
     federation->addRegulator(federate, time);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // requestId
 void
 FederationsList::requestId(FederationHandle handle,
@@ -231,13 +231,13 @@ FederationsList::requestId(FederationHandle handle,
     federation->requestId(id_count, first_id, last_id);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // destroyObject
 void
 FederationsList::destroyObject(FederationHandle handle,
                                FederateHandle federate,
                                ObjectHandle id,
-                               const char* tag)
+                               const char *tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            DeletePrivilegeNotHeld,
@@ -258,12 +258,12 @@ FederationsList::destroyObject(FederationHandle handle,
     federation->deleteObject(federate, id, tag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Return the Handle of the Federation named "name" if it is found in the
   FederationList, else throw FederationExecutionDoesNotExist.
 */
 void
-FederationsList::exists(const char * name,
+FederationsList::exists(const char *name,
                         FederationHandle &handle)
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
@@ -280,7 +280,7 @@ FederationsList::exists(const char * name,
     throw FederationExecutionDoesNotExist();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // info
 #ifdef FEDERATION_USES_MULTICAST
 void FederationsList::info(FederationHandle handle,
@@ -313,7 +313,7 @@ void FederationsList::info(FederationHandle handle,
 #endif
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // registerObject
 ObjectHandle
 FederationsList::registerObject(FederationHandle handle,
@@ -333,16 +333,16 @@ FederationsList::registerObject(FederationHandle handle,
     // It may throw RTIinternalError.
     checkHandle(handle);
     checkHandle(federate);
-    D.Out(pdTrace,"handle = %d, federate = %d.", handle,federate);
+    D.Out(pdTrace, "handle = %d, federate = %d.", handle, federate);
 
     // It may throw FederationExecutionDoesNotExist.
     searchFederation(handle, federation);
 
-    D.Out(pdTrace,"theObjectClass = %d, name = %s.",object_class,name);
-    return(federation->registerObject(federate,object_class,name));
+    D.Out(pdTrace, "theObjectClass = %d, name = %s.", object_class, name);
+    return(federation->registerObject(federate, object_class, name));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // checkHandle
 /*! handle can be any type of handle, not only a Federation handle.
   Throw an exception if Handle is not correct(too low or too big)
@@ -357,7 +357,7 @@ FederationsList::checkHandle(FederationHandle handle)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // updateRegulator
 void
 FederationsList::updateRegulator(FederationHandle handle,
@@ -379,7 +379,7 @@ FederationsList::updateRegulator(FederationHandle handle,
     federation->updateRegulator(federate, time);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // updateAttribute
 void
 FederationsList::updateAttribute(FederationHandle handle,
@@ -389,7 +389,7 @@ FederationsList::updateAttribute(FederationHandle handle,
                                  AttributeValue *values,
                                  UShort list_size,
                                  FederationTime time,
-                                 const char* tag)
+                                 const char *tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            ObjectNotKnown,
@@ -412,7 +412,7 @@ FederationsList::updateAttribute(FederationHandle handle,
                                       list_size, time, tag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // updateParameter
 void
 FederationsList::updateParameter(FederationHandle handle,
@@ -422,7 +422,7 @@ FederationsList::updateParameter(FederationHandle handle,
                                  ParameterValue *values,
                                  UShort list_size,
                                  FederationTime time,
-                                 const char* tag)
+                                 const char *tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            FederationExecutionDoesNotExist,
@@ -445,13 +445,13 @@ FederationsList::updateParameter(FederationHandle handle,
                                      list_size, time, tag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // setPause
 void
 FederationsList::setPause(FederationHandle handle,
                           FederateHandle federate,
                           bool state,
-                          const char * label)
+                          const char *label)
     throw (FederationAlreadyPaused,
            FederationNotPaused,
            FederateNotExecutionMember,
@@ -472,7 +472,7 @@ FederationsList::setPause(FederationHandle handle,
     else federation->resumePause(federate, label);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // publishInteraction
 void
 FederationsList::publishInteraction(FederationHandle handle,
@@ -499,7 +499,7 @@ FederationsList::publishInteraction(FederationHandle handle,
     federation->publishInteraction(federate, interaction, pub);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // publishObject
 void
 FederationsList::publishObject(FederationHandle handle,
@@ -531,7 +531,7 @@ FederationsList::publishObject(FederationHandle handle,
                               pub);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeInteraction
 void
 FederationsList::subscribeInteraction(FederationHandle handle,
@@ -558,7 +558,7 @@ FederationsList::subscribeInteraction(FederationHandle handle,
     federation->subscribeInteraction(federate, interaction, sub);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // subscribeObject
 void
 FederationsList::subscribeObject(FederationHandle handle,
@@ -589,7 +589,7 @@ FederationsList::subscribeObject(FederationHandle handle,
                                 sub);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // removeConstrained
 void
 FederationsList::removeConstrained(FederationHandle handle,
@@ -613,7 +613,7 @@ FederationsList::removeConstrained(FederationHandle handle,
     federation->removeConstrained(federate);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // destroyFederation
 void
 FederationsList::destroyFederation(FederationHandle handle)
@@ -641,7 +641,7 @@ FederationsList::destroyFederation(FederationHandle handle)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // remove
 void
 FederationsList::remove(FederationHandle handle, FederateHandle federate)
@@ -662,7 +662,7 @@ FederationsList::remove(FederationHandle handle, FederateHandle federate)
     federation->remove(federate);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // removeRegulator
 void
 FederationsList::removeRegulator(FederationHandle handle,
@@ -685,7 +685,7 @@ FederationsList::removeRegulator(FederationHandle handle,
     federation->removeRegulator(federate);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! This Method tries to remove all references to this Federate in the
   Federation. To be used when a Federate is supposed to have crashed.
 */
@@ -704,12 +704,12 @@ FederationsList::killFederate(FederationHandle handle, FederateHandle federate)
         searchFederation(handle, federation);
         federation->kill(federate);
     }
-    catch(Exception &e) {
+    catch (Exception &e) {
         return ;
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // isOwner
 bool
 FederationsList::isOwner(FederationHandle handle,
@@ -737,7 +737,7 @@ FederationsList::isOwner(FederationHandle handle,
     return(f->isOwner(federate, id, attribute));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // searchOwner
 void
 FederationsList::searchOwner(FederationHandle handle,
@@ -766,7 +766,7 @@ FederationsList::searchOwner(FederationHandle handle,
     federation->queryAttributeOwnership(federate, id, attribute);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // negotiateDivestiture
 void
 FederationsList::negotiateDivestiture(FederationHandle handle,
@@ -798,7 +798,7 @@ FederationsList::negotiateDivestiture(FederationHandle handle,
     federation->negotiateDivestiture(federate, id, attributes, list_size, tag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // acquireIfAvailable
 void
 FederationsList::acquireIfAvailable(FederationHandle handle,
@@ -829,7 +829,7 @@ FederationsList::acquireIfAvailable(FederationHandle handle,
     federation->acquireIfAvailable(federate, id, attributes, list_size);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // divest
 void
 FederationsList::divest(FederationHandle handle,
@@ -857,7 +857,7 @@ FederationsList::divest(FederationHandle handle,
     federation->divest(federate, id, attributes, list_size);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // acquire
 void
 FederationsList::acquire(FederationHandle handle,
@@ -890,7 +890,7 @@ FederationsList::acquire(FederationHandle handle,
     federation->acquire(federate, id, attributes, list_size, tag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // cancelNegotiatedAttributeOwnershipDivestiture
 void
 FederationsList::cancelDivestiture(FederationHandle handle,
@@ -917,7 +917,7 @@ FederationsList::cancelDivestiture(FederationHandle handle,
     federation->cancelDivestiture(federate, id, attributes, list_size);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // respondRelease
 AttributeHandleSet*
 FederationsList::respondRelease(FederationHandle handle,
@@ -948,7 +948,7 @@ FederationsList::respondRelease(FederationHandle handle,
     return federation->respondRelease(federate, id, attributes, list_size);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // cancelAcquisition
 void
 FederationsList::cancelAcquisition(FederationHandle handle,
@@ -981,5 +981,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.7 2003/01/29 18:12:42 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.8 2003/02/19 14:29:37 breholee Exp $
 

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.8 2003/02/17 16:00:06 breholee Exp $
+// $Id: Federation.hh,v 3.9 2003/02/19 14:29:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -60,366 +60,366 @@ namespace rtig {
 
 class Federation : private list<Federate *>
 {
- // ATTRIBUTES --------------------------------------------------------------
+    // ATTRIBUTES --------------------------------------------------------------
 private:
- FederationHandle handle ;
- char *name ;
- bool paused ;
- char pauseLabel[MAX_USER_TAG_LENGTH + 1] ;
- ObjectHandle nextObjectId ;
- FederateHandle nextFederateHandle ;
+    FederationHandle handle ;
+    char *name ;
+    bool paused ;
+    char pauseLabel[MAX_USER_TAG_LENGTH + 1] ;
+    ObjectHandle nextObjectId ;
+    FederateHandle nextFederateHandle ;
 
- // This object is initialized when the Federation is created, with
- // the reference of the RTIG managed Socket Server. The reference of
- // this object is passed down the Classes Tree with the help of RootObj.
- SecurityServer *server ;
- RootObject *root ;
+    // This object is initialized when the Federation is created, with
+    // the reference of the RTIG managed Socket Server. The reference of
+    // this object is passed down the Classes Tree with the help of RootObj.
+    SecurityServer *server ;
+    RootObject *root ;
 
- LBTS regulators ;
+    LBTS regulators ;
 
 #ifdef FEDERATION_USES_MULTICAST
- SocketMC *MCLink ;
+    SocketMC *MCLink ;
 #endif
 
- // METHODS -----------------------------------------------------------------
+    // METHODS -----------------------------------------------------------------
 public:
 #ifdef FEDERATION_USES_MULTICAST
- Federation(const char *,
- FederationHandle,
- SocketServer*,
- AuditFile*,
- SocketMC*)
+    Federation(const char *,
+               FederationHandle,
+               SocketServer*,
+               AuditFile*,
+               SocketMC*)
 #else
- Federation(const char *, FederationHandle, SocketServer*, AuditFile*)
+        Federation(const char *, FederationHandle, SocketServer*, AuditFile*)
 #endif
- throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
- RTIinternalError);
+        throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
+               RTIinternalError);
 
- ~Federation(void);
+    ~Federation(void);
 
- void requestId(ObjectHandlecount IDCount,
- ObjectHandle &FirstID,
- ObjectHandle &LastID)
- throw (TooManyIDsRequested);
+    void requestId(ObjectHandlecount IDCount,
+                   ObjectHandle &FirstID,
+                   ObjectHandle &LastID)
+        throw (TooManyIDsRequested);
 
- int getNbFederates(void) const ;
- int getNbRegulators(void) const ;
- bool isPaused(void) const ;
- FederationHandle getHandle(void) const ;
- const char *getName(void) const ;
+    int getNbFederates(void) const ;
+    int getNbRegulators(void) const ;
+    bool isPaused(void) const ;
+    FederationHandle getHandle(void) const ;
+    const char *getName(void) const ;
 
- // -------------------------
- // -- Federate Management --
- // -------------------------
- FederateHandle add(const char *theName, SocketTCP *theTCPLink)
- throw (FederateAlreadyExecutionMember,
- MemoryExhausted,
- RTIinternalError);
+    // -------------------------
+    // -- Federate Management --
+    // -------------------------
+    FederateHandle add(const char *theName, SocketTCP *theTCPLink)
+        throw (FederateAlreadyExecutionMember,
+               MemoryExhausted,
+               RTIinternalError);
 
- bool empty(void) const
- throw (FederatesCurrentlyJoined);
+    bool empty(void) const
+        throw (FederatesCurrentlyJoined);
 
- bool check(FederateHandle theHandle) const
- throw (FederateNotExecutionMember);
+    bool check(FederateHandle theHandle) const
+        throw (FederateNotExecutionMember);
 
- void kill(FederateHandle theFederate) throw ();
+    void kill(FederateHandle theFederate) throw ();
 
- void remove(FederateHandle theHandle)
- throw (FederateOwnsAttributes,
- FederateNotExecutionMember);
+    void remove(FederateHandle theHandle)
+        throw (FederateOwnsAttributes,
+               FederateNotExecutionMember);
 
- // ---------------------
- // -- Time Management --
- // ---------------------
- void addRegulator(FederateHandle theHandle, FederationTime theTime)
- throw (FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError); // includes Time Regulation already enabled.
+    // ---------------------
+    // -- Time Management --
+    // ---------------------
+    void addRegulator(FederateHandle theHandle, FederationTime theTime)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); // includes Time Regulation already enabled.
 
- void updateRegulator(FederateHandle theHandle, FederationTime theTime)
- throw (FederateNotExecutionMember,
- RTIinternalError);
+    void updateRegulator(FederateHandle theHandle, FederationTime theTime)
+        throw (FederateNotExecutionMember,
+               RTIinternalError);
 
- void removeRegulator(FederateHandle theHandle)
- throw (FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError); // includes Time Regulation already disabled.
+    void removeRegulator(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); // includes Time Regulation already disabled.
 
- void addConstrained(FederateHandle theHandle)
- throw (FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError); // includes Time constrained already enabled.
+    void addConstrained(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); // includes Time constrained already enabled.
 
- void removeConstrained(FederateHandle theHandle)
- throw (FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError); // includes Time constrained already disabled.
+    void removeConstrained(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); // includes Time constrained already disabled.
 
- // ----------------------
- // -- Pause Management --
- // ----------------------
+    // ----------------------
+    // -- Pause Management --
+    // ----------------------
 
- void enterPause(FederateHandle theFederate, const char *theLabel)
- throw (FederateNotExecutionMember,
- FederationAlreadyPaused,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void enterPause(FederateHandle theFederate, const char *theLabel)
+        throw (FederateNotExecutionMember,
+               FederationAlreadyPaused,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void resumePause(FederateHandle theFederate, const char *theLabel)
- throw (FederateNotExecutionMember,
- FederationNotPaused,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void resumePause(FederateHandle theFederate, const char *theLabel)
+        throw (FederateNotExecutionMember,
+               FederationNotPaused,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- // -----------------------
- // -- Object Management --
- // -----------------------
+    // -----------------------
+    // -- Object Management --
+    // -----------------------
 
- void deleteObject(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- const char *theUserTag)
- throw (FederateNotExecutionMember,
- DeletePrivilegeNotHeld,
- ObjectNotKnown,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void deleteObject(FederateHandle theFederateHandle,
+                      ObjectHandle theObjectHandle,
+                      const char *theUserTag)
+        throw (FederateNotExecutionMember,
+               DeletePrivilegeNotHeld,
+               ObjectNotKnown,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void publishObject(FederateHandle theFederateHandle,
- ObjectClassHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize,
- bool PubOrUnpub)
- throw (ObjectClassNotDefined,
- AttributeNotDefined,
- FederateNotExecutionMember,
- SaveInProgress,
- SecurityError,
- RestoreInProgress,
- RTIinternalError);
+    void publishObject(FederateHandle theFederateHandle,
+                       ObjectClassHandle theObjectHandle,
+                       AttributeHandle *theAttributeList,
+                       UShort theListSize,
+                       bool PubOrUnpub)
+        throw (ObjectClassNotDefined,
+               AttributeNotDefined,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               SecurityError,
+               RestoreInProgress,
+               RTIinternalError);
 
- ObjectHandle registerObject(FederateHandle theFederateHandle,
- ObjectClassHandle theClass,
- ObjectName theName)
- throw (FederateNotExecutionMember,
- FederateNotPublishing,
- ObjectAlreadyRegistered,
- ObjectClassNotDefined,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    ObjectHandle registerObject(FederateHandle theFederateHandle,
+                                ObjectClassHandle theClass,
+                                ObjectName theName)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               ObjectAlreadyRegistered,
+               ObjectClassNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void subscribeObject(FederateHandle theFederateHandle,
- ObjectClassHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize,
- bool SubOrUnSub)
- throw (ObjectClassNotDefined,
- AttributeNotDefined,
- FederateNotExecutionMember,
- SaveInProgress,
- SecurityError,
- RestoreInProgress,
- RTIinternalError);
+    void subscribeObject(FederateHandle theFederateHandle,
+                         ObjectClassHandle theObjectHandle,
+                         AttributeHandle *theAttributeList,
+                         UShort theListSize,
+                         bool SubOrUnSub)
+        throw (ObjectClassNotDefined,
+               AttributeNotDefined,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               SecurityError,
+               RestoreInProgress,
+               RTIinternalError);
 
- void updateAttributeValues(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- AttributeValue *theValueList,
- UShort theListSize,
- FederationTime theTime,
- const char *theTag)
- throw (FederateNotExecutionMember,
- ObjectNotKnown,
- AttributeNotDefined,
- AttributeNotOwned,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void updateAttributeValues(FederateHandle theFederateHandle,
+                               ObjectHandle theObjectHandle,
+                               AttributeHandle *theAttributeList,
+                               AttributeValue *theValueList,
+                               UShort theListSize,
+                               FederationTime theTime,
+                               const char *theTag)
+        throw (FederateNotExecutionMember,
+               ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- // ----------------------------
- // -- Interaction Management --
- // ----------------------------
+    // ----------------------------
+    // -- Interaction Management --
+    // ----------------------------
 
- void broadcastInteraction(FederateHandle theFederateHandle,
- InteractionClassHandle theInteractionHandle,
- ParameterHandle *theParameterList,
- ParameterValue *theValueList,
- UShort theListSize,
- FederationTime theTime,
- const char *theTag)
- throw (FederateNotExecutionMember,
- FederateNotPublishing,
- InteractionClassNotDefined,
- InteractionParameterNotDefined,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void broadcastInteraction(FederateHandle theFederateHandle,
+                              InteractionClassHandle theInteractionHandle,
+                              ParameterHandle *theParameterList,
+                              ParameterValue *theValueList,
+                              UShort theListSize,
+                              FederationTime theTime,
+                              const char *theTag)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void publishInteraction(FederateHandle theFederateHandle,
- InteractionClassHandle theInteractionHandle,
- bool PubOrUnpub)
- throw (InteractionClassNotDefined,
- FederateNotExecutionMember,
- SaveInProgress,
- SecurityError,
- RestoreInProgress,
- RTIinternalError);
+    void publishInteraction(FederateHandle theFederateHandle,
+                            InteractionClassHandle theInteractionHandle,
+                            bool PubOrUnpub)
+        throw (InteractionClassNotDefined,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               SecurityError,
+               RestoreInProgress,
+               RTIinternalError);
 
- void subscribeInteraction(FederateHandle theFederateHandle,
- InteractionClassHandle theInteractionHandle,
- bool SubOrUnsub)
- throw (InteractionClassNotDefined,
- FederateNotExecutionMember,
- SaveInProgress,
- SecurityError,
- RestoreInProgress,
- RTIinternalError);
+    void subscribeInteraction(FederateHandle theFederateHandle,
+                              InteractionClassHandle theInteractionHandle,
+                              bool SubOrUnsub)
+        throw (InteractionClassNotDefined,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               SecurityError,
+               RestoreInProgress,
+               RTIinternalError);
 
 
- // --------------------------
- // -- Ownership Management --
- // --------------------------
+    // --------------------------
+    // -- Ownership Management --
+    // --------------------------
 
- bool isOwner(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle theAttribute)
- throw (FederateNotExecutionMember,
- ObjectNotKnown,
- AttributeNotDefined,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    bool isOwner(FederateHandle theFederateHandle,
+                 ObjectHandle theObjectHandle,
+                 AttributeHandle theAttribute)
+        throw (FederateNotExecutionMember,
+               ObjectNotKnown,
+               AttributeNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void queryAttributeOwnership(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle theAttribute)
- throw (FederateNotExecutionMember,
- ObjectNotKnown,
- AttributeNotDefined,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void queryAttributeOwnership(FederateHandle theFederateHandle,
+                                 ObjectHandle theObjectHandle,
+                                 AttributeHandle theAttribute)
+        throw (FederateNotExecutionMember,
+               ObjectNotKnown,
+               AttributeNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void negotiateDivestiture(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize,
- const char *theTag)
- throw (FederateNotExecutionMember,
- ObjectNotKnown,
- AttributeNotDefined,
- AttributeNotOwned,
- AttributeAlreadyBeingDivested,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void negotiateDivestiture(FederateHandle theFederateHandle,
+                              ObjectHandle theObjectHandle,
+                              AttributeHandle *theAttributeList,
+                              UShort theListSize,
+                              const char *theTag)
+        throw (FederateNotExecutionMember,
+               ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               AttributeAlreadyBeingDivested,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void acquireIfAvailable(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize)
- throw (ObjectNotKnown,
- ObjectClassNotPublished,
- AttributeNotDefined,
- AttributeNotPublished,
- FederateOwnsAttributes,
- AttributeAlreadyBeingAcquired,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void acquireIfAvailable(FederateHandle theFederateHandle,
+                            ObjectHandle theObjectHandle,
+                            AttributeHandle *theAttributeList,
+                            UShort theListSize)
+        throw (ObjectNotKnown,
+               ObjectClassNotPublished,
+               AttributeNotDefined,
+               AttributeNotPublished,
+               FederateOwnsAttributes,
+               AttributeAlreadyBeingAcquired,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void divest(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize)
- throw (ObjectNotKnown,
- AttributeNotDefined,
- AttributeNotOwned,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void divest(FederateHandle theFederateHandle,
+                ObjectHandle theObjectHandle,
+                AttributeHandle *theAttributeList,
+                UShort theListSize)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void acquire(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize,
- const char *theTag)
- throw (ObjectNotKnown,
- ObjectClassNotPublished,
- AttributeNotDefined,
- AttributeNotPublished,
- FederateOwnsAttributes,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void acquire(FederateHandle theFederateHandle,
+                 ObjectHandle theObjectHandle,
+                 AttributeHandle *theAttributeList,
+                 UShort theListSize,
+                 const char *theTag)
+        throw (ObjectNotKnown,
+               ObjectClassNotPublished,
+               AttributeNotDefined,
+               AttributeNotPublished,
+               FederateOwnsAttributes,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void cancelDivestiture(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize)
- throw (ObjectNotKnown,
- AttributeNotDefined,
- AttributeNotOwned,
- AttributeDivestitureWasNotRequested,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void cancelDivestiture(FederateHandle theFederateHandle,
+                           ObjectHandle theObjectHandle,
+                           AttributeHandle *theAttributeList,
+                           UShort theListSize)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               AttributeDivestitureWasNotRequested,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- AttributeHandleSet* respondRelease(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize)
- throw (ObjectNotKnown,
- AttributeNotDefined,
- AttributeNotOwned,
- FederateWasNotAskedToReleaseAttribute,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    AttributeHandleSet* respondRelease(FederateHandle theFederateHandle,
+                                       ObjectHandle theObjectHandle,
+                                       AttributeHandle *theAttributeList,
+                                       UShort theListSize)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               FederateWasNotAskedToReleaseAttribute,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
- void cancelAcquisition(FederateHandle theFederateHandle,
- ObjectHandle theObjectHandle,
- AttributeHandle *theAttributeList,
- UShort theListSize)
- throw (ObjectNotKnown,
- AttributeNotDefined,
- AttributeAlreadyOwned,
- AttributeAcquisitionWasNotRequested,
- FederateNotExecutionMember,
- SaveInProgress,
- RestoreInProgress,
- RTIinternalError);
+    void cancelAcquisition(FederateHandle theFederateHandle,
+                           ObjectHandle theObjectHandle,
+                           AttributeHandle *theAttributeList,
+                           UShort theListSize)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeAlreadyOwned,
+               AttributeAcquisitionWasNotRequested,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
 private:
- // ---------------------
- // -- Private Methods --
- // ---------------------
- void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
+    // ---------------------
+    // -- Private Methods --
+    // ---------------------
+    void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
 
- Federate *getByName(const char *theName) const
- throw (FederateNotExecutionMember);
+    Federate *getByName(const char *theName) const
+        throw (FederateNotExecutionMember);
 
- Federate *getByHandle(FederateHandle theHandle) const
- throw (FederateNotExecutionMember);
+    Federate *getByHandle(FederateHandle theHandle) const
+        throw (FederateNotExecutionMember);
 
- FederateHandle getNewHandle(void)
- throw (RTIinternalError);
+    FederateHandle getNewHandle(void)
+        throw (RTIinternalError);
 };
 
 }}
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.8 2003/02/17 16:00:06 breholee Exp $
+// $Id: Federation.hh,v 3.9 2003/02/19 14:29:37 breholee Exp $

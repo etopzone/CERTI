@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIG.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -329,7 +329,7 @@ RTIG::execute(void)
         // Wait for an incoming message.
         result = 0 ;
         result = select(ulimit(4, 0), &fd, NULL, NULL, NULL);
-        if ((result == -1)&&(errno == EINTR)) break ;
+        if ((result == -1)&& (errno == EINTR)) break ;
 
         // Is it a message from an already opened connection?
         link = socketServer->getActiveSocket(&fd);
@@ -862,4 +862,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: RTIG.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.3 2003/02/17 16:00:06 breholee Exp $
+// $Id: main.cc,v 3.4 2003/02/19 14:29:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -33,33 +33,33 @@ static RTIG* rtip ;
 //! SignalHandler.
 extern "C" void SignalHandler(int sig)
 {
- rtip->signalHandler(sig);
+    rtip->signalHandler(sig);
 
- // Catch signal again.
- signal(sig, SignalHandler);
+    // Catch signal again.
+    signal(sig, SignalHandler);
 }
 
 // ----------------------------------------------------------------------------
 //! RTIG server entry point.
 int main(int argc, char *argv[])
 {
- gengetopt_args_info args_info ;
- if (cmdline_parser(argc, argv, &args_info) != 0) exit(EXIT_FAILURE);
+    gengetopt_args_info args_info ;
+    if (cmdline_parser(argc, argv, &args_info) != 0) exit(EXIT_FAILURE);
 
- cout << "CERTI " VERSION " - Copyright 2002, 2003  ONERA" << endl ;
- cout << "This is free software ; see the source for copying conditions. "
- << "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS "
- << "FOR A PARTICULAR PURPOSE." << endl << endl ;
+    cout << "CERTI " VERSION " - Copyright 2002, 2003  ONERA" << endl ;
+    cout << "This is free software ; see the source for copying conditions. "
+         << "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS "
+         << "FOR A PARTICULAR PURPOSE." << endl << endl ;
 
- signal(SIGINT, SignalHandler);
- signal(SIGPIPE, SignalHandler);
+    signal(SIGINT, SignalHandler);
+    signal(SIGPIPE, SignalHandler);
 
- rtip = new RTIG();
- rtip->execute();
- delete rtip ;
+    rtip = new RTIG();
+    rtip->execute();
+    delete rtip ;
 
- cout << "RTIG exiting." << endl ;
- exit(EXIT_SUCCESS);
+    cout << "RTIG exiting." << endl ;
+    exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.3 2003/02/17 16:00:06 breholee Exp $
+// $Id: main.cc,v 3.4 2003/02/19 14:29:38 breholee Exp $

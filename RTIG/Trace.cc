@@ -1,26 +1,26 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
-// CERTI is free software; you can redistribute it and/or modify
+// CERTI is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
 // CERTI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Trace.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: Trace.cc,v 3.3 2003/02/19 14:29:38 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "Trace.hh"
 
@@ -29,21 +29,21 @@ namespace rtig {
 
 Trace::Trace()
 {
-  f_trace = fopen(NOM_FICHIER_TRACE, "w");
-  if(f_trace == NULL)
-    printf("GTr: impossible ouvrir fichier trace %s\n", NOM_FICHIER_TRACE);
+    f_trace = fopen(NOM_FICHIER_TRACE, "w");
+    if (f_trace == NULL)
+        printf("GTr: impossible ouvrir fichier trace %s\n", NOM_FICHIER_TRACE);
 }
 
 Trace::~Trace()
 {
-  if(f_trace) fclose(f_trace);
+    if (f_trace) fclose(f_trace);
 }
 
 void Trace::write(char *s)
 {
-  if(f_trace) fprintf(f_trace, "%ld  %s\n", time(0), s);
+    if (f_trace) fprintf(f_trace, "%ld %s\n", time(0), s);
 }
 
 }}
 
-// $Id: Trace.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: Trace.cc,v 3.3 2003/02/19 14:29:38 breholee Exp $
