@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.5 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.6 2003/01/29 18:32:34 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -57,18 +57,8 @@ public:
   ObjectClassSet(SecurityServer *theSecurityServer);
   ~ObjectClassSet(void);
 
-
-  // The class is not allocated, only the pointer is memorized.
   void addClass(ObjectClass *theClass);
-
-  /*! Build a Parent-Child relation between two object class, by setting
-      the Child's Parent handle, and registering the Child in the Parent's
-      SonSet. 
-      Also copy all Parent's Attributes in the Child Class.
-  */
   void buildParentRelation(ObjectClass *Child, ObjectClass *Parent);
-
-  //! Print the ObjectClasses tree to the standard output.
   void display(void) const;
 
   // --------------------------
@@ -186,8 +176,6 @@ public:
   // --------------------------
   // -- Ownership Management --
   // --------------------------
- 
- 
 
   Boolean isAttributeOwnedByFederate(ObjectHandle theObject,
 				     AttributeHandle theAttribute,
@@ -200,8 +188,7 @@ public:
   void queryAttributeOwnership(ObjectHandle theObject,
 			       AttributeHandle theAttribute,
 			       FederateHandle theFederateHandle)
-    throw(
-	  ObjectNotKnown,
+    throw(ObjectNotKnown,
 	  AttributeNotDefined,
 	  RTIinternalError);
  
@@ -211,7 +198,6 @@ public:
 					  AttributeHandle *theAttributeList,
 					  UShort theListSize,
 					  const char *theTag)
- 
     throw(ObjectNotKnown,
 	  AttributeNotDefined,
 	  AttributeNotOwned,
@@ -237,8 +223,7 @@ public:
 					     ObjectHandle theObjectHandle,
 					     AttributeHandle*,
 					     UShort theListSize)
-    throw(
-	  ObjectNotKnown,
+    throw(ObjectNotKnown,
 	  AttributeNotDefined,
 	  AttributeNotOwned,
 	  RTIinternalError); 
@@ -250,7 +235,7 @@ public:
 				     UShort theListSize,
 				     const char *theTag)
  
-    throw( ObjectNotKnown,
+    throw(ObjectNotKnown,
 	   ObjectClassNotPublished,
 	   AttributeNotDefined,
 	   AttributeNotPublished,
@@ -262,23 +247,22 @@ public:
 						ObjectHandle theObjectHandle,
 						AttributeHandle*,
 						UShort theListSize)
-    throw( ObjectNotKnown,
+    throw(ObjectNotKnown,
 	   AttributeNotDefined,
 	   AttributeNotOwned,
 	   AttributeDivestitureWasNotRequested,
 	   RTIinternalError);
  
-  AttributeHandleSet 
-  *attributeOwnershipRealeaseResponse( FederateHandle theFederateHandle,
-				       ObjectHandle theObjectHandle,
-				       AttributeHandle *theAttributeList,
-				       UShort theListSize)
- 
-    throw( ObjectNotKnown,
-	   AttributeNotDefined,
-	   AttributeNotOwned,
-	   FederateWasNotAskedToReleaseAttribute,
-	   RTIinternalError); 
+    AttributeHandleSet 
+    *attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
+                                       ObjectHandle theObjectHandle,
+                                       AttributeHandle *theAttributeList,
+                                       UShort theListSize)
+        throw(ObjectNotKnown,
+              AttributeNotDefined,
+              AttributeNotOwned,
+              FederateWasNotAskedToReleaseAttribute,
+              RTIinternalError);
  
   void cancelAttributeOwnershipAcquisition( FederateHandle theFederateHandle,
 					    ObjectHandle theObjectHandle,
@@ -317,4 +301,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.5 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.6 2003/01/29 18:32:34 breholee Exp $
