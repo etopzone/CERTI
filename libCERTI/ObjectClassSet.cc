@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.15 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.16 2005/03/16 23:14:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -331,23 +331,22 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
 // ----------------------------------------------------------------------------
 //! recursiveDiscovering.
 void
-ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
-                                     FederateHandle theFederate,
-                                     ObjectClassHandle theOriginalClass)
+ObjectClassSet::recursiveDiscovering(ObjectClassHandle current_handle,
+                                     FederateHandle federate,
+                                     ObjectClassHandle super_handle)
 {
     // It may throw ObjectClassNotDefined
-    ObjectClass *theClass = getWithHandle(theClassHandle);
+    ObjectClass *current = getWithHandle(current_handle);
 
     D.Out(pdInit, "Recursive Discovering on class %d for Federate %d.",
-          theClassHandle, theFederate);
+          current_handle, federate);
 
-    Boolean result ;
-    result = theClass->sendDiscoverMessages(theFederate, theOriginalClass);
+    bool result = current->sendDiscoverMessages(federate, super_handle);
 
-    if (result == RTI_TRUE) {
-        list<ObjectClassHandle>::const_iterator i = theClass->sonSet.begin();
-        for (; i != theClass->sonSet.end(); i++) {
-            recursiveDiscovering((*i), theFederate, theOriginalClass);
+    if (result) {
+        list<ObjectClassHandle>::const_iterator i ;
+        for (i = current->sonSet.begin(); i != current->sonSet.end(); ++i) {
+            recursiveDiscovering(*i, federate, super_handle);
         }
     }
 }
@@ -406,7 +405,6 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
                           ObjectClassHandle theClassHandle,
                           AttributeHandle *theAttributeList,
                           UShort theListSize,
-                          bool SubOrUnsub,
 			  const RegionImp *region)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
@@ -416,28 +414,26 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
     // It may throw ObjectClassNotDefined
     ObjectClass *theClass = getWithHandle(theClassHandle);
 
-    if (SubOrUnsub == RTI_TRUE)
-        D.Out(pdInit, "Federate %d attempts to subscribe to Object Class %d.",
-              theFederateHandle, theClassHandle);
-    else
-        D.Out(pdTerm, "Federate %d attempts to unsubscribe from Object "
-              "Class %d.", theFederateHandle, theClassHandle);
+//     if (SubOrUnsub == RTI_TRUE)
+//         D.Out(pdInit, "Federate %d attempts to subscribe to Object Class %d.",
+//               theFederateHandle, theClassHandle);
+//     else
+//         D.Out(pdTerm, "Federate %d attempts to unsubscribe from Object "
+//               "Class %d.", theFederateHandle, theClassHandle);
 
     // It may throw AttributeNotDefined
-    Boolean result = theClass->subscribe(theFederateHandle,
-                                         theAttributeList,
-                                         theListSize,
-                                         SubOrUnsub,
-					 region);
+    bool need_discover = theClass->subscribe(theFederateHandle,
+					     theAttributeList,
+					     theListSize,
+					     0);
 
-    // If Result is true, the Federate has never been a subscriber of this
+    // If need_discover is true, the Federate has never been a subscriber of this
     // class, so it my have missed some DiscoverObject messages, for this
     // class or one of its sub-class. Therefore, we must start a recursive
     // process to check this class and its subclass for possible instances
     // to discover, until we have reached an already subscribed class in
     // each branch.
-
-    if (result == RTI_TRUE)
+    if (need_discover)
         recursiveDiscovering(theClass->getHandle(), // Start process with this class
                              theFederateHandle, // Send msgs to this Federate
                              theClass->getHandle());
@@ -685,4 +681,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.15 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.16 2005/03/16 23:14:42 breholee Exp $
