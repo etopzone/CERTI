@@ -1,10 +1,10 @@
-## $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+## $Id: Makefile.am,v 3.1 2003/10/09 08:58:32 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 # @configure_input@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-noinst_HEADERS = graph_c.hh
+include_HEADERS = graph_c.hh
 
-## $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $
+## $Id: Makefile.am,v 3.1 2003/10/09 08:58:32 breholee Exp $
