@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: billard.cc,v 3.4 2003/01/15 13:13:57 breholee Exp $
+// $Id: billard.cc,v 3.5 2003/01/16 18:21:30 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -309,29 +309,26 @@ int main(int argc, char**argv)
     myRTIAmbassador->queryFederateTime(localTime);
 
     try {
-      time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
+        time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
 
-      D.Out(pdDebug,"time_aux : %.2f - localtime : %.2f - timestep : %.2f",
-	    time_aux->getTime(),
-	((RTIfedTime&)localTime).getTime(),
-	((RTIfedTime&)TIME_STEP).getTime());
+        D.Out(pdDebug,"time_aux : %.2f - localtime : %.2f - timestep : %.2f",
+              time_aux->getTime(),
+              ((RTIfedTime&)localTime).getTime(),
+              ((RTIfedTime&)TIME_STEP).getTime());
 
-      myRTIAmbassador->timeAdvanceRequest(*time_aux);
+        myRTIAmbassador->timeAdvanceRequest(*time_aux);
     }
-    catch(Exception& e )
-    {
-	D.Out(pdExcept,"******* Exception sur timeAdvanceRequest.");
+    catch(Exception& e ) {
+        D.Out(pdExcept,"******* Exception sur timeAdvanceRequest.");
     }
+    delete time_aux;
 
     while(!myFedAmbassador->Granted)
-      try
-      {
-//	sleep(1);
-	myRTIAmbassador->tick();
-	nbtick++;
+      try {
+          myRTIAmbassador->tick();
+          nbtick++;
       }
-      catch(Exception& e)
-      {
+      catch(Exception& e) {
           D.Out(pdExcept,"******** Exception ticking the RTI : %d.",&e);
       }
          
@@ -370,12 +367,12 @@ int main(int argc, char**argv)
 	    time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
 
 	    D.Out(pdDebug,"time_aux : %.2f - localtime : %.2f - timestep : %.2f",
-		  time_aux->getTime(),
-		((RTIfedTime&)localTime).getTime(),
-		((RTIfedTime&)TIME_STEP).getTime());
+              time_aux->getTime(),
+              ((RTIfedTime&)localTime).getTime(),
+              ((RTIfedTime&)TIME_STEP).getTime());
 
 	    myFedAmbassador->sendInteraction(*time_aux,Remote->ID);
-	    
+	    delete time_aux;
 	    // On prend la vitesse de l'autre sauf dans le cas ou
 	    // on avait deja la meme. Dans ce cas, on inverse la notre.
 	    if((Local->dx == Remote->dx) 
@@ -406,15 +403,16 @@ int main(int argc, char**argv)
 
      
       // Envoie d'une mise a jour des attributs
-       time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
+      time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
 
-       D.Out(pdDebug,"time_aux : %.2f - localtime : %.2f - timestep : %.2f",
-	     time_aux->getTime(),
-	((RTIfedTime&)localTime).getTime(),
-	((RTIfedTime&)TIME_STEP).getTime());
+      D.Out(pdDebug,"time_aux : %.2f - localtime : %.2f - timestep : %.2f",
+            time_aux->getTime(),
+            ((RTIfedTime&)localTime).getTime(),
+            ((RTIfedTime&)TIME_STEP).getTime());
 
-       myFedAmbassador->SendUpdate(*time_aux);
-       D.Out(pdTrace, "fin tour de boucle.");
+      myFedAmbassador->SendUpdate(*time_aux);
+      delete time_aux;
+      D.Out(pdTrace, "fin tour de boucle.");
 
     } // fin de la boucle de simulation.
   
@@ -714,4 +712,4 @@ void Synchronize(RTI::RTIambassador *myRTIAmbassador,
 
 }
 
-// EOF $Id: billard.cc,v 3.4 2003/01/15 13:13:57 breholee Exp $
+// EOF $Id: billard.cc,v 3.5 2003/01/16 18:21:30 breholee Exp $

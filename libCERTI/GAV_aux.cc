@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// $Id: GAV_aux.cc,v 3.5 2003/01/16 18:17:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,16 +34,17 @@
 
 namespace certi {
 
-AttributeHandleValuePair::AttributeHandleValuePair()
+AttributeHandleValuePair::AttributeHandleValuePair(void)
 {
   _handle = 0;
   _valuelength = 0;
-  _value = new char [1024];
+  _value = new char[1024];
   _next =(AttributeHandleValuePair *)NULL;
 }
 
-AttributeHandleValuePair::~AttributeHandleValuePair()
+AttributeHandleValuePair::~AttributeHandleValuePair(void)
 {
+    delete _value;
 }
 
 //-----------------------------------------------------------------------
@@ -189,19 +190,21 @@ AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&,
 }
   
 void 
-AttributeHandleValuePairSet::empty() 
+AttributeHandleValuePairSet::empty(void)
 {
-  AttributeHandleValuePair * tmp  = _head;
-  AttributeHandleValuePair * next = _head->_next;
-  for (unsigned int i = 0 ; i < _size-1 ; i++) {
-    delete tmp;
-    tmp = next;
-    next = next->_next;
-  }
-  delete tmp;
+    if (_head != NULL) {
+        AttributeHandleValuePair * tmp  = _head;
+        AttributeHandleValuePair * next = _head->_next;
+        for (unsigned int i = 0 ; i < _size-1 ; i++) {
+            delete tmp;
+            tmp = next;
+            next = next->_next;
+        }
+        delete tmp;
 
-  _head =(AttributeHandleValuePair *)NULL;
-  _size = 0;
+        _head =(AttributeHandleValuePair *)NULL;
+        _size = 0;
+    }
 }
 
 ULong 
@@ -320,17 +323,19 @@ AttributeHandleSet::remove(AttributeHandle h)
 void 
 AttributeHandleSet::empty()
 {
-  HandlePair * tmp  = _head;
-  HandlePair * next = _head->_next;
-  for(unsigned int i = 0 ; i < _size-1 ; i++) {
-    delete tmp;
-    tmp = next;
-    next = next->_next;
-  }
-  delete tmp;
+    if (_head != NULL) {
+        HandlePair * tmp  = _head;
+        HandlePair * next = _head->_next;
+        for(unsigned int i = 0 ; i < _size-1 ; i++) {
+            delete tmp;
+            tmp = next;
+            next = next->_next;
+        }
+        delete tmp;
 
-  _head =(HandlePair *)NULL;
-  _size = 0;
+        _head =(HandlePair *)NULL;
+        _size = 0;
+    }
 }
 
 inline Boolean 
@@ -379,8 +384,9 @@ ParameterHandleValuePair::ParameterHandleValuePair()
   _next =(ParameterHandleValuePair *)NULL;
 }
 
-ParameterHandleValuePair::~ParameterHandleValuePair()
+ParameterHandleValuePair::~ParameterHandleValuePair(void)
 {
+    delete _value;
 }
 
 //-----------------------------------------------------------------------
@@ -530,17 +536,19 @@ ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&,
 void 
 ParameterHandleValuePairSet::empty(void) 
 {
-  ParameterHandleValuePair * tmp  = _head;
-  ParameterHandleValuePair * next = _head->_next;
-  for (unsigned int i = 0 ; i < _size-1 ; i++) {
-      delete tmp;
-      tmp = next;
-      next = next->_next;
-  }
-  delete tmp;
+    if (_head != NULL) {
+        ParameterHandleValuePair * tmp  = _head;
+        ParameterHandleValuePair * next = _head->_next;
+        for (unsigned int i = 0 ; i < _size-1 ; i++) {
+            delete tmp;
+            tmp = next;
+            next = next->_next;
+        }
+        delete tmp;
 
-  _head = (ParameterHandleValuePair *) NULL;
-  _size = 0;
+        _head = (ParameterHandleValuePair *) NULL;
+        _size = 0;
+    }
 }
 
 ULong 
@@ -584,4 +592,4 @@ ParameterSetFactory::create(ULong)
 
 }
 
-// $Id: GAV_aux.cc,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// $Id: GAV_aux.cc,v 3.5 2003/01/16 18:17:57 breholee Exp $

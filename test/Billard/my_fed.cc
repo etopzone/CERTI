@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: my_fed.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// $Id: my_fed.cc,v 3.3 2003/01/16 18:21:30 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -446,94 +446,82 @@ throw(
     }
 }
 
-//
+// ---------------------------------------------------------------------------
 // SendInteraction
-//
-
-void Fed::sendInteraction(const FedTime& InteractionTime,
-			   ObjectHandle Id)
+void Fed::sendInteraction(const FedTime& InteractionTime, ObjectHandle Id)
 {
   char buf[512];
-  ParameterHandleValuePairSet  *ParameterSet=NULL ;
+  ParameterHandleValuePairSet  *parameterSet=NULL ;
   
-  ParameterSet = ParameterSetFactory::create( 3 );
+  parameterSet = ParameterSetFactory::create( 3 );
   
   sprintf(buf, "%ld",Id);
-  ParameterSet->add(ParamBoulID, buf, strlen(buf)+1) ;
+  parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
 
   D.Out(pdDebug,"SendInteraction");
-  D.Out(pdDebug,"SendInteraction - ParamBoulID= %u",
-	ParamBoulID);
-  D.Out(pdDebug,"SendInteraction - x= %d",
-	Id);
-  D.Out(pdDebug,"SendInteraction - buf= %s",
-	buf);
+  D.Out(pdDebug,"SendInteraction - ParamBoulID= %u", ParamBoulID);
+  D.Out(pdDebug,"SendInteraction - x= %d", Id);
+  D.Out(pdDebug,"SendInteraction - buf= %s", buf);
 
 //  D.Out(pdDebug,"SendInteraction - ParamBoulID= %u, x= %f, buf= %s",
 //	ParamBoulID,Id,buf);
   
   sprintf(buf, "%f",Local.dx);
-  ParameterSet->add(ParamDXID, buf, strlen(buf)+1) ;
+  parameterSet->add(ParamDXID, buf, strlen(buf)+1);
   D.Out(pdDebug,"SendInteraction - ParamDXID= %u, x= %f, buf= %s",
-	ParamDXID,Local.dx,buf);
+        ParamDXID,Local.dx,buf);
   
   sprintf(buf, "%f",Local.dy);
-  ParameterSet->add(ParamDYID, buf, strlen(buf)+1) ;
+  parameterSet->add(ParamDYID, buf, strlen(buf)+1) ;
   D.Out(pdDebug,"SendInteraction - ParamDYID= %u, x= %f, buf= %s",
-	ParamDYID,Local.dy,buf);
+        ParamDYID,Local.dy,buf);
   
   D.Out(pdRegister,"Sending interaction(DX= %f, DY= %f).",Local.dx,Local.dy);
 
-  try
-  {
-     RTIA->sendInteraction(BingClassID, *ParameterSet,
-			  InteractionTime, "") ;
+  try {
+      RTIA->sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
   }
-  catch( Exception& e )
-  {
-       D.Out(pdExcept,"**** Exception sending interaction : %d", &e);
+  catch( Exception& e ) {
+      D.Out(pdExcept,"**** Exception sending interaction : %d", &e);
   }
-  ParameterSet->empty();
+
+  delete parameterSet;
 }
 
-//
-// SendUpdate
-//
-
+// ---------------------------------------------------------------------------
+// SendUpdate updates a ball by sending entity position and color.
 void Fed::SendUpdate(const FedTime& UpdateTime)
 {
-  char buf[512] ;
-  AttributeHandleValuePairSet  *AttributeSet;
+  char buf[512];
+  AttributeHandleValuePairSet *attributeSet;
   
-  AttributeSet = AttributeSetFactory::create( 3 );
+  attributeSet = AttributeSetFactory::create( 3 );
 
   D.Out(pdTrace, "SendUpdate.");
 
   sprintf(buf, "%f",Local.x);
-  AttributeSet->add(AttrXID, buf, strlen(buf)+1) ;
+  attributeSet->add(AttrXID, buf, strlen(buf)+1) ;
   D.Out(pdDebug,"SendUpdate - AttrXID= %u, x= %f, size= %u",
-	AttrXID,Local.x,AttributeSet->size());
+        AttrXID,Local.x, attributeSet->size());
   
   sprintf(buf, "%f",Local.y);
-  AttributeSet->add(AttrYID, buf, strlen(buf)+1) ;
+  attributeSet->add(AttrYID, buf, strlen(buf)+1) ;
   D.Out(pdDebug,"SendUpdate - AttrYID= %u, y= %f, size= %u",
-	AttrYID,Local.y,AttributeSet->size());
+        AttrYID,Local.y, attributeSet->size());
   
   sprintf(buf, "%d",Local.Color);
-  AttributeSet->add(AttrColorID, buf, strlen(buf)+1) ;
+  attributeSet->add(AttrColorID, buf, strlen(buf)+1) ;
   D.Out(pdDebug,"SendUpdate - AttrColorID= %u, color= %f, size= %u",
-	AttrColorID,Local.color,AttributeSet->size());
-  
-  try
-  {
-    RTIA->updateAttributeValues(Local.ID,   *AttributeSet,
-				  UpdateTime, "");
+        AttrColorID,Local.color, attributeSet->size());
+
+  try {
+      RTIA->updateAttributeValues(Local.ID, *attributeSet, UpdateTime, "");
   }
-  catch( Exception& e )
-  {
-    D.Out(pdExcept,"**** Exception updating attribute values: %d",&e) ;
+  catch( Exception& e ) {
+      D.Out(pdExcept,"**** Exception updating attribute values: %d",&e);
   }
-  AttributeSet->empty();
+
+  delete attributeSet;
 }
 
 void Fed::turnInteractionsOn(
@@ -873,4 +861,4 @@ void Fed::confirmAttributeOwnershipAcquisitionCancellation(
 				
 }
 
-// EOF $Id: my_fed.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.3 2003/01/16 18:21:30 breholee Exp $
