@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,13 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.5 2003/11/13 10:43:02 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.6 2004/01/09 16:17:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RoutingSpace.hh"
-#include "NameComparator.hh"
-#include "HandleComparator.hh"
+#include "helper.hh"
 
 #include <iostream>
 #include <cassert>
@@ -156,4 +155,4 @@ RoutingSpace::size() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.5 2003/11/13 10:43:02 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.6 2004/01/09 16:17:43 breholee Exp $

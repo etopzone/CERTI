@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,14 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.20 2003/11/13 10:43:02 breholee Exp $
+// $Id: RootObject.cc,v 3.21 2004/01/09 16:17:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RootObject.hh"
 #include "PrettyDebug.hh"
-#include "NameComparator.hh"
-#include "HandleComparator.hh"
+#include "helper.hh"
 
 #include <cassert>
 #include <string>
@@ -46,12 +45,11 @@ static pdCDebug D("ROOTOBJECT", "(RootObject) ");
 // ----------------------------------------------------------------------------
 //! The SocketServer can be NULL on the RTIA.
 RootObject::RootObject(SecurityServer *security_server)
-    : server(security_server)
+    : server(security_server), regionHandles(1)
 {
     ObjectClasses = new ObjectClassSet(server);
     Interactions = new InteractionSet(server);
     objects = new ObjectSet(server);
-    freeRegionHandle = 1 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -161,7 +159,8 @@ RegionHandle
 RootObject::createRegion(SpaceHandle handle, long nb_extents)
     throw (SpaceNotDefined)
 {
-    RegionImp *region = new RegionImp(freeRegionHandle++, handle, nb_extents,
+    RegionImp *region = new RegionImp(regionHandles.provide(), handle, 
+				      nb_extents,
 				      getRoutingSpace(handle).size());
     addRegion(region);
 
@@ -200,6 +199,7 @@ RootObject::deleteRegion(RegionHandle region_handle)
     else {
 	// TODO: check RegionInUse
 	regions.remove(*it);
+	regionHandles.free((*it)->getHandle());
 	delete *it ;
     }
 }
@@ -311,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.20 2003/11/13 10:43:02 breholee Exp $
+// $Id: RootObject.cc,v 3.21 2004/01/09 16:17:43 breholee Exp $

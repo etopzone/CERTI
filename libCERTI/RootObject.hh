@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.19 2003/11/13 10:43:02 breholee Exp $
+// $Id: RootObject.hh,v 3.20 2004/01/09 16:17:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -31,6 +31,7 @@
 #include "RegionImp.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
+#include "HandleManager.hh"
 
 #include <vector>
 
@@ -61,7 +62,7 @@ public:
     RegionImp *getRegion(RegionHandle) throw (RegionNotKnown);
     void modifyRegion(RegionHandle, const std::vector<Extent> &)
 	throw (RegionNotKnown, InvalidExtents);
-    
+
     // Object Management
     void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
                                 const char *)
@@ -91,13 +92,15 @@ public:
 
 private:
     std::vector<RoutingSpace> spaces ;
-    std::list<RegionImp *> regions ;
     SecurityServer *server ;
-    long freeRegionHandle ;
+
+    // Regions
+    std::list<RegionImp *> regions ;
+    HandleManager<RegionHandle> regionHandles ;
 };
 
 } // namespace certi
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.19 2003/11/13 10:43:02 breholee Exp $
+// $Id: RootObject.hh,v 3.20 2004/01/09 16:17:43 breholee Exp $
