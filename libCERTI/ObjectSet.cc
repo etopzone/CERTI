@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -24,6 +23,19 @@
 
 #include "ObjectSet.hh"
 
+// Project
+#include <config.h>
+#include "PrettyDebug.hh"
+
+// Standard
+#include <iostream>
+#include <sstream>
+
+using std::pair ;
+using std::cout ;
+using std::endl ;
+using std::ostringstream ;
+
 namespace certi {
 
 static pdCDebug D("OBJECTSET", "(ObjectSet) - ");
@@ -35,12 +47,12 @@ ObjectSet::ObjectSet(SecurityServer *the_server)
 }
 
 // ----------------------------------------------------------------------------
-ObjectSet::~ObjectSet(void)
+ObjectSet::~ObjectSet()
 {
     std::map<ObjectHandle, Object *>::iterator i ;
 
     for (i = begin(); i != end(); i++) {
-        delete (*i).second ;
+        delete i->second ;
     }
     erase(begin(), end());
 }
@@ -78,46 +90,35 @@ ObjectSet::changeAttributeOrderType(ObjectHandle the_object,
 // ----------------------------------------------------------------------------
 ObjectHandle
 ObjectSet::getObjectInstanceHandle(const char *the_name) const
-    throw (ObjectNotKnown,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RTIinternalError)
+    throw (ObjectNotKnown, RTIinternalError)
 {
     char tmp[MAX_USER_TAG_LENGTH] ;
 
     std::map<ObjectHandle, Object *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        ((*i).second)->getName(tmp);
+        (i->second)->getName(tmp);
         if (strcmp(tmp, the_name) == 0)
-            return ((*i).second)->getHandle();
+            return (i->second)->getHandle();
     }
 
     throw ObjectNotKnown("No object instance with that name.");
 }
 
 // ----------------------------------------------------------------------------
-char *
+const char *
 ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
-    throw (ObjectNotKnown,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RTIinternalError)
+    throw (ObjectNotKnown, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
-    char *name = (char *)malloc(MAX_USER_TAG_LENGTH*sizeof(char));
-    object->getName(name);
-
-    return name ;
+    return object->getName();
 }
 
 // ----------------------------------------------------------------------------
 ObjectClassHandle
 ObjectSet::getObjectClass(ObjectHandle the_object) const
-    throw (ObjectNotKnown,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RTIinternalError)
+    throw (ObjectNotKnown, FederateNotExecutionMember,
+           ConcurrentAccessAttempted, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -129,11 +130,8 @@ Object *
 ObjectSet::registerObjectInstance(FederateHandle the_federate,
                                   ObjectHandle the_object,
                                   const char *the_name)
-    throw (ObjectAlreadyRegistered,
-           ConcurrentAccessAttempted,
-           SaveInProgress,
-           RestoreInProgress,
-           RTIinternalError)
+    throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
+           SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
     i = std::map<ObjectHandle, Object *>::find(the_object);
@@ -142,13 +140,26 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
         throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
     }
 
-    Object *object = new Object(the_federate);
-    object->setHandle(the_object);
-    if (the_name) {
-        object->setName(the_name);
+    if (!strlen(the_name)) {
+        for (i = begin(); i != end(); i++) {
+            if (strcmp(i->second->getName(), the_name) == 0)
+                throw ObjectAlreadyRegistered("Object name already defined.");
+        }
     }
 
-    std::pair<ObjectHandle, Object *> tmp(the_object, object);
+    Object *object = new Object(the_federate);
+    object->setHandle(the_object);
+
+    if (!strlen(the_name)) {
+        object->setName(the_name);
+    }
+    else {
+        ostringstream tmp ;
+        tmp << "HLAobject_" << the_object ;
+        object->setName(tmp.str().c_str());
+    }
+
+    pair<ObjectHandle, Object *> tmp(the_object, object);
     std::map<ObjectHandle, Object *>::insert(tmp);
 
     return object ;
@@ -181,7 +192,7 @@ ObjectSet::killFederate(FederateHandle the_federate)
 {
     std::map<ObjectHandle, Object *>::iterator i ;
     for (i = begin(); i != end(); i++) {
-        if (((*i).second)->getOwner() == the_federate) {
+        if ((i->second)->getOwner() == the_federate) {
             std::map<ObjectHandle, Object *>::erase(i);
             i = begin();
         }
@@ -193,9 +204,7 @@ bool
 ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
                                       ObjectHandle the_object,
                                       AttributeHandle the_attribute) const
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           RTIinternalError)
+    throw (ObjectNotKnown, AttributeNotDefined, RTIinternalError)
 {
     D.Out(pdDebug, "isAttributeOwnedByFederate called for attribute %u, "
           "objet %u", the_attribute, the_object);
@@ -214,9 +223,7 @@ void
 ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
                                    ObjectHandle the_object,
                                    AttributeHandle the_attribute) const
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           RTIinternalError)
+    throw (ObjectNotKnown, AttributeNotDefined, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
@@ -233,7 +240,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         answer->object = the_object ;
         answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
-        answer->type = answer->federate 
+        answer->type = answer->federate
             ? m_INFORM_ATTRIBUTE_OWNERSHIP : m_ATTRIBUTE_IS_NOT_OWNED ;
 
         sendToFederate(answer, the_federate);
@@ -389,7 +396,7 @@ ObjectSet::getObject(ObjectHandle the_object) const
     i = find(the_object);
 
     if (i != end())
-        return (*i).second ;
+        return i->second ;
 
     throw ObjectNotKnown("Object not found in map set.");
 }
@@ -422,4 +429,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.3 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectSet.cc,v 3.4 2003/05/23 13:21:48 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,69 +19,49 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.13 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.14 2003/05/23 13:21:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
 #define _CERTI_OBJECT_CLASS_SET_HH
 
-#include <config.h>
-
+// Project
 #include "ObjectClass.hh"
 #include "SecurityServer.hh"
-#include "ObjectClassBroadcastList.hh"
-#include "PrettyDebug.hh"
 
-#include <iostream>
+// Standard
 #include <list>
-
-using std::list ;
-using std::cout ;
-using std::endl ;
 
 namespace certi {
 
 /*! Class ObjectClassSet, qui est la racine de l'arborescence des
   classes d'objets.
 */
-class ObjectClassSet : private list<ObjectClass *>
+class ObjectClassSet : private std::list<ObjectClass *>
 {
 
 public:
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
-
     ObjectClassSet(SecurityServer *theSecurityServer);
-    ~ObjectClassSet(void);
+    ~ObjectClassSet();
 
     void addClass(ObjectClass *theClass);
     void buildParentRelation(ObjectClass *Child, ObjectClass *Parent);
-    void display(void) const ;
+    void display() const ;
 
-    // --------------------------
-    // -- RTI Support Services --
-    // --------------------------
-
+    // RTI Support Services
     AttributeHandle getAttributeHandle(const char *the_name,
                                        ObjectClassHandle the_class) const
-        throw (AttributeNotDefined,
-               ObjectClassNotDefined,
-               RTIinternalError);
+        throw (NameNotFound, ObjectClassNotDefined, RTIinternalError);
 
     const char *getAttributeName(AttributeHandle the_handle,
                                  ObjectClassHandle the_class) const
-        throw (AttributeNotDefined,
-               ObjectClassNotDefined,
-               RTIinternalError);
+        throw (AttributeNotDefined, ObjectClassNotDefined, RTIinternalError);
 
     ObjectClassHandle getObjectClassHandle(const char *the_name) const
-        throw (ObjectClassNotDefined, RTIinternalError);
+        throw (NameNotFound, RTIinternalError);
 
     const char *getObjectClassName(ObjectClassHandle the_handle) const
-        throw (ObjectClassNotDefined,
-               RTIinternalError);
+        throw (ObjectClassNotDefined, RTIinternalError);
 
     ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
         throw (ObjectClassNotDefined);
@@ -90,19 +69,13 @@ public:
     void killFederate(FederateHandle theFederate)
         throw ();
 
-
-    // -----------------------------
-    // -- Object Class Management --
-    // -----------------------------
-
+    // Object Class Management
     void publish(FederateHandle theFederateHandle,
                  ObjectClassHandle theClassHandle,
                  AttributeHandle *theAttributeList,
                  UShort theListSize,
                  bool PubOrUnpub)
-        throw (ObjectClassNotDefined,
-               AttributeNotDefined,
-               RTIinternalError,
+        throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
 
     void subscribe(FederateHandle theFederateHandle,
@@ -110,9 +83,7 @@ public:
                    AttributeHandle *theAttributeList,
                    UShort theListSize,
                    bool SubOrUnsub)
-        throw (ObjectClassNotDefined,
-               AttributeNotDefined,
-               RTIinternalError,
+        throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
 
     // See Subscribe
@@ -120,22 +91,15 @@ public:
                               FederateHandle theFederate,
                               ObjectClassHandle theOriginalClass);
 
-    // --------------------------------
-    // -- Object Instance Management --
-    // --------------------------------
-
+    // Object Instance Management
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
                       const char *theTag)
-        throw (DeletePrivilegeNotHeld,
-               ObjectNotKnown,
-               RTIinternalError);
+        throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
-        throw (InvalidObjectHandle,
-               ObjectClassNotDefined,
-               ObjectClassNotPublished,
-               ObjectAlreadyRegistered,
+        throw (InvalidObjectHandle, ObjectClassNotDefined,
+               ObjectClassNotPublished, ObjectAlreadyRegistered,
                RTIinternalError);
 
     void updateAttributeValues(FederateHandle theFederateHandle,
@@ -145,110 +109,68 @@ public:
                                UShort theArraySize,
                                FederationTime theTime,
                                const char *theUserTag)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               RTIinternalError,
-               InvalidObjectHandle);
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+               RTIinternalError, InvalidObjectHandle);
 
-
-    // --------------------------
-    // -- Ownership Management --
-    // --------------------------
-    void
-    negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
-                                            ObjectHandle theObjectHandle,
-                                            AttributeHandle *theAttributeList,
-                                            UShort theListSize,
-                                            const char *theTag)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               AttributeAlreadyBeingDivested,
-               RTIinternalError);
+    // Ownership Management
+    void negotiatedAttributeOwnershipDivestiture(FederateHandle,
+                                                 ObjectHandle theObjectHandle,
+                                                 AttributeHandle *,
+                                                 UShort theListSize,
+                                                 const char *theTag)
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+               AttributeAlreadyBeingDivested, RTIinternalError);
 
 
     void attributeOwnershipAcquisitionIfAvailable(FederateHandle,
                                                   ObjectHandle theObjectHandle,
                                                   AttributeHandle*,
                                                   UShort theListSize)
-        throw (ObjectNotKnown,
-               ObjectClassNotPublished,
-               AttributeNotDefined,
-               AttributeNotPublished,
-               FederateOwnsAttributes,
-               AttributeAlreadyBeingAcquired,
+        throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
+               AttributeNotPublished, FederateOwnsAttributes,
+               AttributeAlreadyBeingAcquired, RTIinternalError);
+
+    void unconditionalAttributeOwnershipDivestiture(FederateHandle,
+                                                    ObjectHandle,
+                                                    AttributeHandle*,
+                                                    UShort theListSize)
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError);
-
-
-    void
-    unconditionalAttributeOwnershipDivestiture(FederateHandle,
-                                               ObjectHandle theObjectHandle,
-                                               AttributeHandle*,
-                                               UShort theListSize)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               RTIinternalError);
-
 
     void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
                                        AttributeHandle *theAttributeList,
                                        UShort theListSize,
                                        const char *theTag)
+        throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
+               AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 
-        throw (ObjectNotKnown,
-               ObjectClassNotPublished,
-               AttributeNotDefined,
-               AttributeNotPublished,
-               FederateOwnsAttributes,
-               RTIinternalError);
-
-    AttributeHandleSet
-    *attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
-                                       ObjectHandle theObjectHandle,
-                                       AttributeHandle *theAttributeList,
-                                       UShort theListSize)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               FederateWasNotAskedToReleaseAttribute,
-               RTIinternalError);
+    AttributeHandleSet *attributeOwnershipReleaseResponse(FederateHandle,
+                                                          ObjectHandle,
+                                                          AttributeHandle *,
+                                                          UShort)
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+               FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
     void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                              ObjectHandle theObjectHandle,
                                              AttributeHandle *theAttributeList,
                                              UShort theListSize)
-
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeAlreadyOwned,
-               AttributeAcquisitionWasNotRequested,
-               RTIinternalError);
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
+               AttributeAcquisitionWasNotRequested, RTIinternalError);
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
     */
     SecurityServer *server ;
 
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
-
     ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const
         throw (ObjectNotKnown);
 };
 
-}
+} // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.13 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.14 2003/05/23 13:21:48 breholee Exp $

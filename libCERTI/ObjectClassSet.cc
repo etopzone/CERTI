@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.13 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.14 2003/05/23 13:21:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
+
+// Project
+#include <config.h>
+#include "ObjectClassBroadcastList.hh"
+#include "PrettyDebug.hh"
+
+// Standard
+#include <iostream>
+
+using std::list ;
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -73,7 +84,7 @@ ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-ObjectClassSet::~ObjectClassSet(void)
+ObjectClassSet::~ObjectClassSet()
 {
     while (!empty()) {
         delete front();
@@ -84,54 +95,51 @@ ObjectClassSet::~ObjectClassSet(void)
 // ----------------------------------------------------------------------------
 //! deleteObject.
 void
-ObjectClassSet::deleteObject(FederateHandle theFederateHandle,
-                             ObjectHandle theObjectHandle,
-                             const char *theTag)
-    throw (DeletePrivilegeNotHeld,
-           ObjectNotKnown,
-           RTIinternalError)
+ObjectClassSet::deleteObject(FederateHandle federate,
+                             ObjectHandle object,
+                             const char *tag)
+    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
-    ObjectClass *theClass = getInstanceClass(theObjectHandle);
+    ObjectClass *oclass = getInstanceClass(object);
 
     D.Out(pdRegister,
           "Federate %d attempts to delete instance %d in class %d.",
-          theFederateHandle, theObjectHandle, theClass->getHandle());
+          federate, object, oclass->getHandle());
 
     // It may throw a bunch of exceptions.
-    ObjectClassBroadcastList *ocbList = NULL ;
-    ocbList = theClass->deleteInstance(theFederateHandle,
-                                       theObjectHandle,
-                                       theTag);
+    ObjectClassBroadcastList *ocbList = oclass->deleteInstance(federate,
+                                                               object,
+                                                               tag);
 
     // Broadcast RemoveObject message recursively
-    ObjectClassHandle currentClass = 0 ;
+    ObjectClassHandle current_class = 0 ;
     if (ocbList != 0) {
 
-        currentClass = theClass->Father ;
+        current_class = oclass->Father ;
 
-        while (currentClass != 0) {
+        while (current_class) {
             D.Out(pdRegister,
                   "Broadcasting Remove msg to parent class %d for instance %d.",
-                  currentClass, theObjectHandle);
+                  current_class, object);
 
             // It may throw ObjectClassNotDefined
-            theClass = getWithHandle(currentClass);
-            theClass->broadcastClassMessage(ocbList);
+            oclass = getWithHandle(current_class);
+            oclass->broadcastClassMessage(ocbList);
 
-            currentClass = theClass->Father ;
+            current_class = oclass->Father ;
         }
 
         delete ocbList ;
     }
 
-    D.Out(pdRegister, "Instance %d has been deleted.", theObjectHandle);
+    D.Out(pdRegister, "Instance %d has been deleted.", object);
 }
 
 // ----------------------------------------------------------------------------
 //! Print the ObjectClasses tree to the standard output.
 void
-ObjectClassSet::display(void) const
+ObjectClassSet::display() const
 {
     cout << " ObjectClasses :" << endl ;
 
@@ -146,13 +154,11 @@ ObjectClassSet::display(void) const
 AttributeHandle
 ObjectClassSet::getAttributeHandle(const char *the_name,
                                    ObjectClassHandle the_class) const
-    throw (AttributeNotDefined,
-           ObjectClassNotDefined,
-           RTIinternalError)
+    throw (NameNotFound, ObjectClassNotDefined, RTIinternalError)
 {
-    ObjectClass *objectClass = NULL ;
+    ObjectClass *objectClass = 0 ;
 
-    if (the_name == NULL)
+    if (the_name == 0)
         throw RTIinternalError();
 
     D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
@@ -206,9 +212,9 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 //! getObjectClassHandle.
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(const char *the_name) const
-    throw (ObjectClassNotDefined, RTIinternalError)
+    throw (NameNotFound, RTIinternalError)
 {
-    if (the_name == NULL)
+    if (the_name == 0)
         throw RTIinternalError();
 
     D.Out(pdRequest, "Looking for class \"%s\"...", the_name);
@@ -219,7 +225,7 @@ ObjectClassSet::getObjectClassHandle(const char *the_name) const
             return (*i)->getHandle();
     }
 
-    throw ObjectClassNotDefined();
+    throw NameNotFound();
 }
 
 // ----------------------------------------------------------------------------
@@ -677,4 +683,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.13 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.14 2003/05/23 13:21:48 breholee Exp $
