@@ -20,13 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Range.cc,v 3.0 2003/03/21 13:43:34 breholee Exp $
+// $Id: Range.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Range.hh"
 
 namespace certi {
 
+// ----------------------------------------------------------------------------
+// Range
+//
 Range::Range(DimensionHandle handle)
 {
     lowerBound = LONG_MAX ;
@@ -34,6 +37,9 @@ Range::Range(DimensionHandle handle)
     dimension = handle ;
 }
 
+// ----------------------------------------------------------------------------
+// Range
+//
 Range::Range(DimensionHandle handle, ULong lower, ULong upper)
 {
     lowerBound = lower ;
@@ -41,30 +47,45 @@ Range::Range(DimensionHandle handle, ULong lower, ULong upper)
     dimension = handle ;
 }
 
+// ----------------------------------------------------------------------------
+// setLowerBound
+//
 void
 Range::setLowerBound(ULong lower)
 {
     lowerBound = lower ;
 }
 
+// ----------------------------------------------------------------------------
+// setUpperBound
+//
 void
 Range::setUpperBound(ULong upper)
 {
     upperBound = upper ;
 }
 
+// ----------------------------------------------------------------------------
+// getLowerBound
+//
 ULong
 Range::getLowerBound(void)
 {
     return lowerBound ;
 }
 
+// ----------------------------------------------------------------------------
+// getUpperBound
+//
 ULong
 Range::getUpperBound(void)
 {
     return upperBound ;
 }
 
+// ----------------------------------------------------------------------------
+// getDimensionHandle
+//
 DimensionHandle
 Range::getDimensionHandle(void)
 {
@@ -73,4 +94,4 @@ Range::getDimensionHandle(void)
 
 } // namespace certi
 
-// $Id: Range.cc,v 3.0 2003/03/21 13:43:34 breholee Exp $
+// $Id: Range.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.9 2003/03/04 09:47:04 breholee Exp $
+// $Id: ObjectClass.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -282,6 +282,10 @@ public:
     ObjectClassBroadcastList *killFederate(FederateHandle theFederate)
         throw ();
 
+    ObjectClassAttribute *
+    getAttributeWithHandle(AttributeHandle the_handle) const
+        throw (AttributeNotDefined);
+
     // -------------------------
     // -- Instance Management --
     // -------------------------
@@ -353,10 +357,6 @@ private:
     Object *getInstanceWithID(ObjectHandle the_id) const
         throw (ObjectNotKnown);
 
-    ObjectClassAttribute *
-    getAttributeWithHandle(AttributeHandle the_handle) const
-        throw (AttributeNotDefined);
-
     // --------------------------------
     // -- Publication / Subscription --
     // --------------------------------
@@ -368,4 +368,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.9 2003/03/04 09:47:04 breholee Exp $
+// $Id: ObjectClass.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $

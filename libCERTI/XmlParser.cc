@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.9 2003/03/26 10:31:20 breholee Exp $
+// $Id: XmlParser.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "XmlParser.hh"
@@ -122,6 +122,9 @@ XmlParser::parse(string s)
     }
 
     xmlFreeDoc(doc);
+
+    D[pdTrace] << "XmlParser: finished parsing" << endl ;
+    return root ;
 }
 
 // ----------------------------------------------------------------------------
@@ -129,6 +132,8 @@ XmlParser::parse(string s)
 void
 XmlParser::parseClass(ObjectClass* parent)
 {
+    D[pdTrace] << "New Object Class" << endl ;
+
     xmlNodePtr prev = cur ;
     ObjectClass* current = new ObjectClass();
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
@@ -164,8 +169,18 @@ XmlParser::parseClass(ObjectClass* parent)
                 attr->Order = RECEIVE ;
 
             // Routing space
-            attr->setSpace(root->getRoutingSpaceHandle
-                           ((char *) xmlGetProp(cur, ATTRIBUTE_SPACE)));
+            char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
+            if (space) {
+                SpaceHandle h ;
+                try {
+                    h = root->getRoutingSpaceHandle(string(space));
+                }
+                catch (Exception &e) {
+                    cerr << "warning: Incorrect space name for attribute" 
+                         << endl ;
+                }
+                attr->setSpace(h);
+            }
 
             // Attribute complete, adding to the class
             current->addAttribute(attr);
@@ -184,6 +199,8 @@ XmlParser::parseClass(ObjectClass* parent)
 void
 XmlParser::parseInteraction(Interaction* parent)
 {
+    D[pdTrace] << "New Interaction Class" << endl ;
+
     xmlNodePtr prev = cur ;
     Interaction* current = new Interaction();
 
@@ -206,8 +223,19 @@ XmlParser::parseInteraction(Interaction* parent)
     else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
         current->order = RECEIVE ;
 
-    current->setSpace(root->getRoutingSpaceHandle
-                      ((char *) xmlGetProp(cur, ATTRIBUTE_SPACE)));
+    // Routing space
+    char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
+    if (space) {
+        SpaceHandle h ;
+        try {
+            h = root->getRoutingSpaceHandle(string(space));
+        }
+        catch (Exception &e) {
+            cerr << "warning: Incorrect space name for interaction" 
+                 << endl ;
+        }
+        current->setSpace(h);
+    }
 
     // Add to interactions list, and build inheritance relation
     root->Interactions->addClass(current);
@@ -236,6 +264,8 @@ XmlParser::parseInteraction(Interaction* parent)
 void
 XmlParser::parseRoutingSpace(void)
 {
+    D[pdTrace] << "New Routing Space" << endl ;
+
     DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;
     RoutingSpace *current = new RoutingSpace();
@@ -288,4 +318,4 @@ bool XmlParser::exists(void)
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.9 2003/03/26 10:31:20 breholee Exp $
+// $Id: XmlParser.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $

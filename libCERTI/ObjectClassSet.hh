@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.9 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -83,6 +83,9 @@ public:
     const char *getObjectClassName(ObjectClassHandle the_handle) const
         throw (ObjectClassNotDefined,
                RTIinternalError);
+
+    ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
+        throw (ObjectClassNotDefined);
 
     void killFederate(FederateHandle theFederate)
         throw ();
@@ -289,8 +292,6 @@ private:
     // -- Private Methods --
     // ---------------------
 
-    ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
-        throw (ObjectClassNotDefined);
 
     ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const
         throw (ObjectNotKnown);
@@ -300,4 +301,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.9 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $

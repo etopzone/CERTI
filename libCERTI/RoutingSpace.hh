@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.0 2003/03/21 13:44:09 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -47,6 +47,7 @@ public:
     SpaceHandle getHandle(void);
     DimensionHandle getDimensionHandle(string) throw (NameNotFound);
     string getDimensionName(DimensionHandle) throw (DimensionNotDefined);
+    long getNbDimensions(void);
 
     void display(void);
     void addDimension(Dimension*);
@@ -61,5 +62,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.0 2003/03/21 13:44:09 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
 

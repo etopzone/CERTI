@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.7 2003/03/12 10:07:18 breholee Exp $
+// $Id: RootObject.hh,v 3.8 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -31,6 +31,7 @@
 #include "InteractionSet.hh"
 #include "ObjectClassSet.hh"
 #include "ObjectSet.hh"
+#include "RegionImp.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
 #include "PrettyDebug.hh"
@@ -69,13 +70,20 @@ public:
     SpaceHandle getRoutingSpaceHandle(string) throw (NameNotFound);
     string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
+    void addRegion(RegionImp *);
+    long createRegion(SpaceHandle, long) throw (SpaceNotDefined);
+    void deleteRegion(long) throw (RegionNotKnown, RegionInUse);
+    RegionImp *getRegion(long) throw (RegionNotKnown);
+
 private:
     vector<RoutingSpace *> routingSpaces ;
+    list<RegionImp *> regions ;
     SecurityServer *server ;
+    long freeRegionHandle ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.7 2003/03/12 10:07:18 breholee Exp $
+// $Id: RootObject.hh,v 3.8 2003/04/09 16:41:10 breholee Exp $

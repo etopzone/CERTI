@@ -20,23 +20,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
 #define _CERTI_OBJECT_ATTRIBUTE_HH
 
 #include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <list>
-using std::list ;
-
 #include "RTItypes.hh"
 #include "PrettyDebug.hh"
+
+#include <iostream>
+#include <list>
+
+using std::cout ;
+using std::endl ;
+using std::list ;
 
 namespace certi {
 
@@ -75,16 +74,20 @@ public:
     AttributeHandle getHandle(void) const ;
     void setHandle(AttributeHandle h);
 
+    SpaceHandle getSpace(void) const ;
+    void setSpace(SpaceHandle);
+
 private:
     // Private Attributes
     AttributeHandle handle ; //!< The object attribute handle.
     FederateHandle owner ; //!< Federate who owns the attribute.
     Boolean divesting ; //!< Divesting state.
     list<FederateHandle> ownerCandidates ; //!< Federates candidate.
+    SpaceHandle space ; //!< Associated routing space
 };
 
 }
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $

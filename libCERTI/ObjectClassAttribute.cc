@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.8 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.9 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -91,14 +91,15 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
 /*! This constructor initialize the attribute with default parameters.
  */
 ObjectClassAttribute::ObjectClassAttribute(void)
-    : handle(0), LevelID(PublicLevelID), Order(RECEIVE), Transport(BEST_EFFORT)
+    : handle(0), LevelID(PublicLevelID), Order(RECEIVE), 
+      Transport(BEST_EFFORT), space(0)
 {
     Name = 0 ;
     server = 0 ;
 }
 
 // ----------------------------------------------------------------------------
-//! Constructor : Copy Handle, Name, Order and Transport.
+//! Constructor : Copy Handle, Name, Space, Order and Transport.
 ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *Source)
 {
     if (Source == NULL)
@@ -106,6 +107,7 @@ ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *Source)
 
     handle = Source->getHandle();
     LevelID = Source->LevelID ;
+    space = Source->getSpace();
 
     if (Source->Name != NULL)
         Name = strdup(Source->Name);
@@ -314,6 +316,20 @@ ObjectClassAttribute::getHandle(void) const
 }
 
 // ----------------------------------------------------------------------------
+void
+ObjectClassAttribute::setSpace(SpaceHandle h)
+{
+    space = h ;
+}
+
+// ----------------------------------------------------------------------------
+SpaceHandle
+ObjectClassAttribute::getSpace(void) const
+{
+    return space ;
+}
+
+// ----------------------------------------------------------------------------
 //! subscribe.
 void ObjectClassAttribute::subscribe(FederateHandle theFederate,
                                      bool SubOrUnsub)
@@ -376,4 +392,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.8 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.9 2003/04/09 16:41:10 breholee Exp $

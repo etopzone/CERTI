@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.0 2003/03/21 13:43:58 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RoutingSpace.hh"
@@ -28,12 +28,16 @@
 namespace certi {
 
 // ----------------------------------------------------------------------------
+/** Constructor
+ */
 RoutingSpace::RoutingSpace(void)
 {
 
 }
 
 // ----------------------------------------------------------------------------
+/** Destructor
+ */
 RoutingSpace::~RoutingSpace(void)
 {
     vector<Dimension*>::iterator i ;
@@ -44,7 +48,8 @@ RoutingSpace::~RoutingSpace(void)
 }
 
 // ----------------------------------------------------------------------------
-// add a dimension
+/** add a dimension
+ */
 void
 RoutingSpace::addDimension(Dimension* d)
 {
@@ -52,7 +57,8 @@ RoutingSpace::addDimension(Dimension* d)
 }
 
 // ----------------------------------------------------------------------------
-// set the routing space's handle
+/** set the routing space's handle
+ */
 void
 RoutingSpace::setHandle(SpaceHandle h)
 {
@@ -60,7 +66,8 @@ RoutingSpace::setHandle(SpaceHandle h)
 }
 
 // ----------------------------------------------------------------------------
-// display (stdout) the routing space details
+/** display (stdout) the routing space details
+ */
 void
 RoutingSpace::display(void)
 {
@@ -68,7 +75,8 @@ RoutingSpace::display(void)
 }
 
 // ----------------------------------------------------------------------------
-// set the routing space's name
+/** set the routing space's name
+ */
 void
 RoutingSpace::setName(string s)
 {
@@ -76,7 +84,8 @@ RoutingSpace::setName(string s)
 }
 
 // ----------------------------------------------------------------------------
-// get the routing space's name
+/** get the routing space's name
+ */
 string
 RoutingSpace::getName(void)
 {
@@ -84,7 +93,8 @@ RoutingSpace::getName(void)
 }
 
 // ----------------------------------------------------------------------------
-// get the routing space's handle
+/** get the routing space's handle
+ */
 SpaceHandle
 RoutingSpace::getHandle(void)
 {
@@ -92,7 +102,8 @@ RoutingSpace::getHandle(void)
 }
 
 // ----------------------------------------------------------------------------
-// get the handle of the specified dimension
+/** get the handle of the specified dimension
+ */
 DimensionHandle
 RoutingSpace::getDimensionHandle(string dimension)
     throw (NameNotFound)
@@ -107,7 +118,8 @@ RoutingSpace::getDimensionHandle(string dimension)
 }
 
 // ----------------------------------------------------------------------------
-// get the name of the specified dimension
+/** get the name of the specified dimension
+ */
 string
 RoutingSpace::getDimensionName(DimensionHandle dimension)
     throw (DimensionNotDefined)
@@ -122,6 +134,15 @@ RoutingSpace::getDimensionName(DimensionHandle dimension)
     throw new DimensionNotDefined();
 }
 
+// ----------------------------------------------------------------------------
+/** get the number of dimensions of this space
+ */
+long
+RoutingSpace::getNbDimensions()
+{
+    return dimensions.size();
+}
+
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.0 2003/03/21 13:43:58 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $

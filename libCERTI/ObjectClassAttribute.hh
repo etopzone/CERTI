@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -75,13 +75,16 @@ public:
     /*! Name attribute access(GetName reference must be considered READ-ONLY).
       NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
     */
-    inline char *getName(void) const {return Name ; };
+    char *getName(void) const {return Name ; };
 
     void setName(char *NewName)
         throw (ValueLengthExceeded, RTIinternalError);
 
     void setHandle(AttributeHandle h);
     AttributeHandle getHandle(void) const ;
+
+    void setSpace(SpaceHandle);
+    SpaceHandle getSpace(void) const ;
 
     // ----------------------
     // -- Security Methods --
@@ -118,6 +121,7 @@ private:
     // ------------------
     AttributeHandle handle ; //!< The attribute handle.
     AttributeName Name ; //!< The attribute name, must be locally allocated.
+    SpaceHandle space ; //!< Routing space
 
     list<Subscriber *> subscribers ; //!< The subscriber's list.
     list<Publisher *> publishers ; //!< The publisher's list.
@@ -144,4 +148,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $
+// $Id: Message.hh,v 3.11 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -127,13 +127,15 @@ typedef enum {
     TIME_ADVANCE_GRANT,
 
     // Data Distribution
+    CREATE_REGION,
+    MODIFY_REGION,
+    DELETE_REGION,
+
     CREATE_UPDATE_REGION,
     CREATE_SUBSCRIPTION_REGION,
     ASSOCIATE_UPDATE_REGION,
     DISASSOCIATE_UPDATE_REGION,
     CHANGE_THRESHOLDS,
-    MODIFY_REGION,
-    DELETE_REGION,
 
     // Support Services
     GET_OBJECT_CLASS_HANDLE,
@@ -148,6 +150,8 @@ typedef enum {
     GET_SPACE_NAME,
     GET_DIMENSION_HANDLE,
     GET_DIMENSION_NAME,
+    GET_ATTRIBUTE_SPACE_HANDLE,
+    GET_INTERACTION_SPACE_HANDLE,
     GET_FEDERATE_HANDLE,
     GET_FEDERATE_NAME,
     SET_TIME_REGULATING,
@@ -185,12 +189,19 @@ typedef struct {
     FederationTime date ;
 } MessageO_I_Struct ;
 
+struct Message_DDM {
+    SpaceHandle space ;
+    DimensionHandle dimension ;
+    long region ;
+};
+
 typedef union {
     MessageTimeStruct time ;
     MessageReqIDStruct ReqID ;
     MessageT_O_Struct T_O ;
     MessageJ_R_Struct J_R ;
     MessageO_I_Struct O_I ;
+    Message_DDM ddm ;
 } MessageHeaderUnion ;
 
 // -- Structure de l'entete --
@@ -270,6 +281,26 @@ public:
     SpaceHandle getSpace(void) const { return space ; };
     void setSpace(SpaceHandle);
 
+    TypeService getType(void) const { return type ; };
+    void setType(TypeService);
+
+    unsigned long getNumber(void) const { return number ; };
+    void setNumber(unsigned long);
+
+    long getRegion(void) const { return region ; };
+    void setRegion(long);
+    
+    void setAttribute(AttributeHandle);
+    AttributeHandle getAttribute(void) const { return attribute ; };
+
+    void setInteractionClass(InteractionClassHandle);
+    InteractionClassHandle getInteractionClass(void) const { 
+        return interactionClass ;
+    };
+
+    void setObjectClass(ObjectClassHandle);
+    ObjectClassHandle getObjectClass(void) const { return objectClass ; };
+
     // -----------------------
     // -- Public Attributes --
     // -----------------------
@@ -297,6 +328,8 @@ public:
     DimensionHandle dimension ;
     TransportationHandle transportation ;
     OrderingHandle ordering ;
+    unsigned long number ;
+    long region ;
 
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
@@ -365,4 +398,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $
+// $Id: Message.hh,v 3.11 2003/04/09 16:41:10 breholee Exp $

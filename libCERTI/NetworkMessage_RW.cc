@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.4 2003/03/21 15:06:46 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.5 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -98,7 +98,6 @@ NetworkMessage::readBody(Socket *socket)
         switch(Header.type) {
 
             // -- O_I Variable Part With Date(Body Not Empty) --
-            // Those types are put in front line because they are the most used.
         case m_SEND_INTERACTION:
         case m_RECEIVE_INTERACTION:
             readLabel(&Body);
@@ -143,7 +142,6 @@ NetworkMessage::readBody(Socket *socket)
             readLabel(&Body);
             break ;
 
-
         case m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         case m_ATTRIBUTE_OWNERSHIP_ACQUISITION:
@@ -154,7 +152,6 @@ NetworkMessage::readBody(Socket *socket)
                 handleArray[i] = Body.readShortInt();
             readLabel(&Body);
             break ;
-
 
         case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
         case m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
@@ -171,7 +168,11 @@ NetworkMessage::readBody(Socket *socket)
                 handleArray[i] = Body.readShortInt();
             break ;
 
-
+        case m_CREATE_REGION:
+            space = Body.readLongInt();
+            nbExtents = Body.readLongInt();
+            region = Body.readLongInt();
+            break ;
 
             // -- Join Variable Part --
 
@@ -193,7 +194,6 @@ NetworkMessage::readBody(Socket *socket)
             object = Body.readLongInt();
             readLabel(&Body);
             break ;
-
 
             // -- Default Handler --
 
@@ -274,6 +274,7 @@ NetworkMessage::readHeader(Socket *socket)
         case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
         case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
         case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        case m_CREATE_REGION:
             break ;
 
             // -- time Variable Part(No Body)[Continued]--
@@ -327,6 +328,11 @@ NetworkMessage::readHeader(Socket *socket)
         case m_TURN_INTERACTIONS_ON:
         case m_TURN_INTERACTIONS_OFF:
             interactionClass = Header.VP.O_I.handle ;
+            break ;
+
+            // DDM variable part
+        case m_DELETE_REGION:
+            region = Header.VP.ddm.region ;
             break ;
 
             // -- O_I Variable Part(Body not empty) --
@@ -526,6 +532,12 @@ NetworkMessage::writeBody(Socket *socket)
                 Body.writeShortInt(handleArray[i]);
             break ;
 
+        case m_CREATE_REGION:
+            Body.writeLongInt(space);
+            Body.writeLongInt(nbExtents);
+            Body.writeLongInt(region);
+            break ;
+
             // -- Join Variable Part --
 
         case m_JOIN_FEDERATION_EXECUTION:
@@ -647,6 +659,7 @@ NetworkMessage::writeHeader(Socket *socket)
         case m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
         case m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
         case m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        case m_CREATE_REGION:
             Header.bodySize = 1 ;
             break ;
 
@@ -727,6 +740,12 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.handle = interactionClass ;
             break ;
 
+            // DDM variable part, no body
+        case m_DELETE_REGION:
+            Header.bodySize = 0 ;
+            Header.VP.ddm.region = region ;
+            break ;
+
             // -- O_I Variable Part(Body not empty) --
 
         case m_PUBLISH_OBJECT_CLASS:
@@ -771,4 +790,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.4 2003/03/21 15:06:46 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.5 2003/04/09 16:41:10 breholee Exp $

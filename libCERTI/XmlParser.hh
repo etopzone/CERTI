@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.6 2003/03/21 12:47:56 breholee Exp $
+// $Id: XmlParser.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -78,6 +78,7 @@ public:
     static bool exists(void);
 
 private:
+#ifdef HAVE_XML
     string filename ;
     RootObject* root ;
 
@@ -93,10 +94,11 @@ private:
     void parseClass(ObjectClass *);
     void parseInteraction(Interaction *);
     void parseRoutingSpace(void);
+#endif 
 };
 
 } // namespace certi
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.6 2003/03/21 12:47:56 breholee Exp $
+// $Id: XmlParser.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.9 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -125,6 +125,21 @@ void Message::setName(const char *NewName)
 }
 
 // ----------------------------------------------------------------------------
+// setType
+void
+Message::setType(TypeService t)
+{
+    type = t ;
+}
+// ----------------------------------------------------------------------------
+// setNbExtents
+void
+Message::setNumber(unsigned long nb)
+{
+    number = nb ;
+}
+
+// ----------------------------------------------------------------------------
 // setSpace
 void
 Message::setSpace(SpaceHandle handle)
@@ -133,11 +148,43 @@ Message::setSpace(SpaceHandle handle)
 }
 
 // ----------------------------------------------------------------------------
+// setRegion
+void
+Message::setRegion(long handle)
+{
+    region = handle ;
+}
+
+// ----------------------------------------------------------------------------
 // setDimension
 void
 Message::setDimension(DimensionHandle handle)
 {
     dimension = handle ;
+}
+
+// ----------------------------------------------------------------------------
+// setInteractionClass
+void
+Message::setInteractionClass(InteractionClassHandle handle)
+{
+    interactionClass = handle ;
+}
+
+// ----------------------------------------------------------------------------
+// setObjectClass
+void
+Message::setObjectClass(ObjectClassHandle handle)
+{
+    objectClass = handle ;
+}
+
+// ----------------------------------------------------------------------------
+// setAttribute
+void
+Message::setAttribute(AttributeHandle handle)
+{
+    attribute = handle ;
 }
 
 // ----------------------
@@ -275,4 +322,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.9 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $

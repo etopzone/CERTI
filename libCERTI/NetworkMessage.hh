@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.4 2003/03/21 15:06:46 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -103,7 +103,11 @@ typedef enum {
     m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
     m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
     m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
-    m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION
+    m_CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
+    m_CREATE_REGION,
+    m_MODIFY_REGION,
+    m_DELETE_REGION
+    
 } TypeNetworkMessage ;
 
 typedef struct {
@@ -137,6 +141,11 @@ typedef struct {
     FederationTime date ;
 } O_I_Struct ;
 
+struct DDM_Struct {
+    SpaceHandle space ;
+    DimensionHandle dimension ;
+    long region ;
+};
 
 typedef union {
     TimeStruct time ; // Les noms des variables n'ont pas d'importance
@@ -144,6 +153,7 @@ typedef union {
     T_O_Struct T_O ;
     JoinStruct Join ;
     O_I_Struct O_I ;
+    DDM_Struct ddm ;
 } HeaderUnion ;
 
 typedef struct {
@@ -266,6 +276,10 @@ public :
     TransportType transport ;
     OrderType order ;
 
+    SpaceHandle space ;
+    long nbExtents ;
+    long region ;
+
     void setLabel(const char* new_label) { strcpy(label, new_label); }
     void setTag(const char* new_tag) { strcpy(tag, new_tag); }
 
@@ -315,4 +329,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.4 2003/03/21 15:06:46 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.7 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectAttribute.hh"
@@ -32,7 +32,7 @@ static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 // ----------------------------------------------------------------------------
 //! Default constructor (all atttributes to default state).
 ObjectAttribute::ObjectAttribute(void)
-    : handle(0), owner(0), divesting(RTI_FALSE)
+    : handle(0), owner(0), divesting(RTI_FALSE), space(0)
 {
 }
 
@@ -40,7 +40,7 @@ ObjectAttribute::ObjectAttribute(void)
 //! Constructor that sets handle and attribute owner.
 ObjectAttribute::ObjectAttribute(AttributeHandle newHandle,
                                  FederateHandle newOwner)
-    : handle(newHandle), owner(newOwner), divesting(RTI_FALSE)
+    : handle(newHandle), owner(newOwner), divesting(RTI_FALSE), space(0)
 {
 }
 
@@ -158,6 +158,21 @@ ObjectAttribute::setHandle(AttributeHandle h)
     handle = h ;
 }
 
+// ----------------------------------------------------------------------------
+SpaceHandle
+ObjectAttribute::getSpace(void) const
+{
+    return space ;
+}
+
+// ----------------------------------------------------------------------------
+void
+ObjectAttribute::setSpace(SpaceHandle h)
+{
+    space = h ;
+}
+
+
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.7 2003/04/09 16:41:10 breholee Exp $

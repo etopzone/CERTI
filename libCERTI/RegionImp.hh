@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.0 2003/03/21 13:43:52 breholee Exp $
+// $Id: RegionImp.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -34,9 +34,12 @@ using std::vector ;
 
 namespace certi {
 
+typedef long RegionHandle ;
+
 class RegionImp : public Region
 {
 public:
+    RegionImp(long, SpaceHandle, long, long);
     virtual ~RegionImp(void);
 
     virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
@@ -65,8 +68,12 @@ public:
                                                       DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
+    long getHandle(void);
+    void setHandle(long);
+
 private:
-    SpaceHandle spaceHandle ;
+    SpaceHandle space ;
+    long handle ;
     vector<Extent*> extents ;
     vector<Extent*> coExtents ;
 
@@ -76,4 +83,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.0 2003/03/21 13:43:52 breholee Exp $
+// $Id: RegionImp.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $

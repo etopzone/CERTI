@@ -20,29 +20,59 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.0 2003/03/21 13:43:45 breholee Exp $
+// $Id: RegionImp.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RegionImp.hh"
 
 namespace certi {
 
+// ----------------------------------------------------------------------------
+// RegionImp
+//
+RegionImp::RegionImp(long h, SpaceHandle s, long dimensions, long nb_extents)
+{
+    handle = h ;
+    space = s ;
+
+    extents.reserve(nb_extents);
+    coExtents.reserve(nb_extents);
+
+    for (int i = 0; i < nb_extents; i++) {
+        extents.push_back(new Extent(dimensions));
+        coExtents.push_back(new Extent(dimensions));
+    }
+}
+
+// ----------------------------------------------------------------------------
+// ~RegionImp
+//
 RegionImp::~RegionImp(void)
 {
     vector<Extent*>::iterator i ;
     for (i = extents.begin(); i != extents.end(); i++) {
         delete *i ;
     }
+    for (i = coExtents.begin(); i != coExtents.end(); i++) {
+        delete *i ;
+    }
     extents.clear();
+    coExtents.clear();
 }
 
+// ----------------------------------------------------------------------------
+// getSpaceHandle
+//
 SpaceHandle
 RegionImp::getSpaceHandle(void) const
     throw ()
 {
-    return spaceHandle ;
+    return space ;
 }
 
+// ----------------------------------------------------------------------------
+// getNumberOfExtents
+//
 ULong
 RegionImp::getNumberOfExtents(void) const
     throw ()
@@ -50,6 +80,9 @@ RegionImp::getNumberOfExtents(void) const
     return extents.size();
 }
 
+// ----------------------------------------------------------------------------
+// getRangeLowerBound
+//
 ULong
 RegionImp::getRangeLowerBound(ExtentIndex index,
                               DimensionHandle dimension) const
@@ -63,6 +96,9 @@ RegionImp::getRangeLowerBound(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// getRangeUpperBound
+//
 ULong
 RegionImp::getRangeUpperBound(ExtentIndex index,
                               DimensionHandle dimension) const
@@ -76,6 +112,9 @@ RegionImp::getRangeUpperBound(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// getRangeLowerBoundNotificationLimit
+//
 ULong
 RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
@@ -89,6 +128,9 @@ RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// getRangeUpperBoundNotificationLimit
+//
 ULong
 RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
@@ -102,6 +144,9 @@ RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// setRangeLowerBound
+//
 void
 RegionImp::setRangeLowerBound(ExtentIndex index,
                               DimensionHandle dimension,
@@ -116,6 +161,9 @@ RegionImp::setRangeLowerBound(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// setRangeUpperBound
+//
 void
 RegionImp::setRangeUpperBound(ExtentIndex index,
                               DimensionHandle dimension,
@@ -130,6 +178,24 @@ RegionImp::setRangeUpperBound(ExtentIndex index,
     }
 }
 
+// ----------------------------------------------------------------------------
+// getHandle
+//
+long
+RegionImp::getHandle(void)
+{
+    return handle ;
+}
+
+// ----------------------------------------------------------------------------
+// setHandle
+//
+void
+RegionImp::setHandle(long h)
+{
+    handle = h ;
+}
+
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.0 2003/03/21 13:43:45 breholee Exp $
+// $Id: RegionImp.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $

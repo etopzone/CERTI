@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: Message_RW.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,12 +53,9 @@ Message::read(SocketUN *socket)
         readBody(socket);
 
 #else
-
     socket->receive((void *) this, sizeof(Message));
-
 #endif
 }
-
 
 // ---------------------------------------------------------------------------
 //! Read a Message Body from a Socket, should be called after ReadHeader.
@@ -140,6 +137,23 @@ Message::readBody(SocketUN *socket)
             object = Body.readLongInt();
             handleArraySize = Body.readShortInt();
             readHandleArray(&Body);
+            break ;
+
+        case GET_ATTRIBUTE_SPACE_HANDLE:
+            objectClass = Body.readLongInt();
+            attribute = Body.readLongInt();
+            space = Body.readLongInt();
+            break ;
+
+        case CREATE_REGION:
+            space = Body.readLongInt();
+            number = Body.readLongInt();
+            region = Body.readLongInt();
+            break ;
+
+        case GET_INTERACTION_SPACE_HANDLE:
+            interactionClass = Body.readLongInt();
+            space = Body.readLongInt();
             break ;
 
             // --- MessageJ_R_Struct --
@@ -292,8 +306,10 @@ Message::readHeader(SocketUN *socket)
     case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
     case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
     case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+    case GET_ATTRIBUTE_SPACE_HANDLE:
+    case GET_INTERACTION_SPACE_HANDLE:
+    case CREATE_REGION:
         break ;
-
 
         // --- MessageJ_R_Struct --
 
@@ -380,6 +396,11 @@ Message::readHeader(SocketUN *socket)
         order = header.VP.T_O.order ;
         break ;
 
+        // Message_DDM, no body
+    case DELETE_REGION:
+        region = header.VP.ddm.region ;
+        break ;
+
         // --- MessageT_O_Struct, Body not empty ---
 
     case CHANGE_ATTRIBUTE_TRANSPORT_TYPE: // B.c. object, HandleArray.
@@ -398,7 +419,6 @@ Message::readHeader(SocketUN *socket)
     case TIME_ADVANCE_GRANT:
         date = header.VP.time.date ;
         break ;
-
 
     case SET_LOOKAHEAD:
     case REQUEST_LOOKAHEAD:
@@ -622,6 +642,23 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
             break ;
 
+        case GET_ATTRIBUTE_SPACE_HANDLE:
+            Body.writeLongInt(objectClass);
+            Body.writeLongInt(attribute);
+            Body.writeLongInt(space);
+            break ;
+
+        case CREATE_REGION:
+            Body.writeLongInt(space);
+            Body.writeLongInt(number);
+            Body.writeLongInt(region);
+            break ;
+
+        case GET_INTERACTION_SPACE_HANDLE:
+            Body.writeLongInt(interactionClass);
+            Body.writeLongInt(space);
+            break ;
+
             // --- MessageJ_R_Struct --
 
         case JOIN_FEDERATION_EXECUTION:
@@ -657,7 +694,7 @@ Message::writeBody(SocketUN *socket)
             // B.c. object, Tag, label, resignAction
             Body.writeLongInt(object);
             Body.writeString(tag);
-            Body.writeString(name); /*FAYET 25.07.01*/
+            Body.writeString(name);
             Body.writeString(label);
             writeResignAction(&Body);
             break ;
@@ -801,6 +838,9 @@ Message::writeHeader(SocketUN *socket)
     case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
     case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
     case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+    case GET_ATTRIBUTE_SPACE_HANDLE:
+    case GET_INTERACTION_SPACE_HANDLE:
+    case CREATE_REGION:
         header.bodySize = 1 ;
         break ;
 
@@ -901,6 +941,12 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 0 ;
         break ;
 
+        // Message_DDM, no body
+    case DELETE_REGION:
+        header.VP.ddm.region = region ;
+        header.bodySize = 0 ;
+        break ;
+
         // --- MessageT_O_Struct, Body not empty ---
 
     case CHANGE_ATTRIBUTE_TRANSPORT_TYPE: // B.c. object, handleArray.
@@ -982,4 +1028,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: Message_RW.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $

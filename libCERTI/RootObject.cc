@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.7 2003/03/12 10:07:18 breholee Exp $
+// $Id: RootObject.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -37,6 +37,7 @@ RootObject::RootObject(SecurityServer *security_server)
     ObjectClasses = new ObjectClassSet(server);
     Interactions = new InteractionSet(server);
     objects = new ObjectSet(server);
+    freeRegionHandle = 1 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -132,7 +133,7 @@ RootObject::getRoutingSpaceName(SpaceHandle handle)
             return (*i)->getName().c_str();
         }
     }
-    throw new SpaceNotDefined();
+    throw SpaceNotDefined();
 }
 
 // ----------------------------------------------------------------------------
@@ -151,6 +152,66 @@ RootObject::getRoutingSpace(SpaceHandle handle)
     throw new SpaceNotDefined();
 }
 
+// ----------------------------------------------------------------------------
+//! add a region
+void
+RootObject::addRegion(RegionImp *region)
+{    
+     regions.push_back(region);
+}
+
+// ----------------------------------------------------------------------------
+//! create (and add) a region
+long
+RootObject::createRegion(SpaceHandle handle, long nb_extents)
+    throw (SpaceNotDefined)
+{
+    RoutingSpace *space = this->getRoutingSpace(handle);
+
+    RegionImp *region = new RegionImp(freeRegionHandle++, handle,
+                                      space->getNbDimensions(), nb_extents);
+
+    this->addRegion(region);
+    //this->getRoutingSpace(space)->addRegion(region);   
+
+    return region->getHandle();
+}
+
+// ----------------------------------------------------------------------------
+//! delete a region
+void
+RootObject::deleteRegion(long handle)
+    throw (RegionNotKnown, RegionInUse)
+{
+    list<RegionImp *>::iterator i ;
+
+    for (i = regions.begin(); i != regions.end(); i++) {
+        if ((*i)->getHandle() == handle) {
+            // TODO: check "in use"
+            regions.remove(*i);
+            delete *i ;
+            return ;
+        }
+    }
+    throw RegionNotKnown();
+}
+
+// ----------------------------------------------------------------------------
+//! get a region
+RegionImp *
+RootObject::getRegion(long handle)
+    throw (RegionNotKnown)
+{
+    list<RegionImp *>::iterator i ;
+
+    for (i = regions.begin(); i != regions.end(); i++) {
+        if ((*i)->getHandle() == handle) {
+            return *i ;
+        }
+    }
+    throw RegionNotKnown();
+}
+
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.7 2003/03/12 10:07:18 breholee Exp $
+// $Id: RootObject.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
