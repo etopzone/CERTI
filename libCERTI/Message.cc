@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $
+// $Id: Message.cc,v 3.17 2003/06/25 14:57:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -302,7 +301,7 @@ Message::setAHS(const AttributeHandleSet &the_attributes)
 {
     handleArraySize = the_attributes.size();
 
-    for (int i = 0 ; i < the_attributes.size(); i++) {
+    for (unsigned int i = 0 ; i < the_attributes.size(); ++i) {
         handleArray[i] = the_attributes.getHandle(i);
     }
 }
@@ -577,12 +576,12 @@ Message::display(char *s)
     printf(" parameter=%ld:\n", parameter);
     printf(" object=%ld:\n", object);
     printf(" handleArraySize=%d:\n", handleArraySize);
-    printf(" space %d:\n", space);
-    printf(" dimension %d:\n", dimension);
+    printf(" space %ld:\n", space);
+    printf(" dimension %ld:\n", dimension);
     // printf(" transportation %d:\n", transportation);
     // printf(" ordering %d:\n", ordering);
 }
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $
+// $Id: Message.cc,v 3.17 2003/06/25 14:57:09 breholee Exp $
