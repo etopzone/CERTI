@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: TimeManagement.cc,v 3.2 2003/01/16 17:55:33 breholee Exp $
+// $Id: TimeManagement.cc,v 3.3 2003/01/23 15:47:05 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -313,9 +313,11 @@ TimeManagement::nextEventAdvance(Boolean &msg_restant, TypeException &e)
 
       // Deliver to federate every TSO messages with time 'date_min' (1 by 1).
       msg = _GQueues->giveTsoMessage(date_min, msg_donne, msg_restant);
-      if(msg_donne)
+      if(msg_donne) {
           // Send message back to federate.
           executeFederateService(*msg);
+          delete msg;
+      }
       else {
           // Advance current time up to 'date_min'.
           timeAdvanceGrant(date_min, e);
@@ -587,6 +589,7 @@ TimeManagement::timeAdvance(Boolean &msg_restant, TypeException &e)
       }
       else {
           executeFederateService(*msg);
+          delete msg;
       }
   }
   else {
@@ -659,4 +662,4 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.2 2003/01/16 17:55:33 breholee Exp $
+// $Id: TimeManagement.cc,v 3.3 2003/01/23 15:47:05 breholee Exp $
