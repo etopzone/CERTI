@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIambassador.hh,v 3.12 2003/04/22 16:43:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -60,16 +60,6 @@ class RTIambassador : private SocketUN
 public:
     RTIambassador(void) throw (MemoryExhausted, RTIinternalError);
     ~RTIambassador(void);
-
-    // Data Integrity
-
-    void objectToString(const char *char_initial,
-                        ULong taille,
-                        char *char_final);
-
-    void getObjectToStringLength(char *char_initial,
-                                 ULong taille_initiale,
-                                 ULong& taille);
 
     // Federation Management -------------------------------------------------
     void
@@ -1315,4 +1305,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.12 2003/04/22 16:43:04 breholee Exp $

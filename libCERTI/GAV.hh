@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.3 2003/03/24 14:09:25 breholee Exp $
+// $Id: GAV.hh,v 3.4 2003/04/22 16:42:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
@@ -28,6 +28,7 @@
 
 #include <config.h>
 #include "RTItypes.hh"
+#include "converter.hh"
 #include "PrettyDebug.hh"
 
 #include <list>

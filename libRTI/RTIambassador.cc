@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.21 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,6 +34,7 @@
 #include "RootObject.hh"
 #include "RegionImp.hh"
 #include "fedtime.hh"
+#include "converter.hh"
 #include "PrettyDebug.hh"
 
 #include "RTIambassador.hh"
@@ -142,101 +143,6 @@ RTIambassador::RTIambassador(void)
 RTIambassador::~RTIambassador(void)
 {
     kill(pid_RTIA, SIGINT);
-}
-
-// ===========================================================================
-// Data Integrity
-// ===========================================================================
-//! Convert an object string to a network capable message.
-/*! objectToString is used to convert data to a network message for sending.
-  Special caracters are ?, \ and \0.
-  - \0 : it is converted to a single ?,
-  - ? : converted to pattern "\?[??]+\",
-  - \ : converted to pattern "\??[??]+\".
-  - other : keep caracter.
-
-  Differenciation between ? and \ is made on parity number of ? contained
-  between \.
-*/
-void
-RTIambassador::objectToString(const char *init_string,
-                              ULong size, char *end_string)
-{
-    ULong i = 0 ;
-    ULong j = 0 ;
-
-    while (i < size) {
-        switch(init_string[i]) {
-        case '\0':
-            end_string[j++] = '?' ;
-            i++ ;
-            break ;
-        case '?':
-            end_string[j++] = '\\' ;
-            end_string[j++] = '?' ;
-            i++ ;
-            while ((init_string[i] == '?') && (i < size)) {
-                end_string[j++] = '?' ;
-                end_string[j++] = '?' ;
-                i++ ;
-            }
-            end_string[j++] = '\\' ;
-            break ;
-        case '\\':
-            end_string[j++] = '\\' ;
-            end_string[j++] = '?' ;
-            end_string[j++] = '?' ;
-            i++ ;
-            while ((init_string[i] == '\\') && (i<size)) {
-                end_string[j++] = '?' ;
-                end_string[j++] = '?' ;
-                i++ ;
-            }
-            end_string[j++] = '\\' ;
-            break ;
-        default:
-            end_string[j++] = init_string[i] ;
-            i++ ;
-        }
-    }
-    end_string[j] = '\0' ;
-}
-
-// ----------------------------------------------------------------------------
-//! Returns buffer size needed to store network message made by objectToString
-void
-RTIambassador::getObjectToStringLength(char *init_string,
-                                       ULong init_size, ULong &size)
-{
-    ULong counter = 0 ;
-    ULong i = 0 ;
-    size = 0 ;
-
-    while (i < init_size) {
-        switch(init_string[i]) {
-        case '?':
-            i++ ;
-            while ((init_string[i] == '?') && (i < init_size)) {
-                counter++ ;
-                i++ ;
-            }
-            size += 3 + 2 * counter ;
-            counter = 0 ;
-            break ;
-        case '\\':
-            i++ ;
-            while ((init_string[i] == '\\') && (i < init_size)) {
-                counter++ ;
-                i++ ;
-            }
-            size += 4 + 2 * counter ;
-            counter = 0 ;
-        default:
-            size++ ;
-            i++ ;
-        }
-    }
-    size++ ;
 }
 
 // ===========================================================================
@@ -3844,4 +3750,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.21 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $

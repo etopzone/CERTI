@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.5 2003/02/19 18:07:29 breholee Exp $
+// $Id: GAV.cc,v 3.6 2003/04/22 16:42:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -28,93 +28,6 @@
 namespace certi {
 
 static pdCDebug D("GAV", "(gav) - ");
-
-//*******************************************************************
-// Data Integrity
-//*******************************************************************
-//! Returns buffer size needed for storing message restored by stringToObject.
-void
-getStringToObjectLength(char *init_string, ULong& size)
-{
-    ULong counter = 0 ;
-    ULong length = strlen(init_string);
-    ULong i = 0 ;
-    size = 0 ;
-    while (i<length) {
-        switch (init_string[i]) {
-        case '\\':
-            i++ ;
-            while ((init_string[i]=='?') && (i<length)) {
-                counter++ ;
-                i++ ;
-            }
-            if ((counter%2)==0) size += (counter/2);
-            else size += 1+((counter-1)/2);
-            counter = 0 ;
-            break ;
-        default:
-            size++ ;
-            i++ ;
-        }
-    }
-}
-
-//! Restore string network message to the original text object.
-/*! stringToObject is used to restore initial object as it was before being
-  sent throw the network. Cases are as follows :
-  - ? : if alone without \ prefixing caracter, restore to \0
-  - \ : this caracter is used to tell that a caracter \ or ? needs replace it
-  - other : keep caracter.
-
-  Pattern is "\???\" for case \. If number of ? is odd, it must be
-  replaced by a list of ? else it must be replaced by a list of \.
-*/
-void
-stringToObject(char *init_string, char *end_string, ULong size)
-{
-    ULong counter = 0 ;
-    ULong i = 0 ;
-    ULong j = 0 ;
-    ULong indice = 0 ;
-    ULong length = strlen(init_string);
-
-    memset(end_string, '\0', size);
-
-    while (i<length) {
-        switch(init_string[i]) {
-        case '?':
-            // No use to add '\0' since memset does it
-            i++ ;
-            indice++ ;
-            break ;
-        case '\\':
-            i++ ;
-            while ((init_string[i]=='?') && (i<length)) {
-                counter++ ;
-                i++ ;
-            }
-            i++ ;
-            if ((counter%2)==0) {
-                for (j=0 ; j<(counter/2); j++) {
-                    end_string[indice]='\\' ;
-                    indice++ ;
-                }
-            }
-            else {
-                for (j=0 ; j<(1+((counter-1)/2)); j++) {
-                    end_string[indice]='?' ;
-                    indice++ ;
-                }
-            }
-            counter = 0 ;
-            break ;
-        default:
-            end_string[indice]=init_string[i] ;
-            i++ ;
-            indice++ ;
-        }
-    }
-}
 
 // ----------------------------------------------------------------------------
 // CAttributeHandleValuePair
@@ -509,4 +422,4 @@ CParameterHandleValuePairSet::toPHVPS(void) const
 
 }
 
-// $Id: GAV.cc,v 3.5 2003/02/19 18:07:29 breholee Exp $
+// $Id: GAV.cc,v 3.6 2003/04/22 16:42:27 breholee Exp $
