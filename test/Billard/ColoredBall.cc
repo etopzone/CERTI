@@ -18,20 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ColoredBall.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: ColoredBall.cc,v 3.2 2003/10/27 10:51:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ColoredBall.hh"
 
 #include <config.h>
-
-#include <cstdio>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #ifdef TEST_USES_GRAPHICS
 #include "graph_c.hh"
@@ -64,4 +56,4 @@ ColoredBall::display()
 #endif
 }
 
-// $Id: ColoredBall.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: ColoredBall.cc,v 3.2 2003/10/27 10:51:39 breholee Exp $

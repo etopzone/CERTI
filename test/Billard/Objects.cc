@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.cc,v 3.4 2003/10/20 11:13:37 breholee Exp $
+// $Id: Objects.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Objects.hh"
 
+#include "Billard.hh"
 #include "PrettyDebug.hh"
 
 #include <cassert>
@@ -36,8 +37,8 @@ using std::endl ;
 
 // ----------------------------------------------------------------------------
 // Constructor
-Objects::Objects(RTIambassador &rti_amb, Fed &fed_amb, int xmax, int ymax)
-    : rtiamb(rti_amb), fedamb(fed_amb), local(0), XMAX(xmax), YMAX(ymax)
+Objects::Objects(RTIambassador &rti_amb, Billard &fed_amb, int xmax, int ymax)
+    : rtiamb(rti_amb), billard(fed_amb), local(0), XMAX(xmax), YMAX(ymax)
 {
 }
 
@@ -62,7 +63,7 @@ Objects::init(int x, int y)
 void
 Objects::declare(string federate)
 {
-    local.ID = fedamb.registerBallInstance(federate.c_str());
+    local.ID = billard.registerBallInstance(federate.c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -77,7 +78,7 @@ Objects::step(RTIfedTime &time)
 
             Ball &ball = *it ;
 
-            fedamb.sendInteraction(local.dx, local.dy, time, it->ID);
+            billard.sendInteraction(local.dx, local.dy, time, it->ID);
 
             // On prend la vitesse de l'autre sauf dans le cas ou
             // on avait deja la meme. Dans ce cas, on inverse la notre.
@@ -106,7 +107,7 @@ Objects::step(RTIfedTime &time)
 void
 Objects::update(RTIfedTime &time)
 {
-    fedamb.sendUpdate(local.x, local.y, (int) local.color, time, local.ID);
+    billard.sendUpdate(local.x, local.y, (int) local.color, time, local.ID);
     D.Out(pdTrace, "fin tour de boucle.");
 }
 
@@ -208,4 +209,4 @@ Objects::discover(ObjectHandle h)
     remote.push_back(Ball(h));
 }
 
-// $Id: Objects.cc,v 3.4 2003/10/20 11:13:37 breholee Exp $
+// $Id: Objects.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $

@@ -18,41 +18,17 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Fed.hh,v 3.3 2003/10/20 09:33:47 breholee Exp $
+// $Id: BillardNull.hh,v 3.1 2003/10/27 10:51:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef TH_MYFED_HH
-#define TH_MYFED_HH
-
-#include "Ball.hh"
-#include "ColoredBall.hh"
+#ifndef CERTI_BILLARD_NULL_HH
+#define CERTI_BILLARD_NULL_HH
 
 #include "RTI.hh"
-#include "fedtime.hh"
 
-class Objects ;
-
-class Fed : public RTI::FederateAmbassador
+class BillardNull : public FederateAmbassador
 {
 public:
-
-    // Constructeur et Destructeur
-    Fed(RTI::RTIambassador*);
-    virtual ~Fed();
-
-    void init(Objects *);
-
-    bool timeAdvanceGranted();
-    void enableLog(const char *);
-    void disableLog();
-    void publishAndSubscribe();
-    ObjectHandle registerBallInstance(const char *);
-    void sendInteraction(double, double, const FedTime &, ObjectHandle);
-    void sendUpdate(double, double, int, const FedTime &, ObjectHandle);
-
-    // redefinition des services du RTI
-    //(qui sont abstraits dans la classe FederateAmbassador)
-
     void announceSynchronizationPoint(const char *label, const char *tag)
         throw (FederateInternalError);
 
@@ -136,11 +112,6 @@ public:
         throw (InteractionClassNotKnown, InteractionParameterNotKnown,
                InvalidFederationTime, FederateInternalError);
 
-    // void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
-    // const char *theTag,
-    // EventRetractionHandle theHandle)
-    // throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError);
-
     void timeRegulationEnabled(const FedTime& theTime)
         throw (InvalidFederationTime, EnableTimeRegulationWasNotPending,
                FederateInternalError);
@@ -196,8 +167,6 @@ public:
             AttributeNotPublished,
             FederateInternalError);
 
-
-
     void requestAttributeOwnershipAssumption(
         ObjectHandle theObject,
         const AttributeHandleSet& offeredAttributes,
@@ -209,8 +178,6 @@ public:
             AttributeNotPublished,
             FederateInternalError);
 
-
-
     void attributeOwnershipDivestitureNotification(
         ObjectHandle theObject,
         const AttributeHandleSet& releasedAttributes)
@@ -220,7 +187,6 @@ public:
             AttributeNotOwned,
             AttributeDivestitureWasNotRequested,
             FederateInternalError);
-
 
     void requestAttributeOwnershipRelease(
         ObjectHandle theObject, // supplied C1
@@ -241,39 +207,8 @@ public:
             AttributeAlreadyOwned,
             AttributeAcquisitionWasNotCanceled,
             FederateInternalError);
-
-    bool paused ; //!< Pause synchronization before starting application.
-
-private:
-    void getHandles();
-
-    Objects *objects ;
-    std::ofstream *logfile ;
-    bool log ;
-    bool granted ;
-    SpaceHandle routingSpace ;
-
-    // Federation State management
-    RTI::RTIambassador *RTIA ;
-
-    // Object Class management
-    ObjectClassHandle BilleClassID ;
-    ObjectClassHandle BouleClassID ;
-
-    // On suppose que les numeros d'attributs sont les memes dans Bille et
-    // Boule(pour PositionX et PositionY).
-    AttributeHandle AttrXID ;
-    AttributeHandle AttrYID ;
-    AttributeHandle AttrColorID ;
-
-    // Interaction Class management
-    InteractionClassHandle BingClassID ;
-    ParameterHandle ParamDXID ;
-    ParameterHandle ParamDYID ;
-    ParameterHandle ParamBoulID ;
-
-    // Data distribution management
-    SpaceHandle GeoID ;
 };
 
-#endif // TH_MYFED_HH
+#endif // CERTI_BILLARD_NULL_HH
+
+// $Id: BillardNull.hh,v 3.1 2003/10/27 10:51:39 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.4 2003/10/20 09:34:55 breholee Exp $
+// $Id: main.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,7 +28,6 @@
 #include "Display.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
-#include "Fed.hh"
 #include "PrettyDebug.hh"
 
 #include "cmdline.h"
@@ -69,12 +68,12 @@ static bool exit_billard = false ;
 Billard *createBillard(bool, const char *, string);
 
 // ----------------------------------------------------------------------------
-/** Test program entry point.
+/** "Billard" test program
  */
 int
 main(int argc, char **argv)
 {
-    cout << "CERTI Billard " VERSION << endl << endl ;
+    cout << "CERTI Billard " VERSION << endl ;
 
     try {
 	// Handlers
@@ -150,7 +149,6 @@ main(int argc, char **argv)
 
 	// registers objects, regions, etc.
 	billard->declare();
-
 	cout << "Declaration done." << endl ;
 
 	// set delay
@@ -185,7 +183,7 @@ main(int argc, char **argv)
 }
 
 // ----------------------------------------------------------------------------
-/** Signal handler.
+/** Signal handler
  */
 void
 sortir(int number)
@@ -208,7 +206,7 @@ sortir(int number)
 }
 
 // ----------------------------------------------------------------------------
-/** ExceptionHandler.
+/** Exception handler
  */
 void
 ExceptionHandler()
@@ -218,7 +216,7 @@ ExceptionHandler()
 }
 
 // ----------------------------------------------------------------------------
-/** TerminateHandler.
+/** Terminate handler
  */
 void
 TerminateHandler()
@@ -228,12 +226,16 @@ TerminateHandler()
 }
 
 // ----------------------------------------------------------------------------
-/** createBillard
+/** Select a "Billard" subclass, from the command line
+    \param demo Use the second parameter if true ; use default if false
+    \param s_demo Keyword to select the test
+    \param name Federate name
  */
 Billard *
 createBillard(bool demo, const char *s_demo, string name)
 {
     if (demo) {
+	D[pdDebug] << "Create billard " << s_demo << endl ;
 	if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
 	cout << "unknown keyword: " << s_demo << endl ;
     }
@@ -241,4 +243,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.4 2003/10/20 09:34:55 breholee Exp $
+// EOF $Id: main.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $

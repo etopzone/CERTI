@@ -18,18 +18,10 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.2 2003/10/20 11:15:03 breholee Exp $
+// $Id: Ball.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
-#include <cstdio>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
 
 #include "Ball.hh"
 
@@ -40,15 +32,12 @@
 using namespace std ;
 
 // ----------------------------------------------------------------------------
-//! Ball constructor. (parameter: object handle)
+/** Ball constructor
+    \param h HLA object handle
+ */
 Ball::Ball(ObjectHandle h)
+    : x(-1.0), y(-1.0), dx(3.0), dy(3.0), radius(10.0), ID(h)
 {
-    x = -1.0 ;
-    y = -1.0 ;
-    dx = 3.0 ;
-    dy = 3.0 ;
-    radius = 10.0 ;
-    ID = h ;
 #ifdef TEST_USES_GRAPHICS
     color = BLACK ;
 #endif
@@ -93,10 +82,6 @@ Ball::move()
 {
     x += dx ;
     y += dy ;
-    // #ifdef ECHO_COORD
-    // printf("[%04f ; %04f]\r", x, y);
-    // fflush(stdout);
-    // #endif
 }
 
 // ----------------------------------------------------------------------------
@@ -104,8 +89,8 @@ Ball::move()
 void
 Ball::setPosition(float xx, float yy)
 {
-    this->x = xx ;
-    this->y = yy ;
+    x = xx ;
+    y = yy ;
 }
 
 // ----------------------------------------------------------------------------
@@ -134,22 +119,14 @@ Ball::collision(float largeur, float hauteur)
 }
 
 // ----------------------------------------------------------------------------
-/*! Detects and take into account collisions occured with another 'Ball' from
-  window.
-*/
-int
+/** Detects and take into account collisions occured with another Ball
+    \param ab Pointer to the other ball
+ */
+bool
 Ball::collision(Ball *ab)
 {
-    float distance ;
-
-    distance = sqrt((x+dx-ab->x)*(x+dx-ab->x) +(y+dy-ab->y)*(y+dy-ab->y));
-
-    // detecter collision
-    if (distance <= 2 * radius) {
-        return 1 ;
-    }
-    else
-        return 0 ;
+    return sqrt((x + dx - ab->x) * (x + dx - ab->x) +
+		(y + dy - ab->y) * (y + dy - ab->y)) <= 2 * radius ;
 }
 
 // ----------------------------------------------------------------------------
@@ -157,11 +134,10 @@ Ball::collision(Ball *ab)
 void
 Ball::init(int seed)
 {
-    x = radius + (float) seed * 60 + 3 ;
-    y = radius + (float) seed * 20 ;
+    x = radius + seed * 60 + 3 ;
+    y = radius + seed * 20 ;
 
-    if ((seed) % 2)
-        dx = -dx ;
+    if (seed % 2) dx = -dx ;
 
     display();
 }
@@ -174,10 +150,9 @@ Ball::init(int x_, int y_)
     x = x_ ;
     y = y_ ;
 
-    if ((int) x % 2 == 1)
-        dx = -dx ;
+    if ((int) x % 2 == 1) dx = -dx ;
 
     display();
 }
 
-// $Id: Ball.cc,v 3.2 2003/10/20 11:15:03 breholee Exp $
+// $Id: Ball.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.2 2003/10/20 09:38:23 breholee Exp $
+// $Id: BillardDDM.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -30,47 +30,50 @@ using std::string ;
 using std::cout ;
 using std::endl ;
 
-static const char *geo_name = "geo" ;
-static const char *x_name = "x" ;
-static const char *y_name = "y" ;
-
 static pdCDebug D("BILLARD_DDM", __FILE__);
 
 // ----------------------------------------------------------------------------
 // DDM Billard constructor
 BillardDDM::BillardDDM(string federate)
-    : Billard(federate), regionSize(250)
+    : Billard(federate), regionSize(250),
+      geo_name("geo"), dimx_name("X"), dimy_name("Y")
+
 {
     cout << "Billard 'DDM' Test" << endl ;
 }
 
 // ----------------------------------------------------------------------------
-/** get DDM-related handles
+/** Get DDM-related handles
  */
 void
 BillardDDM::getHandles()
 {
+    D[pdDebug] << "DDM getHandles" << endl ;
+
     static bool done = false ;
     if (!done) {
 	geo_id = rtiamb.getRoutingSpaceHandle(geo_name);
-	x_id = rtiamb.getDimensionHandle(x_name, geo_id);
-	y_id = rtiamb.getDimensionHandle(y_name, geo_id);
+	return;
+	dimx_id = rtiamb.getDimensionHandle(dimx_name, geo_id);
+	dimy_id = rtiamb.getDimensionHandle(dimy_name, geo_id);
 	if (verbose) {
 	    cout << "Routing space handle: " << geo_id << endl ;
-	    cout << "Dimension X handle: " << x_id << endl ;
-	    cout << "Dimension Y handle: " << y_id << endl ;
+	    cout << "Dimension X handle: " << dimx_id << endl ;
+	    cout << "Dimension Y handle: " << dimy_id << endl ;
 	}
     }
     done = true ;
 }
 
 // ----------------------------------------------------------------------------
-// create objects, regions, etc.
+/** Create objects, regions, etc.
+ */
 void
 BillardDDM::declare()
 {
     Billard::declare();
     getHandles();
+    return ;
 
     int r = (XMAX / regionSize) * (YMAX / regionSize);
     regions.reserve(r);
@@ -87,15 +90,15 @@ BillardDDM::declare()
 		    assert(region);
 		    assert(region->getNumberOfExtents() == 1);
 		    D[pdDebug] << "set x lower bound " << x << endl ;
-		    region->setRangeLowerBound(0, x_id, x);
+		    region->setRangeLowerBound(0, dimx_id, x);
 		    D[pdDebug] << "set x upper bound " << x + regionSize
 			       << endl ;
-		    region->setRangeUpperBound(0, x_id, x + regionSize);
+		    region->setRangeUpperBound(0, dimx_id, x + regionSize);
 		    D[pdDebug] << "set y lower bound " << y << endl ;
-		    region->setRangeLowerBound(0, y_id, y);
+		    region->setRangeLowerBound(0, dimy_id, y);
 		    D[pdDebug] << "set y upper bound " << y + regionSize
 			       << endl ;
-		    region->setRangeUpperBound(0, y_id, y + regionSize);
+		    region->setRangeUpperBound(0, dimy_id, y + regionSize);
 		}
 		catch (ArrayIndexOutOfBounds &e) {
 		    D[pdDebug] << __FILE__ << ":" << __LINE__ << ":"
@@ -114,4 +117,4 @@ BillardDDM::declare()
     D[pdDebug] << "created " << regions.size() << " regions" << endl ;        
 }
 
-// $Id: BillardDDM.cc,v 3.2 2003/10/20 09:38:23 breholee Exp $
+// $Id: BillardDDM.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $

@@ -18,8 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.2 2003/10/20 09:38:23 breholee Exp $
+// $Id: BillardDDM.hh,v 3.3 2003/10/27 10:51:38 breholee Exp $
 // ----------------------------------------------------------------------------
+
+#ifndef CERTI_BILLARD_DDM_HH
+#define CERTI_BILLARD_DDM_HH
 
 #include "Billard.hh"
 
@@ -39,8 +42,14 @@ protected:
     std::vector<Region *> regions ;
 
     SpaceHandle geo_id ;
-    DimensionHandle x_id ;
-    DimensionHandle y_id ;
+    DimensionHandle dimx_id ;
+    DimensionHandle dimy_id ;
+
+    const char *geo_name ;
+    const char *dimx_name ;
+    const char *dimy_name ;
 };
 
-// $Id: BillardDDM.hh,v 3.2 2003/10/20 09:38:23 breholee Exp $
+#endif // CERTI_BILLARD_DDM_HH
+
+// $Id: BillardDDM.hh,v 3.3 2003/10/27 10:51:38 breholee Exp $

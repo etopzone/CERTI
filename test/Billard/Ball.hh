@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Ball.hh,v 3.2 2003/10/27 10:51:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BALL_HH
 #define CERTI_BALL_HH
 
-#include <RTI.hh>
+#include "RTI.hh"
 
 class Ball
 {
@@ -45,7 +45,7 @@ public:
     void setPosition(float, float);
     void setDirection(float, float);
     void collision(float, float);
-    int collision(Ball *);
+    bool collision(Ball *);
 
     void init(int);
     void init(int, int);
@@ -53,4 +53,4 @@ public:
 
 #endif // CERTI_BALL_HH
 
-// $Id: Ball.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Ball.hh,v 3.2 2003/10/27 10:51:38 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Objects.hh,v 3.3 2003/10/27 10:51:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef BILLARD_OBJECTS_HH
@@ -26,17 +26,18 @@
 
 #include "Ball.hh"
 #include "ColoredBall.hh"
-#include "Fed.hh"
 
 #include <RTI.hh>
 
 #include <vector>
 #include <string>
 
+class Billard ;
+
 class Objects
 {
 public:
-    Objects(RTIambassador &, Fed &, int, int);
+    Objects(RTIambassador &, Billard &, int, int);
 
     void declare(std::string);
     void destroy(const FedTime &);
@@ -53,7 +54,7 @@ public:
 
 private:
     RTI::RTIambassador &rtiamb ;
-    Fed &fedamb ;
+    Billard &billard ;
 
     ColoredBall local ;
     std::vector<Ball> remote ;
@@ -64,4 +65,4 @@ private:
 
 #endif // BILLARD_OBJECTS_HH
 
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Objects.hh,v 3.3 2003/10/27 10:51:39 breholee Exp $
