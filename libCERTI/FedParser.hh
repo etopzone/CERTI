@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: FedParser.hh,v 3.9 2003/10/20 11:56:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
@@ -235,10 +235,10 @@ private:
     // Stacks Doc : For example, the current Object Class is pointed by
     // objStack.back(). It is the last Object Class discovered.
 
-    vector<ObjectClass *> objStack ; //!< Object Class Stack.
-    vector<Interaction *> intStack ; //!< Interaction Class Stack.
-    vector<ObjectClassAttribute *> attStack ; //!< Object Attribute Stack.
-    vector<Parameter *> parStack ; //!< Interaction Parameter Stack.
+    std::vector<ObjectClass *> objStack ; //!< Object Class Stack.
+    std::vector<Interaction *> intStack ; //!< Interaction Class Stack.
+    std::vector<ObjectClassAttribute *> attStack ; //!< Object Attribute Stack.
+    std::vector<Parameter *> parStack ; //!< Interaction Parameter Stack.
 
     //! Current Atom Type Stack.
     fedparser::AtomType TypeStack[CREAD_MAX_OBJ_COUNT] ;
@@ -248,7 +248,7 @@ private:
     // -- FED File objects and buffer --(used in the read part)
     // ---------------------------------
 
-    ifstream *FEDFile ; //!< Pointer to file stream for reading data.
+    std::ifstream *FEDFile ; //!< Pointer to file stream for reading data.
 
     char InBuffer[CREAD_MAX_BUF_LENGTH] ; //!< Buffer used to store
     //piece of file.
@@ -264,4 +264,4 @@ private:
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: FedParser.hh,v 3.9 2003/10/20 11:56:54 breholee Exp $
