@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: bille.cc,v 3.4 2003/03/13 13:21:28 breholee Exp $
+// $Id: bille.cc,v 3.5 2003/03/19 08:57:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -147,12 +147,12 @@ void CBille::Direction(float dxx, float dyy)
 void
 CBille::CollisionBords(float largeur, float hauteur)
 {
-    // si collision avec le bord de gauche ou avec le bord de droite
+    // left/right collision
     if ((x < rayon) || (x > largeur - rayon)) {
         dx = -dx ;
     }
 
-    // si collision avec le bord du haut ou avec le bord du bas
+    // top/bottom collision
     if ((y < rayon) || (y > hauteur - rayon)) {
         dy = -dy ;
     }
@@ -167,7 +167,6 @@ CBille::CollisionBords(float largeur, float hauteur)
 int
 CBille::Collision(CBille *ab)
 {
-    // distance entre les centres des deux billes
     float distance ;
 
     distance = sqrt((x+dx-ab->x)*(x+dx-ab->x) +(y+dy-ab->y)*(y+dy-ab->y));
@@ -209,4 +208,4 @@ CBille::init(int x_, int y_)
 }
 
 
-// $Id: bille.cc,v 3.4 2003/03/13 13:21:28 breholee Exp $
+// $Id: bille.cc,v 3.5 2003/03/19 08:57:23 breholee Exp $
