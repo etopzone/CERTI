@@ -19,24 +19,30 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SupportServices.cc,v 3.2 2003/10/13 10:13:04 breholee Exp $
+// $Id: SupportServices.cc,v 3.3 2003/10/27 10:42:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
 #include "RTIambassador.hh"
 
+#include <config.h>
 #include "Message.hh"
+
+#include <iostream>
+
+using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("LIBRTI", "(libRTI Support) - ");
+static pdCDebug D("LIBRTI_SUPPORT", __FILE__);
 
 // ===========================================================================
 // RTI SUPPORT SERVICES
 // ===========================================================================
 
 // ----------------------------------------------------------------------------
-// Get Object Class Handle
+/** Get object class handle
+    \param theName Name of the object class
+ */
 ObjectClassHandle
 RTIambassador::getObjectClassHandle(const char *theName)
     throw (NameNotFound,
@@ -45,19 +51,17 @@ RTIambassador::getObjectClassHandle(const char *theName)
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_OBJECT_CLASS_HANDLE ;
     req.setName(theName);
-
     executeService(&req, &rep);
-
     return rep.getObjectClass();
 }
 
 // ----------------------------------------------------------------------------
-//! Get Object Class Name
-/*! Returns the class name associated with the handle, memory has to
-  be freed by the caller.
+/** Get object class name.
+    \param handle Handle of the object class
+    \return The class name associated with the handle, memory has to
+    be freed by the caller.
 */
 char *
 RTIambassador::getObjectClassName(ObjectClassHandle handle)
@@ -67,17 +71,17 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_OBJECT_CLASS_NAME ;
     req.setObjectClass(handle);
-
     executeService(&req, &rep);
-
     return strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
-// Get Attribute Handle
+/** Get attribute handle.
+    \param theName Name of the attribute
+    \param whichClass Handle of the attribute's class
+ */
 AttributeHandle
 RTIambassador::getAttributeHandle(const char *theName,
                                   ObjectClassHandle whichClass)
@@ -89,18 +93,19 @@ RTIambassador::getAttributeHandle(const char *theName,
 
 {
     Message req, rep ;
-
     req.type = Message::GET_ATTRIBUTE_HANDLE ;
     req.setName(theName);
     req.setObjectClass(whichClass);
-
     executeService(&req, &rep);
-
     return rep.getAttribute();
 }
 
 // ----------------------------------------------------------------------------
-// Get Attribute Name
+/** Get attribute name.
+    \param theHandle Handle of the attribute
+    \param whichClass Handle of the attribute's class
+ */
+
 char *
 RTIambassador::getAttributeName(AttributeHandle theHandle,
                                 ObjectClassHandle whichClass)
@@ -111,13 +116,10 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_ATTRIBUTE_NAME ;
     req.setAttribute(theHandle);
     req.setObjectClass(whichClass);
-
-    executeService(&req, &rep); // Send request to RTI.
-
+    executeService(&req, &rep);
     return strdup(rep.getName());
 }
 
@@ -245,7 +247,9 @@ RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
 }
 
 // ----------------------------------------------------------------------------
-// Get Routing Space Handle
+/** Get routing space handle
+    \param rs_name Name of the routing space
+ */
 SpaceHandle
 RTIambassador::getRoutingSpaceHandle(const char *rs_name)
     throw (NameNotFound,
@@ -253,17 +257,18 @@ RTIambassador::getRoutingSpaceHandle(const char *rs_name)
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
+    D[pdDebug] << "Get routing space handle: " << rs_name << endl ;
     Message req, rep ;
-
     req.type = Message::GET_SPACE_HANDLE ;
     req.setName(rs_name);
-    this->executeService(&req, &rep);
-
+    executeService(&req, &rep);
     return rep.getSpace();
 }
 
 // ----------------------------------------------------------------------------
-// Get Routing Space Name
+/** Get routing space name
+    \param handle Handle of the routing space
+ */
 char *
 RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined,
@@ -272,16 +277,17 @@ RTIambassador::getRoutingSpaceName(SpaceHandle handle)
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_SPACE_NAME ;
     req.setSpace(handle);
-    this->executeService(&req, &rep);
-
+    executeService(&req, &rep);
     return strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
-// Get Dimension Handle
+/** Get dimension handle
+    \parameter dimension Name of the dimension
+    \parameter space The dimension's routing space handle
+ */
 DimensionHandle
 RTIambassador::getDimensionHandle(const char *dimension,
                                   SpaceHandle space)
@@ -292,17 +298,18 @@ RTIambassador::getDimensionHandle(const char *dimension,
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_DIMENSION_HANDLE ;
     req.setName(dimension);
     req.setSpace(space);
-    this->executeService(&req, &rep);
-
+    executeService(&req, &rep);
     return rep.getDimension();
 }
 
 // ----------------------------------------------------------------------------
-// Get Dimension Name
+/** Get dimension name
+    \param dimension Handle of the dimension
+    \param space The dimension's routing space handle
+ */
 char *
 RTIambassador::getDimensionName(DimensionHandle dimension,
                                 SpaceHandle space)
@@ -313,17 +320,19 @@ RTIambassador::getDimensionName(DimensionHandle dimension,
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_DIMENSION_NAME ;
     req.setDimension(dimension);
     req.setSpace(space);
-    this->executeService(&req, &rep);
-
+    executeService(&req, &rep);
     return strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
-// Get Attribute Routing Space Handle
+/** Get attribute routing space handle
+    \param attribute The attribute handle
+    \param object_class The attribute's class handle
+    \return The associated routing space handle
+ */
 SpaceHandle
 RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
                                               ObjectClassHandle object_class)
@@ -334,13 +343,10 @@ RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
            RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_ATTRIBUTE_SPACE_HANDLE ;
     req.setAttribute(attribute);
     req.setObjectClass(object_class);
-
     executeService(&req, &rep);
-
     return rep.getSpace();
 }
 
@@ -355,17 +361,17 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
            UnimplementedService)
 {
     Message req, rep ;
-
     req.type = Message::GET_OBJECT_CLASS ;
     req.setObject(theObject);
-
     executeService(&req, &rep);
-
     return rep.getObjectClass();
 }
 
 // ----------------------------------------------------------------------------
-// Get Interaction Routing Space Handle
+/** Get interaction routing space handle
+    \param inter The interaction handle
+    \return The associated routing space
+ */
 SpaceHandle
 RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
     throw (InteractionClassNotDefined,
@@ -374,12 +380,9 @@ RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
 	   RTIinternalError)
 {
     Message req, rep ;
-
     req.type = Message::GET_INTERACTION_SPACE_HANDLE ;
     req.setInteractionClass(inter);
-
     this->executeService(&req, &rep);
-
     return rep.getSpace();
 }
 
@@ -395,12 +398,9 @@ RTIambassador::getTransportationHandle(const char *theName)
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::GET_TRANSPORTATION_HANDLE ;
     req.setName(theName);
-
     executeService(&req, &rep);
-
     return rep.getTransportation();
 }
 
@@ -416,12 +416,9 @@ RTIambassador::getTransportationName(TransportationHandle theHandle)
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::GET_TRANSPORTATION_NAME ;
     req.setTransportation(theHandle);
-
     executeService(&req, &rep);
-
     return(strdup(rep.getName()));
 }
 
@@ -437,12 +434,9 @@ RTIambassador::getOrderingHandle(const char *theName)
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::GET_ORDERING_HANDLE ;
     req.setName(theName);
-
     executeService(&req, &rep);
-
     return rep.getOrdering();
 }
 
@@ -459,12 +453,9 @@ RTIambassador::getOrderingName(OrderingHandle theHandle)
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::GET_ORDERING_NAME ;
     req.setOrdering(theHandle);
-
     executeService(&req, &rep);
-
     return(strdup(rep.getName()));
 }
 
@@ -481,9 +472,7 @@ RTIambassador::enableClassRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -500,9 +489,7 @@ RTIambassador::disableClassRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -519,9 +506,7 @@ RTIambassador::enableAttributeRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -538,9 +523,7 @@ RTIambassador::disableAttributeRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -556,9 +539,7 @@ void RTIambassador::enableAttributeScopeAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -575,9 +556,7 @@ RTIambassador::disableAttributeScopeAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -594,9 +573,7 @@ RTIambassador::enableInteractionRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
@@ -613,12 +590,10 @@ RTIambassador::disableInteractionRelevanceAdvisorySwitch()
 {
     throw UnimplementedService();
     Message req, rep ;
-
     req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
-
     executeService(&req, &rep);
 }
 
-}
+} // namespace certi
 
-// $Id: SupportServices.cc,v 3.2 2003/10/13 10:13:04 breholee Exp $
+// $Id: SupportServices.cc,v 3.3 2003/10/27 10:42:47 breholee Exp $
