@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Interaction.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,9 +35,9 @@ namespace certi {
   // -- AddParameter --
   // ------------------
 
-  ParameterHandle Interaction::addParameter(Parameter *theParameter,
-					    bool Inherited)
-  {
+ParameterHandle 
+Interaction::addParameter(Parameter *theParameter, bool Inherited)
+{
     theParameter->Handle = parameterSet.getLength() + 1;
 
     // An inherited parameter keeps its security level, any other get the
@@ -51,7 +51,7 @@ namespace certi {
 	  handle, name, theParameter->Handle);
 
     return theParameter->Handle;
-  }
+}
 
 
   // --------------------------
@@ -127,9 +127,9 @@ namespace certi {
   // -- BroadcastInteractionMessage --
   // ---------------------------------
 
-  void Interaction::
-  broadcastInteractionMessage(InteractionBroadcastList *List)
-  {
+void 
+Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
+{
     int SubIndex = 0; // Class subscribers index
     int ParamIndex = 0; // Message's Parameter index.
 
@@ -137,18 +137,18 @@ namespace certi {
 
     // 1. Set InteractionHandle to local class Handle.
     //printf("(BroadcastInteractionMessage) debut\n");
-    List->Message->InteractionHandle = handle;
+    ibList->message->InteractionHandle = handle;
 
     // 2. Update message Parameters list by removing child's Parameters.
     ParamIndex = 0;
 
-    while(ParamIndex < List->Message->HandleArraySize) {
+    while(ParamIndex < ibList->message->HandleArraySize) {
       // If the Parameter is not in that class, remove it from the message.
       try {
-	getParameterByHandle(List->Message->HandleArray [ParamIndex]);
+	getParameterByHandle(ibList->message->HandleArray [ParamIndex]);
 	ParamIndex ++;
       } catch(InteractionParameterNotDefined) {
-	List->Message->removeParameter(ParamIndex);
+	ibList->message->removeParameter(ParamIndex);
       }
     }
     //printf("(BroadcastInteractionMessage) handle : %d paramindex %d\n",
@@ -159,13 +159,13 @@ namespace certi {
       theSubscriber = subscribers.Ieme(SubIndex);
       D.Out(pdDebug, "Ajout du Federe %d a la BroadcastList.",
 	    theSubscriber->getHandle());
-      List->addFederate(theSubscriber->getHandle());
+      ibList->addFederate(theSubscriber->getHandle());
     }
 
     // 4. Send pending messages.
     D.Out(pdDebug,"Calling SendPendingMessage...");
-    List->sendPendingMessage(server);
-  }
+    ibList->sendPendingMessage(server);
+}
 
 
   // ------------------------------
@@ -728,4 +728,4 @@ namespace certi {
   }
 }
 
-// $Id: Interaction.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Interaction.cc,v 3.4 2003/01/14 16:27:18 breholee Exp $
