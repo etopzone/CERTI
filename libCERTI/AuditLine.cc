@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditLine.cc,v 3.7 2004/05/17 21:34:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,28 +37,49 @@ using std::string ;
 namespace certi {
 
 // ----------------------------------------------------------------------------
-//! addComment adds information to the comment parameter.
-void
-AuditLine::addComment(const char *str)
-{
-    comment += str ;
-}
-
-// ----------------------------------------------------------------------------
 //! AuditLine constructor.
 /*! Initialise internal parameters to null.
  */
 AuditLine::AuditLine()
-    : federation(0), federate(0), type(0), level(0), status(0)
+    : federation(0), federate(0), type(0), level(0), status(0),
+      modified(false), date(0)
 {
-    // Set the Date
-    date = time(NULL);
+}
+
+// ----------------------------------------------------------------------------
+//! AuditLine constructor.
+/*! 
+ */
+AuditLine::AuditLine(unsigned short event_type, unsigned short event_level,
+		     unsigned short event_status, string reason)
+    : federation(0), federate(0),
+      type(event_type), level(event_level), status(event_status),
+      modified(false), date(0), comment(reason)
+{    
 }
 
 // ----------------------------------------------------------------------------
 //! AuditLine destructor. Nothing to be done.
 AuditLine::~AuditLine()
 {
+}
+
+// ----------------------------------------------------------------------------
+//! addComment adds information to the comment parameter.
+void
+AuditLine::addComment(const std::string &str)
+{
+    comment += str ;
+    modified = true ;
+}
+
+// ----------------------------------------------------------------------------
+//! Finish the line with a status and reason
+void
+AuditLine::end(unsigned short event_status, const string reason)
+{
+    status = event_status ;    
+    addComment(reason);
 }
 
 // ----------------------------------------------------------------------------
@@ -83,7 +104,28 @@ AuditLine::write(ofstream &audit_file)
     audit_file.flush();
 }
 
+void 
+AuditLine::setFederation(Handle h)
+{ 
+    federation = h ; 
+    modified = true ;
+}
+
+void 
+AuditLine::setFederate(FederateHandle h) 
+{ 
+    federate = h ; 
+    modified = true ;
+}
+
+void 
+AuditLine::setLevel(unsigned short l) 
+{
+    level = l ; 
+    modified = true ; 
+}
+
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditLine.cc,v 3.7 2004/05/17 21:34:20 breholee Exp $
 

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditFile.hh,v 3.8 2004/05/17 21:34:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
@@ -30,6 +30,7 @@
 #include "Exception.hh"
 
 #include <fstream>
+#include <string>
 
 #define AUDIT_MIN_LEVEL 0
 #define AUDIT_MAX_LEVEL 10
@@ -56,28 +57,31 @@ namespace certi {
 class AuditFile
 {
 public:
-    AuditFile(const char *); // Open LogFileName for writing.
+    AuditFile(const std::string); // Open LogFileName for writing.
     ~AuditFile();
 
     void startLine(Handle, FederateHandle, unsigned short EventType);
     void setLevel(unsigned short EventLevel);
-    void addToLine(const char *Comment);
-    void addToLinef(const char *Format, ...);
-    void endLine(unsigned short Eventstatus = e_NO_EXCEPTION,
-                 const char *Reason = NULL);
-    void putLine(unsigned short EventType,
-                 unsigned short EventLevel,
-                 unsigned short Eventstatus = e_NO_EXCEPTION,
-                 const char *Reason = NULL);
+    //    void addToLine(const std::string);
+    //    void addToLinef(const char *Format, ...);
+    void endLine(unsigned short, std::string);
+    void putLine(unsigned short, unsigned short, unsigned short, std::string);
+
+    AuditFile &operator<<(const char *);
+    AuditFile &operator<<(int);
+    AuditFile &operator<<(unsigned int);
+    AuditFile &operator<<(long);
+    AuditFile &operator<<(unsigned long);
+    AuditFile &operator<<(double);
 
 protected:
-    std::ofstream *auditFile ; //!< Stream pointer to output file.
-    AuditLine *currentLine ; //!< Line currently being processed.
-    char va_Buffer[1024] ; //!< Static buffer for va_printf operations.
+    std::ofstream auditFile ; //!< Stream pointer to output file.
+    AuditLine currentLine ; //!< Line currently being processed.
+    //char va_Buffer[1024] ; //!< Static buffer for va_printf operations.
 };
 
 } // namespace certi
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditFile.hh,v 3.8 2004/05/17 21:34:20 breholee Exp $

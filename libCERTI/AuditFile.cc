@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditFile.cc,v 3.7 2004/05/17 21:34:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,11 +27,13 @@
 
 #include <iostream>
 #include <cstdarg>
+#include <sstream>
 
 using std::ofstream ;
 using std::ios ;
 using std::cerr ;
 using std::endl ;
+using std::string ;
 
 namespace certi {
 
@@ -39,21 +41,17 @@ namespace certi {
 //! AuditFile constructor to write to file
 /*! Audit file is used to store information about actions taken by the RTIG
  */
-AuditFile::AuditFile(const char *log_file)
+AuditFile::AuditFile(const string logfile)
+    : auditFile(logfile.c_str(), ios::app)
 {
-    // Open Audit File (Append mode)
-    auditFile = new ofstream(log_file, ios::app);
-
-    if (!auditFile->is_open()) {
-        cerr << "Could not open Audit file " << log_file << '.' << endl ;
+    if (!auditFile.is_open()) {
+        cerr << "Could not open Audit file « " << logfile.c_str() 
+	     << " »." << endl ;
         throw RTIinternalError("Could not open Audit file.");
     }
 
     // Put a Start delimiter in the Audit File
-    putLine(AUDITEVENT_START_AUDIT, AUDIT_MAX_LEVEL);
-
-    // Init Current line as empty
-    currentLine = 0 ;
+    putLine(AUDITEVENT_START_AUDIT, AUDIT_MAX_LEVEL, e_NO_EXCEPTION, "");
 }
 
 // ----------------------------------------------------------------------------
@@ -63,65 +61,53 @@ AuditFile::AuditFile(const char *log_file)
 */
 AuditFile::~AuditFile()
 {
-    // Flush the current line.
-    if (currentLine != NULL)
-        endLine();
-
-    // Put a last line in the Audit
-    putLine(AUDITEVENT_STOP_AUDIT, AUDIT_MAX_LEVEL);
-
-    // Close Audit File
-    auditFile->close();
+    endLine(e_NO_EXCEPTION, "");
+    putLine(AUDITEVENT_STOP_AUDIT, AUDIT_MAX_LEVEL, e_NO_EXCEPTION, "");
+    auditFile.close();
 }
 
 // ----------------------------------------------------------------------------
 //! Adds last information about current line and writes it to file.
 /*! Completes a line previously initialized by a newLine call. Appends the
-  current status and a comment. Then write line to file and delete it.
+  current status and a comment. Then write line to file.
 */
 void
-AuditFile::endLine(unsigned short Eventstatus, const char *Reason)
+AuditFile::endLine(unsigned short event_status, string reason)
 {
-    if (currentLine != NULL) {
-        currentLine->status = Eventstatus ;
+    if (currentLine.started())
+	currentLine.end(event_status, reason);
 
-        if (Reason != NULL)
-            currentLine->addComment(Reason);
-
-        // Log depending on level and non-zero status.
-        if ((currentLine->level >= AUDIT_CURRENT_LEVEL) ||
-            (currentLine->status != 0))
-            currentLine->write(*auditFile);
-
-        delete currentLine ;
-        currentLine = NULL ;
-    }
+    // Log depending on level and non-zero status.
+    if (currentLine.getLevel() >= AUDIT_CURRENT_LEVEL || 
+	currentLine.getStatus())
+	currentLine.write(auditFile);
+    
+    currentLine = AuditLine();
 }
 
 // ----------------------------------------------------------------------------
 //! addToLine add a comment to the current line.
-void
-AuditFile::addToLine(const char *Comment)
-{
-    if (Comment != NULL)
-        currentLine->addComment(Comment);
-}
+// void
+// AuditFile::addToLine(const string comment)
+// {
+//     currentLine.addComment(comment);
+// }
 
 // ----------------------------------------------------------------------------
 //! addToLinef adds a formatted comment to the current line.
-void
-AuditFile::addToLinef(const char *Format, ...)
-{
-    va_list argptr ; // Variable Argument list, see cstdarg
+// void
+// AuditFile::addToLinef(const char *Format, ...)
+// {
+//     va_list argptr ; // Variable Argument list, see cstdarg
 
-    if ((currentLine != NULL) && (Format != NULL)) {
-        va_start(argptr, Format);
-        vsprintf(va_Buffer, Format, argptr);
-        va_end(argptr);
+//     if ((currentLine != NULL) && (Format != NULL)) {
+//         va_start(argptr, Format);
+//         vsprintf(va_Buffer, Format, argptr);
+//         va_end(argptr);
 
-        currentLine->addComment(va_Buffer);
-    }
-}
+//         currentLine->addComment(va_Buffer);
+//     }
+// }
 
 // ----------------------------------------------------------------------------
 //! creates a new line with parameters and writes this line to file.
@@ -131,46 +117,33 @@ AuditFile::addToLinef(const char *Format, ...)
   builded audit line. The federation and federate numbers are set to(0, 0).
 */
 void
-AuditFile::putLine(unsigned short EventType,
-                   unsigned short EventLevel,
-                   unsigned short Eventstatus,
-                   const char *Reason)
+AuditFile::putLine(unsigned short event_type,
+                   unsigned short event_level,
+                   unsigned short event_status,
+                   string reason)
 {
-    if (EventLevel < AUDIT_CURRENT_LEVEL)
-        return ;
-
-    AuditLine *TempLine = new AuditLine();
-
-    TempLine->type = EventType ;
-    TempLine->level = EventLevel ;
-    TempLine->status = Eventstatus ;
-    if (Reason != NULL)
-        TempLine->addComment(Reason);
-
-    TempLine->write(*auditFile);
-
-    delete TempLine ;
+    if (event_level >= AUDIT_CURRENT_LEVEL) {
+	AuditLine line(event_type, event_level, event_status, reason);
+	line.write(auditFile);
+    }
 }
 
 // ----------------------------------------------------------------------------
 //! start a new line and set with parameters.
 void
-AuditFile::startLine(Handle Federation,
-                     FederateHandle Federate,
-                     unsigned short EventType)
+AuditFile::startLine(Handle federation,
+                     FederateHandle federate,
+                     unsigned short event_type)
 {
     // Check already valid opened line
-    if (currentLine != NULL) {
+    if (currentLine.started()) {
         cerr << "Audit Error : Current line already valid !" << endl ;
         return ;
     }
 
-    currentLine = new AuditLine();
-
-    currentLine->federation = Federation ;
-    currentLine->federate = Federate ;
-    currentLine->type = EventType ;
-    currentLine->level = AUDIT_MIN_LEVEL ;
+    currentLine = AuditLine(event_type, AUDIT_MIN_LEVEL, 0, "");
+    currentLine.setFederation(federation);
+    currentLine.setFederate(federate);
 }
 
 // ----------------------------------------------------------------------------
@@ -181,9 +154,65 @@ AuditFile::startLine(Handle Federation,
 void
 AuditFile::setLevel(unsigned short eventLevel)
 {
-    if (currentLine != NULL) currentLine->level = eventLevel ;
+    currentLine.setLevel(eventLevel);
+}
+
+// ----------------------------------------------------------------------------
+/** operator<<
+ */
+AuditFile &
+AuditFile::operator<<(const char *s)
+{
+    if (s != 0)
+	currentLine.addComment(s);
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(int n)
+{
+    std::ostringstream s ;
+    s << n ;
+    currentLine.addComment(s.str());
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(long n)
+{
+    std::ostringstream s ;
+    s << n ;
+    currentLine.addComment(s.str());
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(unsigned int n)
+{
+    std::ostringstream s ;
+    s << n ;
+    currentLine.addComment(s.str());
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(unsigned long n)
+{
+    std::ostringstream s ;
+    s << n ;
+    currentLine.addComment(s.str());
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(double n)
+{
+    std::ostringstream s ;
+    s << n ;
+    currentLine.addComment(s.str());
+    return *this ;
 }
 
 }
 
-// $Id: AuditFile.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditFile.cc,v 3.7 2004/05/17 21:34:19 breholee Exp $

@@ -19,15 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditLine.hh,v 3.7 2004/05/17 21:34:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
 #define _CERTI_AUDIT_LINE_HH
 
 #include "RTItypes.hh"
+#include "Exception.hh"
 
 #include <fstream>
+#include <string>
 
 namespace certi {
 
@@ -35,18 +37,28 @@ class AuditLine {
 
 public:
     AuditLine();
+    AuditLine(unsigned short, unsigned short, unsigned short, std::string);
     ~AuditLine();
 
     void write(std::ofstream &); //!< Write data to file
-    void addComment(const char *); //!< Add str at the end of comment.
+    void addComment(const std::string &); //!< Add str at the end of comment.
+    void end(unsigned short event_status = e_NO_EXCEPTION,
+	     std::string reason = "");
+    unsigned short getLevel() const { return level ; };
+    unsigned short getStatus() const { return status ; };
+    bool started() const { return modified ; };
+    void setFederation(Handle h);
+    void setFederate(FederateHandle h);
+    void setLevel(unsigned short l);
 
+private:
     Handle federation ;
     FederateHandle federate ;
     unsigned short type ;
     unsigned short level ;
     unsigned short status ;
+    bool modified ;
 
-private:
     time_t date ; //!< date, automatically set at construction time.
     std::string comment ; //!< comment internally managed.
 };
@@ -55,4 +67,4 @@ private:
 
 #endif // _CERTI_AUDIT_LINE_HH
 
-// $Id: AuditLine.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: AuditLine.hh,v 3.7 2004/05/17 21:34:20 breholee Exp $
