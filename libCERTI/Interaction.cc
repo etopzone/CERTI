@@ -20,146 +20,126 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.6 2003/01/17 17:39:18 breholee Exp $
+// $Id: Interaction.cc,v 3.7 2003/01/20 21:49:14 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "Interaction.hh"
 
 namespace certi {
 
-  static pdCDebug D("INTERACTION", "(Interact) - ");
+static pdCDebug D("INTERACTION", "(Interact) - ");
 
-  // ------------------
-  // -- AddParameter --
-  // ------------------
-
-ParameterHandle 
-Interaction::addParameter(Parameter *theParameter, bool Inherited)
+// ---------------------------------------------------------------------------
+//! Used only by CRead, return the new parameter's handle.
+ParameterHandle
+Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 {
-    theParameter->Handle = parameterSet.getLength() + 1;
+    the_parameter->Handle = parameterSet.size() + 1 ;
 
     // An inherited parameter keeps its security level, any other get the
     // default security level of the class.
-    if(!Inherited)
-      theParameter->LevelID = id;
+    if (!is_inherited)
+        the_parameter->LevelID = id ;
 
-    parameterSet.Inserer(1, theParameter);
+    parameterSet.push_front(the_parameter);
 
     D.Out(pdRegister, "Interaction %u(\"%s\") has a new parameter %u.",
-	  handle, name, theParameter->Handle);
+          handle, name, the_parameter->Handle);
 
-    return theParameter->Handle;
+    return the_parameter->Handle ;
 }
 
+// ---------------------------------------------------------------------------
+//! Add the class' attributes to the 'Child' Class.
+void
+Interaction::addParametersToChild(Interaction *the_child)
+{
+    // The Parameter List is read backward to respect the same attribute order
+    // for the child (Parameters are inserted at the beginning of the list)
+    Parameter *child = NULL ;
+    list<Parameter *>::reverse_iterator p ;
+    for (p = parameterSet.rbegin(); p != parameterSet.rend(); p++) {
+        assert((*p) != NULL);
 
-  // --------------------------
-  // -- AddParametersToChild --
-  // --------------------------
+        child = new Parameter(*p);
+        assert(child != NULL);
 
-  void Interaction::addParametersToChild(Interaction *Child)
-  {
-    int ParamIndex;
-    Parameter *parameter = NULL;
-    Parameter *child = NULL;
+        D.Out(pdProtocol,
+              "ObjectClass %u adding new attribute %d to child class %u.",
+              handle, (*p)->Handle, the_child->handle);
 
-    // The Parameter List is read backwards to respect the same attribute
-    // order for the child(Parameters are inserted at the beginning of the list)
+        the_child->addParameter(child, RTI_TRUE);
 
-    for(ParamIndex = parameterSet.getLength(); ParamIndex > 0; ParamIndex--) {
-      parameter = parameterSet.Ieme(ParamIndex);
-      assert(parameter != NULL);
-
-      child = new Parameter(parameter);
-      assert(child != NULL);
- 
-      D.Out(pdProtocol, 
-	    "ObjectClass %u adding new attribute %d to child class %u.",
-	    handle, parameter->Handle, Child->handle);
-
-      Child->addParameter(child, RTI_TRUE);
-
-      if(child->Handle != parameter->Handle)
-	throw RTIinternalError("Error while copying child's attributes.");
-
+        if (child->Handle != (*p)->Handle)
+            throw RTIinternalError("Error while copying child's attributes.");
     }
-  }
+}
 
+// ---------------------------------------------------------------------------
+//! addPublisher (private).
+void
+Interaction::addPublisher(FederateHandle the_federate)
+    throw (RTIinternalError)
+{
+    Publisher *publisher = new Publisher(the_federate);
 
-  // ------------------
-  // -- AddPublisher --(private)
-  // ------------------
-
-  void Interaction::addPublisher(FederateHandle theFederate)
-    throw(RTIinternalError)
-  {
-    Publisher *publisher = new Publisher(theFederate);
- 
-    if(publisher == NULL) {
-      D.Out(pdExcept, "Memory exhausted while publishing interaction.");
-      throw RTIinternalError("Memory Exhausted while publishing interaction.");
-    }
- 
-    publishers.Inserer(1, publisher);
-  }
-
-
-  // ------------------
-  // -- AddSubscriber --(private)
-  // ------------------
-
-  void Interaction::addSubscriber(FederateHandle theFederate)
-    throw(RTIinternalError)
-  {
-    Subscriber *subscriber = new Subscriber(theFederate);
- 
-    if(subscriber == NULL) {
-      D.Out(pdExcept, "Memory exhausted while subscribing interaction.");
-      throw RTIinternalError("Memory Exhausted while subscribing inter.");
+    if (publisher == NULL) {
+        D.Out(pdExcept, "Memory exhausted while publishing interaction.");
+        throw
+            RTIinternalError("Memory Exhausted while publishing interaction.");
     }
 
-    subscribers.Inserer(1, subscriber);
-  }
+    publishers.push_front(publisher);
+}
 
+// ---------------------------------------------------------------------------
+// addSubscriber (private).
+void
+Interaction::addSubscriber(FederateHandle the_federate)
+    throw (RTIinternalError)
+{
+    Subscriber *subscriber = new Subscriber(the_federate);
 
-  // ---------------------------------
-  // -- BroadcastInteractionMessage --
-  // ---------------------------------
+    if (subscriber == NULL) {
+        D.Out(pdExcept, "Memory exhausted while subscribing interaction.");
+        throw
+            RTIinternalError("Memory Exhausted while "
+                             "subscribing interaction.");
+    }
 
-void 
+    subscribers.push_front(subscriber);
+}
+
+// ---------------------------------------------------------------------------
+/*! Called by the InteractionSet on Parent Classes whose Childrens
+  initiated a SendInteraction, to allow them to broadcast the
+  Interaction Message of their child to their own subscribers.
+  See InteractionSet::SendInteraction.
+*/
+void
 Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
 {
-    int SubIndex = 0; // Class subscribers index
-    int ParamIndex = 0; // Message's Parameter index.
-
-    Subscriber *theSubscriber = NULL;
-
     // 1. Set InteractionHandle to local class Handle.
-    //printf("(BroadcastInteractionMessage) debut\n");
-    ibList->message->InteractionHandle = handle;
+    ibList->message->InteractionHandle = handle ;
 
     // 2. Update message Parameters list by removing child's Parameters.
-    ParamIndex = 0;
-
-    while(ParamIndex < ibList->message->HandleArraySize) {
-      // If the Parameter is not in that class, remove it from the message.
-      try {
-	getParameterByHandle(ibList->message->HandleArray [ParamIndex]);
-	ParamIndex ++;
-      } catch(InteractionParameterNotDefined) {
-	ibList->message->removeParameter(ParamIndex);
-      }
+    for (int i = 0  ; i < ibList->message->HandleArraySize  ; ) {
+        // If the Parameter is not in that class, remove it from the message.
+        try {
+            getParameterByHandle(ibList->message->HandleArray[i]);
+            i++ ;
+        }
+        catch(InteractionParameterNotDefined) {
+            ibList->message->removeParameter(i);
+        }
     }
-    //cout << "(BroadcastInteractionMessage) handle : "<< Handle <<
-    //     << " paramindex " << ParamIndex << endl;
+
     // 3. Add Interaction subscribers to the list.
- 
-    for(SubIndex = 1; SubIndex <= subscribers.getLength(); SubIndex++) { 
-      theSubscriber = subscribers.Ieme(SubIndex);
-      D.Out(pdDebug, "Ajout du Federe %d a la BroadcastList.",
-	    theSubscriber->getHandle());
-      ibList->addFederate(theSubscriber->getHandle());
+    list<Subscriber *>::iterator s ;
+    for (s = subscribers.begin(); s != subscribers.end(); s++) {
+        D.Out(pdDebug, "Adding federate %d to BroadcastList.",
+              (*s)->getHandle());
+        ibList->addFederate((*s)->getHandle());
     }
 
     // 4. Send pending messages.
@@ -167,552 +147,494 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
     ibList->sendPendingMessage(server);
 }
 
+// ---------------------------------------------------------------------------
+//! changeTransportationType.
+void
+Interaction::changeTransportationType(TransportType new_type,
+                                      FederateHandle the_handle)
+    throw (FederateNotPublishing,
+           InvalidTransportType,
+           RTIinternalError)
+{
+    if (!isPublishing(the_handle))
+        throw FederateNotPublishing("Change Interaction Transport Type.");
 
-  // ------------------------------
-  // -- ChangeTransportationType --
-  // ------------------------------
+    if ((new_type != RELIABLE) && (new_type != BEST_EFFORT))
+        throw InvalidTransportType();
 
-  void Interaction::changeTransportationType(TransportType NewType,
-					     FederateHandle theHandle)
-    throw(FederateNotPublishing,
-	  InvalidTransportType,
-	  RTIinternalError)
-  {
-    if(!isPublishing(theHandle))
-      throw FederateNotPublishing("Change Interaction Transport Type.");
+    transport = new_type ;
 
-    if((NewType != RELIABLE) &&(NewType != BEST_EFFORT))
-      throw InvalidTransportType();
+    D.Out(pdInit,
+          "Interaction %d: New Transport type is %d.", handle, transport);
+}
 
-    transport = NewType;
+// ---------------------------------------------------------------------------
+//! changeOrderType.
+void
+Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
+    throw (FederateNotPublishing,
+           InvalidOrderType,
+           RTIinternalError)
+{
+    if (!isPublishing(the_handle))
+        throw FederateNotPublishing("Change Interaction Order Type.");
 
-    D.Out(pdInit, 
-	  "Interaction %d: New Transport type is %d.", handle, transport);
-  }
+    if ((new_order != RECEIVE) && (new_order != TIMESTAMP))
+        throw InvalidOrderType();
 
+    D.Out(pdInit, "Interaction %d: New Order type is %d.", handle, order);
+}
 
-  // ---------------------
-  // -- ChangeOrderType --
-  // ---------------------
-
-  void Interaction::changeOrderType(OrderType NewOrder,
-				    FederateHandle theHandle)
-    throw(FederateNotPublishing,
-	  InvalidOrderType,
-	  RTIinternalError)
-  {
-    if(!isPublishing(theHandle))
-      throw FederateNotPublishing("Change Interaction Order Type.");
-
-    if((NewOrder != RECEIVE) &&(NewOrder != TIMESTAMP))
-      throw InvalidOrderType();
-
-    D.Out(pdInit, 
-	  "Interaction %d: New Order type is %d.", handle, order);
-  }
-
-
-  // -------------------------
-  // -- CheckFederateAccess --
-  // -------------------------
-
-  void Interaction::checkFederateAccess(FederateHandle theFederate,
-					char *Reason)
-    throw(SecurityError)
-  {
-    bool result = false ;
-
+// ---------------------------------------------------------------------------
+/*! Throw SecurityError is the Federate is not allowed to access the
+  Interaction Class, and print an Audit message containing Reason.
+*/
+void
+Interaction::checkFederateAccess(FederateHandle the_federate,
+                                 const char *reason) const
+    throw (SecurityError)
+{
     // BUG: Should at least but a line in Audit
-    if(server == NULL)
-      return;
+    if (server == NULL)
+        return ;
 
-    result = server->canFederateAccessData(theFederate, id);
+    bool result = server->canFederateAccessData(the_federate, id);
 
     // BUG: Should use Audit.
-    if(!result) {
+    if (!result) {
         cout << "Interaction " << handle << " : SecurityError for federate "
-             << theFederate << '(' << Reason << ")." << endl;
-      throw SecurityError("Federate should not access Interaction.");
+             << the_federate << '(' << reason << ")." << endl ;
+        throw SecurityError("Federate should not access Interaction.");
     }
-  }
+}
 
+// ---------------------------------------------------------------------------
+//! Interaction.
+Interaction::Interaction(void)
+    : handle(0), parent(0), depth(0), transport(BEST_EFFORT), order(RECEIVE),
+      name(NULL), id(PublicLevelID)
+{
+}
 
-  // ------------------
-  // -- Interaction --
-  // ------------------
-
-  Interaction::Interaction()
-    : parameterSet(), subscribers(), publishers()
-  {
-    handle = 0;
-    name = NULL;
-    parent = 0;
- 
-    depth = 0;
- 
-    id = PublicLevelID;
-
-    order = RECEIVE;
-    transport = BEST_EFFORT;
-  }
-
-
-  // -------------------
-  // -- ~Interaction --
-  // -------------------
-
-  Interaction::~Interaction()
-  {
-    InteractionChild *Son = NULL;
-    Parameter *Parameter = NULL;
-    Publisher *publisher = NULL;
-    Subscriber *Subscriber = NULL;
-
-    if(name != NULL) {
-      free(name);
-      name = NULL;
+// ---------------------------------------------------------------------------
+//! Destructor.
+Interaction::~Interaction(void)
+{
+    if (name != NULL) {
+        free(name);
+        name = NULL ;
     }
 
-    while(parameterSet.getLength() > 0) {
-      Parameter = parameterSet.Ieme(1);
-      parameterSet.Supprimer(1);
-      delete Parameter;
+    while (!parameterSet.empty()) {
+        delete parameterSet.front();
+        parameterSet.pop_front();
     }
 
     // Deleting Publishers
-    if(publishers.getLength() > 0)
-      D.Out(pdError, 
-	    "Interaction %d: publishers list not empty at termination.",
-	    handle);
- 
-    while(publishers.getLength() > 0) {
-      publisher = publishers.Ieme(1);
-      publishers.Supprimer(1);
-      delete publisher;
+    if (!publishers.empty())
+        D.Out(pdError,
+              "Interaction %d: publishers list not empty at termination.",
+              handle);
+
+    while (!publishers.empty()) {
+        delete publishers.front();
+        publishers.pop_front();
     }
- 
+
     // Deleting Subscribers
-    if(subscribers.getLength() > 0)
-      D.Out(pdError, 
-	    "Interaction %d: Subscribers list not empty at termination.",
-	    handle);
- 
-    while(subscribers.getLength() > 0) {
-      Subscriber = subscribers.Ieme(1);
-      subscribers.Supprimer(1);
-      delete Subscriber;
+    if (!subscribers.empty())
+        D.Out(pdError,
+              "Interaction %d: Subscribers list not empty at termination.",
+              handle);
+
+    while (!subscribers.empty()) {
+        delete subscribers.front();
+        subscribers.pop_front();
     }
- 
+
     // Deleting Sons
-    while(children.getLength() > 0) {
-      Son = children.Ieme(1);
-      children.Supprimer(1);
-      delete Son;
+    while (!children.empty()) {
+        delete children.front();
+        children.pop_front();
     }
+}
 
-  }
-
-
-  // ---------------------
-  // -- DeletePublisher --(private)
-  // ---------------------
-
-  void Interaction::deletePublisher(int PublisherRank)
-  {
-    Publisher *publisher = publishers.Ieme(PublisherRank);
-
-    publishers.Supprimer(PublisherRank);
-
-    delete publisher;
-  }
-
-
-  // ----------------------
-  // -- DeleteSubscriber --(private)
-  // ----------------------
-
-  void Interaction::deleteSubscriber(int SubscriberRank)
-  {
-    Subscriber *Subscriber = subscribers.Ieme(SubscriberRank);
-
-    subscribers.Supprimer(SubscriberRank);
-
-    delete Subscriber;
-  }
-
-
-  // -------------
-  // -- Display --
-  // -------------
-
+// ---------------------------------------------------------------------------
+//! Delete a publisher with rank (private module).
 void
-Interaction::display(void)
+Interaction::deletePublisher(int the_rank)
 {
-    InteractionChild *child = NULL;
-    Parameter *parameter = NULL;
+    list<Publisher *>::iterator p = publishers.begin();
+    for (int i = 1  ; p != publishers.end(); i++,p++) {
+        if (i == the_rank) {
+            delete (*p);
+            publishers.erase(p);
+            return ;
+        }
+    }
+}
 
-    cout << " Interaction " << handle << " \"" << name << "\" :" << endl;
+// ---------------------------------------------------------------------------
+//! Delete a subscriber with rank (private module).
+void
+Interaction::deleteSubscriber(int the_rank)
+{
+    list<Subscriber *>::iterator s = subscribers.begin();
+    for (int i = 1  ; s != subscribers.end(); i++,s++) {
+        if (i == the_rank) {
+            delete (*s);
+            subscribers.erase(s);
+            return ;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+//! Print the Interaction to the standard output.
+void
+Interaction::display(void) const
+{
+    cout << " Interaction " << handle << " \"" << name << "\" :" << endl ;
 
     // Display inheritance
 
-    cout << " Parent Class Handle: " << parent << endl;
-    cout << " Security Level: "      << id     << endl;
-    cout << " " << children.getLength() << " Child(s):" << endl;
+    cout << " Parent Class Handle: " << parent << endl ;
+    cout << " Security Level: " << id << endl ;
+    cout << " " << children.size() << " Child(s):" << endl ;
 
-    for(int i = 1; i <= children.getLength(); i++) {
-      child = children.Ieme(i);
-      cout << " child " << i << " Handle: " << child->handle << endl;
+    list<InteractionChild *>::const_iterator c = children.begin();
+    for (int i = 1  ; c != children.end(); i++,c++) {
+        cout << " child " << i << " Handle: " << (*c)->handle << endl ;
     }
 
     // Display parameters
 
-    cout << " " << parameterSet.getLength() << " Parameters:" << endl;
+    cout << " " << parameterSet.size() << " Parameters:" << endl ;
 
-    for (int i = 1; i <= parameterSet.getLength(); i++) {
-      parameter = parameterSet.Ieme(i);
-      parameter->display();
+    list<Parameter *>::const_iterator p = parameterSet.begin();
+    for ( ; p != parameterSet.end(); p++) {
+        (*p)->display();
     }
 }
 
-
-  // --------------------------
-  // -- GetParameterByHandle --(private)
-  // --------------------------
+// ---------------------------------------------------------------------------
+//! Returns the parameter by its handle (private module).
 Parameter*
-Interaction::getParameterByHandle(ParameterHandle theHandle)
-    throw(InteractionParameterNotDefined, RTIinternalError)
+Interaction::getParameterByHandle(ParameterHandle the_handle) const
+    throw (InteractionParameterNotDefined, RTIinternalError)
 {
-    Parameter *parameter = NULL;
-
-    for (int i = 1; i <= parameterSet.getLength(); i++) {
-      parameter = parameterSet.Ieme(i);
-      if(parameter->Handle == theHandle) 
-	return parameter;
+    list<Parameter *>::const_iterator p ;
+    for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
+        if ((*p)->Handle == the_handle)
+            return (*p);
     }
 
     throw InteractionParameterNotDefined();
 }
 
 // ---------------------------------------------------------------------------
-//! getParameterHandle.
+//! Returns the parameter handle obtained by its name.
 ParameterHandle
-Interaction::getParameterHandle(const char* the_name)
-    throw(InteractionParameterNotDefined,
-          RTIinternalError)
+Interaction::getParameterHandle(const char* the_name) const
+    throw (InteractionParameterNotDefined,
+           RTIinternalError)
 {
-    Parameter *parameter = NULL;
-
-    for(int i = 1; i <= parameterSet.getLength(); i++) {
-        parameter = parameterSet.Ieme(i);
-        if(strcmp(parameter->getName(), the_name) == 0)
-            return parameter->Handle;
+    list<Parameter *>::const_iterator p ;
+    for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
+        if (strcmp((*p)->getName(), the_name) == 0)
+            return (*p)->Handle ;
     }
 
     throw InteractionParameterNotDefined();
 }
 
 // ---------------------------------------------------------------------------
-//! getParameterName.
+//! Returns the parameter name obtained by its handle.
 const char*
-Interaction::getParameterName(ParameterHandle the_handle)
-    throw(InteractionParameterNotDefined,
-          RTIinternalError)
+Interaction::getParameterName(ParameterHandle the_handle) const
+    throw (InteractionParameterNotDefined,
+           RTIinternalError)
 {
     return getParameterByHandle(the_handle)->getName();
 }
 
-// ----------------------
-// -- GetPublisherRank --(private)
-// ----------------------
+// ---------------------------------------------------------------------------
+//! Returns the publisher rank from its handle (private module).
+/*! Return the Rank of the Federate in the list, or ZERO if not found.
+ */
 int
-Interaction::getPublisherRank(FederateHandle theFederate)
+Interaction::getPublisherRank(FederateHandle the_federate) const
 {
-    Publisher *publisher;
-
-    for (int i = 1; i <= publishers.getLength(); i++) {
-        publisher = publishers.Ieme(i);
-        if (publisher->getHandle() == theFederate)
-            return i;
+    list<Publisher *>::const_iterator p = publishers.begin();
+    for (int i = 1  ; p != publishers.end(); i++,p++) {
+        if ( (*p)->getHandle() == the_federate)
+            return i ;
     }
 
-    return 0;
+    return 0 ;
 }
 
-// -----------------------
-// -- GetSubscriberRank --(private)
-// -----------------------
+// ---------------------------------------------------------------------------
+//! Returns the subscriber rank from its handle (private module).
+/*! Return the Rank of the Federate in the list, or ZERO if not found.
+ */
 int
-Interaction::getSubscriberRank(FederateHandle theFederate)
+Interaction::getSubscriberRank(FederateHandle the_federate) const
 {
-    Subscriber *subscriber;
-
-    for (int i = 1; i <= subscribers.getLength(); i++) {
-        subscriber = subscribers.Ieme(i);
-        if (subscriber->getHandle() == theFederate)
-            return i;
+    list<Subscriber *>::const_iterator s = subscribers.begin();
+    for (int i = 1  ; s != subscribers.end(); i++,s++) {
+        if ( (*s)->getHandle() == the_federate)
+            return i ;
     }
 
-    return 0;
+    return 0 ;
 }
 
+// ---------------------------------------------------------------------------
+//! Return true if federate has subscribed to this attribute.
+bool
+Interaction::isSubscribed(FederateHandle the_handle) const
+{
+    return(getSubscriberRank(the_handle) != 0);
+}
 
-  // -------------------
-  // -- HasSubscribed --
-  // -------------------
+// ---------------------------------------------------------------------------
+//! Return true if federate is publishing the attribute.
+bool
+Interaction::isPublishing(FederateHandle the_handle) const
+{
+    return(getPublisherRank(the_handle) != 0);
+}
 
-  bool Interaction::isSubscribed(FederateHandle theHandle)
-  {
-    return (getSubscriberRank(theHandle) != 0) ;
-  }
-
-
-
-  // ------------------
-  // -- isPublishing --
-  // ------------------
-
-  bool Interaction::isPublishing(FederateHandle theHandle)
-  {
-    return (getPublisherRank(theHandle) != 0) ;
-  }
-
-
-  // -------------
-  // -- IsReady --
-  // -------------
-
-  void Interaction::isReady(FederateHandle theFederateHandle,
-			    ParameterHandle *theParameterList,
-			    UShort theListSize)
-    throw(FederateNotPublishing,
-	  InteractionParameterNotDefined,
-	  RTIinternalError)
-  {
-    UShort ParamIndex;
-
+// ---------------------------------------------------------------------------
+/*! Check a SendInteractionOrder to see if it's OK for sending, but
+  without sending it(to be called on the RTIA only).
+*/
+void
+Interaction::isReady(FederateHandle federate_handle,
+                     ParameterHandle *parameter_list,
+                     UShort list_size) const
+    throw (FederateNotPublishing,
+           InteractionParameterNotDefined,
+           RTIinternalError)
+{
     // Is Federate Publishing Interaction?
-    if(!isPublishing(theFederateHandle))
-      throw FederateNotPublishing();
+    if (!isPublishing(federate_handle))
+        throw FederateNotPublishing();
 
     // Are Parameters Defined?
-    for(ParamIndex = 0; ParamIndex < theListSize; ParamIndex ++)
-      getParameterByHandle(theParameterList [ParamIndex]);
+    for (UShort i = 0 ; i < list_size ; i++)
+        getParameterByHandle(parameter_list[i]);
+}
 
-  }
-
-
-  // ------------------
-  // -- KillFederate --
-  // ------------------
-
-  void Interaction::killFederate(FederateHandle theFederate)
-    throw()
-  {
+// ---------------------------------------------------------------------------
+//! killFederate.
+void
+Interaction::killFederate(FederateHandle the_federate)
+    throw ()
+{
     try {
+        // Is federate publishing something ? (not important)
+        if (isPublishing(the_federate))
+            publish(RTI_FALSE, the_federate);
 
-      // Est-ce que le federe publie des trucs ?(pas important)
-      if(isPublishing(theFederate))
-	publish(RTI_FALSE, theFederate);
- 
-      // Est-ce que le federe a souscrit a quelquechose ?
-      if(isSubscribed(theFederate))
-	subscribe(RTI_FALSE, theFederate);
-
-    } catch(SecurityError &e) {}
-  }
-
-  // -------------
-  // -- Publish --
-  // -------------
-
-  void Interaction::publish(bool PubOrUnpub, 
-			    FederateHandle theHandle)
-    throw(FederateNotPublishing,
-	  RTIinternalError,
-	  SecurityError)
-  {
-    bool AlreadyPublishing = isPublishing(theHandle);
-
-    checkFederateAccess(theHandle, (char*) "Publish");
-
-    if(PubOrUnpub) {
-      // Federate wants to Publish
-      if(AlreadyPublishing == RTI_FALSE) {
-	D.Out(pdInit, "Interaction %d: Added Federate %d to publishers list.",
-	      handle, theHandle);
-	addPublisher(theHandle);
-      }
-      else
-	D.Out(pdError,
-	      "Interaction %d: Inconsistent publish request from Federate %d.",
-	      handle, theHandle);
+        // Does federate subscribed to something ?
+        if (isSubscribed(the_federate))
+            subscribe(RTI_FALSE, the_federate);
     }
+    catch (SecurityError &e) {}
+}
 
-    else if(!PubOrUnpub) {
-      // Federate wants to Unpublish
-      if(AlreadyPublishing == RTI_TRUE) {
-	D.Out(pdTerm, 
-	      "Interaction %d: Removed Federate %d from publishers list.",
-	      handle, theHandle);
-	deletePublisher(getPublisherRank(theHandle));
-      }
-      else
-	throw FederateNotPublishing();
+// ---------------------------------------------------------------------------
+/*! Pour publier : PubOrUnpub = RTI_TRUE, sinon PubOrUnPub = RTI_FALSE.
+  theHandle : le numero du federe
+*/
+void
+Interaction::publish(bool publish, FederateHandle the_handle)
+    throw (FederateNotPublishing, RTIinternalError, SecurityError)
+{
+    bool alreadyPublishing = isPublishing(the_handle);
+
+    checkFederateAccess(the_handle, (char*) "Publish");
+
+    if (publish) {
+        // Federate wants to Publish
+        if (alreadyPublishing == RTI_FALSE) {
+            D.Out(pdInit,
+                  "Interaction %d: Added Federate %d to publishers list.",
+                  handle, the_handle);
+            addPublisher(the_handle);
+        }
+        else
+            D.Out(pdError,
+                  "Interaction %d: Inconsistent publish request from"
+                  " Federate %d.", handle, the_handle);
     }
+    else {
+        // Federate wants to Unpublish
+        if (alreadyPublishing == RTI_TRUE) {
+            D.Out(pdTerm,
+                  "Interaction %d: Removed Federate %d from publishers list.",
+                  handle, the_handle);
+            deletePublisher(getPublisherRank(the_handle));
+        }
+        else
+            throw FederateNotPublishing();
+    }
+}
 
-  }
-
-
-  // ---------------------
-  // -- SendInteraction --
-  // ---------------------
-
-  InteractionBroadcastList * 
-  Interaction::sendInteraction(FederateHandle theFederateHandle,
-			       ParameterHandle *theParameterList,
-			       ParameterValue *theValueList,
-			       UShort theListSize,
-			       FederationTime,
-			       const char*  theTag)
-    throw(FederateNotPublishing,
-	  InteractionClassNotDefined,
-	  InteractionParameterNotDefined,
-	  RTIinternalError)
-  {
-    int i;
-    NetworkMessage *Answer = NULL;
-    InteractionBroadcastList *List = NULL;
-
+// ---------------------------------------------------------------------------
+/*! Called by RTIG in order to start the broadcasting of an Interaction
+  Message(to all federates who subscribed to this Interaction Class).
+*/
+InteractionBroadcastList *
+Interaction::sendInteraction(FederateHandle federate_handle,
+                             ParameterHandle *parameter_list,
+                             ParameterValue *value_list,
+                             UShort list_size,
+                             FederationTime ,
+                             const char* the_tag)
+    throw (FederateNotPublishing,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           RTIinternalError)
+{
     // Pre-conditions checking
-    if(!isPublishing(theFederateHandle))
-      throw FederateNotPublishing();
+    if (!isPublishing(federate_handle))
+        throw FederateNotPublishing();
 
     // Prepare and Broadcast message for this class
-    if(server != NULL) 
-      {
-	Answer = new NetworkMessage;
-	Answer->Type = m_RECEIVE_INTERACTION;
-	Answer->Exception = e_NO_EXCEPTION;
-	Answer->NumeroFederation = server->federation();
-	Answer->NumeroFedere = theFederateHandle;
+    InteractionBroadcastList *ibList = NULL ;
+    if (server != NULL) {
+        NetworkMessage *answer = new NetworkMessage ;
+        answer->Type = m_RECEIVE_INTERACTION ;
+        answer->Exception = e_NO_EXCEPTION ;
+        answer->NumeroFederation = server->federation();
+        answer->NumeroFedere = federate_handle ;
+        answer->InteractionHandle = handle ; // Interaction Class Handle
 
-	Answer->InteractionHandle = handle; // Interaction Class Handle
+        strcpy(answer->Label, the_tag);
 
-	strcpy(Answer->Label, theTag);
+        answer->HandleArraySize = list_size ;
+        for (int i = 0  ; i < list_size  ; i++) {
+            answer->HandleArray[i] = parameter_list[i] ;
+            answer->setValue(i, value_list[i]);
+        }
 
-	Answer->HandleArraySize = theListSize;
-	for(i = 0;i < theListSize;i++) {
-	  Answer->HandleArray [i] = theParameterList[i];
-	  Answer->setValue(i, theValueList [i]);
-	}
- 
-	D.Out(pdProtocol,"Preparation de la liste de diffusion.");
-	List = new InteractionBroadcastList(Answer);
+        D.Out(pdProtocol,"Preparing broadcast list.");
+        ibList = new InteractionBroadcastList(answer);
 
-	broadcastInteractionMessage(List);
-      }
-
+        broadcastInteractionMessage(ibList);
+    }
     else
-      // SendInteraction should not be called on the RTIA.
-      throw RTIinternalError("SendInteraction called by RTIA.");
+        // SendInteraction should not be called on the RTIA.
+        throw RTIinternalError("SendInteraction called by RTIA.");
 
-    // Return the BroadcastList in case it had to be passed to the parent class.
-    return List;
-  }
+    // Return the BroadcastList in case it had to be passed to the
+    // parent class.
+    return ibList ;
+}
 
+// ---------------------------------------------------------------------------
+/*! Name attribute access(GetName reference must be considered READ-ONLY).
+  NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
+*/
+const char *
+Interaction::getName(void) const
+{
+    return name ;
+}
 
-  // -------------
-  // -- SetName --
-  // -------------
-
-  void Interaction::setName(char *NewName)
-    throw(ValueLengthExceeded, RTIinternalError)
-  {
+// ---------------------------------------------------------------------------
+//! Change the interaction name.
+void
+Interaction::setName(const char *new_name)
+    throw (ValueLengthExceeded, RTIinternalError)
+{
     // Check Length
-    if((NewName == NULL) ||(strlen(NewName) > MAX_USER_TAG_LENGTH)) {
-      D.Out(pdExcept, "Interaction Name %s too long.", NewName);
-      throw ValueLengthExceeded("Interaction name too long.");
+    if ((new_name == NULL) ||(strlen(new_name) > MAX_USER_TAG_LENGTH)) {
+        D.Out(pdExcept, "Interaction Name %s too long.", new_name);
+        throw ValueLengthExceeded("Interaction name too long.");
     }
 
     // Free previous name
-    if(name != NULL)
-      free(name);
+    if (name != NULL)
+        free(name);
 
     // Store new name
-    name = strdup(NewName);
-    if(name == NULL)
-      throw RTIinternalError("Memory Exhausted.");
-  }
+    name = strdup(new_name);
+    if (name == NULL)
+        throw RTIinternalError("Memory Exhausted.");
+}
 
+// ---------------------------------------------------------------------------
+//! Change the level ID.
+/*! A class' LevelID can only be increased.
+ */
+void
+Interaction::setLevelId(SecurityLevelID new_levelID)
+{
+    if (server->dominates(new_levelID, id) == RTI_FALSE)
+        throw SecurityError("Attempt to lower interaction class level.");
 
-  // ----------------
-  // -- SetLevelID --
-  // ----------------
+    id = new_levelID ;
+}
 
-  void Interaction::setLevelId(SecurityLevelID NewLevelID)
-  {
-    if(server->dominates(NewLevelID, id) == RTI_FALSE)
-      throw SecurityError("Attempt to lower interaction class level.");
+// ---------------------------------------------------------------------------
+/*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
+  theHandle : the federate number.
+*/
+void
+Interaction::subscribe(bool subscribe, FederateHandle the_handle)
+    throw (FederateNotSubscribing,
+           RTIinternalError,
+           SecurityError)
+{
+    bool alreadySubscribed = isSubscribed(the_handle);
 
-    id = NewLevelID;
-  }
- 
+    checkFederateAccess(the_handle, "Subscribe");
 
-  // ---------------
-  // -- Subscribe --
-  // ---------------
-
-  void Interaction::subscribe(bool SubOrUnsub,
-			      FederateHandle theHandle)
-    throw(FederateNotSubscribing,
-	  RTIinternalError,
-	  SecurityError)
-  {
-    bool AlreadySubscribed = isSubscribed(theHandle);
-
-    checkFederateAccess(theHandle, (char*) "Subscribe");
-
-    if(SubOrUnsub) {
-      // Federate wants to Subscribe
-      if(AlreadySubscribed == RTI_FALSE) {
-	addSubscriber(theHandle);
-	D.Out(pdInit, "Parameter %d: Added Federate %d to subscribers list.",
-	      handle, theHandle);
-      }
-      else
-	D.Out(pdError, 
-	      "Parameter %d: Unconsistent subscribe request from federate %d.",
-	      handle, theHandle);
+    if (subscribe) {
+        // Federate wants to Subscribe
+        if (alreadySubscribed == RTI_FALSE) {
+            addSubscriber(the_handle);
+            D.Out(pdInit,
+                  "Parameter %d: Added Federate %d to subscribers list.",
+                  handle, the_handle);
+        }
+        else
+            D.Out(pdError,
+                  "Parameter %d: Unconsistent subscribe request from "
+                  "federate %d.", handle, the_handle);
     }
-
-    else if(!SubOrUnsub) {
-      // Federate wants to unsubscribe
-      if(AlreadySubscribed == RTI_TRUE) {
-	deleteSubscriber(getSubscriberRank(theHandle));
-	D.Out(pdTerm, 
-	      "Parameter %d: Removed Federate %d from subscribers list.",
-	      handle, theHandle);
-      }
-      else
-	throw FederateNotSubscribing();
+    else {
+        // Federate wants to unsubscribe
+        if (alreadySubscribed == RTI_TRUE) {
+            deleteSubscriber(getSubscriberRank(the_handle));
+            D.Out(pdTerm,
+                  "Parameter %d: Removed Federate %d from subscribers list.",
+                  handle, the_handle);
+        }
+        else
+            throw FederateNotSubscribing();
     }
+}
 
-  }
-
-
-  // ---------------
-  // -- Subscribe --
-  // ---------------
-
-  void Interaction::subscribe(bool, Subscriber*)
-    throw(RegionNotKnown,
-	  InvalidRoutingSpace,
-	  RTIinternalError)
-  {
+// ---------------------------------------------------------------------------
+/*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
+  Is used to subscribe or not to an interaction in a region.
+*/
+void
+Interaction::subscribe(bool, Subscriber*)
+    throw (RegionNotKnown,
+           InvalidRoutingSpace,
+           RTIinternalError)
+{
     // BUG: Subscribe With Region Not Implemented
     D.Out(pdExcept, "subscribe(with Region) not implemented in Interaction.");
     throw RTIinternalError("subscribe(with Region) not implemented.");
-  }
 }
 
-// $Id: Interaction.cc,v 3.6 2003/01/17 17:39:18 breholee Exp $
+} // namespace certi
+
+// $Id: Interaction.cc,v 3.7 2003/01/20 21:49:14 breholee Exp $

@@ -20,34 +20,38 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.3 2003/01/17 18:00:21 breholee Exp $
+// $Id: ObjectClass.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
 // ---------------------------------------------------------------------------
-
-// Class ObjectClass, qui decrit une classe d'objet. Elle contient
-// aussi la liste des instances de cette classe.
 
 #ifndef _CERTI_OBJECT_CLASS_HH
 #define _CERTI_OBJECT_CLASS_HH
 
-#include <stdio.h>
+#include <config.h>
+
+#include <list>
+using std::list;
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "RTItypes.hh"
 #include "ObjectClassAttribute.hh"
 #include "Object.hh"
 #include "ObjectAttribute.hh"
 #include "SocketTCP.hh"
-#include "List.hh"
 #include "SecurityServer.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
 
-// We need to define a class because List only allows pointers, and
-// not integer for example.
-
 namespace certi {
 
+/*! We need to define a class because List only allows pointers, and
+    not integer for example.
+*/
 class ObjectClassChild {
 public:
-  ObjectClassHandle Handle;
+  ObjectClassHandle Handle; //!< Object class handle.
 
   ObjectClassChild(ObjectClassHandle theHandle) { Handle = theHandle; };
 };
@@ -66,10 +70,12 @@ public:
  
   int size;
 
-  CDiffusion() { size = 0; };
+  CDiffusion(void) { size = 0; };
 };
 
-
+/*! This class is used to describe an object class. It also contains the
+    instance list from this class.
+*/
 class ObjectClass {
 
 public:
@@ -86,83 +92,66 @@ public:
   // the Object Classes tree and set all Father/Son dependences and
   // attributes.
 
-  ObjectClassHandle Handle;
-  // numero de la classe de l'objet 
+  ObjectClassHandle Handle;        //!< Object class number.
+  ObjectClassHandle Father;        //!< Object father number.
+  list<ObjectClassChild *> sonSet; //<! Son classes set from this object class.
 
-  // This Object help to find a TCPLink from a Federate Handle.
+  //! This Object help to find a TCPLink from a Federate Handle.
   SecurityServer *server;
 
-  ObjectClassHandle Father;
-  // numero du pere de l'objet
-
+  //! Depth in the class tree structure. Used only by CRead.
   UShort Depth;
-  // Profondeur dans l'arborescence des classes. Utilise uniquement
-  // par CRead.
-
-  List <ObjectClassChild *> SonSet;
-  // ensemble des classes filles de cette classe d'objet
 
   // ----------------------------
   // -- Initialization Methods --
   // ----------------------------
  
   // Constructor & Destructor
-  ObjectClass();
-  ~ObjectClass();
+  ObjectClass(void);
+  ~ObjectClass(void);
 
-  // Print the ObjectClasses tree to the standard output.
-  void display(void);
+  void display(void) const;
 
-  // Name attribute access(GetName reference must be considered READ-ONLY).
-  // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
-  char *getName() {return Name; };
+  /*! Name attribute access(GetName reference must be considered READ-ONLY).
+      NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
+  */
+  const char *getName(void) const {return Name; };
 
-  void setName(char *NewName)
+  void setName(const char *new_name)
     throw(ValueLengthExceeded, RTIinternalError);
 
   // ----------------------
   // -- Security Methods --
   // ----------------------
 
-  // Throw SecurityError if the Federate is not allowed to access the 
-  // Object Class, and print an Audit message containing Reason.
-  void checkFederateAccess(FederateHandle theFederate,
-			   const char *Reason)
-    throw(SecurityError);
+  void checkFederateAccess(FederateHandle the_federate, const char *the_reason)
+      throw (SecurityError);
 
-  SecurityLevelID getLevelId(void)
-  { return LevelID; };
+  SecurityLevelID getLevelId(void) const
+    { return LevelID; };
 
-  // A class' LevelID can only be increased.
   void setLevelId(SecurityLevelID NewLevelID);
 
   // -------------------------------------------------------------
   // -- CRead Methods(used when building the Root Object Tree) --
   // -------------------------------------------------------------
-
   // To be used only by CRead. It returns the new Attribute's Handle.
-  AttributeHandle addAttribute(ObjectClassAttribute *theAttribute,
-			       Boolean Inherited = RTI_FALSE);
+  AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
+                               Boolean               is_inherited = RTI_FALSE);
 
-  // Add the class' attributes to the 'Child' Class.
-  void addAttributesToChild(ObjectClass *Child);
+  void addAttributesToChild(ObjectClass *child);
 
   // ----------------------------------
   // -- Publication and Subscription --
   // ----------------------------------
-
   void publish(FederateHandle theFederateHandle,
-	       AttributeHandle *theAttributeList,
-	       UShort theListSize,
-	       bool PubOrUnpub)
-    throw(AttributeNotDefined,
-	  RTIinternalError,
-	  SecurityError);
+               AttributeHandle *theAttributeList,
+               UShort theListSize,
+               bool PubOrUnpub)
+      throw(AttributeNotDefined,
+            RTIinternalError,
+            SecurityError);
 
-  // Return RTI_TRUE if theFederate had never subscribed to this class
-  // before. In that case, ObjectClassSet will call SendDiscoverMessages
-  // on this class and on all child classes to allow them to send
-  // Discover Messages for already registered instances.
 
   Boolean subscribe(FederateHandle theFederate,
 		    AttributeHandle *theAttributeList,
@@ -180,71 +169,65 @@ public:
   // on the child classes of this class.
   // Return RTI_FALSE if no messages were sent because the Federate had
   // already receive DO messages for this class(and all child classes).
-
   Boolean sendDiscoverMessages(FederateHandle theFederate,
-			       ObjectClassHandle theOriginalClass);
- 
- 
- 
+                               ObjectClassHandle theOriginalClass);
+
   // --------------------------
   // -- Ownership Management --
   // --------------------------
- 
   Boolean 
   isAttributeOwnedByFederate(ObjectHandle theObject,
-			     AttributeHandle theAttribute,
-			     FederateHandle theFederateHandle)
-    throw(ObjectNotKnown,
-	  AttributeNotDefined,
-	  RTIinternalError);
+                             AttributeHandle theAttribute,
+                             FederateHandle theFederateHandle)
+      throw(ObjectNotKnown,
+            AttributeNotDefined,
+            RTIinternalError);
 
  
   void 
   queryAttributeOwnership(ObjectHandle theObject,
-			  AttributeHandle theAttribute,
-			  FederateHandle theFederateHandle)
-    throw(ObjectNotKnown,
-	  AttributeNotDefined,
-	  RTIinternalError);
- 
- 
+                          AttributeHandle theAttribute,
+                          FederateHandle theFederateHandle)
+      throw(ObjectNotKnown,
+            AttributeNotDefined,
+            RTIinternalError);
+
   ObjectClassBroadcastList * 
   negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
-					  ObjectHandle theObjectHandle,
-					  AttributeHandle *theAttributeList,
-					  UShort theListSize,
-					  const char *theTag)
-    throw(ObjectNotKnown,
-	  AttributeNotDefined,
-	  AttributeNotOwned,
-	  AttributeAlreadyBeingDivested,
-	  RTIinternalError);
+                                          ObjectHandle theObjectHandle,
+                                          AttributeHandle *theAttributeList,
+                                          UShort theListSize,
+                                          const char *theTag)
+      throw(ObjectNotKnown,
+            AttributeNotDefined,
+            AttributeNotOwned,
+            AttributeAlreadyBeingDivested,
+            RTIinternalError);
 
  
   void 
   attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
-					   ObjectHandle theObjectHandle,
-					   AttributeHandle *theAttributeList,
-					   UShort theListSize)
-    throw(ObjectNotKnown,
-	  ObjectClassNotPublished,
-	  AttributeNotDefined,
-	  AttributeNotPublished,
-	  FederateOwnsAttributes,
-	  AttributeAlreadyBeingAcquired,
-	  RTIinternalError);
+                                           ObjectHandle theObjectHandle,
+                                           AttributeHandle *theAttributeList,
+                                           UShort theListSize)
+      throw(ObjectNotKnown,
+            ObjectClassNotPublished,
+            AttributeNotDefined,
+            AttributeNotPublished,
+            FederateOwnsAttributes,
+            AttributeAlreadyBeingAcquired,
+            RTIinternalError);
  
   ObjectClassBroadcastList * 
   unconditionalAttributeOwnershipDivestiture(FederateHandle,
-					     ObjectHandle theObjectHandle,
-					     AttributeHandle*,
-					     UShort theListSize)
-    throw(ObjectNotKnown,
-	  AttributeNotDefined,
-	  AttributeNotOwned,
-	  RTIinternalError);
- 
- 
+                                             ObjectHandle theObjectHandle,
+                                             AttributeHandle*,
+                                             UShort theListSize)
+      throw(ObjectNotKnown,
+            AttributeNotDefined,
+            AttributeNotOwned,
+            RTIinternalError);
+
   void 
   attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 				ObjectHandle theObjectHandle,
@@ -299,11 +282,11 @@ public:
   // --------------------------
 
  
-  AttributeHandle getAttributeHandle(const char* theName)
+  AttributeHandle getAttributeHandle(const char* theName) const
       throw(AttributeNotDefined,
             RTIinternalError);
  
-  const char* getAttributeName(AttributeHandle theHandle)
+  const char* getAttributeName(AttributeHandle theHandle) const
       throw(AttributeNotDefined,
             RTIinternalError);
 
@@ -313,12 +296,6 @@ public:
   // -------------------------
   // -- Instance Management --
   // -------------------------
-
-  // Delete the object instance 'theObjectHandle', and starts to
-  // broadcast the RemoveObject message. Return a BroadcastList of
-  // Federates, in order to allow our ObjectClassSet to go on with
-  // the message broadcasting, by giving the list to our parent
-  // class.
   ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 					   ObjectHandle theObjectHandle,
 					   const char*  theUserTag)
@@ -326,8 +303,6 @@ public:
 	  ObjectNotKnown,
 	  RTIinternalError);
 
-  // Return RTI_TRUE if the object instance designated by 'theID' is
-  // present in that class, else return RTI_FALSE.
   Boolean isInstanceInClass(ObjectHandle theID);
  
  ObjectClassBroadcastList *registerInstance(FederateHandle,
@@ -337,10 +312,7 @@ public:
             ObjectAlreadyRegistered,
             RTIinternalError);
 
-  // Take a Broadcast List and continue to send messages. You should
-  // take a look at ObjectClassSet::RegisterObject to understand
-  // what is going on...
-  void broadcastClassMessage(ObjectClassBroadcastList *List);
+  void broadcastClassMessage(ObjectClassBroadcastList *ocb_list);
 
   ObjectClassBroadcastList *
   updateAttributeValues(FederateHandle theFederateHandle,
@@ -363,27 +335,22 @@ private:
   // ------------------------
 
   // Should be allocated and deleted locally.
-  // nom de la classe de l'objet
-  ObjectClassName Name;
+  ObjectClassName Name; //!< Object class name.
 
-  // All non-inherited attributes have this default level.
+  //! All non-inherited attributes have this default level.
   SecurityLevelID LevelID;
 
-  // This Handle is the greatest handle of the class' subscribers.
+  //! This Handle is the greatest handle of the class' subscribers.
   FederateHandle MaxSubscriberHandle;
 
-  List <ObjectClassAttribute *> AttributeSet;
-  // liste des attributs de la classe d'objet
-
-  List <Object *> ObjectSet;
-  // ensemble des intances des objets de cette classe
+  list<ObjectClassAttribute *> attributeSet; //!< Object class attributes list.
+  list<Object *> objectSet;    //!< Object class instance list.
 
   // ---------------------
   // -- Private Methods --
   // ---------------------
 
-  void sendToFederate(NetworkMessage *msg,
-		      FederateHandle theFederate);
+  void sendToFederate(NetworkMessage *msg, FederateHandle theFederate);
  
   void sendToOwners(CDiffusion *diffusionList,
 		    ObjectHandle theObjectHandle,
@@ -391,28 +358,24 @@ private:
 		    const char *theTag, 
 		    TypeNetworkMessage type); 
 
-  void sendMessage(NetworkMessage *msg,
-		   FederateHandle theDest);
+  void sendMessage(NetworkMessage *msg, FederateHandle theDest);
 
-  Object *getInstanceWithID(ObjectHandle theID)
+  Object *getInstanceWithID(ObjectHandle the_id) const
     throw(ObjectNotKnown);
 
-  ObjectClassAttribute *getAttributeWithHandle(AttributeHandle theHandle)
+  ObjectClassAttribute *
+  getAttributeWithHandle(AttributeHandle the_handle) const
     throw(AttributeNotDefined);
 
   // --------------------------------
   // -- Publication / Subscription --
   // --------------------------------
-
-  // Return RTI_TRUE if the Federate is publishing any attribute of
-  // this class.
-  Boolean isFederatePublisher(FederateHandle theFederate);
-
-  // Return RTI_TRUE if the Federate has subscribe to any attribute.
-  Boolean isFederateSubscriber(FederateHandle theFederate);
+  Boolean isFederatePublisher(FederateHandle the_federate) const;
+  Boolean isFederateSubscriber(FederateHandle the_federate) const;
 };
-}
+
+} // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.3 2003/01/17 18:00:21 breholee Exp $
+// $Id: ObjectClass.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $

@@ -20,12 +20,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.4 2003/01/17 23:21:27 breholee Exp $
+// $Id: Interaction.hh,v 3.5 2003/01/20 21:49:14 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
 #define _CERTI_INTERACTION_HH
- 
+
+#include <config.h>
+
+#include <list>
+using std::list;
+
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -35,193 +40,150 @@ using std::endl;
 #include "Parameter.hh"
 #include "Subscriber.hh"
 #include "Publisher.hh"
-
-#include "List.hh"
 #include "SecurityServer.hh"
 #include "InteractionBroadcastList.hh"
 
 namespace certi {
 
-// We need to define a class because List only allows pointers, and
-// not integer for example.
+/*! We need to define a class because List only allows pointers, and
+  not integer for example.
+*/
 class InteractionChild {
 public:
-  InteractionClassHandle handle;
-  InteractionChild(InteractionClassHandle theHandle) { handle = theHandle; };
+    InteractionClassHandle handle ;
+    InteractionChild(InteractionClassHandle the_handle) { 
+        handle = the_handle ; 
+    };
 };
 
 class Interaction
 {
-  // ATTRIBUTES ------------------------------------------------------------ 
+    // ATTRIBUTES ------------------------------------------------------------ 
 public:
-  InteractionClassHandle handle; // Identifiant de la classe d'interaction
-  SecurityServer *server;  // This Object help to find a TCPLink
-  // given a Federate Handle.
-  InteractionClassHandle parent; // Parent Class' Handle
-  List <InteractionChild *> children;  // Children Classes' Handles List
-  UShort depth;
+    InteractionClassHandle handle ; //!< Interaction class handle.
+    //! This Object helps to find a TCPLink given a Federate Handle.
+    SecurityServer *server ;
+    InteractionClassHandle parent ; //!< Parent Class' Handle.
 
-  // Interaction messages' Transport Type(Reliable, Best Effort).
-  // Currently not used.
-  TransportType transport;
+    list<InteractionChild *> children ; //!< Children Classes' Handles List
+    UShort depth ;
+
+    /*! Interaction messages' Transport Type(Reliable, Best Effort),
+      Currently not used.
+    */
+    TransportType transport ;
  
-  // Interaction message Ordering Type(TSO, FIFO).
-  // Currently not used.
-  OrderType order;
+    //! Interaction message Ordering Type(TSO, FIFO), currently not used.
+    OrderType order ;
 
 private: 
-  InteractionClassName name; // Must be locally allocated and deleted.  
-  SecurityLevelID id;  // The default Security Level for new parameters
+    InteractionClassName name ; //!< Must be locally allocated and deleted. 
+    SecurityLevelID id ; //!< The default Security Level for new parameters
 
- 
-  List<Parameter*> parameterSet ;  // List of this Interaction
-  // Class' Parameters.
-  
-  List<Subscriber*> subscribers;   // List of the Federates(Handles)
-  // who subscribed to this Class.
-
-  List <Publisher *> publishers;   // List of the Federates(Handles)
-  // publishing this Class.
+    //! List of this Interaction Class' Parameters.
+    list<Parameter*> parameterSet ;
+    //! List of the Federates(Handles) who subscribed to this Class.
+    list<Subscriber*> subscribers ;
+    //! List of the Federates(Handles) publishing this Class.
+    list<Publisher *> publishers ;
  
 
-  // METHODS ---------------------------------------------------------------
+    // METHODS ---------------------------------------------------------------
 public:
-  Interaction();
-  ~Interaction();
+    Interaction(void);
+    ~Interaction(void);
  
-  // Name attribute access(GetName reference must be considered READ-ONLY).
-  // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
-  char *getName() {return name; };
+    const char *getName(void) const ;
+    void setName(const char *new_name)
+        throw (ValueLengthExceeded, RTIinternalError);
 
-  void setName(char *NewName)
-    throw(ValueLengthExceeded, RTIinternalError);
+    ParameterHandle addParameter(Parameter *the_parameter,
+                                 bool is_inherited = false);
 
-  // Used only by CRead. Return the new parameter's handle.
-  ParameterHandle addParameter(Parameter *theParameter,
-			       bool Inherited = false);
+    void addParametersToChild(Interaction *new_child);
+    void display(void) const ;
+
+    // -- Security Methods --
+    void checkFederateAccess(FederateHandle the_federate,
+                             const char *reason) const
+        throw (SecurityError);
+
+    SecurityLevelID getLevelId(void) const { return id ; };
+    void setLevelId(SecurityLevelID NewLevelID);
+
+    // -- Publication and Subscription --
+    void publish(bool publish, FederateHandle the_handle)
+        throw (FederateNotPublishing, RTIinternalError, SecurityError);
  
-  // Add the class' attributes to the 'Child' Class.
-  void addParametersToChild(Interaction *Child);
-
-  // Print the Interaction to the standard output.
-  void display(void);
-
-  // -- Security Methods --
-
-  // Throw SecurityError is the Federate is not allowed to access the 
-  // Interaction Class, and print an Audit message containing Reason.
-  void checkFederateAccess(FederateHandle theFederate, char *Reason)
-    throw(SecurityError);
-
-  SecurityLevelID getLevelId(void) { return id ; } ;
-
-  // A class' LevelID can only be increased.
-  void setLevelId(SecurityLevelID NewLevelID);
-
-  // -- Publication and Subscription --
-
-  // Pour publier : PubOrUnpub = RTI_TRUE, sinon PubOrUnPub = RTI_FALSE.
-  // theHandle : le numero du federe
-  void publish(bool PubOrUnpub, FederateHandle theHandle)
-    throw(FederateNotPublishing, RTIinternalError, SecurityError);
+    void subscribe(bool subscribe, FederateHandle the_handle)
+        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
  
-  // Pour s'abonner : SubOrUnsub = RTI_TRUE, sinon SubOrUnsub = RTI_FALSE.
-  // theHandle : le numero dufedere
-  void subscribe(bool SubOrUnsub, FederateHandle theHandle)
-    throw(FederateNotSubscribing, RTIinternalError, SecurityError);
+    void subscribe(bool subscribe, Subscriber *the_subscriber)
+        throw (RegionNotKnown, InvalidRoutingSpace, RTIinternalError);
+
+    // -- RTI Support Services --
+    ParameterHandle getParameterHandle(const char *) const
+        throw (InteractionParameterNotDefined, RTIinternalError);
+
+    const char *getParameterName(ParameterHandle) const
+        throw (InteractionParameterNotDefined, RTIinternalError);
+
+    void killFederate(FederateHandle theFederate)
+        throw ();
+
+    // -- Transport and Ordering --
+    void changeTransportationType(TransportType new_type, 
+                                  FederateHandle the_handle)
+        throw (FederateNotPublishing, InvalidTransportType, RTIinternalError);
  
-  // Pour s'abonner : SubOrUnsub = RTI_TRUE, sinon SubOrUnsub = RTI_FALSE.
-  // permet de souscrire ou non a une interaction dans une region.
-  void subscribe(bool SubOrUnsub, Subscriber *theSubscriber)
-    throw(RegionNotKnown, InvalidRoutingSpace, RTIinternalError);
+    void changeOrderType(OrderType new_order, FederateHandle the_handle)
+        throw (FederateNotPublishing, InvalidOrderType, RTIinternalError);
 
-  // -- RTI Support Services --
+    // -- Instance Broadcasting --
+    void isReady(FederateHandle federate_handle,
+                 ParameterHandle *parameter_list,
+                 UShort list_size) const
+        throw (FederateNotPublishing,
+              InteractionParameterNotDefined,
+              RTIinternalError);
 
-    ParameterHandle getParameterHandle(const char *)
-        throw(InteractionParameterNotDefined, RTIinternalError);
+    InteractionBroadcastList * 
+    sendInteraction(FederateHandle federate_handle,
+                    ParameterHandle *parameter_list,
+                    ParameterValue *value_list,
+                    UShort list_size,
+                    FederationTime the_time,
+                    const char* the_tag)
+        throw (FederateNotPublishing,
+              InteractionClassNotDefined,
+              InteractionParameterNotDefined,
+              RTIinternalError);
 
-    const char *getParameterName(ParameterHandle)
-        throw(InteractionParameterNotDefined, RTIinternalError);
-
-  void killFederate(FederateHandle theFederate)
-    throw();
-
-  // -- Transport and Ordering --
-
-  void changeTransportationType(TransportType NewType, 
-				FederateHandle theHandle)
-    throw(FederateNotPublishing, InvalidTransportType, RTIinternalError);
- 
-  void changeOrderType(OrderType NewOrder, FederateHandle theHandle)
-    throw(FederateNotPublishing, InvalidOrderType, RTIinternalError);
-
-  // -- Instance Broadcasting --
-
-  // Check a SendInteractionOrder to see if it's OK for sending, but 
-  // without sending it(to be called on the RTIA only).
-  void isReady(FederateHandle theFederateHandle,
-	       ParameterHandle *theParameterList,
-	       UShort theListSize)
-    throw(FederateNotPublishing,
-	  InteractionParameterNotDefined,
-	  RTIinternalError);
-
-  // Called by RTIG in order to start the broadcasting of an Interaction
-  // Message(to all federates who subscribed to this Interaction Class).
-  InteractionBroadcastList * 
-  sendInteraction(FederateHandle theFederateHandle,
-		  ParameterHandle *theParameterList,
-		  ParameterValue *theValueList,
-		  UShort theListSize,
-		  FederationTime theTime,
-		  const char*  theTag)
-    throw(FederateNotPublishing,
-	  InteractionClassNotDefined,
-	  InteractionParameterNotDefined,
-	  RTIinternalError);
-
-  // Called by the InteractionSet on Parent Classes whose Childrens
-  // initiated a SendInteraction, to allow them to broadcast the
-  // Interaction Message of their child to their own subscribers.
-  // See InteractionSet::SendInteraction.
-  void broadcastInteractionMessage(InteractionBroadcastList *List);
+    void broadcastInteractionMessage(InteractionBroadcastList *ibList);
 
 private:
- 
-  Parameter *getParameterByHandle(ParameterHandle theHandle)
-    throw(InteractionParameterNotDefined,
-	  RTIinternalError);
+    Parameter *getParameterByHandle(ParameterHandle the_handle) const
+        throw (InteractionParameterNotDefined,
+              RTIinternalError);
 
-  // -- Private Publishers' Management --
+    // -- Private Publishers' Management --
 
-  void addPublisher(FederateHandle theFederate)
-    throw(RTIinternalError);
+    void addPublisher(FederateHandle the_federate)
+        throw (RTIinternalError);
+    void deletePublisher(int the_rank);
+    int getPublisherRank(FederateHandle the_federate) const ;
+    bool isPublishing(FederateHandle the_handle) const ;
 
-  void deletePublisher(int PublisherRank);
-
-  // Return the Rank of the Federate in the list, or ZERO if not found.
-  int getPublisherRank(FederateHandle theFederate);
-
-  // Return RTI_TRUE if the Federate is publishing the attribute,
-  // else return RTI_FALSE.
-  bool isPublishing(FederateHandle theHandle);
-
-  // -- Private Subcribers' Management --
-
-  void addSubscriber(FederateHandle theFederate)
-    throw(RTIinternalError);
-
-  void deleteSubscriber(int SubscriberRank);
-
-  // Return true if the Federate has subscribed to this attribue.
-  bool isSubscribed(FederateHandle theHandle);
-
-  // Return the Rank of the Federate in the list, or ZERO if not found.
-  int getSubscriberRank(FederateHandle theFederate);
-
+    // -- Private Subcribers' Management --
+    void addSubscriber(FederateHandle the_federate)
+        throw (RTIinternalError);
+    void deleteSubscriber(int the_rank);
+    bool isSubscribed(FederateHandle the_handle) const ;
+    int getSubscriberRank(FederateHandle the_federate) const ;
 };
-}
+
+} // namespace
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.4 2003/01/17 23:21:27 breholee Exp $
+// $Id: Interaction.hh,v 3.5 2003/01/20 21:49:14 breholee Exp $

@@ -20,13 +20,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.3 2003/01/17 17:43:11 breholee Exp $
+// $Id: InteractionSet.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
 #define _CERTI_INTERACTION_SET_HH
 
-#include <stdio.h>
+#include <config.h>
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <list>
+using std::list;
 
 #include "Interaction.hh"
 #include "SecurityServer.hh"
@@ -35,134 +42,112 @@
 
 namespace certi {
 
-class InteractionSet : private List <Interaction *> 
+class InteractionSet : private list<Interaction *>
 {
 
 public:
 
-  // --------------------
-  // -- Public Methods --
-  // --------------------
+    // --------------------
+    // -- Public Methods --
+    // --------------------
+    InteractionSet(SecurityServer *the_server);
+    ~InteractionSet(void);
 
-  InteractionSet(SecurityServer *theSecurityServer);
+    void addClass(Interaction *the_class);
+    void buildParentRelation(Interaction *child, Interaction *parent);
+    void display(void) const;
 
-  // Destructor
-  ~InteractionSet();
+    // --------------------------
+    // -- RTI Support Services --
+    // --------------------------
+    InteractionClassHandle
+    getInteractionClassHandle(const char* the_name)
+        throw (InteractionClassNotDefined, RTIinternalError);
 
-  void addClass(Interaction *theClass);
-  // No memory is allocated, please don't free the pointed object!
+    const char*
+    getInteractionClassName(InteractionClassHandle the_handle)
+        throw (InteractionClassNotDefined, RTIinternalError);
 
-  // Build a Parent-Child relation between two object class, by setting
-  // the Child's Parent handle, and registering the Child in the Parent's
-  // SonSet. 
-  // Also copy all Parent's Attributes in the Child Class.
-  void buildParentRelation(Interaction *Child,
-			   Interaction *Parent);
+    ParameterHandle
+    getParameterHandle(const char* the_name,
+                       InteractionClassHandle the_class)
+        throw (InteractionParameterNotDefined,
+               InteractionClassNotDefined,
+               RTIinternalError);
 
-  // Print the Interactions tree to the standard output.
-  void display(void);
-
-  // --------------------------
-  // -- RTI Support Services --
-  // --------------------------
-
-  InteractionClassHandle 
-  getInteractionClassHandle(const char* the_name)
-      throw(InteractionClassNotDefined,
-            RTIinternalError);
-
-  const char* 
-  getInteractionClassName(InteractionClassHandle the_handle)
-      throw(InteractionClassNotDefined,
-            RTIinternalError);
-
-  ParameterHandle 
-  getParameterHandle(const char*            the_name,
+    const char*
+    getParameterName(ParameterHandle the_handle,
                      InteractionClassHandle the_class)
-      throw(InteractionParameterNotDefined,
-            InteractionClassNotDefined,
-            RTIinternalError);
+        throw (InteractionParameterNotDefined,
+               InteractionClassNotDefined,
+               RTIinternalError);
 
-  const char*
-  getParameterName(ParameterHandle        the_handle,
-                   InteractionClassHandle the_class)
-      throw(InteractionParameterNotDefined,
-            InteractionClassNotDefined,
-            RTIinternalError);
+    void killFederate(FederateHandle the_federate)
+        throw ();
 
-  void killFederate(FederateHandle theFederate)
-    throw();
+    // ----------------------------------
+    // -- Interaction Class Management --
+    // ----------------------------------
+    void publish(FederateHandle the_federate_handle,
+                 InteractionClassHandle the_interaction_handle,
+                 bool publish)
+        throw (FederateNotPublishing,
+               InteractionClassNotDefined,
+               RTIinternalError,
+               SecurityError);
 
-  // ----------------------------------
-  // -- Interaction Class Management --
-  // ----------------------------------
+    void subscribe(FederateHandle the_federate_handle,
+                   InteractionClassHandle the_interaction_handle,
+                   bool subscribe)
+        throw (FederateNotSubscribing,
+               InteractionClassNotDefined,
+               RTIinternalError,
+               SecurityError);
 
-  void publish(FederateHandle theFederateHandle,
-	       InteractionClassHandle theInteractionHandle,
-	       bool PubOrUnpub)
-    throw(FederateNotPublishing,
-	  InteractionClassNotDefined,
-	  RTIinternalError,
-	  SecurityError);
+    // -------------------------------------
+    // -- Interaction Instance Management --
+    // -------------------------------------
+    void isReady(FederateHandle theFederateHandle,
+                 InteractionClassHandle theInteraction,
+                 ParameterHandle *paramArray,
+                 UShort paramArraySize)
+        throw (FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               RTIinternalError);
 
-  void subscribe(FederateHandle theFederateHandle,
-		 InteractionClassHandle theInteractionHandle,
-		 bool SubOrUnsub)
-    throw(FederateNotSubscribing,
-	  InteractionClassNotDefined,
-	  RTIinternalError,
-	  SecurityError);
-
-
-  // -------------------------------------
-  // -- Interaction Instance Management --
-  // -------------------------------------
-
-  // Return no exception if the Interaction is valid for a SendInteraction,
-  // but do not broadcast it.(to be used on the RTIA for pre-checking).
-  void isReady(FederateHandle theFederateHandle,
-	       InteractionClassHandle theInteraction,
-	       ParameterHandle *paramArray,
-	       UShort paramArraySize)
-    throw(FederateNotPublishing,
-	  InteractionClassNotDefined,
-	  InteractionParameterNotDefined,
-	  RTIinternalError);
-
-  void broadcastInteraction(FederateHandle theFederateHandle,
-			    InteractionClassHandle theInteractionHandle,
-			    ParameterHandle *theParameterList,
-			    ParameterValue *theValueList,
-			    UShort theListSize,
-			    FederationTime theTime,
-			    const char*  theTag)
-    throw(FederateNotPublishing,
-	  InteractionClassNotDefined,
-	  InteractionParameterNotDefined,
-	  RTIinternalError);
+    void broadcastInteraction(FederateHandle theFederateHandle,
+                              InteractionClassHandle theInteractionHandle,
+                              ParameterHandle *theParameterList,
+                              ParameterValue *theValueList,
+                              UShort theListSize,
+                              FederationTime theTime,
+                              const char* theTag)
+        throw (FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               RTIinternalError);
 
 private:
- 
-  // ------------------------
-  // -- Private Attributes --
-  // ------------------------
 
-  // This object will help to find the TCPLink associated with a Federate.
-  // This reference is passed to all new ObjectClass.
-  SecurityServer *server ;
+    // ------------------------
+    // -- Private Attributes --
+    // ------------------------
 
-  // ---------------------
-  // -- Private Methods --
-  // ---------------------
+    /*! This object will help to find the TCPLink associated with a Federate.
+      This reference is passed to all new ObjectClass.
+    */
+    SecurityServer *server;
 
-  Interaction *getByHandle(InteractionClassHandle theHandle)
-    throw(InteractionClassNotDefined,
-	  RTIinternalError);
- 
+    // ---------------------
+    // -- Private Methods --
+    // ---------------------
+    Interaction *getByHandle(InteractionClassHandle the_handle)
+        throw (InteractionClassNotDefined, RTIinternalError);
 };
 
-}
+} // namespace certi
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.3 2003/01/17 17:43:11 breholee Exp $
+// $Id: InteractionSet.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $

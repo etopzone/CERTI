@@ -20,17 +20,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.3 2003/01/17 17:54:30 breholee Exp $
+// $Id: Object.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
 #define _CERTI_OBJECT_HH
 
+#include <config.h>
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <deque>
+using std::deque;
+
+#include <list>
+using std::list;
+
 #include <cstring>
-#include <stdio.h>
 
 #include "RTItypes.hh"
-#include "List.hh"
 #include "ObjectAttribute.hh"
 
 namespace certi {
@@ -42,16 +52,15 @@ public:
   // -----------------------
   // -- Public Attributes --
   // ----------------------
+  ObjectHandle ID; //<! Object Instance ID
 
-  // Object Instance ID
-  ObjectHandle ID;
-
-  // Owner Handle
-  // BUG: Should be handled at the attribute level, not instance level.
+  /*! Owner Handle
+      BUG: Should be handled at the attribute level, not instance level.
+  */
   FederateHandle Owner;
 
-  List <ObjectAttribute *> AttributeState;/*FAYET 06.08.01*/
-  // liste des attributs de l'instance de la classe d'objet
+  //! Attribute list from object class instance (private).
+  deque<ObjectAttribute *> attributeState;
 
   HLA_Region UR;
 
@@ -59,28 +68,24 @@ public:
   // -- Public Methods --
   // --------------------
   Object(FederateHandle the_owner)
-      : Owner(the_owner), UR(0), Name(NULL), SF() { ID = 0; } ;
+      : Owner(the_owner), UR(0), Name(NULL) { ID = 0; };
 
   Object(FederateHandle the_owner, const char* the_name);
+  ~Object(void);
 
-  // Destructor
-  ~Object();
-
-  // Display informations about this object(see RootObj::Display)
-  void display(void);
+  void display(void) const;
  
   // ------------------
   // -- GetAttribute --
   // ------------------
-
-  ObjectAttribute *getAttribute(AttributeHandle theAttribute)
+  ObjectAttribute *getAttribute(AttributeHandle the_attribute) const
     throw(AttributeNotDefined);
 
   // -------------------------------
   // -- Private Attributes Access --
   // -------------------------------
   void setName(const char* the_object_name);
-  void getName(ObjectName the_name);
+  void getName(ObjectName the_name) const;
 
   // BUG: Prevoir un jour une methode pour changer SF...
 
@@ -90,16 +95,16 @@ private:
   // -- Private Attributes --
   // ------------------------
 
-  ObjectName Name;
-  // nom de l'instance
- 
-  List <FederateHandle *> SF;
-  // ensemble des federes abonnes a cette classe et dont la region de
-  // souscription a une intersection non nulle avec UR.
+  ObjectName Name; //!< Instance name.
+
+  /*! federate list subscribed to this class and with subscription region
+      intersect with UR.
+  */
+  list<FederateHandle *> sf;
 };
 
 }
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.3 2003/01/17 17:54:30 breholee Exp $
+// $Id: Object.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $

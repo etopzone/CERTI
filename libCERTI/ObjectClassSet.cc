@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.5 2003/01/17 18:15:09 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.6 2003/01/20 21:49:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -59,7 +59,7 @@ ObjectClassSet::buildParentRelation(ObjectClass *child, ObjectClass *parent)
   
   // Register Son to Parent
   ObjectClassChild *objSon = new ObjectClassChild(child->Handle);
-  parent->SonSet.Inserer(1, objSon);
+  parent->sonSet.push_front(objSon);
 
   // Copy Parent Attribute into Child class.
   parent->addAttributesToChild(child);
@@ -360,10 +360,10 @@ void ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
 
   if(Result == RTI_TRUE) {
 
-    for (int i = 1; i <= theClass->SonSet.getLength(); i ++)
-        recursiveDiscovering(theClass->SonSet.Ieme(i)->Handle,
-                             theFederate,
-                             theOriginalClass);
+      list<ObjectClassChild *>::const_iterator i = theClass->sonSet.begin();
+      for (; i != theClass->sonSet.end() ; i++) {
+          recursiveDiscovering((*i)->Handle, theFederate, theOriginalClass);
+      }
   }
 }
 
@@ -800,4 +800,4 @@ throw(
 
 }
 
-// $Id: ObjectClassSet.cc,v 3.5 2003/01/17 18:15:09 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.6 2003/01/20 21:49:15 breholee Exp $

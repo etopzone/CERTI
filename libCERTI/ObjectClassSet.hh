@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.4 2003/01/17 18:15:09 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.5 2003/01/20 21:49:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -28,9 +28,10 @@
 
 #include <config.h>
 
-#include <cstdio>
+#include <iostream>
+using std::cout;
+using std::endl;
 
-#include "List.hh"
 #include <list>
 using std::list;
 
@@ -316,4 +317,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.4 2003/01/17 18:15:09 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.5 2003/01/20 21:49:15 breholee Exp $
