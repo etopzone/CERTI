@@ -20,20 +20,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.12 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message.hh,v 3.12.4.1 2003/04/22 21:47:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
 #define _CERTI_MESSAGE_HH
 
-#include <cstdio>
-#include <cstring>
 #include "baseTypes.hh"
+#include "Extent.hh"
 #include "RTItypes.hh"
 #include "SocketUN.hh"
 #include "MessageBody.hh"
 #include "Exception.hh"
 #include "PrettyDebug.hh"
+
+#include <cstdio>
+#include <cstring>
+#include <list>
+
+using std::list ;
 
 namespace certi {
 
@@ -343,6 +348,8 @@ public:
     void setObjectClass(ObjectClassHandle);
     ObjectClassHandle getObjectClass(void) const { return objectClass ; };
 
+    void addExtent(Extent *);
+
     // -----------------------
     // -- Public Attributes --
     // -----------------------
@@ -373,9 +380,10 @@ public:
     unsigned long number ;
     long region ;
 
-    // used for both Attributes and Parameters arrays.
+    // Arrays
     UShort handleArraySize ;
     AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    list<Extent *> extentSet ;
 
     Message& operator = (const Message&);
 
@@ -440,4 +448,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.12 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message.hh,v 3.12.4.1 2003/04/22 21:47:14 breholee Exp $
