@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.18 2003/06/27 17:26:28 breholee Exp $
+// $Id: Message.cc,v 3.19 2003/07/01 13:35:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,6 +38,7 @@ namespace certi {
 #define NONE -1
 
 Message::Message()
+    : extents(0)
 {
     date = 0.0 ;
     exception = e_NO_EXCEPTION ;
@@ -50,17 +51,23 @@ Message::Message()
     handleArraySize = 0 ;
 }
 
-
-// ---------------
-// -- ~Message --
-// ---------------
-
+// ----------------------------------------------------------------------------
+//! Destructor
+//
 Message::~Message()
 {
+    if (extents) {
+	for (vector<Extent *>::iterator i = extents->begin();
+		 i != extents->end(); ++i) {
+	    delete *i ;
+	}
+	delete extents ;
+    }
 }
 
 // ----------------------------------------------------------------------------
-//! getValue.
+//! getValue
+//
 char *Message::getValue(int Rank, char *Value) const
     throw (RTIinternalError)
 {
@@ -74,17 +81,16 @@ char *Message::getValue(int Rank, char *Value) const
     if (Value != NULL) {
         strcpy(Value, valueArray[Rank]);
         return NULL ;
-    } else
+    }
+    else
         return strdup(valueArray[Rank]);
-
 }
 
-
-// ------------------------
-// -- GetValueArray --
-// ------------------------
-
-ParameterValue *Message::getValueArray()
+// ----------------------------------------------------------------------------
+// getValueArray
+//
+ParameterValue *
+Message::getValueArray()
 {
     int i ;
     ParameterValue *NewValueArray = NULL ;
@@ -101,11 +107,9 @@ ParameterValue *Message::getValueArray()
     return NewValueArray ;
 }
 
-
-// --------------
-// -- SetLabel --
-// --------------
-
+// ----------------------------------------------------------------------------
+// setLabel
+//
 void Message::setLabel(const char *NewLabel)
 {
     if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
@@ -114,11 +118,9 @@ void Message::setLabel(const char *NewLabel)
     strcpy(label, NewLabel);
 }
 
-
-// -------------
-// -- SetName --
-// -------------
-
+// ----------------------------------------------------------------------------
+// setName
+//
 void
 Message::setName(const char *NewName)
 {
@@ -130,6 +132,7 @@ Message::setName(const char *NewName)
 
 // ----------------------------------------------------------------------------
 // setType
+//
 void
 Message::setType(Type t)
 {
@@ -468,12 +471,29 @@ void Message::setFederationName(const char *NewNomFederation)
     strcpy(federationName, NewNomFederation);
 }
 
+// ----------------------------------------------------------------------------
+// setExtents
+//
+void
+Message::setExtents(vector<Extent *> *e)
+{
+    extents = e ;
+}
 
-// ----------------------
-// -- SetNomFedere --
-// ----------------------
+// ----------------------------------------------------------------------------
+// getExtents
+//
+vector<Extent *> *
+Message::getExtents()
+{
+    return extents ;
+}
 
-void Message::setFederateName(const char *NewNomFedere)
+// ----------------------------------------------------------------------------
+// setFederateName
+//
+void
+Message::setFederateName(const char *NewNomFedere)
 {
     if (strlen(NewNomFedere) > MAX_FEDERATE_NAME_LENGTH)
         throw ValueLengthExceeded("NomFedere too long to fit in Message.");
@@ -481,12 +501,11 @@ void Message::setFederateName(const char *NewNomFedere)
     strcpy(federateName, NewNomFedere);
 }
 
-
-// ------------
-// -- SetTag --
-// ------------
-
-void Message::setTag(const char *NewTag)
+// ----------------------------------------------------------------------------
+// setTag
+//
+void
+Message::setTag(const char *NewTag)
 {
     if (strlen(NewTag) > MAX_USER_TAG_LENGTH)
         throw ValueLengthExceeded("Tag too long to fit in Message.");
@@ -495,12 +514,11 @@ void Message::setTag(const char *NewTag)
     else strcpy(tag, "");
 }
 
-
-// --------------
-// -- SetValue --
-// --------------
-
-void Message::setValue(int Rank, const char *Value)
+// ----------------------------------------------------------------------------
+// setValue
+//
+void
+Message::setValue(int Rank, const char *Value)
     throw (RTIinternalError)
 {
     // Pre-Checking
@@ -516,9 +534,11 @@ void Message::setValue(int Rank, const char *Value)
     strcpy(valueArray[Rank], Value);
 }
 
-
+// ----------------------------------------------------------------------------
+// operator=
+//
 Message &
-Message::operator = (const Message& msg)
+Message::operator=(const Message& msg)
 {
     type = msg.type ;
     date = msg.date ;
@@ -570,6 +590,9 @@ Message::operator = (const Message& msg)
     return *this ;
 }
 
+// ----------------------------------------------------------------------------
+// display
+//
 void
 Message::display(char *s)
 {
@@ -591,4 +614,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.18 2003/06/27 17:26:28 breholee Exp $
+// $Id: Message.cc,v 3.19 2003/07/01 13:35:00 breholee Exp $

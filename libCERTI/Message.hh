@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.19 2003/06/27 17:26:29 breholee Exp $
+// $Id: Message.hh,v 3.20 2003/07/01 13:35:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -29,6 +29,7 @@
 #include "Exception.hh"
 #include "SocketUN.hh"
 #include "MessageBody.hh"
+#include "RegionImp.hh"
 
 namespace certi {
 
@@ -394,6 +395,10 @@ public:
     const char *getExceptionReason() const
     { return exceptionReason ; };
 
+    void setExtents(std::vector<Extent *> *);
+    std::vector<Extent *> *getExtents();
+    //    std::vector<Extent *> &getExtents();
+    
     // Public attributes
     Type type ;
 
@@ -469,11 +474,13 @@ private:
     void readResignAction(MessageBody *Body);
     void readTag(MessageBody *Body);
     void readValueArray(MessageBody *Body);
+    void readExtents(MessageBody &);
 
     // -- Other Private Write Methods --
     void writeHandleArray(MessageBody *Body);
     void writeResignAction(MessageBody *Body);
     void writeValueArray(MessageBody *Body);
+    void writeExtents(MessageBody &);
 
     // ------------------------
     // -- Private Attributes --
@@ -486,10 +493,11 @@ private:
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
     AttributeValue valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    std::vector<Extent *> *extents ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.19 2003/06/27 17:26:29 breholee Exp $
+// $Id: Message.hh,v 3.20 2003/07/01 13:35:00 breholee Exp $

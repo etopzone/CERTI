@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.7 2003/07/01 13:35:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -227,6 +227,22 @@ NetworkMessage::setValue(int Rank, const char *Value)
     strcpy(ValueArray[Rank], Value);
 }
 
+// ----------------------------------------------------------------------------
+// setExtents
+void
+NetworkMessage::setExtents(vector<Extent *> *ext)
+{
+    extents = ext ;
 }
 
-// $Id: NetworkMessage.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// ----------------------------------------------------------------------------
+//
+vector<Extent *> *
+NetworkMessage::getExtents()
+{
+    return extents ;
+}
+
+}
+
+// $Id: NetworkMessage.cc,v 3.7 2003/07/01 13:35:00 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.11 2003/07/01 13:35:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -29,6 +29,9 @@
 #include "Exception.hh"
 #include "Socket.hh"
 #include "MessageBody.hh"
+#include "Extent.hh"
+
+#include <vector>
 
 #ifdef FEDERATION_USES_MULTICAST
 #define MC_PORT 60123
@@ -238,6 +241,9 @@ public :
     // containing the actual Parameter values. You must FREE this structure.
     ParameterValue *getParamValueArray();
 
+    void setExtents(std::vector<Extent *> *);
+    std::vector<Extent *> *getExtents();
+    
     // -----------------------
     // -- Public Attributes --
     // -----------------------
@@ -289,6 +295,8 @@ public :
     void setLabel(const char *new_label) { strcpy(label, new_label); }
     void setTag(const char *new_tag) { strcpy(tag, new_tag); }
 
+    std::vector<Extent *> *extents ;
+
 private:
 
     // ------------------------
@@ -307,7 +315,7 @@ private:
 
     // Read a Header from a socket, and process it to read its content.
     // Return RTI_TRUE if the ReadBody Method has to be called.
-    Boolean readHeader(Socket *Socket);
+    bool readHeader(Socket *Socket);
 
     // The message is written onto the socket by WriteHeader if no body
     // is required, or by WriteBody is a body has been required by WriteHeader.
@@ -318,14 +326,15 @@ private:
 
     // Prepare and Write a Header to a Socket, and return RTI_TRUE
     // if the WriteBody method has to be called.
-    Boolean writeHeader(Socket *Socket);
+    bool writeHeader(Socket *Socket);
 
     // -- Others Private Read Methods --
-
+    void readExtents(MessageBody &);
     void readLabel(MessageBody *Body);
     void readTag(MessageBody *Body);
     void readFederationName(MessageBody *Body);
     void readFederateName(MessageBody *Body);
+    void writeExtents(MessageBody &);
 
 };
 
@@ -335,4 +344,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.11 2003/07/01 13:35:00 breholee Exp $
