@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.38 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.cc,v 3.37.2.1 2004/07/02 12:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,7 +28,6 @@
 #include "XmlParser.hh"
 #include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
-#include "LBTS.hh"
 
 #include <map>
 #include <fstream>
@@ -70,21 +69,19 @@ static PrettyDebug D("FEDERATION", __FILE__);
 #ifdef FEDERATION_USES_MULTICAST
 Federation::Federation(const char *federation_name,
                        FederationHandle federation_handle,
-                       SocketServer &socket_server,
-                       AuditFile &audit_server,
+                       SocketServer *socket_server,
+                       AuditFile *audit_server,
                        SocketMC *mc_link)
 #else
     Federation::Federation(const char *federation_name,
                            Handle federation_handle,
-                           SocketServer &socket_server,
-                           AuditFile &audit_server)
+                           SocketServer *socket_server,
+                           AuditFile *audit_server)
 #endif
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
-    : federateHandles(1), objectHandles(1), saveInProgress(false),
-      restoreInProgress(false), saveStatus(true), restoreStatus(true),
-      verbose(true)
-
+    : saveInProgress(false), restoreInProgress(false), saveStatus(true),
+      restoreStatus(true), verbose(true)
 {
     //    fedparser::FedParser *fed_reader ;
 
@@ -116,6 +113,7 @@ Federation::Federation(const char *federation_name,
 
     // Initialize the Security Server.
     server = new SecurityServer(socket_server, audit_server, handle);
+    if (server == NULL) throw RTIinternalError();
 
     // Read FOM File to initialize Root Object.
     root = new RootObject(server);
@@ -140,11 +138,11 @@ Federation::Federation(const char *federation_name,
         if (stat(filename.c_str(), &StatBuffer) == 0) {
             MTimeBuffer = ctime(&StatBuffer.st_mtime);
             MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
-            server->audit << "(Last modified " << MTimeBuffer << ")" ;
+            server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
         }
         else
-            server->audit << "(could not retrieve last modif time, errno "
-			  << errno << ")." ;
+            server->Audit->addToLinef("(could not retrieve last modif time, "
+                                      "errno %d).", errno);
     }
     else {
         cout << "no" << endl ;
@@ -159,7 +157,7 @@ Federation::Federation(const char *federation_name,
                 cout << "yes" << endl ;
 
                 XmlParser *parser = new XmlParser(root);
-                server->audit << ", XML File : " << filename.c_str() ;
+                server->Audit->addToLinef(", XML File : %s", filename.c_str());
 
                 try {
                     parser->parse(filename);
@@ -285,17 +283,13 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
     // its LBTS.
     NetworkMessage message ;
     try {
-	std::vector<LBTS::FederateClock> v ;
-	regulators.get(v);
-
-        for (unsigned int i = 0 ; i < v.size(); ++i) {
+        for (unsigned int i = 1 ; i <= regulators.size(); ++i) {
             message.type = NetworkMessage::MESSAGE_NULL ;
             message.federation = handle ;
-	    message.federate = v[i].first ;
-	    message.date = v[i].second ;
 
-            D.Out(pdTerm,
-		  "Sending NULL message(type %d) from %d to new federate.",
+            regulators.get(i, message.federate, message.date);
+
+            D.Out(pdTerm, "Sending NULL message(type %d) from %d to new federate.",
                   message.type, message.federate);
 
             message.write(tcp_link);
@@ -1714,5 +1708,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.38 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.cc,v 3.37.2.1 2004/07/02 12:18:53 breholee Exp $
 
