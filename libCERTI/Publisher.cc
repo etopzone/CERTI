@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -20,28 +20,31 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Publisher.hh,v 3.2 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.cc,v 3.1 2003/01/08 16:18:38 breholee Exp $
 // ---------------------------------------------------------------------------
 
-#ifndef _CERTI_PUBLISHER_HH
-#define _CERTI_PUBLISHER_HH
-
-#include "RTItypes.hh"
+#include "Publisher.hh"
 
 namespace certi {
 
-class Publisher
+// ---------------------------------------------------------------------------
+//! Initialise the Publisher class.
+/*! As the Region stuff will be implemented, think to add a new constructor,
+  and maybe a destructor...
+*/
+Publisher::Publisher(FederateHandle theHandle)
 {
-public:
-    Publisher(FederateHandle);
+    Handle = theHandle;
+}
 
-    FederateHandle getHandle(void) const;
-    
-    FederateHandle Handle;
-};
-  
+// ---------------------------------------------------------------------------
+//! Returns the Publisher's Handle.
+FederateHandle
+Publisher::getHandle(void) const
+{
+    return Handle;
+}
+
 } // namespace certi
 
-#endif // _CERTI_PUBLISHER_HH
-
-// $Id: Publisher.hh,v 3.2 2003/01/08 16:18:38 breholee Exp $
+// $Id: Publisher.cc,v 3.1 2003/01/08 16:18:38 breholee Exp $
