@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.15 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG.hh,v 3.16 2003/07/09 16:09:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -115,10 +115,14 @@ private:
     void processDeleteRegion(Socket*, NetworkMessage*);
     void processAssociateRegion(Socket*, NetworkMessage*);
     void processUnassociateRegion(Socket*, NetworkMessage*);
+    void processSubscribeAttributesWR(Socket*, NetworkMessage*);
+    void processUnsubscribeAttributesWR(Socket*, NetworkMessage*);
+    void processSubscribeInteractionWR(Socket*, NetworkMessage*);
+    void processUnsubscribeInteractionWR(Socket*, NetworkMessage*);
 };
 
 }}
 
 #endif // _CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.15 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG.hh,v 3.16 2003/07/09 16:09:14 breholee Exp $

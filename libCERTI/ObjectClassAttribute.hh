@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.9 2003/07/09 16:05:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -76,49 +76,29 @@ public:
     void setSpace(SpaceHandle);
     SpaceHandle getSpace() const ;
 
-    // ----------------------
-    // -- Security Methods --
-    // ----------------------
-
+    // Security methods
     void checkFederateAccess(FederateHandle the_federate, const char *reason)
         throw (SecurityError);
 
-    // ---------------------------
-    // -- Publish and Subscribe --
-    // ---------------------------
-
+    // Publish & subscribe methods
     Boolean isPublishing(FederateHandle the_handle) const ;
     Boolean hasSubscribed(FederateHandle the_handle) const ;
 
     void publish(FederateHandle theFederate, bool PubOrUnpub)
         throw (RTIinternalError, SecurityError);
 
-    void subscribe(FederateHandle theFederate,
-                   bool SubOrUnsub)
-        throw (RTIinternalError,
-               SecurityError);
+    void subscribe(FederateHandle theFederate, bool SubOrUnsub)
+        throw (RTIinternalError, SecurityError);
 
-    // -----------------------------
-    // -- Update Attribute Values --
-    // -----------------------------
-
+    void subscribe(FederateHandle, RegionImp *);
+    void unsubscribe(FederateHandle, RegionImp *);
+    
+    // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list);
 
 private:
-
-    // ------------------
-    // -- Private Part --
-    // ------------------
-    AttributeHandle handle ; //!< The attribute handle.
-    AttributeName Name ; //!< The attribute name, must be locally allocated.
-    SpaceHandle space ; //!< Routing space
-
-    list<Subscriber *> subscribers ; //!< The subscriber's list.
-    list<Publisher *> publishers ; //!< The publisher's list.
-
     // The four next methods do the memory management stuff to
     // add and delete publishers and subscribers.
-
     void addPublisher(FederateHandle theFederate)
         throw (RTIinternalError);
 
@@ -130,12 +110,18 @@ private:
 
     // Both following methods return the Rank of the Federate in the list,
     // or ZERO if not found.
-
     int getPublisherRank(FederateHandle theFederate) const ;
     int getSubscriberRank(FederateHandle theFederate) const ;
+
+    AttributeHandle handle ; //!< The attribute handle.
+    AttributeName Name ; //!< The attribute name, must be locally allocated.
+    SpaceHandle space ; //!< Routing space
+
+    list<Subscriber *> subscribers ; //!< The subscriber's list.
+    list<Publisher *> publishers ; //!< The publisher's list.
 };
 }
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.9 2003/07/09 16:05:22 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.12 2003/07/07 23:05:25 breholee Exp $
+// $Id: DataDistribution.cc,v 3.13 2003/07/09 16:12:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -202,7 +202,12 @@ DataDistribution::associateRegion(ObjectHandle object,
 				  TypeException &e)
     throw (RegionNotKnown)
 {
-    rootObject->getRegion(region);
+    RegionImp *r = rootObject->getRegion(region);
+
+    rootObject->getObject(object)->unassociate(r);
+    for (int i = 0 ; i < nb ; ++i) {
+	rootObject->getObjectAttribute(object, attr[i])->associate(r);	
+    }
     
     NetworkMessage req, rep ;
 
@@ -225,8 +230,10 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 				    TypeException &e)
     throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
 {
-    rootObject->getRegion(region);
-    
+    RegionImp *r = rootObject->getRegion(region);
+
+    rootObject->getObject(object)->unassociate(r);
+
     NetworkMessage req, rep ;
 
     req.type = NetworkMessage::DDM_UNASSOCIATE_REGION ;
@@ -240,6 +247,97 @@ DataDistribution::unassociateRegion(ObjectHandle object,
     e = rep.exception ;
 }
 
+// ----------------------------------------------------------------------------
+void
+DataDistribution::subscribe(ObjectClassHandle obj_class,
+			    RegionHandle region,
+			    AttributeHandle *attr,
+			    int nb,
+			    TypeException &e)
+    throw (RegionNotKnown)
+{
+    rootObject->getRegion(region);
+
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
+    req.objectClass = obj_class ;
+    req.region = region ;
+    req.setAHS(attr, nb);
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
+		      req.federate);
+
+    e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+void
+DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
+					RegionHandle region,
+					TypeException &e)
+    throw (RegionNotKnown)
+{
+    rootObject->getRegion(region);
+
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
+    req.objectClass = obj_class ;
+    req.region = region ;
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
+		      req.federate);
+
+    e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+void
+DataDistribution::subscribe(InteractionClassHandle int_class,
+			    RegionHandle region,
+			    TypeException &e)
+    throw (RegionNotKnown)
+{
+    rootObject->getRegion(region);
+
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION ;
+    req.interactionClass = int_class ;
+    req.region = region ;
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
+		      req.federate);
+
+    e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+void
+DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
+					 RegionHandle region,
+					 TypeException &e)
+    throw (RegionNotKnown)
+{
+    rootObject->getRegion(region);
+
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION ;
+    req.interactionClass = int_class ;
+    req.region = region ;
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
+		      req.federate);
+
+    e = rep.exception ;
+}
+
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.12 2003/07/07 23:05:25 breholee Exp $
+// $Id: DataDistribution.cc,v 3.13 2003/07/09 16:12:24 breholee Exp $

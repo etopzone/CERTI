@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG.cc,v 3.19 2003/07/09 16:09:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -348,6 +348,30 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processUnassociateRegion(link, msg);
         break ;	
 
+      case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
+	D[pdTrace] << "subscribeObjectClassAttributes (DDM)" << endl ;
+        auditServer->setLevel(6);
+        processSubscribeAttributesWR(link, msg);
+        break ;
+	
+      case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
+	D[pdTrace] << "unsubscribeObjectClassAttributes (DDM)" << endl ;
+        auditServer->setLevel(6);
+        processUnsubscribeAttributesWR(link, msg);
+        break ;
+	
+      case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
+	D[pdTrace] << "subscribeInteraction (DDM)" << endl ;
+        auditServer->setLevel(6);
+        processSubscribeInteractionWR(link, msg);
+        break ;
+	
+      case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
+	D[pdTrace] << "unsubscribeInteraction (DDM)" << endl ;
+        auditServer->setLevel(6);
+        processUnsubscribeInteractionWR(link, msg);
+        break ;	
+	
       default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
         D.Out(pdError, "processMessageRecu: unknown type %u.", msg->type);
@@ -414,7 +438,8 @@ RTIG::execute()
         // Is it a message from an already opened connection?
         link = socketServer->getActiveSocket(&fd);
         if (link != NULL) {
-            D.Out(pdCom, "Incoming message on socket %ld.", link->returnSocket());
+            D.Out(pdCom, "Incoming message on socket %ld.",
+		  link->returnSocket());
             try {
                 do {
                     link = processIncomingMessage((SecureTCPSocket *)link);
@@ -942,4 +967,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG.cc,v 3.19 2003/07/09 16:09:14 breholee Exp $

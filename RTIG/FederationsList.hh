@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// $Id: FederationsList.hh,v 3.19 2003/07/09 16:10:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -460,9 +460,29 @@ public:
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError);
 
-    void unassociateRegion(Handle, FederateHandle, RegionHandle)
+    void unassociateRegion(Handle, FederateHandle, ObjectHandle, RegionHandle)
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError);
+
+    void subscribeAttributesWR(Handle, FederateHandle, ObjectClassHandle,
+			       RegionHandle, unsigned short, AttributeHandle *)
+	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError);
+
+    void unsubscribeAttributesWR(Handle, FederateHandle, ObjectClassHandle,
+				 RegionHandle)
+	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError);
+
+    void subscribeInteractionWR(Handle, FederateHandle, InteractionClassHandle,
+				RegionHandle)
+	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError);
+    
+    void unsubscribeInteractionWR(Handle, FederateHandle,
+				  InteractionClassHandle, RegionHandle)
+	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError);
     
 private:
     // Private methods
@@ -475,4 +495,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// $Id: FederationsList.hh,v 3.19 2003/07/09 16:10:44 breholee Exp $

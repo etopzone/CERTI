@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// $Id: FederationsList.cc,v 3.19 2003/07/09 16:10:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1087,7 +1087,8 @@ FederationsList::associateRegion(Handle federation,
 // ----------------------------------------------------------------------------
 void
 FederationsList::unassociateRegion(Handle federation, 
-				   FederateHandle federate, 
+				   FederateHandle federate,
+				   ObjectHandle object,
 				   RegionHandle region)
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError)
@@ -1100,7 +1101,89 @@ FederationsList::unassociateRegion(Handle federation,
 
     D[pdDebug] << "Unassociate region for updates " << region << endl ;
 
-    f->unassociateRegion(federate, region);
+    f->unassociateRegion(federate, object, region);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::subscribeAttributesWR(Handle federation,
+				       FederateHandle federate,
+				       ObjectClassHandle object_class,
+				       RegionHandle region,
+				       unsigned short nb,
+				       AttributeHandle *attributes)
+    throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << " Subscribe attributes with region " << region << endl ;
+
+    f->subscribeAttributesWR(federate, object_class, region, nb, attributes);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::unsubscribeAttributesWR(Handle federation,
+					 FederateHandle federate,
+					 ObjectClassHandle object_class,
+					 RegionHandle region)
+    throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Unsubscribe attributes with region " << region << endl ;
+
+    f->unsubscribeAttributesWR(federate, object_class, region);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::subscribeInteractionWR(Handle federation,
+					FederateHandle federate,
+					InteractionClassHandle ic,
+					RegionHandle region)
+    throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Subscribe interaction with region " << region << endl ;
+
+    f->subscribeInteractionWR(federate, ic, region);
+}
+    
+// ----------------------------------------------------------------------------
+void
+FederationsList::unsubscribeInteractionWR(Handle federation,
+					  FederateHandle federate,
+					  InteractionClassHandle ic,
+					  RegionHandle region)
+    throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Unsubscribe interaction with region " << region << endl ;
+
+    f->unsubscribeInteractionWR(federate, ic, region);
 }
 
 // ----------------------------------------------------------------------------
@@ -1180,5 +1263,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.19 2003/07/09 16:10:44 breholee Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.17 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.18 2003/07/09 16:09:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -960,14 +960,14 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 }
 
 // ----------------------------------------------------------------------------
-// processAssociateRegion
+// processUnassociateRegion
 void
 RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
     federations->unassociateRegion(req->federation, req->federate,
-				   req->region);
+				   req->object, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " associates region " << req->region
@@ -980,6 +980,91 @@ RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
     rep.write(link);
 }
 
+// ----------------------------------------------------------------------------
+// processSubscribeAttributes
+void
+RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->subscribeAttributesWR(req->federation, req->federate,
+				       req->objectClass, req->region,
+				       req->handleArraySize, req->handleArray);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " subscribes with region " << req->region
+               << " to some attributes of class " << req->objectClass << endl ;
+
+    NetworkMessage rep ;
+    rep.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
+// ----------------------------------------------------------------------------
+// processUnsubscribeAttributes
+void
+RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->unsubscribeAttributesWR(req->federation, req->federate,
+					 req->objectClass, req->region);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " unsubscribes with region " << req->region
+               << " from object class " << req->objectClass << endl ;
+
+    NetworkMessage rep ;
+    rep.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
+// ----------------------------------------------------------------------------
+// processSubscribeInteractions
+void
+RTIG::processSubscribeInteractionWR(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->subscribeInteractionWR(req->federation, req->federate,
+					req->interactionClass, req->region);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " subscribes with region " << req->region
+               << " to interaction class " << req->interactionClass << endl ;
+
+    NetworkMessage rep ;
+    rep.type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
+// ----------------------------------------------------------------------------
+// processUnsubscribeInteractions
+void
+RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->unassociateRegion(req->federation, req->federate,
+				   req->interactionClass, req->region);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " unsubscribes with region " << req->region
+               << " from interaction class " << req->interactionClass << endl ;
+
+    NetworkMessage rep ;
+    rep.type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.17 2003/07/07 23:05:26 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.18 2003/07/09 16:09:14 breholee Exp $

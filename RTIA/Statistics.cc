@@ -279,6 +279,11 @@ Statistics::Statistics()
     RtiMsgName(NetworkMessage::DDM_DELETE_REGION);
     RtiMsgName(NetworkMessage::DDM_ASSOCIATE_REGION);
     RtiMsgName(NetworkMessage::DDM_UNASSOCIATE_REGION);
+    RtiMsgName(NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES);
+    RtiMsgName(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES);
+    RtiMsgName(NetworkMessage::DDM_SUBSCRIBE_INTERACTION);
+    RtiMsgName(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION);
+
 #undef addRtiName
 }
 
@@ -352,4 +357,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.5 2003/07/07 23:05:26 breholee Exp $
+// $Id: Statistics.cc,v 3.6 2003/07/09 16:12:24 breholee Exp $

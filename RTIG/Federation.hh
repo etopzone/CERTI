@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.22 2003/07/07 23:05:26 breholee Exp $
+// $Id: Federation.hh,v 3.23 2003/07/09 16:10:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -446,7 +446,35 @@ public:
 	       RestoreInProgress,
 	       RTIinternalError);
 	
-    void unassociateRegion(FederateHandle, RegionHandle)
+    void unassociateRegion(FederateHandle, ObjectHandle, RegionHandle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+
+    void subscribeAttributesWR(FederateHandle, ObjectClassHandle, RegionHandle,
+				unsigned short, AttributeHandle *)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+
+    void unsubscribeAttributesWR(FederateHandle, ObjectClassHandle,
+				 RegionHandle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+
+    void subscribeInteractionWR(FederateHandle, InteractionClassHandle,
+				RegionHandle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+
+    void unsubscribeInteractionWR(FederateHandle, InteractionClassHandle,
+				  RegionHandle)
 	throw (RegionNotKnown,
 	       SaveInProgress,
 	       RestoreInProgress,
@@ -481,4 +509,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.22 2003/07/07 23:05:26 breholee Exp $
+// $Id: Federation.hh,v 3.23 2003/07/09 16:10:44 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.29 2003/07/07 23:05:26 breholee Exp $
+// $Id: Federation.cc,v 3.30 2003/07/09 16:10:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 #include "FedParser.hh"
 #include "XmlParser.hh"
+#include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
 
 #include <map>
@@ -1546,24 +1547,101 @@ Federation::associateRegion(FederateHandle federate,
     check(federate);
 
     RegionImp *region = root->getRegion(the_handle);
+
+    root->getObject(object)->unassociate(region);
+	
     for (int i = 0 ; i < nb ; ++i) {
 	root->getObjectAttribute(object, attributes[i])->associate(region);
-    }
+    }    
 }
 
 // ----------------------------------------------------------------------------
 //! unassociateRegion
 void
-Federation::unassociateRegion(FederateHandle federate, RegionHandle the_handle)
+Federation::unassociateRegion(FederateHandle federate, ObjectHandle object,
+			      RegionHandle the_handle)
     throw (RegionNotKnown, SaveInProgress, RestoreInProgress,
 	   RTIinternalError)
 {
     check(federate);
 
     RegionImp *region = root->getRegion(the_handle);
+    root->getObject(object)->unassociate(region);
+}
 
-	//root->getObjectAttribute(object, attributes[i])->unassociate(region);
+// ----------------------------------------------------------------------------
+//! subscribeAttributesWR
+void
+Federation::subscribeAttributesWR(FederateHandle federate,
+				  ObjectClassHandle c,
+				  RegionHandle region_handle,
+				  unsigned short nb,
+				  AttributeHandle *attributes)
+    throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError)
+{
+    check(federate);
 
+    RegionImp *r = root->getRegion(region_handle);
+    
+    //    root->getObjectClass(c)->unsubscribe(federate, r);
+    for (int i = 0 ; i < nb ; ++i) {
+	// root->getObjectClassAttribute(c, attributes[i])->subscribe(federate, r);
+    } 
+}
+
+// ----------------------------------------------------------------------------
+//! unsubscribeAttributesWR
+void
+Federation::unsubscribeAttributesWR(FederateHandle federate,
+				    ObjectClassHandle object_class,
+				    RegionHandle region_handle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError)
+{
+    check(federate);
+
+    RegionImp *region = root->getRegion(region_handle);
+
+    //    root->getObjectClass(object_class)->unsubscribe(federate, region);
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::subscribeInteractionWR(FederateHandle federate,
+				   InteractionClassHandle interaction,
+				   RegionHandle region_handle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError)
+{
+    check(federate);
+
+    RegionImp *region = root->getRegion(region_handle);
+
+    //    root->getInteractionClass(interaction)->subscribe(federate, region);
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::unsubscribeInteractionWR(FederateHandle federate,
+				     InteractionClassHandle interaction,
+				     RegionHandle region_handle)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError)
+{
+    check(federate);
+
+    RegionImp *region = root->getRegion(region_handle);
+
+    //    root->getInteractionClass(interaction)->unsubscribe(federate, region);
 }
 
 // ----------------------------------------------------------------------------
@@ -1690,5 +1768,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.29 2003/07/07 23:05:26 breholee Exp $
+// $Id: Federation.cc,v 3.30 2003/07/09 16:10:44 breholee Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.14 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClass.hh,v 3.15 2003/07/09 16:05:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -101,9 +101,9 @@ public:
                       AttributeHandle *theAttributeList,
                       UShort theListSize,
                       bool SubOrUnsub)
-        throw (AttributeNotDefined,
-               RTIinternalError,
-               SecurityError);
+        throw (AttributeNotDefined, RTIinternalError, SecurityError);
+    
+    void unsubscribe(FederateHandle, RegionImp *);
 
     // The second parameter is the Class of whose behalf the message
     // are sent. If SDM is called on the original class, the Federate
@@ -266,4 +266,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.14 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClass.hh,v 3.15 2003/07/09 16:05:22 breholee Exp $
