@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.11 2003/06/27 17:26:28 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.12 2003/07/03 16:21:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -173,7 +173,6 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
     req.setEventRetraction(the_event);
     req.setName(the_name);
 
-    // BUG: Et on fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
     // Adding discovered object in federate internal object list.
@@ -202,7 +201,6 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     req.setTag(the_tag);
     req.setAttributes(the_attributes, the_values, the_size);
 
-    // BUG: Et on fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 }
 
@@ -607,4 +605,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.11 2003/06/27 17:26:28 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.12 2003/07/03 16:21:34 breholee Exp $
