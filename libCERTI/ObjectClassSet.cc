@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -223,32 +223,32 @@ getAttributeName(AttributeHandle   theHandle,
 // -- GetInstanceClass --
 // ----------------------
 
-ObjectClass *ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle)
+ObjectClass *
+ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle)
   throw(ObjectNotKnown)
 {
-  int                     i;
-  ObjectClass           *ObjectClass;
-  Boolean                 Found;
+  int i;
+  ObjectClass *object_class;
+  bool found ;
 
-  i     = 1;
-  Found = RTI_FALSE;
+  object_class = NULL;
+  i = 1;
+  found = false ;
 
   // Try to find Instance's Class
-
-  while((i <= lg) &&(Found == RTI_FALSE)) {
-    ObjectClass = Ieme(i);
-    Found = ObjectClass->isInstanceInClass(theObjectHandle);
-    i ++;
+  while((i <= lg) && (!found)) {
+    object_class = Ieme(i);
+    found = object_class->isInstanceInClass(theObjectHandle);
+    i++;
   }
 
-  if(Found == RTI_FALSE) {
+  if(!found) {
     D.Out(pdExcept, 
-	   "Object instance %d not found in any object class.", theObjectHandle);
+	   "Object instance %d not found in any object class.", 
+	  theObjectHandle);
     throw ObjectNotKnown();
   }
-  else
-    return ObjectClass;
-
+  else return object_class;
 }
 
 
@@ -922,5 +922,5 @@ throw(
 
 }
 
-// $Id: ObjectClassSet.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 

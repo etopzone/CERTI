@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIG.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -305,7 +305,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
 void 
 RTIG::execute()
 {
-  int i, n, result;
+  int result;
   fd_set fd;
   Socket *link;
 
@@ -346,7 +346,7 @@ RTIG::execute()
 	  D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason);
 	else
 	  D.Out(pdExcept, "Catching Network Error, no reason string.");
-	printf("RTIG dropping client connection %ld.\n", link->returnSocket());
+	printf("RTIG dropping client connection %d.\n", link->returnSocket());
 	closeConnection((SecureTCPSocket *)link, true);
 	link = NULL;
       }
@@ -869,4 +869,4 @@ RTIG::signalHandler(int sig)
 
 }}
 
-// $Id: RTIG.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIG.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

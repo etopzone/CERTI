@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -149,7 +149,7 @@ ObjectBroadcastLine(FederateHandle theFederate,
 
 ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage  *theMsg,
 						AttributeHandle  MaxAttHandle)
-  : lst(), MaxHandle(MaxAttHandle)
+  : MaxHandle(MaxAttHandle), lst()
 {
   ObjectBroadcastLine *FirstLine = NULL;
 
@@ -225,7 +225,7 @@ getLineWithFederate(FederateHandle theFederate)
 
 Boolean ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *Line)
 {
-  int AttrIndex;
+  unsigned int AttrIndex;
   
   for(AttrIndex = 1; AttrIndex <= MaxHandle; AttrIndex++)
     if(Line->State [AttrIndex] == bsWaiting)
@@ -310,7 +310,7 @@ void ObjectClassBroadcastList::
 sendPendingRAVMessage(SecurityServer *Server)
 {
   int                     LineIndex;
-  int                     AttrIndex;
+  unsigned int            AttrIndex;
 
   Boolean                 AllWaiting;
   AttributeHandle         CurrentAttrib;
@@ -388,4 +388,4 @@ sendPendingRAVMessage(SecurityServer *Server)
 
 }
 
-// $Id: ObjectClassBroadcastList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $

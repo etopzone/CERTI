@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: ObjectManagement.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef GO_HH
@@ -83,7 +83,7 @@ public:
  
   // 4.2
   ObjectHandle registerObject(ObjectClassHandle theClassHandle,
-			  const char *theObjectName,/*FAYET 25.07.01*/ 
+			  const char *theObjectName,
 			  FederationTime date,
 			  FederationTime heure,
 			  TypeException &e);
@@ -101,7 +101,7 @@ public:
   // 4.4
   void discoverObject(ObjectHandle theObjectHandle, 
 		      ObjectClassHandle theObjectClassHandle,
-		      const char *theObjectName,/*FAYET 25.07.01*/ 
+		      const char *theObjectName,
 		      FederationTime theTime,
 		      EventRetractionHandle theHandle,
 		      TypeException &e);
@@ -261,4 +261,4 @@ protected:
 
 #endif
 
-// $Id: ObjectManagement.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: my_fed.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: my_fed.hh,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -40,7 +40,7 @@
 
 #include "bille.hh"
 
-class RTIambassador;
+//class RTIambassador;
 
 class Fed : public RTI::FederateAmbassador
 {
@@ -59,7 +59,7 @@ public:
 
   // Constructeur et Destructeur
   Fed(RTI::RTIambassador*);
-  ~Fed();
+  virtual ~Fed();
 
   void DeleteObjects(const FedTime& DeletionTime);
   // Efface tous les objets locaux de la simulation a la date DeletionTime.
@@ -168,7 +168,7 @@ throw(
   AttributeNotKnown,
   FederateInternalError);
 
-void Fed::informAttributeOwnership(
+void informAttributeOwnership(
   ObjectHandle    theObject,    // supplied C1
   AttributeHandle theAttribute, // supplied C1
   FederateHandle  theOwner)     // supplied C1

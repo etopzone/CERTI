@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -143,7 +143,7 @@ int FedParser::FindInteractionParentIndex()
 // -- ProcessAttributeAtom --
 // --------------------------
 
-void FedParser::processAttributeAtom(Atom *x)
+void FedParser::processAttributeAtom(Atom *)
   throw(RTIinternalError)
 {
   AttStack [AttIndex] = new ObjectClassAttribute();
@@ -163,12 +163,10 @@ void FedParser::processAttributeAtom(Atom *x)
 // -- ProcessClassAtom --
 // ----------------------
 
-void FedParser::processClassAtom(Atom *x)
+void FedParser::processClassAtom(Atom *)
   throw(RTIinternalError)
 {
   int                ParentIndex = 0; // Index of the Parent Class(if needed)
-  ObjectClassChild *ObjSon = NULL;
-  InteractionChild *IntSon = NULL;
   
   switch(TypeStack [Depth - 1])
     {
@@ -293,7 +291,7 @@ void FedParser::processFederateString(String *x)
 // -- ProcessParameterAtom --
 // --------------------------
 
-void FedParser::processParameterAtom(Atom *x)
+void FedParser::processParameterAtom(Atom *)
   throw(RTIinternalError)
 {
   ParStack [ParIndex] = new Parameter();
@@ -313,7 +311,7 @@ void FedParser::processParameterAtom(Atom *x)
 // -- ProcessSecLevelAtom -- 
 // -------------------------
 
-void FedParser::processSecLevelAtom(Atom *x)
+void FedParser::processSecLevelAtom(Atom *)
   throw(SecurityError,
 	 RTIinternalError)
 {
@@ -611,4 +609,4 @@ void FedParser::storeString(String *x)
 
 }}
 
-// $Id: FedParser_Store.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

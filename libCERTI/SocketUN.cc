@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketUN.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -207,7 +207,7 @@ SocketUN::send(void *buffer, unsigned long size)
   throw(NetworkError, NetworkSignal)
 {
   long sent = 0;
-  long total_sent = 0;
+  unsigned long total_sent = 0;
  
   assert(_est_init_un);
 
@@ -349,4 +349,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketUN.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $

@@ -1,4 +1,4 @@
-// $Id: graph_c.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+// $Id: graph_c.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $ 
 // ---------------------------------------------------------------------------
 
 #ifdef WITH_X11
@@ -49,8 +49,8 @@
    static const char         * nom_coul;
    static mode_remp     b; 
    static style         c;
-   static policecar     d;   
-   static taillecar     t;
+//   static policecar     d;   
+//   static taillecar     t;
    static KeySym        touche;  
    static Font          fonte;
    static Cursor        curseur;
@@ -79,26 +79,29 @@
  /*----recherche chaine de caracteres identifiant la couleur-----*/
  /*==============================================================*/
 
- static const char * rech(couleur a)   {
-                    
-            const char * nom_coub;
-            
-            if(a == BLACK)   nom_coub = "Black";
-            if(a == RED)     nom_coub = "Red";
-            if(a == GREEN)   nom_coub = "Green";
-            if(a == BLUE)    nom_coub = "Blue";
-            if(a == GRAY)    nom_coub = "Gray";
-            if(a == CYAN)    nom_coub = "Cyan";
-            if(a == YELLOW)  nom_coub = "Yellow";
-            if(a == MAGENTA) nom_coub = "Magenta";
-            if(a == BROWN)   nom_coub = "Brown";
-            if(a == ORANGE)  nom_coub = "Orange";
-            if(a == PINK)    nom_coub = "Pink";
-            if(a == VIOLET)  nom_coub = "Violet";
-            if(a == WHITE)   nom_coub = "White";
-             
-             return nom_coub;
- }        
+static const char * rech(couleur a)   {
+
+  const char * nom_coub;
+  
+  switch(a) {
+  case BLACK:   nom_coub = "Black";   break;
+  case RED:     nom_coub = "Red";     break;
+  case GREEN:   nom_coub = "Green";   break;
+  case BLUE:    nom_coub = "Blue";    break;
+  case GRAY:    nom_coub = "Gray";    break;
+  case CYAN:    nom_coub = "Cyan";    break;
+  case YELLOW:  nom_coub = "Yellow";  break;
+  case MAGENTA: nom_coub = "Magenta"; break;
+  case BROWN:   nom_coub = "Brown";   break;
+  case ORANGE:  nom_coub = "Orange";  break;
+  case PINK:    nom_coub = "Pink";    break;
+  case VIOLET:  nom_coub = "Violet";  break;
+  case WHITE:   nom_coub = "White";   break;
+  default:      nom_coub = "Black";
+  }
+  
+  return nom_coub;
+}        
 /*---------------------------------------------------------------------------*/
 
  /*-----affectation du mode de remplissage au contexte graphique---*/
@@ -2186,4 +2189,4 @@ void ModeNORMAL()
 
 #endif // WITH_X11
 
-// $Id: graph_c.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: graph_c.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $

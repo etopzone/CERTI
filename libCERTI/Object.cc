@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Object.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,7 @@ namespace certi {
 // -------------
 
 Object::Object(FederateHandle theOwner, ObjectName theName)
-  : Owner(theOwner), ID(0), SF(), UR(0)
+  : ID(0), Owner(theOwner), UR(0), SF()
 {
   setName(theName);
 }
@@ -67,9 +67,9 @@ Object::~Object()
 void Object::display(void)
 {
   if(Name != NULL)
-    printf("            Instance: ID=%u, Name=\"%s\"\n", ID, Name);
+    printf("            Instance: ID=%ld, Name=\"%s\"\n", ID, Name);
   else
-    printf("            Instance: ID=%u,(No Name).\n",  ID);
+    printf("            Instance: ID=%ld,(No Name).\n",  ID);
                     
 }
 // ------------------
@@ -132,4 +132,4 @@ void Object::setName(ObjectName theObjectName)
     
 }
 
-// $Id: Object.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Object.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

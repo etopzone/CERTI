@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,12 +36,12 @@ void NetworkMessage::display(const char *s)
 {
 	printf("   --- MESSAGE RESEAU --- %s ---\n", s);
         printf("    Type             = %d\n",    Type);
-        printf("    NumeroMessage    = %d-%d\n", NumeroFedere, NumeroMessage);
+        printf("    NumeroMessage    = %ld-%d\n", NumeroFedere, NumeroMessage);
         printf("    Date             = %f\n",    Date);
         printf("    Exception        = %d\n",    Exception);
-        printf("    ObjectHandle     = %d\n",    objectClassHandle);
-        printf("    InteractionHandle= %d\n",    InteractionHandle);
-        printf("    Objectid         = %d\n",    Objectid);
+        printf("    ObjectHandle     = %ld\n",    objectClassHandle);
+        printf("    InteractionHandle= %ld\n",    InteractionHandle);
+        printf("    Objectid         = %ld\n",    Objectid);
         printf("    HandleArraySize  = %d\n",    HandleArraySize);
 }
 
@@ -219,4 +219,4 @@ void NetworkMessage::setValue(int Rank, const char *Value)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

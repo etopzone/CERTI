@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Interaction.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -132,8 +132,6 @@ namespace certi {
     int SubIndex = 0; // Class subscribers index
     int ParamIndex = 0; // Message's Parameter index.
 
-    FederateHandle Federate = 0;
-    Parameter *theParameter = NULL;
     Subscriber *theSubscriber = NULL;
 
     // 1. Set InteractionHandle to local class Handle.
@@ -231,7 +229,7 @@ namespace certi {
 
     // BUG: Should use Audit.
     if(!result) {
-      printf("Interaction %d : SecurityError for federate %d(%s).\n",
+      printf("Interaction %ld : SecurityError for federate %ld(%s).\n",
 	     handle, theFederate, Reason);
       throw SecurityError("Federate should not access Interaction.");
     }
@@ -352,17 +350,17 @@ namespace certi {
     InteractionChild *Son = NULL;
     Parameter *Parameter = NULL;
 
-    printf(" Interaction %u \"%s\" :\n", handle, name);
+    printf(" Interaction %ld \"%s\" :\n", handle, name);
 
     // Display inheritance
 
-    printf(" Parent Class Handle: %u\n", parent);
+    printf(" Parent Class Handle: %ld\n", parent);
     printf(" Security Level: %d\n", id);
     printf(" %d Child(s):\n", children.lg);
 
     for(i = 1; i <= children.lg; i++) {
       Son = children.Ieme(i);
-      printf(" Son %d Handle: %u\n", i, Son->handle);
+      printf(" Son %d Handle: %ld\n", i, Son->handle);
     }
 
     // Display Parameters
@@ -586,7 +584,7 @@ namespace certi {
 			       ParameterHandle *theParameterList,
 			       ParameterValue *theValueList,
 			       UShort theListSize,
-			       FederationTime theTime,
+			       FederationTime,
 			       UserSuppliedTag theTag)
     throw(FederateNotPublishing,
 	  InteractionClassNotDefined,
@@ -594,7 +592,6 @@ namespace certi {
 	  RTIinternalError)
   {
     int i;
-    Interaction *theInteraction = NULL;
     NetworkMessage *Answer = NULL;
     InteractionBroadcastList *List = NULL;
 
@@ -719,8 +716,7 @@ namespace certi {
   // -- Subscribe --
   // ---------------
 
-  void Interaction::subscribe(bool SubOrUnsub,
-			      Subscriber *theSubscriber)
+  void Interaction::subscribe(bool, Subscriber*)
     throw(RegionNotKnown,
 	  InvalidRoutingSpace,
 	  RTIinternalError)
@@ -731,4 +727,4 @@ namespace certi {
   }
 }
 
-// $Id: Interaction.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Interaction.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

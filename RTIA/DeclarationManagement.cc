@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: DeclarationManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
@@ -270,11 +270,11 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 // -------------------------------------------
 // -- 3.3(2) subscribeObjectClassAttribute --(with Region)
 // -------------------------------------------
-void DeclarationManagement::
-subscribeObjectClassAttribute(ObjectClassHandle theClassHandle, 
-			      AttributeHandle theAttribute, 
-			      HLA_Region theRegion,
-			      TypeException &e)
+void 
+DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle,
+						     AttributeHandle,
+						     HLA_Region,
+						     TypeException &e)
 {
   // BUG: Non implemente en F.0
   e = e_UnimplementedService;
@@ -285,22 +285,18 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 // -- 3.3(3) unsubscribeObjectClassAttribute --
 // ---------------------------------------------
 
-void DeclarationManagement::
+void 
+DeclarationManagement::
 unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle, 
 				TypeException &e)
 {
   NetworkMessage req,rep;
  
-  // Variables leurres
-  AttributeHandle *attribArray = NULL;
-  UShort attribArraySize = 0;
-
   e = e_NO_EXCEPTION;
 
   // Pas de Partie Locale pour les abonnements
 
   // Partie RTIG
-
   req.Type = m_UNSUBSCRIBE_OBJECT_CLASS;
   req.objectClassHandle = theClassHandle;
   req.NumeroFederation = _GF->_numero_federation;
@@ -321,11 +317,10 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 // ---------------------------------------------
 
 void DeclarationManagement::
-unsubscribeObjectClassAttribute(ObjectClassHandle theClass, 
-				HLA_Region theRegion,
+unsubscribeObjectClassAttribute(ObjectClassHandle,
+				HLA_Region,
 				TypeException &e)
 {
-  // BUG: Non implemente en F.0
   e = e_UnimplementedService;
 }
 
@@ -377,12 +372,11 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 // -- 3.4(2) subscribeInteractionClass --(with Region)
 // ---------------------------------------
 
-void DeclarationManagement::
-subscribeInteractionClass(InteractionClassHandle theClass, 
-			  HLA_Region theRegion,
-			  TypeException &e)
+void 
+DeclarationManagement::subscribeInteractionClass(InteractionClassHandle,
+						 HLA_Region, 
+						 TypeException &e)
 {
-  // BUG: Non implemente en F.0
   e = e_UnimplementedService;
 }
 
@@ -435,11 +429,10 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 // -----------------------------------------
 
 void DeclarationManagement::
-unsubscribeInteractionClass(InteractionClassHandle theClass, 
-			    HLA_Region theRegion,
+unsubscribeInteractionClass(InteractionClassHandle,
+			    HLA_Region,
 			    TypeException &e)
 {
-  // Non implemente en F.0
   e = e_UnimplementedService;
 }
 
@@ -572,4 +565,4 @@ turnInteractionsOff(InteractionClassHandle theHandle,
 }
 }
 
-// $Id: DeclarationManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketMC.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,11 +66,8 @@ CreerSocketMC(unsigned long addr, unsigned long port)
 
   assert(!_est_init_mc);
   assert(addr>0);
-  assert(port>=0);
 
   // creation du socket recepteur
-
-
   _socket_mc = socket(AF_INET, SOCK_DGRAM, 0);
   if(_socket_mc < 0)
   {
@@ -127,7 +124,7 @@ CreerSocketMC(unsigned long addr, unsigned long port)
 
 //-------------------------------------------------------------------
 void 
-SocketMC::send(void *Buffer, unsigned long Size)
+SocketMC::send(void *Buffer, unsigned long)
   throw(NetworkError, NetworkSignal)
 {
   // BUG:Revoir ca en faisant le contraire(EmettreMC appelle Emettre)
@@ -137,7 +134,7 @@ SocketMC::send(void *Buffer, unsigned long Size)
 
 //-------------------------------------------------------------------
 void 
-SocketMC::receive(void *Buffer, unsigned long Size)
+SocketMC::receive(void *Buffer, unsigned long)
   throw(NetworkError, NetworkSignal)
 {
   // BUG: Revoir ca en faisant le contraire(RecevoirMC appelle Recevoir)
@@ -236,5 +233,5 @@ int SocketMC::timeoutMC(int sec, int usec)
 
 }
 
-// EOF $Id: SocketMC.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: my_fed.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: my_fed.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -76,9 +76,9 @@ void Fed::DeleteObjects(const FedTime& DeletionTime)
 //
 
 void Fed::discoverObjectInstance(
-        ObjectHandle              theObject,      
-        ObjectClassHandle     theObjectClass, 
-  const char                  *theObjectName)
+        ObjectHandle              theObject,
+        ObjectClassHandle     theObjectClass,
+  const char                  */*theObjectName*/)
 throw(
   CouldNotDiscover,
   ObjectClassNotKnown,
@@ -91,7 +91,7 @@ throw(
       throw RTIinternalError();
     }
   Remote[RemoteCount].ID = theObject;
-  printf("Maintenant, je connais l'objet %d\n", theObject);
+  printf("Maintenant, je connais l'objet %ld\n", theObject);
   RemoteCount++;
 }
 
@@ -136,7 +136,7 @@ void Fed::GetHandles(void)
 //
 void Fed::announceSynchronizationPoint(
   const char *label,
-  const char *tag) 
+  const char */*tag*/)
 throw(
   FederateInternalError)
 {
@@ -241,11 +241,11 @@ void Fed::PublishAndsubscribe(void)
 //
 
 void Fed::receiveInteraction(
-        InteractionClassHandle        theInteraction, 
-  const	ParameterHandleValuePairSet&  theParameters,  
-  const FedTime&                      theTime,        
-  const char                          *theTag,         
-        EventRetractionHandle         theHandle)      
+        InteractionClassHandle        theInteraction,
+  const	ParameterHandleValuePairSet&  theParameters,
+  const FedTime&                      /*theTime*/,
+  const char                          */*theTag*/,
+        EventRetractionHandle         /*theHandle*/)
 throw(
   InteractionClassNotKnown,
   InteractionParameterNotKnown,
@@ -254,7 +254,8 @@ throw(
 {
   char  *parmValue;
   ULong valueLength;
-  int dx1,dy1;
+  int dx1 = 0;
+  int dy1 = 0;
   Boolean bille = RTI_FALSE;
 
   D.Out(pdTrace,"Fed : receiveInteraction");
@@ -266,7 +267,7 @@ throw(
   D.Out(pdDebug,"receiveInteraction - nb attributs= %d",
 	theParameters.size());
 
-  for(int j=0 ; j < theParameters.size() ; j++) {
+  for(unsigned int j=0 ; j < theParameters.size() ; j++) {
     ParameterHandle handle = theParameters.getHandle(j) ;
     
     valueLength = theParameters.getValueLength(j);
@@ -326,11 +327,11 @@ throw(
 //
 
 void Fed::reflectAttributeValues(
-        ObjectHandle                  theObject,     
-  const	AttributeHandleValuePairSet&  theAttributes, 
-  const FedTime&                      theTime,       
-  const char                          *theTag,        
-        EventRetractionHandle         theHandle)     
+        ObjectHandle                  theObject,
+  const	AttributeHandleValuePairSet&  theAttributes,
+  const FedTime&                      /*theTime*/,
+  const char                          */*theTag*/,
+        EventRetractionHandle         /*theHandle*/)
 throw(
   ObjectNotKnown,
   AttributeNotKnown,
@@ -341,7 +342,7 @@ throw(
 
   int             i=0;
   float           oldx, oldy;
-  AttributeHandle *attribut;
+  //  AttributeHandle *attribut;
   ULong           valueLength;
   char            *attrValue;
 
@@ -359,7 +360,7 @@ throw(
 
       D.Out(pdDebug,"reflectAttributeValues - nb attributs= %d",
 	    theAttributes.size());
-      for(int j=0; j<theAttributes.size(); j++)
+      for(unsigned int j=0; j<theAttributes.size(); j++)
 	{
 	  AttributeHandle handle = theAttributes.getHandle(j);
 	  valueLength = theAttributes.getValueLength(j);
@@ -416,11 +417,11 @@ void Fed::RegisterObjects(void)
 //
 
 void Fed::removeObjectInstance(
-        ObjectHandle          theObject, 
-//        ObjectRemovalReason   theReason, 
-  const FedTime&              theTime,   
-  const char                  *theTag,    
-        EventRetractionHandle theHandle) 
+        ObjectHandle          theObject,
+//        ObjectRemovalReason   theReason,
+  const FedTime&              /*theTime*/,
+  const char                  */*theTag*/,
+        EventRetractionHandle /*theHandle*/)
 throw(
   ObjectNotKnown,
   InvalidFederationTime,
@@ -435,10 +436,10 @@ throw(
     }
 
   if(i == RemoteCount)
-    printf("Fed: ERREUR: objet id non trouve(%d)\n", theObject);
+    printf("Fed: ERREUR: objet id non trouve(%ld)\n", theObject);
   else
     {
-      printf("Fed: RemoveObject id=%d\n", theObject);     
+      printf("Fed: RemoveObject id=%ld\n", theObject);     
       Remote[i].Effacer();
       RemoteCount--;
     }
@@ -456,7 +457,7 @@ void Fed::sendInteraction(const FedTime& InteractionTime,
   
   ParameterSet = ParameterSetFactory::create( 3 );
   
-  sprintf(buf, "%d",Id);
+  sprintf(buf, "%ld",Id);
   ParameterSet->add(ParamBoulID, buf, strlen(buf)+1) ;
 
   D.Out(pdDebug,"SendInteraction");
@@ -517,7 +518,7 @@ void Fed::SendUpdate(const FedTime& UpdateTime)
   D.Out(pdDebug,"SendUpdate - AttrYID= %u, y= %f, size= %u",
 	AttrYID,Local.y,AttributeSet->size());
   
-  sprintf(buf, "%f",Local.Color);
+  sprintf(buf, "%d",Local.Color);
   AttributeSet->add(AttrColorID, buf, strlen(buf)+1) ;
   D.Out(pdDebug,"SendUpdate - AttrColorID= %u, color= %f, size= %u",
 	AttrColorID,Local.color,AttributeSet->size());
@@ -535,7 +536,7 @@ void Fed::SendUpdate(const FedTime& UpdateTime)
 }
 
 void Fed::turnInteractionsOn(
-  InteractionClassHandle theHandle) 
+  InteractionClassHandle /*theHandle*/)
 throw(
   InteractionClassNotPublished,
   FederateInternalError)
@@ -543,7 +544,7 @@ throw(
 }
 
 void Fed::turnInteractionsOff(
-  InteractionClassHandle theHandle) 
+  InteractionClassHandle /*theHandle*/)
 throw(
   InteractionClassNotPublished,
   FederateInternalError)
@@ -551,7 +552,7 @@ throw(
 }
 
 void Fed::startRegistrationForObjectClass(
-        ObjectClassHandle   theClass)
+        ObjectClassHandle   /*theClass*/)
 throw(
   ObjectClassNotPublished,
   FederateInternalError)
@@ -559,7 +560,7 @@ throw(
 }
 
 void Fed::stopRegistrationForObjectClass(
-        ObjectClassHandle   theClass)
+        ObjectClassHandle   /*theClass*/)
 throw(
   ObjectClassNotPublished,
   FederateInternalError)
@@ -569,7 +570,7 @@ throw(
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * timeAdvanceGrant
  */
-void Fed::timeAdvanceGrant(const FedTime& theTime) 
+void Fed::timeAdvanceGrant(const FedTime& /*theTime*/)
   throw(InvalidFederationTime, TimeAdvanceWasNotInProgress, 
 	 FederationTimeAlreadyPassed, FederateInternalError) {
 
@@ -579,7 +580,7 @@ void Fed::timeAdvanceGrant(const FedTime& theTime)
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * timeRegulationEnabled
  */
-void Fed::timeRegulationEnabled(const FedTime& theTime) 
+void Fed::timeRegulationEnabled(const FedTime& /*theTime*/)
   throw(InvalidFederationTime, EnableTimeRegulationWasNotPending,
 	FederateInternalError) {
   
@@ -593,14 +594,10 @@ void Fed::timeRegulationEnabled(const FedTime& theTime)
 //---------------------------------------------------------------------------
 
 void 
-Fed::requestAttributeOwnershipRelease( 
-					    ObjectHandle theObject, // supplied C1
-					    const AttributeHandleSet& candidateAttributes, // supplied C4
-					    const char *theTag) // supplied C4
-  throw(
-	 ObjectNotKnown,
-	 AttributeNotKnown,
-	 AttributeNotOwned,
+Fed::requestAttributeOwnershipRelease(ObjectHandle,
+				      const AttributeHandleSet&,
+				      const char*)
+  throw(ObjectNotKnown, AttributeNotKnown, AttributeNotOwned,
 	 FederateInternalError)
 {
   cout << "requestAttributeOwnershipRelease..." << endl;
@@ -645,7 +642,7 @@ void Fed::attributeOwnershipUnavailable(
 	
   cout << "CALLBACK Nb d'attributs dans l'AttributeHandleSet : " << offeredAttributes.size() << endl;
 	
-  for(int j=0 ; j < offeredAttributes.size() ; j++)
+  for(unsigned int j=0 ; j < offeredAttributes.size() ; j++)
     {
  
       AttributeHandle handle = offeredAttributes.getHandle(j) ;
@@ -672,8 +669,8 @@ void Fed::attributeOwnershipUnavailable(
 //---------------------------------------------------------------------------
 
 void Fed::attributeOwnershipAcquisitionNotification(
-						     ObjectHandle theObject, // supplied C1
-						     const AttributeHandleSet& securedAttributes) // supplied C4
+						     ObjectHandle /*theObject*/, // supplied C1
+						     const AttributeHandleSet& /*securedAttributes*/) // supplied C4
   throw(
 	 ObjectNotKnown,
 	 AttributeNotKnown,
@@ -745,8 +742,8 @@ void Fed::attributeOwnershipAcquisitionNotification(
 //---------------------------------------------------------------------------
 
 void Fed::attributeOwnershipDivestitureNotification(
-						     ObjectHandle theObject, // supplied C1
-						     const AttributeHandleSet& releasedAttributes) // supplied C4
+						     ObjectHandle /*theObject*/, // supplied C1
+						     const AttributeHandleSet& /*releasedAttributes*/) // supplied C4
   throw(
 	 ObjectNotKnown,
 	 AttributeNotKnown,
@@ -776,9 +773,9 @@ void Fed::attributeOwnershipDivestitureNotification(
 //---------------------------------------------------------------------------
 
 void Fed::requestAttributeOwnershipAssumption(
-					       ObjectHandle theObject, // supplied C1
-					       const AttributeHandleSet& offeredAttributes, // supplied C4
-					       const char *theTag) // supplied C4
+					       ObjectHandle /*theObject*/, // supplied C1
+					       const AttributeHandleSet& /*offeredAttributes*/, // supplied C4
+					       const char */*theTag*/) // supplied C4
   throw(
 	 ObjectNotKnown,
 	 AttributeNotKnown,
@@ -835,8 +832,8 @@ void Fed::requestAttributeOwnershipAssumption(
 // }
 
 void Fed::confirmAttributeOwnershipAcquisitionCancellation(
-							    ObjectHandle theObject, // supplied C1
-							    const AttributeHandleSet& theAttributes) // supplied C4
+							   ObjectHandle /*theObject*/, // supplied C1
+							   const AttributeHandleSet& /*theAttributes*/) // supplied C4
   throw(
 	 ObjectNotKnown,
 	 AttributeNotKnown,
@@ -875,4 +872,4 @@ void Fed::confirmAttributeOwnershipAcquisitionCancellation(
 				
 }
 
-// EOF $Id: my_fed.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.0.2.1 2002/11/22 00:52:57 breholee Exp $

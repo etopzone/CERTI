@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG_processing.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -280,7 +280,8 @@ RTIG::processRequestPause(Socket *link, NetworkMessage *req)
 // processRequestResume
 
 void 
-RTIG::processRequestResume(Socket *link, NetworkMessage *msg)
+RTIG::processRequestResume(Socket*, 
+			   NetworkMessage *msg)
 {
   auditServer->addToLine("Label \"%s\"", msg->Label);
   federations->setPause(msg->NumeroFederation,
@@ -489,7 +490,6 @@ RTIG::processupdateAttributeValues(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
   AttributeValue *ValueArray = NULL;
-  int i;
 
   auditServer->addToLine("ObjID = %u, Date = %f", req->Objectid, req->Date);
 
@@ -528,7 +528,6 @@ RTIG::processsendInteraction(Socket *link, NetworkMessage *req)
 {
   NetworkMessage rep;
   AttributeValue *values = NULL;
-  int i;
 
   // Prepare le Value Array
   auditServer->addToLine("IntID = %u, Date = %f",
@@ -840,7 +839,7 @@ RTIG::processRealeaseResponse(Socket *link, NetworkMessage *req)
 
   rep.HandleArraySize = attributes->size();
  
-  for(int i = 0; i < attributes->size(); i++) {
+  for(unsigned int i = 0; i < attributes->size(); i++) {
     rep.HandleArray[i] = attributes->getHandle(i);
   }
  
@@ -887,5 +886,5 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 
 }}
 
-// $Id: RTIG_processing.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 

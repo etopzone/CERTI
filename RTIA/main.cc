@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: main.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: main.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -38,8 +38,6 @@ extern "C" void SignalHandler(int Signal);
 
 int main(void)
 {  
-  int j;
-
   signal(SIGINT,  SignalHandler);
   signal(SIGPIPE, SignalHandler);
 
@@ -66,4 +64,4 @@ void SignalHandler(int Signal)
 
 }
 
-// EOF $Id: main.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: main.cc,v 3.0.2.1 2002/11/22 00:52:56 breholee Exp $
