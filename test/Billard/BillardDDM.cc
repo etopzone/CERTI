@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2004  ONERA
+// Copyright (C) 2004, 2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.10 2005/02/09 16:17:28 breholee Exp $
+// $Id: BillardDDM.cc,v 3.11 2005/03/13 17:45:16 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -39,13 +39,13 @@ PrettyDebug D("BILLARD_DDM", __FILE__);
 /** Draw a square region
  */
 void
-drawRegion(bool display, int position)
+drawRegion(bool display, int position, int width)
 {
 #ifndef X_DISPLAY_MISSING
     point origin ;
-    origin.X = 100 * position;
+    origin.X = width * position;
     origin.Y = 0 ;
-    rectangler region = Definerr(origin, 100, 100, COUL_UNIE,
+    rectangler region = Definerr(origin, width, 100, COUL_UNIE,
 				 display ? GRAY : WHITE);
     Drawrr(region);
 #endif
@@ -56,7 +56,7 @@ drawRegion(bool display, int position)
 /** Constructor
  */
 BillardDDM::BillardDDM(string federate_name)
-    : Billard(federate_name), subRegion(-1), pubRegion(-1)
+    : Billard(federate_name), numberOfRegions(3), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardDDM" << std::endl ;
 }
@@ -74,22 +74,24 @@ BillardDDM::~BillardDDM()
 void
 BillardDDM::declare()
 {
+    int width = 500 / numberOfRegions ;
+
     GeoID = rtiamb.getRoutingSpaceHandle("Geo");
     std::cout << "Geo space handle : " << GeoID << std::endl ;
 
     areas.clear();
-    for (int i = 0 ; i < 5 ; ++i) {
+    for (int i = 0 ; i < numberOfRegions ; ++i) {
 	areas.push_back(Area());
 	Area &area = areas.back();
-	area.x = 100 * i ;
+	area.x = width * i ;
 	area.y = 0 ;
-	area.size = 100 ;
+	area.size = width ;
 	std::cout << "Region " << i << "... " ;
 	area.region = rtiamb.createRegion(GeoID, 1);
 	std::cout << "ok" << std::endl ;
     }
 
-    int region = (int) local.x / 100 ;
+    int region = (int) local.x / width ;
     AttributeHandle attrs[] = { AttrXID, AttrYID } ;
     Region *regs[] = { areas[region].region, areas[region].region } ;
     std::cout << "Register ball with region..." << std::endl ;
@@ -106,12 +108,13 @@ BillardDDM::declare()
 void
 BillardDDM::checkRegions()
 {
-    int region = (int) local.x / 100 ;
+    int width = 500 / numberOfRegions ;
+    int region = (int) local.x / width ;
 
     if (region != subRegion || region != pubRegion) {
 	if (subRegion != -1)
-	    drawRegion(true, subRegion);
-	drawRegion(false, region);
+	    drawRegion(true, subRegion, width);
+	drawRegion(false, region, width);
 	//	std::cout << "Connect to region " << region << std::endl ;
 	auto_ptr<AttributeHandleSet> a(AttributeHandleSetFactory::create(3));
 	a->add(AttrXID);
@@ -159,4 +162,4 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.10 2005/02/09 16:17:28 breholee Exp $
+// $Id: BillardDDM.cc,v 3.11 2005/03/13 17:45:16 breholee Exp $
