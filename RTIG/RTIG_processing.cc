@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.24 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.25 2005/03/15 14:33:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -966,6 +966,8 @@ RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
     rep.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
+    rep.objectClass = req->objectClass ;
+    rep.handleArraySize = 0 ;
     rep.write(link);
 }
 
@@ -1059,4 +1061,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.24 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.25 2005/03/15 14:33:20 breholee Exp $
