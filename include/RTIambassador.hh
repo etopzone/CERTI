@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.2 2002/11/27 23:07:19 breholee Exp $
+// $Id: RTIambassador.hh,v 3.3 2002/12/10 13:58:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -68,39 +68,15 @@ public:
   RTIambassador() throw(MemoryExhausted, RTIinternalError);
   ~RTIambassador() throw(RTIinternalError);
 
-  // Type conversion
-  CAttributeHandleValuePairSet* 
-  AHStoCAHVPS(const AttributeHandleSet *ahs);
-
-  CAttributeHandleValuePairSet* 
-  AHVPStoCAHVPS(const AttributeHandleValuePairSet *ahvps);
-
-  CParameterHandleValuePairSet* 
-  PHVPStoCPHVPS(const ParameterHandleValuePairSet *phvps);
-
-  AttributeHandleValuePairSet* 
-  CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps);
-
-  ParameterHandleValuePairSet* 
-  CPHVPStoPHVPS(CParameterHandleValuePairSet *cphvps);
-
   // Data Integrity
 
   void objectToString(const char *char_initial, 
 		     ULong taille, 
 		     char *char_final);
 
-  void stringToObject(char *char_initial,
-		      char *char_final,
-		      ULong taille);
-
   void getObjectToStringLength(char *char_initial,
 			       ULong taille_initiale,
 			       ULong& taille);
-
-  void getStringToObjectLength(char *char_initial,
-			       ULong& taille);
-
 
   // Federation Management -------------------------------------------------
   void 
@@ -1338,4 +1314,4 @@ public:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.2 2002/11/27 23:07:19 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.3 2002/12/10 13:58:32 breholee Exp $
