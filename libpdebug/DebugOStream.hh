@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: DebugOStream.hh,v 3.4 2003/11/14 15:41:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
@@ -27,9 +27,8 @@
 
 #include <iostream>
 
-// Attention, defining methods in the class declaration make them
-// inline. All methods in DebugOStream are inline.
-
+/** Stream used by PrettyDebug
+ */
 class DebugOStream
 {
 private:
@@ -258,4 +257,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: DebugOStream.hh,v 3.4 2003/11/14 15:41:07 breholee Exp $

@@ -19,11 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 3.6 2003/10/20 12:27:39 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.7 2003/11/14 15:41:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_PRETTYDEBUG_HH
-#define _CERTI_PRETTYDEBUG_HH
+#ifndef PRETTYDEBUG_HH
+#define PRETTYDEBUG_HH
+
+#ifdef NO_PRETTYDEBUG ///< Deprecated, use NDEBUG
+#define NDEBUG
+#endif
 
 #include "DebugOStream.hh"
 
@@ -34,7 +38,7 @@ typedef unsigned TDebugLevel;
 
 // Alias
 class PrettyDebug ;
-typedef PrettyDebug pdCDebug ;
+typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
 
 // Pretty Debug Constants
 #define pdMaxMessageSize 255  // greater then pdTooLongInitMessage length!
@@ -113,7 +117,7 @@ public:
         return(*theReturnedOutputStreamPtr);
     }
 
-#ifdef NO_PRETTYDEBUG
+#ifdef NDEBUG
     inline void Out(pdDebugLevel Level, const char *Format, ...) {};
 #else
     void Out(pdDebugLevel Level, const char *Format, ...);
@@ -121,6 +125,6 @@ public:
 
 };
 
-#endif // _CERTI_PRETTYDEBUG_HH
+#endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 3.6 2003/10/20 12:27:39 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.7 2003/11/14 15:41:07 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 3.5 2003/10/20 12:27:38 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.6 2003/11/14 15:41:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -167,14 +167,16 @@ PrettyDebug::disableDebugLevel(pdDebugLevel Level)
 }
      
 // ----------------------------------------------------------------------------
-#ifndef NO_PRETTYDEBUG
+#ifndef NDEBUG
 /** If Level is enabled, Message is sent to the DebugServer, preceded
- *  with the Header specified in the Constructor.  If the
- *  NO_PRETTYDEBUG constant is defined, the Out method has beed
- *  declared inline, and its body set to {}(see PrettyDebug.hh).
- *  @attention: Problème, rien ne garantit qu'on ne dépassera pas le
- *  nombre max de char dans le vsprintf. Mieux vaut utiliser la
- *  syntaxe C++ */
+   with the Header specified in the Constructor.  If the NDEBUG
+   constant is defined, the Out method has beed declared inline, and
+   its body set to {} (see PrettyDebug.hh).
+
+   \attention: Problème, rien ne garantit qu'on ne dépassera pas le
+   nombre max de char dans le vsprintf. Mieux vaut utiliser la
+   syntaxe C++ 
+*/
 void
 PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 {
@@ -223,6 +225,6 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
     return;
 }
 
-#endif // NO_PRETTYDEBUG
+#endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 3.5 2003/10/20 12:27:38 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.6 2003/11/14 15:41:07 breholee Exp $
