@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.10 2003/02/19 18:07:29 breholee Exp $
+// $Id: Interaction.cc,v 3.11 2003/04/09 16:39:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -634,6 +634,22 @@ Interaction::subscribe(bool, Subscriber*)
     throw RTIinternalError("subscribe(with Region) not implemented.");
 }
 
+// ----------------------------------------------------------------------------
+// setSpace
+void
+Interaction::setSpace(SpaceHandle h)
+{
+    space = h ;
+}
+
+// ----------------------------------------------------------------------------
+// getSpace
+SpaceHandle
+Interaction::getSpace(void)
+{
+    return space ;
+}
+
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.10 2003/02/19 18:07:29 breholee Exp $
+// $Id: Interaction.cc,v 3.11 2003/04/09 16:39:04 breholee Exp $

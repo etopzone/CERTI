@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.7 2003/02/19 18:07:29 breholee Exp $
+// $Id: Interaction.hh,v 3.8 2003/04/09 16:39:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -68,6 +68,7 @@ public:
 private:
     char *name ; //!< Must be locally allocated and deleted.
     SecurityLevelID id ; //!< The default Security Level for new parameters
+    SpaceHandle space ;
 
     //! List of this Interaction Class' Parameters.
     list<Parameter*> parameterSet ;
@@ -85,6 +86,9 @@ public:
     const char *getName(void) const ;
     void setName(const char *new_name)
         throw (ValueLengthExceeded, RTIinternalError);
+
+    void setSpace(SpaceHandle);
+    SpaceHandle getSpace(void);
 
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
@@ -175,4 +179,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.7 2003/02/19 18:07:29 breholee Exp $
+// $Id: Interaction.hh,v 3.8 2003/04/09 16:39:04 breholee Exp $
