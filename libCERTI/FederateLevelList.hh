@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.3 2003/01/15 18:08:30 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.4 2003/01/17 17:12:35 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
@@ -43,9 +43,7 @@ public:
   FederateLevelList(void);
   ~FederateLevelList(void);
 
-  // Register a new federate principal name, and associate the given level
-  // with it.
-  void addFederate(FederateName theName, SecurityLevelID theLevelID);
+  void addFederate(const char* the_name, SecurityLevelID the_level_id);
 
   // Try to find the given principal name in the database, and return
   // its associated level. If not found, return PublicLevelID.
@@ -55,4 +53,4 @@ public:
 
 #endif // _CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.3 2003/01/15 18:08:30 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.4 2003/01/17 17:12:35 breholee Exp $

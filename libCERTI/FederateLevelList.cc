@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.3 2003/01/15 18:08:30 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.4 2003/01/17 17:12:35 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,19 +29,23 @@
 
 namespace certi {
 
+// ---------------------------------------------------------------------------
 //! add a new federate to Tuple.
+/*! Register a new federate principal name, and associate the given level
+    with it.
+*/
 void 
-FederateLevelList::addFederate(FederateName theName,
-                               SecurityLevelID theLevelID)
+FederateLevelList::addFederate(const char* the_name,
+                               SecurityLevelID the_level_id)
 {
-    if((theName == NULL) || (strlen(theName) > MAX_FEDERATE_NAME_LENGTH))
+    if((the_name == NULL) || (strlen(the_name) > MAX_FEDERATE_NAME_LENGTH))
         throw RTIinternalError("Federate Name too long(principal name).");
 
-    char *nameCopy = strdup(theName);
+    char *nameCopy = strdup(the_name);
     if(nameCopy == NULL)
       throw RTIinternalError("Could not allocate memory.");
 
-    tuple[nameCopy] = theLevelID;
+    tuple[nameCopy] = the_level_id;
 }
 
 //! FederateLevelList constructor.
@@ -72,4 +76,4 @@ FederateLevelList::getLevel(const char* theName) const
 }
 }
 
-// $Id: FederateLevelList.cc,v 3.3 2003/01/15 18:08:30 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.4 2003/01/17 17:12:35 breholee Exp $
