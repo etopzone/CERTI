@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.27 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClass.cc,v 3.28 2005/03/22 14:53:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,7 +38,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTCLASS", "(ObjClass) - ");
+static pdCDebug D("OBJECTCLASS", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! To be used only by CRead, it returns the new Attribute's Handle.
@@ -128,7 +128,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *so
           // been subscribed.
           FederateHandle federate = 0 ;
           for (federate = 1 ; federate <= maxSubscriberHandle ; federate++) {
-              if (isSubscribed(federate)) {
+              if (isSubscribed(federate) && (federate != ocbList->message->federate)) {
                   ocbList->addFederate(federate);
               }
           }
@@ -428,7 +428,7 @@ ObjectClass::getAttribute(AttributeHandle the_handle) const
             return (*a);
     }
 
-    D.Out(pdDebug, "ObjectClass %d: Attribute %d not defined.",
+    D.Out(pdExcept, "ObjectClass %d: Attribute %d not defined.",
           handle, the_handle);
 
     throw AttributeNotDefined();
@@ -599,8 +599,6 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
            ObjectAlreadyRegistered,
            RTIinternalError)
 {
-    D.Out(pdInit, "ObjectClass.");
-
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
         D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
@@ -613,20 +611,15 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         throw ObjectClassNotPublished();
     }
 
-    D.Out(pdInit, "ObjectClass1.");
-
     // Ownership management :
     // Copy instance attributes
     // Federate only owns attributes it publishes.
     ObjectAttribute * oa ;
     list<ObjectClassAttribute *>::reverse_iterator a ;
     for (a = attributeSet.rbegin(); a != attributeSet.rend(); a++) {
-        if ((*a)->isPublishing(the_federate)) {
-            oa = new ObjectAttribute((*a)->getHandle(), the_federate, *a);
-        }
-        else {
-            oa = new ObjectAttribute((*a)->getHandle(), 0, *a);
-        }
+	oa = new ObjectAttribute((*a)->getHandle(),
+				 (*a)->isPublishing(the_federate) ? the_federate : 0,
+				 *a);
 
         // privilegeToDelete is owned by federate even not published.
         if (!strcmp((*a)->getName(), "privilegeToDelete")) {
@@ -689,30 +682,32 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
     // Else, send message for each object
     list<Object *>::const_iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
-	NetworkMessage message ;
-        D.Out(pdInit,
-              "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-              federate, (*o)->getHandle(), handle, message.label);
-
-	message.type = NetworkMessage::DISCOVER_OBJECT ;
-	message.federation = server->federation();
-	message.federate = federate ;
-	message.exception = e_NO_EXCEPTION ;
-	message.objectClass = super_handle ;
-        message.object = (*o)->getHandle();
-        message.setLabel((*o)->getName().c_str());
-
-	Socket *socket = NULL ;
-        try {
-            socket = server->getSocketLink(federate);
-            message.write(socket);
-        }
-        catch (RTIinternalError &e) {
-            D.Out(pdExcept,
-                  "Reference to a killed Federate while sending DO msg.");
-        }
-        catch (NetworkError &e) {
-            D.Out(pdExcept, "Network error while sending DO msg, ignoring.");
+	if ((*o)->getOwner() != federate) {
+	    NetworkMessage message ;
+	    D.Out(pdInit,
+		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
+		  federate, (*o)->getHandle(), handle, message.label);
+	    
+	    message.type = NetworkMessage::DISCOVER_OBJECT ;
+	    message.federation = server->federation();
+	    message.federate = federate ;
+	    message.exception = e_NO_EXCEPTION ;
+	    message.objectClass = super_handle ;
+	    message.object = (*o)->getHandle();
+	    message.setLabel((*o)->getName().c_str());
+	    
+	    Socket *socket = NULL ;
+	    try {
+		socket = server->getSocketLink(federate);
+		message.write(socket);
+	    }
+	    catch (RTIinternalError &e) {
+		D.Out(pdExcept,
+		      "Reference to a killed Federate while sending DO msg.");
+	    }
+	    catch (NetworkError &e) {
+		D.Out(pdExcept, "Network error while sending DO msg, ignoring.");
+	    }
         }
     }
 
@@ -747,6 +742,10 @@ ObjectClass::subscribe(FederateHandle fed,
 		       const RegionImp *region)
     throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
+    D[pdTrace] << __func__ << " : fed " << fed << ", class " << handle
+	       << ", " << nb_attributes << " attributes, region "
+	       << (region ? region->getHandle() : 0) << std::endl ;
+
     checkFederateAccess(fed, "Subscribe");
 
     for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
@@ -756,6 +755,9 @@ ObjectClass::subscribe(FederateHandle fed,
 	maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
 
     bool was_subscriber = isSubscribed(fed);
+    D[pdTrace] << __func__ << " : federate was "
+	       << (was_subscriber ? "" : "not ")
+	       << "subscriber." << std::endl ;
 
     unsubscribe(fed, region);
 
@@ -1003,8 +1005,6 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
            AttributeAlreadyBeingAcquired,
            RTIinternalError)
 {
-    // Pre-conditions checking
-
     //It may throw ObjectNotKnown.
     Object *object = getInstanceWithID(the_object);
 
@@ -1657,4 +1657,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.27 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClass.cc,v 3.28 2005/03/22 14:53:55 breholee Exp $
