@@ -20,29 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelTuple.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederateLevelTuple.hh,v 3.2 2003/01/15 18:02:22 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_TUPLE_HH
 #define _CERTI_FEDERATE_LEVEL_TUPLE_HH
 
-#include "RTItypes.hh"
-#include "SecurityLevel.hh"
-
-namespace certi {
-
-class FederateLevelTuple 
-{
-public:
-  FederateLevelTuple(FederateName, SecurityLevelID);
-  ~FederateLevelTuple();
-    
-public:
-  FederateName name ;
-  SecurityLevelID id ; 
-};
-}
+// *********************To be removed ******************************
 
 #endif // _CERTI_FEDERATE_LEVEL_TUPLE_HH
 
-// $Id: FederateLevelTuple.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederateLevelTuple.hh,v 3.2 2003/01/15 18:02:22 breholee Exp $

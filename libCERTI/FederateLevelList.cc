@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.2 2003/01/15 18:02:22 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,96 +29,47 @@
 
 namespace certi {
 
-  // -----------------
-  // -- addFederate --
-  // -----------------
+//! add a new federate to Tuple.
+void 
+FederateLevelList::addFederate(FederateName theName,
+                               SecurityLevelID theLevelID)
+{
+    if((theName == NULL) || (strlen(theName) > MAX_FEDERATE_NAME_LENGTH))
+        throw RTIinternalError("Federate Name too long(principal name).");
 
-  void 
-  FederateLevelList::addFederate(FederateName theName,
-				 SecurityLevelID theLevelID)
-  {
-    FederateLevelTuple *Tuple = new FederateLevelTuple(theName, theLevelID);
-    Inserer(1, Tuple);
-  }
-
-
-  // ------------------------
-  // -- FederateLevelList --
-  // ------------------------
-
-  FederateLevelList::FederateLevelList()
-    : List <FederateLevelTuple *>()
-  {
-  }
-
-
-  // -------------------------
-  // -- ~FederateLevelList --
-  // -------------------------
-
-  FederateLevelList::~FederateLevelList()
-  {
-    FederateLevelTuple *Tuple;
-
-    while(lg > 0) {
-      Tuple = Ieme(1);
-      Supprimer(1);
-      delete Tuple;
-    }
-  }
-
-
-  // --------------------
-  // -- FederateLevelTuple --
-  // --------------------
-
-  FederateLevelTuple::FederateLevelTuple(FederateName theName,
-					 SecurityLevelID theLevelID)
-  {
-    if((theName == NULL) ||(strlen(theName) > MAX_FEDERATE_NAME_LENGTH))
-      throw RTIinternalError("Federate Name too long(principal name).");
-
-    name = strdup(theName);
-
-    if(name == NULL)
+    char *nameCopy = strdup(theName);
+    if(nameCopy == NULL)
       throw RTIinternalError("Could not allocate memory.");
 
-    id = theLevelID;
-  }
-
-
-  // ---------------------
-  // -- ~FederateLevelTuple --
-  // ---------------------
-
-  FederateLevelTuple::~FederateLevelTuple()
-  {
-    if(name != NULL)
-      free(name);
-
-    name = NULL;
-    id = PublicLevelID;
-  }
-
-
-  // ----------------------
-  // -- getLevel --
-  // ----------------------
-
-  SecurityLevelID 
-  FederateLevelList::getLevel(const char *theName)
-  {
-    int i;
-    FederateLevelTuple *tuple;
-
-    for(i = 1; i <= lg; i++) {
-      tuple = Ieme(i);
-      if(strcmp(theName, tuple->name) == 0) {
-	return tuple->id;
-      }
-    }
-    return PublicLevelID;
-  }
+    tuple[nameCopy] = theLevelID;
 }
 
-// $Id: FederateLevelList.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+//! FederateLevelList constructor.
+FederateLevelList::FederateLevelList(void)
+{
+}
+
+//! Empty map before destroying instance.
+FederateLevelList::~FederateLevelList(void)
+{
+    while (!tuple.empty()) {
+        free((*tuple.begin()).first);
+        tuple.erase(tuple.begin());
+    }
+}
+
+// getLevel returns the level id associated the federate name given.
+SecurityLevelID 
+FederateLevelList::getLevel(const char* theName) const
+{
+    map<FederateName, SecurityLevelID>::const_iterator i;
+    i = tuple.find((char*)theName);
+
+    if (i != tuple.end())
+        return (*i).second;
+
+    return PublicLevelID;
+}
+}
+
+// $Id: FederateLevelList.cc,v 3.2 2003/01/15 18:02:22 breholee Exp $

@@ -20,26 +20,28 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.2 2003/01/15 18:02:22 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
 #define _CERTI_FEDERATE_LEVEL_LIST_HH
 
-#include <stdio.h>
+#include <map>
+using std::map;
 
-#include "List.hh"
 #include "RTItypes.hh"
-#include "FederateLevelTuple.hh"
 #include "SecurityLevel.hh"
 
 namespace certi {
 
-class FederateLevelList : private List <FederateLevelTuple *> 
+class FederateLevelList
 {
+protected:
+    std::map<FederateName, SecurityLevelID> tuple;
+
 public:
-  FederateLevelList();
-  ~FederateLevelList();
+  FederateLevelList(void);
+  ~FederateLevelList(void);
 
   // Register a new federate principal name, and associate the given level
   // with it.
@@ -47,10 +49,10 @@ public:
 
   // Try to find the given principal name in the database, and return
   // its associated level. If not found, return PublicLevelID.
-  SecurityLevelID getLevel(const char *theName);
+  SecurityLevelID getLevel(const char* theName) const;
 };
 }
 
 #endif // _CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.2 2003/01/15 18:02:22 breholee Exp $
