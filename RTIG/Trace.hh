@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Trace.hh,v 3.2 2003/02/19 14:29:38 breholee Exp $
+// $Id: Trace.hh,v 3.3 2003/05/23 15:05:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef GTR_HH
@@ -44,7 +44,7 @@ class Trace
 public:
     Trace();
     ~Trace();
-    void write(char *);
+    void write(const char *);
 private:
     FILE *f_trace ;
 };
@@ -53,4 +53,4 @@ private:
 
 #endif
 
-// $Id: Trace.hh,v 3.2 2003/02/19 14:29:38 breholee Exp $
+// $Id: Trace.hh,v 3.3 2003/05/23 15:05:00 breholee Exp $
