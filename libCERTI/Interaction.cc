@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.5 2003/01/15 12:07:46 breholee Exp $
+// $Id: Interaction.cc,v 3.6 2003/01/17 17:39:18 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -393,40 +393,33 @@ Interaction::getParameterByHandle(ParameterHandle theHandle)
     throw InteractionParameterNotDefined();
 }
 
-
-  // ------------------------
-  // -- GetParameterHandle --
-  // ------------------------
-
-  ParameterHandle Interaction::
-  getParameterHandle(const ParameterName theName)
+// ---------------------------------------------------------------------------
+//! getParameterHandle.
+ParameterHandle
+Interaction::getParameterHandle(const char* the_name)
     throw(InteractionParameterNotDefined,
-	  RTIinternalError)
-  {
-    int i;
+          RTIinternalError)
+{
     Parameter *parameter = NULL;
 
-    for(i = 1; i <= parameterSet.getLength(); i++) {
-      parameter = parameterSet.Ieme(i);
-      if(strcmp(parameter->getName(), theName) == 0)
-	return parameter->Handle;
+    for(int i = 1; i <= parameterSet.getLength(); i++) {
+        parameter = parameterSet.Ieme(i);
+        if(strcmp(parameter->getName(), the_name) == 0)
+            return parameter->Handle;
     }
- 
+
     throw InteractionParameterNotDefined();
-  }
+}
 
-
-  // ----------------------
-  // -- GetParameterName --
-  // ----------------------
-
-  const ParameterName Interaction::getParameterName(ParameterHandle theHandle)
+// ---------------------------------------------------------------------------
+//! getParameterName.
+const char*
+Interaction::getParameterName(ParameterHandle the_handle)
     throw(InteractionParameterNotDefined,
-	  RTIinternalError)
-  {
-    return getParameterByHandle(theHandle)->getName();
-  }
-
+          RTIinternalError)
+{
+    return getParameterByHandle(the_handle)->getName();
+}
 
 // ----------------------
 // -- GetPublisherRank --(private)
@@ -722,4 +715,4 @@ Interaction::getSubscriberRank(FederateHandle theFederate)
   }
 }
 
-// $Id: Interaction.cc,v 3.5 2003/01/15 12:07:46 breholee Exp $
+// $Id: Interaction.cc,v 3.6 2003/01/17 17:39:18 breholee Exp $
