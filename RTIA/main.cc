@@ -18,18 +18,19 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.10 2003/07/05 14:58:34 breholee Exp $
+// $Id: main.cc,v 3.11 2003/07/07 16:07:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "RTIA.hh"
 
-#include <csignal>
 #include <sys/types.h>
+#include <signal.h>
 
 using namespace certi ;
 using namespace rtia ;
+using namespace std ;
 
 extern "C" void SignalHandler(int Signal);
 void NewHandler();
@@ -38,10 +39,10 @@ void NewHandler();
 int
 main(int argc, char *argv[])
 {
-    std::signal(SIGINT, SignalHandler);
-    std::signal(SIGPIPE, SignalHandler);
+    signal(SIGINT, SignalHandler);
+    signal(SIGPIPE, SignalHandler);
 
-    std::set_new_handler(NewHandler);
+    set_new_handler(NewHandler);
 
     RTIA rtia ;
 
@@ -79,4 +80,4 @@ NewHandler()
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.10 2003/07/05 14:58:34 breholee Exp $
+// EOF $Id: main.cc,v 3.11 2003/07/07 16:07:01 breholee Exp $

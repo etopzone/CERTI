@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.14 2003/07/05 14:38:45 breholee Exp $
+// $Id: billard.cc,v 3.15 2003/07/07 16:05:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -44,7 +44,7 @@
 #include <memory.h>
 #include <math.h>
 #include <iostream>
-#include <csignal>
+#include <signal.h>
 #include <exception>
 
 using namespace std ;
@@ -674,4 +674,4 @@ synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     }
 }
 
-// EOF $Id: billard.cc,v 3.14 2003/07/05 14:38:45 breholee Exp $
+// EOF $Id: billard.cc,v 3.15 2003/07/07 16:05:21 breholee Exp $
