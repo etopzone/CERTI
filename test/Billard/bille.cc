@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: bille.cc,v 3.2 2003/01/31 10:47:52 breholee Exp $
+// $Id: bille.cc,v 3.3 2003/02/19 17:20:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -73,8 +73,8 @@ CBille::Afficher(void)
     cercler disque ;
     point centre ;
 
-    centre.X =(int)x ;
-    centre.Y =(int)y ;
+    centre.X = (int)x ;
+    centre.Y = (int)y ;
     disque = Definecr(centre, (int)rayon, COUL_UNIE, (couleur) color);
     Drawcr(disque);
 #endif
@@ -89,8 +89,8 @@ CBoule::Afficher(void)
     cercler disque ;
     point centre ;
 
-    centre.X =(int)x ;
-    centre.Y =(int)y ;
+    centre.X = (int)x ;
+    centre.Y = (int)y ;
     disque = Definecr(centre, (int)rayon, COUL_UNIE, (couleur) Color);
     Drawcr(disque);
 #endif
@@ -105,8 +105,8 @@ CBille::Effacer(void)
     cercler disque ;
     point centre ;
 
-    centre.X =(int)x ;
-    centre.Y =(int)y ;
+    centre.X = (int)x ;
+    centre.Y = (int)y ;
     disque = Definecr(centre, (int)rayon, COUL_UNIE, WHITE);
     Drawcr(disque);
 #endif
@@ -148,12 +148,12 @@ void
 CBille::CollisionBords(float largeur, float hauteur)
 {
     // si collision avec le bord de gauche ou avec le bord de droite
-    if ((x < rayon) ||(x > largeur - rayon)) {
+    if ((x < rayon) || (x > largeur - rayon)) {
         dx = -dx ;
     }
 
     // si collision avec le bord du haut ou avec le bord du bas
-    if ((y < rayon) ||(y > hauteur - rayon)) {
+    if ((y < rayon) || (y > hauteur - rayon)) {
         dy = -dy ;
     }
 }
@@ -194,4 +194,4 @@ CBille::Initialiser(int Graine)
     Afficher();
 }
 
-// $Id: bille.cc,v 3.2 2003/01/31 10:47:52 breholee Exp $
+// $Id: bille.cc,v 3.3 2003/02/19 17:20:28 breholee Exp $

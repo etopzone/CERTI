@@ -1,5 +1,5 @@
 // -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
@@ -19,8 +19,8 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.3 2003/01/31 10:47:52 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: my_fed.hh,v 3.4 2003/02/19 17:20:28 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
 #define TH_MYFED_HH

@@ -1,26 +1,26 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
-// CERTI is free software; you can redistribute it and/or modify
+// CERTI is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
 // CERTI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: constants.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: constants.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef TH_CONSTANTS_HH
 #define TH_CONSTANTS_HH
@@ -40,7 +40,7 @@
 // -- Stop your changes after this line --
 // ---------------------------------------
 
-#define MAX_COUNT 5     // Ticking the RTI
+#define MAX_COUNT 5 // Ticking the RTI
 
 // NB: Definitions in this file must be coherent with the .fed file.
 
@@ -51,10 +51,10 @@
 // Attributes
 #define ATT_POSITION_X "PositionX"
 #define ATT_POSITION_Y "PositionY"
-#define ATT_COLOR      "Color"
+#define ATT_COLOR "Color"
 
 // Interactions
-#define INT_BING       "Bing"
+#define INT_BING "Bing"
 
 // Parameters
 #define PAR_DX "DX"
@@ -63,6 +63,6 @@
 
 // Types
 #define TYP_FLOAT "float"
-#define TYP_INT   "int"
+#define TYP_INT "int"
 
 #endif // TH_CONSTANTS_HH

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.5 2003/01/31 10:47:52 breholee Exp $
+// $Id: my_fed.cc,v 3.6 2003/02/19 17:20:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -243,7 +243,7 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
                 // Local.dx = atof(parmValue);
                 D.Out(pdDebug, "receiveInteraction(*) - dx= %s", parmValue);
                 D.Out(pdDebug, "receiveInteraction - dx= %f", Local.dx);
-                delete [] parmValue ;
+                delete[] parmValue ;
             }
             else
                 D.Out(pdError, "Missing Attribute in RAV.");
@@ -255,7 +255,7 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
                     // Local.dy = atof(parmValue);
                     D.Out(pdDebug, "receiveInteraction(*) - dy= %s", parmValue);
                     D.Out(pdDebug, "receiveInteraction - dy= %f", Local.dy);
-                    delete [] parmValue ;
+                    delete[] parmValue ;
                 }
                 else
                     D.Out(pdError, "Missing Attribute in RAV.");
@@ -334,7 +334,7 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
                     Remote[i].dx = Remote[i].x - oldx ;
                     D.Out(pdDebug, "reflectAttributeValues - x= %f, dx= %f",
                           Remote[i].x, Remote[i].dx);
-                    delete [] attrValue ;
+                    delete[] attrValue ;
                 }
                 else
                     D.Out(pdError, "Fed: ERREUR: missing Attribute.");
@@ -346,7 +346,7 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
                     Remote[i].dy = Remote[i].y - oldy ;
                     D.Out(pdDebug, "reflectAttributeValues - y= %f, dy= %f",
                           Remote[i].y, Remote[i].dy);
-                    delete [] attrValue ;
+                    delete[] attrValue ;
                 }
                 else
                     D.Out(pdError, "Fed: ERREUR: missing Attribute.");
@@ -648,7 +648,7 @@ Fed::attributeOwnershipAcquisitionNotification(
 
     // if (theObject != Local .ID)
     // {
-    // for (i = 0 ; i <=(RemoteCount-1); i++)
+    // for (i = 0 ; i <= (RemoteCount-1); i++)
     // {
     // //cout << "Remote[" << i << "]=" << Remote[i].ID << endl ;
     // if (theObject == Remote[i].ID)
@@ -665,7 +665,7 @@ Fed::attributeOwnershipAcquisitionNotification(
     // }
     // }
     // //Tassement du tableau
-    // for (int j = i ; j <=(RemoteCount-2); j++)
+    // for (int j = i ; j <= (RemoteCount-2); j++)
     // Remote[j] = Remote[j+1] ;
     // RemoteCount-- ;
     // }
@@ -690,7 +690,7 @@ Fed::attributeOwnershipDivestitureNotification(ObjectHandle theObject,
     // {
     // cout << "Cession effectuée !" << endl ;
     // Je_Gere_Boule = RTI_FALSE ;
-    // Remote[RemoteCount]=(CBille)Local ;
+    // Remote[RemoteCount]= (CBille)Local ;
     // Local.ID=0 ;
     // RemoteCount++ ;
     // }
@@ -755,9 +755,9 @@ Fed::requestAttributeOwnershipAssumption(ObjectHandle theObject,
 // throw (InvalidFederationTime, TimeAdvanceWasNotInProgress,
 // FederateInternalError)
 // {
-//     granted = true ;
-//     cout << endl << "CALLBACK : timeAdvanceGrant, time = " 
-//          << ((RTIfedTime&)theTime).getTime() << endl ;
+// granted = true ;
+// cout << endl << "CALLBACK : timeAdvanceGrant, time = "
+// << ((RTIfedTime&)theTime).getTime() << endl ;
 // }
 
 // ----------------------------------------------------------------------------
@@ -801,4 +801,4 @@ Fed::confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
     // }
 }
 
-// EOF $Id: my_fed.cc,v 3.5 2003/01/31 10:47:52 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.6 2003/02/19 17:20:28 breholee Exp $

@@ -1,5 +1,5 @@
 // -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
@@ -19,8 +19,8 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: billard.cc,v 3.9 2003/02/19 17:20:28 breholee Exp $
+// ----------------------------------------------------------------------------
 
 // Project
 #include <config.h>
@@ -101,7 +101,7 @@ void Synchronize(RTI::RTIambassador *rtiamb,
                  Fed *fedamb,
                  bool creator);
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Test program entry point.
 int
 main(int argc, char **argv)
@@ -117,7 +117,7 @@ main(int argc, char **argv)
 
     printf("CERTI-Billard " VERSION " - Copyright (C) 2002, 2003  ONERA\n");
     printf("This is free software ; see the source for copying conditions. "
-           "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS" 
+           "There is NO\nwarranty ; not even for MERCHANTABILITY or FITNESS"
            " FOR A PARTICULAR PURPOSE.\n\n");
 
     gengetopt_args_info args_info ;
@@ -168,8 +168,8 @@ main(int argc, char **argv)
     while (!joined) {
         try {
             id=rtiamb->joinFederationExecution(FederateName,
-                                                         FederationName,
-                                                         fedamb);
+                                               FederationName,
+                                               fedamb);
             joined = true ;
             D.Out(pdInit, "Federate %s joined the %s : I'm #%d .",
                   FederateName, FederationName, id);
@@ -194,12 +194,12 @@ main(int argc, char **argv)
         }
     }
 
-    if (args_info.yoffset_given) 
+    if (args_info.yoffset_given)
         YOFFSET = args_info.yoffset_arg ;
     else
         YOFFSET = YMAX*(id-1)+25*id ;
 
-    if (args_info.xoffset_given) 
+    if (args_info.xoffset_given)
         XOFFSET = args_info.xoffset_arg ;
     else
         XOFFSET = 0 ;
@@ -238,11 +238,11 @@ main(int argc, char **argv)
     // Mettre en route la regulation, se declarer contraint etc.
     if (args_info.coordinated_flag) {
         SetTimeRegulation(rtiamb, creator, localTime);
-        
+
         // Waiting for callbacks
         try {
             rtiamb->tick(1.0, 2.0);
-                nbtick++ ;
+            nbtick++ ;
         }
         catch (Exception& e) {
             D.Out(pdExcept, "Exception ticking the RTI : %d", &e);
@@ -316,8 +316,8 @@ main(int argc, char **argv)
         for (i = 0 ; i < fedamb->RemoteCount ; i++) {
             if ((fedamb->Remote[i].ID != 0) &&
                 (fedamb->Local.Collision(&fedamb->Remote[i]))) {
-                CBoule *Local = &(fedamb->Local);
-                CBille *Remote = &(fedamb->Remote[i]);
+                CBoule *Local = & (fedamb->Local);
+                CBille *Remote = & (fedamb->Remote[i]);
 
                 D.Out(pdTrace, "Collision de %d et de %d.", Local->ID,
                       Remote->ID);
@@ -328,7 +328,7 @@ main(int argc, char **argv)
                 time_aux = new RTIfedTime(localTime.getTime() +
                                           TIME_STEP.getTime());
 
-                D.Out(pdDebug, 
+                D.Out(pdDebug,
                       "time_aux : %.2f - localtime : %.2f - timestep : %.2f",
                       time_aux->getTime(),
                       ((RTIfedTime&)localTime).getTime(),
@@ -338,7 +338,7 @@ main(int argc, char **argv)
                 delete time_aux ;
                 // On prend la vitesse de l'autre sauf dans le cas ou
                 // on avait deja la meme. Dans ce cas, on inverse la notre.
-                if ((Local->dx == Remote->dx) &&(Local->dy == Remote->dy)) {
+                if ((Local->dx == Remote->dx) && (Local->dy == Remote->dy)) {
                     Local->dx = -(Local->dx);
                     Local->dy = -(Local->dy);
                 }
@@ -403,7 +403,7 @@ main(int argc, char **argv)
     // Detruire la federation
 
     if (creator) {
-        for(;;) {
+        for (;;) {
             rtiamb->tick(1.0, 2.0);
             nbtick++ ;
 
@@ -426,7 +426,7 @@ main(int argc, char **argv)
     D.Out(pdTerm, "Federation terminated.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! sortir.
 void
 sortir(int SignalNumber)
@@ -444,7 +444,7 @@ sortir(int SignalNumber)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! ExceptionHandler.
 void
 ExceptionHandler(void)
@@ -453,7 +453,7 @@ ExceptionHandler(void)
     exit(-1);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! InitialisationGraphique.
 void
 InitialisationGraphique(FederateHandle id)
@@ -469,7 +469,7 @@ InitialisationGraphique(FederateHandle id)
 #endif
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! SetTimeRegulation.
 void
 SetTimeRegulation(RTI::RTIambassador *rtiamb,
@@ -523,7 +523,7 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
     rtiamb->modifyLookahead(TIME_STEP);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return the remaining time when the alarm is stopped.
 void
 Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
@@ -631,4 +631,4 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         alarm(TEMPS_SIMU_F);
 }
 
-// EOF $Id: billard.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
+// EOF $Id: billard.cc,v 3.9 2003/02/19 17:20:28 breholee Exp $

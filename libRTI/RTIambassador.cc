@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libRTI
 //
-// CERTI-libRTI is free software; you can redistribute it and/or
+// CERTI-libRTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libRTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.14 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: RTIambassador.cc,v 3.15 2003/02/19 17:20:28 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include <config.h>
 
@@ -39,9 +39,9 @@
 
 namespace certi {
 
-static pdCDebug D("LIBRTI", "(libRTI ) - ");
+static pdCDebug D("LIBRTI", "(libRTI) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::leave(const char *msg)
 {
@@ -49,7 +49,7 @@ RTIambassador::leave(const char *msg)
     exit(EXIT_FAILURE);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::executeService(Message *req, Message *rep)
 {
@@ -95,7 +95,7 @@ RTIambassador::executeService(Message *req, Message *rep)
     D.Out(pdDebug, "exception processed.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Start RTIambassador processes for communication with RTIG.
 /*! When a new RTIambassador is created in the application, a new process rtia
   is launched. This process is used for data exchange with rtig server.
@@ -134,7 +134,7 @@ RTIambassador::RTIambassador(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Closes processes.
 /*! When destructor is called, kill rtia process.
  */
@@ -186,7 +186,7 @@ RTIambassador::objectToString(const char *init_string,
             end_string[j++] = '?' ;
             end_string[j++] = '?' ;
             i++ ;
-            while ((init_string[i] == '\\') &&(i<size)) {
+            while ((init_string[i] == '\\') && (i<size)) {
                 end_string[j++] = '?' ;
                 end_string[j++] = '?' ;
                 i++ ;
@@ -200,7 +200,7 @@ RTIambassador::objectToString(const char *init_string,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns buffer size needed to store network message made by objectToString
 void
 RTIambassador::getObjectToStringLength(char *init_string,
@@ -240,7 +240,7 @@ RTIambassador::getObjectToStringLength(char *init_string,
 // FEDERATION MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Create Federation Execution.
 /*! Send a CREATE_FEDERATION_EXECUTION request type to inform rtia process a
   new federation is being created.
@@ -256,24 +256,24 @@ RTIambassador::createFederationExecution(const char *executionName,
            RestoreInProgress,
            RTIinternalError)
 {
-    Message req, rep;
-    //   char *exeName = new char[20];
-    //   strcpy(exeName,executionName);
-    //   strcat(exeName,"\56");
-    //   strcat(exeName,"fed");
-    
-    req.type = CREATE_FEDERATION_EXECUTION;
+    Message req, rep ;
+    // char *exeName = new char[20] ;
+    // strcpy(exeName, executionName);
+    // strcat(exeName, "\56");
+    // strcat(exeName, "fed");
+
+    req.type = CREATE_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
-    
-    //    if(!strcasecmp(FED,exeName)) {
+
+    // if (!strcasecmp(FED, exeName)) {
     executeService(&req, &rep);
-    //   }
-    //   else {
-    //     throw RTIinternalError();
-    //   }
+    // }
+    // else {
+    // throw RTIinternalError();
+    // }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Destroy Federation Execution.
 void
 RTIambassador::destroyFederationExecution(const char *executionName)
@@ -292,7 +292,7 @@ RTIambassador::destroyFederationExecution(const char *executionName)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Join Federation Execution.
 FederateHandle
 RTIambassador::
@@ -322,7 +322,7 @@ joinFederationExecution(const char *yourName,
     return rep.federate ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Resign Federation Execution.
 void
 RTIambassador::resignFederationExecution(ResignAction theAction)
@@ -340,11 +340,11 @@ RTIambassador::resignFederationExecution(ResignAction theAction)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Register Federation Synchronization Point
 void
 RTIambassador::registerFederationSynchronizationPoint(const char *label,
-                                                      const char * /*theTag*/)
+                                                      const char */*theTag*/)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -368,7 +368,7 @@ RTIambassador::registerFederationSynchronizationPoint(const char *label,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void RTIambassador::
 registerFederationSynchronizationPoint(const char */*label*/,
                                        const char */*theTag*/,
@@ -383,7 +383,7 @@ registerFederationSynchronizationPoint(const char */*label*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Synchronization Point Achieved
 void
 RTIambassador::synchronizationPointAchieved(const char *label)
@@ -410,7 +410,7 @@ RTIambassador::synchronizationPointAchieved(const char *label)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Request Federation Save (not implemented)
 void
 RTIambassador::requestFederationSave(const char */*label*/,
@@ -427,7 +427,7 @@ RTIambassador::requestFederationSave(const char */*label*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Request Federation Save (not implemented)
 void
 RTIambassador::requestFederationSave(const char */*label*/)
@@ -441,7 +441,7 @@ RTIambassador::requestFederationSave(const char */*label*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Federate Save Begun (not implemented).
 void
 RTIambassador::federateSaveBegun()
@@ -456,7 +456,7 @@ RTIambassador::federateSaveBegun()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Federate Save Complete (not implemented)
 void
 RTIambassador::federateSaveComplete()
@@ -470,7 +470,7 @@ RTIambassador::federateSaveComplete()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Federate Save Not Complete (not implemented)
 void
 RTIambassador::federateSaveNotComplete()
@@ -484,7 +484,7 @@ RTIambassador::federateSaveNotComplete()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Request Restore (not implemented)
 void
 RTIambassador::requestFederationRestore(const char */*label*/)
@@ -499,7 +499,7 @@ RTIambassador::requestFederationRestore(const char */*label*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Restore Complete (not implemented)
 void
 RTIambassador::federateRestoreComplete()
@@ -515,7 +515,7 @@ RTIambassador::federateRestoreComplete()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Federate Restore Not Complete (not implemented).
 void
 RTIambassador::federateRestoreNotComplete()
@@ -535,7 +535,7 @@ RTIambassador::federateRestoreNotComplete()
 // DECLARATION MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Publish Object Class
 void
 RTIambassador::publishObjectClass(ObjectClassHandle theClass,
@@ -568,7 +568,7 @@ RTIambassador::publishObjectClass(ObjectClassHandle theClass,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnPublish Object Class
 void
 RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
@@ -592,7 +592,7 @@ RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Publish Interaction Class
 void
 RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
@@ -612,7 +612,7 @@ RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Publish Interaction Class
 void
 RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
@@ -633,7 +633,7 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Subscribe Object Class Attribute
 void
 RTIambassador::
@@ -667,7 +667,7 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnSubscribe Object Class Attribute
 void
 RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
@@ -689,7 +689,7 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Subscribe Interaction Class
 void
 RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
@@ -711,7 +711,7 @@ RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnSubscribe Interaction Class
 void
 RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
@@ -736,7 +736,7 @@ RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
 // OBJECT MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Register Object
 ObjectHandle
 RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
@@ -755,14 +755,14 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
 
     // envoyer la requete au RTI
     req.type = REGISTER_OBJECT ;
-    req.setName((char*) theObjectName);
+    req.setName((char *) theObjectName);
     req.objectClass = theClass ;
     executeService(&req, &rep);
 
     return rep.object ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 ObjectHandle
 RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
     throw (ObjectClassNotDefined,
@@ -787,7 +787,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
     return rep.object ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Update Attribute Values
 EventRetractionHandle
 RTIambassador::
@@ -838,7 +838,7 @@ updateAttributeValues(ObjectHandle theObject,
     return rep.eventRetraction ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::updateAttributeValues(ObjectHandle,
                                      const AttributeHandleValuePairSet&,
@@ -856,7 +856,7 @@ RTIambassador::updateAttributeValues(ObjectHandle,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Send Interaction
 EventRetractionHandle
 RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
@@ -904,7 +904,7 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     return rep.eventRetraction ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::sendInteraction(InteractionClassHandle,
                                const ParameterHandleValuePairSet &,
@@ -923,7 +923,7 @@ RTIambassador::sendInteraction(InteractionClassHandle,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Delete Object
 EventRetractionHandle
 RTIambassador::deleteObjectInstance(ObjectHandle theObject,
@@ -950,7 +950,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     return rep.eventRetraction ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::deleteObjectInstance(ObjectHandle /*theObject*/,
                                     const char */*theTag*/)
@@ -966,7 +966,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle /*theObject*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Local Delete Object Instance
 void
 RTIambassador::localDeleteObjectInstance(ObjectHandle /*theObject*/)
@@ -983,7 +983,7 @@ RTIambassador::localDeleteObjectInstance(ObjectHandle /*theObject*/)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Change Attribute Transportation Type
 void
 RTIambassador::
@@ -1024,7 +1024,7 @@ changeAttributeTransportationType(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Change Interaction Transportation Type
 void
 RTIambassador::
@@ -1052,7 +1052,7 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Request Attribute Value Update
 void
 RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle /*theObject*/,
@@ -1069,7 +1069,7 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle /*theObject*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle /*theClass*/,
                                                 const AttributeHandleSet&)
@@ -1089,7 +1089,7 @@ RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle /*theClass*/,
 // OWNERSHIP MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnConditional Attribute Ownership Divestiture
 void
 RTIambassador::
@@ -1119,7 +1119,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Negotiated Attribute Ownership Divestiture
 void
 RTIambassador::
@@ -1153,13 +1153,13 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Attribute Ownership Acquisition
 void
 RTIambassador::
 attributeOwnershipAcquisition(ObjectHandle theObject,
                               const AttributeHandleSet& desiredAttributes,
-                              const char* theTag)
+                              const char *theTag)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1188,7 +1188,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Attribute Ownership Release Response
 AttributeHandleSet*
 RTIambassador::
@@ -1231,7 +1231,7 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
     return NULL ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Cancel Negotiated Attribute Ownership Divestiture
 void
 RTIambassador::
@@ -1262,7 +1262,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Cancel Attribute Ownership Acquisition
 void
 RTIambassador::
@@ -1293,7 +1293,7 @@ cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Attribute Ownership Acquisition If Available
 void
 RTIambassador::
@@ -1327,7 +1327,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Query Attribute Ownership
 void
 RTIambassador::
@@ -1352,7 +1352,7 @@ queryAttributeOwnership(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // 5.16 Is Attribute Owned By Federate
 Boolean
 RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
@@ -1381,7 +1381,7 @@ RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 // TIME MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Time Regulation
 void
 RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
@@ -1406,7 +1406,7 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Time Regulation
 void
 RTIambassador::disableTimeRegulation(void)
@@ -1426,7 +1426,7 @@ RTIambassador::disableTimeRegulation(void)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Time Constrained
 void
 RTIambassador::enableTimeConstrained(void)
@@ -1447,7 +1447,7 @@ RTIambassador::enableTimeConstrained(void)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Time Constrained
 void
 RTIambassador::disableTimeConstrained(void)
@@ -1467,7 +1467,7 @@ RTIambassador::disableTimeConstrained(void)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Time Advance Request
 void
 RTIambassador::timeAdvanceRequest(FedTime& theTime)
@@ -1490,7 +1490,7 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Time Advance Request Available
 void
 RTIambassador::timeAdvanceRequestAvailable(const FedTime& /*theTime*/)
@@ -1509,7 +1509,7 @@ RTIambassador::timeAdvanceRequestAvailable(const FedTime& /*theTime*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Next Event Request
 void
 RTIambassador::nextEventRequest(const FedTime& theTime)
@@ -1532,7 +1532,7 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Next Event Request Available
 void
 RTIambassador::nextEventRequestAvailable(const FedTime& /*theTime*/)
@@ -1551,7 +1551,7 @@ RTIambassador::nextEventRequestAvailable(const FedTime& /*theTime*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Flush Queue Request
 void
 RTIambassador::flushQueueRequest(const FedTime& /*theTime*/)
@@ -1569,7 +1569,7 @@ RTIambassador::flushQueueRequest(const FedTime& /*theTime*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Asynchronous Delivery
 void
 RTIambassador::enableAsynchronousDelivery(void)
@@ -1584,7 +1584,7 @@ RTIambassador::enableAsynchronousDelivery(void)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Asynchronous Delivery
 void
 RTIambassador::disableAsynchronousDelivery(void)
@@ -1599,7 +1599,7 @@ RTIambassador::disableAsynchronousDelivery(void)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Query LBTS
 void
 RTIambassador::queryLBTS(FedTime& theTime)
@@ -1618,7 +1618,7 @@ RTIambassador::queryLBTS(FedTime& theTime)
     theTime = RTIfedTime(rep.date);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Query Federate Time
 void
 RTIambassador::queryFederateTime(FedTime& theTime)
@@ -1637,7 +1637,7 @@ RTIambassador::queryFederateTime(FedTime& theTime)
     theTime = RTIfedTime(rep.date);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Query Minimum Next Event Time
 void
 RTIambassador::queryMinNextEventTime(FedTime& theTime)
@@ -1650,7 +1650,7 @@ RTIambassador::queryMinNextEventTime(FedTime& theTime)
     theTime = RTIfedTime(0.0);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Modify Lookahead
 void
 RTIambassador::modifyLookahead(const FedTime& theLookahead)
@@ -1671,7 +1671,7 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Query Lookahead
 void
 RTIambassador::queryLookahead(FedTime& theTime)
@@ -1691,7 +1691,7 @@ RTIambassador::queryLookahead(FedTime& theTime)
     theTime = *(dynamic_cast<FedTime *>(tmp));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Retract
 void
 RTIambassador::retract(EventRetractionHandle /*theHandle*/)
@@ -1706,7 +1706,7 @@ RTIambassador::retract(EventRetractionHandle /*theHandle*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Change Attribute Order Type
 void
 RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
@@ -1746,7 +1746,7 @@ RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
     executeService(&req, &rep);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Change Interaction Order Type
 void
 RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
@@ -1777,7 +1777,7 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 // DATA DISTRIBUTION MANAGEMENT
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Create Region
 Region*
 RTIambassador::createRegion(SpaceHandle /*theSpace*/,
@@ -1794,7 +1794,7 @@ RTIambassador::createRegion(SpaceHandle /*theSpace*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Notify About Region Modification
 void
 RTIambassador::notifyAboutRegionModification(Region &)
@@ -1811,7 +1811,7 @@ RTIambassador::notifyAboutRegionModification(Region &)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Delete Region
 void
 RTIambassador::deleteRegion(Region *)
@@ -1827,7 +1827,7 @@ RTIambassador::deleteRegion(Region *)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Register Object Instance With Region
 ObjectHandle
 RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
@@ -1852,7 +1852,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 ObjectHandle
 RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
                                                 AttributeHandle attrs[],
@@ -1874,7 +1874,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Associate Region For Updates
 void
 RTIambassador::associateRegionForUpdates(Region &,
@@ -1894,7 +1894,7 @@ RTIambassador::associateRegionForUpdates(Region &,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnAssociate Region For Updates
 void
 RTIambassador::unassociateRegionForUpdates(Region &/*theRegion*/,
@@ -1912,7 +1912,7 @@ RTIambassador::unassociateRegionForUpdates(Region &/*theRegion*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Subscribe Object Class Attributes With Region
 void
 RTIambassador::
@@ -1934,7 +1934,7 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnSubscribe Object Class Attributes With Region
 void
 RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
@@ -1952,12 +1952,12 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Subscribe Interaction Class With Region
 void
 RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle,
-                                    Region &,
-                                    Boolean)
+                                                   Region &,
+                                                   Boolean)
     throw (InteractionClassNotDefined,
            RegionNotKnown,
            InvalidRegionContext,
@@ -1973,7 +1973,7 @@ RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // UnSubscribe Interaction Class With Region
 void
 RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle,
@@ -1991,7 +1991,7 @@ RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle,
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Send Interaction With Region
 EventRetractionHandle
 RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
@@ -2015,7 +2015,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
     throw UnimplementedService();
 }
 
-void 
+void
 RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
                                          const ParameterHandleValuePairSet &,
                                          const char *,
@@ -2036,7 +2036,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Request Class Attribute Value Update With Region
 void RTIambassador::
 requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*theClass*/,
@@ -2059,7 +2059,7 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*theClass*/,
 // RTI SUPPORT SERVICES
 // ===========================================================================
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Object Class Handle
 ObjectClassHandle
 RTIambassador::getObjectClassHandle(const char *theName)
@@ -2079,11 +2079,11 @@ RTIambassador::getObjectClassHandle(const char *theName)
     return rep.objectClass ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Get Object Class Name
 /*! Returns the class name associated with the handle, memory has to
   be freed by the caller.
- */
+*/
 char *
 RTIambassador::getObjectClassName(ObjectClassHandle handle)
     throw (ObjectClassNotDefined,
@@ -2091,7 +2091,7 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep;
+    Message req, rep ;
 
     req.type = GET_OBJECT_CLASS_NAME ;
     req.objectClass = handle ;
@@ -2101,7 +2101,7 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
     return strdup(rep.getName());
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Attribute Handle
 AttributeHandle
 RTIambassador::getAttributeHandle(const char *theName,
@@ -2125,7 +2125,7 @@ RTIambassador::getAttributeHandle(const char *theName,
     return rep.attribute ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Attribute Name
 char *
 RTIambassador::getAttributeName(AttributeHandle theHandle,
@@ -2136,18 +2136,18 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep;
+    Message req, rep ;
 
-    req.type = GET_ATTRIBUTE_NAME;
-    req.attribute = theHandle;
-    req.objectClass = whichClass;
+    req.type = GET_ATTRIBUTE_NAME ;
+    req.attribute = theHandle ;
+    req.objectClass = whichClass ;
 
     executeService(&req, &rep); // Send request to RTI.
 
-    return strdup(rep.getName()) ;
+    return strdup(rep.getName());
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Interaction Class Handle
 InteractionClassHandle
 RTIambassador::getInteractionClassHandle(const char *theName)
@@ -2168,7 +2168,7 @@ RTIambassador::getInteractionClassHandle(const char *theName)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Interaction Class Name
 char *
 RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
@@ -2177,17 +2177,17 @@ RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep;
+    Message req, rep ;
 
-    req.type = GET_INTERACTION_CLASS_NAME;
-    req.interactionClass = theHandle;
+    req.type = GET_INTERACTION_CLASS_NAME ;
+    req.interactionClass = theHandle ;
 
     executeService(&req, &rep); // Send request to RTI
 
     return strdup(rep.getName());
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Parameter Handle
 ParameterHandle
 RTIambassador::getParameterHandle(const char *theName,
@@ -2207,10 +2207,10 @@ RTIambassador::getParameterHandle(const char *theName,
 
     executeService(&req, &rep);
 
-    return rep.parameter;
+    return rep.parameter ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Parameter Name
 char *
 RTIambassador::getParameterName(ParameterHandle theHandle,
@@ -2221,18 +2221,18 @@ RTIambassador::getParameterName(ParameterHandle theHandle,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep;
+    Message req, rep ;
 
-    req.type = GET_PARAMETER_NAME;
-    req.parameter = theHandle;
-    req.interactionClass = whichClass;
+    req.type = GET_PARAMETER_NAME ;
+    req.parameter = theHandle ;
+    req.interactionClass = whichClass ;
 
     executeService(&req, &rep); // Send request to RTI.
 
-    return strdup(rep.getName()) ;
+    return strdup(rep.getName());
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Object Instance Handle
 ObjectHandle
 RTIambassador::getObjectInstanceHandle(const char */*theName*/)
@@ -2246,7 +2246,7 @@ RTIambassador::getObjectInstanceHandle(const char */*theName*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Object Instance Name
 char *
 RTIambassador::getObjectInstanceName(ObjectHandle /*theHandle*/)
@@ -2259,7 +2259,7 @@ RTIambassador::getObjectInstanceName(ObjectHandle /*theHandle*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Routing Space Handle
 SpaceHandle
 RTIambassador::getRoutingSpaceHandle(const char *name)
@@ -2268,7 +2268,7 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep ;    
+    Message req, rep ;
 
     req.type = GET_SPACE_HANDLE ;
     req.setName(name);
@@ -2277,7 +2277,7 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
     return rep.space ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Routing Space Name
 char *
 RTIambassador::getRoutingSpaceName(SpaceHandle)
@@ -2291,7 +2291,7 @@ RTIambassador::getRoutingSpaceName(SpaceHandle)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Dimension Handle
 DimensionHandle
 RTIambassador::getDimensionHandle(const char */*theName*/,
@@ -2307,7 +2307,7 @@ RTIambassador::getDimensionHandle(const char */*theName*/,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Dimension Name
 char *
 RTIambassador::getDimensionName(DimensionHandle /*theHandle*/,
@@ -2323,7 +2323,7 @@ RTIambassador::getDimensionName(DimensionHandle /*theHandle*/,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Attribute Routing Space Handle
 SpaceHandle
 RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle /*theHandle*/,
@@ -2339,7 +2339,7 @@ RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle /*theHandle*/,
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Object Class
 ObjectClassHandle
 RTIambassador::getObjectClass(ObjectHandle /*theObject*/)
@@ -2352,7 +2352,7 @@ RTIambassador::getObjectClass(ObjectHandle /*theObject*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Interaction Routing Space Handle
 SpaceHandle
 RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle)
@@ -2365,10 +2365,10 @@ RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Transportation Handle
 TransportationHandle
-RTIambassador::getTransportationHandle(const char * /*theName*/)
+RTIambassador::getTransportationHandle(const char */*theName*/)
     throw (NameNotFound,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2378,7 +2378,7 @@ RTIambassador::getTransportationHandle(const char * /*theName*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Transportation Name
 char *
 RTIambassador::getTransportationName(TransportationHandle /*theHandle*/)
@@ -2391,10 +2391,10 @@ RTIambassador::getTransportationName(TransportationHandle /*theHandle*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Ordering Handle
 OrderingHandle
-RTIambassador::getOrderingHandle(const char * /*theName*/)
+RTIambassador::getOrderingHandle(const char */*theName*/)
     throw (NameNotFound,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2405,7 +2405,7 @@ RTIambassador::getOrderingHandle(const char * /*theName*/)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Get Ordering Name
 char *
 RTIambassador::getOrderingName(OrderingHandle /*theHandle*/)
@@ -2418,7 +2418,7 @@ RTIambassador::getOrderingName(OrderingHandle /*theHandle*/)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Class Relevance Advisory Switch
 void
 RTIambassador::enableClassRelevanceAdvisorySwitch(void)
@@ -2432,7 +2432,7 @@ RTIambassador::enableClassRelevanceAdvisorySwitch(void)
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Class Relevance Advisory Switch
 void
 RTIambassador::disableClassRelevanceAdvisorySwitch(void)
@@ -2447,7 +2447,7 @@ RTIambassador::disableClassRelevanceAdvisorySwitch(void)
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Attribute Relevance Advisory Switch
 void
 RTIambassador::enableAttributeRelevanceAdvisorySwitch()
@@ -2461,7 +2461,7 @@ RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Attribute Relevance Advisory Switch
 void
 RTIambassador::disableAttributeRelevanceAdvisorySwitch()
@@ -2475,7 +2475,7 @@ RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Attribute Scope Advisory Switch
 void RTIambassador::enableAttributeScopeAdvisorySwitch()
     throw (FederateNotExecutionMember,
@@ -2488,7 +2488,7 @@ void RTIambassador::enableAttributeScopeAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Attribute Scope Advisory Switch
 void
 RTIambassador::disableAttributeScopeAdvisorySwitch()
@@ -2502,7 +2502,7 @@ RTIambassador::disableAttributeScopeAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Enable Interaction Relevance Advisory Switch
 void
 RTIambassador::enableInteractionRelevanceAdvisorySwitch()
@@ -2516,7 +2516,7 @@ RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Disable Interaction Relevance Advisory Switch
 void
 RTIambassador::disableInteractionRelevanceAdvisorySwitch()
@@ -2530,7 +2530,7 @@ RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     throw UnimplementedService();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Tick
 Boolean
 RTIambassador::tick(void)
@@ -2858,7 +2858,7 @@ RTIambassador::tick(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 Boolean
 RTIambassador::tick(TickTime /*minimum*/,
                     TickTime /*maximum*/)
@@ -2906,7 +2906,7 @@ RTIambassador::tick(TickTime /*minimum*/,
         if (vers_Fed.type == TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
-            return vers_Fed.boolean;
+            return vers_Fed.boolean ;
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une
@@ -3176,7 +3176,7 @@ RTIambassador::tick(TickTime /*minimum*/,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Process exception from received message.
 /*! When a message is received from RTIA, it can contains an exception.
   This exception is processed by this module and a new exception is thrown.
@@ -3592,30 +3592,30 @@ RTIambassador::processException(Message *msg)
     }
 }
 
-// ---------------------------------------------------------------------------
-RegionToken
-RTIambassador::getRegionToken(Region *)
-    throw (FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RegionNotKnown,
-           RTIinternalError,
-           UnimplementedService) //CERTI
-{
-    throw UnimplementedService();
-}
+// ----------------------------------------------------------------------------
+// RegionToken
+// RTIambassador::getRegionToken(Region *)
+//     throw (FederateNotExecutionMember,
+//            ConcurrentAccessAttempted,
+//            RegionNotKnown,
+//            RTIinternalError,
+//            UnimplementedService) //CERTI
+// {
+//     throw UnimplementedService();
+// }
 
-// ---------------------------------------------------------------------------
-Region *
-RTIambassador::getRegion(RegionToken)
-    throw (FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RegionNotKnown,
-           RTIinternalError,
-           UnimplementedService) //CERTI
-{
-    throw UnimplementedService();
-}
+// ----------------------------------------------------------------------------
+// Region *
+// RTIambassador::getRegion(RegionToken)
+//     throw (FederateNotExecutionMember,
+//            ConcurrentAccessAttempted,
+//            RegionNotKnown,
+//            RTIinternalError,
+//            UnimplementedService) //CERTI
+// {
+//     throw UnimplementedService();
+// }
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.14 2003/02/17 09:17:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.15 2003/02/19 17:20:28 breholee Exp $
