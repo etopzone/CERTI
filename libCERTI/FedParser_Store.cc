@@ -20,10 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.10 2003/03/12 10:04:02 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.11 2003/05/23 12:08:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedParser.hh"
+
+// Project
+#include <config.h>
+#include "ObjectClassAttribute.hh"
 
 namespace certi {
 namespace fedparser {
@@ -566,4 +570,4 @@ void FedParser::storeString(String *x)
 
 }} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.10 2003/03/12 10:04:02 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.11 2003/05/23 12:08:39 breholee Exp $
