@@ -19,13 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Socket.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $
+// $Id: Socket.hh,v 3.7 2005/01/13 12:52:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_HH
 #define _CERTI_SOCKET_HH
 
 #include "certi.hh"
+#include <sys/time.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 
 // Those values are returned by the GetClass method.
 
@@ -77,4 +80,4 @@ public:
 
 #endif // _CERTI_SOCKET_HH
 
-// $Id: Socket.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $
+// $Id: Socket.hh,v 3.7 2005/01/13 12:52:47 breholee Exp $
