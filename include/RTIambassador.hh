@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.8 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTIambassador.hh,v 3.9 2003/03/12 10:02:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -1134,8 +1134,7 @@ public:
         throw (SpaceNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     DimensionHandle
     getDimensionHandle(const char *theName,
@@ -1144,8 +1143,7 @@ public:
                NameNotFound,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     char *
     getDimensionName(DimensionHandle theHandle,
@@ -1154,8 +1152,7 @@ public:
                DimensionNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     SpaceHandle
     getAttributeRoutingSpaceHandle(AttributeHandle theHandle,
@@ -1336,4 +1333,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.8 2003/02/19 17:20:28 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.9 2003/03/12 10:02:38 breholee Exp $
