@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 1.2 2003/02/19 18:07:29 breholee Exp $
+// $Id: Exception.cc,v 3.0 2003/03/21 13:43:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -70,4 +70,4 @@ Exception& Exception::operator = (const Exception &toCopy)
 
 } // namespace certi
 
-// $Id: Exception.cc,v 1.2 2003/02/19 18:07:29 breholee Exp $$
+// $Id: Exception.cc,v 3.0 2003/03/21 13:43:01 breholee Exp $$

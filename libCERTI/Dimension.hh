@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 1.3 2003/03/12 10:06:06 breholee Exp $
+// $Id: Dimension.hh,v 3.0 2003/03/21 13:42:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -55,4 +55,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 1.3 2003/03/12 10:06:06 breholee Exp $
+// $Id: Dimension.hh,v 3.0 2003/03/21 13:42:56 breholee Exp $

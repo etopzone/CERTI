@@ -51,13 +51,14 @@ cmdline_parser_print_help (void)
   printf("   -c         --coordinated        coordinated time (default=on)\n");
   printf("   -dINT      --delay=INT          delay before 1st step\n");
   printf("   -fSTRING   --federation=STRING  federation name\n");
-  printf("   -XINT      --initx=INT          ball initial X value\n");
-  printf("   -YINT      --inity=INT          ball initial Y value\n");
+  printf("   -lSTRING   --logfile=STRING     file to log events\n");
   printf("   -nSTRING   --name=STRING        federate name\n");
   printf("   -tINT      --timer=INT          timer\n");
   printf("   -v         --verbose            verbose mode (default=off)\n");
   printf("   -xINT      --xoffset=INT        X offset (X11)\n");
   printf("   -yINT      --yoffset=INT        Y offset (X11)\n");
+  printf("   -XINT      --initx=INT          ball initial X value\n");
+  printf("   -YINT      --inity=INT          ball initial Y value\n");
 }
 
 
@@ -87,16 +88,18 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->coordinated_given = 0 ;
   args_info->delay_given = 0 ;
   args_info->federation_given = 0 ;
-  args_info->initx_given = 0 ;
-  args_info->inity_given = 0 ;
+  args_info->logfile_given = 0 ;
   args_info->name_given = 0 ;
   args_info->timer_given = 0 ;
   args_info->verbose_given = 0 ;
   args_info->xoffset_given = 0 ;
   args_info->yoffset_given = 0 ;
+  args_info->initx_given = 0 ;
+  args_info->inity_given = 0 ;
 #define clear_args() { \
   args_info->coordinated_flag = 1;\
   args_info->federation_arg = NULL; \
+  args_info->logfile_arg = NULL; \
   args_info->name_arg = NULL; \
   args_info->verbose_flag = 0;\
 }
@@ -118,17 +121,18 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "coordinated",	0, NULL, 'c' },
         { "delay",	1, NULL, 'd' },
         { "federation",	1, NULL, 'f' },
-        { "initx",	1, NULL, 'X' },
-        { "inity",	1, NULL, 'Y' },
+        { "logfile",	1, NULL, 'l' },
         { "name",	1, NULL, 'n' },
         { "timer",	1, NULL, 't' },
         { "verbose",	0, NULL, 'v' },
         { "xoffset",	1, NULL, 'x' },
         { "yoffset",	1, NULL, 'y' },
+        { "initx",	1, NULL, 'X' },
+        { "inity",	1, NULL, 'Y' },
         { NULL,	0, NULL, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVa:cd:f:X:Y:n:t:vx:y:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVa:cd:f:l:n:t:vx:y:X:Y:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -188,26 +192,15 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           args_info->federation_arg = strdup (optarg);
           break;
 
-        case 'X':	/* ball initial X value.  */
-          if (args_info->initx_given)
+        case 'l':	/* file to log events.  */
+          if (args_info->logfile_given)
             {
-              fprintf (stderr, "%s: `--initx' (`-X') option given more than once\n", PACKAGE);
+              fprintf (stderr, "%s: `--logfile' (`-l') option given more than once\n", PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
-          args_info->initx_given = 1;
-          args_info->initx_arg = atoi (optarg);
-          break;
-
-        case 'Y':	/* ball initial Y value.  */
-          if (args_info->inity_given)
-            {
-              fprintf (stderr, "%s: `--inity' (`-Y') option given more than once\n", PACKAGE);
-              clear_args ();
-              exit (EXIT_FAILURE);
-            }
-          args_info->inity_given = 1;
-          args_info->inity_arg = atoi (optarg);
+          args_info->logfile_given = 1;
+          args_info->logfile_arg = strdup (optarg);
           break;
 
         case 'n':	/* federate name.  */
@@ -263,6 +256,28 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
             }
           args_info->yoffset_given = 1;
           args_info->yoffset_arg = atoi (optarg);
+          break;
+
+        case 'X':	/* ball initial X value.  */
+          if (args_info->initx_given)
+            {
+              fprintf (stderr, "%s: `--initx' (`-X') option given more than once\n", PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->initx_given = 1;
+          args_info->initx_arg = atoi (optarg);
+          break;
+
+        case 'Y':	/* ball initial Y value.  */
+          if (args_info->inity_given)
+            {
+              fprintf (stderr, "%s: `--inity' (`-Y') option given more than once\n", PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->inity_given = 1;
+          args_info->inity_arg = atoi (optarg);
           break;
 
 

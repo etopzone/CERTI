@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Range.cc,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: Range.cc,v 3.0 2003/03/21 13:43:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Range.hh"
@@ -73,4 +73,4 @@ Range::getDimensionHandle(void)
 
 } // namespace certi
 
-// $Id: Range.cc,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: Range.cc,v 3.0 2003/03/21 13:43:34 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Range.hh,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: Range.hh,v 3.0 2003/03/21 13:43:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RANGE_HH
@@ -53,4 +53,4 @@ private:
 
 #endif // _CERTI_RANGE_HH
 
-// $Id: Range.hh,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: Range.hh,v 3.0 2003/03/21 13:43:40 breholee Exp $
