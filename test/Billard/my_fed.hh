@@ -1,25 +1,25 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
-// CERTI is free software; you can redistribute it and/or modify
+// CERTI is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
+// the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
 // CERTI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// but WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// $Id: my_fed.hh,v 3.3 2003/01/31 10:47:52 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -41,237 +41,227 @@
 
 #include "bille.hh"
 
-//class RTIambassador;
-
 class Fed : public RTI::FederateAmbassador
 {
-public: 
-  // ATTRIBUTS
-  Boolean Granted;
-  Boolean InPause;
-  char CurrentPauseLabel[100];
+public:
+    // ATTRIBUTS
+    bool granted ;
+    bool paused ;
+    char CurrentPauseLabel[100] ;
 
-  // Object Instances management
-  CBoule Local; // La bille locale.
-  CBille Remote[20]; // tableau des billes des autres federes
-  int RemoteCount; // indice du tableau des billes
+    // Object Instances management
+    CBoule Local ; // La bille locale.
+    CBille Remote[20] ; // tableau des billes des autres federes
+    int RemoteCount ; // indice du tableau des billes
 
-  // METHODES
+    // METHODES
 
-  // Constructeur et Destructeur
-  Fed(RTI::RTIambassador*);
-  virtual ~Fed();
+    // Constructeur et Destructeur
+    Fed(RTI::RTIambassador*);
+    virtual ~Fed();
 
-  void DeleteObjects(const FedTime& DeletionTime);
-  // Efface tous les objets locaux de la simulation a la date DeletionTime.
+    void DeleteObjects(const FedTime& DeletionTime);
 
-  void PublishAndsubscribe(void);
-  // Publie les classes Bille et Bing.
+    void PublishAndsubscribe(void);
 
-  void RegisterObjects(void);
-  // Get object IDs from the RTIA and register local objects.
+    void RegisterObjects(void);
 
-  void sendInteraction(const FedTime& InteractionTime,
-		       ObjectHandle Id);
-  // Envoie une interaction, dont les parametres DX et DY ont pour valeur
-  // les dx et dy de la bille Local, et dont l'etiquette temporelle vaut
-  // InteractionTime.
+    void sendInteraction(const FedTime& InteractionTime,
+                         ObjectHandle Id);
 
-  void SendUpdate(const FedTime& UpdateTime);
-  // Envoie un updateAttributeValue pour l'objet Local avec une
-  // etiquette temporelle de UpdateTime
- 
-  // redefinition des services du RTI
-  //(qui sont abstraits dans la classe FederateAmbassador)
+    void SendUpdate(const FedTime& UpdateTime);
 
-  void announceSynchronizationPoint(const char *label, const char *tag) 
-    throw(FederateInternalError);
+    // redefinition des services du RTI
+    //(qui sont abstraits dans la classe FederateAmbassador)
 
-  void synchronizationPointRegistrationSucceeded(const char *label) 
-    throw(FederateInternalError);
+    void announceSynchronizationPoint(const char *label, const char *tag)
+        throw (FederateInternalError);
 
-  void synchronizationPointRegistrationFailed(const char *label) 
-    throw(FederateInternalError);
+    void synchronizationPointRegistrationSucceeded(const char *label)
+        throw (FederateInternalError);
 
-  void federationSynchronized(const char *label)
-    throw(FederateInternalError);
+    void synchronizationPointRegistrationFailed(const char *label)
+        throw (FederateInternalError);
 
-  void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime, 
-				 const char*  theTag, 
-				 EventRetractionHandle theHandle) 
-    throw(ObjectNotKnown, InvalidFederationTime, FederateInternalError) ;
+    void federationSynchronized(const char *label)
+        throw (FederateInternalError);
 
-  void timeAdvanceGrant(const FedTime& theTime) 
-    throw(InvalidFederationTime, TimeAdvanceWasNotInProgress, 
-	  FederationTimeAlreadyPassed, FederateInternalError);
+    void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
+                              const char *theTag,
+                              EventRetractionHandle theHandle)
+        throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError);
 
-  void startRegistrationForObjectClass(ObjectClassHandle theClass)
-    throw(ObjectClassNotPublished,
-	  FederateInternalError);
+    void timeAdvanceGrant(const FedTime& theTime)
+        throw (InvalidFederationTime, TimeAdvanceWasNotInProgress,
+               FederationTimeAlreadyPassed, FederateInternalError);
 
-  void stopRegistrationForObjectClass(ObjectClassHandle theClass)
-    throw(ObjectClassNotPublished,
-	  FederateInternalError);
+    void startRegistrationForObjectClass(ObjectClassHandle theClass)
+        throw (ObjectClassNotPublished,
+               FederateInternalError);
 
-  void turnInteractionsOn(InteractionClassHandle theHandle) 
-    throw(InteractionClassNotPublished, FederateInternalError);
+    void stopRegistrationForObjectClass(ObjectClassHandle theClass)
+        throw (ObjectClassNotPublished,
+               FederateInternalError);
 
-  void turnInteractionsOff(InteractionClassHandle theHandle) 
-    throw(InteractionClassNotPublished, FederateInternalError);
+    void turnInteractionsOn(InteractionClassHandle theHandle)
+        throw (InteractionClassNotPublished, FederateInternalError);
 
-  void discoverObjectInstance(ObjectHandle theObject, 
-			      ObjectClassHandle theObjectClass, 
-			      const char *theObjectName)
-    throw(CouldNotDiscover, ObjectClassNotKnown, InvalidFederationTime, 
-	  FederateInternalError);
+    void turnInteractionsOff(InteractionClassHandle theHandle)
+        throw (InteractionClassNotPublished, FederateInternalError);
 
-  void reflectAttributeValues(ObjectHandle theObject, 
-			      const AttributeHandleValuePairSet& theAttributes,
-			      const FedTime& theTime, const char *theTag, 
-			      EventRetractionHandle theHandle) 
-    throw(ObjectNotKnown, AttributeNotKnown, InvalidFederationTime, 
-	  FederateInternalError);
+    void discoverObjectInstance(ObjectHandle theObject,
+                                ObjectClassHandle theObjectClass,
+                                const char *theObjectName)
+        throw (CouldNotDiscover, ObjectClassNotKnown, InvalidFederationTime,
+               FederateInternalError);
 
-  void receiveInteraction(InteractionClassHandle theInteraction, 
-			  const ParameterHandleValuePairSet& theParameters, 
-			  const FedTime& theTime, const char *theTag, 
-			  EventRetractionHandle theHandle) 
-    throw(InteractionClassNotKnown, InteractionParameterNotKnown, 
-	  InvalidFederationTime, FederateInternalError);
+    void reflectAttributeValues(ObjectHandle theObject,
+                                const AttributeHandleValuePairSet& theAttributes,
+                                const FedTime& theTime, const char *theTag,
+                                EventRetractionHandle theHandle)
+        throw (ObjectNotKnown, AttributeNotKnown, InvalidFederationTime,
+               FederateInternalError);
 
-//   void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
-// 			    const char *theTag, 
-// 			    EventRetractionHandle theHandle) 
-//     throw(ObjectNotKnown, InvalidFederationTime, FederateInternalError);
+    void receiveInteraction(InteractionClassHandle theInteraction,
+                            const ParameterHandleValuePairSet& theParameters,
+                            const FedTime& theTime, const char *theTag,
+                            EventRetractionHandle theHandle)
+        throw (InteractionClassNotKnown, InteractionParameterNotKnown,
+               InvalidFederationTime, FederateInternalError);
 
-  void timeRegulationEnabled(const FedTime& theTime) 
-    throw(InvalidFederationTime, EnableTimeRegulationWasNotPending,
-	  FederateInternalError);
+    // void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
+    // const char *theTag,
+    // EventRetractionHandle theHandle)
+    // throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError);
 
- Boolean isAttributeOwnedByFederate(
-  ObjectHandle        theObject,     
-  AttributeHandle theAttribute)  
-throw(
-  ObjectNotKnown,
-  AttributeNotDefined,
-  FederateNotExecutionMember,
-  ConcurrentAccessAttempted,
-  SaveInProgress,
-  RestoreInProgress,
-  RTIinternalError);
-	
+    void timeRegulationEnabled(const FedTime& theTime)
+        throw (InvalidFederationTime, EnableTimeRegulationWasNotPending,
+               FederateInternalError);
 
-void attributeIsNotOwned(
-  ObjectHandle    theObject,    // supplied C1
-  AttributeHandle theAttribute) // supplied C1
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-  FederateInternalError);
-
-void informAttributeOwnership(
-  ObjectHandle    theObject,    // supplied C1
-  AttributeHandle theAttribute, // supplied C1
-  FederateHandle  theOwner)     // supplied C1
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-  FederateInternalError);
-
-void attributeOwnershipUnavailable(
-        ObjectHandle          theObject,         
-		  	const AttributeHandleSet& 	offeredAttributes)            
-throw(
-  ObjectNotKnown,
-	AttributeNotDefined,	
-  AttributeAlreadyOwned,
-	AttributeAcquisitionWasNotRequested,
-  FederateInternalError);	
-
-void attributeOwnershipAcquisitionNotification(
-        	ObjectHandle            theObject,         
-  	const AttributeHandleSet& 		securedAttributes) 
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-	AttributeAcquisitionWasNotRequested,
-  AttributeAlreadyOwned,
-	AttributeNotPublished,		
-  FederateInternalError);	
-
-	
-
-void requestAttributeOwnershipAssumption(
-        ObjectHandle          theObject,         
-		  	const AttributeHandleSet& 	offeredAttributes, 
-			  const char            *theTag)            
-throw(
-  ObjectNotKnown,
-	AttributeNotKnown,
-  AttributeAlreadyOwned,
-	AttributeNotPublished,
-  FederateInternalError);
-	
+    Boolean isAttributeOwnedByFederate(
+                                       ObjectHandle theObject,
+                                       AttributeHandle theAttribute)
+        throw (
+               ObjectNotKnown,
+               AttributeNotDefined,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
 
-void attributeOwnershipDivestitureNotification(
-        ObjectHandle            theObject,          
-	const	AttributeHandleSet& 		releasedAttributes) 
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-  AttributeNotOwned,	
-	AttributeDivestitureWasNotRequested,	
-  FederateInternalError);
+    void attributeIsNotOwned(
+                             ObjectHandle theObject, // supplied C1
+                             AttributeHandle theAttribute) // supplied C1
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               FederateInternalError);
+
+    void informAttributeOwnership(
+                                  ObjectHandle theObject, // supplied C1
+                                  AttributeHandle theAttribute, // supplied C1
+                                  FederateHandle theOwner) // supplied C1
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               FederateInternalError);
+
+    void attributeOwnershipUnavailable(
+                                       ObjectHandle theObject,
+                                       const AttributeHandleSet& offeredAttributes)
+        throw (
+               ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeAlreadyOwned,
+               AttributeAcquisitionWasNotRequested,
+               FederateInternalError);
+
+    void attributeOwnershipAcquisitionNotification(
+                                                   ObjectHandle theObject,
+                                                   const AttributeHandleSet& securedAttributes)
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               AttributeAcquisitionWasNotRequested,
+               AttributeAlreadyOwned,
+               AttributeNotPublished,
+               FederateInternalError);
 
 
-void requestAttributeOwnershipRelease(
-        ObjectHandle        theObject,           // supplied C1
-  const AttributeHandleSet& candidateAttributes, // supplied C4
-  const char                    *theTag)              // supplied C4
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-  AttributeNotOwned,
-  FederateInternalError);
-	
-void confirmAttributeOwnershipAcquisitionCancellation(
-        ObjectHandle        theObject,         // supplied C1
-  const AttributeHandleSet& theAttributes) // supplied C4
-throw(
-  ObjectNotKnown,
-  AttributeNotKnown,
-  AttributeAlreadyOwned,
-  AttributeAcquisitionWasNotCanceled,
-  FederateInternalError);		
+
+    void requestAttributeOwnershipAssumption(
+                                             ObjectHandle theObject,
+                                             const AttributeHandleSet& offeredAttributes,
+                                             const char *theTag)
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               AttributeAlreadyOwned,
+               AttributeNotPublished,
+               FederateInternalError);
 
 
-  // ------------------
-  // -- Private Part --
-  // ------------------
+
+    void attributeOwnershipDivestitureNotification(
+                                                   ObjectHandle theObject,
+                                                   const AttributeHandleSet& releasedAttributes)
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               AttributeNotOwned,
+               AttributeDivestitureWasNotRequested,
+               FederateInternalError);
+
+
+    void requestAttributeOwnershipRelease(
+                                          ObjectHandle theObject, // supplied C1
+                                          const AttributeHandleSet& candidateAttributes, // supplied C4
+                                          const char *theTag) // supplied C4
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               AttributeNotOwned,
+               FederateInternalError);
+
+    void confirmAttributeOwnershipAcquisitionCancellation(
+                                                          ObjectHandle theObject, // supplied C1
+                                                          const AttributeHandleSet& theAttributes) // supplied C4
+        throw (
+               ObjectNotKnown,
+               AttributeNotKnown,
+               AttributeAlreadyOwned,
+               AttributeAcquisitionWasNotCanceled,
+               FederateInternalError);
+
+
+    // ------------------
+    // -- Private Part --
+    // ------------------
 
 private:
-  // Federation State management
-  RTI::RTIambassador *RTIA;
+    // Federation State management
+    RTI::RTIambassador *RTIA ;
 
-  // Object Class management
-  ObjectClassHandle BilleClassID;
-  ObjectClassHandle BouleClassID;
+    // Object Class management
+    ObjectClassHandle BilleClassID ;
+    ObjectClassHandle BouleClassID ;
 
-  // On suppose que les numeros d'attributs sont les memes dans Bille et
-  // Boule(pour PositionX et PositionY).
-  AttributeHandle AttrXID;
-  AttributeHandle AttrYID;
-  AttributeHandle AttrColorID;
+    // On suppose que les numeros d'attributs sont les memes dans Bille et
+    // Boule(pour PositionX et PositionY).
+    AttributeHandle AttrXID ;
+    AttributeHandle AttrYID ;
+    AttributeHandle AttrColorID ;
 
-  // Interaction Class management
-  InteractionClassHandle BingClassID;
-  ParameterHandle ParamDXID;
-  ParameterHandle ParamDYID;
-  ParameterHandle ParamBoulID;
+    // Interaction Class management
+    InteractionClassHandle BingClassID ;
+    ParameterHandle ParamDXID ;
+    ParameterHandle ParamDYID ;
+    ParameterHandle ParamBoulID ;
 
-  // Private Methods
-  void GetHandles(); // Initializes all the IDs attributes by asking the RTIA.
+    // Private Methods
+    void GetHandles(void);
 };
 
 #endif // TH_MYFED_HH
