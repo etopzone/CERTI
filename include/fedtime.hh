@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fedtime.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: fedtime.hh,v 3.3 2003/10/20 12:43:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_TIME_HH
@@ -34,8 +34,6 @@
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
-
-using namespace std ;
 
 namespace certi {
 
@@ -130,7 +128,7 @@ public:
     // Boolean operator== (const Double&) const throw (InvalidFederationTime);
 
     // Implementation friends
-    friend ostream& operator<<(ostream&, const FedTime&);
+    friend std::ostream& operator<<(std::ostream&, const FedTime&);
 
     // Implementation member variables
     Double _fedTime ;
@@ -158,4 +156,4 @@ RTIfedTime operator/(const Double&, const FedTime&)
 
 #endif // _CERTI_FED_TIME_HH
 
-// $Id: fedtime.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: fedtime.hh,v 3.3 2003/10/20 12:43:46 breholee Exp $
