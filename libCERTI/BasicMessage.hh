@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.4 2005/02/09 15:47:06 breholee Exp $
+// $Id: BasicMessage.hh,v 3.5 2005/03/25 17:00:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -27,10 +27,8 @@
 
 #include "Extent.hh"
 #include "MessageBody.hh"
-#include "RegionImp.hh"
+#include "BaseRegion.hh"
 #include <vector>
-
-class RegionImp ;
 
 namespace certi {
 
@@ -44,7 +42,7 @@ public:
     void setExtents(const std::vector<Extent> &);
     const std::vector<Extent> &getExtents() const ;
 
-    void setRegions(Region **, int);
+    void setRegions(const BaseRegion **, int);
     void setRegions(const std::vector<RegionHandle> &);
     const std::vector<RegionHandle> &getRegions() const ;
 
@@ -63,4 +61,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.4 2005/02/09 15:47:06 breholee Exp $
+// $Id: BasicMessage.hh,v 3.5 2005/03/25 17:00:52 breholee Exp $

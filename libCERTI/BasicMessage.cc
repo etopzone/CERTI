@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,11 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.5 2005/02/09 15:47:06 breholee Exp $
+// $Id: BasicMessage.cc,v 3.6 2005/03/25 17:00:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
-#include "RegionImp.hh"
 #include "PrettyDebug.hh"
 
 #include <cassert>
@@ -133,12 +132,12 @@ BasicMessage::readRegions(const MessageBody &body)
 
 // ----------------------------------------------------------------------------
 void
-BasicMessage::setRegions(Region *reg[], int size)
+BasicMessage::setRegions(const BaseRegion *reg[], int size)
 {
     regions.resize(size);
     
     for (int i = 0 ; i < size ; ++i) {
-        regions[i] = dynamic_cast<RegionImp *>(reg[i])->getHandle();
+        regions[i] = reg[i]->getHandle();
     }
 }
 
@@ -157,4 +156,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.5 2005/02/09 15:47:06 breholee Exp $
+// $Id: BasicMessage.cc,v 3.6 2005/03/25 17:00:52 breholee Exp $
