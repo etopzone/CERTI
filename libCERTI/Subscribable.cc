@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.1 2005/04/02 15:41:04 breholee Exp $
+// $Id: Subscribable.cc,v 3.2 2005/04/05 20:03:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -106,6 +106,37 @@ Subscribable::subscribe(FederateHandle fed, const RTIRegion *region)
 		   << fed << std::endl ;
 }
 
+// ----------------------------------------------------------------------------
+/** Add federates and associated attribute to a broadcast list.
+    @param lst Broadcast list where federates/handles should be added
+    @param region Region to check for overlap
+    @param handle Handle of this object (Subscribable subclass)
+ */
+void
+Subscribable::addFederatesIfOverlap(ObjectClassBroadcastList &lst, const RTIRegion *region, Handle handle) const
+{
+    std::list<Subscriber>::const_iterator it = subscribers.begin();
+    for (; it != subscribers.end(); ++it) {
+	if (it->match(region))
+	    lst.addFederate(it->getHandle(), handle);
+    }
+}
+
+// ----------------------------------------------------------------------------
+/** Add federates to a broadcast list.
+    @param lst Broadcast list where federates/handles should be added
+    @param region Region to check for overlap
+ */
+void
+Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegion *region) const
+{
+    std::list<Subscriber>::const_iterator it = subscribers.begin();
+    for (; it != subscribers.end(); ++it) {
+	if (it->match(region))
+	    lst.addFederate(it->getHandle());
+    }
+}
+
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.1 2005/04/02 15:41:04 breholee Exp $
+// $Id: Subscribable.cc,v 3.2 2005/04/05 20:03:49 breholee Exp $
