@@ -19,148 +19,74 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.hh,v 3.6 2003/11/10 14:47:58 breholee Exp $
+// $Id: MessageBody.hh,v 3.7 2004/01/09 16:07:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_MESSAGE_BODY_HH
-#define _CERTI_MESSAGE_BODY_HH
+#ifndef LIBCERTI_MESSAGE_BODY_HH
+#define LIBCERTI_MESSAGE_BODY_HH
 
 #include "RTItypes.hh"
 
 #include <cstring>
+#include <vector>
 
 namespace certi {
 
-//! There is no overflow checking, so this value would better be big enough.
-#define BODY_BUFFER_MAX_SIZE 200
-
-/*! La classe Body est en fait un buffer de caracteres, avec des methodes
-  permettant d'y ecrire et d'y lire des entiers(courts et longs) et des
-  chaines de caracteres.
-
-  Elle est basee sur la classe systeme strstreambuf, qui est un flux de
-  caracteres base sur des chaines en memoire. Pour plus d'info man
-  ssbuf(3C++).
-
-  This class works like all streams, on a FIFO basis. For example, you call
-  writeLongInt(myFirstInt), then writeString(myString), and then retrieve
-  your data by calling(IN THE SAME ORDER) ReadLongInt and ReadString. If you
-  don't respect the same order, results are inpredictables.
-
-  Here is how to use this class:
-
-  -# Create an empty Body: MessageBody *myBody = new MessageBody();
-
-  -# Put your thing in the Body:
-  myBody->writeString("Hello");
-  myBody->writeShortInt(1);
-
-  -# Freeze the Body in order to send it: myBody->Freeze();
-
-  -# Send it to the other side, and then destroy your Body:
-  Send(myBody->getBuffer(), myBody->getLength());
-  delete myBody ;
-
-  -# When received on the other side, create a new Body :
-  MessageBody *myNewBody = new MessageBody(Buffer, Length);
-
-  -# Retrieve your Data in the same Order :
-  myString = myNewBody->readString();
-  myInt = myNewBody->readShortInt();
-
-  -# Delete your Body(don't forget to deallocate the retrieved string also):
-  delete myNewBody ;
+/** MessageBody is a class managing a char buffer for Message exchange.
+    It provide member functions to read and write integers and strings.
+    To read the contents of a MessageBody, juste read the elements in
+    the order they were written.
 */
-class MessageBody // : private strstreambuf
+class MessageBody
 {
 public:
-
-    // -----------------------------------
-    // -- Read/Write Methods for Blocks --
-    // -----------------------------------
-
-    inline void readBlock(char *Block, unsigned short Size) const
-    { sgetn(Block, Size); };
-
-    /*! You can use this method to include the header at the beginning of the
-      body, in order to make a single Socket->Send call.
-    */
-    inline void writeBlock(char *Block, unsigned short Size)
-    { sputn(Block, Size); };
-
-    // ----------------------------------------
-    // -- Read and Write Methods for Integer --
-    // ----------------------------------------
-
-    inline unsigned short readShortInt() const
-    {
-        unsigned short Result ;
-        sgetn((char *) &Result, 2);
-        return Result ;
-    };
-
-    inline void writeShortInt(unsigned short C)
-    {
-        sputn((char *) &C, 2);
-    };
-
-    inline unsigned long readLongInt() const
-    {
-        unsigned long Result ;
-        sgetn((char *) &Result, 4);
-        return Result ;
-    };
-
-    inline void writeLongInt(unsigned long C)
-    {
-        sputn((char *) &C, 4);
-    };
-
-    // ----------------------------------------
-    // -- Read and Write Methods for Strings --
-    // ----------------------------------------
-    void readString(char *store, unsigned short store_len);
-    void writeString(const char *str);
-
-    // -----------------------------
-    // -- General Purpose Methods --
-    // -----------------------------
     MessageBody();
-
-    // To create a READ body, with a buffer of yours(it will NOT be deleted
-    // by the destructor). No Write operations should be made.
-    //MessageBody(char *InitBuffer, int InitLength);
+    MessageBody(size_t);
     ~MessageBody();
 
-    long getLength() const ;
+    void readBlock(char *block, unsigned short size) const { 
+	sgetn(block, size);
+    };
+
+    void writeBlock(char *block, unsigned short size) { sputn(block, size); };
+
+    unsigned short readShortInt() const {
+        unsigned short result ;
+        sgetn((char *) &result, 2);
+        return result ;
+    };
+
+    void writeShortInt(unsigned short c) { sputn((char *) &c, 2); };
+
+    unsigned long readLongInt() const {
+        unsigned long result ;
+        sgetn((char *) &result, 4);
+        return result ;
+    };
+
+    void writeLongInt(unsigned long c) { sputn((char *) &c, 4); };
+
+    void readString(char *, unsigned short);
+    void writeString(const char *);
+
+    size_t getLength() const ;
     const char *getBuffer() const ;
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-    char Buffer[BODY_BUFFER_MAX_SIZE] ;
-    unsigned long Length ;
-    mutable char *GetPtr ;
-    // There is no PutPtr, because it computed with Buffer + Length.
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
-    inline void sputn(char *Ptr, unsigned short Size) {
-        std::memcpy(Buffer + Length, Ptr, Size);
-        Length += Size ;
+    void sputn(char *ptr, unsigned short size) {
+	std::copy(ptr, ptr + size, std::back_inserter(buffer));
+    };
+    void sgetn(char *ptr, unsigned short size) const {
+	for (int i = 0 ; i < size ; ++i, ++getPtr)
+	    ptr[i] = *getPtr ;	
     };
 
-    inline void sgetn(char *Ptr, unsigned short Size) const {
-        std::memcpy(Ptr, GetPtr, Size);
-        GetPtr += Size ;
-    };
+    std::vector<char> buffer ;
+    mutable std::vector<char>::iterator getPtr ;
 };
-}
 
-#endif // _CERTI_MESSAGE_BODY_HH
+} // certi
 
-// $Id: MessageBody.hh,v 3.6 2003/11/10 14:47:58 breholee Exp $
+#endif // LIBCERTI_MESSAGE_BODY_HH
+
+// $Id: MessageBody.hh,v 3.7 2004/01/09 16:07:29 breholee Exp $

@@ -19,104 +19,95 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.5 2003/11/10 14:47:58 breholee Exp $
+// $Id: MessageBody.cc,v 3.6 2004/01/09 16:07:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "MessageBody.hh"
 
-// Comment this out if you don't want to use Integer encoding in stream.
-// #define USE_INT_ENCODING
-
 namespace certi {
 
-// ----------------------------------------------------------------------------
-/*! To create a WRITE body, with its own buffer(it will be deleted by the
-  destructor). No Read operations should be made.
-*/
+/** Constructor. Created MessageBody is empty, buffer size 0.
+ */
 MessageBody::MessageBody()
 {
-    Length = 0 ;
-    GetPtr = Buffer ;
+    buffer.reserve(200);
+    getPtr = buffer.begin();
 
     if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
         throw RTIinternalError("MessageBody unabled to process ints.");
 }
 
-// ----------------------------------------------------------------------------
-//! Destructor.
-MessageBody::~MessageBody()
+/** Constructor, with an initial buffer size.
+    @param n Buffer size
+*/
+MessageBody::MessageBody(size_t n)
 {
+    buffer.resize(n);
+    getPtr = buffer.begin();
+
+    if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
+        throw RTIinternalError("MessageBody unabled to process ints.");
 }
 
-// ----------------------------------------------------------------------------
-//! getLength.
-/*! Body must have been frozen.
+/** Destructor.
  */
-long MessageBody::getLength() const
+MessageBody::~MessageBody() { }
+
+/** Get the size of the buffer.
+    \return buffer size
+*/
+size_t
+MessageBody::getLength() const
 {
-    return Length ;
+    return buffer.size();
 }
 
-// ----------------------------------------------------------------------------
-//! getBuffer.
-/*! Body must have been frozen.
- */
+/** Get buffer pointer.
+    \return buffer pointer. 
+*/
 const char *
 MessageBody::getBuffer() const
 {
-    return Buffer ;
+    return &(buffer[0]);
 }
 
-// ----------------------------------------------------------------------------
-/*! Retrieve a string from the Body, and put it in Store. Store is at least
-  (StoreLen + 1) bytes long. Store must be NOT NULL.
+/** Read a string from the body, and put it in a buffer.
+    @pre store is not null
+    @param store Output buffer
+    @param store_length Maximal string length (+1 gives minimal store size)
 */
-void MessageBody::readString(char *Store, unsigned short StoreLen)
+void
+MessageBody::readString(char *store, unsigned short store_length)
 {
-    // Read String's Length
-    unsigned short StrLength = readShortInt();
+    unsigned short length = readShortInt();
 
-    // Is the Store String long enough?
-    if (StrLength > StoreLen)
+    if (length > store_length)
         throw RTIinternalError("String in Message too long for storage.");
 
-    // Get string from stream
-    if (StrLength > 0)
-        sgetn(Store, StrLength);
+    if (length > 0)
+        sgetn(store, length);
 
-    Store[StrLength] = '\0' ;
+    store[length] = 0 ;
 }
 
-// ----------------------------------------------------------------------------
-/*! If the string is empty(or NULL), an empty string is written onto the
-  stream.
+/** Write a string. If the string is empty (or NULL), an empty string
+    is written onto the stream.
+    @param s String to copy
 */
-void MessageBody::writeString(const char *String)
+void 
+MessageBody::writeString(const char *s)
 {
-    unsigned short StrLength ;
-
-    // NULL String is handled like an empty string
-    if (String == NULL) {
-        writeShortInt(0);
-        return ;
+    if (s) {
+	unsigned short length = std::strlen(s);
+	writeShortInt(length);
+	if (length > 0)
+	    sputn((char *) s, length);
     }
-
-    // Write string length
-    StrLength = std::strlen(String);
-
-    // BUG: Should test string's length.
-    //if (StrLength > MAX_BYTES_PER_VALUE)
-    // throw RTIinternalError("String too long.");
-
-    writeShortInt(StrLength);
-
-    // WriteString
-    if (StrLength > 0) {
-        sputn((char *)String, StrLength);
-    }
+    else 
+	writeShortInt(0);
 }
 
-}
+} // certi
 
-// $Id: MessageBody.cc,v 3.5 2003/11/10 14:47:58 breholee Exp $
+// $Id: MessageBody.cc,v 3.6 2004/01/09 16:07:29 breholee Exp $
