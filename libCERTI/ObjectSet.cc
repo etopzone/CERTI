@@ -69,7 +69,7 @@ ObjectSet::changeAttributeTransportationType(ObjectHandle the_object,
            RTIinternalError,
            InvalidObjectHandle)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ ObjectSet::changeAttributeOrderType(ObjectHandle the_object,
            RTIinternalError,
            InvalidObjectHandle)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ ObjectSet::getObjectClass(ObjectHandle the_object) const
     throw (ObjectNotKnown, FederateNotExecutionMember,
            ConcurrentAccessAttempted, RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 
     return 0 ;
 }
@@ -242,7 +242,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         answer->federate = oa->getOwner();
         answer->type = answer->federate
             ? NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP
-	    : NetworkMessage::ATTRIBUTE_IS_NOT_OWNED ;
+            : NetworkMessage::ATTRIBUTE_IS_NOT_OWNED ;
 
         sendToFederate(answer, the_federate);
     }
@@ -264,7 +264,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
            AttributeAlreadyBeingDivested,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -281,7 +281,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
            AttributeAlreadyBeingAcquired,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -295,7 +295,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
            AttributeNotOwned,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -313,7 +313,7 @@ ObjectSet::attributeOwnershipAcquisition(FederateHandle the_federate,
            FederateOwnsAttributes,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -368,7 +368,7 @@ ObjectSet::attributeOwnershipReleaseResponse(FederateHandle the_federate,
            FederateWasNotAskedToReleaseAttribute,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 
     return NULL ;
 }
@@ -385,7 +385,7 @@ ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
            AttributeAcquisitionWasNotRequested,
            RTIinternalError)
 {
-    Object *object = getObject(the_object);
+    // Object *object = getObject(the_object);
 }
 
 // ----------------------------------------------------------------------------
@@ -430,4 +430,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.5 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectSet.cc,v 3.6 2003/06/25 15:40:28 breholee Exp $
