@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.3 2003/07/01 13:32:58 breholee Exp $
+// $Id: Extent.cc,v 3.4 2003/11/10 14:36:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,102 +30,89 @@ using std::vector ;
 namespace certi {
 
 // ----------------------------------------------------------------------------
-// Extent
-//
-Extent::Extent(int n)
+/** Extent constructor
+    \param n Number of dimensions in the routing space
+ */
+Extent::Extent(size_t n)
 {
-    if (n > 0) {
-        ranges.resize(n);
-    }
+    ranges.resize(n);
 }
 
 // ----------------------------------------------------------------------------
-// ~Extent
-//
-Extent::~Extent()
-{
-    vector<Range*>::iterator i ;
-    for (i = ranges.begin(); i != ranges.end(); i++) {
-        delete *i ;
-    }
-    ranges.clear();
-}
-
-// ----------------------------------------------------------------------------
-// getRangeLowerBound
-//
+/** Get range lower bound
+ */
 ULong
-Extent::getRangeLowerBound(DimensionHandle handle)
+Extent::getRangeLowerBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
-    vector<Range*>::iterator i ;
-    for (i = ranges.begin(); i != ranges.end(); i++) {
-        if ((*i)->getDimensionHandle() == handle) {
-            return (*i)->getLowerBound();
-        }
-    }
-    throw ArrayIndexOutOfBounds();
+    if ((handle <= 0) || (handle > ranges.size())) 
+	throw ArrayIndexOutOfBounds();
+    else
+	return ranges[handle - 1].first ;	
 }
 
 // ----------------------------------------------------------------------------
-// getRangeUpperBound
-//
+/** Get range upper bound
+ */
 ULong
-Extent::getRangeUpperBound(DimensionHandle handle)
+Extent::getRangeUpperBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
-    vector<Range*>::iterator i ;
-    for (i = ranges.begin(); i != ranges.end(); i++) {
-        if ((*i)->getDimensionHandle() == handle) {
-            return (*i)->getUpperBound();
-        }
-    }
-    throw ArrayIndexOutOfBounds();
+    if ((handle <= 0) || (handle > ranges.size())) 
+	throw ArrayIndexOutOfBounds();
+    else
+	return ranges[handle - 1].second ;
 }
 
 // ----------------------------------------------------------------------------
-// setRangeLowerBound
-//
+/** Set range lower bound
+ */
 void
 Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
 {
-    vector<Range*>::iterator i ;
-    for (i = ranges.begin(); i != ranges.end(); i++) {
-        if ((*i)->getDimensionHandle() == handle) {
-            (*i)->setLowerBound(val);
-            return ;
-        }
-    }
-    throw ArrayIndexOutOfBounds();
+    if ((handle <= 0) || (handle > ranges.size())) 
+	throw ArrayIndexOutOfBounds();
+    else
+	ranges[handle - 1].first = val ;
 }
 
 // ----------------------------------------------------------------------------
-// setRangeUpperBound
-//
+/** Set range upper bound
+ */
 void
 Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
 {
-    vector<Range*>::iterator i ;
-    for (i = ranges.begin(); i != ranges.end(); i++) {
-        if ((*i)->getDimensionHandle() == handle) {
-            (*i)->setUpperBound(val);
-            return ;
-        }
-    }
-    throw ArrayIndexOutOfBounds();
+    if ((handle <= 0) || (handle > ranges.size())) 
+	throw ArrayIndexOutOfBounds();
+    else
+	ranges[handle - 1].second = val ;
 }
 
 // ----------------------------------------------------------------------------
-// getNumberOfRanges
-//
-long
-Extent::getNumberOfRanges()
+/** Get the number of ranges in this Extent.
+ */
+size_t
+Extent::size() const
 {
     return ranges.size();
 }
 
+// ----------------------------------------------------------------------------
+/** Get a range dimension handle.
+ */
+// DimensionHandle
+// Extent::getDimensionHandle(size_t n) const
+//     throw (ArrayIndexOutOfBounds)
+// {
+//     RangeSet::const_iterator it = ranges.begin();
+//     for (int j = 0 ; j < size(); ++j, ++it) {
+// 	if (j == n) return it->first ;
+//     }
+//     throw ArrayIndexOutOfBounds();
+// }
+
 } // namespace certi
 
-// $Id: Extent.cc,v 3.3 2003/07/01 13:32:58 breholee Exp $
+// $Id: Extent.cc,v 3.4 2003/11/10 14:36:43 breholee Exp $

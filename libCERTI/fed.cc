@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: fed.cc,v 3.2 2003/11/10 14:37:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -349,7 +349,7 @@ startSpace()
     routing_space = new RoutingSpace();
     routing_space->setHandle(spaceHandle++);
     routing_space->setName(arg);
-    root_object->addRoutingSpace(routing_space);
+    root_object->addRoutingSpace(*routing_space);
     dimensionHandle = 1 ;
 
     indent();
@@ -362,15 +362,15 @@ startSpace()
 void
 addDimension()
 {
-    Dimension *dimension = new Dimension(dimensionHandle++);
-    dimension->setName(arg);
+    Dimension dimension(dimensionHandle++);
+    dimension.setName(arg);
     routing_space->addDimension(dimension);
 
     indent();
     cout << "(dimension \"" << arg.c_str() << "\" (id "
-	 << dimension->getHandle() << "))" ;
+	 << dimension.getHandle() << "))" ;
 }
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: fed.cc,v 3.2 2003/11/10 14:37:22 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $
+// $Id: Dimension.cc,v 3.2 2003/11/10 14:36:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,7 +46,7 @@ Dimension::setName(string s)
 
 // ----------------------------------------------------------------------------
 string
-Dimension::getName()
+Dimension::getName() const
 {
     return name ;
 }
@@ -67,13 +67,13 @@ Dimension::setUpperBound(ULong v)
 
 // ----------------------------------------------------------------------------
 DimensionHandle
-Dimension::getHandle()
+Dimension::getHandle() const
 {
     return handle ;
 }
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $
+// $Id: Dimension.cc,v 3.2 2003/11/10 14:36:43 breholee Exp $
 
 

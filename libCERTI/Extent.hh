@@ -19,28 +19,33 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.3 2003/07/01 13:32:58 breholee Exp $
+// $Id: Extent.hh,v 3.4 2003/11/10 14:36:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXTENT_HH
 #define _CERTI_EXTENT_HH
 
-#include "Range.hh"
+#include "RTItypes.hh"
 
 #include <vector>
+#include <utility>
+#include <map>
 
 namespace certi {
+
+typedef std::pair<ULong, ULong> Range ;
+typedef std::vector<Range> RangeSet ;
 
 class Extent
 {
 public:
-    Extent(int);
-    ~Extent();
+    Extent(size_t);
+    //    void add(DimensionHandle);
 
-    ULong getRangeLowerBound(DimensionHandle)
+    ULong getRangeLowerBound(DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    ULong getRangeUpperBound(DimensionHandle)
+    ULong getRangeUpperBound(DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
     void setRangeUpperBound(DimensionHandle, ULong)
@@ -49,14 +54,17 @@ public:
     void setRangeLowerBound(DimensionHandle, ULong)
         throw (ArrayIndexOutOfBounds);
 
-    long getNumberOfRanges();
+//     DimensionHandle getDimensionHandle(size_t) const
+// 	throw (ArrayIndexOutOfBounds);
+
+    size_t size() const ;
     
 private:
-    std::vector<Range*> ranges ;
+     RangeSet ranges ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.3 2003/07/01 13:32:58 breholee Exp $
+// $Id: Extent.hh,v 3.4 2003/11/10 14:36:43 breholee Exp $

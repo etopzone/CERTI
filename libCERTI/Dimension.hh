@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.1 2003/06/27 17:26:28 breholee Exp $
+// $Id: Dimension.hh,v 3.2 2003/11/10 14:36:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -36,8 +36,8 @@ class Dimension
 public:
     Dimension(DimensionHandle);
     void setName(std::string);
-    std::string getName();
-    DimensionHandle getHandle();
+    std::string getName() const ;
+    DimensionHandle getHandle() const ;
     static void setLowerBound(ULong);
     static void setUpperBound(ULong);
 
@@ -52,4 +52,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.1 2003/06/27 17:26:28 breholee Exp $
+// $Id: Dimension.hh,v 3.2 2003/11/10 14:36:43 breholee Exp $

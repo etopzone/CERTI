@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.15 2003/10/27 10:20:17 breholee Exp $
+// $Id: XmlParser.cc,v 3.16 2003/11/10 14:37:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -297,18 +297,18 @@ XmlParser::parseRoutingSpace()
 
     DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;
-    RoutingSpace *current = new RoutingSpace();
-    current->setHandle(freeSpaceHandle++);
-    current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+    RoutingSpace current ;
+    current.setHandle(freeSpaceHandle++);
+    current.setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
     root->addRoutingSpace(current);
 
     // Dimensions
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
-            Dimension* dimension = new Dimension(freeDimensionHandle++);
-            dimension->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
-            current->addDimension(dimension);
+            Dimension dimension(freeDimensionHandle++);
+            dimension.setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+            current.addDimension(dimension);
         }
         cur = cur->next ;
     }
@@ -347,4 +347,4 @@ bool XmlParser::exists()
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.15 2003/10/27 10:20:17 breholee Exp $
+// $Id: XmlParser.cc,v 3.16 2003/11/10 14:37:22 breholee Exp $
