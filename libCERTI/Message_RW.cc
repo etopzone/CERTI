@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.14 2003/07/03 16:17:10 breholee Exp $
+// $Id: Message_RW.cc,v 3.15 2003/07/09 16:00:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -144,7 +144,6 @@ Message::readBody(SocketUN *socket)
             break ;
 
 	  case DDM_ASSOCIATE_REGION:
-	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    object = Body.readLongInt();
 	    region = Body.readLongInt();
 	    boolean = Boolean(Body.readShortInt());
@@ -152,8 +151,20 @@ Message::readBody(SocketUN *socket)
             readHandleArray(&Body);
 	    break ;
 
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    objectClass = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    handleArraySize = Body.readShortInt();
+            readHandleArray(&Body);
+	    break ;
+
 	  case DDM_UNASSOCIATE_REGION:
-	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    break ;
+
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:	    
 	    object = Body.readLongInt();
 	    region = Body.readLongInt();
 	    break ;
@@ -693,7 +704,6 @@ Message::writeBody(SocketUN *socket)
             break ;
 
 	  case DDM_ASSOCIATE_REGION:
-	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    Body.writeLongInt(object);
 	    Body.writeLongInt(region);
 	    Body.writeShortInt(boolean);
@@ -701,12 +711,24 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
 	    break ;
 
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+            Body.writeShortInt(handleArraySize);
+            writeHandleArray(&Body);
+	    break ;
+
 	  case DDM_UNASSOCIATE_REGION:
-	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
 	    Body.writeLongInt(object);
 	    Body.writeLongInt(region);
 	    break ;
 
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(region);
+	    break ;
+	    
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:
 	    Body.writeLongInt(interactionClass);
@@ -1184,4 +1206,4 @@ Message::readExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.14 2003/07/03 16:17:10 breholee Exp $
+// $Id: Message_RW.cc,v 3.15 2003/07/09 16:00:59 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.11 2003/07/03 16:16:16 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.12 2003/07/09 16:01:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -205,6 +205,40 @@ NetworkMessage::readBody(Socket *socket)
 	  case DDM_MODIFY_REGION:
 	    readExtents(Body);
 	    break ;
+
+	  case DDM_ASSOCIATE_REGION:
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    handleArraySize = Body.readShortInt();
+
+	    break ;
+
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    objectClass = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    handleArraySize = Body.readShortInt();
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                handleArray[i] = Body.readShortInt();
+	    break ;
+
+	  case DDM_UNASSOCIATE_REGION:
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    break ;
+
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:	    
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    break ;
+
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:
+	    interactionClass = Body.readLongInt();
+	    region = Body.readLongInt();
+	    boolean = Boolean(Body.readShortInt());
+	    break ;
 	    
             // -- Default Handler --
 
@@ -302,6 +336,12 @@ NetworkMessage::readHeader(Socket *socket)
           case FEDERATION_RESTORE_BEGUN:
           case FEDERATION_RESTORED:
           case FEDERATION_NOT_RESTORED:
+	  case DDM_ASSOCIATE_REGION:
+	  case DDM_UNASSOCIATE_REGION:
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:
             break ;
 
             // -- time Variable Part(No Body)[Continued]--
@@ -599,6 +639,41 @@ NetworkMessage::writeBody(Socket *socket)
 	  case DDM_MODIFY_REGION:
 	    writeExtents(Body);
 	    break ;
+
+	  case DDM_ASSOCIATE_REGION:
+	    Body.writeLongInt(object);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+            Body.writeShortInt(handleArraySize);
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                Body.writeShortInt(handleArray[i]);
+	    break ;
+
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+            Body.writeShortInt(handleArraySize);
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                Body.writeShortInt(handleArray[i]);
+	    break ;
+
+	  case DDM_UNASSOCIATE_REGION:
+	    Body.writeLongInt(object);
+	    Body.writeLongInt(region);
+	    break ;
+
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(region);
+	    break ;
+	    
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:
+	    Body.writeLongInt(interactionClass);
+	    Body.writeLongInt(region);
+	    Body.writeShortInt(boolean);
+	    break ;
 	    
             // -- Default Handler --
           default:
@@ -656,7 +731,6 @@ NetworkMessage::writeHeader(Socket *socket)
     }
     else
         switch(type) {
-
 
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
@@ -722,6 +796,12 @@ NetworkMessage::writeHeader(Socket *socket)
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
           case DDM_CREATE_REGION:
           case INITIATE_FEDERATE_RESTORE:
+	  case DDM_ASSOCIATE_REGION:
+	  case DDM_UNASSOCIATE_REGION:
+	  case DDM_SUBSCRIBE_ATTRIBUTES:
+	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
+	  case DDM_SUBSCRIBE_INTERACTION:
+	  case DDM_UNSUBSCRIBE_INTERACTION:	
             Header.bodySize = 1 ;
             break ;
 
@@ -902,4 +982,4 @@ NetworkMessage::writeExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.11 2003/07/03 16:16:16 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.12 2003/07/09 16:01:00 breholee Exp $

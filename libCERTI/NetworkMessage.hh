@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.13 2003/07/07 23:05:26 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.14 2003/07/09 16:01:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -172,7 +172,11 @@ public:
         DDM_MODIFY_REGION,
         DDM_DELETE_REGION,
         DDM_ASSOCIATE_REGION,
-	DDM_UNASSOCIATE_REGION
+	DDM_UNASSOCIATE_REGION,
+	DDM_SUBSCRIBE_ATTRIBUTES,
+	DDM_UNSUBSCRIBE_ATTRIBUTES,
+	DDM_SUBSCRIBE_INTERACTION,
+	DDM_UNSUBSCRIBE_INTERACTION
     };
 
     struct HeaderStruct {
@@ -269,6 +273,8 @@ public :
     Boolean regulator ;
     Boolean constrained ;
 
+    Boolean boolean ;
+    
     FederationTime date ;
 
     int numberOfRegulators ;
@@ -349,4 +355,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.13 2003/07/07 23:05:26 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.14 2003/07/09 16:01:00 breholee Exp $
