@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.11 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.12 2003/06/25 16:23:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -89,7 +88,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     unsigned int peer = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
 
-    FederationHandle num_federation ;
+    Handle num_federation ;
     FederateHandle num_federe ;
 
     int nb_regulateurs ;
@@ -153,7 +152,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Removes a federate from federation.
 void
-RTIG::processResignFederation(FederationHandle federation,
+RTIG::processResignFederation(Handle federation,
                               FederateHandle federe)
 {
     federations->remove(federation, federe);
@@ -166,7 +165,7 @@ RTIG::processResignFederation(FederationHandle federation,
 void
 RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 {
-    FederationHandle num_federation ;
+    Handle num_federation ;
     char *federation = req->federationName ;
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
@@ -917,4 +916,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.11 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.12 2003/06/25 16:23:48 breholee Exp $

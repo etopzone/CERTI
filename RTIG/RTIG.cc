@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.12 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIG.cc,v 3.13 2003/06/25 16:23:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -336,7 +335,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 void
 RTIG::closeConnection(Socket *link, bool emergency)
 {
-    FederationHandle federation ;
+    Handle federation ;
     FederateHandle federate ;
 
     try {
@@ -356,7 +355,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
 // ----------------------------------------------------------------------------
 // execute
 void
-RTIG::execute(void)
+RTIG::execute()
 {
     int result ;
     fd_set fd ;
@@ -913,4 +912,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.12 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIG.cc,v 3.13 2003/06/25 16:23:48 breholee Exp $

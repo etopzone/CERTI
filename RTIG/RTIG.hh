@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.10 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIG.hh,v 3.11 2003/06/25 16:23:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -62,7 +61,7 @@ private:
     int tcpPort ;
     int udpPort ;
     bool terminate ;
-    FederationHandle nextFederationHandle ;
+    Handle nextFederationHandle ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
     SocketServer* socketServer ;
@@ -83,13 +82,13 @@ private:
     Socket* processIncomingMessage(Socket*);
     Socket* chooseProcessingMethod(Socket*, NetworkMessage *);
 
-    void openConnection(void);
+    void openConnection();
     void closeConnection(Socket*, bool emergency);
 
     // Event handlers
     void processCreateFederation(Socket*, NetworkMessage*);
     void processJoinFederation(Socket*, NetworkMessage*);
-    void processResignFederation(FederationHandle, FederateHandle);
+    void processResignFederation(Handle, FederateHandle);
     void processDestroyFederation(Socket*, NetworkMessage*);
     void processSetTimeRegulating(NetworkMessage *msg);
     void processSetTimeConstrained(NetworkMessage *msg);
@@ -132,4 +131,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.10 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIG.hh,v 3.11 2003/06/25 16:23:48 breholee Exp $

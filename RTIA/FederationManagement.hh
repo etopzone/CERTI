@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.8 2003/05/23 14:56:45 breholee Exp $
+// $Id: FederationManagement.hh,v 3.9 2003/06/25 16:27:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -87,7 +87,7 @@ public:
 
     // Attributes
     TimeManagement *tm ;
-    FederationHandle _numero_federation ;
+    Handle _numero_federation ;
     FederateHandle federate ;
     Boolean _fin_execution ;
     
@@ -110,4 +110,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.8 2003/05/23 14:56:45 breholee Exp $
+// $Id: FederationManagement.hh,v 3.9 2003/06/25 16:27:04 breholee Exp $
