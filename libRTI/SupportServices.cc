@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SupportServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: SupportServices.cc,v 3.2 2003/10/13 10:13:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -140,7 +140,6 @@ RTIambassador::getInteractionClassHandle(const char *theName)
     return rep.getInteractionClass();
 }
 
-
 // ----------------------------------------------------------------------------
 // Get Interaction Class Name
 char *
@@ -215,7 +214,6 @@ RTIambassador::getObjectInstanceHandle(const char *theName)
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
     Message req, rep ;
 
     req.type = Message::GET_OBJECT_INSTANCE_HANDLE ;
@@ -236,7 +234,6 @@ RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
     Message req, rep ;
 
     req.type = Message::GET_OBJECT_INSTANCE_NAME ;
@@ -357,7 +354,6 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
     Message req, rep ;
 
     req.type = Message::GET_OBJECT_CLASS ;
@@ -625,4 +621,4 @@ RTIambassador::disableInteractionRelevanceAdvisorySwitch()
 
 }
 
-// $Id: SupportServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: SupportServices.cc,v 3.2 2003/10/13 10:13:04 breholee Exp $
