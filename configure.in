@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.2 2003/01/14 14:38:03 breholee Exp $ 
+## $Id: configure.in,v 3.3 2003/01/20 17:27:50 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 # ========== Init ============================================================
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.2 $)
+AC_REVISION($Revision: 3.3 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -51,8 +51,20 @@ else
 	AC_SUBST(WITH_X11)
 fi
 
+# ---------- XML -------------------------------------------------------------
+AC_CHECK_PROG(XML2_CONFIG, xml2-config, xml2-config)
+if test "x$XML2_CONFIG" != x ; then
+    XML_LIBS="`$XML2_CONFIG --libs`"
+    XML_CFLAGS="`$XML2_CONFIG --cflags`"
+    HAVE_XML="-DHAVE_XML"
+    AC_SUBST(XML_LIBS)
+    AC_SUBST(XML_CFLAGS)
+    AC_SUBST(HAVE_XML)
+else
+    AC_MSG_WARN([not found])
+fi
+
 # ---------- GTK -------------------------------------------------------------
-# maybe not used in this version of CERTI
 dnl AM_PATH_GTK(
 dnl 	[1.0.6],
 dnl 	WITH_GTK="-DWITH_GTK"
@@ -66,4 +78,4 @@ libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
 test/Makefile test/include/Makefile test/libgraphc/Makefile
 test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.2 2003/01/14 14:38:03 breholee Exp $
+## $Id: configure.in,v 3.3 2003/01/20 17:27:50 breholee Exp $
