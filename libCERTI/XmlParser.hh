@@ -20,19 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
+// $Id: XmlParser.hh,v 3.8 2003/05/23 13:23:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
 #define _CERTI_XML_PARSER_HH
 
 // Project
-#include <config.h>
-#include "RoutingSpace.hh"
 #include "RootObject.hh"
 #include "ObjectClass.hh"
 #include "Interaction.hh"
-#include "PrettyDebug.hh"
 
 // Libraries
 #ifdef HAVE_XML
@@ -42,31 +39,6 @@
 
 // Standard libraries
 #include <string>
-
-using std::string ;
-
-#ifdef HAVE_XML
-#define NODE_OBJECT_MODEL (const xmlChar*) "objectModel"
-#define NODE_OBJECTS (const xmlChar*) "objects"
-#define NODE_OBJECT_CLASS (const xmlChar*) "objectClass"
-#define NODE_INTERACTIONS (const xmlChar*) "interactions"
-#define NODE_INTERACTION_CLASS (const xmlChar*) "interactionClass"
-#define NODE_ATTRIBUTE (const xmlChar*) "attribute"
-#define NODE_PARAMETER (const xmlChar*) "parameter"
-#define NODE_ROUTING_SPACE (const xmlChar*) "routingSpace"
-#define NODE_DIMENSIONS (const xmlChar*) "dimensions"
-#define NODE_DIMENSION (const xmlChar*) "dimension"
-
-#define ATTRIBUTE_NAME (const xmlChar*) "name"
-#define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
-#define ATTRIBUTE_ORDER (const xmlChar*) "order"
-#define ATTRIBUTE_SPACE (const xmlChar*) "space"
-
-#define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
-#define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
-#define VALUE_TSO (const xmlChar*) "TimeStamp"
-#define VALUE_RO (const xmlChar*) "Receive"
-#endif
 
 namespace certi {
 
@@ -78,12 +50,9 @@ public:
     static bool exists(void);
 
 private:
-#ifdef HAVE_XML
-    string filename ;
-    RootObject* root ;
-
-    xmlDocPtr doc ;
-    xmlNodePtr cur ;
+    void parseClass(ObjectClass *);
+    void parseInteraction(Interaction *);
+    void parseRoutingSpace(void);
 
     int freeObjectClassHandle ;
     int freeInteractionClassHandle ;
@@ -91,9 +60,12 @@ private:
     int freeParameterHandle ;
     int freeSpaceHandle ;
 
-    void parseClass(ObjectClass *);
-    void parseInteraction(Interaction *);
-    void parseRoutingSpace(void);
+    string filename ;
+    RootObject* root ;
+    
+#ifdef HAVE_XML
+    xmlDocPtr doc ;
+    xmlNodePtr cur ;    
 #endif 
 };
 
@@ -101,4 +73,4 @@ private:
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
+// $Id: XmlParser.hh,v 3.8 2003/05/23 13:23:29 breholee Exp $

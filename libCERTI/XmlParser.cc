@@ -20,12 +20,41 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: XmlParser.cc,v 3.11 2003/05/23 13:23:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "XmlParser.hh"
 
+// Project
+#include <config.h>
+#include "ObjectClassAttribute.hh"
+#include "RoutingSpace.hh"
+#include "PrettyDebug.hh"
+
+using std::string ;
+
 #ifdef HAVE_XML
+
+#define NODE_OBJECT_MODEL (const xmlChar*) "objectModel"
+#define NODE_OBJECTS (const xmlChar*) "objects"
+#define NODE_OBJECT_CLASS (const xmlChar*) "objectClass"
+#define NODE_INTERACTIONS (const xmlChar*) "interactions"
+#define NODE_INTERACTION_CLASS (const xmlChar*) "interactionClass"
+#define NODE_ATTRIBUTE (const xmlChar*) "attribute"
+#define NODE_PARAMETER (const xmlChar*) "parameter"
+#define NODE_ROUTING_SPACE (const xmlChar*) "routingSpace"
+#define NODE_DIMENSIONS (const xmlChar*) "dimensions"
+#define NODE_DIMENSION (const xmlChar*) "dimension"
+
+#define ATTRIBUTE_NAME (const xmlChar*) "name"
+#define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
+#define ATTRIBUTE_ORDER (const xmlChar*) "order"
+#define ATTRIBUTE_SPACE (const xmlChar*) "space"
+
+#define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
+#define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
+#define VALUE_TSO (const xmlChar*) "TimeStamp"
+#define VALUE_RO (const xmlChar*) "Receive"
 
 namespace certi {
 
@@ -318,4 +347,4 @@ bool XmlParser::exists(void)
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: XmlParser.cc,v 3.11 2003/05/23 13:23:29 breholee Exp $
