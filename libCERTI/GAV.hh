@@ -20,24 +20,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.2 2003/02/19 18:07:29 breholee Exp $
+// $Id: GAV.hh,v 3.3 2003/03/24 14:09:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
 #define _CERTI_GAV_HH
 
-#include "RTItypes.hh"
-
 #include <config.h>
-
-#include <list>
-using std::list ;
-
+#include "RTItypes.hh"
 #include "PrettyDebug.hh"
 
+#include <list>
+#include <algorithm>
 #include <assert.h>
 
+using std::list ;
+using std::find ;
+
 namespace certi {
+
 class AttributeHandleSetImp : public list<AttributeHandle>, AttributeHandleSet
 {
 public:
