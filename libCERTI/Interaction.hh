@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.11 2003/07/09 16:01:37 breholee Exp $
+// $Id: Interaction.hh,v 3.12 2003/07/10 21:54:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -33,6 +33,7 @@
 #include "InteractionBroadcastList.hh"
 
 #include <list>
+#include <string>
 
 namespace certi {
 
@@ -97,7 +98,7 @@ public:
     // -- Instance Broadcasting --
     void isReady(FederateHandle federate_handle,
                  ParameterHandle *parameter_list,
-                 UShort list_size) const
+                 UShort list_size)
         throw (FederateNotPublishing,
                InteractionParameterNotDefined,
                RTIinternalError);
@@ -136,40 +137,28 @@ public:
 
 private:
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
-        throw (InteractionParameterNotDefined,
-               RTIinternalError);
+        throw (InteractionParameterNotDefined, RTIinternalError);
 
-    // -- Private Publishers' Management --
+    void deletePublisher(FederateHandle);
+    void deleteSubscriber(FederateHandle);
+    bool isPublishing(FederateHandle);
+    bool isSubscribed(FederateHandle);
 
-    void addPublisher(FederateHandle the_federate)
-        throw (RTIinternalError);
-    void deletePublisher(int the_rank);
-    int getPublisherRank(FederateHandle the_federate) const ;
-    bool isPublishing(FederateHandle the_handle) const ;
-
-    // -- Private Subcribers' Management --
-    void addSubscriber(FederateHandle the_federate)
-        throw (RTIinternalError);
-    void deleteSubscriber(int the_rank);
-    bool isSubscribed(FederateHandle the_handle) const ;
-    int getSubscriberRank(FederateHandle the_federate) const ;
-
-    // Attributes
-    
-    char *name ; //!< Must be locally allocated and deleted.
+    // Attributes    
+    std::string name ;
     SecurityLevelID id ; //!< The default Security Level for new parameters
     SpaceHandle space ;
 
     //! List of this Interaction Class' Parameters.
-    list<Parameter *> parameterSet ;
+    std::list<Parameter *> parameterSet ;
     //! List of the Federates(Handles) who subscribed to this Class.
-    list<Subscriber *> subscribers ;
+    std::list<Subscriber *> subscribers ;
     //! List of the Federates(Handles) publishing this Class.
-    list<Publisher *> publishers ;
+    std::list<Publisher *> publishers ;
 };
 
 } // namespace
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.11 2003/07/09 16:01:37 breholee Exp $
+// $Id: Interaction.hh,v 3.12 2003/07/10 21:54:25 breholee Exp $

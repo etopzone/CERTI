@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $
+// $Id: Interaction.cc,v 3.15 2003/07/10 21:54:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,8 +52,8 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 
     parameterSet.push_front(the_parameter);
 
-    D.Out(pdRegister, "Interaction %u(\"%s\") has a new parameter %u.",
-          handle, name, the_parameter->Handle);
+    D[pdRegister] << "Interaction " << handle << "(\"" << name.c_str()
+		  << "\") has a new parameter " << the_parameter->Handle ;
 
     return the_parameter->Handle ;
 }
@@ -82,41 +82,6 @@ Interaction::addParametersToChild(Interaction *the_child)
         if (child->Handle != (*p)->Handle)
             throw RTIinternalError("Error while copying child's attributes.");
     }
-}
-
-// ----------------------------------------------------------------------------
-//! addPublisher (private).
-void
-Interaction::addPublisher(FederateHandle the_federate)
-    throw (RTIinternalError)
-{
-    Publisher *publisher = new Publisher(the_federate);
-
-    if (publisher == NULL) {
-        D.Out(pdExcept, "Memory exhausted while publishing interaction.");
-        throw
-            RTIinternalError("Memory Exhausted while publishing interaction.");
-    }
-
-    publishers.push_front(publisher);
-}
-
-// ----------------------------------------------------------------------------
-// addSubscriber (private).
-void
-Interaction::addSubscriber(FederateHandle the_federate)
-    throw (RTIinternalError)
-{
-    Subscriber *subscriber = new Subscriber(the_federate);
-
-    if (subscriber == NULL) {
-        D.Out(pdExcept, "Memory exhausted while subscribing interaction.");
-        throw
-            RTIinternalError("Memory Exhausted while "
-                             "subscribing interaction.");
-    }
-
-    subscribers.push_front(subscriber);
 }
 
 // ----------------------------------------------------------------------------
@@ -221,7 +186,7 @@ Interaction::checkFederateAccess(FederateHandle the_federate,
 //! Interaction.
 Interaction::Interaction()
     : handle(0), parent(0), depth(0), transport(BEST_EFFORT), order(RECEIVE),
-      name(NULL), id(PublicLevelID)
+      id(PublicLevelID)
 {
 }
 
@@ -229,11 +194,6 @@ Interaction::Interaction()
 //! Destructor.
 Interaction::~Interaction()
 {
-    if (name != NULL) {
-        free(name);
-        name = NULL ;
-    }
-
     while (!parameterSet.empty()) {
         delete parameterSet.front();
         parameterSet.pop_front();
@@ -270,11 +230,11 @@ Interaction::~Interaction()
 // ----------------------------------------------------------------------------
 //! Delete a publisher with rank (private module).
 void
-Interaction::deletePublisher(int the_rank)
+Interaction::deletePublisher(FederateHandle fed)
 {
-    list<Publisher *>::iterator p = publishers.begin();
-    for (int i = 1 ; p != publishers.end(); i++, p++) {
-        if (i == the_rank) {
+    list<Publisher *>::iterator p ;
+    for (p = publishers.begin(); p != publishers.end(); ++p) {
+        if ((*p)->getHandle() == fed) {
             delete (*p);
             publishers.erase(p);
             return ;
@@ -285,11 +245,11 @@ Interaction::deletePublisher(int the_rank)
 // ----------------------------------------------------------------------------
 //! Delete a subscriber with rank (private module).
 void
-Interaction::deleteSubscriber(int the_rank)
+Interaction::deleteSubscriber(FederateHandle fed)
 {
-    list<Subscriber *>::iterator s = subscribers.begin();
-    for (int i = 1 ; s != subscribers.end(); i++, s++) {
-        if (i == the_rank) {
+    list<Subscriber *>::iterator s ;
+    for (s = subscribers.begin(); s != subscribers.end(); ++s) {
+        if ((*s)->getHandle() == fed) {
             delete (*s);
             subscribers.erase(s);
             return ;
@@ -305,7 +265,6 @@ Interaction::display() const
     cout << " Interaction " << handle << " \"" << name << "\" :" << endl ;
 
     // Display inheritance
-
     cout << " Parent Class Handle: " << parent << endl ;
     cout << " Security Level: " << id << endl ;
     cout << " " << children.size() << " Child(s):" << endl ;
@@ -344,8 +303,7 @@ Interaction::getParameterByHandle(ParameterHandle the_handle) const
 //! Returns the parameter handle obtained by its name.
 ParameterHandle
 Interaction::getParameterHandle(const char *the_name) const
-    throw (NameNotFound,
-           RTIinternalError)
+    throw (NameNotFound, RTIinternalError)
 {
     list<Parameter *>::const_iterator p ;
     for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
@@ -367,51 +325,31 @@ Interaction::getParameterName(ParameterHandle the_handle) const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns the publisher rank from its handle (private module).
-/*! Return the Rank of the Federate in the list, or ZERO if not found.
- */
-int
-Interaction::getPublisherRank(FederateHandle the_federate) const
-{
-    list<Publisher *>::const_iterator p = publishers.begin();
-    for (int i = 1 ; p != publishers.end(); i++, p++) {
-        if ((*p)->getHandle() == the_federate)
-            return i ;
-    }
-
-    return 0 ;
-}
-
-// ----------------------------------------------------------------------------
-//! Returns the subscriber rank from its handle (private module).
-/*! Return the Rank of the Federate in the list, or ZERO if not found.
- */
-int
-Interaction::getSubscriberRank(FederateHandle the_federate) const
-{
-    list<Subscriber *>::const_iterator s = subscribers.begin();
-    for (int i = 1 ; s != subscribers.end(); i++, s++) {
-        if ((*s)->getHandle() == the_federate)
-            return i ;
-    }
-
-    return 0 ;
-}
-
-// ----------------------------------------------------------------------------
 //! Return true if federate has subscribed to this attribute.
 bool
-Interaction::isSubscribed(FederateHandle the_handle) const
+Interaction::isSubscribed(FederateHandle fed)
 {
-    return(getSubscriberRank(the_handle) != 0);
+    list<Subscriber *>::iterator s ;
+    for (s = subscribers.begin(); s != subscribers.end(); ++s) {
+        if ((*s)->getHandle() == fed) {
+	    return true ;
+        }
+    }
+    return false ;
 }
 
 // ----------------------------------------------------------------------------
 //! Return true if federate is publishing the attribute.
 bool
-Interaction::isPublishing(FederateHandle the_handle) const
+Interaction::isPublishing(FederateHandle fed)
 {
-    return(getPublisherRank(the_handle) != 0);
+    list<Publisher *>::iterator p ;
+    for (p = publishers.begin(); p != publishers.end(); ++p) {
+        if ((*p)->getHandle() == fed) {
+	    return true ;
+        }
+    }
+    return false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -421,7 +359,7 @@ Interaction::isPublishing(FederateHandle the_handle) const
 void
 Interaction::isReady(FederateHandle federate_handle,
                      ParameterHandle *parameter_list,
-                     UShort list_size) const
+                     UShort list_size)
     throw (FederateNotPublishing,
            InteractionParameterNotDefined,
            RTIinternalError)
@@ -471,7 +409,7 @@ Interaction::publish(bool publish, FederateHandle the_handle)
             D.Out(pdInit,
                   "Interaction %d: Added Federate %d to publishers list.",
                   handle, the_handle);
-            addPublisher(the_handle);
+	    publishers.push_front(new Publisher(the_handle));
         }
         else
             D.Out(pdError,
@@ -484,7 +422,7 @@ Interaction::publish(bool publish, FederateHandle the_handle)
             D.Out(pdTerm,
                   "Interaction %d: Removed Federate %d from publishers list.",
                   handle, the_handle);
-            deletePublisher(getPublisherRank(the_handle));
+            deletePublisher(the_handle);
         }
         else
             throw FederateNotPublishing();
@@ -550,7 +488,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 const char *
 Interaction::getName() const
 {
-    return name ;
+    return name.c_str();
 }
 
 // ----------------------------------------------------------------------------
@@ -559,20 +497,7 @@ void
 Interaction::setName(const char *new_name)
     throw (ValueLengthExceeded, RTIinternalError)
 {
-    // Check Length
-    if ((new_name == NULL) || (strlen(new_name) > MAX_USER_TAG_LENGTH)) {
-        D.Out(pdExcept, "Interaction Name %s too long.", new_name);
-        throw ValueLengthExceeded("Interaction name too long.");
-    }
-
-    // Free previous name
-    if (name != NULL)
-        free(name);
-
-    // Store new name
-    name = strdup(new_name);
-    if (name == NULL)
-        throw RTIinternalError("Memory Exhausted.");
+    name = new_name == 0 ? "" : new_name ;
 }
 
 // ----------------------------------------------------------------------------
@@ -605,7 +530,7 @@ Interaction::subscribe(bool subscribe, FederateHandle the_handle)
     if (subscribe) {
         // Federate wants to Subscribe
         if (alreadySubscribed == RTI_FALSE) {
-            addSubscriber(the_handle);
+            subscribers.push_front(new Subscriber(the_handle));
             D.Out(pdInit,
                   "Parameter %d: Added Federate %d to subscribers list.",
                   handle, the_handle);
@@ -618,7 +543,7 @@ Interaction::subscribe(bool subscribe, FederateHandle the_handle)
     else {
         // Federate wants to unsubscribe
         if (alreadySubscribed == RTI_TRUE) {
-            deleteSubscriber(getSubscriberRank(the_handle));
+            deleteSubscriber(the_handle);
             D.Out(pdTerm,
                   "Parameter %d: Removed Federate %d from subscribers list.",
                   handle, the_handle);
@@ -661,4 +586,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $
+// $Id: Interaction.cc,v 3.15 2003/07/10 21:54:25 breholee Exp $
