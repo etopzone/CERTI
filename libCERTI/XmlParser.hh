@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.3 2003/02/19 18:07:31 breholee Exp $
+// $Id: XmlParser.hh,v 3.4 2003/02/21 15:27:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -63,7 +63,7 @@ using std::string ;
 #define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
 #define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
 #define VALUE_TSO (const xmlChar*) "TimeStamp"
-#define VALUE_RO (const xmlChar*) "Reveive"
+#define VALUE_RO (const xmlChar*) "Receive"
 
 namespace certi {
 
@@ -97,4 +97,4 @@ private:
 #endif // HAVE_XML
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.3 2003/02/19 18:07:31 breholee Exp $
+// $Id: XmlParser.hh,v 3.4 2003/02/21 15:27:08 breholee Exp $
