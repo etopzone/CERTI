@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.hh,v 3.6 2003/11/12 14:40:57 breholee Exp $
+// $Id: SocketMC.hh,v 3.7 2005/03/14 19:16:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_MC_HH
@@ -61,8 +61,6 @@ public:
     char *receiveMC(NetworkMessage *msg);
 
 private:
-    int portableSelect(fd_set *, struct timeval *);
-
     struct sockaddr_in _sin ;
     socklen_t _sinlen ;
 
@@ -79,4 +77,4 @@ private:
 
 #endif // _CERTI_SOCKET_MC_HH
 
-// $Id: SocketMC.hh,v 3.6 2003/11/12 14:40:57 breholee Exp $
+// $Id: SocketMC.hh,v 3.7 2005/03/14 19:16:24 breholee Exp $
