@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.11.2.1 2004/06/30 14:20:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -54,7 +54,7 @@ AttributeHandleValuePair::AttributeHandleValuePair(Handle handle,
 // ----------------------------------------------------------------------------
 AttributeHandleValuePair::~AttributeHandleValuePair()
 {
-    delete _value ;
+    free(_value);
 }
 
 // ----------------------------------------------------------------------------
@@ -639,4 +639,4 @@ ParameterSetFactory::create(ULong size)
 
 } // namespace certi
 
-// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.11.2.1 2004/06/30 14:20:12 breholee Exp $
