@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: Files.hh,v 3.6 2003/10/20 12:05:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FILES_HH
@@ -65,9 +65,9 @@ public:
 
 private:
     // Attributes
-    list<NetworkMessage *> fifos ; //!< FIFO list.
-    list<NetworkMessage *> tsos ; //!< TSO list.
-    list<NetworkMessage *> commands ; //!< commands list.
+    std::list<NetworkMessage *> fifos ; //!< FIFO list.
+    std::list<NetworkMessage *> tsos ; //!< TSO list.
+    std::list<NetworkMessage *> commands ; //!< commands list.
 
     // Call a service on the federate.
     void executeFederateService(NetworkMessage *);
@@ -77,4 +77,4 @@ private:
 
 #endif // _CERTI_RTIA_FILES_HH
 
-// $Id: Files.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: Files.hh,v 3.6 2003/10/20 12:05:50 breholee Exp $
