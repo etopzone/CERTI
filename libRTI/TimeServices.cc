@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TimeServices.cc,v 3.2 2003/10/06 16:19:44 breholee Exp $
+// $Id: TimeServices.cc,v 3.3 2005/03/13 22:35:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -347,7 +347,7 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
 // ----------------------------------------------------------------------------
 // Query Lookahead
 void
-RTIambassador::queryLookahead(FedTime& theTime)
+RTIambassador::queryLookahead(FedTime &theTime)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -359,8 +359,13 @@ RTIambassador::queryLookahead(FedTime& theTime)
     req.type = Message::QUERY_LOOKAHEAD ;
     executeService(&req, &rep);
 
-    RTIfedTime *tmp = new RTIfedTime((Double) rep.getFederationTimeDelta());
-    theTime = *(dynamic_cast<FedTime *>(tmp));
+    try { 
+        RTIfedTime &ret = dynamic_cast<RTIfedTime&>(theTime); 
+        ret = RTIfedTime((Double) rep.getFederationTimeDelta());
+    }
+    catch (std::bad_cast) {
+	throw RTIinternalError("theTime is not a RTIfedTime object");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -437,4 +442,4 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 
 }
 
-// $Id: TimeServices.cc,v 3.2 2003/10/06 16:19:44 breholee Exp $
+// $Id: TimeServices.cc,v 3.3 2005/03/13 22:35:39 breholee Exp $
