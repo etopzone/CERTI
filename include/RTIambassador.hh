@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIambassador.hh,v 3.5 2003/01/10 15:39:58 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -28,8 +28,10 @@
 
 #include <csignal>
 #include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
 
-#include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -49,25 +51,15 @@ class Message ;
 class CAttributeHandleValuePairSet ;
 class AttributeHandleSet ;
 
+/*! This class is used by applications for calls to RTI.
+    RTIambassador is separated into two parts. This part uses an UNIX socket
+    for sending and receiving data to/from rtia.
+ */
 class RTIambassador : private SocketUN
 {
-private:
-  //privateRTIambassador attr ;
-  pid_t pid_RTIA;
-  FederateAmbassador *fed_amb;
- 
-  // booleen pour interdire les appels reentrants
-  //(voir tick()et executeService() )
-  Boolean en_service;
-
-  RootObject *_theRootObj;
-
-  void processException(Message *);
-  void executeService(Message *requete, Message *reponse);
-
 public:
-  RTIambassador() throw(MemoryExhausted, RTIinternalError);
-  ~RTIambassador() throw(RTIinternalError);
+  RTIambassador(void) throw(MemoryExhausted, RTIinternalError);
+  ~RTIambassador(void);
 
   // Data Integrity
 
@@ -1309,10 +1301,24 @@ public:
 	  ConcurrentAccessAttempted,
 	  RTIinternalError);
 
+private:
+  pid_t pid_RTIA; //!< pid associated with rtia fork (private).
+
+  //! Federate Ambassador reference for module calls.
+  FederateAmbassador *fed_amb;
+ 
+  //! used to prevent reentrant calls (see tick() and executeService()).
+  bool is_reentrant;
+
+  RootObject *_theRootObj;
+
+  void processException(Message *);
+  void executeService(Message *requete, Message *reponse);
+  void leave(const char *msg);
 };
 
 }
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.5 2003/01/10 15:39:58 breholee Exp $

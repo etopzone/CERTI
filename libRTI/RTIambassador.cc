@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.5 2002/12/11 00:47:34 breholee Exp $
+// $Id: RTIambassador.cc,v 3.6 2003/01/10 15:39:58 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -34,7 +34,6 @@
 #include "fedtime.hh"
 #include "PrettyDebug.hh"
 
-//#include "privateRTIambassador.hh"
 #include "RTIambassador.hh"
 
 namespace certi {
@@ -42,9 +41,9 @@ namespace certi {
 static pdCDebug D("LIBRTI", "(libRTI  ) - ");
 
 //-----------------------------------------------------------------
-void Sortir(const char *msg)              // FIXME: prototype?
+void RTIambassador::leave(const char *msg)
 {
-  printf("libRTI: %s\n", msg);
+  cout << "libRTI: " << msg << endl;
   exit(-1);
 }
 
@@ -52,88 +51,93 @@ void Sortir(const char *msg)              // FIXME: prototype?
 void 
 RTIambassador::executeService(Message *req,Message *rep)
 {
-  // lever une exception si appel reentrant
-  if(en_service)
+  // raise exception if reentrant call.
+  if (is_reentrant)
     throw ConcurrentAccessAttempted();
 
-  D.Out(pdDebug,"envoi de la requete au RTIA");
+  D.Out(pdDebug,"sending request to RTIA.");
 
-  en_service = RTI_TRUE;
+  is_reentrant = true ;
   try {
     req->write((SocketUN *) this);
    }
   catch(NetworkError) {
-    printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+    cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
     throw RTIinternalError();
   }
    
-  D.Out(pdDebug,"attente reponse du RTIA");
+  D.Out(pdDebug,"waiting RTIA reply.");
 
-  // attendre la reponse du RTI 
+  // waitinf RTI reply.
   try {
     rep->read((SocketUN *) this);
   }
   catch(NetworkError) {
-    printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+    cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
     throw RTIinternalError();
   }
 
-  D.Out(pdDebug,"reponse du RTIA recue");
+  D.Out(pdDebug,"RTIA reply received.");
 
   if(rep->Type != req->Type) {
-    printf("LibRTI: Assertion failed: rep->Type != req->Type\n");
+    cout << "LibRTI: Assertion failed: rep->Type != req->Type" << endl;
     throw RTIinternalError("LibRTI:ExecuterService: rep->Type != req->Type");
   }
 
-  en_service = RTI_FALSE;
+  is_reentrant = false ;
   
-  D.Out(pdDebug,"traitement de l'exception(réponse) retournee");
+  D.Out(pdDebug,"processing returned exception (from reply).");
 
   processException(rep);
 
-  D.Out(pdDebug,"traitement realise");
+  D.Out(pdDebug,"exception processed.");
 }
 
-
-//-----------------------------------------------------------------
-// Constructeur
-
-RTIambassador::RTIambassador()
+// ---------------------------------------------------------------------------
+//! Start RTIambassador processes for communication with RTIG.
+/*! When a new RTIambassador is created in the application, a new process rtia
+    is launched. This process is used for data exchange with rtig server.
+    This process connects to rtia after one second delay (UNIX socket).
+ */
+RTIambassador::RTIambassador(void)
   throw(MemoryExhausted, RTIinternalError) : SocketUN(stIgnoreSignal)
 {
-  en_service = RTI_FALSE;
-  const char *rtiaexec = "rtia" ;
+  is_reentrant = false ;
+  const char *rtiaexec = "rtia";
   const char *rtiaenv = getenv("CERTI_RTIA");
-  const char *rtiacall ;
-  if(rtiaenv) rtiacall = rtiaenv ;
-  else rtiacall = rtiaexec ;
+  const char *rtiacall;
+  if (rtiaenv) rtiacall = rtiaenv;
+  else rtiacall = rtiaexec;
 
-  // creation du processus RTIA
+  // creating RTIA process.
   switch((pid_RTIA = fork()))
   {
-    case -1: // erreur du fork
+    case -1: // fork failed.
       perror("fork");
-      throw RTIinternalError("Sortir sur instruction fork");
+      throw RTIinternalError("fork failed in RTIambassador constructor");
       break;
 
-    case 0: // processus fils(RTIA)
+    case 0: // child process (RTIA).
       execlp(rtiacall , NULL);
       perror("execlp");
+
+      cerr << "Could not launch RTIA process." << endl 
+           << "Maybe RTIA is not in search PATH environment." << endl ;
+
       exit(-1);
 
-    default:  // processus pere(Federe)
+    default:  // father process (Federe).
       sleep(1);
       connectUN(pid_RTIA);
       break;
   }
 }
 
-
-//-----------------------------------------------------------------
-// Destructeur
-
-RTIambassador::~RTIambassador()
-  throw(RTIinternalError)
+// ---------------------------------------------------------------------------
+//! Closes processes.
+/*! When destructor is called, kill rtia process.
+ */
+RTIambassador::~RTIambassador(void)
 {
   kill(pid_RTIA, SIGINT);
 }
@@ -152,8 +156,9 @@ RTIambassador::~RTIambassador()
      Differenciation between ? and \ is made on parity number of ? contained
      between \.
 */
-void RTIambassador::objectToString(const char *init_string,
-				   ULong size, char *end_string)
+void 
+RTIambassador::objectToString(const char *init_string,
+                              ULong size, char *end_string)
 {
   ULong i = 0;
   ULong j = 0;
@@ -198,9 +203,11 @@ void RTIambassador::objectToString(const char *init_string,
     }
 }
 
-//! Returns buffer size needed for storing network message made by objectToString.
-void RTIambassador::getObjectToStringLength(char *init_string,
-					    ULong init_size, ULong& size)
+// ---------------------------------------------------------------------------
+//! Returns buffer size needed to store network message made by objectToString
+void
+RTIambassador::getObjectToStringLength(char *init_string,
+                                       ULong init_size, ULong& size)
 {
   ULong counter = 0;
   ULong i = 0;
@@ -236,13 +243,14 @@ void RTIambassador::getObjectToStringLength(char *init_string,
 }
 
 //*******************************************************************
-//              Gestion de la federation
+//              Federation Management
 //*******************************************************************
 
-
-//-----------------------------------------------------------------
-// 2.1 Create Federation Execution
-
+// ---------------------------------------------------------------------------
+//! Create Federation Execution.
+/*! Send a CREATE_FEDERATION_EXECUTION request type to inform rtia process a
+    new federation is being created.
+*/
 void RTIambassador::createFederationExecution(
   const char *executionName,
   const char *FED)
@@ -272,11 +280,10 @@ throw(
   }
 }
 
-//-----------------------------------------------------------------
-// 2.2 Destroy Federation Execution
-
-void RTIambassador::destroyFederationExecution(
-  const char *executionName)
+// ---------------------------------------------------------------------------
+//! Destroy Federation Execution.
+void
+RTIambassador::destroyFederationExecution(const char *executionName)
 throw(
   FederatesCurrentlyJoined,
   FederationExecutionDoesNotExist,
@@ -293,13 +300,12 @@ throw(
   executeService(&req, &rep);
 }
 
-//-----------------------------------------------------------------
-// 2.3 Join Federation Execution
-
-FederateHandle RTIambassador::joinFederationExecution(
-  const char *yourName,
-  const char *executionName,
-        FederateAmbassadorPtr federateAmbassadorReference)
+// ---------------------------------------------------------------------------
+//! Join Federation Execution.
+FederateHandle
+RTIambassador::joinFederationExecution(const char *yourName,
+                                       const char *executionName,
+                           FederateAmbassadorPtr federateAmbassadorReference)
 throw(
   FederateAlreadyExecutionMember,
   FederationExecutionDoesNotExist,
@@ -324,12 +330,10 @@ throw(
   return(rep.NumeroFedere);
 }
 
-
-//-----------------------------------------------------------------
-// 2.4 Resign Federation Execution
-
-void RTIambassador::resignFederationExecution(
-  ResignAction theAction) 
+// ---------------------------------------------------------------------------
+//! Resign Federation Execution.
+void
+RTIambassador::resignFederationExecution(ResignAction theAction) 
 throw(
   FederateOwnsAttributes,
   FederateNotExecutionMember,
@@ -345,13 +349,11 @@ throw(
   executeService(&req, &rep);
 }
 
-
-//-----------------------------------------------------------------
-// 2.5 RegisterFederationSynchronizationPoint
-
-void RTIambassador::registerFederationSynchronizationPoint(
-  const char *label,
-  const char * /*theTag*/)
+// ---------------------------------------------------------------------------
+//! Register Federation Synchronization Point
+void
+RTIambassador::registerFederationSynchronizationPoint(const char *label,
+                                                      const char * /*theTag*/)
 throw(
   FederateNotExecutionMember,
   ConcurrentAccessAttempted,
@@ -392,12 +394,11 @@ throw(
 }
 
 
-//-----------------------------------------------------------------
-// 2.7 Synchronization Point Achieved
-
-void RTIambassador::synchronizationPointAchieved(
-  const char *label)
-throw(
+// -----------------------------------------------------------------
+//! Synchronization Point Achieved
+void
+RTIambassador::synchronizationPointAchieved(const char *label)
+    throw(
   SynchronizationPointLabelWasNotAnnounced,
   FederateNotExecutionMember,
   ConcurrentAccessAttempted,
@@ -421,13 +422,11 @@ throw(
   executeService(&req, &rep);
 }
 
-
-//-----------------------------------------------------------------
-// 2.9 Request Federation Save
-
-void RTIambassador::requestFederationSave(    
-  const char     */*label*/,
-  const FedTime&  /*theTime*/)
+// ---------------------------------------------------------------------------
+//! Request Federation Save (not implemented)
+void
+RTIambassador::requestFederationSave(const char     */*label*/,
+                                     const FedTime&  /*theTime*/)
 throw(
   FederationTimeAlreadyPassed,
   InvalidFederationTime,
@@ -441,8 +440,10 @@ throw(
   throw UnimplementedService();
 }
 
-void RTIambassador::requestFederationSave( 
-  const char */*label*/)
+// ---------------------------------------------------------------------------
+//! Request Federation Save (not implemented)
+void
+RTIambassador::requestFederationSave(const char */*label*/)
   throw(
 	//  InvalidFederationTime,
 // 	 FederateNotExecutionMember,
@@ -462,11 +463,10 @@ void RTIambassador::requestFederationSave(
   throw UnimplementedService();
 }
 
-
-//-----------------------------------------------------------------
-// 2.11 Federate Save Begun
-
-void RTIambassador::federateSaveBegun() 
+// ---------------------------------------------------------------------------
+//! Federate Save Begun (not implemented).
+void
+RTIambassador::federateSaveBegun() 
 throw(
   SaveNotInitiated,
   FederateNotExecutionMember,
@@ -478,10 +478,8 @@ throw(
   throw UnimplementedService();
 }
 
-
-//-----------------------------------------------------------------
-// 2.12 Federate Save Complete
-
+// ---------------------------------------------------------------------------
+//! Federate Save Complete (not implemented)
 void 
 RTIambassador::federateSaveComplete() 
 throw(
@@ -495,6 +493,8 @@ throw(
   throw UnimplementedService();
 }
 
+// ---------------------------------------------------------------------------
+// Federate Save Not Complete (not implemented)
 void 
 RTIambassador::federateSaveNotComplete() 
 throw(
@@ -508,12 +508,10 @@ throw(
   throw UnimplementedService();
 }
 
-
-//-----------------------------------------------------------------
-// 2.14 Request Restore
-
-void RTIambassador::requestFederationRestore(    
-  const char */*label*/)
+// ---------------------------------------------------------------------------
+//! 2.14 Request Restore (not implemented)
+void
+RTIambassador::requestFederationRestore(const char */*label*/)
 throw(
   SpecifiedSaveLabelDoesNotExist,//CERTI
   FederateNotExecutionMember,
@@ -526,10 +524,8 @@ throw(
   throw UnimplementedService();
 }
 
-
-//-----------------------------------------------------------------
-// 2.17 Restore Complete
-
+// ---------------------------------------------------------------------------
+//! Restore Complete (not implemented)
 void 
 RTIambassador::federateRestoreComplete()  
 throw(
@@ -545,6 +541,7 @@ throw(
   throw UnimplementedService();
 }
 
+//! Federate Restore Not Complete (not implemented).
 void 
 RTIambassador::federateRestoreNotComplete() 
 throw(
@@ -560,30 +557,15 @@ throw(
   throw UnimplementedService();
 }
 
-//void restoreNotAchieved() 
-//throw(
-//  RestoreNotRequested,
-//  FederateNotExecutionMember,
-//  ConcurrentAccessAttempted,
-//  SaveInProgress,//not implemented
-//  RTIinternalError,
-//  UnimplementedService)//CERTI
-//{
-//  throw UnimplementedService();
-//}
-
-
 //*******************************************************************
-//              Gestion des declarations
+//              Declaration Management
 //*******************************************************************
-
 
 //-----------------------------------------------------------------
-// 3.1 Publish Object Class
-
-void RTIambassador::publishObjectClass(
-        ObjectClassHandle   theClass,      
-  const AttributeHandleSet& attributeList)
+// Publish Object Class
+void
+RTIambassador::publishObjectClass(ObjectClassHandle theClass,      
+                                  const AttributeHandleSet& attributeList)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -2811,11 +2793,11 @@ Boolean RTIambassador::tick()
   CAttributeHandleValuePairSet theAttributes;
   CParameterHandleValuePairSet theParameters;
 
-  // Lever une exception si appel reentrant
-  if(en_service)
+  // Throw exception if reentrant call.
+  if (is_reentrant)
     throw ConcurrentAccessAttempted();
 
-  en_service = RTI_TRUE;
+  is_reentrant = true ;
 
   // Prevenir le RTI
   vers_RTI.Type = TICK_REQUEST;
@@ -2824,28 +2806,27 @@ Boolean RTIambassador::tick()
     vers_RTI.write((SocketUN *) this);
   }
   catch(NetworkError) {
-    printf("tick 1.\n");
-    printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+    cout << "tick 1." << endl;
+    cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
     throw RTIinternalError();
   }
 
   while(1) {
  
     // Lire la reponse du RTIA local 
-
     try {
       vers_Fed.read((SocketUN *) this);
     }
     catch(NetworkError) {
-      printf("tick 2.\n");
-      printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+      cout << "tick 2." << endl;
+      cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
       throw RTIinternalError();
     }
 
     // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
 
     if(vers_Fed.Type == TICK_REQUEST) {
-      en_service = RTI_FALSE;
+      is_reentrant = false ;
       processException(&vers_Fed);
       return(vers_Fed.Bool);
     }
@@ -3107,7 +3088,7 @@ fed_amb->requestAttributeOwnershipRelease((ObjectHandle)vers_Fed.Objectid,
  break;
 
       default:
- Sortir("service demande par le RTI inconnu");
+          leave("RTI service requested by RTI is unknown.");
       }
     }
     catch(InvalidFederationTime &e)
@@ -3144,8 +3125,8 @@ fed_amb->requestAttributeOwnershipRelease((ObjectHandle)vers_Fed.Objectid,
       vers_RTI.write((SocketUN *) this);
     }
     catch(NetworkError) {
-      printf("tick 3.\n");
-      printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+      cout << "tick 3." << endl;
+      cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
       throw RTIinternalError();
     }
 
@@ -3169,10 +3150,10 @@ throw(
   CParameterHandleValuePairSet theParameters;
 
   // Lever une exception si appel reentrant
-  if(en_service)
+  if (is_reentrant)
     throw ConcurrentAccessAttempted();
 
-  en_service = RTI_TRUE;
+  is_reentrant = true ;
 
   // Prevenir le RTI
   vers_RTI.Type = TICK_REQUEST;
@@ -3181,7 +3162,7 @@ throw(
     vers_RTI.write((SocketUN *) this);
   }
   catch(NetworkError) {
-    printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+    cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
     throw RTIinternalError();
   }
 
@@ -3193,14 +3174,14 @@ throw(
       vers_Fed.read((SocketUN *) this);
     }
     catch(NetworkError) {
-      printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+      cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
       throw RTIinternalError();
     }
 
     // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
 
     if(vers_Fed.Type == TICK_REQUEST) {
-      en_service = RTI_FALSE;
+      is_reentrant = false ;
       processException(&vers_Fed);
       return(vers_Fed.Bool);
     }
@@ -3459,7 +3440,7 @@ fed_amb->requestAttributeOwnershipRelease((ObjectHandle)vers_Fed.Objectid,
  break;
 
       default:
- Sortir("service demande par le RTI inconnu");
+          leave("RTI service requested by RTI is unknown.");
       }
     }
     catch(InvalidFederationTime &e)
@@ -3496,16 +3477,21 @@ fed_amb->requestAttributeOwnershipRelease((ObjectHandle)vers_Fed.Objectid,
       vers_RTI.write((SocketUN *) this);
     }
     catch(NetworkError) {
-      printf("tick 3.\n");
-      printf("LibRTI: Catched NetworkError, throw RTIinternalError.\n");
+      cout << "tick 3." << endl;
+      cout << "LibRTI: Catched NetworkError, throw RTIinternalError." << endl;
       throw RTIinternalError();
     }
 
   }
 }
 
-//-----------------------------------------------------------------
-void RTIambassador::processException(Message *msg)
+// ---------------------------------------------------------------------------
+//! Process exception from received message.
+/*! When a message is received from RTIA, it can contains an exception.
+    This exception is processed by this module and a new exception is thrown.
+*/
+void
+RTIambassador::processException(Message *msg)
 {
   D.Out(pdExcept,"nom de l'exception : %d .",msg->Exception);
   switch(msg->Exception)
@@ -3910,7 +3896,7 @@ void RTIambassador::processException(Message *msg)
 
     default:
       D.Out(pdExcept, "Throwing unknown exception !");
-      printf("LibRTI: Receving unknown exception.\n");
+      cout << "LibRTI: Receiving unknown exception." << endl;
       throw RTIinternalError(msg->RaisonException);
       break;
   }
@@ -3918,4 +3904,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.5 2002/12/11 00:47:34 breholee Exp $
+// $Id: RTIambassador.cc,v 3.6 2003/01/10 15:39:58 breholee Exp $
