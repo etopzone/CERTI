@@ -1,6 +1,6 @@
 ## CERTI RTIA Makefile.am
 ## Copyright (C) 2001, 2002, 2003 ONERA
-## $Id: Makefile.am,v 3.3 2003/06/27 17:26:28 breholee Exp $
+## $Id: Makefile.am,v 3.4 2003/10/20 12:04:46 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -24,6 +24,6 @@ ObjectManagement.cc OwnershipManagement.cc RTIA.cc RTIA_federate.cc	\
 RTIA_network.cc Statistics.cc TimeManagement.cc
 
 LDADD = -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lCERTI	\
--lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@
+-lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@
 
-## $Id: Makefile.am,v 3.3 2003/06/27 17:26:28 breholee Exp $
+## $Id: Makefile.am,v 3.4 2003/10/20 12:04:46 breholee Exp $

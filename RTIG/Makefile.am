@@ -1,5 +1,5 @@
 ## CERTI RTIG Makefile.am 
-## $Id: Makefile.am,v 3.3 2003/02/17 09:17:03 breholee Exp $
+## $Id: Makefile.am,v 3.4 2003/10/20 12:02:02 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -19,6 +19,6 @@ rtig_SOURCES = Federate.cc Federation.cc FederationsList.cc main.cc	\
 RTIG.cc RTIG_processing.cc Trace.cc cmdline.c getopt1.c getopt.c
 
 LDADD = -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lCERTI	\
--lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@
+-lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@
 
-## EOF $Id: Makefile.am,v 3.3 2003/02/17 09:17:03 breholee Exp $
+## EOF $Id: Makefile.am,v 3.4 2003/10/20 12:02:02 breholee Exp $
