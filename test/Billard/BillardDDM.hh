@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.4 2003/12/01 16:41:54 breholee Exp $
+// $Id: BillardDDM.hh,v 3.5 2003/12/02 16:51:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_DDM_HH
@@ -35,6 +35,7 @@ public:
     virtual ~BillardDDM();
 
     virtual void declare();
+    virtual void publishAndSubscribe();
 
 protected:
     virtual void getHandles();
@@ -53,4 +54,4 @@ protected:
 
 #endif // CERTI_BILLARD_DDM_HH
 
-// $Id: BillardDDM.hh,v 3.4 2003/12/01 16:41:54 breholee Exp $
+// $Id: BillardDDM.hh,v 3.5 2003/12/02 16:51:35 breholee Exp $

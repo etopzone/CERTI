@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.6 2003/12/01 16:41:54 breholee Exp $
+// $Id: BillardDDM.cc,v 3.7 2003/12/02 16:51:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -132,7 +132,7 @@ BillardDDM::declare()
 /** Carry out publications and subscriptions
  */
 void
-Billard::publishAndSubscribe()
+BillardDDM::publishAndSubscribe()
 {
     getHandles();
 
@@ -161,4 +161,4 @@ Billard::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
 }
 
-// $Id: BillardDDM.cc,v 3.6 2003/12/01 16:41:54 breholee Exp $
+// $Id: BillardDDM.cc,v 3.7 2003/12/02 16:51:35 breholee Exp $
