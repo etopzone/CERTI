@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.19 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG.cc,v 3.20 2003/10/20 12:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,7 +38,7 @@ using std::cerr ;
 namespace certi {
 namespace rtig {
 
-static pdCDebug D("RTIG", "(RTIG)- ");
+static pdCDebug D("RTIG", __FILE__);
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -58,20 +58,11 @@ RTIG::RTIG()
     udpPort = atoi(udp_port_s);
 
     socketServer = new SocketServer(&tcpSocketServer,
-                                    &udpSocketServer,
-                                    udpPort);
-
-    if (socketServer == NULL)
-        throw RTIinternalError("No memory to create socketServer.");
-
+				    &udpSocketServer,
+				    udpPort);
     auditServer = new AuditFile(RTIG_AUDIT_FILENAME);
-
-    if (auditServer == NULL)
-        throw RTIinternalError("No memory to create auditServer.");
-
     federations = new FederationsList(socketServer, auditServer);
-    if (federations == NULL)
-        throw RTIinternalError("No memory to create federations.");
+    federations->setVerbose(verbose);
 }
 
 // ----------------------------------------------------------------------------
@@ -420,8 +411,9 @@ RTIG::execute()
     tcpSocketServer.createTCPServer(tcpPort);
     // udpSocketServer.createUDPServer(PORT_UDP_RTIG);
 
-    cout << "RTIG up and running." << endl ;
-
+    if (verbose) {
+	cout << "CERTI RTIG up and running ..." << endl ;
+    }
     terminate = false ;
 
     while (!terminate) {
@@ -967,4 +959,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.19 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG.cc,v 3.20 2003/10/20 12:00:21 breholee Exp $

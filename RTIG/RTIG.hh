@@ -18,11 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.16 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG.hh,v 3.17 2003/10/20 12:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_RTIG_HH
-#define _CERTI_RTIG_HH
+#ifndef CERTI_RTIG_HH
+#define CERTI_RTIG_HH
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
@@ -46,22 +46,12 @@ namespace rtig {
 */
 class RTIG
 {
-private:
-    int tcpPort ;
-    int udpPort ;
-    bool terminate ;
-    Handle nextFederationHandle ;
-    SocketTCP tcpSocketServer ;
-    SocketUDP udpSocketServer ;
-    SocketServer* socketServer ;
-    AuditFile* auditServer ;
-    FederationsList* federations ; //!< Manages federations.
-
 public:
     RTIG();
     ~RTIG();
 
     void signalHandler(int sig);
+    void setVerbose(bool flag) { verbose = flag ; }
     void execute();
 
 private:
@@ -119,10 +109,22 @@ private:
     void processUnsubscribeAttributesWR(Socket*, NetworkMessage*);
     void processSubscribeInteractionWR(Socket*, NetworkMessage*);
     void processUnsubscribeInteractionWR(Socket*, NetworkMessage*);
+
+private:
+    int tcpPort ;
+    int udpPort ;
+    bool terminate ;
+    bool verbose ;
+    Handle nextFederationHandle ;
+    SocketTCP tcpSocketServer ;
+    SocketUDP udpSocketServer ;
+    SocketServer *socketServer ;
+    AuditFile *auditServer ;
+    FederationsList *federations ; //!< Manages federations.
 };
 
-}}
+}} // namespaces
 
-#endif // _CERTI_RTIG_HH
+#endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.16 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG.hh,v 3.17 2003/10/20 12:00:21 breholee Exp $
