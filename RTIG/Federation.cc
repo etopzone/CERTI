@@ -1,4 +1,4 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federation.cc,v 3.4 2002/12/16 10:12:59 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -40,19 +40,17 @@ Federation::Federation(FederationExecutionName federation_name,
 		       AuditFile *audit_server,
 		       SocketMC *mc_link)
 #else
-
-  Federation::Federation(FederationExecutionName federation_name,
-			 FederationHandle federation_handle,
-			 SocketServer *socket_server,
-			 AuditFile *audit_server)
-
+Federation::Federation(FederationExecutionName federation_name,
+		       FederationHandle federation_handle,
+		       SocketServer *socket_server,
+		       AuditFile *audit_server)
 #endif
   throw(CouldNotOpenRID,
 	ErrorReadingRID,
-	MemoryExhausted, 
+	MemoryExhausted,
 	SecurityError,
 	RTIinternalError)
-  : List <Federate *>()
+  : list<Federate *>()
 {
   fedparser::FedParser *fed_reader;
   char file_name [MAX_FEDERATION_NAME_LENGTH + 5];
@@ -69,8 +67,7 @@ Federation::Federation(FederationExecutionName federation_name,
 #endif // FEDERATION_USES_MULTICAST // --------------
 
   // Allocates Name
-  if((federation_name == NULL) ||
-     (federation_handle == 0))
+  if ((federation_name == 0) || (federation_handle == 0))
     throw RTIinternalError("Null init parameter in Federation creation.");
 
   if(strlen(federation_name) > MAX_FEDERATION_NAME_LENGTH)
@@ -90,14 +87,12 @@ Federation::Federation(FederationExecutionName federation_name,
   nextObjectId = (ObjectHandle) 1 ;
   nextFederateHandle = (FederateHandle) 1 ;
 
-  D.Out(pdInit, 
+  D.Out(pdInit,
 	"New Federation created with Handle %d, now reading FED.", handle);
 
   // Initialize the Security Server.
 
-  server = new SecurityServer(socket_server,
-			      audit_server,
-			      handle);
+  server = new SecurityServer(socket_server, audit_server, handle);
 
   if(server == NULL) throw RTIinternalError();
 
@@ -105,7 +100,7 @@ Federation::Federation(FederationExecutionName federation_name,
 
   root = new RootObject(server);
 
-  if(root == NULL) 
+  if(root == NULL)
     throw MemoryExhausted("No memory left for Federation Root Object.");
 
   fed_reader = new fedparser::FedParser(root);
@@ -141,10 +136,8 @@ Federation::Federation(FederationExecutionName federation_name,
     server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
   }
   else
-    server->
-      Audit->addToLinef("(could not retrieve last modif time, errno %d).",
-		       errno);
-
+    server->Audit->addToLinef("(could not retrieve last modif time, errno %d).",
+                              errno);
 }
 
 // ---------------------------------------------------------------------------
@@ -152,16 +145,13 @@ Federation::Federation(FederationExecutionName federation_name,
 
 Federation::~Federation()
 {
-  // If there are Federates, delete them all!
-  Federate *tmp_federate = NULL;
-
   D.Out(pdInit, "Destroying Federation %d...", handle);
 
-  while(lg > 0) {
-    tmp_federate = Ieme(1);
-    delete tmp_federate;
-    Supprimer(1);
+  // If there are Federates, delete them all!
+  for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
+    delete(*i);
   }
+  clear();
 
   // Free local allocations
   free(name);
@@ -179,54 +169,49 @@ Federation::~Federation()
 // ---------------------------------------------------------------------------
 // Get attributes
 
-int 
-Federation::getNbFederates(void) 
-{ 
-  return lg ; 
+int
+Federation::getNbFederates(void)
+{
+    return size();
 }
 
-bool 
-Federation::isPaused(void) 
-{ 
-  return paused ; 
+bool
+Federation::isPaused(void)
+{
+    return paused;
 }
 
-FederationHandle 
-Federation::getHandle(void) 
-{ 
-  return handle ; 
-} 
-  
-FederationExecutionName 
-Federation::getName(void) 
-{ 
-  return name ; 
-} 
+FederationHandle
+Federation::getHandle(void)
+{
+    return handle;
+}
+
+FederationExecutionName
+Federation::getName(void)
+{
+    return name;
+}
 
 int
 Federation::getNbRegulators(void)
 {
-  return regulators.getLength() ;
+    return regulators.getLength();
 }
 
 // ---------------------------------------------------------------------------
 // add
 
-FederateHandle 
+FederateHandle
 Federation::add(FederateName federate_name, SocketTCP *tcp_link)
-  throw(FederateAlreadyExecutionMember,	MemoryExhausted, RTIinternalError)
+    throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 {
-  Federate *federate;
-  FederateHandle federate_handle;
-  NetworkMessage message;
-  int i; // Loop variable
-
-  if(federate_name == NULL) {
+  if(federate_name == 0) {
     D.Out(pdExcept, "Tried to add a NULL named federate.");
     throw RTIinternalError("Tried to add NULL federate to federation.");
   }
 
-  if(lg >= MAX_FEDERATE) {
+  if (size() >= MAX_FEDERATE) {
     D.Out(pdExcept, "Federation %d has too many Federates.", handle);
     throw RTIinternalError("Too many federates in federation.");
   }
@@ -239,20 +224,20 @@ Federation::add(FederateName federate_name, SocketTCP *tcp_link)
     // Nothing to do.
   }
 
-  federate_handle = getNewHandle();
+  FederateHandle federate_handle = getNewHandle();
 
-  federate = new Federate(federate_name, federate_handle);
+  Federate *federate = new Federate(federate_name, federate_handle);
 
-  Inserer(1, federate);
+  push_front(federate);
 
   D.Out(pdInit, "Federate %d joined Federation %d.", federate_handle, handle);
 
   // Donner au nouveau federe un dernier message nul
   // de chaque federe(i) contenant son heure logique h(i)
   // pour que le nouveau puisse calculer son LBTS.
-
+  NetworkMessage message;
   try {
-    for(i = 1; i <= regulators.getLength(); i++) {
+    for (int i = 1; i <= regulators.getLength(); i++) {
       message.Type = m_MESSAGE_NULL;
       message.NumeroFederation = handle;
 
@@ -277,7 +262,7 @@ Federation::add(FederateName federate_name, SocketTCP *tcp_link)
 
       message.write(tcp_link);
     }
-  } 
+  }
   catch(NetworkError) {
     throw RTIinternalError("Network Error while initializing federate.");
   }
@@ -288,17 +273,15 @@ Federation::add(FederateName federate_name, SocketTCP *tcp_link)
 // ---------------------------------------------------------------------------
 // addConstrained
 
-void 
+void
 Federation::addConstrained(FederateHandle federate_handle)
-  throw(FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+    throw(FederateNotExecutionMember,
+          SaveInProgress,
+          RestoreInProgress,
+          RTIinternalError)
 {
-  Federate *federate = NULL;
-
   // It may throw FederateNotExecutionMember
-  federate = getByHandle(federate_handle);
+  Federate *federate = getByHandle(federate_handle);
 
   if(federate->isConstrained()) {
     D.Out(pdExcept, "Federate %d already constrained.", federate_handle);
@@ -313,26 +296,24 @@ Federation::addConstrained(FederateHandle federate_handle)
 // ---------------------------------------------------------------------------
 // addRegulator
 
-void 
+void
 Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
   throw(FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
 	RTIinternalError)
 {
-  NetworkMessage msg;
-  Federate *federate = NULL;
-
   // It may throw FederateNotExecutionMember
-  federate = getByHandle(federate_handle);
+  Federate *federate = getByHandle(federate_handle);
 
   // It may throw RTIinternalError if Federate was not regulators.
   regulators.insert(federate_handle, time);
   federate->setRegulator(true);
- 
+
   D.Out(pdTerm, "Federation %d: Federate %d is now a regulator(Time=%f).",
 	handle, federate_handle, time);
- 
+
+  NetworkMessage msg;
   msg.Type = m_SET_TIME_REGULATING;
   msg.Exception = e_NO_EXCEPTION;
   msg.NumeroFederation = handle;
@@ -346,52 +327,47 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
 // ---------------------------------------------------------------------------
 // broadcastAnyMessage
 
-void Federation::broadcastAnyMessage(NetworkMessage *msg,
-				     FederateHandle except_federate)
+void
+Federation::broadcastAnyMessage(NetworkMessage *msg,
+                                FederateHandle except_federate)
 {
-  int i;
-  Federate *federate = NULL;
   Socket *socket = NULL;
 
   // Broadcast the message 'msg' to all Federates in the Federation
   // except to Federate whose Handle is 'Except_Federate'.
-
-  for(i = 1; i <= lg; i++) {
-    federate = Ieme(i);
-    if(federate->getHandle() != except_federate) {
+  for (list<Federate *>::const_iterator i = begin(); i != end() ; i++) {
+    if( (*i)->getHandle() != except_federate ) {
       try {
 #ifdef HLA_USES_UDP
-	socket = server->getSocketLink(federate->Handle, BEST_EFFORT);
+	socket = server->getSocketLink((*i)->getHandle(), BEST_EFFORT);
 #else
-	socket = server->getSocketLink(federate->getHandle());
-#endif 
+	socket = server->getSocketLink((*i)->getHandle());
+#endif
 	msg->write(socket);
       }
       catch(RTIinternalError &e) {
-	D.Out(pdExcept, 
-	      "Reference to a killed Federate while broadcasting.");
+          D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
       }
       catch(NetworkError &e) {
-	D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+          D.Out(pdExcept, "Network error while broadcasting, ignoring.");
       }
     }
   }
 
-  // BUG: If except = 0, could use Multicast. 
+  // BUG: If except = 0, could use Multicast.
 }
 
 // ---------------------------------------------------------------------------
 // broadcastInteraction
 
-void 
-Federation::
-broadcastInteraction(FederateHandle federate_handle,
-		     InteractionClassHandle interaction,
-		     ParameterHandle *parameter_handles,
-		     ParameterValue *parameter_values,
-		     UShort list_size,
-		     FederationTime time,
-		     const char*  tag)
+void
+Federation::broadcastInteraction(FederateHandle federate_handle,
+                                 InteractionClassHandle interaction,
+                                 ParameterHandle *parameter_handles,
+                                 ParameterValue *parameter_values,
+                                 UShort list_size,
+                                 FederationTime time,
+                                 const char*  tag)
   throw(FederateNotExecutionMember,
 	FederateNotPublishing,
 	InteractionClassNotDefined,
@@ -412,16 +388,17 @@ broadcastInteraction(FederateHandle federate_handle,
 					   tag);
   D.Out(pdRequest, "Federation %d: Broadcasted Interaction %d from Federate "
 	"%d nb params %d.", handle, interaction, federate_handle, list_size);
-  for(int i=0 ; i < list_size ; i++) 
-    D.Out(pdRequest, 
-	  " Param %d Value %s",
-	  parameter_handles[i], parameter_values[i]);
+  for(int i=0 ; i < list_size ; i++)
+    D.Out(pdRequest,
+          " Param %d Value %s",
+          parameter_handles[i],
+          parameter_values[i]);
 }
 
 // ---------------------------------------------------------------------------
 // deleteObject
 
-void 
+void
 Federation::deleteObject(FederateHandle federate,
 			 ObjectHandle id,
 			 const char*  tag)
@@ -444,7 +421,7 @@ Federation::deleteObject(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // enterPause
 
-void 
+void
 Federation::enterPause(FederateHandle federate, PauseLabel label)
   throw(FederateNotExecutionMember,
 	FederationAlreadyPaused,
@@ -452,79 +429,69 @@ Federation::enterPause(FederateHandle federate, PauseLabel label)
 	RestoreInProgress,
 	RTIinternalError)
 {
-  NetworkMessage msg;
-
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
   if(this->paused == true)
     throw FederationAlreadyPaused();
 
-  if((label == NULL) ||
-     (strlen(label) > MAX_USER_TAG_LENGTH))
+  if((label == 0) || (strlen(label) > MAX_USER_TAG_LENGTH))
     throw RTIinternalError("Bad pause label(null or too long).");
- 
+
   strcpy(pauseLabel, label);
   this->paused = true ;
 
   D.Out(pdTerm, "Federation %d is now Paused.", handle);
 
+  NetworkMessage msg;
   msg.Type = m_REQUEST_PAUSE;
   msg.Exception = e_NO_EXCEPTION;
   msg.NumeroFedere = federate;
   msg.NumeroFederation = handle;
   strcpy(msg.Label, pauseLabel);
- 
+
   broadcastAnyMessage(&msg, federate);
 }
 
 // ---------------------------------------------------------------------------
 // getByHandle
 
-Federate* 
-Federation::getByHandle(FederateHandle federate_handle)
-  throw(FederateNotExecutionMember)
+Federate*
+Federation::getByHandle(FederateHandle federate_handle) const
+    throw (FederateNotExecutionMember)
 {
-  int i = 0;
-  Federate *federate = NULL;
+    for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
+        if( (*i)->getHandle() == federate_handle )
+            return (*i);
+    }
 
-  for(i = 1; i <= lg; i++) {
-    federate = Ieme(i);
-    if(federate->getHandle() == federate_handle)
-      return federate;
-  }
-
-  throw FederateNotExecutionMember("Federate Handle not found.");
+    throw FederateNotExecutionMember("Federate Handle not found.");
 }
 
 // ---------------------------------------------------------------------------
 // getByName
 
-Federate* 
-Federation::getByName(FederateName federate_name)
-  throw(FederateNotExecutionMember)
+Federate*
+Federation::getByName(FederateName federate_name) const
+    throw(FederateNotExecutionMember)
 {
-  int i = 0;
-  Federate *federate = NULL;
+    for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
+        if(strcmp((*i)->getName(), federate_name) == 0)
+            return (*i);
+    }
 
-  for(i = 1; i <= lg; i++) {
-    federate = Ieme(i);
-    if(strcmp(federate->getName(), federate_name) == 0)
-      return federate;
-  }
-
-  throw FederateNotExecutionMember("Federate Name not found.");
+    throw FederateNotExecutionMember("Federate Name not found.");
 }
 
 // ---------------------------------------------------------------------------
 // getNewHandle
 
-FederateHandle 
+FederateHandle
 Federation::getNewHandle(void)
-  throw(RTIinternalError)
+    throw (RTIinternalError)
 {
   if(nextFederateHandle > MAX_FEDERATEHANDLE) {
-    D.Out(pdExcept, 
+    D.Out(pdExcept,
 	  "Federation %d: Max Federate Handle count reached.", handle);
     throw RTIinternalError("Max Federate Handle reached.");
   }
@@ -537,38 +504,37 @@ Federation::getNewHandle(void)
 // ---------------------------------------------------------------------------
 // empty
 
-bool 
-Federation::empty()
-  throw(FederatesCurrentlyJoined)
+bool
+Federation::empty(void)
+    throw(FederatesCurrentlyJoined)
 {
-  if(lg == 0) return true ;
-  else throw FederatesCurrentlyJoined();
+    if (list<Federate *>::empty())
+        return true;
+    else
+        throw FederatesCurrentlyJoined();
 }
 
 // ---------------------------------------------------------------------------
 // check
 
-bool 
-Federation::check(FederateHandle federate_handle)
-  throw(FederateNotExecutionMember)
+bool
+Federation::check(FederateHandle federate_handle) const
+    throw (FederateNotExecutionMember)
 {
-  int i = 0;
-  Federate *federate = NULL;
-
-  for(i = 1; i <= lg; i++) {
-    federate = Ieme(i);
-    if(federate->getHandle() == federate_handle)
-      return true ;
+  for (list<Federate *>::const_iterator i = begin(); i != end(); i++) {
+      if( (*i)->getHandle() == federate_handle )
+          return true;
   }
+
   throw FederateNotExecutionMember();
 }
 
 // ---------------------------------------------------------------------------
 // killFederate
 
-void 
+void
 Federation::kill(FederateHandle federate)
-  throw()
+    throw()
 {
   // NOTE: Connection to the federate is already closed.
 
@@ -585,15 +551,14 @@ Federation::kill(FederateHandle federate)
     removeConstrained(federate);
     D.Out(pdInit, "Constrained Federate %d removed...", federate);
   } catch(Exception &e) {}
- 
+
   // Supprime les references au federe pour les classes d'objets
-  D.Out(pdInit, "Federate %d removed from the Root Object tree...",
-	federate);
+  D.Out(pdInit, "Federate %d removed from the Root Object tree...", federate);
   root->ObjectClasses->killFederate(federate);
- 
+
   // Supprime les references au federe pour les classes d'interactions.
   D.Out(pdInit, "Federate %d removed from the Root Inteaction tree...",
-	federate);
+        federate);
   root->Interactions->killFederate(federate);
 
   // delete from federations list
@@ -606,7 +571,7 @@ Federation::kill(FederateHandle federate)
 // ---------------------------------------------------------------------------
 // publishInteraction
 
-void 
+void
 Federation::publishInteraction(FederateHandle federate,
 			       InteractionClassHandle interaction,
 			       bool pub)
@@ -621,10 +586,8 @@ Federation::publishInteraction(FederateHandle federate,
   this->check(federate);
 
   // It may throw InteractionClassNotDefined
-  root->Interactions->publish(federate,
-			      interaction,
-			      pub);
-  D.Out(pdRequest, 
+  root->Interactions->publish(federate, interaction, pub);
+  D.Out(pdRequest,
 	"Federation %d: Federate %d has(un)published Interaction %d.",
 	handle, federate, interaction);
 }
@@ -632,7 +595,7 @@ Federation::publishInteraction(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // publishObject
 
-void 
+void
 Federation::publishObject(FederateHandle federate,
 			  ObjectClassHandle object,
 			  AttributeHandle *attributes,
@@ -650,11 +613,7 @@ Federation::publishObject(FederateHandle federate,
   this->check(federate);
 
   // It may throw *NotDefined
-  root->ObjectClasses->publish(federate,
-				  object,
-				  attributes,
-				  list_size,
-				  pub);
+  root->ObjectClasses->publish(federate, object, attributes, list_size, pub);
 
   D.Out(pdRegister,
 	"Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
@@ -664,7 +623,7 @@ Federation::publishObject(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // registerObject
 
-ObjectHandle 
+ObjectHandle
 Federation::registerObject(FederateHandle federate,
 			   ObjectClassHandle class_handle,
 			   ObjectName object_name)
@@ -675,74 +634,64 @@ Federation::registerObject(FederateHandle federate,
 	SaveInProgress,
 	RestoreInProgress,
 	RTIinternalError)
-{ 
-  ObjectHandle new_id = 0;
+{
+    // Allocate new ID.
+    if (nextObjectId > MAX_OBJECTID) {
+        D.Out(pdError, "RTIinternalError : nextObjectId = %d, MAX = %d.",
+              nextObjectId, MAX_OBJECTID);
+        throw RTIinternalError("Too many IDs requested.");
+    }
 
-  // Allocate new ID.
-  if(nextObjectId > MAX_OBJECTID){
-    D.Out(pdError, 
-	  "RTIinternalError : nextObjectId = %d, MAX = %d.",
-	  nextObjectId, MAX_OBJECTID);
-    throw RTIinternalError("Too many IDs requested.");
-  }
+    ObjectHandle new_id = nextObjectId ;
+    nextObjectId++;
 
-  new_id = nextObjectId ;
-  nextObjectId++;
- 
-  D.Out(pdRegister, 
-	"Federation %d: Federate %d registering Object %d of Class %d.",
-	handle, federate, new_id, class_handle);
+    D.Out(pdRegister,
+          "Federation %d: Federate %d registering Object %d of Class %d.",
+          handle, federate, new_id, class_handle);
 
-  // Register Object.
-  root->ObjectClasses->registerInstance(federate,
-					   class_handle,
-					   new_id,
-					   object_name);
-  D.Out(pdDebug,"suite");
-  return new_id;
+    // Register Object.
+    root->ObjectClasses->registerInstance(federate, class_handle, new_id,
+                                          object_name);
+    D.Out(pdDebug,"suite");
+    return new_id;
 }
 
 // ---------------------------------------------------------------------------
 // removeFederate
 
-void 
+void
 Federation::remove(FederateHandle federate_handle)
-  throw(FederateOwnsAttributes,	FederateNotExecutionMember)
+    throw (FederateOwnsAttributes, FederateNotExecutionMember)
 {
-  int i = 0;
-  Federate *federate = NULL;
+    for (list<Federate *>::iterator i = begin(); i != end(); i++) {
+        if( (*i)->getHandle() == federate_handle ) {
+            // BUG: RemoveFederate: Should see if Federate owns attributes
+            delete (*i);
+            erase(i);
 
-  for(i = 1; i <= lg; i++) {
-    federate = Ieme(i);
-    if(federate->getHandle() == federate_handle) {
-      // BUG: RemoveFederate: Should see if Federate owns attributes
-      Supprimer(i);
-      delete federate;
-
-      D.Out(pdInit, "Federation %d: Removed Federate %d.", handle, federate_handle);
-      return;
+            D.Out(pdInit, "Federation %d: Removed Federate %d.", handle,
+                  federate_handle);
+            return;
+        }
     }
-  }
 
-  D.Out(pdExcept, "Federation %d could not remove unknown federate %d.",
-	handle, federate_handle);
-  throw FederateNotExecutionMember();
-} 
+    D.Out(pdExcept, "Federation %d could not remove unknown federate %d.",
+          handle, federate_handle);
+    throw FederateNotExecutionMember();
+}
 
 // ---------------------------------------------------------------------------
 // removeConstrained
 
-void 
+void
 Federation::removeConstrained(FederateHandle federate_handle)
-  throw(FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federate *federate = NULL;
-
   // It may throw FederateNotExecutionMember
-  federate = getByHandle(federate_handle);
+  Federate *federate = getByHandle(federate_handle);
 
   if(federate->isConstrained() == false) {
     D.Out(pdExcept, "Federate %d was not constrained.", federate_handle);
@@ -754,30 +703,28 @@ Federation::removeConstrained(FederateHandle federate_handle)
 	handle, federate_handle);
 }
 
-// -------------------------------------------------------------------------- 
+// --------------------------------------------------------------------------
 // removeRegulator
 
-void 
+void
 Federation::removeRegulator(FederateHandle federate_handle)
-  throw(FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  NetworkMessage msg;
-  Federate *federate = NULL;
-
   // It may throw FederateNotExecutionMember
-  federate = getByHandle(federate_handle);
+  Federate *federate = getByHandle(federate_handle);
 
   // It may throw RTIinternalError if Federate was not regulators.
   regulators.remove(federate_handle);
- 
+
   federate->setRegulator(false);
 
   D.Out(pdTerm, "Federation %d: Federate %d is not a regulator anymore.",
 	handle, federate_handle);
 
+  NetworkMessage msg;
   msg.Type = m_SET_TIME_REGULATING;
   msg.Exception = e_NO_EXCEPTION;
   msg.NumeroFederation = handle;
@@ -788,10 +735,10 @@ Federation::removeRegulator(FederateHandle federate_handle)
   broadcastAnyMessage(&msg, 0);
 }
 
-// --------------------------------------------------------------------------- 
+// ---------------------------------------------------------------------------
 // requestId
 
-void 
+void
 Federation::requestId(ObjectHandlecount id_count,
 		      ObjectHandle &first_id,
 		      ObjectHandle &last_id)
@@ -804,7 +751,7 @@ Federation::requestId(ObjectHandlecount id_count,
 
   first_id = nextObjectId ;
   last_id = nextObjectId + id_count - 1 ;
- 
+
   D.Out(pdInit, "Federation %d returns %d new IDs starting at %d.",
 	handle, id_count, first_id);
 
@@ -814,17 +761,14 @@ Federation::requestId(ObjectHandlecount id_count,
 // ---------------------------------------------------------------------------
 // resumePause
 
-void 
-Federation::resumePause(FederateHandle federate,
-			PauseLabel label)
-  throw(FederateNotExecutionMember,
-	FederationNotPaused,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+void
+Federation::resumePause(FederateHandle federate, PauseLabel label)
+    throw (FederateNotExecutionMember,
+           FederationNotPaused,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  NetworkMessage msg;
-
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
@@ -833,12 +777,12 @@ Federation::resumePause(FederateHandle federate,
   if((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
     throw RTIinternalError("Bad pause label(null or too long).");
 
-  // pauseLabel [0] = '\0';
   strcpy(pauseLabel, label);
   this->paused = false ;
 
   D.Out(pdTerm, "Federation %d is not Paused anymore.", handle);
 
+  NetworkMessage msg;
   msg.Type = m_REQUEST_RESUME;
   msg.Exception = e_NO_EXCEPTION;
   msg.NumeroFederation = handle;
@@ -851,7 +795,7 @@ Federation::resumePause(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // subscribeInteraction
 
-void 
+void
 Federation::subscribeInteraction(FederateHandle federate,
 				 InteractionClassHandle interaction,
 				 bool sub)
@@ -875,7 +819,7 @@ Federation::subscribeInteraction(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // subscribeObject
 
-void 
+void
 Federation::subscribeObject(FederateHandle federate,
 			    ObjectClassHandle object,
 			    AttributeHandle *attributes,
@@ -897,13 +841,12 @@ Federation::subscribeObject(FederateHandle federate,
   D.Out(pdRegister,
 	"Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
 	handle, federate, list_size, object);
- 
 }
 
 // ---------------------------------------------------------------------------
 // updateAttributeValues
 
-void 
+void
 Federation::updateAttributeValues(FederateHandle federate,
 				  ObjectHandle id,
 				  AttributeHandle *attributes,
@@ -919,37 +862,29 @@ Federation::updateAttributeValues(FederateHandle federate,
 	RestoreInProgress,
 	RTIinternalError)
 {
-  // It may throw FederateNotExecutionMember.
-  this->check(federate);
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
 
-  // It may throw *NotDefined
-  root->ObjectClasses->updateAttributeValues(federate,
-					     id,
-					     attributes,
-					     values,
-					     list_size,
-					     time,
-					     tag);
+    // It may throw *NotDefined
+    root->ObjectClasses->updateAttributeValues(federate, id, attributes, values,
+                                               list_size, time, tag);
 
-  D.Out(pdRegister,
-	"Federation %d: Federate %d updated attributes of Object %d.",
-	handle, federate, id);
- 
+    D.Out(pdRegister,
+          "Federation %d: Federate %d updated attributes of Object %d.",
+          handle, federate, id);
 }
 
 // ---------------------------------------------------------------------------
 // updateRegulator
 
-void Federation::updateRegulator(FederateHandle federate_handle,
-				 FederationTime time)
+void
+Federation::updateRegulator(FederateHandle federate_handle,
+			    FederationTime time)
   throw(FederateNotExecutionMember,
 	RTIinternalError)
 {
-  NetworkMessage msg;
-  Federate *federate = NULL;
-
   // It may throw FederateNotExecutionMember
-  federate = getByHandle(federate_handle);
+  Federate *federate = getByHandle(federate_handle);
 
   if(federate->isRegulator() == false) {
     D.Out(pdExcept, "Federate %d is not a regulator.", federate_handle);
@@ -960,7 +895,8 @@ void Federation::updateRegulator(FederateHandle federate_handle,
 	handle, federate_handle, time);
 
   regulators.update(federate_handle, time);
- 
+
+  NetworkMessage msg;
   msg.Type = m_MESSAGE_NULL;
   msg.Exception = e_NO_EXCEPTION;
   msg.NumeroFederation = handle;
@@ -983,22 +919,21 @@ Federation::isOwner(FederateHandle federate,
 	SaveInProgress,
 	RestoreInProgress,
 	RTIinternalError)
-{ 
+{
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
   D.Out(pdDebug,"Owner of Object %u Atrribute %u", id, attribute);
- 
+
   // It may throw *NotDefined
-  return(root->ObjectClasses->isAttributeOwnedByFederate(id, 
-							 attribute, 
+  return(root->ObjectClasses->isAttributeOwnedByFederate(id, attribute,
 							 federate));
 }
 
 // ---------------------------------------------------------------------------
 // queryAttributeOwnership
 
-void 
+void
 Federation::queryAttributeOwnership(FederateHandle federate,
 				    ObjectHandle id,
 				    AttributeHandle attribute)
@@ -1013,7 +948,7 @@ Federation::queryAttributeOwnership(FederateHandle federate,
   this->check(federate);
 
   D.Out(pdDebug,"Owner of Object %u Atrribute %u", id,attribute);
- 
+
   // It may throw *NotDefined
   root->ObjectClasses->queryAttributeOwnership(id, attribute, federate);
 }
@@ -1021,20 +956,20 @@ Federation::queryAttributeOwnership(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // negotiateDivestiture (negotiatedAttributeOwnershipDivestiture)
 
-void 
+void
 Federation::negotiateDivestiture(FederateHandle federate,
 				 ObjectHandle id,
 				 AttributeHandle *attribs,
 				 UShort list_size,
-				 const char *tag)  
+				 const char *tag)
   throw(FederateNotExecutionMember,
 	ObjectNotKnown,
 	AttributeNotDefined,
 	AttributeNotOwned,
-	AttributeAlreadyBeingDivested, 
+	AttributeAlreadyBeingDivested,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
+	RTIinternalError)
 {
   // It may throw FederateNotExecutionMember.
   this->check(federate);
@@ -1050,11 +985,11 @@ Federation::negotiateDivestiture(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // acquireIfAvailable (attributeOwnershipAcquisitionIfAvailable)
 
-void 
+void
 Federation::acquireIfAvailable(FederateHandle federate,
 			       ObjectHandle id,
 			       AttributeHandle *attribs,
-			       UShort list_size) 
+			       UShort list_size)
   throw(ObjectNotKnown,
 	ObjectClassNotPublished,
 	AttributeNotDefined,
@@ -1064,8 +999,8 @@ Federation::acquireIfAvailable(FederateHandle federate,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
-{ 
+	RTIinternalError)
+{
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
@@ -1073,25 +1008,25 @@ Federation::acquireIfAvailable(FederateHandle federate,
   root->ObjectClasses->attributeOwnershipAcquisitionIfAvailable(federate,
 								id,
 								attribs,
-								list_size); 
+								list_size);
 }
 
 // ---------------------------------------------------------------------------
 // divest (unconditionalAttributeOwnershipDivestiture)
 
-void 
+void
 Federation::divest(FederateHandle federate,
 		   ObjectHandle id,
 		   AttributeHandle *attrs,
-		   UShort list_size) 
+		   UShort list_size)
   throw(ObjectNotKnown,
 	AttributeNotDefined,
 	AttributeNotOwned,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
-{ 
+	RTIinternalError)
+{
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
@@ -1105,7 +1040,7 @@ Federation::divest(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // attributeOwnershipAcquisition
 
-void 
+void
 Federation::acquire(FederateHandle federate,
 		    ObjectHandle id,
 		    AttributeHandle *attributes,
@@ -1119,8 +1054,8 @@ Federation::acquire(FederateHandle federate,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
-{ 
+	RTIinternalError)
+{
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
@@ -1130,20 +1065,18 @@ Federation::acquire(FederateHandle federate,
 						     attributes,
 						     list_size,
 						     tag);
- 
+
   D.Out(pdDebug,"Acquisition on Object %u ", id);
- 
 }
 
 // ---------------------------------------------------------------------------
 // cancelDivestiture (cancelNegotiatedAttributeOwnershipDivestiture)
 
-void 
-Federation::
-cancelDivestiture(FederateHandle federate,
-		  ObjectHandle id,
-		  AttributeHandle *attributes,
-		  UShort list_size)  
+void
+Federation::cancelDivestiture(FederateHandle federate,
+			      ObjectHandle id,
+			      AttributeHandle *attributes,
+			      UShort list_size)
   throw(ObjectNotKnown,
 	AttributeNotDefined,
 	AttributeNotOwned,
@@ -1151,19 +1084,19 @@ cancelDivestiture(FederateHandle federate,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
+	RTIinternalError)
 {
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
   // It may throw *NotDefined
   root->ObjectClasses->
-    cancelNegotiatedAttributeOwnershipDivestiture(federate, 
-						  id, 
+    cancelNegotiatedAttributeOwnershipDivestiture(federate,
+						  id,
 						  attributes,
 						  list_size);
- 
-  D.Out(pdDebug,"CancelDivestiture sur Objet %u ", id); 
+
+  D.Out(pdDebug,"CancelDivestiture sur Objet %u ", id);
 }
 
 // ---------------------------------------------------------------------------
@@ -1181,8 +1114,8 @@ Federation::respondRelease(FederateHandle federate,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError) 
-{ 
+	RTIinternalError)
+{
   // It may throw FederateNotExecutionMember.
   this->check(federate);
 
@@ -1198,7 +1131,7 @@ Federation::respondRelease(FederateHandle federate,
 // ---------------------------------------------------------------------------
 // cancelAttributeOwnershipAcquisition
 
-void 
+void
 Federation::cancelAcquisition(FederateHandle federate,
 			      ObjectHandle id,
 			      AttributeHandle *attributes,
@@ -1210,7 +1143,7 @@ Federation::cancelAcquisition(FederateHandle federate,
 	FederateNotExecutionMember,
 	SaveInProgress,
 	RestoreInProgress,
-	RTIinternalError)  
+	RTIinternalError)
 {
   // It may throw FederateNotExecutionMember.
   this->check(federate);
@@ -1222,9 +1155,9 @@ Federation::cancelAcquisition(FederateHandle federate,
 							   id,
 							   attributes,
 							   list_size);
-} 
+}
 
 }}
 
-// $Id: Federation.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federation.cc,v 3.4 2002/12/16 10:12:59 breholee Exp $
 

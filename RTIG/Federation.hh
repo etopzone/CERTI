@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federation.hh,v 3.3 2002/12/16 10:12:59 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -27,13 +27,11 @@
 
 #include <config.h>
 
-#include <time.h>
-#include <sys/stat.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include <list>
+using std::list;
 
-#include "List.hh"
+#include <string.h> // strlen
+
 #include "Federate.hh"
 #include "RootObject.hh"
 #include "LBTS.hh"
@@ -51,7 +49,7 @@ using namespace certi ;
 namespace certi {
 namespace rtig {
 
-class Federation : private List <Federate *>
+class Federation : private list<Federate *>
 {
   // ATTRIBUTES --------------------------------------------------------------
 private:
@@ -128,7 +126,7 @@ public:
 
   // Return true if the Federate is part of the Federation, else throw
   // an exception.
-  bool check(FederateHandle theHandle)
+  bool check(FederateHandle theHandle) const
     throw(FederateNotExecutionMember);
 
   // This Method tries to remove all references to this Federate in
@@ -431,11 +429,11 @@ private:
   void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except); 
 
   // Return a pointer of the Federate whose Name is theName, if found.
-  Federate *getByName(FederateName theName)
+  Federate *getByName(FederateName theName) const
     throw(FederateNotExecutionMember);
  
   // Return a pointer of the Federate whose Handle is theHandle, if found.
-  Federate *getByHandle(FederateHandle theHandle)
+  Federate *getByHandle(FederateHandle theHandle) const
     throw(FederateNotExecutionMember);
 
   // Return a brand new Federate Handle.  Throw an exception if there
@@ -448,4 +446,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: Federation.hh,v 3.3 2002/12/16 10:12:59 breholee Exp $
