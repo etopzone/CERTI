@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: bille.cc,v 3.5 2003/03/19 08:57:23 breholee Exp $
+// $Id: Ball.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,8 +31,7 @@
 #include <math.h>
 #include <string.h>
 
-#include "bille.hh"
-#include "constants.hh"
+#include "Ball.hh"
 
 #ifdef TEST_USES_GRAPHICS
 #include "graph_c.hh"
@@ -43,55 +41,31 @@ using namespace std ;
 
 // ----------------------------------------------------------------------------
 //! CBille constructor.
-CBille::CBille(void)
+Ball::Ball(ObjectHandle h)
 {
     x = -1.0 ;
     y = -1.0 ;
     dx = 3.0 ;
     dy = 3.0 ;
-    rayon = 10.0 ;
+    radius = 10.0 ;
+    ID = h ;
 #ifdef TEST_USES_GRAPHICS
     color = BLACK ;
 #endif
 }
 
 // ----------------------------------------------------------------------------
-//! CBoule constructor.
-CBoule::CBoule(void) : CBille()
-{
-#ifdef TEST_USES_GRAPHICS
-    Color = RED ;
-#endif
-}
-
-// ----------------------------------------------------------------------------
 //! Displays the 'bille' on the right place in window.
 void
-CBille::Afficher(void)
+Ball::display()
 {
 #ifdef TEST_USES_GRAPHICS
     cercler disque ;
     point centre ;
 
-    centre.X = (int)x ;
-    centre.Y = (int)y ;
-    disque = Definecr(centre, (int)rayon, COUL_UNIE, (couleur) color);
-    Drawcr(disque);
-#endif
-}
-
-// ----------------------------------------------------------------------------
-//! Displays the 'boule' on the right place in window.
-void
-CBoule::Afficher(void)
-{
-#ifdef TEST_USES_GRAPHICS
-    cercler disque ;
-    point centre ;
-
-    centre.X = (int)x ;
-    centre.Y = (int)y ;
-    disque = Definecr(centre, (int)rayon, COUL_UNIE, (couleur) Color);
+    centre.X = (int) x ;
+    centre.Y = (int) y ;
+    disque = Definecr(centre, (int) radius, COUL_UNIE, (couleur) color);
     Drawcr(disque);
 #endif
 }
@@ -99,7 +73,7 @@ CBoule::Afficher(void)
 // ----------------------------------------------------------------------------
 //! Clear the 'bille' from window.
 void
-CBille::Effacer(void)
+Ball::erase()
 {
 #ifdef TEST_USES_GRAPHICS
     cercler disque ;
@@ -107,7 +81,7 @@ CBille::Effacer(void)
 
     centre.X = (int)x ;
     centre.Y = (int)y ;
-    disque = Definecr(centre, (int)rayon, COUL_UNIE, WHITE);
+    disque = Definecr(centre, (int)radius, COUL_UNIE, WHITE);
     Drawcr(disque);
 #endif
 }
@@ -115,20 +89,20 @@ CBille::Effacer(void)
 // ----------------------------------------------------------------------------
 //! Determine new values for x and y, based on dx and dy.
 void
-CBille::Deplacer(void)
+Ball::move()
 {
     x += dx ;
     y += dy ;
-// #ifdef ECHO_COORD
-//     printf("[%04f ; %04f]\r", x, y);
-//     fflush(stdout);
-// #endif
+    // #ifdef ECHO_COORD
+    // printf("[%04f ; %04f]\r", x, y);
+    // fflush(stdout);
+    // #endif
 }
 
 // ----------------------------------------------------------------------------
 //! Put the 'bille' at a determined location.
 void
-CBille::Positionner(float xx, float yy)
+Ball::setPosition(float xx, float yy)
 {
     this->x = xx ;
     this->y = yy ;
@@ -136,7 +110,7 @@ CBille::Positionner(float xx, float yy)
 
 // ----------------------------------------------------------------------------
 //! modify dx and dy directions.
-void CBille::Direction(float dxx, float dyy)
+void Ball::setDirection(float dxx, float dyy)
 {
     dx = dxx ;
     dy = dyy ;
@@ -145,34 +119,32 @@ void CBille::Direction(float dxx, float dyy)
 // ----------------------------------------------------------------------------
 //! Detects and take into account collisions occured with window borders.
 void
-CBille::CollisionBords(float largeur, float hauteur)
+Ball::collision(float largeur, float hauteur)
 {
     // left/right collision
-    if ((x < rayon) || (x > largeur - rayon)) {
+    if ((x < radius) || (x > largeur - radius)) {
         dx = -dx ;
     }
 
     // top/bottom collision
-    if ((y < rayon) || (y > hauteur - rayon)) {
+    if ((y < radius) || (y > hauteur - radius)) {
         dy = -dy ;
     }
 }
 
 // ----------------------------------------------------------------------------
-/*! Detects and take into account collisions occured with another 'bille' from
+/*! Detects and take into account collisions occured with another 'Ball' from
   window.
-
-  ab : autre bille.
 */
 int
-CBille::Collision(CBille *ab)
+Ball::collision(Ball *ab)
 {
     float distance ;
 
     distance = sqrt((x+dx-ab->x)*(x+dx-ab->x) +(y+dy-ab->y)*(y+dy-ab->y));
 
     // detecter collision
-    if (distance <= 2 * rayon) {
+    if (distance <= 2 * radius) {
         return 1 ;
     }
     else
@@ -182,21 +154,21 @@ CBille::Collision(CBille *ab)
 // ----------------------------------------------------------------------------
 //! init with one int parameter
 void
-CBille::init(int Graine)
+Ball::init(int seed)
 {
-    x = rayon + (float) Graine * 60 + 3 ;
-    y = rayon + (float) Graine * 20 ;
+    x = radius + (float) seed * 60 + 3 ;
+    y = radius + (float) seed * 20 ;
 
-    if ((Graine) % 2)
+    if ((seed) % 2)
         dx = -dx ;
 
-    Afficher();
+    display();
 }
 
 // ----------------------------------------------------------------------------
 //! init with coordinates
 void
-CBille::init(int x_, int y_)
+Ball::init(int x_, int y_)
 {
     x = x_ ;
     y = y_ ;
@@ -204,8 +176,8 @@ CBille::init(int x_, int y_)
     if ((int) x % 2 == 1)
         dx = -dx ;
 
-    Afficher();
+    display();
 }
 
 
-// $Id: bille.cc,v 3.5 2003/03/19 08:57:23 breholee Exp $
+// $Id: Ball.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $

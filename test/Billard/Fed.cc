@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,21 +18,53 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.10 2003/06/26 15:16:10 breholee Exp $
+// $Id: Fed.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include "Fed.hh"
+
 #include <config.h>
-
-#include <memory.h>
-
-#include "my_fed.hh"
-#include "constants.hh"
-
 #include "PrettyDebug.hh"
+#include "Objects.hh"
 
-static pdCDebug D("FEDAMB", "(Fed_Amba) - ");
+#include <iostream>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <cstring>
+#include <memory.h>
+#include <fstream>
+#include <iostream>
 
-extern bool verbose ;
+using std::ofstream ;
+using std::ios ;
+using std::cout ;
+using std::endl ;
+
+// Classes
+#define CLA_BILLE "Bille"
+#define CLA_BOULE "Boule"
+
+// Attributes
+#define ATT_POSITION_X "PositionX"
+#define ATT_POSITION_Y "PositionY"
+#define ATT_COLOR "Color"
+
+// Interactions
+#define INT_BING "Bing"
+
+// Parameters
+#define PAR_DX "DX"
+#define PAR_DY "DY"
+#define PAR_BOUL "BoulNum"
+
+// Types
+#define TYP_FLOAT "float"
+#define TYP_INT "int"
+
+static pdCDebug D("FEDAMB", __FILE__ "> ");
 
 // ----------------------------------------------------------------------------
 //! Constructor.
@@ -42,31 +73,199 @@ Fed::Fed(RTI::RTIambassador *rtia)
     RTIA = rtia ;
     granted = false ;
     paused = false ;
-    RemoteCount = 0 ;
     D.Out(pdInit, "Federate Ambassador created.");
 }
 
 // ----------------------------------------------------------------------------
+// time advance granted ? resets if yes
+bool
+Fed::timeAdvanceGranted()
+{
+    bool ret = granted ;
+    granted = false ;
+    return ret ;
+}
+
+// ----------------------------------------------------------------------------
+// init
+void
+Fed::init(Objects *obj)
+{
+    objects = obj ;
+}
+
+// ----------------------------------------------------------------------------
 //! Destructor.
-Fed::~Fed(void)
+Fed::~Fed()
 {
     D.Out(pdTerm, "Federate Ambassador destroyed.");
 }
 
-// ----------------------------------------------------------------------------
-//! Efface tous les objets locaux de la simulation a la date DeletionTime.
 void
-Fed::DeleteObjects(const FedTime& DeletionTime)
+Fed::enableLog(const char *file)
 {
-    try {
-        RTIA->deleteObjectInstance(Local.ID, DeletionTime, "DO");
-        D.Out(pdRegister, "Local object deleted from federation.");
-    }
-    catch (Exception &e)
-        {
-            D.Out(pdExcept, "**** Exception delete object : %d", &e);
-        }
+    logfile = new ofstream(file, ios::out);
+    log = logfile->is_open();
 }
+
+void
+Fed::disableLog()
+{
+    logfile->close();
+    log = false ;
+}
+
+// ----------------------------------------------------------------------------
+// Publish and subscribe
+void
+Fed::publishAndSubscribe()
+{
+    // Get all class and attributes handles
+    getHandles();
+
+    // Add PositionX et PositionY to the attribute set
+    AttributeHandleSet *AttributeSet = AttributeHandleSetFactory::create(3);
+    AttributeSet->add(AttrXID);
+    AttributeSet->add(AttrYID);
+
+    // Subscribe to Bille objects.
+    RTIA->subscribeObjectClassAttributes(BilleClassID, *AttributeSet, RTI_TRUE);
+
+    // Publish Boule Objects.
+    AttributeSet->add(AttrColorID);
+    RTIA->publishObjectClass(BouleClassID, *AttributeSet);
+
+    // Publish and subscribe to Bing interactions
+    RTIA->subscribeInteractionClass(BingClassID, RTI_TRUE);
+    RTIA->publishInteractionClass(BingClassID);
+
+    AttributeSet->empty();
+
+    D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
+}
+
+// ----------------------------------------------------------------------------
+// getHandles
+void
+Fed::getHandles()
+{
+    BilleClassID = RTIA->getObjectClassHandle(CLA_BILLE);
+    BouleClassID = RTIA->getObjectClassHandle(CLA_BOULE);
+    D.Out(pdInit, "BilleClassID = %d, BouleClassID = %d.",
+          BilleClassID, BouleClassID);
+
+    // Attributs des classes d'Objets
+    AttrXID = RTIA->getAttributeHandle(ATT_POSITION_X, BilleClassID);
+    AttrYID = RTIA->getAttributeHandle(ATT_POSITION_Y, BilleClassID);
+    AttrColorID = RTIA->getAttributeHandle(ATT_COLOR, BouleClassID);
+
+    D.Out(pdInit, "AttrXID = %d, AttrYID = %d, AttrColorID = %d.",
+          AttrXID, AttrYID, AttrColorID);
+
+    // Interactions
+    BingClassID = RTIA->getInteractionClassHandle(INT_BING);
+    ParamBoulID = RTIA->getParameterHandle(PAR_BOUL, BingClassID);
+    ParamDXID = RTIA->getParameterHandle(PAR_DX, BingClassID);
+    ParamDYID = RTIA->getParameterHandle(PAR_DY, BingClassID);
+
+    D.Out(pdInit, "BingClassID = %d, DX_ID = %d, DY_ID = %d",
+          BingClassID, ParamDXID, ParamDYID);
+}
+
+// ----------------------------------------------------------------------------
+/*! Envoie une interaction, dont les parametres DX et DY ont pour valeur les
+  dx et dy de la bille Local, et dont l'etiquette temporelle vaut
+  InteractionTime.
+*/
+void
+Fed::sendInteraction(double dx, double dy, const FedTime& InteractionTime,
+                     ObjectHandle id)
+{
+    char buf[512] ;
+    ParameterHandleValuePairSet *parameterSet=NULL ;
+
+    parameterSet = ParameterSetFactory::create(3);
+
+    sprintf(buf, "%ld", id);
+    parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
+
+    D.Out(pdDebug, "SendInteraction");
+    D.Out(pdDebug, "SendInteraction - ParamBoulID= %u", ParamBoulID);
+    D.Out(pdDebug, "SendInteraction - x= %d", id);
+    D.Out(pdDebug, "SendInteraction - buf= %s", buf);
+
+    // D.Out(pdDebug, "SendInteraction - ParamBoulID= %u, x= %f, buf= %s",
+    // ParamBoulID, Id, buf);
+
+    sprintf(buf, "%f", dx);
+    parameterSet->add(ParamDXID, buf, strlen(buf)+1);
+    D.Out(pdDebug, "SendInteraction - ParamDXID= %u, x= %f, buf= %s",
+          ParamDXID, dx, buf);
+
+    sprintf(buf, "%f", dy);
+    parameterSet->add(ParamDYID, buf, strlen(buf)+1);
+    D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f, buf= %s",
+          ParamDYID, dy, buf);
+
+    D.Out(pdRegister, "Sending interaction(DX= %f, DY= %f).", dx, dy);
+
+    try {
+        RTIA->sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
+    }
+    catch (Exception& e) {
+        D.Out(pdExcept, "**** Exception sending interaction : %d", &e);
+    }
+
+    delete parameterSet ;
+}
+
+// ----------------------------------------------------------------------------
+//! SendUpdate updates a ball by sending entity position and color.
+/*! Envoie un updateAttributeValue pour l'objet Local avec une etiquette
+  temporelle de UpdateTime.
+*/
+void
+Fed::sendUpdate(double x, double y, int color, const FedTime& UpdateTime,
+                ObjectHandle id)
+{
+    char buf[512] ;
+    AttributeHandleValuePairSet *attributeSet ;
+
+    attributeSet = AttributeSetFactory::create(3);
+
+    D.Out(pdTrace, "SendUpdate.");
+
+    sprintf(buf, "%f", x);
+    attributeSet->add(AttrXID, buf, strlen(buf)+1);
+    D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u",
+          AttrXID, x, attributeSet->size());
+
+    sprintf(buf, "%f", y);
+    attributeSet->add(AttrYID, buf, strlen(buf)+1);
+    D.Out(pdDebug, "SendUpdate - AttrYID= %u, y= %f, size= %u",
+          AttrYID, y, attributeSet->size());
+
+    sprintf(buf, "%d", color);
+    attributeSet->add(AttrColorID, buf, strlen(buf)+1);
+    D.Out(pdDebug, "SendUpdate - AttrColorID= %u, color= %f, size= %u",
+          AttrColorID, color, attributeSet->size());
+
+    try {
+        RTIA->updateAttributeValues(id, *attributeSet, UpdateTime, "");
+        // if (log)
+        // logfile << string(((RTIfedTime) UpdateTime).getTime()) << " : UAV "
+        // << string(Local.x) << " " << string(Local.y) << endl ;
+    }
+    catch (Exception& e) {
+        D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
+    }
+
+    delete attributeSet ;
+}
+
+// ============================================================================
+// CALLBACKS
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 //! discoverObjectInstance.
@@ -83,40 +282,7 @@ Fed::discoverObjectInstance(ObjectHandle theObject,
         D.Out(pdError, "Object of Unknown Class discovered.");
         throw RTIinternalError();
     }
-    Remote[RemoteCount].ID = theObject ;
-    printf("Discovered object %ld\n", theObject);
-    RemoteCount++ ;
-}
-
-// ----------------------------------------------------------------------------
-//! Initializes all the IDs attributes by asking the RTIA.
-void
-Fed::GetHandles(void)
-{
-    // Classes d'Objets
-
-    BilleClassID = RTIA->getObjectClassHandle(CLA_BILLE);
-    BouleClassID = RTIA->getObjectClassHandle(CLA_BOULE);
-    D.Out(pdInit, "BilleClassID = %d, BouleClassID = %d.",
-          BilleClassID, BouleClassID);
-
-    // Attributs des classes d'Objets
-    AttrXID = RTIA->getAttributeHandle(ATT_POSITION_X, BilleClassID);
-    AttrYID = RTIA->getAttributeHandle(ATT_POSITION_Y, BilleClassID);
-    AttrColorID = RTIA->getAttributeHandle(ATT_COLOR, BouleClassID);
-
-    D.Out(pdInit, "AttrXID = %d, AttrYID = %d, AttrColorID = %d.",
-          AttrXID, AttrYID, AttrColorID);
-
-    // Interactions
-
-    BingClassID = RTIA->getInteractionClassHandle(INT_BING);
-    ParamBoulID = RTIA->getParameterHandle(PAR_BOUL, BingClassID);
-    ParamDXID = RTIA->getParameterHandle(PAR_DX, BingClassID);
-    ParamDYID = RTIA->getParameterHandle(PAR_DY, BingClassID);
-
-    D.Out(pdInit, "BingClassID = %d, DX_ID = %d, DY_ID = %d",
-          BingClassID, ParamDXID, ParamDYID);
+    objects->discover(theObject);
 }
 
 // ----------------------------------------------------------------------------
@@ -125,12 +291,12 @@ void
 Fed::announceSynchronizationPoint(const char *label, const char *tag)
     throw (FederateInternalError)
 {
-    if (strcmp(label,"Init") == 0) {
-        paused = RTI_TRUE;
+    if (strcmp(label, "Init") == 0) {
+        paused = RTI_TRUE ;
         D.Out(pdProtocol, "announceSynchronizationPoint.");
     }
     else {
-        cout << "Unexpected synchronization label" << endl;
+        cout << "Unexpected synchronization label" << endl ;
         exit(1);
     }
 }
@@ -164,40 +330,11 @@ void
 Fed::federationSynchronized(const char *label)
     throw (FederateInternalError)
 {
-    if (strcmp(label,"Init") == 0) {
+    if (strcmp(label, "Init") == 0) {
         paused = false ;
         D.Out(pdProtocol,
               "CALLBACK : federationSynchronized with label %s", label);
     }
-}
-
-// ----------------------------------------------------------------------------
-//! Publish and subscribe Bille and Boule classes.
-void
-Fed::PublishAndsubscribe(void)
-{
-    // Get all class and attributes handles
-    GetHandles();
-
-    // Add PositionX et PositionY to the attribute set
-    AttributeHandleSet *AttributeSet = AttributeHandleSetFactory::create(3);
-    AttributeSet->add(AttrXID);
-    AttributeSet->add(AttrYID);
-
-    // Subscribe to Bille objects.
-    RTIA->subscribeObjectClassAttributes(BilleClassID, *AttributeSet, RTI_TRUE);
-
-    // Publish Boule Objects.
-    AttributeSet->add(AttrColorID);
-    RTIA->publishObjectClass(BouleClassID, *AttributeSet);
-
-    // Publish and subscribe to Bing interactions
-    RTIA->subscribeInteractionClass(BingClassID, RTI_TRUE);
-    RTIA->publishInteractionClass(BingClassID);
-
-    AttributeSet->empty();
-
-    D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
 }
 
 // ----------------------------------------------------------------------------
@@ -217,7 +354,8 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
     ULong valueLength ;
     int dx1 = 0 ;
     int dy1 = 0 ;
-    Boolean bille = RTI_FALSE ;
+    ObjectHandle h1 = 0 ;
+    bool bille = false ;
 
     D.Out(pdTrace, "Fed : receiveInteraction");
     if (theInteraction != BingClassID) {
@@ -241,7 +379,6 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
                 dx1 = atoi(parmValue);
                 // Local.dx = atof(parmValue);
                 D.Out(pdDebug, "receiveInteraction(*) - dx= %s", parmValue);
-                D.Out(pdDebug, "receiveInteraction - dx= %f", Local.dx);
                 delete[] parmValue ;
             }
             else
@@ -253,7 +390,6 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
                     dy1 = atoi(parmValue);
                     // Local.dy = atof(parmValue);
                     D.Out(pdDebug, "receiveInteraction(*) - dy= %s", parmValue);
-                    D.Out(pdDebug, "receiveInteraction - dy= %f", Local.dy);
                     delete[] parmValue ;
                 }
                 else
@@ -262,28 +398,15 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
             else
                 if (handle == ParamBoulID) {
                     if (parmValue != NULL) {
-                        D.Out(pdDebug,
-                              "receiveInteraction(***) - Local.ID= %d",
-                              Local.ID);
-                        D.Out(pdDebug,
-                              "receiveInteraction(***) - parmValue= %s",
-                              parmValue);
-                        if (Local.ID == atof(parmValue))
-                            bille = RTI_TRUE ;
-                        else
-                            bille = RTI_FALSE ;
+                        h1 = atof(parmValue);
+                        bille = true ;
                     }
                     else
                         D.Out(pdError, "Unrecognized parameter handle");
                 }
     }
     if (bille) {
-        Local.dx = dx1 ;
-        Local.dy = dy1 ;
-        D.Out(pdDebug, "**** receiveInteraction(*) - dx1 = %f, local.dx = %f",
-              dx1, Local.dx);
-        D.Out(pdDebug, "**** receiveInteraction(*) - dy1 = %f, local.dy = %f",
-              dy1, Local.dy);
+        objects->receive(h1, dx1, dy1);
     }
 }
 
@@ -304,69 +427,46 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
 
     int i=0 ;
     float oldx, oldy ;
-    // AttributeHandle *attribut ;
+
+    float x1 = 0 ;
+    float y1 = 0 ;
+
     ULong valueLength ;
     char *attrValue ;
 
-    if (verbose)
-        cout << "<= RAV " << ((RTIfedTime) theTime).getTime() << endl ;
 
-    for (i=0 ; i<RemoteCount ; i++) {
-        if (Remote[i].ID == theObject)
-            break ;
-    }
+    D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
+          theAttributes.size());
 
-    if (i == RemoteCount)
-        D.Out(pdError, "Fed: error, id not found (%d).", theObject);
-    else {
-        Remote[i].Effacer();
 
-        D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
-              theAttributes.size());
-        for (unsigned int j=0 ; j<theAttributes.size(); j++) {
-            AttributeHandle handle = theAttributes.getHandle(j);
-            valueLength = theAttributes.getValueLength(j);
-            attrValue = new char[valueLength] ;
-            theAttributes.getValue(j, attrValue, valueLength);
+    for (unsigned int j=0 ; j<theAttributes.size(); j++) {
 
-            if (handle == AttrXID) {
-                if (attrValue != NULL) {
-                    oldx = Remote[i].x ;
-                    Remote[i].x = atof(attrValue);
-                    Remote[i].dx = Remote[i].x - oldx ;
-                    D.Out(pdDebug, "reflectAttributeValues - x= %f, dx= %f",
-                          Remote[i].x, Remote[i].dx);
-                    delete[] attrValue ;
-                }
-                else
-                    D.Out(pdError, "Fed: ERREUR: missing Attribute.");
-            }
-            else if (handle == AttrYID) {
-                if (attrValue != NULL) {
-                    oldy = Remote[i].y ;
-                    Remote[i].y = atof(attrValue);
-                    Remote[i].dy = Remote[i].y - oldy ;
-                    D.Out(pdDebug, "reflectAttributeValues - y= %f, dy= %f",
-                          Remote[i].y, Remote[i].dy);
-                    delete[] attrValue ;
-                }
-                else
-                    D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        AttributeHandle handle = theAttributes.getHandle(j);
+        valueLength = theAttributes.getValueLength(j);
+        attrValue = new char[valueLength] ;
+        theAttributes.getValue(j, attrValue, valueLength);
+
+        if (handle == AttrXID) {
+            if (attrValue != NULL) {
+                x1 = atof(attrValue);
+                delete[] attrValue ;
             }
             else
-                D.Out(pdError, "Fed: ERREUR: handle inconnu.");
+                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
         }
-        Remote[i].Afficher();
+        else if (handle == AttrYID) {
+            if (attrValue != NULL) {
+                y1 = atof(attrValue);
+                delete[] attrValue ;
+            }
+            else
+                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        }
+        else
+            D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
-}
 
-// ----------------------------------------------------------------------------
-//! Get object IDs from the RTIA and register local objects.
-void Fed::RegisterObjects(const char *s)
-{
-    Local.ID = RTIA->registerObjectInstance(BouleClassID, s);
-    //    Local.ID = RTIA->registerObjectInstance(BilleClassID, s);
-    D.Out(pdRegister, "Local object registered under ID %d.", Local.ID);
+    objects->reflect(theObject, x1, y1);
 }
 
 // ----------------------------------------------------------------------------
@@ -381,109 +481,7 @@ Fed::removeObjectInstance(ObjectHandle theObject,
            InvalidFederationTime,
            FederateInternalError)
 {
-    int i = 0 ;
-    for (int i=0 ; i<RemoteCount ; i++) {
-        if (Remote[i].ID == theObject)
-            break ;
-    }
-
-    if (i == RemoteCount)
-        printf("Fed: error, id not found (%ld)\n", theObject);
-    else {
-        printf("Fed: RemoveObject id=%ld\n", theObject);
-        Remote[i].Effacer();
-        RemoteCount-- ;
-    }
-}
-
-// ----------------------------------------------------------------------------
-/*! Envoie une interaction, dont les parametres DX et DY ont pour valeur les
-  dx et dy de la bille Local, et dont l'etiquette temporelle vaut
-  InteractionTime.
-*/
-void
-Fed::sendInteraction(const FedTime& InteractionTime, ObjectHandle Id)
-{
-    char buf[512] ;
-    ParameterHandleValuePairSet *parameterSet=NULL ;
-
-    parameterSet = ParameterSetFactory::create(3);
-
-    sprintf(buf, "%ld", Id);
-    parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
-
-    D.Out(pdDebug, "SendInteraction");
-    D.Out(pdDebug, "SendInteraction - ParamBoulID= %u", ParamBoulID);
-    D.Out(pdDebug, "SendInteraction - x= %d", Id);
-    D.Out(pdDebug, "SendInteraction - buf= %s", buf);
-
-    // D.Out(pdDebug, "SendInteraction - ParamBoulID= %u, x= %f, buf= %s",
-    // ParamBoulID, Id, buf);
-
-    sprintf(buf, "%f", Local.dx);
-    parameterSet->add(ParamDXID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendInteraction - ParamDXID= %u, x= %f, buf= %s",
-          ParamDXID, Local.dx, buf);
-
-    sprintf(buf, "%f", Local.dy);
-    parameterSet->add(ParamDYID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f, buf= %s",
-          ParamDYID, Local.dy, buf);
-
-    D.Out(pdRegister, "Sending interaction(DX= %f, DY= %f).", Local.dx, Local.dy);
-
-    try {
-        RTIA->sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
-    }
-    catch (Exception& e) {
-        D.Out(pdExcept, "**** Exception sending interaction : %d", &e);
-    }
-
-    delete parameterSet ;
-}
-
-// ----------------------------------------------------------------------------
-//! SendUpdate updates a ball by sending entity position and color.
-/*! Envoie un updateAttributeValue pour l'objet Local avec une etiquette
-  temporelle de UpdateTime.
-*/
-void Fed::SendUpdate(const FedTime& UpdateTime)
-{
-    char buf[512] ;
-    AttributeHandleValuePairSet *attributeSet ;
-
-    attributeSet = AttributeSetFactory::create(3);
-
-    D.Out(pdTrace, "SendUpdate.");
-
-    sprintf(buf, "%f", Local.x);
-    attributeSet->add(AttrXID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u",
-          AttrXID, Local.x, attributeSet->size());
-
-    sprintf(buf, "%f", Local.y);
-    attributeSet->add(AttrYID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendUpdate - AttrYID= %u, y= %f, size= %u",
-          AttrYID, Local.y, attributeSet->size());
-
-    sprintf(buf, "%d", Local.Color);
-    attributeSet->add(AttrColorID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendUpdate - AttrColorID= %u, color= %f, size= %u",
-          AttrColorID, Local.color, attributeSet->size());
-
-    try {
-        RTIA->updateAttributeValues(Local.ID, *attributeSet, UpdateTime, "");
-        if (verbose)
-            cout << "-> UAV " << ((RTIfedTime) UpdateTime).getTime() << endl ;
-//         if (log)
-//             logfile << string(((RTIfedTime) UpdateTime).getTime()) << " : UAV "
-//                     << string(Local.x) << " " << string(Local.y) << endl ;
-    }
-    catch (Exception& e) {
-        D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
-    }
-
-    delete attributeSet ;
+    objects->remove(theObject);
 }
 
 // ----------------------------------------------------------------------------
@@ -614,8 +612,8 @@ Fed::attributeOwnershipUnavailable(ObjectHandle theObject,
 //! attributeOwnershipAcquisitionNotification.
 void
 Fed::attributeOwnershipAcquisitionNotification(
-                                               ObjectHandle theObject,
-                                               const AttributeHandleSet& attrs)
+    ObjectHandle theObject,
+    const AttributeHandleSet& attrs)
     throw (ObjectNotKnown,
            AttributeNotKnown,
            AttributeAcquisitionWasNotRequested,
@@ -809,18 +807,12 @@ Fed::confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
     // }
 }
 
-void
-Fed::enableLog(const char *file)
+// ----------------------------------------------------------------------------
+// registerBallInstance
+ObjectHandle
+Fed::registerBallInstance(const char *s)
 {
-    logfile = new ofstream(file, ios::out);
-    log = logfile->is_open();
+    return RTIA->registerObjectInstance(BouleClassID, s);
 }
 
-void
-Fed::disableLog(void)
-{
-    logfile->close();
-    log = false ;
-}
-
-// EOF $Id: my_fed.cc,v 3.10 2003/06/26 15:16:10 breholee Exp $
+// EOF $Id: Fed.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $

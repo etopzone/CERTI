@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,67 +18,37 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.8 2003/05/05 20:21:39 breholee Exp $
+// $Id: Fed.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
 #define TH_MYFED_HH
 
-#include <config.h>
-
-#include <iostream>
-
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <cstring>
+#include "Ball.hh"
+#include "ColoredBall.hh"
 
 #include "RTI.hh"
 #include "fedtime.hh"
 
-#include "bille.hh"
-
-#include <fstream>
-#include <iostream>
-
-using std::ofstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
+class Objects ;
 
 class Fed : public RTI::FederateAmbassador
 {
 public:
-    // ATTRIBUTS
-    bool granted ;
-    bool paused ; //!< Pause synchronization before starting application.
-
-    // Object Instances management
-    CBoule Local ; // La bille locale.
-    CBille Remote[20] ; // tableau des billes des autres federes
-    int RemoteCount ; // indice du tableau des billes
-
-    // METHODES
 
     // Constructeur et Destructeur
     Fed(RTI::RTIambassador*);
     virtual ~Fed();
 
+    void init(Objects *);
+
+    bool timeAdvanceGranted();
     void enableLog(const char *);
-    void disableLog(void);
-
-    void DeleteObjects(const FedTime& DeletionTime);
-
-    void PublishAndsubscribe(void);
-
-    void RegisterObjects(const char *);
-
-    void sendInteraction(const FedTime& InteractionTime,
-                         ObjectHandle Id);
-
-    void SendUpdate(const FedTime& UpdateTime);
+    void disableLog();
+    void publishAndSubscribe();
+    ObjectHandle registerBallInstance(const char *);
+    void sendInteraction(double, double, const FedTime &, ObjectHandle);
+    void sendUpdate(double, double, int, const FedTime &, ObjectHandle);
 
     // redefinition des services du RTI
     //(qui sont abstraits dans la classe FederateAmbassador)
@@ -99,7 +68,7 @@ public:
     void initiateFederateSave(const char *label)
         throw (FederateInternalError) {}
 
-    void federationSaved(void)
+    void federationSaved()
         throw (FederateInternalError) {}
 
     void requestFederationRestoreSucceeded(const char *label)
@@ -109,7 +78,7 @@ public:
                                         const char *reason)
         throw (FederateInternalError) {}
 
-    void federationRestoreBegun(void)
+    void federationRestoreBegun()
         throw (FederateInternalError) {}
 
     void initiateFederateRestore(const char *label,
@@ -118,10 +87,10 @@ public:
                CouldNotRestore,
                FederateInternalError) {}
 
-    void federationRestored(void)
+    void federationRestored()
         throw (FederateInternalError) {}
 
-    void federationNotRestored(void)
+    void federationNotRestored()
         throw (FederateInternalError) {}
 
     void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
@@ -273,14 +242,17 @@ public:
             AttributeAcquisitionWasNotCanceled,
             FederateInternalError);
 
-
-    // ------------------
-    // -- Private Part --
-    // ------------------
+    bool paused ; //!< Pause synchronization before starting application.
 
 private:
+    void getHandles();
+
+    Objects *objects ;
+
     ofstream *logfile ;
     bool log ;
+
+    bool granted ;
 
     // Federation State management
     RTI::RTIambassador *RTIA ;
@@ -300,9 +272,6 @@ private:
     ParameterHandle ParamDXID ;
     ParameterHandle ParamDYID ;
     ParameterHandle ParamBoulID ;
-
-    // Private Methods
-    void GetHandles(void);
 };
 
 #endif // TH_MYFED_HH
