@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.5 2003/01/20 21:49:15 breholee Exp $ 
+## $Id: Makefile.am,v 3.6 2003/01/29 10:30:53 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -12,7 +12,7 @@ include_HEADERS = Socket.hh SocketUN.hh
 
 noinst_HEADERS = audit.hh AuditFile.hh AuditLine.hh broadcast.hh	\
 exception_type.hh fed_file.hh FederateClock.hh FederateLevelList.hh	\
-FedParser.hh GSSAPIHandler.hh Interaction.hh				\
+FedParser.hh GAV.hh GSSAPIHandler.hh Interaction.hh			\
 InteractionBroadcastLine.hh InteractionBroadcastList.hh			\
 InteractionSet.hh LBTS.hh Message.hh message_types.hh MessageBody.hh	\
 network.hh NetworkMessage.hh Object.hh ObjectAttribute.hh		\
@@ -39,4 +39,4 @@ libCERTI_la_LDFLAGS = -release 3.0.1
 
 LDADD = @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.5 2003/01/20 21:49:15 breholee Exp $
+## EOF $Id: Makefile.am,v 3.6 2003/01/29 10:30:53 breholee Exp $
