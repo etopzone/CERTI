@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.17 2005/03/16 23:16:59 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.18 2005/03/25 17:22:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -31,7 +31,6 @@
 #include "Subscriber.hh"
 #include "Publisher.hh"
 #include "ObjectClassBroadcastList.hh"
-
 
 namespace certi {
 
@@ -63,20 +62,20 @@ public:
 
     // Publish & subscribe methods
     bool isPublishing(FederateHandle) const ;
-    bool isSubscribed(FederateHandle, const RegionImp *) const ;
+    bool isSubscribed(FederateHandle, const RTIRegion *) const ;
     bool isSubscribed(FederateHandle) const ;
 
     void publish(FederateHandle) throw (RTIinternalError, SecurityError);
     void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
 
-    void subscribe(FederateHandle, const RegionImp *)
+    void subscribe(FederateHandle, const RTIRegion *)
 	throw (RTIinternalError, SecurityError);
-    void unsubscribe(FederateHandle, const RegionImp *) throw (RTIinternalError);
+    void unsubscribe(FederateHandle, const RTIRegion *) throw (RTIinternalError);
     void unsubscribe(FederateHandle) throw (RTIinternalError);
     
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
-			     const RegionImp *region = 0);
+			     const RTIRegion *region = 0);
 
     // Attributes
     SecurityLevelID level ;
@@ -86,7 +85,7 @@ public:
 
 private:
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle, const RegionImp *);
+    void deleteSubscriber(FederateHandle, const RTIRegion *);
     void deleteSubscriber(FederateHandle);
 
     AttributeHandle handle ; //!< The attribute handle.
@@ -102,4 +101,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.17 2005/03/16 23:16:59 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.18 2005/03/25 17:22:36 breholee Exp $

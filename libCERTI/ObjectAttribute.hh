@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.13 2005/03/11 13:38:34 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.14 2005/03/25 17:20:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_OBJECT_ATTRIBUTE_HH
-#define _CERTI_OBJECT_ATTRIBUTE_HH
+#ifndef CERTI_OBJECT_ATTRIBUTE_HH
+#define CERTI_OBJECT_ATTRIBUTE_HH
 
 #include "certi.hh"
 
@@ -31,7 +31,7 @@
 
 namespace certi {
 
-class RegionImp ;
+class RTIRegion ;
 
 class ObjectClassAttribute ;
 
@@ -74,10 +74,10 @@ public:
 
     ObjectClassAttribute *getObjectClassAttribute() const { return source ; };
 
-    void associate(RegionImp *);
-    void unassociate(RegionImp *);
+    void associate(RTIRegion *);
+    void unassociate(RTIRegion *);
 
-    const RegionImp *getRegion() const { return region ; };
+    const RTIRegion *getRegion() const { return region ; };
     
 private:
     // Private Attributes
@@ -87,11 +87,11 @@ private:
     std::list<FederateHandle> ownerCandidates ; //!< Federates candidate.
     SpaceHandle space ; //!< Associated routing space
     ObjectClassAttribute *source ; //!< The associated class attribute.
-    RegionImp *region ;
+    RTIRegion *region ;
 };
 
 }
 
-#endif // _CERTI_OBJECT_ATTRIBUTE_HH
+#endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.13 2005/03/11 13:38:34 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.14 2005/03/25 17:20:26 breholee Exp $

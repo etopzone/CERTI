@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.13 2005/02/09 15:55:19 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.14 2005/03/25 17:20:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "ObjectAttribute.hh"
-#include "RegionImp.hh"
+#include "RTIRegion.hh"
 #include "PrettyDebug.hh"
 
 #include <iostream>
@@ -180,7 +180,7 @@ ObjectAttribute::setSpace(SpaceHandle h)
 /* Associate this attribute with a DDM region
  */
 void
-ObjectAttribute::associate(RegionImp *r)
+ObjectAttribute::associate(RTIRegion *r)
 {
     region = r ;
 }
@@ -190,7 +190,7 @@ ObjectAttribute::associate(RegionImp *r)
    associated with a different region, nothing is changed.
  */
 void
-ObjectAttribute::unassociate(RegionImp *r)
+ObjectAttribute::unassociate(RTIRegion *r)
 {
     if (region == r)
 	region = 0 ;
@@ -198,4 +198,4 @@ ObjectAttribute::unassociate(RegionImp *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.13 2005/02/09 15:55:19 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.14 2005/03/25 17:20:26 breholee Exp $

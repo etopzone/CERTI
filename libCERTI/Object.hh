@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.14 2004/05/18 13:18:53 breholee Exp $
+// $Id: Object.hh,v 3.15 2005/03/25 17:20:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -27,7 +27,7 @@
 
 #include "certi.hh"
 #include "ObjectAttribute.hh"
-#include "RegionImp.hh"
+#include "RTIRegion.hh"
 #include "Named.hh"
 #include "Handled.hh"
 
@@ -60,7 +60,7 @@ public:
     FederateHandle getOwner() const ;
     void setOwner(FederateHandle);
 
-    void unassociate(RegionImp *);       
+    void unassociate(RTIRegion *);       
 
     // -----------------------
     // -- Public Attributes --
@@ -88,4 +88,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.14 2004/05/18 13:18:53 breholee Exp $
+// $Id: Object.hh,v 3.15 2005/03/25 17:20:26 breholee Exp $

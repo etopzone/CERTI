@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.20 2005/03/16 23:16:59 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.21 2005/03/25 17:22:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,7 +130,7 @@ ObjectClassAttribute::deleteSubscriber(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! Removes a subscribed federate
 void
-ObjectClassAttribute::deleteSubscriber(FederateHandle fed, const RegionImp *region)
+ObjectClassAttribute::deleteSubscriber(FederateHandle fed, const RTIRegion *region)
 {
     subscribers.remove(Subscriber(fed, region));
 }
@@ -171,7 +171,7 @@ ObjectClassAttribute::isPublishing(FederateHandle fed) const
  */
 bool
 ObjectClassAttribute::isSubscribed(FederateHandle fed,
-				   const RegionImp *region) const
+				   const RTIRegion *region) const
 {
     return std::find(subscribers.begin(),
 		     subscribers.end(),
@@ -267,7 +267,7 @@ ObjectClassAttribute::getSpace() const
 /** Unsubscribe a federate if it is associated with a particular region
  */
 void
-ObjectClassAttribute::unsubscribe(FederateHandle fed, const RegionImp *region)
+ObjectClassAttribute::unsubscribe(FederateHandle fed, const RTIRegion *region)
     throw (RTIinternalError)
 {
     if (isSubscribed(fed, region)) {
@@ -302,7 +302,7 @@ ObjectClassAttribute::unsubscribe(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! subscribe
 void
-ObjectClassAttribute::subscribe(FederateHandle fed, const RegionImp *region)
+ObjectClassAttribute::subscribe(FederateHandle fed, const RTIRegion *region)
     throw (RTIinternalError, SecurityError)
 {
     if (!isSubscribed(fed, region)) {
@@ -329,14 +329,14 @@ ObjectClassAttribute::subscribe(FederateHandle fed, const RegionImp *region)
 //! Add all attribute's subscribers to the broadcast list
 void
 ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
-					  const RegionImp *region)
+					  const RTIRegion *region)
 {
     switch(ocblist->message->type) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           list<Subscriber>::iterator i ;
           for (i = subscribers.begin(); i != subscribers.end(); i++) {
-	      //     if ((*i)->match(region))
+	      if (i->match(region))
 		  ocblist->addFederate(i->getHandle(), handle);
           }
       } break ;
@@ -353,4 +353,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.20 2005/03/16 23:16:59 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.21 2005/03/25 17:22:36 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.18 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.19 2005/03/25 17:25:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -78,7 +78,7 @@ public:
                SecurityError);
 
     void subscribe(FederateHandle, ObjectClassHandle, AttributeHandle *,
-                   int theListSize, const RegionImp * = 0)
+                   int theListSize, const RTIRegion * = 0)
         throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
 
@@ -150,6 +150,8 @@ public:
         throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested, RTIinternalError);
 
+    Object *getObject(ObjectHandle) const throw (ObjectNotKnown);
+
 private:
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
@@ -164,4 +166,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.18 2005/03/21 13:37:46 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.19 2005/03/25 17:25:06 breholee Exp $

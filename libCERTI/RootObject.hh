@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.20 2004/01/09 16:17:43 breholee Exp $
+// $Id: RootObject.hh,v 3.21 2005/03/25 17:18:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -28,7 +28,7 @@
 #include "InteractionSet.hh"
 #include "ObjectClassSet.hh"
 #include "ObjectSet.hh"
-#include "RegionImp.hh"
+#include "RTIRegion.hh"
 #include "RoutingSpace.hh"
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
@@ -56,10 +56,10 @@ public:
     SpaceHandle getRoutingSpaceHandle(std::string) throw (NameNotFound);
     std::string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
-    void addRegion(RegionImp *);
-    RegionHandle createRegion(SpaceHandle, long) throw (SpaceNotDefined);
+    void addRegion(RTIRegion *);
+    RegionHandle createRegion(SpaceHandle, unsigned long) throw (SpaceNotDefined);
     void deleteRegion(RegionHandle) throw (RegionNotKnown, RegionInUse);
-    RegionImp *getRegion(RegionHandle) throw (RegionNotKnown);
+    RTIRegion *getRegion(RegionHandle) throw (RegionNotKnown);
     void modifyRegion(RegionHandle, const std::vector<Extent> &)
 	throw (RegionNotKnown, InvalidExtents);
 
@@ -95,7 +95,7 @@ private:
     SecurityServer *server ;
 
     // Regions
-    std::list<RegionImp *> regions ;
+    std::list<RTIRegion *> regions ;
     HandleManager<RegionHandle> regionHandles ;
 };
 
@@ -103,4 +103,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.20 2004/01/09 16:17:43 breholee Exp $
+// $Id: RootObject.hh,v 3.21 2005/03/25 17:18:33 breholee Exp $

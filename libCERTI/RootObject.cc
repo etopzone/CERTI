@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $
+// $Id: RootObject.cc,v 3.24 2005/03/25 17:18:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -152,7 +152,7 @@ RootObject::getRoutingSpace(SpaceHandle handle)
 // ----------------------------------------------------------------------------
 //! add a region
 void
-RootObject::addRegion(RegionImp *region)
+RootObject::addRegion(RTIRegion *region)
 {
     regions.push_back(region);
 }
@@ -160,12 +160,12 @@ RootObject::addRegion(RegionImp *region)
 // ----------------------------------------------------------------------------
 //! create (and add) a region
 RegionHandle
-RootObject::createRegion(SpaceHandle handle, long nb_extents)
+RootObject::createRegion(SpaceHandle handle, unsigned long nb_extents)
     throw (SpaceNotDefined)
 {
-    RegionImp *region = new RegionImp(regionHandles.provide(), handle, 
-				      nb_extents,
-				      getRoutingSpace(handle).size());
+    RTIRegion *region = new RTIRegion(regionHandles.provide(),
+				      getRoutingSpace(handle), 
+				      nb_extents);
     addRegion(region);
 
     assert(region->getNumberOfExtents() == nb_extents);
@@ -178,12 +178,8 @@ void
 RootObject::modifyRegion(RegionHandle handle, const vector<Extent> &extents)
     throw (RegionNotKnown, InvalidExtents)
 {
-    RegionImp *region = getRegion(handle);
-
-    // TODO (later in development) Use the expected exception, not an assert
-    assert((size_t) region->getNumberOfExtents() == extents.size());
-
-    region->setExtents(extents);
+    RTIRegion *region = getRegion(handle);
+    region->replaceExtents(extents);
 }
 
 // ----------------------------------------------------------------------------
@@ -194,10 +190,10 @@ void
 RootObject::deleteRegion(RegionHandle region_handle)
     throw (RegionNotKnown, RegionInUse)
 {
-    list<RegionImp *>::iterator it = std::find_if(
+    list<RTIRegion *>::iterator it = std::find_if(
 	regions.begin(),
 	regions.end(),
-	HandleComparator<RegionImp>(region_handle));
+	HandleComparator<RTIRegion>(region_handle));
 
     if (it == regions.end()) throw RegionNotKnown();
     else {
@@ -213,14 +209,14 @@ RootObject::deleteRegion(RegionHandle region_handle)
     \param region_handle Region to get
     \return Pointer to the region
 */
-RegionImp *
+RTIRegion *
 RootObject::getRegion(RegionHandle handle)
     throw (RegionNotKnown)
 {
-    list<RegionImp *>::iterator it = std::find_if(
+    list<RTIRegion *>::iterator it = std::find_if(
 	regions.begin(), 
 	regions.end(),
-	HandleComparator<RegionImp>(handle));
+	HandleComparator<RTIRegion>(handle));
 
     if (it == regions.end()) throw RegionNotKnown();
     else return *it ;
@@ -315,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $
+// $Id: RootObject.cc,v 3.24 2005/03/25 17:18:33 breholee Exp $

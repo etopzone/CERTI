@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.16 2004/05/18 13:18:53 breholee Exp $
+// $Id: Object.cc,v 3.17 2005/03/25 17:20:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -142,7 +142,7 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
 // ----------------------------------------------------------------------------
 //! Unassociate attributes from this region
 void
-Object::unassociate(RegionImp *region)
+Object::unassociate(RTIRegion *region)
 {
     deque<ObjectAttribute *>::const_iterator i ;
     for (i = attributeState.begin(); i != attributeState.end(); i++) {
@@ -152,4 +152,4 @@ Object::unassociate(RegionImp *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.16 2004/05/18 13:18:53 breholee Exp $
+// $Id: Object.cc,v 3.17 2005/03/25 17:20:26 breholee Exp $
