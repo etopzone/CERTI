@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketTCP.hh,v 3.10 2005/03/14 18:55:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
@@ -51,12 +51,11 @@ namespace certi {
 class SocketTCP : public Socket
 {
 public :
-    // ---------------------------------------------
-    // -- Fonctions heritee de la classe Socket --
-    // ---------------------------------------------
+    SocketTCP();
+    virtual ~SocketTCP();
 
     void send(void *Buffer, unsigned long Size)
-        throw (NetworkError, NetworkSignal);
+	throw (NetworkError, NetworkSignal);
 
     void receive(void *Buffer, unsigned long Size)
         throw (NetworkError, NetworkSignal);
@@ -70,26 +69,25 @@ public :
 
     void close();
 
-    // --------------------------
-    // -- TCP Specific Methods --
-    // --------------------------
-
-    SocketTCP();
-    ~SocketTCP();
-
     int accept(SocketTCP *serveur);
 
     void createTCPClient(unsigned int port, char *nom_serveur);
     void createTCPClient(unsigned int port, unsigned long addr);
-    void createTCPServer(unsigned int port = 0, unsigned long addr = INADDR_ANY);
+    void createTCPServer(unsigned int port = 0,
+			 unsigned long addr = INADDR_ANY);
 
     SocketTCP & operator= (SocketTCP &theSocket);
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
+    unsigned int getPort() const ;
+    unsigned long getAddr() const ;
+    void setPort(unsigned int port);
+    int bind(unsigned int port=0, unsigned long addr=INADDR_ANY);
+    void changeReuseOption();
+    int connect(unsigned int port, unsigned long addr);
+    int listen(unsigned long howMuch=5);
+    int open();
+    int timeoutTCP(int, int);
 
     long _socket_tcp ;
 
@@ -103,31 +101,13 @@ private:
     // This class can use a buffer to reduce the number of systems calls
     // when reading a lot of small amouts of data. Each time a Receive
     // is made, it will try to read SOCKTCP_BUFFER_LENGTH
-
     char ReadBuffer[SOCKTCP_BUFFER_LENGTH] ;
     unsigned long RBLength ;
 #endif
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
-    unsigned int getPort() const ;
-    unsigned long getAddr() const ;
-    void setPort(unsigned int port);
-
-    int bind(unsigned int port=0, unsigned long addr=INADDR_ANY);
-    void changeReuseOption();
-    int connect(unsigned int port, unsigned long addr);
-    int listen(unsigned long howMuch=5);
-    int open();
-    int timeoutTCP(int, int);
-
-    int portableSelect(fd_set *, struct timeval *);
 };
 
-}
+} // namespace certi
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketTCP.hh,v 3.10 2005/03/14 18:55:51 breholee Exp $

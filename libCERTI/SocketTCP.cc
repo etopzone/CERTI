@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.9 2004/03/14 00:24:55 breholee Exp $
+// $Id: SocketTCP.cc,v 3.10 2005/03/14 18:55:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -476,45 +476,38 @@ void SocketTCP::setPort(unsigned int port)
 }
 
 // ----------------------------------------------------------------------------
-//! timeoutTCP.
-int 
+/** Wait for a socket event, until a time-out. The time-out is given
+    with seconds and microseconds in parameter.
+    @param sec seconds
+    @param usec microseconds
+    @return 1 if there are waiting events, 0 if the wait timed out
+    @exception NetworkSignal and NetworkError
+ */
+int
 SocketTCP::timeoutTCP(int sec, int usec)
 {
-    int i ;
-    fd_set fdset ;
-    struct timeval time_out ;
-    
     assert(_est_init_tcp);
-    
+
+    struct timeval time_out ;    
     time_out.tv_sec = sec ;
     time_out.tv_usec = usec ;
-    
+
+    fd_set fdset ;
     FD_ZERO(&fdset);
     FD_SET(_socket_tcp, &fdset);
-    
-    while ((i = portableSelect(&fdset, &time_out)) < 0) {
 
+    int nb = select(_socket_tcp+1, &fdset, NULL, NULL, &time_out);
+
+    if (nb < 0) {
 	if (errno == EINTR)
 	    throw NetworkSignal("TCP::TimeOut Interrompu par un signal.");
 	else
 	    throw NetworkError();
     }
-    return (i > 0) ? 1 : 0 ;
-}
-
-// ----------------------------------------------------------------------------
-/** Portable select
- */
-int
-SocketTCP::portableSelect(fd_set *fdset, struct timeval *time_out)
-{
-#ifdef WITH_CYGWIN
-    return select(_socket_tcp+1, fdset, NULL, NULL, time_out);
-#else
-    return select(sysconf(_SC_OPEN_MAX), fdset, NULL, NULL, time_out);
-#endif
+    else 
+	return nb > 0 ;
 }
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.9 2004/03/14 00:24:55 breholee Exp $
+// $Id: SocketTCP.cc,v 3.10 2005/03/14 18:55:51 breholee Exp $
