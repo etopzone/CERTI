@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.15 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTIambassador.cc,v 3.16 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -64,7 +64,7 @@ RTIambassador::executeService(Message *req, Message *rep)
         req->write((SocketUN *) this);
     }
     catch (NetworkError) {
-        cout << "LibRTI: Catched NetworkError, "
+        cout << "LibRTI: Catched NetworkError (write), "
              << "throw RTIinternalError." << endl ;
         throw RTIinternalError();
     }
@@ -76,7 +76,7 @@ RTIambassador::executeService(Message *req, Message *rep)
         rep->read((SocketUN *) this);
     }
     catch (NetworkError) {
-        cout << "LibRTI: Catched NetworkError, "
+        cout << "LibRTI: Catched NetworkError (read), "
              << "throw RTIinternalError." << endl ;
         throw RTIinternalError();
     }
@@ -2274,20 +2274,26 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
     req.setName(name);
     this->executeService(&req, &rep);
 
-    return rep.space ;
+    return rep.getSpace() ;
 }
 
 // ----------------------------------------------------------------------------
 // Get Routing Space Name
 char *
-RTIambassador::getRoutingSpaceName(SpaceHandle)
+RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = GET_SPACE_NAME ;
+    req.setSpace(handle) ;
+    this->executeService(&req, &rep);
+
+    return strdup(rep.getName());
 }
 
 
@@ -3618,4 +3624,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.15 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTIambassador.cc,v 3.16 2003/03/11 13:10:35 breholee Exp $

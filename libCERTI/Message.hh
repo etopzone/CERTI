@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.7 2003/03/06 13:34:53 breholee Exp $
+// $Id: Message.hh,v 3.8 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -254,6 +254,8 @@ public:
     const char *getName(void) const { return name ; };
     void setName(const char *new_name);
 
+    
+
     const char *getFederationName(void) const { return federationName ; };
     void setFederationName(const char *federation_name);
 
@@ -262,6 +264,9 @@ public:
 
     const char *getTag(void) const { return tag ; };
     void setTag(const char *new_tag);
+
+    SpaceHandle getSpace(void) const { return space ; };
+    void setSpace(SpaceHandle);
 
     // -----------------------
     // -- Public Attributes --
@@ -358,4 +363,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.7 2003/03/06 13:34:53 breholee Exp $
+// $Id: Message.hh,v 3.8 2003/03/11 13:10:35 breholee Exp $

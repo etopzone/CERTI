@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.7 2003/03/06 13:34:53 breholee Exp $
+// $Id: Message.cc,v 3.8 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -124,6 +124,13 @@ void Message::setName(const char *NewName)
     strcpy(name, NewName);
 }
 
+// ----------------------------------------------------------------------------
+// setSpace
+void
+Message::setSpace(SpaceHandle handle)
+{
+    space = handle ;
+}
 
 // ----------------------
 // -- SetNomFederation --
@@ -260,4 +267,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.7 2003/03/06 13:34:53 breholee Exp $
+// $Id: Message.cc,v 3.8 2003/03/11 13:10:35 breholee Exp $

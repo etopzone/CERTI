@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.2 2003/02/19 15:45:22 breholee Exp $
+// $Id: DataDistribution.hh,v 3.3 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -37,6 +37,7 @@ public:
     DataDistribution(RootObject *);
 
     SpaceHandle getRoutingSpaceHandle(const char *);
+    const char *getRoutingSpaceName(SpaceHandle);
 
 private:
     RootObject *rootObject ;
@@ -46,4 +47,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.2 2003/02/19 15:45:22 breholee Exp $
+// $Id: DataDistribution.hh,v 3.3 2003/03/11 13:10:35 breholee Exp $

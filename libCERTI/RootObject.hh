@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.5 2003/03/04 18:09:32 breholee Exp $
+// $Id: RootObject.hh,v 3.6 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -65,8 +65,8 @@ public:
                           SecurityLevelID the_level_id);
 
     void addRoutingSpace(RoutingSpace *);
-    SpaceHandle getRoutingSpaceHandle(const char *) const
-        throw (NameNotFound);
+    SpaceHandle getRoutingSpaceHandle(const char *) throw (NameNotFound);
+    const char *getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
 private:
     vector<RoutingSpace *> routingSpaces ;
@@ -77,4 +77,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.5 2003/03/04 18:09:32 breholee Exp $
+// $Id: RootObject.hh,v 3.6 2003/03/11 13:10:35 breholee Exp $

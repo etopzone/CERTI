@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -707,7 +707,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         // 8.10
     case GET_SPACE_NAME:
-        // unimplemented
+        // nb_requetes...
+        D.Out(pdTrace, "Receiving Message from Federate, type GetSpaceName.");
+        rep.setName(ddm->getRoutingSpaceName(req->getSpace()));
         break ;
 
         // 8.11
@@ -1094,4 +1096,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.6 2003/03/11 13:10:35 breholee Exp $
