@@ -15,7 +15,6 @@ Files
 Content
 -------
 
-- emacs coding style line
 - copyright and license notice
 - CVS Id
 
@@ -59,6 +58,7 @@ Indentation
 -----------
 
 - 4-space indentation
+- 2-space indentation for case statements
 - no indentation for namespaces
 
 Line wrap
