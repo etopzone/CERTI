@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: Object.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -27,6 +27,7 @@
 
 #include "RTItypes.hh"
 #include "ObjectAttribute.hh"
+#include "RegionImp.hh"
 
 #include <deque>
 #include <list>
@@ -78,7 +79,7 @@ public:
     FederateHandle getOwner() const ;
     void setOwner(FederateHandle);
 
-    // BUG: Prevoir un jour une methode pour changer SF...
+    void unassociate(RegionImp *);       
 
 private:
 
@@ -101,4 +102,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: Object.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $

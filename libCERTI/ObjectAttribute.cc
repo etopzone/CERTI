@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.11 2003/07/07 23:05:26 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.12 2003/07/09 16:04:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "ObjectAttribute.hh"
-
+#include "RegionImp.hh"
 #include "PrettyDebug.hh"
 
 #include <iostream>
@@ -36,13 +36,6 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
-
-// ----------------------------------------------------------------------------
-//! Default constructor (all atttributes to default state).
-// ObjectAttribute::ObjectAttribute()
-// : handle(0), owner(0), divesting(RTI_FALSE), space(0)
-// {
-// }
 
 // ----------------------------------------------------------------------------
 //! Constructor that sets handle and attribute owner.
@@ -90,7 +83,7 @@ ObjectAttribute::setOwner(FederateHandle newOwner)
 Boolean
 ObjectAttribute::beingDivested() const
 {
-    return(divesting);
+    return divesting ;
 }
 
 // ----------------------------------------------------------------------------
@@ -199,4 +192,4 @@ ObjectAttribute::unassociate(RegionImp *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.11 2003/07/07 23:05:26 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.12 2003/07/09 16:04:46 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: Object.cc,v 3.13 2003/07/09 16:04:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 
 using std::cout ;
 using std::endl ;
@@ -180,6 +181,17 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
     throw AttributeNotDefined("Instance doesn't have this attribute handle");
 }
 
+// ----------------------------------------------------------------------------
+//! Unassociate attributes from this region
+void
+Object::unassociate(RegionImp *region)
+{
+    deque<ObjectAttribute *>::const_iterator i ;
+    for (i = attributeState.begin(); i != attributeState.end(); i++) {
+	(*i)->unassociate(region);
+    }
+}
+
 } // namespace certi
 
-// $Id: Object.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: Object.cc,v 3.13 2003/07/09 16:04:46 breholee Exp $

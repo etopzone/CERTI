@@ -19,18 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.10 2003/07/07 23:05:26 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
 #define _CERTI_OBJECT_ATTRIBUTE_HH
 
 #include "RTItypes.hh"
-#include "RegionImp.hh"
 
 #include <list>
 
 namespace certi {
+
+class RegionImp ;
 
 class ObjectClassAttribute ;
 
@@ -75,7 +76,7 @@ public:
 
     void associate(RegionImp *);
     void unassociate(RegionImp *);
-
+    
 private:
     // Private Attributes
     AttributeHandle handle ; //!< The object attribute handle.
@@ -84,11 +85,11 @@ private:
     std::list<FederateHandle> ownerCandidates ; //!< Federates candidate.
     SpaceHandle space ; //!< Associated routing space
     ObjectClassAttribute *source ; //!< The associated class attribute.
-    RegionImp *region ; //!< The associated update region
+    RegionImp *region ;
 };
 
 }
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.10 2003/07/07 23:05:26 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $
