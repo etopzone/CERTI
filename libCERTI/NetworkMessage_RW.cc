@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.10 2003/07/01 13:34:04 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.11 2003/07/03 16:16:16 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -175,7 +175,7 @@ NetworkMessage::readBody(Socket *socket)
                 handleArray[i] = Body.readShortInt();
             break ;
 
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
             space = Body.readLongInt();
             nbExtents = Body.readLongInt();
             region = Body.readLongInt();
@@ -202,7 +202,7 @@ NetworkMessage::readBody(Socket *socket)
             readLabel(&Body);
             break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    readExtents(Body);
 	    break ;
 	    
@@ -296,7 +296,7 @@ NetworkMessage::readHeader(Socket *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
           case FEDERATE_RESTORE_COMPLETE:
           case FEDERATE_RESTORE_NOT_COMPLETE:
           case FEDERATION_RESTORE_BEGUN:
@@ -358,7 +358,7 @@ NetworkMessage::readHeader(Socket *socket)
             break ;
 
             // DDM variable part
-          case DELETE_REGION:
+          case DDM_DELETE_REGION:
             region = Header.VP.ddm.region ;
             break ;
 
@@ -375,7 +375,7 @@ NetworkMessage::readHeader(Socket *socket)
             objectClass = Header.VP.O_I.handle ;
 	    break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    region = Header.VP.ddm.region ;
 	    break ;
 
@@ -569,7 +569,7 @@ NetworkMessage::writeBody(Socket *socket)
                 Body.writeShortInt(handleArray[i]);
             break ;
 
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
             Body.writeLongInt(space);
             Body.writeLongInt(nbExtents);
             Body.writeLongInt(region);
@@ -596,7 +596,7 @@ NetworkMessage::writeBody(Socket *socket)
             Body.writeString(label);
             break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    writeExtents(Body);
 	    break ;
 	    
@@ -720,7 +720,7 @@ NetworkMessage::writeHeader(Socket *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-          case CREATE_REGION:
+          case DDM_CREATE_REGION:
           case INITIATE_FEDERATE_RESTORE:
             Header.bodySize = 1 ;
             break ;
@@ -803,7 +803,7 @@ NetworkMessage::writeHeader(Socket *socket)
             break ;
 
             // DDM variable part, no body
-          case DELETE_REGION:
+          case DDM_DELETE_REGION:
             Header.bodySize = 0 ;
             Header.VP.ddm.region = region ;
             break ;
@@ -830,7 +830,7 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.handle = objectClass ;
             break ;
 
-	  case MODIFY_REGION:
+	  case DDM_MODIFY_REGION:
 	    Header.bodySize = 1 ;
 	    Header.VP.ddm.region = region ;
 	    break ;
@@ -840,7 +840,6 @@ NetworkMessage::writeHeader(Socket *socket)
           default:
             D.Out(pdExcept, "Unknown type %d in WriteHeader.", Header.type);
             throw RTIinternalError("Unknown/Unimplemented type for Header.");
-
         }
 
     // 4- If Header.bodySize = 0, send message and return RTI_FALSE,
@@ -903,4 +902,4 @@ NetworkMessage::writeExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.10 2003/07/01 13:34:04 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.11 2003/07/03 16:16:16 breholee Exp $
