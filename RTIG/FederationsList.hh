@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.8 2003/02/19 14:29:38 breholee Exp $
+// $Id: FederationsList.hh,v 3.9 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -83,13 +83,13 @@ public:
     void info(FederationHandle theHandle,
               int &nb_federes,
               int &nb_regulateurs,
-              bool &est_pause,
+              bool &is_syncing,
               SocketMC* &comm_mc)
 #else
         void info(FederationHandle theHandle,
                   int &nb_federes,
                   int &nb_regulateurs,
-                  bool &est_pause)
+                  bool &is_syncing)
 #endif
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
@@ -99,14 +99,12 @@ public:
                    ObjectHandle &LastID)
         throw (TooManyIDsRequested);
 
-    // ----------------------
-    // -- Pause Management --
-    // ----------------------
-
-    void setPause(FederationHandle theHandle,
-                  FederateHandle theFederate,
-                  bool state,
-                  const char *theLabel)
+    // Synchronization Management
+    void manageSynchronization(FederationHandle theHandle,
+                               FederateHandle theFederate,
+                               bool state,
+                               const char *the_label,
+                               const char *the_tag)
         throw (FederationAlreadyPaused,
                FederationNotPaused,
                FederateNotExecutionMember,
@@ -114,6 +112,12 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    void broadcastSynchronization(FederationHandle handle,
+                                  FederateHandle federate,
+                                  const char *label,
+                                  const char *tag)
+        throw (FederationExecutionDoesNotExist,
+               RTIinternalError);
 
     // -------------------------
     // -- Federate Management --
@@ -437,8 +441,8 @@ private:
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 };
 
-}}
+}} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.8 2003/02/19 14:29:38 breholee Exp $
+// $Id: FederationsList.hh,v 3.9 2003/03/21 15:06:46 breholee Exp $

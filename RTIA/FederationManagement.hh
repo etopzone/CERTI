@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
+// $Id: FederationManagement.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -27,7 +27,10 @@
 
 #include <config.h>
 
-#include <stdio.h>
+#include <list>
+using std::list ;
+
+#include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -90,13 +93,16 @@ public:
     void resignFederationExecution(ResignAction action,
                                    TypeException &e);
 
-    // -- Pause/Resume --
-    void requestPause(const char *label, TypeException &e);
-    void pauseAchieved(const char *label, TypeException &e);
-    void requestResume(const char *label, TypeException &e);
-    void resumeAchieved(TypeException &e);
-    void initiatePause(const char *label);
-    void initiateResume(const char *label);
+    // Synchronization.
+    void registerSynchronization(const char* label,
+                                 const char* tag,
+                                 TypeException &e);
+    void unregisterSynchronization(const char* label,
+                                   TypeException &e);
+    void synchronizationPointRegistrationSucceeded(const char* label);
+    void federationSynchronized(const char* label);
+    void announceSynchronizationPoint(const char* label,
+                                      const char* tag);
 
 private:
 
@@ -108,18 +114,15 @@ private:
 
     Boolean _est_createur_federation ;
     Boolean _est_membre_federation ;
-    Boolean _est_pause ;
+
+    list<char *> synchronizationLabels; //!< Labels being synchronized.
 
     char _nom_federation[MAX_FEDERATION_NAME_LENGTH] ;
     char _nom_federe[MAX_FEDERATE_NAME_LENGTH] ;
-    char _label_pause[100] ;
-
-    Boolean _RTI_demande_pause ;
-    Boolean _RTI_demande_fin_pause ;
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
+// $Id: FederationManagement.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: TimeManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -110,18 +110,40 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 //! Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
 Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
 {
-
     D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
 
-    switch(msg.type) {
+    switch (msg.type) {
 
-    case m_REQUEST_PAUSE:
-        fm->initiatePause(msg.label);
-        break ;
+    case m_FEDERATION_SYNCHRONIZED:
+        try {
+            fm->federationSynchronized(msg.label);
+        }
+        catch(RTIinternalError &e) {
+            cout << "RTIA:RTIinternalError in federationSynchronized." << endl;
+            throw e;
+        }
+        break;
 
-    case m_REQUEST_RESUME:
-        fm->initiateResume(msg.label);
-        break ;
+    case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        try {
+            fm->synchronizationPointRegistrationSucceeded(msg.label);
+        }
+        catch(RTIinternalError &e) {
+            cout << "RTIA:RTIinternalError in synchronizationPointRegistration"
+                "Succeeded." << endl;
+            throw e;
+        }
+        break;
+
+    case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+        try {
+            fm->announceSynchronizationPoint(msg.label, msg.tag);
+        }
+        catch(RTIinternalError &e) {
+            cout << "RTIA:RTIinternalError in announceSynchronizationPoint." << endl;
+            throw e;
+        }
+        break;
 
     case m_DISCOVER_OBJECT:
         try {
@@ -665,4 +687,4 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: TimeManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $

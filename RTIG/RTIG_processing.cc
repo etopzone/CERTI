@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -247,36 +247,46 @@ RTIG::processMessageNull(NetworkMessage *msg)
 }
 
 // ----------------------------------------------------------------------------
-// processRequestPause
-void
-RTIG::processRequestPause(Socket *link, NetworkMessage *req)
+//! processRegisterSynchronization.
+void 
+RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Label \"%s\"", req->label);
-    federations->setPause(req->federation,
-                          req->federate,
-                          true,
-                          req->label);
-    D.Out(pdTerm, "Federation %u is now paused.", req->federation);
+    auditServer->addToLinef("Label \"%s\" registered. Tag is \"%s\"",
+                            req->label, req->tag);
+    federations->manageSynchronization(req->federation,
+                                       req->federate,
+                                       true,
+                                       req->label,
+                                       req->tag);
+    D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
-    NetworkMessage rep ;
-    rep.type = m_REQUEST_PAUSE ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-
+    // send synchronizationPointRegistrationSucceeded() to federate.
+    NetworkMessage rep;
+    rep.type        = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+    rep.federate    = req->federate ;
+    rep.federation  = req->federation ;
+    rep.setLabel(req->label);
     rep.write(link);
+
+    federations->broadcastSynchronization(req->federation,
+                                          req->federate,
+                                          req->label,
+                                          req->tag);
 }
 
 // ----------------------------------------------------------------------------
-// processRequestResume
-void
-RTIG::processRequestResume(Socket*, NetworkMessage *msg)
+//! processSynchronizationAchieved.
+void 
+RTIG::processSynchronizationAchieved(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Label \"%s\"", msg->label);
-    federations->setPause(msg->federation,
-                          msg->federate,
-                          false,
-                          msg->label);
-    D.Out(pdTerm, "Federation %u has been resumed.", msg->federation);
+    auditServer->addToLinef("Label \"%s\" ended.", req->label);
+
+    federations->manageSynchronization(req->federation,
+                                       req->federate,
+                                       false,
+                                       req->label,
+                                       "");
+    D.Out(pdTerm, "Federate %u has synchronized.", req->federate);
 }
 
 // ----------------------------------------------------------------------------
@@ -814,4 +824,4 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $

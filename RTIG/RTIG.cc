@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -141,18 +141,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processResignFederation(msg->federation, msg->federate);
         break ;
 
-    case m_REQUEST_PAUSE:
-        D.Out(pdTrace, "Federation %u: requestPause du federe %u.",
+    case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        D.Out(pdTrace,
+              "Federation %u: registerFedSyncPoint from federate %u.",
               msg->federation, msg->federate);
         auditServer->setLevel(8);
-        processRequestPause(link, msg);
+        processRegisterSynchronization(link, msg);
         break ;
 
-    case m_REQUEST_RESUME:
-        D.Out(pdTrace, "Federation %u: requestResume du federe %u.",
+    case m_SYNCHRONIZATION_POINT_ACHIEVED:
+        D.Out(pdTrace,
+              "Federation %u: synchronizationPointAchieved from federate %u.",
               msg->federation, msg->federate);
         auditServer->setLevel(8);
-        processRequestResume(link, msg);
+        processSynchronizationAchieved(link, msg);
         break ;
 
     case m_SET_TIME_REGULATING:
@@ -862,4 +864,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.6 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $

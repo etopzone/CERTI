@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.17 2003/03/12 10:00:14 breholee Exp $
+// $Id: RTIambassador.cc,v 3.18 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -344,7 +344,7 @@ RTIambassador::resignFederationExecution(ResignAction theAction)
 //! Register Federation Synchronization Point
 void
 RTIambassador::registerFederationSynchronizationPoint(const char *label,
-                                                      const char */*theTag*/)
+                                                      const char *the_tag)
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -353,18 +353,10 @@ RTIambassador::registerFederationSynchronizationPoint(const char *label,
 {
     Message req, rep ;
 
-    if ((strcmp(label, "Freeze") == 0) || (strcmp(label, "Init") == 0)) {
-        req.type = REQUEST_PAUSE ;
-        req.setLabel(label);
-    }
-    else {
-        if (strcmp(label, "Unfreeze") == 0) {
-            req.type = REQUEST_RESUME ;
-            req.setLabel(label);
-        }
-        else
-            throw RTIinternalError();
-    }
+    req.type = REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+    req.setLabel(label);
+    req.setTag(the_tag);
+
     executeService(&req, &rep);
 }
 
@@ -396,16 +388,8 @@ RTIambassador::synchronizationPointAchieved(const char *label)
 {
     Message req, rep ;
 
-    if ((strcmp(label, "Freeze") == 0) || (strcmp(label, "Init") == 0)) {
-        req.type = PAUSE_ACHIEVED ;
-        req.setLabel(label);
-    }
-    else {
-        if (strcmp(label, "Unfreeze") == 0) {
-            req.type = RESUME_ACHIEVED ;
-            req.setLabel(label);
-        } else throw RTIinternalError();
-    }
+    req.type = SYNCHRONIZATION_POINT_ACHIEVED ;
+    req.setLabel(label);
 
     executeService(&req, &rep);
 }
@@ -2606,13 +2590,18 @@ RTIambassador::tick(void)
         try {
             switch (vers_Fed.type) {
 
-            case INITIATE_PAUSE: {
-                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
-            } break ;
+            case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+                fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
+                break ;
 
-            case INITIATE_RESUME: {
-                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
-            } break ;
+            case ANNOUNCE_SYNCHRONIZATION_POINT:
+                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
+                                                      vers_Fed.getTag());
+                break;
+
+            case FEDERATION_SYNCHRONIZED:
+                fed_amb->federationSynchronized(vers_Fed.getLabel());
+                break;
 
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
@@ -2932,13 +2921,18 @@ RTIambassador::tick(TickTime /*minimum*/,
         try {
             switch(vers_Fed.type) {
 
-            case INITIATE_PAUSE: {
-                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
-            } break ;
+            case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+                fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
+                break ;
 
-            case INITIATE_RESUME: {
-                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(), "");
-            } break ;
+            case ANNOUNCE_SYNCHRONIZATION_POINT:
+                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
+                                                      vers_Fed.getTag());
+                break;
+
+            case FEDERATION_SYNCHRONIZED:
+                fed_amb->federationSynchronized(vers_Fed.getLabel());
+                break;
 
             case START_REGISTRATION_FOR_OBJECT_CLASS: {
                 fed_amb->
@@ -3633,4 +3627,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.17 2003/03/12 10:00:14 breholee Exp $
+// $Id: RTIambassador.cc,v 3.18 2003/03/21 15:06:46 breholee Exp $

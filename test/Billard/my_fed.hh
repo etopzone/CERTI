@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.5 2003/03/19 08:59:30 breholee Exp $
+// $Id: my_fed.hh,v 3.6 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -41,13 +41,20 @@
 
 #include "bille.hh"
 
+#include <fstream>
+#include <iostream>
+
+using std::ofstream ;
+using std::ios ;
+using std::cout ;
+using std::endl ;
+
 class Fed : public RTI::FederateAmbassador
 {
 public:
     // ATTRIBUTS
     bool granted ;
-    bool paused ;
-    char CurrentPauseLabel[100] ;
+    bool paused ; //!< Pause synchronization before starting application.
 
     // Object Instances management
     CBoule Local ; // La bille locale.
@@ -59,6 +66,9 @@ public:
     // Constructeur et Destructeur
     Fed(RTI::RTIambassador*);
     virtual ~Fed();
+
+    void enableLog(const char *);
+    void disableLog(void);
 
     void DeleteObjects(const FedTime& DeletionTime);
 
@@ -241,6 +251,9 @@ public:
     // ------------------
 
 private:
+    ofstream *logfile ;
+    bool log ;
+
     // Federation State management
     RTI::RTIambassador *RTIA ;
 

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.8 2003/03/20 10:31:56 breholee Exp $
+// $Id: my_fed.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,7 @@
 #include "PrettyDebug.hh"
 
 static pdCDebug D("FEDAMB", "(Fed_Amba) - ");
+
 extern bool verbose ;
 
 // ----------------------------------------------------------------------------
@@ -121,22 +122,16 @@ Fed::GetHandles(void)
 // ----------------------------------------------------------------------------
 //! announceSynchronizationPoint.
 void
-Fed::announceSynchronizationPoint(const char *label, const char */*tag*/)
+Fed::announceSynchronizationPoint(const char *label, const char *tag)
     throw (FederateInternalError)
 {
-    if ((strcmp(label, "Freeze") == 0) || (strcmp(label, "Init") == 0)) {
-        paused = true ;
-        strcpy(CurrentPauseLabel, label);
+    if (strcmp(label,"Init") == 0) {
+        paused = RTI_TRUE;
         D.Out(pdProtocol, "announceSynchronizationPoint.");
     }
     else {
-        if (strcmp(label, "Unfreeze") == 0) {
-            paused = false ;
-            strcpy(CurrentPauseLabel, label);
-            D.Out(pdProtocol, "announceSynchronizationPoint.");
-        }
-        else
-            throw RTIinternalError();
+        cout << "Unexpected synchronization label" << endl;
+        exit(1);
     }
 }
 
@@ -169,8 +164,11 @@ void
 Fed::federationSynchronized(const char *label)
     throw (FederateInternalError)
 {
-    paused = false ;
-    D.Out(pdProtocol, "CALLBACK : federationSynchronized with label %s", label);
+    if (strcmp(label,"Init") == 0) {
+        paused = false ;
+        D.Out(pdProtocol,
+              "CALLBACK : federationSynchronized with label %s", label);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -477,6 +475,9 @@ void Fed::SendUpdate(const FedTime& UpdateTime)
         RTIA->updateAttributeValues(Local.ID, *attributeSet, UpdateTime, "");
         if (verbose)
             cout << "-> UAV " << ((RTIfedTime) UpdateTime).getTime() << endl ;
+//         if (log)
+//             logfile << string(((RTIfedTime) UpdateTime).getTime()) << " : UAV "
+//                     << string(Local.x) << " " << string(Local.y) << endl ;
     }
     catch (Exception& e) {
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
@@ -808,4 +809,18 @@ Fed::confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
     // }
 }
 
-// EOF $Id: my_fed.cc,v 3.8 2003/03/20 10:31:56 breholee Exp $
+void
+Fed::enableLog(const char *file)
+{
+    logfile = new ofstream(file, ios::out);
+    log = logfile->is_open();
+}
+
+void
+Fed::disableLog(void)
+{
+    logfile->close();
+    log = false ;
+}
+
+// EOF $Id: my_fed.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $

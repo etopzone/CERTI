@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.6 2003/03/05 13:12:05 breholee Exp $
+// $Id: RTIG.hh,v 3.7 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -94,8 +94,8 @@ private:
     void processSetTimeRegulating(NetworkMessage *msg);
     void processSetTimeConstrained(NetworkMessage *msg);
     void processMessageNull(NetworkMessage*);
-    void processRequestPause(Socket*, NetworkMessage*);
-    void processRequestResume(Socket*, NetworkMessage*);
+    void processRegisterSynchronization(Socket*, NetworkMessage*);
+    void processSynchronizationAchieved(Socket*, NetworkMessage*);
     void processPublishObjectClass(Socket*, NetworkMessage*);
     void processSubscribeObjectClass(Socket*, NetworkMessage*);
     void processUnpublishObjectClass(Socket*, NetworkMessage*);
@@ -125,4 +125,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.6 2003/03/05 13:12:05 breholee Exp $
+// $Id: RTIG.hh,v 3.7 2003/03/21 15:06:46 breholee Exp $

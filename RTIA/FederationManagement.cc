@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: FederationManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -46,13 +46,8 @@ FederationManagement::FederationManagement(Communications *GC)
     _est_createur_federation = RTI_FALSE ;
     _est_membre_federation = RTI_FALSE ;
 
-    _est_pause = RTI_FALSE ;
-    _RTI_demande_pause = RTI_FALSE ;
-    _RTI_demande_fin_pause = RTI_FALSE ;
-
     _nom_federation[0] = 0 ;
     _nom_federe[0] = 0 ;
-    _label_pause[0] = 0 ;
 }
 
 
@@ -276,198 +271,152 @@ FederationManagement::resignFederationExecution(ResignAction,
 }
 
 // ----------------------------------------------------------------------------
-//! requestPause.
+//! Register synchronization.
 void
-FederationManagement::requestPause(const char *label, TypeException &e)
+FederationManagement::registerSynchronization(const char *label,
+                                              const char *tag,
+                                              TypeException &e)
 {
-    NetworkMessage req, rep ;
-
-    D.Out(pdProtocol, "RequestPause, _est_pause = %d.", _est_pause);
+    D.Out(pdProtocol, "RegisterSynchronization.");
 
     assert(label != NULL);
 
     e = e_NO_EXCEPTION ;
 
-    if (_est_pause)
-        e = e_FederationAlreadyPaused ;
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    bool exists = false ;
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i), label)) {
+            e = e_FederationAlreadyPaused ; // Label already pending.
+            exists = true ;
+            break ;
+        }
+    }
+
+    if (!exists)
+        synchronizationLabels.push_back(strdup(label));
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        req.type = m_REQUEST_PAUSE ;
-        strcpy(req.label, label);
+        NetworkMessage req, rep ;
+        req.type = m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
         req.federation = _numero_federation ;
         req.federate = federate ;
-
+        req.setLabel(label);
+        req.setTag(tag);
         comm->sendMessage(&req);
-
-        comm->waitMessage(&rep, m_REQUEST_PAUSE, federate);
-
-        if (rep.exception == e_NO_EXCEPTION) {
-            assert(_est_pause == RTI_FALSE);
-            assert(_RTI_demande_pause == RTI_FALSE);
-            assert(_RTI_demande_fin_pause == RTI_FALSE);
-
-            _est_pause = RTI_TRUE ;
-            strcpy(_label_pause, label);
-        }
-        else
-            e = rep.exception ;
+        e = rep.exception ;
     }
 }
 
 // ----------------------------------------------------------------------------
-//! pauseAchieved.
+//! Unregister synchronization.
 void
-FederationManagement::pauseAchieved(const char *label, TypeException &e)
+FederationManagement::unregisterSynchronization(const char *label,
+                                                TypeException &e)
 {
+    D.Out(pdProtocol, "unregisterSynchronization.");
+
     assert(label != NULL);
 
     e = e_NO_EXCEPTION ;
 
-    D.Out(pdProtocol, "PauseAchieved, _est_pause = %d.", _est_pause);
-
-    if (!_RTI_demande_pause)
-        e = e_NoPauseRequested ;
-
-    // si label different du label de la pause
-    if (strcmp(_label_pause, label))
+    // Find if this label has been requested by federate or RTIG.
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    bool exists = false ;
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i), label)) {
+            // Label already pending.
+            exists = true ;
+            break ;
+        }
+    }
+    if (!exists)
         e = e_UnknownLabel ;
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        assert(_RTI_demande_pause == RTI_TRUE);
-        assert(_est_pause == RTI_FALSE);
-        assert(_RTI_demande_fin_pause == RTI_FALSE);
+        NetworkMessage req, rep ;
 
-        _RTI_demande_pause = RTI_FALSE ;
-
-        _est_pause = RTI_TRUE ;
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! requestResume.
-void
-FederationManagement::requestResume(const char *label, TypeException &e)
-{
-    NetworkMessage req ;
-
-    D.Out(pdProtocol, "RequestResume, _est_pause = %d.", _est_pause);
-
-    assert(label != NULL);
-
-    e = e_NO_EXCEPTION ;
-
-    if (!_est_pause)
-        e = e_FederationNotPaused ;
-
-    if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
-
-    if (e == e_NO_EXCEPTION) {
-        assert(_est_pause == RTI_TRUE);
-        assert(_RTI_demande_pause == RTI_FALSE);
-        assert(_RTI_demande_fin_pause == RTI_FALSE);
-
-        req.type = m_REQUEST_RESUME ;
-        strcpy(req.label, label);
-
+        req.type = m_SYNCHRONIZATION_POINT_ACHIEVED ;
         req.federation = _numero_federation ;
         req.federate = federate ;
+        req.setLabel(label);
 
         comm->sendMessage(&req);
 
-        _est_pause = RTI_FALSE ;
-        strcpy(_label_pause, label);
+        e = rep.exception ;
     }
 }
 
 // ----------------------------------------------------------------------------
-//! resumeAchieved
 void
-FederationManagement::resumeAchieved(TypeException &e)
+FederationManagement::announceSynchronizationPoint(const char *label,
+                                                   const char *tag)
 {
-    D.Out(pdProtocol, "ResumeAchieved, _est_pause = %d.", _est_pause);
+    D.Out(pdInit, "Announce Synchronization Point \"%s\"(%s).", label, tag);
 
-    e = e_NO_EXCEPTION ;
-
-    if (!_RTI_demande_fin_pause)
-        e = e_NoResumeRequested ;
-
-    if (!_est_membre_federation)
-        e = e_FederateNotExecutionMember ;
-
-    if (e == e_NO_EXCEPTION) {
-        assert(_est_pause == RTI_TRUE);
-        assert(_RTI_demande_pause == RTI_FALSE);
-        assert(_RTI_demande_fin_pause == RTI_TRUE);
-
-        _RTI_demande_fin_pause = RTI_FALSE ;
-        _est_pause = RTI_FALSE ;
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! initiatePause.
-void
-FederationManagement::initiatePause(const char *label)
-{
     Message req, rep ;
-
-    D.Out(pdProtocol, "InitiatePause, _est_pause = %d.", _est_pause);
 
     assert(label != NULL);
 
-    req.type = INITIATE_PAUSE ;
+    req.type = ANNOUNCE_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
+    req.setTag(tag);
+
+    // adding label to list of synchronizations to be done.
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    bool exists = false ;
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i), label)) {
+            // label exists (only if initiator).
+            exists = true ;
+            break ;
+        }
+    }
+    if (!exists)
+        synchronizationLabels.push_back(strdup(label));
 
     comm->requestFederateService(&req, &rep);
-
-    // BUG: A remplacer par if (exception) throw RTIinternalError.
-    assert(rep.exception == e_NO_EXCEPTION);
-
-    if (rep.exception == e_NO_EXCEPTION) {
-        assert(_est_pause == RTI_FALSE);
-        assert(_RTI_demande_pause == RTI_FALSE);
-        assert(_RTI_demande_fin_pause == RTI_FALSE);
-
-        _RTI_demande_pause = RTI_TRUE ;
-        strcpy(_label_pause, label);
-    }
 }
 
 // ----------------------------------------------------------------------------
-//! initiateResume.
-void
-FederationManagement::initiateResume(const char *label)
+void FederationManagement::
+synchronizationPointRegistrationSucceeded(const char *label)
 {
-    Message req, rep ;
+    D.Out(pdInit, "Synchronization Point Registration Succeeded \"%s\".",
+          label);
 
-    D.Out(pdProtocol, "InitiateResume, _est_pause = %d.", _est_pause);
+    Message req, rep ;
 
     assert(label != NULL);
 
-    req.type = INITIATE_RESUME ;
+    req.type = SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     req.setLabel(label);
 
     comm->requestFederateService(&req, &rep);
-    // BUG: A remplacer par if (exception) throw RTIinternalError.
-    assert(rep.exception == e_NO_EXCEPTION);
+}
 
-    if (rep.exception == e_NO_EXCEPTION) {
-        assert(_est_pause == RTI_TRUE);
-        assert(_RTI_demande_pause == RTI_FALSE);
-        assert(_RTI_demande_fin_pause == RTI_FALSE);
+// ----------------------------------------------------------------------------
+void
+FederationManagement::federationSynchronized(const char *label)
+{
+    D.Out(pdInit, "Federation Synchronized \"%s\".", label);
 
-        _RTI_demande_fin_pause = RTI_TRUE ;
-        strcpy(_label_pause, label);
-    }
+    Message req, rep ;
+
+    assert(label != NULL);
+
+    req.type = FEDERATION_SYNCHRONIZED ;
+    req.setLabel(label);
+
+    comm->requestFederateService(&req, &rep);
 }
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: FederationManagement.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $

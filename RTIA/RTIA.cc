@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -36,8 +36,8 @@ static pdCDebug D("RTIA", "(RTIA) ");
 const char *Messages_RTIG[MSG_RTIG_MAX] = {
     "MESSAGE NULL",
     "SET_TIME_REGULATING",
-    "REQUEST_PAUSE",
-    "REQUEST_RESUME",
+    "REQUEST_PAUSE", // to be removed or changed later.
+    "REQUEST_RESUME", // to be removed or changed later.
     "DISCOVER_OBJECT",
     "START_REGISTRATION_FOR_OBJECT_CLASS",
     "STOP_REGISTRATION_FOR_OBJECT_CLASS",
@@ -63,10 +63,10 @@ const char *Messages_Fed[MSG_FED_MAX] = {
     "DESTROY_FEDERATION_EXECUTION",
     "JOIN_FEDERATION_EXECUTION",
     "RESIGN_FEDERATION_EXECUTION",
-    "REQUEST_PAUSE",
-    "PAUSE_ACHIEVED",
-    "REQUEST_RESUME",
-    "RESUME_ACHIEVED",
+    "REQUEST_PAUSE", // to be removed or changed later.
+    "PAUSE_ACHIEVED", // to be removed or changed later.
+    "REQUEST_RESUME", // to be removed or changed later.
+    "RESUME_ACHIEVED", // to be removed or changed later.
     "PUBLISH_OBJECT_CLASS",
     "UNPUBLISH_OBJECT_CLASS",
     "PUBLISH_INTERACTION_CLASS",
@@ -235,4 +235,4 @@ RTIA::execute(void)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA.cc,v 3.6 2003/03/21 15:06:46 breholee Exp $

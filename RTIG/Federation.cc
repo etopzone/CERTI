@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.11 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federation.cc,v 3.12 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -80,9 +80,6 @@ Federation::Federation(const char *federation_name,
 
     // Default Attribute values
     handle = federation_handle ;
-
-    this->paused = false ;
-    pauseLabel[0] = '\0' ;
 
     nextObjectId = (ObjectHandle) 1 ;
     nextFederateHandle = (FederateHandle) 1 ;
@@ -211,12 +208,15 @@ Federation::getNbFederates(void) const
     return size();
 }
 
+// ----------------------------------------------------------------------------
+//! Return true if federation is being synchronized.
 bool
-Federation::isPaused(void) const
+Federation::isSynchronizing(void) const
 {
-    return paused ;
+    return !synchronizationLabels.empty();
 }
 
+// ----------------------------------------------------------------------------
 FederationHandle
 Federation::getHandle(void) const
 {
@@ -290,18 +290,23 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
             message.write(tcp_link);
         }
 
-        // Si la federation est en pause, mettre le federe en pause
-
-        if (this->paused) {
-            message.type = m_REQUEST_PAUSE ;
+        // If federation is synchronizing, put federate in same state.
+        if (isSynchronizing()) {
+            message.type = m_ANNOUNCE_SYNCHRONIZATION_POINT ;
             message.federate = federate_handle ;
             message.federation = handle ;
 
-            D.Out(pdTerm, "Sending Pause message(type %d) to the new Federate.",
-                  message.type);
-            strcpy(message.label, pauseLabel);
+            std::map<const char *, const char *>::const_iterator i ;
+            i = synchronizationLabels.begin();
+            for (; i != synchronizationLabels.end(); i++) {
+                message.setLabel((*i).first);
+                message.setTag((*i).second);
+                D.Out(pdTerm, "Sending synchronization message %s (type %d)"
+                      " to the new Federate.", (*i).first, message.type);
 
-            message.write(tcp_link);
+                message.write(tcp_link);
+                federate->addSynchronizationLabel((*i).first);
+            }
         }
     }
     catch (NetworkError) {
@@ -462,38 +467,66 @@ Federation::deleteObject(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-// enterPause
-
+//! registerSynchronization.
 void
-Federation::enterPause(FederateHandle federate, const char *label)
+Federation::registerSynchronization(FederateHandle federate,
+                                    const char *label,
+                                    const char *tag)
     throw (FederateNotExecutionMember,
            FederationAlreadyPaused,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
 {
-    // It may throw FederateNotExecutionMember.
-    this->check(federate);
+    this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if (this->paused == true)
-        throw FederationAlreadyPaused();
-
-    if ((label == 0) || (strlen(label) > MAX_USER_TAG_LENGTH))
+    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
         throw RTIinternalError("Bad pause label(null or too long).");
 
-    strcpy(pauseLabel, label);
-    this->paused = true ;
+    // Verify label does not already exists
+    std::map<const char *, const char *>::const_iterator i ;
+    i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i).first, label)) {
+            throw FederationAlreadyPaused(); // Label already pending.
+        }
+    }
 
-    D.Out(pdTerm, "Federation %d is now Paused.", handle);
+    // If not already in pending labels, insert to list.
+    synchronizationLabels.insert(pair<const char *, const char *>(strdup(label),
+                                                                  strdup(tag)));
 
+    // Add label to each federate (may throw RTIinternalError).
+    list<Federate *>::iterator j ;
+    for (j = begin(); j != end(); j++) {
+        (*j)->addSynchronizationLabel(label);
+    }
+
+    D.Out(pdTerm, "Federation %d is now synchronizing for label %s.",
+          label, handle);
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::broadcastSynchronization(FederateHandle federate,
+                                     const char *label,
+                                     const char *tag)
+    throw (RTIinternalError)
+{
+    this->check(federate); // It may throw FederateNotExecutionMember.
+
+    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
+        throw RTIinternalError("Bad pause label(null or too long).");
+
+    // broadcast announceSynchronizationPoint() to all federates in federation.
     NetworkMessage msg ;
-    msg.type = m_REQUEST_PAUSE ;
-    msg.exception = e_NO_EXCEPTION ;
+    msg.type = m_ANNOUNCE_SYNCHRONIZATION_POINT ;
     msg.federate = federate ;
     msg.federation = handle ;
-    strcpy(msg.label, pauseLabel);
+    msg.setLabel(label);
+    msg.setTag(tag);
 
-    broadcastAnyMessage(&msg, federate);
+    broadcastAnyMessage(&msg, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -806,37 +839,58 @@ Federation::requestId(ObjectHandlecount id_count,
 }
 
 // ----------------------------------------------------------------------------
-// resumePause
-
+//! unregisterSynchronization.
 void
-Federation::resumePause(FederateHandle federate, const char *label)
+Federation::unregisterSynchronization(FederateHandle federate_handle,
+                                      const char *label)
     throw (FederateNotExecutionMember,
            FederationNotPaused,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
 {
-    // It may throw FederateNotExecutionMember.
-    this->check(federate);
-
-    if (!this->paused) throw FederationNotPaused();
+    this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
         throw RTIinternalError("Bad pause label(null or too long).");
 
-    strcpy(pauseLabel, label);
-    this->paused = false ;
+    // Set federate synchronized on this label.
+    Federate *federate = getByHandle(federate_handle);
+    federate->removeSynchronizationLabel(label);
+
+    // Test in every federate is synchronized. Otherwise, quit method.
+    list<Federate *>::iterator j ;
+    for (j = begin(); j != end(); j++) {
+        if ((*j)->isSynchronizationLabel(label) == true)
+            return ;
+    }
+
+    // All federates from federation has called synchronizationPointAchieved.
 
     D.Out(pdTerm, "Federation %d is not Paused anymore.", handle);
+    // Remove label from federation list.
+    std::map<const char *, const char *>::iterator i ;
+    i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i).first, label)) {
+            delete (*i).first ;
+            delete (*i).second ;
+            synchronizationLabels.erase(i);
+            break ;
+        }
+    }
 
+    // send a federationSynchronized().
     NetworkMessage msg ;
-    msg.type = m_REQUEST_RESUME ;
+    msg.type = m_FEDERATION_SYNCHRONIZED ;
     msg.exception = e_NO_EXCEPTION ;
     msg.federation = handle ;
-    msg.federate = federate ;
-    strcpy(msg.label, pauseLabel);
+    msg.federate = federate_handle ;
+    msg.setLabel(label);
 
-    broadcastAnyMessage(&msg, federate);
+    broadcastAnyMessage(&msg, 0);
+
+    D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label);
 }
 
 // ----------------------------------------------------------------------------
@@ -1203,7 +1257,7 @@ Federation::cancelAcquisition(FederateHandle federate,
                                                              list_size);
 }
 
-}}
+}} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.11 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federation.cc,v 3.12 2003/03/21 15:06:46 breholee Exp $
 

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.4 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -114,8 +114,15 @@ NetworkMessage::readBody(Socket *socket)
             readFederationName(&Body);
             break ;
 
-        case m_REQUEST_PAUSE:
-        case m_REQUEST_RESUME:
+        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+            readLabel(&Body);
+            readTag(&Body);
+            break ;
+
+        case m_SYNCHRONIZATION_POINT_ACHIEVED:
+        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case m_FEDERATION_SYNCHRONIZED:
             readLabel(&Body);
             break ;
 
@@ -241,12 +248,15 @@ NetworkMessage::readHeader(Socket *socket)
 
         case m_CREATE_FEDERATION_EXECUTION:
         case m_DESTROY_FEDERATION_EXECUTION:
-        case m_REQUEST_PAUSE:
+        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case m_SYNCHRONIZATION_POINT_ACHIEVED:
+        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case m_FEDERATION_SYNCHRONIZED:
+        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
         case m_DELETE_OBJECT:
         case m_REMOVE_OBJECT:
         case m_CLOSE_CONNEXION:
         case m_RESIGN_FEDERATION_EXECUTION:
-        case m_REQUEST_RESUME:
         case m_IS_ATTRIBUTE_OWNED_BY_FEDERATE:
         case m_INFORM_ATTRIBUTE_OWNERSHIP:
         case m_ATTRIBUTE_IS_NOT_OWNED:
@@ -358,11 +368,15 @@ NetworkMessage::readLabel(MessageBody *Body)
     Body->readString(label, MAX_USER_TAG_LENGTH);
 }
 
+// ---------------------------------------------------------------------------
+//! Read the tag contained into the message.
+void NetworkMessage::readTag(MessageBody *Body)
+{
+    Body->readString(tag, MAX_USER_TAG_LENGTH);
+}
 
-// -----------------------
-// -- ReadNomFederation --
-// -----------------------
-
+// ---------------------------------------------------------------------------
+//! Read the federation name.
 void
 NetworkMessage::readFederationName(MessageBody *Body)
 {
@@ -458,8 +472,15 @@ NetworkMessage::writeBody(Socket *socket)
             Body.writeString(federationName);
             break ;
 
-        case m_REQUEST_PAUSE:
-        case m_REQUEST_RESUME:
+        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+            Body.writeString(label);
+            Body.writeString(tag);
+            break ;
+
+        case m_SYNCHRONIZATION_POINT_ACHIEVED:
+        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case m_FEDERATION_SYNCHRONIZED:
             Body.writeString(label);
             break ;
 
@@ -599,7 +620,6 @@ NetworkMessage::writeHeader(Socket *socket)
 
         case m_CLOSE_CONNEXION:
         case m_RESIGN_FEDERATION_EXECUTION:
-            // case m_REQUEST_RESUME:
             Header.bodySize = 0 ;
             break ;
 
@@ -630,10 +650,12 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.bodySize = 1 ;
             break ;
 
-
-        case m_REQUEST_PAUSE:
-        case m_REQUEST_RESUME:
-            // Body Contains label(should be non-empty)
+        case m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case m_SYNCHRONIZATION_POINT_ACHIEVED:
+        case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case m_FEDERATION_SYNCHRONIZED:
+        case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+            // Body Contains Label(should be non-empty)
             // BUG: S'il fait moins de 16 octet, il passe dans le header.
             Header.bodySize = 1 ;
             break ;
@@ -749,4 +771,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.4 2003/03/21 15:06:46 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.7 2003/03/12 10:09:49 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.8 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -104,35 +104,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 2.5
-    case REQUEST_PAUSE:
+    case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
         nb_requetes[4]++ ;
         D.Out(pdTrace, "Receiving Message from Federate, type RequestPause.");
 
-        fm->requestPause(req->getLabel(), e);
+        fm->registerSynchronization(req->getLabel(), req->getTag(), e);
         break ;
 
         // 2.7
-    case PAUSE_ACHIEVED:
+    case SYNCHRONIZATION_POINT_ACHIEVED:
         nb_requetes[5]++ ;
         D.Out(pdTrace, "Receiving Message from Federate, type PauseAchieved.");
 
-        fm->pauseAchieved(req->getLabel(), e);
-        break ;
-
-        // 2.8
-    case REQUEST_RESUME:
-        nb_requetes[6]++ ;
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestResume.");
-
-        fm->requestResume(req->getLabel(), e);
-        break ;
-
-        // 2.10
-    case RESUME_ACHIEVED:
-        nb_requetes[7]++ ;
-        D.Out(pdTrace, "Receiving Message from Federate, type ResumeAchieved.");
-
-        fm->resumeAchieved(e);
+        fm->unregisterSynchronization(req->getLabel(), e);
         break ;
 
         // 2.11
@@ -1112,4 +1096,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.7 2003/03/12 10:09:49 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.8 2003/03/21 15:06:46 breholee Exp $

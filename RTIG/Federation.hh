@@ -19,39 +19,36 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.9 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federation.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
 #define _CERTI_RTIG_FEDERATION_HH
 
 #include <config.h>
-
-#include <list>
-using std::list ;
-
-#include <fstream>
-using std::ifstream ;
-using std::ios ;
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <string.h> // strlen
-
 #include "Federate.hh"
 #include "RootObject.hh"
 #include "LBTS.hh"
 #include "SecurityServer.hh"
 #include "RTItypes.hh"
 #include "FedParser.hh" // CRead : FED file reader.
-#include "PrettyDebug.hh"
 #include "XmlParser.hh"
-
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
 #endif
+#include "PrettyDebug.hh"
+
+#include <map>
+#include <fstream>
+#include <iostream>
+#include <string.h> // strlen
+
+using std::map ;
+using std::pair ;
+using std::ifstream ;
+using std::ios ;
+using std::cout ;
+using std::endl ;
 
 using namespace certi ;
 
@@ -64,10 +61,12 @@ class Federation : private list<Federate *>
 private:
     FederationHandle handle ;
     char *name ;
-    bool paused ;
-    char pauseLabel[MAX_USER_TAG_LENGTH + 1] ;
-    ObjectHandle nextObjectId ;
     FederateHandle nextFederateHandle ;
+
+    //! Labels and Tags not on synchronization.
+    std::map<const char *, const char *> synchronizationLabels ;
+
+    ObjectHandle nextObjectId ;
 
     // This object is initialized when the Federation is created, with
     // the reference of the RTIG managed Socket Server. The reference of
@@ -104,7 +103,7 @@ public:
 
     int getNbFederates(void) const ;
     int getNbRegulators(void) const ;
-    bool isPaused(void) const ;
+    bool isSynchronizing(void) const ;
     FederationHandle getHandle(void) const ;
     const char *getName(void) const ;
 
@@ -159,23 +158,28 @@ public:
                RestoreInProgress,
                RTIinternalError); // includes Time constrained already disabled.
 
-    // ----------------------
-    // -- Pause Management --
-    // ----------------------
-
-    void enterPause(FederateHandle theFederate, const char *theLabel)
+    // Synchronization Management.
+    void registerSynchronization(FederateHandle the_federate,
+                                 const char *the_label,
+                                 const char *the_tag)
         throw (FederateNotExecutionMember,
                FederationAlreadyPaused,
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
 
-    void resumePause(FederateHandle theFederate, const char *theLabel)
+    void unregisterSynchronization(FederateHandle theFederate,
+                                   const char *theLabel)
         throw (FederateNotExecutionMember,
                FederationNotPaused,
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
+
+    void broadcastSynchronization(FederateHandle federate,
+                                  const char *label,
+                                  const char *tag)
+        throw (RTIinternalError);
 
     // -----------------------
     // -- Object Management --
@@ -418,8 +422,8 @@ private:
         throw (RTIinternalError);
 };
 
-}}
+}} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.9 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federation.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $

@@ -20,13 +20,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.4 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
 #define _CERTI_NETWORK_MESSAGE
 
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
 #include "baseTypes.hh"
 #include "RTItypes.hh"
@@ -57,8 +57,11 @@ typedef enum {
     m_RESIGN_FEDERATION_EXECUTION,
     m_SET_TIME_REGULATING,
     m_SET_TIME_CONSTRAINED,
-    m_REQUEST_PAUSE,
-    m_REQUEST_RESUME,
+    m_REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
+    m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
+    m_ANNOUNCE_SYNCHRONIZATION_POINT,               // RTIG to RTIA
+    m_SYNCHRONIZATION_POINT_ACHIEVED,
+    m_FEDERATION_SYNCHRONIZED,                      // RTIG to RTIA
     m_PUBLISH_OBJECT_CLASS,
     m_UNPUBLISH_OBJECT_CLASS,
     m_PUBLISH_INTERACTION_CLASS,
@@ -245,6 +248,7 @@ public :
     unsigned long multicastAddress ;
 
     char label[MAX_USER_TAG_LENGTH + 1] ;
+    char tag[MAX_USER_TAG_LENGTH + 1] ;
 
     ObjectHandlecount idCount ;
     ObjectHandle firstId ;
@@ -261,6 +265,9 @@ public :
 
     TransportType transport ;
     OrderType order ;
+
+    void setLabel(const char* new_label) { strcpy(label, new_label); }
+    void setTag(const char* new_tag) { strcpy(tag, new_tag); }
 
 private:
 
@@ -296,6 +303,7 @@ private:
     // -- Others Private Read Methods --
 
     void readLabel(MessageBody *Body);
+    void readTag(MessageBody *Body);
     void readFederationName(MessageBody *Body);
     void readFederateName(MessageBody *Body);
 
@@ -307,4 +315,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.4 2003/03/21 15:06:46 breholee Exp $

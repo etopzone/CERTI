@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.9 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -44,12 +44,11 @@ typedef enum {
     DESTROY_FEDERATION_EXECUTION,
     JOIN_FEDERATION_EXECUTION,
     RESIGN_FEDERATION_EXECUTION,
-    REQUEST_PAUSE,
-    INITIATE_PAUSE,
-    PAUSE_ACHIEVED,
-    REQUEST_RESUME,
-    INITIATE_RESUME,
-    RESUME_ACHIEVED,
+    REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
+    SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED,
+    ANNOUNCE_SYNCHRONIZATION_POINT,
+    SYNCHRONIZATION_POINT_ACHIEVED,
+    FEDERATION_SYNCHRONIZED,
     REQUEST_FEDERATION_SAVE,
     INITIATE_FEDERATE_SAVE,
     FEDERATE_SAVE_BEGUN,
@@ -366,4 +365,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.9 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message.hh,v 3.10 2003/03/21 15:06:46 breholee Exp $

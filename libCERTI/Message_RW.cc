@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.6 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,12 +91,15 @@ Message::readBody(SocketUN *socket)
             readFederationName(&Body);
             break ;
 
-        case REQUEST_PAUSE:
-        case REQUEST_RESUME:
-        case INITIATE_PAUSE:
-        case INITIATE_RESUME:
-        case PAUSE_ACHIEVED:
-            // case RESUME_ACHIEVED:
+        case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case ANNOUNCE_SYNCHRONIZATION_POINT:
+            readLabel(&Body);
+            readTag(&Body);
+            break ;
+
+        case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case SYNCHRONIZATION_POINT_ACHIEVED:
+        case FEDERATION_SYNCHRONIZED:
             readLabel(&Body);
             break ;
 
@@ -263,21 +266,15 @@ Message::readHeader(SocketUN *socket)
 
     switch(type) {
 
-        // --- No Variable Part, No Body ---
-
-        // case REQUEST_RESUME:
-        // case INITIATE_RESUME:
-    case RESUME_ACHIEVED:
-
         // --- No Variable Part, Body not empty ---
 
     case CREATE_FEDERATION_EXECUTION: // Body contains NomFederation
     case DESTROY_FEDERATION_EXECUTION: // Body contains NomFedere
-    case REQUEST_PAUSE: // Body contains Label
-    case REQUEST_RESUME: // Body contains Label
-    case INITIATE_PAUSE: // Body contains Label
-    case INITIATE_RESUME: // Body contains Label
-    case PAUSE_ACHIEVED: // Body contains Label
+    case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
+    case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+    case ANNOUNCE_SYNCHRONIZATION_POINT:
+    case SYNCHRONIZATION_POINT_ACHIEVED:            // Body contains Label
+    case FEDERATION_SYNCHRONIZED:
     case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
     case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
     case ATTRIBUTE_IS_NOT_OWNED:
@@ -574,11 +571,15 @@ Message::writeBody(SocketUN *socket)
             Body.writeString(federationName);
             break ;
 
-        case REQUEST_PAUSE:
-        case REQUEST_RESUME:
-        case INITIATE_PAUSE:
-        case INITIATE_RESUME:
-        case PAUSE_ACHIEVED:
+        case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+        case ANNOUNCE_SYNCHRONIZATION_POINT:
+            Body.writeString(label);
+            Body.writeString(tag);
+            break ;
+
+        case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        case SYNCHRONIZATION_POINT_ACHIEVED:
+        case FEDERATION_SYNCHRONIZED:
             Body.writeString(label);
             break ;
 
@@ -774,23 +775,15 @@ Message::writeHeader(SocketUN *socket)
 
     switch(this->type) {
 
-        // --- No Variable Part, No Body ---
-
-        // case REQUEST_RESUME:
-        // case INITIATE_RESUME:
-    case RESUME_ACHIEVED:
-        header.bodySize = 0 ;
-        break ;
-
         // --- No Variable Part, Body not empty ---
 
     case CREATE_FEDERATION_EXECUTION: // Body contains federationName
     case DESTROY_FEDERATION_EXECUTION: // Body contains federationName
-    case REQUEST_PAUSE: // Body contains label
-    case REQUEST_RESUME: // Body contains label
-    case INITIATE_PAUSE: // Body contains label
-    case INITIATE_RESUME: // Body contains label
-    case PAUSE_ACHIEVED: // Body contains label
+    case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
+    case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+    case ANNOUNCE_SYNCHRONIZATION_POINT:
+    case SYNCHRONIZATION_POINT_ACHIEVED:            // Body contains Label
+    case FEDERATION_SYNCHRONIZED:
     case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
     case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
     case ATTRIBUTE_IS_NOT_OWNED:
@@ -989,4 +982,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.6 2003/03/12 10:07:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $

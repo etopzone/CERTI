@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.4 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federate.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -96,6 +96,52 @@ Federate::setRegulator(bool r)
     regulator = r ;
 }
 
+// ---------------------------------------------------------------------------
+void
+Federate::addSynchronizationLabel(const char * label)
+    throw (RTIinternalError)
+{
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end() ; i++) {
+        if (!strcmp((*i), label)) {
+            throw RTIinternalError("Synch. label pending in federate.");
+        }
+    }
+
+    synchronizationLabels.push_back(strdup(label));
+}
+
+// ---------------------------------------------------------------------------
+void
+Federate::removeSynchronizationLabel(const char * label)
+    throw (RTIinternalError)
+{
+    list<char *>::iterator i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end() ; i++) {
+        if (!strcmp((*i), label)) {
+            delete (*i) ;
+            synchronizationLabels.erase(i);
+            return ;
+        }
+    }
+
+    throw RTIinternalError("Synch. label not in federate.");
+}
+
+// ---------------------------------------------------------------------------
+bool
+Federate::isSynchronizationLabel(const char * label) const
+{
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end() ; i++) {
+        if (!strcmp((*i), label)) {
+            return true;
+        }
+    }
+
+    return false ;
+}
+
 }}
 
-// $Id: Federate.cc,v 3.4 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federate.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $

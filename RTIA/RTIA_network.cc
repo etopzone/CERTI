@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA_network.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -63,24 +63,26 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
             break ;
         }
 
-    case m_REQUEST_PAUSE:
-        {
-            nb_messages[2]++ ;
-            D.Out(pdTrace, "Receving Message from RTIG, type m_REQUEST_PAUSE.");
+    case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        //nb_messages[xx]++ ;
+        D.Out(pdTrace, "Receiving Message from RTIG, type m_SYNCHRONIZATION_"
+              "POINT_REGISTRATION_SUCCEEDED.");
 
-            queues->insertBeginCommand(msg);
-            break ;
-        }
+        queues->insertBeginCommand(msg);
+        break ;
+    case m_ANNOUNCE_SYNCHRONIZATION_POINT:
+        nb_messages[2]++ ;
+        D.Out(pdTrace, "Receiving Message from RTIG, type m_ANNOUCE_"
+              "SYNCHRONIZATION_POINT.");
 
-    case m_REQUEST_RESUME:
-        {
-            nb_messages[3]++ ;
-            D.Out(pdTrace,
-                  "Receving Message from RTIG, type m_REQUEST_RESUME.");
-
-            queues->insertLastCommand(msg);
-            break ;
-        }
+        queues->insertBeginCommand(msg);
+        break ;
+    case m_FEDERATION_SYNCHRONIZED:
+        nb_messages[3]++ ;
+        D.Out(pdTrace,
+              "Receiving Message from RTIG, type m_FEDERATION_SYNCHRONIZED.");
+        queues->insertBeginCommand(msg);
+        break;
 
     case m_DISCOVER_OBJECT:
         {
@@ -232,4 +234,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: RTIA_network.cc,v 3.5 2003/03/21 15:06:46 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.4 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federate.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -27,8 +27,13 @@
 
 #include <config.h>
 
+#include <list>
+using std::list;
+
+#include <cstring>
+
 #include "RTItypes.hh"
-#include "SocketTCP.hh"
+// #include "SocketTCP.hh"
 
 namespace certi {
 namespace rtig {
@@ -45,6 +50,7 @@ private:
     bool regulator ;
     bool constrained ; //!< = false by default.
 
+    list<char *> synchronizationLabels; // List of labels to synchronize.
     // METHODS -----------------------------------------------------------------
 public:
     Federate(const char *the_name, FederateHandle)
@@ -57,10 +63,16 @@ public:
     bool isRegulator(void) const ;
     void setConstrained(bool);
     void setRegulator(bool);
+
+    void addSynchronizationLabel(const char * label)
+        throw (RTIinternalError);
+    void removeSynchronizationLabel(const char * label)
+        throw (RTIinternalError);
+    bool isSynchronizationLabel(const char * label) const ;
 };
 
 }}
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.4 2003/02/19 14:29:37 breholee Exp $
+// $Id: Federate.hh,v 3.5 2003/03/21 15:06:46 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.12 2003/03/20 10:31:56 breholee Exp $
+// $Id: billard.cc,v 3.13 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -103,7 +103,7 @@ void InitialisationGraphique(FederateHandle myFederateID);
 void SetTimeRegulation(RTI::RTIambassador *rtiamb,
                        bool creator,
                        FedTime& localTime);
-void Synchronize(RTI::RTIambassador *rtiamb,
+void synchronize(RTI::RTIambassador *rtiamb,
                  Fed *fedamb,
                  bool creator);
 
@@ -167,6 +167,10 @@ main(int argc, char **argv)
     if(args_info.auto_given) 
         autostart = args_info.auto_arg ;
 
+    // Log
+    if (args_info.logfile_given)
+        fedamb->enableLog(args_info.logfile_arg);        
+
     // Verifier que la federation existe
     try {
         rtiamb->createFederationExecution(FederationName,
@@ -224,14 +228,12 @@ main(int argc, char **argv)
     else
         XOFFSET = 0 ;
 
-    // Le createur met la federation en pause.
+    // Creator put federation in pause.
     if (creator) {
         D.Out(pdInit, "Pause requested");
         try {
-            rtiamb->registerFederationSynchronizationPoint("Freeze",
-                                                           "OK");
-            fedamb->paused = true ;
-            strcpy(fedamb->CurrentPauseLabel, "Freeze");
+            rtiamb->registerFederationSynchronizationPoint("Init",
+                                                      "Waiting all players.");
         }
         catch (Exception& e) {
             D.Out(pdExcept, "Federate #%s : Register Federation "
@@ -269,8 +271,8 @@ main(int argc, char **argv)
         }
     }
 
-    // Phase de synchronisation initiale.
-    Synchronize(rtiamb, fedamb, creator);
+    // Initial synchronization.
+    synchronize(rtiamb, fedamb, creator);
     D.Out(pdInit, "Initial synchronization done.");
 
     // Creer ma boule
@@ -566,13 +568,13 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
 // ----------------------------------------------------------------------------
 //! Return the remaining time when the alarm is stopped.
 void
-Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
+synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
 {
     if (creator) {
-        // Attendre le signal de l'utilisateur et arreter la pause.
+        // Wait a signal from user and stop the pause synchronization.
 
         if (autostart == 0) {
-            printf("Press ENTER to start execution...\n");
+            cout << "Press ENTER to start execution..." << endl ;
             getchar();
         }
         else {
@@ -589,8 +591,6 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         while (!fedamb->paused)
             try {
                 D.Out(pdInit, "not paused");
-                D.Out(pdInit, "label - %s",
-                      fedamb->CurrentPauseLabel);
                 rtiamb->tick(1.0, 2.0);
             }
             catch (Exception& e) {
@@ -599,25 +599,20 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         D.Out(pdDebug, "paused");
 
         try {
-            strcpy(fedamb->CurrentPauseLabel, "Unfreeze");
-            // rtiamb->synchronizationPointAchieved(fedamb->CurrentPauseLabel);
-            rtiamb->registerFederationSynchronizationPoint(fedamb->
-                                                           CurrentPauseLabel,
-                                                           "");
+            rtiamb->synchronizationPointAchieved("Init");
         }
         catch (Exception& e) {
             D.Out(pdExcept, "**** Exception achieving a synchronization "
                   "point by creator : %d", &e);
         }
-        // while (fedamb->paused)
-        // try
-        // {
-        // rtiamb->tick(1.0, 2.0);
-        // }
-        // catch (Exception& e)
-        // {
-        // D.Out("******** Exception ticking the RTI : %d.", &e);
-        // }
+
+        while(fedamb->paused)
+            try { 
+                rtiamb->tick(1.0, 2.0) ;
+            }
+            catch(Exception& e) {
+                D.Out(pdExcept, "**** Exception ticking the RTI : %d.",&e);
+            }
     }
     else {
         if (autostart != 0) {
@@ -639,13 +634,11 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
             }
         }
         D.Out(pdInit, "Federate paused");
-        D.Out(pdInit, "label before pause achieved - %s.",
-              fedamb->CurrentPauseLabel);
 
         try {
-            // le fédéré fait un pause achieved
-            rtiamb->synchronizationPointAchieved(fedamb->CurrentPauseLabel);
-            D.Out(pdInit, "Pause achieved");
+            // Federate ends its synchronization.
+            rtiamb->synchronizationPointAchieved("Init");
+            D.Out(pdInit, "Pause achieved."); 
         }
         catch (Exception& e) {
             D.Out(pdExcept,
@@ -664,9 +657,6 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
             }
         }
         D.Out(pdInit, "End of pause");
-        D.Out(pdInit, "label - %s", fedamb->CurrentPauseLabel);
-        rtiamb->synchronizationPointAchieved(fedamb->CurrentPauseLabel);
-        D.Out(pdInit, "Resume achieved");
     }
 
     D.Out(pdInit, "Federation is synchronized.");
@@ -685,4 +675,4 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     }
 }
 
-// EOF $Id: billard.cc,v 3.12 2003/03/20 10:31:56 breholee Exp $
+// EOF $Id: billard.cc,v 3.13 2003/03/21 15:06:46 breholee Exp $

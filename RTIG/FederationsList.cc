@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.8 2003/02/19 14:29:37 breholee Exp $
+// $Id: FederationsList.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -27,7 +27,7 @@
 namespace certi {
 namespace rtig {
 
-static pdCDebug D("LISTEFEDERATIONS", "(ListFede) - ");
+static pdCDebug D("FEDERATIONSLIST", "(ListFede) - ");
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -286,13 +286,13 @@ FederationsList::exists(const char *name,
 void FederationsList::info(FederationHandle handle,
                            int &nb_federates,
                            int &nb_regulators,
-                           bool &is_paused,
+                           bool &is_syncing,
                            SocketMC* &comm_mc)
 #else
     void FederationsList::info(FederationHandle handle,
                                int &nb_federates,
                                int &nb_regulators,
-                               bool &is_paused)
+                               bool &is_syncing)
 #endif
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
@@ -306,7 +306,7 @@ void FederationsList::info(FederationHandle handle,
 
     nb_federates = federation->getNbFederates();
     nb_regulators = federation->getNbRegulators();
-    is_paused = federation->isPaused();
+    is_syncing = federation->isSynchronizing();
 
 #ifdef FEDERATION_USES_MULTICAST
     comm_mc = federation->MCLink ;
@@ -446,12 +446,15 @@ FederationsList::updateParameter(FederationHandle handle,
 }
 
 // ----------------------------------------------------------------------------
-// setPause
+/*! Called by processRegisterSynchronization and
+    processSynchronizationAchieved.
+*/
 void
-FederationsList::setPause(FederationHandle handle,
-                          FederateHandle federate,
-                          bool state,
-                          const char *label)
+FederationsList::manageSynchronization(FederationHandle handle,
+                                       FederateHandle   federate,
+                                       bool             state,
+                                       const char *     label,
+                                       const char *     tag)
     throw (FederationAlreadyPaused,
            FederationNotPaused,
            FederateNotExecutionMember,
@@ -459,17 +462,36 @@ FederationsList::setPause(FederationHandle handle,
            RestoreInProgress,
            RTIinternalError)
 {
-    Federation *federation = NULL ;
-
-    // It may throw RTIinternalError
-    checkHandle(handle);
+    checkHandle(handle); // It may throw RTIinternalError
 
     // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
     searchFederation(handle, federation);
-
+ 
     // It may throw a bunch of exceptions.
-    if (state) federation->enterPause(federate, label);
-    else federation->resumePause(federate, label);
+    if (state)
+        federation->registerSynchronization(federate, label, tag);
+    else
+        federation->unregisterSynchronization(federate, label);
+}
+
+// ---------------------------------------------------------------------------
+//! Called by processRegisterSynchronization.
+void
+FederationsList::broadcastSynchronization(FederationHandle handle,
+                                          FederateHandle   federate,
+                                          const char *     label,
+                                          const char *     tag)
+    throw (FederationExecutionDoesNotExist,
+           RTIinternalError)
+{
+    checkHandle(handle); // It may throw RTIinternalError
+ 
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(handle, federation);
+ 
+    federation->broadcastSynchronization(federate, label, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -981,5 +1003,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.8 2003/02/19 14:29:37 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
 
