@@ -1,4 +1,3 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // libgraphc - X11 drawing library
 // Copyright (C) 2002, 2003  ONERA
@@ -18,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: graph_c.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $ 
+// $Id: graph_c.hh,v 3.3 2003/11/12 14:37:15 breholee Exp $ 
 // ---------------------------------------------------------------------------
 
-#ifdef WITH_X11
+#ifndef X_DISPLAY_MISSING
 
 #ifndef GRAPH_C_HH
 #define GRAPH_C_HH
@@ -559,6 +558,6 @@ void ModeXOR();
 void ModeNORMAL();
 
 #endif // GRAPH_C_HH
-#endif // WITH_X11
+#endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: graph_c.hh,v 3.3 2003/11/12 14:37:15 breholee Exp $

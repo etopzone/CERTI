@@ -1,6 +1,6 @@
 ## CERTI test/billard/Makefile.am
 ## Copyright (C) 2001, 2003 ONERA
-## $Id: Makefile.am,v 3.8 2003/10/27 10:56:48 breholee Exp $
+## $Id: Makefile.am,v 3.9 2003/11/12 14:37:15 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -12,7 +12,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libpdebug	\
 -I$(top_srcdir)/libCERTI -I$(top_srcdir)/test/include @XCFLAGS@	\
-@WITH_X11@ @XML_CFLAGS@ @HAVE_XML@ -DTEST_USES_GRAPHICS
+@WITH_X11@ @XML_CFLAGS@ @HAVE_XML@ @WITH_CYGWIN@
 
 bin_PROGRAMS = billard
 
@@ -31,4 +31,4 @@ LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
 
 EXTRA_DIST = Test.fed Test.xml
 
-## EOF $Id: Makefile.am,v 3.8 2003/10/27 10:56:48 breholee Exp $
+## EOF $Id: Makefile.am,v 3.9 2003/11/12 14:37:15 breholee Exp $

@@ -18,16 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: Ball.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "Ball.hh"
 
-#ifdef TEST_USES_GRAPHICS
 #include "graph_c.hh"
-#endif
 
 using namespace std ;
 
@@ -38,7 +36,7 @@ using namespace std ;
 Ball::Ball(ObjectHandle h)
     : x(-1.0), y(-1.0), dx(3.0), dy(3.0), radius(10.0), ID(h)
 {
-#ifdef TEST_USES_GRAPHICS
+#ifndef X_DISPLAY_MISSING
     color = BLACK ;
 #endif
 }
@@ -48,7 +46,7 @@ Ball::Ball(ObjectHandle h)
 void
 Ball::display()
 {
-#ifdef TEST_USES_GRAPHICS
+#ifndef X_DISPLAY_MISSING
     cercler disque ;
     point centre ;
 
@@ -64,7 +62,7 @@ Ball::display()
 void
 Ball::erase()
 {
-#ifdef TEST_USES_GRAPHICS
+#ifndef X_DISPLAY_MISSING
     cercler disque ;
     point centre ;
 
@@ -155,4 +153,4 @@ Ball::init(int x_, int y_)
     display();
 }
 
-// $Id: Ball.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: Ball.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $

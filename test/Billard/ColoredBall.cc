@@ -18,16 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ColoredBall.cc,v 3.2 2003/10/27 10:51:39 breholee Exp $
+// $Id: ColoredBall.cc,v 3.3 2003/11/12 14:37:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ColoredBall.hh"
 
 #include <config.h>
 
-#ifdef TEST_USES_GRAPHICS
 #include "graph_c.hh"
-#endif
 
 using namespace std ;
 
@@ -35,7 +33,7 @@ using namespace std ;
 //! CBoule constructor.
 ColoredBall::ColoredBall(ObjectHandle h) : Ball(h)
 {
-#ifdef TEST_USES_GRAPHICS
+#ifndef X_DISPLAY_MISSING
     Color = RED ;
 #endif
 }
@@ -45,7 +43,7 @@ ColoredBall::ColoredBall(ObjectHandle h) : Ball(h)
 void
 ColoredBall::display()
 {
-#ifdef TEST_USES_GRAPHICS
+#ifndef X_DISPLAY_MISSING
     cercler disque ;
     point centre ;
 
@@ -56,4 +54,4 @@ ColoredBall::display()
 #endif
 }
 
-// $Id: ColoredBall.cc,v 3.2 2003/10/27 10:51:39 breholee Exp $
+// $Id: ColoredBall.cc,v 3.3 2003/11/12 14:37:15 breholee Exp $

@@ -18,18 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Display.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Display.cc,v 3.2 2003/11/12 14:37:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Display.hh"
 
 #include <config.h>
 
-//#define TEST_USES_GRAPHICS
-
-//#ifdef TEST_USES_GRAPHICS
 #include "graph_c.hh"
-//#endif
 
 #include <iostream>
 
@@ -50,18 +46,14 @@ void
 Display::show()
 {
     std::cout << "Display(" << x << ", " << y << ", " << XMAX << ", " << YMAX ;
-    //#ifdef TEST_USES_GRAPHICS
     InitGraphe(x, y, XMAX, YMAX);
-    //#endif
     std::cout << ")" << std::endl ;
 }
 
 // ----------------------------------------------------------------------------
 // Display
 Display::Display()
-    : XMAX(500), YMAX(100), x(0), y(0)
-{
-}
+    : XMAX(500), YMAX(100), x(0), y(0) { }
 
 // ----------------------------------------------------------------------------
 // getHeight
@@ -82,4 +74,4 @@ Display::instance()
     return myInstance ;
 }
 
-// $Id: Display.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Display.cc,v 3.2 2003/11/12 14:37:15 breholee Exp $
