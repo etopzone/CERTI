@@ -20,12 +20,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.8 2003/03/21 14:03:36 breholee Exp $
+// $Id: XmlParser.cc,v 3.9 2003/03/26 10:31:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifdef HAVE_XML
-
 #include "XmlParser.hh"
+
+#ifdef HAVE_XML
 
 namespace certi {
 
@@ -163,6 +163,10 @@ XmlParser::parseClass(ObjectClass* parent)
             else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
                 attr->Order = RECEIVE ;
 
+            // Routing space
+            attr->setSpace(root->getRoutingSpaceHandle
+                           ((char *) xmlGetProp(cur, ATTRIBUTE_SPACE)));
+
             // Attribute complete, adding to the class
             current->addAttribute(attr);
         }
@@ -201,6 +205,9 @@ XmlParser::parseInteraction(Interaction* parent)
         current->order = TIMESTAMP ;
     else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
         current->order = RECEIVE ;
+
+    current->setSpace(root->getRoutingSpaceHandle
+                      ((char *) xmlGetProp(cur, ATTRIBUTE_SPACE)));
 
     // Add to interactions list, and build inheritance relation
     root->Interactions->addClass(current);
@@ -281,4 +288,4 @@ bool XmlParser::exists(void)
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.8 2003/03/21 14:03:36 breholee Exp $
+// $Id: XmlParser.cc,v 3.9 2003/03/26 10:31:20 breholee Exp $
