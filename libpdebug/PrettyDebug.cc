@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.5 2003/10/20 12:27:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -50,7 +50,7 @@ PrettyDebug::Print(DebugOStream& theOutputStream,
                    const char* theHeaderMessage, const char * Message)
 {
     if (Message != NULL)
-        theOutputStream << theHeaderMessage << Message;
+	theOutputStream << theHeaderMessage << "> " << Message;
     else
         theOutputStream << theHeaderMessage << pdSEmptyMessage;
 }
@@ -76,9 +76,9 @@ PrettyDebug::ParseEnvString(const char *Name)
     if (Value != 0) { // Print Debug Init Message
         int length = strlen(LEnvVar) + strlen(pdInitMessage) + strlen(Value);
         if (length < pdMaxMessageSize)
-            cout << endl << LEnvVar << pdInitMessage << Value << endl;
+            cout << LEnvVar << pdInitMessage << Value << endl;
         else
-            cout << endl << LEnvVar << pdTooLongInitMessage << endl;
+            cout << LEnvVar << pdTooLongInitMessage << endl;
         
          // Compare each char of Value to content of the pgDebugKeys
          // string, to enable matching debug levels.
@@ -97,7 +97,7 @@ PrettyDebug::ParseEnvString(const char *Name)
  *  of the 'Name' environment variable.  The 'Header' message is put
  *  in front of all printed debug messages. It can be a module name or
  *  whatever you need. */
-PrettyDebug::PrettyDebug(const char * Name, const char * Header)
+PrettyDebug::PrettyDebug(const char *Name, const char *Header)
 {
     if (Name == 0) {
         PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
@@ -225,4 +225,4 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 
 #endif // NO_PRETTYDEBUG
 
-// $Id: PrettyDebug.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.5 2003/10/20 12:27:38 breholee Exp $
