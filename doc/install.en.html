@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head>
+<meta content="text/html; charset=iso-8859-15" http-equiv="Content-Type">
+<meta content="EN" http-equiv="Content-Language">
+<meta content="Benoît BRÉHOLÉE" name="author">
+<meta content="FOLLOW,INDEX" name="robots">
+<title>Setup - CERTI</title></head>	
+
+
+<body alink="#008000" vlink="#600000" link="#000080" text="#000000" bgcolor="#ffffff">
+
+<h3>CERTI Setup</h3>
+<br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Distribution</b>
+</td></tr></tbody></table>
+The distribution file contains:
+<br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ the <b>RTIG</b> (RTI Gateway), central RTI process<br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ the <b>RTIA</b> (RTI Ambassador), local RTI component, there is
+one RTIA process with each federate<br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ the <b>libRTI</b> library : each federate is linked to this
+library which provides HLA sercices.<br>
+<br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Directories</b>
+</td></tr></tbody></table>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ The <i>compilation directory</i> is created when unpacking the tar
+file. It can be located anywhere and is just used during compilation
+and installation. Its name is <tt>certi-<i>version</i></tt>, where
+<i>version</i> has to be replaced with the actual version number.<br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ The <i>target directory</i> : directory where files are
+installed. The usual Unix sub-directories are used : <tt>bin</tt>,
+<tt>lib</tt>, etc. This directory can be <tt>/usr</tt> or
+<tt>/usr/local</tt> for system-wide installations, or
+<tt>$HOME/CERTI</tt> in a user directory.<br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ The <i>execution directory</i> contains the federation
+files (<tt>.fed.</tt>). Programs (RTI and federates) are launched from
+this directory<br>
+<br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Archive file</b>
+</td></tr></tbody></table>
+Usual untar command:
+<blockquote>
+<tt>tar zxvf certi-<i>version</i>.tar.gz</tt><br>
+</blockquote>
+If your <tt>tar</tt> doesn't accept the <tt>z</tt> option, first unzip the tar file with <tt>gunzip</tt> then untar with "<tt>tar xvf <i>file.tar</i></tt>".
+A directory named  <tt>certi-<i>version</i></tt> is then created. <br>
+<br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Configuration</b>
+</td></tr></tbody></table>
+ 
+First, the configuration script should be executed in the compilation directory. The syntax is :
+   <blockquote><tt>env init ./configure
+  options</tt> </blockquote>where the optional <tt>env</tt> part is used to modify the environment during the compilation<br>
+<br><u>Examples</u><br><blockquote>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ <tt>./configure --prefix=$HOME/CERTI</tt><br>
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ <tt>env CC=gcc-3.0 CXX=g++-3.0 ./configure --prefix=/usr/local/certi</tt><br>
+</blockquote>
+ <br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Compilation</b>
+</td></tr></tbody></table>
+ 
+ Next, CERTI should be compiled from the compilation directory, type:
+ <blockquote>
+ <tt>make</tt>
+ </blockquote>
+  <br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Installation</b>
+</td></tr></tbody></table>
+ This next step copies files from the compilation directory to the installation directory (the one in the <tt>--prefix</tt> option). The command is:
+  <blockquote>
+  <tt>make install</tt>
+  </blockquote>
+ <br>
+<table bgcolor="#f0f0ff" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tbody><tr><td><b>Testing with « Billard » application</b>
+</td></tr></tbody></table>
+    CERTI binaries and federates must appear in the <tt>PATH</tt> environment variable, so maybe you need to add directories to this variable:
+  <blockquote>
+    <tt>export PATH=$PATH:$HOME/CERTI/bin</tt></blockquote>
+ 
+ 
+    <br>
+    Programs can now be launched from the execution directory (the one with the <tt>.fed</tt> files. You need to have either the <tt>CERTI_HOST</tt> environment variable set to the name of the machine on which the RTIG is running, or the <tt>RTIA.dat</tt> file containing this name.
+<br><br>
+   <br><u>Example</u><br>
+ 
+   In 4 different terminals :
+ 
+ <blockquote>
+   
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ <tt>export PATH=$PATH:$HOME/CERTI/bin</tt><br>
+   
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ <tt>export CERTI_HOST=your_host</tt><br>
+   
+<img src="install.en_files/puce.gif" alt="-" border="0">
+ <tt>cd $HOME/CERTI/share/federations</tt><br>
+</blockquote>
+ 
+   Then these lines, one in each terminal:
+ 
+ <br><br>
+   <table border="1">
+   <tbody><tr><td><b>Terminal</b></td><td><b>Command</b></td><td><b>Note</b></td></tr>
+   <tr><td>1</td><td><tt>rtig</tt></td><td>this script starts the RTIG</td></tr>
+   <tr><td>2</td><td><tt>billard -fTest -n1</tt></td><td>this one starts the first <i>billard</i> instance</td></tr>
+   <tr><td>3</td><td><tt>billard -fTest -n2</tt></td><td>this one a second <i>billard</i></td></tr>
+   <tr><td>4</td><td><tt>billard -ftest -n3</tt></td><td>this one a third <i>billard</i></td></tr>
+   </tbody></table>
+
+</body></html>
