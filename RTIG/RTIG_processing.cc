@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.19 2003/10/20 13:15:14 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.20 2004/01/09 16:23:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,8 +41,8 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     char *federation = req->federationName ;
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
-
     auditServer->addToLinef("Federation Name : %s", federation);
+    Handle h = federationHandles.provide();
 
 #ifdef FEDERATION_USES_MULTICAST
     // multicast base address
@@ -56,25 +56,23 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         throw RTIinternalError("Unable to allocate Multicast socket.");
     }
 
-    com_mc->CreerSocketMC(base_adr_mc + nextFederationHandle, MC_PORT);
+    com_mc->CreerSocketMC(base_adr_mc + h, MC_PORT);
 
     // inserer la nouvelle federation dans la liste des federations
-    federations->createFederation(federation, nextFederationHandle, com_mc);
+    federations->createFederation(federation, h, com_mc);
 
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 
 #else
-    federations->createFederation(federation, nextFederationHandle);
+    federations->createFederation(federation, h);
 #endif
-
-    nextFederationHandle++ ;
 
     // Prepare answer for RTIA
     NetworkMessage rep ;
     rep.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
-    rep.federation = nextFederationHandle ;
+    rep.federation = h ;
 
     rep.write(link); // Send answer to RTIA
 
@@ -178,6 +176,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     auditServer->addToLinef("Name \"%s\"", federation);
     federations->exists(federation, num_federation);
     federations->destroyFederation(num_federation);
+    federationHandles.free(num_federation);
     D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation);
 
     NetworkMessage rep ;
@@ -455,31 +454,6 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.interactionClass = req->interactionClass ;
-
-    rep.write(link); // send answer to RTIA
-}
-
-// ----------------------------------------------------------------------------
-// processRequestId
-void
-RTIG::processRequestId(Socket *link, NetworkMessage *req)
-{
-    NetworkMessage rep ;
-
-    auditServer->addToLinef("Asked %u", req->idCount);
-    federations->requestId(req->federation,
-                           req->idCount,
-                           rep.firstId,
-                           rep.lastId);
-    auditServer->addToLinef(", given range from %u to %u",
-                            rep.firstId, rep.lastId);
-
-    D.Out(pdInit, "%d IDs have been sent for Federation %u.",
-          req->idCount, req->federation);
-
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
 
     rep.write(link); // send answer to RTIA
 }
@@ -1069,4 +1043,4 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.19 2003/10/20 13:15:14 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.20 2004/01/09 16:23:00 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.17 2003/10/20 12:00:21 breholee Exp $
+// $Id: RTIG.hh,v 3.18 2004/01/09 16:23:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -32,6 +32,7 @@
 #include "SocketServer.hh"
 #include "FederationsList.hh"
 #include "AuditFile.hh"
+#include "HandleManager.hh"
 #include "cmdline.h"
 
 namespace certi {
@@ -86,7 +87,6 @@ private:
     void processSubscribeInteractionClass(Socket*, NetworkMessage*);
     void processUnpublishInteractionClass(Socket*, NetworkMessage*);
     void processUnsubscribeInteractionClass(Socket*, NetworkMessage*msg);
-    void processRequestId(Socket*, NetworkMessage*);
     void processRegisterObject(Socket*, NetworkMessage*);
     void processUpdateAttributeValues(Socket*, NetworkMessage*);
     void processSendInteraction(Socket*, NetworkMessage*);
@@ -115,7 +115,7 @@ private:
     int udpPort ;
     bool terminate ;
     bool verbose ;
-    Handle nextFederationHandle ;
+    HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
     SocketServer *socketServer ;
@@ -127,4 +127,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.17 2003/10/20 12:00:21 breholee Exp $
+// $Id: RTIG.hh,v 3.18 2004/01/09 16:23:00 breholee Exp $

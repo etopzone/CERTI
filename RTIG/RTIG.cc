@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.20 2003/10/20 12:00:21 breholee Exp $
+// $Id: RTIG.cc,v 3.21 2004/01/09 16:23:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,11 +44,8 @@ static pdCDebug D("RTIG", __FILE__);
 // Constructor
 
 RTIG::RTIG()
+    : federationHandles(1), terminate(false)
 {
-    terminate = false ;
-
-    nextFederationHandle = 1 ;
-
     // Start RTIG services
     const char *tcp_port_s = getenv("CERTI_TCP_PORT");
     const char *udp_port_s = getenv("CERTI_UDP_PORT");
@@ -235,12 +232,6 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace, "un/subscribeInteractionClass.");
         auditServer->setLevel(7);
         processSubscribeInteractionClass(link, msg);
-        break ;
-
-      case NetworkMessage::REQUEST_ID:
-        D.Out(pdTrace, "requestID.");
-        auditServer->setLevel(6);
-        processRequestId(link, msg);
         break ;
 
       case NetworkMessage::REGISTER_OBJECT:
@@ -959,4 +950,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.20 2003/10/20 12:00:21 breholee Exp $
+// $Id: RTIG.cc,v 3.21 2004/01/09 16:23:00 breholee Exp $
