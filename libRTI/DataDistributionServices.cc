@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -19,24 +19,59 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.10 2005/02/09 16:31:42 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.11 2005/03/25 17:42:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIambassador.hh"
 #include "Message.hh"
+#include "FedRegion.hh"
 
 #include <cassert>
 
 using std::endl ;
 
-namespace certi {
+namespace {
 
 static pdCDebug D("LIBRTI_DDM", __FILE__);
+
+}
+
+namespace certi {
 
 // ===========================================================================
 // DATA DISTRIBUTION MANAGEMENT
 // ===========================================================================
+
+std::vector<RegionHandle>
+build_region_handles(Region **regions, int nb)
+    throw (RegionNotKnown)
+{
+    std::vector<RegionHandle> vect(nb);
+    for (int i = 0 ; i < nb ; ++i) {
+	Region *region = regions[i] ;
+	try {
+	    vect[i] = dynamic_cast<FedRegion *>(region)->getHandle();
+	}
+	catch (std::bad_cast) {
+	    throw RegionNotKnown();
+	}
+    }
+    return vect ;
+}
+
+RegionHandle
+get_handle(const Region &region)
+    throw (RegionNotKnown, RTIinternalError)
+{
+    try {
+	return dynamic_cast<const FedRegion &>(region).getHandle();
+    }
+    catch (std::bad_cast) {
+	throw RegionNotKnown();
+    }
+    throw RTIinternalError();
+}
 
 // ----------------------------------------------------------------------------
 /** Create a routing region for data distribution management.
@@ -59,8 +94,9 @@ RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
     req.setSpace(space);
     req.setNumber(nb_extents);
     executeService(&req, &rep);
-    Region *region = new RegionImp(rep.getRegion(), space, nb_extents,
-				   rep.getNumber());
+    Region *region = new FedRegion(rep.getRegion(), space,
+				   std::vector<Extent>(nb_extents,
+						       Extent(rep.getNumber())));
 
     assert(region->getNumberOfExtents() == nb_extents);
     return region ;
@@ -81,17 +117,25 @@ RTIambassador::notifyAboutRegionModification(Region &r)
            RestoreInProgress,
            RTIinternalError)
 {
-    RegionImp &region = dynamic_cast<RegionImp &>(r);
-    D[pdDebug] << "Notify About Region " << region.getHandle()
-	      << " Modification" << endl ;
-    Message req, rep ;
-
-    req.setType(Message::DDM_MODIFY_REGION);
-    req.setRegion(region.getHandle());
-    req.setExtents(region.getExtents());
-
-    executeService(&req, &rep);
-    region.notify();
+    try {
+	FedRegion &region = dynamic_cast<FedRegion &>(r);
+	D[pdDebug] << "Notify About Region " << region.getHandle()
+		   << " Modification" << endl ;
+	Message req, rep ;
+	
+	req.setType(Message::DDM_MODIFY_REGION);
+	req.setRegion(region.getHandle());
+	req.setExtents(region.getExtents());
+	
+	executeService(&req, &rep);
+	region.commit();
+    }
+    catch (std::bad_cast) {
+	throw RegionNotKnown();
+    }
+    catch (Exception &e) {
+	throw ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -116,7 +160,12 @@ RTIambassador::deleteRegion(Region *region)
     Message req, rep ;
 
     req.setType(Message::DDM_DELETE_REGION);
-    req.setRegion(((RegionImp *) region)->getHandle());
+    try {
+	req.setRegion(dynamic_cast<FedRegion *>(region)->getHandle());
+    }
+    catch (std::bad_cast) {
+	throw RegionNotKnown();
+    }
     executeService(&req, &rep);
 
     delete region ;
@@ -150,7 +199,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
     req.setObjectClass(object_class);
     req.setTag(tag);
     req.setAHS(attrs, nb);
-    req.setRegions(regions, nb);
+    req.setRegions(build_region_handles(regions, nb));
 
     D[pdDebug] << "registerObjectInstanceWithRegion 2" << std::endl ;
     executeService(&req, &rep);
@@ -182,7 +231,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
     req.setType(Message::DDM_REGISTER_OBJECT);
     req.setObjectClass(object_class);
     req.setAHS(attrs, nb);
-    req.setRegions(regions, nb);
+    req.setRegions(build_region_handles(regions, nb));
 
     executeService(&req, &rep);
 
@@ -216,7 +265,7 @@ RTIambassador::associateRegionForUpdates(Region &region,
     
     req.type = Message::DDM_ASSOCIATE_REGION ;
     req.setObject(object);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
     req.setAHS(attributes);
 
     executeService(&req, &rep);
@@ -246,7 +295,7 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
 
     req.type = Message::DDM_UNASSOCIATE_REGION ;
     req.setObject(object);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
 
     executeService(&req, &rep);
     D[pdDebug] << "- Unassociate Region for Updates" << endl ;
@@ -279,7 +328,7 @@ RTIambassador::subscribeObjectClassAttributesWithRegion(
 
     req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
     req.setObjectClass(object_class);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
     req.setAHS(attributes);
     req.setBoolean(passive);
 
@@ -310,7 +359,7 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
 
     req.type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES ;
     req.setObjectClass(object_class);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
 
     executeService(&req, &rep);
     D[pdDebug] << "- Unsubscribe Object Class with Region" << endl ;
@@ -336,7 +385,7 @@ RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle ic,
 
     req.type = Message::DDM_SUBSCRIBE_INTERACTION ;
     req.setInteractionClass(ic);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
     req.setBoolean(passive);
 
     executeService(&req, &rep);
@@ -360,7 +409,7 @@ RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle ic,
 
     req.type = Message::DDM_UNSUBSCRIBE_INTERACTION ;
     req.setInteractionClass(ic);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
 
     executeService(&req, &rep);
 }
@@ -392,7 +441,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
     req.setPHVPS(par);
     req.setFedTime(time);
     req.setTag(tag);
-    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
 
     executeService(&req, &rep);
 
@@ -421,7 +470,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
     req.setInteractionClass(interaction);
     req.setPHVPS(par);
     req.setTag(tag);
-    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
 
     executeService(&req, &rep);
 }
@@ -447,10 +496,10 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
     Message req, rep ;
     req.setType(Message::DDM_REQUEST_UPDATE);
     req.setAHS(attrs);
-    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
+    req.setRegion(get_handle(region));
     executeService(&req, &rep);    
 }
 
-} // namespace
+} // namespace certi
 
-// $Id: DataDistributionServices.cc,v 3.10 2005/02/09 16:31:42 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.11 2005/03/25 17:42:33 breholee Exp $
