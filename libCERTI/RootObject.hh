@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.14 2003/07/07 23:05:26 breholee Exp $
+// $Id: RootObject.hh,v 3.15 2003/07/09 15:58:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -76,11 +76,15 @@ public:
 
     void killFederate(FederateHandle) throw (RTIinternalError);
 
+    // Access to elements of the RootObject hierarchy    
+    ObjectAttribute *getObjectAttribute(ObjectHandle, AttributeHandle);
+    ObjectClass *getObjectClass(ObjectClassHandle);
+    Interaction *getInteractionClass(InteractionClassHandle);
+    Object *getObject(ObjectHandle);    
     ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
 						  AttributeHandle);
     
-    ObjectAttribute *getObjectAttribute(ObjectHandle, AttributeHandle);
-
+    
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
@@ -97,4 +101,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.14 2003/07/07 23:05:26 breholee Exp $
+// $Id: RootObject.hh,v 3.15 2003/07/09 15:58:47 breholee Exp $
