@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.14 2003/10/20 13:15:14 breholee Exp $
+// $Id: XmlParser.cc,v 3.15 2003/10/27 10:20:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -237,7 +237,7 @@ XmlParser::parseInteraction(Interaction* parent)
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
 
     // Handle
-    current->handle = freeInteractionClassHandle++ ;
+    current->setHandle(freeInteractionClassHandle++);
 
     // Transportation
     if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION), VALUE_RELIABLE))
@@ -276,7 +276,7 @@ XmlParser::parseInteraction(Interaction* parent)
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
             Parameter *param = new Parameter();
             param->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
-            param->Handle = freeParameterHandle++ ;
+            param->setHandle(freeParameterHandle++);
             current->addParameter(param);
         }
         // Subinteraction
@@ -347,4 +347,4 @@ bool XmlParser::exists()
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.14 2003/10/20 13:15:14 breholee Exp $
+// $Id: XmlParser.cc,v 3.15 2003/10/27 10:20:17 breholee Exp $
