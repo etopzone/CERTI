@@ -19,13 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.3 2003/11/13 10:35:19 breholee Exp $
+// $Id: Dimension.hh,v 3.4 2004/05/17 21:51:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
 #define _CERTI_DIMENSION_HH
 
 #include "RTItypes.hh"
+#include "Named.hh"
+#include "Handled.hh"
 
 #include <string>
 
@@ -34,19 +36,14 @@ namespace certi {
 /** Describes a dimension in a routing space.
     \sa RoutingSpace
  */
-class Dimension
+class Dimension : public Named, public Handled<DimensionHandle>
 {
 public:
     Dimension(DimensionHandle);
-    void setName(std::string);
-    std::string getName() const ;
-    DimensionHandle getHandle() const ;
     static void setLowerBound(ULong);
     static void setUpperBound(ULong);
 
 private:
-    std::string name ;
-    DimensionHandle handle ;
     static ULong axisLowerBound ;
     static ULong axisUpperBound ;
 };
@@ -55,4 +52,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.3 2003/11/13 10:35:19 breholee Exp $
+// $Id: Dimension.hh,v 3.4 2004/05/17 21:51:55 breholee Exp $
