@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.12 2003/07/01 13:34:04 breholee Exp $
+// $Id: RootObject.cc,v 3.13 2003/07/03 16:18:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -279,7 +279,16 @@ RootObject::killFederate(FederateHandle the_federate)
     objects->killFederate(the_federate);
 }
 
+// ----------------------------------------------------------------------------
+// getObjectClassAttribute
+ObjectClassAttribute *
+RootObject::getObjectClassAttribute(ObjectHandle object,
+				    AttributeHandle attribute)
+{
+    return objects->getObject(object)->getAttribute(attribute)
+	->getObjectClassAttribute();
+}
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.12 2003/07/01 13:34:04 breholee Exp $
+// $Id: RootObject.cc,v 3.13 2003/07/03 16:18:33 breholee Exp $

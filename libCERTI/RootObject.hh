@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.12 2003/07/01 13:34:04 breholee Exp $
+// $Id: RootObject.hh,v 3.13 2003/07/03 16:18:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -49,6 +49,7 @@ public:
     void registerFederate(const char *the_federate,
                           SecurityLevelID the_level_id);
 
+    // Data Distribution Management
     void addRoutingSpace(RoutingSpace *);
     RoutingSpace *getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
     SpaceHandle getRoutingSpaceHandle(string) throw (NameNotFound);
@@ -60,7 +61,7 @@ public:
     RegionImp *getRegion(long) throw (RegionNotKnown);
     void modifyRegion(long, std::vector<Extent *> *)
 	throw (RegionNotKnown, InvalidExtents);
-
+    
     // Object Management
     void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
                                 const char *)
@@ -69,12 +70,15 @@ public:
                ObjectClassNotPublished,
                ObjectAlreadyRegistered,
                RTIinternalError);
-
+    
     void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void killFederate(FederateHandle) throw (RTIinternalError);
 
+    ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
+						  AttributeHandle);
+    
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
@@ -91,4 +95,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.12 2003/07/01 13:34:04 breholee Exp $
+// $Id: RootObject.hh,v 3.13 2003/07/03 16:18:33 breholee Exp $
