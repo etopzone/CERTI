@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.43 2005/04/05 12:24:20 breholee Exp $
+// $Id: Federation.cc,v 3.44 2005/04/05 20:18:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1097,7 +1097,7 @@ Federation::subscribeInteraction(FederateHandle federate,
     this->check(federate);
 
     // It may throw *NotDefined
-    root->Interactions->subscribe(federate, interaction, sub);
+    root->Interactions->subscribe(federate, interaction, 0, sub);
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)subscribes to Interaction %d.",
           handle, federate, interaction);
@@ -1757,5 +1757,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.43 2005/04/05 12:24:20 breholee Exp $
+// $Id: Federation.cc,v 3.44 2005/04/05 20:18:06 breholee Exp $
 
