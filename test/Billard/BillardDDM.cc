@@ -18,11 +18,10 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.12 2005/03/23 11:09:10 breholee Exp $
+// $Id: BillardDDM.cc,v 3.13 2005/03/25 17:44:16 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
-#include "RegionImp.hh"
 
 #ifndef X_DISPLAY_MISSING
 #include "graph_c.hh"
@@ -56,7 +55,7 @@ drawRegion(bool display, int position, int width)
 /** Constructor
  */
 BillardDDM::BillardDDM(string federate_name)
-    : Billard(federate_name), numberOfRegions(3), subRegion(-1), pubRegion(-1)
+    : Billard(federate_name), numberOfRegions(5), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardDDM" << std::endl ;
 }
@@ -163,4 +162,4 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.12 2005/03/23 11:09:10 breholee Exp $
+// $Id: BillardDDM.cc,v 3.13 2005/03/25 17:44:16 breholee Exp $
