@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.17 2003/05/23 15:03:36 breholee Exp $
+// $Id: Federation.hh,v 3.18 2003/06/25 16:19:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -49,7 +49,7 @@ class Federation : private list<Federate *>
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
-    FederationHandle handle ;
+    Handle handle ;
     char *name ;
     FederateHandle nextFederateHandle ;
 
@@ -82,7 +82,7 @@ public:
                AuditFile*,
                SocketMC*)
 #else
-        Federation(const char *, FederationHandle, SocketServer*, AuditFile*)
+        Federation(const char *, Handle, SocketServer*, AuditFile*)
 #endif
         throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
                RTIinternalError);
@@ -97,7 +97,7 @@ public:
     int getNbFederates() const ;
     int getNbRegulators() const ;
     bool isSynchronizing() const ;
-    FederationHandle getHandle() const ;
+    Handle getHandle() const ;
     const char *getName() const ;
 
     // -------------------------
@@ -457,4 +457,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.17 2003/05/23 15:03:36 breholee Exp $
+// $Id: Federation.hh,v 3.18 2003/06/25 16:19:42 breholee Exp $

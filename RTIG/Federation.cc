@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.24 2003/06/07 22:24:12 breholee Exp $
+// $Id: Federation.cc,v 3.25 2003/06/25 16:19:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -68,14 +68,14 @@ Federation::Federation(const char *federation_name,
                        SocketMC *mc_link)
 #else
     Federation::Federation(const char *federation_name,
-                           FederationHandle federation_handle,
+                           Handle federation_handle,
                            SocketServer *socket_server,
                            AuditFile *audit_server)
 #endif
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
-    : saveInProgress(false), saveStatus(true),
-      restoreInProgress(false), restoreStatus(true)
+    : saveInProgress(false), restoreInProgress(false),
+      saveStatus(true), restoreStatus(true)
 {
     fedparser::FedParser *fed_reader ;
 
@@ -98,8 +98,6 @@ Federation::Federation(const char *federation_name,
         throw RTIinternalError("Federation name too long.");
 
     name = strdup(federation_name);
-    if (name == 0)
-        throw MemoryExhausted("No memory left for Federation Name.");
 
     // Default Attribute values
     handle = federation_handle ;
@@ -241,7 +239,7 @@ Federation::isSynchronizing() const
 
 // ----------------------------------------------------------------------------
 //! Returns the federation handle.
-FederationHandle
+Handle
 Federation::getHandle() const
 {
     return handle ;
@@ -304,7 +302,7 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
     // its LBTS.
     NetworkMessage message ;
     try {
-        for (int i = 1 ; i <= regulators.size(); i++) {
+        for (unsigned int i = 1 ; i <= regulators.size(); ++i) {
             message.type = NetworkMessage::MESSAGE_NULL ;
             message.federation = handle ;
 
@@ -1645,5 +1643,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.24 2003/06/07 22:24:12 breholee Exp $
+// $Id: Federation.cc,v 3.25 2003/06/25 16:19:42 breholee Exp $
 

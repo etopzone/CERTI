@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.13 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederationsList.hh,v 3.14 2003/06/25 16:19:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -62,7 +61,7 @@ public:
 #ifdef FEDERATION_USES_MULTICAST
     void createFederation(const char *, FederationHandle, SocketMC*)
 #else
-        void createFederation(const char *, FederationHandle)
+        void createFederation(const char *, Handle)
 #endif
         throw (FederationExecutionAlreadyExists,
                CouldNotOpenRID,
@@ -71,12 +70,11 @@ public:
                SecurityError,
                RTIinternalError);
 
-    void exists(const char *name, FederationHandle &handle)
+    void exists(const char *name, Handle &handle)
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
-    void destroyFederation(FederationHandle)
-        throw (FederatesCurrentlyJoined,
-               FederationExecutionDoesNotExist,
+    void destroyFederation(Handle)
+        throw (FederatesCurrentlyJoined, FederationExecutionDoesNotExist,
                RTIinternalError);
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -86,21 +84,21 @@ public:
               bool &is_syncing,
               SocketMC* &comm_mc)
 #else
-        void info(FederationHandle theHandle,
+        void info(Handle theHandle,
                   int &nb_federes,
                   int &nb_regulateurs,
                   bool &is_syncing)
 #endif
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
-    void requestId(FederationHandle theHandle,
+    void requestId(Handle theHandle,
                    ObjectHandlecount IDCount,
                    ObjectHandle &FirstID,
                    ObjectHandle &LastID)
         throw (TooManyIDsRequested);
 
     // Synchronization Management
-    void manageSynchronization(FederationHandle theHandle,
+    void manageSynchronization(Handle theHandle,
                                FederateHandle theFederate,
                                bool state,
                                const char *the_label,
@@ -112,31 +110,31 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void broadcastSynchronization(FederationHandle handle,
+    void broadcastSynchronization(Handle handle,
                                   FederateHandle federate,
                                   const char *label,
                                   const char *tag)
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
-    void requestFederationSave(FederationHandle, FederateHandle, const char *,
+    void requestFederationSave(Handle, FederateHandle, const char *,
                                FederationTime);
 
-    void federateSaveBegun(FederationHandle, FederateHandle);
-    void federateSaveStatus(FederationHandle, FederateHandle, bool);
+    void federateSaveBegun(Handle, FederateHandle);
+    void federateSaveStatus(Handle, FederateHandle, bool);
 
-    void requestFederationRestore(FederationHandle the_federation,
+    void requestFederationRestore(Handle the_federation,
                                   FederateHandle the_federate,
                                   const char *the_label);
 
-    void federateRestoreStatus(FederationHandle the_federation,
+    void federateRestoreStatus(Handle the_federation,
                                FederateHandle the_federate,
                                bool the_status);
 
     // -------------------------
     // -- Federate Management --
     // -------------------------
-    FederateHandle addFederate(FederationHandle theHandle,
+    FederateHandle addFederate(Handle theHandle,
                                const char *theFederateName,
                                SocketTCP *theTCPLink)
         throw (FederationExecutionDoesNotExist,
@@ -144,20 +142,20 @@ public:
                MemoryExhausted,
                RTIinternalError);
 
-    void remove(FederationHandle, FederateHandle)
+    void remove(Handle, FederateHandle)
         throw (FederationExecutionDoesNotExist,
                FederateOwnsAttributes,
                FederateNotExecutionMember,
                RTIinternalError);
 
-    void killFederate(FederationHandle, FederateHandle)
+    void killFederate(Handle, FederateHandle)
         throw ();
 
     // ---------------------
     // -- Time Management --
     // ---------------------
 
-    void createRegulator(FederationHandle theHandle,
+    void createRegulator(Handle theHandle,
                          FederateHandle theFederateHandle,
                          FederationTime theTime)
         throw (FederationExecutionDoesNotExist,
@@ -166,14 +164,14 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void updateRegulator(FederationHandle theHandle,
+    void updateRegulator(Handle theHandle,
                          FederateHandle theFederateHandle,
                          FederationTime heure_logique)
         throw (FederationExecutionDoesNotExist,
                FederateNotExecutionMember,
                RTIinternalError);
 
-    void removeRegulator(FederationHandle theHandle,
+    void removeRegulator(Handle theHandle,
                          FederateHandle theFederateHandle)
         throw (FederationExecutionDoesNotExist,
                FederateNotExecutionMember,
@@ -181,7 +179,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void addConstrained(FederationHandle theHandle,
+    void addConstrained(Handle theHandle,
                         FederateHandle theFederateHandle)
         throw (FederationExecutionDoesNotExist,
                FederateNotExecutionMember,
@@ -189,7 +187,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void removeConstrained(FederationHandle theHandle,
+    void removeConstrained(Handle theHandle,
                            FederateHandle theFederateHandle)
         throw (FederationExecutionDoesNotExist,
                FederateNotExecutionMember,
@@ -201,7 +199,7 @@ public:
     // -- Object Classes & Instances Management --
     // -------------------------------------------
 
-    void publishObject(FederationHandle theHandle,
+    void publishObject(Handle theHandle,
                        FederateHandle theFederateHandle,
                        ObjectClassHandle theObjectHandle,
                        AttributeHandle *theAttributeList,
@@ -216,7 +214,7 @@ public:
                SecurityError,
                RTIinternalError);
 
-    void subscribeObject(FederationHandle theHandle,
+    void subscribeObject(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          AttributeHandle *theAttributeList,
@@ -231,7 +229,7 @@ public:
                SecurityError,
                RTIinternalError);
 
-    ObjectHandle registerObject(FederationHandle theHandle,
+    ObjectHandle registerObject(Handle theHandle,
                                 FederateHandle theFederateHandle,
                                 ObjectClassHandle theClass,
                                 ObjectName theName)
@@ -244,7 +242,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void destroyObject(FederationHandle theHandle,
+    void destroyObject(Handle theHandle,
                        FederateHandle theFederateHandle,
                        ObjectHandle theObjectHandle,
                        const char *theUserTag)
@@ -256,7 +254,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void updateAttribute(FederationHandle theHandle,
+    void updateAttribute(Handle theHandle,
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
                          AttributeHandle *theAttributeList,
@@ -277,7 +275,7 @@ public:
     // -- Interactions Classes Management --
     // -------------------------------------
 
-    void publishInteraction(FederationHandle theHandle,
+    void publishInteraction(Handle theHandle,
                             FederateHandle theFederateHandle,
                             InteractionClassHandle theInteractionHandle,
                             bool publish_or_unpublish)
@@ -289,7 +287,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void subscribeInteraction(FederationHandle theHandle,
+    void subscribeInteraction(Handle theHandle,
                               FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               bool subscribe_or_unsubscribe)
@@ -301,7 +299,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void updateParameter(FederationHandle theFederation,
+    void updateParameter(Handle theFederation,
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
                          ParameterHandle *theParameterList,
@@ -322,7 +320,7 @@ public:
     // --------------------------
     // -- Ownership Management --
     // --------------------------
-    bool isOwner(FederationHandle theHandle,
+    bool isOwner(Handle theHandle,
                  FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
                  AttributeHandle theAttribute)
@@ -333,7 +331,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void searchOwner(FederationHandle theHandle,
+    void searchOwner(Handle theHandle,
                      FederateHandle theFederateHandle,
                      ObjectHandle theObjectHandle,
                      AttributeHandle theAttribute)
@@ -344,7 +342,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void negotiateDivestiture(FederationHandle,
+    void negotiateDivestiture(Handle,
                               FederateHandle,
                               ObjectHandle,
                               AttributeHandle*,
@@ -359,7 +357,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void acquireIfAvailable(FederationHandle,
+    void acquireIfAvailable(Handle,
                             FederateHandle,
                             ObjectHandle,
                             AttributeHandle*,
@@ -375,7 +373,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void divest(FederationHandle,
+    void divest(Handle,
                 FederateHandle,
                 ObjectHandle,
                 AttributeHandle*,
@@ -388,7 +386,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void acquire(FederationHandle theHandle,
+    void acquire(Handle theHandle,
                  FederateHandle theFederateHandle,
                  ObjectHandle theObjectHandle,
                  AttributeHandle *theAttributeList,
@@ -404,7 +402,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void cancelDivestiture(FederationHandle theHandle,
+    void cancelDivestiture(Handle theHandle,
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            AttributeHandle *theAttributeList,
@@ -418,7 +416,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    AttributeHandleSet* respondRelease(FederationHandle theHandle,
+    AttributeHandleSet* respondRelease(Handle theHandle,
                                        FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
                                        AttributeHandle *theAttributeList,
@@ -432,7 +430,7 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
-    void cancelAcquisition(FederationHandle theHandle,
+    void cancelAcquisition(Handle theHandle,
                            FederateHandle theFederateHandle,
                            ObjectHandle theObjectHandle,
                            AttributeHandle *theAttributeList,
@@ -448,18 +446,18 @@ public:
 
     // Data Distribution Management
 
-    long createRegion(FederationHandle, FederateHandle, SpaceHandle, long)
+    long createRegion(Handle, FederateHandle, SpaceHandle, long)
         throw (SpaceNotDefined, InvalidExtents, FederateNotExecutionMember,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
-    void deleteRegion(FederationHandle, FederateHandle, long)
+    void deleteRegion(Handle, FederateHandle, long)
         throw (RegionNotKnown, RegionInUse, FederateNotExecutionMember,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
 private:
     // Private methods
-    void checkHandle(FederationHandle theHandle) throw (RTIinternalError);
-    int searchFederation(FederationHandle the_handle, Federation* &federation)
+    void checkHandle(Handle theHandle) throw (RTIinternalError);
+    int searchFederation(Handle the_handle, Federation* &federation)
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 };
 
@@ -467,4 +465,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.13 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederationsList.hh,v 3.14 2003/06/25 16:19:43 breholee Exp $
