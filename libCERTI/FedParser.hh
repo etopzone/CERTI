@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.6 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser.hh,v 3.7 2003/03/04 18:10:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
@@ -29,17 +29,18 @@
 // Project
 #include <config.h>
 #include "RootObject.hh"
-//#include "fed_file.hh"
-//#include "parser.hh"
 #include "PrettyDebug.hh"
 
 // Standard libraries
 #include <fstream>
 #include <iostream>
+#include <vector>
+
 using std::ifstream ;
 using std::ios ;
 using std::cout ;
 using std::endl ;
+using std::vector ;
 
 #define ZEOF ~0u // -1 for unsigned type (Standard C)
 
@@ -68,14 +69,14 @@ namespace fedparser {
 
 union Object ;
 
+// A list is composed of a first element 'first', that can be an
+// Atom or a List, and of the rest of the elements, pointed by
+// Next. Next can be a List or a Nil object.
 struct List {
     int type ;
     union Object *first ; // List(nested list) or Atom or String
     union Object *next ; // List(if there are other elements) or Nil
 };
-// A list is composed of a first element 'first', that can be an
-// Atom or a List, and of the rest of the elements, pointed by
-// Next. Next can be a List or a Nil object.
 
 struct Atom {
     int type ;
@@ -183,16 +184,16 @@ private:
 
     // -- Object and Interaction Classes Init --
 
-    void allocateAndRegisterObjectClass(int index)
+    void allocateAndRegisterObjectClass(void)
         throw (RTIinternalError);
 
-    void allocateAndRegisterInteractionClass(int index)
+    void allocateAndRegisterInteractionClass(void)
         throw (RTIinternalError);
 
-    int findObjectParentIndex(void)
+    ObjectClass * findObjectParent(void) const
         throw (RTIinternalError);
 
-    int FindInteractionParentIndex(void)
+    Interaction * findInteractionParent(void) const
         throw (RTIinternalError);
 
     // -- Atom Processing --
@@ -241,35 +242,23 @@ private:
 
     RootObject *RootObj ;
 
-    Boolean ErrorWhileReading ; //<! Used to know when to display RootObj struct.
+    Boolean ErrorWhileReading ; //<! Used to know when to display
+                                //RootObj struct.
 
     // ------------------------------
     // -- Stacks and Stack Indexes --(used in the Store part)
     // ------------------------------
+    // Stacks Doc : For example, the current Object Class is pointed by
+    // objStack.back(). It is the last Object Class discovered.
 
-    ObjectClass *ObjStack[CREAD_MAX_OBJ_COUNT] ; //!< Object Class Stack.
-    Interaction *IntStack[CREAD_MAX_OBJ_COUNT] ; //!< Interaction Class Stack.
+    vector<ObjectClass *> objStack ; //!< Object Class Stack.
+    vector<Interaction *> intStack ; //!< Interaction Class Stack.
+    vector<ObjectClassAttribute *> attStack ; //!< Object Attribute Stack.
+    vector<Parameter *> parStack ; //!< Interaction Parameter Stack.
 
-    //! Object Attribute Stack.
-    ObjectClassAttribute *AttStack[CREAD_MAX_OBJ_COUNT] ;
-    Parameter *ParStack[CREAD_MAX_OBJ_COUNT] ; //!< Interaction Parameter Stack.
     //! Current Atom Type Stack.
     fedparser::AtomType TypeStack[CREAD_MAX_OBJ_COUNT] ;
-
-    int ObjIndex ; //!< Object Class Stack Index
-    int IntIndex ; //!< Interaction Class Stack Index
-    int AttIndex ; //!< Object Attribute Stack Index
-    int ParIndex ; //!< Interaction Parameter Stack Index
-
     int Depth ; //<! Current Depth in the FED tree.
-    // TypeStack[Depth] is the type of the last read List.
-
-    // Stacks Doc : For example, the current Object Class is pointed
-    // by ObjStack[ObjIndex - 1]. It is the last Object Class discovered.
-
-    // ObjIndex, IntIndex, AttIndex and ParIndex are incremented each time
-    // a new Object Class(etc.) is put in the stack. Their respective
-    // value is the NEXT EMPTY space in the stack.
 
     // ---------------------------------
     // -- FED File objects and buffer --(used in the read part)
@@ -277,7 +266,8 @@ private:
 
     ifstream *FEDFile ; //!< Pointer to file stream for reading data.
 
-    char InBuffer[CREAD_MAX_BUF_LENGTH] ; //!< Buffer used to store piece of file.
+    char InBuffer[CREAD_MAX_BUF_LENGTH] ; //!< Buffer used to store
+                                          //piece of file.
     int InBufferPos ; //!< Position in InBuffer currently being treated.
     int InBufferLength ; //!< Size of the useful part of InBuffer buffer.
     int CurrentChar ; //!< char value being currently treated by file reading.
@@ -290,4 +280,4 @@ private:
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.6 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser.hh,v 3.7 2003/03/04 18:10:25 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Build.cc,v 3.5 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.6 2003/03/04 18:10:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // FedParser Class handles .fed files.
@@ -80,13 +80,6 @@ FedParser::advance(void)
 */
 FedParser::FedParser(RootObject *theRootObj)
 {
-    for (int i=0 ; i < CREAD_MAX_OBJ_COUNT ; i++) {
-        ObjStack[i] = NULL ;
-        IntStack[i] = NULL ;
-        AttStack[i] = NULL ;
-        ParStack[i] = NULL ;
-    }
-
     RootObj = theRootObj ;
     ErrorWhileReading = RTI_FALSE ;
     FEDFile = NULL ;
@@ -96,10 +89,6 @@ FedParser::FedParser(RootObject *theRootObj)
     InBufferPos = 0 ;
     InBufferLength = 0 ;
 
-    ObjIndex = 1 ;
-    IntIndex = 1 ;
-    AttIndex = 1 ;
-    ParIndex = 1 ;
     Depth = 1 ;
 
     TypeStack[Depth] = fedparser::NONE ;
@@ -362,22 +351,22 @@ FedParser::readString(void)
     }
     TempString[Length] = '\0' ;
 
-    struct String *ResultString = (struct String *) malloc(sizeof(struct String));
+    struct String *result = (struct String *) malloc(sizeof(struct String));
 
-    if (ResultString == NULL) {
+    if (result == NULL) {
         D.Out(pdError, "Memory Exhausted in ReadString.");
         throw MemoryExhausted("Could not allow String Object.");
     }
 
-    ResultString->type = STRING_TYPE ;
-    ResultString->length = Length+1 ;
-    ResultString->name = strdup(TempString);
-    if (ResultString->name == NULL) {
+    result->type = STRING_TYPE ;
+    result->length = Length+1 ;
+    result->name = strdup(TempString);
+    if (result->name == NULL) {
         D.Out(pdError, "Memory Exhausted in ReadString for string name.");
         throw MemoryExhausted("Could not allow String Object.");
     }
 
-    return((fedparser::Object *)ResultString);
+    return (fedparser::Object *) result ;
 }
 
 // ----------------------------------------------------------------------------
@@ -405,4 +394,4 @@ FedParser::skipLine(void)
 
 }}
 
-// $Id: FedParser_Build.cc,v 3.5 2003/02/20 13:49:31 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.6 2003/03/04 18:10:25 breholee Exp $

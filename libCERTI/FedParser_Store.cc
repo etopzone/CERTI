@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.8 2003/03/04 09:47:03 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.9 2003/03/04 18:10:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -32,38 +32,40 @@ static pdCDebug D("CREAD", "(cread) - ");
 
 // ----------------------------------------------------------------------------
 //! Allocate, initialize and register(add to RootObj tree) new Object Class.
-void FedParser::allocateAndRegisterObjectClass(int index)
+void FedParser::allocateAndRegisterObjectClass(void)
     throw (RTIinternalError)
 {
-    ObjStack[index] = new ObjectClass ;
-    if (ObjStack[index] == NULL) {
+    objStack.push_back(new ObjectClass);
+
+    if (objStack.back() == NULL) {
         D.Out(pdError, "Memory Exhausted in ObjectClass allocation.");
         throw RTIinternalError("Memory Exhausted in ObjectClass allocation.");
     }
 
-    ObjStack[index]->setHandle(index);
-    ObjStack[index]->Depth = Depth ;
+    objStack.back()->setHandle(objStack.size());
+    objStack.back()->Depth = Depth ;
 
-    RootObj->ObjectClasses->addClass(ObjStack[index]);
+    RootObj->ObjectClasses->addClass(objStack.back());
 }
 
 // ----------------------------------------------------------------------------
 /*! Allocate, initialize and register (add to RootObj tree) new Interaction
   Class.
 */
-void FedParser::allocateAndRegisterInteractionClass(int index)
+void FedParser::allocateAndRegisterInteractionClass(void)
     throw (RTIinternalError)
 {
-    IntStack[index] = new Interaction ;
-    if (IntStack[index] == NULL) {
+    intStack.push_back(new Interaction);
+
+    if (intStack.back() == NULL) {
         D.Out(pdError, "Memory Exhausted in InteractionClass allocation.");
         throw RTIinternalError("Memory Exhausted.");
     }
 
-    IntStack[index]->handle = index ;
-    IntStack[index]->depth = Depth ;
+    intStack.back()->handle = intStack.size();
+    intStack.back()->depth = Depth ;
 
-    RootObj->Interactions->addClass(IntStack[index]);
+    RootObj->Interactions->addClass(intStack.back());
 }
 
 // ----------------------------------------------------------------------------
@@ -100,16 +102,17 @@ FedParser::freeObject(Object *x)
 /*! Return the last registered Object Class handle whose Depth is equal to
   (Depth-1).
 */
-int FedParser::findObjectParentIndex(void)
+ObjectClass *
+FedParser::findObjectParent(void) const
     throw (RTIinternalError)
 {
-    int index = ObjIndex ;
-
-    // The parent class of the current Interaction is the last Interaction class
-    // whose Depth attribute is equal to(current Depth minus one).
-    for (index = ObjIndex ; index > 0 ; index--)
-        if (ObjStack[index]->Depth == (Depth - 1))
-            return index ; // index is the same as ObjStack[index]->Handle
+    // The parent class of the current Interaction is the last Interaction
+    // class whose Depth attribute is equal to(current Depth minus one).
+    vector<ObjectClass *>::const_reverse_iterator i ;
+    for (i = objStack.rbegin(); i != objStack.rend(); i++) {
+        if ((*i)->Depth == (Depth - 1))
+            return *i ;
+    }
 
     D.Out(pdError, "Parent Class not found.");
     throw RTIinternalError("Parent Class not found.");
@@ -119,16 +122,17 @@ int FedParser::findObjectParentIndex(void)
 /*! Return the last registered Interaction class handle whose Depth is equal
   to (Depth-1).
 */
-int FedParser::FindInteractionParentIndex(void)
+Interaction *
+FedParser::findInteractionParent(void) const
     throw (RTIinternalError)
 {
-    int index = IntIndex ;
-
-    // The parent class of the current Interaction is the last Interaction class
-    // whose Depth attribute is equal to(current Depth minus one).
-    for (index = IntIndex ; index > 0 ; index--)
-        if (IntStack[index]->depth == (Depth - 1))
-            return index ; // Index is the same as IntStack[index]->Handle
+    // The parent class of the current Interaction is the last Interaction
+    // class whose Depth attribute is equal to(current Depth minus one).
+    vector<Interaction *>::const_reverse_iterator i ;
+    for (i = intStack.rbegin(); i != intStack.rend(); i++) {
+        if ((*i)->depth == (Depth - 1))
+            return *i ;
+    }
 
     D.Out(pdError, "Interaction Parent Class not found.");
     throw RTIinternalError("Parent Class not found.");
@@ -141,15 +145,13 @@ int FedParser::FindInteractionParentIndex(void)
 void FedParser::processAttributeAtom(Atom *)
     throw (RTIinternalError)
 {
-    AttStack[AttIndex] = new ObjectClassAttribute();
+    attStack.push_back(new ObjectClassAttribute());
 
-    AttStack[AttIndex]->setHandle(ObjStack[ObjIndex - 1]
-                                  ->addAttribute(AttStack[AttIndex]));
+    attStack.back()->setHandle(objStack.back()->addAttribute(attStack.back()));
 
     D.Out(pdRegister, "Adding new attribute %u to ObjectClass %u.",
-          AttStack[AttIndex]->getHandle(), ObjStack[ObjIndex - 1]->getHandle());
+          attStack.back()->getHandle(), objStack.back()->getHandle());
 
-    AttIndex++ ;
     TypeStack[Depth] = ATTRIB ;
 }
 
@@ -163,82 +165,77 @@ void
 FedParser::processClassAtom(Atom *)
     throw (RTIinternalError)
 {
-    int ParentIndex = 0 ; // Index of the Parent Class(if needed)
+    switch(TypeStack[Depth - 1]) {
+    case OBJ: // Root Object Class(no parent class)
+        D.Out(pdRegister, "Allocating Root Object Class.");
+        allocateAndRegisterObjectClass();
 
-    switch(TypeStack[Depth - 1])
-        {
-        case OBJ: // Root Object Class(no parent class)
-            D.Out(pdRegister, "Allocating Root Object Class.");
-            allocateAndRegisterObjectClass(ObjIndex);
-
-            ObjIndex ++ ;
-            if (ObjIndex >= CREAD_MAX_OBJ_COUNT) {
-                D.Out(pdError, "Maximum Object Class count reached.");
-                throw RTIinternalError("Maximum Object Class count reached in FED.");
-            }
-
-            TypeStack[Depth] = CLASSOBJ ;
-            break ;
-
-        case INT: // Root Interaction Class(no parent class)
-            D.Out(pdRegister, "Allocating Root Interaction Class.");
-            allocateAndRegisterInteractionClass(IntIndex);
-
-            IntIndex ++ ;
-            if (IntIndex >= CREAD_MAX_OBJ_COUNT) {
-                D.Out(pdError, "Maximum Interaction Class count reached.");
-                throw RTIinternalError("Maximum Inter. Class count reached in FED.");
-            }
-
-            TypeStack[Depth] = CLASSINT ;
-            break ;
-
-        case CLASSOBJ: // Object Class(with a parent class)
-            D.Out(pdRegister, "Allocating Child Object Class.");
-            allocateAndRegisterObjectClass(ObjIndex);
-
-            // The parent Class is the last one with a Depth attribute equal to
-            //(the current Depth - 1)
-            ParentIndex = findObjectParentIndex();
-
-            // Build the Parent-Child relation(mutual register, copy attributes...)
-            RootObj->ObjectClasses->buildParentRelation(ObjStack[ObjIndex],
-                                                        ObjStack[ParentIndex]);
-
-            ObjIndex++ ;
-            if (ObjIndex >= CREAD_MAX_OBJ_COUNT) {
-                D.Out(pdError, "Maximum Object Class count reached.");
-                throw RTIinternalError("Maximum Object Class count reached in FED.");
-            }
-
-            TypeStack[Depth] = CLASSOBJ ;
-            break ;
-
-        case CLASSINT: // Interaction Class(with parent)
-            D.Out(pdRegister, "Allocating Child Interaction Class.");
-            allocateAndRegisterInteractionClass(IntIndex);
-
-            // The Parent Interaction Class is the last Interaction Class whose
-            // Depth is equal to(current Depth minus one)
-            ParentIndex = FindInteractionParentIndex();
-
-            // Build the Parent-Child relation(mutual register, copy attributes...)
-            RootObj->Interactions->buildParentRelation(IntStack[IntIndex],
-                                                       IntStack[ParentIndex]);
-            IntIndex ++ ;
-            if (IntIndex >= CREAD_MAX_OBJ_COUNT) {
-                D.Out(pdError, "Maximum Interaction Class count reached.");
-                throw RTIinternalError("Maximum Inter. Class count reached in FED.");
-            }
-
-            TypeStack[Depth] = CLASSINT ;
-            break ;
-
-        default:
-            D.Out(pdError, "Unknown type ProcessClassAtom's switch.");
-            throw RTIinternalError("Unknown type ProcessClassAtom's switch.");
-            break ;
+        if (objStack.size() >= CREAD_MAX_OBJ_COUNT) {
+            D.Out(pdError, "Maximum Object Class count reached.");
+            throw RTIinternalError("Maximum Object Class count reached in FED.");
         }
+
+        TypeStack[Depth] = CLASSOBJ ;
+        break ;
+
+    case INT: // Root Interaction Class(no parent class)
+        D.Out(pdRegister, "Allocating Root Interaction Class.");
+        allocateAndRegisterInteractionClass();
+
+        if (intStack.size() >= CREAD_MAX_OBJ_COUNT) {
+            D.Out(pdError, "Maximum Interaction Class count reached.");
+            throw RTIinternalError("Maximum Inter. Class count reached in FED.");
+        }
+
+        TypeStack[Depth] = CLASSINT ;
+        break ;
+
+    case CLASSOBJ: { // Object Class(with a parent class)
+        D.Out(pdRegister, "Allocating Child Object Class.");
+        allocateAndRegisterObjectClass();
+
+        if (objStack.size() >= CREAD_MAX_OBJ_COUNT) {
+            D.Out(pdError, "Maximum Object Class count reached.");
+            throw RTIinternalError("Maximum Object Class count reached in FED.");
+        }
+
+        // The parent Class is the last one with a Depth attribute equal to
+        //(the current Depth - 1)
+
+        ObjectClass * oc = findObjectParent();
+
+        // Build the Parent-Child relation(mutual register, copy attributes...)
+        RootObj->ObjectClasses->buildParentRelation(objStack.back(), oc);
+
+        TypeStack[Depth] = CLASSOBJ ;
+    }
+        break ;
+
+    case CLASSINT: { // Interaction Class(with parent)
+        D.Out(pdRegister, "Allocating Child Interaction Class.");
+        allocateAndRegisterInteractionClass();
+
+        // The Parent Interaction Class is the last Interaction Class whose
+        // Depth is equal to(current Depth minus one)
+        Interaction * inter = findInteractionParent();
+
+        // Build the Parent-Child relation(mutual register, copy attributes...)
+        RootObj->Interactions->buildParentRelation(intStack.back(), inter);
+
+        if (intStack.size() >= CREAD_MAX_OBJ_COUNT) {
+            D.Out(pdError, "Maximum Interaction Class count reached.");
+            throw RTIinternalError("Maximum Inter. Class count reached in FED.");
+        }
+
+        TypeStack[Depth] = CLASSINT ;
+    }
+        break ;
+
+    default:
+        D.Out(pdError, "Unknown type ProcessClassAtom's switch.");
+        throw RTIinternalError("Unknown type ProcessClassAtom's switch.");
+        break ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -289,15 +286,13 @@ void FedParser::processFederateString(String *x)
 void FedParser::processParameterAtom(Atom *)
     throw (RTIinternalError)
 {
-    ParStack[ParIndex] = new Parameter();
+    parStack.push_back(new Parameter);
 
-    ParStack[ParIndex]->Handle
-        = IntStack[IntIndex - 1]->addParameter(ParStack[ParIndex]);
+    parStack.back()->Handle = intStack.back()->addParameter(parStack.back());
 
     D.Out(pdRegister, "Adding new parameter %u to Interaction %u.",
-          ParStack[ParIndex]->Handle, IntStack[IntIndex - 1]->handle);
+          parStack.back()->Handle, intStack.back()->handle);
 
-    ParIndex++ ;
     TypeStack[Depth] = PARAM ;
 }
 
@@ -327,15 +322,15 @@ void FedParser::processSecLevelString(String *x)
     case OBJ:
     case CLASSOBJ:
         D.Out(pdTrace, "Setting SecLevel of ObjClass %d to %d.",
-              ObjStack[ObjIndex - 1]->getHandle(), LevelID);
-        ObjStack[ObjIndex - 1]->setLevelId(LevelID);
+              objStack.back()->getHandle(), LevelID);
+        objStack.back()->setLevelId(LevelID);
         break ;
 
     case INT:
     case CLASSINT:
         D.Out(pdTrace, "Setting SecLevel of IntClass %d to %d.",
-              IntStack[IntIndex - 1]->handle, LevelID);
-        IntStack[IntIndex - 1]->setLevelId(LevelID);
+              intStack.back()->handle, LevelID);
+        intStack.back()->setLevelId(LevelID);
         break ;
 
     default:
@@ -354,16 +349,16 @@ void FedParser::processTransportOrderAtom(Atom *x)
     if (TypeStack[Depth] == ATTRIB) {
 
         if (strcmp(x->name, FED_STR_RELIABLE) == 0)
-            AttStack[AttIndex - 1]->Transport = RELIABLE ;
+            attStack.back()->Transport = RELIABLE ;
 
         else if (strcmp(x->name, FED_STR_BESTEFFORT) == 0)
-            AttStack[AttIndex - 1]->Transport = BEST_EFFORT ;
+            attStack.back()->Transport = BEST_EFFORT ;
 
         else if (strcmp(x->name, FED_STR_RECEIVE) == 0)
-            AttStack[AttIndex - 1]->Order = RECEIVE ;
+            attStack.back()->Order = RECEIVE ;
 
         else if (strcmp(x->name, FED_STR_TIMESTAMP) == 0)
-            AttStack[AttIndex - 1]->Order = TIMESTAMP ;
+            attStack.back()->Order = TIMESTAMP ;
 
         else {
             D.Out(pdError,
@@ -375,16 +370,16 @@ void FedParser::processTransportOrderAtom(Atom *x)
     else if (TypeStack[Depth] == CLASSINT) {
 
         if (strcmp(x->name, FED_STR_RELIABLE) == 0)
-            IntStack[IntIndex - 1]->transport = RELIABLE ;
+            intStack.back()->transport = RELIABLE ;
 
         else if (strcmp(x->name, FED_STR_BESTEFFORT) == 0)
-            IntStack[IntIndex - 1]->transport = BEST_EFFORT ;
+            intStack.back()->transport = BEST_EFFORT ;
 
         else if (strcmp(x->name, FED_STR_RECEIVE) == 0)
-            IntStack[IntIndex - 1]->order = RECEIVE ;
+            intStack.back()->order = RECEIVE ;
 
         else if (strcmp(x->name, FED_STR_TIMESTAMP) == 0)
-            IntStack[IntIndex - 1]->order = TIMESTAMP ;
+            intStack.back()->order = TIMESTAMP ;
 
         else {
             D.Out(pdError,
@@ -541,20 +536,20 @@ void FedParser::storeString(String *x)
 
         case OBJ:
         case CLASSOBJ:
-            ObjStack[ObjIndex - 1]->setName(x->name);
+            objStack.back()->setName(x->name);
             break ;
 
         case INT:
         case CLASSINT:
-            IntStack[IntIndex - 1]->setName(x->name);
+            intStack.back()->setName(x->name);
             break ;
 
         case ATTRIB:
-            AttStack[AttIndex - 1]->setName(x->name);
+            attStack.back()->setName(x->name);
             break ;
 
         case PARAM:
-            ParStack[ParIndex - 1]->setName(x->name);
+            parStack.back()->setName(x->name);
             break ;
 
         case SECLEVEL:
@@ -581,4 +576,4 @@ void FedParser::storeString(String *x)
 
 }} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.8 2003/03/04 09:47:03 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.9 2003/03/04 18:10:25 breholee Exp $
