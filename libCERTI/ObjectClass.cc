@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClass.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -72,7 +72,9 @@ namespace certi {
     // The Attribute List is read backwards to respect the same attribute
     // order for the child(Attributes are inserted at the beginning of the list)
 
-    for(AttribIndex = AttributeSet.getLength(); AttribIndex > 0; AttribIndex--) {
+    for (AttribIndex = AttributeSet.getLength(); 
+         AttribIndex > 0; 
+         AttribIndex--) {
       Attribute = AttributeSet.Ieme(AttribIndex);
       assert(Attribute != NULL);
 
@@ -95,71 +97,64 @@ namespace certi {
   // ---------------------------
   // -- BroadcastClassMessage --
   // ---------------------------
-
-  void ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *List)
-  {
-    int                    AttrIndex = 0;
-    FederateHandle         Federate  = 0;
-    ObjectClassAttribute *Attribute = NULL;
-
-
+void
+ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
+{
+    int attr = 0;
+    FederateHandle Federate  = 0;
+    ObjectClassAttribute *attribute = NULL;
 	
     // 1. Set ObjectHandle to local class Handle.
-
-    List->Message->objectClassHandle = Handle;
+    ocbList->message->objectClassHandle = Handle;
 
     // 2. Update message attribute list by removing child's attributes.
-
-    if((List->Message->Type == m_REFLECT_ATTRIBUTE_VALUES)
-	||( List->Message->Type == m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
-      AttrIndex = 0;
-      while(AttrIndex < List->Message->HandleArraySize) {
-	// If the Attribute is not in that class, remove it from the message.
-	try {
-	  getAttributeWithHandle(List->Message->HandleArray [AttrIndex]);
-	  AttrIndex ++;
-	} catch(AttributeNotDefined &e) {
-	  List->Message->removeAttribute(AttrIndex);
-	}
-      }
-
+    if ((ocbList->message->Type == m_REFLECT_ATTRIBUTE_VALUES) ||
+        (ocbList->message->Type == m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
+        attr = 0;
+        while (attr < ocbList->message->HandleArraySize) {
+            // If the attribute is not in that class, remove it from
+            // the message.
+            try {
+                getAttributeWithHandle(ocbList->message->HandleArray[attr]);
+                attr ++;
+            }
+            catch (AttributeNotDefined &e) {
+                ocbList->message->removeAttribute(attr);
+            }
+        }
     }
 
     // 3. Add class/attributes subscribers to the list.
-
-    switch(List->Message->Type) {
+    switch(ocbList->message->Type) {
 
     case m_DISCOVER_OBJECT:
     case m_REMOVE_OBJECT:
-      // Pour chaque federe, l'ajouter a la liste s'il a souscrit a au moins
-      // un attribut de la classe.
-      for(Federate = 1; Federate <= MaxSubscriberHandle; Federate++) {
-	if(isFederateSubscriber(Federate) == RTI_TRUE)
-	  List->addFederate(Federate);
-      }
-      break;
+        // Pour chaque federe, l'ajouter a la liste s'il a souscrit a
+        // au moins un attribut de la classe.
+        for (Federate = 1; Federate <= MaxSubscriberHandle; Federate++) {
+            if (isFederateSubscriber(Federate) == RTI_TRUE) {
+                ocbList->addFederate(Federate);
+            }
+        }
+        break;
 
     case m_REFLECT_ATTRIBUTE_VALUES:
     case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-      // Pour chaque attribut de la classe, mettre a jour la liste en ajoutant
-      // les federes qui ont souscrit a l'attribut.
-      for(AttrIndex = 1; AttrIndex <= AttributeSet.getLength(); AttrIndex++) {
-	Attribute = AttributeSet.Ieme(AttrIndex);
-	Attribute->updateBroadcastList(List);
-      }
-      break;
+        // Pour chaque attribut de la classe, mettre a jour la liste
+        // en ajoutant les federes qui ont souscrit a l'attribut.
+        for (attr = 1; attr <= AttributeSet.getLength(); attr++) {
+            attribute = AttributeSet.Ieme(attr);
+            attribute->updateBroadcastList(ocbList);
+        }
+        break;
 		
-
     default:
-      throw RTIinternalError("BroadcastClassMsg: Unknown type.");
+        throw RTIinternalError("BroadcastClassMsg: Unknown type.");
     }
 
     // 4. Send pending messages.
-    List->sendPendingMessage(server        );
-  }
-
-
-
+    ocbList->sendPendingMessage(server);
+}
 
   // --------------------
   // -- SendToFederate --
@@ -2112,4 +2107,4 @@ namespace certi {
 
 }
 
-// $Id: ObjectClass.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClass.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $

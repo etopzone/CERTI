@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,10 +20,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "ObjectClassBroadcastList.hh"
 
@@ -31,173 +29,158 @@ namespace certi {
 
 static pdCDebug D("OBJBROADCASTLIST", "(broadcas) - ");
 
-// ------------------
-// -- AdaptMessage --
-// ------------------
-
-NetworkMessage *ObjectClassBroadcastList::
-adaptMessage(ObjectBroadcastLine *Line)
+// ---------------------------------------------------------------------------
+/*! Return a copy of the REFLECT_ATTRIBUTE_VALUES message 'Message' containing
+  references omly to the attributes marked as bsWaiting in the line 'line'.
+  The returned message should be deleted later.
+*/
+NetworkMessage *
+ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 {
-  UShort           i;
-  UShort           CurrentSize;
-  AttributeHandle  CurrentAttrib;
-  char             Buffer [MAX_BYTES_PER_VALUE + 1];
+    if ((message->Type != m_REFLECT_ATTRIBUTE_VALUES) &&
+        (message->Type != m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
+        throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
 
-  NetworkMessage  *ReducedMessage = new NetworkMessage;
-  if((Message->Type != m_REFLECT_ATTRIBUTE_VALUES) 
-      &&(Message->Type != m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
-    delete ReducedMessage;
-    throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
-  }
+    // Copy static informations.
+    NetworkMessage *reducedMessage = new NetworkMessage;
+    reducedMessage->Type = message->Type;
+    reducedMessage->Exception = message->Exception;
+    reducedMessage->NumeroFederation = message->NumeroFederation;
+    reducedMessage->NumeroFedere = message->NumeroFedere;
+    reducedMessage->Objectid = message->Objectid;
+    reducedMessage->Date = message->Date;
 
-  // Copy static informations.
-  ReducedMessage->Type             = Message->Type;
-  ReducedMessage->Exception        = Message->Exception;
-  ReducedMessage->NumeroFederation = Message->NumeroFederation;
-  ReducedMessage->NumeroFedere     = Message->NumeroFedere;
-  ReducedMessage->Objectid         = Message->Objectid;
-  ReducedMessage->Date             = Message->Date;
+    strcpy(reducedMessage->Label, message->Label);
 
-  strcpy(ReducedMessage->Label, Message->Label);
+    // Copy attributes that are in the bsWaiting state in Line.
+    UShort currentSize;
+    AttributeHandle currentAttrib;
+    char buffer[MAX_BYTES_PER_VALUE + 1] ;
 
-  // Copy attributes that are in the bsWaiting state in Line.
-  ReducedMessage->HandleArraySize  = 0;
+    reducedMessage->HandleArraySize  = 0;
 
-  for(i = 0; i < Message->HandleArraySize; i++) {
+    for (UShort i = 0; i < message->HandleArraySize; i++) {
 
-    CurrentAttrib = Message->HandleArray [i];
+        currentAttrib = message->HandleArray[i];
 
-    if(Line->State [CurrentAttrib] == bsWaiting) {
+        if (line->State[currentAttrib] == bsWaiting) {
 
-      // Update number of attributes in ReducedMessage.
-      CurrentSize    =  ReducedMessage->HandleArraySize;
-      ReducedMessage->HandleArraySize ++;
+            // Update number of attributes in ReducedMessage.
+            currentSize =  reducedMessage->HandleArraySize;
+            reducedMessage->HandleArraySize ++;
 
-      // Copy Attribute Handle.
-      ReducedMessage->HandleArray [CurrentSize] = CurrentAttrib;
+            // Copy Attribute Handle.
+            reducedMessage->HandleArray[currentSize] = currentAttrib;
 
-		  if(Message->Type == m_REFLECT_ATTRIBUTE_VALUES){
-			// Copy Attribute Value.
-      Message      ->getValue(i,           Buffer);
-      ReducedMessage->setValue(CurrentSize, Buffer);
-			}
-			
+            if (message->Type == m_REFLECT_ATTRIBUTE_VALUES) {
+                // Copy Attribute Value.
+                message->getValue(i, buffer);
+                reducedMessage->setValue(currentSize, buffer);
+            }
+        }
     }
-  }
 
-  return ReducedMessage;
+    return reducedMessage;
 }
 
-
-// -----------------
-// -- addFederate --
-// -----------------
-
-void ObjectClassBroadcastList::addFederate(FederateHandle  theFederate,
-					  AttributeHandle theAttribute)
+// ---------------------------------------------------------------------------
+/*! Add a federate to the list. If it was not present in the list, a new line
+  is added and all attributes are marked as bsNotSubscriber.  Then if the
+  Federate has not been sent a message for this attribute, the attribute
+  (for the federate) is marked has bsWaiting.  theAttribute can be not
+  specified in the case of a DiscoverObject message.
+*/
+void
+ObjectClassBroadcastList::addFederate(FederateHandle theFederate,
+                                      AttributeHandle theAttribute)
 {
-  ObjectBroadcastLine *Line = NULL;
+    if (theAttribute > maxHandle) {
+        D.Out(pdExcept, "Bad attribute handle: %u > %u.", theAttribute, 
+              maxHandle);
+        throw RTIinternalError();
+    }
 
-  if(theAttribute > MaxHandle) {
-    D.Out(pdExcept, "Bad attribute handle: %u > %u.", 
-	   theAttribute, MaxHandle);
-    throw RTIinternalError();
-  }
+    ObjectBroadcastLine *line = getLineWithFederate(theFederate);
 
-  Line = getLineWithFederate(theFederate);
-
-  if(Line == NULL) {
-    Line = new ObjectBroadcastLine(theFederate, bsNotSub);
-    lst.Inserer(1, Line);
-    D.Out(pdRegister, 
-	   "Adding new line in list for Federate %d.", theFederate);
-  }
+    if (line == 0) {
+        line = new ObjectBroadcastLine(theFederate, bsNotSub);
+        lines.push_front(line);
+        D.Out(pdRegister, "Adding new line in list for Federate %d.", 
+              theFederate);
+    }
   
-  if(Line->State [theAttribute] != bsSent) {
-    Line->State [theAttribute] = bsWaiting;
-    D.Out(pdRegister, 
-	   "List attribute %d for Federate %d is now bsWaiting.",
-	   theAttribute, theFederate);
-  }
-  else
-    D.Out(pdTrace,
-	   "Message already sent to federate %d about attribute %d.",
-	   theFederate, theAttribute);
-
+    if (line->State[theAttribute] != bsSent) {
+        line->State[theAttribute] = bsWaiting;
+        D.Out(pdRegister, "List attribute %d for Federate %d is now bsWaiting.",
+              theAttribute, theFederate);
+    }
+    else
+        D.Out(pdTrace, 
+              "Message already sent to federate %d about attribute %d.",
+              theFederate, theAttribute);
 }
 
 
 // -----------------------------
 // --  ObjectBroadcastLine --
 // -----------------------------
-
-ObjectBroadcastLine::
-ObjectBroadcastLine(FederateHandle theFederate,
-			BroadcastState theInitialState)
+ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
+                                         BroadcastState theInitialState)
 {
-  AttributeHandle i;
+    Federate = theFederate;
 
-  Federate = theFederate;
-
-  for(i = 0; i <= MAX_ATTRIBUTES_PER_CLASS; i++)
-    State [i] = theInitialState;
+    for (AttributeHandle i = 0; i <= MAX_ATTRIBUTES_PER_CLASS; i++)
+        State[i] = theInitialState;
 }
 
-
-// -----------------------------
-// --  ObjectClassBroadcastList --
-// -----------------------------
-
-ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage  *theMsg,
-						AttributeHandle  MaxAttHandle)
-  : MaxHandle(MaxAttHandle), lst()
+// ---------------------------------------------------------------------------
+/*! theMsg must have been allocated, and will be destroyed by the destructor.
+  theMsg->NumeroFedere is added to the list, and its state is set as "Sent"
+  for all attributes.  For RAVs messages, MaxAttHandle is the greatest
+  attribute handle of the class. For Discover_Object message, it can be 0 to
+  mean "any attribute".
+*/
+ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage *theMsg,
+                                                   AttributeHandle maxAttHandle)
+    : maxHandle(maxAttHandle)
 {
-  ObjectBroadcastLine *FirstLine = NULL;
+    ObjectBroadcastLine *firstLine = 0 ;
 
-  if(theMsg == NULL)
-    throw RTIinternalError("Null Broadcast Message.");
+    if (theMsg == 0)
+        throw RTIinternalError("Null Broadcast Message.");
 
-  Message  = theMsg;
+    message = theMsg;
 
-  // Add reference of the sender.
-  if(Message->NumeroFedere != 0) {
-    FirstLine = new ObjectBroadcastLine(Message->NumeroFedere,
-					    bsSent);
-    lst.Inserer(1, FirstLine);
-  }					 
+    // Add reference of the sender.
+    if (message->NumeroFedere != 0) {
+        firstLine = new ObjectBroadcastLine(message->NumeroFedere, bsSent);
+        lines.push_front(firstLine);
+    }
 }
 
-
-// ------------------------------
-// --  ~ObjectClassBroadcastList --
-// ------------------------------
-
-ObjectClassBroadcastList::~ObjectClassBroadcastList()
+// ---------------------------------------------------------------------------
+//! Free all structures, including Message.
+ObjectClassBroadcastList::~ObjectClassBroadcastList(void)
 {
-  clear();
+    this->clear();
 }
 
-
-// ----------------
-// -- EmptyList  --
-// ----------------
-
-void ObjectClassBroadcastList::clear(void)
+// ---------------------------------------------------------------------------
+//! Empty the list so it can reused (like the destructor).
+void
+ObjectClassBroadcastList::clear(void)
 {
-  ObjectBroadcastLine *Line = NULL;
+    delete message;
+    message = 0 ;
 
-  delete Message;
+    maxHandle = 0;
 
-  Message   = NULL;
-  MaxHandle = 0;
+    while (!lines.empty()) {
+        delete lines.front();
+        lines.pop_front();
+    }
 
-  while(lst.getLength() > 0) {
-    Line = lst.Ieme(1);
-    lst.Supprimer(1);
-    delete Line;
-  }
-
-  D.Out(pdTerm, "List is now empty.");
+    D.Out(pdTerm, "List is now empty.");
 }
 
 
@@ -205,34 +188,32 @@ void ObjectClassBroadcastList::clear(void)
 // -- GetLineWithFederate --
 // -------------------------
 
-ObjectBroadcastLine *ObjectClassBroadcastList::
-getLineWithFederate(FederateHandle theFederate)
+ObjectBroadcastLine*
+ObjectClassBroadcastList::getLineWithFederate(FederateHandle theFederate)
 {
-  ObjectBroadcastLine *Line = NULL;
-  int                     i;
+    list<ObjectBroadcastLine *>::iterator i ;
+    for (i = lines.begin(); i != lines.end() ; i++) {
+        if ((*i)->Federate == theFederate)
+            return (*i);
+    }
 
-  for(i = 1; i <= lst.getLength(); i++) {
-    Line = lst.Ieme(i);
-    if(Line->Federate == theFederate)
-      return Line;
-  }
-
-  return NULL;
+    return 0 ;
 }
 
 // ---------------
 // -- IsWaiting --
 // ---------------
 
-Boolean ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *Line)
+Boolean
+ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *line)
 {
-  unsigned int AttrIndex;
-  
-  for(AttrIndex = 1; AttrIndex <= MaxHandle; AttrIndex++)
-    if(Line->State [AttrIndex] == bsWaiting)
-      return RTI_TRUE;
+    for (unsigned int attrIndex = 1; attrIndex <= maxHandle; attrIndex++) {
+        if (line->State [attrIndex] == bsWaiting) {
+            return RTI_TRUE;
+        }
+    }
 
-  return RTI_FALSE;
+    return RTI_FALSE;
 }
 
 
@@ -240,153 +221,156 @@ Boolean ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *Line)
 // -- SendPendingDOMessage --
 // --------------------------
 
-void ObjectClassBroadcastList::
-sendPendingDOMessage(SecurityServer *Server)
+void
+ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 {
-  int                     LineIndex;
-  ObjectBroadcastLine *Line           = NULL;
-  Socket                *socket         = NULL;
+    Socket *socket = NULL;
 
-  // Pour chaque ligne de la liste
-  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
-    Line = lst.Ieme(LineIndex);
+    // Pour chaque ligne de la liste
+    list<ObjectBroadcastLine *>::iterator i ;
+    for (i = lines.begin(); i != lines.end() ; i++) {
+        // Si le federe attend un message(attribute 0 en attente)
+        if ((*i)->State[0] == bsWaiting) {
 
-    // Si le federe attend un message(attribute 0 en attente)
-    if(Line->State [0] == bsWaiting) {
+            // 1. Envoyer le message au federe
+            D.Out(pdProtocol, 
+                  "Broadcasting message to Federate %d.", (*i)->Federate);
+            try {
+                socket = server->getSocketLink((*i)->Federate);
+                message->write(socket);
+            }
+            catch(RTIinternalError &e) {
+                D.Out(pdExcept, 
+                      "Reference to a killed Federate while broadcasting.");
+            }
+            catch(NetworkError &e) {
+                D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+            }
 
-      // 1. Envoyer le message au federe
-      D.Out(pdProtocol, 
-	     "Broadcasting message to Federate %d.", Line->Federate);
-      try {
-	socket = Server->getSocketLink(Line->Federate);
-	Message->write(socket);
-      }
-      catch(RTIinternalError &e) {
-	D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
-      }
-      catch(NetworkError &e) {
-	D.Out(pdExcept, "Network error while broadcasting, ignoring.");
-      }
-
-      // 2. Marquer le federe comme ayant recu le message.
-      Line->State [0] = bsSent;
+            // 2. Marquer le federe comme ayant recu le message.
+            (*i)->State[0] = bsSent;
+        }
+        else
+            D.Out(pdProtocol, "No message sent to Federate %d.", 
+                  (*i)->Federate);
     }
-    else
-      D.Out(pdProtocol, 
-	     "No message sent to Federate %d.", Line->Federate);	  
-  }
 }
 
+// ---------------------------------------------------------------------------
+/*! IMPORTANT: Before calling this method, be sure to set the
+  Message->NumeroFederation handle.
 
-// ------------------------
-// -- SendPendingMessage --
-// ------------------------
-
-void ObjectClassBroadcastList::
-sendPendingMessage(SecurityServer *Server)
+  Broadcast the message to all the Federate in the bsWaiting state. If it is
+  a DiscoverObject message, the message is sent as is, and the Federate is
+  marked as bsSent for the ANY attribute.  If it is a RAV message, the
+  message is first copied, without the Attribute list, and then all pending
+  attributes(in the bsWainting state) are added to the copy. The copy is
+  sent, and attributes are marked as bsSent.
+*/
+void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
-  switch(Message->Type) {
+    switch (message->Type) {
 
-  case m_REFLECT_ATTRIBUTE_VALUES:
-  case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-    sendPendingRAVMessage(Server);
-    break;
+    case m_REFLECT_ATTRIBUTE_VALUES:
+    case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+        sendPendingRAVMessage(server);
+        break;
 
-  case m_DISCOVER_OBJECT:
-  case m_REMOVE_OBJECT:
-    sendPendingDOMessage(Server);
-    break;
+    case m_DISCOVER_OBJECT:
+    case m_REMOVE_OBJECT:
+        sendPendingDOMessage(server);
+        break;
     
-  default:
-    throw RTIinternalError("Unknown message type to broadcast.");
-  }
-
+    default:
+        throw RTIinternalError("Unknown message type to broadcast.");
+    }
 }
 
 // ---------------------------
 // -- SendPendingRAVMessage --
 // ---------------------------
 
-void ObjectClassBroadcastList::
-sendPendingRAVMessage(SecurityServer *Server)
+void
+ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 {
-  int                     LineIndex;
-  unsigned int            AttrIndex;
+    Boolean allWaiting;
+    AttributeHandle currentAttrib;
 
-  Boolean                 AllWaiting;
-  AttributeHandle         CurrentAttrib;
-
-  ObjectBroadcastLine *Line           = NULL;
-  Socket                *socket         = NULL;
-  NetworkMessage         *CurrentMessage = NULL;
+    Socket *socket = 0 ;
+    NetworkMessage *currentMessage = 0 ;
   
-	// Pour chacunes des lignes :
-  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
-    Line = lst.Ieme(LineIndex);
-    
-    // Si AU MOINS UN des attributs est en bsWaiting
-    if(isWaiting(Line) == RTI_TRUE) {
-      
-      // 1. Est-ce que tous les attributs du message sont en bsWaiting ?
-      AllWaiting = RTI_TRUE;
-      for(AttrIndex = 0; 
-	   AttrIndex < Message->HandleArraySize;
-	   AttrIndex ++) {
-	CurrentAttrib = Message->HandleArray [AttrIndex];
-	if(Line->State [CurrentAttrib] != bsWaiting)
-	  AllWaiting = RTI_FALSE;
-      }
-      
-      if(AllWaiting == RTI_FALSE) {
-	//   NON: Faire un nouveau message, contenant seulement les attributs
-	//        en bsWaiting.
-	CurrentMessage = adaptMessage(Line);
-	D.Out(pdProtocol, "Broadcasting reduced message to Federate %d.",
-	       Line->Federate);
-      }
-      else {
-	// OUI: Rien a faire
-	CurrentMessage = Message;
-	D.Out(pdProtocol, "Broadcasting complete message to Federate %d.",
-	       Line->Federate);
-      }
+    // For each line :
+    list<ObjectBroadcastLine *>::iterator i ;
+    for (i = lines.begin(); i != lines.end() ; i++) {
 
-      // 2. Envoyer le message(ou la copie reduite),
-      try {
+        // Si AU MOINS UN des attributs est en bsWaiting
+        if (isWaiting(*i) == RTI_TRUE) {
+      
+            // 1. Est-ce que tous les attributs du message sont en bsWaiting ?
+            allWaiting = RTI_TRUE;
+            for (unsigned int attrIndex = 0;
+                attrIndex < message->HandleArraySize;
+                attrIndex ++) {
+                currentAttrib = message->HandleArray[attrIndex];
+                if ((*i)->State [currentAttrib] != bsWaiting)
+                    allWaiting = RTI_FALSE;
+            }
+      
+            if (allWaiting == RTI_FALSE) {
+                // NO: Create a new message containing only bsWaiting
+                // attributes.
+                currentMessage = adaptMessage(*i);
+                D.Out(pdProtocol, 
+                      "Broadcasting reduced message to Federate %d.",
+                      (*i)->Federate);
+            }
+            else {
+                // YES: Nothing to do.
+                currentMessage = message;
+                D.Out(pdProtocol, 
+                      "Broadcasting complete message to Federate %d.",
+                      (*i)->Federate);
+            }
+
+            // 2. Send message (or reduced one).
+            try {
 #ifdef HLA_USES_UDP
-	socket = Server->getSocketLink(Line->Federate, BEST_EFFORT);
+                socket = server->getSocketLink((*i)->Federate, BEST_EFFORT);
 #else
-	socket = Server->getSocketLink(Line->Federate);
+                socket = server->getSocketLink((*i)->Federate);
 #endif
-	CurrentMessage->write(socket);
-      }
-      catch(RTIinternalError &e) {
-	D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
-      }
-      catch(NetworkError &e) {
-	D.Out(pdExcept, "Network error while broadcasting, ignoring.");
-      }
+                currentMessage->write(socket);
+            }
+            catch (RTIinternalError &e) {
+                D.Out(pdExcept, 
+                      "Reference to a killed Federate while broadcasting.");
+            }
+            catch(NetworkError &e) {
+                D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+            }
       
-      // 3. marquer les attributs en bsSent.
-      for(AttrIndex = 1; AttrIndex <= MaxHandle; AttrIndex ++)
-	if(Line->State [AttrIndex] == bsWaiting)
-	  Line->State [AttrIndex] = bsSent;
+            // 3. marquer les attributs en bsSent.
+            for (unsigned int attrIndex = 1; 
+                 attrIndex <= maxHandle; 
+                 attrIndex ++) {
+                if((*i)->State [attrIndex] == bsWaiting) {
+                    (*i)->State [attrIndex] = bsSent;
+                }
+            }
       
-      // 4. Eventuellement effacer la copie du message.
-      if(CurrentMessage != Message) {
-	delete CurrentMessage;
-	CurrentMessage = NULL;
-      }
+            // 4. Eventuellement effacer la copie du message.
+            if (currentMessage != message) {
+                delete currentMessage;
+                currentMessage = NULL;
+            }
       
-    } // Si AU MOINS UN des attributs est en bsWaiting
-    else
-      D.Out(pdProtocol, 
-	     "No message sent to Federate %d.", Line->Federate);	  
-    
-  } // Pour chaque ligne...
-  
+        } // Si AU MOINS UN des attributs est en bsWaiting
+        else
+            D.Out(pdProtocol, "No message sent to Federate %d.", 
+                  (*i)->Federate);
+    } // Pour chaque ligne...
 }
 
 }
 
-// $Id: ObjectClassBroadcastList.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.4 2003/01/15 14:31:43 breholee Exp $

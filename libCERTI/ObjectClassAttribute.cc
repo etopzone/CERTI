@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.4 2003/01/15 12:07:46 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.5 2003/01/15 14:31:43 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -347,14 +347,15 @@ void ObjectClassAttribute::subscribe(FederateHandle theFederate,
 // -- UpdateBroadcastList --
 // -------------------------
 
-void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
+void
+ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 {
-	switch(List->Message->Type) {
+	switch(ocblist->message->Type) {
 	
 	case m_REFLECT_ATTRIBUTE_VALUES: {
         list<Subscriber *>::iterator i ; 
         for (i = subscribers.begin(); i != subscribers.end() ; i++) {
-            List->addFederate((*i)->getHandle(), Handle); // Attribute handle
+            ocblist->addFederate((*i)->getHandle(), Handle); // Attribute handle
         }
     }
         break;
@@ -362,7 +363,7 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 	case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
         list<Publisher *>::iterator i ; 
         for (i = publishers.begin(); i != publishers.end() ; i++) {
-            List->addFederate((*i)->getHandle(), Handle); // Attribute handle
+            ocblist->addFederate((*i)->getHandle(), Handle); // Attribute handle
         }
     }
 	break;
@@ -373,4 +374,4 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.4 2003/01/15 12:07:46 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.5 2003/01/15 14:31:43 breholee Exp $
