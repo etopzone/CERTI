@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.14 2004/03/04 20:19:04 breholee Exp $
+// $Id: FederationManagement.cc,v 3.15 2004/05/17 21:24:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -213,7 +213,7 @@ joinFederationExecution(const char *Federate,
 
             _numero_federation = reponse.federation ;
             federate = reponse.federate ;
-            tm->MyFederateNumber = reponse.federate ;
+            tm->setFederate(reponse.federate);
 
 #ifdef FEDERATION_USES_MULTICAST
             // creation du socket pour la communication best-effort
@@ -642,4 +642,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.14 2004/03/04 20:19:04 breholee Exp $
+// $Id: FederationManagement.cc,v 3.15 2004/05/17 21:24:47 breholee Exp $
