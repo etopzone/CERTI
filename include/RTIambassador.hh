@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,27 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIambassador.hh,v 3.15 2003/07/01 13:24:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
 #define _CERTI_RTI_AMBASSADOR_HH
 
-#include <csignal>
-#include <iostream>
-using std::cout ;
-using std::cerr ;
-using std::endl ;
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <cstring>
-
-#include <assert.h>
-
+#include "RTItypes.hh"
 #include "fedtime.hh"
-
 #include "SocketUN.hh"
 
 namespace certi {
@@ -835,8 +821,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     deleteRegion(Region *theRegion)
@@ -887,9 +872,9 @@ public:
                UnimplementedService);
 
     void
-    associateRegionForUpdates(Region &theRegion,
-                              ObjectHandle theObject,
-                              const AttributeHandleSet &theAttributes)
+    associateRegionForUpdates(Region &,
+			      ObjectHandle,
+			      const AttributeHandleSet &)
         throw (ObjectNotKnown,
                AttributeNotDefined,
                InvalidRegionContext,
@@ -898,8 +883,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     unassociateRegionForUpdates(Region &theRegion,
@@ -1299,4 +1283,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.14 2003/05/05 20:21:39 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.15 2003/07/01 13:24:41 breholee Exp $
