@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.24 2003/10/20 13:15:14 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.25 2003/10/27 10:23:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
 
-#include "FedParser.hh"
+#include "fed.hh"
 #include "XmlParser.hh"
 
 using std::string ;
@@ -121,11 +121,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           string filename = string(req->getFederationName()) + ".fed" ;
           ifstream *fdd = new ifstream(filename.c_str());
           if (fdd->is_open()) {
-              fedparser::FedParser *parser = new fedparser::FedParser(rootObject);
-              if (parser == 0)
-                  throw MemoryExhausted("No memory left to read FED file.");
-              parser->readFile(filename.c_str());
-              delete parser ;
+	      int result = certi::fedparser::build(filename.c_str(),
+						   rootObject, true);
+	      if (result) throw ErrorReadingFED();
           }
           else {
               if (XmlParser::exists()) {
@@ -138,6 +136,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                       delete fdd ;
                       delete parser ;
                   }
+		  else throw CouldNotOpenFED();
               }
           }
           break ;
@@ -1088,4 +1087,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.24 2003/10/20 13:15:14 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.25 2003/10/27 10:23:45 breholee Exp $

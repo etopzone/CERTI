@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.33 2003/10/20 13:15:14 breholee Exp $
+// $Id: Federation.cc,v 3.34 2003/10/27 10:22:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 
-#include "FedParser.hh"
+#include "fed.hh"
 #include "XmlParser.hh"
 #include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
@@ -81,9 +81,9 @@ Federation::Federation(const char *federation_name,
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
     : saveInProgress(false), restoreInProgress(false),
-      saveStatus(true), restoreStatus(true)
+      saveStatus(true), restoreStatus(true), verbose(true)
 {
-    fedparser::FedParser *fed_reader ;
+    //    fedparser::FedParser *fed_reader ;
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -121,39 +121,19 @@ Federation::Federation(const char *federation_name,
     // Read FOM File to initialize Root Object.
     root = new RootObject(server);
 
-    if (root == 0)
-        throw MemoryExhausted("No memory left for Federation Root Object.");
-
     cout << "New federation: " << name << endl ;
     cout << "Looking for .fed file... " ;
 
     string filename = string(name) + ".fed" ;
-    ifstream *fdd = new ifstream(filename.c_str());
+    ifstream fdd(filename.c_str());
 
-    if (fdd->is_open()) {
+    if (fdd.is_open()) {
+	fdd.close();
 
         cout << "yes" << endl ;
-        fed_reader = new fedparser::FedParser(root);
-        if (fed_reader == 0)
-            throw MemoryExhausted("No memory left to read FED file.");
-
-        server->Audit->addToLinef(", Fed File : %s", filename.c_str());
-
-        try {
-            fed_reader->readFile(filename.c_str());
-        }
-        catch (Exception *e) {
-            delete fed_reader ;
-            delete server ;
-            server = NULL ;
-            delete root ;
-            root = NULL ;
-            throw e ;
-        }
-
-        delete fed_reader ;
-        delete fdd ;
-
+	int err = fedparser::build(filename.c_str(), root, verbose);
+	if (err) throw ErrorReadingFED();
+	    
         // Retrieve the FED file last modification time(for Audit)
         struct stat StatBuffer ;
         char *MTimeBuffer ;
@@ -173,10 +153,10 @@ Federation::Federation(const char *federation_name,
             cout << "Looking for .xml file... " ;
 
             filename = string(name) + ".xml" ;
-            fdd = new ifstream(filename.c_str());
+            fdd.open(filename.c_str());
 
-            if (fdd->is_open()) {
-
+            if (fdd.is_open()) {
+		fdd.close();
                 cout << "yes" << endl ;
 
                 XmlParser *parser = new XmlParser(root);
@@ -194,10 +174,11 @@ Federation::Federation(const char *federation_name,
                     throw e ;
                 }
                 delete parser ;
-                delete fdd ;
             }
-            else
+            else {
                 cout << "no" << endl ;
+		throw CouldNotOpenFED();
+	    }
         }
     }
 }
@@ -1777,5 +1758,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.33 2003/10/20 13:15:14 breholee Exp $
+// $Id: Federation.cc,v 3.34 2003/10/27 10:22:34 breholee Exp $
 
