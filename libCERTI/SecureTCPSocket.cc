@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.4 2003/06/25 15:56:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -131,7 +131,7 @@ void SecureTCPSocket::getMessage()
 // --------------
 
 int
-SecureTCPSocket::getClass(void) const
+SecureTCPSocket::getClass() const
 {
 #ifdef HLA_USES_GSSAPI
     return SOCKET_TYPE_S_TCP ;
@@ -179,7 +179,8 @@ void SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
 // -- GetPeerName --
 // -----------------
 
-const char *SecureTCPSocket::getPeerName()
+const char *
+SecureTCPSocket::getPeerName()
 {
     if (PeerName != NULL)
         return PeerName ;
@@ -191,6 +192,7 @@ const char *SecureTCPSocket::getPeerName()
 #ifdef WITH_GSSAPI
     return PeerName ;
 #endif // WITH_GSSAPI
+    throw RTIinternalError("No peer's principal name.");
 }
 
 
@@ -299,4 +301,4 @@ void SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.4 2003/06/25 15:56:25 breholee Exp $
