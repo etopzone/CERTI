@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.25 2005/02/09 15:43:07 breholee Exp $
+// $Id: FederationsList.hh,v 3.26 2005/03/16 23:00:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -207,8 +207,7 @@ public:
                          FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          AttributeHandle *theAttributeList,
-                         UShort theListSize,
-                         bool subscribe_or_unsubscribe)
+                         UShort theListSize)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederationExecutionDoesNotExist,
@@ -500,4 +499,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.25 2005/02/09 15:43:07 breholee Exp $
+// $Id: FederationsList.hh,v 3.26 2005/03/16 23:00:06 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.25 2005/03/15 14:33:20 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.26 2005/03/16 23:00:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -381,11 +381,10 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 		<< ", # of att. = " << req->handleArraySize ;
 
     federations.subscribeObject(req->federation,
-                                 req->federate,
-                                 req->objectClass,
-                                 req->handleArray,
-                                 req->handleArraySize,
-                                 sub);
+				req->federate,
+				req->objectClass,
+				sub ? req->handleArray : 0,
+				sub ? req->handleArraySize : 0);
 
     D.Out(pdRegister,
           "Federate %u of Federation %u subscribed to object class %d.",
@@ -1061,4 +1060,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.25 2005/03/15 14:33:20 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.26 2005/03/16 23:00:06 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.26 2005/02/09 15:43:07 breholee Exp $
+// $Id: FederationsList.cc,v 3.27 2005/03/16 23:00:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -566,8 +566,7 @@ FederationsList::subscribeObject(Handle handle,
                                  FederateHandle federate,
                                  ObjectClassHandle object_class,
                                  AttributeHandle *attributes,
-                                 UShort list_size,
-                                 bool sub)
+                                 UShort list_size)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            FederationExecutionDoesNotExist,
@@ -586,8 +585,7 @@ FederationsList::subscribeObject(Handle handle,
     // It may throw FederationExecutionDoesNotExist.
     searchFederation(handle, federation);
 
-    federation->subscribeObject(federate, object_class, attributes, list_size,
-                                sub);
+    federation->subscribeObject(federate, object_class, attributes, list_size);
 }
 
 // ----------------------------------------------------------------------------
@@ -1265,5 +1263,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.26 2005/02/09 15:43:07 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.27 2005/03/16 23:00:06 breholee Exp $
 

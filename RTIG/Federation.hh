@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.31 2005/02/09 15:43:07 breholee Exp $
+// $Id: Federation.hh,v 3.32 2005/03/16 23:00:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -228,8 +228,7 @@ public:
     void subscribeObject(FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          AttributeHandle *theAttributeList,
-                         UShort theListSize,
-                         bool SubOrUnSub)
+                         UShort theListSize)
         throw (ObjectClassNotDefined,
                AttributeNotDefined,
                FederateNotExecutionMember,
@@ -512,4 +511,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.31 2005/02/09 15:43:07 breholee Exp $
+// $Id: Federation.hh,v 3.32 2005/03/16 23:00:06 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.40 2005/02/09 15:43:07 breholee Exp $
+// $Id: Federation.cc,v 3.41 2005/03/16 23:00:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1104,8 +1104,7 @@ void
 Federation::subscribeObject(FederateHandle federate,
                             ObjectClassHandle object,
                             AttributeHandle *attributes,
-                            UShort list_size,
-                            bool sub)
+                            UShort list_size)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            FederateNotExecutionMember,
@@ -1118,7 +1117,7 @@ Federation::subscribeObject(FederateHandle federate,
     this->check(federate);
 
     // It may throw *NotDefined
-    root->ObjectClasses->subscribe(federate, object, attributes, list_size, sub);
+    root->ObjectClasses->subscribe(federate, object, attributes, list_size);
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
           handle, federate, list_size, object);
@@ -1529,16 +1528,8 @@ Federation::subscribeAttributesWR(FederateHandle federate,
 	   RTIinternalError)
 {
     check(federate);
-
-    RegionImp *r = root->getRegion(region_handle);
-    
-    root->getObjectClass(c)->unsubscribe(federate, r);
-    for (int i = 0 ; i < nb ; ++i) {
-	D[pdDebug] << "Class " << c << " attribute " << i << ": "
-		   << attributes[i] << endl ;
-	root->getObjectClass(c)->getAttributeWithHandle(
-	    attributes[i])->subscribe(federate, r);
-    } 
+    root->ObjectClasses->subscribe(federate, c, attributes, nb,
+				   root->getRegion(region_handle));
 }
 
 // ----------------------------------------------------------------------------
@@ -1760,5 +1751,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.40 2005/02/09 15:43:07 breholee Exp $
+// $Id: Federation.cc,v 3.41 2005/03/16 23:00:06 breholee Exp $
 
