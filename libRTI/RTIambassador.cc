@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.6 2003/01/10 15:39:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.7 2003/01/17 12:21:17 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -2881,66 +2881,69 @@ Boolean RTIambassador::tick()
  
  // 4.4
       case REFLECT_ATTRIBUTE_VALUES: {
+          for(i=0; i<vers_Fed.HandleArraySize; i++) {
+              CAttributeHandleValuePair *att = new CAttributeHandleValuePair;
 
-	for(i=0; i<vers_Fed.HandleArraySize; i++) {
-  
-	  CAttributeHandleValuePair *att = new CAttributeHandleValuePair;
+              att->_attrib = vers_Fed.HandleArray[i];
 	  
-	  att->_attrib = vers_Fed.HandleArray[i];
+              // BUG: Federate may be expecting to find value name
+              // (a call to GetWithName for example).
+              strcpy(att->_value.name,  "");
 	  
-	  // BUG: Le federe s'attend surement a trouver le nom de la
-	  // valeur(pour faire un GetWithName notamment.
-	  strcpy(att->_value.name,  "");
+              vers_Fed.getValue(i, att->_value.value); 
 	  
-	  vers_Fed.getValue(i, att->_value.value); 
+              // BUG: Federate is expecting to find value type.
+              strcpy(att->_value.type,  "");
 	  
-	  // BUG: Le federe s'attend surement a trouver le type de la valeur.
-	  strcpy(att->_value.type,  "");
-	  
-	  theAttributes.add(att);
-	}
+              theAttributes.add(att);
+          }
 
-	AttributeHandleValuePairSet*
-	  theAttributes_aux = theAttributes.toAHVPS();
-	fed_amb->reflectAttributeValues((ObjectHandle)vers_Fed.Objectid,
-					*theAttributes_aux,
-					RTIfedTime(vers_Fed.Date),
-					(char *)vers_Fed.getTag(),
-					vers_Fed.Retract);
+          AttributeHandleValuePairSet*
+              theAttributes_aux = theAttributes.toAHVPS();
+
+          fed_amb->reflectAttributeValues((ObjectHandle)vers_Fed.Objectid,
+                                          *theAttributes_aux,
+                                          RTIfedTime(vers_Fed.Date),
+                                          (char *)vers_Fed.getTag(),
+                                          vers_Fed.Retract);
+
+          delete theAttributes_aux;
       }
-      break;
+          break;
 
-      // 4.6
+          // 4.6
       case RECEIVE_INTERACTION: {
- 
- for(i=0; i<vers_Fed.HandleArraySize; i++) {
- 
-   CParameterHandleValuePair *par = new CParameterHandleValuePair;
+           for(i=0; i<vers_Fed.HandleArraySize; i++) {
+              CParameterHandleValuePair *par = new CParameterHandleValuePair;
 
-   par->_param = vers_Fed.HandleArray[i];
+              par->_param = vers_Fed.HandleArray[i];
 
-   // BUG: Le federe s'attend surement a trouver le nom de la
-   // valeur(pour faire un GetWithName notamment.
-   strcpy(par->_value.name,  "");
+              // BUG: Federate may be expecting to find value name
+              // (a call to GetWithName for example).
+              strcpy(par->_value.name,  "");
 
-   vers_Fed.getValue(i, par->_value.value);
+              vers_Fed.getValue(i, par->_value.value);
 
-   // Pareil pour le type de la valeur.
-   strcpy(par->_value.type,  "");
+              // BUG: Federate is expecting to find value type.
+              strcpy(par->_value.type,  "");
 
-   theParameters.add(par);
- }
+              theParameters.add(par);
+          }
 
- ParameterHandleValuePairSet *theParameters_aux = theParameters.toPHVPS();
-        fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
-        *theParameters_aux,
-            RTIfedTime(vers_Fed.Date),
-(char *)vers_Fed.getTag(),
-        vers_Fed.Retract);
+          ParameterHandleValuePairSet *theParameters_aux;
+          theParameters_aux = theParameters.toPHVPS();
+
+          fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
+                                      *theParameters_aux,
+                                      RTIfedTime(vers_Fed.Date),
+                                      (char *)vers_Fed.getTag(),
+                                      vers_Fed.Retract);
+
+          delete theParameters_aux;
       }
-      break;
+          break;
 
-      // 4.8
+          // 4.8
       case REMOVE_OBJECT:
  fed_amb->removeObjectInstance((ObjectHandle)vers_Fed.Objectid,
            RTIfedTime(vers_Fed.Date),
@@ -3904,4 +3907,4 @@ RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.6 2003/01/10 15:39:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.7 2003/01/17 12:21:17 breholee Exp $
