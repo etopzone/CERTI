@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: FederationsList.cc,v 3.3 2002/12/11 14:47:24 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -33,7 +33,7 @@ static pdCDebug D("LISTEFEDERATIONS", "(ListFede) - ");
 // Constructor
 
 FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
-  : List <Federation*>()
+  : list<Federation *>()
 {
   if(server == NULL)
     throw RTIinternalError("FederationsList: No SocketServer was given.");
@@ -50,16 +50,13 @@ FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
 
 FederationsList::~FederationsList()
 {
-  Federation *federation = NULL;
+    if (!empty())
+        D.Out(pdError, "ListeFederation not empty at destruction time.");
 
-  if(lg > 0)
-    D.Out(pdError, "ListeFederation not empty at destruction time.");
-
-  while(lg > 0) {
-    federation = Ieme(1);
-    Supprimer(1);
-    delete federation;
-  }
+    for (list<Federation *>::iterator i = begin(); i != end() ; i++) {
+        delete(*i);
+    }
+    clear();
 }
 
 // ---------------------------------------------------------------------------
@@ -126,22 +123,21 @@ FederationsList::searchFederation(FederationHandle handle,
   throw(FederationExecutionDoesNotExist,
 	RTIinternalError)
 {
-  int i;
   federation = NULL;
   rank = 0;
 
   // It may raise RTIinternalError
   checkHandle(handle);
 
-  i = 1;
-  while(i<=lg) {
-    federation = Ieme(i);
-    if(federation->getHandle() == handle) {
-      rank = i;
+  list<Federation *>::const_iterator i = begin();
+  for (int j = 1; i != end() ; i++, j++) {
+    if ( (*i)->getHandle() == handle ) {
+      federation = (*i);
+      rank = j;
       return;
     }
-    i++;
   }
+
   D.Out(pdExcept, "Unknown Federation Handle %d.", handle);
   throw FederationExecutionDoesNotExist("Bad Federation Handle.");
 }
@@ -183,7 +179,7 @@ void FederationsList::createFederation(FederationExecutionName name,
 	  "CreerFederation catches FederationExecutionDoesNotExist.");
   }
 
-  if(lg >= MAX_FEDERATION)
+  if(size() >= MAX_FEDERATION)
     throw RTIinternalError("Too many federation executions.");
 
 
@@ -196,7 +192,7 @@ void FederationsList::createFederation(FederationExecutionName name,
   if(federation == NULL)
     throw MemoryExhausted("No memory left for new Federation.");
 
-  Inserer(1, federation);
+  push_front(federation);
   D.Out(pdInit, "New Federation created with Handle %d.", handle);
 }
 
@@ -281,28 +277,22 @@ FederationsList::destroyObject(FederationHandle handle,
 // ---------------------------------------------------------------------------
 // exists
 
-void FederationsList::exists(FederationExecutionName name,
-			     FederationHandle &handle)
-  throw(FederationExecutionDoesNotExist,
-	RTIinternalError)
+void 
+FederationsList::exists(FederationExecutionName name,
+                        FederationHandle &handle)
+    throw(FederationExecutionDoesNotExist, RTIinternalError)
 {
-  Federation *federation;
-  int i;
+    if(name == NULL) throw RTIinternalError("Null Federation Name.");
 
-  if(name == NULL) throw RTIinternalError("Null Federation Name.");
-
-  i = 1; 
-  while(i <= lg) {
-    federation = Ieme(i);
-    if(!strcmp(federation->getName(), name)) {
-      handle = federation->getHandle();
-      return;
+    for ( list<Federation *>::iterator i = begin() ; i != end() ; i++) {
+        if( !strcmp((*i)->getName(), name) ) {
+            handle = (*i)->getHandle();
+            return;
+        }
     }
-    i++;
-  }
 
-  D.Out(pdDebug, "EstPresent throws FederationExecutionDoesNotExist.");
-  throw FederationExecutionDoesNotExist();
+    D.Out(pdDebug, "EstPresent throws FederationExecutionDoesNotExist.");
+    throw FederationExecutionDoesNotExist();
 }
 
 // ---------------------------------------------------------------------------
@@ -362,8 +352,8 @@ FederationsList::registerObject(FederationHandle handle,
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
-  D.Out(pdTrace,"handle = %d, federate = %d.",
-	handle,federate);
+  D.Out(pdTrace,"handle = %d, federate = %d.", handle,federate);
+
   // It may throw FederationExecutionDoesNotExist.
   searchFederation(handle, federation, rank);
  
@@ -669,20 +659,25 @@ FederationsList::destroyFederation(FederationHandle handle)
 	FederationExecutionDoesNotExist,
 	RTIinternalError)
 {
-  Federation *federation;
-  int rank;
-
-  // It may throw RTIinternalError
-  checkHandle(handle);
-
-  // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation, rank);
-
-  // It may throw FederatesCurrentlyJoined
-  if(federation->empty()) {
-    Supprimer(rank);
-    delete federation;
-  }
+    Federation *federation;
+    int rank;
+    
+    // It may throw RTIinternalError
+    checkHandle(handle);
+    
+    // It may throw FederationExecutionDoesNotExist
+    searchFederation(handle, federation, rank);
+    
+    // It may throw FederatesCurrentlyJoined
+    if(federation->empty()) {
+        list<Federation *>::iterator i = begin();
+        for (int j = 1 ; i != end() && j <= rank ; j++) {
+            if (j == rank) {
+                erase(i);
+            }
+        }
+        delete federation;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1047,5 +1042,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.3 2002/12/11 14:47:24 breholee Exp $
 
