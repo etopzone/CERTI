@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.0 2003/03/21 13:43:18 breholee Exp $
+// $Id: Extent.hh,v 3.1 2003/04/09 16:37:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXTENT_HH
@@ -36,7 +36,6 @@ namespace certi {
 class Extent
 {
 public:
-    Extent(void);
     Extent(int);
     ~Extent(void);
 
@@ -60,4 +59,4 @@ private:
 
 #endif // _CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.0 2003/03/21 13:43:18 breholee Exp $
+// $Id: Extent.hh,v 3.1 2003/04/09 16:37:20 breholee Exp $

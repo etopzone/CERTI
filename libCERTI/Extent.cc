@@ -20,18 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.0 2003/03/21 13:43:13 breholee Exp $
+// $Id: Extent.cc,v 3.1 2003/04/09 16:37:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Extent.hh"
 
 namespace certi {
 
-Extent::Extent(void)
-{
-
-}
-
+// ----------------------------------------------------------------------------
+// Extent
+//
 Extent::Extent(int n)
 {
     if (n > 0) {
@@ -39,6 +37,9 @@ Extent::Extent(int n)
     }
 }
 
+// ----------------------------------------------------------------------------
+// ~Extent
+//
 Extent::~Extent(void)
 {
     vector<Range*>::iterator i ;
@@ -48,6 +49,9 @@ Extent::~Extent(void)
     ranges.clear();
 }
 
+// ----------------------------------------------------------------------------
+// getRangeLowerBound
+//
 ULong
 Extent::getRangeLowerBound(DimensionHandle handle)
     throw (ArrayIndexOutOfBounds)
@@ -61,6 +65,9 @@ Extent::getRangeLowerBound(DimensionHandle handle)
     throw ArrayIndexOutOfBounds();
 }
 
+// ----------------------------------------------------------------------------
+// getRangeUpperBound
+//
 ULong
 Extent::getRangeUpperBound(DimensionHandle handle)
     throw (ArrayIndexOutOfBounds)
@@ -74,6 +81,9 @@ Extent::getRangeUpperBound(DimensionHandle handle)
     throw ArrayIndexOutOfBounds();
 }
 
+// ----------------------------------------------------------------------------
+// setRangeLowerBound
+//
 void
 Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
@@ -88,6 +98,9 @@ Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
     throw ArrayIndexOutOfBounds();
 }
 
+// ----------------------------------------------------------------------------
+// setRangeUpperBound
+//
 void
 Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
@@ -104,4 +117,4 @@ Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.0 2003/03/21 13:43:13 breholee Exp $
+// $Id: Extent.cc,v 3.1 2003/04/09 16:37:20 breholee Exp $
