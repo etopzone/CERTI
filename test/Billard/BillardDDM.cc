@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.4 2003/11/10 15:06:41 breholee Exp $
+// $Id: BillardDDM.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -33,7 +33,8 @@ using std::endl ;
 static pdCDebug D("BILLARD_DDM", __FILE__);
 
 // ----------------------------------------------------------------------------
-// DDM Billard constructor
+/** DDM Billard constructor
+ */
 BillardDDM::BillardDDM(string federate)
     : Billard(federate), regionSize(100),
       geo_name("geo"), dimx_name("X"), dimy_name("Y")
@@ -53,9 +54,15 @@ BillardDDM::getHandles()
 
     static bool done = false ;
     if (!done) {
-	geo_id = rtiamb.getRoutingSpaceHandle(geo_name);
-	dimx_id = rtiamb.getDimensionHandle(dimx_name, geo_id);
-	dimy_id = rtiamb.getDimensionHandle(dimy_name, geo_id);
+	try {
+	    geo_id = rtiamb.getRoutingSpaceHandle(geo_name);
+	    dimx_id = rtiamb.getDimensionHandle(dimx_name, geo_id);
+	    dimy_id = rtiamb.getDimensionHandle(dimy_name, geo_id);
+	  	}
+	catch (NameNotFound &e) {
+	    cout << "Error: Routing Space or Dimension name not found" << endl ;
+	    throw e ;
+	}
 	if (verbose) {
 	    cout << "Routing space handle: " << geo_id << endl ;
 	    cout << "Dimension X handle: " << dimx_id << endl ;
@@ -74,8 +81,6 @@ BillardDDM::declare()
     Billard::declare();
     getHandles();
 
-    int r = (XMAX / regionSize) * (YMAX / regionSize);
-
     for (int x = 0 ; x < XMAX ; x += regionSize) {
 	for (int y = 0 ; y < YMAX ; y += regionSize) {
 	    try {
@@ -83,36 +88,32 @@ BillardDDM::declare()
 	        D[pdDebug] << "created region with "
 			   << region->getNumberOfExtents() << " extent(s)"
 			   << endl ;
-		try {
-		    assert(region);
-		    assert(region->getNumberOfExtents() == 1);
 
-		    region->setRangeLowerBound(0, dimx_id, x);
-		    D[pdDebug] << "x lower bound: "
-			       << region->getRangeLowerBound(0, dimx_id)
-			       << endl ;
+		assert(region);
+		assert(region->getNumberOfExtents() == 1);
+		
+		region->setRangeLowerBound(0, dimx_id, x);
+		D[pdDebug] << "x lower bound: "
+			   << region->getRangeLowerBound(0, dimx_id)
+			   << endl ;
+		
+		region->setRangeUpperBound(0, dimx_id, x + regionSize);
+		D[pdDebug] << "x upper bound: " 
+			   << region->getRangeUpperBound(0, dimx_id)
+			   << endl ;
+		
+		region->setRangeLowerBound(0, dimy_id, y);
+		D[pdDebug] << "y lower bound: "
+			   << region->getRangeLowerBound(0, dimy_id)
+			   << endl ;
+		
+		region->setRangeUpperBound(0, dimy_id, y + regionSize);
+		D[pdDebug] << "y upper bound: "
+			   << region->getRangeUpperBound(0, dimy_id)
+			   << endl ;
 
-		    region->setRangeUpperBound(0, dimx_id, x + regionSize);
-		    D[pdDebug] << "x upper bound: " 
-			       << region->getRangeUpperBound(0, dimx_id)
-			       << endl ;
-
-		    region->setRangeLowerBound(0, dimy_id, y);
-		    D[pdDebug] << "y lower bound: "
-			       << region->getRangeLowerBound(0, dimy_id)
-			       << endl ;
-
-		    region->setRangeUpperBound(0, dimy_id, y + regionSize);
-		    D[pdDebug] << "y upper bound: "
-			       << region->getRangeUpperBound(0, dimy_id)
-			       << endl ;
-		}
-		catch (ArrayIndexOutOfBounds &e) {
-		    D[pdDebug] << __FILE__ << ":" << __LINE__ << ":"
-			 << e._name << ": " << e._reason << endl ;
-		}
 		rtiamb.notifyAboutRegionModification(*region);
-		regions.push_back(region);
+ 		regions.push_back(region);
 	    }
 	    catch (Exception &e) {
 		D[pdDebug] << __FILE__ << ":" << __LINE__ << ":exception:"
@@ -124,4 +125,4 @@ BillardDDM::declare()
     D[pdDebug] << "created " << regions.size() << " regions" << endl ;        
 }
 
-// $Id: BillardDDM.cc,v 3.4 2003/11/10 15:06:41 breholee Exp $
+// $Id: BillardDDM.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
