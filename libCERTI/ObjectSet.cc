@@ -150,7 +150,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
     Object *object = new Object(the_federate);
     object->setHandle(the_object);
 
-    if (!strlen(the_name)) {
+    if (strlen(the_name)) {
         object->setName(the_name);
     }
     else {
@@ -430,4 +430,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.6 2003/06/25 15:40:28 breholee Exp $
+// $Id: ObjectSet.cc,v 3.7 2003/07/04 14:25:43 breholee Exp $
