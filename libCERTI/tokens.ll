@@ -20,11 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: tokens.ll,v 3.2 2004/05/18 13:18:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include <string>
 #include <iostream>
 

@@ -18,14 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.9 2003/05/23 16:40:04 breholee Exp $
+// $Id: Federate.hh,v 3.10 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
 #define _CERTI_RTIG_FEDERATE_HH
 
 // Project
-#include "RTItypes.hh"
+#include "certi.hh"
 
 // Standard
 #include <list>
@@ -81,4 +81,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.9 2003/05/23 16:40:04 breholee Exp $
+// $Id: Federate.hh,v 3.10 2004/05/18 13:18:52 breholee Exp $

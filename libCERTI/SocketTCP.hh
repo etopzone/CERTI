@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketTCP.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
 #define _CERTI_SOCKET_TCP_HH
 
 #include "Socket.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -130,4 +130,4 @@ private:
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketTCP.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $

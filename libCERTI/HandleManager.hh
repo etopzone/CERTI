@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $
+// $Id: HandleManager.hh,v 1.3 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
 #define LIBCERTI_HANDLE_MANAGER
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <limits>
 

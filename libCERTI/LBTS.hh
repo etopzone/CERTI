@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.5 2004/05/17 22:10:10 breholee Exp $
+// $Id: LBTS.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
 #define LIBCERTI_LBTS_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <map>
 #include <vector>
@@ -63,4 +63,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.5 2004/05/17 22:10:10 breholee Exp $
+// $Id: LBTS.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $

@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.7 2004/05/17 21:34:20 breholee Exp $
+// $Id: AuditLine.cc,v 3.8 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "AuditLine.hh"
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <string>
 #include <time.h>
@@ -127,5 +127,5 @@ AuditLine::setLevel(unsigned short l)
 
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.7 2004/05/17 21:34:20 breholee Exp $
+// $Id: AuditLine.cc,v 3.8 2004/05/18 13:18:53 breholee Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
+// $Id: ObjectClass.cc,v 3.22 2004/05/18 13:18:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -639,7 +639,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         answer->exception = e_NO_EXCEPTION ;
         answer->objectClass = handle ; // Class Handle
         answer->object = the_object->getHandle();
-        strcpy(answer->label, the_object->getName());
+        answer->setLabel(the_object->getName().c_str());
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
         broadcastClassMessage(ocbList);
@@ -692,7 +692,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
               theFederate, (*o)->getHandle(), handle, message->label);
 
         message->object = (*o)->getHandle();
-        (*o)->getName(message->label);
+        message->setLabel((*o)->getName().c_str());
 
         // Send Message to Federate
         try {
@@ -1643,4 +1643,4 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
+// $Id: ObjectClass.cc,v 3.22 2004/05/18 13:18:54 breholee Exp $

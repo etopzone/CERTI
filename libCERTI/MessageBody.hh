@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.hh,v 3.7 2004/01/09 16:07:29 breholee Exp $
+// $Id: MessageBody.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
 #define LIBCERTI_MESSAGE_BODY_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <cstring>
 #include <vector>
@@ -89,4 +89,4 @@ private:
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.7 2004/01/09 16:07:29 breholee Exp $
+// $Id: MessageBody.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $

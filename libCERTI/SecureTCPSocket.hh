@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Couche de securite utilisant GSSAPI au-dessus d'un socket TCP.
@@ -29,7 +29,7 @@
 
 #include "SocketTCP.hh"
 #include "GSSAPIHandler.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 
 namespace certi {
 
@@ -120,5 +120,5 @@ private:
 
 #endif // _CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
 

@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.5 2003/11/13 10:35:19 breholee Exp $
+// $Id: Extent.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXTENT_HH
 #define _CERTI_EXTENT_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <vector>
 #include <utility>
@@ -68,4 +68,4 @@ private:
 
 #endif // _CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.5 2003/11/13 10:35:19 breholee Exp $
+// $Id: Extent.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $

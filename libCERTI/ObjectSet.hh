@@ -28,10 +28,11 @@
 #include "Object.hh"
 #include "ObjectSet.hh"
 #include "SecurityServer.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 
 // Standard
 #include <map>
+#include <string>
 
 namespace certi {
 
@@ -43,7 +44,7 @@ public:
     ~ObjectSet();
 
     ObjectHandle
-    getObjectInstanceHandle(const char *the_name) const
+    getObjectInstanceHandle(std::string) const
         throw (ObjectNotKnown, RTIinternalError);
 
     const char *
@@ -70,7 +71,7 @@ public:
                RTIinternalError, InvalidObjectHandle);
 
     Object *registerObjectInstance(FederateHandle, ObjectClassHandle,
-				   ObjectHandle, const char *)
+				   ObjectHandle, std::string)
         throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 

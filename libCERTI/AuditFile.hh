@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.8 2004/05/17 21:34:20 breholee Exp $
+// $Id: AuditFile.hh,v 3.9 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
 #define _CERTI_AUDIT_FILE_HH
 
 #include "AuditLine.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "Exception.hh"
 
 #include <fstream>
@@ -84,4 +84,4 @@ protected:
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.8 2004/05/17 21:34:20 breholee Exp $
+// $Id: AuditFile.hh,v 3.9 2004/05/18 13:18:53 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.15 2003/10/13 10:02:25 breholee Exp $
+// $Id: Object.cc,v 3.16 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,62 +95,6 @@ Object::getAttribute(AttributeHandle the_attribute) const
 }
 
 // ----------------------------------------------------------------------------
-//! Copy the Object name(or '\0' if there is no name) in the_name.
-void
-Object::getName(ObjectName the_name) const
-{
-    if (name != NULL)
-        strcpy(the_name, name);
-    else
-        the_name[0] = '\0' ;
-}
-
-// ----------------------------------------------------------------------------
-const char *
-Object::getName() const
-{
-    return name ;
-}
-
-// ----------------------------------------------------------------------------
-//! As 'theObjectName' is duplicated, it can be deleted afterwards.
-void
-Object::setName(const char *the_object_name)
-{
-    if (name != NULL)
-        free(name);
-
-    if (the_object_name != NULL) {
-        int length = strlen(the_object_name);
-
-        if (length > MAX_USER_TAG_LENGTH) {
-            cout << "Bad Object name." << endl ;
-            throw RTIinternalError("Object name too long.");
-        }
-        else if (length == 0)
-            name = NULL ;
-        else
-            name = strdup(the_object_name);
-    }
-    else
-        name = NULL ;
-}
-
-// ----------------------------------------------------------------------------
-ObjectHandle
-Object::getHandle() const
-{
-    return handle ;
-}
-
-// ----------------------------------------------------------------------------
-void
-Object::setHandle(ObjectHandle h)
-{
-    handle = h ;
-}
-
-// ----------------------------------------------------------------------------
 ObjectClassHandle
 Object::getClass() const
 {
@@ -208,4 +152,4 @@ Object::unassociate(RegionImp *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.15 2003/10/13 10:02:25 breholee Exp $
+// $Id: Object.cc,v 3.16 2004/05/18 13:18:53 breholee Exp $

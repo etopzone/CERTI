@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.15 2003/10/27 10:12:07 breholee Exp $
+// $Id: Interaction.hh,v 3.16 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
 #define _CERTI_INTERACTION_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "SecurityServer.hh"
 #include "Parameter.hh"
 #include "Subscriber.hh"
@@ -171,4 +171,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.15 2003/10/27 10:12:07 breholee Exp $
+// $Id: Interaction.hh,v 3.16 2004/05/18 13:18:53 breholee Exp $

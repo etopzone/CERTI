@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: RegionImp.hh,v 3.8 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
 #define _CERTI_REGION_IMP_HH
 
 #include "Extent.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <vector>
 
@@ -94,4 +94,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.7 2004/03/04 20:19:05 breholee Exp $
+// $Id: RegionImp.hh,v 3.8 2004/05/18 13:18:55 breholee Exp $

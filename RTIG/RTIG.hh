@@ -18,14 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.19 2004/05/17 21:14:59 breholee Exp $
+// $Id: RTIG.hh,v 3.20 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
 #define CERTI_RTIG_HH
 
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "NetworkMessage.hh"
 #include "SecureTCPSocket.hh"
 #include "SocketMC.hh"
@@ -127,4 +126,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.19 2004/05/17 21:14:59 breholee Exp $
+// $Id: RTIG.hh,v 3.20 2004/05/18 13:18:52 breholee Exp $

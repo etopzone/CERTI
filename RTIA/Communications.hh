@@ -18,14 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: Communications.hh,v 3.8 2004/05/18 13:18:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
 #define _CERTI_COMMUNICATIONS_HH
 
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "NetworkMessage.hh"
 #include "Message.hh"
 #include "SocketUN.hh"
@@ -75,4 +74,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: Communications.hh,v 3.8 2004/05/18 13:18:51 breholee Exp $

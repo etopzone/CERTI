@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Publisher.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: Publisher.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_PUBLISHER_HH
 #define _CERTI_PUBLISHER_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 namespace certi {
 
@@ -45,4 +45,4 @@ protected:
 
 #endif // _CERTI_PUBLISHER_HH
 
-// $Id: Publisher.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: Publisher.hh,v 3.6 2004/05/18 13:18:55 breholee Exp $

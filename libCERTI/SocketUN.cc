@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.9 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUN.cc,v 3.10 2004/05/18 13:18:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "SocketUN.hh"
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <assert.h>
 #include <iostream>
@@ -343,4 +343,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.9 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUN.cc,v 3.10 2004/05/18 13:18:56 breholee Exp $

@@ -19,10 +19,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.7 2004/05/17 21:34:19 breholee Exp $
+// $Id: AuditFile.cc,v 3.8 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
 #include "AuditFile.hh"
 
 #include <iostream>
@@ -215,4 +214,4 @@ AuditFile::operator<<(double n)
 
 }
 
-// $Id: AuditFile.cc,v 3.7 2004/05/17 21:34:19 breholee Exp $
+// $Id: AuditFile.cc,v 3.8 2004/05/18 13:18:52 breholee Exp $

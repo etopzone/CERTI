@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.hh,v 3.6 2003/07/10 16:24:03 breholee Exp $
+// $Id: Subscriber.hh,v 3.7 2004/05/18 13:18:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SUBSCRIBER_HH
 #define _CERTI_SUBSCRIBER_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "RegionImp.hh"
 
 namespace certi {
@@ -51,4 +51,4 @@ protected:
 
 #endif // _CERTI_SUBSCRIBER_HH
 
-// $Id: Subscriber.hh,v 3.6 2003/07/10 16:24:03 breholee Exp $
+// $Id: Subscriber.hh,v 3.7 2004/05/18 13:18:57 breholee Exp $

@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.8 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUDP.cc,v 3.9 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "SocketUDP.hh"
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "PrettyDebug.hh"
 
 #include <iostream>
@@ -349,4 +349,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.8 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUDP.cc,v 3.9 2004/05/18 13:18:55 breholee Exp $

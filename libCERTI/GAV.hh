@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.7 2003/07/10 15:06:49 breholee Exp $
+// $Id: GAV.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
 #define _CERTI_GAV_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <list>
 

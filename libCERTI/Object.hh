@@ -19,36 +19,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.13 2003/10/13 10:02:25 breholee Exp $
+// $Id: Object.hh,v 3.14 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
 #define _CERTI_OBJECT_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "ObjectAttribute.hh"
 #include "RegionImp.hh"
+#include "Named.hh"
+#include "Handled.hh"
 
 #include <deque>
 #include <list>
 
 namespace certi {
 
-class Object {
-
+class Object : public Named, public Handled<ObjectHandle>
+{
 public:
-
-    // -----------------------
-    // -- Public Attributes --
-    // ----------------------
-    /*! Owner Handle
-      BUG: Should be handled at the attribute level, not instance level.
-    */
-    FederateHandle Owner ;
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
     Object(FederateHandle the_owner)
         : Owner(the_owner), name(NULL) { handle = 0 ; };
 
@@ -64,16 +54,6 @@ public:
     bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const
         throw (AttributeNotDefined, RTIinternalError);
 
-    // -------------------------------
-    // -- Private Attributes Access --
-    // -------------------------------
-    void setName(const char *the_object_name);
-    void getName(ObjectName the_name) const ;
-    const char *getName() const ;
-
-    ObjectHandle getHandle() const ;
-    void setHandle(ObjectHandle h);
-
     ObjectClassHandle getClass() const ;
     void setClass(ObjectClassHandle h);
 
@@ -82,11 +62,15 @@ public:
 
     void unassociate(RegionImp *);       
 
-private:
+    // -----------------------
+    // -- Public Attributes --
+    // ----------------------
+    /*! Owner Handle
+      BUG: Should be handled at the attribute level, not instance level.
+    */
+    FederateHandle Owner ;
 
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
+private:
     //! Attribute list from object class instance (private).
     std::deque<ObjectAttribute *> attributeState ;
 
@@ -104,4 +88,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.13 2003/10/13 10:02:25 breholee Exp $
+// $Id: Object.hh,v 3.14 2004/05/18 13:18:53 breholee Exp $

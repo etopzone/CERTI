@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketServer.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
 #define _CERTI_SOCKET_SERVER_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "Socket.hh"
 #include "SocketTCP.hh"
 #include "SocketUDP.hh"
@@ -127,4 +127,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketServer.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $

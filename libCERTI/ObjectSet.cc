@@ -35,6 +35,7 @@ using std::pair ;
 using std::cout ;
 using std::endl ;
 using std::ostringstream ;
+using std::string ;
 
 namespace certi {
 
@@ -89,16 +90,13 @@ ObjectSet::changeAttributeOrderType(ObjectHandle,
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-ObjectSet::getObjectInstanceHandle(const char *the_name) const
+ObjectSet::getObjectInstanceHandle(string the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
-    char tmp[MAX_USER_TAG_LENGTH] ;
-
     std::map<ObjectHandle, Object *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        (i->second)->getName(tmp);
-        if (strcmp(tmp, the_name) == 0)
-            return (i->second)->getHandle();
+        if (i->second->getName() == the_name)
+            return i->second->getHandle();
     }
 
     throw ObjectNotKnown("No object instance with that name.");
@@ -111,7 +109,7 @@ ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
 {
     Object *object = getObject(the_object);
 
-    return object->getName();
+    return object->getName().c_str();
 }
 
 // ----------------------------------------------------------------------------
@@ -128,7 +126,7 @@ Object *
 ObjectSet::registerObjectInstance(FederateHandle the_federate,
 				  ObjectClassHandle the_class,
                                   ObjectHandle the_object,
-                                  const char *the_name)
+                                  string the_name)
     throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
            SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -139,9 +137,9 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
         throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
     }
 
-    if (!strlen(the_name)) {
+    if (the_name.size() > 0) {
         for (i = begin(); i != end(); i++) {
-            if (strcmp(i->second->getName(), the_name) == 0)
+            if (i->second->getName() == the_name)
                 throw ObjectAlreadyRegistered("Object name already defined.");
         }
     }
@@ -150,13 +148,13 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
     object->setHandle(the_object);
     object->setClass(the_class);
 
-    if (strlen(the_name)) {
+    if (the_name.size() > 0) {
         object->setName(the_name);
     }
     else {
         ostringstream tmp ;
         tmp << "HLAobject_" << the_object ;
-        object->setName(tmp.str().c_str());
+        object->setName(tmp.str());
     }
 
     pair<ObjectHandle, Object *> tmp(the_object, object);
@@ -430,4 +428,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $
+// $Id: ObjectSet.cc,v 3.10 2004/05/18 13:18:55 breholee Exp $

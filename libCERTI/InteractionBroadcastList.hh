@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.5 2003/10/20 12:46:53 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_BROADCAST_LIST_HH
 #define _CERTI_INTERACTION_BROADCAST_LIST_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "NetworkMessage.hh"
 #include "InteractionBroadcastLine.hh"
 #include "SecurityServer.hh"
@@ -75,4 +75,4 @@ private:
 
 #endif // _CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.5 2003/10/20 12:46:53 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $

@@ -18,17 +18,16 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
 #define _CERTI_RTIA_OWM
 
+#include "certi.hh"
 #include "FederationManagement.hh"
 #include "Communications.hh"
 #include "Files.hh"
-#include "baseTypes.hh"
-#include "RTItypes.hh"
 #include "RootObject.hh"
 
 namespace certi {
@@ -163,4 +162,4 @@ protected:
 
 #endif // _CERTI_RTIA_OWM
 
-// $Id: OwnershipManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $

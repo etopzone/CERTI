@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.6 2003/07/10 15:06:49 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.7 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -27,8 +27,7 @@
 #include "FederationManagement.hh"
 #include "Communications.hh"
 #include "Files.hh"
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "RootObject.hh"
 #include "PrettyDebug.hh"
 
@@ -98,4 +97,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.6 2003/07/10 15:06:49 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.7 2004/05/18 13:18:52 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.17 2003/10/20 12:49:17 breholee Exp $
+// $Id: ObjectClass.hh,v 3.18 2004/05/18 13:18:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -29,7 +29,7 @@
 #include "Object.hh"
 #include "ObjectAttribute.hh"
 #include "ObjectClassBroadcastList.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "SecurityServer.hh"
 
 // Standard
@@ -266,4 +266,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.17 2003/10/20 12:49:17 breholee Exp $
+// $Id: ObjectClass.hh,v 3.18 2004/05/18 13:18:54 breholee Exp $

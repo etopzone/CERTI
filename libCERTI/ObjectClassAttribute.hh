@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.13 2003/10/27 10:15:12 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.14 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 #define CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "SecurityLevel.hh"
 
 #include "Subscriber.hh"
@@ -100,4 +100,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.13 2003/10/27 10:15:12 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.14 2004/05/18 13:18:55 breholee Exp $

@@ -18,14 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.10 2003/10/20 12:05:50 breholee Exp $
+// $Id: FederationManagement.hh,v 3.11 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
 #define _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "NetworkMessage.hh"
 #include "Communications.hh"
 
@@ -110,4 +109,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.10 2003/10/20 12:05:50 breholee Exp $
+// $Id: FederationManagement.hh,v 3.11 2004/05/18 13:18:52 breholee Exp $

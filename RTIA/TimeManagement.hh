@@ -18,16 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.5 2003/10/20 12:08:46 breholee Exp $
+// $Id: TimeManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
 #define CERTI_RTIA_TIME_MANAGEMENT_HH
 
 // Project
-#include <config.h>
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "Communications.hh"
 #include "FederationManagement.hh"
 #include "ObjectManagement.hh"
@@ -125,4 +123,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.5 2003/10/20 12:08:46 breholee Exp $
+// $Id: TimeManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $

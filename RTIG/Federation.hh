@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.29 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.hh,v 3.30 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -29,7 +29,7 @@
 #include "LBTS.hh"
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
 #endif
@@ -503,4 +503,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.29 2004/05/17 21:19:19 breholee Exp $
+// $Id: Federation.hh,v 3.30 2004/05/18 13:18:52 breholee Exp $

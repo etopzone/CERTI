@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.9 2004/03/03 22:49:02 breholee Exp $
+// $Id: main.cc,v 3.10 2004/05/18 13:18:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "RTIG.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 
 #include <new>
 #include <csignal>
@@ -95,4 +95,4 @@ int main(int argc, char *argv[])
     exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.9 2004/03/03 22:49:02 breholee Exp $
+// $Id: main.cc,v 3.10 2004/05/18 13:18:52 breholee Exp $

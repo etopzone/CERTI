@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.hh,v 3.4 2003/10/27 10:16:36 breholee Exp $
+// $Id: Parameter.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_PARAMETER_HH
 #define _CERTI_PARAMETER_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "SecurityLevel.hh"
 
 namespace certi {
@@ -70,4 +70,4 @@ public:
 
 #endif // _CERTI_PARAMETER_HH
 
-// $Id: Parameter.hh,v 3.4 2003/10/27 10:16:36 breholee Exp $
+// $Id: Parameter.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $

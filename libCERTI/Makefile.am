@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.14 2004/01/09 15:59:24 breholee Exp $ 
+## $Id: Makefile.am,v 3.15 2004/05/18 13:18:53 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -12,16 +12,16 @@ lib_LTLIBRARIES = libCERTI.la
 include_HEADERS = Socket.hh SocketUN.hh
 
 noinst_HEADERS = AuditFile.hh AuditLine.hh converter.hh Dimension.hh	\
-Exception.hh Extent.hh FederateClock.hh FederateLevelList.hh GAV.hh	\
-GSSAPIHandler.hh Interaction.hh InteractionBroadcastLine.hh		\
-InteractionBroadcastList.hh InteractionSet.hh LBTS.hh Message.hh	\
-MessageBody.hh NetworkMessage.hh Object.hh ObjectSet.hh			\
-ObjectAttribute.hh ObjectBroadcastLine.hh ObjectClass.hh		\
-ObjectClassAttribute.hh ObjectClassBroadcastList.hh ObjectClassSet.hh	\
-Parameter.hh Publisher.hh RegionImp.hh RootObject.hh RoutingSpace.hh	\
-SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh SocketMC.hh	\
-SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh XmlParser.hh	\
-fed.hh BasicMessage.hh helper.hh HandleManager.hh Handled.hh Named.hh
+Exception.hh Extent.hh FederateLevelList.hh GAV.hh GSSAPIHandler.hh	\
+Interaction.hh InteractionBroadcastLine.hh InteractionBroadcastList.hh	\
+InteractionSet.hh LBTS.hh Message.hh MessageBody.hh NetworkMessage.hh	\
+Object.hh ObjectSet.hh ObjectAttribute.hh ObjectBroadcastLine.hh	\
+ObjectClass.hh ObjectClassAttribute.hh ObjectClassBroadcastList.hh	\
+ObjectClassSet.hh Parameter.hh Publisher.hh RegionImp.hh RootObject.hh	\
+RoutingSpace.hh SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh	\
+SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh	\
+XmlParser.hh fed.hh BasicMessage.hh helper.hh HandleManager.hh		\
+Handled.hh Named.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc Dimension.cc		\
 Exception.cc Extent.cc FederateLevelList.cc FedTime.cc GAV.cc		\
@@ -43,4 +43,4 @@ LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
 
-## EOF $Id: Makefile.am,v 3.14 2004/01/09 15:59:24 breholee Exp $
+## EOF $Id: Makefile.am,v 3.15 2004/05/18 13:18:53 breholee Exp $
