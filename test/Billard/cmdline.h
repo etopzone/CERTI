@@ -20,17 +20,27 @@ extern "C" {
 
 struct gengetopt_args_info
 {
-  char * federation_arg;	/* federation name.  */
-  char * name_arg;	/* federate name.  */
+  int auto_arg;	/* auto start.  */
   int coordinated_flag;	/* coordinated time (default=on).  */
+  int delay_arg;	/* delay before 1st step.  */
+  char * federation_arg;	/* federation name.  */
+  int initx_arg;	/* ball initial X value.  */
+  int inity_arg;	/* ball initial Y value.  */
+  char * name_arg;	/* federate name.  */
+  int timer_arg;	/* timer.  */
   int xoffset_arg;	/* X offset (X11).  */
   int yoffset_arg;	/* Y offset (X11).  */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
-  int federation_given ;	/* Whether federation was given.  */
-  int name_given ;	/* Whether name was given.  */
+  int auto_given ;	/* Whether auto was given.  */
   int coordinated_given ;	/* Whether coordinated was given.  */
+  int delay_given ;	/* Whether delay was given.  */
+  int federation_given ;	/* Whether federation was given.  */
+  int initx_given ;	/* Whether initx was given.  */
+  int inity_given ;	/* Whether inity was given.  */
+  int name_given ;	/* Whether name was given.  */
+  int timer_given ;	/* Whether timer was given.  */
   int xoffset_given ;	/* Whether xoffset was given.  */
   int yoffset_given ;	/* Whether yoffset was given.  */
 

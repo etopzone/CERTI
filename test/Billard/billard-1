@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: billard-1,v 3.1 2003/02/17 09:17:04 breholee Exp $
+# $Id: billard-1,v 3.2 2003/03/13 13:21:23 breholee Exp $
 
 # OBJECTCLASS="A:C:D:E:I:P:R:S:T:W:Z:X"
 # OBJECTCLASSSET="A:C:D:E:I:P:R:S:T:W:Z:X"
@@ -38,4 +38,4 @@
 #DISPLAY=$CERTIDISPLAY
 #export DISPLAY
 
-billard --name 1 --federation Test
+billard --name 1 --federation Test --timer 60

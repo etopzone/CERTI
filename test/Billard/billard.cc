@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.9 2003/02/19 17:20:28 breholee Exp $
+// $Id: billard.cc,v 3.10 2003/03/13 13:21:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -88,6 +88,10 @@ char c ;
 int YOFFSET ;
 int XOFFSET ;
 
+int autostart = 0 ;
+int delay = 0 ;
+int timer = 0 ;
+
 // ----------------------------------------
 // -- Declaration des fonctions internes --
 // ----------------------------------------
@@ -146,6 +150,18 @@ main(int argc, char **argv)
     printf("Using %s file\n", DotFedFile);
 
     FederateName = args_info.name_arg ;
+
+    // Timer
+    if (args_info.timer_given) 
+        timer = args_info.timer_arg ;
+
+    // Delay
+    if(args_info.delay_given) 
+        delay = args_info.delay_arg ;
+
+    // Autostart
+    if(args_info.auto_given) 
+        autostart = args_info.auto_arg ;
 
     // Verifier que la federation existe
     try {
@@ -253,8 +269,25 @@ main(int argc, char **argv)
     Synchronize(rtiamb, fedamb, creator);
     D.Out(pdInit, "Initial synchronization done.");
 
+    // Delay ?
+    if (delay != 0) {
+        while (delay >= 0) {
+            sleep(1);
+            printf("\rDelay     : %5d\r", delay);
+            fflush(stdout);
+            delay-- ;
+        }
+        printf("\n");
+    }
+
     // Creer ma boule
-    fedamb->Local.Initialiser(id);
+
+    if (args_info.initx_given && args_info.inity_given) {
+        fedamb->Local.init(args_info.initx_arg, args_info.inity_arg);
+    }
+    else
+        fedamb->Local.init(id);
+
     D.Out(pdTrace, "creation de la boule réussie.");
 
     // Declarer la boule aux autres federes
@@ -531,10 +564,19 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     if (creator) {
         // Attendre le signal de l'utilisateur et arreter la pause.
 
-#ifndef NO_CONTROLS
-        printf("APPUYER sur ENTER pour lancer l'execution...\n");
-        getchar();
-#endif
+        if (autostart == 0) {
+            printf("Press ENTER to start execution...\n");
+            getchar();
+        }
+        else {
+            while (autostart >= 0) {
+                sleep(1);
+                printf("\rAutostart : %5d", autostart);
+                fflush(stdout);
+                autostart-- ;
+            }
+            printf("\n");
+        }
 
         D.Out(pdInit, "Le createur peut demander de reprendre l'execution.");
         while (!fedamb->paused)
@@ -571,6 +613,11 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         // }
     }
     else {
+        if (autostart != 0) {
+            printf("Ignoring autostart (federate is not creator)\n");
+        }
+        printf("Synchronization...\n");
+
         if (!fedamb->paused) {
             D.Out(pdInit,
                   "le Federe n'est pas en pause, il est arrivé trop tot.");
@@ -625,10 +672,8 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     sigaction(SIGALRM, &a, NULL);
     // sigset(SIGALRM, sortir);
 
-    if (creator)
-        alarm(TEMPS_SIMU_C);
-    else
-        alarm(TEMPS_SIMU_F);
+    printf("Timer     : %5d\n", timer);
+    alarm(timer);
 }
 
-// EOF $Id: billard.cc,v 3.9 2003/02/19 17:20:28 breholee Exp $
+// EOF $Id: billard.cc,v 3.10 2003/03/13 13:21:25 breholee Exp $

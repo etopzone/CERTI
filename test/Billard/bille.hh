@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: bille.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: bille.hh,v 3.3 2003/03/13 13:21:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef BILLE_HH
@@ -49,7 +49,8 @@ public:
     void CollisionBords(float, float);
     int Collision(CBille *);
 
-    void Initialiser(int Graine);
+    void init(int Graine);
+    void init(int, int);
     // Positionne la bille en fonction de Graine puis l'affiche.
 
 };

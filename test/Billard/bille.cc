@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: bille.cc,v 3.3 2003/02/19 17:20:28 breholee Exp $
+// $Id: bille.cc,v 3.4 2003/03/13 13:21:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -119,10 +119,10 @@ CBille::Deplacer(void)
 {
     x += dx ;
     y += dy ;
-#ifdef ECHO_COORD
-    printf("[%04f ; %04f]\r", x, y);
-    fflush(stdout);
-#endif
+// #ifdef ECHO_COORD
+//     printf("[%04f ; %04f]\r", x, y);
+//     fflush(stdout);
+// #endif
 }
 
 // ----------------------------------------------------------------------------
@@ -181,9 +181,9 @@ CBille::Collision(CBille *ab)
 }
 
 // ----------------------------------------------------------------------------
-//! Initialiser
+//! init with one int parameter
 void
-CBille::Initialiser(int Graine)
+CBille::init(int Graine)
 {
     x = rayon + (float) Graine * 60 + 3 ;
     y = rayon + (float) Graine * 20 ;
@@ -194,4 +194,19 @@ CBille::Initialiser(int Graine)
     Afficher();
 }
 
-// $Id: bille.cc,v 3.3 2003/02/19 17:20:28 breholee Exp $
+// ----------------------------------------------------------------------------
+//! init with coordinates
+void
+CBille::init(int x_, int y_)
+{
+    x = x_ ;
+    y = y_ ;
+
+    if ((int) x % 2 == 1)
+        dx = -dx ;
+
+    Afficher();
+}
+
+
+// $Id: bille.cc,v 3.4 2003/03/13 13:21:28 breholee Exp $
