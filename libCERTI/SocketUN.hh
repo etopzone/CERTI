@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUN.hh,v 3.6 2003/08/20 18:40:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UN_HH
@@ -40,7 +40,7 @@ namespace certi {
 // signal interruption and continue to perform the RW operation till
 // its done. LibRTI will use the stSignalIgnore, RTIA will use
 // stSignalInterrupt.
-typedef enum {stSignalInterrupt, stIgnoreSignal} SignalHandlerType ;
+typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
 
 // This is the read buffer of UNIX sockets. It must be at least as
 // long as the longest data ever received by a socket. If the next
@@ -125,4 +125,4 @@ private:
 
 #endif // _CERTI_SOCKET_UN_HH
 
-// $Id: SocketUN.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUN.hh,v 3.6 2003/08/20 18:40:02 breholee Exp $

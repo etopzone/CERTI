@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketTCP.cc,v 3.7 2003/08/20 18:40:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -269,12 +269,16 @@ SocketTCP::~SocketTCP()
         close();
 
 #ifdef RTI_PRINTS_STATISTICS
-    cout << endl ;
-    cout << "TCP Socket(" << _socket_tcp << "): Total Sent Bytes : "
-         << SentBytesCount << '.' << endl ;
-    cout << "TCP Socket(" << _socket_tcp << "): Total Received Bytes : "
-         << RcvdBytesCount << '.' << endl ;
-    cout << endl ;
+    cout << " TCP Socket " ;
+    cout.width(2);
+    cout << _socket_tcp << " : total = " ;
+    cout.width(9);
+    cout << SentBytesCount << "b sent " << endl ;
+    cout << " TCP Socket " ;
+    cout.width(2);
+    cout << _socket_tcp << " : total = " ;
+    cout.width(9);
+    cout << RcvdBytesCount << "b received" << endl ;
 #endif
 }
 
@@ -500,4 +504,4 @@ int SocketTCP::timeoutTCP(int sec, int usec)
 
 }
 
-// $Id: SocketTCP.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketTCP.cc,v 3.7 2003/08/20 18:40:02 breholee Exp $

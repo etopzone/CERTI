@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUDP.cc,v 3.8 2003/08/20 18:40:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -198,10 +198,16 @@ SocketUDP::~SocketUDP()
         close();
 
 #ifdef RTI_PRINTS_STATISTICS
-    cout << endl << "UDP Socket(" << _socket_udp << "): Total sent bytes: "
-         << SentBytesCount << "." << endl ;
-    cout << endl << "UDP Socket(" << _socket_udp << "): Total received bytes: "
-         << RcvdBytesCount << "." << endl << endl ;
+    cout << " UDP Socket " ;
+    cout.width(2);
+    cout << _socket_udp << " : total = " ;
+    cout.width(9);
+    cout << SentBytesCount << "b sent " << endl ;
+    cout << " UDP Socket " ;
+    cout.width(2);
+    cout << _socket_udp << " : total = " ;
+    cout.width(9);
+    cout << RcvdBytesCount << "b received" << endl ;
 #endif
 }
 
@@ -343,4 +349,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUDP.cc,v 3.8 2003/08/20 18:40:02 breholee Exp $

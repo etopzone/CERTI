@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.8 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketUN.cc,v 3.9 2003/08/20 18:40:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -188,10 +188,16 @@ SocketUN::~SocketUN()
     delete pD ;
 
 #ifdef RTI_PRINTS_STATISTICS
-    cout << endl << "UNIX Socket(" << _socket_un << "): Total sent bytes: "
-         << SentBytesCount << "." << endl ;
-    cout << "UNIX Socket(" << _socket_un << "): Total received bytes: "
-         << RcvdBytesCount << endl << endl ;
+    cout << "Unix Socket " ;
+    cout.width(2);
+    cout << _socket_un << " : total = " ;
+    cout.width(9);
+    cout << SentBytesCount << "b sent " << endl ;
+    cout << "Unix Socket " ;
+    cout.width(2);
+    cout << _socket_un << " : total = " ;
+    cout.width(9);
+    cout << RcvdBytesCount << "b received" << endl ;
 #endif
 }
 
@@ -337,4 +343,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.8 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketUN.cc,v 3.9 2003/08/20 18:40:02 breholee Exp $
