@@ -20,11 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Build.cc,v 3.3 2003/01/20 17:38:34 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// Classe FedParser chargee de lire les fichiers .fed, partie lecture
-// du fichier et construction de la liste.
+// FedParser Class handles .fed files.
+// This cc file concerns file reading and list building.
 
 #include "FedParser.hh"
 
@@ -39,7 +39,11 @@ static pdCDebug D("CREAD", "(FedParser   ) - ");
     advancing character by character in the file, a whole piece of
     CREAD_MAX_BUF_LENGTH is read into a buffer. When buffer is fully examined,
     a new piece is read from file.
- */
+
+    Put the next character of FEDFile in CurrentChar.
+    Uses InBuffer to temporaly store content of FEDFile.
+*/
+
 void
 FedParser::advance(void)
     throw(ErrorReadingRID)
@@ -74,6 +78,9 @@ FedParser::advance(void)
 
 // ---------------------------------------------------------------------------
 //! FedParser is a class for reading a federate file and creating a structure.
+/*! Parameter : a pointer to the federation Root Object. It would better be an
+    empty Root Object...
+*/
 FedParser::FedParser(RootObject *theRootObj)
 {
   for(int i=0; i < CREAD_MAX_OBJ_COUNT; i++)
@@ -205,7 +212,12 @@ FedParser::readAtom(void)
 /*! readFile takes a filename as parameter. This file is used to retrieve data
     used by federate. After opening it, datas are retrieved by the
     readListFirst module and stored by store module.
+
+    Read the 'FedFile' file and build the Root Object tree following the
+    FED file content. Call the 'Store' method after a completed file read.
+    -- THIS METHOD IS THE READ PART ENTRY POINT --
 */
+
 void
 FedParser::readFile(const char *FedFile)
     throw(CouldNotOpenRID, ErrorReadingRID, SecurityError, RTIinternalError)
@@ -397,5 +409,5 @@ FedParser::skipLine(void)
 
 }}
 
-// $Id: FedParser_Build.cc,v 3.3 2003/01/20 17:38:34 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
 

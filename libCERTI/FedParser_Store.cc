@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.3 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -30,10 +30,8 @@ namespace fedparser {
 
 static pdCDebug D("CREAD", "(cread)    - ");
 
-// ------------------------------------
-// -- AllocateAndRegisterObjectClass --
-// ------------------------------------
-
+// ---------------------------------------------------------------------------
+//! Allocate, initialize and register(add to RootObj tree) new Object Class.
 void FedParser::allocateAndRegisterObjectClass(int index)
   throw(RTIinternalError)
 {
@@ -49,11 +47,10 @@ void FedParser::allocateAndRegisterObjectClass(int index)
   RootObj->ObjectClasses->addClass(ObjStack [index]);  
 }
 
-
-// -----------------------------------------
-// -- AllocateAndRegisterInteractionClass --
-// -----------------------------------------
-
+// ---------------------------------------------------------------------------
+/*! Allocate, initialize and register (add to RootObj tree) new Interaction
+    Class.
+*/
 void FedParser::allocateAndRegisterInteractionClass(int index)
   throw(RTIinternalError)
 {
@@ -99,11 +96,11 @@ FreeObject(Object *x)
   free(x);
 }
 
-// ---------------------------
-// -- FindObjectParentIndex --
-// ---------------------------
-
-int FedParser::findObjectParentIndex()
+// ---------------------------------------------------------------------------
+/*! Return the last registered Object Class handle whose Depth is equal to
+    (Depth-1).
+*/
+int FedParser::findObjectParentIndex(void)
   throw(RTIinternalError)
 {
   int index = ObjIndex;
@@ -118,12 +115,11 @@ int FedParser::findObjectParentIndex()
   throw RTIinternalError("Parent Class not found.");
 }
 
-
-// --------------------------------
-// -- FindInteractionParentIndex --
-// --------------------------------
-
-int FedParser::FindInteractionParentIndex()
+// ---------------------------------------------------------------------------
+/*! Return the last registered Interaction class handle whose Depth is equal
+    to (Depth-1).
+*/
+int FedParser::FindInteractionParentIndex(void)
   throw(RTIinternalError)
 {
   int index = IntIndex;
@@ -138,11 +134,10 @@ int FedParser::FindInteractionParentIndex()
   throw RTIinternalError("Parent Class not found.");
 }
 
-
-// --------------------------
-// -- ProcessAttributeAtom --
-// --------------------------
-
+// ---------------------------------------------------------------------------
+/*! When a 'attribute' atom is encountered, it means that a new object class
+    attribute definition is starting. This function process this event.
+*/
 void FedParser::processAttributeAtom(Atom *)
   throw(RTIinternalError)
 {
@@ -160,6 +155,10 @@ void FedParser::processAttributeAtom(Atom *)
 
 // ---------------------------------------------------------------------------
 //! Called by storeAtom to process class atom.
+/*! When a 'class' atom is encountered, it means that a new object or
+    interaction class definition is starting. This function process this kind
+    of event.
+*/
 void
 FedParser::processClassAtom(Atom *)
     throw(RTIinternalError)
@@ -242,11 +241,11 @@ FedParser::processClassAtom(Atom *)
     }
 }
 
-
-// ---------------------------
-// -- ProcessFederateString --
-// ---------------------------
-
+// ---------------------------------------------------------------------------
+/*! Process a 'federate' list token, containing a Federate Name and a Security
+    Level associated with it. This method is called twice, for the Federate
+    Name string and then for the Federate Level string.
+*/
 void FedParser::processFederateString(String *x)
   throw(RTIinternalError)
 {
@@ -283,10 +282,10 @@ void FedParser::processFederateString(String *x)
 
 }
 
-// --------------------------
-// -- ProcessParameterAtom --
-// --------------------------
-
+// ---------------------------------------------------------------------------
+/*! When a 'parameter' atom is encountered, it means that a new interaction
+    parameter definition is starting. This function process this event.
+*/
 void FedParser::processParameterAtom(Atom *)
   throw(RTIinternalError)
 {
@@ -302,11 +301,8 @@ void FedParser::processParameterAtom(Atom *)
   TypeStack [Depth] = PARAM;
 }
 
-
-// -------------------------
-// -- ProcessSecLevelAtom -- 
-// -------------------------
-
+// ---------------------------------------------------------------------------
+//! Process security level atoms.
 void FedParser::processSecLevelAtom(Atom *)
   throw(SecurityError,
 	 RTIinternalError)
@@ -314,11 +310,8 @@ void FedParser::processSecLevelAtom(Atom *)
   TypeStack [Depth] = SECLEVEL;
 }
 
-
-// ---------------------------
-// -- ProcessSecLevelString -- 
-// ---------------------------
-
+// ---------------------------------------------------------------------------
+//! Guess whose security level the string describes, and set it correctly.
 void FedParser::processSecLevelString(String *x)
   throw(SecurityError,
 	 RTIinternalError)
@@ -353,11 +346,8 @@ void FedParser::processSecLevelString(String *x)
 
 }
 
-
-// -------------------------------
-// -- ProcessTransportOrderAtom --
-// -------------------------------
-
+// ---------------------------------------------------------------------------
+//! Process FED_RELIABLE etc. atoms, related to Transport or Order type.
 void FedParser::processTransportOrderAtom(Atom *x)
   throw(RTIinternalError)
 {
@@ -412,6 +402,10 @@ void FedParser::processTransportOrderAtom(Atom *x)
 
 // ---------------------------------------------------------------------------
 //! Entry point for creating object instances (called by readFile module).
+/*! Transfer the Object tree pointed by Root into a RootObj tree. It calls
+    storeObject(Root) to start the recursive storage process.
+    -- THIS METHOD IS THE STORE PART ENTRY POINT --
+*/
 void
 FedParser::store(Object *Root)
     throw(SecurityError, RTIinternalError)
@@ -458,11 +452,10 @@ FedParser::storeAtom(Atom *x)
     processTransportOrderAtom(x);
 }
 
-
-// ---------------
-// -- StoreList --
-// ---------------
-
+// ---------------------------------------------------------------------------
+/*! The main recursive part is here.
+    Header is used to print trace information.
+*/
 void FedParser::storeList(List *x, const char *Header)
   throw(SecurityError,
 	 RTIinternalError)
@@ -493,6 +486,9 @@ void FedParser::storeList(List *x, const char *Header)
 
 // ---------------------------------------------------------------------------
 //! storeObject calls the right store module depending on object type.
+/*! Call one of the Store* method depending on 'x' type.
+    Header is used to print trace information.
+*/
 void
 FedParser::storeObject(Object *x, const char *Header)
     throw(SecurityError, RTIinternalError)
@@ -530,11 +526,7 @@ FedParser::storeObject(Object *x, const char *Header)
   FreeObject(x);
 }
 
-
-// -----------------
-// -- StoreString --
-// -----------------
-
+// ---------------------------------------------------------------------------
 void FedParser::storeString(String *x)
   throw(SecurityError,
 	 RTIinternalError)
@@ -589,4 +581,4 @@ void FedParser::storeString(String *x)
 
 }}
 
-// $Id: FedParser_Store.cc,v 3.3 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.4 2003/01/28 23:41:30 breholee Exp $
