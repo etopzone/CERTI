@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.6 2003/04/22 16:42:27 breholee Exp $
+// $Id: GAV.cc,v 3.7 2003/06/25 14:48:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -90,7 +89,7 @@ void CParameterHandleValuePair::AfficheParameter()
 // CAttributeHandleValuePairSet
 // ----------------------------------------------------------------------------
 
-CAttributeHandleValuePairSet::CAttributeHandleValuePairSet(void)
+CAttributeHandleValuePairSet::CAttributeHandleValuePairSet()
     : _size(0), _head((CAttributeHandleValuePair *)NULL)
 {
 }
@@ -102,7 +101,7 @@ CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps) :
     CAttributeHandleValuePair *cahvp ;
     ULong valueLength ;
 
-    for (int i = 0 ; i < ahvps.size(); i++) {
+    for (unsigned int i = 0 ; i < ahvps.size(); ++i) {
         cahvp = new CAttributeHandleValuePair();
         cahvp->_attrib = ahvps.getHandle(i);
         ahvps.getValue(i, cahvp->_value.value, valueLength);
@@ -117,14 +116,14 @@ CAttributeHandleValuePairSet(const AttributeHandleSet & ahs)
 {
     CAttributeHandleValuePair *cahvp ;
 
-    for (int i = 0 ; i < ahs.size(); i++) {
+    for (unsigned int i = 0 ; i < ahs.size(); ++i) {
         cahvp = new CAttributeHandleValuePair();
         cahvp->_attrib = ahs.getHandle(i);
         add(cahvp);
     }
 }
 
-CAttributeHandleValuePairSet::~CAttributeHandleValuePairSet(void)
+CAttributeHandleValuePairSet::~CAttributeHandleValuePairSet()
 {
     empty();
 }
@@ -227,7 +226,7 @@ void CAttributeHandleValuePairSet::empty()
 }
 
 AttributeHandleValuePairSet*
-CAttributeHandleValuePairSet::toAHVPS(void) const
+CAttributeHandleValuePairSet::toAHVPS() const
 {
     ULong longueur ;
     CAttributeHandleValuePair *cahvp ;
@@ -263,21 +262,21 @@ CAttributeHandleValuePairSet::toAHVPS(void) const
 // CParameterHandleValuePairSet
 // ----------------------------------------------------------------------------
 
-CParameterHandleValuePairSet::CParameterHandleValuePairSet(void)
-    : _size(0), _head((CParameterHandleValuePair *)NULL)
+CParameterHandleValuePairSet::CParameterHandleValuePairSet()
+    : _size(0), _head((CParameterHandleValuePair *) NULL)
 
 {
 }
 
 CParameterHandleValuePairSet::
 CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps)
-    : _size(0), _head((CParameterHandleValuePair *)NULL)
+    : _size(0), _head((CParameterHandleValuePair *) NULL)
 
 {
     CParameterHandleValuePair *cphvp = NULL ;
     ULong valueLength = 0 ;
 
-    for (ulong i = 0 ; i < phvps.size(); i++) {
+    for (unsigned int i = 0 ; i < phvps.size(); i++) {
         cphvp = new CParameterHandleValuePair();
         cphvp->_param = phvps.getHandle(i);
         phvps.getValue(i, cphvp->_value.value, valueLength);
@@ -286,7 +285,7 @@ CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps)
     }
 }
 
-CParameterHandleValuePairSet::~CParameterHandleValuePairSet(void)
+CParameterHandleValuePairSet::~CParameterHandleValuePairSet()
 {
     empty();
 }
@@ -390,7 +389,7 @@ void CParameterHandleValuePairSet::empty()
 }
 
 ParameterHandleValuePairSet*
-CParameterHandleValuePairSet::toPHVPS(void) const
+CParameterHandleValuePairSet::toPHVPS() const
 {
     ULong longueur ;
     CParameterHandleValuePair *cphvp ;
@@ -422,4 +421,4 @@ CParameterHandleValuePairSet::toPHVPS(void) const
 
 }
 
-// $Id: GAV.cc,v 3.6 2003/04/22 16:42:27 breholee Exp $
+// $Id: GAV.cc,v 3.7 2003/06/25 14:48:07 breholee Exp $
