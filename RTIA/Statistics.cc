@@ -30,6 +30,8 @@
 using std::cout ;
 using std::endl ;
 using std::string ;
+using std::ostream ;
+using std::endl ;
 
 namespace certi {
 namespace rtia {
@@ -41,11 +43,14 @@ std::map<NetworkMessage::Type, std::string> Statistics::rtiMessageName ;
 //! Initialize the two set used for collecting number of messages exchanged.
 Statistics::Statistics()
 {
-    //char *statEnv = getenv("CERTI_NO_STATISTICS");
     myDisplay = true ;
     myDisplayZero = false ;
 
+    char *statEnv = getenv("CERTI_NO_STATISTICS");
+    if (statEnv) myDisplay = false ;
+
 #define FedMsgName(msg_) fedMessageName[msg_] = #msg_
+
     FedMsgName(Message::CREATE_FEDERATION_EXECUTION);
     FedMsgName(Message::DESTROY_FEDERATION_EXECUTION);
     FedMsgName(Message::JOIN_FEDERATION_EXECUTION);
@@ -288,12 +293,6 @@ Statistics::Statistics()
 }
 
 // ----------------------------------------------------------------------------
-//! Destructor (Does nothing).
-Statistics::~Statistics()
-{
-}
-
-// ----------------------------------------------------------------------------
 //! Increment counter for RTIG message type received.
 void
 Statistics::rtiService(NetworkMessage::Type service)
@@ -326,7 +325,8 @@ operator<<(ostream &s, Statistics &stat)
         int nb = fi->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
-            s << nb << ' ' << Statistics::fedMessageName[fi->first] << endl ;
+            s << nb << ' ' << Statistics::fedMessageName[fi->first] << " (MSG#"
+	      << fi->first << ")" << endl ;
         }
         sentFederateMessages += nb ;
     }
@@ -341,7 +341,8 @@ operator<<(ostream &s, Statistics &stat)
         int nb = ri->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
-            s << nb << ' ' << Statistics::rtiMessageName[ri->first] << endl ;
+            s << nb << ' ' << Statistics::rtiMessageName[ri->first] << " (MSG#"
+	      << ri->first << ")" << endl ;
         }
         sentRtiMessages += nb ;
     }
@@ -355,4 +356,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.7 2003/07/30 09:43:49 breholee Exp $
+// $Id: Statistics.cc,v 3.8 2003/10/20 12:08:46 breholee Exp $

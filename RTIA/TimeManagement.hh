@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,11 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: TimeManagement.hh,v 3.5 2003/10/20 12:08:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_RTIA_TIME_MANAGEMENT_HH
-#define _CERTI_RTIA_TIME_MANAGEMENT_HH
+#ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
+#define CERTI_RTIA_TIME_MANAGEMENT_HH
 
 // Project
 #include <config.h>
@@ -92,26 +91,6 @@ public:
     Boolean requestRegulateurState(void) { return _est_regulateur ; };
 
 private:
-    // Other RTIA Objects
-    Communications *comm ;
-    Queues *queues ;
-    FederationManagement *fm ;
-    ObjectManagement *om ;
-    OwnershipManagement *owm ;
-
-    // Federate State
-    FederationTime lastNullMessageDate ;
-
-    // Type/date from last request (timeAdvance, nextEvent, flushQueue)
-    TypeAvancee _avancee_en_cours ;
-    FederationTime date_avancee ;
-
-    // Federate Data
-    FederationTime _heure_courante ;
-    FederationTimeDelta _lookahead_courant ;
-    Boolean _est_regulateur ;
-    Boolean _est_contraint ;
-
     // Methods
     void advance(Boolean &msg_restant, TypeException &e);
     void timeAdvance(Boolean &msg_restant, TypeException &e);
@@ -120,10 +99,30 @@ private:
     void flushQueueRequest(FederationTime, TypeException &);
     Boolean executeFederateService(NetworkMessage &msg);
     void sendNullMessage(FederationTime heure_logique);
+
+    // Other RTIA Objects
+    Communications *comm ;
+    Queues *queues ;
+    FederationManagement *fm ;
+    ObjectManagement *om ;
+    OwnershipManagement *owm ;
+
+    /// Federate State
+    FederationTime lastNullMessageDate ;
+
+    /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
+    TypeAvancee _avancee_en_cours ;
+    FederationTime date_avancee ;
+
+    // Federate Data
+    FederationTime _heure_courante ;
+    FederationTimeDelta _lookahead_courant ;
+    Boolean _est_regulateur ;
+    Boolean _est_contraint ;
 };
 
 }} // namespace certi/rtia
 
-#endif // _CERTI_RTIA_TIME_MANAGEMENT_HH
+#endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: TimeManagement.hh,v 3.5 2003/10/20 12:08:46 breholee Exp $

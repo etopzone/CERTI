@@ -20,8 +20,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_STATISTICS
-#define _CERTI_STATISTICS
+#ifndef CERTI_STATISTICS
+#define CERTI_STATISTICS
 
 // Project
 #include "Message.hh"
@@ -33,38 +33,38 @@
 namespace certi {
 namespace rtia {
 
-//! Display statistics on sent/received messages by RTIA.
-/*! This class collects information type exchanged by federate/RTIA
-  and RTIA/RTIG. Statistics are displayed on exit only if
-  CERTI_NO_STATISTICS UNIX environment variable has not been set.
+/** Display statistics on sent/received messages by RTIA. This class
+  collects information type exchanged by federate/RTIA and
+  RTIA/RTIG. Statistics are displayed on exit only if
+  CERTI_NO_STATISTICS environment variable has not been set.
 */
 class Statistics
 {
 public:
     Statistics();
-    ~Statistics();
 
     void rtiService(NetworkMessage::Type);
     void federateService(Message::Type);
     bool display() { return myDisplay ; };
     bool displayZero() { return myDisplayZero ; };
     
-    friend ostream &operator<<(ostream &, Statistics &);
+    friend std::ostream &operator<<(std::ostream &, Statistics &);
+
 protected:
     //! Collects number of messages exchanged between federate and RTIA.
     std::map<Message::Type, int> federateServiceSet ;
     //! Collects number of messages exchanged between RTIG and RTIA.
     std::map<NetworkMessage::Type, int> rtiServiceSet ;
-
-    //    static std::string rtiStrMessages[] ;
-    //    static std::string federateStrMessages[] ;
-
+    //! Names of Message messages
     static std::map<Message::Type, std::string> fedMessageName ;
+    //! Names of NetworkMessage-class messages
     static std::map<NetworkMessage::Type, std::string> rtiMessageName ;
-
+    //! Display number of sent messages, for each message type
     bool myDisplay ;
-    bool myDisplayZero ;
+    //! Display messages information including messages not sent
+    bool myDisplayZero ; 
 };
 
-}}
-#endif // _CERTI_STATISTICS
+}} // namespaces
+
+#endif // CERTI_STATISTICS
