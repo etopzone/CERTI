@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
+// $Id: RTIG.cc,v 3.23 2004/03/14 00:24:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,8 +28,8 @@
 
 #include <iostream>
 #include <csignal>
-#include "ulimit.h"
-#include "errno.h"
+#include <unistd.h>
+#include <errno.h>
 
 using std::cout ;
 using std::endl ;
@@ -415,7 +415,7 @@ RTIG::execute()
 
         // Wait for an incoming message.
         result = 0 ;
-        result = select(ulimit(4, 0), &fd, NULL, NULL, NULL);
+        result = select(sysconf(_SC_OPEN_MAX), &fd, NULL, NULL, NULL);
         if ((result == -1)&& (errno == EINTR)) break ;
 
         // Is it a message from an already opened connection?
@@ -950,4 +950,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
+// $Id: RTIG.cc,v 3.23 2004/03/14 00:24:55 breholee Exp $

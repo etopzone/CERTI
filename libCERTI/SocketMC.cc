@@ -19,14 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.7 2003/11/12 14:40:57 breholee Exp $
+// $Id: SocketMC.cc,v 3.8 2004/03/14 00:24:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "SocketMC.hh"
 
 #include <arpa/inet.h>
-#include <ulimit.h>
 #include <unistd.h>
 #include <assert.h>
 #include <errno.h>
@@ -242,11 +241,11 @@ SocketMC::portableSelect(fd_set *fdset, struct timeval *time_out)
 #ifdef WITH_CYGWIN
     return select(_socket_mc+1, SELECT_TYPE_ARG234 fdset, NULL, NULL, time_out);
 #else
-    return select(ulimit(4, 0), SELECT_TYPE_ARG234 fdset, NULL, NULL, time_out);
+    return select(sysconf(_SC_OPEN_MAX), SELECT_TYPE_ARG234 fdset, NULL, NULL, time_out);
 #endif
 }
 
 }
 
-// EOF $Id: SocketMC.cc,v 3.7 2003/11/12 14:40:57 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.8 2004/03/14 00:24:55 breholee Exp $
 

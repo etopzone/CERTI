@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.10 2003/10/13 09:55:52 breholee Exp $
+// $Id: Communications.cc,v 3.11 2004/03/14 00:24:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,7 +29,7 @@
 #include <fstream>
 #include <iostream>
 #include <assert.h>
-#include <ulimit.h>
+#include <unistd.h>
 #include <errno.h>
 
 using std::ifstream ;
@@ -215,7 +215,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     else {
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
-        if (select(ulimit(4, 0), &fdset, NULL, NULL, NULL) < 0) {
+        if (select(sysconf(_SC_OPEN_MAX), &fdset, NULL, NULL, NULL) < 0) {
             if (errno == EINTR)
                 throw NetworkSignal();
             else
@@ -309,4 +309,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.10 2003/10/13 09:55:52 breholee Exp $
+// $Id: Communications.cc,v 3.11 2004/03/14 00:24:55 breholee Exp $

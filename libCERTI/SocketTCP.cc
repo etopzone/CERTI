@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketTCP.cc,v 3.9 2004/03/14 00:24:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,7 +29,6 @@
 
 #include <netdb.h>
 #include <errno.h>
-#include <ulimit.h>
 #include <assert.h>
 #include <unistd.h>
 #include <netinet/tcp.h>
@@ -512,10 +511,10 @@ SocketTCP::portableSelect(fd_set *fdset, struct timeval *time_out)
 #ifdef WITH_CYGWIN
     return select(_socket_tcp+1, fdset, NULL, NULL, time_out);
 #else
-    return select(ulimit(4, 0), fdset, NULL, NULL, time_out);
+    return select(sysconf(_SC_OPEN_MAX), fdset, NULL, NULL, time_out);
 #endif
 }
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.8 2003/11/12 14:40:58 breholee Exp $
+// $Id: SocketTCP.cc,v 3.9 2004/03/14 00:24:55 breholee Exp $
