@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+## $Id: Makefile.am,v 3.0.2.1 2002/11/22 18:41:03 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -33,6 +33,8 @@ Parameter.cc RootObject.cc SecureTCPSocket.cc SecurityServer.cc		\
 SocketMC.cc SocketServer.cc SocketTCP.cc SocketUDP.cc SocketUN.cc	\
 Subscriber.cc
 
-libCERTI_la_LDFLAGS = -version-info 0:0:0
+# libCERTI_la_LDFLAGS = -version-info 0:0:0
+# Too unstable to use -version-info, so :
+libCERTI_la_LDFLAGS = -release 3.0.1
 
-## EOF $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $
+## EOF $Id: Makefile.am,v 3.0.2.1 2002/11/22 18:41:03 breholee Exp $
