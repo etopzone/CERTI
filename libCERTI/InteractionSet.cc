@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.4 2003/01/20 21:49:14 breholee Exp $
+// $Id: InteractionSet.cc,v 3.5 2003/01/29 18:25:25 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "InteractionSet.hh"
@@ -102,8 +102,7 @@ InteractionSet::buildParentRelation(Interaction *child, Interaction *parent)
     child->setLevelId(parent->getLevelId());
 
     // Register son to parent.
-    InteractionChild *son = new InteractionChild(child->handle);
-    parent->children.push_front(son);
+    parent->children.push_front(child->handle);
 
     // Copy parent Attribute into child class.
     parent->addParametersToChild(child);
@@ -286,4 +285,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.4 2003/01/20 21:49:14 breholee Exp $
+// $Id: InteractionSet.cc,v 3.5 2003/01/29 18:25:25 breholee Exp $
