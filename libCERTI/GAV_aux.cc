@@ -20,13 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.6 2003/01/26 23:14:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.7 2003/01/28 23:33:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
-#include <config.h>
-
-#include "RTItypes.hh"
-#include "PrettyDebug.hh"
+#include "GAV.hh"
 
 //-----------------------------------------------------------------------
 // AttributeHandleValuePair
@@ -53,23 +50,23 @@ AttributeHandleValuePair::~AttributeHandleValuePair(void)
 }
 
 //-----------------------------------------------------------------------
-// AttributeHandleValuePairSet
+// AttributeHandleValuePairSetImp
 //-----------------------------------------------------------------------
-AttributeHandleValuePairSet::~AttributeHandleValuePairSet(void)
+AttributeHandleValuePairSetImp::~AttributeHandleValuePairSetImp(void)
 {
     empty();
 }
 
 // ---------------------------------------------------------------------------
 inline ULong 
-AttributeHandleValuePairSet::size(void) const
+AttributeHandleValuePairSetImp::size(void) const
 {
     return list<AttributeHandleValuePair *>::size();
 }
 
 // ---------------------------------------------------------------------------
 Handle
-AttributeHandleValuePairSet::getHandle(ULong i) const
+AttributeHandleValuePairSetImp::getHandle(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = begin();
@@ -83,7 +80,7 @@ AttributeHandleValuePairSet::getHandle(ULong i) const
 
 // ---------------------------------------------------------------------------
 ULong 
-AttributeHandleValuePairSet::getValueLength(ULong i) const
+AttributeHandleValuePairSetImp::getValueLength(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = begin();
@@ -97,9 +94,9 @@ AttributeHandleValuePairSet::getValueLength(ULong i) const
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleValuePairSet::getValue(ULong i,
-                                      char* buff,
-                                      ULong& value_length) const
+AttributeHandleValuePairSetImp::getValue(ULong i,
+                                         char* buff,
+                                         ULong& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = begin();
@@ -116,8 +113,8 @@ AttributeHandleValuePairSet::getValue(ULong i,
 
 // ---------------------------------------------------------------------------
 char *
-AttributeHandleValuePairSet::getValuePointer(ULong i,
-                                             ULong& value_length) const
+AttributeHandleValuePairSetImp::getValuePointer(ULong i,
+                                                ULong& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::const_iterator j = begin();
@@ -133,7 +130,7 @@ AttributeHandleValuePairSet::getValuePointer(ULong i,
 
 // ---------------------------------------------------------------------------
 inline TransportType 
-AttributeHandleValuePairSet::getTransportType(ULong) const
+AttributeHandleValuePairSetImp::getTransportType(ULong) const
     throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
     return _transport ;
@@ -141,7 +138,7 @@ AttributeHandleValuePairSet::getTransportType(ULong) const
 
 // ---------------------------------------------------------------------------
 inline OrderType 
-AttributeHandleValuePairSet::getOrderType(ULong) const
+AttributeHandleValuePairSetImp::getOrderType(ULong) const
     throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
     return _order ;
@@ -149,7 +146,7 @@ AttributeHandleValuePairSet::getOrderType(ULong) const
 
 // ---------------------------------------------------------------------------
 Region*
-AttributeHandleValuePairSet::getRegion(ULong) const
+AttributeHandleValuePairSetImp::getRegion(ULong) const
     throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext,
            UnimplementedService)//CERTI
 {
@@ -158,9 +155,9 @@ AttributeHandleValuePairSet::getRegion(ULong) const
 
 // ---------------------------------------------------------------------------
 void
-AttributeHandleValuePairSet::add(Handle h,
-                                 const char* buff,
-                                 ULong value_length)
+AttributeHandleValuePairSetImp::add(Handle h,
+                                    const char* buff,
+                                    ULong value_length)
     throw (ValueLengthExceeded, ValueCountExceeded)
 {
     AttributeHandleValuePair *ahvp ;
@@ -171,7 +168,7 @@ AttributeHandleValuePairSet::add(Handle h,
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleValuePairSet::remove(Handle h)
+AttributeHandleValuePairSetImp::remove(Handle h)
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandleValuePair *>::iterator j ;
@@ -188,8 +185,8 @@ AttributeHandleValuePairSet::remove(Handle h)
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&,
-                                      ULong&)
+AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet&,
+                                         ULong&)
     throw (ValueCountExceeded, ArrayIndexOutOfBounds,
            UnimplementedService) //CERTI
 {
@@ -198,7 +195,7 @@ AttributeHandleValuePairSet::moveFrom(const AttributeHandleValuePairSet&,
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleValuePairSet::empty(void)
+AttributeHandleValuePairSetImp::empty(void)
 {
     while (!list<AttributeHandleValuePair *>::empty()) {
         delete front();
@@ -208,7 +205,7 @@ AttributeHandleValuePairSet::empty(void)
 
 // ---------------------------------------------------------------------------
 ULong 
-AttributeHandleValuePairSet::start(void) const
+AttributeHandleValuePairSetImp::start(void) const
 {
     //not implemented
     return 0 ;
@@ -216,7 +213,7 @@ AttributeHandleValuePairSet::start(void) const
 
 // ---------------------------------------------------------------------------
 ULong 
-AttributeHandleValuePairSet::valid(ULong) const
+AttributeHandleValuePairSetImp::valid(ULong) const
 {
     //not implemented
     return 0 ;
@@ -224,7 +221,7 @@ AttributeHandleValuePairSet::valid(ULong) const
 
 // ---------------------------------------------------------------------------
 ULong 
-AttributeHandleValuePairSet::next(ULong) const
+AttributeHandleValuePairSetImp::next(ULong) const
 {
     //not implemented
     return 0 ;
@@ -238,30 +235,31 @@ AttributeHandleValuePairSet*
 AttributeSetFactory::create(ULong)
     throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
 {
-    AttributeHandleValuePairSet *ahvps = new AttributeHandleValuePairSet ;
+    AttributeHandleValuePairSetImp *ahvps ;
+    ahvps = new AttributeHandleValuePairSetImp ;
     ahvps->_order = RECEIVE ;
     ahvps->_transport = RELIABLE ;
-    return ahvps ;
+    return (AttributeHandleValuePairSet *) ahvps ;
 }
 
 //-----------------------------------------------------------------------
-// AttributeHandleSet
+// AttributeHandleSetImp
 //-----------------------------------------------------------------------
-AttributeHandleSet::~AttributeHandleSet(void)
+AttributeHandleSetImp::~AttributeHandleSetImp(void)
 {
     empty();
 }
 
 // ---------------------------------------------------------------------------
 inline ULong 
-AttributeHandleSet::size(void) const
+AttributeHandleSetImp::size(void) const
 {
     return list<AttributeHandle>::size();
 }
 
 // ---------------------------------------------------------------------------
 AttributeHandle 
-AttributeHandleSet::getHandle(ULong i) const
+AttributeHandleSetImp::getHandle(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<AttributeHandle>::const_iterator h ;
@@ -276,7 +274,7 @@ AttributeHandleSet::getHandle(ULong i) const
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleSet::add(AttributeHandle h)
+AttributeHandleSetImp::add(AttributeHandle h)
     throw (ArrayIndexOutOfBounds, AttributeNotDefined)
 {
     push_front(h);
@@ -284,7 +282,7 @@ AttributeHandleSet::add(AttributeHandle h)
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleSet::remove(AttributeHandle h)
+AttributeHandleSetImp::remove(AttributeHandle h)
     throw (AttributeNotDefined)// not guaranteed safe while iterating
 {
     if (isMember(h) == RTI_TRUE)
@@ -295,21 +293,21 @@ AttributeHandleSet::remove(AttributeHandle h)
 
 // ---------------------------------------------------------------------------
 void 
-AttributeHandleSet::empty(void)
+AttributeHandleSetImp::empty(void)
 {
     list<AttributeHandle>::clear();
 }
 
 // ---------------------------------------------------------------------------
 inline Boolean
-AttributeHandleSet::isEmpty(void) const
+AttributeHandleSetImp::isEmpty(void) const
 {
     return ((list<AttributeHandle>::empty()) ? RTI_TRUE : RTI_FALSE);
 }
 
 // ---------------------------------------------------------------------------
 Boolean
-AttributeHandleSet::isMember(AttributeHandle h) const
+AttributeHandleSetImp::isMember(AttributeHandle h) const
 {
     list<AttributeHandle>::const_iterator result = find(begin(), end(), h);
 
@@ -320,34 +318,34 @@ AttributeHandleSet::isMember(AttributeHandle h) const
 }
 
 //-----------------------------------------------------------------------
-// AttributeHandleSetFactory
+// AttributeHandleSetImpFactory
 //-----------------------------------------------------------------------
 
 AttributeHandleSet* 
 AttributeHandleSetFactory::create(ULong)
     throw (MemoryExhausted, ValueCountExceeded)
 {
-    return(new AttributeHandleSet());
+    return ((AttributeHandleSet *)new AttributeHandleSetImp());
 }
 
 //-----------------------------------------------------------------------
-// FederateHandleSet
+// FederateHandleSetImp
 //-----------------------------------------------------------------------
-FederateHandleSet::~FederateHandleSet(void)
+FederateHandleSetImp::~FederateHandleSetImp(void)
 {
     empty();
 }
 
 // ---------------------------------------------------------------------------
 inline ULong 
-FederateHandleSet::size(void) const
+FederateHandleSetImp::size(void) const
 {
     return list<FederateHandle>::size();
 }
 
 // ---------------------------------------------------------------------------
 FederateHandle 
-FederateHandleSet::getHandle(ULong i) const
+FederateHandleSetImp::getHandle(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<FederateHandle>::const_iterator h ;
@@ -362,7 +360,7 @@ FederateHandleSet::getHandle(ULong i) const
 
 // ---------------------------------------------------------------------------
 void 
-FederateHandleSet::add(FederateHandle h)
+FederateHandleSetImp::add(FederateHandle h)
     throw (ValueCountExceeded)
 {
     push_front(h);
@@ -370,7 +368,7 @@ FederateHandleSet::add(FederateHandle h)
 
 // ---------------------------------------------------------------------------
 void 
-FederateHandleSet::remove(FederateHandle h)
+FederateHandleSetImp::remove(FederateHandle h)
     throw (AttributeNotDefined, ArrayIndexOutOfBounds)
 {
     if (isMember(h) == RTI_TRUE)
@@ -381,14 +379,14 @@ FederateHandleSet::remove(FederateHandle h)
 
 // ---------------------------------------------------------------------------
 void 
-FederateHandleSet::empty(void)
+FederateHandleSetImp::empty(void)
 {
     list<FederateHandle>::clear();
 }
 
 // ---------------------------------------------------------------------------
 Boolean
-FederateHandleSet::isMember(FederateHandle h) const
+FederateHandleSetImp::isMember(FederateHandle h) const
 {
     list<FederateHandle>::const_iterator result = find(begin(), end(), h);
 
@@ -396,6 +394,17 @@ FederateHandleSet::isMember(FederateHandle h) const
         return RTI_FALSE ;
     else
         return RTI_TRUE ;
+}
+
+//-----------------------------------------------------------------------
+// FederateHandleSetFactory
+//-----------------------------------------------------------------------
+
+FederateHandleSet* 
+FederateHandleSetFactory::create(ULong)
+    throw (MemoryExhausted, ValueCountExceeded)
+{
+    return ((FederateHandleSet *) new FederateHandleSetImp());
 }
 
 //-----------------------------------------------------------------------
@@ -420,23 +429,29 @@ ParameterHandleValuePair::~ParameterHandleValuePair(void)
 }
 
 //-----------------------------------------------------------------------
-// ParameterHandleValuePairSet
+// ParameterHandleValuePairSetImp
 //-----------------------------------------------------------------------
-ParameterHandleValuePairSet::~ParameterHandleValuePairSet(void)
+ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(ULong size)
+{
+    _order = RECEIVE ;
+    _transport = RELIABLE ;
+}
+
+ParameterHandleValuePairSetImp::~ParameterHandleValuePairSetImp(void)
 {
     empty();
 }
 
 // ---------------------------------------------------------------------------
 inline ULong 
-ParameterHandleValuePairSet::size(void) const
+ParameterHandleValuePairSetImp::size(void) const
 {
     return list<ParameterHandleValuePair *>::size();
 }
 
 // ---------------------------------------------------------------------------
 Handle 
-ParameterHandleValuePairSet::getHandle(ULong i) const
+ParameterHandleValuePairSetImp::getHandle(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = begin();
@@ -450,7 +465,7 @@ ParameterHandleValuePairSet::getHandle(ULong i) const
 
 // ---------------------------------------------------------------------------
 ULong 
-ParameterHandleValuePairSet::getValueLength(ULong i) const
+ParameterHandleValuePairSetImp::getValueLength(ULong i) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = begin();
@@ -464,9 +479,9 @@ ParameterHandleValuePairSet::getValueLength(ULong i) const
 
 // ---------------------------------------------------------------------------
 void 
-ParameterHandleValuePairSet::getValue(ULong i,
-                                      char* buff,
-                                      ULong& value_length) const
+ParameterHandleValuePairSetImp::getValue(ULong i,
+                                         char* buff,
+                                         ULong& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = begin();
@@ -483,8 +498,8 @@ ParameterHandleValuePairSet::getValue(ULong i,
 
 // ---------------------------------------------------------------------------
 char *
-ParameterHandleValuePairSet::getValuePointer(ULong i,
-                                             ULong& value_length) const
+ParameterHandleValuePairSetImp::getValuePointer(ULong i,
+                                                ULong& value_length) const
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::const_iterator j = begin();
@@ -500,7 +515,7 @@ ParameterHandleValuePairSet::getValuePointer(ULong i,
 
 // ---------------------------------------------------------------------------
 inline TransportType 
-ParameterHandleValuePairSet::getTransportType(void) const
+ParameterHandleValuePairSetImp::getTransportType(void) const
     throw (InvalidHandleValuePairSetContext) 
 {
     return _transport ;
@@ -508,7 +523,7 @@ ParameterHandleValuePairSet::getTransportType(void) const
 
 // ---------------------------------------------------------------------------
 inline OrderType 
-ParameterHandleValuePairSet::getOrderType(void) const
+ParameterHandleValuePairSetImp::getOrderType(void) const
     throw (InvalidHandleValuePairSetContext)
 {
     return _order ;
@@ -516,7 +531,7 @@ ParameterHandleValuePairSet::getOrderType(void) const
 
 // ---------------------------------------------------------------------------
 Region *
-ParameterHandleValuePairSet::getRegion(void) const
+ParameterHandleValuePairSetImp::getRegion(void) const
     throw (InvalidHandleValuePairSetContext, 
            UnimplementedService)//CERTI
 {
@@ -525,9 +540,9 @@ ParameterHandleValuePairSet::getRegion(void) const
 
 // ---------------------------------------------------------------------------
 void 
-ParameterHandleValuePairSet::add(Handle h,
-                                 const char* buff,
-                                 ULong value_length)
+ParameterHandleValuePairSetImp::add(Handle h,
+                                    const char* buff,
+                                    ULong value_length)
     throw (ValueLengthExceeded, ValueCountExceeded)
 {
     ParameterHandleValuePair *phvp ;
@@ -538,7 +553,7 @@ ParameterHandleValuePairSet::add(Handle h,
 
 // ---------------------------------------------------------------------------
 void 
-ParameterHandleValuePairSet::remove(Handle h)
+ParameterHandleValuePairSetImp::remove(Handle h)
     throw (ArrayIndexOutOfBounds)
 {
     list<ParameterHandleValuePair *>::iterator j ;
@@ -555,8 +570,8 @@ ParameterHandleValuePairSet::remove(Handle h)
 
 // ---------------------------------------------------------------------------
 void 
-ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&,
-                                      ULong&)
+ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet&,
+                                         ULong&)
     throw (ValueCountExceeded, ArrayIndexOutOfBounds,
            UnimplementedService)//CERTI
 {
@@ -565,7 +580,7 @@ ParameterHandleValuePairSet::moveFrom(const ParameterHandleValuePairSet&,
 
 // ---------------------------------------------------------------------------
 void 
-ParameterHandleValuePairSet::empty(void) 
+ParameterHandleValuePairSetImp::empty(void) 
 {
     while (!list<ParameterHandleValuePair *>::empty()) {
         delete front();
@@ -575,7 +590,7 @@ ParameterHandleValuePairSet::empty(void)
 
 // ---------------------------------------------------------------------------
 ULong 
-ParameterHandleValuePairSet::start(void) const
+ParameterHandleValuePairSetImp::start(void) const
 {
     //not implemented
     return 0 ;
@@ -583,7 +598,7 @@ ParameterHandleValuePairSet::start(void) const
 
 // ---------------------------------------------------------------------------
 ULong 
-ParameterHandleValuePairSet::valid(ULong) const
+ParameterHandleValuePairSetImp::valid(ULong) const
 {
     //not implemented
     return 0 ;
@@ -591,7 +606,7 @@ ParameterHandleValuePairSet::valid(ULong) const
 
 // ---------------------------------------------------------------------------
 ULong 
-ParameterHandleValuePairSet::next(ULong) const
+ParameterHandleValuePairSetImp::next(ULong) const
 {
     //not implemented
     return 0 ;
@@ -602,16 +617,18 @@ ParameterHandleValuePairSet::next(ULong) const
 //-----------------------------------------------------------------------
 
 ParameterHandleValuePairSet* 
-ParameterSetFactory::create(ULong)
+ParameterSetFactory::create(ULong size)
     throw (MemoryExhausted, ValueCountExceeded,
            HandleValuePairMaximumExceeded)
 {
-    ParameterHandleValuePairSet *phvps = new ParameterHandleValuePairSet ;
+    ParameterHandleValuePairSetImp *phvps ;
+    phvps = new ParameterHandleValuePairSetImp(size) ;
+
     phvps->_order = RECEIVE ;
     phvps->_transport = RELIABLE ;
-    return phvps ;
+    return (ParameterHandleValuePairSet *) phvps ;
 }
 
-}
+} // namespace certi
 
-// $Id: GAV_aux.cc,v 3.6 2003/01/26 23:14:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.7 2003/01/28 23:33:00 breholee Exp $

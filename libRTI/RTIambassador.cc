@@ -20,13 +20,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.10 2003/01/20 22:06:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.11 2003/01/28 23:33:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
+#include "GAV.hh"
 #include "FederateAmbassador.hh"
 #include "Message.hh"
 #include "SocketUN.hh"
@@ -3580,4 +3581,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.10 2003/01/20 22:06:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.11 2003/01/28 23:33:00 breholee Exp $

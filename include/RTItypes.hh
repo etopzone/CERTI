@@ -20,101 +20,130 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.6 2003/01/26 23:14:05 breholee Exp $
+// $Id: RTItypes.hh,v 3.7 2003/01/28 23:33:00 breholee Exp $
 // ---------------------------------------------------------------------------
-
-// Types utilises par le RTI : Constantes, exceptions, handles...
 
 #ifndef _CERTI_RTI_TYPES_HH
 #define _CERTI_RTI_TYPES_HH
 
-#include <list>
-using std::list ;
-
 #include "baseTypes.hh"
 #include "local_config.hh"
 
-#define RTI_VERSION PACKAGE"-"VERSION
+#define RTI_VERSION "CERTI-3"
+
+#define MAX_FEDERATEHANDLE USHRT_MAX
+#define MAX_OBJECTID ULONG_MAX
 
 namespace certi {
-
-class CAttributeHandleValuePairSet ;
-// Each time a new exception is added, please handle this new case in
-// exception_type.hh and in RTIambassador.cc.
 RTI_EXCEPT(ArrayIndexOutOfBounds)
+RTI_EXCEPT(AsynchronousDeliveryAlreadyDisabled)
+RTI_EXCEPT(AsynchronousDeliveryAlreadyEnabled)
+RTI_EXCEPT(AttributeAcquisitionWasNotCanceled)
+RTI_EXCEPT(AttributeAcquisitionWasNotRequested)
+RTI_EXCEPT(AttributeAlreadyBeingAcquired)
+RTI_EXCEPT(AttributeAlreadyBeingDivested)
 RTI_EXCEPT(AttributeAlreadyOwned)
+RTI_EXCEPT(AttributeDivestitureWasNotRequested)
 RTI_EXCEPT(AttributeNotDefined)
 RTI_EXCEPT(AttributeNotKnown)
 RTI_EXCEPT(AttributeNotOwned)
 RTI_EXCEPT(AttributeNotPublished)
-RTI_EXCEPT(AttributeNotSubscribed)
+RTI_EXCEPT(AttributeNotSubscribed)//deprecated
 RTI_EXCEPT(ConcurrentAccessAttempted)
 RTI_EXCEPT(CouldNotDiscover)
-RTI_EXCEPT(CouldNotOpenRID)
+RTI_EXCEPT(CouldNotOpenFED)
+RTI_EXCEPT(CouldNotOpenRID)//deprecated
 RTI_EXCEPT(CouldNotRestore)
 RTI_EXCEPT(DeletePrivilegeNotHeld)
-RTI_EXCEPT(ErrorReadingRID)
+RTI_EXCEPT(DimensionNotDefined)
+RTI_EXCEPT(EnableTimeConstrainedPending)
+RTI_EXCEPT(EnableTimeConstrainedWasNotPending)
+RTI_EXCEPT(EnableTimeRegulationPending)
+RTI_EXCEPT(EnableTimeRegulationWasNotPending)
+RTI_EXCEPT(ErrorReadingFED)
+RTI_EXCEPT(ErrorReadingRID)//deprecated
 RTI_EXCEPT(EventNotKnown)
-RTI_EXCEPT(FederateAlreadyPaused)
 RTI_EXCEPT(FederateAlreadyExecutionMember)
-RTI_EXCEPT(FederateDoesNotExist)
+RTI_EXCEPT(FederateAlreadyPaused)//deprecated
+RTI_EXCEPT(FederateDoesNotExist)//deprecated
 RTI_EXCEPT(FederateInternalError)
-RTI_EXCEPT(FederateNameAlreadyInUse)
+RTI_EXCEPT(FederateLoggingServiceCalls)
+RTI_EXCEPT(FederateNameAlreadyInUse)//deprecated
 RTI_EXCEPT(FederateNotExecutionMember)
-RTI_EXCEPT(FederateNotPaused)
-RTI_EXCEPT(FederateNotPublishing)
-RTI_EXCEPT(FederateNotSubscribing)
+RTI_EXCEPT(FederateNotPaused)//deprecated
+RTI_EXCEPT(FederateNotPublishing) // deprecated
+RTI_EXCEPT(FederateNotSubscribing)//deprecated
 RTI_EXCEPT(FederateOwnsAttributes)
 RTI_EXCEPT(FederatesCurrentlyJoined)
+RTI_EXCEPT(FederateWasNotAskedToReleaseAttribute)
 RTI_EXCEPT(FederationAlreadyPaused)
 RTI_EXCEPT(FederationExecutionAlreadyExists)
 RTI_EXCEPT(FederationExecutionDoesNotExist)
-RTI_EXCEPT(FederationNotPaused)
+RTI_EXCEPT(FederationNotPaused)//deprecated
 RTI_EXCEPT(FederationTimeAlreadyPassed)
-RTI_EXCEPT(IDsupplyExhausted)
+RTI_EXCEPT(HandleValuePairMaximumExceeded)
+RTI_EXCEPT(IDsupplyExhausted)//deprecated
 RTI_EXCEPT(InteractionClassNotDefined)
 RTI_EXCEPT(InteractionClassNotKnown)
 RTI_EXCEPT(InteractionClassNotPublished)
+RTI_EXCEPT(InteractionClassNotSubscribed)
 RTI_EXCEPT(InteractionParameterNotDefined)
 RTI_EXCEPT(InteractionParameterNotKnown)
-RTI_EXCEPT(InvalidDivestitureCondition)
+RTI_EXCEPT(InvalidDivestitureCondition)//deprecated
 RTI_EXCEPT(InvalidExtents)
 RTI_EXCEPT(InvalidFederationTime)
-RTI_EXCEPT(InvalidFederationTimeDelta)
+RTI_EXCEPT(InvalidFederationTimeDelta)//deprecated
+RTI_EXCEPT(InvalidHandleValuePairSetContext)
+RTI_EXCEPT(InvalidLookahead)
 RTI_EXCEPT(InvalidObjectHandle)
-RTI_EXCEPT(InvalidOrderType)
+RTI_EXCEPT(InvalidOrderingHandle)
+RTI_EXCEPT(InvalidOrderType)//deprecated
+RTI_EXCEPT(InvalidRegionContext)
 RTI_EXCEPT(InvalidResignAction)
 RTI_EXCEPT(InvalidRetractionHandle)
-RTI_EXCEPT(InvalidRoutingSpace)
-RTI_EXCEPT(InvalidTransportType)
+RTI_EXCEPT(InvalidRoutingSpace)//deprecated
+RTI_EXCEPT(InvalidTransportationHandle)
+RTI_EXCEPT(InvalidTransportType)//deprecated
 RTI_EXCEPT(MemoryExhausted)
 RTI_EXCEPT(NameNotFound)
-RTI_EXCEPT(NoPauseRequested)
-RTI_EXCEPT(NoResumeRequested)
+RTI_EXCEPT(NoPauseRequested)//deprecated
+RTI_EXCEPT(NoResumeRequested)//deprecated
+RTI_EXCEPT(ObjectAlreadyRegistered)
 RTI_EXCEPT(ObjectClassNotDefined)
 RTI_EXCEPT(ObjectClassNotKnown)
 RTI_EXCEPT(ObjectClassNotPublished)
 RTI_EXCEPT(ObjectClassNotSubscribed)
 RTI_EXCEPT(ObjectNotKnown)
-RTI_EXCEPT(ObjectAlreadyRegistered)
+RTI_EXCEPT(OwnershipAcquisitionPending)
+RTI_EXCEPT(RegionInUse)
 RTI_EXCEPT(RegionNotKnown)
 RTI_EXCEPT(RestoreInProgress)
 RTI_EXCEPT(RestoreNotRequested)
+RTI_EXCEPT(RTICannotRestore)//deprecated
 RTI_EXCEPT(RTIinternalError)
 RTI_EXCEPT(SaveInProgress)
 RTI_EXCEPT(SaveNotInitiated)
-RTI_EXCEPT(SecurityError)
+RTI_EXCEPT(SecurityError)//deprecated
 RTI_EXCEPT(SpaceNotDefined)
 RTI_EXCEPT(SpecifiedSaveLabelDoesNotExist)
+RTI_EXCEPT(SynchronizationPointLabelWasNotAnnounced)
 RTI_EXCEPT(TimeAdvanceAlreadyInProgress)
 RTI_EXCEPT(TimeAdvanceWasNotInProgress)
-RTI_EXCEPT(TooManyIDsRequested)
+RTI_EXCEPT(TimeConstrainedAlreadyEnabled)
+RTI_EXCEPT(TimeConstrainedWasNotEnabled)
+RTI_EXCEPT(TimeRegulationAlreadyEnabled)
+RTI_EXCEPT(TimeRegulationWasNotEnabled)
+RTI_EXCEPT(TooManyIDsRequested)//deprecated
 RTI_EXCEPT(UnableToPerformSave)
-RTI_EXCEPT(UnimplementedService)
+RTI_EXCEPT(UnimplementedService)//CERTI
 RTI_EXCEPT(UnknownLabel)
 RTI_EXCEPT(ValueCountExceeded)
 RTI_EXCEPT(ValueLengthExceeded)
- 
+
+class CAttributeHandleValuePairSet ;
+class FederateAmbassador ;
+class Region ;
+
 enum OrderType {
     RECEIVE = 1,
     TIMESTAMP
@@ -136,38 +165,35 @@ enum TransportType {
     BEST_EFFORT
 };
 
-typedef ULong Handle ;
-typedef Handle TransportationHandle ;
-//typedef TransportationHandle TransportType ;
- 
 enum ResignAction {
     RELEASE_ATTRIBUTES = 1,
     DELETE_OBJECTS,
     DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES,
     NO_ACTION
 };
- 
-class FederateAmbassador ;
- 
+
+typedef ULong ExtentIndex ;
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 typedef ULong FederateHandle ;
-
-#define MAX_FEDERATEHANDLE USHRT_MAX
-
 typedef UShort FederationHandle ;
-typedef ULong ObjectClassHandle ;
-typedef ULong InteractionClassHandle ;
-typedef Handle AttributeHandle ;
-typedef Handle ParameterHandle ;
- 
-#define MAX_OBJECTID ULONG_MAX
-
-typedef ULong FederateID ;
-typedef ULong UniqueID ;
-typedef UShort ObjectHandlecount ;
-typedef Double FederationTimeDelta ; // Must be the same as FederationTime
 typedef Double FederationTime ;
+typedef Double FederationTimeDelta ;
+typedef ULong FederateID ;
+typedef ULong Handle ;
+typedef ULong InteractionClassHandle ;
+typedef ULong ObjectClassHandle ;
+typedef UShort ObjectHandlecount ;
+typedef ULong RegionToken ;
 typedef Double TickTime ;
+typedef ULong UniqueID ;
+typedef Long SpaceHandle ;
+
+typedef Handle AttributeHandle ;
+typedef Handle DimensionHandle ;
+typedef Handle ObjectHandle ;
+typedef Handle OrderingHandle ;
+typedef Handle ParameterHandle ;
+typedef Handle TransportationHandle ;
 
 // BUG: Le Transport des EventRetractHandle n'est pas assure par les 
 // Message. Voir Message::WriteRAction dans Message_RW.cc .
@@ -179,12 +205,12 @@ struct EventRetractionHandle_s {
 
 typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
-// All char * declarations should use null terminated strings
 typedef char * FederationExecutionName ; // See MAX_FEDERATION_NAME_LENGTH
 typedef char * FederateName ; // See MAX_FEDERATE_NAME_LENGTH
 typedef char * ObjectClassName ; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectName ; // See MAX_USER_TAG_LENGTH
 typedef char * InteractionClassName ; // See MAX_USER_TAG_LENGTH
+typedef char * SpaceName ;
 
 // Parameters and Attributes MUST share the same types.
 typedef char * AttributeName ; // See MAX_USER_TAG_LENGTH
@@ -233,86 +259,39 @@ struct ThresholdSet_s {
 };
 typedef struct ThresholdSet_s ThresholdSet ;
  
-typedef Long SpaceHandle ;
- 
-typedef char * SpaceName ;
-
-//-----------------------------------------------------------------
-// RTItypes for RTI 1.3 compatibility
-
-RTI_EXCEPT(AsynchronousDeliveryAlreadyDisabled)
-RTI_EXCEPT(AsynchronousDeliveryAlreadyEnabled)
-RTI_EXCEPT(AttributeAcquisitionWasNotRequested)
-RTI_EXCEPT(AttributeAcquisitionWasNotCanceled)
-RTI_EXCEPT(AttributeAlreadyBeingAcquired)
-RTI_EXCEPT(AttributeAlreadyBeingDivested)
-RTI_EXCEPT(AttributeDivestitureWasNotRequested)
-RTI_EXCEPT(CouldNotOpenFED)
-RTI_EXCEPT(DimensionNotDefined)
-RTI_EXCEPT(EnableTimeConstrainedPending)
-RTI_EXCEPT(EnableTimeConstrainedWasNotPending)
-RTI_EXCEPT(EnableTimeRegulationPending)
-RTI_EXCEPT(EnableTimeRegulationWasNotPending)
-RTI_EXCEPT(ErrorReadingFED)
-RTI_EXCEPT(FederateLoggingServiceCalls)
-RTI_EXCEPT(FederateWasNotAskedToReleaseAttribute)
-RTI_EXCEPT(HandleValuePairMaximumExceeded)
-RTI_EXCEPT(InteractionClassNotSubscribed)
-RTI_EXCEPT(InvalidHandleValuePairSetContext)
-RTI_EXCEPT(InvalidLookahead)
-RTI_EXCEPT(InvalidOrderingHandle)
-RTI_EXCEPT(InvalidRegionContext)
-RTI_EXCEPT(InvalidTransportationHandle)
-RTI_EXCEPT(OwnershipAcquisitionPending)
-RTI_EXCEPT(RegionInUse)
-RTI_EXCEPT(RTICannotRestore)
-RTI_EXCEPT(SynchronizationPointLabelWasNotAnnounced)
-RTI_EXCEPT(TimeConstrainedAlreadyEnabled)
-RTI_EXCEPT(TimeConstrainedWasNotEnabled)
-RTI_EXCEPT(TimeRegulationAlreadyEnabled)
-RTI_EXCEPT(TimeRegulationWasNotEnabled)
-
-typedef ULong ExtentIndex ;
-typedef Handle ObjectHandle ;
-typedef Handle DimensionHandle ;
-
-typedef Handle OrderingHandle ;
-typedef ULong RegionToken ;
-//typedef OrderingHandle OrderType ;
-
-class Region ;
-
-class FederateHandleSet : private list<FederateHandle>
+class FederateHandleSet
 {
 public:
-    virtual ~FederateHandleSet(void);
+    virtual ~FederateHandleSet(void) {;}
 
-    virtual ULong size(void) const ;
+    virtual ULong size(void) const = 0 ;
 
     virtual FederateHandle getHandle(ULong i) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual void add(FederateHandle h)
-        throw (ValueCountExceeded);
+        throw (ValueCountExceeded) = 0 ;
  
     virtual void remove(FederateHandle h)
-        throw (AttributeNotDefined, ArrayIndexOutOfBounds);
+        throw (AttributeNotDefined, ArrayIndexOutOfBounds) = 0 ;
  
-    virtual void empty(void);
+    virtual void empty(void) = 0 ;
 
-    virtual Boolean isMember(FederateHandle h) const ;
+    virtual Boolean isMember(FederateHandle h) const = 0 ;
 };
 
-class FederateHandleSetFactory {
+class FederateHandleSetFactory
+{
 public:
     static FederateHandleSet* create(ULong count)
         throw (MemoryExhausted,
                ValueCountExceeded);
 };
 
-class Region {
+class Region
+{
 public:
-    virtual ~Region() { }
+    virtual ~Region(void) {;}
 
     virtual ULong 
     getRangeLowerBound(ExtentIndex theExtent,
@@ -337,11 +316,11 @@ public:
         throw (ArrayIndexOutOfBounds) = 0 ;
 
     virtual SpaceHandle 
-    getSpaceHandle() const
+    getSpaceHandle(void) const
         throw () = 0 ;
 
     virtual ULong 
-    getNumberOfExtents() const
+    getNumberOfExtents(void) const
         throw () = 0 ;
 
     virtual ULong 
@@ -355,230 +334,120 @@ public:
         throw (ArrayIndexOutOfBounds) = 0 ;
 };
 
-class AttributeHandleSet : private list<AttributeHandle>
+class AttributeHandleSet
 {
 public:
-    virtual ~AttributeHandleSet(void);
+    virtual ~AttributeHandleSet(void) {;}
 
-    virtual ULong size(void) const ;
+    virtual ULong size(void) const = 0 ;
 
     virtual AttributeHandle getHandle(ULong i) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual void add(AttributeHandle h)
-        throw (ArrayIndexOutOfBounds, AttributeNotDefined);
+        throw (ArrayIndexOutOfBounds, AttributeNotDefined) = 0 ;
  
     virtual void remove(AttributeHandle h) 
-        throw (AttributeNotDefined);
+        throw (AttributeNotDefined) = 0 ;
  
-    virtual void empty(void);
+    virtual void empty(void) = 0 ;
 
-    virtual Boolean isEmpty(void) const ;
-    virtual Boolean isMember(AttributeHandle h) const ;
+    virtual Boolean isEmpty(void) const = 0 ;
+    virtual Boolean isMember(AttributeHandle h) const = 0 ;
 };
 
 class AttributeHandleSetFactory 
 {
-    // METHODS
 public:
     static AttributeHandleSet* create(ULong count)
         throw (MemoryExhausted, ValueCountExceeded);
 };
 
-class AttributeHandleValuePair 
+class AttributeHandleValuePairSet
 {
-    // ATTRIBUTES
 public:
-    Handle _handle ;
-    ULong _valueLength ;
-    char *_value ;
+    virtual ~AttributeHandleValuePairSet(void) {;}
 
-    // METHODS
-public :
-    AttributeHandleValuePair(Handle handle,
-                             const char* value,
-                             ULong value_length);
-    ~AttributeHandleValuePair(void);
-};
+    virtual ULong size(void) const = 0;
 
-class AttributeHandleValuePairSet : private list<AttributeHandleValuePair *>
-{
-    // ATTRIBUTES
-public:
-    OrderType _order ;
-    TransportType _transport ;
+    virtual Handle getHandle(ULong i) const 
+        throw (ArrayIndexOutOfBounds) = 0;
 
-    // METHODS
-public:
-    virtual ~AttributeHandleValuePairSet(void);
-
-    virtual ULong size(void) const ;
-    virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
-    virtual ULong getValueLength(ULong i) const throw (ArrayIndexOutOfBounds);
+    virtual ULong getValueLength(ULong i) const
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual void getValue(ULong i, char* buff, ULong& valueLength) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
 
     virtual char *getValuePointer(ULong i, ULong& valueLength) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
 
     virtual TransportType getTransportType(ULong i) const
-        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
+        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext) = 0 ;
 
     virtual OrderType getOrderType(ULong i) const
-        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
+        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext) = 0 ;
 
     virtual Region *getRegion(ULong i) const
         throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext,
-               UnimplementedService);//CERTI
+               UnimplementedService) = 0 ;
 
     virtual void add(Handle h, const char* buff, ULong valueLength)
-        throw (ValueLengthExceeded, ValueCountExceeded);
-    virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
+        throw (ValueLengthExceeded, ValueCountExceeded) = 0 ;
+
+    virtual void remove(Handle h) throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual void moveFrom(const AttributeHandleValuePairSet& ahvps, ULong& i)
-        throw (ValueCountExceeded,
-               ArrayIndexOutOfBounds,
-               UnimplementedService);
+        throw (ValueCountExceeded, ArrayIndexOutOfBounds,
+               UnimplementedService) = 0 ;
  
-    virtual void empty(void);
-    virtual ULong start(void) const ;
-    virtual ULong valid(ULong i) const ;
-    virtual ULong next(ULong i) const ;
+    virtual void empty(void) = 0 ;
+    virtual ULong start(void) const = 0 ;
+    virtual ULong valid(ULong i) const = 0 ;
+    virtual ULong next(ULong i) const = 0 ;
 };
 
-class CAttributeHandleValuePair
+class ParameterHandleValuePairSet
 {
 public:
-    OrderType _order ;
-    TransportType _transport ;
-    Boolean _isPublished ;
-    Boolean _isSubscribed ;
-    AttributeHandle _attrib ;
-    Value _value ;
-    CAttributeHandleValuePair *_next ;
+    virtual ~ParameterHandleValuePairSet(void) {;}
 
-public:
-    CAttributeHandleValuePair();
-    ~CAttributeHandleValuePair();
+    virtual ULong size(void) const = 0 ;
  
-    void AfficheAttribute(); 
-};
-
-class CAttributeHandleValuePairSet
-{
-protected:
-    CAttributeHandleValuePair *_head ;
-public:
-    UShort _size ; 
-
-public:
-    CAttributeHandleValuePairSet(void);
-    CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps);
-    CAttributeHandleValuePairSet(const AttributeHandleSet & ahs);
-    ~CAttributeHandleValuePairSet(void);
-
-    void add(CAttributeHandleValuePair *att);
-    CAttributeHandleValuePair *getWithHandle(AttributeHandle) const ;
-    CAttributeHandleValuePair *getWithName(AttributeName) const ;
-    CAttributeHandleValuePair *getIeme(UShort) const ;
-    void del(AttributeHandle);
-    void empty(void);
-
-    AttributeHandleValuePairSet* toAHVPS(void) const ;
-}; 
-
-class CParameterHandleValuePair
-{
-public:
-    ParameterHandle _param ;
-    Value _value ;
-    CParameterHandleValuePair *_next ;
-
-public:
-    CParameterHandleValuePair();
-    ~CParameterHandleValuePair();
+    virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds) = 0 ;
  
-    void AfficheParameter();
-};
-
-class ParameterHandleValuePairSet ;
-
-class CParameterHandleValuePairSet
-{ 
-protected:
-    CParameterHandleValuePair *_head ;
-public:
-    UShort _size ;
-
-public:
-    CParameterHandleValuePairSet(void);
-    CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps);
-    ~CParameterHandleValuePairSet(void);
-
-    void add(CParameterHandleValuePair *par);
-    CParameterHandleValuePair *getWithHandle(ParameterHandle) const ;
-    CParameterHandleValuePair *getWithName(ParameterName) const ;
-    CParameterHandleValuePair *getIeme(UShort) const ;
-    void del(ParameterHandle);
-    void empty();
-
-    ParameterHandleValuePairSet* toPHVPS(void) const ;
-};
-
-class ParameterHandleValuePair 
-{
-public:
-    Handle _handle ;
-    ULong _valueLength ;
-    char *_value ;
-
-    ParameterHandleValuePair(Handle handle, const char* value, ULong length);
-    ~ParameterHandleValuePair(void);
-};
-
-class ParameterHandleValuePairSet : private list<ParameterHandleValuePair *>
-{
-public:
-    OrderType _order ;
-    TransportType _transport ;
-
-public:
-    virtual ~ParameterHandleValuePairSet(void);
-
-    virtual ULong size(void) const ;
- 
-    virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
- 
-    virtual ULong getValueLength(ULong i) const throw (ArrayIndexOutOfBounds);
+    virtual ULong getValueLength(ULong i) const
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual void getValue(ULong i, char* buff, ULong& valueLength) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual char *getValuePointer(ULong i, ULong& valueLength) const
-        throw (ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds) = 0 ;
  
     virtual TransportType getTransportType(void) const
-        throw (InvalidHandleValuePairSetContext);
- 
+        throw (InvalidHandleValuePairSetContext) = 0 ;
+
     virtual OrderType getOrderType(void) const
-        throw (InvalidHandleValuePairSetContext);
- 
+        throw (InvalidHandleValuePairSetContext) = 0 ;
+
     virtual Region *getRegion(void) const
-        throw (InvalidHandleValuePairSetContext, UnimplementedService);//CERTI
+        throw (InvalidHandleValuePairSetContext, UnimplementedService) = 0 ;
  
     virtual void add(Handle h, const char* buff, ULong valueLength)
-        throw (ValueLengthExceeded, ValueCountExceeded);
+        throw (ValueLengthExceeded, ValueCountExceeded) = 0 ;
  
-    virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
+    virtual void remove(Handle h) throw (ArrayIndexOutOfBounds) = 0 ;
 
     virtual void moveFrom(const ParameterHandleValuePairSet& phvps, ULong& i)
-        throw (ValueCountExceeded, ArrayIndexOutOfBounds, UnimplementedService);
- 
-    virtual void empty(void);
-    virtual ULong start(void) const ;
-    virtual ULong valid(ULong i) const ;
-    virtual ULong next(ULong i) const ;
+        throw (ValueCountExceeded,
+               ArrayIndexOutOfBounds,
+               UnimplementedService) = 0 ;
+
+    virtual void empty(void) = 0 ;
+    virtual ULong start(void) const = 0 ;
+    virtual ULong valid(ULong i) const = 0 ;
+    virtual ULong next(ULong i) const = 0 ;
 };
 
 class AttributeSetFactory 
@@ -602,4 +471,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.6 2003/01/26 23:14:05 breholee Exp $
+// $Id: RTItypes.hh,v 3.7 2003/01/28 23:33:00 breholee Exp $
