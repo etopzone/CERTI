@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.13 2003/05/23 11:39:54 breholee Exp $
+// $Id: ObjectClass.hh,v 3.14 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -236,7 +236,7 @@ private:
                       ObjectHandle theObjectHandle,
                       FederateHandle theFederate,
                       const char *theTag,
-                      TypeNetworkMessage type);
+                      NetworkMessage::Type type);
 
     void sendMessage(NetworkMessage *msg, FederateHandle theDest);
 
@@ -266,4 +266,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.13 2003/05/23 11:39:54 breholee Exp $
+// $Id: ObjectClass.hh,v 3.14 2003/06/07 22:24:13 breholee Exp $

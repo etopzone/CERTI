@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.9 2003/05/23 14:15:17 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.10 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -68,14 +68,14 @@ ObjectManagement::requestID(ObjectHandlecount idCount,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_REQUEST_ID ;
+    req.type = NetworkMessage::REQUEST_ID ;
     req.idCount = idCount ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_REQUEST_ID, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::REQUEST_ID, req.federate);
 
     e = rep.exception ;
     firstID = rep.firstId ;
@@ -93,7 +93,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_REGISTER_OBJECT ;
+    req.type = NetworkMessage::REGISTER_OBJECT ;
     req.federate = fm->federate ;
     req.federation = fm->_numero_federation ;
     req.objectClass = the_class ;
@@ -103,7 +103,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_REGISTER_OBJECT, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::REGISTER_OBJECT, req.federate);
 
     e = rep.exception ;
 
@@ -133,7 +133,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     int i ;
 
     // Mise en place de la requete
-    req.type = m_UPDATE_ATTRIBUTE_VALUES ;
+    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
@@ -149,7 +149,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     strcpy(req.label, theTag);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_UPDATE_ATTRIBUTE_VALUES, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
 
     e = rep.exception ;
 
@@ -168,7 +168,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = DISCOVER_OBJECT_INSTANCE ;
+    req.type = Message::DISCOVER_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setObjectClass(the_class);
     req.setFederationTime(the_time);
@@ -197,7 +197,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = REFLECT_ATTRIBUTE_VALUES ;
+    req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setFederationTime(the_time);
     req.setEventRetraction(the_event);
@@ -228,7 +228,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArraySize);
 
     // Preparation du message au RTI.
-    req.type = m_SEND_INTERACTION ;
+    req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
     req.date = theTime ;
 
@@ -247,7 +247,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     // Emission et attente de la reponse.
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_SEND_INTERACTION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
 
     e = rep.exception ;
 
@@ -268,7 +268,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 {
     Message req, rep ;
 
-    req.type = RECEIVE_INTERACTION ;
+    req.type = Message::RECEIVE_INTERACTION ;
     req.setInteractionClass(the_interaction);
     req.setFederationTime(the_time);
     req.setEventRetraction(the_event);
@@ -288,14 +288,14 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_DELETE_OBJECT ;
+    req.type = NetworkMessage::DELETE_OBJECT ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
     strcpy(req.label, theTag);
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_DELETE_OBJECT, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DELETE_OBJECT, req.federate);
 
     e = rep.exception ;
 
@@ -318,7 +318,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = REMOVE_OBJECT_INSTANCE ;
+    req.type = Message::REMOVE_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
@@ -352,7 +352,7 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
     NetworkMessage req, rep ;
     int i ;
 
-    req.type = m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
+    req.type = NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -364,7 +364,7 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
     comm->sendMessage(&req);
 
     comm->waitMessage(&rep,
-                      m_CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
+                      NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
                       req.federate);
 
     e = rep.exception ;
@@ -384,7 +384,7 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
     NetworkMessage req, rep ;
     int i ;
 
-    req.type = m_CHANGE_ATTRIBUTE_ORDER_TYPE ;
+    req.type = NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -396,7 +396,7 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_CHANGE_ATTRIBUTE_ORDER_TYPE, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.federate);
 
     e = rep.exception ;
 
@@ -412,14 +412,14 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_CHANGE_INTERACTION_TRANSPORT_TYPE ;
+    req.type = NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.transport = theType ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate);
     e = rep.exception ;
 
     return rep.eventRetraction ;
@@ -434,7 +434,7 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_CHANGE_INTERACTION_ORDER_TYPE ;
+    req.type = NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -442,7 +442,7 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_CHANGE_INTERACTION_ORDER_TYPE, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.federate);
 
     e = rep.exception ;
 
@@ -458,7 +458,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                     TypeException &e)
 {
     NetworkMessage req, rep ;
-    req.type = m_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
+    req.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.object = handle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -469,7 +469,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 
     req.handleArraySize = attribArraySize ;
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
+    comm->waitMessage(&rep, NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
                       req.federate);
     e = rep.exception ;
 
@@ -609,4 +609,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.9 2003/05/23 14:15:17 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.10 2003/06/07 22:24:12 breholee Exp $

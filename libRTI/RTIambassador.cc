@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.29 2003/05/09 03:14:15 breholee Exp $
+// $Id: RTIambassador.cc,v 3.30 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -171,7 +171,7 @@ RTIambassador::createFederationExecution(const char *executionName,
     // strcat(exeName, "\56");
     // strcat(exeName, "fed");
 
-    req.type = CREATE_FEDERATION_EXECUTION ;
+    req.type = Message::CREATE_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
 
     // if (!strcasecmp(FED, exeName)) {
@@ -195,7 +195,7 @@ RTIambassador::destroyFederationExecution(const char *executionName)
 {
     Message req, rep ;
 
-    req.type = DESTROY_FEDERATION_EXECUTION ;
+    req.type = Message::DESTROY_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
 
     executeService(&req, &rep);
@@ -223,7 +223,7 @@ joinFederationExecution(const char *yourName,
 
     fed_amb = (FederateAmbassador *) federateAmbassadorReference ;
 
-    req.type = JOIN_FEDERATION_EXECUTION ;
+    req.type = Message::JOIN_FEDERATION_EXECUTION ;
     req.setFederateName(yourName);
     req.setFederationName(executionName);
 
@@ -243,7 +243,7 @@ RTIambassador::resignFederationExecution(ResignAction theAction)
 {
     Message req, rep ;
 
-    req.type = RESIGN_FEDERATION_EXECUTION ;
+    req.type = Message::RESIGN_FEDERATION_EXECUTION ;
     req.setResignAction(theAction);
     executeService(&req, &rep);
 }
@@ -261,7 +261,7 @@ RTIambassador::registerFederationSynchronizationPoint(const char *label,
 {
     Message req, rep ;
 
-    req.type = REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+    req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(the_tag);
 
@@ -283,7 +283,7 @@ registerFederationSynchronizationPoint(const char *label,
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+    req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(theTag);
 
@@ -303,7 +303,7 @@ RTIambassador::synchronizationPointAchieved(const char *label)
 {
     Message req, rep ;
 
-    req.type = SYNCHRONIZATION_POINT_ACHIEVED ;
+    req.type = Message::SYNCHRONIZATION_POINT_ACHIEVED ;
     req.setLabel(label);
 
     executeService(&req, &rep);
@@ -325,7 +325,7 @@ RTIambassador::requestFederationSave(const char *label,
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REQUEST_FEDERATION_SAVE ;
+    req.type = Message::REQUEST_FEDERATION_SAVE ;
     req.setFedTime(theTime);
     req.setLabel(label);
     req.setBoolean(RTI_TRUE);
@@ -346,7 +346,7 @@ RTIambassador::requestFederationSave(const char *label)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REQUEST_FEDERATION_SAVE ;
+    req.type = Message::REQUEST_FEDERATION_SAVE ;
     req.setLabel(label);
     req.setBoolean(RTI_FALSE);
 
@@ -366,7 +366,7 @@ RTIambassador::federateSaveBegun()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FEDERATE_SAVE_BEGUN ;
+    req.type = Message::FEDERATE_SAVE_BEGUN ;
 
     executeService(&req, &rep);
 }
@@ -384,7 +384,7 @@ RTIambassador::federateSaveComplete()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FEDERATE_SAVE_COMPLETE ;
+    req.type = Message::FEDERATE_SAVE_COMPLETE ;
 
     executeService(&req, &rep);
 }
@@ -402,7 +402,7 @@ RTIambassador::federateSaveNotComplete()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FEDERATE_SAVE_NOT_COMPLETE ;
+    req.type = Message::FEDERATE_SAVE_NOT_COMPLETE ;
 
     executeService(&req, &rep);
 }
@@ -422,7 +422,7 @@ RTIambassador::requestFederationRestore(const char *label)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REQUEST_FEDERATION_RESTORE ;
+    req.type = Message::REQUEST_FEDERATION_RESTORE ;
     req.setLabel(label);
 
     executeService(&req, &rep);
@@ -444,7 +444,7 @@ RTIambassador::federateRestoreComplete()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FEDERATE_RESTORE_COMPLETE ;
+    req.type = Message::FEDERATE_RESTORE_COMPLETE ;
 
     executeService(&req, &rep);
 }
@@ -465,7 +465,7 @@ RTIambassador::federateRestoreNotComplete()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FEDERATE_RESTORE_NOT_COMPLETE ;
+    req.type = Message::FEDERATE_RESTORE_NOT_COMPLETE ;
 
     executeService(&req, &rep);
 }
@@ -491,7 +491,7 @@ RTIambassador::publishObjectClass(ObjectClassHandle theClass,
 {
     Message req, rep ;
 
-    req.type = PUBLISH_OBJECT_CLASS ;
+    req.type = Message::PUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     req.setAHS(attributeList);
 
@@ -515,7 +515,7 @@ RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    req.type = UNPUBLISH_OBJECT_CLASS ;
+    req.type = Message::UNPUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     executeService(&req, &rep);
 }
@@ -535,7 +535,7 @@ RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
 {
     Message req, rep ;
 
-    req.type = PUBLISH_INTERACTION_CLASS ;
+    req.type = Message::PUBLISH_INTERACTION_CLASS ;
     req.setInteractionClass(theInteraction);
     executeService(&req, &rep);
 }
@@ -555,7 +555,7 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
 {
     Message req, rep ;
 
-    req.type = UNPUBLISH_INTERACTION_CLASS ;
+    req.type = Message::UNPUBLISH_INTERACTION_CLASS ;
     req.setInteractionClass(theInteraction);
     executeService(&req, &rep);
 }
@@ -578,7 +578,7 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
 {
     Message req, rep ;
 
-    req.type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
+    req.type = Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
     req.setObjectClass(theClass);
     req.setAHS(attributeList);
     req.setBoolean(active);
@@ -601,7 +601,7 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    req.type = UNSUBSCRIBE_OBJECT_CLASS ;
+    req.type = Message::UNSUBSCRIBE_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     executeService(&req, &rep);
 }
@@ -623,7 +623,7 @@ RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
 {
     Message req, rep ;
 
-    req.type = SUBSCRIBE_INTERACTION_CLASS ;
+    req.type = Message::SUBSCRIBE_INTERACTION_CLASS ;
     req.setInteractionClass(theClass);
     executeService(&req, &rep);
 }
@@ -643,7 +643,7 @@ RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
 {
     Message req, rep ;
 
-    req.type = UNSUBSCRIBE_INTERACTION_CLASS ;
+    req.type = Message::UNSUBSCRIBE_INTERACTION_CLASS ;
     req.setInteractionClass(theClass);
     executeService(&req, &rep);
 }
@@ -669,7 +669,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
 {
     Message req, rep ;
 
-    req.type = REGISTER_OBJECT_INSTANCE ;
+    req.type = Message::REGISTER_OBJECT_INSTANCE ;
     req.setName(theObjectName);
     req.setObjectClass(theClass);
     executeService(&req, &rep);
@@ -692,7 +692,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
-    req.type = REGISTER_OBJECT_INSTANCE ;
+    req.type = Message::REGISTER_OBJECT_INSTANCE ;
     req.setName("\0");
     req.setObjectClass(theClass);
 
@@ -721,7 +721,7 @@ updateAttributeValues(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = UPDATE_ATTRIBUTE_VALUES ;
+    req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(theObject);
     req.setFedTime(theTime);
     req.setTag(theTag);
@@ -752,7 +752,7 @@ RTIambassador::updateAttributeValues(ObjectHandle the_object,
 
     Message req, rep ;
 
-    req.type = UPDATE_ATTRIBUTE_VALUES ;
+    req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setTag(the_tag);
     req.setAHVPS(the_attributes);
@@ -780,7 +780,7 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 {
     Message req, rep ;
 
-    req.type = SEND_INTERACTION ;
+    req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(theInteraction);
     req.setFedTime(theTime);
     req.setTag(theTag);
@@ -811,7 +811,7 @@ RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
 
     Message req, rep ;
 
-    req.type = SEND_INTERACTION ;
+    req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(the_interaction);
     req.setTag(the_tag);
     req.setPHVPS(the_parameters);
@@ -838,7 +838,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = DELETE_OBJECT_INSTANCE ;
+    req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
     req.setFedTime(theTime);
     req.setTag(theTag);
@@ -863,7 +863,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DELETE_OBJECT_INSTANCE ;
+    req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
     req.setTag(theTag);
 
@@ -886,7 +886,7 @@ RTIambassador::localDeleteObjectInstance(ObjectHandle theObject)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = LOCAL_DELETE_OBJECT_INSTANCE ;
+    req.type = Message::LOCAL_DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
 
     executeService(&req, &rep);
@@ -913,7 +913,7 @@ changeAttributeTransportationType(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
+    req.type = Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
     req.setObject(theObject);
     req.setTransportation(theType);
     req.setAHS(theAttributes);
@@ -939,7 +939,7 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
 {
     Message req, rep ;
 
-    req.type = CHANGE_INTERACTION_TRANSPORTATION_TYPE ;
+    req.type = Message::CHANGE_INTERACTION_TRANSPORTATION_TYPE ;
     req.setInteractionClass(theClass);
     req.setTransportation(theType);
 
@@ -963,7 +963,7 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
+    req.type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.setObject(theObject);
     req.setAHS(theAttributes);
 
@@ -986,7 +986,7 @@ RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
+    req.type = Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
     req.setObjectClass(theClass);
     req.setAHS(attrs);
 
@@ -1014,7 +1014,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
     req.setAHS(attrs);
 
@@ -1040,7 +1040,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
     req.setTag(theTag);
     req.setAHS(attrs);
@@ -1068,7 +1068,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.setObject(theObject);
     req.setTag(theTag);
     req.setAHS(desiredAttributes);
@@ -1094,7 +1094,7 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
     req.setObject(theObject);
     req.setAHS(attrs);
 
@@ -1125,7 +1125,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
     req.setAHS(attrs);
 
@@ -1150,7 +1150,7 @@ cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.type = Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.setObject(theObject);
     req.setAHS(attrs);
 
@@ -1177,7 +1177,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
     req.setObject(theObject);
     req.setAHS(desired);
 
@@ -1201,7 +1201,7 @@ queryAttributeOwnership(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = QUERY_ATTRIBUTE_OWNERSHIP ;
+    req.type = Message::QUERY_ATTRIBUTE_OWNERSHIP ;
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
@@ -1223,7 +1223,7 @@ RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
+    req.type = Message::IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
     req.setObject(theObject);
     req.setAttribute(theAttribute);
 
@@ -1256,7 +1256,7 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = ENABLE_TIME_REGULATION ;
+    req.type = Message::ENABLE_TIME_REGULATION ;
     req.setBoolean(RTI_TRUE);
 
     executeService(&req, &rep);
@@ -1277,7 +1277,7 @@ RTIambassador::disableTimeRegulation()
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = DISABLE_TIME_REGULATION ;
+    req.type = Message::DISABLE_TIME_REGULATION ;
     req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
 }
@@ -1298,7 +1298,7 @@ RTIambassador::enableTimeConstrained()
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = ENABLE_TIME_CONSTRAINED ;
+    req.type = Message::ENABLE_TIME_CONSTRAINED ;
     req.setBoolean(RTI_TRUE);
     executeService(&req, &rep);
 }
@@ -1317,7 +1317,7 @@ RTIambassador::disableTimeConstrained()
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = DISABLE_TIME_CONSTRAINED ;
+    req.type = Message::DISABLE_TIME_CONSTRAINED ;
     req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
 }
@@ -1340,7 +1340,7 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = TIME_ADVANCE_REQUEST ;
+    req.type = Message::TIME_ADVANCE_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
 }
@@ -1366,7 +1366,7 @@ RTIambassador::timeAdvanceRequestAvailable(const FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = TIME_ADVANCE_REQUEST_AVAILABLE ;
+    req.type = Message::TIME_ADVANCE_REQUEST_AVAILABLE ;
     req.setFedTime(theTime);
 
     executeService(&req, &rep);
@@ -1390,7 +1390,7 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = NEXT_EVENT_REQUEST ;
+    req.type = Message::NEXT_EVENT_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
 }
@@ -1415,7 +1415,7 @@ RTIambassador::nextEventRequestAvailable(const FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = NEXT_EVENT_REQUEST ;
+    req.type = Message::NEXT_EVENT_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
 }
@@ -1438,7 +1438,7 @@ RTIambassador::flushQueueRequest(const FedTime& theTime)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = FLUSH_QUEUE_REQUEST ;
+    req.type = Message::FLUSH_QUEUE_REQUEST ;
     req.setFedTime(theTime);
 
     executeService(&req, &rep);
@@ -1459,7 +1459,7 @@ RTIambassador::enableAsynchronousDelivery()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = ENABLE_ASYNCHRONOUS_DELIVERY ;
+    req.type = Message::ENABLE_ASYNCHRONOUS_DELIVERY ;
 
     executeService(&req, &rep);
 }
@@ -1479,7 +1479,7 @@ RTIambassador::disableAsynchronousDelivery()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DISABLE_ASYNCHRONOUS_DELIVERY ;
+    req.type = Message::DISABLE_ASYNCHRONOUS_DELIVERY ;
 
     executeService(&req, &rep);
 }
@@ -1497,7 +1497,7 @@ RTIambassador::queryLBTS(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = QUERY_LBTS ;
+    req.type = Message::QUERY_LBTS ;
     executeService(&req, &rep);
 
     theTime = rep.getFedTime();
@@ -1516,7 +1516,7 @@ RTIambassador::queryFederateTime(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = QUERY_FEDERATE_TIME ;
+    req.type = Message::QUERY_FEDERATE_TIME ;
     executeService(&req, &rep);
 
     theTime = rep.getFedTime();
@@ -1550,7 +1550,7 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = MODIFY_LOOKAHEAD ;
+    req.type = Message::MODIFY_LOOKAHEAD ;
     req.setLookahead(theLookahead);
 
     executeService(&req, &rep);
@@ -1569,7 +1569,7 @@ RTIambassador::queryLookahead(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = QUERY_LOOKAHEAD ;
+    req.type = Message::QUERY_LOOKAHEAD ;
     executeService(&req, &rep);
 
     RTIfedTime *tmp = new RTIfedTime((Double) rep.getFederationTimeDelta());
@@ -1591,7 +1591,7 @@ RTIambassador::retract(EventRetractionHandle handle)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = RETRACT ;
+    req.type = Message::RETRACT ;
     req.setEventRetraction(handle);
 
     executeService(&req, &rep);
@@ -1616,7 +1616,7 @@ RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
 {
     Message req, rep ;
 
-    req.type = CHANGE_ATTRIBUTE_ORDER_TYPE ;
+    req.type = Message::CHANGE_ATTRIBUTE_ORDER_TYPE ;
     req.setObject(theObject);
     req.setOrdering(theType);
     req.setAHS(attrs);
@@ -1642,7 +1642,7 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = CHANGE_INTERACTION_ORDER_TYPE ;
+    req.type = Message::CHANGE_INTERACTION_ORDER_TYPE ;
     req.setInteractionClass(theClass);
     req.setOrdering(theType);
 
@@ -1668,7 +1668,7 @@ RTIambassador::createRegion(SpaceHandle space,
 {
     Message req, rep ;
 
-    req.setType(CREATE_REGION);
+    req.setType(Message::CREATE_REGION);
     req.setSpace(space);
     req.setNumber(nb_extents);
     executeService(&req, &rep);
@@ -1714,7 +1714,7 @@ RTIambassador::deleteRegion(Region *region)
 
     Message req, rep ;
 
-    req.setType(DELETE_REGION);
+    req.setType(Message::DELETE_REGION);
     req.setRegion(((RegionImp *) region)->getHandle());
     executeService(&req, &rep);
 
@@ -1965,7 +1965,7 @@ RTIambassador::getObjectClassHandle(const char *theName)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = GET_OBJECT_CLASS_HANDLE ;
+    req.type = Message::GET_OBJECT_CLASS_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
@@ -1987,7 +1987,7 @@ RTIambassador::getObjectClassName(ObjectClassHandle handle)
 {
     Message req, rep ;
 
-    req.type = GET_OBJECT_CLASS_NAME ;
+    req.type = Message::GET_OBJECT_CLASS_NAME ;
     req.setObjectClass(handle);
 
     executeService(&req, &rep);
@@ -2009,7 +2009,7 @@ RTIambassador::getAttributeHandle(const char *theName,
 {
     Message req, rep ;
 
-    req.type = GET_ATTRIBUTE_HANDLE ;
+    req.type = Message::GET_ATTRIBUTE_HANDLE ;
     req.setName(theName);
     req.setObjectClass(whichClass);
 
@@ -2031,7 +2031,7 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
 {
     Message req, rep ;
 
-    req.type = GET_ATTRIBUTE_NAME ;
+    req.type = Message::GET_ATTRIBUTE_NAME ;
     req.setAttribute(theHandle);
     req.setObjectClass(whichClass);
 
@@ -2051,7 +2051,7 @@ RTIambassador::getInteractionClassHandle(const char *theName)
 {
     Message req, rep ;
 
-    req.type = GET_INTERACTION_CLASS_HANDLE ;
+    req.type = Message::GET_INTERACTION_CLASS_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
@@ -2071,7 +2071,7 @@ RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
 {
     Message req, rep ;
 
-    req.type = GET_INTERACTION_CLASS_NAME ;
+    req.type = Message::GET_INTERACTION_CLASS_NAME ;
     req.setInteractionClass(theHandle);
 
     executeService(&req, &rep);
@@ -2092,7 +2092,7 @@ RTIambassador::getParameterHandle(const char *theName,
 {
     Message req, rep ;
 
-    req.type = GET_PARAMETER_HANDLE ;
+    req.type = Message::GET_PARAMETER_HANDLE ;
     req.setName(theName);
     req.setInteractionClass(whichClass);
 
@@ -2114,7 +2114,7 @@ RTIambassador::getParameterName(ParameterHandle theHandle,
 {
     Message req, rep ;
 
-    req.type = GET_PARAMETER_NAME ;
+    req.type = Message::GET_PARAMETER_NAME ;
     req.setParameter(theHandle);
     req.setInteractionClass(whichClass);
 
@@ -2137,7 +2137,7 @@ RTIambassador::getObjectInstanceHandle(const char *theName)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_OBJECT_INSTANCE_HANDLE ;
+    req.type = Message::GET_OBJECT_INSTANCE_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
@@ -2158,7 +2158,7 @@ RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_OBJECT_INSTANCE_NAME ;
+    req.type = Message::GET_OBJECT_INSTANCE_NAME ;
     req.setObject(theHandle);
 
     executeService(&req, &rep);
@@ -2177,7 +2177,7 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
 {
     Message req, rep ;
 
-    req.type = GET_SPACE_HANDLE ;
+    req.type = Message::GET_SPACE_HANDLE ;
     req.setName(name);
     this->executeService(&req, &rep);
 
@@ -2195,7 +2195,7 @@ RTIambassador::getRoutingSpaceName(SpaceHandle handle)
 {
     Message req, rep ;
 
-    req.type = GET_SPACE_NAME ;
+    req.type = Message::GET_SPACE_NAME ;
     req.setSpace(handle);
     this->executeService(&req, &rep);
 
@@ -2215,7 +2215,7 @@ RTIambassador::getDimensionHandle(const char *dimension,
 {
     Message req, rep ;
 
-    req.type = GET_DIMENSION_HANDLE ;
+    req.type = Message::GET_DIMENSION_HANDLE ;
     req.setName(dimension);
     req.setSpace(space);
     this->executeService(&req, &rep);
@@ -2236,7 +2236,7 @@ RTIambassador::getDimensionName(DimensionHandle dimension,
 {
     Message req, rep ;
 
-    req.type = GET_DIMENSION_NAME ;
+    req.type = Message::GET_DIMENSION_NAME ;
     req.setDimension(dimension);
     req.setSpace(space);
     this->executeService(&req, &rep);
@@ -2255,7 +2255,7 @@ RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
 {
     Message req, rep ;
 
-    req.type = GET_ATTRIBUTE_SPACE_HANDLE ;
+    req.type = Message::GET_ATTRIBUTE_SPACE_HANDLE ;
     req.setAttribute(attribute);
     req.setObjectClass(objectClass);
 
@@ -2277,7 +2277,7 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_OBJECT_CLASS ;
+    req.type = Message::GET_OBJECT_CLASS ;
     req.setObject(theObject);
 
     executeService(&req, &rep);
@@ -2294,7 +2294,7 @@ RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
 {
     Message req, rep ;
 
-    req.type = GET_INTERACTION_SPACE_HANDLE ;
+    req.type = Message::GET_INTERACTION_SPACE_HANDLE ;
     req.setInteractionClass(inter);
 
     this->executeService(&req, &rep);
@@ -2315,7 +2315,7 @@ RTIambassador::getTransportationHandle(const char *theName)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_TRANSPORTATION_HANDLE ;
+    req.type = Message::GET_TRANSPORTATION_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
@@ -2336,7 +2336,7 @@ RTIambassador::getTransportationName(TransportationHandle theHandle)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_TRANSPORTATION_NAME ;
+    req.type = Message::GET_TRANSPORTATION_NAME ;
     req.setTransportation(theHandle);
 
     executeService(&req, &rep);
@@ -2357,7 +2357,7 @@ RTIambassador::getOrderingHandle(const char *theName)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_ORDERING_HANDLE ;
+    req.type = Message::GET_ORDERING_HANDLE ;
     req.setName(theName);
 
     executeService(&req, &rep);
@@ -2379,7 +2379,7 @@ RTIambassador::getOrderingName(OrderingHandle theHandle)
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = GET_ORDERING_NAME ;
+    req.type = Message::GET_ORDERING_NAME ;
     req.setOrdering(theHandle);
 
     executeService(&req, &rep);
@@ -2401,7 +2401,7 @@ RTIambassador::enableClassRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2420,7 +2420,7 @@ RTIambassador::disableClassRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2439,7 +2439,7 @@ RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2458,7 +2458,7 @@ RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2476,7 +2476,7 @@ void RTIambassador::enableAttributeScopeAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2495,7 +2495,7 @@ RTIambassador::disableAttributeScopeAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2514,7 +2514,7 @@ RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2533,7 +2533,7 @@ RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     throw UnimplementedService();
     Message req, rep ;
 
-    req.type = DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
 
     executeService(&req, &rep);
 }
@@ -2555,7 +2555,7 @@ RTIambassador::tick()
     is_reentrant = true ;
 
     // Prevenir le RTI
-    vers_RTI.type = TICK_REQUEST ;
+    vers_RTI.type = Message::TICK_REQUEST ;
 
     try {
         vers_RTI.write((SocketUN *) this);
@@ -2581,7 +2581,7 @@ RTIambassador::tick()
         }
 
         // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
-        if (vers_Fed.type == TICK_REQUEST) {
+        if (vers_Fed.type == Message::TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
             return vers_Fed.getBoolean();
@@ -2594,80 +2594,80 @@ RTIambassador::tick()
         try {
             switch (vers_Fed.type) {
 
-              case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+              case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
                 fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
                 break ;
 
-              case ANNOUNCE_SYNCHRONIZATION_POINT:
+              case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
                 fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
                                                       vers_Fed.getTag());
                 break ;
 
-              case FEDERATION_SYNCHRONIZED:
+              case Message::FEDERATION_SYNCHRONIZED:
                 fed_amb->federationSynchronized(vers_Fed.getLabel());
                 break ;
 
-              case INITIATE_FEDERATE_SAVE:
+              case Message::INITIATE_FEDERATE_SAVE:
                 fed_amb->initiateFederateSave(vers_Fed.getLabel());
                 break ;
 
-              case FEDERATION_SAVED:
+              case Message::FEDERATION_SAVED:
                 fed_amb->federationSaved();
                 break ;
 
-              case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+              case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
                 fed_amb->requestFederationRestoreSucceeded(
                     vers_Fed.getLabel());
                 break ;
 
-              case REQUEST_FEDERATION_RESTORE_FAILED:
+              case Message::REQUEST_FEDERATION_RESTORE_FAILED:
                 fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
                                                         vers_Fed.getTag());
                 break ;
 
-              case FEDERATION_RESTORE_BEGUN:
+              case Message::FEDERATION_RESTORE_BEGUN:
                 fed_amb->federationRestoreBegun();
                 break ;
 
-              case INITIATE_FEDERATE_RESTORE:
+              case Message::INITIATE_FEDERATE_RESTORE:
                 fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
                                                  vers_Fed.getFederate());
                 break ;
 
-              case FEDERATION_RESTORED:
+              case Message::FEDERATION_RESTORED:
                 fed_amb->federationRestored();
                 break ;
 
-              case FEDERATION_NOT_RESTORED:
+              case Message::FEDERATION_NOT_RESTORED:
                 fed_amb->federationNotRestored();
                 break ;
 
-              case START_REGISTRATION_FOR_OBJECT_CLASS: {
+              case Message::START_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
                       startRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
 
-              case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
+              case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
                       stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
 
-              case TURN_INTERACTIONS_ON: {
+              case Message::TURN_INTERACTIONS_ON: {
                   fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
 
-              case TURN_INTERACTIONS_OFF: {
+              case Message::TURN_INTERACTIONS_OFF: {
                   fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
 
-              case DISCOVER_OBJECT_INSTANCE: {
+              case Message::DISCOVER_OBJECT_INSTANCE: {
                   fed_amb->
                       discoverObjectInstance(vers_Fed.getObject(),
                                              vers_Fed.getObjectClass(),
                                              vers_Fed.getName());
               } break ;
 
-              case REFLECT_ATTRIBUTE_VALUES: {
+              case Message::REFLECT_ATTRIBUTE_VALUES: {
                   AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
                   fed_amb->
                       reflectAttributeValues(vers_Fed.getObject(),
@@ -2679,7 +2679,7 @@ RTIambassador::tick()
                   delete theAttributes ;
               } break ;
 
-              case RECEIVE_INTERACTION: {
+              case Message::RECEIVE_INTERACTION: {
                   ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
 
                   fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
@@ -2691,25 +2691,25 @@ RTIambassador::tick()
                   delete theParameters ;
               } break ;
 
-              case REMOVE_OBJECT_INSTANCE: {
+              case Message::REMOVE_OBJECT_INSTANCE: {
                   fed_amb->removeObjectInstance(vers_Fed.getObject(),
                                                 vers_Fed.getFedTime(),
                                                 vers_Fed.getTag(),
                                                 vers_Fed.getEventRetraction());
               } break ;
 
-              case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+              case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
 
 
 
                   // fed_amb->provideAttributeValueUpdate();
               } break ;
 
-              case REQUEST_RETRACTION: {
+              case Message::REQUEST_RETRACTION: {
 
               } break ;
 
-              case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+              case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->
@@ -2719,7 +2719,7 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
+              case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
@@ -2729,7 +2729,7 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
+              case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
@@ -2738,7 +2738,7 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
+              case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->
@@ -2748,7 +2748,7 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
+              case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->
@@ -2758,7 +2758,7 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
+              case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
                   fed_amb->
@@ -2768,19 +2768,19 @@ RTIambassador::tick()
                   delete attributeSet ;
               } break ;
 
-              case INFORM_ATTRIBUTE_OWNERSHIP: {
+              case Message::INFORM_ATTRIBUTE_OWNERSHIP: {
                   fed_amb->
                       informAttributeOwnership(vers_Fed.getObject(),
                                                vers_Fed.getAttribute(),
                                                vers_Fed.getFederate());
               } break ;
 
-              case ATTRIBUTE_IS_NOT_OWNED: {
+              case Message::ATTRIBUTE_IS_NOT_OWNED: {
                   fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
                                                vers_Fed.getAttribute());
               } break ;
 
-              case TIME_ADVANCE_GRANT: {
+              case Message::TIME_ADVANCE_GRANT: {
                   fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
 
@@ -3247,4 +3247,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.29 2003/05/09 03:14:15 breholee Exp $
+// $Id: RTIambassador.cc,v 3.30 2003/06/07 22:24:13 breholee Exp $

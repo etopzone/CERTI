@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.7 2003/05/09 02:31:14 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
@@ -72,7 +72,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
     NetworkMessage req ;
-    req.type = m_PUBLISH_OBJECT_CLASS ;
+    req.type = NetworkMessage::PUBLISH_OBJECT_CLASS ;
     req.objectClass = theClassHandle ;
     req.handleArraySize = attribArraySize ;
     req.federation = fm->_numero_federation ;
@@ -86,7 +86,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     // Reception
     NetworkMessage rep ;
-    comm->waitMessage(&rep, m_PUBLISH_OBJECT_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::PUBLISH_OBJECT_CLASS, req.federate);
 
     e = rep.exception ;
 }
@@ -118,7 +118,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
     NetworkMessage req ;
-    req.type = m_UNPUBLISH_OBJECT_CLASS ;
+    req.type = NetworkMessage::UNPUBLISH_OBJECT_CLASS ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = theClassHandle ;
@@ -128,7 +128,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
 
     // On attend une reponse
     NetworkMessage rep ;
-    comm->waitMessage(&rep, m_UNPUBLISH_OBJECT_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::UNPUBLISH_OBJECT_CLASS, req.federate);
 
     e = rep.exception ;
 }
@@ -155,7 +155,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
 
     // Partie RTIG
     NetworkMessage req ;
-    req.type = m_PUBLISH_INTERACTION_CLASS ;
+    req.type = NetworkMessage::PUBLISH_INTERACTION_CLASS ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.interactionClass = theInteractionHandle ;
@@ -163,7 +163,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     comm->sendMessage(&req);
 
     NetworkMessage rep ;
-    comm->waitMessage(&rep, m_PUBLISH_INTERACTION_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::PUBLISH_INTERACTION_CLASS, req.federate);
 
     e = rep.exception ;
 }
@@ -190,7 +190,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 
     // Partie RTIG
     NetworkMessage req ;
-    req.type = m_UNPUBLISH_INTERACTION_CLASS ;
+    req.type = NetworkMessage::UNPUBLISH_INTERACTION_CLASS ;
     req.interactionClass = theInteractionHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -198,7 +198,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
     comm->sendMessage(&req);
 
     NetworkMessage rep ;
-    comm->waitMessage(&rep, m_UNPUBLISH_INTERACTION_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::UNPUBLISH_INTERACTION_CLASS, req.federate);
 
     e = rep.exception ;
 }
@@ -218,7 +218,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
 
-    req.type = m_SUBSCRIBE_OBJECT_CLASS ;
+    req.type = NetworkMessage::SUBSCRIBE_OBJECT_CLASS ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = theClassHandle ;
@@ -232,7 +232,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Reception
     comm->waitMessage(&rep,
-                      m_SUBSCRIBE_OBJECT_CLASS,
+                      NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
                       req.federate);
 
     e = rep.exception ;
@@ -264,7 +264,7 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     // Pas de Partie Locale pour les abonnements
 
     // Partie RTIG
-    req.type = m_UNSUBSCRIBE_OBJECT_CLASS ;
+    req.type = NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS ;
     req.objectClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -272,7 +272,7 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     comm->waitMessage(&rep,
-                      m_UNSUBSCRIBE_OBJECT_CLASS,
+                      NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS,
                       req.federate);
 
     e = rep.exception ;
@@ -315,14 +315,14 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     // Partie RTIG
 
-    req.type = m_SUBSCRIBE_INTERACTION_CLASS ;
+    req.type = NetworkMessage::SUBSCRIBE_INTERACTION_CLASS ;
     req.interactionClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_SUBSCRIBE_INTERACTION_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::SUBSCRIBE_INTERACTION_CLASS, req.federate);
 
     e = rep.exception ;
 }
@@ -364,7 +364,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     // Partie RTIG
 
-    req.type = m_UNSUBSCRIBE_INTERACTION_CLASS ;
+    req.type = NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS ;
     req.interactionClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -372,7 +372,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
     comm->sendMessage(&req);
 
     comm->waitMessage(&rep,
-                      m_UNSUBSCRIBE_INTERACTION_CLASS,
+                      NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS,
                       req.federate);
 
     e = rep.exception ;
@@ -402,7 +402,7 @@ startRegistrationForObjectClass(ObjectClassHandle the_class,
 
     // Partie Federe
 
-    req.type = START_REGISTRATION_FOR_OBJECT_CLASS ;
+    req.type = Message::START_REGISTRATION_FOR_OBJECT_CLASS ;
     req.setObjectClass(the_class);
 
     comm->sendUN(&req);
@@ -431,7 +431,7 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
 
     // Partie Federe
 
-    req.type = STOP_REGISTRATION_FOR_OBJECT_CLASS ;
+    req.type = Message::STOP_REGISTRATION_FOR_OBJECT_CLASS ;
     req.setObjectClass(the_class);
 
     comm->sendUN(&req);
@@ -454,7 +454,7 @@ DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
                                           TypeException &e)
 {
     Message req, rep ;
-    req.type = TURN_INTERACTIONS_ON ;
+    req.type = Message::TURN_INTERACTIONS_ON ;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
     comm->receiveUN(&rep);
@@ -475,7 +475,7 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
                                            TypeException &e)
 {
     Message req ;
-    req.type = TURN_INTERACTIONS_OFF ;
+    req.type = Message::TURN_INTERACTIONS_OFF ;
     req.setInteractionClass(interaction);
     comm->sendUN(&req);
     Message rep ;
@@ -492,4 +492,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.7 2003/05/09 02:31:14 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $

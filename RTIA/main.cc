@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.7 2003/05/23 14:59:32 breholee Exp $
+// $Id: main.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -38,18 +38,22 @@ main(int argc, char *argv[])
 
     std::set_new_handler(NewHandler);
 
+    RTIA rtia ;
+
     try {
-        RTIA rtia ;
-        rtia.execute();
+	rtia.execute();
     }
     catch (Exception &e) {
-        cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
-        if (e._reason)
-            cerr << "Reason: " << e._reason << endl ;
-        
-        return EXIT_FAILURE ;
+	cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
+	if (e._reason)
+	    cerr << "Reason: " << e._reason << endl ;
+	
+	return EXIT_FAILURE ;
     }
 
+    rtia.displayStatistics();
+    cout << "RTIA: End execution." << endl ;
+    
     return EXIT_SUCCESS ;
 }
 
@@ -70,4 +74,4 @@ NewHandler()
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.7 2003/05/23 14:59:32 breholee Exp $
+// EOF $Id: main.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $

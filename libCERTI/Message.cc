@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.15 2003/05/09 02:31:14 breholee Exp $
+// $Id: Message.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -113,7 +113,8 @@ void Message::setLabel(const char *NewLabel)
 // -- SetName --
 // -------------
 
-void Message::setName(const char *NewName)
+void
+Message::setName(const char *NewName)
 {
     if (strlen(NewName) > MAX_USER_TAG_LENGTH)
         throw ValueLengthExceeded("Name too long to fit in Message.");
@@ -124,7 +125,7 @@ void Message::setName(const char *NewName)
 // ----------------------------------------------------------------------------
 // setType
 void
-Message::setType(TypeService t)
+Message::setType(Type t)
 {
     type = t ;
 }
@@ -584,4 +585,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.15 2003/05/09 02:31:14 breholee Exp $
+// $Id: Message.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $

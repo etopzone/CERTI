@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.9 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.10 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -370,7 +370,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 {
     switch(ocblist->message->type) {
 
-    case m_REFLECT_ATTRIBUTE_VALUES: {
+    case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
         list<Subscriber *>::iterator i ;
         for (i = subscribers.begin(); i != subscribers.end(); i++) {
             ocblist->addFederate((*i)->getHandle(), handle);
@@ -378,7 +378,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
     }
         break ;
 
-    case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+    case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
         list<Publisher *>::iterator i ;
         for (i = publishers.begin(); i != publishers.end(); i++) {
             ocblist->addFederate((*i)->getHandle(), handle);
@@ -392,4 +392,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.9 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.10 2003/06/07 22:24:13 breholee Exp $

@@ -241,7 +241,8 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
         answer->type = answer->federate
-            ? m_INFORM_ATTRIBUTE_OWNERSHIP : m_ATTRIBUTE_IS_NOT_OWNED ;
+            ? NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP
+	    : NetworkMessage::ATTRIBUTE_IS_NOT_OWNED ;
 
         sendToFederate(answer, the_federate);
     }
@@ -429,4 +430,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.4 2003/05/23 13:21:48 breholee Exp $
+// $Id: ObjectSet.cc,v 3.5 2003/06/07 22:24:13 breholee Exp $

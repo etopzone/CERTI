@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.8 2003/05/23 14:54:06 breholee Exp $
+// $Id: RTIA.cc,v 3.9 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -31,115 +31,6 @@ static pdCDebug D("RTIA", "(RTIA) ");
 // Tableau des messages pouvant etre recus du RTIG
 
 #define MSG_RTIG_MAX 18
-
-const char *Messages_RTIG[MSG_RTIG_MAX] = {
-    "MESSAGE NULL",
-    "SET_TIME_REGULATING",
-    "REQUEST_PAUSE", // to be removed or changed later.
-    "REQUEST_RESUME", // to be removed or changed later.
-    "DISCOVER_OBJECT",
-    "START_REGISTRATION_FOR_OBJECT_CLASS",
-    "STOP_REGISTRATION_FOR_OBJECT_CLASS",
-    "REFLECT_ATTRIBUTE_VALUES",
-    "SEND_INTERACTION",
-    "REMOVE_OBJECT",
-    "INFORM_ATTRIBUTE_OWNERSHIP",
-    "ATTRIBUTE_IS_NOT_OWNED",
-    "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION",
-    "ATTRIBUTE_OWNERSHIP_UNAVAILABLE",
-    "ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION",
-    "ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION",
-    "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE",
-    "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION"
-};
-
-// Tableau des messages pouvant etre recus du Federe.
-
-#define MSG_FED_MAX 53
-
-const char *Messages_Fed[MSG_FED_MAX] = {
-    "CREATE_FEDERATION_EXECUTION",
-    "DESTROY_FEDERATION_EXECUTION",
-    "JOIN_FEDERATION_EXECUTION",
-    "RESIGN_FEDERATION_EXECUTION",
-    "REQUEST_PAUSE", // to be removed or changed later.
-    "PAUSE_ACHIEVED", // to be removed or changed later.
-    "REQUEST_RESUME", // to be removed or changed later.
-    "RESUME_ACHIEVED", // to be removed or changed later.
-    "PUBLISH_OBJECT_CLASS",
-    "UNPUBLISH_OBJECT_CLASS",
-    "PUBLISH_INTERACTION_CLASS",
-    "UNPUBLISH_INTERACTION_CLASS",
-    "SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE",
-    "UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE",
-    "SUBSCRIBE_INTERACTION_CLASS",
-    "UNSUBSCRIBE_INTERACTION_CLASS",
-    "REQUEST_ID",
-    "REGISTER_OBJECT",
-    "UPDATE_ATTRIBUTE_VALUES",
-    "SEND_INTERACTION",
-    "DELETE_OBJECT",
-    "CHANGE_ATTRIBUTE_TRANSPORT_TYPE",
-    "CHANGE_ATTRIBUTE_ORDER_TYPE",
-    "CHANGE_INTERACTION_TRANSPORT_TYPE",
-    "CHANGE_INTERACTION_ORDER_TYPE",
-    "REQUEST_FEDERATION_TIME",
-    "REQUEST_LBTS",
-    "REQUEST_FEDERATE_TIME",
-    "SET_LOOKAHEAD",
-    "REQUEST_LOOKAHEAD",
-    "TIME_ADVANCED_REQUEST",
-    "NEXT_EVENT_REQUEST",
-    "GET_OBJECT_CLASS_HANDLE",
-    "GET_OBJECT_CLASS_NAME",
-    "GET_ATTRIBUTE_HANDLE",
-    "GET_ATTRIBUTE_NAME",
-    "GET_INTERACTION_CLASS_HANDLE",
-    "GET_INTERACTION_CLASS_NAME",
-    "GET_PARAMETER_HANDLE",
-    "GET_PARAMETER_NAME",
-    "SET_TIME_REGULATING",
-    "SET_TIME_CONSTRAINED",
-    "TICK_REQUEST",
-    "IS_ATTRIBUTE_OWNED_BY_FEDERATE",
-    "QUERY_ATTRIBUTE_OWNERSHIP",
-    "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
-    "ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE",
-    "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
-    "ATTRIBUTE_OWNERSHIP_ACQUISITION",
-    "CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE",
-    "ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE",
-    "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION",
-    "GET_SPACE_HANDLE"
-};
-
-// ----------------------------------------------------------------------------
-// Displays statistics (requests, rtig messages, ...).
-void
-RTIA::count()
-{
-#ifdef RTI_PRINTS_STATISTICS
-
-    char *s = getenv("CERTI_NO_STATISTICS");
-    if (s) return ;
-
-    cout << endl << "RTIA: Statistics (processed messages)" << endl ;
-
-    for (int j = 0 ; j < MSG_FED_MAX ; j++)
-        cout << " Federate request type " << Messages_Fed[j]
-             << ": " << nb_requetes[j] << endl ;
-
-    cout << endl ;
-
-    for (int j = 0 ; j < MSG_RTIG_MAX ; j++)
-        cout << " RTIG messages type " << Messages_RTIG[j]
-             << ": " << nb_messages[j] << endl ;
-
-    cout << endl << " Number of interactions : " << nb_evenements << endl ;
-    cout << " Number of RTIG messages : " << TOTAL << endl ;
-
-#endif
-}
 
 // ----------------------------------------------------------------------------
 //! RTIA constructor.
@@ -159,15 +50,6 @@ RTIA::RTIA()
 
     fm->tm = tm ;
     queues->fm = fm ;
-
-    TOTAL = 0 ;
-    nb_evenements = 0 ;
-
-    for (int j = 0 ; j < MSG_FED_MAX ; j++)
-        nb_requetes[j]=0 ;
-
-    for (int j = 0 ; j < MSG_RTIG_MAX ; j++)
-        nb_messages[j]=0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -184,11 +66,16 @@ RTIA::~RTIA()
     delete comm ;
     delete ddm ;
     delete rootObject ;
+}
 
-    // Display statistics.
-    count();
-
-    cout << "RTIA: End execution." << endl ;
+// ----------------------------------------------------------------------------
+// displayStatistics
+void
+RTIA::displayStatistics()
+{
+    if (stat.display()) {
+	cout << stat ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -237,4 +124,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.8 2003/05/23 14:54:06 breholee Exp $
+// $Id: RTIA.cc,v 3.9 2003/06/07 22:24:12 breholee Exp $

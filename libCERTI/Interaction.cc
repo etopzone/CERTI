@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.12 2003/05/23 09:42:58 breholee Exp $
+// $Id: Interaction.cc,v 3.13 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -506,7 +506,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
         NetworkMessage *answer = new NetworkMessage ;
-        answer->type = m_RECEIVE_INTERACTION ;
+        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
@@ -652,4 +652,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.12 2003/05/23 09:42:58 breholee Exp $
+// $Id: Interaction.cc,v 3.13 2003/06/07 22:24:13 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.7 2003/02/19 15:45:22 breholee Exp $
+// $Id: Communications.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -36,7 +36,7 @@ static pdCDebug D("RTIA_COMM", "(RTIA Comm) ");
   3- Federate which sent the message, 0 if indifferent.
 */
 void Communications::waitMessage(NetworkMessage *msg,
-                                 TypeNetworkMessage type_msg,
+                                 NetworkMessage::Type type_msg,
                                  FederateHandle numeroFedere)
 {
     NetworkMessage *tampon ;
@@ -117,7 +117,7 @@ Communications::~Communications(void)
     // Advertise RTIG that TCP link is being closed.
 
     NetworkMessage msg ;
-    msg.type = m_CLOSE_CONNEXION ;
+    msg.type = NetworkMessage::CLOSE_CONNEXION ;
     msg.write((SecureTCPSocket *) this);
 
     SecureTCPSocket::close();
@@ -247,7 +247,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
   returns RTI_FALSE.
 */
 Boolean
-Communications::searchMessage(TypeNetworkMessage type_msg,
+Communications::searchMessage(NetworkMessage::Type type_msg,
                               FederateHandle numeroFedere,
                               NetworkMessage *msg)
 {
@@ -295,4 +295,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.7 2003/02/19 15:45:22 breholee Exp $
+// $Id: Communications.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $

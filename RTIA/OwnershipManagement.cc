@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
@@ -57,7 +57,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
           "IS_ATTRIBUTE_OWNED_BY_FEDERATE, attribute %u of object %u",
           theAttribute, theObject);
 
-    req.type = m_IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
+    req.type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -70,7 +70,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
 
     // waitMessage is only used to verify transmission was OK.
     comm->waitMessage(&rep,
-                      m_IS_ATTRIBUTE_OWNED_BY_FEDERATE,
+                      NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE,
                       req.federate);
 
     e = rep.exception ;
@@ -94,7 +94,7 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
           "QUERY_ATTRIBUTE_OWNERSHIP, attribute %u from object %u",
           theAttribute, theObject);
 
-    req.type = m_QUERY_ATTRIBUTE_OWNERSHIP ;
+    req.type = NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -106,7 +106,7 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
     comm->sendMessage(&req);
 
     //AttendreMsg ne sert que pour verifier que la transmission a ete OK
-    comm->waitMessage(&rep, m_QUERY_ATTRIBUTE_OWNERSHIP, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP, req.federate);
 
     e = rep.exception ;
 }
@@ -124,7 +124,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -139,7 +139,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+    comm->waitMessage(&rep, NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate);
 
     e = rep.exception ;
@@ -156,7 +156,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -171,7 +171,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     comm->sendMessage(&req);
 
     comm->waitMessage(&rep,
-                      m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+                      NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate);
 
     e = rep.exception ;
@@ -188,7 +188,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
+    req.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -201,7 +201,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
+    comm->waitMessage(&rep, NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
                       req.federate);
 
     e = rep.exception ;
@@ -218,7 +218,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.type = NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -232,7 +232,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+    comm->waitMessage(&rep, NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate);
 
     e = rep.exception ;
@@ -250,7 +250,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -265,7 +265,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_ATTRIBUTE_OWNERSHIP_ACQUISITION,
+    comm->waitMessage(&rep, NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION,
                       req.federate);
 
     e = rep.exception ;
@@ -282,7 +282,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
+    req.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -298,7 +298,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
+    comm->waitMessage(&rep, NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
                       req.federate);
 
     e = rep.exception ;
@@ -328,7 +328,7 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
 {
     NetworkMessage req, rep ;
 
-    req.type = m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.type = NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
@@ -341,7 +341,7 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
+    comm->waitMessage(&rep, NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
                       req.federate);
 
     e = rep.exception ;
@@ -357,7 +357,7 @@ OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = INFORM_ATTRIBUTE_OWNERSHIP ;
+    req.type = Message::INFORM_ATTRIBUTE_OWNERSHIP ;
     req.setObject(the_object);
     req.setAttribute(the_attribute);
     req.setFederate(the_owner);
@@ -375,7 +375,7 @@ OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_IS_NOT_OWNED ;
+    req.type = Message::ATTRIBUTE_IS_NOT_OWNED ;
     req.setObject(the_object);
     req.setAttribute(the_attribute);
     // req.setFederate(the_owner);
@@ -395,7 +395,7 @@ attributeOwnershipUnavailable(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_UNAVAILABLE ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
@@ -414,7 +414,7 @@ attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
@@ -434,7 +434,7 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
+    req.type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
     req.setTag(the_tag);
@@ -454,7 +454,7 @@ requestAttributeOwnershipRelease(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE ;
+    req.type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
     req.setTag(the_tag);
@@ -473,7 +473,7 @@ attributeOwnershipDivestitureNotification(ObjectHandle the_object,
 {
     Message req, rep ;
 
-    req.type = ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION ;
+    req.type = Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
@@ -491,7 +491,7 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 {
     Message req ;
 
-    req.type = CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION ;
+    req.type = Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
@@ -501,4 +501,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $

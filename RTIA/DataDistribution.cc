@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.6 2003/05/23 14:16:47 breholee Exp $
+// $Id: DataDistribution.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DataDistribution.hh"
@@ -114,14 +114,14 @@ DataDistribution::createRegion(SpaceHandle space,
 
     NetworkMessage req, rep ;
 
-    req.type = m_CREATE_REGION ;
+    req.type = NetworkMessage::CREATE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.space = space ;
     req.nbExtents = nb_extents ;
     
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_CREATE_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::CREATE_REGION, req.federate);
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
@@ -152,13 +152,13 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     // Request to RTIG
     NetworkMessage req, rep ;
 
-    req.type = m_DELETE_REGION ;
+    req.type = NetworkMessage::DELETE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.region = handle ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, m_DELETE_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DELETE_REGION, req.federate);
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
@@ -169,4 +169,4 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.6 2003/05/23 14:16:47 breholee Exp $
+// $Id: DataDistribution.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $

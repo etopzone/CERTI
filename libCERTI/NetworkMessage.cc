@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.5 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,7 +53,7 @@ NetworkMessage::display(const char *s)
 
 NetworkMessage::NetworkMessage()
 {
-    type = m_NOT_TYPED ;
+    type = NOT_TYPED ;
     exception = e_NO_EXCEPTION ;
 
     number = 0 ;
@@ -227,4 +227,4 @@ NetworkMessage::setValue(int Rank, const char *Value)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.5 2003/06/07 22:24:13 breholee Exp $

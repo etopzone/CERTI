@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.10 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.11 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -68,7 +68,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 
     // Prepare answer for RTIA
     NetworkMessage rep ;
-    rep.type = m_CREATE_FEDERATION_EXECUTION ;
+    rep.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federation = nextFederationHandle ;
 
@@ -131,7 +131,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     // Prepare answer
     NetworkMessage rep ;
-    rep.type = m_JOIN_FEDERATION_EXECUTION ;
+    rep.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = num_federe ;
     rep.federation = num_federation ;
@@ -177,7 +177,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation);
 
     NetworkMessage rep ;
-    rep.type = m_DESTROY_FEDERATION_EXECUTION ;
+    rep.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
 
@@ -262,7 +262,7 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 
     // send synchronizationPointRegistrationSucceeded() to federate.
     NetworkMessage rep ;
-    rep.type = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
+    rep.type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     rep.federate = req->federate ;
     rep.federation = req->federation ;
     rep.setLabel(req->label);
@@ -313,7 +313,7 @@ RTIG::processFederateSaveStatus(Socket *link, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u save ended.", req->federate);
 
-    bool status = req->type == m_FEDERATE_SAVE_COMPLETE ;
+    bool status = req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
     federations->federateSaveStatus(req->federation, req->federate, status);
 }
 
@@ -333,7 +333,7 @@ RTIG::processFederateRestoreStatus(Socket *link, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u restore ended.", req->federate);
 
-    bool status = (req->type == m_FEDERATE_RESTORE_COMPLETE) ? true : false ;
+    bool status = (req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE) ? true : false ;
     federations->federateRestoreStatus(req->federation, req->federate, status);
 }
 
@@ -342,7 +342,7 @@ RTIG::processFederateRestoreStatus(Socket *link, NetworkMessage *req)
 void
 RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 {
-    bool pub = (req->type == m_PUBLISH_OBJECT_CLASS);
+    bool pub = (req->type == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
     auditServer->addToLinef("Class = %u, # of att. = %u",
                             req->objectClass,
@@ -373,7 +373,7 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 {
-    bool sub = (req->type == m_SUBSCRIBE_OBJECT_CLASS);
+    bool sub = (req->type == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
     auditServer->addToLinef("Class = %u, # of att. = %u",
                             req->objectClass,
@@ -407,7 +407,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 {
     assert(link != NULL && req != NULL);
 
-    bool pub = (req->type == m_PUBLISH_INTERACTION_CLASS);
+    bool pub = (req->type == NetworkMessage::PUBLISH_INTERACTION_CLASS);
 
     auditServer->addToLinef("Class = %u", req->interactionClass);
     federations->publishInteraction(req->federation,
@@ -433,7 +433,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 {
-    bool sub = (req->type == m_SUBSCRIBE_INTERACTION_CLASS);
+    bool sub = (req->type == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
 
     auditServer->addToLinef("Class = %u", req->interactionClass);
     federations->subscribeInteraction(req->federation,
@@ -531,7 +531,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 
     // Prepare la reponse
     NetworkMessage rep ;
-    rep.type = m_UPDATE_ATTRIBUTE_VALUES ;
+    rep.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -567,7 +567,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
           req->interactionClass);
 
     NetworkMessage rep ;
-    rep.type = m_SEND_INTERACTION ;
+    rep.type = NetworkMessage::SEND_INTERACTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.interactionClass = req->interactionClass ;
@@ -592,7 +592,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
           req->object, req->federation);
 
     NetworkMessage rep ;
-    rep.type = m_DELETE_OBJECT ;
+    rep.type = NetworkMessage::DELETE_OBJECT ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -619,7 +619,7 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
           req->handleArray[0], req->object);
 
     NetworkMessage rep ;
-    rep.type = m_QUERY_ATTRIBUTE_OWNERSHIP ;
+    rep.type = NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -650,7 +650,7 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
 
-    rep.type = m_IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
+    rep.type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -678,7 +678,7 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    rep.type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -708,7 +708,7 @@ RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
+    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -738,7 +738,7 @@ RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    rep.type = NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -768,7 +768,7 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -797,7 +797,7 @@ RTIG::processCancelNegotiatedDivestiture(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    rep.type = NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -833,7 +833,7 @@ RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
         rep.handleArray[i] = attributes->getHandle(i);
     }
 
-    rep.type = m_ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
+    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -861,7 +861,7 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->object);
 
     NetworkMessage rep ;
-    rep.type = m_CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    rep.type = NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.object = req->object ;
@@ -888,7 +888,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
                << req->federation << " creates region " << rep.region
                << endl ;
 
-    rep.type = m_CREATE_REGION ;
+    rep.type = NetworkMessage::CREATE_REGION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.write(link);
@@ -908,7 +908,7 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
                << endl ;
 
     NetworkMessage rep ;
-    rep.type = m_DELETE_REGION ;
+    rep.type = NetworkMessage::DELETE_REGION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
     rep.region = req->region ;
@@ -917,4 +917,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.10 2003/05/05 20:21:39 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.11 2003/06/07 22:24:13 breholee Exp $

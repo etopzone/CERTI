@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: Communications.hh,v 3.6 2003/06/07 22:24:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -73,13 +73,13 @@ public:
     unsigned long getAddress(void);
     unsigned int getPort(void);
     void waitMessage(NetworkMessage *msg,
-                     TypeNetworkMessage type_msg,
+                     NetworkMessage::Type type_msg,
                      FederateHandle numeroFedere);
 
 private:
     list<NetworkMessage *> waitingList ;
 
-    Boolean searchMessage(TypeNetworkMessage type_msg,
+    Boolean searchMessage(NetworkMessage::Type type_msg,
                           FederateHandle numeroFedere,
                           NetworkMessage *msg);
 };
@@ -88,4 +88,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: Communications.hh,v 3.6 2003/06/07 22:24:12 breholee Exp $

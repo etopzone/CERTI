@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.8 2003/06/07 22:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassBroadcastList.hh"
@@ -37,8 +37,8 @@ static pdCDebug D("OBJBROADCASTLIST", "(broadcas) - ");
 NetworkMessage *
 ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 {
-    if ((message->type != m_REFLECT_ATTRIBUTE_VALUES) &&
-        (message->type != m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
+    if ((message->type != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
+        (message->type != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
         throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
 
     // Copy static informations.
@@ -72,7 +72,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             // Copy Attribute Handle.
             reducedMessage->handleArray[currentSize] = currentAttrib ;
 
-            if (message->type == m_REFLECT_ATTRIBUTE_VALUES) {
+            if (message->type == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
                 // Copy Attribute Value.
                 message->getValue(i, buffer);
                 reducedMessage->setValue(currentSize, buffer);
@@ -276,13 +276,13 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
     switch (message->type) {
 
-    case m_REFLECT_ATTRIBUTE_VALUES:
-    case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+    case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
+    case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         sendPendingRAVMessage(server);
         break ;
 
-    case m_DISCOVER_OBJECT:
-    case m_REMOVE_OBJECT:
+    case NetworkMessage::DISCOVER_OBJECT:
+    case NetworkMessage::REMOVE_OBJECT:
         sendPendingDOMessage(server);
         break ;
 
@@ -379,4 +379,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.8 2003/06/07 22:24:13 breholee Exp $
