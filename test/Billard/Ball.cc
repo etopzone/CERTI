@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Ball.cc,v 3.2 2003/10/20 11:15:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,7 +40,7 @@
 using namespace std ;
 
 // ----------------------------------------------------------------------------
-//! CBille constructor.
+//! Ball constructor. (parameter: object handle)
 Ball::Ball(ObjectHandle h)
 {
     x = -1.0 ;
@@ -55,7 +55,7 @@ Ball::Ball(ObjectHandle h)
 }
 
 // ----------------------------------------------------------------------------
-//! Displays the 'bille' on the right place in window.
+//! Displays the Ball on the right place in window.
 void
 Ball::display()
 {
@@ -71,7 +71,7 @@ Ball::display()
 }
 
 // ----------------------------------------------------------------------------
-//! Clear the 'bille' from window.
+//! Clear the Ball from window.
 void
 Ball::erase()
 {
@@ -87,7 +87,7 @@ Ball::erase()
 }
 
 // ----------------------------------------------------------------------------
-//! Determine new values for x and y, based on dx and dy.
+//! Set new values for x and y, based on dx and dy.
 void
 Ball::move()
 {
@@ -100,7 +100,7 @@ Ball::move()
 }
 
 // ----------------------------------------------------------------------------
-//! Put the 'bille' at a determined location.
+//! Put the Ball at a determined location.
 void
 Ball::setPosition(float xx, float yy)
 {
@@ -109,8 +109,9 @@ Ball::setPosition(float xx, float yy)
 }
 
 // ----------------------------------------------------------------------------
-//! modify dx and dy directions.
-void Ball::setDirection(float dxx, float dyy)
+//! Modify direction (x/y)
+void
+Ball::setDirection(float dxx, float dyy)
 {
     dx = dxx ;
     dy = dyy ;
@@ -152,7 +153,7 @@ Ball::collision(Ball *ab)
 }
 
 // ----------------------------------------------------------------------------
-//! init with one int parameter
+//! Initialize with a seed
 void
 Ball::init(int seed)
 {
@@ -166,7 +167,7 @@ Ball::init(int seed)
 }
 
 // ----------------------------------------------------------------------------
-//! init with coordinates
+//! Initialize with coordinates
 void
 Ball::init(int x_, int y_)
 {
@@ -179,5 +180,4 @@ Ball::init(int x_, int y_)
     display();
 }
 
-
-// $Id: Ball.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Ball.cc,v 3.2 2003/10/20 11:15:03 breholee Exp $
