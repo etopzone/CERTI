@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.18 2005/04/05 12:27:37 breholee Exp $
+// $Id: Interaction.hh,v 3.19 2005/04/05 19:59:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -28,7 +28,7 @@
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "Parameter.hh"
-#include "Subscriber.hh"
+#include "Subscribable.hh"
 #include "Publisher.hh"
 #include "InteractionBroadcastList.hh"
 
@@ -37,7 +37,7 @@
 
 namespace certi {
 
-class Interaction
+class Interaction : public Subscribable
 {
 public:
     Interaction();
@@ -73,18 +73,6 @@ public:
 
     void unpublish(FederateHandle)
         throw (FederateNotPublishing, RTIinternalError, SecurityError);
-
-    void subscribe(FederateHandle)
-        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
-
-    void unsubscribe(FederateHandle)
-        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
-
-    void subscribe(FederateHandle, RTIRegion *)
-        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
-
-    void unsubscribe(FederateHandle, RTIRegion *)
-        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
     
     // -- RTI Support Services --
     ParameterHandle getParameterHandle(const char *) const
@@ -148,10 +136,7 @@ private:
         throw (InteractionParameterNotDefined, RTIinternalError);
 
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle, RTIRegion *);
     bool isPublishing(FederateHandle);
-    bool isSubscribed(FederateHandle);
-    bool isSubscribed(FederateHandle, RTIRegion *);
 
     // Attributes    
     std::string name ;
@@ -160,8 +145,6 @@ private:
 
     //! List of this Interaction Class' Parameters.
     std::list<Parameter *> parameterSet ;
-    //! List of the Federates(Handles) who subscribed to this Class.
-    std::list<Subscriber *> subscribers ;
     //! List of the Federates(Handles) publishing this Class.
     std::list<Publisher *> publishers ;
 };
@@ -170,4 +153,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.18 2005/04/05 12:27:37 breholee Exp $
+// $Id: Interaction.hh,v 3.19 2005/04/05 19:59:56 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.22 2005/04/05 12:27:37 breholee Exp $
+// $Id: Interaction.cc,v 3.23 2005/04/05 19:59:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -110,12 +110,7 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
     }
 
     // 3. Add Interaction subscribers to the list.
-    list<Subscriber *>::iterator s ;
-    for (s = subscribers.begin(); s != subscribers.end(); s++) {
-        D.Out(pdDebug, "Adding federate %d to BroadcastList.",
-              (*s)->getHandle());
-        ibList->addFederate((*s)->getHandle());
-    }
+    addFederatesIfOverlap(*ibList, region);
 
     // 4. Send pending messages.
     D.Out(pdDebug, "Calling SendPendingMessage...");
@@ -211,17 +206,6 @@ Interaction::~Interaction()
         publishers.pop_front();
     }
 
-    // Deleting Subscribers
-    if (!subscribers.empty())
-        D.Out(pdError,
-              "Interaction %d: Subscribers list not empty at termination.",
-              handle);
-
-    while (!subscribers.empty()) {
-        delete subscribers.front();
-        subscribers.pop_front();
-    }
-
     // Deleting Sons
     while (!children.empty()) {
         children.pop_front();
@@ -238,21 +222,6 @@ Interaction::deletePublisher(FederateHandle fed)
         if ((*p)->getHandle() == fed) {
             delete (*p);
             publishers.erase(p);
-            return ;
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! Delete a subscriber with rank
-void
-Interaction::deleteSubscriber(FederateHandle fed, RTIRegion *region)
-{
-    list<Subscriber *>::iterator s ;
-    for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->equals(fed, region)) {
-            delete *s ;
-            subscribers.erase(s);
             return ;
         }
     }
@@ -323,28 +292,6 @@ Interaction::getParameterName(ParameterHandle the_handle) const
            RTIinternalError)
 {
     return getParameterByHandle(the_handle)->getName();
-}
-
-// ----------------------------------------------------------------------------
-//! Return true if federate has subscribed to this attribute w/ region
-bool
-Interaction::isSubscribed(FederateHandle fed, RTIRegion *region)
-{
-    list<Subscriber *>::iterator s ;
-    for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->equals(fed, region)) {
-	    return true ;
-        }
-    }
-    return false ;
-}
-
-// ----------------------------------------------------------------------------
-//! Return true if federate has subscribed to this attribute w/ default region
-bool
-Interaction::isSubscribed(FederateHandle fed)
-{
-    return isSubscribed(fed, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -524,60 +471,6 @@ Interaction::setLevelId(SecurityLevelID new_levelID)
 }
 
 // ----------------------------------------------------------------------------
-//! subscribe
-void
-Interaction::subscribe(FederateHandle fed, RTIRegion *region)
-    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
-{
-    checkFederateAccess(fed, "Subscribe");
-
-    if (!isSubscribed(fed, region)) {
-	subscribers.push_front(new Subscriber(fed, region));
-	D.Out(pdInit,
-	      "Parameter %d: Added Federate %d to subscribers list.",
-	      handle, fed);
-    }
-    else
-	D.Out(pdError,
-	      "Parameter %d: Unconsistent subscribe request from "
-	      "federate %d.", handle, fed);    
-}
-
-// ----------------------------------------------------------------------------
-//! subscribe
-void
-Interaction::subscribe(FederateHandle fed)
-    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
-{
-    subscribe(fed, 0);
-}
-
-// ----------------------------------------------------------------------------
-//! unsubscribe
-void
-Interaction::unsubscribe(FederateHandle fed, RTIRegion *region)
-    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
-{
-    if (isSubscribed(fed)) {
-	deleteSubscriber(fed, region);
-	D.Out(pdTerm,
-	      "Parameter %d: Removed Federate %d from subscribers list.",
-	      handle, fed);
-    }
-    else
-	throw FederateNotSubscribing();
-}
-
-// ----------------------------------------------------------------------------
-//! unsubscribe
-void
-Interaction::unsubscribe(FederateHandle fed)
-    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
-{
-    unsubscribe(fed, 0);
-}
-
-// ----------------------------------------------------------------------------
 // setSpace
 void
 Interaction::setSpace(SpaceHandle h)
@@ -595,4 +488,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.22 2005/04/05 12:27:37 breholee Exp $
+// $Id: Interaction.cc,v 3.23 2005/04/05 19:59:56 breholee Exp $
