@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.11 2003/04/22 15:55:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -120,26 +120,6 @@ public:
                               FederateHandle theFederate,
                               ObjectClassHandle theOriginalClass);
 
-    void changeAttributeTransportType(ObjectHandle theObjectHandle,
-                                      AttributeHandle *attribArray,
-                                      UShort attribArraySize,
-                                      TransportType theType)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               RTIinternalError,
-               InvalidObjectHandle);
-
-    void changeAttributeOrdertType(ObjectHandle theObjectHandle,
-                                   AttributeHandle *attribArray,
-                                   UShort attribArraySize,
-                                   TransportType theType)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               RTIinternalError,
-               InvalidObjectHandle);
-
     // --------------------------------
     // -- Object Instance Management --
     // --------------------------------
@@ -182,8 +162,7 @@ public:
     Boolean isAttributeOwnedByFederate(ObjectHandle theObject,
                                        AttributeHandle theAttribute,
                                        FederateHandle theFederateHandle)
-        throw (
-               ObjectNotKnown,
+        throw (ObjectNotKnown,
                AttributeNotDefined,
                RTIinternalError);
 
@@ -301,4 +280,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.11 2003/04/22 15:55:57 breholee Exp $

@@ -47,8 +47,174 @@ public:
     ObjectSet(SecurityServer *the_server);
     ~ObjectSet(void);
 
+    ObjectHandle
+    getObjectInstanceHandle(const char *the_name) const
+        throw (ObjectNotKnown,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               RTIinternalError);
+
+    char *
+    getObjectInstanceName(ObjectHandle the_object) const
+        throw (ObjectNotKnown,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               RTIinternalError);
+
+    ObjectClassHandle
+    getObjectClass(ObjectHandle the_object) const
+        throw (ObjectNotKnown,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               RTIinternalError);
+
+    void changeAttributeTransportationType(ObjectHandle the_object,
+                                           AttributeHandle *the_attributes,
+                                           UShort the_size,
+                                           TransportType the_type)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               RTIinternalError,
+               InvalidObjectHandle);
+
+    void changeAttributeOrderType(ObjectHandle the_object,
+                                  AttributeHandle *the_attributes,
+                                  UShort the_size,
+                                  TransportType the_type)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               RTIinternalError,
+               InvalidObjectHandle);
+
+    ObjectHandle
+    registerObjectInstance(ObjectClassHandle the_class,
+                           const char *the_name)
+        throw (ObjectClassNotDefined,
+               ObjectClassNotPublished,
+               ObjectAlreadyRegistered,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void
+    deleteObjectInstance(ObjectHandle the_object,
+                         const char *the_tag)
+        throw (ObjectNotKnown,
+               DeletePrivilegeNotHeld,
+               FederateNotExecutionMember,
+               ConcurrentAccessAttempted,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    // Ownership Management.
+
+    Boolean
+    isAttributeOwnedByFederate(FederateHandle the_federate,
+                               ObjectHandle the_object,
+                               AttributeHandle the_attribute) const
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               RTIinternalError);
+
+    void
+    queryAttributeOwnership(FederateHandle the_federate,
+                            ObjectHandle the_object,
+                            AttributeHandle the_attribute) const
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               RTIinternalError);
+
+    void
+    negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                            ObjectHandle the_object,
+                                            AttributeHandle *the_attributes,
+                                            UShort the_size,
+                                            const char *the_tag)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               AttributeAlreadyBeingDivested,
+               RTIinternalError);
+
+    void
+    attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
+                                             ObjectHandle the_object,
+                                             AttributeHandle *the_attributes,
+                                             UShort the_size)
+        throw (ObjectNotKnown,
+               ObjectClassNotPublished,
+               AttributeNotDefined,
+               AttributeNotPublished,
+               FederateOwnsAttributes,
+               AttributeAlreadyBeingAcquired,
+               RTIinternalError);
+
+    void
+    unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                               ObjectHandle the_object,
+                                               AttributeHandle *the_attributes,
+                                               UShort the_size)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               RTIinternalError);
+
+    void
+    attributeOwnershipAcquisition(FederateHandle the_federate,
+                                  ObjectHandle the_object,
+                                  AttributeHandle *the_attributes,
+                                  UShort the_size,
+                                  const char *the_tag)
+        throw (ObjectNotKnown,
+               ObjectClassNotPublished,
+               AttributeNotDefined,
+               AttributeNotPublished,
+               FederateOwnsAttributes,
+               RTIinternalError);
+
+    void
+    cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
+                                                  ObjectHandle the_object,
+                                                  AttributeHandle *,
+                                                  UShort the_size)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               AttributeDivestitureWasNotRequested,
+               RTIinternalError);
+
+    AttributeHandleSet *
+    attributeOwnershipReleaseResponse(FederateHandle the_federate,
+                                      ObjectHandle the_object,
+                                      AttributeHandle *the_attributes,
+                                      UShort the_size)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               FederateWasNotAskedToReleaseAttribute,
+               RTIinternalError);
+
+    void
+    cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
+                                        ObjectHandle the_object,
+                                        AttributeHandle *the_attributes,
+                                        UShort the_size)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeAlreadyOwned,
+               AttributeAcquisitionWasNotRequested,
+               RTIinternalError);
+
 protected:
     SecurityServer *server ;
+
+    Object *getObject(ObjectHandle the_object) const
+        throw (ObjectNotKnown);
 };
 
 } // namespace certi
