@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.16 2003/07/10 22:35:48 breholee Exp $
+// $Id: Interaction.cc,v 3.17 2003/10/27 10:12:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,7 +43,7 @@ static pdCDebug D("INTERACTION", "(Interact) - ");
 ParameterHandle
 Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 {
-    the_parameter->Handle = parameterSet.size() + 1 ;
+    the_parameter->setHandle(parameterSet.size() + 1);
 
     // An inherited parameter keeps its security level, any other get the
     // default security level of the class.
@@ -53,9 +53,9 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
     parameterSet.push_front(the_parameter);
 
     D[pdRegister] << "Interaction " << handle << "(\"" << name.c_str()
-		  << "\") has a new parameter " << the_parameter->Handle ;
+		  << "\") has a new parameter " << the_parameter->getHandle();
 
-    return the_parameter->Handle ;
+    return the_parameter->getHandle();
 }
 
 // ----------------------------------------------------------------------------
@@ -75,11 +75,11 @@ Interaction::addParametersToChild(Interaction *the_child)
 
         D.Out(pdProtocol,
               "ObjectClass %u adding new attribute %d to child class %u.",
-              handle, (*p)->Handle, the_child->handle);
+              handle, (*p)->getHandle(), the_child->handle);
 
         the_child->addParameter(child, RTI_TRUE);
 
-        if (child->Handle != (*p)->Handle)
+        if (child->getHandle() != (*p)->getHandle())
             throw RTIinternalError("Error while copying child's attributes.");
     }
 }
@@ -292,7 +292,7 @@ Interaction::getParameterByHandle(ParameterHandle the_handle) const
 {
     list<Parameter *>::const_iterator p ;
     for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
-        if ((*p)->Handle == the_handle)
+        if ((*p)->getHandle() == the_handle)
             return (*p);
     }
 
@@ -308,7 +308,7 @@ Interaction::getParameterHandle(const char *the_name) const
     list<Parameter *>::const_iterator p ;
     for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
         if (strcmp((*p)->getName(), the_name) == 0)
-            return (*p)->Handle ;
+            return (*p)->getHandle();
     }
 
     throw NameNotFound();
@@ -592,4 +592,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.16 2003/07/10 22:35:48 breholee Exp $
+// $Id: Interaction.cc,v 3.17 2003/10/27 10:12:06 breholee Exp $

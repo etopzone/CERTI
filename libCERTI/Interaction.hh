@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.14 2003/10/20 09:30:44 breholee Exp $
+// $Id: Interaction.hh,v 3.15 2003/10/27 10:12:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -49,6 +49,9 @@ public:
 
     void setSpace(SpaceHandle);
     SpaceHandle getSpace();
+
+    void setHandle(InteractionClassHandle h) { handle = h ; }
+    InteractionClassHandle getHandle() const { return handle ; }
 
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
@@ -125,7 +128,6 @@ public:
 
     // Attributes
     
-    InteractionClassHandle handle ; //!< Interaction class handle.
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
     InteractionClassHandle parent ;
@@ -141,6 +143,8 @@ public:
     OrderType order ;
 
 private:
+    InteractionClassHandle handle ; //!< Interaction class handle.
+
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined, RTIinternalError);
 
@@ -167,4 +171,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.14 2003/10/20 09:30:44 breholee Exp $
+// $Id: Interaction.hh,v 3.15 2003/10/27 10:12:07 breholee Exp $

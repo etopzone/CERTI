@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.9 2003/07/10 22:35:48 breholee Exp $
+// $Id: InteractionSet.cc,v 3.10 2003/10/27 10:12:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -45,7 +45,7 @@ static pdCDebug D("INTERACTIONSET", "(InterSet) - ");
 void
 InteractionSet::addClass(Interaction *the_class)
 {
-    D.Out(pdInit, "Adding new interaction class %d, ", the_class->handle);
+    D.Out(pdInit, "Adding new interaction class %d, ", the_class->getHandle());
 
     the_class->server = server ;
 
@@ -105,13 +105,13 @@ void
 InteractionSet::buildParentRelation(Interaction *child, Interaction *parent)
 {
     // Register parent to son.
-    child->parent = parent->handle ;
+    child->parent = parent->getHandle();
 
     // Transfert security level.
     child->setLevelId(parent->getLevelId());
 
     // Register son to parent.
-    parent->children.push_front(child->handle);
+    parent->children.push_front(child->getHandle());
 
     // Copy parent Attribute into child class.
     parent->addParametersToChild(child);
@@ -158,7 +158,7 @@ InteractionSet::getByHandle(InteractionClassHandle the_handle)
 {
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        if ((*i)->handle == the_handle)
+        if ((*i)->getHandle() == the_handle)
             return (*i);
     }
 
@@ -177,7 +177,7 @@ InteractionSet::getInteractionClassHandle(const char *the_name)
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if (strcmp((*i)->getName(), the_name) == 0)
-            return (*i)->handle ;
+            return (*i)->getHandle();
     }
 
     throw NameNotFound();
@@ -191,7 +191,7 @@ InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
 {
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        if ((*i)->handle == the_handle)
+        if ((*i)->getHandle() == the_handle)
             return (*i)->getName();
     }
 
@@ -300,4 +300,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.9 2003/07/10 22:35:48 breholee Exp $
+// $Id: InteractionSet.cc,v 3.10 2003/10/27 10:12:07 breholee Exp $
