@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.25 2005/03/13 22:44:49 breholee Exp $
+// $Id: Message.hh,v 3.26 2005/03/25 17:06:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -29,7 +29,6 @@
 #include "Exception.hh"
 #include "SocketUN.hh"
 #include "MessageBody.hh"
-#include "RegionImp.hh"
 #include "BasicMessage.hh"
 
 namespace certi {
@@ -480,4 +479,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.25 2005/03/13 22:44:49 breholee Exp $
+// $Id: Message.hh,v 3.26 2005/03/25 17:06:32 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,39 +19,38 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.hh,v 3.10 2005/03/16 23:03:37 breholee Exp $
+// $Id: Subscriber.hh,v 3.11 2005/03/25 17:09:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SUBSCRIBER_HH
 #define _CERTI_SUBSCRIBER_HH
 
 #include "certi.hh"
-#include "RegionImp.hh"
 
 namespace certi {
 
-class RegionImp ;
+class RTIRegion ;
 
 class Subscriber
 {
 public:
     Subscriber(FederateHandle);
-    Subscriber(FederateHandle, const RegionImp *);
+    Subscriber(FederateHandle, const RTIRegion *);
     
     FederateHandle getHandle() const ;
-    const RegionImp *getRegion() const ;
-    bool equals(FederateHandle, const RegionImp *) const ;
-    bool match(const RegionImp *) const ;
+    const RTIRegion *getRegion() const ;
+    bool equals(FederateHandle, const RTIRegion *) const ;
+    bool match(const RTIRegion *) const ;
 
     bool operator==(const Subscriber &) const ;
 
 protected:
     FederateHandle handle ; //!< The ID of the Subscriber.
-    const RegionImp *region ; //!< the subscription region
+    const RTIRegion *region ; //!< the subscription region
 };
 
 }
 
 #endif // _CERTI_SUBSCRIBER_HH
 
-// $Id: Subscriber.hh,v 3.10 2005/03/16 23:03:37 breholee Exp $
+// $Id: Subscriber.hh,v 3.11 2005/03/25 17:09:39 breholee Exp $

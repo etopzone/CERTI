@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.16 2004/05/18 13:18:53 breholee Exp $
+// $Id: Interaction.hh,v 3.17 2005/03/25 17:06:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -80,10 +80,10 @@ public:
     void unsubscribe(FederateHandle)
         throw (FederateNotSubscribing, RTIinternalError, SecurityError);
 
-    void subscribe(FederateHandle, RegionImp *)
+    void subscribe(FederateHandle, RTIRegion *)
         throw (FederateNotSubscribing, RTIinternalError, SecurityError);
 
-    void unsubscribe(FederateHandle, RegionImp *)
+    void unsubscribe(FederateHandle, RTIRegion *)
         throw (FederateNotSubscribing, RTIinternalError, SecurityError);
     
     // -- RTI Support Services --
@@ -149,10 +149,10 @@ private:
         throw (InteractionParameterNotDefined, RTIinternalError);
 
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle, RegionImp *);
+    void deleteSubscriber(FederateHandle, RTIRegion *);
     bool isPublishing(FederateHandle);
     bool isSubscribed(FederateHandle);
-    bool isSubscribed(FederateHandle, RegionImp *);
+    bool isSubscribed(FederateHandle, RTIRegion *);
 
     // Attributes    
     std::string name ;
@@ -171,4 +171,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.16 2004/05/18 13:18:53 breholee Exp $
+// $Id: Interaction.hh,v 3.17 2005/03/25 17:06:32 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.20 2005/03/16 23:02:07 breholee Exp $
+// $Id: Interaction.cc,v 3.21 2005/03/25 17:06:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -228,7 +228,7 @@ Interaction::~Interaction()
 }
 
 // ----------------------------------------------------------------------------
-//! Delete a publisher with rank (private module).
+//! Delete a publisher with rank
 void
 Interaction::deletePublisher(FederateHandle fed)
 {
@@ -243,9 +243,9 @@ Interaction::deletePublisher(FederateHandle fed)
 }
 
 // ----------------------------------------------------------------------------
-//! Delete a subscriber with rank (private module).
+//! Delete a subscriber with rank
 void
-Interaction::deleteSubscriber(FederateHandle fed, RegionImp *region)
+Interaction::deleteSubscriber(FederateHandle fed, RTIRegion *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
@@ -285,7 +285,7 @@ Interaction::display() const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns the parameter by its handle (private module).
+//! Returns the parameter by its handle
 Parameter*
 Interaction::getParameterByHandle(ParameterHandle the_handle) const
     throw (InteractionParameterNotDefined, RTIinternalError)
@@ -327,7 +327,7 @@ Interaction::getParameterName(ParameterHandle the_handle) const
 // ----------------------------------------------------------------------------
 //! Return true if federate has subscribed to this attribute w/ region
 bool
-Interaction::isSubscribed(FederateHandle fed, RegionImp *region)
+Interaction::isSubscribed(FederateHandle fed, RTIRegion *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
@@ -524,7 +524,7 @@ Interaction::setLevelId(SecurityLevelID new_levelID)
 // ----------------------------------------------------------------------------
 //! subscribe
 void
-Interaction::subscribe(FederateHandle fed, RegionImp *region)
+Interaction::subscribe(FederateHandle fed, RTIRegion *region)
     throw (FederateNotSubscribing, RTIinternalError, SecurityError)
 {
     checkFederateAccess(fed, "Subscribe");
@@ -553,7 +553,7 @@ Interaction::subscribe(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! unsubscribe
 void
-Interaction::unsubscribe(FederateHandle fed, RegionImp *region)
+Interaction::unsubscribe(FederateHandle fed, RTIRegion *region)
     throw (FederateNotSubscribing, RTIinternalError, SecurityError)
 {
     if (isSubscribed(fed)) {
@@ -593,4 +593,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.20 2005/03/16 23:02:07 breholee Exp $
+// $Id: Interaction.cc,v 3.21 2005/03/25 17:06:32 breholee Exp $
