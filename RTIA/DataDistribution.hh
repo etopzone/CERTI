@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.7 2003/07/01 13:30:05 breholee Exp $
+// $Id: DataDistribution.hh,v 3.8 2003/07/03 16:21:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -61,6 +61,9 @@ public:
     void deleteRegion(long, TypeException &)
         throw (RegionNotKnown, RegionInUse);
 
+    void associateRegion(ObjectHandle, RegionHandle, AttributeHandle *,
+			 int, TypeException &);
+    
 private:
     RootObject *rootObject ;
     FederationManagement *fm ;
@@ -71,4 +74,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.7 2003/07/01 13:30:05 breholee Exp $
+// $Id: DataDistribution.hh,v 3.8 2003/07/03 16:21:58 breholee Exp $

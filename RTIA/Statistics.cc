@@ -156,24 +156,18 @@ Statistics::Statistics()
     FedMsgName(Message::TIME_CONSTRAINED_ENABLED);
 
     // Data Distribution
-    FedMsgName(Message::CREATE_REGION);
-    FedMsgName(Message::MODIFY_REGION);
-    FedMsgName(Message::DELETE_REGION);
-    FedMsgName(Message::REGISTER_OBJECT_INSTANCE_WITH_REGION);
-    FedMsgName(Message::ASSOCIATE_REGION_FOR_UPDATES);
-    FedMsgName(Message::UNASSOCIATE_REGION_FOR_UPDATES);
-    FedMsgName(Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGION);
-    FedMsgName(Message::UNSUBSCRIBE_OBJECT_CLASS_WITH_REGION);
-    FedMsgName(Message::SUBSCRIBE_INTERACTION_CLASS_WITH_REGION);
-    FedMsgName(Message::UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGION);
-    FedMsgName(Message::SEND_INTERACTION_WITH_REGION);
-    FedMsgName(Message::REQUEST_CLASS_ATTRIBUTE_UPDATE_WITH_REGION);
-
-    FedMsgName(Message::CREATE_UPDATE_REGION);
-    FedMsgName(Message::CREATE_SUBSCRIPTION_REGION);
-    FedMsgName(Message::ASSOCIATE_UPDATE_REGION);
-    FedMsgName(Message::DISASSOCIATE_UPDATE_REGION);
-    FedMsgName(Message::CHANGE_THRESHOLDS);
+    FedMsgName(Message::DDM_CREATE_REGION);
+    FedMsgName(Message::DDM_MODIFY_REGION);
+    FedMsgName(Message::DDM_DELETE_REGION);
+    FedMsgName(Message::DDM_REGISTER_OBJECT);
+    FedMsgName(Message::DDM_ASSOCIATE_REGION);
+    FedMsgName(Message::DDM_UNASSOCIATE_REGION);
+    FedMsgName(Message::DDM_SUBSCRIBE_ATTRIBUTES);
+    FedMsgName(Message::DDM_UNSUBSCRIBE_ATTRIBUTES);
+    FedMsgName(Message::DDM_SUBSCRIBE_INTERACTION);
+    FedMsgName(Message::DDM_UNSUBSCRIBE_INTERACTION);
+    FedMsgName(Message::DDM_SEND_INTERACTION);
+    FedMsgName(Message::DDM_REQUEST_UPDATE);
 
     // Support Services
     FedMsgName(Message::GET_OBJECT_CLASS_HANDLE);
@@ -280,9 +274,10 @@ Statistics::Statistics()
     RtiMsgName(NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE);
     RtiMsgName(NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION);
     RtiMsgName(NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION);
-    RtiMsgName(NetworkMessage::CREATE_REGION);
-    RtiMsgName(NetworkMessage::MODIFY_REGION);
-    RtiMsgName(NetworkMessage::DELETE_REGION);
+    RtiMsgName(NetworkMessage::DDM_CREATE_REGION);
+    RtiMsgName(NetworkMessage::DDM_MODIFY_REGION);
+    RtiMsgName(NetworkMessage::DDM_DELETE_REGION);
+    RtiMsgName(NetworkMessage::DDM_ASSOCIATE_REGION);
 #undef addRtiName
 }
 
@@ -356,4 +351,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.3 2003/06/27 17:26:28 breholee Exp $
+// $Id: Statistics.cc,v 3.4 2003/07/03 16:21:58 breholee Exp $

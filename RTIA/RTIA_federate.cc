@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.19 2003/07/01 13:28:07 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.20 2003/07/03 16:21:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -646,20 +646,27 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         rep.setSpace(ddm->getInteractionSpace(req->getInteractionClass()));
         break ;
 
-      case Message::CREATE_REGION:
+      case Message::DDM_CREATE_REGION:
         D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
         rep.setRegion(ddm->createRegion(req->getSpace(), req->getNumber(), e));
         break ;
 
-      case Message::MODIFY_REGION:
+      case Message::DDM_MODIFY_REGION:
 	D[pdTrace] << "Receiving Message from Federate: Modify Region" << endl ;
 	ddm->modifyRegion(req->getRegion(), req->getExtents(), e);
 	break ;
 
-      case Message::DELETE_REGION:
+      case Message::DDM_DELETE_REGION:
         D[pdTrace] << "Receiving Message from Federate: DeleteRegion" << endl ;
         ddm->deleteRegion(req->getRegion(), e);
         break ;
+
+      case Message::DDM_ASSOCIATE_REGION:
+	D[pdTrace] << "Receiving Message from Federate: Associate Region"
+		   << endl ;
+	ddm->associateRegion(req->getObject(), req->getRegion(),
+			     req->handleArray, req->handleArraySize, e);
+	break ;
 
       case Message::ENABLE_TIME_REGULATION:
       case Message::DISABLE_TIME_REGULATION:
@@ -1035,4 +1042,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.19 2003/07/01 13:28:07 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.20 2003/07/03 16:21:58 breholee Exp $

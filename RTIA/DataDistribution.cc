@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.9 2003/07/01 13:30:05 breholee Exp $
+// $Id: DataDistribution.cc,v 3.10 2003/07/03 16:21:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,13 +33,11 @@ namespace rtia {
 static pdCDebug D("RTIA_DDM", "(RTIA DDM) ");
 
 // ----------------------------------------------------------------------------
-DataDistribution::DataDistribution(RootObject *ro,
+DataDistribution::DataDistribution(RootObject *root_object,
                                    FederationManagement *fed_management,
                                    Communications *communications)
+    : rootObject(root_object), fm(fed_management), comm(communications)
 {
-    rootObject = ro ;
-    fm = fed_management ;
-    comm = communications ;
 }
 
 // ----------------------------------------------------------------------------
@@ -113,14 +111,14 @@ DataDistribution::createRegion(SpaceHandle space,
 
     NetworkMessage req, rep ;
 
-    req.type = NetworkMessage::CREATE_REGION ;
+    req.type = NetworkMessage::DDM_CREATE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.space = space ;
     req.nbExtents = nb_extents ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::CREATE_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DDM_CREATE_REGION, req.federate);
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
@@ -151,12 +149,12 @@ DataDistribution::modifyRegion(RegionHandle handle,
 
     // Request to RTIG
     NetworkMessage req, rep ;
-    req.type = NetworkMessage::MODIFY_REGION ;
+    req.type = NetworkMessage::DDM_MODIFY_REGION ;
     req.region = handle ;
     req.setExtents(extents);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::MODIFY_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DDM_MODIFY_REGION, req.federate);
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
@@ -180,13 +178,13 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     // Request to RTIG
     NetworkMessage req, rep ;
 
-    req.type = NetworkMessage::DELETE_REGION ;
+    req.type = NetworkMessage::DDM_DELETE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.region = handle ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DELETE_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DDM_DELETE_REGION, req.federate);
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
@@ -195,6 +193,27 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     }
 }
 
+// ----------------------------------------------------------------------------
+void
+DataDistribution::associateRegion(ObjectHandle object,
+				  RegionHandle region,
+				  AttributeHandle *attr,
+				  int nb,
+				  TypeException &e)
+{
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
+    req.object = object ;
+    req.region = region ;
+    req.setAHS(attr, nb);
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_ASSOCIATE_REGION, req.federate);
+
+    e = rep.exception ;
+}
+
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.9 2003/07/01 13:30:05 breholee Exp $
+// $Id: DataDistribution.cc,v 3.10 2003/07/03 16:21:58 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.32 2003/07/01 13:26:55 breholee Exp $
+// $Id: RTIambassador.cc,v 3.33 2003/07/03 16:24:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,7 +49,6 @@
 using std::cout ;
 using std::cerr ;
 using std::endl ;
-
 
 namespace certi {
 
@@ -178,20 +177,11 @@ RTIambassador::createFederationExecution(const char *executionName,
            RTIinternalError)
 {
     Message req, rep ;
-    // char *exeName = new char[20] ;
-    // strcpy(exeName, executionName);
-    // strcat(exeName, "\56");
-    // strcat(exeName, "fed");
 
     req.type = Message::CREATE_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
 
-    // if (!strcasecmp(FED, exeName)) {
     executeService(&req, &rep);
-    // }
-    // else {
-    // throw RTIinternalError();
-    // }
 }
 
 // ----------------------------------------------------------------------------
@@ -748,7 +738,7 @@ updateAttributeValues(ObjectHandle theObject,
 // ----------------------------------------------------------------------------
 void
 RTIambassador::updateAttributeValues(ObjectHandle the_object,
-                                     const AttributeHandleValuePairSet& the_attributes,
+                                     const AttributeHandleValuePairSet& attrs,
                                      const char *the_tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -767,7 +757,7 @@ RTIambassador::updateAttributeValues(ObjectHandle the_object,
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setTag(the_tag);
-    req.setAHVPS(the_attributes);
+    req.setAHVPS(attrs);
     req.setBoolean(RTI_FALSE);
 
     executeService(&req, &rep);
@@ -807,7 +797,7 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 // ----------------------------------------------------------------------------
 void
 RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
-                               const ParameterHandleValuePairSet & the_parameters,
+                               const ParameterHandleValuePairSet &parameters,
                                const char *the_tag)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
@@ -826,7 +816,7 @@ RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
     req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(the_interaction);
     req.setTag(the_tag);
-    req.setPHVPS(the_parameters);
+    req.setPHVPS(parameters);
     req.setBoolean(RTI_FALSE);
 
     executeService(&req, &rep);
@@ -962,7 +952,7 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
 // Request Attribute Value Update
 void
 RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
-                                                 const AttributeHandleSet& theAttributes)
+                                                 const AttributeHandleSet &ahs)
     throw (ObjectNotKnown, // not implemented
            AttributeNotDefined,
            FederateNotExecutionMember,
@@ -977,7 +967,7 @@ RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
 
     req.type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.setObject(theObject);
-    req.setAHS(theAttributes);
+    req.setAHS(ahs);
 
     executeService(&req, &rep);
 }
@@ -1667,7 +1657,7 @@ RTIambassador::createRegion(SpaceHandle space,
 {
     Message req, rep ;
 
-    req.setType(Message::CREATE_REGION);
+    req.setType(Message::DDM_CREATE_REGION);
     req.setSpace(space);
     req.setNumber(nb_extents);
     executeService(&req, &rep);
@@ -1693,7 +1683,7 @@ RTIambassador::notifyAboutRegionModification(Region &r)
     RegionImp &region = dynamic_cast<RegionImp &>(r);
     Message req, rep ;
 
-    req.setType(Message::MODIFY_REGION);
+    req.setType(Message::DDM_MODIFY_REGION);
     req.setRegion(region.getHandle());
     req.setExtents(region.getExtents());
 
@@ -1719,7 +1709,7 @@ RTIambassador::deleteRegion(Region *region)
 
     Message req, rep ;
 
-    req.setType(Message::DELETE_REGION);
+    req.setType(Message::DDM_DELETE_REGION);
     req.setRegion(((RegionImp *) region)->getHandle());
     executeService(&req, &rep);
 
@@ -1729,11 +1719,11 @@ RTIambassador::deleteRegion(Region *region)
 // ----------------------------------------------------------------------------
 // Register Object Instance With Region
 ObjectHandle
-RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
-                                                const char *,
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
+                                                const char *tag,
                                                 AttributeHandle attrs[],
                                                 Region *regions[],
-                                                ULong)
+                                                ULong nb)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1745,18 +1735,27 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.setType(Message::DDM_REGISTER_OBJECT);
+    req.setObject(object);
+    req.setTag(tag);
+    req.setAHS(attrs, nb);
+    RegionImp *r = dynamic_cast<RegionImp *>(regions[0]);
+    req.setRegions(const_cast<const RegionImp **>(&r), nb);
+
+    executeService(&req, &rep);
+    return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
                                                 AttributeHandle attrs[],
                                                 Region *regions[],
-                                                ULong)
+                                                ULong nb)
     throw (ObjectClassNotDefined,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1767,10 +1766,19 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.setType(Message::DDM_REGISTER_OBJECT);
+    req.setObject(object);
+    req.setAHS(attrs, nb);
+    RegionImp *r = dynamic_cast<RegionImp *>(regions[0]);
+    req.setRegions(const_cast<const RegionImp **>(&r), nb);
+
+    executeService(&req, &rep);
+
+    return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
@@ -1789,14 +1797,21 @@ RTIambassador::associateRegionForUpdates(Region &region,
            RestoreInProgress,
            RTIinternalError)
 {
-    
+    Message req, rep ;
+
+    req.type = Message::DDM_ASSOCIATE_REGION ;
+    req.setObject(object);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setAHS(attributes);
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // UnAssociate Region For Updates
 void
-RTIambassador::unassociateRegionForUpdates(Region &/*theRegion*/,
-                                           ObjectHandle /*theObject*/)
+RTIambassador::unassociateRegionForUpdates(Region &region,
+                                           ObjectHandle object)
     throw (ObjectNotKnown,
            InvalidRegionContext,
            RegionNotKnown,
@@ -1804,20 +1819,25 @@ RTIambassador::unassociateRegionForUpdates(Region &/*theRegion*/,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = Message::DDM_UNASSOCIATE_REGION ;
+    req.setObject(object);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // Subscribe Object Class Attributes With Region
 void
 RTIambassador::
-subscribeObjectClassAttributesWithRegion(ObjectClassHandle,
-                                         Region &,
-                                         const AttributeHandleSet &,
-                                         Boolean)
+subscribeObjectClassAttributesWithRegion(ObjectClassHandle object,
+                                         Region &region,
+					 const AttributeHandleSet &attributes,
+                                         Boolean passive)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            RegionNotKnown,
@@ -1826,17 +1846,24 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
+    req.setObject(object);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setAHS(attributes);
+    req.setBoolean(passive);
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // UnSubscribe Object Class Attributes With Region
 void
-RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
-                                                Region &/*theRegion*/)
+RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object,
+                                                Region &region)
     throw (ObjectClassNotDefined,
            RegionNotKnown,
            ObjectClassNotSubscribed,
@@ -1844,18 +1871,23 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle /*theClass*/,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES ;
+    req.setObject(object);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // Subscribe Interaction Class With Region
 void
-RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle,
-                                                   Region &,
-                                                   Boolean)
+RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle ic,
+                                                   Region &region,
+                                                   Boolean passive)
     throw (InteractionClassNotDefined,
            RegionNotKnown,
            InvalidRegionContext,
@@ -1864,18 +1896,23 @@ RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
-}
+    Message req, rep ;
 
+    req.type = Message::DDM_SUBSCRIBE_INTERACTION ;
+    req.setInteractionClass(ic);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setBoolean(passive);
+
+    executeService(&req, &rep);
+}
 
 // ----------------------------------------------------------------------------
 // UnSubscribe Interaction Class With Region
 void
-RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle,
-                                                     Region &)
+RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle ic,
+                                                     Region &region)
     throw (InteractionClassNotDefined,
            InteractionClassNotSubscribed,
            RegionNotKnown,
@@ -1883,20 +1920,25 @@ RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = Message::DDM_UNSUBSCRIBE_INTERACTION ;
+    req.setInteractionClass(ic);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+
+    executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
 // Send Interaction With Region
 EventRetractionHandle
-RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
-                                         const ParameterHandleValuePairSet &,
-                                         const FedTime &,
-                                         const char *,
-                                         const Region &)
+RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
+                                         const ParameterHandleValuePairSet &par,
+                                         const FedTime &time,
+                                         const char *tag,
+                                         const Region &region)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -1910,14 +1952,25 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.setType(Message::DDM_SEND_INTERACTION);
+    req.setInteractionClass(interaction);
+    req.setPHVPS(par);
+    req.setFedTime(time);
+    req.setTag(tag);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+
+    executeService(&req, &rep);
+
+    return rep.getEventRetraction();
 }
 
 void
-RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
-                                         const ParameterHandleValuePairSet &,
-                                         const char *,
-                                         const Region &)
+RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
+                                         const ParameterHandleValuePairSet &par,
+                                         const char *tag,
+                                         const Region &region)
     throw (InteractionClassNotDefined,
            InteractionClassNotPublished,
            InteractionParameterNotDefined,
@@ -1930,16 +1983,24 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle,
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.setType(Message::DDM_SEND_INTERACTION);
+    req.setInteractionClass(interaction);
+    req.setPHVPS(par);
+    req.setTag(tag);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+
+    executeService(&req, &rep);
 }
 
 
 // ----------------------------------------------------------------------------
 // Request Class Attribute Value Update With Region
 void RTIambassador::
-requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*theClass*/,
-                                           const AttributeHandleSet &,
-                                           const Region &/*theRegion*/)
+requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
+                                           const AttributeHandleSet &attrs,
+                                           const Region &region)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            RegionNotKnown,
@@ -1951,6 +2012,12 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*theClass*/,
            UnimplementedService)
 {
     throw UnimplementedService();
+
+    Message req, rep ;
+    req.setType(Message::DDM_REQUEST_UPDATE);
+    req.setAHS(attrs);
+    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    executeService(&req, &rep);    
 }
 
 // ===========================================================================
@@ -2598,7 +2665,8 @@ RTIambassador::tick()
             switch (vers_Fed.type) {
 
               case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-                fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
+                fed_amb->synchronizationPointRegistrationSucceeded(
+		    vers_Fed.getLabel());
                 break ;
 
               case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
@@ -2646,8 +2714,8 @@ RTIambassador::tick()
                 break ;
 
               case Message::START_REGISTRATION_FOR_OBJECT_CLASS: {
-                  fed_amb->
-                      startRegistrationForObjectClass(vers_Fed.getObjectClass());
+                  fed_amb->startRegistrationForObjectClass(
+		      vers_Fed.getObjectClass());
               } break ;
 
               case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS: {
@@ -2671,27 +2739,27 @@ RTIambassador::tick()
               } break ;
 
               case Message::REFLECT_ATTRIBUTE_VALUES: {
-                  AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
+                  AttributeHandleValuePairSet *attributes = vers_Fed.getAHVPS();
                   fed_amb->
                       reflectAttributeValues(vers_Fed.getObject(),
-                                             *theAttributes,
+                                             *attributes,
                                              vers_Fed.getFedTime(),
                                              vers_Fed.getTag(),
                                              vers_Fed.getEventRetraction());
 
-                  delete theAttributes ;
+                  delete attributes ;
               } break ;
 
               case Message::RECEIVE_INTERACTION: {
-                  ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
+                  ParameterHandleValuePairSet *parameters = vers_Fed.getPHVPS();
 
                   fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
-                                              *theParameters,
+                                              *parameters,
                                               vers_Fed.getFedTime(),
                                               vers_Fed.getTag(),
                                               vers_Fed.getEventRetraction());
 
-                  delete theParameters ;
+                  delete parameters ;
               } break ;
 
               case Message::REMOVE_OBJECT_INSTANCE: {
@@ -2725,9 +2793,10 @@ RTIambassador::tick()
               case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
-                                                            *attributeSet,
-                                                            vers_Fed.getTag());
+                  fed_amb->requestAttributeOwnershipRelease(
+		      vers_Fed.getObject(),
+		      *attributeSet,
+		      vers_Fed.getTag());
 
                   delete attributeSet ;
               } break ;
@@ -2744,9 +2813,9 @@ RTIambassador::tick()
               case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->
-                      attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
-                                                                *attributeSet);
+                  fed_amb->attributeOwnershipAcquisitionNotification(
+		      vers_Fed.getObject(),
+		      *attributeSet);
 
                   delete attributeSet ;
               } break ;
@@ -2754,9 +2823,9 @@ RTIambassador::tick()
               case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->
-                      attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
-                                                                *attributeSet);
+                  fed_amb->attributeOwnershipDivestitureNotification(
+		      vers_Fed.getObject(),
+		      *attributeSet);
 
                   delete attributeSet ;
               } break ;
@@ -2856,12 +2925,14 @@ RTIambassador::processException(Message *msg)
       } break ;
 
       case e_AttributeAlreadyBeingAcquired: {
-          D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingAcquired exception.");
+          D.Out(pdExcept,
+		"Throwing e_AttributeAlreadyBeingAcquired exception.");
           throw AttributeAlreadyBeingAcquired(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAlreadyBeingDivested: {
-          D.Out(pdExcept, "Throwing e_AttributeAlreadyBeingDivested exception.");
+          D.Out(pdExcept,
+		"Throwing e_AttributeAlreadyBeingDivested exception.");
           throw AttributeAlreadyBeingDivested(msg->getExceptionReason());
       } break ;
 
@@ -2943,7 +3014,8 @@ RTIambassador::processException(Message *msg)
       } break ;
 
       case e_FederateAlreadyExecutionMember: {
-          D.Out(pdExcept, "Throwing e_FederateAlreadyExecutionMember exception.");
+          D.Out(pdExcept,
+		"Throwing e_FederateAlreadyExecutionMember exception.");
           throw FederateAlreadyExecutionMember(msg->getExceptionReason());
       } break ;
 
@@ -2987,7 +3059,8 @@ RTIambassador::processException(Message *msg)
                 "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
           D.Out(pdDebug,
                 "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-          throw FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
+          throw
+	      FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
       } break ;
 
       case e_FederationAlreadyPaused: {
@@ -3051,7 +3124,8 @@ RTIambassador::processException(Message *msg)
       } break ;
 
       case e_InteractionParameterNotDefined: {
-          D.Out(pdExcept, "Throwing e_InteractionParameterNotDefined exception.");
+          D.Out(pdExcept,
+		"Throwing e_InteractionParameterNotDefined exception.");
           throw InteractionParameterNotDefined(msg->getExceptionReason());
       } break ;
 
@@ -3196,7 +3270,8 @@ RTIambassador::processException(Message *msg)
       } break ;
 
       case e_SpecifiedSaveLabelDoesNotExist: {
-          D.Out(pdExcept, "Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
+          D.Out(pdExcept,
+		"Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
           throw SpecifiedSaveLabelDoesNotExist(msg->getExceptionReason());
       } break ;
 
@@ -3250,4 +3325,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.32 2003/07/01 13:26:55 breholee Exp $
+// $Id: RTIambassador.cc,v 3.33 2003/07/03 16:24:59 breholee Exp $
