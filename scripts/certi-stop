@@ -1,0 +1,4 @@
+#! /bin/sh
+
+ps -ef | grep rtig | grep -v grep | awk {'print $2'} | xargs kill
+

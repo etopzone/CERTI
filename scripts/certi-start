@@ -1,0 +1,7 @@
+#! /bin/sh
+
+if [ -d "$CERTI_HOME" ] ; then
+	cd $CERTI_HOME
+fi
+
+rtig $@
