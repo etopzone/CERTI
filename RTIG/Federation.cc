@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.41 2005/03/16 23:00:06 breholee Exp $
+// $Id: Federation.cc,v 3.42 2005/03/25 17:34:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1491,7 +1491,7 @@ Federation::associateRegion(FederateHandle federate,
 {
     check(federate);
 
-    RegionImp *region = root->getRegion(the_handle);
+    RTIRegion *region = root->getRegion(the_handle);
 
     root->getObject(object)->unassociate(region);
 	
@@ -1510,7 +1510,7 @@ Federation::unassociateRegion(FederateHandle federate, ObjectHandle object,
 {
     check(federate);
 
-    RegionImp *region = root->getRegion(the_handle);
+    RTIRegion *region = root->getRegion(the_handle);
     root->getObject(object)->unassociate(region);
 }
 
@@ -1545,7 +1545,7 @@ Federation::unsubscribeAttributesWR(FederateHandle federate,
 {
     check(federate);
 
-    RegionImp *region = root->getRegion(region_handle);
+    RTIRegion *region = root->getRegion(region_handle);
 
     root->getObjectClass(object_class)->unsubscribe(federate, region);
 }
@@ -1562,7 +1562,7 @@ Federation::subscribeInteractionWR(FederateHandle federate,
 {
     check(federate);
 
-    RegionImp *region = root->getRegion(region_handle);
+    RTIRegion *region = root->getRegion(region_handle);
 
     root->getInteractionClass(interaction)->subscribe(federate, region);
 }
@@ -1579,7 +1579,7 @@ Federation::unsubscribeInteractionWR(FederateHandle federate,
 {
     check(federate);
 
-    RegionImp *region = root->getRegion(region_handle);
+    RTIRegion *region = root->getRegion(region_handle);
 
     root->getInteractionClass(interaction)->unsubscribe(federate, region);
 }
@@ -1615,7 +1615,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 	       << "\" registered" << std::endl ;
 
     // Associate region
-    RegionImp *region = root->getRegion(region_handle);
+    RTIRegion *region = root->getRegion(region_handle);
     root->getObject(object)->unassociate(region);
 	
     for (int i = 0 ; i < nb ; ++i) {
@@ -1751,5 +1751,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.41 2005/03/16 23:00:06 breholee Exp $
+// $Id: Federation.cc,v 3.42 2005/03/25 17:34:21 breholee Exp $
 
