@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastLine.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: InteractionBroadcastLine.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_BROADCAST_LINE_HH
@@ -47,4 +47,4 @@ public:
 
 #endif // _CERTI_INTERACTION_BROADCAST_LINE_HH
 
-// $Id: InteractionBroadcastLine.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: InteractionBroadcastLine.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $

@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.4 2003/02/17 09:17:03 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: AuditFile.hh,v 3.5 2003/02/19 18:07:29 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
 #define _CERTI_AUDIT_FILE_HH
@@ -37,32 +37,32 @@
 #include <iostream>
 #include <cstdarg>
 
-using std::ofstream;
-using std::ios;
-using std::cerr;
-using std::endl;
+using std::ofstream ;
+using std::ios ;
+using std::cerr ;
+using std::endl ;
 
 #define AUDIT_MIN_LEVEL 0
 #define AUDIT_MAX_LEVEL 10
 
-#define AUDITEVENT_START_AUDIT    128
-#define AUDITEVENT_STOP_AUDIT     129
-#define AUDITEVENT_START_RTIG     130
-#define AUDITEVENT_STOP_RTIG      131
+#define AUDITEVENT_START_AUDIT 128
+#define AUDITEVENT_STOP_AUDIT 129
+#define AUDITEVENT_START_RTIG 130
+#define AUDITEVENT_STOP_RTIG 131
 
 namespace certi {
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! AuditFile class is used to store information into a file for later usage.
 /*! First call the startLine method to give background information about the
-    next current audit line. The line is then prepared internally, but not yet
-    written to the audit file. You can then set the Level of the line
-    separately. If the Level is below the fixed Audit level, nothing will be
-    stored or written for this event (except in the case of an exception). The
-    default level is the lowest one.  Each call to addToLine or to addToLine
-    adds the parameter string to the current line. Then a last call to EndLine
-    will set the line's status (or Result) and flush the line into the Audit
-    file.
+  next current audit line. The line is then prepared internally, but not yet
+  written to the audit file. You can then set the Level of the line
+  separately. If the Level is below the fixed Audit level, nothing will be
+  stored or written for this event (except in the case of an exception). The
+  default level is the lowest one. Each call to addToLine or to addToLine
+  adds the parameter string to the current line. Then a last call to EndLine
+  will set the line's status (or Result) and flush the line into the Audit
+  file.
 */
 class AuditFile
 {
@@ -82,13 +82,13 @@ public:
                  const char *Reason = NULL);
 
 protected:
-    ofstream  *auditFile;   //!< Stream pointer to output file.
-    AuditLine *currentLine; //!< Line currently being processed.
-    char va_Buffer [1024];  //!< Static buffer for va_printf operations.
+    ofstream *auditFile ; //!< Stream pointer to output file.
+    AuditLine *currentLine ; //!< Line currently being processed.
+    char va_Buffer[1024] ; //!< Static buffer for va_printf operations.
 };
 
 } // namespace certi
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.4 2003/02/17 09:17:03 breholee Exp $
+// $Id: AuditFile.hh,v 3.5 2003/02/19 18:07:29 breholee Exp $

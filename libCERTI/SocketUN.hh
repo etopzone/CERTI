@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.hh,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// $Id: SocketUN.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UN_HH
@@ -59,81 +59,81 @@ typedef enum {stSignalInterrupt, stIgnoreSignal} SignalHandlerType ;
 #define SOCKUN_BUFFER_LENGTH 4096
 
 /*! IMPORTANT NOTE: This UNIX socket implementation uses a Read Buffer to
- improve global read performances(by reducing Read system calls). An
- important drawback of this improvement is that a socket can be marked as
- empty for the system, but in fact there is data waiting in the read
- buffer. This is especially a problem for processes using the 'select'
- system call: the socket won't be marked as ready for reading, because all
- data has already been read, and is waiting in the internal buffer.
- Therefore, before returning to a select loop, be sure to call the
- IsDataReady method to check whether any data is waiting for processing.
+  improve global read performances(by reducing Read system calls). An
+  important drawback of this improvement is that a socket can be marked as
+  empty for the system, but in fact there is data waiting in the read
+  buffer. This is especially a problem for processes using the 'select'
+  system call: the socket won't be marked as ready for reading, because all
+  data has already been read, and is waiting in the internal buffer.
+  Therefore, before returning to a select loop, be sure to call the
+  IsDataReady method to check whether any data is waiting for processing.
 */
 class SocketUN
 {
 public:
- // ------------------------------
- // -- Constructor / Destructor --
- // ------------------------------
- SocketUN(SignalHandlerType theType = stSignalInterrupt);
- ~SocketUN(void);
+    // ------------------------------
+    // -- Constructor / Destructor --
+    // ------------------------------
+    SocketUN(SignalHandlerType theType = stSignalInterrupt);
+    ~SocketUN(void);
 
- // ----------------------------
- // -- Initialization Methods --
- // ----------------------------
- void connectUN(pid_t Server_pid);
- void acceptUN(void);
+    // ----------------------------
+    // -- Initialization Methods --
+    // ----------------------------
+    void connectUN(pid_t Server_pid);
+    void acceptUN(void);
 
- // -----------------
- // -- R/W Methods --
- // -----------------
- Boolean isDataReady(void);
+    // -----------------
+    // -- R/W Methods --
+    // -----------------
+    Boolean isDataReady(void);
 
- void send(void *Buffer, unsigned long Size)
- throw (NetworkError,
- NetworkSignal);
+    void send(void *Buffer, unsigned long Size)
+        throw (NetworkError,
+               NetworkSignal);
 
- void receive(void *Buffer, unsigned long Size)
- throw (NetworkError,
- NetworkSignal);
+    void receive(void *Buffer, unsigned long Size)
+        throw (NetworkError,
+               NetworkSignal);
 
 protected:
- void error(const char *);
+    void error(const char *);
 
- int _socket_un ;
+    int _socket_un ;
 
- Boolean _est_serveur ;
- Boolean _est_init_un ;
+    Boolean _est_serveur ;
+    Boolean _est_init_un ;
 
- SignalHandlerType HandlerType ;
+    SignalHandlerType HandlerType ;
 
- char SocketName[108] ;
+    char SocketName[108] ;
 
 private:
 
- // ------------------------
- // -- Private Attributes --
- // ------------------------
+    // ------------------------
+    // -- Private Attributes --
+    // ------------------------
 
- unsigned long long SentBytesCount ;
- unsigned long long RcvdBytesCount ;
+    unsigned long long SentBytesCount ;
+    unsigned long long RcvdBytesCount ;
 
- // la socket du serveur RTIA qui a ete cree par le federe-client
- int sock_connect ;
+    // la socket du serveur RTIA qui a ete cree par le federe-client
+    int sock_connect ;
 
- pdCDebug *pD ;
+    pdCDebug *pD ;
 
 
 #ifdef SOCKUN_BUFFER_LENGTH
- // This class can use a buffer to reduce the number of systems
- // calls when reading a lot of small amouts of data. Each time a
- // Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
+    // This class can use a buffer to reduce the number of systems
+    // calls when reading a lot of small amouts of data. Each time a
+    // Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
 
- char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
- unsigned long RBLength ;
+    char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
+    unsigned long RBLength ;
 #endif
 };
 }
 
 #endif // _CERTI_SOCKET_UN_HH
 
-// $Id: SocketUN.hh,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// $Id: SocketUN.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $

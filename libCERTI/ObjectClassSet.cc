@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: ObjectClassSet.cc,v 3.9 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
 
@@ -29,7 +29,7 @@ namespace certi {
 
 static pdCDebug D("OBJECTCLASSSET", "(ObjClSet) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! The class is not allocated, only the pointer is memorized.
 void
 ObjectClassSet::addClass(ObjectClass *newClass)
@@ -41,7 +41,7 @@ ObjectClassSet::addClass(ObjectClass *newClass)
     push_front(newClass);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Build a Parent-Child relation between two object class, by setting the
   Child's Parent handle, and registering the child in the Parent's sonSet.
   Also copy all parent's Attributes in the child Class.
@@ -62,7 +62,7 @@ ObjectClassSet::buildParentRelation(ObjectClass *child, ObjectClass *parent)
     parent->addAttributesToChild(child);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Constructor.
 ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)
     : list<ObjectClass *>()
@@ -71,7 +71,7 @@ ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)
     server = theSecurityServer ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Destructor.
 ObjectClassSet::~ObjectClassSet(void)
 {
@@ -81,12 +81,12 @@ ObjectClassSet::~ObjectClassSet(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! deleteObject.
 void
 ObjectClassSet::deleteObject(FederateHandle theFederateHandle,
                              ObjectHandle theObjectHandle,
-                             const char* theTag)
+                             const char *theTag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -128,7 +128,7 @@ ObjectClassSet::deleteObject(FederateHandle theFederateHandle,
     D.Out(pdRegister, "Instance %d has been deleted.", theObjectHandle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Print the ObjectClasses tree to the standard output.
 void
 ObjectClassSet::display(void) const
@@ -141,7 +141,7 @@ ObjectClassSet::display(void) const
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
 ObjectClassSet::getAttributeHandle(const char *the_name,
@@ -164,9 +164,9 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
     return objectClass->getAttributeHandle(the_name);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getAttributeName.
-const char*
+const char *
 ObjectClassSet::getAttributeName(AttributeHandle the_handle,
                                  ObjectClassHandle the_class) const
     throw (AttributeNotDefined,
@@ -184,7 +184,7 @@ ObjectClassSet::getAttributeName(AttributeHandle the_handle,
     return objectClass->getAttributeName(the_handle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getInstanceClass.
 ObjectClass *
 ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
@@ -202,10 +202,10 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
     throw ObjectNotKnown();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(const char* the_name) const
+ObjectClassSet::getObjectClassHandle(const char *the_name) const
     throw (ObjectClassNotDefined, RTIinternalError)
 {
     if (the_name == NULL)
@@ -222,9 +222,9 @@ ObjectClassSet::getObjectClassHandle(const char* the_name) const
     throw ObjectClassNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getObjectClassName.
-const char*
+const char *
 ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
     throw (ObjectClassNotDefined,
            RTIinternalError)
@@ -234,7 +234,7 @@ ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
     return getWithHandle(the_handle)->getName();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getWithHandle (private method).
 ObjectClass *
 ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
@@ -251,7 +251,7 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
     throw ObjectClassNotDefined("Unknow class handle.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! killFederate.
 void ObjectClassSet::killFederate(FederateHandle theFederate)
     throw ()
@@ -292,7 +292,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
     D.Out(pdExcept, "End of the KillFederate Procedure.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! publish
 void
 ObjectClassSet::publish(FederateHandle theFederateHandle,
@@ -322,7 +322,7 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
                       PubOrUnpub);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! recursiveDiscovering.
 void
 ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
@@ -346,13 +346,13 @@ ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! registerInstance.
 void
 ObjectClassSet::registerInstance(FederateHandle theFederateHandle,
                                  ObjectClassHandle theClassHandle,
                                  ObjectHandle theObjectHandle,
-                                 const char* the_object_name)
+                                 const char *the_object_name)
     throw (InvalidObjectHandle,
            ObjectClassNotDefined,
            ObjectClassNotPublished,
@@ -398,7 +398,7 @@ ObjectClassSet::registerInstance(FederateHandle theFederateHandle,
     D.Out(pdRegister, "Instance %d has been registered.", theObjectHandle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! subscribe.
 void
 ObjectClassSet::subscribe(FederateHandle theFederateHandle,
@@ -441,7 +441,7 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
     // Discovered objects belong to the same class, the original one.
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! updateAttributeValues.
 void
 ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
@@ -450,7 +450,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
                                       AttributeValue *theValueArray,
                                       UShort theArraySize,
                                       FederationTime theTime,
-                                      const char* theUserTag)
+                                      const char *theUserTag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -492,7 +492,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
     delete ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! isAttributeOwnedByFederate.
 Boolean
 ObjectClassSet::isAttributeOwnedByFederate(ObjectHandle theObject,
@@ -511,7 +511,7 @@ ObjectClassSet::isAttributeOwnedByFederate(ObjectHandle theObject,
                                                    theFederateHandle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! queryAttributeOwnership.
 void
 ObjectClassSet::queryAttributeOwnership(ObjectHandle theObject,
@@ -533,7 +533,7 @@ ObjectClassSet::queryAttributeOwnership(ObjectHandle theObject,
                                          theFederateHandle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! negotiatedAttributeOwnershipDivestiture.
 void
 ObjectClassSet::
@@ -554,7 +554,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
-    ocbList = 
+    ocbList =
         objectClass->negotiatedAttributeOwnershipDivestiture(theFederateHandle,
                                                              theObjectHandle,
                                                              theAttributeList,
@@ -579,7 +579,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     delete ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipAcquisitionIfAvailable.
 void
 ObjectClassSet::
@@ -605,7 +605,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                                           theListSize);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! unconditionalAttributeOwnershipDivestiture
 void
 ObjectClassSet::
@@ -628,7 +628,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         unconditionalAttributeOwnershipDivestiture(theFederateHandle,
                                                    theObjectHandle,
                                                    theAttributeList,
-                                                   theListSize);    
+                                                   theListSize);
 
     // Broadcast ReflectAttributeValues message recursively
     currentClass = objectClass->Father ;
@@ -648,7 +648,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     delete ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipAcquisition.
 void
 ObjectClassSet::
@@ -675,7 +675,7 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                                theTag);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! cancelNegotiatedAttributeOwnershipDivestiture.
 void
 ObjectClassSet::
@@ -700,7 +700,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                       theListSize);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipReleaseResponse.
 AttributeHandleSet * ObjectClassSet::
 attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
@@ -723,7 +723,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                                           theListSize));
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! cancelAttributeOwnershipAcquisition.
 void ObjectClassSet::
 cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
@@ -748,4 +748,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.8 2003/02/17 09:17:04 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.9 2003/02/19 18:07:30 breholee Exp $

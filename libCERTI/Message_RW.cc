@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: Message_RW.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -973,4 +973,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: Message_RW.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $

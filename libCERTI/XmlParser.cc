@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.2 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: XmlParser.cc,v 3.3 2003/02/19 18:07:31 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
 
@@ -53,7 +53,7 @@ XmlParser::parse(string s)
     // transportation = HLAreliable
     // order = TimeStamp
 
-    doc = xmlParseFile(filename.c_str()) ;
+    doc = xmlParseFile(filename.c_str());
 
     // Did libXML manage to parse the file ?
     if (doc == 0) {
@@ -88,7 +88,7 @@ XmlParser::parse(string s)
                 if ((!xmlStrcmp(cur->name, NODE_OBJECT_CLASS))) {
                     this->parseClass(0);
                 }
-                cur = cur->next ;      
+                cur = cur->next ;
             }
             cur = prev ;
         }
@@ -100,7 +100,7 @@ XmlParser::parse(string s)
                 if ((!xmlStrcmp(cur->name, NODE_INTERACTION_CLASS))) {
                     this->parseInteraction(0);
                 }
-                cur = cur->next ;      
+                cur = cur->next ;
             }
             cur = prev ;
         }
@@ -117,17 +117,17 @@ XmlParser::parse(string s)
 }
 
 // ----------------------------------------------------------------------------
-//! Parse the current class node 
+//! Parse the current class node
 void
 XmlParser::parseClass(ObjectClass* parent)
 {
     xmlNodePtr prev = cur ;
-    ObjectClass* current = new ObjectClass() ;
+    ObjectClass* current = new ObjectClass();
     if (current == 0) {
         D.Out(pdError, "Memory exhausted in ObjectClass allocation.");
         throw RTIinternalError("Memoory exhausted in ObjectClass allocation.");
     }
-    
+
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
     current->Handle = freeObjectClassHandle++ ;
     root->ObjectClasses->addClass(current);
@@ -138,7 +138,7 @@ XmlParser::parseClass(ObjectClass* parent)
     while (cur != NULL) {
         // Attributes
         if ((!xmlStrcmp(cur->name, NODE_ATTRIBUTE))) {
-            ObjectClassAttribute *attr = new ObjectClassAttribute() ;
+            ObjectClassAttribute *attr = new ObjectClassAttribute();
 
             // Name
             attr->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
@@ -151,9 +151,9 @@ XmlParser::parseClass(ObjectClass* parent)
                            VALUE_RELIABLE))
                 attr->Transport = RELIABLE ;
             else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
-                                 VALUE_BESTEFFORT))
+                                VALUE_BESTEFFORT))
                 attr->Transport = BEST_EFFORT ;
-            
+
             // Order
             if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_TSO))
                 attr->Order = TIMESTAMP ;
@@ -193,25 +193,25 @@ XmlParser::parseInteraction(Interaction* parent)
     // Transportation
     if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION), VALUE_RELIABLE))
         current->transport = RELIABLE ;
-    else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION), 
+    else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
                         VALUE_BESTEFFORT))
         current->transport = BEST_EFFORT ;
-    
+
     // Order
     if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_TSO))
         current->order = TIMESTAMP ;
     else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
         current->order = RECEIVE ;
-    
+
     // Add to interactions list, and build inheritance relation
     root->Interactions->addClass(current);
-    if (parent != 0) 
+    if (parent != 0)
         root->Interactions->buildParentRelation(current, parent);
 
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
-            Parameter *param = new Parameter() ;
+            Parameter *param = new Parameter();
             param->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
             param->Handle = freeParameterHandle++ ;
             current->addParameter(param);
@@ -265,10 +265,10 @@ XmlParser::exists(void)
 
 #else // !HAVE_XML
 namespace certi {
-XmlParser::XmlParser(RootObject *) { } ;
+XmlParser::XmlParser(RootObject *) { };
 RootObject *XmlParser::parse(string) { return 0 ; }
 bool XmlParser::exists(void) { return false ; }
 }
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.2 2003/02/17 09:17:04 breholee Exp $
+// $Id: XmlParser.cc,v 3.3 2003/02/19 18:07:31 breholee Exp $

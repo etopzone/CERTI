@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -146,7 +146,7 @@ NetworkMessage::getValue(int Rank, char *Value)
 {
     // Pre-Checking
 
-    if ((Rank < 0) ||(Rank >= handleArraySize))
+    if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
@@ -217,7 +217,7 @@ NetworkMessage::setValue(int Rank, const char *Value)
     if ((Value == NULL) || (strlen(Value) > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
-    if ((Rank < 0) ||(Rank >= handleArraySize))
+    if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank for message.");
 
     // Setting Value
@@ -227,4 +227,4 @@ NetworkMessage::setValue(int Rank, const char *Value)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.3 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $

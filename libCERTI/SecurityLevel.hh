@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: SecurityLevel.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
 #define _CERTI_SECURITY_LEVEL_HH
@@ -29,34 +29,34 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef char* SecurityLevelName;   // Max length MAX_USER_TAG_LENGTH
-typedef unsigned short  SecurityLevelID;
+typedef char *SecurityLevelName ; // Max length MAX_USER_TAG_LENGTH
+typedef unsigned short SecurityLevelID ;
 
-#define PublicLevelID    0
-#define PublicLevelName  "Public"
+#define PublicLevelID 0
+#define PublicLevelName "Public"
 
 namespace certi {
 
-class SecurityLevel 
-{  
+class SecurityLevel
+{
 public:
-  SecurityLevelName Name;
-  SecurityLevelID   LevelID;
+    SecurityLevelName Name ;
+    SecurityLevelID LevelID ;
 
-  SecurityLevel(const char *InitName,
-		SecurityLevelID   InitLevelID)
-  { 
-    if((InitName == NULL) ||(std::strlen(InitName) > MAX_USER_TAG_LENGTH))
-      throw RTIinternalError("Bad Security Level Name.");
-    Name    = strdup(InitName);
-    LevelID = InitLevelID;
-  }
+    SecurityLevel(const char *InitName,
+                  SecurityLevelID InitLevelID)
+    {
+        if ((InitName == NULL) || (std::strlen(InitName) > MAX_USER_TAG_LENGTH))
+            throw RTIinternalError("Bad Security Level Name.");
+        Name = strdup(InitName);
+        LevelID = InitLevelID ;
+    }
 
-  ~SecurityLevel() { if(Name != NULL) free(Name); };
+    ~SecurityLevel() { if (Name != NULL) free(Name); };
 };
 
 }
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: SecurityLevel.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $

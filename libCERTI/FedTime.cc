@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedTime.cc,v 3.3 2003/01/29 21:05:31 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: FedTime.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include <config.h>
 
@@ -29,11 +29,11 @@
 
 namespace certi {
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // FedTimeFactory
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 FedTime*
 FedTimeFactory::makeZero(void)
     throw (MemoryExhausted)
@@ -44,106 +44,106 @@ FedTimeFactory::makeZero(void)
     return fedtime ;
 }
 
-// ---------------------------------------------------------------------------
-FedTime* 
-FedTimeFactory::decode(const char*)
+// ----------------------------------------------------------------------------
+FedTime*
+FedTimeFactory::decode(const char *)
     throw (MemoryExhausted)
 {
     //not implemented
     throw MemoryExhausted();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // FedTime
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 FedTime::~FedTime(void)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // RTIfedTime
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(void)
 {
     _fedTime = 0 ;
     _zero = 0 ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const Double &dble)
 {
     _fedTime = dble ;
     initZero();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const FedTime &time)
 {
     RTIfedTime *tmp ;
-    tmp = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    tmp = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (tmp) {
         _fedTime = tmp->_fedTime ;
         _zero = tmp->_zero ;
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const RTIfedTime &time) : FedTime()
 {
     _fedTime = time._fedTime ;
     _zero = time._zero ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 RTIfedTime::~RTIfedTime(void)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Overloaded functions from FedTime
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-void 
+// ----------------------------------------------------------------------------
+void
 RTIfedTime::setZero(void)
 {
     _zero = 0 ;
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
+// ----------------------------------------------------------------------------
+Boolean
 RTIfedTime::isZero(void)
 {
     return ((_zero == 0) ? RTI_TRUE : RTI_FALSE);
 }
 
-// ---------------------------------------------------------------------------
-void 
+// ----------------------------------------------------------------------------
+void
 RTIfedTime::setEpsilon(void)
 {
     //not implemented
 }
 
-// ---------------------------------------------------------------------------
-void 
+// ----------------------------------------------------------------------------
+void
 RTIfedTime::setPositiveInfinity(void)
 {
     //not implemented
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
+// ----------------------------------------------------------------------------
+Boolean
 RTIfedTime::isPositiveInfinity(void)
 {
     //not implemented
     return RTI_FALSE ; // compatibilite avec le type retourne
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 int
 RTIfedTime::encodedLength(void) const
 {
@@ -151,39 +151,39 @@ RTIfedTime::encodedLength(void) const
     return 0 ; // compatibilite avec le type retourne
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 void
 RTIfedTime::encode(char *) const
 {
     //not implemented
 }
 
-// ---------------------------------------------------------------------------
-int 
+// ----------------------------------------------------------------------------
+int
 RTIfedTime::getPrintableLength(void) const
 {
     //not implemented
     return 0 ; // compatibilite avec le type retourne
 }
 
-// ---------------------------------------------------------------------------
-void 
-RTIfedTime::getPrintableString(char*)
+// ----------------------------------------------------------------------------
+void
+RTIfedTime::getPrintableString(char *)
 {
     //not implemented
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Overloaded operators from FedTime
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-FedTime& 
-RTIfedTime::operator+=(const FedTime &time)
+// ----------------------------------------------------------------------------
+FedTime&
+RTIfedTime::operator+= (const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         _fedTime += fedtime->_fedTime ;
         initZero();
@@ -192,13 +192,13 @@ RTIfedTime::operator+=(const FedTime &time)
     else throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-FedTime& 
-RTIfedTime::operator-=(const FedTime &time)
+// ----------------------------------------------------------------------------
+FedTime&
+RTIfedTime::operator-= (const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         _fedTime -= fedtime->_fedTime ;
         initZero();
@@ -207,13 +207,13 @@ RTIfedTime::operator-=(const FedTime &time)
     else throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
-RTIfedTime::operator<=(const FedTime &time) const
+// ----------------------------------------------------------------------------
+Boolean
+RTIfedTime::operator<= (const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime <= fedtime->_fedTime) return RTI_TRUE ;
         else return RTI_FALSE ;
@@ -221,13 +221,13 @@ RTIfedTime::operator<=(const FedTime &time) const
     else throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
+// ----------------------------------------------------------------------------
+Boolean
 RTIfedTime::operator<(const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime < fedtime->_fedTime)
             return RTI_TRUE ;
@@ -238,13 +238,13 @@ RTIfedTime::operator<(const FedTime &time) const
         throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
-RTIfedTime::operator>=(const FedTime &time) const
+// ----------------------------------------------------------------------------
+Boolean
+RTIfedTime::operator>= (const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime >= fedtime->_fedTime)
             return RTI_TRUE ;
@@ -255,13 +255,13 @@ RTIfedTime::operator>=(const FedTime &time) const
         throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
+// ----------------------------------------------------------------------------
+Boolean
 RTIfedTime::operator>(const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime > fedtime->_fedTime)
             return RTI_TRUE ;
@@ -272,13 +272,13 @@ RTIfedTime::operator>(const FedTime &time) const
         throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-Boolean 
-RTIfedTime::operator==(const FedTime &time) const
+// ----------------------------------------------------------------------------
+Boolean
+RTIfedTime::operator== (const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime == fedtime->_fedTime)
             return RTI_TRUE ;
@@ -289,13 +289,13 @@ RTIfedTime::operator==(const FedTime &time) const
         throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
-FedTime& 
-RTIfedTime::operator=(const FedTime &time)
+// ----------------------------------------------------------------------------
+FedTime&
+RTIfedTime::operator= (const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         _fedTime = fedtime->_fedTime ;
         initZero();
@@ -305,28 +305,28 @@ RTIfedTime::operator=(const FedTime &time)
         throw (new InvalidFederationTime());
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Implementation functions
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-Double 
+// ----------------------------------------------------------------------------
+Double
 RTIfedTime::getTime(void) const
 {
     return _fedTime ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Implementation operators
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 Boolean
-RTIfedTime::operator!=(const FedTime &time) const
+RTIfedTime::operator!= (const FedTime &time) const
     throw (InvalidFederationTime)
 {
     RTIfedTime *fedtime ;
-    fedtime = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    fedtime = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (fedtime) {
         if (_fedTime != fedtime->_fedTime)
             return RTI_TRUE ;
@@ -337,25 +337,25 @@ RTIfedTime::operator!=(const FedTime &time) const
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-FedTime& 
-RTIfedTime::operator=(const RTIfedTime &time)
+// ----------------------------------------------------------------------------
+FedTime&
+RTIfedTime::operator= (const RTIfedTime &time)
     throw (InvalidFederationTime)
 {
     // RTIfedTime *fedtime = new RTIfedTime();
-    // fedtime->_fedTime =((RTIfedTime)time)._fedTime ;
+    // fedtime->_fedTime = ((RTIfedTime)time)._fedTime ;
     _fedTime = time._fedTime ;
     _zero = time._zero ;
     return *this ;
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 RTIfedTime::operator+(const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = _fedTime + param->_fedTime ;
         fedtime.initZero();
@@ -365,13 +365,13 @@ RTIfedTime::operator+(const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 RTIfedTime::operator-(const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = _fedTime - param->_fedTime ;
         fedtime.initZero();
@@ -381,13 +381,13 @@ RTIfedTime::operator-(const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 RTIfedTime::operator*(const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = _fedTime * param->_fedTime ;
         fedtime.initZero();
@@ -397,13 +397,13 @@ RTIfedTime::operator*(const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 RTIfedTime::operator/(const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = _fedTime / param->_fedTime ;
         fedtime.initZero();
@@ -413,22 +413,22 @@ RTIfedTime::operator/(const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Implementation friends
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //ostream& operator<<(ostream&, const FedTime&)
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Global operators
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 operator+(const Double &d, const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = d + param->_fedTime ;
         fedtime.initZero();
@@ -438,13 +438,13 @@ operator+(const Double &d, const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 operator-(const Double &d, const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = d - param->_fedTime ;
         fedtime.initZero();
@@ -454,13 +454,13 @@ operator-(const Double &d, const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 operator*(const Double &d, const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = d * param->_fedTime ;
         fedtime.initZero();
@@ -470,13 +470,13 @@ operator*(const Double &d, const FedTime &time)
         throw InvalidFederationTime();
 }
 
-// ---------------------------------------------------------------------------
-RTIfedTime 
+// ----------------------------------------------------------------------------
+RTIfedTime
 operator/(const Double &d, const FedTime &time)
     throw (InvalidFederationTime)
 {
     RTIfedTime *param ;
-    param = dynamic_cast<RTIfedTime *>(&(const_cast<FedTime&>(time)));
+    param = dynamic_cast<RTIfedTime *>(& (const_cast<FedTime&>(time)));
     if (param) {
         RTIfedTime fedtime = d / param->_fedTime ;
         fedtime.initZero();
@@ -488,4 +488,4 @@ operator/(const Double &d, const FedTime &time)
 
 } // namespace certi
 
-// $Id: FedTime.cc,v 3.3 2003/01/29 21:05:31 breholee Exp $
+// $Id: FedTime.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $

@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.5 2003/01/29 18:25:25 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: InteractionSet.cc,v 3.6 2003/02/19 18:07:29 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "InteractionSet.hh"
 
@@ -29,23 +29,23 @@ namespace certi {
 
 static pdCDebug D("INTERACTIONSET", "(InterSet) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! addClass.
 /*! No memory is allocated, please don't free the pointed object.
  */
 void
 InteractionSet::addClass(Interaction *the_class)
 {
-    D.Out(pdInit, "Adding new interaction class %d,", the_class->handle);
+    D.Out(pdInit, "Adding new interaction class %d, ", the_class->handle);
 
-    the_class->server = server;
+    the_class->server = server ;
 
     // BUG: We must verify that no other class with the same name does already
     // exists. Make a call to getClassHandle.
     push_front(the_class);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! broadcastInteraction.
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
@@ -54,17 +54,17 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      ParameterValue *value_list,
                                      UShort list_size,
                                      FederationTime the_time,
-                                     const char* the_tag)
+                                     const char *the_tag)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
            InteractionParameterNotDefined,
            RTIinternalError)
 {
     // It may throw InteractionClassNotDefined.
-    //InteractionClassHandle currentClass = interaction_handle;
+    //InteractionClassHandle currentClass = interaction_handle ;
     Interaction *theInteraction = getByHandle(interaction_handle);
 
-    InteractionBroadcastList *ibList;
+    InteractionBroadcastList *ibList ;
     ibList = theInteraction->sendInteraction(federate_handle,
                                              parameter_list,
                                              value_list,
@@ -74,20 +74,20 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 
     // Pass the Message(and its BroadcastList) to the Parent Classes.
     if (ibList != NULL) {
-        //currentClass = theInteraction->parent;
-        //while(CurrentClass != 0) {
+        //currentClass = theInteraction->parent ;
+        //while (CurrentClass != 0) {
         // theInteraction = getByHandle(CurrentClass);
         // theInteraction->broadcastInteractionMessage(List);
-        // CurrentClass = theInteraction->Father;
+        // CurrentClass = theInteraction->Father ;
         //}
-        delete ibList;
+        delete ibList ;
     }
     else
         // BroadcastInteraction should not be called on the RTIA(see IsReady)
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Build a Parent-Child relation between two object class, by setting the
   Child's Parent handle, and registering the Child in the Parent's SonSet.
   Also copy all Parent's Attributes in the Child Class.
@@ -96,7 +96,7 @@ void
 InteractionSet::buildParentRelation(Interaction *child, Interaction *parent)
 {
     // Register parent to son.
-    child->parent = parent->handle;
+    child->parent = parent->handle ;
 
     // Transfert security level.
     child->setLevelId(parent->getLevelId());
@@ -108,7 +108,7 @@ InteractionSet::buildParentRelation(Interaction *child, Interaction *parent)
     parent->addParametersToChild(child);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! interactionSet.
 /*! 'security_server' can be NULL on the RTIA.
  */
@@ -117,7 +117,7 @@ InteractionSet::InteractionSet(SecurityServer *security_server)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Destructor (frees list).
 InteractionSet::~InteractionSet(void)
 {
@@ -127,20 +127,20 @@ InteractionSet::~InteractionSet(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Print the Interactions tree to the standard output.
 void
 InteractionSet::display(void) const
 {
-    cout << " Interactions :" << endl;
+    cout << " Interactions :" << endl ;
 
     list<Interaction *>::const_iterator i = begin();
-    for (; i != end() ; i++) {
+    for (; i != end(); i++) {
         (*i)->display();
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return interaction associated to handle.
 Interaction *
 InteractionSet::getByHandle(InteractionClassHandle the_handle)
@@ -148,7 +148,7 @@ InteractionSet::getByHandle(InteractionClassHandle the_handle)
            RTIinternalError)
 {
     list<Interaction *>::const_iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if ((*i)->handle == the_handle)
             return (*i);
     }
@@ -156,32 +156,32 @@ InteractionSet::getByHandle(InteractionClassHandle the_handle)
     throw InteractionClassNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return the interaction handle associated to name.
 InteractionClassHandle
-InteractionSet::getInteractionClassHandle(const char* the_name)
+InteractionSet::getInteractionClassHandle(const char *the_name)
     throw (InteractionClassNotDefined, RTIinternalError)
 {
     if (the_name == NULL)
         throw RTIinternalError();
 
     list<Interaction *>::const_iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if (strcmp((*i)->getName(), the_name) == 0)
-            return (*i)->handle;
+            return (*i)->handle ;
     }
 
     throw InteractionClassNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return the interaction name associated to handle.
-const char*
+const char *
 InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
     throw (InteractionClassNotDefined, RTIinternalError)
 {
     list<Interaction *>::const_iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if ((*i)->handle == the_handle)
             return (*i)->getName();
     }
@@ -189,10 +189,10 @@ InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
     throw InteractionClassNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return the parameter handle associated to name and class handle.
 ParameterHandle
-InteractionSet::getParameterHandle(const char* the_name,
+InteractionSet::getParameterHandle(const char *the_name,
                                    InteractionClassHandle the_class)
     throw (InteractionParameterNotDefined,
            InteractionClassNotDefined,
@@ -206,9 +206,9 @@ InteractionSet::getParameterHandle(const char* the_name,
     return interaction->getParameterHandle(the_name);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return the parameter name associated to handle and class handle.
-const char*
+const char *
 InteractionSet::getParameterName(ParameterHandle the_handle,
                                  InteractionClassHandle the_class)
     throw (InteractionParameterNotDefined,
@@ -220,7 +220,7 @@ InteractionSet::getParameterName(ParameterHandle the_handle,
     return interaction->getParameterName(the_handle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Return no exception if the Interaction is valid for a SendInteraction, but
   do not broadcast it.(to be used on the RTIA for pre-checking).
 */
@@ -239,19 +239,19 @@ InteractionSet::isReady(FederateHandle federate_handle,
     interaction->isReady(federate_handle, param_array, param_array_size);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! killFederate.
 void
 InteractionSet::killFederate(FederateHandle the_federate)
     throw ()
 {
     list<Interaction *>::iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         (*i)->killFederate(the_federate);
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! publish.
 void
 InteractionSet::publish(FederateHandle federate_handle,
@@ -267,7 +267,7 @@ InteractionSet::publish(FederateHandle federate_handle,
     interaction->publish(publish, federate_handle);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! subscribe.
 void
 InteractionSet::subscribe(FederateHandle federate_handle,
@@ -285,4 +285,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.5 2003/01/29 18:25:25 breholee Exp $
+// $Id: InteractionSet.cc,v 3.6 2003/02/19 18:07:29 breholee Exp $

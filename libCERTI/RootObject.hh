@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// $Id: RootObject.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -81,4 +81,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// $Id: RootObject.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $

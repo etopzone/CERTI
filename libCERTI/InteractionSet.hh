@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: InteractionSet.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
 #define _CERTI_INTERACTION_SET_HH
@@ -29,11 +29,11 @@
 #include <config.h>
 
 #include <iostream>
-using std::cout;
-using std::endl;
+using std::cout ;
+using std::endl ;
 
 #include <list>
-using std::list;
+using std::list ;
 
 #include "Interaction.hh"
 #include "SecurityServer.hh"
@@ -55,27 +55,27 @@ public:
 
     void addClass(Interaction *the_class);
     void buildParentRelation(Interaction *child, Interaction *parent);
-    void display(void) const;
+    void display(void) const ;
 
     // --------------------------
     // -- RTI Support Services --
     // --------------------------
     InteractionClassHandle
-    getInteractionClassHandle(const char* the_name)
+    getInteractionClassHandle(const char *the_name)
         throw (InteractionClassNotDefined, RTIinternalError);
 
-    const char*
+    const char *
     getInteractionClassName(InteractionClassHandle the_handle)
         throw (InteractionClassNotDefined, RTIinternalError);
 
     ParameterHandle
-    getParameterHandle(const char* the_name,
+    getParameterHandle(const char *the_name,
                        InteractionClassHandle the_class)
         throw (InteractionParameterNotDefined,
                InteractionClassNotDefined,
                RTIinternalError);
 
-    const char*
+    const char *
     getParameterName(ParameterHandle the_handle,
                      InteractionClassHandle the_class)
         throw (InteractionParameterNotDefined,
@@ -122,7 +122,7 @@ public:
                               ParameterValue *theValueList,
                               UShort theListSize,
                               FederationTime theTime,
-                              const char* theTag)
+                              const char *theTag)
         throw (FederateNotPublishing,
                InteractionClassNotDefined,
                InteractionParameterNotDefined,
@@ -137,7 +137,7 @@ private:
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
     */
-    SecurityServer *server;
+    SecurityServer *server ;
 
     // ---------------------
     // -- Private Methods --
@@ -150,4 +150,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
+// $Id: InteractionSet.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $

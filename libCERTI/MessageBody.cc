@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// $Id: MessageBody.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "MessageBody.hh"
@@ -32,15 +32,15 @@ namespace certi {
 
 // ----------------------------------------------------------------------------
 /*! To create a WRITE body, with its own buffer(it will be deleted by the
- destructor). No Read operations should be made.
+  destructor). No Read operations should be made.
 */
 MessageBody::MessageBody(void)
 {
- Length = 0 ;
- GetPtr = Buffer ;
+    Length = 0 ;
+    GetPtr = Buffer ;
 
- if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
- throw RTIinternalError("MessageBody unabled to process ints.");
+    if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
+        throw RTIinternalError("MessageBody unabled to process ints.");
 }
 
 // ----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ MessageBody::~MessageBody(void)
  */
 long MessageBody::getLength(void)
 {
- return Length ;
+    return Length ;
 }
 
 // ----------------------------------------------------------------------------
@@ -64,58 +64,58 @@ long MessageBody::getLength(void)
  */
 char *MessageBody::getBuffer(void)
 {
- return Buffer ;
+    return Buffer ;
 }
 
 // ----------------------------------------------------------------------------
 /*! Retrieve a string from the Body, and put it in Store. Store is at least
- (StoreLen + 1) bytes long. Store must be NOT NULL.
+  (StoreLen + 1) bytes long. Store must be NOT NULL.
 */
 void MessageBody::readString(char *Store, unsigned short StoreLen)
 {
- // Read String's Length
- unsigned short StrLength = readShortInt();
+    // Read String's Length
+    unsigned short StrLength = readShortInt();
 
- // Is the Store String long enough?
- if (StrLength > StoreLen)
- throw RTIinternalError("String in Message too long for storage.");
+    // Is the Store String long enough?
+    if (StrLength > StoreLen)
+        throw RTIinternalError("String in Message too long for storage.");
 
- // Get string from stream
- if (StrLength > 0)
- sgetn(Store, StrLength);
+    // Get string from stream
+    if (StrLength > 0)
+        sgetn(Store, StrLength);
 
- Store[StrLength] = '\0' ;
+    Store[StrLength] = '\0' ;
 }
 
 // ----------------------------------------------------------------------------
 /*! If the string is empty(or NULL), an empty string is written onto the
- stream.
+  stream.
 */
 void MessageBody::writeString(const char *String)
 {
- unsigned short StrLength ;
+    unsigned short StrLength ;
 
- // NULL String is handled like an empty string
- if (String == NULL) {
- writeShortInt(0);
- return ;
- }
+    // NULL String is handled like an empty string
+    if (String == NULL) {
+        writeShortInt(0);
+        return ;
+    }
 
- // Write string length
- StrLength = std::strlen(String);
+    // Write string length
+    StrLength = std::strlen(String);
 
- // BUG: Should test string's length.
- //if (StrLength > MAX_BYTES_PER_VALUE)
- // throw RTIinternalError("String too long.");
+    // BUG: Should test string's length.
+    //if (StrLength > MAX_BYTES_PER_VALUE)
+    // throw RTIinternalError("String too long.");
 
- writeShortInt(StrLength);
+    writeShortInt(StrLength);
 
- // WriteString
- if (StrLength > 0) {
- sputn((char *)String, StrLength);
- }
+    // WriteString
+    if (StrLength > 0) {
+        sputn((char *)String, StrLength);
+    }
 }
 
 }
 
-// $Id: MessageBody.cc,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// $Id: MessageBody.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $

@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.6 2003/01/29 18:22:47 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: Interaction.hh,v 3.7 2003/02/19 18:07:29 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
 #define _CERTI_INTERACTION_HH
@@ -29,11 +29,11 @@
 #include <config.h>
 
 #include <list>
-using std::list;
+using std::list ;
 
 #include <iostream>
-using std::cout;
-using std::endl;
+using std::cout ;
+using std::endl ;
 
 #include "PrettyDebug.hh"
 #include "RTItypes.hh"
@@ -47,7 +47,7 @@ namespace certi {
 
 class Interaction
 {
-    // ATTRIBUTES ------------------------------------------------------------ 
+    // ATTRIBUTES ------------------------------------------------------------
 public:
     InteractionClassHandle handle ; //!< Interaction class handle.
     //! This Object helps to find a TCPLink given a Federate Handle.
@@ -61,12 +61,12 @@ public:
       Currently not used.
     */
     TransportType transport ;
- 
+
     //! Interaction message Ordering Type(TSO, FIFO), currently not used.
     OrderType order ;
 
-private: 
-    char * name ;        //!< Must be locally allocated and deleted. 
+private:
+    char *name ; //!< Must be locally allocated and deleted.
     SecurityLevelID id ; //!< The default Security Level for new parameters
 
     //! List of this Interaction Class' Parameters.
@@ -75,13 +75,13 @@ private:
     list<Subscriber*> subscribers ;
     //! List of the Federates(Handles) publishing this Class.
     list<Publisher *> publishers ;
- 
+
 
     // METHODS ---------------------------------------------------------------
 public:
     Interaction(void);
     ~Interaction(void);
- 
+
     const char *getName(void) const ;
     void setName(const char *new_name)
         throw (ValueLengthExceeded, RTIinternalError);
@@ -103,10 +103,10 @@ public:
     // -- Publication and Subscription --
     void publish(bool publish, FederateHandle the_handle)
         throw (FederateNotPublishing, RTIinternalError, SecurityError);
- 
+
     void subscribe(bool subscribe, FederateHandle the_handle)
         throw (FederateNotSubscribing, RTIinternalError, SecurityError);
- 
+
     void subscribe(bool subscribe, Subscriber *the_subscriber)
         throw (RegionNotKnown, InvalidRoutingSpace, RTIinternalError);
 
@@ -121,10 +121,10 @@ public:
         throw ();
 
     // -- Transport and Ordering --
-    void changeTransportationType(TransportType new_type, 
+    void changeTransportationType(TransportType new_type,
                                   FederateHandle the_handle)
         throw (FederateNotPublishing, InvalidTransportType, RTIinternalError);
- 
+
     void changeOrderType(OrderType new_order, FederateHandle the_handle)
         throw (FederateNotPublishing, InvalidOrderType, RTIinternalError);
 
@@ -133,27 +133,27 @@ public:
                  ParameterHandle *parameter_list,
                  UShort list_size) const
         throw (FederateNotPublishing,
-              InteractionParameterNotDefined,
-              RTIinternalError);
+               InteractionParameterNotDefined,
+               RTIinternalError);
 
-    InteractionBroadcastList * 
+    InteractionBroadcastList *
     sendInteraction(FederateHandle federate_handle,
                     ParameterHandle *parameter_list,
                     ParameterValue *value_list,
                     UShort list_size,
                     FederationTime the_time,
-                    const char* the_tag)
+                    const char *the_tag)
         throw (FederateNotPublishing,
-              InteractionClassNotDefined,
-              InteractionParameterNotDefined,
-              RTIinternalError);
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               RTIinternalError);
 
     void broadcastInteractionMessage(InteractionBroadcastList *ibList);
 
 private:
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined,
-              RTIinternalError);
+               RTIinternalError);
 
     // -- Private Publishers' Management --
 
@@ -175,4 +175,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.6 2003/01/29 18:22:47 breholee Exp $
+// $Id: Interaction.hh,v 3.7 2003/02/19 18:07:29 breholee Exp $

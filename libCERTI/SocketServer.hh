@@ -1,37 +1,37 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: SocketServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
 #define _CERTI_SOCKET_SERVER_HH
 
 #include <list>
-using std::list;
+using std::list ;
 
 #include "RTItypes.hh"
 #include "Socket.hh"
-#include "SocketTCP.hh" 
+#include "SocketTCP.hh"
 #include "SocketUDP.hh"
 
 #include "NetworkMessage.hh"
@@ -41,22 +41,22 @@ using std::list;
 
 namespace certi {
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Element of the SocketServer internal list.
-class SocketTuple 
+class SocketTuple
 {
 public:
-    FederationHandle Federation;
-    FederateHandle Federate;
+    FederationHandle Federation ;
+    FederateHandle Federate ;
 
-    SocketTCP *ReliableLink;
-    SocketUDP *BestEffortLink;
- 
+    SocketTCP *ReliableLink ;
+    SocketUDP *BestEffortLink ;
+
     SocketTuple(Socket *theTCPLink);
     ~SocketTuple();
 };
-  
-// ---------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 /*! Liste dynamique mettant en relation un couple(Federation, Federe)
   avec une Socket TCP. Sont decritent les classes : SocketTuple
   (l'element de la liste) SocketServer(la liste au niveau du RTIG)
@@ -78,9 +78,9 @@ public:
     void open(void)
         throw (RTIinternalError);
 
-    void close(long socket,                // Provided
+    void close(long socket, // Provided
                FederationHandle &federation_referenced, // Returned
-               FederateHandle &federate_referenced)   // Returned
+               FederateHandle &federate_referenced) // Returned
         throw (RTIinternalError);
 
     void setReferences(long the_socket,
@@ -100,7 +100,7 @@ public:
     // -- RTIG related methods --
     // --------------------------
     void addToFDSet(fd_set *select_fdset);
-    Socket *getActiveSocket(fd_set *select_fdset) const;
+    Socket *getActiveSocket(fd_set *select_fdset) const ;
 
     // ------------------------------------------
     // -- Message Broadcasting related Methods --
@@ -109,7 +109,7 @@ public:
                           FederateHandle the_federate,
                           TransportType the_type = RELIABLE) const
         throw (FederateNotExecutionMember,
-              RTIinternalError);
+               RTIinternalError);
 
     SocketTuple *getWithReferences(FederationHandle the_federation,
                                    FederateHandle the_federate) const
@@ -117,9 +117,9 @@ public:
 
 private:
     // The Server socket object(used for Accepts)
-    SocketTCP *ServerSocketTCP;
-    SocketUDP *ServerSocketUDP;
-    //    int port;
+    SocketTCP *ServerSocketTCP ;
+    SocketUDP *ServerSocketUDP ;
+    // int port ;
 
     // ---------------------
     // -- Private Methods --
@@ -132,4 +132,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// $Id: SocketServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $

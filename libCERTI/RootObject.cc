@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// $Id: RootObject.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -47,7 +47,7 @@ RootObject::~RootObject()
 {
     delete ObjectClasses ;
     delete Interactions ;
-    for (int i = 1; i < routingSpaces.size(); i++)
+    for (int i = 1 ; i < routingSpaces.size(); i++)
         delete routingSpaces[i] ;
     routingSpaces.clear();
 }
@@ -63,7 +63,7 @@ RootObject::display(void)
         printf("+ Routing Spaces :\n");
         for (vector<RoutingSpace *>::iterator i = routingSpaces.begin();
              i != routingSpaces.end();
-             i++) {        
+             i++) {
             (*i)->display();
         }
     }
@@ -90,7 +90,7 @@ RootObject::registerFederate(const char *the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! add a routing space [HLA 1.3]
+//! add a routing space[HLA 1.3]
 void
 RootObject::addRoutingSpace(RoutingSpace *rs)
 {
@@ -100,7 +100,7 @@ RootObject::addRoutingSpace(RoutingSpace *rs)
 }
 
 // ----------------------------------------------------------------------------
-//! get a routing space handle [HLA 1.3]
+//! get a routing space handle[HLA 1.3]
 SpaceHandle
 RootObject::getRoutingSpaceHandle(const char *rs)
     throw (NameNotFound)
@@ -120,4 +120,4 @@ RootObject::getRoutingSpaceHandle(const char *rs)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.3 2003/02/17 09:17:04 breholee Exp $
+// $Id: RootObject.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $

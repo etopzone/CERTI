@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: Interaction.cc,v 3.10 2003/02/19 18:07:29 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
 
@@ -29,7 +29,7 @@ namespace certi {
 
 static pdCDebug D("INTERACTION", "(Interact) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Used only by CRead, return the new parameter's handle.
 ParameterHandle
 Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
@@ -49,7 +49,7 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
     return the_parameter->Handle ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Add the class' attributes to the 'Child' Class.
 void
 Interaction::addParametersToChild(Interaction *the_child)
@@ -75,7 +75,7 @@ Interaction::addParametersToChild(Interaction *the_child)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! addPublisher (private).
 void
 Interaction::addPublisher(FederateHandle the_federate)
@@ -92,7 +92,7 @@ Interaction::addPublisher(FederateHandle the_federate)
     publishers.push_front(publisher);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // addSubscriber (private).
 void
 Interaction::addSubscriber(FederateHandle the_federate)
@@ -110,7 +110,7 @@ Interaction::addSubscriber(FederateHandle the_federate)
     subscribers.push_front(subscriber);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Called by the InteractionSet on Parent Classes whose Childrens
   initiated a SendInteraction, to allow them to broadcast the
   Interaction Message of their child to their own subscribers.
@@ -123,13 +123,13 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
     ibList->message->interactionClass = handle ;
 
     // 2. Update message Parameters list by removing child's Parameters.
-    for (int i = 0  ; i < ibList->message->handleArraySize  ; ) {
+    for (int i = 0 ; i < ibList->message->handleArraySize ;) {
         // If the Parameter is not in that class, remove it from the message.
         try {
             getParameterByHandle(ibList->message->handleArray[i]);
             i++ ;
         }
-        catch(InteractionParameterNotDefined) {
+        catch (InteractionParameterNotDefined) {
             ibList->message->removeParameter(i);
         }
     }
@@ -143,11 +143,11 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
     }
 
     // 4. Send pending messages.
-    D.Out(pdDebug,"Calling SendPendingMessage...");
+    D.Out(pdDebug, "Calling SendPendingMessage...");
     ibList->sendPendingMessage(server);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! changeTransportationType.
 void
 Interaction::changeTransportationType(TransportType new_type,
@@ -168,7 +168,7 @@ Interaction::changeTransportationType(TransportType new_type,
           "Interaction %d: New Transport type is %d.", handle, transport);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! changeOrderType.
 void
 Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
@@ -185,7 +185,7 @@ Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
     D.Out(pdInit, "Interaction %d: New Order type is %d.", handle, order);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Throw SecurityError is the Federate is not allowed to access the
   Interaction Class, and print an Audit message containing Reason.
 */
@@ -208,7 +208,7 @@ Interaction::checkFederateAccess(FederateHandle the_federate,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Interaction.
 Interaction::Interaction(void)
     : handle(0), parent(0), depth(0), transport(BEST_EFFORT), order(RECEIVE),
@@ -216,7 +216,7 @@ Interaction::Interaction(void)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Destructor.
 Interaction::~Interaction(void)
 {
@@ -258,13 +258,13 @@ Interaction::~Interaction(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Delete a publisher with rank (private module).
 void
 Interaction::deletePublisher(int the_rank)
 {
     list<Publisher *>::iterator p = publishers.begin();
-    for (int i = 1  ; p != publishers.end(); i++,p++) {
+    for (int i = 1 ; p != publishers.end(); i++, p++) {
         if (i == the_rank) {
             delete (*p);
             publishers.erase(p);
@@ -273,13 +273,13 @@ Interaction::deletePublisher(int the_rank)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Delete a subscriber with rank (private module).
 void
 Interaction::deleteSubscriber(int the_rank)
 {
     list<Subscriber *>::iterator s = subscribers.begin();
-    for (int i = 1  ; s != subscribers.end(); i++,s++) {
+    for (int i = 1 ; s != subscribers.end(); i++, s++) {
         if (i == the_rank) {
             delete (*s);
             subscribers.erase(s);
@@ -288,7 +288,7 @@ Interaction::deleteSubscriber(int the_rank)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Print the Interaction to the standard output.
 void
 Interaction::display(void) const
@@ -302,7 +302,7 @@ Interaction::display(void) const
     cout << " " << children.size() << " Child(s):" << endl ;
 
     list<InteractionClassHandle>::const_iterator c = children.begin();
-    for (int i = 1  ; c != children.end(); i++,c++) {
+    for (int i = 1 ; c != children.end(); i++, c++) {
         cout << " child " << i << " Handle: " << (*c) << endl ;
     }
 
@@ -311,12 +311,12 @@ Interaction::display(void) const
     cout << " " << parameterSet.size() << " Parameters:" << endl ;
 
     list<Parameter *>::const_iterator p = parameterSet.begin();
-    for ( ; p != parameterSet.end(); p++) {
+    for (; p != parameterSet.end(); p++) {
         (*p)->display();
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns the parameter by its handle (private module).
 Parameter*
 Interaction::getParameterByHandle(ParameterHandle the_handle) const
@@ -331,10 +331,10 @@ Interaction::getParameterByHandle(ParameterHandle the_handle) const
     throw InteractionParameterNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns the parameter handle obtained by its name.
 ParameterHandle
-Interaction::getParameterHandle(const char* the_name) const
+Interaction::getParameterHandle(const char *the_name) const
     throw (InteractionParameterNotDefined,
            RTIinternalError)
 {
@@ -347,9 +347,9 @@ Interaction::getParameterHandle(const char* the_name) const
     throw InteractionParameterNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns the parameter name obtained by its handle.
-const char*
+const char *
 Interaction::getParameterName(ParameterHandle the_handle) const
     throw (InteractionParameterNotDefined,
            RTIinternalError)
@@ -357,7 +357,7 @@ Interaction::getParameterName(ParameterHandle the_handle) const
     return getParameterByHandle(the_handle)->getName();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns the publisher rank from its handle (private module).
 /*! Return the Rank of the Federate in the list, or ZERO if not found.
  */
@@ -365,15 +365,15 @@ int
 Interaction::getPublisherRank(FederateHandle the_federate) const
 {
     list<Publisher *>::const_iterator p = publishers.begin();
-    for (int i = 1  ; p != publishers.end(); i++,p++) {
-        if ( (*p)->getHandle() == the_federate)
+    for (int i = 1 ; p != publishers.end(); i++, p++) {
+        if ((*p)->getHandle() == the_federate)
             return i ;
     }
 
     return 0 ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Returns the subscriber rank from its handle (private module).
 /*! Return the Rank of the Federate in the list, or ZERO if not found.
  */
@@ -381,15 +381,15 @@ int
 Interaction::getSubscriberRank(FederateHandle the_federate) const
 {
     list<Subscriber *>::const_iterator s = subscribers.begin();
-    for (int i = 1  ; s != subscribers.end(); i++,s++) {
-        if ( (*s)->getHandle() == the_federate)
+    for (int i = 1 ; s != subscribers.end(); i++, s++) {
+        if ((*s)->getHandle() == the_federate)
             return i ;
     }
 
     return 0 ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return true if federate has subscribed to this attribute.
 bool
 Interaction::isSubscribed(FederateHandle the_handle) const
@@ -397,7 +397,7 @@ Interaction::isSubscribed(FederateHandle the_handle) const
     return(getSubscriberRank(the_handle) != 0);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return true if federate is publishing the attribute.
 bool
 Interaction::isPublishing(FederateHandle the_handle) const
@@ -405,7 +405,7 @@ Interaction::isPublishing(FederateHandle the_handle) const
     return(getPublisherRank(the_handle) != 0);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Check a SendInteractionOrder to see if it's OK for sending, but
   without sending it(to be called on the RTIA only).
 */
@@ -426,7 +426,7 @@ Interaction::isReady(FederateHandle federate_handle,
         getParameterByHandle(parameter_list[i]);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! killFederate.
 void
 Interaction::killFederate(FederateHandle the_federate)
@@ -444,7 +444,7 @@ Interaction::killFederate(FederateHandle the_federate)
     catch (SecurityError &e) {}
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Pour publier : PubOrUnpub = RTI_TRUE, sinon PubOrUnPub = RTI_FALSE.
   theHandle : le numero du federe
 */
@@ -454,7 +454,7 @@ Interaction::publish(bool publish, FederateHandle the_handle)
 {
     bool alreadyPublishing = isPublishing(the_handle);
 
-    checkFederateAccess(the_handle, (char*) "Publish");
+    checkFederateAccess(the_handle, (char *) "Publish");
 
     if (publish) {
         // Federate wants to Publish
@@ -482,7 +482,7 @@ Interaction::publish(bool publish, FederateHandle the_handle)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Called by RTIG in order to start the broadcasting of an Interaction
   Message(to all federates who subscribed to this Interaction Class).
 */
@@ -491,8 +491,8 @@ Interaction::sendInteraction(FederateHandle federate_handle,
                              ParameterHandle *parameter_list,
                              ParameterValue *value_list,
                              UShort list_size,
-                             FederationTime ,
-                             const char* the_tag)
+                             FederationTime,
+                             const char *the_tag)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
            InteractionParameterNotDefined,
@@ -515,12 +515,12 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         strcpy(answer->label, the_tag);
 
         answer->handleArraySize = list_size ;
-        for (int i = 0  ; i < list_size  ; i++) {
+        for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
             answer->setValue(i, value_list[i]);
         }
 
-        D.Out(pdProtocol,"Preparing broadcast list.");
+        D.Out(pdProtocol, "Preparing broadcast list.");
         ibList = new InteractionBroadcastList(answer);
 
         broadcastInteractionMessage(ibList);
@@ -534,7 +534,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     return ibList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Name attribute access(GetName reference must be considered READ-ONLY).
   NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
 */
@@ -544,14 +544,14 @@ Interaction::getName(void) const
     return name ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Change the interaction name.
 void
 Interaction::setName(const char *new_name)
     throw (ValueLengthExceeded, RTIinternalError)
 {
     // Check Length
-    if ((new_name == NULL) ||(strlen(new_name) > MAX_USER_TAG_LENGTH)) {
+    if ((new_name == NULL) || (strlen(new_name) > MAX_USER_TAG_LENGTH)) {
         D.Out(pdExcept, "Interaction Name %s too long.", new_name);
         throw ValueLengthExceeded("Interaction name too long.");
     }
@@ -566,7 +566,7 @@ Interaction::setName(const char *new_name)
         throw RTIinternalError("Memory Exhausted.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Change the level ID.
 /*! A class' LevelID can only be increased.
  */
@@ -579,7 +579,7 @@ Interaction::setLevelId(SecurityLevelID new_levelID)
     id = new_levelID ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
   theHandle : the federate number.
 */
@@ -619,7 +619,7 @@ Interaction::subscribe(bool subscribe, FederateHandle the_handle)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
   Is used to subscribe or not to an interaction in a region.
 */
@@ -636,4 +636,4 @@ Interaction::subscribe(bool, Subscriber*)
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $
+// $Id: Interaction.cc,v 3.10 2003/02/19 18:07:29 breholee Exp $

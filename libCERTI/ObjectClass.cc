@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: ObjectClass.cc,v 3.10 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
 
@@ -29,7 +29,7 @@ namespace certi {
 
 static pdCDebug D("OBJECTCLASS", "(ObjClass) - ");
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! To be used only by CRead, it returns the new Attribute's Handle.
 AttributeHandle
 ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
@@ -54,7 +54,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     return theAttribute->Handle ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Add the class' attributes to the 'Child' Class.
 void
 ObjectClass::addAttributesToChild(ObjectClass *the_child)
@@ -80,7 +80,7 @@ ObjectClass::addAttributesToChild(ObjectClass *the_child)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Take a Broadcast List and continue to send messages. You should
   take a look at ObjectClassSet::RegisterObject to understand
   what is going on...
@@ -143,7 +143,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
     ocbList->sendPendingMessage(server);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! sendToFederate.
 void
 ObjectClass::sendToFederate(NetworkMessage *msg, FederateHandle theFederate)
@@ -168,7 +168,7 @@ ObjectClass::sendToFederate(NetworkMessage *msg, FederateHandle theFederate)
     // BUG: If except = 0, could use Multicast.
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! sendToOwners.
 void
 ObjectClass::sendToOwners(CDiffusion *diffusionList,
@@ -180,7 +180,7 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
     int nbAttributes = diffusionList->size ;
 
     FederateHandle toFederate ;
-    for (int i = 0  ; i < nbAttributes  ; i++) {
+    for (int i = 0 ; i < nbAttributes ; i++) {
         toFederate = diffusionList->DiffArray[i].federate ;
         if (toFederate != 0) {
             NetworkMessage *answer = new NetworkMessage ;
@@ -192,7 +192,7 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
             strcpy(answer->label, theTag);
 
             int index = 0 ;
-            for (int j = i  ; j < nbAttributes  ; j++) {
+            for (int j = i ; j < nbAttributes ; j++) {
                 if (diffusionList->DiffArray[j].federate == toFederate) {
                     D.Out(pdDebug, "handle : %u",
                           diffusionList->DiffArray[j].attribute);
@@ -203,13 +203,13 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
                 }
             }
             answer->handleArraySize = index ;
-            D.Out(pdDebug,"Envoi message type %u ", type);
+            D.Out(pdDebug, "Envoi message type %u ", type);
             sendToFederate(answer, toFederate);
         }
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Throw SecurityError if the Federate is not allowed to access the
   Object Class, and print an Audit message containing reason.
 */
@@ -235,7 +235,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! ObjectClass constructor (only one).
 ObjectClass::ObjectClass(void)
     : Handle(0), Father(0), server(NULL), Depth(0),
@@ -243,7 +243,7 @@ ObjectClass::ObjectClass(void)
 {
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! ObjectClass destructor (frees allocated memory).
 ObjectClass::~ObjectClass(void)
 {
@@ -274,7 +274,7 @@ ObjectClass::~ObjectClass(void)
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Delete the object instance 'theObjectHandle', and starts to
   broadcast the RemoveObject message. Return a BroadcastList of
   Federates, in order to allow our ObjectClassSet to go on with
@@ -284,7 +284,7 @@ ObjectClass::~ObjectClass(void)
 ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle theFederateHandle,
                             ObjectHandle theObjectHandle,
-                            const char* theUserTag)
+                            const char *theUserTag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -343,7 +343,7 @@ ObjectClass::deleteInstance(FederateHandle theFederateHandle,
     return ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Print the ObjectClasses tree to the standard output.
 void ObjectClass::display(void) const
 {
@@ -355,7 +355,7 @@ void ObjectClass::display(void) const
     cout << " " << sonSet.size() << " Child(s):" << endl ;
 
     list<ObjectClassHandle>::const_iterator s = sonSet.begin();
-    for (int i = 1  ; s != sonSet.end(); s++,i++) {
+    for (int i = 1 ; s != sonSet.end(); s++, i++) {
         cout << " Son " << i << " Handle: "<< (*s) << endl ;
     }
 
@@ -374,10 +374,10 @@ void ObjectClass::display(void) const
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
-ObjectClass::getAttributeHandle(const char* the_name) const
+ObjectClass::getAttributeHandle(const char *the_name) const
     throw (AttributeNotDefined,
            RTIinternalError)
 {
@@ -393,9 +393,9 @@ ObjectClass::getAttributeHandle(const char* the_name) const
     throw AttributeNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getAttributeName.
-const char*
+const char *
 ObjectClass::getAttributeName(AttributeHandle the_handle) const
     throw (AttributeNotDefined,
            RTIinternalError)
@@ -404,7 +404,7 @@ ObjectClass::getAttributeName(AttributeHandle the_handle) const
 }
 
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getAttributeWithHandle (private module).
 ObjectClassAttribute *
 ObjectClass::getAttributeWithHandle(AttributeHandle the_handle) const
@@ -422,7 +422,7 @@ ObjectClass::getAttributeWithHandle(AttributeHandle the_handle) const
     throw AttributeNotDefined();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getInstanceWithId (private module).
 Object *
 ObjectClass::getInstanceWithID(ObjectHandle the_id) const
@@ -437,7 +437,7 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     throw ObjectNotKnown();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return RTI_TRUE if the Federate is publishing any attribute of this class.
 Boolean
 ObjectClass::isFederatePublisher(FederateHandle the_federate) const
@@ -453,7 +453,7 @@ ObjectClass::isFederatePublisher(FederateHandle the_federate) const
     return RTI_FALSE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Return RTI_TRUE if the Federate has subscribe to any attribute.
 Boolean
 ObjectClass::isFederateSubscriber(FederateHandle the_federate) const
@@ -467,7 +467,7 @@ ObjectClass::isFederateSubscriber(FederateHandle the_federate) const
     return RTI_FALSE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Return RTI_TRUE if the object instance designated by 'theID' is
   present in that class, else return RTI_FALSE.
 */
@@ -484,7 +484,7 @@ ObjectClass::isInstanceInClass(ObjectHandle theID)
     return RTI_TRUE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! killFederate.
 ObjectClassBroadcastList *
 ObjectClass::killFederate(FederateHandle the_federate)
@@ -525,7 +525,7 @@ ObjectClass::killFederate(FederateHandle the_federate)
     return NULL ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! publish.
 void
 ObjectClass::publish(FederateHandle theFederateHandle,
@@ -566,7 +566,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Register a new object instance, and start to broadcast the DiscoverObject
   Message to class subscribers. Return a Broadcast List of Federates, in
   order to allow our ObjectClassSet to go on with the message broadcasting,
@@ -575,7 +575,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 ObjectClassBroadcastList *
 ObjectClass::registerInstance(FederateHandle the_federate_handle,
                               ObjectHandle the_object_handle,
-                              const char* the_object_name)
+                              const char *the_object_name)
     throw (ObjectClassNotPublished,
            ObjectAlreadyRegistered,
            RTIinternalError)
@@ -615,10 +615,10 @@ ObjectClass::registerInstance(FederateHandle the_federate_handle,
                                                the_federate_handle));
         else
             object->attributeState.
-                push_front(new ObjectAttribute((*a)->Handle,0));
+                push_front(new ObjectAttribute((*a)->Handle, 0));
 
         // privilegeToDelete is owned by federate even not published.
-        if (strcmp((*a)->getName(),"privilegeToDelete") == 0)
+        if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
             object->attributeState.front()->setOwner(the_federate_handle);
     }
 
@@ -654,7 +654,7 @@ ObjectClass::registerInstance(FederateHandle the_federate_handle,
     return ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! sendDiscoverMessages.
 Boolean
 ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
@@ -713,7 +713,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     return RTI_TRUE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! setName.
 void
 ObjectClass::setName(const char *new_name)
@@ -735,7 +735,7 @@ ObjectClass::setName(const char *new_name)
         throw RTIinternalError("Memory Exhausted.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! A class' LevelID can only be increased.
 void
 ObjectClass::setLevelId(SecurityLevelID new_levelID)
@@ -746,7 +746,7 @@ ObjectClass::setLevelId(SecurityLevelID new_levelID)
     LevelID = new_levelID ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Return RTI_TRUE if theFederate had never subscribed to this class
   before. In that case, ObjectClassSet will call SendDiscoverMessages
   on this class and on all child classes to allow them to send
@@ -807,7 +807,7 @@ ObjectClass::subscribe(FederateHandle theFederate,
         return RTI_FALSE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! update Attribute Values (with time).
 ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
@@ -816,7 +816,7 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
                                    AttributeValue *theValueArray,
                                    UShort theArraySize,
                                    FederationTime theTime,
-                                   const char* theUserTag)
+                                   const char *theUserTag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -881,7 +881,7 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
     return ocbList ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! isAttributeOwnedByFederate.
 Boolean
 ObjectClass::isAttributeOwnedByFederate(ObjectHandle theObject,
@@ -916,13 +916,13 @@ ObjectClass::isAttributeOwnedByFederate(ObjectHandle theObject,
         }
     }
     else {
-        D.Out(pdDebug,"Only called on RTIG");
+        D.Out(pdDebug, "Only called on RTIG");
     }
 
     return RTI_FALSE ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! queryAttributeOwnership.
 void
 ObjectClass::queryAttributeOwnership(ObjectHandle theObject,
@@ -966,11 +966,11 @@ ObjectClass::queryAttributeOwnership(ObjectHandle theObject,
         sendToFederate(answer, theFederateHandle);
     }
     else {
-        D.Out(pdDebug,"Only called on RTIG");
+        D.Out(pdDebug, "Only called on RTIG");
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! negotiatedAttributeOwnershipDivestiture.
 ObjectClassBroadcastList * ObjectClass::
 negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
@@ -995,16 +995,16 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     // Does federate owns every attributes.
     // Does federate has called NegotiatedAttributeOwnershipDivestiture.
-    D.Out(pdDebug, "NegotiatedDivestiture Demandeur : %u",theFederateHandle);
+    D.Out(pdDebug, "NegotiatedDivestiture Demandeur : %u", theFederateHandle);
 
     for (int i = 0 ; i < theListSize ; i++) {
         list<ObjectClassAttribute *>::const_iterator a = attributeSet.begin();
         deque<ObjectAttribute *>::const_iterator j ;
         j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++,a++) {
+        for (; j != object->attributeState.end(); j++, a++) {
             if (theAttributeList[i] == (*j)->Handle) {
                 D.Out(pdDebug, "Attribute Name : %s", (*a)->getName());
-                D.Out(pdDebug, "Attribute Handle : %u",(*j)->Handle);
+                D.Out(pdDebug, "Attribute Handle : %u", (*j)->Handle);
                 D.Out(pdDebug, "Attribute Owner : %u", (*j)->getOwner());
                 if ((*j)->getOwner() != theFederateHandle)
                     throw AttributeNotOwned();
@@ -1094,7 +1094,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             strcpy(AnswerDivestiture->label, "\0");
             AnswerDivestiture->handleArraySize = compteur_divestiture ;
 
-            sendToFederate(AnswerDivestiture,theFederateHandle);
+            sendToFederate(AnswerDivestiture, theFederateHandle);
         }
         else
             delete AnswerDivestiture ;
@@ -1132,7 +1132,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     return List ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipAcquisitionIfAvailable.
 void ObjectClass::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
@@ -1164,12 +1164,12 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
         }
 
         //rem attributeSet.size()=attributeState.size()
-        for (int i = 0  ; i < theListSize  ; i++) {
+        for (int i = 0 ; i < theListSize ; i++) {
             list<ObjectClassAttribute *>::const_iterator a ;
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; a != attributeSet.end(); a++,j++) {
+            for (; a != attributeSet.end(); a++, j++) {
                 if (theAttributeList[i] == (*a)->Handle) {
                     // The federate has to publish attributes he desire to
                     // acquire.
@@ -1216,7 +1216,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++,a++) {
+            for (; j != object->attributeState.end(); j++, a++) {
                 if (theAttributeList[i] == (*j)->Handle) {
                     oldOwner = (*j)->getOwner();
                     if ((oldOwner == 0) || ((*j)->beingDivested())) {
@@ -1239,7 +1239,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                         compteur_notification++ ;
                         //object->Owner reste le champ de référence
                         //pour le privilegeToDelete
-                        if (strcmp((*a)->getName(),"privilegeToDelete") == 0)
+                        if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
                             object->Owner = theFederateHandle ;
                     }
                     else {
@@ -1255,7 +1255,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
 
         if (compteur_notification != 0) {
             Answer_notification->handleArraySize = compteur_notification ;
-            sendToFederate(Answer_notification,theFederateHandle);
+            sendToFederate(Answer_notification, theFederateHandle);
         }
         else
             delete Answer_notification ;
@@ -1265,15 +1265,15 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
 
         if (compteur_divestiture != 0) {
             diffusionDivestiture->size =compteur_divestiture ;
-            sendToOwners(diffusionDivestiture,theObjectHandle,
-                         theFederateHandle,"\0",
+            sendToOwners(diffusionDivestiture, theObjectHandle,
+                         theFederateHandle, "\0",
                          m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION);
         }
         delete diffusionDivestiture ;
 
         if (compteur_unavailable != 0) {
             Answer_unavailable->handleArraySize = compteur_unavailable ;
-            sendToFederate(Answer_unavailable,theFederateHandle);
+            sendToFederate(Answer_unavailable, theFederateHandle);
         }
         else
             delete Answer_unavailable ;
@@ -1286,7 +1286,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! unconditionalAttributeOwnershipDivestiture.
 ObjectClassBroadcastList * ObjectClass::
 unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
@@ -1334,7 +1334,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++,a++) {
+            for (; j != object->attributeState.end(); j++, a++) {
                 if (theAttributeList[i] == (*j)->Handle) {
                     if ((*j)->hasCandidates()) {
                         // An attributeOwnershipAcquisition is on the way
@@ -1394,8 +1394,8 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
         if (compteur_acquisition != 0) {
             diffusionAcquisition->size =compteur_acquisition ;
-            sendToOwners(diffusionAcquisition,theObjectHandle,
-                         theFederateHandle,"\0",
+            sendToOwners(diffusionAcquisition, theObjectHandle,
+                         theFederateHandle, "\0",
                          m_ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
         }
         delete diffusionAcquisition ;
@@ -1412,7 +1412,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     return List ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipAcquisition.
 void
 ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
@@ -1435,14 +1435,14 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     // may throw ObjectNotKnown
     Object *object = getInstanceWithID(theObjectHandle);
 
-    for (int i = 0  ; i < theListSize  ; i++) {
+    for (int i = 0 ; i < theListSize ; i++) {
         // Do all attribute handles exist ? It may throw AttributeNotDefined.
         getAttributeWithHandle(theAttributeList[i]);
 
         list<ObjectClassAttribute *>::const_iterator a = attributeSet.begin();
         deque<ObjectAttribute *>::const_iterator j ;
         j = object->attributeState.begin();
-        for (; j != object->attributeState.begin(); j++,a++) {
+        for (; j != object->attributeState.begin(); j++, a++) {
             if (theAttributeList[i] == (*j)->Handle) {
                 //Le fédéré est-il déjà propriétaire de certains attributs
                 if ((*j)->getOwner() == theFederateHandle)
@@ -1483,7 +1483,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++,a++) {
+            for (; j != object->attributeState.end(); j++, a++) {
                 if (theAttributeList[i] == (*j)->Handle) {
                     oldOwner = (*j)->getOwner();
                     if ((oldOwner == 0) || ((*j)->beingDivested())) {
@@ -1531,22 +1531,22 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
         if (compteur_notification != 0) {
             AnswerNotification->handleArraySize = compteur_notification ;
-            sendToFederate(AnswerNotification,theFederateHandle);
+            sendToFederate(AnswerNotification, theFederateHandle);
         }
         else
             delete AnswerNotification ;
 
         if (compteur_divestiture != 0) {
             diffusionDivestiture->size =compteur_divestiture ;
-            sendToOwners(diffusionDivestiture,theObjectHandle,
-                         theFederateHandle,"\0",
+            sendToOwners(diffusionDivestiture, theObjectHandle,
+                         theFederateHandle, "\0",
                          m_ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION);
         }
         delete diffusionDivestiture ;
 
         if (compteur_release != 0) {
             diffusionRelease->size =compteur_release ;
-            sendToOwners(diffusionRelease,theObjectHandle,theFederateHandle,
+            sendToOwners(diffusionRelease, theObjectHandle, theFederateHandle,
                          theTag, m_REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE);
         }
         delete diffusionRelease ;
@@ -1560,7 +1560,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! cancelNegotiatedAttributeOwnershipDivestiture.
 void
 ObjectClass::
@@ -1616,7 +1616,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! attributeOwnershipReleaseResponse.
 AttributeHandleSet *
 ObjectClass::
@@ -1668,7 +1668,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++,a++) {
+            for (; j != object->attributeState.end(); j++, a++) {
                 if (theAttributeList[i] == (*j)->Handle) {
                     //Le demandeur le plus récent devient propriétaire
                     newOwner = (*j)->getCandidate(1);
@@ -1684,7 +1684,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                     diffusionAcquisition->
                         DiffArray[compteur_acquisition].federate = newOwner ;
                     diffusionAcquisition->
-                        DiffArray[compteur_acquisition].attribute = 
+                        DiffArray[compteur_acquisition].attribute =
                         (*j)->Handle ;
                     compteur_acquisition++ ;
                     theAttribute->add((*j)->Handle);
@@ -1716,7 +1716,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
     return(theAttribute);
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! cancelAttributeOwnershipAcquisition.
 void
 ObjectClass::
@@ -1745,12 +1745,12 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
     if (server != NULL) {
         //rem attributeSet.size()=attributeState.size()
-        for (int i = 0  ; i < list_size  ; i++) {
+        for (int i = 0 ; i < list_size ; i++) {
             list<ObjectClassAttribute *>::const_iterator a ;
             a = attributeSet.begin();
             deque<ObjectAttribute *>::const_iterator j ;
             j = object->attributeState.begin();
-            for (; a != attributeSet.end(); a++,j++) {
+            for (; a != attributeSet.end(); a++, j++) {
                 if (attribute_list[i] == (*a)->Handle) {
                     D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i],
                           (*j)->getOwner());
@@ -1793,7 +1793,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
         if (compteur_confirmation != 0) {
             answer_confirmation->handleArraySize = compteur_confirmation ;
-            sendToFederate(answer_confirmation,federate_handle);
+            sendToFederate(answer_confirmation, federate_handle);
         }
         else
             delete answer_confirmation ;
@@ -1808,4 +1808,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.9 2003/02/17 09:17:03 breholee Exp $
+// $Id: ObjectClass.cc,v 3.10 2003/02/19 18:07:30 breholee Exp $

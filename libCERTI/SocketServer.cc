@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: SocketServer.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include <config.h>
 
@@ -29,34 +29,34 @@
 
 namespace certi {
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! This method is called when the RTIG wants to initialize its
-    FD_SET before doing a select. It will add all open socket to the set.
+  FD_SET before doing a select. It will add all open socket to the set.
 */
 void
 SocketServer::addToFDSet(fd_set *select_fdset)
 {
     list<SocketTuple *>::iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if ((*i)->ReliableLink != NULL)
             FD_SET((*i)->ReliableLink->returnSocket(), select_fdset);
     }
-}   
+}
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Check if 'message' coming from socket link 'Socket' has a valid
-    Federate field, that is, the Federate number linked to the socket is
-    the same as the Federate Number specified in the message.
-    If not, throw SecurityError.
+  Federate field, that is, the Federate number linked to the socket is
+  the same as the Federate Number specified in the message.
+  If not, throw SecurityError.
 */
 void
 SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
-  throw(SecurityError)
+    throw (SecurityError)
 {
     if ((message->federation == 0) && (message->federate == 0))
-        return;
+        return ;
 
-    Socket *socket;
+    Socket *socket ;
     try {
         socket = getSocketLink(message->federation,
                                message->federate);
@@ -72,40 +72,40 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Close and delete the Socket object whose socket is "Socket",
-    and return the former references associated with this socket in
-    the last two parameters. Those returned references can be
-    used for example to force the Federate out of the Federation.
-    Further call to GetSocket with those references will return a
-    NULL Socket object.
-    Throw RTIinternalError if the socket is not found.
+  and return the former references associated with this socket in
+  the last two parameters. Those returned references can be
+  used for example to force the Federate out of the Federation.
+  Further call to GetSocket with those references will return a
+  NULL Socket object.
+  Throw RTIinternalError if the socket is not found.
 */
 void
 SocketServer::close(long socket,
                     FederationHandle &federation_referenced,
                     FederateHandle &federate_referenced)
-    throw(RTIinternalError)
+    throw (RTIinternalError)
 {
-    federation_referenced = 0;
-    federate_referenced   = 0;
+    federation_referenced = 0 ;
+    federate_referenced = 0 ;
 
     // It may throw RTIinternalError.
     SocketTuple *tuple = getWithSocket(socket);
 
-    federation_referenced = tuple->Federation;
-    federate_referenced   = tuple->Federate;
+    federation_referenced = tuple->Federation ;
+    federate_referenced = tuple->Federate ;
 
     // If the Tuple had no references, remove it, else just delete the socket.
     if (tuple->Federation == 0) {
         list<SocketTuple *>::iterator i ;
         list<SocketTuple *>::iterator tmp ;
-        for (i = begin(); i != end() ; i++) {
+        for (i = begin(); i != end(); i++) {
             if (((*i)->ReliableLink != NULL) &&
                 ((*i)->ReliableLink->returnSocket() == socket)) {
-              	delete (*i);
+                delete (*i);
                 tmp = erase(i); // i is dereferenced.
-                i = tmp--;      // loop will increment i;
+                i = tmp-- ; // loop will increment i ;
             }
         }
     }
@@ -113,15 +113,15 @@ SocketServer::close(long socket,
         tuple->ReliableLink->close();
         tuple->BestEffortLink->close();
 
-        delete tuple->ReliableLink;
-        delete tuple->BestEffortLink;
+        delete tuple->ReliableLink ;
+        delete tuple->BestEffortLink ;
 
-        tuple->ReliableLink = NULL;
-        tuple->BestEffortLink = NULL;
+        tuple->ReliableLink = NULL ;
+        tuple->BestEffortLink = NULL ;
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! socketServer.
 SocketServer::SocketServer(SocketTCP *tcp_socket,
                            SocketUDP *udp_socket, int the_port)
@@ -130,11 +130,11 @@ SocketServer::SocketServer(SocketTCP *tcp_socket,
     if (tcp_socket == NULL)
         throw RTIinternalError();
 
-    ServerSocketTCP = tcp_socket;
-    ServerSocketUDP = udp_socket;
+    ServerSocketTCP = tcp_socket ;
+    ServerSocketUDP = udp_socket ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! Destructor (frees tuple list).
 SocketServer::~SocketServer(void)
 {
@@ -142,64 +142,64 @@ SocketServer::~SocketServer(void)
     while (!list<SocketTuple *>::empty()) {
         delete front();
         pop_front();
-  }
+    }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! SocketTuple constructor.
 SocketTuple::SocketTuple(Socket *tcp_link)
     : Federation(0), Federate(0)
 {
     if (tcp_link != NULL)
-        ReliableLink =(SocketTCP *)tcp_link;
+        ReliableLink = (SocketTCP *)tcp_link ;
     else
         throw RTIinternalError("Null socket");
 
     BestEffortLink = new SocketUDP();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! SocketTuple destructor.
 SocketTuple::~SocketTuple(void)
 {
     if (ReliableLink != NULL) {
         ReliableLink->close();
-        delete ReliableLink;
-        ReliableLink = NULL;
+        delete ReliableLink ;
+        ReliableLink = NULL ;
     }
     if (BestEffortLink != NULL) {
         BestEffortLink->close();
-        delete BestEffortLink;
-        BestEffortLink = NULL;
+        delete BestEffortLink ;
+        BestEffortLink = NULL ;
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! This method return the first socket object who has been declared active
-    in the fd_set. It can be called several times to get all active sockets.
+  in the fd_set. It can be called several times to get all active sockets.
 */
 Socket *
 SocketServer::getActiveSocket(fd_set *select_fdset) const
 {
     list<SocketTuple *>::const_iterator i ;
-    for(i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if (((*i)->ReliableLink != NULL) &&
             (FD_ISSET((*i)->ReliableLink->returnSocket(), select_fdset)))
-            return (*i)->ReliableLink;
+            return (*i)->ReliableLink ;
     }
 
-    return NULL;
+    return NULL ;
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Return the Socket object associated with(theFederation, theFederate). If
-    the couple(Federation, Federate) is not found, a
-    FederateNotExecutionMember exception is thrown.
+  the couple(Federation, Federate) is not found, a
+  FederateNotExecutionMember exception is thrown.
 
-    If the Federate has crashed, it should return a NULL socket object, but
-    this should not happen. In fact, when a Client(Federate) crashes, the
-    RTIG is supposed be remove all references to this federate. That's the
-    reason why a RTIinternalError is thrown in that case.
+  If the Federate has crashed, it should return a NULL socket object, but
+  this should not happen. In fact, when a Client(Federate) crashes, the
+  RTIG is supposed be remove all references to this federate. That's the
+  reason why a RTIinternalError is thrown in that case.
 */
 Socket*
 SocketServer::getSocketLink(FederationHandle the_federation,
@@ -213,59 +213,59 @@ SocketServer::getSocketLink(FederationHandle the_federation,
     if (the_type == RELIABLE) {
         if (tuple->ReliableLink == 0)
             throw RTIinternalError("Reference to a killed Federate.");
-        return tuple->ReliableLink;
+        return tuple->ReliableLink ;
     }
     else {
         if (tuple->BestEffortLink == 0)
             throw RTIinternalError("Reference to a killed Federate.");
-        return tuple->BestEffortLink;
+        return tuple->BestEffortLink ;
     }
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getWithReferences.
 SocketTuple *
 SocketServer::getWithReferences(FederationHandle the_federation,
-                                FederateHandle   the_federate) const
-    throw(FederateNotExecutionMember)
+                                FederateHandle the_federate) const
+    throw (FederateNotExecutionMember)
 {
     list<SocketTuple *>::const_iterator i ;
-    for (i = begin(); i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if (((*i)->Federation == the_federation) &&
-            ((*i)->Federate   == the_federate))
+            ((*i)->Federate == the_federate))
             return (*i);
     }
-    
+
     throw FederateNotExecutionMember();
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //! getWithSocket (private).
 SocketTuple *
 SocketServer::getWithSocket(long socket_descriptor) const
-    throw(RTIinternalError)
+    throw (RTIinternalError)
 {
     list<SocketTuple *>::const_iterator i ;
-    for (i = begin(); i != end() ; i++) {
-        if (((*i)->ReliableLink != NULL) && 
+    for (i = begin(); i != end(); i++) {
+        if (((*i)->ReliableLink != NULL) &&
             ((*i)->ReliableLink->returnSocket() == socket_descriptor))
             return (*i);
-        if (((*i)->BestEffortLink != NULL) && 
+        if (((*i)->BestEffortLink != NULL) &&
             ((*i)->BestEffortLink->returnSocket() == socket_descriptor))
             return (*i);
     }
-    
+
     throw RTIinternalError("Socket not found.");
 }
 
-// ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /*! Allocate a new SocketTuple by Accepting on the ServerSocket.
-    The SocketTuple references are empty.
-    Throw RTIinternalError in case of a memory allocation problem.
+  The SocketTuple references are empty.
+  Throw RTIinternalError in case of a memory allocation problem.
 */
 void
 SocketServer::open(void)
-    throw(RTIinternalError)
+    throw (RTIinternalError)
 {
     SecureTCPSocket *newLink = new SecureTCPSocket();
 
@@ -282,19 +282,19 @@ SocketServer::open(void)
     push_front(newTuple);
 }
 
-// ---------------------------------------------------------------------------
-/*! Change the FederationHandle and the FederateHandle associated with 
-    "socket". Once the references have been set for a Socket, they can't
-    be changed. References can be zeros(but should not).
-    Throw RTIinternalError if the References have already been set, or
-    if the Socket is not found.
+// ----------------------------------------------------------------------------
+/*! Change the FederationHandle and the FederateHandle associated with
+  "socket". Once the references have been set for a Socket, they can't
+  be changed. References can be zeros(but should not).
+  Throw RTIinternalError if the References have already been set, or
+  if the Socket is not found.
 */
 void
-SocketServer::setReferences(long             socket,
+SocketServer::setReferences(long socket,
                             FederationHandle federation_reference,
-                            FederateHandle   federate_reference,
-                            unsigned long    address,
-                            unsigned int     port)
+                            FederateHandle federate_reference,
+                            unsigned long address,
+                            unsigned int port)
     throw (RTIinternalError)
 {
     // It may throw RTIinternalError if not found.
@@ -304,12 +304,12 @@ SocketServer::setReferences(long             socket,
         // References have already been set once.
         throw RTIinternalError("Socket References have already been set.");
 
-    tuple->Federation = federation_reference;
-    tuple->Federate   = federate_reference;
+    tuple->Federation = federation_reference ;
+    tuple->Federate = federate_reference ;
     tuple->BestEffortLink->attach(ServerSocketUDP->returnSocket(), address,
                                   port);
 }
 
 }
 
-// $Id: SocketServer.cc,v 3.4 2003/02/17 09:17:04 breholee Exp $
+// $Id: SocketServer.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $

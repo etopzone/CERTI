@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectBroadcastLine.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: ObjectBroadcastLine.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Classe privee pour les listes de diffusion. Les *BroadcastLine

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: Message.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -63,7 +63,7 @@ char *Message::getValue(int Rank, char *Value)
 {
     // Pre-Checking
 
-    if ((Rank < 0) ||(Rank >= handleArraySize))
+    if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
@@ -174,10 +174,10 @@ void Message::setValue(int Rank, const char *Value)
 {
     // Pre-Checking
 
-    if ((Value == NULL) ||(strlen(Value) > MAX_BYTES_PER_VALUE))
+    if ((Value == NULL) || (strlen(Value) > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
-    if ((Rank < 0) ||(Rank >= handleArraySize))
+    if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank for message.");
 
     // Setting Value
@@ -252,4 +252,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.5 2003/02/17 09:17:03 breholee Exp $
+// $Id: Message.cc,v 3.6 2003/02/19 18:07:30 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,7 +66,7 @@ NetworkMessage::read(Socket *socket)
 // -- ReadBody --
 // --------------
 
-void 
+void
 NetworkMessage::readBody(Socket *socket)
 {
     MessageBody Body ;
@@ -82,7 +82,7 @@ NetworkMessage::readBody(Socket *socket)
     // 3. Read informations from Message Body according to message type.
 
     if ((Header.type == m_UPDATE_ATTRIBUTE_VALUES)
-        ||(Header.type == m_REFLECT_ATTRIBUTE_VALUES)) {
+        || (Header.type == m_REFLECT_ATTRIBUTE_VALUES)) {
         object = Body.readLongInt();
         readLabel(&Body);
         Body.readBlock((char *) handleArray,
@@ -202,7 +202,7 @@ NetworkMessage::readBody(Socket *socket)
 // -- ReadHeader --
 // ----------------
 
-Boolean 
+Boolean
 NetworkMessage::readHeader(Socket *socket)
 {
     // 1- Read Header from Socket
@@ -221,7 +221,7 @@ NetworkMessage::readHeader(Socket *socket)
         date = Header.VP.time.date ;
 
     else if ((type == m_UPDATE_ATTRIBUTE_VALUES)
-             ||(type == m_REFLECT_ATTRIBUTE_VALUES)) {
+             || (type == m_REFLECT_ATTRIBUTE_VALUES)) {
         objectClass = Header.VP.O_I.handle ;
         handleArraySize = Header.VP.O_I.size ;
         date = Header.VP.O_I.date ;
@@ -352,7 +352,7 @@ NetworkMessage::readHeader(Socket *socket)
 // -- ReadLabel --
 // ---------------
 
-void 
+void
 NetworkMessage::readLabel(MessageBody *Body)
 {
     Body->readString(label, MAX_USER_TAG_LENGTH);
@@ -363,7 +363,7 @@ NetworkMessage::readLabel(MessageBody *Body)
 // -- ReadNomFederation --
 // -----------------------
 
-void 
+void
 NetworkMessage::readFederationName(MessageBody *Body)
 {
     Body->readString(federationName, MAX_FEDERATION_NAME_LENGTH);
@@ -374,7 +374,7 @@ NetworkMessage::readFederationName(MessageBody *Body)
 // -- ReadNomFedere --
 // -------------------
 
-void 
+void
 NetworkMessage::readFederateName(MessageBody *Body)
 {
     Body->readString(federateName, MAX_FEDERATE_NAME_LENGTH);
@@ -385,7 +385,7 @@ NetworkMessage::readFederateName(MessageBody *Body)
 // -- Write --
 // -----------
 
-void 
+void
 NetworkMessage::write(Socket *socket)
     throw (NetworkError,
            NetworkSignal)
@@ -412,7 +412,7 @@ NetworkMessage::write(Socket *socket)
 // -- WriteBody --
 // ---------------
 
-void 
+void
 NetworkMessage::writeBody(Socket *socket)
 {
     MessageBody Body ;
@@ -426,7 +426,7 @@ NetworkMessage::writeBody(Socket *socket)
 
     // 1- Prepare Body Structure according to Message type
     if ((Header.type == m_UPDATE_ATTRIBUTE_VALUES)
-        ||(Header.type == m_REFLECT_ATTRIBUTE_VALUES)) {
+        || (Header.type == m_REFLECT_ATTRIBUTE_VALUES)) {
         Body.writeLongInt(object);
         Body.writeString(label);
         Body.writeBlock((char *) handleArray,
@@ -553,7 +553,7 @@ NetworkMessage::writeBody(Socket *socket)
 // -- WriteHeader --
 // -----------------
 
-Boolean 
+Boolean
 NetworkMessage::writeHeader(Socket *socket)
 {
     // 1- Clear Header
@@ -575,7 +575,7 @@ NetworkMessage::writeHeader(Socket *socket)
         Header.VP.time.date = date ;
     }
     else if ((type == m_UPDATE_ATTRIBUTE_VALUES)
-             ||(type == m_REFLECT_ATTRIBUTE_VALUES)) {
+             || (type == m_REFLECT_ATTRIBUTE_VALUES)) {
         // Body contains ObjectHandle, handleArray, ValueArray, label
         Header.bodySize = 1 ;
         Header.VP.O_I.handle = objectClass ;
@@ -749,4 +749,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $

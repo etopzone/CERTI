@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -146,7 +146,7 @@ typedef union {
 typedef struct {
     TypeNetworkMessage type ;
     TypeException exception ;
-    FederationHandle federation       ;
+    FederationHandle federation ;
     FederateHandle federate ;
     UShort bodySize ;
     HeaderUnion VP ; // Variable Part
@@ -307,4 +307,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.2 2003/02/17 09:17:03 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $

@@ -1,27 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
-// CERTI-libCERTI is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
 // CERTI-libCERTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Socket.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: Socket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_HH
 #define _CERTI_SOCKET_HH
@@ -39,42 +39,42 @@
 namespace certi {
 // Those Exceptions will be used by all Socket classes.
 RTI_EXCEPT(NetworkSignal) // Used when received a signal during system call.
-  RTI_EXCEPT(NetworkError) // Used for all other errors(connection closed...)
+    RTI_EXCEPT(NetworkError) // Used for all other errors(connection closed...)
 
-  class Socket
-  {
-  public:
+    class Socket
+    {
+    public:
 
-    // -----------------------
-    // -- Read/Write Method --
-    // -----------------------
+        // -----------------------
+        // -- Read/Write Method --
+        // -----------------------
 
-    virtual void send(void *Buffer, unsigned long Size) = 0;
-    virtual void receive(void *Buffer, unsigned long Size) = 0;
-    virtual void close() = 0;
- 
-    // This method may be used for implementation using Read Buffers,
-    // because in that case 'select' system calls are not trustworthy.
-    // See Important Note in SocketTCP.hh
-    virtual Boolean isDataReady() const = 0;
+        virtual void send(void *Buffer, unsigned long Size) = 0 ;
+        virtual void receive(void *Buffer, unsigned long Size) = 0 ;
+        virtual void close() = 0 ;
 
-    // ---------------------
-    // -- Get Descriptors --
-    // ---------------------
+        // This method may be used for implementation using Read Buffers,
+        // because in that case 'select' system calls are not trustworthy.
+        // See Important Note in SocketTCP.hh
+        virtual Boolean isDataReady() const = 0 ;
 
-    virtual int getClass() const = 0;
-    virtual int returnSocket() const = 0;
-    virtual unsigned long returnAdress() const = 0;
+        // ---------------------
+        // -- Get Descriptors --
+        // ---------------------
 
-    // ----------------
-    // -- Descructor --
-    // ----------------
+        virtual int getClass() const = 0 ;
+        virtual int returnSocket() const = 0 ;
+        virtual unsigned long returnAdress() const = 0 ;
 
-    virtual ~Socket() {};
-  };
+        // ----------------
+        // -- Descructor --
+        // ----------------
+
+        virtual ~Socket() {};
+    };
 
 }
 
 #endif // _CERTI_SOCKET_HH
 
-// $Id: Socket.hh,v 3.2 2003/01/15 10:12:29 breholee Exp $
+// $Id: Socket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
