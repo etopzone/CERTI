@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.20 2003/07/03 16:19:47 breholee Exp $
+// $Id: Message.cc,v 3.21 2003/07/04 14:27:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -527,13 +527,17 @@ Message::setFederateName(const char *NewNomFedere)
 // setTag
 //
 void
-Message::setTag(const char *NewTag)
+Message::setTag(const char *new_tag)
 {
-    if (strlen(NewTag) > MAX_USER_TAG_LENGTH)
-        throw ValueLengthExceeded("Tag too long to fit in Message.");
-
-    if (NewTag != NULL) strcpy(tag, NewTag);
-    else strcpy(tag, "");
+    if (new_tag) {
+	if (strlen(new_tag) > MAX_USER_TAG_LENGTH) {
+	    throw ValueLengthExceeded("Tag too long to fit in Message.");
+	}
+	strcpy(tag, new_tag);
+    }
+    else {
+	strcpy(tag, "");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -636,4 +640,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.20 2003/07/03 16:19:47 breholee Exp $
+// $Id: Message.cc,v 3.21 2003/07/04 14:27:07 breholee Exp $
