@@ -1,15 +1,13 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,37 +17,37 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.7 2005/04/04 14:51:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_INTERACTION_BROADCAST_LIST_HH
-#define _CERTI_INTERACTION_BROADCAST_LIST_HH
+#ifndef CERTI_INTERACTION_BROADCAST_LIST_HH
+#define CERTI_INTERACTION_BROADCAST_LIST_HH
 
 #include "certi.hh"
 #include "NetworkMessage.hh"
-#include "InteractionBroadcastLine.hh"
 #include "SecurityServer.hh"
 
 #include <list>
 
 namespace certi {
 
-class InteractionBroadcastList {
-
+struct InteractionBroadcastLine
+{
 public:
+    enum State {
+        sent, waiting, notSub
+    };
 
-    // -----------------------
-    // -- Public Attributes --
-    // -----------------------
+    InteractionBroadcastLine(FederateHandle fed, State init = notSub)
+        : federate(fed), state(init) { };
 
-    /*! The Message to be broadcast. This message must be allocated before
-      calling the constructor of the class, be is deleted by the destructor.
-    */
-    NetworkMessage *message ;
+    FederateHandle federate ;
+    State state ;
+};
 
-    // --------------------
-    // -- Public Methods --
-    // --------------------
+class InteractionBroadcastList
+{
+public:
     InteractionBroadcastList(NetworkMessage *theMsg);
     ~InteractionBroadcastList();
 
@@ -57,22 +55,19 @@ public:
     void addFederate(FederateHandle theFederate);
     void sendPendingMessage(SecurityServer *Server);
 
+    /*! The Message to be broadcast. This message must be allocated before
+      calling the constructor of the class, be is deleted by the destructor.
+    */
+    NetworkMessage *message ;
+
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-    std::list<InteractionBroadcastLine *> lines ;
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
     InteractionBroadcastLine *getLineWithFederate(FederateHandle theFederate);
+
+    std::list<InteractionBroadcastLine *> lines ;
 };
 
 }
 
-#endif // _CERTI_INTERACTION_BROADCAST_LIST_HH
+#endif // CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.7 2005/04/04 14:51:24 breholee Exp $
