@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.9 2003/07/03 16:07:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
@@ -70,6 +70,8 @@ public:
     SpaceHandle getSpace() const ;
     void setSpace(SpaceHandle);
 
+    ObjectClassAttribute *getObjectClassAttribute() const { return source ; };
+
 private:
     // Private Attributes
     AttributeHandle handle ; //!< The object attribute handle.
@@ -84,4 +86,4 @@ private:
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.9 2003/07/03 16:07:24 breholee Exp $
