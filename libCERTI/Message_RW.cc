@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message_RW.cc,v 3.5 2003/03/06 13:22:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,6 +35,7 @@ static pdCDebug D("MESSAGE", "(Message_RW) ");
 #define USE_HEADER_AND_BODY
 
 // ----------------------------------------------------------------------------
+//! Read NetworkMessage Objects from Socket objects.
 void
 Message::read(SocketUN *socket)
     throw (NetworkError,
@@ -59,9 +60,8 @@ Message::read(SocketUN *socket)
 }
 
 
-// --------------
-// -- ReadBody --
-// --------------
+// ---------------------------------------------------------------------------
+//! Read a Message Body from a Socket, should be called after ReadHeader.
 void
 Message::readBody(SocketUN *socket)
 {
@@ -231,11 +231,10 @@ Message::readBody(SocketUN *socket)
     }
 }
 
-
-// ----------------
-// -- ReadHeader --
-// ----------------
-
+// ---------------------------------------------------------------------------
+/*! Read a Header from a socket, and process it to read its content. Return
+    RTI_TRUE if the ReadBody Method has to be called.
+*/
 Boolean
 Message::readHeader(SocketUN *socket)
 {
@@ -513,11 +512,8 @@ Message::readValueArray(MessageBody *Body)
     }
 }
 
-
-// -----------
-// -- Write --
-// -----------
-
+// ---------------------------------------------------------------------------
+//! Write NetworkMessage Objects to Socket objects.
 void
 Message::write(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
@@ -535,11 +531,11 @@ Message::write(SocketUN *socket)
 #endif
 }
 
-
-// ---------------
-// -- WriteBody --
-// ---------------
-
+// ---------------------------------------------------------------------------
+/*! Prepare and write a Body to a socket, should be called after WriteHeader.
+    The message is written onto the socket by WriteHeader if no body is
+    required, or by WriteBody is a body has been required by WriteHeader.
+*/
 void
 Message::writeBody(SocketUN *socket)
 {
@@ -732,11 +728,12 @@ void Message::writeHandleArray(MessageBody *Body)
                      handleArraySize * sizeof(AttributeHandle));
 }
 
-
-// -----------------
-// -- WriteHeader --
-// -----------------
-
+// ---------------------------------------------------------------------------
+/*! Prepare and Write a Header to a Socket, and return RTI_TRUE if the
+    WriteBody method has to be called.
+    The message is written onto the socket by WriteHeader if no body is
+    required, or by WriteBody is a body has been required by WriteHeader.
+*/
 bool
 Message::writeHeader(SocketUN *socket)
 {
@@ -973,4 +970,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: Message_RW.cc,v 3.5 2003/03/06 13:22:36 breholee Exp $
