@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,11 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.cc,v 3.9 2005/03/16 23:03:37 breholee Exp $
+// $Id: Subscriber.cc,v 3.10 2005/03/25 17:13:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Subscriber.hh"
+#include "RTIRegion.hh"
+
+#include "PrettyDebug.hh"
+
+namespace {
+
+PrettyDebug D("SUBSCRIBER", __FILE__);
+
+}
 
 namespace certi {
 
@@ -36,7 +45,7 @@ Subscriber::Subscriber(FederateHandle h)
 
 // ----------------------------------------------------------------------------
 // Constructor
-Subscriber::Subscriber(FederateHandle h, const RegionImp *r)
+Subscriber::Subscriber(FederateHandle h, const RTIRegion *r)
     : handle(h), region(r)
 {
 }
@@ -49,7 +58,7 @@ Subscriber::getHandle() const
 }
 
 // ----------------------------------------------------------------------------
-const RegionImp *
+const RTIRegion *
 Subscriber::getRegion() const
 {
     return region ;
@@ -64,7 +73,7 @@ Subscriber::operator==(const Subscriber &sub) const
 
 // ----------------------------------------------------------------------------
 bool
-Subscriber::equals(FederateHandle fed, const RegionImp *r) const
+Subscriber::equals(FederateHandle fed, const RTIRegion *r) const
 {
     return handle == fed && region == r ;
 }
@@ -75,11 +84,13 @@ Subscriber::equals(FederateHandle fed, const RegionImp *r) const
     is 'true'
  */
 bool
-Subscriber::match(const RegionImp *r) const
+Subscriber::match(const RTIRegion *r) const
 {
-    return region == 0 || r == 0 || region->overlaps(*r);
+    D[pdTrace] << "Match test: " << (region ? region->getHandle() : 0) << " vs "
+	       << (r ? r->getHandle() : 0) << std::endl ;
+    return (region == 0) || (r == 0) || region->overlaps(*r);
 }
 
 } // namespace certi
 
-// $Id: Subscriber.cc,v 3.9 2005/03/16 23:03:37 breholee Exp $
+// $Id: Subscriber.cc,v 3.10 2005/03/25 17:13:11 breholee Exp $
