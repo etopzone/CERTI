@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.4 2004/08/24 18:25:05 breholee Exp $
+// $Id: BasicMessage.cc,v 3.5 2005/02/09 15:47:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
@@ -113,6 +113,7 @@ void
 BasicMessage::writeRegions(MessageBody &body)
 {
     long n = regions.size();
+    body.writeLongInt(n);
     for (int i = 0 ; i < n ; ++i) {
 	body.writeLongInt(regions[i]);
     }
@@ -124,6 +125,7 @@ BasicMessage::readRegions(const MessageBody &body)
 {
     long n = body.readLongInt();
     regions.clear();
+    regions.reserve(n);
     for (int i = 0; i < n; ++i) {
 	regions.push_back(body.readLongInt());
     }
@@ -131,12 +133,12 @@ BasicMessage::readRegions(const MessageBody &body)
 
 // ----------------------------------------------------------------------------
 void
-BasicMessage::setRegions(const RegionImp **reg, int size)
+BasicMessage::setRegions(Region *reg[], int size)
 {
     regions.resize(size);
     
     for (int i = 0 ; i < size ; ++i) {
-        regions[i] = reg[i]->getHandle();
+        regions[i] = dynamic_cast<RegionImp *>(reg[i])->getHandle();
     }
 }
 
@@ -155,4 +157,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.4 2004/08/24 18:25:05 breholee Exp $
+// $Id: BasicMessage.cc,v 3.5 2005/02/09 15:47:06 breholee Exp $

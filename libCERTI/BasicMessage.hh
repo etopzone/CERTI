@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.3 2004/08/24 18:25:05 breholee Exp $
+// $Id: BasicMessage.hh,v 3.4 2005/02/09 15:47:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -44,7 +44,7 @@ public:
     void setExtents(const std::vector<Extent> &);
     const std::vector<Extent> &getExtents() const ;
 
-    void setRegions(const RegionImp **, int);
+    void setRegions(Region **, int);
     void setRegions(const std::vector<RegionHandle> &);
     const std::vector<RegionHandle> &getRegions() const ;
 
@@ -63,4 +63,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.3 2004/08/24 18:25:05 breholee Exp $
+// $Id: BasicMessage.hh,v 3.4 2005/02/09 15:47:06 breholee Exp $
