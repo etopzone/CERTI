@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUDP.cc,v 3.6 2003/06/25 16:13:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketUDP.hh"
+#include <config.h>
+
+#include "RTItypes.hh"
+#include "PrettyDebug.hh"
+
+#include <iostream>
+#include <unistd.h>
+#include <strings.h>
+
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -55,7 +65,7 @@ SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
 
 // ----------------------------------------------------------------------------
 //! bind.
-int SocketUDP::bind(void)
+int SocketUDP::bind()
 {
     assert(!_est_init_udp);
 
@@ -165,7 +175,7 @@ SocketUDP::createUDPServer(unsigned int port)
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-SocketUDP::SocketUDP(void)
+SocketUDP::SocketUDP()
 {
     _est_init_udp = RTI_FALSE ;
 
@@ -180,19 +190,17 @@ SocketUDP::SocketUDP(void)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-SocketUDP::~SocketUDP(void)
+SocketUDP::~SocketUDP()
 {
     // Fermeture
     if (_est_init_udp)
         close();
 
 #ifdef RTI_PRINTS_STATISTICS
-    printf("\n");
-    printf("UDP Socket(%ld): Total Sent Bytes : %lld.\n",
-           _socket_udp, SentBytesCount);
-    printf("UDP Socket(%ld): Total Received Bytes : %lld.\n",
-           _socket_udp, RcvdBytesCount);
-    printf("\n");
+    cout << endl << "UDP Socket(" << _socket_udp << "): Total sent bytes: "
+         << SentBytesCount << "." << endl ;
+    cout << endl << "UDP Socket(" << _socket_udp << "): Total received bytes: "
+         << RcvdBytesCount << "." << endl << endl ;
 #endif
 }
 
@@ -221,7 +229,7 @@ void SocketUDP::send(void * Message, unsigned long Size)
 
 // ----------------------------------------------------------------------------
 //! close.
-void SocketUDP::close(void)
+void SocketUDP::close()
 {
     if (_est_init_udp) {
         D.Out(pdDebug, "Closing UDP object...");
@@ -236,7 +244,7 @@ void SocketUDP::close(void)
 // ----------------------------------------------------------------------------
 //! getAddr.
 unsigned long
-SocketUDP::getAddr(void) const
+SocketUDP::getAddr() const
 {
     D.Out(pdDebug, "Hostname is %ul...", sock_local.sin_addr.s_addr);
     return(sock_local.sin_addr.s_addr);
@@ -245,7 +253,7 @@ SocketUDP::getAddr(void) const
 // ----------------------------------------------------------------------------
 //! getPort.
 unsigned int
-SocketUDP::getPort(void) const
+SocketUDP::getPort() const
 {
     D.Out(pdDebug, "UDP port is %ud...", sock_local.sin_port);
     return sock_local.sin_port ;
@@ -256,14 +264,14 @@ SocketUDP::getPort(void) const
   and is waiting in the internal buffer, else RTI_FALSE.
 */
 Boolean
-SocketUDP::isDataReady(void) const
+SocketUDP::isDataReady() const
 {
     return ((BufferSize > 0) ? RTI_TRUE : RTI_FALSE);
 }
 
 // ----------------------------------------------------------------------------
 //! open.
-int SocketUDP::open(void)
+int SocketUDP::open()
 {
     return(((_socket_udp=socket(AF_INET, SOCK_DGRAM, 0))<0)?0:1);
 }
@@ -309,7 +317,7 @@ SocketUDP::receive(void * Message, unsigned long Size)
 // ----------------------------------------------------------------------------
 //! returnAdress.
 unsigned long
-SocketUDP::returnAdress(void) const
+SocketUDP::returnAdress() const
 {
     D.Out(pdDebug, "Retourner Adresse Machine locale...");
     return getAddr();
@@ -318,7 +326,7 @@ SocketUDP::returnAdress(void) const
 // ----------------------------------------------------------------------------
 //! returnSocket.
 int
-SocketUDP::returnSocket(void) const
+SocketUDP::returnSocket() const
 {
     D.Out(pdDebug, "Retourner Socket UDP...");
     return _socket_udp ;
@@ -334,4 +342,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketUDP.cc,v 3.6 2003/06/25 16:13:04 breholee Exp $
