@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.11 2004/03/14 00:24:55 breholee Exp $
+// $Id: Communications.cc,v 3.12 2005/03/13 22:12:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -172,17 +172,24 @@ Communications::getPort()
 void
 Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 {
-    // initialize fdset for use with select.
+    const int tcp_fd(SecureTCPSocket::returnSocket());
+    const int udp_fd(SocketUDP::returnSocket());
+
     fd_set fdset ;
     FD_ZERO(&fdset);
+
     FD_SET(_socket_un, &fdset);
-    FD_SET(SecureTCPSocket::returnSocket(), &fdset);
-    FD_SET(SocketUDP::returnSocket(), &fdset);
+    FD_SET(tcp_fd, &fdset);
+    FD_SET(udp_fd, &fdset);
+
+    int max_fd = std::max(_socket_un, std::max(tcp_fd, udp_fd));
 
 #ifdef FEDERATION_USES_MULTICAST
     // if multicast link is initialized (during join federation).
-    if (_est_init_mc)
+    if (_est_init_mc) {
         FD_SET(_socket_mc, &fdset);
+        max_fd = std::max(max_fd, _socket_mc);
+    }
 #endif
 
     if (!waitingList.empty()) {
@@ -215,7 +222,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     else {
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
-        if (select(sysconf(_SC_OPEN_MAX), &fdset, NULL, NULL, NULL) < 0) {
+        if (select(max_fd, &fdset, NULL, NULL, NULL) < 0) {
             if (errno == EINTR)
                 throw NetworkSignal();
             else
@@ -309,4 +316,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.11 2004/03/14 00:24:55 breholee Exp $
+// $Id: Communications.cc,v 3.12 2005/03/13 22:12:08 breholee Exp $
