@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.5 2003/01/16 14:02:13 breholee Exp $
+// $Id: ObjectClass.cc,v 3.6 2003/01/17 18:00:21 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -444,42 +444,36 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 
   }
 
-
-  // ------------------------
-  // -- GetAttributeHandle --
-  // ------------------------
-
-  AttributeHandle ObjectClass::getAttributeHandle(const AttributeName theName)
+// ---------------------------------------------------------------------------
+//! getAttributeHandle.
+AttributeHandle
+ObjectClass::getAttributeHandle(const char* the_name)
     throw(AttributeNotDefined,
-	   RTIinternalError)
-  {
-    int i;
-    ObjectClassAttribute *Attribute = NULL;
+          RTIinternalError)
+{
+    ObjectClassAttribute *attribute = NULL;
 
-    for(i = 1; i <= AttributeSet.getLength(); i++) {
-      Attribute = AttributeSet.Ieme(i);
-      if(strcmp(Attribute->getName(), theName) == 0)
-	return Attribute->Handle;
+    for(int i = 1; i <= AttributeSet.getLength(); i++) {
+        attribute = AttributeSet.Ieme(i);
+        if(strcmp(attribute->getName(), the_name) == 0)
+            return attribute->Handle;
     }
 
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
-	   Handle, theName);
+          Handle, the_name);
 
     throw AttributeNotDefined();
-  }
+}
 
-  
-  // ----------------------
-  // -- GetAttributeName --
-  // ----------------------
-
-  const AttributeName ObjectClass::
-  getAttributeName(AttributeHandle     theHandle)
+// ---------------------------------------------------------------------------
+//! getAttributeName.
+const char*
+ObjectClass::getAttributeName(AttributeHandle the_handle)
     throw(AttributeNotDefined,
-	   RTIinternalError)
-  {
-    return getAttributeWithHandle(theHandle)->getName();
-  }
+          RTIinternalError)
+{
+    return getAttributeWithHandle(the_handle)->getName();
+}
 
 
 
@@ -674,34 +668,31 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
     }
   }
 
-
-  // ----------------------
-  // -- RegisterInstance --
-  // ----------------------
-
-  ObjectClassBroadcastList *ObjectClass::
-  registerInstance(FederateHandle theFederateHandle,
-		    ObjectHandle       theObjectHandle,
-		    ObjectName     theObjectName)
+// ---------------------------------------------------------------------------
+/*! Register a new object instance, and start to broadcast the DiscoverObject
+    Message to class subscribers. Return a Broadcast List of Federates, in
+    order to allow our ObjectClassSet to go on with the message broadcasting,
+    by giving the list to our parent class.
+*/
+ObjectClassBroadcastList *
+ObjectClass::registerInstance(FederateHandle the_federate_handle,
+                              ObjectHandle   the_object_handle,
+                              const char*    the_object_name)
     throw(ObjectClassNotPublished,
-	   ObjectAlreadyRegistered,
-	   RTIinternalError)
-  {
-    Object                *object = NULL;
-    NetworkMessage         *Answer = NULL;
-    ObjectClassBroadcastList *List   = NULL;
-
+          ObjectAlreadyRegistered,
+          RTIinternalError)
+{
     D.Out(pdInit, "ObjectClass.");
 
     // Pre-conditions checking
-    if(isInstanceInClass(theObjectHandle) == RTI_TRUE) {
+    if(isInstanceInClass(the_object_handle) == RTI_TRUE) {
       D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
       throw ObjectAlreadyRegistered();
     }
  
     // This condition is only to be checked on the RTIG 
     if((server != NULL) &&
-	(isFederatePublisher(theFederateHandle) != RTI_TRUE)) {
+	(isFederatePublisher(the_federate_handle) != RTI_TRUE)) {
       D.Out(pdExcept, "exception : ObjectClassNotPublished.");
       throw ObjectClassNotPublished();
     }
@@ -709,65 +700,66 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
     D.Out(pdInit, "ObjectClass1.");
 
     // Register new Object.
-    object = new Object(theFederateHandle);
+    Object *object = new Object(the_federate_handle);
 
-    object->ID = theObjectHandle;
-    if(theObjectName != NULL)
-      object->setName(theObjectName);
+    object->ID = the_object_handle;
+    if(the_object_name != NULL)
+        object->setName(the_object_name);
   
     //Gestion de la propriété :
     //Recopie des attributs au niveau de l'instance
 
-    ObjectClassAttribute *Attribute = NULL;
+    ObjectClassAttribute *attribute = NULL;
 
     //Le fédéré ne possède que les attributs qu'il publie
 
     for(int k=AttributeSet.getLength();k>0;k--)
       {
-	Attribute = AttributeSet.Ieme(k);
-	if(Attribute->IsPublishing(theFederateHandle))
-	  object->AttributeState.Inserer(1,new ObjectAttribute(Attribute->Handle,
-							       theFederateHandle));
-	else
-	  object->AttributeState.Inserer(1,new ObjectAttribute(Attribute->Handle,0));
+          attribute = AttributeSet.Ieme(k);
+          if (attribute->IsPublishing(the_federate_handle))
+              object->AttributeState.
+                  Inserer(1,new ObjectAttribute(attribute->Handle,
+                                                the_federate_handle));
+          else
+              object->AttributeState.
+                  Inserer(1,new ObjectAttribute(attribute->Handle,0));
   
-	//Le privilegeToDelete appartient au fédéré même s'il n'est pas publié 
-	if( strcmp(AttributeSet.Ieme(k)->getName(),"privilegeToDelete") == 0)
-	  object->AttributeState.Ieme(1)->setOwner(theFederateHandle);  
+          // privilegeToDelete is owned by federate even not published.
+          if (strcmp(AttributeSet.Ieme(k)->getName(),"privilegeToDelete") == 0)
+              object->AttributeState.Ieme(1)->setOwner(the_federate_handle);
       }
 
     ObjectSet.Inserer(1, object);
 
-
     // Prepare and Broadcast message for this class
+    ObjectClassBroadcastList *ocbList = NULL;
     if(server != NULL) {
 
       D.Out(pdRegister, 
-	     "Object %u registered in class %u, now broadcasting...", 
-	     theObjectHandle, Handle);
+            "Object %u registered in class %u, now broadcasting...", 
+            the_object_handle, Handle);
 
-      Answer                     = new NetworkMessage;
-      Answer->Type             = m_DISCOVER_OBJECT;
-      Answer->NumeroFederation = server->federation();
-      Answer->NumeroFedere     = theFederateHandle;
-      Answer->Exception        = e_NO_EXCEPTION;
-      Answer->objectClassHandle     = Handle; // Class Handle
-      Answer->Objectid         = theObjectHandle;
-      strcpy(Answer->Label, theObjectName);
+      NetworkMessage *answer    = new NetworkMessage;
+      answer->Type              = m_DISCOVER_OBJECT;
+      answer->NumeroFederation  = server->federation();
+      answer->NumeroFedere      = the_federate_handle;
+      answer->Exception         = e_NO_EXCEPTION;
+      answer->objectClassHandle = Handle; // Class Handle
+      answer->Objectid          = the_object_handle;
+      strcpy(answer->Label, the_object_name);
 
-      List = new ObjectClassBroadcastList(Answer, 0);
-      broadcastClassMessage(List);
+      ocbList = new ObjectClassBroadcastList(answer, 0);
+      broadcastClassMessage(ocbList);
     }
     else {
-      D.Out(pdRegister, 
-	     "Object %u registered in class %u, no broadcast to do.", 
-	     theObjectHandle, Handle);
+        D.Out(pdRegister, 
+              "Object %u registered in class %u, no broadcast to do.", 
+              the_object_handle, Handle);
     }
 
     // Return the BroadcastList in case it had to be passed to the parent class.
-    return List;
-  }
-
+    return ocbList;
+}
 
   // --------------------------
   // -- SendDiscoverMessages --
@@ -2105,4 +2097,4 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 
 }
 
-// $Id: ObjectClass.cc,v 3.5 2003/01/16 14:02:13 breholee Exp $
+// $Id: ObjectClass.cc,v 3.6 2003/01/17 18:00:21 breholee Exp $

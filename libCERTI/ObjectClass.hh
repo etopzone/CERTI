@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClass.hh,v 3.3 2003/01/17 18:00:21 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Class ObjectClass, qui decrit une classe d'objet. Elle contient
@@ -299,13 +299,13 @@ public:
   // --------------------------
 
  
-  AttributeHandle getAttributeHandle(const AttributeName theName)
-    throw(AttributeNotDefined,
-	  RTIinternalError);
+  AttributeHandle getAttributeHandle(const char* theName)
+      throw(AttributeNotDefined,
+            RTIinternalError);
  
-  const AttributeName getAttributeName(AttributeHandle theHandle)
-    throw(AttributeNotDefined,
-	  RTIinternalError);
+  const char* getAttributeName(AttributeHandle theHandle)
+      throw(AttributeNotDefined,
+            RTIinternalError);
 
   ObjectClassBroadcastList *killFederate(FederateHandle theFederate)
     throw();
@@ -330,17 +330,12 @@ public:
   // present in that class, else return RTI_FALSE.
   Boolean isInstanceInClass(ObjectHandle theID);
  
-  // Register a new object instance, and start to broadcast the
-  // DiscoverObject Message to class subscribers. Return a Broadcast
-  // List of Federates, in order to allow our ObjectClassSet to go
-  // on with the message broadcasting, by giving the list to our
-  // parent class.
-  ObjectClassBroadcastList *registerInstance(FederateHandle,
-					     ObjectHandle theObjectHandle,
-					     ObjectName theObjectName)
-    throw(ObjectClassNotPublished,
-	  ObjectAlreadyRegistered,
-	  RTIinternalError);
+ ObjectClassBroadcastList *registerInstance(FederateHandle,
+                                             ObjectHandle theObjectHandle,
+                                             const char*  theObjectName)
+      throw(ObjectClassNotPublished,
+            ObjectAlreadyRegistered,
+            RTIinternalError);
 
   // Take a Broadcast List and continue to send messages. You should
   // take a look at ObjectClassSet::RegisterObject to understand
@@ -420,4 +415,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClass.hh,v 3.3 2003/01/17 18:00:21 breholee Exp $
