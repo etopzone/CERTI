@@ -20,11 +20,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.hh,v 3.1 2003/04/22 21:23:02 breholee Exp $
+// $Id: converter.hh,v 3.2 2003/05/15 20:40:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_CONVERTER_HH
 #define _CERTI_CONVERTER_HH
+
+#include <config.h>
 
 // Project
 #include "RTItypes.hh"
@@ -34,13 +36,13 @@
 
 namespace certi {
 
-void getStringToObjectLength(char *, ULong &);
-void stringToObject(char *, char *, ULong);
+void getStringToObjectLength(const char *, ULong &);
+void stringToObject(const char *, char *, ULong);
 void objectToString(const char *, ULong, char *);
-void getObjectToStringLength(char *, ULong, ULong &);
+void getObjectToStringLength(const char *, ULong, ULong &);
 
 } // namespace certi
 
 #endif // _CERTI_CONVERTER_HH
 
-// $Id: converter.hh,v 3.1 2003/04/22 21:23:02 breholee Exp $
+// $Id: converter.hh,v 3.2 2003/05/15 20:40:11 breholee Exp $

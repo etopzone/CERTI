@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.cc,v 3.1 2003/05/13 08:18:40 breholee Exp $
+// $Id: converter.cc,v 3.2 2003/05/15 20:40:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "converter.hh"
@@ -30,7 +30,7 @@ namespace certi {
 // ----------------------------------------------------------------------------
 //! Returns buffer size needed for storing message restored by stringToObject.
 void
-getStringToObjectLength(char *init_string, ULong& size)
+getStringToObjectLength(const char *init_string, ULong& size)
 {
     ULong counter = 0 ;
     ULong length = strlen(init_string);
@@ -38,7 +38,7 @@ getStringToObjectLength(char *init_string, ULong& size)
     size = 0 ;
     while (i<length) {
         switch (init_string[i]) {
-        case '\\':
+          case '\\':
             i++ ;
             while ((init_string[i]=='?') && (i<length)) {
                 counter++ ;
@@ -49,7 +49,7 @@ getStringToObjectLength(char *init_string, ULong& size)
             else size += 1+((counter-1)/2);
             counter = 0 ;
             break ;
-        default:
+          default:
             size++ ;
             i++ ;
         }
@@ -68,7 +68,7 @@ getStringToObjectLength(char *init_string, ULong& size)
   replaced by a list of ? else it must be replaced by a list of \.
 */
 void
-stringToObject(char *init_string, char *end_string, ULong size)
+stringToObject(const char *init_string, char *end_string, ULong size)
 {
     ULong counter = 0 ;
     ULong i = 0 ;
@@ -80,12 +80,12 @@ stringToObject(char *init_string, char *end_string, ULong size)
 
     while (i<length) {
         switch(init_string[i]) {
-        case '?':
+          case '?':
             // No use to add '\0' since memset does it
             i++ ;
             indice++ ;
             break ;
-        case '\\':
+          case '\\':
             i++ ;
             while ((init_string[i]=='?') && (i<length)) {
                 counter++ ;
@@ -106,7 +106,7 @@ stringToObject(char *init_string, char *end_string, ULong size)
             }
             counter = 0 ;
             break ;
-        default:
+          default:
             end_string[indice]=init_string[i] ;
             i++ ;
             indice++ ;
@@ -135,11 +135,11 @@ objectToString(const char *init_string,
 
     while (i < size) {
         switch(init_string[i]) {
-        case '\0':
+          case '\0':
             end_string[j++] = '?' ;
             i++ ;
             break ;
-        case '?':
+          case '?':
             end_string[j++] = '\\' ;
             end_string[j++] = '?' ;
             i++ ;
@@ -150,7 +150,7 @@ objectToString(const char *init_string,
             }
             end_string[j++] = '\\' ;
             break ;
-        case '\\':
+          case '\\':
             end_string[j++] = '\\' ;
             end_string[j++] = '?' ;
             end_string[j++] = '?' ;
@@ -162,7 +162,7 @@ objectToString(const char *init_string,
             }
             end_string[j++] = '\\' ;
             break ;
-        default:
+          default:
             end_string[j++] = init_string[i] ;
             i++ ;
         }
@@ -173,7 +173,7 @@ objectToString(const char *init_string,
 // ----------------------------------------------------------------------------
 //! Returns buffer size needed to store network message made by objectToString
 void
-getObjectToStringLength(char *init_string,
+getObjectToStringLength(const char *init_string,
                         ULong init_size, ULong &size)
 {
     ULong counter = 0 ;
@@ -182,7 +182,7 @@ getObjectToStringLength(char *init_string,
 
     while (i < init_size) {
         switch(init_string[i]) {
-        case '?':
+          case '?':
             i++ ;
             while ((init_string[i] == '?') && (i < init_size)) {
                 counter++ ;
@@ -191,7 +191,7 @@ getObjectToStringLength(char *init_string,
             size += 3 + 2 * counter ;
             counter = 0 ;
             break ;
-        case '\\':
+          case '\\':
             i++ ;
             while ((init_string[i] == '\\') && (i < init_size)) {
                 counter++ ;
@@ -199,7 +199,7 @@ getObjectToStringLength(char *init_string,
             }
             size += 4 + 2 * counter ;
             counter = 0 ;
-        default:
+          default:
             size++ ;
             i++ ;
         }
@@ -209,4 +209,4 @@ getObjectToStringLength(char *init_string,
 
 } // namespace certi
 
-// $Id: converter.cc,v 3.1 2003/05/13 08:18:40 breholee Exp $
+// $Id: converter.cc,v 3.2 2003/05/15 20:40:11 breholee Exp $
