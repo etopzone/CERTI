@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.8 2004/01/09 16:20:41 breholee Exp $
+// $Id: main.cc,v 3.9 2004/03/03 22:49:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
 	     << endl << endl ;
     }
 
-    signal(SIGINT, SignalHandler);
-    signal(SIGPIPE, SignalHandler);
+    std::signal(SIGINT, SignalHandler);
+    std::signal(SIGPIPE, SignalHandler);
 
     std::set_new_handler(NewHandler);
 
@@ -95,4 +95,4 @@ int main(int argc, char *argv[])
     exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.8 2004/01/09 16:20:41 breholee Exp $
+// $Id: main.cc,v 3.9 2004/03/03 22:49:02 breholee Exp $
