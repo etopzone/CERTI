@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.30 2003/07/09 16:10:44 breholee Exp $
+// $Id: Federation.cc,v 3.31 2003/07/10 22:51:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1586,9 +1586,9 @@ Federation::subscribeAttributesWR(FederateHandle federate,
 
     RegionImp *r = root->getRegion(region_handle);
     
-    //    root->getObjectClass(c)->unsubscribe(federate, r);
+    root->getObjectClass(c)->unsubscribe(federate, r);
     for (int i = 0 ; i < nb ; ++i) {
-	// root->getObjectClassAttribute(c, attributes[i])->subscribe(federate, r);
+	root->getObjectClassAttribute(c, attributes[i])->subscribe(federate, r);
     } 
 }
 
@@ -1607,7 +1607,7 @@ Federation::unsubscribeAttributesWR(FederateHandle federate,
 
     RegionImp *region = root->getRegion(region_handle);
 
-    //    root->getObjectClass(object_class)->unsubscribe(federate, region);
+    root->getObjectClass(object_class)->unsubscribe(federate, region);
 }
 
 // ----------------------------------------------------------------------------
@@ -1624,7 +1624,7 @@ Federation::subscribeInteractionWR(FederateHandle federate,
 
     RegionImp *region = root->getRegion(region_handle);
 
-    //    root->getInteractionClass(interaction)->subscribe(federate, region);
+    root->getInteractionClass(interaction)->subscribe(federate, region);
 }
 
 // ----------------------------------------------------------------------------
@@ -1641,7 +1641,7 @@ Federation::unsubscribeInteractionWR(FederateHandle federate,
 
     RegionImp *region = root->getRegion(region_handle);
 
-    //    root->getInteractionClass(interaction)->unsubscribe(federate, region);
+    root->getInteractionClass(interaction)->unsubscribe(federate, region);
 }
 
 // ----------------------------------------------------------------------------
@@ -1768,5 +1768,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.30 2003/07/09 16:10:44 breholee Exp $
+// $Id: Federation.cc,v 3.31 2003/07/10 22:51:38 breholee Exp $
 
