@@ -33,9 +33,9 @@ by modifying the CXXFLAGS variable:
 
 env CXXFLAGS="-fpermissive " ./configure --prefix=$HOME/CERTI
 
-- Example 3: This is the line we use on Solaris 6 stations, note how the
+- Example 3: This is the line we used on Solaris 6 stations, note how the
 default compiler names and directory values can be modified:
 
 env CC=cc CXX=CC CXXFLAGS="-RTTI -g -features=no%conststrings -I/opt/SUNWspro/SC5.0/include/CC " LDFLAGS="-L/opt/SUNWspro/SC5.0/lib/CC4 -L/opt/SUNWspro/SC5.0/lib/CC4/libp -lC " ./configure --prefix=$HOME/CERTI
 
-
+You'll find an installation document in the doc directory.
