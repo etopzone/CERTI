@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: Object.hh,v 3.7 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -57,9 +57,6 @@ public:
     */
     FederateHandle Owner ;
 
-    //! Attribute list from object class instance (private).
-    deque<ObjectAttribute *> attributeState ;
-
     HLA_Region UR ;
 
     // --------------------
@@ -73,9 +70,7 @@ public:
 
     void display(void) const ;
 
-    // ------------------
-    // -- GetAttribute --
-    // ------------------
+    void addAttribute(ObjectAttribute * new_attribute);
     ObjectAttribute *getAttribute(AttributeHandle the_attribute) const
         throw (AttributeNotDefined);
 
@@ -95,6 +90,9 @@ private:
     // ------------------------
     // -- Private Attributes --
     // ------------------------
+    //! Attribute list from object class instance (private).
+    deque<ObjectAttribute *> attributeState ;
+
     ObjectHandle handle ; //!< Object Instance ID
     ObjectName name ; //!< Instance name.
 
@@ -108,4 +106,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.6 2003/02/21 17:36:39 breholee Exp $
+// $Id: Object.hh,v 3.7 2003/03/04 09:47:04 breholee Exp $

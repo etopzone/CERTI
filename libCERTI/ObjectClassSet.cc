@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.10 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.11 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -34,7 +34,7 @@ static pdCDebug D("OBJECTCLASSSET", "(ObjClSet) - ");
 void
 ObjectClassSet::addClass(ObjectClass *newClass)
 {
-    D.Out(pdInit, "Adding new object class %d.", newClass->Handle);
+    D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 
     newClass->server = server ;
 
@@ -50,13 +50,13 @@ void
 ObjectClassSet::buildParentRelation(ObjectClass *child, ObjectClass *parent)
 {
     // Register Parent to Son
-    child->Father = parent->Handle ;
+    child->Father = parent->getHandle();
 
     // Transfer Security Level
     child->setLevelId(parent->getLevelId());
 
     // Register Son to Parent
-    parent->sonSet.push_front(child->Handle);
+    parent->sonSet.push_front(child->getHandle());
 
     // Copy Parent Attribute into Child class.
     parent->addAttributesToChild(child);
@@ -96,7 +96,7 @@ ObjectClassSet::deleteObject(FederateHandle theFederateHandle,
 
     D.Out(pdRegister,
           "Federate %d attempts to delete instance %d in class %d.",
-          theFederateHandle, theObjectHandle, theClass->Handle);
+          theFederateHandle, theObjectHandle, theClass->getHandle());
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -216,7 +216,7 @@ ObjectClassSet::getObjectClassHandle(const char *the_name) const
     list<ObjectClass *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if (strcmp((*i)->getName(), the_name) == 0)
-            return (*i)->Handle ;
+            return (*i)->getHandle();
     }
 
     throw ObjectClassNotDefined();
@@ -242,7 +242,7 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
 {
     list<ObjectClass *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        if ((*i)->Handle == theHandle)
+        if ((*i)->getHandle() == theHandle)
             return (*i);
     }
 
@@ -435,9 +435,9 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
     // each branch.
 
     if (result == RTI_TRUE)
-        recursiveDiscovering(theClass->Handle, // Start process with this class
+        recursiveDiscovering(theClass->getHandle(), // Start process with this class
                              theFederateHandle, // Send msgs to this Federate
-                             theClass->Handle);
+                             theClass->getHandle());
     // Discovered objects belong to the same class, the original one.
 }
 
@@ -459,7 +459,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
 {
     // It may throw ObjectNotKnown
     ObjectClass * objectClass = getInstanceClass(theObjectHandle);
-    ObjectClassHandle currentClass = objectClass->Handle ;
+    ObjectClassHandle currentClass = objectClass->getHandle();
 
     D.Out(pdProtocol, "Federate %d Updating object %d from class %d.",
           theFederateHandle, theObjectHandle, currentClass);
@@ -550,7 +550,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 {
     // It may throw ObjectNotKnown
     ObjectClass *objectClass = getInstanceClass(theObjectHandle);
-    ObjectClassHandle currentClass = objectClass->Handle ;
+    ObjectClassHandle currentClass = objectClass->getHandle();
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -620,7 +620,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 {
     // It may throw ObjectNotKnown
     ObjectClass *objectClass = getInstanceClass(theObjectHandle);
-    ObjectClassHandle currentClass = objectClass->Handle ;
+    ObjectClassHandle currentClass = objectClass->getHandle();
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -748,4 +748,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.10 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.11 2003/03/04 09:47:04 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.8 2003/03/04 09:47:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -41,7 +41,7 @@ void FedParser::allocateAndRegisterObjectClass(int index)
         throw RTIinternalError("Memory Exhausted in ObjectClass allocation.");
     }
 
-    ObjStack[index]->Handle = index ;
+    ObjStack[index]->setHandle(index);
     ObjStack[index]->Depth = Depth ;
 
     RootObj->ObjectClasses->addClass(ObjStack[index]);
@@ -147,7 +147,7 @@ void FedParser::processAttributeAtom(Atom *)
                                   ->addAttribute(AttStack[AttIndex]));
 
     D.Out(pdRegister, "Adding new attribute %u to ObjectClass %u.",
-          AttStack[AttIndex]->getHandle(), ObjStack[ObjIndex - 1]->Handle);
+          AttStack[AttIndex]->getHandle(), ObjStack[ObjIndex - 1]->getHandle());
 
     AttIndex++ ;
     TypeStack[Depth] = ATTRIB ;
@@ -157,7 +157,7 @@ void FedParser::processAttributeAtom(Atom *)
 //! Called by storeAtom to process class atom.
 /*! When a 'class' atom is encountered, it means that a new object or
   interaction class definition is starting. This function process this kind
-!  of event.
+  of event.
 */
 void
 FedParser::processClassAtom(Atom *)
@@ -327,7 +327,7 @@ void FedParser::processSecLevelString(String *x)
     case OBJ:
     case CLASSOBJ:
         D.Out(pdTrace, "Setting SecLevel of ObjClass %d to %d.",
-              ObjStack[ObjIndex - 1]->Handle, LevelID);
+              ObjStack[ObjIndex - 1]->getHandle(), LevelID);
         ObjStack[ObjIndex - 1]->setLevelId(LevelID);
         break ;
 
@@ -581,4 +581,4 @@ void FedParser::storeString(String *x)
 
 }} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.8 2003/03/04 09:47:03 breholee Exp $

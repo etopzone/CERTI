@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: XmlParser.cc,v 3.5 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -129,7 +129,7 @@ XmlParser::parseClass(ObjectClass* parent)
     }
 
     current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
-    current->Handle = freeObjectClassHandle++ ;
+    current->setHandle(freeObjectClassHandle++);
     root->ObjectClasses->addClass(current);
     if (parent != 0)
         root->ObjectClasses->buildParentRelation(current, parent);
@@ -271,4 +271,4 @@ bool XmlParser::exists(void) { return false ; }
 }
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: XmlParser.cc,v 3.5 2003/03/04 09:47:04 breholee Exp $

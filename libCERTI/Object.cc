@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: Object.cc,v 3.8 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -61,6 +61,13 @@ Object::display(void) const
         cout << ", name=\"" << name << "\"" << endl ;
     else
         cout << ", (No name)." << endl ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Object::addAttribute(ObjectAttribute * new_attribute)
+{
+    attributeState.push_front(new_attribute);
 }
 
 // ----------------------------------------------------------------------------
@@ -129,4 +136,4 @@ Object::setHandle(ObjectHandle h)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.7 2003/02/21 17:36:39 breholee Exp $
+// $Id: Object.cc,v 3.8 2003/03/04 09:47:04 breholee Exp $

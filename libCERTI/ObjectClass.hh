@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.8 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClass.hh,v 3.9 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -81,8 +81,6 @@ public:
     // They are kept public for convenience in the CRead class that build
     // the Object Classes tree and set all Father/Son dependences and
     // attributes.
-
-    ObjectClassHandle Handle ; //!< Object class number.
     ObjectClassHandle Father ; //!< Object father number.
     list<ObjectClassHandle> sonSet ; //<! Son classes set from this object class.
 
@@ -109,6 +107,9 @@ public:
 
     void setName(const char *new_name)
         throw (ValueLengthExceeded, RTIinternalError);
+
+    void setHandle(ObjectClassHandle new_handle);
+    ObjectClassHandle getHandle(void) const ;
 
     // ----------------------
     // -- Security Methods --
@@ -259,8 +260,7 @@ public:
                                              AttributeHandle *theAttributeList,
                                              UShort theListSize)
 
-        throw (
-               ObjectNotKnown,
+        throw (ObjectNotKnown,
                AttributeNotDefined,
                AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested,
@@ -270,7 +270,6 @@ public:
     // --------------------------
     // -- RTI Support Services --
     // --------------------------
-
 
     AttributeHandle getAttributeHandle(const char *theName) const
         throw (AttributeNotDefined,
@@ -326,6 +325,7 @@ private:
 
     // Should be allocated and deleted locally.
     char *Name ; //!< Object class name.
+    ObjectClassHandle handle ; //!< Object class number.
 
     //! All non-inherited attributes have this default level.
     SecurityLevelID LevelID ;
@@ -368,4 +368,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.8 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClass.hh,v 3.9 2003/03/04 09:47:04 breholee Exp $

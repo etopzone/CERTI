@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.11 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClass.cc,v 3.12 2003/03/04 09:47:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
@@ -49,7 +49,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     attributeSet.push_front(theAttribute);
 
     D.Out(pdProtocol, "ObjectClass %u has a new attribute %u.",
-          Handle, theAttribute->getHandle());
+          handle, theAttribute->getHandle());
 
     return theAttribute->getHandle();
 }
@@ -71,7 +71,7 @@ ObjectClass::addAttributesToChild(ObjectClass *the_child)
 
         D.Out(pdProtocol,
               "ObjectClass %u adding new attribute %d to child class %u.",
-              Handle, (*a)->getHandle(), the_child->Handle);
+              handle, (*a)->getHandle(), the_child->getHandle());
 
         the_child->addAttribute(childAttribute);
 
@@ -89,7 +89,7 @@ void
 ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
 {
     // 1. Set ObjectHandle to local class Handle.
-    ocbList->message->objectClass = Handle ;
+    ocbList->message->objectClass = handle ;
 
     // 2. Update message attribute list by removing child's attributes.
     if ((ocbList->message->type == m_REFLECT_ATTRIBUTE_VALUES) ||
@@ -229,7 +229,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 
     // BUG: Should use Audit.
     if (result != RTI_TRUE) {
-        cout << "Object Class " << Handle << " : SecurityError for federate "
+        cout << "Object Class " << handle << " : SecurityError for federate "
              << the_federate << '(' << reason << ")." << endl ;
         throw SecurityError("Federate should not access Object Class.");
     }
@@ -238,7 +238,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 // ----------------------------------------------------------------------------
 //! ObjectClass constructor (only one).
 ObjectClass::ObjectClass(void)
-    : Handle(0), Father(0), server(NULL), Depth(0),
+    : handle(0), Father(0), server(NULL), Depth(0),
       Name(NULL), LevelID(PublicLevelID), MaxSubscriberHandle(0)
 {
 }
@@ -255,7 +255,7 @@ ObjectClass::~ObjectClass(void)
     // Deleting instances
     if (!objectSet.empty())
         D.Out(pdError,
-              "ObjectClass %d : Instances remaining while exiting...", Handle);
+              "ObjectClass %d : Instances remaining while exiting...", handle);
 
     while (!objectSet.empty()) {
         delete objectSet.front();
@@ -318,14 +318,14 @@ ObjectClass::deleteInstance(FederateHandle theFederateHandle,
     if (server != NULL) {
         D.Out(pdRegister,
               "Object %u deleted in class %u, now broadcasting...",
-              theObjectHandle, Handle);
+              theObjectHandle, handle);
 
         NetworkMessage *answer = new NetworkMessage ;
         answer->type = m_REMOVE_OBJECT ;
         answer->federation = server->federation();
         answer->federate = theFederateHandle ;
         answer->exception = e_NO_EXCEPTION ;
-        answer->objectClass = Handle ; // Class Handle
+        answer->objectClass = handle ; // Class Handle
         answer->object = theObjectHandle ;
         strcpy(answer->label, theUserTag);
 
@@ -335,7 +335,7 @@ ObjectClass::deleteInstance(FederateHandle theFederateHandle,
     else {
         D.Out(pdRegister,
               "Object %u deleted in class %u, no broadcast to do.",
-              theObjectHandle, Handle);
+              theObjectHandle, handle);
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -347,7 +347,7 @@ ObjectClass::deleteInstance(FederateHandle theFederateHandle,
 //! Print the ObjectClasses tree to the standard output.
 void ObjectClass::display(void) const
 {
-    cout << " ObjectClass #" << Handle << " \"" << Name << "\":" << endl ;
+    cout << " ObjectClass #" << handle << " \"" << Name << "\":" << endl ;
 
     // Display inheritance
     cout << " Parent Class Handle: " << Father << endl ;
@@ -356,7 +356,7 @@ void ObjectClass::display(void) const
 
     list<ObjectClassHandle>::const_iterator s = sonSet.begin();
     for (int i = 1 ; s != sonSet.end(); s++, i++) {
-        cout << " Son " << i << " Handle: "<< (*s) << endl ;
+        cout << " Son " << i << " handle: "<< (*s) << endl ;
     }
 
     // Display Attributes
@@ -388,7 +388,7 @@ ObjectClass::getAttributeHandle(const char *the_name) const
     }
 
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
-          Handle, the_name);
+          handle, the_name);
 
     throw AttributeNotDefined();
 }
@@ -417,7 +417,7 @@ ObjectClass::getAttributeWithHandle(AttributeHandle the_handle) const
     }
 
     D.Out(pdDebug, "ObjectClass %d: Attribute %d not defined.",
-          Handle, the_handle);
+          handle, the_handle);
 
     throw AttributeNotDefined();
 }
@@ -491,7 +491,7 @@ ObjectClass::killFederate(FederateHandle the_federate)
     throw ()
 {
     D.Out(pdRegister, "Object Class %d: Killing Federate %d.",
-          Handle, the_federate);
+          handle, the_federate);
 
     try {
         // Does federate is publishing something ? (not important)
@@ -519,7 +519,7 @@ ObjectClass::killFederate(FederateHandle the_federate)
     }
 
     D.Out(pdRegister, "Object Class %d:Federate %d killed.",
-          Handle, the_federate);
+          handle, the_federate);
 
     // Return NULL if the Federate did not own any instance.
     return NULL ;
@@ -548,7 +548,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 
     // Reset all previous publish information.
     D.Out(pdInit, "ObjectClass %d: Reset publish info of Federate %d.",
-          Handle, theFederateHandle);
+          handle, theFederateHandle);
 
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
@@ -560,7 +560,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
     ObjectClassAttribute * attribute ;
     for (UShort i = 0 ; i < theListSize ; i++) {
         D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.",
-              Handle, theFederateHandle, theAttributeList[i]);
+              handle, theFederateHandle, theAttributeList[i]);
         attribute = getAttributeWithHandle(theAttributeList[i]);
         attribute->publish(theFederateHandle, PubOrUnpub);
     }
@@ -607,19 +607,19 @@ ObjectClass::registerInstance(FederateHandle the_federate_handle,
     // Ownership management :
     // Copy instance attributes
     // Federate only owns attributes it publishes.
+    ObjectAttribute * oa ;
     list<ObjectClassAttribute *>::reverse_iterator a ;
     for (a = attributeSet.rbegin(); a != attributeSet.rend(); a++) {
         if ((*a)->isPublishing(the_federate_handle))
-            object->attributeState.
-                push_front(new ObjectAttribute((*a)->getHandle(),
-                                               the_federate_handle));
+            oa = new ObjectAttribute((*a)->getHandle(), the_federate_handle);
         else
-            object->attributeState.
-                push_front(new ObjectAttribute((*a)->getHandle(), 0));
+            oa = new ObjectAttribute((*a)->getHandle(), 0);
 
         // privilegeToDelete is owned by federate even not published.
         if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
-            object->attributeState.front()->setOwner(the_federate_handle);
+            oa->setOwner(the_federate_handle);
+
+        object->addAttribute(oa);
     }
 
     objectSet.push_front(object);
@@ -629,14 +629,14 @@ ObjectClass::registerInstance(FederateHandle the_federate_handle,
     if (server != NULL) {
         D.Out(pdRegister,
               "Object %u registered in class %u, now broadcasting...",
-              the_object_handle, Handle);
+              the_object_handle, handle);
 
         NetworkMessage *answer = new NetworkMessage ;
         answer->type = m_DISCOVER_OBJECT ;
         answer->federation = server->federation();
         answer->federate = the_federate_handle ;
         answer->exception = e_NO_EXCEPTION ;
-        answer->objectClass = Handle ; // Class Handle
+        answer->objectClass = handle ; // Class Handle
         answer->object = the_object_handle ;
         strcpy(answer->label, the_object_name);
 
@@ -646,7 +646,7 @@ ObjectClass::registerInstance(FederateHandle the_federate_handle,
     else {
         D.Out(pdRegister,
               "Object %u registered in class %u, no broadcast to do.",
-              the_object_handle, Handle);
+              the_object_handle, handle);
     }
 
     // Return the BroadcastList in case it had to be passed to the parent
@@ -664,7 +664,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     // subscriber of the class, the Recursive process must be stopped,
     // because the Federate must have received all previous DiscoverObject
     // Message for this class and its sub-classes.
-    if ((Handle != theOriginalClass) &&
+    if ((handle != theOriginalClass) &&
         (isFederateSubscriber(theFederate) == RTI_TRUE))
         return RTI_FALSE ;
 
@@ -688,7 +688,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         D.Out(pdInit,
               "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-              theFederate, (*o)->getHandle(), Handle, message->label);
+              theFederate, (*o)->getHandle(), handle, message->label);
 
         message->object = (*o)->getHandle();
         (*o)->getName(message->label);
@@ -774,7 +774,7 @@ ObjectClass::subscribe(FederateHandle theFederate,
     // object class, so we first remove all previous subscription information.
     D.Out(pdInit,
           "ObjectClass %d: Resetting previous Sub info of Federate %d.",
-          Handle, theFederate);
+          handle, theFederate);
 
     Boolean wasPreviousSubscriber = RTI_FALSE ;
     list<ObjectClassAttribute *>::iterator a ;
@@ -790,7 +790,7 @@ ObjectClass::subscribe(FederateHandle theFederate,
     for (UShort index = 0 ; index < theListSize ; index++) {
         D.Out(pdInit,
               "ObjectClass %d: Federate %d subscribes to attribute %d.",
-              Handle, theFederate, theAttributeList[index]);
+              handle, theFederate, theAttributeList[index]);
         attribute = getAttributeWithHandle(theAttributeList[index]);
         attribute->subscribe(theFederate, SubOrUnsub);
     }
@@ -827,15 +827,12 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
     Object *object = getInstanceWithID(theObjectHandle);
 
     // Ownership management: Test ownership on each attribute before updating.
+    ObjectAttribute * oa ;
     for (int i = 0 ; i < theArraySize ; i++) {
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++) {
-            if (theAttributeArray[i] == (*j)->getHandle()) {
-                if ((*j)->getOwner() != theFederateHandle)
-                    throw AttributeNotOwned();
-            }
-        }
+        oa = object->getAttribute(theAttributeArray[i]);
+
+        if (oa->getOwner() != theFederateHandle)
+            throw AttributeNotOwned();
     }
 
     // Federate must be Owner of all attributes(not Owner of the instance).
@@ -866,7 +863,7 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
 
         D.Out(pdProtocol,
               "Object %u updated in class %u, now broadcasting...",
-              theObjectHandle, Handle);
+              theObjectHandle, handle);
 
         broadcastClassMessage(ocbList);
     }
@@ -903,17 +900,11 @@ ObjectClass::isAttributeOwnedByFederate(ObjectHandle theObject,
           "isAttributeOwnedByFederate sur l'attribut %u de l'objet %u",
           theAttribute, theObject);
 
+    ObjectAttribute * oa ;
     if (server != NULL) {
-        deque<ObjectAttribute *>::const_iterator i ;
-        i = object->attributeState.begin();
-        for (; i != object->attributeState.end(); i++) {
-            if (theAttribute == (*i)->getHandle()) {
-                if ((*i)->getOwner() == theFederateHandle)
-                    return(RTI_TRUE);
-                else
-                    return(RTI_FALSE);
-            }
-        }
+        oa = object->getAttribute(theAttribute);
+
+        return (oa->getOwner() == theFederateHandle) ? RTI_TRUE : RTI_FALSE ;
     }
     else {
         D.Out(pdDebug, "Only called on RTIG");
@@ -944,19 +935,15 @@ ObjectClass::queryAttributeOwnership(ObjectHandle theObject,
           theAttribute, theObject);
 
     if (server != NULL) {
+        ObjectAttribute * oa ;
+        oa = object->getAttribute(theAttribute);
+
         NetworkMessage *answer = new NetworkMessage ;
         answer->federation = server->federation();
         answer->exception = e_NO_EXCEPTION ;
         answer->object = theObject ;
         answer->handleArray[0] = theAttribute ;
-
-        deque<ObjectAttribute *>::const_iterator i ;
-        i = object->attributeState.begin();
-        for (; i != object->attributeState.end(); i++) {
-            if (theAttribute == (*i)->getHandle()) {
-                answer->federate = (*i)->getOwner();
-            }
-        }
+        answer->federate = oa->getOwner();
 
         if (answer->federate != 0)
             answer->type = m_INFORM_ATTRIBUTE_OWNERSHIP ;
@@ -997,21 +984,19 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     // Does federate has called NegotiatedAttributeOwnershipDivestiture.
     D.Out(pdDebug, "NegotiatedDivestiture Demandeur : %u", theFederateHandle);
 
+    ObjectAttribute * oa ;
+    ObjectClassAttribute * oca ;
     for (int i = 0 ; i < theListSize ; i++) {
-        list<ObjectClassAttribute *>::const_iterator a = attributeSet.begin();
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++, a++) {
-            if (theAttributeList[i] == (*j)->getHandle()) {
-                D.Out(pdDebug, "Attribute Name : %s", (*a)->getName());
-                D.Out(pdDebug, "Attribute Handle : %u", (*j)->getHandle());
-                D.Out(pdDebug, "Attribute Owner : %u", (*j)->getOwner());
-                if ((*j)->getOwner() != theFederateHandle)
-                    throw AttributeNotOwned();
-                if ((*j)->beingDivested())
-                    throw AttributeAlreadyBeingDivested();
-            }
-        }
+        oca = getAttributeWithHandle(theAttributeList[i]);
+        oa = object->getAttribute(theAttributeList[i]);
+
+        D.Out(pdDebug, "Attribute Name : %s", oca->getName());
+        D.Out(pdDebug, "Attribute Handle : %u", oa->getHandle());
+        D.Out(pdDebug, "Attribute Owner : %u", oa->getOwner());
+        if (oa->getOwner() != theFederateHandle)
+            throw AttributeNotOwned();
+        if (oa->beingDivested())
+            throw AttributeAlreadyBeingDivested();
     }
 
     int compteur_acquisition = 0 ;
@@ -1030,49 +1015,44 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
+        ObjectAttribute * oa ;
+        ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++) {
-                if (theAttributeList[i] == (*j)->getHandle()) {
-                    if ((*j)->hasCandidates()) {
-                        // An attributeOwnershipAcquisition is on the way
-                        // with this attribute.
+            oa = object->getAttribute(theAttributeList[i]);
 
-                        // Le demandeur le plus récent devient propriétaire
-                        NewOwner = (*j)->getCandidate(1);
+            if (oa->hasCandidates()) {
+                // An attributeOwnershipAcquisition is on the way
+                // with this attribute.
 
-                        (*j)->setOwner(NewOwner);
+                // Le demandeur le plus récent devient propriétaire
+                NewOwner = oa->getCandidate(1);
 
-                        // On le supprime de la liste des demandeurs
-                        (*j)->removeCandidate(NewOwner);
+                oa->setOwner(NewOwner);
 
-                        // On réinitialise divesting
-                        (*j)->setDivesting(RTI_FALSE);
+                // On le supprime de la liste des demandeurs
+                oa->removeCandidate(NewOwner);
 
-                        diffusionAcquisition->DiffArray[compteur_acquisition]
-                            .federate = NewOwner ;
-                        diffusionAcquisition->DiffArray[compteur_acquisition]
-                            .attribute = (*j)->getHandle();
-                        compteur_acquisition++ ;
+                // On réinitialise divesting
+                oa->setDivesting(RTI_FALSE);
 
-                        AnswerDivestiture->handleArray[compteur_divestiture]
-                            = theAttributeList[i] ;
-                        compteur_divestiture++ ;
+                diffusionAcquisition->DiffArray[compteur_acquisition]
+                    .federate = NewOwner ;
+                diffusionAcquisition->DiffArray[compteur_acquisition]
+                    .attribute = oa->getHandle();
+                compteur_acquisition++ ;
 
-                        if (strcmp((*a)->getName(),
-                                   "privilegeToDelete") == 0)
-                            object->Owner = NewOwner ;
-                    }
-                    else {
-                        AnswerAssumption->handleArray[compteur_assumption]
-                            = theAttributeList[i] ;
-                        (*j)->setDivesting(RTI_TRUE);
-                        compteur_assumption++ ;
-                    }
-                }
+                AnswerDivestiture->handleArray[compteur_divestiture]
+                    = theAttributeList[i] ;
+                compteur_divestiture++ ;
+
+                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                    object->Owner = NewOwner ;
+            }
+            else {
+                AnswerAssumption->handleArray[compteur_assumption]
+                    = theAttributeList[i] ;
+                oa->setDivesting(RTI_TRUE);
+                compteur_assumption++ ;
             }
         }
 
@@ -1113,7 +1093,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
             D.Out(pdProtocol,
                   "Object %u divestiture in class %u, now broadcasting...",
-                  theObjectHandle, Handle);
+                  theObjectHandle, handle);
             broadcastClassMessage(List);
         }
         else
@@ -1164,26 +1144,23 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
         }
 
         //rem attributeSet.size()=attributeState.size()
+        ObjectAttribute * oa ;
+        ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; a != attributeSet.end(); a++, j++) {
-                if (theAttributeList[i] == (*a)->getHandle()) {
-                    // The federate has to publish attributes he desire to
-                    // acquire.
-                    if (!(*a)->isPublishing(theFederateHandle) &&
-                        (strcmp((*a)->getName(), "privilegeToDelete") != 0))
-                        throw AttributeNotPublished();
-                    // Does federate already owns some attributes.
-                    if ((*j)->getOwner() == theFederateHandle)
-                        throw FederateOwnsAttributes();
-                    // Does federate is on the way to acquire something.
-                    if ((*j)->isCandidate(theFederateHandle) != 0)
-                        throw AttributeAlreadyBeingAcquired();
-                }
-            }
+            oca = getAttributeWithHandle(theAttributeList[i]);
+            oa = object->getAttribute(theAttributeList[i]);
+
+            // The federate has to publish attributes he desire to
+            // acquire.
+            if (!oca->isPublishing(theFederateHandle) &&
+                (strcmp(oca->getName(), "privilegeToDelete") != 0))
+                throw AttributeNotPublished();
+            // Does federate already owns some attributes.
+            if (oa->getOwner() == theFederateHandle)
+                throw FederateOwnsAttributes();
+            // Does federate is on the way to acquire something.
+            if (oa->isCandidate(theFederateHandle) != 0)
+                throw AttributeAlreadyBeingAcquired();
         }
 
         NetworkMessage *Answer_notification = new NetworkMessage ;
@@ -1211,45 +1188,39 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
         int compteur_notification = 0 ;
         int compteur_divestiture = 0 ;
         FederateHandle oldOwner ;
+
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++, a++) {
-                if (theAttributeList[i] == (*j)->getHandle()) {
-                    oldOwner = (*j)->getOwner();
-                    if ((oldOwner == 0) || ((*j)->beingDivested())) {
-                        //Cet attribut est libre ou offert par son propriétaire
-                        //S'il est offert
-                        if ((*j)->beingDivested()) {
-                            diffusionDivestiture->DiffArray
-                                [compteur_divestiture].federate
-                                = oldOwner ;
-                            diffusionDivestiture->DiffArray
-                                [compteur_divestiture].attribute
-                                = (*j)->getHandle();
-                            compteur_divestiture++ ;
-                        }
-                        //Qu'il soit offert ou libre
-                        Answer_notification->handleArray[compteur_notification]
-                            = theAttributeList[i] ;
-                        (*j)->setOwner(theFederateHandle);
-                        (*j)->setDivesting(RTI_FALSE);
-                        compteur_notification++ ;
-                        //object->Owner reste le champ de référence
-                        //pour le privilegeToDelete
-                        if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
-                            object->Owner = theFederateHandle ;
-                    }
-                    else {
-                        //Cet attribut n'est pas disponible!!!
-                        Answer_unavailable->handleArray[compteur_unavailable]
-                            = theAttributeList[i] ;
-                        (*j)->addCandidate(theFederateHandle);
-                        compteur_unavailable++ ;
-                    }
+            oca = getAttributeWithHandle(theAttributeList[i]);
+            oa = object->getAttribute(theAttributeList[i]);
+
+            oldOwner = oa->getOwner();
+            if ((oldOwner == 0) || (oa->beingDivested())) {
+                //Cet attribut est libre ou offert par son propriétaire
+                //S'il est offert
+                if (oa->beingDivested()) {
+                    diffusionDivestiture->DiffArray[compteur_divestiture].federate
+                        = oldOwner ;
+                    diffusionDivestiture->DiffArray[compteur_divestiture].attribute
+                        = oa->getHandle();
+                    compteur_divestiture++ ;
                 }
+                //Qu'il soit offert ou libre
+                Answer_notification->handleArray[compteur_notification]
+                    = theAttributeList[i] ;
+                oa->setOwner(theFederateHandle);
+                oa->setDivesting(RTI_FALSE);
+                compteur_notification++ ;
+                //object->Owner reste le champ de référence
+                //pour le privilegeToDelete
+                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                    object->Owner = theFederateHandle ;
+            }
+            else {
+                //Cet attribut n'est pas disponible!!!
+                Answer_unavailable->handleArray[compteur_unavailable]
+                    = theAttributeList[i] ;
+                oa->addCandidate(theFederateHandle);
+                compteur_unavailable++ ;
             }
         }
 
@@ -1308,15 +1279,12 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         getAttributeWithHandle(theAttributeList[index]);
 
     //Le fédéré est-il propriétaire de tous les attributs
+    ObjectAttribute * oa ;
     for (int i = 0 ; i < theListSize ; i++) {
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++) {
-            if (theAttributeList[i] == (*j)->getHandle()) {
-                if ((*j)->getOwner() != theFederateHandle)
-                    throw AttributeNotOwned();
-            }
-        }
+        oa = object->getAttribute(theAttributeList[i]);
+
+        if (oa->getOwner() != theFederateHandle)
+            throw AttributeNotOwned();
     }
 
     int compteur_assumption = 0 ;
@@ -1329,45 +1297,42 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         AnswerAssumption->handleArraySize = theListSize ;
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
+        ObjectAttribute * oa ;
+        ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++, a++) {
-                if (theAttributeList[i] == (*j)->getHandle()) {
-                    if ((*j)->hasCandidates()) {
-                        // An attributeOwnershipAcquisition is on the way
-                        // on this attribute.
+            oca = getAttributeWithHandle(theAttributeList[i]);
+            oa = object->getAttribute(theAttributeList[i]);
 
-                        // Le demandeur le plus récent devient propriétaire
-                        NewOwner = (*j)->getCandidate(1);
+            if (oa->hasCandidates()) {
+                // An attributeOwnershipAcquisition is on the way
+                // on this attribute.
 
-                        (*j)->setOwner(NewOwner);
+                // Le demandeur le plus récent devient propriétaire
+                NewOwner = oa->getCandidate(1);
 
-                        // We remove it from candidate list.
-                        (*j)->removeCandidate(NewOwner);
+                oa->setOwner(NewOwner);
 
-                        // We reinitialize divesting.
-                        (*j)->setDivesting(RTI_FALSE);
+                // We remove it from candidate list.
+                oa->removeCandidate(NewOwner);
 
-                        diffusionAcquisition->DiffArray[compteur_acquisition]
-                            .federate = NewOwner ;
-                        diffusionAcquisition->DiffArray[compteur_acquisition]
-                            .attribute = (*j)->getHandle();
-                        compteur_acquisition++ ;
+                // We reinitialize divesting.
+                oa->setDivesting(RTI_FALSE);
 
-                        if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
-                            object->Owner = NewOwner ;
-                    }
-                    else {
-                        AnswerAssumption->handleArray[compteur_assumption] =
-                            theAttributeList[i] ;
-                        (*j)->setOwner(0);
-                        (*j)->setDivesting(RTI_FALSE);
-                        compteur_assumption++ ;
-                    }
-                }
+                diffusionAcquisition->DiffArray[compteur_acquisition]
+                    .federate = NewOwner ;
+                diffusionAcquisition->DiffArray[compteur_acquisition]
+                    .attribute = oa->getHandle();
+                compteur_acquisition++ ;
+
+                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                    object->Owner = NewOwner ;
+            }
+            else {
+                AnswerAssumption->handleArray[compteur_assumption] =
+                    theAttributeList[i] ;
+                oa->setOwner(0);
+                oa->setDivesting(RTI_FALSE);
+                compteur_assumption++ ;
             }
         }
 
@@ -1385,7 +1350,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
             D.Out(pdProtocol,
                   "Object %u updated in class %u, now broadcasting...",
-                  theObjectHandle, Handle);
+                  theObjectHandle, handle);
 
             broadcastClassMessage(List);
         }
@@ -1435,24 +1400,20 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     // may throw ObjectNotKnown
     Object *object = getInstanceWithID(theObjectHandle);
 
+    ObjectAttribute * oa ;
+    ObjectClassAttribute * oca ;
     for (int i = 0 ; i < theListSize ; i++) {
         // Do all attribute handles exist ? It may throw AttributeNotDefined.
-        getAttributeWithHandle(theAttributeList[i]);
+        oca = getAttributeWithHandle(theAttributeList[i]);
+        oa = object->getAttribute(theAttributeList[i]);
 
-        list<ObjectClassAttribute *>::const_iterator a = attributeSet.begin();
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.begin(); j++, a++) {
-            if (theAttributeList[i] == (*j)->getHandle()) {
-                //Le fédéré est-il déjà propriétaire de certains attributs
-                if ((*j)->getOwner() == theFederateHandle)
-                    throw FederateOwnsAttributes();
-                //Le fédéré publie-t-il les attributs
-                if (!(*a)->isPublishing(theFederateHandle) &&
-                    (strcmp((*a)->getName(), "privilegeToDelete") != 0))
-                    throw AttributeNotPublished();
-            }
-        }
+        //Le fédéré est-il déjà propriétaire de certains attributs
+        if (oa->getOwner() == theFederateHandle)
+            throw FederateOwnsAttributes();
+        //Le fédéré publie-t-il les attributs
+        if (!oca->isPublishing(theFederateHandle) &&
+            (strcmp(oca->getName(), "privilegeToDelete") != 0))
+            throw AttributeNotPublished();
     }
 
     int compteur_notification = 0 ;
@@ -1478,54 +1439,47 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
         CDiffusion *diffusionRelease = new CDiffusion();
 
+        ObjectAttribute * oa ;
+        ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++, a++) {
-                if (theAttributeList[i] == (*j)->getHandle()) {
-                    oldOwner = (*j)->getOwner();
-                    if ((oldOwner == 0) || ((*j)->beingDivested())) {
-                        //Cet attribut est libre ou offert par son propriétaire
-                        //S'il est offert
-                        if ((*j)->beingDivested()) {
-                            diffusionDivestiture->
-                                DiffArray[compteur_divestiture].federate =
-                                oldOwner ;
-                            diffusionDivestiture->DiffArray
-                                [compteur_divestiture].attribute =
-                                (*j)->getHandle();
-                            compteur_divestiture++ ;
-                        }
-                        //Qu'il soit offert ou libre
-                        if ((*j)->isCandidate(theFederateHandle) != 0)
-                            (*j)->removeCandidate(theFederateHandle);
-                        AnswerNotification->handleArray[compteur_notification]
-                            = theAttributeList[i] ;
-                        (*j)->setOwner(theFederateHandle);
-                        (*j)->setDivesting(RTI_FALSE);
-                        compteur_notification++ ;
+            oca = getAttributeWithHandle(theAttributeList[i]);
+            oa = object->getAttribute(theAttributeList[i]);
 
-                        // object->Owner reste le champ de référence pour
-                        // le privilegeToDelete
-                        if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
-                            object->Owner = theFederateHandle ;
-                    }
-                    else {
-                        diffusionRelease->DiffArray[compteur_release]
-                            .federate = oldOwner ;
-                        diffusionRelease->DiffArray[compteur_release]
-                            .attribute = (*j)->getHandle();
-                        compteur_release++ ;
-
-                        //On l'enlève de la liste des demandeurs s'il y était
-                        (*j)->removeCandidate(theFederateHandle);
-
-                        //pour le rajouter en 1ere position
-                        (*j)->addCandidate(theFederateHandle);
-                    }
+            oldOwner = oa->getOwner();
+            if ((oldOwner == 0) || (oa->beingDivested())) {
+                //Cet attribut est libre ou offert par son propriétaire s'il est offert
+                if (oa->beingDivested()) {
+                    diffusionDivestiture->DiffArray[compteur_divestiture].federate =
+                        oldOwner ;
+                    diffusionDivestiture->DiffArray[compteur_divestiture].attribute =
+                        oa->getHandle();
+                    compteur_divestiture++ ;
                 }
+                //Qu'il soit offert ou libre
+                if (oa->isCandidate(theFederateHandle) != 0)
+                    oa->removeCandidate(theFederateHandle);
+                AnswerNotification->handleArray[compteur_notification]
+                    = theAttributeList[i] ;
+                oa->setOwner(theFederateHandle);
+                oa->setDivesting(RTI_FALSE);
+                compteur_notification++ ;
+
+                // object->Owner reste le champ de référence pour
+                // le privilegeToDelete
+                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                    object->Owner = theFederateHandle ;
+            }
+            else {
+                diffusionRelease->DiffArray[compteur_release].federate = oldOwner ;
+                diffusionRelease->DiffArray[compteur_release].attribute =
+                    oa->getHandle();
+                compteur_release++ ;
+
+                //On l'enlève de la liste des demandeurs s'il y était
+                oa->removeCandidate(theFederateHandle);
+
+                //pour le rajouter en 1ere position
+                oa->addCandidate(theFederateHandle);
             }
         }
 
@@ -1583,29 +1537,22 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     for (int index = 0 ; index < theListSize ; index++)
         getAttributeWithHandle(attributeList[index]);
 
+    ObjectAttribute * oa ;
     for (int i = 0 ; i < theListSize ; i++) {
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++) {
-            if (attributeList[i] == (*j)->getHandle()) {
-                // Does federate owns every attributes.
-                if ((*j)->getOwner() != theFederateHandle)
-                    throw AttributeNotOwned();
-                // Does federate called NegotiatedAttributeOwnershipDivestiture
-                if (!(*j)->beingDivested())
-                    throw AttributeDivestitureWasNotRequested();
-            }
-        }
+        oa = object->getAttribute(attributeList[i]);
+
+        // Does federate owns every attributes.
+        if (oa->getOwner() != theFederateHandle)
+            throw AttributeNotOwned();
+        // Does federate called NegotiatedAttributeOwnershipDivestiture
+        if (!oa->beingDivested())
+            throw AttributeDivestitureWasNotRequested();
     }
 
     if (server != NULL) {
         for (int i = 0 ; i < theListSize ; i++) {
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++) {
-                if (attributeList[i] == (*j)->getHandle())
-                    (*j)->setDivesting(RTI_FALSE);
-            }
+            oa = object->getAttribute(attributeList[i]);
+            oa->setDivesting(RTI_FALSE);
         }
     }
     else {
@@ -1641,18 +1588,14 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 
     //Le fédéré est-il propriétaire de tous les attributs
     //Y a-t-il des acquéreurs pour les attributs
-    ObjectAttribute *attribute = NULL ;
+    ObjectAttribute * oa ;
     for (int i = 0 ; i < theListSize ; i++) {
-        deque<ObjectAttribute *>::const_iterator j ;
-        j = object->attributeState.begin();
-        for (; j != object->attributeState.end(); j++) {
-            if (theAttributeList[i] == (*j)->getHandle()) {
-                if ((*j)->getOwner() != theFederateHandle)
-                    throw AttributeNotOwned();
-                if (!(*j)->hasCandidates())
-                    throw FederateWasNotAskedToReleaseAttribute();
-            }
-        }
+        oa = object->getAttribute(theAttributeList[i]);
+
+        if (oa->getOwner() != theFederateHandle)
+            throw AttributeNotOwned();
+        if (!oa->hasCandidates())
+            throw FederateWasNotAskedToReleaseAttribute();
     }
 
     int compteur_acquisition = 0 ;
@@ -1663,39 +1606,33 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 
         theAttribute = AttributeHandleSetFactory::create(theListSize);
 
+        ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++, a++) {
-                if (theAttributeList[i] == (*j)->getHandle()) {
-                    //Le demandeur le plus récent devient propriétaire
-                    newOwner = (*j)->getCandidate(1);
+            oca = getAttributeWithHandle(theAttributeList[i]);
+            oa = object->getAttribute(theAttributeList[i]);
 
-                    (*j)->setOwner(newOwner);
+            //Le demandeur le plus récent devient propriétaire
+            newOwner = oa->getCandidate(1);
 
-                    //On le supprime de la liste des demandeurs
-                    (*j)->removeCandidate(newOwner);
+            oa->setOwner(newOwner);
 
-                    //On réinitialise divesting
-                    (*j)->setDivesting(RTI_FALSE);
+            //On le supprime de la liste des demandeurs
+            oa->removeCandidate(newOwner);
 
-                    diffusionAcquisition->
-                        DiffArray[compteur_acquisition].federate = newOwner ;
-                    diffusionAcquisition->
-                        DiffArray[compteur_acquisition].attribute =
-                        (*j)->getHandle();
-                    compteur_acquisition++ ;
-                    theAttribute->add((*j)->getHandle());
+            //On réinitialise divesting
+            oa->setDivesting(RTI_FALSE);
 
-                    D.Out(pdDebug, "Acquisition handle %u compteur %u",
-                          theAttributeList[i], compteur_acquisition);
+            diffusionAcquisition->DiffArray[compteur_acquisition].federate = newOwner ;
+            diffusionAcquisition->DiffArray[compteur_acquisition].attribute =
+                oa->getHandle();
+            compteur_acquisition++ ;
+            theAttribute->add(oa->getHandle());
 
-                    if (strcmp((*a)->getName(), "privilegeToDelete") == 0)
-                        object->Owner = newOwner ;
-                }
-            }
+            D.Out(pdDebug, "Acquisition handle %u compteur %u",
+                  theAttributeList[i], compteur_acquisition);
+
+            if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                object->Owner = newOwner ;
         }
 
         if (compteur_acquisition != 0) {
@@ -1745,23 +1682,20 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
     if (server != NULL) {
         //rem attributeSet.size()=attributeState.size()
+        ObjectAttribute * oa ;
+        ObjectClassAttribute * oca ;
+
         for (int i = 0 ; i < list_size ; i++) {
-            list<ObjectClassAttribute *>::const_iterator a ;
-            a = attributeSet.begin();
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; a != attributeSet.end(); a++, j++) {
-                if (attribute_list[i] == (*a)->getHandle()) {
-                    D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i],
-                          (*j)->getOwner());
-                    // Does federate is already owning some attributes ?
-                    if ((*j)->getOwner() == federate_handle)
-                        throw AttributeAlreadyOwned();
-                    // Does federate is already doing an acquisition ?
-                    if ((*j)->isCandidate(federate_handle) == 0)
-                        throw AttributeAcquisitionWasNotRequested();
-                }
-            }
+            oca = getAttributeWithHandle(attribute_list[i]);
+            oa = object->getAttribute(attribute_list[i]);
+
+            D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i], oa->getOwner());
+            // Does federate is already owning some attributes ?
+            if (oa->getOwner() == federate_handle)
+                throw AttributeAlreadyOwned();
+            // Does federate is already doing an acquisition ?
+            if (oa->isCandidate(federate_handle) == 0)
+                throw AttributeAcquisitionWasNotRequested();
         }
 
         NetworkMessage *answer_confirmation = new NetworkMessage ;
@@ -1774,21 +1708,15 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
         int compteur_confirmation = 0 ;
         for (int i = 0 ; i < list_size ; i++) {
-            deque<ObjectAttribute *>::const_iterator j ;
-            j = object->attributeState.begin();
-            for (; j != object->attributeState.end(); j++) {
-                if (attribute_list[i] == (*j)->getHandle()) {
-                    answer_confirmation->handleArray[compteur_confirmation]
-                        = attribute_list[i] ;
+            oa = object->getAttribute(attribute_list[i]);
 
-                    // We remove federate from candidates.
-                    (*j)->removeCandidate(federate_handle);
-                    D.Out(pdDebug,
-                          "Adding federate %u to attribute %u object %u",
-                          federate_handle, attribute_list[i], object_handle);
-                    compteur_confirmation++ ;
-                }
-            }
+            answer_confirmation->handleArray[compteur_confirmation] = attribute_list[i] ;
+
+            // We remove federate from candidates.
+            oa->removeCandidate(federate_handle);
+            D.Out(pdDebug, "Adding federate %u to attribute %u object %u",
+                  federate_handle, attribute_list[i], object_handle);
+            compteur_confirmation++ ;
         }
 
         if (compteur_confirmation != 0) {
@@ -1806,6 +1734,20 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
     }
 }
 
+// ----------------------------------------------------------------------------
+void
+ObjectClass::setHandle(ObjectClassHandle new_handle)
+{
+    handle = new_handle ;
+}
+
+// ----------------------------------------------------------------------------
+ObjectClassHandle
+ObjectClass::getHandle(void) const
+{
+    return handle ;
+}
+
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.11 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClass.cc,v 3.12 2003/03/04 09:47:04 breholee Exp $
