@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.17 2003/10/06 16:19:43 breholee Exp $
+// $Id: RTIambassador.hh,v 3.18 2004/05/18 13:15:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
 #define _CERTI_RTI_AMBASSADOR_HH
 
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "fedtime.hh"
 #include "SocketUN.hh"
 
@@ -1272,4 +1272,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.17 2003/10/06 16:19:43 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.18 2004/05/18 13:15:04 breholee Exp $

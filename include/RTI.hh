@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -19,19 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $
+// $Id: RTI.hh,v 3.5 2004/05/18 13:15:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTI_HH
 #define CERTI_RTI_HH
 
-// This header file sets aliases so that federates using RTI-NG API
-// can use CERTI
-
 #include "certi.hh"
+#include "RTIambassador.hh"
+#include "FederateAmbassador.hh"
 
 namespace RTI = certi ;
 
 #endif // CERTI_RTI_HH
 
-// $Id: RTI.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $
+// $Id: RTI.hh,v 3.5 2004/05/18 13:15:03 breholee Exp $

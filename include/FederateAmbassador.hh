@@ -19,14 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateAmbassador.hh,v 3.5 2003/10/06 16:19:43 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.6 2004/05/18 13:15:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_AMBASSADOR_HH
 #define _CERTI_FEDERATE_AMBASSADOR_HH
 
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "certi.hh"
 #include "fedtime.hh"
 #include "RTIambassador.hh"
 
@@ -241,4 +240,4 @@ public:
 
 #endif // _CERTI_FEDERATE_AMBASSADOR_HH
 
-// $Id: FederateAmbassador.hh,v 3.5 2003/10/06 16:19:43 breholee Exp $
+// $Id: FederateAmbassador.hh,v 3.6 2004/05/18 13:15:03 breholee Exp $
