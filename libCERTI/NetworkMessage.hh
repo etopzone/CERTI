@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.6 2003/04/23 14:29:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -62,6 +62,13 @@ typedef enum {
     m_ANNOUNCE_SYNCHRONIZATION_POINT,               // RTIG to RTIA
     m_SYNCHRONIZATION_POINT_ACHIEVED,
     m_FEDERATION_SYNCHRONIZED,                      // RTIG to RTIA
+    m_REQUEST_FEDERATION_SAVE,
+    m_FEDERATE_SAVE_BEGUN,
+    m_FEDERATE_SAVE_COMPLETE,
+    m_FEDERATE_SAVE_NOT_COMPLETE,
+    m_INITIATE_FEDERATE_SAVE,
+    m_FEDERATION_SAVED,
+    m_FEDERATION_NOT_SAVED,
     m_PUBLISH_OBJECT_CLASS,
     m_UNPUBLISH_OBJECT_CLASS,
     m_PUBLISH_INTERACTION_CLASS,
@@ -329,4 +336,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.6 2003/04/23 14:29:18 breholee Exp $

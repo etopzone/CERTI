@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.9 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message_RW.cc,v 3.10 2003/04/23 14:29:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -97,6 +97,8 @@ Message::readBody(SocketUN *socket)
         case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         case SYNCHRONIZATION_POINT_ACHIEVED:
         case FEDERATION_SYNCHRONIZED:
+        case REQUEST_FEDERATION_SAVE:
+        case INITIATE_FEDERATE_SAVE:
             readLabel(&Body);
             break ;
 
@@ -289,6 +291,7 @@ Message::readHeader(SocketUN *socket)
     case ANNOUNCE_SYNCHRONIZATION_POINT:
     case SYNCHRONIZATION_POINT_ACHIEVED:            // Body contains Label
     case FEDERATION_SYNCHRONIZED:
+    case INITIATE_FEDERATE_SAVE:
     case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
     case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
     case ATTRIBUTE_IS_NOT_OWNED:
@@ -846,6 +849,18 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 1 ;
         break ;
 
+    case REQUEST_FEDERATION_SAVE:                   // Body contains Label
+        header.VP.O_I.date = date ;
+        header.bodySize = 1 ;
+        break ;
+
+    case FEDERATE_SAVE_BEGUN:
+    case FEDERATE_SAVE_COMPLETE:
+    case FEDERATE_SAVE_NOT_COMPLETE:
+    case FEDERATION_SAVED:
+    case FEDERATION_NOT_SAVED:
+        header.bodySize = 0 ;
+        break ;
 
         // --- MessageJ_R_Struct --
 
@@ -985,7 +1000,6 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 0 ;
         break ;
 
-
         // -- Default Handler --
     default:
         D.Out(pdExcept, "Unknown type %d in WriteHeader.", header.type);
@@ -1031,4 +1045,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.9 2003/04/17 17:00:21 breholee Exp $
+// $Id: Message_RW.cc,v 3.10 2003/04/23 14:29:18 breholee Exp $

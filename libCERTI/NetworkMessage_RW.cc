@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.6 2003/04/23 14:29:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -122,6 +122,8 @@ NetworkMessage::readBody(Socket *socket)
         case m_SYNCHRONIZATION_POINT_ACHIEVED:
         case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         case m_FEDERATION_SYNCHRONIZED:
+        case m_REQUEST_FEDERATION_SAVE:
+        case m_INITIATE_FEDERATE_SAVE:
             readLabel(&Body);
             break ;
 
@@ -242,6 +244,13 @@ NetworkMessage::readHeader(Socket *socket)
             interactionClass = Header.VP.O_I.handle ;
             handleArraySize = Header.VP.O_I.size ;
             date = Header.VP.O_I.date ;
+            break ;
+
+        case m_REQUEST_FEDERATION_SAVE:
+            date = Header.VP.O_I.date ;
+            break ;
+
+        case m_INITIATE_FEDERATE_SAVE:
             break ;
 
             // -- No Variable Part --
@@ -487,6 +496,8 @@ NetworkMessage::writeBody(Socket *socket)
         case m_SYNCHRONIZATION_POINT_ACHIEVED:
         case m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         case m_FEDERATION_SYNCHRONIZED:
+        case m_REQUEST_FEDERATION_SAVE:
+        case m_INITIATE_FEDERATE_SAVE:
             Body.writeString(label);
             break ;
 
@@ -628,10 +639,24 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.date = date ;
             break ;
 
+        case m_REQUEST_FEDERATION_SAVE:
+            Header.bodySize = 1 ;
+            Header.VP.O_I.date = date ;
+            break ;
+
+        case m_INITIATE_FEDERATE_SAVE:
+            Header.bodySize = 1 ;
+            break ;
+
             // -- No Variable Part, No Body --
 
         case m_CLOSE_CONNEXION:
         case m_RESIGN_FEDERATION_EXECUTION:
+        case m_FEDERATE_SAVE_BEGUN:
+        case m_FEDERATE_SAVE_COMPLETE:
+        case m_FEDERATE_SAVE_NOT_COMPLETE:
+        case m_FEDERATION_SAVED:
+        case m_FEDERATION_NOT_SAVED:
             Header.bodySize = 0 ;
             break ;
 
@@ -790,4 +815,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.6 2003/04/23 14:29:18 breholee Exp $
