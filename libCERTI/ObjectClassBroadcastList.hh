@@ -19,20 +19,30 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.7 2005/03/11 14:01:31 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.8 2005/04/05 20:07:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
-#define _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
+#ifndef CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
+#define CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
 #include "certi.hh"
 #include "NetworkMessage.hh"
 #include "SecurityServer.hh"
-#include "ObjectBroadcastLine.hh"
 
 #include <list>
 
 namespace certi {
+
+class ObjectBroadcastLine {
+public:
+    enum State { sent, waiting, notSub };
+
+    ObjectBroadcastLine(FederateHandle fed, State init = notSub);
+
+    FederateHandle Federate ;
+    State state[MAX_ATTRIBUTES_PER_CLASS + 1] ;
+
+};
 
 /*! This class is used to carry necessary information for broadcasting a
   RegisterObject() or an UpdateAttributeValues().
@@ -40,22 +50,16 @@ namespace certi {
 class ObjectClassBroadcastList {
 
 public:
-    ObjectClassBroadcastList(NetworkMessage *msg,
-                             AttributeHandle MaxAttHandle = 0);
+    ObjectClassBroadcastList(NetworkMessage *, AttributeHandle = 0);
     ~ObjectClassBroadcastList();
 
     void clear();
-    void addFederate(FederateHandle theFederate,
-                     AttributeHandle theAttribute = 0);
-
+    void addFederate(FederateHandle, AttributeHandle = 0);
     void sendPendingMessage(SecurityServer *server);
 
     NetworkMessage *message ;
 
 private:
-    AttributeHandle maxHandle ;
-    std::list<ObjectBroadcastLine *> lines ;
-
     NetworkMessage *adaptMessage(ObjectBroadcastLine *line);
 
     //! Return the line of the list describing federate 'theFederate', or NULL.
@@ -69,10 +73,13 @@ private:
     */
     void sendPendingDOMessage(SecurityServer *server);
     void sendPendingRAVMessage(SecurityServer *server);
+
+    AttributeHandle maxHandle ;
+    std::list<ObjectBroadcastLine *> lines ;
 };
 
-}
+} // namespace certi
 
-#endif // _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
+#endif // CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.7 2005/03/11 14:01:31 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.8 2005/04/05 20:07:08 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.10 2005/03/11 14:01:31 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.11 2005/04/05 20:07:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,19 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("BROADCAST", __FILE__);
+
+// ----------------------------------------------------------------------------
+/** ObjectBroadcastLine  
+ */
+ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
+                                         ObjectBroadcastLine::State init_state)
+{
+    Federate = theFederate ;
+    for (AttributeHandle i = 0 ; i <= MAX_ATTRIBUTES_PER_CLASS ; i++)
+        state[i] = init_state ;
+}
+
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 /*! Return a copy of the REFLECT_ATTRIBUTE_VALUES message 'Message' containing
@@ -124,17 +137,6 @@ ObjectClassBroadcastList::addFederate(FederateHandle theFederate,
         D.Out(pdTrace,
               "Message already sent to federate %d about attribute %d.",
               theFederate, theAttribute);
-}
-
-// ----------------------------------------------------------------------------
-/** ObjectBroadcastLine  
- */
-ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
-                                         ObjectBroadcastLine::State init_state)
-{
-    Federate = theFederate ;
-    for (AttributeHandle i = 0 ; i <= MAX_ATTRIBUTES_PER_CLASS ; i++)
-        state[i] = init_state ;
 }
 
 // ----------------------------------------------------------------------------
@@ -375,4 +377,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.10 2005/03/11 14:01:31 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.11 2005/04/05 20:07:08 breholee Exp $
