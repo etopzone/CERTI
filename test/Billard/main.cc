@@ -18,16 +18,18 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: main.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "Billard.hh"
+#include "BillardDDM.hh"
 #include "Display.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
 #include "Fed.hh"
+#include "Factory.hh"
 #include "PrettyDebug.hh"
 
 #include "cmdline.h"
@@ -87,7 +89,8 @@ main(int argc, char **argv)
     string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
 
     // Create billard
-    Billard billard(federate);
+    Billard billard = Billard(federate);
+    //BillardDDM billard = BillardDDM(federate);
 
     int timer = args.timer_given ? args.timer_arg : 0 ;
     int delay = args.delay_given ? args.delay_arg : 0 ;
@@ -99,9 +102,10 @@ main(int argc, char **argv)
 
     // Display...
     Display *display = Display::instance();
+    int y_default = 10 + (handle - 1) * (display->getHeight() + 20);
     display->setWindow(
         args.xoffset_given ? args.xoffset_arg : 10,
-        args.yoffset_given ? args.yoffset_arg : 10 + (handle - 1) * (display->getHeight() + 20));
+        args.yoffset_given ? args.yoffset_arg : y_default);
 
     // Continue initialisation...
     billard.pause();
@@ -117,7 +121,6 @@ main(int argc, char **argv)
 
     // Countdown
     struct sigaction a ;
-
     a.sa_handler = sortir ;
     sigemptyset(&a.sa_mask);
     sigaction(SIGALRM, &a, NULL);
@@ -137,7 +140,7 @@ main(int argc, char **argv)
     }
 
     // declare objects
-    billard.create();
+    billard.declare();
 
     // set delay
     if (delay != 0) {
@@ -187,4 +190,4 @@ ExceptionHandler()
     exit(-1);
 }
 
-// EOF $Id: main.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// EOF $Id: main.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $

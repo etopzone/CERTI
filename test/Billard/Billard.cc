@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Billard.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -175,13 +175,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
                     rtiamb.queryFederateTime(localTime);
 
                     RTIfedTime requestTime(((RTIfedTime&)localTime).getTime());
-                    // D.Out(pdInit, "localtime %.2f, requestTime %.2f",
-                    // ((RTIfedTime&)localTime).getTime(),
-                    // ((RTIfedTime&)requestTime).getTime());
                     requestTime += TIME_STEP ;
-                    // D.Out(pdInit, "localtime %.2f, requestTime %.2f",
-                    // ((RTIfedTime&)localTime).getTime(),
-                    // ((RTIfedTime&)requestTime).getTime());
                     rtiamb.timeAdvanceRequest(requestTime);
 
                     while (!fedamb.timeAdvanceGranted()) {
@@ -328,9 +322,9 @@ Billard::init(int x, int y)
 // ----------------------------------------------------------------------------
 // create objects
 void
-Billard::create()
+Billard::declare()
 {
-    objects.create(federateName);
+    objects.declare(federateName);
 }
 
 // ----------------------------------------------------------------------------
@@ -421,4 +415,4 @@ Billard::resign()
     D.Out(pdTerm, "Federation terminated.");
 }
 
-// $Id: Billard.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Billard.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $

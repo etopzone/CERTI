@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Objects.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Objects.hh"
@@ -58,7 +58,7 @@ Objects::init(int x, int y)
 // ----------------------------------------------------------------------------
 // create
 void
-Objects::create(string federate)
+Objects::declare(string federate)
 {
     local.ID = fedamb.registerBallInstance(federate.c_str());
 }
@@ -71,7 +71,7 @@ Objects::step(RTIfedTime &time)
     vector<Ball>::iterator it ;
 
     for (it = remote.begin(); it != remote.end(); ++it) {
-        if (it->ID != 0 && local.collision(it)) {
+        if (it->ID != 0 && local.collision(&(*it))) {
 
             Ball &ball = *it ;
 
@@ -104,7 +104,7 @@ Objects::step(RTIfedTime &time)
 void
 Objects::update(RTIfedTime &time)
 {
-    fedamb.sendUpdate(local.x, local.y, local.color, time, local.ID);
+    fedamb.sendUpdate(local.x, local.y, (int) local.color, time, local.ID);
     D.Out(pdTrace, "fin tour de boucle.");
 }
 
@@ -204,4 +204,4 @@ Objects::discover(ObjectHandle h)
     remote.push_back(Ball(h));
 }
 
-// $Id: Objects.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Objects.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $

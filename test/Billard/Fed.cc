@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Fed.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Fed.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Fed.hh"
@@ -59,6 +59,9 @@ using std::endl ;
 #define PAR_DX "DX"
 #define PAR_DY "DY"
 #define PAR_BOUL "BoulNum"
+
+// Routing spaces
+#define RS_GEO "geo"
 
 // Types
 #define TYP_FLOAT "float"
@@ -145,7 +148,9 @@ Fed::publishAndSubscribe()
 }
 
 // ----------------------------------------------------------------------------
-// getHandles
+//! getHandles
+/*! get handles of objet/interaction classes and routing spaces
+ */
 void
 Fed::getHandles()
 {
@@ -158,7 +163,6 @@ Fed::getHandles()
     AttrXID = RTIA->getAttributeHandle(ATT_POSITION_X, BilleClassID);
     AttrYID = RTIA->getAttributeHandle(ATT_POSITION_Y, BilleClassID);
     AttrColorID = RTIA->getAttributeHandle(ATT_COLOR, BouleClassID);
-
     D.Out(pdInit, "AttrXID = %d, AttrYID = %d, AttrColorID = %d.",
           AttrXID, AttrYID, AttrColorID);
 
@@ -167,9 +171,12 @@ Fed::getHandles()
     ParamBoulID = RTIA->getParameterHandle(PAR_BOUL, BingClassID);
     ParamDXID = RTIA->getParameterHandle(PAR_DX, BingClassID);
     ParamDYID = RTIA->getParameterHandle(PAR_DY, BingClassID);
-
     D.Out(pdInit, "BingClassID = %d, DX_ID = %d, DY_ID = %d",
           BingClassID, ParamDXID, ParamDYID);
+
+    // Routing spaces
+    GeoID = RTIA->getRoutingSpaceHandle(RS_GEO);
+    D[pdInit] << "GeoID = " << GeoID << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -398,7 +405,7 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
             else
                 if (handle == ParamBoulID) {
                     if (parmValue != NULL) {
-                        h1 = atof(parmValue);
+                        h1 = atoi(parmValue);
                         bille = true ;
                     }
                     else
@@ -815,4 +822,4 @@ Fed::registerBallInstance(const char *s)
     return RTIA->registerObjectInstance(BouleClassID, s);
 }
 
-// EOF $Id: Fed.cc,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// EOF $Id: Fed.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $

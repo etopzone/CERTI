@@ -18,50 +18,21 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Factory.cc,v 3.1 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef BILLARD_OBJECTS_HH
-#define BILLARD_OBJECTS_HH
+#include "Factory.hh"
+#include "BillardDDM.hh"
 
-#include "Ball.hh"
-#include "ColoredBall.hh"
-#include "Fed.hh"
+using std::string ;
 
-#include <RTI.hh>
-
-#include <vector>
-#include <string>
-
-class Objects
+Billard
+Factory::create(const char *demo, string federate)
 {
-public:
-    Objects(RTIambassador &, Fed &, int, int);
+    if (!strcmp(demo, "DDM"))
+	return BillardDDM(federate);
 
-    void declare(std::string);
-    void destroy(const FedTime &);
-    void discover(ObjectHandle);
-    void display();
-    void erase();
-    void init(int);
-    void init(int, int);
-    void receive(ObjectClassHandle, int, int);
-    void remove(ObjectHandle);
-    void reflect(ObjectHandle, int, int);
-    void step(RTIfedTime &);
-    void update(RTIfedTime &);
+    return Billard(federate);
+}
 
-private:
-    RTI::RTIambassador &rtiamb ;
-    Fed &fedamb ;
-
-    ColoredBall local ;
-    std::vector<Ball> remote ;
-
-    const int XMAX ;
-    const int YMAX ;
-};
-
-#endif // BILLARD_OBJECTS_HH
-
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Factory.cc,v 3.1 2003/08/20 18:42:24 breholee Exp $

@@ -18,50 +18,17 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: BillardDDM.hh,v 3.1 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef BILLARD_OBJECTS_HH
-#define BILLARD_OBJECTS_HH
+#include "Billard.hh"
 
-#include "Ball.hh"
-#include "ColoredBall.hh"
-#include "Fed.hh"
-
-#include <RTI.hh>
-
-#include <vector>
 #include <string>
 
-class Objects
+class BillardDDM : public Billard
 {
 public:
-    Objects(RTIambassador &, Fed &, int, int);
-
-    void declare(std::string);
-    void destroy(const FedTime &);
-    void discover(ObjectHandle);
-    void display();
-    void erase();
-    void init(int);
-    void init(int, int);
-    void receive(ObjectClassHandle, int, int);
-    void remove(ObjectHandle);
-    void reflect(ObjectHandle, int, int);
-    void step(RTIfedTime &);
-    void update(RTIfedTime &);
-
-private:
-    RTI::RTIambassador &rtiamb ;
-    Fed &fedamb ;
-
-    ColoredBall local ;
-    std::vector<Ball> remote ;
-
-    const int XMAX ;
-    const int YMAX ;
+    BillardDDM(std::string);
 };
 
-#endif // BILLARD_OBJECTS_HH
-
-// $Id: Objects.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: BillardDDM.hh,v 3.1 2003/08/20 18:42:24 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Billard.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -38,7 +38,7 @@ public:
 
     void init(int);
     void init(int, int);
-    void create();
+    void declare();
     void join(std::string, std::string);
     void pause();
     void publishAndSubscribe();
@@ -50,7 +50,7 @@ public:
 
     FederateHandle getHandle() const ;
 
-private:
+protected:
     RTIambassador rtiamb ;
     Fed fedamb ;
     Objects objects ;
@@ -74,4 +74,4 @@ private:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: Billard.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
