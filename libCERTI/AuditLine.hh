@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditLine.hh,v 3.5 2003/06/25 14:53:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
@@ -44,13 +43,13 @@ namespace certi {
 class AuditLine {
 
 public:
-    AuditLine(void);
-    ~AuditLine(void);
+    AuditLine();
+    ~AuditLine();
 
     void write(ofstream &); //!< Write data to file
     void addComment(const char *); //!< Add str at the end of comment.
 
-    FederationHandle federation ;
+    Handle federation ;
     FederateHandle federate ;
     unsigned short type ;
     unsigned short level ;
@@ -65,4 +64,4 @@ private:
 
 #endif // _CERTI_AUDIT_LINE_HH
 
-// $Id: AuditLine.hh,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditLine.hh,v 3.5 2003/06/25 14:53:37 breholee Exp $

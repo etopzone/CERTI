@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditFile.cc,v 3.5 2003/06/25 14:53:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "AuditFile.hh"
@@ -53,7 +52,7 @@ AuditFile::AuditFile(const char *log_file)
 /*! if a line is currently being processed, close it. Before closing the file,
   adds a specific end line.
 */
-AuditFile::~AuditFile(void)
+AuditFile::~AuditFile()
 {
     // Flush the current line.
     if (currentLine != NULL)
@@ -147,7 +146,7 @@ AuditFile::putLine(unsigned short EventType,
 // ----------------------------------------------------------------------------
 //! start a new line and set with parameters.
 void
-AuditFile::startLine(FederationHandle Federation,
+AuditFile::startLine(Handle Federation,
                      FederateHandle Federate,
                      unsigned short EventType)
 {
@@ -178,4 +177,4 @@ AuditFile::setLevel(unsigned short eventLevel)
 
 }
 
-// $Id: AuditFile.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditFile.cc,v 3.5 2003/06/25 14:53:37 breholee Exp $
