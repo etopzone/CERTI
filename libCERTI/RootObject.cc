@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
+// $Id: RootObject.cc,v 3.22.2.1 2004/07/02 12:21:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -45,7 +45,7 @@ static pdCDebug D("ROOTOBJECT", "(RootObject) ");
 // ----------------------------------------------------------------------------
 //! The SocketServer can be NULL on the RTIA.
 RootObject::RootObject(SecurityServer *security_server)
-    : server(security_server), regionHandles(1)
+    : server(security_server)
 {
     ObjectClasses = new ObjectClassSet(server);
     Interactions = new InteractionSet(server);
@@ -315,4 +315,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
+// $Id: RootObject.cc,v 3.22.2.1 2004/07/02 12:21:43 breholee Exp $
