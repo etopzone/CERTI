@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.7 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClass.cc,v 3.8 2003/01/29 18:31:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
@@ -270,7 +270,6 @@ ObjectClass::~ObjectClass(void)
 
     // Deleting Sons
     while (!sonSet.empty()) {
-        delete sonSet.front();
         sonSet.pop_front();
     }
 }
@@ -355,9 +354,9 @@ void ObjectClass::display(void) const
     cout << " Security Level: " << LevelID << endl ;
     cout << " " << sonSet.size() << " Child(s):" << endl ;
 
-    list<ObjectClassChild *>::const_iterator s = sonSet.begin();
+    list<ObjectClassHandle>::const_iterator s = sonSet.begin();
     for (int i = 1  ; s != sonSet.end(); s++,i++) {
-        cout << " Son " << i << " Handle: "<< (*s)->Handle << endl ;
+        cout << " Son " << i << " Handle: "<< (*s) << endl ;
     }
 
     // Display Attributes
@@ -1618,13 +1617,13 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 }
 
 // ---------------------------------------------------------------------------
-//! attributeOwnershipRealeaseResponse.
+//! attributeOwnershipReleaseResponse.
 AttributeHandleSet *
 ObjectClass::
-attributeOwnershipRealeaseResponse(FederateHandle theFederateHandle,
-                                   ObjectHandle theObjectHandle,
-                                   AttributeHandle *theAttributeList,
-                                   UShort theListSize)
+attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
+                                  ObjectHandle theObjectHandle,
+                                  AttributeHandle *theAttributeList,
+                                  UShort theListSize)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -1810,4 +1809,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.7 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClass.cc,v 3.8 2003/01/29 18:31:15 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClass.hh,v 3.5 2003/01/29 18:31:15 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -45,16 +45,6 @@ using std::endl;
 #include "PrettyDebug.hh"
 
 namespace certi {
-
-/*! We need to define a class because List only allows pointers, and
-    not integer for example.
-*/
-class ObjectClassChild {
-public:
-  ObjectClassHandle Handle; //!< Object class handle.
-
-  ObjectClassChild(ObjectClassHandle theHandle) { Handle = theHandle; };
-};
 
 class CDiffusion {
 
@@ -92,9 +82,9 @@ public:
   // the Object Classes tree and set all Father/Son dependences and
   // attributes.
 
-  ObjectClassHandle Handle;        //!< Object class number.
-  ObjectClassHandle Father;        //!< Object father number.
-  list<ObjectClassChild *> sonSet; //<! Son classes set from this object class.
+  ObjectClassHandle Handle;       //!< Object class number.
+  ObjectClassHandle Father;       //!< Object father number.
+  list<ObjectClassHandle> sonSet; //<! Son classes set from this object class.
 
   //! This Object help to find a TCPLink from a Federate Handle.
   SecurityServer *server;
@@ -253,16 +243,16 @@ public:
 	   AttributeDivestitureWasNotRequested,
 	   RTIinternalError);
  
-  AttributeHandleSet *
-  attributeOwnershipRealeaseResponse(FederateHandle theFederateHandle,
-				     ObjectHandle theObjectHandle,
-				     AttributeHandle *theAttributeList,
-				     UShort theListSize)
-    throw( ObjectNotKnown,
-	   AttributeNotDefined,
-	   AttributeNotOwned,
-	   FederateWasNotAskedToReleaseAttribute,
-	   RTIinternalError); 
+    AttributeHandleSet *
+    attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
+                                      ObjectHandle theObjectHandle,
+                                      AttributeHandle *theAttributeList,
+                                      UShort theListSize)
+        throw (ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               FederateWasNotAskedToReleaseAttribute,
+               RTIinternalError);
  
   void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 					   ObjectHandle theObjectHandle,
@@ -335,7 +325,7 @@ private:
   // ------------------------
 
   // Should be allocated and deleted locally.
-  ObjectClassName Name; //!< Object class name.
+  char *Name; //!< Object class name.
 
   //! All non-inherited attributes have this default level.
   SecurityLevelID LevelID;
@@ -378,4 +368,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.4 2003/01/20 21:49:15 breholee Exp $
+// $Id: ObjectClass.hh,v 3.5 2003/01/29 18:31:15 breholee Exp $
