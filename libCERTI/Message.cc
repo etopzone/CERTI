@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message.cc,v 3.26 2005/03/13 22:46:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ namespace certi {
 
 Message::Message()
 {
-    date = 0.0 ;
+    fed_time._fedTime = 0.0;
     exception = e_NO_EXCEPTION ;
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
@@ -206,7 +206,7 @@ Message::setFederationTimeDelta(FederationTimeDelta the_lookahead)
 void
 Message::setFedTime(const FedTime &the_time)
 {
-    date = (FederationTime) (RTIfedTime(the_time)._fedTime);
+    fed_time = dynamic_cast<const RTIfedTime &>(the_time);
 }
 
 // ----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ Message::setLookahead(const FedTime& the_lookahead)
 void
 Message::setFederationTime(FederationTime the_time)
 {
-    date = the_time ;
+    fed_time = RTIfedTime(the_time);
 }
 
 // ----------------------------------------------------------------------------
@@ -325,8 +325,7 @@ Message::setAHS(const AttributeHandle *attr, int size)
 AttributeHandleValuePairSet*
 Message::getAHVPS() const
 {
-    CAttributeHandleValuePairSet * theAttributes ;
-    theAttributes = new CAttributeHandleValuePairSet ;
+    CAttributeHandleValuePairSet theAttributes ;
 
     for (int i = 0 ; i < handleArraySize ; i++) {
         CAttributeHandleValuePair *att = new CAttributeHandleValuePair ;
@@ -341,10 +340,10 @@ Message::getAHVPS() const
         // BUG: Federate is expecting to find value type.
         strcpy(att->_value.type, "");
 
-        theAttributes->add(att);
+        theAttributes.add(att);
     }
 
-    return theAttributes->toAHVPS();
+    return theAttributes.toAHVPS();
 }
 
 // ----------------------------------------------------------------------------
@@ -352,14 +351,13 @@ void
 Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
 {
     ULong length ;
-    CAttributeHandleValuePairSet *theAttributes_aux ;
-    theAttributes_aux = new CAttributeHandleValuePairSet(the_attributes);
-    CAttributeHandleValuePair *tmp ;
+    CAttributeHandleValuePairSet theAttributes_aux(the_attributes);
 
-    handleArraySize = theAttributes_aux->_size ;
+    const int size(theAttributes_aux._size);
+    handleArraySize = size ;
 
-    for (int i = 0 ; i < theAttributes_aux->_size ; i++) {
-        tmp = theAttributes_aux->getIeme(i);
+    for (int i = 0 ; i < size ; i++) {
+        CAttributeHandleValuePair *tmp = theAttributes_aux.getIeme(i);
         handleArray[i] = tmp->_attrib ;
 
         // codage
@@ -369,16 +367,15 @@ Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
         char *value = new char[length] ;
         objectToString(tmp->_value.value, tmp->_value.length, value);
         setValue(i, value);
+        delete value;
     }
-    delete theAttributes_aux ;
 }
 
 // ----------------------------------------------------------------------------
 ParameterHandleValuePairSet*
 Message::getPHVPS() const
 {
-    CParameterHandleValuePairSet* theParameters ;
-    theParameters = new CParameterHandleValuePairSet ;
+    CParameterHandleValuePairSet theParameters ;
 
     for (int i = 0 ; i < handleArraySize ; i++) {
         CParameterHandleValuePair *par = new CParameterHandleValuePair ;
@@ -394,10 +391,10 @@ Message::getPHVPS() const
         // BUG: Federate is expecting to find value type.
         strcpy(par->_value.type, "");
 
-        theParameters->add(par);
+        theParameters.add(par);
     }
 
-    return theParameters->toPHVPS();
+    return theParameters.toPHVPS();
 }
 
 // ----------------------------------------------------------------------------
@@ -405,14 +402,13 @@ void
 Message::setPHVPS(const ParameterHandleValuePairSet &the_parameters)
 {
     ULong length ;
-    CParameterHandleValuePairSet *theParameters_aux ;
-    theParameters_aux = new CParameterHandleValuePairSet(the_parameters);
-    CParameterHandleValuePair *tmp ;
+    CParameterHandleValuePairSet theParameters_aux(the_parameters);
 
-    handleArraySize = theParameters_aux->_size ;
+    const int size(theParameters_aux._size);
+    handleArraySize = size ;
 
-    for (int i = 0 ; i < theParameters_aux->_size ; i++) {
-        tmp = theParameters_aux->getIeme(i);
+    for (int i = 0 ; i < size ; i++) {
+        CParameterHandleValuePair *tmp = theParameters_aux.getIeme(i);
         handleArray[i] = tmp->_param ;
 
         // codage
@@ -422,9 +418,8 @@ Message::setPHVPS(const ParameterHandleValuePairSet &the_parameters)
         char *value = new char[length] ;
         objectToString(tmp->_value.value, tmp->_value.length, value);
         setValue(i, value);
+        delete value;
     }
-
-    delete theParameters_aux ;
 }
 
 // ----------------------------------------------------------------------------
@@ -533,7 +528,7 @@ Message &
 Message::operator=(const Message& msg)
 {
     type = msg.type ;
-    date = msg.date ;
+    fed_time = msg.fed_time ;
     boolean = msg.boolean ;
     lookahead = msg.lookahead ;
     exception = msg.exception ;
@@ -590,7 +585,7 @@ Message::display(char *s)
 {
     printf(" --- MESSAGE --- %s ---\n", s);
     printf(" type=%d:\n", type);
-    printf(" date=%f:\n", date);
+    printf(" date=%f:\n", fed_time._fedTime);
     printf(" exception=%d:\n", exception);
     printf(" objectClass=%ld:\n", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
@@ -606,4 +601,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message.cc,v 3.26 2005/03/13 22:46:14 breholee Exp $
