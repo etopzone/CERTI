@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.hh,v 3.4 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federation.hh,v 3.5 2003/01/17 23:58:26 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -100,7 +100,7 @@ public:
     throw(TooManyIDsRequested);
  
   int getNbFederates(void);
-  int getNbRegulators(void);
+  int getNbRegulators(void) const;
   bool isPaused(void);
   FederationHandle getHandle(void);
   const char* getName(void);
@@ -437,4 +437,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.4 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federation.hh,v 3.5 2003/01/17 23:58:26 breholee Exp $
