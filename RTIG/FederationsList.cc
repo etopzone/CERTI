@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationsList.cc,v 3.10 2003/03/24 14:02:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -324,6 +324,7 @@ FederationsList::registerObject(FederationHandle handle,
            FederateNotPublishing,
            ObjectAlreadyRegistered,
            ObjectClassNotDefined,
+           ObjectClassNotPublished,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
@@ -1003,5 +1004,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.10 2003/03/24 14:02:44 breholee Exp $
 

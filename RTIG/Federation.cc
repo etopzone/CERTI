@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.12 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federation.cc,v 3.13 2003/03/24 14:02:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -712,6 +712,7 @@ Federation::registerObject(FederateHandle federate,
            FederateNotPublishing,
            ObjectAlreadyRegistered,
            ObjectClassNotDefined,
+           ObjectClassNotPublished,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
@@ -1259,5 +1260,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.12 2003/03/21 15:06:46 breholee Exp $
+// $Id: Federation.cc,v 3.13 2003/03/24 14:02:44 breholee Exp $
 

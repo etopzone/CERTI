@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationsList.hh,v 3.10 2003/03/24 14:02:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -227,6 +227,7 @@ public:
                FederateNotPublishing,
                ObjectAlreadyRegistered,
                ObjectClassNotDefined,
+               ObjectClassNotPublished,
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
@@ -445,4 +446,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// $Id: FederationsList.hh,v 3.10 2003/03/24 14:02:44 breholee Exp $
