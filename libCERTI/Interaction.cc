@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.19 2004/03/04 20:19:05 breholee Exp $
+// $Id: Interaction.cc,v 3.20 2005/03/16 23:02:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -249,7 +249,7 @@ Interaction::deleteSubscriber(FederateHandle fed, RegionImp *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->match(fed, region)) {
+        if ((*s)->equals(fed, region)) {
             delete *s ;
             subscribers.erase(s);
             return ;
@@ -331,7 +331,7 @@ Interaction::isSubscribed(FederateHandle fed, RegionImp *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->match(fed, region)) {
+        if ((*s)->equals(fed, region)) {
 	    return true ;
         }
     }
@@ -593,4 +593,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.19 2004/03/04 20:19:05 breholee Exp $
+// $Id: Interaction.cc,v 3.20 2005/03/16 23:02:07 breholee Exp $
