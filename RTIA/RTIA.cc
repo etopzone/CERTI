@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.7 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIA.cc,v 3.8 2003/05/23 14:54:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -117,7 +116,7 @@ const char *Messages_Fed[MSG_FED_MAX] = {
 // ----------------------------------------------------------------------------
 // Displays statistics (requests, rtig messages, ...).
 void
-RTIA::count(void)
+RTIA::count()
 {
 #ifdef RTI_PRINTS_STATISTICS
 
@@ -144,7 +143,7 @@ RTIA::count(void)
 
 // ----------------------------------------------------------------------------
 //! RTIA constructor.
-RTIA::RTIA(void)
+RTIA::RTIA()
 {
     // No SocketServer is passed to the RootObject.
     rootObject = new RootObject(NULL);
@@ -173,7 +172,7 @@ RTIA::RTIA(void)
 
 // ----------------------------------------------------------------------------
 // RTIA Destructor
-RTIA::~RTIA(void)
+RTIA::~RTIA()
 {
     // BUG: TCP link destroyed ?
 
@@ -194,8 +193,11 @@ RTIA::~RTIA(void)
 
 // ----------------------------------------------------------------------------
 //! RTIA mainloop.
+/*! Messages allocated for reading data exchange between RTIA and federate/RTIG
+  are freed by 'processFederateRequest' or 'processNetworkMessage'.
+*/
 void
-RTIA::execute(void)
+RTIA::execute()
 {
     Message *msg_un ;
     NetworkMessage *msg_tcp_udp ;
@@ -217,17 +219,17 @@ RTIA::execute(void)
         }
 
         switch (n) {
-        case 0:
+          case 0:
             break ;
-        case 1:
+          case 1:
             processNetworkMessage(msg_tcp_udp);
             delete msg_un ;
             break ;
-        case 2:
+          case 2:
             processFederateRequest(msg_un);
             delete msg_tcp_udp ;
             break ;
-        default:
+          default:
             assert(false);
         }
     }
@@ -235,4 +237,4 @@ RTIA::execute(void)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.7 2003/04/18 14:03:06 breholee Exp $
+// $Id: RTIA.cc,v 3.8 2003/05/23 14:54:06 breholee Exp $
