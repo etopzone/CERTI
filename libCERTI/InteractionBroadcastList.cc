@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.3 2002/12/11 17:09:20 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,19 +35,16 @@ static pdCDebug D("INTBROADCASTLIST", "(broadcas) - ");
 // -- addFederate --
 // -----------------
 
-void InteractionBroadcastList::addFederate(FederateHandle  theFederate)
+void InteractionBroadcastList::addFederate(FederateHandle theFederate)
 {
-  InteractionBroadcastLine *Line = NULL;
-
   // 1. Is there already a line in the list for this Federate?
-  Line = getLineWithFederate(theFederate);
+  InteractionBroadcastLine * Line = getLineWithFederate(theFederate);
 
   // If NO, add a new one, in the bsWaiting State.
   if(Line == NULL) {
     Line = new InteractionBroadcastLine(theFederate, bsWaiting);
     lst.Inserer(1, Line);
-    D.Out(pdRegister, 
-	   "Adding new line in list for Federate %d.", theFederate);
+    D.Out(pdRegister, "Adding new line in list for Federate %d.", theFederate);
   }
   else
     D.Out(pdTrace,"Message already sent to federate %d.", theFederate);
@@ -61,8 +58,6 @@ void InteractionBroadcastList::addFederate(FederateHandle  theFederate)
 InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
   : lst()
 {
-  InteractionBroadcastLine *FirstLine = NULL;
-
   if(theMsg == NULL)
     throw RTIinternalError("Null Broadcast Message.");
 
@@ -70,8 +65,8 @@ InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
 
   // Add reference of the sender(so it does not receive its own message).
   if(Message->NumeroFedere != 0) {
-    FirstLine = new InteractionBroadcastLine(Message->NumeroFedere,
-					       bsSent);
+    InteractionBroadcastLine *FirstLine;
+    FirstLine = new InteractionBroadcastLine(Message->NumeroFedere, bsSent);
     lst.Inserer(1, FirstLine);
   }
 }
@@ -117,9 +112,8 @@ InteractionBroadcastLine *InteractionBroadcastList::
 getLineWithFederate(FederateHandle theFederate)
 {
   InteractionBroadcastLine *Line = NULL;
-  int                        i;
 
-  for(i = 1; i <= lst.getLength(); i++) {
+  for(int i = 1; i <= lst.getLength(); i++) {
     Line = lst.Ieme(i);
     if(Line->federate == theFederate)
       return Line;
@@ -133,16 +127,13 @@ getLineWithFederate(FederateHandle theFederate)
 // -- SendPendingMessage --
 // ------------------------
 
-void InteractionBroadcastList::
-sendPendingMessage(SecurityServer *Server)
+void InteractionBroadcastList::sendPendingMessage(SecurityServer *Server)
 {
-  int LineIndex;
   InteractionBroadcastLine *Line = NULL;
-  Socket *socket = NULL;
 
   // Pour chaque ligne de la liste
 
-  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
+  for(int LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
     Line = lst.Ieme(LineIndex);
       
     // Si le federe attend un message
@@ -151,6 +142,8 @@ sendPendingMessage(SecurityServer *Server)
       // 1. Envoyer le message au federe
       D.Out(pdProtocol, 
 	     "Broadcasting message to Federate %d.", Line->federate);
+
+      Socket *socket = NULL;
       try {
 #ifdef HLA_USES_UDP
 	socket = Server->getSocketLink(Line->federate, BEST_EFFORT);
@@ -170,12 +163,10 @@ sendPendingMessage(SecurityServer *Server)
       Line->state = bsSent;
     }
     else
-      D.Out(pdProtocol, 
-	     "No message sent to Federate %d.", Line->federate);	  
+      D.Out(pdProtocol, "No message sent to Federate %d.", Line->federate);
   }
-
 }
 
 }
 
-// $Id: InteractionBroadcastList.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.3 2002/12/11 17:09:20 breholee Exp $
