@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.16 2003/03/11 13:10:35 breholee Exp $
+// $Id: RTIambassador.cc,v 3.17 2003/03/12 10:00:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2284,8 +2284,7 @@ RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
     Message req, rep ;
 
@@ -2296,36 +2295,46 @@ RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     return strdup(rep.getName());
 }
 
-
 // ----------------------------------------------------------------------------
 // Get Dimension Handle
 DimensionHandle
-RTIambassador::getDimensionHandle(const char */*theName*/,
-                                  SpaceHandle /*whichSpace*/)
+RTIambassador::getDimensionHandle(const char *dimension,
+                                  SpaceHandle space)
     throw (SpaceNotDefined,
            NameNotFound,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
-}
+    Message req, rep ;
 
+    req.type = GET_DIMENSION_HANDLE ;
+    req.setName(dimension);
+    req.setSpace(space);
+    this->executeService(&req, &rep);
+
+    return rep.getDimension();
+}
 
 // ----------------------------------------------------------------------------
 // Get Dimension Name
 char *
-RTIambassador::getDimensionName(DimensionHandle /*theHandle*/,
-                                SpaceHandle /*whichSpace*/)
+RTIambassador::getDimensionName(DimensionHandle dimension,
+                                SpaceHandle space)
     throw (SpaceNotDefined,
            DimensionNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = GET_DIMENSION_NAME ;
+    req.setDimension(dimension);
+    req.setSpace(space);
+    this->executeService(&req, &rep);
+
+    return strdup(rep.getName());
 }
 
 
@@ -3624,4 +3633,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.16 2003/03/11 13:10:35 breholee Exp $
+// $Id: RTIambassador.cc,v 3.17 2003/03/12 10:00:14 breholee Exp $
