@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Objects.cc,v 3.3 2003/10/13 10:08:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Objects.hh"
@@ -201,7 +201,9 @@ Objects::remove(ObjectHandle h)
 void
 Objects::discover(ObjectHandle h)
 {
+    cout << "Discovered object " << h << endl ;
+
     remote.push_back(Ball(h));
 }
 
-// $Id: Objects.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Objects.cc,v 3.3 2003/10/13 10:08:12 breholee Exp $
