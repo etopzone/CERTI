@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.7 2003/10/20 09:28:52 breholee Exp $
+// $Id: SecurityServer.hh,v 3.8 2003/10/27 10:18:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -84,7 +84,7 @@ public:
     Boolean canFederateAccessData(FederateHandle theFederate,
                                   SecurityLevelID theDataLevelID);
 
-    SecurityLevelID getLevelIDWithName(SecurityLevelName theName);
+    SecurityLevelID getLevelIDWithName(const char *theName);
 
     void registerFederate(const char *the_federate,
                           SecurityLevelID the_level_id);
@@ -115,4 +115,4 @@ private:
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.7 2003/10/20 09:28:52 breholee Exp $
+// $Id: SecurityServer.hh,v 3.8 2003/10/27 10:18:56 breholee Exp $

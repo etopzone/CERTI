@@ -19,15 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecurityServer.cc,v 3.7 2003/10/27 10:18:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "SecurityServer.hh"
+#include "PrettyDebug.hh"
 
-#include <assert.h>
+#include <cassert>
 
 using std::list ;
+using std::endl ;
+
+static pdCDebug D("SECURITY_SERVER", __FILE__);
 
 namespace certi {
 
@@ -132,13 +136,17 @@ SecurityServer::getLevel(const char *theFederate) const
 // ----------------------------------------------------------------------------
 //! Returns the level ID associated with name otherwise creates a new one.
 SecurityLevelID
-SecurityServer::getLevelIDWithName(SecurityLevelName theName)
+SecurityServer::getLevelIDWithName(const char *theName)
 {
-    if (empty())
+    if (empty()) {
+	D[pdDebug] << "Empty list: added default (public) level" << endl ;
         insertPublicLevel();
+    }
 
-    if ((theName == NULL) || (strlen(theName) > MAX_USER_TAG_LENGTH))
+    if ((theName == NULL) || (strlen(theName) > MAX_USER_TAG_LENGTH)) {
+	D[pdDebug] << "Security Level Name null or too long." << endl ;
         throw RTIinternalError("Security Level Name null or too long.");
+    }
 
     list<SecurityLevel *>::const_iterator i = begin();
     for (; i != end(); i++) {
@@ -147,6 +155,8 @@ SecurityServer::getLevelIDWithName(SecurityLevelName theName)
     }
 
     // Level not Found
+    D[pdDebug] << "Level " << theName << " not found. Adding it to the list."
+	       << endl ;
     LastLevelID ++ ;
     SecurityLevel *StoredLevel = new SecurityLevel(theName, LastLevelID);
     push_back(StoredLevel);
@@ -180,4 +190,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecurityServer.cc,v 3.7 2003/10/27 10:18:56 breholee Exp $
