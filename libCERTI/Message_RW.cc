@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.21 2005/02/09 15:52:06 breholee Exp $
+// $Id: Message_RW.cc,v 3.22 2005/03/13 22:44:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -417,7 +417,7 @@ Message::readHeader(SocketUN *socket)
       case GET_ATTRIBUTE_NAME: // B.c. Name and attribute.
         objectClass = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
-        date = header.VP.O_I.date ;
+        setFederationTime(header.VP.O_I.date);
         break ;
 
       case SEND_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[]
@@ -428,7 +428,7 @@ Message::readHeader(SocketUN *socket)
       case GET_PARAMETER_NAME: // Body contains Name and parameter
         interactionClass = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
-        date = header.VP.O_I.date ;
+        setFederationTime(header.VP.O_I.date );
         break ;
 
       case GET_SPACE_HANDLE:
@@ -437,7 +437,7 @@ Message::readHeader(SocketUN *socket)
       case GET_DIMENSION_HANDLE:
         this->space = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
-        date = header.VP.O_I.date ;
+        setFederationTime(header.VP.O_I.date );
         break ;
 
         // --- MessageT_O_Struct, No Body ---
@@ -475,7 +475,7 @@ Message::readHeader(SocketUN *socket)
       case TIME_ADVANCE_REQUEST:
       case NEXT_EVENT_REQUEST:
       case TIME_ADVANCE_GRANT:
-        date = header.VP.time.date ;
+        setFederationTime(header.VP.time.date );
         break ;
 
       case MODIFY_LOOKAHEAD:
@@ -947,7 +947,7 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
       case REQUEST_FEDERATION_SAVE: // Body contains Label
-        header.VP.O_I.date = date ;
+        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
 
@@ -1016,7 +1016,7 @@ Message::writeHeader(SocketUN *socket)
       case GET_ATTRIBUTE_NAME: // B.c. name and attribute.
         header.VP.O_I.handle = objectClass ;
         header.VP.O_I.size = handleArraySize ;
-        header.VP.O_I.date = date ;
+        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
 
@@ -1029,7 +1029,7 @@ Message::writeHeader(SocketUN *socket)
       case GET_PARAMETER_NAME: // Body contains name and parameter
         header.VP.O_I.handle = interactionClass ;
         header.VP.O_I.size = handleArraySize ;
-        header.VP.O_I.date = date ;
+        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
 
@@ -1039,7 +1039,7 @@ Message::writeHeader(SocketUN *socket)
       case GET_DIMENSION_NAME:
         header.VP.O_I.handle = space ;
         header.VP.O_I.size = handleArraySize ;
-        header.VP.O_I.date = date ;
+        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
 
@@ -1082,7 +1082,7 @@ Message::writeHeader(SocketUN *socket)
       case TIME_ADVANCE_REQUEST:
       case NEXT_EVENT_REQUEST:
       case TIME_ADVANCE_GRANT:
-        header.VP.time.date = date ;
+        header.VP.time.date = getFederationTime() ;
         header.bodySize = 0 ;
         break ;
 
@@ -1136,4 +1136,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.21 2005/02/09 15:52:06 breholee Exp $
+// $Id: Message_RW.cc,v 3.22 2005/03/13 22:44:49 breholee Exp $

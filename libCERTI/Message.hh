@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.24 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message.hh,v 3.25 2005/03/13 22:44:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -326,13 +326,13 @@ public:
     ResignAction getResignAction() const { return resignAction ; };
 
     void setFedTime(const FedTime&);
-    FedTime& getFedTime() const { return *(new RTIfedTime(date)); };
+    const FedTime& getFedTime() const { return fed_time; };
 
     void setLookahead(const FedTime&);
 
     void setFederationTime(FederationTime);
-    FederationTime getFederationTime() const { return date ; };
-
+    FederationTime getFederationTime() const { return fed_time._fedTime ; };
+    
     void setBoolean(Boolean);
     Boolean getBoolean() const { return boolean ; };
 
@@ -388,7 +388,7 @@ protected:
     TypeException exception ;
     char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
 
-    FederationTime date ;
+    RTIfedTime fed_time;
     Boolean boolean ;
     FederationTimeDelta lookahead ;
     FederateHandle federate ;
@@ -480,4 +480,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.24 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message.hh,v 3.25 2005/03/13 22:44:49 breholee Exp $
