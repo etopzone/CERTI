@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 1.1 2004/01/09 15:54:55 breholee Exp $
+// $Id: Named.cc,v 1.2 2004/05/17 23:01:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -68,11 +68,11 @@ Named::getCName() const
     @return true if strings match
  */
 bool
-Named::isNamed(std::string s) const
+Named::isNamed(const std::string &s) const
 {
     return name == s ;
 }
 
 } // certi
 
-// $Id: Named.cc,v 1.1 2004/01/09 15:54:55 breholee Exp $
+// $Id: Named.cc,v 1.2 2004/05/17 23:01:29 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 1.1 2004/01/09 15:54:55 breholee Exp $
+// $Id: Named.hh,v 1.2 2004/05/17 23:01:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -38,7 +38,7 @@ public:
     void setName(std::string);
     std::string getName() const ;
     const char *getCName() const ;
-    bool isNamed(std::string) const ;
+    bool isNamed(const std::string &) const ;
 
 protected:
     std::string name ;
@@ -48,4 +48,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 1.1 2004/01/09 15:54:55 breholee Exp $
+// $Id: Named.hh,v 1.2 2004/05/17 23:01:31 breholee Exp $
