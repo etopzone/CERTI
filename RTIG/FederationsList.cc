@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.6 2003/01/20 20:30:44 breholee Exp $
+// $Id: FederationsList.cc,v 3.7 2003/01/29 18:12:42 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -31,29 +31,27 @@ static pdCDebug D("LISTEFEDERATIONS", "(ListFede) - ");
 
 // ---------------------------------------------------------------------------
 // Constructor
-
 FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
-  : list<Federation *>()
+    : list<Federation *>()
 {
-  if(server == NULL)
-    throw RTIinternalError("FederationsList: No SocketServer was given.");
+    if (server == NULL)
+        throw RTIinternalError("FederationsList: No SocketServer was given.");
 
-  if(audit == NULL)
-    throw RTIinternalError("FederationsList: No AuditServer was given.");
+    if (audit == NULL)
+        throw RTIinternalError("FederationsList: No AuditServer was given.");
 
-  socketServer = server ;
-  auditFile = audit ;
+    socketServer = server ;
+    auditFile = audit ;
 }
 
 // ---------------------------------------------------------------------------
 // Destructor
-
 FederationsList::~FederationsList()
 {
     if (!empty())
         D.Out(pdError, "ListeFederation not empty at destruction time.");
 
-    for (list<Federation *>::iterator i = begin(); i != end() ; i++) {
+    for (list<Federation *>::iterator i = begin(); i != end(); i++) {
         delete(*i);
     }
     clear();
@@ -61,224 +59,220 @@ FederationsList::~FederationsList()
 
 // ---------------------------------------------------------------------------
 //! Adds a constrained federate to federation.
-void 
-FederationsList::addConstrained(FederationHandle handle, 
+void
+FederationsList::addConstrained(FederationHandle handle,
                                 FederateHandle federate)
-  throw(FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  // It may throw a bunch of exceptions.
-  federation->addConstrained(federate);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->addConstrained(federate);
 }
 
 // ---------------------------------------------------------------------------
-// addFederate
-
-FederateHandle 
+/*! Creates a new Federate if its name is unique, and returns its new
+  Federate Handle. Also sends Null messages from all other federates
+  to initialize its LBTS, and finally a RequestPause message if the
+  Federation is already paused.
+*/
+FederateHandle
 FederationsList::addFederate(FederationHandle handle,
-			     FederateName name,
-			     SocketTCP *tcp_link)
-  throw(FederationExecutionDoesNotExist,
-	FederateAlreadyExecutionMember,
-	MemoryExhausted,
-	RTIinternalError)
+                             const char *name,
+                             SocketTCP *tcp_link)
+    throw (FederationExecutionDoesNotExist,
+           FederateAlreadyExecutionMember,
+           MemoryExhausted,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
-  FederateHandle federate;
- 
-  // It may throw RTIinternalError
-  checkHandle(handle);
+    // It may throw RTIinternalError
+    checkHandle(handle);
 
-  // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation);
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(handle, federation);
 
-  // It may raise a bunch of exceptions
-  federate = federation->add(name, tcp_link);
+    // It may raise a bunch of exceptions
+    FederateHandle federate = federation->add(name, tcp_link);
 
-  return federate;
+    return federate ;
 }
 
 // ---------------------------------------------------------------------------
 // searchFederation
-
 int
 FederationsList::searchFederation(FederationHandle handle,
                                   Federation* &federation)
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
-  federation = NULL;
+    federation = NULL ;
 
-  // It may raise RTIinternalError
-  checkHandle(handle);
+    // It may raise RTIinternalError
+    checkHandle(handle);
 
-  list<Federation *>::const_iterator i = begin();
-  for (int j = 1; i != end() ; i++, j++) {
-    if ( (*i)->getHandle() == handle ) {
-      federation = (*i);
-      return j;
+    list<Federation *>::const_iterator i = begin();
+    for (int j = 1 ; i != end(); i++, j++) {
+        if ((*i)->getHandle() == handle) {
+            federation = (*i);
+            return j ;
+        }
     }
-  }
 
-  D.Out(pdExcept, "Unknown Federation Handle %d.", handle);
-  throw FederationExecutionDoesNotExist("Bad Federation Handle.");
+    D.Out(pdExcept, "Unknown Federation Handle %d.", handle);
+    throw FederationExecutionDoesNotExist("Bad Federation Handle.");
 }
 
 // ---------------------------------------------------------------------------
 // createFederation
-
 #ifdef FEDERATION_USES_MULTICAST
 void FederationsList::createFederation(const char * name,
                                        FederationHandle handle,
                                        SocketMC *mc_link)
 #else
-void FederationsList::createFederation(const char* name,
-                                       FederationHandle handle)
+    void FederationsList::createFederation(const char* name,
+                                           FederationHandle handle)
 #endif
-  throw(FederationExecutionAlreadyExists,
-	CouldNotOpenRID,
-	ErrorReadingRID,
-	MemoryExhausted, 
-	SecurityError,
-	RTIinternalError)
+    throw (FederationExecutionAlreadyExists,
+           CouldNotOpenRID,
+           ErrorReadingRID,
+           MemoryExhausted,
+           SecurityError,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
-  FederationHandle unused;
+    Federation *federation = NULL ;
+    FederationHandle unused ;
 
-  // It may throw RTIinternalError
-  checkHandle(handle);
-  auditFile->addToLinef(", Handle : %hu", handle);
-  if(name == NULL) throw RTIinternalError("Invalid Federation Name.");
+    // It may throw RTIinternalError
+    checkHandle(handle);
+    auditFile->addToLinef(", Handle : %hu", handle);
+    if (name == NULL) throw RTIinternalError("Invalid Federation Name.");
 
-  // It should throw FederationExecutionDoesNotExist.
-  try {
-    exists(name, unused);
-    D.Out(pdExcept, "Federation %s already present.", name);
-    throw FederationExecutionAlreadyExists();
-  }
-  catch(FederationExecutionDoesNotExist &e) {
-    D.Out(pdDebug, 
-	  "CreerFederation catches FederationExecutionDoesNotExist.");
-  }
+    // It should throw FederationExecutionDoesNotExist.
+    try {
+        exists(name, unused);
+        D.Out(pdExcept, "Federation %s already present.", name);
+        throw FederationExecutionAlreadyExists();
+    }
+    catch(FederationExecutionDoesNotExist &e) {
+        D.Out(pdDebug,
+              "CreerFederation catches FederationExecutionDoesNotExist.");
+    }
 
-  if(size() >= MAX_FEDERATION)
-    throw RTIinternalError("Too many federation executions.");
+    if (size() >= MAX_FEDERATION)
+        throw RTIinternalError("Too many federation executions.");
 
 
 #ifdef FEDERATION_USES_MULTICAST
-  federation = new Federation(name, handle, socketServer, auditFile, mc_link);
+    federation = new Federation(name, handle, socketServer, auditFile, mc_link);
 #else
-  federation = new Federation(name, handle, socketServer, auditFile);
-#endif 
+    federation = new Federation(name, handle, socketServer, auditFile);
+#endif
 
-  if(federation == NULL)
-    throw MemoryExhausted("No memory left for new Federation.");
+    if (federation == NULL)
+        throw MemoryExhausted("No memory left for new Federation.");
 
-  push_front(federation);
-  D.Out(pdInit, "New Federation created with Handle %d.", handle);
+    push_front(federation);
+    D.Out(pdInit, "New Federation created with Handle %d.", handle);
 }
 
 // ---------------------------------------------------------------------------
 // createRegulator
-
-void 
+void
 FederationsList::createRegulator(FederationHandle handle,
-				 FederateHandle federate,
-				 FederationTime time)
-  throw(FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                 FederateHandle federate,
+                                 FederationTime time)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
 
-  // It may throw a bunch of exceptions.
-  federation->addRegulator(federate, time);
+    // It may throw a bunch of exceptions.
+    federation->addRegulator(federate, time);
 }
 
 // ---------------------------------------------------------------------------
 // requestId
-
-void 
-FederationsList::requestId(FederationHandle handle, 
-			   ObjectHandlecount id_count,
-			   ObjectHandle &first_id,
-			   ObjectHandle &last_id)
-  throw(TooManyIDsRequested)
+void
+FederationsList::requestId(FederationHandle handle,
+                           ObjectHandlecount id_count,
+                           ObjectHandle &first_id,
+                           ObjectHandle &last_id)
+    throw (TooManyIDsRequested)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->requestId(id_count, first_id, last_id);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->requestId(id_count, first_id, last_id);
 }
 
 // ---------------------------------------------------------------------------
 // destroyObject
-
-void 
+void
 FederationsList::destroyObject(FederationHandle handle,
-			       FederateHandle federate,
-			       ObjectHandle id,
-			       const char*  tag)
-  throw(FederateNotExecutionMember,
-	FederationExecutionDoesNotExist,
-	DeletePrivilegeNotHeld,
-	ObjectNotKnown,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                               FederateHandle federate,
+                               ObjectHandle id,
+                               const char* tag)
+    throw (FederateNotExecutionMember,
+           FederationExecutionDoesNotExist,
+           DeletePrivilegeNotHeld,
+           ObjectNotKnown,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  federation->deleteObject(federate, id, tag);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->deleteObject(federate, id, tag);
 }
 
 // ---------------------------------------------------------------------------
 /*! Return the Handle of the Federation named "name" if it is found in the
-    FederationList, else throw FederationExecutionDoesNotExist.
+  FederationList, else throw FederationExecutionDoesNotExist.
 */
-void 
+void
 FederationsList::exists(const char * name,
-                        FederationHandle             &handle)
-    throw(FederationExecutionDoesNotExist, RTIinternalError)
+                        FederationHandle &handle)
+    throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
-    if(name == NULL) throw RTIinternalError("Null Federation Name.");
+    if (name == NULL) throw RTIinternalError("Null Federation Name.");
 
-    for ( list<Federation *>::iterator i = begin() ; i != end() ; i++) {
-        if( !strcmp((*i)->getName(), name) ) {
+    for (list<Federation *>::iterator i = begin(); i != end(); i++) {
+        if (!strcmp((*i)->getName(), name)) {
             handle = (*i)->getHandle();
-            return;
+            return ;
         }
     }
 
@@ -288,725 +282,704 @@ FederationsList::exists(const char * name,
 
 // ---------------------------------------------------------------------------
 // info
-
 #ifdef FEDERATION_USES_MULTICAST
 void FederationsList::info(FederationHandle handle,
-			   int &nb_federates,
-			   int &nb_regulators,
-			   bool &is_paused,
-			   SocketMC* &comm_mc)
+                           int &nb_federates,
+                           int &nb_regulators,
+                           bool &is_paused,
+                           SocketMC* &comm_mc)
 #else
-void FederationsList::info(FederationHandle handle,
-			   int &nb_federates,
-			   int &nb_regulators,
-			   bool &is_paused)
+    void FederationsList::info(FederationHandle handle,
+                               int &nb_federates,
+                               int &nb_regulators,
+                               bool &is_paused)
 #endif
-  throw(FederationExecutionDoesNotExist, RTIinternalError)
+    throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
-  Federation *federation;
+    Federation *federation ;
 
-  // It may raise RTIinternalError
-  checkHandle(handle);
+    // It may raise RTIinternalError
+    checkHandle(handle);
 
-  // It may throw FederationExecutionNotFound
-  searchFederation(handle, federation);
+    // It may throw FederationExecutionNotFound
+    searchFederation(handle, federation);
 
-  nb_federates = federation->getNbFederates();
-  nb_regulators = federation->getNbRegulators();
-  is_paused = federation->isPaused();
+    nb_federates = federation->getNbFederates();
+    nb_regulators = federation->getNbRegulators();
+    is_paused = federation->isPaused();
 
 #ifdef FEDERATION_USES_MULTICAST
-  comm_mc = federation->MCLink;
+    comm_mc = federation->MCLink ;
 #endif
 }
 
 // ---------------------------------------------------------------------------
 // registerObject
-
-ObjectHandle 
+ObjectHandle
 FederationsList::registerObject(FederationHandle handle,
-				FederateHandle federate,
-				ObjectClassHandle object_class,
-				ObjectName name)
-  throw(FederateNotExecutionMember,
-	FederateNotPublishing,
-	ObjectAlreadyRegistered,
-	ObjectClassNotDefined,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                FederateHandle federate,
+                                ObjectClassHandle object_class,
+                                ObjectName name)
+    throw (FederateNotExecutionMember,
+           FederateNotPublishing,
+           ObjectAlreadyRegistered,
+           ObjectClassNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
-  D.Out(pdTrace,"handle = %d, federate = %d.", handle,federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  D.Out(pdTrace,"theObjectClass = %d, name = %s.",object_class,name);
-  return(federation->registerObject(federate,object_class,name));
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+    D.Out(pdTrace,"handle = %d, federate = %d.", handle,federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    D.Out(pdTrace,"theObjectClass = %d, name = %s.",object_class,name);
+    return(federation->registerObject(federate,object_class,name));
 }
 
 // ---------------------------------------------------------------------------
 // checkHandle
-// handle can be any type of handle, not only a Federation handle.
-
-void 
+/*! handle can be any type of handle, not only a Federation handle.
+  Throw an exception if Handle is not correct(too low or too big)
+*/
+void
 FederationsList::checkHandle(FederationHandle handle)
-  throw(RTIinternalError)
+    throw (RTIinternalError)
 {
-  if(handle <= 0) {
-    D.Out(pdExcept, "Illegal Handle %d.", handle);
-    throw RTIinternalError("Negative or null FederationHandle.");
-  }
+    if (handle <= 0) {
+        D.Out(pdExcept, "Illegal Handle %d.", handle);
+        throw RTIinternalError("Negative or null FederationHandle.");
+    }
 }
 
 // ---------------------------------------------------------------------------
 // updateRegulator
-
-void 
+void
 FederationsList::updateRegulator(FederationHandle handle,
-				 FederateHandle federate,
-				 FederationTime time)
-  throw(FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	RTIinternalError)
+                                 FederateHandle federate,
+                                 FederationTime time)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->updateRegulator(federate, time);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->updateRegulator(federate, time);
 }
 
 // ---------------------------------------------------------------------------
 // updateAttribute
-
-void 
+void
 FederationsList::updateAttribute(FederationHandle handle,
-				 FederateHandle federate,
-				 ObjectHandle id,
-				 AttributeHandle *attributes,
-				 AttributeValue *values,
-				 UShort list_size,
-				 FederationTime time,
-				 const char*  tag)
-  throw(FederateNotExecutionMember,
-	FederationExecutionDoesNotExist,
-	ObjectNotKnown,
-	AttributeNotDefined,
-	AttributeNotOwned,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                 FederateHandle federate,
+                                 ObjectHandle id,
+                                 AttributeHandle *attributes,
+                                 AttributeValue *values,
+                                 UShort list_size,
+                                 FederationTime time,
+                                 const char* tag)
+    throw (FederateNotExecutionMember,
+           FederationExecutionDoesNotExist,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->updateAttributeValues(federate, id, attributes, values,
-				    list_size, time, tag);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->updateAttributeValues(federate, id, attributes, values,
+                                      list_size, time, tag);
 }
 
 // ---------------------------------------------------------------------------
 // updateParameter
-
-void 
+void
 FederationsList::updateParameter(FederationHandle handle,
-				 FederateHandle federate,
-				 InteractionClassHandle interaction,
-				 ParameterHandle *parameters,
-				 ParameterValue *values,
-				 UShort list_size,
-				 FederationTime time,
-				 const char*  tag)
-  throw(FederateNotExecutionMember,
-	FederateNotPublishing,
-	FederationExecutionDoesNotExist,
-	InteractionClassNotDefined,
-	InteractionParameterNotDefined,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                 FederateHandle federate,
+                                 InteractionClassHandle interaction,
+                                 ParameterHandle *parameters,
+                                 ParameterValue *values,
+                                 UShort list_size,
+                                 FederationTime time,
+                                 const char* tag)
+    throw (FederateNotExecutionMember,
+           FederateNotPublishing,
+           FederationExecutionDoesNotExist,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->broadcastInteraction(federate, interaction, parameters, values, 
-				   list_size, time, tag);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->broadcastInteraction(federate, interaction, parameters, values,
+                                     list_size, time, tag);
 }
 
 // ---------------------------------------------------------------------------
 // setPause
-
-void 
+void
 FederationsList::setPause(FederationHandle handle,
                           FederateHandle federate,
                           bool state,
                           const char * label)
-    throw(FederationAlreadyPaused, 
-          FederationNotPaused,
-          FederateNotExecutionMember,
-          SaveInProgress,
-          RestoreInProgress,
-          RTIinternalError)
+    throw (FederationAlreadyPaused,
+           FederationNotPaused,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError
-  checkHandle(handle);
+    // It may throw RTIinternalError
+    checkHandle(handle);
 
-  // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation);
+    // It may throw FederationExecutionDoesNotExist
+    searchFederation(handle, federation);
 
-  // It may throw a bunch of exceptions.
-  if(state) federation->enterPause(federate, label);
-  else federation->resumePause(federate, label);
+    // It may throw a bunch of exceptions.
+    if (state) federation->enterPause(federate, label);
+    else federation->resumePause(federate, label);
 }
 
 // ---------------------------------------------------------------------------
 // publishInteraction
-
-void 
+void
 FederationsList::publishInteraction(FederationHandle handle,
-				    FederateHandle federate, 
-				    InteractionClassHandle interaction,
-				    bool pub)
-  throw(InteractionClassNotDefined,
-	FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	SecurityError,
-	RestoreInProgress,
-	RTIinternalError)
+                                    FederateHandle federate,
+                                    InteractionClassHandle interaction,
+                                    bool pub)
+    throw (InteractionClassNotDefined,
+           FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           SecurityError,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->publishInteraction(federate, interaction, pub);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->publishInteraction(federate, interaction, pub);
 }
 
 // ---------------------------------------------------------------------------
 // publishObject
-
-void 
+void
 FederationsList::publishObject(FederationHandle handle,
-			       FederateHandle federate,
-			       ObjectClassHandle object_class,
-			       AttributeHandle *attributes,
-			       UShort list_size,
-			       bool pub) 
-  throw(ObjectClassNotDefined,
-	AttributeNotDefined,
-	FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	SecurityError,
-	RTIinternalError)
- 
+                               FederateHandle federate,
+                               ObjectClassHandle object_class,
+                               AttributeHandle *attributes,
+                               UShort list_size,
+                               bool pub)
+    throw (ObjectClassNotDefined,
+           AttributeNotDefined,
+           FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           SecurityError,
+           RTIinternalError)
+
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->publishObject(federate, object_class, attributes, list_size, 
-			    pub);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->publishObject(federate, object_class, attributes, list_size,
+                              pub);
 }
 
 // ---------------------------------------------------------------------------
 // subscribeInteraction
-
-void 
+void
 FederationsList::subscribeInteraction(FederationHandle handle,
-				      FederateHandle federate, 
-				      InteractionClassHandle interaction,
-				      bool sub)
-  throw(InteractionClassNotDefined,
-	FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	SecurityError,
-	RestoreInProgress,
-	RTIinternalError)
+                                      FederateHandle federate,
+                                      InteractionClassHandle interaction,
+                                      bool sub)
+    throw (InteractionClassNotDefined,
+           FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           SecurityError,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->subscribeInteraction(federate, interaction, sub);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->subscribeInteraction(federate, interaction, sub);
 }
 
 // ---------------------------------------------------------------------------
 // subscribeObject
-
-void 
+void
 FederationsList::subscribeObject(FederationHandle handle,
-				 FederateHandle federate,
-				 ObjectClassHandle object_class,
-				 AttributeHandle *attributes,
-				 UShort list_size,
-				 bool sub)
-  throw(ObjectClassNotDefined,
-	AttributeNotDefined,
-	FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	SecurityError,
-	RTIinternalError)
+                                 FederateHandle federate,
+                                 ObjectClassHandle object_class,
+                                 AttributeHandle *attributes,
+                                 UShort list_size,
+                                 bool sub)
+    throw (ObjectClassNotDefined,
+           AttributeNotDefined,
+           FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           SecurityError,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  federation->subscribeObject(federate, object_class, attributes, list_size, 
-			      sub);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->subscribeObject(federate, object_class, attributes, list_size,
+                                sub);
 }
 
 // ---------------------------------------------------------------------------
 // removeConstrained
-
-void 
+void
 FederationsList::removeConstrained(FederationHandle handle,
-				   FederateHandle federate)
-  throw(FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                   FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  // It may throw a bunch of exceptions.
-  federation->removeConstrained(federate);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->removeConstrained(federate);
 }
 
 // ---------------------------------------------------------------------------
 // destroyFederation
-
-void 
+void
 FederationsList::destroyFederation(FederationHandle handle)
-  throw(FederatesCurrentlyJoined,
-	FederationExecutionDoesNotExist,
-	RTIinternalError)
+    throw (FederatesCurrentlyJoined,
+           FederationExecutionDoesNotExist,
+           RTIinternalError)
 {
-    Federation *federation;
-    
+    Federation *federation ;
+
     // It may throw RTIinternalError
     checkHandle(handle);
-    
+
     // It may throw FederationExecutionDoesNotExist
     int rank = searchFederation(handle, federation);
-    
+
     // It may throw FederatesCurrentlyJoined
-    if(federation->empty()) {
+    if (federation->empty()) {
         list<Federation *>::iterator i = begin();
         for (int j = 1 ; i != end() && j <= rank ; j++) {
             if (j == rank) {
                 erase(i);
             }
         }
-        delete federation;
+        delete federation ;
     }
 }
 
 // ---------------------------------------------------------------------------
 // remove
-
-void 
+void
 FederationsList::remove(FederationHandle handle, FederateHandle federate)
-  throw(FederationExecutionDoesNotExist,
-	FederateOwnsAttributes,
-	FederateNotExecutionMember,
-	RTIinternalError)
+    throw (FederationExecutionDoesNotExist,
+           FederateOwnsAttributes,
+           FederateNotExecutionMember,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
+    // It may throw RTIinternalError.
+    checkHandle(handle);
 
-  // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation);
+    // It may throw FederationExecutionDoesNotExist
+    searchFederation(handle, federation);
 
-  // It may throw FederateOwnsAttributes or FederateNotExecutionMember
-  federation->remove(federate);
+    // It may throw FederateOwnsAttributes or FederateNotExecutionMember
+    federation->remove(federate);
 }
 
 // ---------------------------------------------------------------------------
 // removeRegulator
-
-void 
+void
 FederationsList::removeRegulator(FederationHandle handle,
-				 FederateHandle federate)
-  throw(FederationExecutionDoesNotExist,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
-
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  federation->removeRegulator(federate);
-}
-
-// ---------------------------------------------------------------------------
-// killFederate
-
-void 
-FederationsList::killFederate(FederationHandle handle, FederateHandle federate)
-  throw()
-{
-  Federation *federation = NULL;
-
-  try {
     // It may throw RTIinternalError.
     checkHandle(handle);
     checkHandle(federate);
- 
+
     // It may throw FederationExecutionDoesNotExist.
     searchFederation(handle, federation);
-    federation->kill(federate);
-  }
-  catch(Exception &e) {
-    return;
-  }
+
+    federation->removeRegulator(federate);
+}
+
+// ---------------------------------------------------------------------------
+/*! This Method tries to remove all references to this Federate in the
+  Federation. To be used when a Federate is supposed to have crashed.
+*/
+void
+FederationsList::killFederate(FederationHandle handle, FederateHandle federate)
+    throw ()
+{
+    Federation *federation = NULL ;
+
+    try {
+        // It may throw RTIinternalError.
+        checkHandle(handle);
+        checkHandle(federate);
+
+        // It may throw FederationExecutionDoesNotExist.
+        searchFederation(handle, federation);
+        federation->kill(federate);
+    }
+    catch(Exception &e) {
+        return ;
+    }
 }
 
 // ---------------------------------------------------------------------------
 // isOwner
-
-bool 
+bool
 FederationsList::isOwner(FederationHandle handle,
-			 FederateHandle federate,
-			 ObjectHandle id,
-			 AttributeHandle attribute)
-  throw(FederateNotExecutionMember,
-	ObjectNotKnown,
-	AttributeNotDefined,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                         FederateHandle federate,
+                         ObjectHandle id,
+                         AttributeHandle attribute)
+    throw (FederateNotExecutionMember,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *f = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, f);
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "Owner of Attribute %u of Object %u .", attribute, id); 
- 
-  return(f->isOwner(federate, id, attribute));
+    Federation *f = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, f);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "Owner of Attribute %u of Object %u .", attribute, id);
+
+    return(f->isOwner(federate, id, attribute));
 }
 
 // ---------------------------------------------------------------------------
 // searchOwner
-
-void 
+void
 FederationsList::searchOwner(FederationHandle handle,
-			     FederateHandle federate,
-			     ObjectHandle id,
-			     AttributeHandle attribute)
-  throw(FederateNotExecutionMember,
-	ObjectNotKnown,
-	AttributeNotDefined,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                             FederateHandle federate,
+                             ObjectHandle id,
+                             AttributeHandle attribute)
+    throw (FederateNotExecutionMember,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "Owner of Attribute %u of Object %u .", attribute, id); 
- 
-  federation->queryAttributeOwnership(federate, id, attribute);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "Owner of Attribute %u of Object %u .", attribute, id);
+
+    federation->queryAttributeOwnership(federate, id, attribute);
 }
 
 // ---------------------------------------------------------------------------
 // negotiateDivestiture
-
-void 
+void
 FederationsList::negotiateDivestiture(FederationHandle handle,
-				      FederateHandle federate,
-				      ObjectHandle id,
-				      AttributeHandle *attributes,
-				      UShort list_size,
-				      const char *tag)
-  throw(FederateNotExecutionMember,
-	ObjectNotKnown,
-	AttributeNotDefined,
-	AttributeNotOwned,
-	AttributeAlreadyBeingDivested, 
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                      FederateHandle federate,
+                                      ObjectHandle id,
+                                      AttributeHandle *attributes,
+                                      UShort list_size,
+                                      const char *tag)
+    throw (FederateNotExecutionMember,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           AttributeAlreadyBeingDivested,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
-  
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "NegotiatedAttributeOwnershipDivestiture of Object %u.", id); 
- 
-  federation->negotiateDivestiture(federate, id, attributes, list_size, tag);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "NegotiatedAttributeOwnershipDivestiture of Object %u.", id);
+
+    federation->negotiateDivestiture(federate, id, attributes, list_size, tag);
 }
 
 // ---------------------------------------------------------------------------
 // acquireIfAvailable
-
-void 
+void
 FederationsList::acquireIfAvailable(FederationHandle handle,
-				    FederateHandle federate,
-				    ObjectHandle id,
-				    AttributeHandle *attributes,
-				    UShort list_size)  
-  throw(ObjectNotKnown,
-	ObjectClassNotPublished,
-	AttributeNotDefined,
-	AttributeNotPublished,
-	FederateOwnsAttributes,
-	AttributeAlreadyBeingAcquired,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                    FederateHandle federate,
+                                    ObjectHandle id,
+                                    AttributeHandle *attributes,
+                                    UShort list_size)
+    throw (ObjectNotKnown,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           FederateOwnsAttributes,
+           AttributeAlreadyBeingAcquired,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
-  
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  federation->acquireIfAvailable(federate, id, attributes, list_size);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    federation->acquireIfAvailable(federate, id, attributes, list_size);
 }
 
 // ---------------------------------------------------------------------------
 // divest
-
-void 
+void
 FederationsList::divest(FederationHandle handle,
-			FederateHandle federate,
-			ObjectHandle id,
-			AttributeHandle *attributes,
-			UShort list_size) 
-  throw(ObjectNotKnown,
-	AttributeNotDefined,
-	AttributeNotOwned,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                        FederateHandle federate,
+                        ObjectHandle id,
+                        AttributeHandle *attributes,
+                        UShort list_size)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  federation->divest(federate, id, attributes, list_size);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    federation->divest(federate, id, attributes, list_size);
 }
 
 // ---------------------------------------------------------------------------
 // acquire
-
-void 
+void
 FederationsList::acquire(FederationHandle handle,
-			 FederateHandle federate,
-			 ObjectHandle id,
-			 AttributeHandle *attributes,
-			 UShort list_size,
-			 const char *tag)
-  throw(ObjectNotKnown,
-	ObjectClassNotPublished,
-	AttributeNotDefined,
-	AttributeNotPublished,
-	FederateOwnsAttributes,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                         FederateHandle federate,
+                         ObjectHandle id,
+                         AttributeHandle *attributes,
+                         UShort list_size,
+                         const char *tag)
+    throw (ObjectNotKnown,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           FederateOwnsAttributes,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
+    Federation *federation = NULL ;
 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "attributeOwnershipAcquisition of Object %u .", id); 
- 
-  federation->acquire(federate, id, attributes, list_size, tag);
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "attributeOwnershipAcquisition of Object %u .", id);
+
+    federation->acquire(federate, id, attributes, list_size, tag);
 }
 
 // ---------------------------------------------------------------------------
 // cancelNegotiatedAttributeOwnershipDivestiture
-
-void 
+void
 FederationsList::cancelDivestiture(FederationHandle handle,
-				   FederateHandle federate,
-				   ObjectHandle id,
-				   AttributeHandle *attributes,
-				   UShort list_size) 
-  throw(ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
-	AttributeDivestitureWasNotRequested, FederateNotExecutionMember,
-	SaveInProgress, RestoreInProgress, RTIinternalError)
+                                   FederateHandle federate,
+                                   ObjectHandle id,
+                                   AttributeHandle *attributes,
+                                   UShort list_size)
+    throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+           AttributeDivestitureWasNotRequested, FederateNotExecutionMember,
+           SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
-  
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, 
-	"cancelNegotiatedAttributeOwnershipDivestiture of Object %u .",	id); 
- 
-  federation->cancelDivestiture(federate, id, attributes, list_size);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug,
+          "cancelNegotiatedAttributeOwnershipDivestiture of Object %u .", id);
+
+    federation->cancelDivestiture(federate, id, attributes, list_size);
 }
 
 // ---------------------------------------------------------------------------
 // respondRelease
-
 AttributeHandleSet*
 FederationsList::respondRelease(FederationHandle handle,
-				FederateHandle federate,
-				ObjectHandle id,
-				AttributeHandle *attributes,
-				UShort list_size) 
-  throw(ObjectNotKnown,
-	AttributeNotDefined,
-	AttributeNotOwned,
-	FederateWasNotAskedToReleaseAttribute,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError)
+                                FederateHandle federate,
+                                ObjectHandle id,
+                                AttributeHandle *attributes,
+                                UShort list_size)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           FederateWasNotAskedToReleaseAttribute,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
-  
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "AttributeOwnershipRealeaseResponse of Object %u .", id); 
- 
-  return federation->respondRelease(federate, id, attributes, list_size);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "AttributeOwnershipRealeaseResponse of Object %u .", id);
+
+    return federation->respondRelease(federate, id, attributes, list_size);
 }
 
 // ---------------------------------------------------------------------------
 // cancelAcquisition
-
-void 
+void
 FederationsList::cancelAcquisition(FederationHandle handle,
-				   FederateHandle federate,
-				   ObjectHandle id,
-				   AttributeHandle *attributes,
-				   UShort list_size)
-  throw(ObjectNotKnown,
-	AttributeNotDefined,
-	AttributeAlreadyOwned,
-	AttributeAcquisitionWasNotRequested,
-	FederateNotExecutionMember,
-	SaveInProgress,
-	RestoreInProgress,
-	RTIinternalError) 
+                                   FederateHandle federate,
+                                   ObjectHandle id,
+                                   AttributeHandle *attributes,
+                                   UShort list_size)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeAlreadyOwned,
+           AttributeAcquisitionWasNotRequested,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
 {
-  Federation *federation = NULL;
- 
-  // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation);
- 
-  // It may throw RTIinternalError.
-  checkHandle(handle);
-  checkHandle(federate);
- 
-  D.Out(pdDebug, "cancelAttributeOwnershipAcquisition of Object %u .", id); 
- 
-  federation->cancelAcquisition(federate, id, attributes, list_size);
+    Federation *federation = NULL ;
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    D.Out(pdDebug, "cancelAttributeOwnershipAcquisition of Object %u .", id);
+
+    federation->cancelAcquisition(federate, id, attributes, list_size);
 }
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.6 2003/01/20 20:30:44 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.7 2003/01/29 18:12:42 breholee Exp $
 
