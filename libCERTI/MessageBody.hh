@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: MessageBody.hh,v 3.6 2003/11/10 14:47:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_BODY_HH
@@ -79,7 +79,7 @@ public:
     // -- Read/Write Methods for Blocks --
     // -----------------------------------
 
-    inline void readBlock(char *Block, unsigned short Size)
+    inline void readBlock(char *Block, unsigned short Size) const
     { sgetn(Block, Size); };
 
     /*! You can use this method to include the header at the beginning of the
@@ -92,7 +92,7 @@ public:
     // -- Read and Write Methods for Integer --
     // ----------------------------------------
 
-    inline unsigned short readShortInt()
+    inline unsigned short readShortInt() const
     {
         unsigned short Result ;
         sgetn((char *) &Result, 2);
@@ -104,7 +104,7 @@ public:
         sputn((char *) &C, 2);
     };
 
-    inline unsigned long readLongInt()
+    inline unsigned long readLongInt() const
     {
         unsigned long Result ;
         sgetn((char *) &Result, 4);
@@ -132,8 +132,8 @@ public:
     //MessageBody(char *InitBuffer, int InitLength);
     ~MessageBody();
 
-    long getLength();
-    char *getBuffer();
+    long getLength() const ;
+    const char *getBuffer() const ;
 
 private:
 
@@ -142,7 +142,7 @@ private:
     // ------------------------
     char Buffer[BODY_BUFFER_MAX_SIZE] ;
     unsigned long Length ;
-    char *GetPtr ;
+    mutable char *GetPtr ;
     // There is no PutPtr, because it computed with Buffer + Length.
 
     // ---------------------
@@ -154,7 +154,7 @@ private:
         Length += Size ;
     };
 
-    inline void sgetn(char *Ptr, unsigned short Size) {
+    inline void sgetn(char *Ptr, unsigned short Size) const {
         std::memcpy(Ptr, GetPtr, Size);
         GetPtr += Size ;
     };
@@ -163,4 +163,4 @@ private:
 
 #endif // _CERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: MessageBody.hh,v 3.6 2003/11/10 14:47:58 breholee Exp $

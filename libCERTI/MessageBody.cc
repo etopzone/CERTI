@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: MessageBody.cc,v 3.5 2003/11/10 14:47:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,7 +53,7 @@ MessageBody::~MessageBody()
 //! getLength.
 /*! Body must have been frozen.
  */
-long MessageBody::getLength()
+long MessageBody::getLength() const
 {
     return Length ;
 }
@@ -62,7 +62,8 @@ long MessageBody::getLength()
 //! getBuffer.
 /*! Body must have been frozen.
  */
-char *MessageBody::getBuffer()
+const char *
+MessageBody::getBuffer() const
 {
     return Buffer ;
 }
@@ -118,4 +119,4 @@ void MessageBody::writeString(const char *String)
 
 }
 
-// $Id: MessageBody.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: MessageBody.cc,v 3.5 2003/11/10 14:47:58 breholee Exp $
