@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.3 2003/10/13 10:09:01 breholee Exp $
+// $Id: main.cc,v 3.4 2003/10/20 09:34:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -47,12 +47,16 @@
 #include <signal.h>
 #include <exception>
 
-using namespace std ;
+using std::string ;
+using std::cout ;
+using std::endl ;
+using std::cerr ;
 
-static pdCDebug D("BILLARD", __FILE__ "> ");
+static pdCDebug D("BILLARD", __FILE__);
 
 extern "C" void sortir(int SignalNumber);
 void ExceptionHandler();
+void TerminateHandler();
 
 #ifdef HAVE_XML
 static const bool WITH_XML = true ;
@@ -65,143 +69,176 @@ static bool exit_billard = false ;
 Billard *createBillard(bool, const char *, string);
 
 // ----------------------------------------------------------------------------
-//! Test program entry point.
+/** Test program entry point.
+ */
 int
 main(int argc, char **argv)
 {
-    cout << PACKAGE << " v" << VERSION << endl ;
+    cout << "CERTI Billard " VERSION << endl << endl ;
 
-    // Handlers
-    signal(SIGINT, sortir);
-    signal(SIGALRM, sortir);
-    set_terminate(ExceptionHandler);
-    set_unexpected(ExceptionHandler);
+    try {
+	// Handlers
+	signal(SIGINT, sortir);
+	signal(SIGALRM, sortir);
+	std::set_terminate(TerminateHandler);
+	std::set_unexpected(ExceptionHandler);
 
-    // Command line
-    gengetopt_args_info args ;
-    if (cmdline_parser(argc, argv, &args) != 0)
-        exit(EXIT_FAILURE);
+	// Command line
+	gengetopt_args_info args ;
+	if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
 
-    bool verbose = args.verbose_flag ;
+	bool verbose = args.verbose_flag ;
 
-    // Federation and .fed names
-    string federation = args.federation_arg ;
-    string federate = args.name_arg ;
-    string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
+	// Federation and .fed names
+	string federation = args.federation_arg ;
+	string federate = args.name_arg ;
+	string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
 
-    // Create billard
-    Billard *billard = createBillard(args.demo_given, args.demo_arg, federate);
+	// Create billard
+	Billard *billard = createBillard(args.demo_given, args.demo_arg, 
+					 federate);
+	billard->setVerbose(verbose);
 
-    int timer = args.timer_given ? args.timer_arg : 0 ;
-    int delay = args.delay_given ? args.delay_arg : 0 ;
-    int autostart = args.auto_given ? args.auto_arg : 0 ;
+	int timer = args.timer_given ? args.timer_arg : 0 ;
+	int delay = args.delay_given ? args.delay_arg : 0 ;
+	int autostart = args.auto_given ? args.auto_arg : 0 ;
 
-    // Joins federation
-    billard->join(federation, fedfile);
-    FederateHandle handle = billard->getHandle();
+	// Joins federation
+	D[pdDebug] << "Create or join federation" << endl ;
+	billard->join(federation, fedfile);
+	FederateHandle handle = billard->getHandle();
 
-    // Display...
-    Display *display = Display::instance();
-    int y_default = 10 + (handle - 1) * (display->getHeight() + 20);
-    display->setWindow(
-        args.xoffset_given ? args.xoffset_arg : 10,
-        args.yoffset_given ? args.yoffset_arg : y_default);
+	// Display...
+	Display *display = Display::instance();
+	int y_default = 10 + (handle - 1) * (display->getHeight() + 20);
+	display->setWindow(
+	    args.xoffset_given ? args.xoffset_arg : 10,
+	    args.yoffset_given ? args.yoffset_arg : y_default);
 
-    // Continue initialisation...
-    billard->pause();
-    billard->publishAndSubscribe();
+	// Continue initialisation...
+	D[pdDebug] << "Synchronization" << endl ;
+	billard->pause();
+	D[pdDebug] << "Publish and subscribe" << endl ;
+	billard->publishAndSubscribe();
+	display->show();
 
-    display->show();
+	if (args.coordinated_flag) {
+	    billard->setTimeRegulation(true, true);
+	    billard->tick();
+	}
+	billard->synchronize(autostart);
 
-    if (args.coordinated_flag) {
-        billard->setTimeRegulation(true, true);
-        billard->tick();
+	// Countdown
+	struct sigaction a ;
+	a.sa_handler = sortir ;
+	sigemptyset(&a.sa_mask);
+	sigaction(SIGALRM, &a, NULL);
+
+	// set timer
+	if (timer != 0) {
+	    printf("Timer ... : %5d\n", timer);
+	    alarm(timer);
+	}
+
+	// Create object
+	if (args.initx_given && args.inity_given) {
+	    billard->init(args.initx_arg, args.inity_arg);
+	}
+	else {
+	    billard->init(handle);
+	}
+
+	// registers objects, regions, etc.
+	billard->declare();
+
+	cout << "Declaration done." << endl ;
+
+	// set delay
+	if (delay != 0) {
+	    while (delay >= 0) {
+		sleep(1);
+		printf("\rDelay : %5d", delay);
+		fflush(stdout);
+		delay-- ;
+	    }
+	    printf("\n");
+	}
+
+	// Simlation loop
+	while (!exit_billard) {
+	    billard->step();
+	}
+
+	// End of simulation
+	D.Out(pdTrace, "End of simulation loop.");
+	billard->resign();
+
+	delete billard ;
+	delete display ;
     }
-    billard->synchronize(autostart);
-
-    // Countdown
-    struct sigaction a ;
-    a.sa_handler = sortir ;
-    sigemptyset(&a.sa_mask);
-    sigaction(SIGALRM, &a, NULL);
-
-    // set timer
-    if (timer != 0) {
-        printf("Timer : %5d\n", timer);
-        alarm(timer);
+    catch (Exception &e) {
+	cerr << "Billard: exception: " << e._name << " [" 
+	     << (e._reason ? e._reason : "undefined") << "]" << endl ;
     }
 
-    // Create object
-    if (args.initx_given && args.inity_given) {
-        billard->init(args.initx_arg, args.inity_arg);
-    }
-    else {
-        billard->init(handle);
-    }
-
-    // declare objects
-    billard->declare();
-
-    // set delay
-    if (delay != 0) {
-        while (delay >= 0) {
-            sleep(1);
-            printf("\rDelay : %5d", delay);
-            fflush(stdout);
-            delay-- ;
-        }
-        printf("\n");
-    }
-
-    // Simlation loop
-    while (!exit_billard) {
-        billard->step();
-    }
-
-    // End of simulation
-    D.Out(pdTrace, "End of simulation loop.");
-    billard->resign();
-
-    delete billard ;
-    delete display ;
+    cout << "Exiting." << endl ;
 }
 
 // ----------------------------------------------------------------------------
-//! sortir.
+/** Signal handler.
+ */
 void
-sortir(int SignalNumber)
+sortir(int number)
 {
-    if (SignalNumber == SIGALRM) {
-        D.Out(pdTerm, "Alarm signal received, exiting...");
-        exit_billard = true ;
-    }
-    else {
-        D.Out(pdTerm, "Emergency stop, destroying Ambassadors.");
-        D.Out(pdTerm, "Federate terminated.");
-        exit(EXIT_FAILURE);
+    switch (number) {
+      case SIGALRM: {
+	  D.Out(pdTerm, "Alarm signal received, exiting...");
+	  exit_billard = true ;
+      } break ;
+      case SIGINT: {
+	  cout << "Exit request received" << endl ;
+	  exit_billard = true ;
+      } break ;
+      default: {
+	  D.Out(pdTerm, "Emergency stop, destroying Ambassadors.");
+	  D.Out(pdTerm, "Federate terminated.");
+	  exit(EXIT_FAILURE);
+      } 
     }
 }
 
 // ----------------------------------------------------------------------------
-//! ExceptionHandler.
+/** ExceptionHandler.
+ */
 void
 ExceptionHandler()
 {
-    D.Out(pdExcept, "****Exception thrown on the 'test_heritage' Federate.");
+    cerr << "Billard: unexpected exception." << endl ;
     exit(EXIT_FAILURE);
 }
 
 // ----------------------------------------------------------------------------
-//! createBillard
+/** TerminateHandler.
+ */
+void
+TerminateHandler()
+{
+    cerr << "Billard: unknown exception." << endl ;
+    exit(EXIT_FAILURE);
+}
+
+// ----------------------------------------------------------------------------
+/** createBillard
+ */
 Billard *
 createBillard(bool demo, const char *s_demo, string name)
 {
     if (demo) {
 	if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
-	cout << "unknown demo keyword: " << s_demo << endl ;
+	cout << "unknown keyword: " << s_demo << endl ;
     }
     
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.3 2003/10/13 10:09:01 breholee Exp $
+// EOF $Id: main.cc,v 3.4 2003/10/20 09:34:55 breholee Exp $
