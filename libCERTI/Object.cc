@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.9 2003/04/23 09:45:10 breholee Exp $
+// $Id: Object.cc,v 3.10 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -148,6 +148,30 @@ Object::getOwner(void) const
     return Owner ;
 }
 
+// ----------------------------------------------------------------------------
+void
+Object::setOwner(FederateHandle the_federate)
+{
+    Owner = the_federate ;
+}
+
+// ----------------------------------------------------------------------------
+//! Verify that the attribute owner is federate.
+bool
+Object::isAttributeOwnedByFederate(FederateHandle the_federate,
+                                   AttributeHandle the_attribute) const
+    throw (AttributeNotDefined, RTIinternalError)
+{
+    deque<ObjectAttribute *>::const_iterator i ;
+    for (i = attributeState.begin() ; i != attributeState.end() ; i++) {
+        if ((*i)->getHandle() == the_attribute) {
+            return (*i)->getOwner() == the_federate ;
+        }
+    }
+
+    throw AttributeNotDefined("Instance doesn't have this attribute handle");
+}
+
 } // namespace certi
 
-// $Id: Object.cc,v 3.9 2003/04/23 09:45:10 breholee Exp $
+// $Id: Object.cc,v 3.10 2003/04/23 13:49:24 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.6 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
@@ -39,6 +39,8 @@ using std::list ;
 
 namespace certi {
 
+class ObjectClassAttribute ;
+
 //! Object attribute information.
 /*! This class maintains information about an attribute:
   - handle,
@@ -52,8 +54,8 @@ public:
     // Public Methods
 
     // Constructors & Destructors
-    ObjectAttribute(void);
-    ObjectAttribute(AttributeHandle new_handle, FederateHandle new_owner);
+    ObjectAttribute(void); //!< Declared by not defined (Don't call it).
+    ObjectAttribute(AttributeHandle, FederateHandle, ObjectClassAttribute *);
     ~ObjectAttribute(void);
 
     void display(void) const ;
@@ -84,10 +86,11 @@ private:
     Boolean divesting ; //!< Divesting state.
     list<FederateHandle> ownerCandidates ; //!< Federates candidate.
     SpaceHandle space ; //!< Associated routing space
+    ObjectClassAttribute *source ; //!< The associated class attribute.
 };
 
 }
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.5 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.6 2003/04/23 13:49:24 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: RootObject.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -75,6 +75,20 @@ public:
     void deleteRegion(long) throw (RegionNotKnown, RegionInUse);
     RegionImp *getRegion(long) throw (RegionNotKnown);
 
+    // Object Management
+    void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
+                                const char *)
+        throw (InvalidObjectHandle,
+               ObjectClassNotDefined,
+               ObjectClassNotPublished,
+               ObjectAlreadyRegistered,
+               RTIinternalError);
+
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
+        throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+
+    void killFederate(FederateHandle) throw (RTIinternalError);
+
 private:
     vector<RoutingSpace *> routingSpaces ;
     list<RegionImp *> regions ;
@@ -86,4 +100,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: RootObject.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $

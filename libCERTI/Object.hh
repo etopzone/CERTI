@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.8 2003/04/23 09:45:10 breholee Exp $
+// $Id: Object.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -71,6 +71,9 @@ public:
     ObjectAttribute *getAttribute(AttributeHandle the_attribute) const
         throw (AttributeNotDefined);
 
+    bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const
+        throw (AttributeNotDefined, RTIinternalError);
+
     // -------------------------------
     // -- Private Attributes Access --
     // -------------------------------
@@ -82,6 +85,7 @@ public:
     void setHandle(ObjectHandle h);
 
     FederateHandle getOwner(void) const ;
+    void setOwner(FederateHandle);
 
     // BUG: Prevoir un jour une methode pour changer SF...
 
@@ -106,4 +110,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.8 2003/04/23 09:45:10 breholee Exp $
+// $Id: Object.hh,v 3.9 2003/04/23 13:49:24 breholee Exp $

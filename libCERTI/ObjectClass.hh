@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClass.hh,v 3.11 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -166,15 +166,6 @@ public:
     // --------------------------
     // -- Ownership Management --
     // --------------------------
-    Boolean
-    isAttributeOwnedByFederate(ObjectHandle theObject,
-                               AttributeHandle theAttribute,
-                               FederateHandle theFederateHandle)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               RTIinternalError);
-
-
     void
     queryAttributeOwnership(ObjectHandle theObject,
                             AttributeHandle theAttribute,
@@ -296,11 +287,10 @@ public:
                ObjectNotKnown,
                RTIinternalError);
 
-    Boolean isInstanceInClass(ObjectHandle theID);
+    bool isInstanceInClass(ObjectHandle theID);
 
-    ObjectClassBroadcastList *registerInstance(FederateHandle,
-                                               ObjectHandle theObjectHandle,
-                                               const char *theObjectName)
+    ObjectClassBroadcastList *
+    registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
         throw (ObjectClassNotPublished,
                ObjectAlreadyRegistered,
                RTIinternalError);
@@ -360,12 +350,12 @@ private:
     // --------------------------------
     // -- Publication / Subscription --
     // --------------------------------
-    Boolean isFederatePublisher(FederateHandle the_federate) const ;
-    Boolean isFederateSubscriber(FederateHandle the_federate) const ;
+    bool isFederatePublisher(FederateHandle the_federate) const ;
+    bool isFederateSubscriber(FederateHandle the_federate) const ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.10 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClass.hh,v 3.11 2003/04/23 13:49:24 breholee Exp $

@@ -125,25 +125,39 @@ ObjectSet::getObjectClass(ObjectHandle the_object) const
 }
 
 // ----------------------------------------------------------------------------
-ObjectHandle
-ObjectSet::registerObjectInstance(ObjectClassHandle the_class,
+Object *
+ObjectSet::registerObjectInstance(FederateHandle the_federate,
+                                  ObjectHandle the_object,
                                   const char *the_name)
-    throw (ObjectClassNotDefined,
-           ObjectClassNotPublished,
-           ObjectAlreadyRegistered,
-           FederateNotExecutionMember,
+    throw (ObjectAlreadyRegistered,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
            RTIinternalError)
 {
+    std::map<ObjectHandle, Object *>::const_iterator i ;
+    i = std::map<ObjectHandle, Object *>::find(the_object);
 
-    return 0 ;
+    if (i != std::map<ObjectHandle, Object *>::end()) {
+        throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
+    }
+
+    Object *object = new Object(the_federate);
+    object->setHandle(the_object);
+    if (the_name) {
+        object->setName(the_name);
+    }
+
+    std::pair<ObjectHandle, Object *> tmp(the_object, object);
+    std::map<ObjectHandle, Object *>::insert(tmp);
+
+    return object ;
 }
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::deleteObjectInstance(ObjectHandle the_object,
+ObjectSet::deleteObjectInstance(FederateHandle the_federate,
+                                ObjectHandle the_object,
                                 const char *the_tag)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
@@ -154,10 +168,28 @@ ObjectSet::deleteObjectInstance(ObjectHandle the_object,
            RTIinternalError)
 {
     Object *object = getObject(the_object);
+
+    delete object ; // Remove the Object instance.
+
+    std::map<ObjectHandle, Object *>::erase(the_object);
 }
 
 // ----------------------------------------------------------------------------
-Boolean
+void
+ObjectSet::killFederate(FederateHandle the_federate)
+    throw (RTIinternalError)
+{
+    std::map<ObjectHandle, Object *>::iterator i ;
+    for (i = begin() ; i != end() ; i++) {
+        if (((*i).second)->getOwner() == the_federate) {
+            std::map<ObjectHandle, Object *>::erase(i);
+            i = begin();
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+bool
 ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
                                       ObjectHandle the_object,
                                       AttributeHandle the_attribute) const
@@ -165,9 +197,16 @@ ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
            AttributeNotDefined,
            RTIinternalError)
 {
+    D.Out(pdDebug, "isAttributeOwnedByFederate called for attribute %u, "
+          "objet %u", the_attribute, the_object);
+
     Object *object = getObject(the_object);
 
-    return RTI_FALSE ;
+    if (server == 0) {
+        throw RTIinternalError("isAttributeOwnedByFederate no called bu RTIG");
+    }
+
+    return object->isAttributeOwnedByFederate(the_federate, the_attribute);
 }
 
 // ----------------------------------------------------------------------------
@@ -310,4 +349,4 @@ ObjectSet::getObject(ObjectHandle the_object) const
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.1 2003/04/22 15:55:57 breholee Exp $
+// $Id: ObjectSet.cc,v 3.2 2003/04/23 13:49:24 breholee Exp $

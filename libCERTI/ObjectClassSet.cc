@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.11 2003/03/04 09:47:04 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.12 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -349,30 +349,24 @@ ObjectClassSet::recursiveDiscovering(ObjectClassHandle theClassHandle,
 // ----------------------------------------------------------------------------
 //! registerInstance.
 void
-ObjectClassSet::registerInstance(FederateHandle theFederateHandle,
-                                 ObjectClassHandle theClassHandle,
-                                 ObjectHandle theObjectHandle,
-                                 const char *the_object_name)
+ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
+                                       Object *the_object,
+                                       ObjectClassHandle the_class)
     throw (InvalidObjectHandle,
            ObjectClassNotDefined,
            ObjectClassNotPublished,
            ObjectAlreadyRegistered,
            RTIinternalError)
 {
-    ObjectClassHandle currentClass = theClassHandle ;
-
-    D.Out(pdRegister,
-          "Federate %d attempts to register instance %d in class %d.",
-          theFederateHandle, theObjectHandle, theClassHandle);
+    ObjectClassHandle currentClass = the_class ;
 
     // It may throw ObjectClassNotDefined
-    ObjectClass *theClass = getWithHandle(theClassHandle);
+    ObjectClass *theClass = getWithHandle(the_class);
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
-    ocbList = theClass->registerInstance(theFederateHandle,
-                                         theObjectHandle,
-                                         the_object_name);
+    ocbList = theClass->registerObjectInstance(the_federate, the_object,
+                                               the_class);
 
     // Broadcast DiscoverObject message recursively
     if (ocbList != 0) {
@@ -383,7 +377,7 @@ ObjectClassSet::registerInstance(FederateHandle theFederateHandle,
             D.Out(pdRegister,
                   "Broadcasting Discover msg to parent class "
                   "%d for instance %d.",
-                  currentClass, theObjectHandle);
+                  currentClass, the_object);
             // It may throw ObjectClassNotDefined
             theClass = getWithHandle(currentClass);
 
@@ -395,7 +389,8 @@ ObjectClassSet::registerInstance(FederateHandle theFederateHandle,
         delete ocbList ;
     }
 
-    D.Out(pdRegister, "Instance %d has been registered.", theObjectHandle);
+    D[pdRegister] << "Instance " << the_object << " has been registered."
+                  << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -490,25 +485,6 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
     }
 
     delete ocbList ;
-}
-
-// ----------------------------------------------------------------------------
-//! isAttributeOwnedByFederate.
-Boolean
-ObjectClassSet::isAttributeOwnedByFederate(ObjectHandle theObject,
-                                           AttributeHandle theAttribute,
-                                           FederateHandle theFederateHandle)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           RTIinternalError)
-{
-    // It may throw ObjectNotKnown
-    ObjectClass * objectClass = getInstanceClass(theObject);
-
-    // It may throw a bunch of exceptions.
-    return objectClass->isAttributeOwnedByFederate(theObject,
-                                                   theAttribute,
-                                                   theFederateHandle);
 }
 
 // ----------------------------------------------------------------------------
@@ -748,4 +724,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.11 2003/03/04 09:47:04 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.12 2003/04/23 13:49:24 breholee Exp $

@@ -88,21 +88,14 @@ public:
                RTIinternalError,
                InvalidObjectHandle);
 
-    ObjectHandle
-    registerObjectInstance(ObjectClassHandle the_class,
-                           const char *the_name)
-        throw (ObjectClassNotDefined,
-               ObjectClassNotPublished,
-               ObjectAlreadyRegistered,
-               FederateNotExecutionMember,
+    Object *registerObjectInstance(FederateHandle, ObjectHandle, const char *)
+        throw (ObjectAlreadyRegistered,
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
 
-    void
-    deleteObjectInstance(ObjectHandle the_object,
-                         const char *the_tag)
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
         throw (ObjectNotKnown,
                DeletePrivilegeNotHeld,
                FederateNotExecutionMember,
@@ -111,9 +104,11 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    void killFederate(FederateHandle) throw (RTIinternalError);
+
     // Ownership Management.
 
-    Boolean
+    bool
     isAttributeOwnedByFederate(FederateHandle the_federate,
                                ObjectHandle the_object,
                                AttributeHandle the_attribute) const

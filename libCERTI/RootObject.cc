@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: RootObject.cc,v 3.9 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -212,6 +212,51 @@ RootObject::getRegion(long handle)
     throw RegionNotKnown();
 }
 
+// ----------------------------------------------------------------------------
+void
+RootObject::registerObjectInstance(FederateHandle the_federate,
+                                   ObjectClassHandle the_class,
+                                   ObjectHandle the_object,
+                                   const char *the_object_name)
+    throw (InvalidObjectHandle,
+           ObjectClassNotDefined,
+           ObjectClassNotPublished,
+           ObjectAlreadyRegistered,
+           RTIinternalError)
+{
+    D.Out(pdRegister,
+          "Federate %d attempts to register instance %d in class %d.",
+          the_federate, the_object, the_class);
+
+    Object *object ;
+    object = objects->registerObjectInstance(the_federate, the_object,
+                                             the_object_name);
+
+    ObjectClasses->registerObjectInstance(the_federate, object, the_class);
+}
+
+// ----------------------------------------------------------------------------
+void
+RootObject::deleteObjectInstance(FederateHandle the_federate,
+                                 ObjectHandle the_object,
+                                 const char *the_tag)
+    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
+{
+    ObjectClasses->deleteObject(the_federate, the_object, the_tag);
+    objects->deleteObjectInstance(the_federate, the_object, the_tag);
+}
+
+// ----------------------------------------------------------------------------
+void
+RootObject::killFederate(FederateHandle the_federate)
+    throw (RTIinternalError)
+{
+    ObjectClasses->killFederate(the_federate);
+    Interactions->killFederate(the_federate);
+    objects->killFederate(the_federate);
+}
+
+
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: RootObject.cc,v 3.9 2003/04/23 13:49:24 breholee Exp $

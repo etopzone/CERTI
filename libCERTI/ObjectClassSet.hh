@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.11 2003/04/22 15:55:57 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.12 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -28,17 +28,17 @@
 
 #include <config.h>
 
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <list>
-using std::list ;
-
 #include "ObjectClass.hh"
 #include "SecurityServer.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
+
+#include <iostream>
+#include <list>
+
+using std::list ;
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -131,10 +131,7 @@ public:
                ObjectNotKnown,
                RTIinternalError);
 
-    void registerInstance(FederateHandle theFederateHandle,
-                          ObjectClassHandle theClassHandle,
-                          ObjectHandle theObjectHandle,
-                          const char *theObjectName)
+    void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
         throw (InvalidObjectHandle,
                ObjectClassNotDefined,
                ObjectClassNotPublished,
@@ -158,14 +155,6 @@ public:
     // --------------------------
     // -- Ownership Management --
     // --------------------------
-
-    Boolean isAttributeOwnedByFederate(ObjectHandle theObject,
-                                       AttributeHandle theAttribute,
-                                       FederateHandle theFederateHandle)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               RTIinternalError);
-
     void queryAttributeOwnership(ObjectHandle theObject,
                                  AttributeHandle theAttribute,
                                  FederateHandle theFederateHandle)
@@ -280,4 +269,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.11 2003/04/22 15:55:57 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.12 2003/04/23 13:49:24 breholee Exp $

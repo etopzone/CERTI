@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.6 2003/04/17 17:00:21 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.7 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -68,13 +68,10 @@ ObjectManagement::requestID(ObjectHandlecount idCount,
     lastID = rep.lastId ;
 }
 
-
-// ------------------------
-// -- 4.2 registerObject --
-// ------------------------
-
+// ----------------------------------------------------------------------------
+//! 4.2 registerObject.
 ObjectHandle
-ObjectManagement::registerObject(ObjectClassHandle theClassHandle,
+ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  const char *theObjectName,
                                  FederationTime,
                                  FederationTime,
@@ -85,7 +82,7 @@ ObjectManagement::registerObject(ObjectClassHandle theClassHandle,
     req.type = m_REGISTER_OBJECT ;
     req.federate = fm->federate ;
     req.federation = fm->_numero_federation ;
-    req.objectClass = theClassHandle ;
+    req.objectClass = the_class ;
     strcpy(req.label, (char *)theObjectName);
 
     // BUG: A quoi servent Date et Heure ?
@@ -97,10 +94,8 @@ ObjectManagement::registerObject(ObjectClassHandle theClassHandle,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
-        rootObject->ObjectClasses->registerInstance(fm->federate,
-                                                    theClassHandle,
-                                                    rep.object,
-                                                    rep.label);
+        rootObject->registerObjectInstance(fm->federate, the_class, rep.object,
+                                           rep.label);
 
         // La reponse contient le numero d'objet(object)
         return rep.object ;
@@ -156,8 +151,8 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 // ----------------------------------------------------------------------------
 //! 4.4 discoverObject.
 void
-ObjectManagement::discoverObject(ObjectHandle theObjectHandle,
-                                 ObjectClassHandle theObjectClassHandle,
+ObjectManagement::discoverObject(ObjectHandle the_object,
+                                 ObjectClassHandle the_class,
                                  const char *theObjectName,
                                  FederationTime theTime,
                                  EventRetractionHandle theHandle,
@@ -166,8 +161,8 @@ ObjectManagement::discoverObject(ObjectHandle theObjectHandle,
     Message req, rep ;
 
     req.type = DISCOVER_OBJECT_INSTANCE ;
-    req.object = theObjectHandle ;
-    req.objectClass = theObjectClassHandle ;
+    req.object = the_object ;
+    req.objectClass = the_class ;
     req.date = theTime ;
     req.eventRetraction = theHandle ;
     req.setName((char *)theObjectName);
@@ -175,12 +170,9 @@ ObjectManagement::discoverObject(ObjectHandle theObjectHandle,
     // BUG: Et on fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
-    // Insertion de l'objet decouvert dans la liste interne du federe
-    rootObject->ObjectClasses->registerInstance(fm->federate,
-                                                theObjectClassHandle,
-                                                req.object,
-                                                req.getName());
-
+    // Adding discovered object in federate internal object list.
+    rootObject->registerObjectInstance(fm->federate, the_class, req.object,
+                                       req.getName());
 }
 
 
@@ -652,4 +644,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.6 2003/04/17 17:00:21 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.7 2003/04/23 13:49:24 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.14 2003/04/18 14:03:06 breholee Exp $
+// $Id: Federation.cc,v 3.15 2003/04/23 13:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -468,7 +468,7 @@ Federation::deleteObject(FederateHandle federate,
     D.Out(pdRegister, "Federation %d: Federate %d destroys object %d.",
           this->handle, federate, id);
 
-    root->ObjectClasses->deleteObject(federate, id, tag);
+    root->deleteObjectInstance(federate, id, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -638,14 +638,10 @@ Federation::kill(FederateHandle federate)
         D.Out(pdInit, "Constrained Federate %d removed...", federate);
     } catch (Exception &e) {}
 
-    // Supprime les references au federe pour les classes d'objets
-    D.Out(pdInit, "Federate %d removed from the Root Object tree...", federate);
-    root->ObjectClasses->killFederate(federate);
-
-    // Supprime les references au federe pour les classes d'interactions.
-    D.Out(pdInit, "Federate %d removed from the Root Inteaction tree...",
-          federate);
-    root->Interactions->killFederate(federate);
+    // Remove references to this federate in root object
+    root->killFederate(federate);
+    D[pdTrace] << "Federate " << federate << " removed from the Root Object "
+               << endl ;
 
     // delete from federations list
     try {
@@ -737,8 +733,7 @@ Federation::registerObject(FederateHandle federate,
           handle, federate, new_id, class_handle);
 
     // Register Object.
-    root->ObjectClasses->registerInstance(federate, class_handle, new_id,
-                                          object_name);
+    root->registerObjectInstance(federate, class_handle, new_id, object_name);
     D.Out(pdDebug, "suite");
     return new_id ;
 }
@@ -1014,7 +1009,6 @@ Federation::updateRegulator(FederateHandle federate_handle,
 
 // ----------------------------------------------------------------------------
 // isOwner (isAttributeOwnedByFederate)
-
 bool
 Federation::isOwner(FederateHandle federate,
                     ObjectHandle id,
@@ -1032,8 +1026,7 @@ Federation::isOwner(FederateHandle federate,
     D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
 
     // It may throw *NotDefined
-    return(root->ObjectClasses->isAttributeOwnedByFederate(id, attribute,
-                                                           federate));
+    return root->objects->isAttributeOwnedByFederate(id, attribute, federate);
 }
 
 // ----------------------------------------------------------------------------
@@ -1297,5 +1290,5 @@ Federation::deleteRegion(FederateHandle federate,
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.14 2003/04/18 14:03:06 breholee Exp $
+// $Id: Federation.cc,v 3.15 2003/04/23 13:49:24 breholee Exp $
 
