@@ -1,6 +1,6 @@
-## CERTI librti/Makefile.am 
-## Copyright (C) 2001, 2002 Onera
-## $Id: Makefile.am,v 3.1 2002/11/26 15:48:01 breholee Exp $
+## CERTI libRTI/Makefile.am 
+## Copyright (C) 2001, 2002, 2003  ONERA
+## $Id: Makefile.am,v 3.2 2003/07/01 13:26:16 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -19,5 +19,5 @@ libRTI_la_SOURCES = RTIambassador.cc
 # too unstable to use version-info, so :
 libRTI_la_LDFLAGS = -release 3.0.1
 
-## EOF $Id: Makefile.am,v 3.1 2002/11/26 15:48:01 breholee Exp $
+## EOF $Id: Makefile.am,v 3.2 2003/07/01 13:26:16 breholee Exp $
 
