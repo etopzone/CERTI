@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.25 2003/10/27 10:23:45 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.26 2003/11/10 14:28:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -662,6 +662,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::DDM_CREATE_REGION:
         D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
         rep.setRegion(ddm->createRegion(req->getSpace(), req->getNumber(), e));
+	rep.setNumber(rootObject->getRoutingSpace(req->getSpace()).size());
         break ;
 
       case Message::DDM_MODIFY_REGION:
@@ -1087,4 +1088,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.25 2003/10/27 10:23:45 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.26 2003/11/10 14:28:18 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.34 2003/10/27 10:22:34 breholee Exp $
+// $Id: Federation.cc,v 3.35 2003/11/10 14:31:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1494,8 +1494,8 @@ Federation::createRegion(FederateHandle federate,
 // ----------------------------------------------------------------------------
 // modifyRegion
 void
-Federation::modifyRegion(FederateHandle federate, long region,
-			 vector<Extent *> *extents)
+Federation::modifyRegion(FederateHandle federate, RegionHandle region,
+			 const vector<Extent> &extents)
     throw (RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress,
 	   RTIinternalError)
 {
@@ -1758,5 +1758,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.34 2003/10/27 10:22:34 breholee Exp $
+// $Id: Federation.cc,v 3.35 2003/11/10 14:31:34 breholee Exp $
 

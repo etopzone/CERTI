@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.14 2003/10/20 13:15:13 breholee Exp $
+// $Id: DataDistribution.cc,v 3.15 2003/11/10 14:28:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,25 +27,27 @@
 #include "ObjectClassAttribute.hh"
 #include "RegionImp.hh"
 
+#include <cassert>
+
 using std::string ;
 using std::endl ;
 
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_DDM", "(RTIA DDM) ");
+static pdCDebug D("RTIA_DDM", __FILE__);
 
 // ----------------------------------------------------------------------------
 DataDistribution::DataDistribution(RootObject *root_object,
                                    FederationManagement *fed_management,
                                    Communications *communications)
-    : rootObject(root_object), fm(fed_management), comm(communications)
-{
-}
+    : rootObject(root_object),
+      fm(fed_management),
+      comm(communications) { }
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-DataDistribution::getRoutingSpaceHandle(string name)
+DataDistribution::getRoutingSpaceHandle(string name) const 
 {
     return rootObject->getRoutingSpaceHandle(name);
 }
@@ -54,7 +56,7 @@ DataDistribution::getRoutingSpaceHandle(string name)
 // getRoutingSpaceName
 //
 string
-DataDistribution::getRoutingSpaceName(SpaceHandle handle)
+DataDistribution::getRoutingSpaceName(SpaceHandle handle) const
 {
     return rootObject->getRoutingSpaceName(handle);
 }
@@ -63,20 +65,21 @@ DataDistribution::getRoutingSpaceName(SpaceHandle handle)
 // getDimensionHandle
 //
 DimensionHandle
-DataDistribution::getDimensionHandle(string dimension, SpaceHandle space)
+DataDistribution::getDimensionHandle(string dimension, SpaceHandle space) const
     throw (SpaceNotDefined, NameNotFound)
 {
-    return rootObject->getRoutingSpace(space)->getDimensionHandle(dimension);
+    return rootObject->getRoutingSpace(space).getDimensionHandle(dimension);
 }
 
 // ----------------------------------------------------------------------------
 // getDimensionName
 //
 string
-DataDistribution::getDimensionName(DimensionHandle dimension, SpaceHandle space)
+DataDistribution::getDimensionName(DimensionHandle dimension,
+				   SpaceHandle space) const
     throw (SpaceNotDefined, DimensionNotDefined)
 {
-    return rootObject->getRoutingSpace(space)->getDimensionName(dimension);
+    return rootObject->getRoutingSpace(space).getDimensionName(dimension);
 }
 
 // ----------------------------------------------------------------------------
@@ -84,7 +87,7 @@ DataDistribution::getDimensionName(DimensionHandle dimension, SpaceHandle space)
 //
 SpaceHandle
 DataDistribution::getAttributeSpace(AttributeHandle attribute,
-                                    ObjectClassHandle object_class)
+                                    ObjectClassHandle object_class) const
     throw (ObjectClassNotDefined, AttributeNotDefined)
 {
     return rootObject->ObjectClasses->getWithHandle(object_class)->
@@ -95,7 +98,7 @@ DataDistribution::getAttributeSpace(AttributeHandle attribute,
 // getInteractionSpaceHandle
 //
 SpaceHandle
-DataDistribution::getInteractionSpace(InteractionClassHandle interaction)
+DataDistribution::getInteractionSpace(InteractionClassHandle interaction) const
     throw (InteractionClassNotDefined)
 {
     return rootObject->Interactions->getByHandle(interaction)->getSpace();
@@ -126,8 +129,10 @@ DataDistribution::createRegion(SpaceHandle space,
 
     if (e == e_NO_EXCEPTION) {
         long handle = rep.region ;
-        int nb = rootObject->getRoutingSpace(space)->getNbDimensions();
-        RegionImp *region = new RegionImp(handle, space, nb, nb_extents);
+        int nb = rootObject->getRoutingSpace(space).size();
+        RegionImp *region = new RegionImp(handle, space, nb_extents, nb);
+
+	assert(region->getNumberOfExtents() == nb_extents);
         rootObject->addRegion(region);
 
         D[pdDebug] << "Created region " << handle << endl ;
@@ -142,7 +147,7 @@ DataDistribution::createRegion(SpaceHandle space,
 //
 void
 DataDistribution::modifyRegion(RegionHandle handle,
-			       std::vector<Extent *> *extents,
+			       const std::vector<Extent> &extents,
 			       TypeException &e)
 {
     D[pdDebug] << "Modify region " << handle << "..." << endl ;
@@ -161,7 +166,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION) {
-	region->setExtents(*extents);	
+	region->setExtents(extents);	
 	D[pdDebug] << "Modified region " << handle << endl ;
     }
 }
@@ -343,4 +348,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.14 2003/10/20 13:15:13 breholee Exp $
+// $Id: DataDistribution.cc,v 3.15 2003/11/10 14:28:17 breholee Exp $

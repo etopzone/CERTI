@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.12 2003/10/20 13:15:14 breholee Exp $
+// $Id: DataDistribution.hh,v 3.13 2003/11/10 14:28:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -37,26 +37,27 @@ class DataDistribution
 public:
     DataDistribution(RootObject *, FederationManagement *, Communications *);
 
-    SpaceHandle getRoutingSpaceHandle(std::string);
+    SpaceHandle getRoutingSpaceHandle(std::string) const ;
 
-    std::string getRoutingSpaceName(SpaceHandle);
+    std::string getRoutingSpaceName(SpaceHandle) const ;
 
-    DimensionHandle getDimensionHandle(std::string, SpaceHandle)
+    DimensionHandle getDimensionHandle(std::string, SpaceHandle) const
         throw (SpaceNotDefined, NameNotFound);
 
-    std::string getDimensionName(DimensionHandle, SpaceHandle)
+    std::string getDimensionName(DimensionHandle, SpaceHandle) const
         throw (SpaceNotDefined, DimensionNotDefined);
 
-    SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle)
+    SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle) const
         throw (ObjectClassNotDefined, AttributeNotDefined);
 
-    SpaceHandle getInteractionSpace(InteractionClassHandle)
+    SpaceHandle getInteractionSpace(InteractionClassHandle) const
         throw (InteractionClassNotDefined);
 
     long createRegion(SpaceHandle, long, TypeException &)
         throw (SpaceNotDefined);
 
-    void modifyRegion(RegionHandle, std::vector<Extent *> *, TypeException &);
+    void modifyRegion(RegionHandle, const std::vector<Extent> &,
+		      TypeException &);
     
     void deleteRegion(long, TypeException &)
         throw (RegionNotKnown, RegionInUse);
@@ -92,4 +93,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.12 2003/10/20 13:15:14 breholee Exp $
+// $Id: DataDistribution.hh,v 3.13 2003/11/10 14:28:18 breholee Exp $

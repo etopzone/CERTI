@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.21 2003/10/20 13:15:14 breholee Exp $
+// $Id: FederationsList.hh,v 3.22 2003/11/10 14:31:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -442,12 +442,12 @@ public:
                RTIinternalError);
 
     // Data Distribution Management
-
     long createRegion(Handle, FederateHandle, SpaceHandle, long)
         throw (SpaceNotDefined, InvalidExtents, FederateNotExecutionMember,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
-    void modifyRegion(Handle, FederateHandle, long, std::vector<Extent *> *)
+    void modifyRegion(Handle, FederateHandle, RegionHandle,
+		      const std::vector<Extent> &)
 	throw (InvalidExtents, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
     
@@ -499,4 +499,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.21 2003/10/20 13:15:14 breholee Exp $
+// $Id: FederationsList.hh,v 3.22 2003/11/10 14:31:37 breholee Exp $

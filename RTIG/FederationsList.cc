@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.21 2003/10/20 13:15:14 breholee Exp $
+// $Id: FederationsList.cc,v 3.22 2003/11/10 14:31:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1031,8 +1031,8 @@ FederationsList::createRegion(Handle federation,
 void
 FederationsList::modifyRegion(Handle federation,
 			      FederateHandle federate,
-			      long region,
-			      std::vector<Extent *> *extents)
+			      RegionHandle region,
+			      const std::vector<Extent> &extents)
     throw (InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
 {
     Federation *f = 0 ;
@@ -1265,5 +1265,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.21 2003/10/20 13:15:14 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.22 2003/11/10 14:31:36 breholee Exp $
 
