@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.5 2003/11/10 14:54:11 breholee Exp $
+// $Id: RegionImp.cc,v 3.6 2003/12/01 16:21:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -233,20 +233,13 @@ RegionImp::setExtents(const vector<Extent> &e)
     throw (InvalidExtents)
 {
     assert(e.size() == extents.size()); // TO REMOVE
+
     if (e.size() != extents.size())
 	throw InvalidExtents();
 
-//     int n = extents.size();
-//     for (int i = 0 ; i < n ; ++i) {
-// 	int m = e[i].size();
-// 	for (int j = 0 ; j < m ; ++j) {
-// 	    extents[i].setRangeUpperBound(j, e[i].getRangeUpperBound(j));
-// 	    extents[i].setRangeLowerBound(j, e[i].getRangeLowerBound(j));
-// 	}
-//     }
     extents = e ;
 }
 
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.5 2003/11/10 14:54:11 breholee Exp $
+// $Id: RegionImp.cc,v 3.6 2003/12/01 16:21:26 breholee Exp $
