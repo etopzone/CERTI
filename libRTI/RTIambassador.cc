@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.11 2003/01/28 23:33:00 breholee Exp $
+// $Id: RTIambassador.cc,v 3.12 2003/01/29 18:16:40 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -262,8 +262,8 @@ RTIambassador::createFederationExecution(const char *executionName,
     //   strcat(exeName,"\56");
     //   strcat(exeName,"fed");
     
-    req.Type             = CREATE_FEDERATION_EXECUTION;
-    req.setFederationName((FederationExecutionName)executionName);
+    req.Type = CREATE_FEDERATION_EXECUTION;
+    req.setFederationName(executionName);
     
     //    if(!strcasecmp(FED,exeName)) {
     executeService(&req, &rep);
@@ -287,7 +287,7 @@ RTIambassador::destroyFederationExecution(const char *executionName)
     Message req, rep ;
 
     req.Type = DESTROY_FEDERATION_EXECUTION ;
-    req.setFederationName((FederationExecutionName) executionName);
+    req.setFederationName(executionName);
 
     executeService(&req, &rep);
 }
@@ -315,8 +315,8 @@ joinFederationExecution(const char *yourName,
     fed_amb = (FederateAmbassador *) federateAmbassadorReference ;
 
     req.Type = JOIN_FEDERATION_EXECUTION ;
-    req.setFederateName((FederateName) yourName);
-    req.setFederationName((FederationExecutionName) executionName);
+    req.setFederateName(yourName);
+    req.setFederationName(executionName);
 
     executeService(&req, &rep);
     return rep.NumeroFedere ;
@@ -2063,7 +2063,7 @@ RTIambassador::getObjectClassHandle(const char *theName)
 
     // envoyer la requete au RTI
     req.Type = GET_OBJECT_CLASS_HANDLE ;
-    req.setName((ObjectClassName) theName);
+    req.setName(theName);
 
     executeService(&req, &rep);
 
@@ -2151,7 +2151,7 @@ RTIambassador::getInteractionClassHandle(const char *theName)
 
     // envoyer la requete au RTI
     req.Type = GET_INTERACTION_CLASS_HANDLE ;
-    req.setName((InteractionClassName) theName);
+    req.setName(theName);
 
     executeService(&req, &rep);
 
@@ -3581,4 +3581,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.11 2003/01/28 23:33:00 breholee Exp $
+// $Id: RTIambassador.cc,v 3.12 2003/01/29 18:16:40 breholee Exp $

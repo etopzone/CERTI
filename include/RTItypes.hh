@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.7 2003/01/28 23:33:00 breholee Exp $
+// $Id: RTItypes.hh,v 3.8 2003/01/29 18:15:04 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_TYPES_HH
@@ -205,11 +205,7 @@ struct EventRetractionHandle_s {
 
 typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
-typedef char * FederationExecutionName ; // See MAX_FEDERATION_NAME_LENGTH
-typedef char * FederateName ; // See MAX_FEDERATE_NAME_LENGTH
-typedef char * ObjectClassName ; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectName ; // See MAX_USER_TAG_LENGTH
-typedef char * InteractionClassName ; // See MAX_USER_TAG_LENGTH
 typedef char * SpaceName ;
 
 // Parameters and Attributes MUST share the same types.
@@ -471,4 +467,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.7 2003/01/28 23:33:00 breholee Exp $
+// $Id: RTItypes.hh,v 3.8 2003/01/29 18:15:04 breholee Exp $

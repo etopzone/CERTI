@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.4 2003/01/17 17:12:35 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.5 2003/01/29 18:18:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,7 +66,7 @@ FederateLevelList::~FederateLevelList(void)
 SecurityLevelID 
 FederateLevelList::getLevel(const char* theName) const
 {
-    map<FederateName, SecurityLevelID>::const_iterator i;
+    map<char *, SecurityLevelID>::const_iterator i;
     i = tuple.find((char*)theName);
 
     if (i != tuple.end())
@@ -76,4 +76,4 @@ FederateLevelList::getLevel(const char* theName) const
 }
 }
 
-// $Id: FederateLevelList.cc,v 3.4 2003/01/17 17:12:35 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.5 2003/01/29 18:18:19 breholee Exp $

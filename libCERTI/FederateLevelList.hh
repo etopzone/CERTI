@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.4 2003/01/17 17:12:35 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.5 2003/01/29 18:18:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
@@ -37,7 +37,7 @@ namespace certi {
 class FederateLevelList
 {
 protected:
-    std::map<FederateName, SecurityLevelID> tuple;
+    std::map<char *, SecurityLevelID> tuple;
 
 public:
   FederateLevelList(void);
@@ -53,4 +53,4 @@ public:
 
 #endif // _CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.4 2003/01/17 17:12:35 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.5 2003/01/29 18:18:19 breholee Exp $
