@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.15 2003/07/09 15:58:47 breholee Exp $
+// $Id: RootObject.hh,v 3.16 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -52,8 +52,8 @@ public:
     // Data Distribution Management
     void addRoutingSpace(RoutingSpace *);
     RoutingSpace *getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
-    SpaceHandle getRoutingSpaceHandle(string) throw (NameNotFound);
-    string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
+    SpaceHandle getRoutingSpaceHandle(std::string) throw (NameNotFound);
+    std::string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
     void addRegion(RegionImp *);
     long createRegion(SpaceHandle, long) throw (SpaceNotDefined);
@@ -91,8 +91,8 @@ public:
     ObjectSet *objects ;
 
 private:
-    vector<RoutingSpace *> routingSpaces ;
-    list<RegionImp *> regions ;
+    std::vector<RoutingSpace *> routingSpaces ;
+    std::list<RegionImp *> regions ;
     SecurityServer *server ;
     long freeRegionHandle ;
 };
@@ -101,4 +101,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.15 2003/07/09 15:58:47 breholee Exp $
+// $Id: RootObject.hh,v 3.16 2003/10/20 13:15:14 breholee Exp $

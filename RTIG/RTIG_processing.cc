@@ -18,13 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.18 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.19 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIG.hh"
 
 #include <assert.h>
+
+using std::endl ;
 
 namespace certi {
 namespace rtig {
@@ -1067,4 +1069,4 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.18 2003/07/09 16:09:14 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.19 2003/10/20 13:15:14 breholee Exp $

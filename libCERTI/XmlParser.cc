@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.13 2003/07/10 13:19:41 breholee Exp $
+// $Id: XmlParser.cc,v 3.14 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,6 +30,8 @@
 #include "PrettyDebug.hh"
 
 using std::string ;
+using std::cerr ;
+using std::endl ;
 
 #ifdef HAVE_XML
 
@@ -345,4 +347,4 @@ bool XmlParser::exists()
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.13 2003/07/10 13:19:41 breholee Exp $
+// $Id: XmlParser.cc,v 3.14 2003/10/20 13:15:14 breholee Exp $

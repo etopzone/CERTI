@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.20 2003/10/20 12:54:24 breholee Exp $
+// $Id: FederationsList.hh,v 3.21 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -37,7 +37,7 @@ namespace rtig {
 
 /*! FederationsList keep track on federation operations.
  */
-class FederationsList : private list<Federation *>
+class FederationsList : private std::list<Federation *>
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
@@ -499,4 +499,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.20 2003/10/20 12:54:24 breholee Exp $
+// $Id: FederationsList.hh,v 3.21 2003/10/20 13:15:14 breholee Exp $

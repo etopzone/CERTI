@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.23 2003/10/13 09:57:56 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.24 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,9 @@
 
 #include "FedParser.hh"
 #include "XmlParser.hh"
+
+using std::string ;
+using std::ifstream ;
 
 namespace certi {
 namespace rtia {
@@ -1085,4 +1088,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.23 2003/10/13 09:57:56 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.24 2003/10/20 13:15:14 breholee Exp $

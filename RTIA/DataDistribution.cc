@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.13 2003/07/09 16:12:24 breholee Exp $
+// $Id: DataDistribution.cc,v 3.14 2003/10/20 13:15:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,9 @@
 
 #include "ObjectClassAttribute.hh"
 #include "RegionImp.hh"
+
+using std::string ;
+using std::endl ;
 
 namespace certi {
 namespace rtia {
@@ -340,4 +343,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.13 2003/07/09 16:12:24 breholee Exp $
+// $Id: DataDistribution.cc,v 3.14 2003/10/20 13:15:13 breholee Exp $

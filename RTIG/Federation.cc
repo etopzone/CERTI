@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.32 2003/10/13 10:11:33 breholee Exp $
+// $Id: Federation.cc,v 3.33 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,6 +41,10 @@ using std::ifstream ;
 using std::ios ;
 using std::cout ;
 using std::endl ;
+using std::string ;
+using std::list ;
+using std::cerr ;
+using std::vector ;
 
 // Definitions
 #ifdef HAVE_XML
@@ -1773,5 +1777,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.32 2003/10/13 10:11:33 breholee Exp $
+// $Id: Federation.cc,v 3.33 2003/10/20 13:15:14 breholee Exp $
 

@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.15 2003/07/09 16:00:59 breholee Exp $
+// $Id: Message_RW.cc,v 3.16 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Message.hh"
+
+using std::vector ;
 
 namespace certi {
 
@@ -1206,4 +1208,4 @@ Message::readExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.15 2003/07/09 16:00:59 breholee Exp $
+// $Id: Message_RW.cc,v 3.16 2003/10/20 13:15:14 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.16 2003/10/13 10:02:24 breholee Exp $
+// $Id: RootObject.cc,v 3.17 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,10 @@
 #include <stdio.h>
 
 using std::vector ;
+using std::cout ;
+using std::endl ;
+using std::string ;
+using std::list ;
 
 namespace certi {
 
@@ -324,4 +328,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.16 2003/10/13 10:02:24 breholee Exp $
+// $Id: RootObject.cc,v 3.17 2003/10/20 13:15:14 breholee Exp $

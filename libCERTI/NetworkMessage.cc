@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.8 2003/07/03 16:19:47 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.9 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,8 @@
 
 #include <cstdio>
 #include <cstring>
+
+using std::vector ;
 
 namespace certi {
 
@@ -256,4 +258,4 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.8 2003/07/03 16:19:47 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.9 2003/10/20 13:15:14 breholee Exp $

@@ -19,13 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.12 2003/07/09 16:01:00 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.13 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "NetworkMessage.hh"
 
 #include "PrettyDebug.hh"
+
+using std::vector ;
 
 namespace certi {
 
@@ -982,4 +984,4 @@ NetworkMessage::writeExtents(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.12 2003/07/09 16:01:00 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.13 2003/10/20 13:15:14 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.11 2003/07/09 16:12:24 breholee Exp $
+// $Id: DataDistribution.hh,v 3.12 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -37,14 +37,14 @@ class DataDistribution
 public:
     DataDistribution(RootObject *, FederationManagement *, Communications *);
 
-    SpaceHandle getRoutingSpaceHandle(string);
+    SpaceHandle getRoutingSpaceHandle(std::string);
 
-    string getRoutingSpaceName(SpaceHandle);
+    std::string getRoutingSpaceName(SpaceHandle);
 
-    DimensionHandle getDimensionHandle(string, SpaceHandle)
+    DimensionHandle getDimensionHandle(std::string, SpaceHandle)
         throw (SpaceNotDefined, NameNotFound);
 
-    string getDimensionName(DimensionHandle, SpaceHandle)
+    std::string getDimensionName(DimensionHandle, SpaceHandle)
         throw (SpaceNotDefined, DimensionNotDefined);
 
     SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle)
@@ -92,4 +92,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.11 2003/07/09 16:12:24 breholee Exp $
+// $Id: DataDistribution.hh,v 3.12 2003/10/20 13:15:14 breholee Exp $

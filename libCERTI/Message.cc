@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.21 2003/07/04 14:27:07 breholee Exp $
+// $Id: Message.cc,v 3.22 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,8 @@
 
 #include <cstdio>
 #include <cstring>
+
+using std::vector ;
 
 namespace certi {
 
@@ -640,4 +642,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.21 2003/07/04 14:27:07 breholee Exp $
+// $Id: Message.cc,v 3.22 2003/10/20 13:15:14 breholee Exp $

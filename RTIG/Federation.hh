@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.23 2003/07/09 16:10:44 breholee Exp $
+// $Id: Federation.hh,v 3.24 2003/10/20 13:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -43,7 +43,7 @@
 namespace certi {
 namespace rtig {
 
-class Federation : private list<Federate *>
+class Federation : private std::list<Federate *>
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
@@ -498,7 +498,7 @@ private:
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
     bool restoreStatus ; //!< True if restoring was correctly done.
-    string saveLabel ; //!< The label associated with the save request.
+    std::string saveLabel ; //!< The label associated with the save request.
 
 #ifdef HAVE_XML
     xmlDocPtr doc ; // FIXME: should not be an attribute
@@ -509,4 +509,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.23 2003/07/09 16:10:44 breholee Exp $
+// $Id: Federation.hh,v 3.24 2003/10/20 13:15:14 breholee Exp $
