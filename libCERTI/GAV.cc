@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.9 2003/07/10 15:06:49 breholee Exp $
+// $Id: GAV.cc,v 3.10 2005/03/13 22:40:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -235,23 +235,24 @@ void CAttributeHandleValuePairSet::empty()
 AttributeHandleValuePairSet*
 CAttributeHandleValuePairSet::toAHVPS() const
 {
-    ULong longueur ;
-    CAttributeHandleValuePair *cahvp ;
-
     AttributeHandleValuePairSet *ahvps ;
     ahvps = AttributeSetFactory::create(_size);
 
     for (int i = 0 ; i<_size ; i++) {
-        cahvp = getIeme(i);
+        CAttributeHandleValuePair *cahvp = getIeme(i);
 
         if (cahvp != NULL) {
             if (&cahvp->_value != NULL) {
+                ULong longueur;
+                
                 // decodage
                 getStringToObjectLength(cahvp->_value.value, longueur);
+
                 char *valeur = new char[longueur] ;
                 valeur[0] = '\0' ;
                 stringToObject(cahvp->_value.value, valeur, longueur);
                 memcpy(cahvp->_value.value, valeur, longueur);
+                delete valeur;
                 /* phvps->add(cahvp->_param,
                    cahvp->_value.value,
                    (strlen(cahvp->_value.value)*sizeof(char))); */
@@ -416,6 +417,7 @@ CParameterHandleValuePairSet::toPHVPS() const
                 valeur[0] = '\0' ;
                 stringToObject(cphvp->_value.value, valeur, longueur);
                 memcpy(cphvp->_value.value, valeur, longueur);
+                delete valeur;
 
                 // adding new value to PHVPS
                 phvps->add(cphvp->_param, cphvp->_value.value, longueur);
@@ -428,4 +430,4 @@ CParameterHandleValuePairSet::toPHVPS() const
 
 }
 
-// $Id: GAV.cc,v 3.9 2003/07/10 15:06:49 breholee Exp $
+// $Id: GAV.cc,v 3.10 2005/03/13 22:40:49 breholee Exp $
