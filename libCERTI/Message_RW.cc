@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.20 2004/09/23 09:15:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.21 2005/02/09 15:52:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,7 +31,7 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("MESSAGE", __FILE__);
+static pdCDebug D("RTIA_MSG", __FILE__);
 
 // You can comment this out if you don't want to optimize network messages.
 #define USE_HEADER_AND_BODY
@@ -1136,4 +1136,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.20 2004/09/23 09:15:18 breholee Exp $
+// $Id: Message_RW.cc,v 3.21 2005/02/09 15:52:06 breholee Exp $
