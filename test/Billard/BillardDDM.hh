@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.1 2003/08/20 18:42:24 breholee Exp $
+// $Id: BillardDDM.hh,v 3.2 2003/10/20 09:38:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -29,6 +29,18 @@ class BillardDDM : public Billard
 {
 public:
     BillardDDM(std::string);
+
+    virtual void declare();
+
+protected:
+    virtual void getHandles();
+
+    int regionSize ;
+    std::vector<Region *> regions ;
+
+    SpaceHandle geo_id ;
+    DimensionHandle x_id ;
+    DimensionHandle y_id ;
 };
 
-// $Id: BillardDDM.hh,v 3.1 2003/08/20 18:42:24 breholee Exp $
+// $Id: BillardDDM.hh,v 3.2 2003/10/20 09:38:23 breholee Exp $
