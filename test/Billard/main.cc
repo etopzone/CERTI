@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: main.cc,v 3.3 2003/10/13 10:09:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,7 +29,6 @@
 #include "Ball.hh"
 #include "ColoredBall.hh"
 #include "Fed.hh"
-#include "Factory.hh"
 #include "PrettyDebug.hh"
 
 #include "cmdline.h"
@@ -63,12 +62,14 @@ static const bool WITH_XML = false ;
 
 static bool exit_billard = false ;
 
+Billard *createBillard(bool, const char *, string);
+
 // ----------------------------------------------------------------------------
 //! Test program entry point.
 int
 main(int argc, char **argv)
 {
-    cout << PACKAGE << '-' << VERSION << endl ;
+    cout << PACKAGE << " v" << VERSION << endl ;
 
     // Handlers
     signal(SIGINT, sortir);
@@ -83,22 +84,21 @@ main(int argc, char **argv)
 
     bool verbose = args.verbose_flag ;
 
-    // Names
+    // Federation and .fed names
     string federation = args.federation_arg ;
     string federate = args.name_arg ;
     string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
 
     // Create billard
-    Billard billard = Billard(federate);
-    //BillardDDM billard = BillardDDM(federate);
+    Billard *billard = createBillard(args.demo_given, args.demo_arg, federate);
 
     int timer = args.timer_given ? args.timer_arg : 0 ;
     int delay = args.delay_given ? args.delay_arg : 0 ;
     int autostart = args.auto_given ? args.auto_arg : 0 ;
 
     // Joins federation
-    billard.join(federation, fedfile);
-    FederateHandle handle = billard.getHandle();
+    billard->join(federation, fedfile);
+    FederateHandle handle = billard->getHandle();
 
     // Display...
     Display *display = Display::instance();
@@ -108,16 +108,16 @@ main(int argc, char **argv)
         args.yoffset_given ? args.yoffset_arg : y_default);
 
     // Continue initialisation...
-    billard.pause();
-    billard.publishAndSubscribe();
+    billard->pause();
+    billard->publishAndSubscribe();
 
     display->show();
 
     if (args.coordinated_flag) {
-        billard.setTimeRegulation(true, true);
-        billard.tick();
+        billard->setTimeRegulation(true, true);
+        billard->tick();
     }
-    billard.synchronize(autostart);
+    billard->synchronize(autostart);
 
     // Countdown
     struct sigaction a ;
@@ -133,14 +133,14 @@ main(int argc, char **argv)
 
     // Create object
     if (args.initx_given && args.inity_given) {
-        billard.init(args.initx_arg, args.inity_arg);
+        billard->init(args.initx_arg, args.inity_arg);
     }
     else {
-        billard.init(handle);
+        billard->init(handle);
     }
 
     // declare objects
-    billard.declare();
+    billard->declare();
 
     // set delay
     if (delay != 0) {
@@ -155,13 +155,14 @@ main(int argc, char **argv)
 
     // Simlation loop
     while (!exit_billard) {
-        billard.step();
+        billard->step();
     }
 
     // End of simulation
     D.Out(pdTrace, "End of simulation loop.");
-    billard.resign();
+    billard->resign();
 
+    delete billard ;
     delete display ;
 }
 
@@ -187,7 +188,20 @@ void
 ExceptionHandler()
 {
     D.Out(pdExcept, "****Exception thrown on the 'test_heritage' Federate.");
-    exit(-1);
+    exit(EXIT_FAILURE);
 }
 
-// EOF $Id: main.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// ----------------------------------------------------------------------------
+//! createBillard
+Billard *
+createBillard(bool demo, const char *s_demo, string name)
+{
+    if (demo) {
+	if (!strcmp(s_demo, "DDM")) return new BillardDDM(name);
+	cout << "unknown demo keyword: " << s_demo << endl ;
+    }
+    
+    return new Billard(name);
+}
+
+// EOF $Id: main.cc,v 3.3 2003/10/13 10:09:01 breholee Exp $
