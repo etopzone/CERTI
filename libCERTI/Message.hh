@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.22 2003/11/10 14:43:01 breholee Exp $
+// $Id: Message.hh,v 3.23 2004/01/09 16:09:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -43,12 +43,6 @@ public:
     struct MessageTimeStruct {
         FederationTime date ; // Date, Logical Time, Lookahead, etc.
         Boolean mode ; // IsRegulator or IsConstrained
-    };
-
-    struct MessageReqIDStruct {
-        ObjectHandlecount count ;
-        ObjectHandle first ;
-        ObjectHandle last ;
     };
 
     struct MessageT_O_Struct {
@@ -77,7 +71,6 @@ public:
 
     union MessageHeaderUnion {
         MessageTimeStruct time ;
-        MessageReqIDStruct ReqID ;
         MessageT_O_Struct T_O ;
         MessageJ_R_Struct J_R ;
         MessageO_I_Struct O_I ;
@@ -130,7 +123,6 @@ public:
         TURN_INTERACTIONS_OFF,
 
         // Object
-        REQUEST_ID,
         REGISTER_OBJECT_INSTANCE,
         UPDATE_ATTRIBUTE_VALUES,
         DISCOVER_OBJECT_INSTANCE,
@@ -243,7 +235,7 @@ public:
         DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
         TICK_REQUEST,
 
-	LAST
+	LAST // should be the "last" (not used)
     };
 
     // -- Structure de l'entete --
@@ -491,4 +483,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.22 2003/11/10 14:43:01 breholee Exp $
+// $Id: Message.hh,v 3.23 2004/01/09 16:09:55 breholee Exp $

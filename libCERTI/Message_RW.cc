@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.17 2003/11/10 14:43:02 breholee Exp $
+// $Id: Message_RW.cc,v 3.18 2004/01/09 16:09:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,6 +48,7 @@ Message::read(SocketUN *socket)
     if (has_body) readBody(socket);
 
 #else
+#error    
     socket->receive((void *) this, sizeof(Message));
 #endif
 }
@@ -59,7 +60,7 @@ Message::readBody(SocketUN *socket)
 {
     assert(header.bodySize > 0);
 
-    MessageBody Body ;
+    MessageBody Body(header.bodySize);
 
     // 1. Read Body from socket.
     socket->receive((void *) Body.getBuffer(), header.bodySize);
@@ -427,14 +428,6 @@ Message::readHeader(SocketUN *socket)
         this->space = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         date = header.VP.O_I.date ;
-        break ;
-
-        // --- ReqIDStruct, No Body ---
-
-      case REQUEST_ID:
-        idCount = header.VP.ReqID.count ;
-        firstId = header.VP.ReqID.first ;
-        lastId = header.VP.ReqID.last ;
         break ;
 
         // --- MessageT_O_Struct, No Body ---
@@ -1031,15 +1024,6 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 1 ;
         break ;
 
-        // --- ReqIDStruct, No Body ---
-
-      case REQUEST_ID:
-        header.VP.ReqID.count = idCount ;
-        header.VP.ReqID.first = firstId ;
-        header.VP.ReqID.last = lastId ;
-        header.bodySize = 0 ;
-        break ;
-
         // --- MessageT_O_Struct, No Body ---
 
       case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
@@ -1141,4 +1125,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.17 2003/11/10 14:43:02 breholee Exp $
+// $Id: Message_RW.cc,v 3.18 2004/01/09 16:09:55 breholee Exp $
