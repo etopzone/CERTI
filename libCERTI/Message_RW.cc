@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: Message_RW.cc,v 3.13 2003/07/01 13:34:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -250,6 +250,10 @@ Message::readBody(SocketUN *socket)
             readHandleArray(&Body);
             break ;
 
+	  case MODIFY_REGION:
+	    readExtents(Body);
+	    break ;
+	    
             // -- Default Handler --
 
           default:
@@ -415,6 +419,11 @@ Message::readHeader(SocketUN *socket)
         region = header.VP.ddm.region ;
         break ;
 
+	// Message_DDM, Body
+      case MODIFY_REGION:
+	region = header.VP.ddm.region ;
+	break ;	
+	
         // --- MessageT_O_Struct, Body not empty ---
 
       case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, HandleArray.
@@ -763,6 +772,10 @@ Message::writeBody(SocketUN *socket)
             writeHandleArray(&Body);
             break ;
 
+	  case MODIFY_REGION:
+	    writeExtents(Body);
+	    break ;
+	    
             // -- Default Handler --
 
           default:
@@ -981,6 +994,12 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 0 ;
         break ;
 
+	// Message_DDM, Body
+      case MODIFY_REGION:
+	header.VP.ddm.region = region ;
+	header.bodySize = 1 ;
+	break ;
+
         // --- MessageT_O_Struct, Body not empty ---
 
       case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, handleArray.
@@ -1061,6 +1080,53 @@ Message::writeValueArray(MessageBody *Body)
     }
 }
 
+// ----------------------------------------------------------------------------
+// writeExtents
+//
+void
+Message::writeExtents(MessageBody &body)
+{
+    long n = extents ? extents->size() : 0 ;
+
+    for (long i = 0 ; i < n ; ++i) {
+	Extent *e = (*extents)[i] ;
+	long m = e->getNumberOfRanges();
+	body.writeLongInt(m);
+	for (long j = 0 ; j < m ; ++j) {
+	    body.writeLongInt(e->getRangeLowerBound(j));
+	    body.writeLongInt(e->getRangeUpperBound(j));
+	}
+    }
+}
+
+// ----------------------------------------------------------------------------
+// readExtents
+//
+void
+Message::readExtents(MessageBody &body)
+{
+    if (extents) {
+	for (vector<Extent *>::iterator i = extents->begin();
+	     i != extents->end(); ++i) {
+	    delete *i ;
+	}
+	delete extents ;
+
+    }
+    extents = new vector<Extent *>();
+    
+    long n = body.readLongInt();
+    for (long i = 0 ; i < n ; ++i) {
+	long m = body.readLongInt();
+	Extent *e = new Extent(m);
+	for (long j = 0 ; j < m ; ++j) {
+	    e->setRangeLowerBound(j, body.readLongInt());
+	    e->setRangeUpperBound(j, body.readLongInt());
+	}
+	extents->push_back(e);
+    }
+}
+
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
+// $Id: Message_RW.cc,v 3.13 2003/07/01 13:34:04 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.11 2003/06/27 17:26:29 breholee Exp $
+// $Id: RootObject.hh,v 3.12 2003/07/01 13:34:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -58,6 +58,8 @@ public:
     long createRegion(SpaceHandle, long) throw (SpaceNotDefined);
     void deleteRegion(long) throw (RegionNotKnown, RegionInUse);
     RegionImp *getRegion(long) throw (RegionNotKnown);
+    void modifyRegion(long, std::vector<Extent *> *)
+	throw (RegionNotKnown, InvalidExtents);
 
     // Object Management
     void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
@@ -89,4 +91,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.11 2003/06/27 17:26:29 breholee Exp $
+// $Id: RootObject.hh,v 3.12 2003/07/01 13:34:04 breholee Exp $

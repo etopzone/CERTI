@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.10 2003/07/01 13:34:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,16 +46,13 @@ NetworkMessage::read(Socket *socket)
 {
 #ifdef USE_HEADER_AND_BODY
 
-    Boolean Result ;
     // 1- Read Header
-    Result = readHeader(socket);
+    bool result = readHeader(socket);
 
     // 2- if ReadHeader returned RTI_TRUE, Read Body.
-    if (Result == RTI_TRUE)
+    if (result)
         readBody(socket);
-
 #else
-
     Socket->receive(this, sizeof(NetworkMessage));
 
 #endif
@@ -205,6 +202,10 @@ NetworkMessage::readBody(Socket *socket)
             readLabel(&Body);
             break ;
 
+	  case MODIFY_REGION:
+	    readExtents(Body);
+	    break ;
+	    
             // -- Default Handler --
 
           default:
@@ -219,7 +220,7 @@ NetworkMessage::readBody(Socket *socket)
 // -- ReadHeader --
 // ----------------
 
-Boolean
+bool
 NetworkMessage::readHeader(Socket *socket)
 {
     // 1- Read Header from Socket
@@ -245,7 +246,7 @@ NetworkMessage::readHeader(Socket *socket)
     }
 
     else
-        switch(Header.type) {
+        switch (Header.type) {
 
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
@@ -372,7 +373,11 @@ NetworkMessage::readHeader(Socket *socket)
           case REGISTER_OBJECT:
           case DISCOVER_OBJECT:
             objectClass = Header.VP.O_I.handle ;
-            break ;
+	    break ;
+
+	  case MODIFY_REGION:
+	    region = Header.VP.ddm.region ;
+	    break ;
 
             // -- Default Handler --
 
@@ -383,10 +388,7 @@ NetworkMessage::readHeader(Socket *socket)
 
     // 4- If Header.bodySize is not 0, return RTI_TRUE, else RTI_FALSE
 
-    if (Header.bodySize == 0)
-        return RTI_FALSE ;
-    else
-        return RTI_TRUE ;
+    return Header.bodySize ;
 }
 
 
@@ -416,6 +418,8 @@ NetworkMessage::readFederationName(MessageBody *Body)
 }
 
 
+
+
 // -------------------
 // -- ReadNomFedere --
 // -------------------
@@ -438,17 +442,14 @@ NetworkMessage::write(Socket *socket)
 {
 
 #ifdef USE_HEADER_AND_BODY
-    Boolean Result ;
     // 1- Call WriteHeader
-    Result = writeHeader(socket);
+    bool result = writeHeader(socket);
 
     // 2- If WriteHeader returned RTI_TRUE, call WriteBody.
-    if (Result == RTI_TRUE)
+    if (result)
         writeBody(socket);
-
 #else
     socket->send(this, sizeof(NetworkMessage));
-    //socket->send((NetworkMessage)this, sizeof(NetworkMessage));
 #endif
 
 }
@@ -595,12 +596,14 @@ NetworkMessage::writeBody(Socket *socket)
             Body.writeString(label);
             break ;
 
+	  case MODIFY_REGION:
+	    writeExtents(Body);
+	    break ;
+	    
             // -- Default Handler --
-
           default:
             D.Out(pdExcept, "Unknown type %d in WriteBody.", Header.type);
             throw RTIinternalError("Unknown/Unimplemented type for Header.");
-
         }
 
     // 2- Set Header.bodySize
@@ -622,7 +625,7 @@ NetworkMessage::writeBody(Socket *socket)
 // -- WriteHeader --
 // -----------------
 
-Boolean
+bool
 NetworkMessage::writeHeader(Socket *socket)
 {
     // 1- Clear Header
@@ -827,6 +830,11 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.O_I.handle = objectClass ;
             break ;
 
+	  case MODIFY_REGION:
+	    Header.bodySize = 1 ;
+	    Header.VP.ddm.region = region ;
+	    break ;
+
             // -- Default Handler --
 
           default:
@@ -840,13 +848,59 @@ NetworkMessage::writeHeader(Socket *socket)
 
     if (Header.bodySize == 0) {
         socket->send((void *) &Header, sizeof(HeaderStruct));
-        return RTI_FALSE ;
+        return false ;
     }
     else
-        return RTI_TRUE ;
+        return true ;
+}
 
+// -----------------------------------------------------------------------------
+// readExtents
+//
+void
+NetworkMessage::readExtents(MessageBody &body)
+{
+    if (extents) {
+	for (vector<Extent *>::iterator i = extents->begin();
+	     i != extents->end(); ++i) {
+	    delete *i ;
+	}
+	delete extents ;
+	
+    }
+    extents = new vector<Extent *>();
+    
+    long n = body.readLongInt();
+    for (long i = 0 ; i < n ; ++i) {
+	long m = body.readLongInt();
+	Extent *e = new Extent(m);
+	for (long j = 0 ; j < m ; ++j) {
+	    e->setRangeLowerBound(j, body.readLongInt());
+	    e->setRangeUpperBound(j, body.readLongInt());
+	}
+	extents->push_back(e);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// writeExtents
+//
+void
+NetworkMessage::writeExtents(MessageBody &body)
+{
+    long n = extents ? extents->size() : 0 ;
+
+    for (long i = 0 ; i < n ; ++i) {
+	Extent *e = (*extents)[i] ;
+	long m = e->getNumberOfRanges();
+	body.writeLongInt(m);
+	for (long j = 0 ; j < m ; ++j) {
+	    body.writeLongInt(e->getRangeLowerBound(j));
+	    body.writeLongInt(e->getRangeUpperBound(j));
+	}
+    }
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.10 2003/07/01 13:34:04 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.26 2003/06/27 17:26:28 breholee Exp $
+// $Id: Federation.cc,v 3.27 2003/07/01 13:31:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1501,7 +1501,19 @@ Federation::createRegion(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-//! Reads a XML configuration file for restoring a previously saved federation.
+// modifyRegion
+void
+Federation::modifyRegion(FederateHandle federate, long region,
+			 vector<Extent *> *extents)
+    throw (RegionNotKnown, InvalidExtents, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    check(federate);
+    root->modifyRegion(region, extents);
+}
+
+// ----------------------------------------------------------------------------
+//!
 void
 Federation::deleteRegion(FederateHandle federate,
                          long region)
@@ -1644,5 +1656,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.26 2003/06/27 17:26:28 breholee Exp $
+// $Id: Federation.cc,v 3.27 2003/07/01 13:31:24 breholee Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.11 2003/06/27 17:26:29 breholee Exp $
+// $Id: RootObject.cc,v 3.12 2003/07/01 13:34:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -189,6 +189,18 @@ RootObject::createRegion(SpaceHandle handle, long nb_extents)
 }
 
 // ----------------------------------------------------------------------------
+// modify a region
+void
+RootObject::modifyRegion(long handle, vector<Extent *> *extents)
+    throw (RegionNotKnown, InvalidExtents)
+{
+    RegionImp *region = getRegion(handle);
+
+    // TODO: check extents are in the routing space
+    region->setExtents(*extents);
+}
+
+// ----------------------------------------------------------------------------
 //! delete a region
 void
 RootObject::deleteRegion(long handle)
@@ -270,4 +282,4 @@ RootObject::killFederate(FederateHandle the_federate)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.11 2003/06/27 17:26:29 breholee Exp $
+// $Id: RootObject.cc,v 3.12 2003/07/01 13:34:04 breholee Exp $

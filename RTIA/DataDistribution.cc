@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: DataDistribution.cc,v 3.9 2003/07/01 13:30:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -137,6 +137,35 @@ DataDistribution::createRegion(SpaceHandle space,
 }
 
 // ----------------------------------------------------------------------------
+// modifyRegion
+//
+void
+DataDistribution::modifyRegion(RegionHandle handle,
+			       std::vector<Extent *> *extents,
+			       TypeException &e)
+{
+    D[pdDebug] << "Modify region " << handle << "..." << endl ;
+
+    // check region
+    RegionImp *region = rootObject->getRegion(handle);
+
+    // Request to RTIG
+    NetworkMessage req, rep ;
+    req.type = NetworkMessage::MODIFY_REGION ;
+    req.region = handle ;
+    req.setExtents(extents);
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::MODIFY_REGION, req.federate);
+    e = rep.exception ;
+
+    if (e == e_NO_EXCEPTION) {
+	region->setExtents(*extents);	
+	D[pdDebug] << "Modified region " << handle << endl ;
+    }
+}
+
+// ----------------------------------------------------------------------------
 // deleteRegion
 //
 void
@@ -168,4 +197,4 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: DataDistribution.cc,v 3.9 2003/07/01 13:30:05 breholee Exp $

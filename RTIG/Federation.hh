@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.19 2003/06/27 17:26:28 breholee Exp $
+// $Id: Federation.hh,v 3.20 2003/07/01 13:31:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -419,11 +419,24 @@ public:
     // Data Distribution Management
 
     long createRegion(FederateHandle, SpaceHandle, long)
-        throw (SpaceNotDefined, InvalidExtents, SaveInProgress,
-               RestoreInProgress, RTIinternalError);
+        throw (SpaceNotDefined,
+	       InvalidExtents,
+	       SaveInProgress,
+               RestoreInProgress,
+	       RTIinternalError);
 
+    void modifyRegion(FederateHandle, long, std::vector<Extent *> *)
+	throw (RegionNotKnown,
+	       InvalidExtents,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+    
     void deleteRegion(FederateHandle, long)
-        throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress,
+        throw (RegionNotKnown,
+	       RegionInUse,
+	       SaveInProgress,
+	       RestoreInProgress,
                RTIinternalError);
 
 private:
@@ -455,4 +468,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.19 2003/06/27 17:26:28 breholee Exp $
+// $Id: Federation.hh,v 3.20 2003/07/01 13:31:24 breholee Exp $

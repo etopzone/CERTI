@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.13 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.14 2003/07/01 13:31:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -897,6 +897,26 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 }
 
 // ----------------------------------------------------------------------------
+// processModifyRegion
+void
+RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
+{
+    federations->modifyRegion(req->federation, req->federate,
+			      req->region, req->getExtents());
+    
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " modifies region " << req->region
+               << endl ;
+
+    NetworkMessage rep ;
+
+    rep.type = NetworkMessage::MODIFY_REGION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
+// ----------------------------------------------------------------------------
 // processDeleteRegion
 void
 RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
@@ -919,4 +939,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.13 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.14 2003/07/01 13:31:25 breholee Exp $

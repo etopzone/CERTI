@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.31 2003/06/27 17:26:29 breholee Exp $
+// $Id: RTIambassador.cc,v 3.32 2003/07/01 13:26:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,6 +38,18 @@
 #include "PrettyDebug.hh"
 
 #include <signal.h>
+#include <csignal>
+#include <iostream>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <cstring>
+#include <assert.h>
+
+using std::cout ;
+using std::cerr ;
+using std::endl ;
+
 
 namespace certi {
 
@@ -1255,7 +1267,6 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::ENABLE_TIME_REGULATION ;
     req.setBoolean(RTI_TRUE);
 
@@ -1276,7 +1287,6 @@ RTIambassador::disableTimeRegulation()
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::DISABLE_TIME_REGULATION ;
     req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
@@ -1297,7 +1307,6 @@ RTIambassador::enableTimeConstrained()
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::ENABLE_TIME_CONSTRAINED ;
     req.setBoolean(RTI_TRUE);
     executeService(&req, &rep);
@@ -1316,7 +1325,6 @@ RTIambassador::disableTimeConstrained()
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::DISABLE_TIME_CONSTRAINED ;
     req.setBoolean(RTI_FALSE);
     executeService(&req, &rep);
@@ -1339,7 +1347,6 @@ RTIambassador::timeAdvanceRequest(FedTime& theTime)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::TIME_ADVANCE_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
@@ -1365,7 +1372,6 @@ RTIambassador::timeAdvanceRequestAvailable(const FedTime& theTime)
 
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::TIME_ADVANCE_REQUEST_AVAILABLE ;
     req.setFedTime(theTime);
 
@@ -1389,7 +1395,6 @@ RTIambassador::nextEventRequest(const FedTime& theTime)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::NEXT_EVENT_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
@@ -1414,7 +1419,6 @@ RTIambassador::nextEventRequestAvailable(const FedTime& theTime)
     throw UnimplementedService();
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::NEXT_EVENT_REQUEST ;
     req.setFedTime(theTime);
     executeService(&req, &rep);
@@ -1496,7 +1500,6 @@ RTIambassador::queryLBTS(FedTime& theTime)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::QUERY_LBTS ;
     executeService(&req, &rep);
 
@@ -1515,7 +1518,6 @@ RTIambassador::queryFederateTime(FedTime& theTime)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::QUERY_FEDERATE_TIME ;
     executeService(&req, &rep);
 
@@ -1549,7 +1551,6 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::MODIFY_LOOKAHEAD ;
     req.setLookahead(theLookahead);
 
@@ -1568,7 +1569,6 @@ RTIambassador::queryLookahead(FedTime& theTime)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::QUERY_LOOKAHEAD ;
     executeService(&req, &rep);
 
@@ -1641,7 +1641,6 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::CHANGE_INTERACTION_ORDER_TYPE ;
     req.setInteractionClass(theClass);
     req.setOrdering(theType);
@@ -1682,19 +1681,25 @@ RTIambassador::createRegion(SpaceHandle space,
 // ----------------------------------------------------------------------------
 // Notify About Region Modification
 void
-RTIambassador::notifyAboutRegionModification(Region &)
+RTIambassador::notifyAboutRegionModification(Region &r)
     throw (RegionNotKnown,
            InvalidExtents,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
-}
+    RegionImp &region = dynamic_cast<RegionImp &>(r);
+    Message req, rep ;
 
+    req.setType(Message::MODIFY_REGION);
+    req.setRegion(region.getHandle());
+    req.setExtents(region.getExtents());
+
+    executeService(&req, &rep);
+    region.notify();
+}
 
 // ----------------------------------------------------------------------------
 // Delete Region
@@ -1771,9 +1776,9 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle,
 // ----------------------------------------------------------------------------
 // Associate Region For Updates
 void
-RTIambassador::associateRegionForUpdates(Region &,
-                                         ObjectHandle,
-                                         const AttributeHandleSet &)
+RTIambassador::associateRegionForUpdates(Region &region,
+                                         ObjectHandle object,
+                                         const AttributeHandleSet &attributes)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            InvalidRegionContext,
@@ -1782,10 +1787,9 @@ RTIambassador::associateRegionForUpdates(Region &,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    
 }
 
 // ----------------------------------------------------------------------------
@@ -1964,7 +1968,6 @@ RTIambassador::getObjectClassHandle(const char *theName)
 {
     Message req, rep ;
 
-    // envoyer la requete au RTI
     req.type = Message::GET_OBJECT_CLASS_HANDLE ;
     req.setName(theName);
 
@@ -3247,4 +3250,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.31 2003/06/27 17:26:29 breholee Exp $
+// $Id: RTIambassador.cc,v 3.32 2003/07/01 13:26:55 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.15 2003/06/27 17:26:28 breholee Exp $
+// $Id: FederationsList.cc,v 3.16 2003/07/01 13:31:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1027,6 +1027,24 @@ FederationsList::createRegion(Handle federation,
 
 // ----------------------------------------------------------------------------
 void
+FederationsList::modifyRegion(Handle federation,
+			      FederateHandle federate,
+			      long region,
+			      std::vector<Extent *> *extents)
+    throw (InvalidExtents, SaveInProgress, RestoreInProgress, RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Modify region #" << region << endl ;
+    f->modifyRegion(federate, region, extents);
+}
+
+// ----------------------------------------------------------------------------
+void
 FederationsList::deleteRegion(Handle federation,
                               FederateHandle federate,
                               long region)
@@ -1121,5 +1139,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.15 2003/06/27 17:26:28 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.16 2003/07/01 13:31:24 breholee Exp $
 

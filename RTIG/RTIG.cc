@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIG.cc,v 3.15 2003/07/01 13:31:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -323,6 +323,12 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processCreateRegion(link, msg);
         break ;
 
+      case NetworkMessage::MODIFY_REGION:
+	D[pdTrace] << "modifyRegion" << endl ;
+	auditServer->setLevel(6);
+        processModifyRegion(link, msg);
+        break ;
+
       case NetworkMessage::DELETE_REGION:
         D[pdTrace] << "deleteRegion" << endl ;
         auditServer->setLevel(6);
@@ -330,7 +336,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       default:
-        // FIXME: Sould treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
+        // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
         D.Out(pdError, "processMessageRecu: unknown type %u.", msg->type);
         throw RTIinternalError("Unknown Message Type");
     }
@@ -923,4 +929,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIG.cc,v 3.15 2003/07/01 13:31:24 breholee Exp $

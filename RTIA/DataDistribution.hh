@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.6 2003/05/23 14:16:47 breholee Exp $
+// $Id: DataDistribution.hh,v 3.7 2003/07/01 13:30:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -56,6 +56,8 @@ public:
     long createRegion(SpaceHandle, long, TypeException &)
         throw (SpaceNotDefined);
 
+    void modifyRegion(RegionHandle, std::vector<Extent *> *, TypeException &);
+    
     void deleteRegion(long, TypeException &)
         throw (RegionNotKnown, RegionInUse);
 
@@ -69,4 +71,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.6 2003/05/23 14:16:47 breholee Exp $
+// $Id: DataDistribution.hh,v 3.7 2003/07/01 13:30:05 breholee Exp $
