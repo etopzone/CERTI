@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.13 2003/10/20 13:15:14 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.14 2003/11/10 14:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -927,61 +927,12 @@ NetworkMessage::writeHeader(Socket *socket)
     // 4- If Header.bodySize = 0, send message and return RTI_FALSE,
     // Else send nothing(will be done by WriteBody), and return RTI_TRUE.
 
-    if (Header.bodySize == 0) {
+    if (Header.bodySize == 0)
         socket->send((void *) &Header, sizeof(HeaderStruct));
-        return false ;
-    }
-    else
-        return true ;
-}
 
-// -----------------------------------------------------------------------------
-// readExtents
-//
-void
-NetworkMessage::readExtents(MessageBody &body)
-{
-    if (extents) {
-	for (vector<Extent *>::iterator i = extents->begin();
-	     i != extents->end(); ++i) {
-	    delete *i ;
-	}
-	delete extents ;
-	
-    }
-    extents = new vector<Extent *>();
-    
-    long n = body.readLongInt();
-    for (long i = 0 ; i < n ; ++i) {
-	long m = body.readLongInt();
-	Extent *e = new Extent(m);
-	for (long j = 0 ; j < m ; ++j) {
-	    e->setRangeLowerBound(j, body.readLongInt());
-	    e->setRangeUpperBound(j, body.readLongInt());
-	}
-	extents->push_back(e);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// writeExtents
-//
-void
-NetworkMessage::writeExtents(MessageBody &body)
-{
-    long n = extents ? extents->size() : 0 ;
-
-    for (long i = 0 ; i < n ; ++i) {
-	Extent *e = (*extents)[i] ;
-	long m = e->getNumberOfRanges();
-	body.writeLongInt(m);
-	for (long j = 0 ; j < m ; ++j) {
-	    body.writeLongInt(e->getRangeLowerBound(j));
-	    body.writeLongInt(e->getRangeUpperBound(j));
-	}
-    }
+    return Header.bodySize != 0 ;
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.13 2003/10/20 13:15:14 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.14 2003/11/10 14:43:02 breholee Exp $

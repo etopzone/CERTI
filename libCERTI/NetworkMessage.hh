@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.14 2003/07/09 16:01:00 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.15 2003/11/10 14:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -29,8 +29,8 @@
 #include "Exception.hh"
 #include "Socket.hh"
 #include "MessageBody.hh"
-#include "Extent.hh"
 #include "RegionImp.hh"
+#include "BasicMessage.hh"
 
 #include <vector>
 
@@ -46,7 +46,7 @@
 
 namespace certi {
 
-class NetworkMessage
+class NetworkMessage : public BasicMessage
 {
 public:
     struct TimeStruct {
@@ -176,7 +176,9 @@ public:
 	DDM_SUBSCRIBE_ATTRIBUTES,
 	DDM_UNSUBSCRIBE_ATTRIBUTES,
 	DDM_SUBSCRIBE_INTERACTION,
-	DDM_UNSUBSCRIBE_INTERACTION
+	DDM_UNSUBSCRIBE_INTERACTION,
+
+	LAST
     };
 
     struct HeaderStruct {
@@ -248,9 +250,6 @@ public :
     // containing the actual Parameter values. You must FREE this structure.
     ParameterValue *getParamValueArray();
 
-    void setExtents(std::vector<Extent *> *);
-    std::vector<Extent *> *getExtents();
-
     void setAHS(const AttributeHandle *, int);
 
     // -----------------------
@@ -306,8 +305,6 @@ public :
     void setLabel(const char *new_label) { strcpy(label, new_label); }
     void setTag(const char *new_tag) { strcpy(tag, new_tag); }
 
-    std::vector<Extent *> *extents ;
-
 private:
 
     // ------------------------
@@ -340,12 +337,10 @@ private:
     bool writeHeader(Socket *Socket);
 
     // -- Others Private Read Methods --
-    void readExtents(MessageBody &);
     void readLabel(MessageBody *Body);
     void readTag(MessageBody *Body);
     void readFederationName(MessageBody *Body);
     void readFederateName(MessageBody *Body);
-    void writeExtents(MessageBody &);
 
 };
 
@@ -355,4 +350,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.14 2003/07/09 16:01:00 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.15 2003/11/10 14:43:02 breholee Exp $

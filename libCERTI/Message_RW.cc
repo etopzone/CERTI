@@ -19,17 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.16 2003/10/20 13:15:14 breholee Exp $
+// $Id: Message_RW.cc,v 3.17 2003/11/10 14:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Message.hh"
 
+#include <cassert>
+
 using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("MESSAGE", "(Message_RW) ");
+static pdCDebug D("MESSAGE", __FILE__);
 
 // You can comment this out if you don't want to optimize network messages.
 #define USE_HEADER_AND_BODY
@@ -38,19 +40,12 @@ static pdCDebug D("MESSAGE", "(Message_RW) ");
 //! Read NetworkMessage Objects from Socket objects.
 void
 Message::read(SocketUN *socket)
-    throw (NetworkError,
-           NetworkSignal)
+    throw (NetworkError, NetworkSignal)
 {
 #ifdef USE_HEADER_AND_BODY
 
-    Boolean Result ;
-
-    // 1- Read Header
-    Result = readHeader(socket);
-
-    // 2- if ReadHeader returned RTI_TRUE, Read Body.
-    if (Result == RTI_TRUE)
-        readBody(socket);
+    bool has_body = readHeader(socket);
+    if (has_body) readBody(socket);
 
 #else
     socket->receive((void *) this, sizeof(Message));
@@ -62,17 +57,14 @@ Message::read(SocketUN *socket)
 void
 Message::readBody(SocketUN *socket)
 {
+    assert(header.bodySize > 0);
+
     MessageBody Body ;
 
-    if (header.bodySize == 0)
-        throw RTIinternalError("ReadBody should not have been called.");
-
     // 1. Read Body from socket.
-
     socket->receive((void *) Body.getBuffer(), header.bodySize);
 
     // 3. Read informations from Message Body according to message type.
-
     if (header.exception != e_NO_EXCEPTION) {
         Body.readString(exceptionReason, MAX_EXCEPTION_REASON_LENGTH);
     }
@@ -301,7 +293,7 @@ Message::readBody(SocketUN *socket)
 /*! Read a Header from a socket, and process it to read its content. Return
   RTI_TRUE if the ReadBody Method has to be called.
 */
-Boolean
+bool
 Message::readHeader(SocketUN *socket)
 {
     // 1- Read Header from Socket
@@ -315,7 +307,7 @@ Message::readHeader(SocketUN *socket)
     // exception reason.
 
     if (exception != e_NO_EXCEPTION)
-        return RTI_TRUE ;
+        return true ;
 
     // 2- Parse Header according to its type(Variable Part)
     // NULL, UAV and SendInteraction are the most common ones.
@@ -504,18 +496,9 @@ Message::readHeader(SocketUN *socket)
         throw RTIinternalError("Message: Received unknown Header type.");
     }
 
-    // 4- If Header.bodySize is not 0, return RTI_TRUE, else RTI_FALSE
-
-    if (header.bodySize == 0)
-        return RTI_FALSE ;
-    else
-        return RTI_TRUE ;
+    // 4- Return depends on body
+    return header.bodySize != 0 ;
 }
-
-
-// ---------------
-// -- ReadLabel --
-// ---------------
 
 void
 Message::readHandleArray(MessageBody *Body)
@@ -1126,13 +1109,10 @@ Message::writeHeader(SocketUN *socket)
     // 4- If Header.bodySize = 0, send message and return RTI_FALSE,
     // Else send nothing(will be done by WriteBody), and return RTI_TRUE.
 
-    if (header.bodySize == 0) {
+    if (header.bodySize == 0)
         socket->send((void *) &header, sizeof(MessageHeader));
-        return false ;
-    }
-    else
-        return true ;
 
+    return header.bodySize != 0 ;
 }
 
 
@@ -1159,53 +1139,6 @@ Message::writeValueArray(MessageBody *Body)
     }
 }
 
-// ----------------------------------------------------------------------------
-// writeExtents
-//
-void
-Message::writeExtents(MessageBody &body)
-{
-    long n = extents ? extents->size() : 0 ;
-
-    for (long i = 0 ; i < n ; ++i) {
-	Extent *e = (*extents)[i] ;
-	long m = e->getNumberOfRanges();
-	body.writeLongInt(m);
-	for (long j = 0 ; j < m ; ++j) {
-	    body.writeLongInt(e->getRangeLowerBound(j));
-	    body.writeLongInt(e->getRangeUpperBound(j));
-	}
-    }
-}
-
-// ----------------------------------------------------------------------------
-// readExtents
-//
-void
-Message::readExtents(MessageBody &body)
-{
-    if (extents) {
-	for (vector<Extent *>::iterator i = extents->begin();
-	     i != extents->end(); ++i) {
-	    delete *i ;
-	}
-	delete extents ;
-
-    }
-    extents = new vector<Extent *>();
-    
-    long n = body.readLongInt();
-    for (long i = 0 ; i < n ; ++i) {
-	long m = body.readLongInt();
-	Extent *e = new Extent(m);
-	for (long j = 0 ; j < m ; ++j) {
-	    e->setRangeLowerBound(j, body.readLongInt());
-	    e->setRangeUpperBound(j, body.readLongInt());
-	}
-	extents->push_back(e);
-    }
-}
-
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.16 2003/10/20 13:15:14 breholee Exp $
+// $Id: Message_RW.cc,v 3.17 2003/11/10 14:43:02 breholee Exp $

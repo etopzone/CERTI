@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.22 2003/10/20 13:15:14 breholee Exp $
+// $Id: Message.cc,v 3.23 2003/11/10 14:43:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,7 +40,6 @@ namespace certi {
 #define NONE -1
 
 Message::Message()
-    : extents(0)
 {
     date = 0.0 ;
     exception = e_NO_EXCEPTION ;
@@ -58,13 +57,6 @@ Message::Message()
 //
 Message::~Message()
 {
-    if (extents) {
-	for (vector<Extent *>::iterator i = extents->begin();
-		 i != extents->end(); ++i) {
-	    delete *i ;
-	}
-	delete extents ;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -495,23 +487,6 @@ void Message::setFederationName(const char *NewNomFederation)
     strcpy(federationName, NewNomFederation);
 }
 
-// ----------------------------------------------------------------------------
-// setExtents
-//
-void
-Message::setExtents(vector<Extent *> *e)
-{
-    extents = e ;
-}
-
-// ----------------------------------------------------------------------------
-// getExtents
-//
-vector<Extent *> *
-Message::getExtents()
-{
-    return extents ;
-}
 
 // ----------------------------------------------------------------------------
 // setFederateName
@@ -642,4 +617,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.22 2003/10/20 13:15:14 breholee Exp $
+// $Id: Message.cc,v 3.23 2003/11/10 14:43:01 breholee Exp $

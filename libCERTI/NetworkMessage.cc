@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.9 2003/10/20 13:15:14 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.10 2003/11/10 14:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -230,22 +230,6 @@ NetworkMessage::setValue(int Rank, const char *Value)
 }
 
 // ----------------------------------------------------------------------------
-// setExtents
-void
-NetworkMessage::setExtents(vector<Extent *> *ext)
-{
-    extents = ext ;
-}
-
-// ----------------------------------------------------------------------------
-//
-vector<Extent *> *
-NetworkMessage::getExtents()
-{
-    return extents ;
-}
-
-// ----------------------------------------------------------------------------
 void
 NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 {
@@ -258,4 +242,4 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.9 2003/10/20 13:15:14 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.10 2003/11/10 14:43:02 breholee Exp $

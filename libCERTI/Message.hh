@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.21 2003/07/03 16:19:47 breholee Exp $
+// $Id: Message.hh,v 3.22 2003/11/10 14:43:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -30,13 +30,14 @@
 #include "SocketUN.hh"
 #include "MessageBody.hh"
 #include "RegionImp.hh"
+#include "BasicMessage.hh"
 
 namespace certi {
 
 /*! The Message class is used to formalize messages that are going to be
   exchanged between the RTI and the federate.
 */
-class Message
+class Message : public BasicMessage
 {
 public:
     struct MessageTimeStruct {
@@ -84,7 +85,7 @@ public:
     };
 
     enum Type {
-        NOT_USED,
+        NOT_USED = 0,
 
         // gestion federation
         CREATE_FEDERATION_EXECUTION,
@@ -240,7 +241,9 @@ public:
         DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
         ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
         DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
-        TICK_REQUEST
+        TICK_REQUEST,
+
+	LAST
     };
 
     // -- Structure de l'entete --
@@ -386,13 +389,8 @@ public:
     void setParameters(ParameterHandle *, ParameterValue *, ushort);
 
     void setException(TypeException, const char *the_reason = "\0");
-    TypeException getExceptionType() const
-    { return exception ; };
-    const char *getExceptionReason() const
-    { return exceptionReason ; };
-
-    void setExtents(std::vector<Extent *> *);
-    std::vector<Extent *> *getExtents();
+    TypeException getExceptionType() const { return exception ; };
+    const char *getExceptionReason() const { return exceptionReason ; };
 
     // Public attributes
     Type type ;
@@ -446,7 +444,7 @@ private:
     // Read a Header from a socket, and process it to read its
     // content. Return RTI_TRUE if the ReadBody Method has to be
     // called.
-    Boolean readHeader(SocketUN *Socket);
+    bool readHeader(SocketUN *Socket);
 
     // The message is written onto the socket by WriteHeader if no
     // body is required, or by WriteBody is a body has been required
@@ -469,13 +467,11 @@ private:
     void readResignAction(MessageBody *Body);
     void readTag(MessageBody *Body);
     void readValueArray(MessageBody *Body);
-    void readExtents(MessageBody &);
 
     // -- Other Private Write Methods --
     void writeHandleArray(MessageBody *Body);
     void writeResignAction(MessageBody *Body);
     void writeValueArray(MessageBody *Body);
-    void writeExtents(MessageBody &);
 
     // ------------------------
     // -- Private Attributes --
@@ -488,7 +484,6 @@ private:
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
     AttributeValue valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
-    std::vector<Extent *> *extents ;
     std::vector<RegionHandle> regions ;
 };
 
@@ -496,4 +491,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.21 2003/07/03 16:19:47 breholee Exp $
+// $Id: Message.hh,v 3.22 2003/11/10 14:43:01 breholee Exp $
