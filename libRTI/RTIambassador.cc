@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.8 2003/01/17 16:28:14 breholee Exp $
+// $Id: RTIambassador.cc,v 3.9 2003/01/20 17:41:09 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -255,21 +255,21 @@ RTIambassador::createFederationExecution(const char *executionName,
            RestoreInProgress,
            RTIinternalError)
 {
-    Message req, rep ;
-    char *exeName = new char[20] ;
-    strcpy(exeName, executionName);
-    strcat(exeName, "\56");
-    strcat(exeName, "fed");
-
-    req.Type = CREATE_FEDERATION_EXECUTION ;
-    req.setFederationName((FederationExecutionName) executionName);
-
-    if (!strcasecmp(FED, exeName)) {
-        executeService(&req, &rep);
-    }
-    else {
-        throw RTIinternalError();
-    }
+    Message req, rep;
+    //   char *exeName = new char[20];
+    //   strcpy(exeName,executionName);
+    //   strcat(exeName,"\56");
+    //   strcat(exeName,"fed");
+    
+    req.Type             = CREATE_FEDERATION_EXECUTION;
+    req.setFederationName((FederationExecutionName)executionName);
+    
+    //    if(!strcasecmp(FED,exeName)) {
+    executeService(&req, &rep);
+    //   }
+    //   else {
+    //     throw RTIinternalError();
+    //   }
 }
 
 // ---------------------------------------------------------------------------
@@ -3581,4 +3581,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.8 2003/01/17 16:28:14 breholee Exp $
+// $Id: RTIambassador.cc,v 3.9 2003/01/20 17:41:09 breholee Exp $
