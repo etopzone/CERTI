@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Communications.cc,v 3.4 2002/12/11 12:50:14 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -57,7 +57,7 @@ void Communications::waitMessage(NetworkMessage *msg,
 
   while((tampon->Type != type_msg) || 
 	((numeroFedere != 0) &&(tampon->NumeroFedere != numeroFedere))) {
-    _fileAttente.Inserer(_fileAttente.getLength()+1, tampon);
+    waitingList.push_back(tampon);
     tampon = new NetworkMessage;
     tampon->read((SecureTCPSocket *) this);
     
@@ -78,7 +78,6 @@ void Communications::waitMessage(NetworkMessage *msg,
 
 Communications::Communications() : SocketUN(), SecureTCPSocket(), SocketUDP()
 {
-  FILE *fp = NULL;
   char nom_serveur_RTIG[200]; 
 
   // creation communication Federe/RTIA
@@ -86,16 +85,19 @@ Communications::Communications() : SocketUN(), SecureTCPSocket(), SocketUDP()
 
   // creation liaison TCP avec le RTIG
   char *certihost = getenv("CERTI_HOST");
+
+  ifstream* file = NULL;
   if(certihost==NULL) {
-    fp = fopen("RTIA.dat", "r");
-    if(fp == NULL) {
-      printf("RTIA ERROR: Unable to find RTIG host.\n");
-      printf("No RTIA.dat file found, no CERTI_HOST variable set\n");
+    file = new ifstream("RTIA.dat", ios::in);
+    if(!file->is_open()) {
+      cout << "RTIA ERROR: Unable to find RTIG host." << endl;
+      cout << "No RTIA.dat file found, no CERTI_HOST variable set" << endl;
       exit(-1);
     }
     
-    fscanf(fp, "%s", nom_serveur_RTIG); // FIXME: buffer overflow
-    fclose(fp);
+    file->get(nom_serveur_RTIG, 200);
+    file->close();
+    delete file;
     certihost = nom_serveur_RTIG ;
   }
 
@@ -175,10 +177,10 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     FD_SET(_socket_mc, &fdset);
 #endif
 
-  if(_fileAttente.getLength() > 0) {
+  if(!waitingList.empty()) {
     // Il y a un message dans la file d'attente
-    msg2 = _fileAttente.Ieme(1);
-    _fileAttente.Supprimer(1);
+    msg2 = waitingList.front();
+    waitingList.pop_front();
     memcpy(msg_reseau, msg2, TAILLE_MSG_RESEAU);
     delete msg2;
     n = 1;
@@ -204,7 +206,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
   }
   else {
  
-    // _fileAttente.getLength() == 0 et pas de data dans le buffer TCP
+    // waitingList.empty() et pas de data dans le buffer TCP
     // Attendre un message(venant du federe ou du reseau)
  
     if(select(ulimit(4,0), &fdset, NULL, NULL, NULL) < 0 ) {
@@ -255,44 +257,30 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 
 Boolean 
 Communications::searchMessage(TypeNetworkMessage type_msg,
-			      FederateHandle numeroFedere,
-			      NetworkMessage *msg)
+                              FederateHandle numeroFedere,
+                              NetworkMessage *msg)
 {
-  int i;
-  NetworkMessage *Message;
+    list<NetworkMessage *>::iterator i = waitingList.begin();
+    for (; i != waitingList.end() ; i++) {
 
-  for(i = 1; i <= _fileAttente.getLength(); i++) {
-    Message = _fileAttente.Ieme(i);
- 
-    D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
- 
-    if(numeroFedere == 0) {
-      // Comparaison sans numero de federe
-      if(Message->Type == type_msg) {
-	memcpy(msg, Message, TAILLE_MSG_RESEAU);
-	_fileAttente.Supprimer(i);
-	delete Message;
-	D.Out(pdProtocol, "Message of Type %d was already here.", 
-	      type_msg);
-	return RTI_TRUE;
-      }
+        D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
+
+        if((*i)->Type == type_msg) {
+            // if numeroFedere != 0, verify that federateNumbers are similar
+            if ( ((*i)->NumeroFedere==numeroFedere) || (numeroFedere == 0) ) {
+                memcpy(msg, (*i), TAILLE_MSG_RESEAU);
+                waitingList.erase(i);
+                delete (*i);
+                D.Out(pdProtocol, 
+                      "Message of Type %d was already here.", 
+                      type_msg);
+                return RTI_TRUE;
+            }
+        }
     }
-    else {
-      // Comparaison avec numero de federe
-      if((Message->Type==type_msg) && (Message->NumeroFedere==numeroFedere)) {
-	memcpy(msg, Message, TAILLE_MSG_RESEAU);
-	_fileAttente.Supprimer(i);
-	delete Message;
-	D.Out(pdProtocol, "Message of Type %d was already here.", 
-	      type_msg);
-	return RTI_TRUE;
-      }
-    }
-  }
-  return RTI_FALSE;
+    return RTI_FALSE;
 }
 
-}
-}
+}}
 
-// $Id: Communications.cc,v 3.3 2002/12/11 00:47:33 breholee Exp $
+// $Id: Communications.cc,v 3.4 2002/12/11 12:50:14 breholee Exp $

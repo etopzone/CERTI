@@ -19,27 +19,31 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Communications.hh,v 3.2 2002/12/11 12:50:14 breholee Exp $
 // ---------------------------------------------------------------------------
 
-#ifndef GCOM_HH
-#define GCOM_HH
+#ifndef _CERTI_COMMUNICATIONS_HH
+#define _CERTI_COMMUNICATIONS_HH
 
 #include <config.h>
+
+#include <fstream>
+using std::ifstream;
+using std::ios;
+#include <iostream>
+using std::cout;
+using std::endl;
+#include <list>
+using std::list;
 
 #include "PrettyDebug.hh"
 #include "baseTypes.hh"
 #include "RTItypes.hh"
-#include "NetworkMessage.hh" // NetworkMessage class
-#include "Message.hh" // Message class
-#include "SocketUN.hh" // SocketUN class
-#include "SecureTCPSocket.hh" // SecureTCPSocket class
-#include "List.hh"
+#include "NetworkMessage.hh"
+#include "Message.hh"
+#include "SocketUN.hh"
+#include "SecureTCPSocket.hh"
 #include "SocketUDP.hh"
-
-#include <stdio.h>
-#include <unistd.h>
-#include <string>
 
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -91,7 +95,7 @@ public:
   unsigned int getPort();
 
 private:
-  List <NetworkMessage*> _fileAttente;
+  list<NetworkMessage *> waitingList;
 
   // Renvoie RTI_TRUE si un message du type "type_msg" venant du federe
   // "numeroFedere"(ou de n'importe qui si numerofedere vaut 0) etait
@@ -102,9 +106,8 @@ private:
 			NetworkMessage *msg);
 };
 
-}
-}
+}}
 
-#endif
+#endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Communications.hh,v 3.2 2002/12/11 12:50:14 breholee Exp $
