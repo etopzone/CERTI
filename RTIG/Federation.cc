@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.22 2003/05/23 15:03:36 breholee Exp $
+// $Id: Federation.cc,v 3.23 2003/05/23 16:52:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -74,7 +74,7 @@ Federation::Federation(const char *federation_name,
 #endif
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
-    : list<Federate *>(), saveInProgress(false), saveStatus(true),
+    : saveInProgress(false), saveStatus(true),
       restoreInProgress(false), restoreStatus(true)
 {
     fedparser::FedParser *fed_reader ;
@@ -89,10 +89,6 @@ Federation::Federation(const char *federation_name,
     D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
     MCLink = mc_link ;
 #endif // FEDERATION_USES_MULTICAST // --------------
-
-    // Flags
-    saveInProgress = false ;
-    restoreInProgress = false ;
 
     // Allocates Name
     if ((federation_name == 0) || (federation_handle == 0))
@@ -228,7 +224,7 @@ Federation::~Federation()
 }
 
 // ----------------------------------------------------------------------------
-// Get attributes
+//! Returns the number of federates in federation.
 int
 Federation::getNbFederates() const
 {
@@ -244,6 +240,7 @@ Federation::isSynchronizing() const
 }
 
 // ----------------------------------------------------------------------------
+//! Returns the federation handle.
 FederationHandle
 Federation::getHandle() const
 {
@@ -251,13 +248,15 @@ Federation::getHandle() const
 }
 
 // ----------------------------------------------------------------------------
-//! getName.
+//! Returns the federation name given in 'Create Federation Execution'.
 const char *
 Federation::getName() const
 {
     return name ;
 }
 
+// ----------------------------------------------------------------------------
+//! Returns the number of federates regulator.
 int
 Federation::getNbRegulators() const
 {
@@ -300,9 +299,9 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
 
     D.Out(pdInit, "Federate %d joined Federation %d.", federate_handle, handle);
 
-    // Donner au nouveau federe un dernier message nul
-    // de chaque federe(i) contenant son heure logique h(i)
-    // pour que le nouveau puisse calculer son LBTS.
+    // Send, to the newly added federate, a Null message from each regulating
+    // federate (i) with their logical time h(i). This permits to calculate
+    // its LBTS.
     NetworkMessage message ;
     try {
         for (int i = 1 ; i <= regulators.size(); i++) {
@@ -472,8 +471,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
 }
 
 // ----------------------------------------------------------------------------
-// deleteObject
-
+//! Removes an object instance from federation.
 void
 Federation::deleteObject(FederateHandle federate,
                          ObjectHandle id,
@@ -495,7 +493,7 @@ Federation::deleteObject(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-//! registerSynchronization.
+//! Add a new synchronization point to federation.
 void
 Federation::registerSynchronization(FederateHandle federate,
                                     const char *label,
@@ -535,6 +533,9 @@ Federation::registerSynchronization(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
+/*! Broadcast an 'Announce Synchronization Point' when registering a new
+  synchronization point.
+*/
 void
 Federation::broadcastSynchronization(FederateHandle federate,
                                      const char *label,
@@ -558,7 +559,10 @@ Federation::broadcastSynchronization(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-//! the_time is not managed yet.
+//! Request a federation save.
+/*! This service puts each federate from federation in saving state.
+  !! the_time is not managed yet.
+*/
 void
 Federation::requestFederationSave(FederateHandle the_federate,
                                   const char *the_label,
@@ -601,6 +605,7 @@ Federation::federateSaveBegun(FederateHandle the_federate)
 }
 
 // ----------------------------------------------------------------------------
+//! Informs that a federate returns a save end message (with success or not!).
 void
 Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     throw (FederateNotExecutionMember)
@@ -638,6 +643,7 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
 }
 
 // ----------------------------------------------------------------------------
+//! Informs that a federate is requesting a save.
 void
 Federation::requestFederationRestore(FederateHandle the_federate,
                                      const char *the_label)
@@ -721,6 +727,10 @@ Federation::requestFederationRestore(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
+//! Informs that a federate has ended a restore.
+/*! If each federate in federation has ended restoring, this service send a
+  federation restore status.
+*/
 void
 Federation::federateRestoreStatus(FederateHandle the_federate,
                                   bool the_status)
@@ -805,7 +815,7 @@ Federation::getNewHandle()
 }
 
 // ----------------------------------------------------------------------------
-// empty
+//! Return true if no federates are in federation.
 /*! Return true if there are no Federates left in the Federation, else throw
   FederatesCurrentlyJoined.
 */
@@ -820,7 +830,7 @@ Federation::empty() const
 }
 
 // ----------------------------------------------------------------------------
-// check
+//! Return true if federate is in federation.
 /*! Return true if the Federate is part of the Federation, else throw an
   exception.
 */
@@ -926,8 +936,7 @@ Federation::publishObject(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-// registerObject
-
+//! Adds a new object instance to federation.
 ObjectHandle
 Federation::registerObject(FederateHandle federate,
                            ObjectClassHandle class_handle,
@@ -1493,6 +1502,7 @@ Federation::createRegion(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
+//! Reads a XML configuration file for restoring a previously saved federation.
 void
 Federation::deleteRegion(FederateHandle federate,
                          long region)
@@ -1635,5 +1645,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.22 2003/05/23 15:03:36 breholee Exp $
+// $Id: Federation.cc,v 3.23 2003/05/23 16:52:09 breholee Exp $
 
