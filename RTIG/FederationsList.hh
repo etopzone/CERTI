@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.hh,v 3.6 2003/01/20 20:30:44 breholee Exp $
+// $Id: FederationsList.hh,v 3.7 2003/01/29 18:12:12 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -118,14 +118,9 @@ public:
   // -------------------------
   // -- Federate Management --
   // -------------------------
-
-  // Create a new Federate if its name is unique, and return its new
-  // Federate Handle. Also send Null messages from all others federates
-  // to initialize its LBTS, and finally a RequestPause message if the
-  // Federation is already paused.
   FederateHandle addFederate(FederationHandle theHandle,
-			     FederateName theFederateName,
-			     SocketTCP *theTCPLink)
+                             const char *theFederateName,
+                             SocketTCP *theTCPLink)
     throw(FederationExecutionDoesNotExist,
 	  FederateAlreadyExecutionMember,
 	  MemoryExhausted,
@@ -138,9 +133,6 @@ public:
 	  FederateNotExecutionMember,
 	  RTIinternalError);
  
-  // This Method tries to remove all references to this Federate
-  // in the Federation. To be used when a Federate is supposed to
-  // have crashed.
   void killFederate(FederationHandle theHandle,
 		    FederateHandle theFederateHandle)
     throw();
@@ -440,7 +432,6 @@ public:
   // PRIVATE METHODS -----
 private:
   void checkHandle(FederationHandle theHandle) throw(RTIinternalError);
-  // Throw an exception if Handle is not correct(too low or too big)
 
   int searchFederation(FederationHandle the_handle, Federation* &federation)
       throw (FederationExecutionDoesNotExist, RTIinternalError);
@@ -450,4 +441,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.6 2003/01/20 20:30:44 breholee Exp $
+// $Id: FederationsList.hh,v 3.7 2003/01/29 18:12:12 breholee Exp $

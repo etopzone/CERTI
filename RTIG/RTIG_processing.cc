@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG_processing.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.4 2003/01/29 18:11:10 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -34,16 +34,16 @@ static pdCDebug D("RTIG", "(RTIG)- ");
 void 
 RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 {
-  FederationExecutionName federation = req->NomFederation;
+    char *federation = req->NomFederation;
 
-  if(federation == NULL) throw RTIinternalError("Invalid Federation Name.");
+    if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
-  auditServer->addToLinef("Federation Name : %s", federation);
+    auditServer->addToLinef("Federation Name : %s", federation);
 
 #ifdef FEDERATION_USES_MULTICAST
-  // multicast base address
-  unsigned long base_adr_mc = inet_addr(ADRESSE_MULTICAST);
-  SocketMC *com_mc = NULL;
+    // multicast base address
+    unsigned long base_adr_mc = inet_addr(ADRESSE_MULTICAST);
+    SocketMC *com_mc = NULL;
 
   // creer la communication multicast
   com_mc = new SocketMC();
@@ -58,7 +58,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
   federations->createFederation(federation, nextFederationHandle, com_mc);
 
   // inserer descripteur fichier pour le prochain appel a un select
-  ClientSockets.Inserer(1, com_mc);
+  ClientSockets.push_front(com_mc);
 
 #else
   federations->createFederation(federation, nextFederationHandle); 
@@ -83,71 +83,71 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 void 
 RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 {
-  FederationExecutionName federation = req->NomFederation;
-  FederateName federate = req->NomFedere;
+    char *federation = req->NomFederation ;
+    char *federate = req->NomFedere ;
 
-  unsigned int peer = req->BestEffortPeer;
-  unsigned long address = req->BestEffortAddress;
+    unsigned int peer = req->BestEffortPeer ;
+    unsigned long address = req->BestEffortAddress ;
 
-  FederationHandle num_federation;
-  FederateHandle num_federe;
+    FederationHandle num_federation ;
+    FederateHandle num_federe ;
 
-  int nb_regulateurs;
-  int nb_federes;
-  bool pause;
+    int nb_regulateurs ;
+    int nb_federes ;
+    bool pause ;
 
-  if((federation == NULL)||(federate == NULL))
-    throw RTIinternalError("Invalid Federation/Federate Name.");
+    if ((federation == NULL) || (federate == NULL))
+        throw RTIinternalError("Invalid Federation/Federate Name.");
 
-  auditServer->addToLinef("Federate \"%s\" joins Federation \"%s\"",
-			 federate, federation);
+    auditServer->addToLinef("Federate \"%s\" joins Federation \"%s\"",
+                            federate, federation);
 
-  federations->exists(federation, num_federation);
+    federations->exists(federation, num_federation);
 
-  num_federe = federations->addFederate(num_federation,
-					federate,
-					(SecureTCPSocket *)link);
+    num_federe = federations->addFederate(num_federation,
+                                          federate,
+                                          (SecureTCPSocket *) link);
 
 #ifdef FEDERATION_USES_MULTICAST
-  SocketMC *com_mc = NULL;
+    SocketMC *com_mc = NULL;
 
-  federations->info(num_federation, nb_federes, nb_regulateurs, pause, com_mc);
-  assert(com_mc != NULL);
+    federations->info(num_federation, nb_federes, nb_regulateurs, 
+                      pause, com_mc);
+    assert(com_mc != NULL);
 #else
-  federations->info(num_federation, nb_federes, nb_regulateurs, pause);
+    federations->info(num_federation, nb_federes, nb_regulateurs, pause);
 #endif
 
-  // Store Federate <->Socket reference.
-  socketServer->setReferences(link->returnSocket(),
-			      num_federation,
-			      num_federe,
-			      address,
-			      peer);
+    // Store Federate <->Socket reference.
+    socketServer->setReferences(link->returnSocket(),
+                                num_federation,
+                                num_federe,
+                                address,
+                                peer);
  
-  auditServer->addToLinef("(%d)with handle %d. Socket %d",
-			 num_federation, num_federe,
-			 link->returnSocket());
+    auditServer->addToLinef("(%d)with handle %d. Socket %d",
+                            num_federation, num_federe,
+                            link->returnSocket());
 
-  // Prepare answer
-  NetworkMessage rep;
-  rep.Type = m_JOIN_FEDERATION_EXECUTION;
-  rep.Exception = e_NO_EXCEPTION;
-  rep.NumeroFedere = num_federe;
-  rep.NumeroFederation = num_federation;
-  rep.NombreRegulateurs = nb_regulateurs;
-  rep.BestEffortPeer = peer;
-  rep.BestEffortAddress = address;
-
+    // Prepare answer
+    NetworkMessage rep;
+    rep.Type = m_JOIN_FEDERATION_EXECUTION;
+    rep.Exception = e_NO_EXCEPTION;
+    rep.NumeroFedere = num_federe;
+    rep.NumeroFederation = num_federation;
+    rep.NombreRegulateurs = nb_regulateurs;
+    rep.BestEffortPeer = peer;
+    rep.BestEffortAddress = address;
 
 #ifdef FEDERATION_USES_MULTICAST
-  rep.AdresseMulticast = com_mc->returnAdress();
+    rep.AdresseMulticast = com_mc->returnAdress();
 #endif
 
-  D.Out(pdInit, "Federate \"%s\" has joined Federation %u under handle %u.",
-	federate, num_federation, num_federe);
+    D.Out(pdInit, "Federate \"%s\" has joined Federation %u under handle %u.",
+          federate, num_federation, num_federe);
 
-  // Send answer
-  rep.write(link);
+    // Send answer
+    rep.write(link);
 }
  
 // ---------------------------------------------------------------------------
@@ -167,7 +167,7 @@ void
 RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 {
   FederationHandle num_federation;
-  FederationExecutionName federation = req->NomFederation;
+  char *federation = req->NomFederation;
 
   if(federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
@@ -814,4 +814,4 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 
 }}
 
-// $Id: RTIG_processing.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.4 2003/01/29 18:11:10 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.hh,v 3.6 2003/01/20 17:45:49 breholee Exp $
+// $Id: Federation.hh,v 3.7 2003/01/29 18:09:56 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -63,7 +63,7 @@ class Federation : private list<Federate *>
   // ATTRIBUTES --------------------------------------------------------------
 private:
   FederationHandle handle;
-  FederationExecutionName name; 
+  char *name ;
   bool paused ;
   char pauseLabel[MAX_USER_TAG_LENGTH + 1];
   ObjectHandle nextObjectId ;
@@ -446,4 +446,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.6 2003/01/20 17:45:49 breholee Exp $
+// $Id: Federation.hh,v 3.7 2003/01/29 18:09:56 breholee Exp $
