@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistribution.cc,v 3.17 2005/02/09 15:44:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -214,11 +214,13 @@ DataDistribution::associateRegion(ObjectHandle object,
 
     RegionImp *r = rootObject->getRegion(region);
 
+    D[pdDebug] << "- unassociate object " << object << std::endl ;
     rootObject->getObject(object)->unassociate(r);
     for (int i = 0 ; i < nb ; ++i) {
+	D[pdDebug] << "- associate attribute " << attr[i] << std::endl ;
 	rootObject->getObjectAttribute(object, attr[i])->associate(r);	
     }
-    
+
     NetworkMessage req, rep ;
 
     req.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
@@ -239,11 +241,14 @@ DataDistribution::associateRegion(ObjectHandle object,
 ObjectHandle
 DataDistribution::registerObject(ObjectClassHandle class_handle,
 				 const std::string name,
-				 const AttributeHandle *attr,
+				 const AttributeHandle *attrs,
 				 int nb,
 				 const std::vector<RegionHandle> regions,
 				 TypeException &e)
 {
+    D[pdDebug] << "Register object of class " << class_handle << " with "
+	       << regions.size() << " region(s)." << std::endl ;
+
     NetworkMessage req, rep ;
 
     req.type = NetworkMessage::DDM_REGISTER_OBJECT ;
@@ -251,7 +256,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     req.federate = fm->federate ;
     req.objectClass = class_handle ;
     req.setTag(name.c_str());
-    req.setAHS(attr, nb);
+    req.setAHS(attrs, nb);
     req.setRegions(regions);
 
     comm->sendMessage(&req);
@@ -260,7 +265,20 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 
     e = rep.exception ;
 
-    return rep.object ;
+    if (e == e_NO_EXCEPTION) {
+        rootObject->registerObjectInstance(fm->federate, class_handle, rep.object,
+                                           rep.label);
+	for (int i = 0 ; i < nb ; ++i) {
+	    D[pdDebug] << "Register attribute [" << i << "] Attr: " << attrs[i]
+		       << " Region: " << regions[i] << std::endl ;
+		
+	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep.object, attrs[i]);
+	    RegionImp *region = rootObject->getRegion(regions[i]);
+	    attribute->associate(region);
+	}
+        return rep.object ;
+    }
+    else return 0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -393,4 +411,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistribution.cc,v 3.17 2005/02/09 15:44:32 breholee Exp $
