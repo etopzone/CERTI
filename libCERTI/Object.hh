@@ -20,28 +20,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.7 2003/03/04 09:47:04 breholee Exp $
+// $Id: Object.hh,v 3.8 2003/04/23 09:45:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
 #define _CERTI_OBJECT_HH
 
 #include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <deque>
-using std::deque ;
-
-#include <list>
-using std::list ;
-
-#include <cstring>
-
 #include "RTItypes.hh"
 #include "ObjectAttribute.hh"
+
+#include <iostream>
+#include <deque>
+#include <list>
+#include <cstring>
+
+using std::cout ;
+using std::endl ;
+using std::deque ;
+using std::list ;
 
 namespace certi {
 
@@ -79,9 +76,12 @@ public:
     // -------------------------------
     void setName(const char *the_object_name);
     void getName(ObjectName the_name) const ;
+    const char *getName(void) const ;
 
     ObjectHandle getHandle(void) const ;
     void setHandle(ObjectHandle h);
+
+    FederateHandle getOwner(void) const ;
 
     // BUG: Prevoir un jour une methode pour changer SF...
 
@@ -106,4 +106,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.7 2003/03/04 09:47:04 breholee Exp $
+// $Id: Object.hh,v 3.8 2003/04/23 09:45:10 breholee Exp $

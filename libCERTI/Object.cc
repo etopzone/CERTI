@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.8 2003/03/04 09:47:04 breholee Exp $
+// $Id: Object.cc,v 3.9 2003/04/23 09:45:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -97,6 +97,13 @@ Object::getName(ObjectName the_name) const
 }
 
 // ----------------------------------------------------------------------------
+const char *
+Object::getName(void) const
+{
+    return name ;
+}
+
+// ----------------------------------------------------------------------------
 //! As 'theObjectName' is duplicated, it can be deleted afterwards.
 void
 Object::setName(const char *the_object_name)
@@ -134,6 +141,13 @@ Object::setHandle(ObjectHandle h)
     handle = h ;
 }
 
+// ----------------------------------------------------------------------------
+FederateHandle
+Object::getOwner(void) const
+{
+    return Owner ;
+}
+
 } // namespace certi
 
-// $Id: Object.cc,v 3.8 2003/03/04 09:47:04 breholee Exp $
+// $Id: Object.cc,v 3.9 2003/04/23 09:45:10 breholee Exp $
