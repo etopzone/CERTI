@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DeclarationManagement.hh"
@@ -42,7 +42,7 @@ DeclarationManagement::DeclarationManagement(Communications *GC,
 
 // ----------------------------------------------------------------------------
 // ~DeclarationManagement
-DeclarationManagement::~DeclarationManagement(void)
+DeclarationManagement::~DeclarationManagement()
 {
 }
 
@@ -392,7 +392,7 @@ DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle,
 // startRegistrationForObjectClass
 void
 DeclarationManagement::
-startRegistrationForObjectClass(ObjectClassHandle theClass,
+startRegistrationForObjectClass(ObjectClassHandle the_class,
                                 // CAttributeHandleValuePairSet &theAttributes,
                                 TypeException &e)
 {
@@ -403,7 +403,7 @@ startRegistrationForObjectClass(ObjectClassHandle theClass,
     // Partie Federe
 
     req.type = START_REGISTRATION_FOR_OBJECT_CLASS ;
-    req.objectClass = theClass ;
+    req.setObjectClass(the_class);
 
     comm->sendUN(&req);
 
@@ -422,7 +422,7 @@ startRegistrationForObjectClass(ObjectClassHandle theClass,
 // stopRegistrationForObjectClass
 void
 DeclarationManagement::
-stopRegistrationForObjectClass(ObjectClassHandle theClass,
+stopRegistrationForObjectClass(ObjectClassHandle the_class,
                                TypeException &e)
 {
     Message req, rep ;
@@ -432,7 +432,7 @@ stopRegistrationForObjectClass(ObjectClassHandle theClass,
     // Partie Federe
 
     req.type = STOP_REGISTRATION_FOR_OBJECT_CLASS ;
-    req.objectClass = theClass ;
+    req.setObjectClass(the_class);
 
     comm->sendUN(&req);
 
@@ -450,20 +450,13 @@ stopRegistrationForObjectClass(ObjectClassHandle theClass,
 // ----------------------------------------------------------------------------
 // turnInteractionsOn
 void
-DeclarationManagement::turnInteractionsOn(InteractionClassHandle theHandle,
+DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
                                           TypeException &e)
 {
     Message req, rep ;
-
-    // Pas de partie Locale
-
-    // Partie Federe
-
     req.type = TURN_INTERACTIONS_ON ;
-    req.interactionClass = theHandle ;
-
+    req.setInteractionClass(interaction);
     comm->sendUN(&req);
-
     comm->receiveUN(&rep);
 
     if (rep.type != req.type) {
@@ -478,18 +471,13 @@ DeclarationManagement::turnInteractionsOn(InteractionClassHandle theHandle,
 // ----------------------------------------------------------------------------
 // turnInteractionsOff
 void
-DeclarationManagement::turnInteractionsOff(InteractionClassHandle theHandle,
+DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
                                            TypeException &e)
 {
-    // Pas de partie Locale
-
-    // Partie Federe
     Message req ;
     req.type = TURN_INTERACTIONS_OFF ;
-    req.interactionClass = theHandle ;
-
+    req.setInteractionClass(interaction);
     comm->sendUN(&req);
-
     Message rep ;
     comm->receiveUN(&rep);
 
@@ -504,4 +492,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle theHandle,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $

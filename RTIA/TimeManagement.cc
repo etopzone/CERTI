@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: TimeManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -434,7 +434,7 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
 
 // ----------------------------------------------------------------------------
 FederationTime
-TimeManagement::requestFederationTime(void)
+TimeManagement::requestFederationTime()
 {
     if (_heure_courante < _LBTS)
         return _heure_courante ;
@@ -443,7 +443,7 @@ TimeManagement::requestFederationTime(void)
 }
 
 // ----------------------------------------------------------------------------
-FederationTimeDelta TimeManagement::requestLookahead(void)
+FederationTimeDelta TimeManagement::requestLookahead()
 {
     // BUG: C'est quoi cette salade ?
 
@@ -665,13 +665,13 @@ TimeManagement::timeAdvance(Boolean &msg_restant, TypeException &e)
   advanced and send a timeAdvanceGrant to federate.
 */
 void
-TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
+TimeManagement::timeAdvanceGrant(FederationTime logical_time,
                                  TypeException &e)
 {
     Message req, rep ;
 
     req.type = TIME_ADVANCE_GRANT ;
-    req.date = heure_logique ;
+    req.setFederationTime(logical_time);
 
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
           req.date);
@@ -681,7 +681,7 @@ TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION)
-        _heure_courante = heure_logique ;
+        _heure_courante = logical_time ;
 }
 
 // ----------------------------------------------------------------------------
@@ -690,7 +690,7 @@ TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
   is received.
 */
 void
-TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
+TimeManagement::timeAdvanceRequest(FederationTime logical_time,
                                    TypeException &e)
 {
     e = e_NO_EXCEPTION ;
@@ -700,16 +700,16 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_TimeAdvanceAlreadyInProgress ;
 
-    if (heure_logique <= _heure_courante)
+    if (logical_time <= _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
 
     if (e == e_NO_EXCEPTION) {
         if (_est_regulateur)
-            sendNullMessage(heure_logique);
+            sendNullMessage(logical_time);
 
         _avancee_en_cours = TAR ;
-        date_avancee = heure_logique ;
+        date_avancee = logical_time ;
 
         D.Out(pdTrace, "timeAdvanceRequest accepted (asked time=%f).",
               date_avancee);
@@ -721,4 +721,4 @@ TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: TimeManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $

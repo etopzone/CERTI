@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.11 2003/05/08 23:32:54 breholee Exp $
+// $Id: Message.cc,v 3.12 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -210,6 +210,13 @@ Message::setLookahead(const FedTime& the_lookahead)
 
 // ----------------------------------------------------------------------------
 void
+Message::setFederationTime(FederationTime the_time)
+{
+    date = the_time ;
+}
+
+// ----------------------------------------------------------------------------
+void
 Message::setBoolean(Boolean the_bool)
 {
     boolean = the_bool ;
@@ -248,6 +255,13 @@ void
 Message::setParameter(ParameterHandle the_parameter)
 {
     parameter = the_parameter ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setFederate(FederateHandle the_federate)
+{
+    federate = the_federate ;
 }
 
 // ----------------------------------------------------------------------------
@@ -312,6 +326,45 @@ Message::setPHVPS(const ParameterHandleValuePairSet &the_parameters)
     }
 
     delete theParameters_aux ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setAttributes(AttributeHandle *the_attributes, ushort the_size)
+{
+    handleArraySize = the_size ;
+
+    for (int i = 0 ; i < the_size ; i++) {
+        handleArray[i] = the_attributes[i] ;
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setAttributes(AttributeHandle *the_attributes,
+                       AttributeValue *the_values,
+                       ushort the_size)
+{
+    handleArraySize = the_size ;
+
+    for (int i = 0 ; i < the_size ; i++) {
+        handleArray[i] = the_attributes[i] ;
+        setValue(i, the_values[i]);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setParameters(ParameterHandle * the_parameters,
+                       ParameterValue * the_values,
+                       ushort the_size)
+{
+    handleArraySize = the_size ;
+
+    for (int i = 0 ; i < the_size ; i++) {
+        handleArray[i] = the_parameters[i] ;
+        setValue(i, the_values[i]);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -447,4 +500,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.11 2003/05/08 23:32:54 breholee Exp $
+// $Id: Message.cc,v 3.12 2003/05/09 00:27:17 breholee Exp $

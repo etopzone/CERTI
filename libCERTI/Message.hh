@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.13 2003/05/08 23:32:54 breholee Exp $
+// $Id: Message.hh,v 3.14 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -304,50 +304,51 @@ public:
     // All the Get* methods return a pointer on the actual stored value.
     // This pointer is READ-ONLY, and should not be de-allocated.
 
-    const char *getLabel(void) const { return label ; };
+    const char *getLabel() const { return label ; };
     void setLabel(const char *new_label);
 
-    const char *getName(void) const { return name ; };
+    const char *getName() const { return name ; };
     void setName(const char *new_name);
 
-    DimensionHandle getDimension(void) const { return dimension ; };
+    DimensionHandle getDimension() const { return dimension ; };
     void setDimension(DimensionHandle);
 
-    const char *getFederationName(void) const { return federationName ; };
+    const char *getFederationName() const { return federationName ; };
     void setFederationName(const char *federation_name);
 
-    const char *getFederateName(void) const { return federateName ; };
+    const char *getFederateName() const { return federateName ; };
     void setFederateName(const char *federate_name);
 
-    const char *getTag(void) const { return tag ; };
+    const char *getTag() const { return tag ; };
     void setTag(const char *new_tag);
 
-    SpaceHandle getSpace(void) const { return space ; };
+    SpaceHandle getSpace() const { return space ; };
     void setSpace(SpaceHandle);
 
-    TypeService getType(void) const { return type ; };
+    TypeService getType() const { return type ; };
     void setType(TypeService);
 
-    unsigned long getNumber(void) const { return number ; };
+    unsigned long getNumber() const { return number ; };
     void setNumber(unsigned long);
 
-    long getRegion(void) const { return region ; };
+    long getRegion() const { return region ; };
     void setRegion(long);
 
     void setAttribute(AttributeHandle);
-    AttributeHandle getAttribute(void) const { return attribute ; };
+    AttributeHandle getAttribute() const { return attribute ; };
 
     void setInteractionClass(InteractionClassHandle);
-    InteractionClassHandle getInteractionClass(void) const {
+    InteractionClassHandle getInteractionClass() const {
         return interactionClass ;
     };
 
     void setObjectClass(ObjectClassHandle);
-    ObjectClassHandle getObjectClass(void) const { return objectClass ; };
+    ObjectClassHandle getObjectClass() const { return objectClass ; };
 
     void setResignAction(ResignAction);
     void setFedTime(const FedTime&);
     void setLookahead(const FedTime&);
+    void setFederationTime(FederationTime);
 
     void setBoolean(Boolean);
     void setObject(ObjectHandle);
@@ -355,10 +356,15 @@ public:
     void setOrdering(OrderingHandle);
     void setEventRetraction(EventRetractionHandle);
     void setParameter(ParameterHandle);
+    void setFederate(FederateHandle);
 
     void setAHS(const AttributeHandleSet &);
     void setAHVPS(const AttributeHandleValuePairSet &);
     void setPHVPS(const ParameterHandleValuePairSet &);
+
+    void setAttributes(AttributeHandle *, ushort);
+    void setAttributes(AttributeHandle *, AttributeValue *, ushort);
+    void setParameters(ParameterHandle *, ParameterValue *, ushort);
 
     // -----------------------
     // -- Public Attributes --
@@ -457,4 +463,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.13 2003/05/08 23:32:54 breholee Exp $
+// $Id: Message.hh,v 3.14 2003/05/09 00:27:17 breholee Exp $

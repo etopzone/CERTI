@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.7 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -29,6 +29,7 @@ namespace rtia {
 
 static pdCDebug D("RTIA_OM", "(RTIA OM) ");
 
+// ----------------------------------------------------------------------------
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
                                    RootObject *theRootObj)
@@ -38,14 +39,13 @@ ObjectManagement::ObjectManagement(Communications *GC,
     rootObject = theRootObj ;
 }
 
+// ----------------------------------------------------------------------------
 ObjectManagement::~ObjectManagement()
 {
 }
 
-// -------------------
-// -- 4.1 requestID --
-// -------------------
-
+// ----------------------------------------------------------------------------
+//! requestID.
 void
 ObjectManagement::requestID(ObjectHandlecount idCount,
                             ObjectHandle &firstID,
@@ -69,7 +69,7 @@ ObjectManagement::requestID(ObjectHandlecount idCount,
 }
 
 // ----------------------------------------------------------------------------
-//! 4.2 registerObject.
+//! registerObject
 ObjectHandle
 ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  const char *theObjectName,
@@ -104,11 +104,8 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
         return 0 ;
 }
 
-
-// -------------------------------
-// -- 4.3 updateAttributeValues --
-// -------------------------------
-
+// ----------------------------------------------------------------------------
+//! updateAttributeValues
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
@@ -137,10 +134,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 
     strcpy(req.label, theTag);
 
-    // Emission et reception de la reponse
-
     comm->sendMessage(&req);
-
     comm->waitMessage(&rep, m_UPDATE_ATTRIBUTE_VALUES, req.federate);
 
     e = rep.exception ;
@@ -149,72 +143,59 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! 4.4 discoverObject.
+//! discoverObject.
 void
 ObjectManagement::discoverObject(ObjectHandle the_object,
                                  ObjectClassHandle the_class,
-                                 const char *theObjectName,
-                                 FederationTime theTime,
-                                 EventRetractionHandle theHandle,
+                                 const char *the_name,
+                                 FederationTime the_time,
+                                 EventRetractionHandle the_event,
                                  TypeException &)
 {
     Message req, rep ;
 
     req.type = DISCOVER_OBJECT_INSTANCE ;
-    req.object = the_object ;
-    req.objectClass = the_class ;
-    req.date = theTime ;
-    req.eventRetraction = theHandle ;
-    req.setName((char *)theObjectName);
+    req.setObject(the_object);
+    req.setObjectClass(the_class);
+    req.setFederationTime(the_time);
+    req.setEventRetraction(the_event);
+    req.setName(the_name);
 
     // BUG: Et on fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
     // Adding discovered object in federate internal object list.
-    rootObject->registerObjectInstance(fm->federate, the_class, req.object,
+    rootObject->registerObjectInstance(fm->federate, the_class, the_object,
                                        req.getName());
 }
 
-
-// --------------------------------
-// -- 4.5 reflectAttributeValues --
-// --------------------------------
-
+// ----------------------------------------------------------------------------
+//! reflectAttributeValues.
 void
-ObjectManagement::reflectAttributeValues(ObjectHandle theObjectHandle,
-                                         AttributeHandle *attribArray,
-                                         AttributeValue *valueArray,
-                                         UShort attribArraySize,
-                                         FederationTime theTime,
-                                         const char *theTag,
-                                         EventRetractionHandle theHandle,
+ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
+                                         AttributeHandle *the_attributes,
+                                         AttributeValue *the_values,
+                                         UShort the_size,
+                                         FederationTime the_time,
+                                         const char *the_tag,
+                                         EventRetractionHandle the_event,
                                          TypeException &)
 {
     Message req, rep ;
-    int i ;
 
     req.type = REFLECT_ATTRIBUTE_VALUES ;
-    req.object = theObjectHandle ;
-    req.date = theTime ;
-    req.eventRetraction = theHandle ;
-    req.setTag(theTag);
-
-    req.handleArraySize = attribArraySize ;
-
-    for (i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        req.setValue(i, valueArray[i]);
-    }
+    req.setObject(the_object);
+    req.setFederationTime(the_time);
+    req.setEventRetraction(the_event);
+    req.setTag(the_tag);
+    req.setAttributes(the_attributes, the_values, the_size);
 
     // BUG: Et on fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 }
 
-
-// -------------------------
-// -- 4.6 sendInteraction --
-// -------------------------
-
+// ----------------------------------------------------------------------------
+//! sendInteraction
 EventRetractionHandle
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   ParameterHandle *paramArray,
@@ -227,14 +208,12 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     NetworkMessage req, rep ;
 
     // Test local pour savoir si l'interaction est correcte.
-
     rootObject->Interactions->isReady(fm->federate,
                                       theInteraction,
                                       paramArray,
                                       paramArraySize);
 
     // Preparation du message au RTI.
-
     req.type = m_SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
     req.date = theTime ;
@@ -253,9 +232,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     strcpy(req.label, theTag);
 
     // Emission et attente de la reponse.
-
     comm->sendMessage(&req);
-
     comm->waitMessage(&rep, m_SEND_INTERACTION, req.federate);
 
     e = rep.exception ;
@@ -263,45 +240,33 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     return rep.eventRetraction ;
 }
 
-
-// ----------------------------
-// -- 4.7 receiveInteraction --
-// ----------------------------
-
+// ----------------------------------------------------------------------------
+//! receiveInteraction
 void
-ObjectManagement::receiveInteraction(InteractionClassHandle theInteraction,
-                                     ParameterHandle *paramArray,
-                                     ParameterValue *valueArray,
-                                     UShort paramArraySize,
-                                     FederationTime theTime,
-                                     const char *theTag,
-                                     EventRetractionHandle theHandle,
+ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
+                                     ParameterHandle *the_parameters,
+                                     ParameterValue *the_values,
+                                     UShort the_size,
+                                     FederationTime the_time,
+                                     const char *the_tag,
+                                     EventRetractionHandle the_event,
                                      TypeException &)
 {
-    int i ;
     Message req, rep ;
 
     req.type = RECEIVE_INTERACTION ;
-    req.interactionClass = theInteraction ;
-    req.date = theTime ;
-    req.eventRetraction = theHandle ;
-    req.setTag(theTag);
-
-    req.handleArraySize = paramArraySize ;
-    for (i = 0 ; i < paramArraySize ; i++) {
-        req.handleArray[i] = paramArray[i] ;
-        req.setValue(i, valueArray[i]);
-    }
+    req.setInteractionClass(the_interaction);
+    req.setFederationTime(the_time);
+    req.setEventRetraction(the_event);
+    req.setTag(the_tag);
+    req.setParameters(the_parameters, the_values, the_size);
 
     // BUG: On fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 }
 
-
-// ----------------------
-// -- 4.8 deleteObject --
-// ----------------------
-
+// ----------------------------------------------------------------------------
+//! deleteObject
 EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                const char *theTag,
@@ -315,9 +280,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     req.federate = fm->federate ;
 
     strcpy(req.label, theTag);
-
     comm->sendMessage(&req);
-
     comm->waitMessage(&rep, m_DELETE_OBJECT, req.federate);
 
     e = rep.exception ;
@@ -331,33 +294,29 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! 4.9(1) removeObject.
+//! removeObject
 void
-ObjectManagement::removeObject(ObjectHandle theObjectHandle,
-                               FederateHandle theFederateHandle,
-                               const char *theTag,
-                               EventRetractionHandle theHandle,
+ObjectManagement::removeObject(ObjectHandle the_object,
+                               FederateHandle the_federate,
+                               const char *the_tag,
+                               EventRetractionHandle the_event,
                                TypeException &)
 {
     Message req, rep ;
 
     req.type = REMOVE_OBJECT_INSTANCE ;
-    req.object = theObjectHandle ;
-    req.eventRetraction = theHandle ;
-    req.setTag(theTag);
+    req.setObject(the_object);
+    req.setEventRetraction(the_event);
+    req.setTag(the_tag);
 
     // BUG: On fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
-    rootObject->ObjectClasses->deleteObject(theFederateHandle,
-                                            theObjectHandle,
-                                            theTag);
+    rootObject->ObjectClasses->deleteObject(the_federate, the_object, the_tag);
 }
 
-// --------------------------
-// -- 4.9(2) removeObject --
-// --------------------------
-
+// ----------------------------------------------------------------------------
+//! removeObject
 void
 ObjectManagement::removeObject(ObjectHandle,
                                ObjectRemovalReason,
@@ -367,11 +326,8 @@ ObjectManagement::removeObject(ObjectHandle,
     throw RTIinternalError();
 }
 
-
-// ---------------------------------------
-// -- 4.10 changeAttributeTransportType --
-// ---------------------------------------
-
+// ----------------------------------------------------------------------------
+//! changeAttributeTransportType
 EventRetractionHandle
 ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
                                                AttributeHandle *attribArray,
@@ -402,11 +358,8 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
     return rep.eventRetraction ;
 }
 
-
-// -----------------------------------
-// -- 4.11 changeAttributeOrderType --
-// -----------------------------------
-
+// ----------------------------------------------------------------------------
+//! changeAttributeOrderType
 EventRetractionHandle
 ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
                                            AttributeHandle *attribArray,
@@ -436,49 +389,39 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
     return rep.eventRetraction ;
 }
 
-
-// -----------------------------------------
-// -- 4.12 changeInteractionTransportType --
-// -----------------------------------------
-
-EventRetractionHandle ObjectManagement::
-changeInteractionTransportType(InteractionClassHandle theClassID,
-                               TransportType theType,
-                               TypeException &e)
+// ----------------------------------------------------------------------------
+//! changeInteractionTransportType
+EventRetractionHandle
+ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
+                                                 TransportType theType,
+                                                 TypeException &e)
 {
     NetworkMessage req, rep ;
 
     req.type = m_CHANGE_INTERACTION_TRANSPORT_TYPE ;
-    req.interactionClass = theClassID ;
+    req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.transport = theType ;
 
     comm->sendMessage(&req);
-
-    comm->waitMessage(&rep,
-                      m_CHANGE_INTERACTION_TRANSPORT_TYPE,
-                      req.federate);
-
+    comm->waitMessage(&rep, m_CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate);
     e = rep.exception ;
 
     return rep.eventRetraction ;
 }
 
-
-// -------------------------------------
-// -- 4.13 changeInteractionOrderType --
-// -------------------------------------
-
+// ----------------------------------------------------------------------------
+//! changeInteractionOrderType
 EventRetractionHandle
-ObjectManagement::changeInteractionOrderType(InteractionClassHandle theClassID,
+ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
                                              OrderType theType,
                                              TypeException &e)
 {
     NetworkMessage req, rep ;
 
     req.type = m_CHANGE_INTERACTION_ORDER_TYPE ;
-    req.interactionClass = theClassID ;
+    req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.order = theType ;
@@ -492,36 +435,28 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle theClassID,
     return rep.eventRetraction ;
 }
 
-
-// ------------------------------------------------
-// -- 4.14(1) requestObjectAttributeValueUpdate --
-// ------------------------------------------------
-
-EventRetractionHandle ObjectManagement::
-requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
-                                  AttributeHandle *attribArray,
-                                  UShort attribArraySize,
-                                  TypeException &e)
+// ----------------------------------------------------------------------------
+//! requestObjectAttributeValueUpdate
+EventRetractionHandle
+ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
+                                                    AttributeHandle *attribs,
+                                                    UShort attribArraySize,
+                                                    TypeException &e)
 {
     NetworkMessage req, rep ;
-    int i ;
-
     req.type = m_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
-    req.object = theObjectHandle ;
+    req.object = handle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
-    for (i = 0 ; i < attribArraySize ; i++)
-        req.handleArray[i] = attribArray[i] ;
+    for (int i = 0 ; i < attribArraySize ; i++) {
+        req.handleArray[i] = attribs[i] ;
+    }
 
     req.handleArraySize = attribArraySize ;
-
     comm->sendMessage(&req);
-
-    comm->waitMessage(&rep,
-                      m_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
+    comm->waitMessage(&rep, m_REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
                       req.federate);
-
     e = rep.exception ;
 
     return rep.eventRetraction ;
@@ -644,4 +579,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.7 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.8 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederationManagement.cc,v 3.9 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -561,7 +561,7 @@ FederationManagement::requestFederationRestoreStatus(bool status,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federationRestoreBegun(void)
+FederationManagement::federationRestoreBegun()
 {
     D.Out(pdInit, "Federation restore begun");
 
@@ -583,7 +583,7 @@ FederationManagement::initiateFederateRestore(const char *label,
 
     Message req, rep ;
     req.type = INITIATE_FEDERATE_RESTORE ;
-    req.federate = handle ;
+    req.setFederate(handle);
     req.setLabel(label);
 
     comm->requestFederateService(&req, &rep);
@@ -609,7 +609,7 @@ FederationManagement::federationRestoredStatus(bool status)
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::checkFederationSaving(void)
+FederationManagement::checkFederationSaving()
     throw (SaveInProgress)
 {
     if (savingState) {
@@ -619,7 +619,7 @@ FederationManagement::checkFederationSaving(void)
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::checkFederationRestoring(void)
+FederationManagement::checkFederationRestoring()
     throw (RestoreInProgress)
 {
     if (restoringState) {
@@ -629,4 +629,4 @@ FederationManagement::checkFederationRestoring(void)
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.8 2003/05/05 20:21:39 breholee Exp $
+// $Id: FederationManagement.cc,v 3.9 2003/05/09 00:27:17 breholee Exp $

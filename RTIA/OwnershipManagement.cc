@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
@@ -40,7 +40,7 @@ OwnershipManagement::OwnershipManagement(Communications *GC,
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-OwnershipManagement::~OwnershipManagement(void)
+OwnershipManagement::~OwnershipManagement()
 {
 }
 
@@ -350,17 +350,17 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
 // ----------------------------------------------------------------------------
 //! informAttributeOwnership.
 void
-OwnershipManagement::informAttributeOwnership(ObjectHandle theObject,
-                                              AttributeHandle theAttribute,
-                                              FederateHandle theOwner,
+OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
+                                              AttributeHandle the_attribute,
+                                              FederateHandle the_owner,
                                               TypeException &)
 {
     Message req, rep ;
 
     req.type = INFORM_ATTRIBUTE_OWNERSHIP ;
-    req.object = theObject ;
-    req.attribute = theAttribute ;
-    req.federate = theOwner ;
+    req.setObject(the_object);
+    req.setAttribute(the_attribute);
+    req.setFederate(the_owner);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -368,17 +368,17 @@ OwnershipManagement::informAttributeOwnership(ObjectHandle theObject,
 // ----------------------------------------------------------------------------
 //! attributeIsNotOwned.
 void
-OwnershipManagement::attributeIsNotOwned(ObjectHandle theObject,
-                                         AttributeHandle theAttribute,
+OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
+                                         AttributeHandle the_attribute,
                                          FederateHandle,
                                          TypeException &)
 {
     Message req, rep ;
 
     req.type = ATTRIBUTE_IS_NOT_OWNED ;
-    req.object = theObject ;
-    req.attribute = theAttribute ;
-    // req.FederateHandle = theOwner ;
+    req.setObject(the_object);
+    req.setAttribute(the_attribute);
+    // req.setFederate(the_owner);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -387,24 +387,17 @@ OwnershipManagement::attributeIsNotOwned(ObjectHandle theObject,
 //! attributeOwnershipUnavailable.
 void
 OwnershipManagement::
-attributeOwnershipUnavailable(ObjectHandle theObject,
-                              AttributeHandle *attribArray,
-                              UShort attribArraySize,
+attributeOwnershipUnavailable(ObjectHandle the_object,
+                              AttributeHandle *the_attributes,
+                              UShort the_size,
                               FederateHandle,
                               TypeException &)
 {
     Message req, rep ;
 
     req.type = ATTRIBUTE_OWNERSHIP_UNAVAILABLE ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug, "OWNERSHIP_UNAVAILABLE Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribute %u", theObject, req.handleArray[i]);
-    }
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -413,24 +406,17 @@ attributeOwnershipUnavailable(ObjectHandle theObject,
 //! attributeOwnershipAcquisitionNotification.
 void
 OwnershipManagement::
-attributeOwnershipAcquisitionNotification(ObjectHandle theObject,
-                                          AttributeHandle *attribArray,
-                                          UShort attribArraySize,
+attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
+                                          AttributeHandle *the_attributes,
+                                          UShort the_size,
                                           FederateHandle,
                                           TypeException &)
 {
     Message req, rep ;
 
     req.type = ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug, "ACQUISITION_NOTIFICATION Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribute %u", theObject, req.handleArray[i]);
-    }
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -439,27 +425,19 @@ attributeOwnershipAcquisitionNotification(ObjectHandle theObject,
 //! requestAttributeOwnershipAssumption.
 void
 OwnershipManagement::
-requestAttributeOwnershipAssumption(ObjectHandle theObject,
-                                    AttributeHandle *attribArray,
-                                    UShort attribArraySize,
+requestAttributeOwnershipAssumption(ObjectHandle the_object,
+                                    AttributeHandle *the_attributes,
+                                    UShort the_size,
                                     FederateHandle,
-                                    char *theTag,
+                                    char *the_tag,
                                     TypeException &)
 {
     Message req, rep ;
 
     req.type = REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug, "OWNERSHIP_ASSUMPTION Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribute %u", theObject, req.handleArray[i]);
-    }
-
-    req.setTag(theTag);
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
+    req.setTag(the_tag);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -468,26 +446,18 @@ requestAttributeOwnershipAssumption(ObjectHandle theObject,
 //! requestAttributeOwnershipRelease.
 void
 OwnershipManagement::
-requestAttributeOwnershipRelease(ObjectHandle theObject,
-                                 AttributeHandle *attribArray,
-                                 UShort attribArraySize,
-                                 char *theTag,
+requestAttributeOwnershipRelease(ObjectHandle the_object,
+                                 AttributeHandle *the_attributes,
+                                 UShort the_size,
+                                 char *the_tag,
                                  TypeException &)
 {
     Message req, rep ;
 
     req.type = REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug, "OWNERSHIP_RELEASE Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribute %u", theObject, req.handleArray[i]);
-    }
-
-    req.setTag(theTag);
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
+    req.setTag(the_tag);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -496,23 +466,16 @@ requestAttributeOwnershipRelease(ObjectHandle theObject,
 //! attributeOwnershipDivestitureNotification.
 void
 OwnershipManagement::
-attributeOwnershipDivestitureNotification(ObjectHandle theObject,
-                                          AttributeHandle *attribArray,
-                                          UShort attribArraySize,
+attributeOwnershipDivestitureNotification(ObjectHandle the_object,
+                                          AttributeHandle *the_attributes,
+                                          UShort the_size,
                                           TypeException &)
 {
     Message req, rep ;
 
     req.type = ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug, "DIVESTITURE_NOTIFICATION Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribut %u", theObject, req.handleArray[i]);
-    }
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -521,24 +484,16 @@ attributeOwnershipDivestitureNotification(ObjectHandle theObject,
 //! confirmattributeOwnershipAcquisitionCancellation.
 void
 OwnershipManagement::
-confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
-                                                 AttributeHandle *attribArray,
-                                                 UShort attribArraySize,
+confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
+                                                 AttributeHandle *the_attributes,
+                                                 UShort the_size,
                                                  TypeException &)
 {
     Message req ;
 
     req.type = CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION ;
-    req.object = theObject ;
-
-    req.handleArraySize = attribArraySize ;
-    D.Out(pdDebug,
-          "CONFIRM_ACQUISITION_CANCELLATION Object %u handleArraySize %u",
-          theObject, req.handleArraySize);
-    for (int i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        D.Out(pdDebug, "Object %u Attribute %u", theObject, req.handleArray[i]);
-    }
+    req.setObject(the_object);
+    req.setAttributes(the_attributes, the_size);
 
     Message rep ;
     comm->requestFederateService(&req, &rep);
@@ -546,4 +501,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.5 2003/02/19 15:45:23 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.6 2003/05/09 00:27:17 breholee Exp $
