@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.2 2003/07/09 16:15:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -226,7 +226,7 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
 // Subscribe Object Class Attributes With Region
 void
 RTIambassador::
-subscribeObjectClassAttributesWithRegion(ObjectClassHandle object,
+subscribeObjectClassAttributesWithRegion(ObjectClassHandle object_class,
                                          Region &region,
 					 const AttributeHandleSet &attributes,
                                          Boolean passive)
@@ -243,7 +243,7 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle object,
     Message req, rep ;
 
     req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
-    req.setObject(object);
+    req.setObjectClass(object_class);
     req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
     req.setAHS(attributes);
     req.setBoolean(passive);
@@ -254,7 +254,7 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle object,
 // ----------------------------------------------------------------------------
 // UnSubscribe Object Class Attributes With Region
 void
-RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object,
+RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
                                                 Region &region)
     throw (ObjectClassNotDefined,
            RegionNotKnown,
@@ -268,7 +268,7 @@ RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object,
     Message req, rep ;
 
     req.type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES ;
-    req.setObject(object);
+    req.setObjectClass(object_class);
     req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
 
     executeService(&req, &rep);
@@ -411,4 +411,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 }
 
-// $Id: DataDistributionServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.2 2003/07/09 16:15:14 breholee Exp $
