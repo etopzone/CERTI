@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: billard.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// $Id: billard.cc,v 3.3 2003/01/15 13:00:55 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -137,8 +137,6 @@ int main(int argc, char**argv)
       exit(-1);
     }
 
-  if(argc==5) YOFFSET = atoi(argv[4]);
-
   // Handlers 
   std::signal(SIGINT,  sortir);
   std::signal(SIGALRM, sortir);
@@ -175,9 +173,7 @@ int main(int argc, char**argv)
 
 
   while( !Joined )
-  {
-    
-    
+  {    
       try
       {
 	myFederateID=myRTIAmbassador->joinFederationExecution(FederateName,
@@ -209,6 +205,11 @@ int main(int argc, char**argv)
          throw ;
          }
    }
+
+  if(argc==5)
+      YOFFSET = atoi(argv[4]);
+  else
+      YOFFSET = YMAX*(myFederateID-1)+25*myFederateID;
 
   // Le createur met la federation en pause.
 
@@ -508,7 +509,7 @@ void ExceptionHandler(void)
 void InitialisationGraphique(FederateHandle  myFederateID)
 { 
   int          x      = XFEN;
-  int          y      = YFEN + YMAX*(myFederateID-1+YOFFSET)+25*myFederateID ;
+  int          y      = YFEN + YOFFSET;
   unsigned int width  = XMAX;
   unsigned int height = YMAX;
 
@@ -713,4 +714,4 @@ void Synchronize(RTI::RTIambassador *myRTIAmbassador,
 
 }
 
-// EOF $Id: billard.cc,v 3.2 2002/12/11 00:47:34 breholee Exp $
+// EOF $Id: billard.cc,v 3.3 2003/01/15 13:00:55 breholee Exp $
