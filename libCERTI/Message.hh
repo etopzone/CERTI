@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.20 2003/07/01 13:35:00 breholee Exp $
+// $Id: Message.hh,v 3.21 2003/07/03 16:19:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -33,58 +33,57 @@
 
 namespace certi {
 
-typedef struct {
-    FederationTime date ; // Date, Logical Time, Lookahead, etc.
-    Boolean mode ; // IsRegulator or IsConstrained
-} MessageTimeStruct ;
-
-typedef struct {
-    ObjectHandlecount count ;
-    ObjectHandle first ;
-    ObjectHandle last ;
-} MessageReqIDStruct ;
-
-typedef struct {
-    ObjectClassHandle handle ;
-    UShort size ;
-    TransportType transport ;
-    OrderType order ;
-} MessageT_O_Struct ;
-
-typedef struct {
-    FederateHandle federate ; // Join
-    ResignAction action ; // Resign
-} MessageJ_R_Struct ;
-
-typedef struct {
-    ObjectClassHandle handle ;
-    UShort size ;
-    FederationTime date ;
-} MessageO_I_Struct ;
-
-struct Message_DDM {
-    SpaceHandle space ;
-    DimensionHandle dimension ;
-    long region ;
-};
-
-typedef union {
-    MessageTimeStruct time ;
-    MessageReqIDStruct ReqID ;
-    MessageT_O_Struct T_O ;
-    MessageJ_R_Struct J_R ;
-    MessageO_I_Struct O_I ;
-    Message_DDM ddm ;
-} MessageHeaderUnion ;
-
 /*! The Message class is used to formalize messages that are going to be
   exchanged between the RTI and the federate.
 */
 class Message
 {
 public:
-    enum Type {
+    struct MessageTimeStruct {
+        FederationTime date ; // Date, Logical Time, Lookahead, etc.
+        Boolean mode ; // IsRegulator or IsConstrained
+    };
 
+    struct MessageReqIDStruct {
+        ObjectHandlecount count ;
+        ObjectHandle first ;
+        ObjectHandle last ;
+    };
+
+    struct MessageT_O_Struct {
+        ObjectClassHandle handle ;
+        UShort size ;
+        TransportType transport ;
+        OrderType order ;
+    };
+
+    struct MessageJ_R_Struct {
+        FederateHandle federate ; // Join
+        ResignAction action ; // Resign
+    };
+
+    struct MessageO_I_Struct {
+        ObjectClassHandle handle ;
+        UShort size ;
+        FederationTime date ;
+    };
+
+    struct Message_DDM {
+        SpaceHandle space ;
+        DimensionHandle dimension ;
+        RegionHandle region ;
+    };
+
+    union MessageHeaderUnion {
+        MessageTimeStruct time ;
+        MessageReqIDStruct ReqID ;
+        MessageT_O_Struct T_O ;
+        MessageJ_R_Struct J_R ;
+        MessageO_I_Struct O_I ;
+        Message_DDM ddm ;
+    };
+
+    enum Type {
         NOT_USED,
 
         // gestion federation
@@ -197,25 +196,19 @@ public:
         TIME_REGULATION_ENABLED,
         TIME_CONSTRAINED_ENABLED,
 
-        // Data Distribution
-        CREATE_REGION,
-        MODIFY_REGION,
-        DELETE_REGION,
-        REGISTER_OBJECT_INSTANCE_WITH_REGION,
-        ASSOCIATE_REGION_FOR_UPDATES,
-        UNASSOCIATE_REGION_FOR_UPDATES,
-        SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES_WITH_REGION,
-        UNSUBSCRIBE_OBJECT_CLASS_WITH_REGION,
-        SUBSCRIBE_INTERACTION_CLASS_WITH_REGION,
-        UNSUBSCRIBE_INTERACTION_CLASS_WITH_REGION,
-        SEND_INTERACTION_WITH_REGION,
-        REQUEST_CLASS_ATTRIBUTE_UPDATE_WITH_REGION,
-
-        CREATE_UPDATE_REGION,
-        CREATE_SUBSCRIPTION_REGION,
-        ASSOCIATE_UPDATE_REGION,
-        DISASSOCIATE_UPDATE_REGION,
-        CHANGE_THRESHOLDS,
+        // Data Distribution Management
+        DDM_CREATE_REGION,
+        DDM_MODIFY_REGION,
+        DDM_DELETE_REGION,
+        DDM_REGISTER_OBJECT,
+        DDM_ASSOCIATE_REGION,
+        DDM_UNASSOCIATE_REGION,
+        DDM_SUBSCRIBE_ATTRIBUTES,
+        DDM_UNSUBSCRIBE_ATTRIBUTES,
+        DDM_SUBSCRIBE_INTERACTION,
+        DDM_UNSUBSCRIBE_INTERACTION,
+        DDM_SEND_INTERACTION,
+        DDM_REQUEST_UPDATE,
 
         // Support Services
         GET_OBJECT_CLASS_HANDLE,
@@ -378,6 +371,9 @@ public:
 
     AttributeHandleSet* getAHS() const ;
     void setAHS(const AttributeHandleSet &);
+    void setAHS(const AttributeHandle *, int);
+
+    void setRegions(const RegionImp **, int);
 
     AttributeHandleValuePairSet* getAHVPS() const ;
     void setAHVPS(const AttributeHandleValuePairSet &);
@@ -397,8 +393,7 @@ public:
 
     void setExtents(std::vector<Extent *> *);
     std::vector<Extent *> *getExtents();
-    //    std::vector<Extent *> &getExtents();
-    
+
     // Public attributes
     Type type ;
 
@@ -494,10 +489,11 @@ private:
     char tag[MAX_USER_TAG_LENGTH + 1] ;
     AttributeValue valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
     std::vector<Extent *> *extents ;
+    std::vector<RegionHandle> regions ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.20 2003/07/01 13:35:00 breholee Exp $
+// $Id: Message.hh,v 3.21 2003/07/03 16:19:47 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.11 2003/07/01 13:35:00 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.12 2003/07/03 16:19:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -30,6 +30,7 @@
 #include "Socket.hh"
 #include "MessageBody.hh"
 #include "Extent.hh"
+#include "RegionImp.hh"
 
 #include <vector>
 
@@ -45,55 +46,55 @@
 
 namespace certi {
 
-typedef struct {
-    FederationTime date ; // Date, Logical Time
-    Boolean R_or_C ; // IsRegulator or IsConstrained
-} TimeStruct ;
-
-typedef struct {
-    ObjectHandlecount count ;
-    ObjectHandle first ;
-    ObjectHandle last ;
-} ReqIDStruct ;
-
-typedef struct {
-    ObjectClassHandle handle ;
-    UShort handleArraySize ;
-    TransportType transport ;
-    OrderType order ;
-} T_O_Struct ;
-
-typedef struct {
-    int NbReg ;
-    unsigned long AdrMC ;
-    unsigned long Addr ;
-    unsigned int peer ;
-} JoinStruct ;
-
-typedef struct {
-    ObjectClassHandle handle ;
-    UShort size ;
-    FederationTime date ;
-} O_I_Struct ;
-
-struct DDM_Struct {
-    SpaceHandle space ;
-    DimensionHandle dimension ;
-    long region ;
-};
-
-typedef union {
-    TimeStruct time ; // Les noms des variables n'ont pas d'importance
-    ReqIDStruct ReqID ; // mais ils doivent etre presents.
-    T_O_Struct T_O ;
-    JoinStruct Join ;
-    O_I_Struct O_I ;
-    DDM_Struct ddm ;
-} HeaderUnion ;
-
 class NetworkMessage
 {
 public:
+    struct TimeStruct {
+        FederationTime date ; // Date, Logical Time
+        Boolean R_or_C ; // IsRegulator or IsConstrained
+    };
+
+    struct ReqIDStruct {
+        ObjectHandlecount count ;
+        ObjectHandle first ;
+        ObjectHandle last ;
+    };
+
+    struct T_O_Struct {
+        ObjectClassHandle handle ;
+        UShort handleArraySize ;
+        TransportType transport ;
+        OrderType order ;
+    };
+
+    struct JoinStruct {
+        int NbReg ;
+        unsigned long AdrMC ;
+        unsigned long Addr ;
+        unsigned int peer ;
+    };
+
+    struct O_I_Struct {
+        ObjectClassHandle handle ;
+        UShort size ;
+        FederationTime date ;
+    };
+
+    struct DDM_Struct {
+        SpaceHandle space ;
+        DimensionHandle dimension ;
+        RegionHandle region ;
+    };
+
+    union HeaderUnion {
+        TimeStruct time ; // Les noms des variables n'ont pas d'importance
+        ReqIDStruct ReqID ; // mais ils doivent etre presents.
+        T_O_Struct T_O ;
+        JoinStruct Join ;
+        O_I_Struct O_I ;
+        DDM_Struct ddm ;
+    };
+
     enum Type {
         NOT_TYPED = 0, // Not used.
         CLOSE_CONNEXION,
@@ -167,9 +168,10 @@ public:
         ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
         CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
         CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
-        CREATE_REGION,
-        MODIFY_REGION,
-        DELETE_REGION
+        DDM_CREATE_REGION,
+        DDM_MODIFY_REGION,
+        DDM_DELETE_REGION,
+        DDM_ASSOCIATE_REGION
     };
 
     struct HeaderStruct {
@@ -243,7 +245,9 @@ public :
 
     void setExtents(std::vector<Extent *> *);
     std::vector<Extent *> *getExtents();
-    
+
+    void setAHS(const AttributeHandle *, int);
+
     // -----------------------
     // -- Public Attributes --
     // -----------------------
@@ -344,4 +348,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.11 2003/07/01 13:35:00 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.12 2003/07/03 16:19:47 breholee Exp $

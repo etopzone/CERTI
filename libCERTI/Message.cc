@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.19 2003/07/01 13:35:00 breholee Exp $
+// $Id: Message.cc,v 3.20 2003/07/03 16:19:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -313,6 +313,28 @@ Message::setAHS(const AttributeHandleSet &the_attributes)
 
     for (unsigned int i = 0 ; i < the_attributes.size(); ++i) {
         handleArray[i] = the_attributes.getHandle(i);
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setAHS(const AttributeHandle *attr, int size)
+{
+    handleArraySize = size ;
+
+    for (int i = 0 ; i < size ; ++i) {
+        handleArray[i] = attr[i] ;
+    }
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setRegions(const RegionImp **reg, int size)
+{
+    regions.resize(size);
+    
+    for (int i = 0 ; i < size ; ++i) {
+        regions[i] = reg[i]->getHandle();
     }
 }
 
@@ -614,4 +636,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.19 2003/07/01 13:35:00 breholee Exp $
+// $Id: Message.cc,v 3.20 2003/07/03 16:19:47 breholee Exp $
