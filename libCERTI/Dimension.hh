@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.2 2003/11/10 14:36:43 breholee Exp $
+// $Id: Dimension.hh,v 3.3 2003/11/13 10:35:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -31,6 +31,9 @@
 
 namespace certi {
 
+/** Describes a dimension in a routing space.
+    \sa RoutingSpace
+ */
 class Dimension
 {
 public:
@@ -52,4 +55,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.2 2003/11/10 14:36:43 breholee Exp $
+// $Id: Dimension.hh,v 3.3 2003/11/13 10:35:19 breholee Exp $

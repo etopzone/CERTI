@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleComparator.hh,v 1.1 2003/11/10 14:57:33 breholee Exp $
+// $Id: HandleComparator.hh,v 1.2 2003/11/13 10:37:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_COMPARATOR
@@ -27,6 +27,9 @@
 
 namespace certi {
 
+/** HandleComparator is a comparison functor for objects having a getHandle()
+    method. 
+ */
 template<class T>
 class HandleComparator
 {
@@ -60,4 +63,4 @@ HandleComparator<T>::operator()(const T &op) const
 
 #endif // LIBCERTI_HANDLE_COMPARATOR
 
-// $Id: HandleComparator.hh,v 1.1 2003/11/10 14:57:33 breholee Exp $
+// $Id: HandleComparator.hh,v 1.2 2003/11/13 10:37:35 breholee Exp $

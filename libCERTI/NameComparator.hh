@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NameComparator.hh,v 1.1 2003/11/10 14:57:33 breholee Exp $
+// $Id: NameComparator.hh,v 1.2 2003/11/13 10:37:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAME_COMPARATOR
@@ -29,6 +29,9 @@
 
 namespace certi {
 
+/** NameComparator is a comparison functor for objects having a getName()
+    method. 
+ */
 template<class T>
 class NameComparator
 {
@@ -48,14 +51,14 @@ template <class T>
 bool 
 NameComparator<T>::operator()(const T *op) const
 {
-    return op->getName() == name ;
+    return name == op->getName();
 }
 
 template <class T>
 bool 
 NameComparator<T>::operator()(const T &op) const
 {
-    return op.getName() == name ;
+    return name == op.getName() ;
 }
 
 }
