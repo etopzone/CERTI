@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.14 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClass.cc,v 3.15 2003/05/23 11:39:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
+
+// Project
+#include <config.h>
+#include "ObjectClassAttribute.hh"
+#include "SocketTCP.hh"
+#include "PrettyDebug.hh"
+
+// Standard
+#include <iostream>
+
+using std::cout ;
+using std::endl ;
+using std::list ;
 
 namespace certi {
 
@@ -237,7 +249,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 //! ObjectClass constructor (only one).
-ObjectClass::ObjectClass(void)
+ObjectClass::ObjectClass()
     : handle(0), Father(0), server(NULL), Depth(0),
       Name(NULL), LevelID(PublicLevelID), MaxSubscriberHandle(0)
 {
@@ -245,7 +257,7 @@ ObjectClass::ObjectClass(void)
 
 // ----------------------------------------------------------------------------
 //! ObjectClass destructor (frees allocated memory).
-ObjectClass::~ObjectClass(void)
+ObjectClass::~ObjectClass()
 {
     if (Name != NULL) {
         free(Name);
@@ -340,7 +352,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 //! Print the ObjectClasses tree to the standard output.
-void ObjectClass::display(void) const
+void ObjectClass::display() const
 {
     cout << " ObjectClass #" << handle << " \"" << Name << "\":" << endl ;
 
@@ -373,8 +385,7 @@ void ObjectClass::display(void) const
 //! getAttributeHandle.
 AttributeHandle
 ObjectClass::getAttributeHandle(const char *the_name) const
-    throw (AttributeNotDefined,
-           RTIinternalError)
+    throw (NameNotFound, RTIinternalError)
 {
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
@@ -385,7 +396,7 @@ ObjectClass::getAttributeHandle(const char *the_name) const
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
           handle, the_name);
 
-    throw AttributeNotDefined();
+    throw NameNotFound();
 }
 
 // ----------------------------------------------------------------------------
@@ -1610,11 +1621,11 @@ ObjectClass::setHandle(ObjectClassHandle new_handle)
 
 // ----------------------------------------------------------------------------
 ObjectClassHandle
-ObjectClass::getHandle(void) const
+ObjectClass::getHandle() const
 {
     return handle ;
 }
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.14 2003/05/08 22:28:32 breholee Exp $
+// $Id: ObjectClass.cc,v 3.15 2003/05/23 11:39:54 breholee Exp $
