@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.19 2003/07/10 13:19:41 breholee Exp $
+// $Id: ObjectClass.cc,v 3.20 2003/07/10 21:49:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1629,6 +1629,18 @@ ObjectClass::getHandle() const
     return handle ;
 }
 
+// ----------------------------------------------------------------------------
+void
+ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
+{
+    list<ObjectClassAttribute *>::iterator i ;
+    for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
+	if ((*i)->hasSubscribed(fed, region)) {
+	    (*i)->unsubscribe(fed, region);
+	}
+    }
+}
+
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.19 2003/07/10 13:19:41 breholee Exp $
+// $Id: ObjectClass.cc,v 3.20 2003/07/10 21:49:43 breholee Exp $
