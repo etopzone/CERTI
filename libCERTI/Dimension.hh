@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.5 2004/05/18 13:18:53 breholee Exp $
+// $Id: Dimension.hh,v 3.6 2005/03/25 17:01:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -42,6 +42,8 @@ public:
     Dimension(DimensionHandle);
     static void setLowerBound(ULong);
     static void setUpperBound(ULong);
+    static ULong getLowerBound() { return axisLowerBound ; }
+    static ULong getUpperBound() { return axisUpperBound ; }
 
 private:
     static ULong axisLowerBound ;
@@ -52,4 +54,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.5 2004/05/18 13:18:53 breholee Exp $
+// $Id: Dimension.hh,v 3.6 2005/03/25 17:01:57 breholee Exp $
