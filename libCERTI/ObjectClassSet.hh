@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,20 +20,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.3 2003/01/16 16:05:48 breholee Exp $
 // ---------------------------------------------------------------------------
-
-// $Id: ObjectClassSet.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
-// Class ObjectClassSet, qui est la racine de l'arborescence des
-// classes d'objets.
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
 #define _CERTI_OBJECT_CLASS_SET_HH
 
-#include <stdio.h>
+#include <config.h>
+
+#include <cstdio>
 
 #include "List.hh"
+#include <list>
+using std::list;
+
 #include "ObjectClass.hh"
 #include "SecurityServer.hh"
 #include "ObjectClassBroadcastList.hh"
@@ -41,7 +41,10 @@
 
 namespace certi {
 
-class ObjectClassSet : private List <ObjectClass *> 
+/*! Class ObjectClassSet, qui est la racine de l'arborescence des
+    classes d'objets.
+*/
+class ObjectClassSet : private list<ObjectClass *> 
 {
 
 public:
@@ -51,43 +54,43 @@ public:
   // --------------------
 
   ObjectClassSet(SecurityServer *theSecurityServer);
-
-  ~ObjectClassSet();
+  ~ObjectClassSet(void);
 
 
   // The class is not allocated, only the pointer is memorized.
   void addClass(ObjectClass *theClass);
 
-  // Build a Parent-Child relation between two object class, by setting
-  // the Child's Parent handle, and registering the Child in the Parent's
-  // SonSet. 
-  // Also copy all Parent's Attributes in the Child Class.
+  /*! Build a Parent-Child relation between two object class, by setting
+      the Child's Parent handle, and registering the Child in the Parent's
+      SonSet. 
+      Also copy all Parent's Attributes in the Child Class.
+  */
   void buildParentRelation(ObjectClass *Child, ObjectClass *Parent);
 
-  // Print the ObjectClasses tree to the standard output.
-  void display(void);
+  //! Print the ObjectClasses tree to the standard output.
+  void display(void) const;
 
   // --------------------------
   // -- RTI Support Services --
   // --------------------------
 
   AttributeHandle getAttributeHandle(const AttributeName theName,
-				     ObjectClassHandle theClass)
+                                     ObjectClassHandle theClass) const
     throw(AttributeNotDefined,
 	  ObjectClassNotDefined,
 	  RTIinternalError);
 
   const AttributeName getAttributeName(AttributeHandle theHandle,
-				       ObjectClassHandle theClass)
+                                       ObjectClassHandle theClass) const
     throw(AttributeNotDefined,
 	  ObjectClassNotDefined,
 	  RTIinternalError);
 
-  ObjectClassHandle getObjectClassHandle(const ObjectClassName theName)
+  ObjectClassHandle getObjectClassHandle(const ObjectClassName theName) const
     throw(ObjectClassNotDefined,
 	  RTIinternalError);
 
-  const ObjectClassName getObjectClassName(ObjectClassHandle theHandle)
+  const ObjectClassName getObjectClassName(ObjectClassHandle theHandle) const
     throw(ObjectClassNotDefined,
 	  RTIinternalError);
  
@@ -293,24 +296,24 @@ private:
   // -- Private Attributes --
   // ------------------------
 
-  // This object will help to find the TCPLink associated with a Federate.
-  // This reference is passed to all new ObjectClass.
+  /*! This object will help to find the TCPLink associated with a Federate.
+      This reference is passed to all new ObjectClass.
+  */
   SecurityServer *server;
 
   // ---------------------
   // -- Private Methods --
   // ---------------------
 
-  ObjectClass *getWithHandle(ObjectClassHandle theHandle)
+  ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
     throw(ObjectClassNotDefined);
 
-  ObjectClass *getInstanceClass(ObjectHandle theObjectHandle)
+  ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const
     throw(ObjectNotKnown);
-
 };
 
 }
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.3 2003/01/16 16:05:48 breholee Exp $
