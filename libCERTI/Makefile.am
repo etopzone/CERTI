@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.19 2005/04/04 14:51:24 breholee Exp $ 
+## $Id: Makefile.am,v 3.20 2005/04/05 20:02:12 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -16,13 +16,12 @@ BasicMessage.hh converter.hh Dimension.hh Exception.hh Extent.hh	\
 FederateLevelList.hh fed.hh FedRegion.hh GAV.hh GSSAPIHandler.hh	\
 Handled.hh HandleManager.hh helper.hh InteractionBroadcastList.hh	\
 Interaction.hh InteractionSet.hh LBTS.hh MessageBody.hh Message.hh	\
-Named.hh NetworkMessage.hh ObjectAttribute.hh ObjectBroadcastLine.hh	\
-ObjectClassAttribute.hh ObjectClassBroadcastList.hh ObjectClass.hh	\
-ObjectClassSet.hh Object.hh ObjectSet.hh Parameter.hh Publisher.hh	\
-RootObject.hh RoutingSpace.hh RTIRegion.hh SecureTCPSocket.hh		\
-SecurityLevel.hh SecurityServer.hh Socket.hh SocketMC.hh		\
-SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh Subscriber.hh	\
-XmlParser.hh Subscribable.hh
+Named.hh NetworkMessage.hh ObjectAttribute.hh ObjectClassAttribute.hh	\
+ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
+ObjectSet.hh Parameter.hh Publisher.hh RootObject.hh RoutingSpace.hh	\
+RTIRegion.hh SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh	\
+Socket.hh SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh		\
+SocketUN.hh Subscriber.hh XmlParser.hh Subscribable.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
@@ -45,4 +44,4 @@ LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
 
-## EOF $Id: Makefile.am,v 3.19 2005/04/04 14:51:24 breholee Exp $
+## EOF $Id: Makefile.am,v 3.20 2005/04/05 20:02:12 breholee Exp $
