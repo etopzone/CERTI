@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.6 2004/04/16 16:03:55 breholee Exp $
+# $Id: myconf,v 3.7 2005/03/14 20:19:07 breholee Exp $
 
 case $1 in
     sun)
@@ -21,7 +21,19 @@ case $1 in
 
     linux) 
 	echo GNU/Linux / GCC configuration ;
-	CXXFLAGS=" -Wall -ansi -Woverloaded-virtual -Wno-unused-function" ;
+	CXXFLAGS=" -W -Wall -ansi -pedantic -Woverloaded-virtual -Wno-unused-function" ;
+	export CXXFLAGS
+	;;
+
+    linux-debug) 
+	echo GNU/Linux / GCC configuration ;
+	CXXFLAGS=" -g -W -Wall -ansi -pedantic -Woverloaded-virtual -Wno-unused-function" ;
+	export CXXFLAGS
+	;;
+
+    linux-opt) 
+	echo GNU/Linux / GCC configuration ;
+	CXXFLAGS=" -O2 -W -Wall -ansi -pedantic -Woverloaded-virtual -Wno-unused-function" ;
 	export CXXFLAGS
 	;;
 
@@ -45,4 +57,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# $Id: myconf,v 3.6 2004/04/16 16:03:55 breholee Exp $
+# $Id: myconf,v 3.7 2005/03/14 20:19:07 breholee Exp $
