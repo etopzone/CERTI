@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.21 2003/05/22 13:32:40 breholee Exp $
+// $Id: Federation.cc,v 3.22 2003/05/23 15:03:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -679,8 +678,8 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     msg->type = success ?
         m_REQUEST_FEDERATION_RESTORE_SUCCEEDED
         : m_REQUEST_FEDERATION_RESTORE_FAILED ;
-    
-    socket = server->getSocketLink(msg->federate);    
+
+    socket = server->getSocketLink(msg->federate);
     msg->write(socket);
     delete msg ;
 
@@ -932,7 +931,7 @@ Federation::publishObject(FederateHandle federate,
 ObjectHandle
 Federation::registerObject(FederateHandle federate,
                            ObjectClassHandle class_handle,
-                           ObjectName object_name)
+                           const char *object_name)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            ObjectAlreadyRegistered,
@@ -1516,9 +1515,9 @@ Federation::deleteRegion(FederateHandle federate,
 bool
 Federation::restoreXmlData()
 {
-#ifndef HAVE_XML    
-        return false ;
-#else    
+#ifndef HAVE_XML
+    return false ;
+#else
     xmlNodePtr cur ;
 
     cur = xmlDocGetRootElement(doc);
@@ -1566,13 +1565,13 @@ Federation::restoreXmlData()
 
                     // Set federate regulating status
                     status = !strcmp("true", (char *) xmlGetProp(
-                                         cur, (const xmlChar*)"regulator"));
+                                         cur, (const xmlChar *) "regulator"));
 
                     (*i)->setRegulator(status);
 
                     (*i)->setHandle(
                         strtol((char *) xmlGetProp(
-                                   cur, (const xmlChar*)"handle"), 0 , 10));
+                                   cur, (const xmlChar *) "handle"), 0, 10));
                     break ;
                 }
             }
@@ -1589,8 +1588,8 @@ bool
 Federation::saveXmlData()
 {
 #ifndef HAVE_XML
-        return false ;
-#else    
+    return false ;
+#else
     doc = xmlNewDoc((const xmlChar *) "1.0");
     doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
 
@@ -1629,12 +1628,12 @@ Federation::saveXmlData()
     xmlSaveFile(filename.c_str(), doc);
 
     // TODO: tests
-    
+
     return true ;
 #endif // HAVE_XML
 }
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.21 2003/05/22 13:32:40 breholee Exp $
+// $Id: Federation.cc,v 3.22 2003/05/23 15:03:36 breholee Exp $
 

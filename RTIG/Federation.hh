@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.16 2003/05/22 13:32:40 breholee Exp $
+// $Id: Federation.hh,v 3.17 2003/05/23 15:03:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -36,7 +35,7 @@
 
 // Libraries
 #ifdef HAVE_XML
-#include <libxml/xmlmemory.h>  // FIXME: should be in the .cc
+#include <libxml/xmlmemory.h> // FIXME: should be in the .cc
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #endif // HAVE_XML
@@ -70,9 +69,9 @@ private:
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC *MCLink ;
 #endif
-    
-    bool saveXmlData(void);
-    bool restoreXmlData(void);
+
+    bool saveXmlData();
+    bool restoreXmlData();
 
     // METHODS -----------------------------------------------------------------
 public:
@@ -88,18 +87,18 @@ public:
         throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
                RTIinternalError);
 
-    ~Federation(void);
+    ~Federation();
 
     void requestId(ObjectHandlecount IDCount,
                    ObjectHandle &FirstID,
                    ObjectHandle &LastID)
         throw (TooManyIDsRequested);
 
-    int getNbFederates(void) const ;
-    int getNbRegulators(void) const ;
-    bool isSynchronizing(void) const ;
-    FederationHandle getHandle(void) const ;
-    const char *getName(void) const ;
+    int getNbFederates() const ;
+    int getNbRegulators() const ;
+    bool isSynchronizing() const ;
+    FederationHandle getHandle() const ;
+    const char *getName() const ;
 
     // -------------------------
     // -- Federate Management --
@@ -109,7 +108,7 @@ public:
                MemoryExhausted,
                RTIinternalError);
 
-    bool empty(void) const
+    bool empty() const
         throw (FederatesCurrentlyJoined);
 
     bool check(FederateHandle theHandle) const
@@ -222,7 +221,7 @@ public:
 
     ObjectHandle registerObject(FederateHandle theFederateHandle,
                                 ObjectClassHandle theClass,
-                                ObjectName theName)
+                                const char *theName)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                ObjectAlreadyRegistered,
@@ -439,7 +438,7 @@ private:
     Federate *getByHandle(FederateHandle theHandle) const
         throw (FederateNotExecutionMember);
 
-    FederateHandle getNewHandle(void)
+    FederateHandle getNewHandle()
         throw (RTIinternalError);
 
     // Private attributes
@@ -458,4 +457,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.16 2003/05/22 13:32:40 breholee Exp $
+// $Id: Federation.hh,v 3.17 2003/05/23 15:03:36 breholee Exp $
