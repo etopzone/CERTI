@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.22 2004/05/17 21:14:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     char *federation = req->federationName ;
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
-    auditServer->addToLinef("Federation Name : %s", federation);
+    auditServer << "Federation Name : " << federation ;
     Handle h = federationHandles.provide();
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -65,7 +65,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     ClientSockets.push_front(com_mc);
 
 #else
-    federations->createFederation(federation, h);
+    federations.createFederation(federation, h);
 #endif
 
     // Prepare answer for RTIA
@@ -101,35 +101,34 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     if ((federation == NULL) || (federate == NULL))
         throw RTIinternalError("Invalid Federation/Federate Name.");
 
-    auditServer->addToLinef("Federate \"%s\" joins Federation \"%s\"",
-                            federate, federation);
+    auditServer << "Federate \"" << federate << "\" joins Federation \""
+		<< federation << "\"" ;
 
-    federations->exists(federation, num_federation);
+    federations.exists(federation, num_federation);
 
-    num_federe = federations->addFederate(num_federation,
+    num_federe = federations.addFederate(num_federation,
                                           federate,
                                           (SecureTCPSocket *) link);
 
 #ifdef FEDERATION_USES_MULTICAST
     SocketMC *com_mc = NULL ;
 
-    federations->info(num_federation, nb_federes, nb_regulateurs,
+    federations.info(num_federation, nb_federes, nb_regulateurs,
                       pause, com_mc);
     assert(com_mc != NULL);
 #else
-    federations->info(num_federation, nb_federes, nb_regulateurs, pause);
+    federations.info(num_federation, nb_federes, nb_regulateurs, pause);
 #endif
 
     // Store Federate <->Socket reference.
-    socketServer->setReferences(link->returnSocket(),
+    socketServer.setReferences(link->returnSocket(),
                                 num_federation,
                                 num_federe,
                                 address,
                                 peer);
 
-    auditServer->addToLinef("(%d)with handle %d. Socket %d",
-                            num_federation, num_federe,
-                            link->returnSocket());
+    auditServer << "(" << num_federation << ")with handle " << num_federe
+		<< ". Socket " << link->returnSocket();
 
     // Prepare answer
     NetworkMessage rep ;
@@ -158,7 +157,7 @@ void
 RTIG::processResignFederation(Handle federation,
                               FederateHandle federe)
 {
-    federations->remove(federation, federe);
+    federations.remove(federation, federe);
     D.Out(pdInit, "Federate %u is resigning from federation %u.",
           federe, federation);
 }
@@ -173,9 +172,9 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
-    auditServer->addToLinef("Name \"%s\"", federation);
-    federations->exists(federation, num_federation);
-    federations->destroyFederation(num_federation);
+    auditServer << "Name \"" << federation << "\"" ;
+    federations.exists(federation, num_federation);
+    federations.destroyFederation(num_federation);
     federationHandles.free(num_federation);
     D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation);
 
@@ -193,18 +192,18 @@ void
 RTIG::processSetTimeRegulating(NetworkMessage *msg)
 {
     if (msg->regulator) {
-        auditServer->addToLinef("ON at time %f", msg->date);
+        auditServer << "ON at time " << msg->date ;
 
-        federations->createRegulator(msg->federation,
+        federations.createRegulator(msg->federation,
                                      msg->federate,
                                      msg->date);
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation ON.",
               msg->federate, msg->federation);
     }
     else {
-        auditServer->addToLine("OFF");
+        auditServer << "OFF" ;
 
-        federations->removeRegulator(msg->federation,
+        federations.removeRegulator(msg->federation,
                                      msg->federate);
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation OFF.",
               msg->federate, msg->federation);
@@ -217,17 +216,17 @@ void
 RTIG::processSetTimeConstrained(NetworkMessage *msg)
 {
     if (msg->constrained) {
-        auditServer->addToLinef("ON at time %f", msg->date);
+        auditServer << "ON at time " << msg->date ;
 
-        federations->addConstrained(msg->federation,
+        federations.addConstrained(msg->federation,
                                     msg->federate);
         D.Out(pdTerm, "Federate %u of Federation %u is now constrained.",
               msg->federate, msg->federation);
     }
     else {
-        auditServer->addToLine("OFF");
+        auditServer << "OFF" ;
 
-        federations->removeConstrained(msg->federation,
+        federations.removeConstrained(msg->federation,
                                        msg->federate);
         D.Out(pdTerm, "Federate %u of Federation %u is no more constrained.",
               msg->federate, msg->federation);
@@ -239,11 +238,11 @@ RTIG::processSetTimeConstrained(NetworkMessage *msg)
 void
 RTIG::processMessageNull(NetworkMessage *msg)
 {
-    auditServer->addToLinef("Date %f", msg->date);
+    auditServer << "Date " << msg->date ;
 
     // Catch all exceptions because RTIA does not expect an answer anyway.
     try {
-        federations->updateRegulator(msg->federation,
+        federations.updateRegulator(msg->federation,
                                      msg->federate,
                                      msg->date);
     } catch (Exception &e) {}
@@ -254,9 +253,10 @@ RTIG::processMessageNull(NetworkMessage *msg)
 void
 RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Label \"%s\" registered. Tag is \"%s\"",
-                            req->label, req->tag);
-    federations->manageSynchronization(req->federation,
+    auditServer << "Label \"" << req->label << "\" registered. Tag is \""
+		<< req->tag << "\"" ;
+    
+    federations.manageSynchronization(req->federation,
                                        req->federate,
                                        true,
                                        req->label,
@@ -271,7 +271,7 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     rep.setLabel(req->label);
     rep.write(link);
 
-    federations->broadcastSynchronization(req->federation,
+    federations.broadcastSynchronization(req->federation,
                                           req->federate,
                                           req->label,
                                           req->tag);
@@ -282,9 +282,9 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 void
 RTIG::processSynchronizationAchieved(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Label \"%s\" ended.", req->label);
+    auditServer << "Label \"" << req->label << "\" ended." ;
 
-    federations->manageSynchronization(req->federation,
+    federations.manageSynchronization(req->federation,
                                        req->federate,
                                        false,
                                        req->label,
@@ -296,37 +296,37 @@ RTIG::processSynchronizationAchieved(Socket *, NetworkMessage *req)
 void
 RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Federation save request.");
+    auditServer << "Federation save request." ;
 
-    federations->requestFederationSave(req->federation, req->federate,
+    federations.requestFederationSave(req->federation, req->federate,
                                        req->label, req->date);
 }
 // ----------------------------------------------------------------------------
 void
 RTIG::processFederateSaveBegun(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Federate %u save begun.", req->federate);
+    auditServer << "Federate " << req->federate << " save begun." ;
 
-    federations->federateSaveBegun(req->federation, req->federate);
+    federations.federateSaveBegun(req->federation, req->federate);
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Federate %u save ended.", req->federate);
+    auditServer << "Federate " << req->federate << " save ended." ;
 
     bool status = req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
-    federations->federateSaveStatus(req->federation, req->federate, status);
+    federations.federateSaveStatus(req->federation, req->federate, status);
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIG::processRequestFederationRestore(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Federate %u request restore.", req->federate);
+    auditServer << "Federate " << req->federate << " request restore." ;
 
-    federations->requestFederationRestore(req->federation, req->federate,
+    federations.requestFederationRestore(req->federation, req->federate,
                                           req->label);
 }
 
@@ -334,10 +334,10 @@ RTIG::processRequestFederationRestore(Socket *, NetworkMessage *req)
 void
 RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 {
-    auditServer->addToLinef("Federate %u restore ended.", req->federate);
+    auditServer << "Federate " << req->federate << " restore ended." ;
 
-    bool status = (req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE) ? true : false ;
-    federations->federateRestoreStatus(req->federation, req->federate, status);
+    bool status = req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
+    federations.federateRestoreStatus(req->federation, req->federate, status);
 }
 
 // ----------------------------------------------------------------------------
@@ -347,11 +347,10 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 {
     bool pub = (req->type == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
-    auditServer->addToLinef("Class = %u, # of att. = %u",
-                            req->objectClass,
-                            req->handleArraySize);
+    auditServer << "Class = " << req->objectClass << ", # of att. = " 
+		<< req->handleArraySize ;
 
-    federations->publishObject(req->federation,
+    federations.publishObject(req->federation,
                                req->federate,
                                req->objectClass,
                                req->handleArray,
@@ -378,11 +377,10 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 {
     bool sub = (req->type == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
-    auditServer->addToLinef("Class = %u, # of att. = %u",
-                            req->objectClass,
-                            req->handleArraySize);
+    auditServer << "Class = " << req->objectClass
+		<< ", # of att. = " << req->handleArraySize ;
 
-    federations->subscribeObject(req->federation,
+    federations.subscribeObject(req->federation,
                                  req->federate,
                                  req->objectClass,
                                  req->handleArray,
@@ -412,8 +410,8 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 
     bool pub = (req->type == NetworkMessage::PUBLISH_INTERACTION_CLASS);
 
-    auditServer->addToLinef("Class = %u", req->interactionClass);
-    federations->publishInteraction(req->federation,
+    auditServer << "Class = " << req->interactionClass ;
+    federations.publishInteraction(req->federation,
                                     req->federate,
                                     req->interactionClass,
                                     pub);
@@ -438,8 +436,8 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 {
     bool sub = (req->type == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
 
-    auditServer->addToLinef("Class = %u", req->interactionClass);
-    federations->subscribeInteraction(req->federation,
+    auditServer << "Class = %u" << req->interactionClass ;
+    federations.subscribeInteraction(req->federation,
                                       req->federate,
                                       req->interactionClass,
                                       sub);
@@ -465,12 +463,12 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
     NetworkMessage rep ;
 
-    auditServer->addToLinef("Class = %u", req->objectClass);
-    rep.object = federations->registerObject(req->federation,
+    auditServer << "Class = %u" << req->objectClass ;
+    rep.object = federations.registerObject(req->federation,
                                              req->federate,
                                              req->objectClass,
                                              req->label);
-    auditServer->addToLinef(", Handle = %u", rep.object);
+    auditServer << ", Handle = " << rep.object ;
 
     D.Out(pdRegister,
           "Object \"%s\" of Federate %u has been registered under ID %u.",
@@ -491,13 +489,14 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
     AttributeValue *ValueArray = NULL ;
 
-    auditServer->addToLinef("ObjID = %u, Date = %f", req->object, req->date);
+    auditServer << "ObjID = " << req->object
+		<< ", Date = " << req->date ;
 
     // Prepare le Value Array
     ValueArray = req->getAttribValueArray();
 
     // Propage l'appel
-    federations->updateAttribute(req->federation,
+    federations.updateAttribute(req->federation,
                                  req->federate,
                                  req->object,
                                  req->handleArray,
@@ -527,11 +526,11 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     AttributeValue *values = NULL ;
 
     // Prepare le Value Array
-    auditServer->addToLinef("IntID = %u, date = %f",
-                            req->interactionClass, req->date);
+    auditServer << "IntID = " << req->interactionClass
+		<< ", date = " << req->date ;
     values = req->getParamValueArray();
 
-    federations->updateParameter(req->federation,
+    federations.updateParameter(req->federation,
                                  req->federate,
                                  req->interactionClass,
                                  req->handleArray,
@@ -559,9 +558,9 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 void
 RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("ObjID = %u", req->object);
+    auditServer << "ObjID = %u" << req->object ;
 
-    federations->destroyObject(req->federation,
+    federations.destroyObject(req->federation,
                                req->federate,
                                req->object,
                                req->label);
@@ -586,9 +585,9 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
 
-    auditServer->addToLinef("AttributeHandle = %u", req->handleArray[0]);
+    auditServer << "AttributeHandle = " << req->handleArray[0] ;
 
-    federations->searchOwner(req->federation,
+    federations.searchOwner(req->federation,
                              req->federate,
                              req->object,
                              req->handleArray[0]);
@@ -615,9 +614,9 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
 
-    auditServer->addToLinef("AttributeHandle = %u", req->handleArray[0]);
+    auditServer << "AttributeHandle = " << req->handleArray[0] ;
 
-    if (federations->isOwner(req->federation,
+    if (federations.isOwner(req->federation,
                              req->federate,
                              req->object,
                              req->handleArray[0]))
@@ -641,10 +640,9 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
 void
 RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
-    federations->negotiateDivestiture(req->federation,
+    auditServer << "Object = " <<  req->object
+		<< ", # of att. = %u" << req->handleArraySize ;
+    federations.negotiateDivestiture(req->federation,
                                       req->federate,
                                       req->object,
                                       req->handleArray,
@@ -670,11 +668,10 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
 void
 RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = " << req->handleArraySize ;
 
-    federations->acquireIfAvailable(req->federation,
+    federations.acquireIfAvailable(req->federation,
                                     req->federate,
                                     req->object,
                                     req->handleArray,
@@ -700,11 +697,10 @@ RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
 void
 RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = %u" << req->handleArraySize ;
 
-    federations->divest(req->federation,
+    federations.divest(req->federation,
                         req->federate,
                         req->object,
                         req->handleArray,
@@ -730,11 +726,10 @@ RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
 void
 RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = %u" << req->handleArraySize ;
 
-    federations->acquire(req->federation,
+    federations.acquire(req->federation,
                          req->federate,
                          req->object,
                          req->handleArray,
@@ -760,11 +755,10 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
 void
 RTIG::processCancelNegotiatedDivestiture(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = " << req->handleArraySize ;
 
-    federations->cancelDivestiture(req->federation,
+    federations.cancelDivestiture(req->federation,
                                    req->federate,
                                    req->object,
                                    req->handleArray,
@@ -789,12 +783,11 @@ RTIG::processCancelNegotiatedDivestiture(Socket *link, NetworkMessage *req)
 void
 RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = " << req->handleArraySize ;
 
     AttributeHandleSet *attributes =
-        federations->respondRelease(req->federation,
+        federations.respondRelease(req->federation,
                                     req->federate,
                                     req->object,
                                     req->handleArray,
@@ -824,11 +817,10 @@ RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
 void
 RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
 {
-    auditServer->addToLinef("Object = %u, # of att. = %u",
-                            req->object,
-                            req->handleArraySize);
+    auditServer << "Object = " << req->object
+		<< ", # of att. = " << req->handleArraySize ;
 
-    federations->cancelAcquisition(req->federation,
+    federations.cancelAcquisition(req->federation,
                                    req->federate,
                                    req->object,
                                    req->handleArray,
@@ -857,7 +849,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 
     NetworkMessage rep ;
 
-    rep.region = federations->createRegion(req->federation,
+    rep.region = federations.createRegion(req->federation,
                                            req->federate,
                                            req->space,
                                            req->nbExtents);
@@ -877,7 +869,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 void
 RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
 {
-    federations->modifyRegion(req->federation, req->federate,
+    federations.modifyRegion(req->federation, req->federate,
 			      req->region, req->getExtents());
     
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -899,7 +891,7 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->deleteRegion(req->federation, req->federate, req->region);
+    federations.deleteRegion(req->federation, req->federate, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " deletes region " << req->region
@@ -920,7 +912,7 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->associateRegion(req->federation, req->federate, req->object,
+    federations.associateRegion(req->federation, req->federate, req->object,
 				 req->region, req->handleArraySize,
 				 req->handleArray);
 
@@ -942,7 +934,7 @@ RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->unassociateRegion(req->federation, req->federate,
+    federations.unassociateRegion(req->federation, req->federate,
 				   req->object, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -963,7 +955,7 @@ RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->subscribeAttributesWR(req->federation, req->federate,
+    federations.subscribeAttributesWR(req->federation, req->federate,
 				       req->objectClass, req->region,
 				       req->handleArraySize, req->handleArray);
 
@@ -985,7 +977,7 @@ RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->unsubscribeAttributesWR(req->federation, req->federate,
+    federations.unsubscribeAttributesWR(req->federation, req->federate,
 					 req->objectClass, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -1006,7 +998,7 @@ RTIG::processSubscribeInteractionWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->subscribeInteractionWR(req->federation, req->federate,
+    federations.subscribeInteractionWR(req->federation, req->federate,
 					req->interactionClass, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -1027,7 +1019,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations->unassociateRegion(req->federation, req->federate,
+    federations.unassociateRegion(req->federation, req->federate,
 				   req->interactionClass, req->region);
 
     D[pdDebug] << "Federate " << req->federate << " of Federation "
@@ -1043,4 +1035,4 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.22 2004/05/17 21:14:59 breholee Exp $

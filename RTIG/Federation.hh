@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.28 2004/03/04 20:19:05 breholee Exp $
+// $Id: Federation.hh,v 3.29 2004/05/17 21:19:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -77,11 +77,11 @@ public:
 #ifdef FEDERATION_USES_MULTICAST
     Federation(const char *,
                FederationHandle,
-               SocketServer*,
-               AuditFile*,
+               SocketServer &,
+               AuditFile &,
                SocketMC*)
 #else
-        Federation(const char *, Handle, SocketServer*, AuditFile*)
+        Federation(const char *, Handle, SocketServer &, AuditFile &)
 #endif
         throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
                RTIinternalError);
@@ -503,4 +503,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.28 2004/03/04 20:19:05 breholee Exp $
+// $Id: Federation.hh,v 3.29 2004/05/17 21:19:19 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.23 2004/03/14 00:24:55 breholee Exp $
+// $Id: RTIG.cc,v 3.24 2004/05/17 21:14:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,7 +44,10 @@ static pdCDebug D("RTIG", __FILE__);
 // Constructor
 
 RTIG::RTIG()
-    : terminate(false), federationHandles(1)
+    : terminate(false), federationHandles(1),
+      socketServer(&tcpSocketServer, &udpSocketServer, udpPort),
+      auditServer(RTIG_AUDIT_FILENAME),
+      federations(socketServer, auditServer)
 {
     // Start RTIG services
     const char *tcp_port_s = getenv("CERTI_TCP_PORT");
@@ -54,12 +57,7 @@ RTIG::RTIG()
     tcpPort = atoi(tcp_port_s);
     udpPort = atoi(udp_port_s);
 
-    socketServer = new SocketServer(&tcpSocketServer,
-				    &udpSocketServer,
-				    udpPort);
-    auditServer = new AuditFile(RTIG_AUDIT_FILENAME);
-    federations = new FederationsList(socketServer, auditServer);
-    federations->setVerbose(verbose);
+    federations.setVerbose(verbose);
 }
 
 // ----------------------------------------------------------------------------
@@ -69,10 +67,6 @@ RTIG::~RTIG()
 {
     tcpSocketServer.close();
     udpSocketServer.close();
-
-    delete socketServer ;
-    delete federations ;
-    delete auditServer ;
 
     cout << endl << "Stopping RTIG" << endl ;
 }
@@ -87,58 +81,58 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
 
     // This may throw a security error.
-    socketServer->checkMessage(link->returnSocket(), msg);
+    socketServer.checkMessage(link->returnSocket(), msg);
 
     switch(msg->type) {
       case NetworkMessage::MESSAGE_NULL:
         D.Out(pdDebug, "Message Null.");
-        auditServer->setLevel(0);
+        auditServer.setLevel(0);
         processMessageNull(msg);
         break ;
 
       case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
         D.Out(pdDebug, "UpdateAttributeValue.");
-        auditServer->setLevel(1);
+        auditServer.setLevel(1);
         processUpdateAttributeValues(link, msg);
         break ;
 
       case NetworkMessage::SEND_INTERACTION:
         D.Out(pdTrace, "send interaction.");
-        auditServer->setLevel(2);
+        auditServer.setLevel(2);
         processSendInteraction(link, msg);
         break ;
 
       case NetworkMessage::CLOSE_CONNEXION:
         D.Out(pdTrace, "Close connection %ld.", link->returnSocket());
-        auditServer->setLevel(9);
-        auditServer->addToLinef("Socket %ld", link->returnSocket());
+        auditServer.setLevel(9);
+        auditServer << "Socket " << link->returnSocket();
         closeConnection(link, false);
         link = NULL ;
         break ;
 
       case NetworkMessage::CREATE_FEDERATION_EXECUTION:
         D.Out(pdTrace, "Create federation \"%s\".", msg->federationName);
-        auditServer->setLevel(9);
+        auditServer.setLevel(9);
         processCreateFederation(link, msg);
         break ;
 
       case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
         D.Out(pdTrace, "Destroy federation \"%s\".", msg->federationName);
-        auditServer->setLevel(9);
+        auditServer.setLevel(9);
         processDestroyFederation(link, msg);
         break ;
 
       case NetworkMessage::JOIN_FEDERATION_EXECUTION:
         D.Out(pdTrace, "federate \"%s\" joins federation \"%s\".",
               msg->federateName, msg->federationName);
-        auditServer->setLevel(9);
+        auditServer.setLevel(9);
         processJoinFederation(link, msg);
         break ;
 
       case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
         D.Out(pdTrace, "Federate no %u leaves federation no %u .",
               msg->federate, msg->federation);
-        auditServer->setLevel(9);
+        auditServer.setLevel(9);
         processResignFederation(msg->federation, msg->federate);
         break ;
 
@@ -146,7 +140,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace,
               "Federation %u: registerFedSyncPoint from federate %u.",
               msg->federation, msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processRegisterSynchronization(link, msg);
         break ;
 
@@ -154,20 +148,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace,
               "Federation %u: synchronizationPointAchieved from federate %u.",
               msg->federation, msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processSynchronizationAchieved(link, msg);
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_SAVE:
         D.Out(pdTrace, "Request federation save from federate %u.",
               msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processRequestFederationSave(link, msg);
         break ;
 
       case NetworkMessage::FEDERATE_SAVE_BEGUN:
         D.Out(pdTrace, "Federate %u begun save.", msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processFederateSaveBegun(link, msg);
         break ;
 
@@ -175,13 +169,13 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
         D.Out(pdTrace, "Federate %u save complete/not complete.",
               msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processFederateSaveStatus(link, msg);
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_RESTORE:
         D.Out(pdTrace, "Federate %u request a restoration.", msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processRequestFederationRestore(link, msg);
         break ;
 
@@ -189,168 +183,168 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
         D.Out(pdTrace, "Federate %u restore complete/not complete.",
               msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processFederateRestoreStatus(link, msg);
         break ;
 
       case NetworkMessage::SET_TIME_REGULATING:
         D.Out(pdTrace, "SetTimeRegulating du federe %u(date=%f).",
               msg->federate, msg->date);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processSetTimeRegulating(msg);
         break ;
 
       case NetworkMessage::SET_TIME_CONSTRAINED:
         D.Out(pdTrace, "SetTimeConstrained du federe %u.", msg->federate);
-        auditServer->setLevel(8);
+        auditServer.setLevel(8);
         processSetTimeConstrained(msg);
         break ;
 
       case NetworkMessage::PUBLISH_OBJECT_CLASS:
       case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
         D.Out(pdTrace, "un/publishObjectClass.");
-        auditServer->setLevel(7);
+        auditServer.setLevel(7);
         processPublishObjectClass(link, msg);
         break ;
 
       case NetworkMessage::PUBLISH_INTERACTION_CLASS:
       case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
         D.Out(pdTrace, "un/publishInteractionClass.");
-        auditServer->setLevel(7);
+        auditServer.setLevel(7);
         processPublishInteractionClass(link, msg);
         break ;
 
       case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
       case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
         D.Out(pdTrace, "un/subscribeObjectClass.");
-        auditServer->setLevel(7);
+        auditServer.setLevel(7);
         processSubscribeObjectClass(link, msg);
         break ;
 
       case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
       case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
         D.Out(pdTrace, "un/subscribeInteractionClass.");
-        auditServer->setLevel(7);
+        auditServer.setLevel(7);
         processSubscribeInteractionClass(link, msg);
         break ;
 
       case NetworkMessage::REGISTER_OBJECT:
         D.Out(pdTrace, "registerObject.");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processRegisterObject(link, msg);
         break ;
 
       case NetworkMessage::DELETE_OBJECT:
         D.Out(pdTrace, "DeleteObject..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processDeleteObject(link, msg);
         break ;
 
       case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
         D.Out(pdTrace, "isAttributeOwnedByFederate..");
-        auditServer->setLevel(2);
+        auditServer.setLevel(2);
         processAttributeOwnedByFederate(link, msg);
         break ;
 
       case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
         D.Out(pdTrace, "queryAttributeOwnership..");
-        auditServer->setLevel(2);
+        auditServer.setLevel(2);
         processQueryAttributeOwnership(link, msg);
         break ;
 
       case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "negotiatedAttributeOwnershipDivestiture..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processNegotiatedOwnershipDivestiture(link, msg);
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
         D.Out(pdTrace, "attributeOwnershipAcquisitionIfAvailable..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processAcquisitionIfAvailable(link, msg);
         break ;
 
       case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "unconditionalAttributeOwnershipDivestiture..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processUnconditionalDivestiture(link, msg);
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
         D.Out(pdTrace, "attributeOwnershipAcquisition..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processOwnershipAcquisition(link, msg);
         break ;
 
       case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
         D.Out(pdTrace, "cancelNegociatedAttributeOwnershipDivestiture..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processCancelNegotiatedDivestiture(link, msg);
         break ;
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
         D.Out(pdTrace, "attributeOwnershipReleaseResponse..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processReleaseResponse(link, msg);
         break ;
 
       case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
         D.Out(pdTrace, "cancelAttributeOwnershipAcquisition..");
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processCancelAcquisition(link, msg);
         break ;
 
       case NetworkMessage::DDM_CREATE_REGION:
         D[pdTrace] << "createRegion" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processCreateRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_MODIFY_REGION:
 	D[pdTrace] << "modifyRegion" << endl ;
-	auditServer->setLevel(6);
+	auditServer.setLevel(6);
         processModifyRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_DELETE_REGION:
         D[pdTrace] << "deleteRegion" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processDeleteRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_ASSOCIATE_REGION:
 	D[pdTrace] << "associateRegionForUpdates" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processAssociateRegion(link, msg);
         break ;	
 
       case NetworkMessage::DDM_UNASSOCIATE_REGION:
 	D[pdTrace] << "unassociateRegionForUpdates" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processUnassociateRegion(link, msg);
         break ;	
 
       case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
 	D[pdTrace] << "subscribeObjectClassAttributes (DDM)" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processSubscribeAttributesWR(link, msg);
         break ;
 	
       case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
 	D[pdTrace] << "unsubscribeObjectClassAttributes (DDM)" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processUnsubscribeAttributesWR(link, msg);
         break ;
 	
       case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
 	D[pdTrace] << "subscribeInteraction (DDM)" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processSubscribeInteractionWR(link, msg);
         break ;
 	
       case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
 	D[pdTrace] << "unsubscribeInteraction (DDM)" << endl ;
-        auditServer->setLevel(6);
+        auditServer.setLevel(6);
         processUnsubscribeInteractionWR(link, msg);
         break ;	
 	
@@ -375,7 +369,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
     FederateHandle federate ;
 
     try {
-        socketServer->close(link->returnSocket(), federation, federate);
+        socketServer.close(link->returnSocket(), federation, federate);
     }
     catch (RTIinternalError &e) {
         D.Out(pdError, "Connection not found while trying to close it.");
@@ -383,7 +377,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
 
     if (emergency) {
         D.Out(pdExcept, "Killing Federate(%u, %u)...", federation, federate);
-        federations->killFederate(federation, federate);
+        federations.killFederate(federation, federate);
         D.Out(pdExcept, "Federate(%u, %u)Killed... ", federation, federate);
     }
 }
@@ -411,7 +405,7 @@ RTIG::execute()
         // Initialize fd_set structure with all opened sockets.
         FD_ZERO(&fd);
         FD_SET(tcpSocketServer.returnSocket(), &fd);
-        socketServer->addToFDSet(&fd);
+        socketServer.addToFDSet(&fd);
 
         // Wait for an incoming message.
         result = 0 ;
@@ -419,7 +413,7 @@ RTIG::execute()
         if ((result == -1)&& (errno == EINTR)) break ;
 
         // Is it a message from an already opened connection?
-        link = socketServer->getActiveSocket(&fd);
+        link = socketServer.getActiveSocket(&fd);
         if (link != NULL) {
             D.Out(pdCom, "Incoming message on socket %ld.",
 		  link->returnSocket());
@@ -456,7 +450,7 @@ void
 RTIG::openConnection()
 {
     try {
-        socketServer->open();
+        socketServer.open();
     }
     catch (RTIinternalError &e) {
         D.Out(pdExcept, "Error while accepting new connection : %s.", e._reason);
@@ -493,7 +487,7 @@ RTIG::processIncomingMessage(Socket *link)
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = msg.federate ;
 
-    auditServer->startLine(msg.federation, msg.federate, msg.type);
+    auditServer.startLine(msg.federation, msg.federate, msg.type);
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -902,7 +896,7 @@ RTIG::processIncomingMessage(Socket *link)
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError &e) {
         strcpy(buffer, " - NetworkError");
-        auditServer->endLine(rep.exception, buffer);
+        auditServer.endLine(rep.exception, buffer);
 
         throw e ;
     }
@@ -923,7 +917,7 @@ RTIG::processIncomingMessage(Socket *link)
             strcpy(buffer, " - Exception");
     }
 
-    auditServer->endLine(rep.exception, buffer);
+    auditServer.endLine(rep.exception, buffer);
 
     if (link == NULL) return link ;
 
@@ -950,4 +944,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.23 2004/03/14 00:24:55 breholee Exp $
+// $Id: RTIG.cc,v 3.24 2004/05/17 21:14:59 breholee Exp $

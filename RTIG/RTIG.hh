@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.18 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG.hh,v 3.19 2004/05/17 21:14:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -118,13 +118,13 @@ private:
     HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
-    SocketServer *socketServer ;
-    AuditFile *auditServer ;
-    FederationsList *federations ; //!< Manages federations.
+    SocketServer socketServer ;
+    AuditFile auditServer ;
+    FederationsList federations ;
 };
 
 }} // namespaces
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.18 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG.hh,v 3.19 2004/05/17 21:14:59 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.23 2004/01/09 16:29:50 breholee Exp $
+// $Id: FederationsList.cc,v 3.24 2004/05/17 21:19:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,18 +34,12 @@ static pdCDebug D("FEDERATIONSLIST", "(ListFede) - ");
 
 // ----------------------------------------------------------------------------
 // Constructor
-FederationsList::FederationsList(SocketServer *server, AuditFile *audit)
-    : list<Federation *>()
+FederationsList::FederationsList(SocketServer &server, AuditFile &audit)
+    : list<Federation *>(),
+      socketServer(server),
+      auditFile(audit),
+      verbose(false)
 {
-    if (server == NULL)
-        throw RTIinternalError("FederationsList: No SocketServer was given.");
-
-    if (audit == NULL)
-        throw RTIinternalError("FederationsList: No AuditServer was given.");
-
-    socketServer = server ;
-    auditFile = audit ;
-    verbose = false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -159,7 +153,7 @@ void FederationsList::createFederation(const char *name,
 
     // It may throw RTIinternalError
     checkHandle(handle);
-    auditFile->addToLinef(", Handle : %hu", handle);
+    auditFile << ", Handle : " << (long) handle ;
     if (name == NULL) throw RTIinternalError("Invalid Federation Name.");
 
     // It should throw FederationExecutionDoesNotExist.
@@ -1245,5 +1239,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.23 2004/01/09 16:29:50 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.24 2004/05/17 21:19:19 breholee Exp $
 
