@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.26 2005/03/16 23:00:06 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.27 2005/04/05 12:24:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -530,13 +530,14 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     values = req->getParamValueArray();
 
     federations.updateParameter(req->federation,
-                                 req->federate,
-                                 req->interactionClass,
-                                 req->handleArray,
-                                 values,
-                                 req->handleArraySize,
-                                 req->date,
-                                 req->label);
+				req->federate,
+				req->interactionClass,
+				req->handleArray,
+				values,
+				req->handleArraySize,
+				req->date,
+				req->region,
+				req->label);
     free(values);
 
     D.Out(pdDebug, "Mise A Jour des parametres de l'interaction %d terminee",
@@ -1060,4 +1061,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.26 2005/03/16 23:00:06 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.27 2005/04/05 12:24:20 breholee Exp $

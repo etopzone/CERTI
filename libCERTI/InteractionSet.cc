@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.10 2003/10/27 10:12:07 breholee Exp $
+// $Id: InteractionSet.cc,v 3.11 2005/04/05 12:27:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -63,6 +63,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      ParameterValue *value_list,
                                      UShort list_size,
                                      FederationTime the_time,
+				     const RTIRegion *region,
                                      const char *the_tag)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
@@ -79,6 +80,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                              value_list,
                                              list_size,
                                              the_time,
+					     region,
                                              the_tag);
 
     // Pass the Message(and its BroadcastList) to the Parent Classes.
@@ -300,4 +302,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.10 2003/10/27 10:12:07 breholee Exp $
+// $Id: InteractionSet.cc,v 3.11 2005/04/05 12:27:37 breholee Exp $

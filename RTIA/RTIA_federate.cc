@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.29 2005/03/21 13:17:41 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.30 2005/04/05 12:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -314,6 +314,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                       req->handleArraySize,
                                       req->getFederationTime(),
                                       req->getTag(),
+				      req->getRegion(),
                                       e));
               free(ValueArray);
           } catch (Exception *e) {
@@ -1100,4 +1101,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.29 2005/03/21 13:17:41 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.30 2005/04/05 12:21:39 breholee Exp $

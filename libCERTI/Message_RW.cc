@@ -1,15 +1,13 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.22 2005/03/13 22:44:49 breholee Exp $
+// $Id: Message_RW.cc,v 3.23 2005/04/05 12:27:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -265,6 +263,7 @@ Message::readBody(SocketUN *socket)
             readTag(&Body);
             readHandleArray(&Body);
             readValueArray(&Body);
+	    region = Body.readLongInt();
             readResignAction(&Body);
             break ;
 
@@ -818,6 +817,7 @@ Message::writeBody(SocketUN *socket)
             Body.writeString(tag);
             writeHandleArray(&Body);
             writeValueArray(&Body);
+	    Body.writeLongInt(region);
             writeResignAction(&Body);
             break ;
 
@@ -1136,4 +1136,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.22 2005/03/13 22:44:49 breholee Exp $
+// $Id: Message_RW.cc,v 3.23 2005/04/05 12:27:37 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.10 2005/03/21 13:17:41 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.11 2005/04/05 12:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -82,6 +82,7 @@ public:
                     UShort paramArraySize,
                     FederationTime theTime,
                     const char *theTag,
+		    RegionHandle,
                     TypeException &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
@@ -182,4 +183,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.10 2005/03/21 13:17:41 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.11 2005/04/05 12:21:39 breholee Exp $

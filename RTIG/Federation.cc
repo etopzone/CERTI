@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.42 2005/03/25 17:34:21 breholee Exp $
+// $Id: Federation.cc,v 3.43 2005/04/05 12:24:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -427,6 +427,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
                                  ParameterValue *parameter_values,
                                  UShort list_size,
                                  FederationTime time,
+				 RegionHandle region_handle,
                                  const char *tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
@@ -439,12 +440,17 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
 
+    const RTIRegion *region = 0 ;
+    if (region_handle != 0)
+	region = root->getRegion(region_handle);
+
     root->Interactions->broadcastInteraction(federate_handle,
                                              interaction,
                                              parameter_handles,
                                              parameter_values,
                                              list_size,
                                              time,
+					     region,
                                              tag);
     D.Out(pdRequest, "Federation %d: Broadcasted Interaction %d from Federate "
           "%d nb params %d.", handle, interaction, federate_handle, list_size);
@@ -1751,5 +1757,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.42 2005/03/25 17:34:21 breholee Exp $
+// $Id: Federation.cc,v 3.43 2005/04/05 12:24:20 breholee Exp $
 

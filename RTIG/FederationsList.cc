@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002, 2003, 2004, 2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.27 2005/03/16 23:00:06 breholee Exp $
+// $Id: FederationsList.cc,v 3.28 2005/04/05 12:24:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -401,6 +401,7 @@ FederationsList::updateParameter(Handle handle,
                                  ParameterValue *values,
                                  UShort list_size,
                                  FederationTime time,
+				 RegionHandle region,
                                  const char *tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
@@ -421,7 +422,7 @@ FederationsList::updateParameter(Handle handle,
     searchFederation(handle, federation);
 
     federation->broadcastInteraction(federate, interaction, parameters, values,
-                                     list_size, time, tag);
+                                     list_size, time, region, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -1263,5 +1264,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.27 2005/03/16 23:00:06 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.28 2005/04/05 12:24:20 breholee Exp $
 

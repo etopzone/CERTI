@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.15 2005/03/21 13:17:41 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.16 2005/04/05 12:21:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -180,6 +180,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   UShort paramArraySize,
                                   FederationTime theTime,
                                   const char *theTag,
+				  RegionHandle region,
                                   TypeException &e)
 {
     NetworkMessage req, rep ;
@@ -194,17 +195,16 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
     req.date = theTime ;
-
+    req.region = region ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
     req.handleArraySize = paramArraySize ;
 
-    for (int i=0 ; i<paramArraySize ; i++)
-        {
-            req.handleArray[i] = paramArray[i] ;
-            req.setValue(i, valueArray[i]);
-        }
+    for (int i=0 ; i<paramArraySize ; i++) {
+	req.handleArray[i] = paramArray[i] ;
+	req.setValue(i, valueArray[i]);
+    }
 
     strcpy(req.label, theTag);
 
@@ -580,4 +580,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.15 2005/03/21 13:17:41 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.16 2005/04/05 12:21:39 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.21 2005/03/25 17:06:32 breholee Exp $
+// $Id: Interaction.cc,v 3.22 2005/04/05 12:27:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,7 +91,8 @@ Interaction::addParametersToChild(Interaction *the_child)
   See InteractionSet::SendInteraction.
 */
 void
-Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList)
+Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
+					 const RTIRegion *region)
 {
     // 1. Set InteractionHandle to local class Handle.
     ibList->message->interactionClass = handle ;
@@ -446,6 +447,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
                              ParameterValue *value_list,
                              UShort list_size,
                              FederationTime time,
+			     const RTIRegion *region,
                              const char *the_tag)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
@@ -478,7 +480,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         D.Out(pdProtocol, "Preparing broadcast list.");
         ibList = new InteractionBroadcastList(answer);
 
-        broadcastInteractionMessage(ibList);
+        broadcastInteractionMessage(ibList, region);
     }
     else
         // SendInteraction should not be called on the RTIA.
@@ -593,4 +595,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.21 2005/03/25 17:06:32 breholee Exp $
+// $Id: Interaction.cc,v 3.22 2005/04/05 12:27:37 breholee Exp $

@@ -1,15 +1,13 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.17 2005/02/09 15:54:18 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.18 2005/04/05 12:27:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -83,6 +81,7 @@ NetworkMessage::readBody(Socket *socket)
             for (i = 0 ; i < handleArraySize ; i ++) {
                 Body.readString(ValueArray[i], MAX_BYTES_PER_VALUE);
             }
+	    region = Body.readLongInt();
             break ;
 
           case CREATE_FEDERATION_EXECUTION:
@@ -505,6 +504,7 @@ NetworkMessage::writeBody(Socket *socket)
             for (i = 0 ; i < handleArraySize ; i ++) {
                 Body.writeString(ValueArray[i]);
             }
+	    Body.writeLongInt(region);
             break ;
 
             // -- No Variable Part --
@@ -904,4 +904,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.17 2005/02/09 15:54:18 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.18 2005/04/05 12:27:37 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.26 2005/03/16 23:00:06 breholee Exp $
+// $Id: FederationsList.hh,v 3.27 2005/04/05 12:24:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -294,6 +294,7 @@ public:
                          ParameterValue *theValueList,
                          UShort theListSize,
                          FederationTime theTime,
+			 RegionHandle,
                          const char *theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
@@ -499,4 +500,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.26 2005/03/16 23:00:06 breholee Exp $
+// $Id: FederationsList.hh,v 3.27 2005/04/05 12:24:20 breholee Exp $
