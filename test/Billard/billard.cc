@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.13 2003/03/21 15:06:46 breholee Exp $
+// $Id: billard.cc,v 3.14 2003/07/05 14:38:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -45,7 +44,7 @@
 #include <memory.h>
 #include <math.h>
 #include <iostream>
-#include <signal.h>
+#include <csignal>
 #include <exception>
 
 using namespace std ;
@@ -136,8 +135,8 @@ main(int argc, char **argv)
     fedamb = new Fed(rtiamb);
 
     // Handlers
-    std::signal(SIGINT, sortir);
-    std::signal(SIGALRM, sortir);
+    signal(SIGINT, sortir);
+    signal(SIGALRM, sortir);
 
     set_terminate(ExceptionHandler);
     set_unexpected(ExceptionHandler);
@@ -675,4 +674,4 @@ synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     }
 }
 
-// EOF $Id: billard.cc,v 3.13 2003/03/21 15:06:46 breholee Exp $
+// EOF $Id: billard.cc,v 3.14 2003/07/05 14:38:45 breholee Exp $
