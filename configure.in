@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.1 2002/11/26 15:42:04 breholee Exp $ 
+## $Id: configure.in,v 3.2 2003/01/14 14:38:03 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 # ========== Init ============================================================
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.1 $)
+AC_REVISION($Revision: 3.2 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -14,7 +14,10 @@ AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_DISABLE_SHARED
+AC_CANONICAL_HOST
+case x$host_os in
+     xsolaris*) AC_DISABLE_SHARED ;;
+esac
 AC_PROG_LIBTOOL
 
 # ========== Autoheader ======================================================
@@ -25,9 +28,6 @@ AH_TEMPLATE([socklen_t], [Define the type for socklen_t])
 # ---------- UNIX/C++ --------------------------------------------------------
 AC_ETR_SOCKET_NSL
 AC_TYPE_SOCKLEN_T
-AC_CXX_IOSTREAM_HEADER
-AC_CXX_NAMESPACES
-AC_CXX_BOOL
 AC_FUNC_SELECT_ARGTYPES
 
 # ---------- GSSAPI ----------------------------------------------------------
@@ -60,31 +60,10 @@ dnl 	AC_SUBST(WITH_GTK),
 dnl 	AC_MSG_WARN([GTK files not found])
 dnl )	
 
-# ========== Checks for header files =========================================
-#AC_HEADER_STDC
-#AC_CHECK_HEADERS([errno.h memory.h stdlib.h string.h sys/socket.h
-#sys/types.h unistd.h exception.h signal.h])
-
-# ========== Checks for typedefs, structures, and compiler characteristics ===
-#AC_C_CONST
-#AC_C_INLINE
-#AC_TYPE_PID_T
-#AC_HEADER_TIME
-#AC_TYPE_UID_T
-
-# ========== Checks for library functions ====================================
-#AC_FUNC_MALLOC
-#AC_TYPE_SIGNAL
-#AC_FUNC_STAT
-#AC_FUNC_VPRINTF
-
-#AC_CHECK_FUNCS([alarm sigset gethostbyname gethostname inet_ntoa
-#memmove memset select socket recvfrom sqrt strchr strdup])
-
 # ========== Output ==========================================================
 AC_OUTPUT([Makefile include/Makefile libpdebug/Makefile
 libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
 test/Makefile test/include/Makefile test/libgraphc/Makefile
 test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.1 2002/11/26 15:42:04 breholee Exp $
+## $Id: configure.in,v 3.2 2003/01/14 14:38:03 breholee Exp $
