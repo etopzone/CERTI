@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.4 2004/02/25 23:52:29 breholee Exp $
+# $Id: myconf,v 3.5 2004/03/04 20:02:03 breholee Exp $
 
 case $1 in
     sun)
@@ -14,13 +14,15 @@ case $1 in
 	;;
 
     sun-gcc) 
-	echo Sun / gcc configuration ;
+	echo Sun / GCC configuration ;
 	CXXFLAGS=" -Wall " 
 	export CXXFLAGS
 	;;
 
     linux) 
-	echo GNU/Linux / gcc configuration ;
+	echo GNU/Linux / GCC configuration ;
+	CXXFLAGS=" -W -Wall -ansi -Woverloaded-virtual -Wno-unused-function" ;
+	export CXXFLAGS
 	;;
 
     hpux)
@@ -31,7 +33,7 @@ case $1 in
 	;;
 
     hpux-gcc)
-        echo HPUX / gcc configuration  
+        echo HPUX / GCC configuration  
         CC=gcc ;
         CXX=g++ ;
         export CC CXX
@@ -43,4 +45,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# $Id: myconf,v 3.4 2004/02/25 23:52:29 breholee Exp $
+# $Id: myconf,v 3.5 2004/03/04 20:02:03 breholee Exp $
