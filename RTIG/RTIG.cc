@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.15 2003/07/01 13:31:24 breholee Exp $
+// $Id: RTIG.cc,v 3.16 2003/07/03 16:23:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -317,19 +317,19 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processCancelAcquisition(link, msg);
         break ;
 
-      case NetworkMessage::CREATE_REGION:
+      case NetworkMessage::DDM_CREATE_REGION:
         D[pdTrace] << "createRegion" << endl ;
         auditServer->setLevel(6);
         processCreateRegion(link, msg);
         break ;
 
-      case NetworkMessage::MODIFY_REGION:
+      case NetworkMessage::DDM_MODIFY_REGION:
 	D[pdTrace] << "modifyRegion" << endl ;
 	auditServer->setLevel(6);
         processModifyRegion(link, msg);
         break ;
 
-      case NetworkMessage::DELETE_REGION:
+      case NetworkMessage::DDM_DELETE_REGION:
         D[pdTrace] << "deleteRegion" << endl ;
         auditServer->setLevel(6);
         processDeleteRegion(link, msg);
@@ -929,4 +929,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.15 2003/07/01 13:31:24 breholee Exp $
+// $Id: RTIG.cc,v 3.16 2003/07/03 16:23:43 breholee Exp $
