@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.21 2005/03/25 17:22:36 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.22 2005/04/02 15:42:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,8 +46,7 @@ static pdCDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 */
 void
 ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
-					  const char *reason)
-    throw (SecurityError)
+					  const char *reason) const
 {
     if (server && !server->canFederateAccessData(fed, level)) {
         cout << "Attribute " << handle << " : SecurityError for federate "
@@ -96,12 +95,6 @@ ObjectClassAttribute::~ObjectClassAttribute()
         delete (*p);
     }
     publishers.clear();
-
-    // Deleting Subscribers
-    if (!subscribers.empty())
-        D[pdError] << "Attribute " << handle
-		   << ": Subscribers list not empty at termination." << endl ;
-    subscribers.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -117,22 +110,6 @@ ObjectClassAttribute::deletePublisher(FederateHandle fed)
 	    return ;
         }
     }
-}
-
-// ----------------------------------------------------------------------------
-//! Removes a subscribed federate
-void
-ObjectClassAttribute::deleteSubscriber(FederateHandle fed)
-{
-    subscribers.remove_if(HandleComparator<Subscriber>(fed));
-}
-
-// ----------------------------------------------------------------------------
-//! Removes a subscribed federate
-void
-ObjectClassAttribute::deleteSubscriber(FederateHandle fed, const RTIRegion *region)
-{
-    subscribers.remove(Subscriber(fed, region));
 }
 
 // ----------------------------------------------------------------------------
@@ -161,34 +138,6 @@ ObjectClassAttribute::isPublishing(FederateHandle fed) const
             return true ;
     }
     return false ;
-}
-
-// ----------------------------------------------------------------------------
-/** Indicates whether a federate is subscribed with a particular region
-    @param fed federate 
-    @param region region
-    @return true if the federate/region pair is subscriber
- */
-bool
-ObjectClassAttribute::isSubscribed(FederateHandle fed,
-				   const RTIRegion *region) const
-{
-    return std::find(subscribers.begin(),
-		     subscribers.end(),
-		     Subscriber(fed, region)) != subscribers.end();
-}
-
-// ----------------------------------------------------------------------------
-/** Indicates whether a federate is subscribed with any region
-    @param fed federate 
-    @return true if the federate is subscribed
- */
-bool
-ObjectClassAttribute::isSubscribed(FederateHandle fed) const
-{
-    return std::find_if(subscribers.begin(),
-			subscribers.end(),
-			HandleComparator<Subscriber>(fed)) != subscribers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -263,67 +212,6 @@ ObjectClassAttribute::getSpace() const
     return space ;
 }
 
-// ----------------------------------------------------------------------------
-/** Unsubscribe a federate if it is associated with a particular region
- */
-void
-ObjectClassAttribute::unsubscribe(FederateHandle fed, const RTIRegion *region)
-    throw (RTIinternalError)
-{
-    if (isSubscribed(fed, region)) {
-        deleteSubscriber(fed, region);
-        D[pdTerm] << "Attribute " << handle << ": Removed Federate "
-		  << fed << " from subscribers list." << endl ;
-    }
-    else {
-        D[pdError] << "Attribute " << handle << ": Unconsistent unsubscribe "
-		   << "request from federate " << fed << endl ;
-    }
-}
-
-// ----------------------------------------------------------------------------
-/** Remove this federate's subscriptions
- */
-void
-ObjectClassAttribute::unsubscribe(FederateHandle fed)
-    throw (RTIinternalError)
-{
-    if (isSubscribed(fed)) {
-        deleteSubscriber(fed);
-        D[pdTerm] << "Attribute " << handle << ": Removed Federate "
-		  << fed << " from subscribers list." << endl ;
-    }
-    else {
-        D[pdError] << "Attribute " << handle << ": Unconsistent unsubscribe "
-		   << "request from federate " << fed << endl ;
-    }
-}
-
-// ----------------------------------------------------------------------------
-//! subscribe
-void
-ObjectClassAttribute::subscribe(FederateHandle fed, const RTIRegion *region)
-    throw (RTIinternalError, SecurityError)
-{
-    if (!isSubscribed(fed, region)) {
-        checkFederateAccess(fed, "Subscribe");
-
-	Subscriber sub(fed, region);
-	if (region != 0) {
-	    subscribers.push_back(sub);
-	}
-	else {
-	    subscribers.push_front(sub);
-	}
-	
-        D[pdInit] << "Attribute " << handle << ": Added Federate " << fed
-		  << " to subscribers list." << endl ;
-    }
-    else
-        D[pdError] << "Attribute " << handle
-		   << ": Unconsistent subscribe request from federate "
-		   << fed << endl ;
-}
 
 // ----------------------------------------------------------------------------
 //! Add all attribute's subscribers to the broadcast list
@@ -334,11 +222,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
     switch(ocblist->message->type) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
-          list<Subscriber>::iterator i ;
-          for (i = subscribers.begin(); i != subscribers.end(); i++) {
-	      if (i->match(region))
-		  ocblist->addFederate(i->getHandle(), handle);
-          }
+	  addFederatesIfOverlap(*ocblist, region, handle);
       } break ;
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
           list<Publisher *>::iterator i ;
@@ -353,4 +237,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.21 2005/03/25 17:22:36 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.22 2005/04/02 15:42:20 breholee Exp $
