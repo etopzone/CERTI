@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.13 2003/10/13 09:57:55 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.14 2004/01/09 16:41:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,44 +41,14 @@ namespace rtia {
 
 static pdCDebug D("RTIA_OM", "(RTIA OM) ");
 
-// ----------------------------------------------------------------------------
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
                                    RootObject *theRootObj)
-{
-    comm = GC ;
-    fm = GF ;
-    rootObject = theRootObj ;
-}
+    : comm(GC), 
+      fm(GF),
+      rootObject(theRootObj) { }
 
-// ----------------------------------------------------------------------------
-ObjectManagement::~ObjectManagement()
-{
-}
-
-// ----------------------------------------------------------------------------
-//! requestID.
-void
-ObjectManagement::requestID(ObjectHandlecount idCount,
-                            ObjectHandle &firstID,
-                            ObjectHandle &lastID,
-                            TypeException &e)
-{
-    NetworkMessage req, rep ;
-
-    req.type = NetworkMessage::REQUEST_ID ;
-    req.idCount = idCount ;
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
-
-    comm->sendMessage(&req);
-
-    comm->waitMessage(&rep, NetworkMessage::REQUEST_ID, req.federate);
-
-    e = rep.exception ;
-    firstID = rep.firstId ;
-    lastID = rep.lastId ;
-}
+ObjectManagement::~ObjectManagement() { }
 
 // ----------------------------------------------------------------------------
 //! registerObject
@@ -609,4 +579,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.13 2003/10/13 09:57:55 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.14 2004/01/09 16:41:00 breholee Exp $

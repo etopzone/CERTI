@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.8 2003/10/13 09:57:56 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.9 2004/01/09 16:41:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -42,11 +42,6 @@ class ObjectManagement
 public:
     ObjectManagement(Communications *, FederationManagement *, RootObject *);
     ~ObjectManagement();
-
-    void requestID(ObjectHandlecount idCount,
-                   ObjectHandle &firstID,
-                   ObjectHandle &lastID,
-                   TypeException &e);
 
     // Object Management services
     ObjectHandle registerObject(ObjectClassHandle theClassHandle,
@@ -187,4 +182,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.8 2003/10/13 09:57:56 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.9 2004/01/09 16:41:00 breholee Exp $
