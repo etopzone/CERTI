@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.3 2003/07/10 21:32:53 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.4 2003/10/27 10:43:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,7 +36,11 @@ static pdCDebug D("LIBRTI", "(libRTI DDM) - ");
 // ===========================================================================
 
 // ----------------------------------------------------------------------------
-// Create Region
+/** Create a routing region for data distribution management.
+    \param space The space handle of the region
+    \param nb_extents The number of extents
+    \return A Region object, associated with the created region
+ */
 Region *
 RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
     throw (SpaceNotDefined,
@@ -48,12 +52,10 @@ RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
            RTIinternalError)
 {
     Message req, rep ;
-
     req.setType(Message::DDM_CREATE_REGION);
     req.setSpace(space);
     req.setNumber(nb_extents);
     executeService(&req, &rep);
-
     Region *region = new RegionImp(rep.getRegion(), rep.getNumber(),
                                    space, nb_extents);
 
@@ -61,7 +63,10 @@ RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
 }
 
 // ----------------------------------------------------------------------------
-// Notify About Region Modification
+/** Notify about region modification. Applies the changes done through
+    the region services to the RTI.
+    \param r The region to commit to the RTI
+ */
 void
 RTIambassador::notifyAboutRegionModification(Region &r)
     throw (RegionNotKnown,
@@ -84,7 +89,10 @@ RTIambassador::notifyAboutRegionModification(Region &r)
 }
 
 // ----------------------------------------------------------------------------
-// Delete Region
+/** Delete region. Correctly destroys the region (through the RTI).
+    \attention Always use this function to destroy a region. Do NOT
+    use the C++ delete operator.
+ */
 void
 RTIambassador::deleteRegion(Region *region)
     throw (RegionNotKnown,
@@ -411,4 +419,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.3 2003/07/10 21:32:53 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.4 2003/10/27 10:43:41 breholee Exp $
