@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.7 2003/05/23 14:15:17 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.8 2003/10/13 09:57:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -174,6 +174,8 @@ public:
     const char *getParameterName(ParameterHandle theParameterHandle,
                                  InteractionClassHandle theClassHandle);
 
+    ObjectClassHandle getObjectClass(ObjectHandle);
+
 protected:
     Communications *comm ;
     Queues *queues ;
@@ -185,4 +187,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.7 2003/05/23 14:15:17 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.8 2003/10/13 09:57:56 breholee Exp $

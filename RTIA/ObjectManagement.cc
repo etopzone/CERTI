@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.12 2003/07/03 16:21:34 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.13 2003/10/13 09:57:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,9 +95,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
     req.federate = fm->federate ;
     req.federation = fm->_numero_federation ;
     req.objectClass = the_class ;
-    strcpy(req.label, (char *)theObjectName);
-
-    // BUG: A quoi servent Date et Heure ?
+    strcpy(req.label, (char *) theObjectName);
 
     comm->sendMessage(&req);
 
@@ -108,8 +106,6 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, the_class, rep.object,
                                            rep.label);
-
-        // La reponse contient le numero d'objet(object)
         return rep.object ;
     }
     else
@@ -603,6 +599,14 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
                                                       theClassHandle);
 }
 
+// ----------------------------------------------------------------------------
+//! getObjectClass
+ObjectClassHandle
+ObjectManagement::getObjectClass(ObjectHandle object)
+{
+    return rootObject->objects->getObjectClass(object);
+}
+
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.12 2003/07/03 16:21:34 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.13 2003/10/13 09:57:55 breholee Exp $

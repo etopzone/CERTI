@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.22 2003/07/09 16:12:24 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.23 2003/10/13 09:57:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -556,6 +556,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         }
         break ;
 
+      case Message::GET_OBJECT_INSTANCE_HANDLE:
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type getObjectInstanceHandle.");
+        rep.setObject(om->getObjectInstanceHandle(req->getName()));
+        break ;
+
       case Message::GET_OBJECT_INSTANCE_NAME:
         D.Out(pdTrace,
               "Receiving Message from Federate, type getObjectInstanceName.");
@@ -645,6 +651,11 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate: GetInteractionSpaceHandle");
         rep.setSpace(ddm->getInteractionSpace(req->getInteractionClass()));
         break ;
+
+      case Message::GET_OBJECT_CLASS:
+        D[pdTrace] << "Message from Federate: getObjectClass" << endl ;
+	rep.setObjectClass(om->getObjectClass(req->getObject()));
+	break ;	
 
       case Message::DDM_CREATE_REGION:
         D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
@@ -1074,4 +1085,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.22 2003/07/09 16:12:24 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.23 2003/10/13 09:57:56 breholee Exp $
