@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,21 +19,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.cc,v 3.2 2003/05/15 20:40:11 breholee Exp $
+// $Id: converter.cc,v 3.3 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "converter.hh"
+
+#include <string.h>
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 //! Returns buffer size needed for storing message restored by stringToObject.
 void
-getStringToObjectLength(const char *init_string, ULong& size)
+getStringToObjectLength(const char *init_string, unsigned long& size)
 {
-    ULong counter = 0 ;
-    ULong length = strlen(init_string);
-    ULong i = 0 ;
+    unsigned long counter = 0 ;
+    unsigned long length = strlen(init_string);
+    unsigned long i = 0 ;
     size = 0 ;
     while (i<length) {
         switch (init_string[i]) {
@@ -68,13 +70,13 @@ getStringToObjectLength(const char *init_string, ULong& size)
   replaced by a list of ? else it must be replaced by a list of \.
 */
 void
-stringToObject(const char *init_string, char *end_string, ULong size)
+stringToObject(const char *init_string, char *end_string, unsigned long size)
 {
-    ULong counter = 0 ;
-    ULong i = 0 ;
-    ULong j = 0 ;
-    ULong indice = 0 ;
-    ULong length = strlen(init_string);
+    unsigned long counter = 0 ;
+    unsigned long i = 0 ;
+    unsigned long j = 0 ;
+    unsigned long indice = 0 ;
+    unsigned long length = strlen(init_string);
 
     memset(end_string, '\0', size);
 
@@ -128,10 +130,10 @@ stringToObject(const char *init_string, char *end_string, ULong size)
 */
 void
 objectToString(const char *init_string,
-               ULong size, char *end_string)
+               unsigned long size, char *end_string)
 {
-    ULong i = 0 ;
-    ULong j = 0 ;
+    unsigned long i = 0 ;
+    unsigned long j = 0 ;
 
     while (i < size) {
         switch(init_string[i]) {
@@ -174,10 +176,10 @@ objectToString(const char *init_string,
 //! Returns buffer size needed to store network message made by objectToString
 void
 getObjectToStringLength(const char *init_string,
-                        ULong init_size, ULong &size)
+                        unsigned long init_size, unsigned long &size)
 {
-    ULong counter = 0 ;
-    ULong i = 0 ;
+    unsigned long counter = 0 ;
+    unsigned long i = 0 ;
     size = 0 ;
 
     while (i < init_size) {
@@ -209,4 +211,4 @@ getObjectToStringLength(const char *init_string,
 
 } // namespace certi
 
-// $Id: converter.cc,v 3.2 2003/05/15 20:40:11 breholee Exp $
+// $Id: converter.cc,v 3.3 2003/06/27 17:26:29 breholee Exp $

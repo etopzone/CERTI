@@ -18,9 +18,10 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
+// $Id: RTIA_network.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RTIA.hh"
 
 namespace certi {
@@ -253,4 +254,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
+// $Id: RTIA_network.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,29 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.hh,v 3.2 2003/05/15 20:40:11 breholee Exp $
+// $Id: converter.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_CONVERTER_HH
 #define _CERTI_CONVERTER_HH
 
-#include <config.h>
-
-// Project
-#include "RTItypes.hh"
-
-// Standard libraries
-#include <string.h>
-
 namespace certi {
 
-void getStringToObjectLength(const char *, ULong &);
-void stringToObject(const char *, char *, ULong);
-void objectToString(const char *, ULong, char *);
-void getObjectToStringLength(const char *, ULong, ULong &);
+void getStringToObjectLength(const char *, unsigned long &);
+void stringToObject(const char *, char *, unsigned long);
+void objectToString(const char *, unsigned long, char *);
+void getObjectToStringLength(const char *, unsigned long, unsigned long &);
 
 } // namespace certi
 
 #endif // _CERTI_CONVERTER_HH
 
-// $Id: converter.hh,v 3.2 2003/05/15 20:40:11 breholee Exp $
+// $Id: converter.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $

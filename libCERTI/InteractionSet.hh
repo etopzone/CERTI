@@ -19,25 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.7 2003/05/23 09:45:15 breholee Exp $
+// $Id: InteractionSet.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
 #define _CERTI_INTERACTION_SET_HH
 
-#include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <list>
-using std::list ;
-
 #include "Interaction.hh"
 #include "SecurityServer.hh"
-#include "PrettyDebug.hh"
-#include "InteractionBroadcastList.hh"
+
+#include <list>
 
 namespace certi {
 
@@ -146,4 +137,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.7 2003/05/23 09:45:15 breholee Exp $
+// $Id: InteractionSet.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $

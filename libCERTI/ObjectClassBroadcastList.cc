@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.8 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "ObjectClassBroadcastList.hh"
+
+#include "PrettyDebug.hh"
+
+using std::list ;
 
 namespace certi {
 
@@ -163,7 +167,7 @@ ObjectClassBroadcastList::ObjectClassBroadcastList(NetworkMessage *theMsg,
 
 // ----------------------------------------------------------------------------
 //! Free all structures, including Message.
-ObjectClassBroadcastList::~ObjectClassBroadcastList(void)
+ObjectClassBroadcastList::~ObjectClassBroadcastList()
 {
     this->clear();
 }
@@ -171,7 +175,7 @@ ObjectClassBroadcastList::~ObjectClassBroadcastList(void)
 // ----------------------------------------------------------------------------
 //! Empty the list so it can reused (like the destructor).
 void
-ObjectClassBroadcastList::clear(void)
+ObjectClassBroadcastList::clear()
 {
     delete message ;
     message = 0 ;
@@ -276,17 +280,17 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
     switch (message->type) {
 
-    case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
-    case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
+      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         sendPendingRAVMessage(server);
         break ;
 
-    case NetworkMessage::DISCOVER_OBJECT:
-    case NetworkMessage::REMOVE_OBJECT:
+      case NetworkMessage::DISCOVER_OBJECT:
+      case NetworkMessage::REMOVE_OBJECT:
         sendPendingDOMessage(server);
         break ;
 
-    default:
+      default:
         throw RTIinternalError("Unknown message type to broadcast.");
     }
 }
@@ -379,4 +383,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.8 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.9 2003/06/27 17:26:29 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,9 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Range.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: Range.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Range.hh"
 
 namespace certi {
@@ -69,7 +69,7 @@ Range::setUpperBound(ULong upper)
 // getLowerBound
 //
 ULong
-Range::getLowerBound(void)
+Range::getLowerBound()
 {
     return lowerBound ;
 }
@@ -78,7 +78,7 @@ Range::getLowerBound(void)
 // getUpperBound
 //
 ULong
-Range::getUpperBound(void)
+Range::getUpperBound()
 {
     return upperBound ;
 }
@@ -87,11 +87,11 @@ Range::getUpperBound(void)
 // getDimensionHandle
 //
 DimensionHandle
-Range::getDimensionHandle(void)
+Range::getDimensionHandle()
 {
     return dimension ;
 }
 
 } // namespace certi
 
-// $Id: Range.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: Range.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $

@@ -18,17 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.10 2003/06/07 22:24:12 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.11 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "ObjectManagement.hh"
 
-// Project
-#include <config.h>
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
 
-// Standard
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -609,4 +607,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.10 2003/06/07 22:24:12 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.11 2003/06/27 17:26:28 breholee Exp $

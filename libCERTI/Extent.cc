@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,10 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.1 2003/04/09 16:37:20 breholee Exp $
+// $Id: Extent.cc,v 3.2 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Extent.hh"
+
+using std::vector ;
 
 namespace certi {
 
@@ -40,7 +42,7 @@ Extent::Extent(int n)
 // ----------------------------------------------------------------------------
 // ~Extent
 //
-Extent::~Extent(void)
+Extent::~Extent()
 {
     vector<Range*>::iterator i ;
     for (i = ranges.begin(); i != ranges.end(); i++) {
@@ -117,4 +119,4 @@ Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.1 2003/04/09 16:37:20 breholee Exp $
+// $Id: Extent.cc,v 3.2 2003/06/27 17:26:28 breholee Exp $

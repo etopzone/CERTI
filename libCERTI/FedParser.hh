@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,29 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.7 2003/03/04 18:10:25 breholee Exp $
+// $Id: FedParser.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
 #define _CERTI_FED_PARSER_HH
 
-// Project
-#include <config.h>
 #include "RootObject.hh"
-#include "PrettyDebug.hh"
 
-// Standard libraries
-#include <fstream>
-#include <iostream>
 #include <vector>
 
-using std::ifstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
-using std::vector ;
-
-#define ZEOF ~0u // -1 for unsigned type (Standard C)
+#define ZEOF ~0u // -1 for unsigned type
 
 #define CREAD_MAX_BUF_LENGTH 4096 // File buffer length
 #define CREAD_MAX_ATOM_LENGTH 256 // Max length of an atom in the FED file.
@@ -123,17 +110,14 @@ typedef enum {
     FEDERATE_LEVEL // Waiting for a federate level
 } AtomType ;
 
-
-
 class FedParser
 {
 public:
-
     // --------------------------------
     // -- Constructor and Destructor --
     // --------------------------------
     FedParser(RootObject *);
-    ~FedParser(void);
+    ~FedParser();
 
     // ------------------------
     // -- Public Entry Point --
@@ -151,13 +135,13 @@ private:
     // -- Private Methods : Read-Build Methods --
     // ------------------------------------------
 
-    void advance(void)
+    void advance()
         throw (ErrorReadingRID);
 
-    void skipLine(void)
+    void skipLine()
         throw (ErrorReadingRID); // Inherited from advance().
 
-    void readSeparators(void)
+    void readSeparators()
         throw (ErrorReadingRID); // Inherited from advance().
 
     Object *readListFirst()
@@ -184,16 +168,16 @@ private:
 
     // -- Object and Interaction Classes Init --
 
-    void allocateAndRegisterObjectClass(void)
+    void allocateAndRegisterObjectClass()
         throw (RTIinternalError);
 
-    void allocateAndRegisterInteractionClass(void)
+    void allocateAndRegisterInteractionClass()
         throw (RTIinternalError);
 
-    ObjectClass * findObjectParent(void) const
+    ObjectClass * findObjectParent() const
         throw (RTIinternalError);
 
-    Interaction * findInteractionParent(void) const
+    Interaction * findInteractionParent() const
         throw (RTIinternalError);
 
     // -- Atom Processing --
@@ -243,7 +227,7 @@ private:
     RootObject *RootObj ;
 
     Boolean ErrorWhileReading ; //<! Used to know when to display
-                                //RootObj struct.
+    //RootObj struct.
 
     // ------------------------------
     // -- Stacks and Stack Indexes --(used in the Store part)
@@ -267,7 +251,7 @@ private:
     ifstream *FEDFile ; //!< Pointer to file stream for reading data.
 
     char InBuffer[CREAD_MAX_BUF_LENGTH] ; //!< Buffer used to store
-                                          //piece of file.
+    //piece of file.
     int InBufferPos ; //!< Position in InBuffer currently being treated.
     int InBufferLength ; //!< Size of the useful part of InBuffer buffer.
     int CurrentChar ; //!< char value being currently treated by file reading.
@@ -280,4 +264,4 @@ private:
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.7 2003/03/04 18:10:25 breholee Exp $
+// $Id: FedParser.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $

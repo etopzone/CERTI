@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,10 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RegionImp.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RegionImp.hh"
+
+using std::vector ;
 
 namespace certi {
 
@@ -38,7 +40,7 @@ RegionImp::RegionImp(long h, SpaceHandle s, long dimensions, long nb_extents)
     extents.reserve(nb_extents);
     coExtents.reserve(nb_extents);
 
-    for (int i = 0; i < nb_extents; i++) {
+    for (int i = 0 ; i < nb_extents ; i++) {
         extents.push_back(new Extent(dimensions));
         coExtents.push_back(new Extent(dimensions));
     }
@@ -47,7 +49,7 @@ RegionImp::RegionImp(long h, SpaceHandle s, long dimensions, long nb_extents)
 // ----------------------------------------------------------------------------
 // ~RegionImp
 //
-RegionImp::~RegionImp(void)
+RegionImp::~RegionImp()
 {
     vector<Extent*>::iterator i ;
     for (i = extents.begin(); i != extents.end(); i++) {
@@ -64,7 +66,7 @@ RegionImp::~RegionImp(void)
 // getSpaceHandle
 //
 SpaceHandle
-RegionImp::getSpaceHandle(void) const
+RegionImp::getSpaceHandle() const
     throw ()
 {
     return space ;
@@ -74,7 +76,7 @@ RegionImp::getSpaceHandle(void) const
 // getNumberOfExtents
 //
 ULong
-RegionImp::getNumberOfExtents(void) const
+RegionImp::getNumberOfExtents() const
     throw ()
 {
     return extents.size();
@@ -182,7 +184,7 @@ RegionImp::setRangeUpperBound(ExtentIndex index,
 // getHandle
 //
 long
-RegionImp::getHandle(void)
+RegionImp::getHandle()
 {
     return handle ;
 }
@@ -198,4 +200,4 @@ RegionImp::setHandle(long h)
 
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RegionImp.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $

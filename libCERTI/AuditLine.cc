@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,12 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.5 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditLine.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "AuditLine.hh"
+
+#include "RTItypes.hh"
+
+#include <string>
+#include <time.h>
+
+using std::ofstream ;
+using std::endl ;
+using std::string ;
 
 namespace certi {
 
@@ -41,7 +48,7 @@ AuditLine::addComment(const char *str)
 //! AuditLine constructor.
 /*! Initialise internal parameters to null.
  */
-AuditLine::AuditLine(void)
+AuditLine::AuditLine()
     : federation(0), federate(0), type(0), level(0), status(0)
 {
     // Set the Date
@@ -50,7 +57,7 @@ AuditLine::AuditLine(void)
 
 // ----------------------------------------------------------------------------
 //! AuditLine destructor. Nothing to be done.
-AuditLine::~AuditLine(void)
+AuditLine::~AuditLine()
 {
 }
 
@@ -78,5 +85,5 @@ AuditLine::write(ofstream &audit_file)
 
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.5 2003/02/19 18:07:29 breholee Exp $
+// $Id: AuditLine.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
 

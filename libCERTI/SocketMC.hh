@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,28 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketMC.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_MC_HH
 #define _CERTI_SOCKET_MC_HH
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <time.h>
-#include <ulimit.h>
-#include <cstring>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <assert.h>
-#include <errno.h>
-#include <sys/time.h> // necessaire pour struct timeval
-
-#include "NetworkMessage.hh"
 #include "Socket.hh"
+#include "NetworkMessage.hh"
+
+#include <sys/socket.h>
 
 namespace certi {
 
@@ -90,4 +77,4 @@ private:
 
 #endif // _CERTI_SOCKET_MC_HH
 
-// $Id: SocketMC.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketMC.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $

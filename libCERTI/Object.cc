@@ -19,10 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.11 2003/06/25 15:06:42 breholee Exp $
+// $Id: Object.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Object.hh"
+
+#include <iostream>
+#include <cstring>
+
+using std::cout ;
+using std::endl ;
+using std::deque ;
+using std::list ;
 
 namespace certi {
 
@@ -173,4 +182,4 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.11 2003/06/25 15:06:42 breholee Exp $
+// $Id: Object.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $

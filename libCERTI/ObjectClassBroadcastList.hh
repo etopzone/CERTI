@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,22 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 #define _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-#include <config.h>
-
-#include <list>
-using std::list ;
-
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
 #include "SecurityServer.hh"
 #include "ObjectBroadcastLine.hh"
-#include "PrettyDebug.hh"
+
+#include <list>
 
 namespace certi {
 
@@ -61,9 +56,9 @@ public:
     // --------------------
     ObjectClassBroadcastList(NetworkMessage *theMsg,
                              AttributeHandle MaxAttHandle = 0);
-    ~ObjectClassBroadcastList(void);
+    ~ObjectClassBroadcastList();
 
-    void clear(void);
+    void clear();
 
     void addFederate(FederateHandle theFederate,
                      AttributeHandle theAttribute = 0);
@@ -78,7 +73,7 @@ private:
 
     AttributeHandle maxHandle ;
 
-    list<ObjectBroadcastLine *> lines ;
+    std::list<ObjectBroadcastLine *> lines ;
 
     // ---------------------
     // -- Private Methods --
@@ -104,4 +99,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $

@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.2 2003/01/14 14:40:01 breholee Exp $
+# $Id: myconf,v 3.3 2003/06/27 17:26:28 breholee Exp $
 
 case $1 in
     sun)
@@ -8,14 +8,14 @@ case $1 in
 	CC=cc ;
 	CXX=CC ;
 	AR=CC ;
-	CXXFLAGS="-g" ;
+	CXXFLAGS=" -g " ;
 	AR_FLAGS=$CXXFLAGS" -xar -o" ;
 	export CC CXX AR CXXFLAGS LDFLAGS AR_FLAGS
 	;;
 
     sun-gcc) 
 	echo Sun / gcc configuration ;
-	CXXFLAGS=" -fpermissive " 
+	CXXFLAGS=" -Wall " 
 	export CXXFLAGS
 	;;
 
@@ -43,4 +43,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# $Id: myconf,v 3.2 2003/01/14 14:40:01 breholee Exp $
+# $Id: myconf,v 3.3 2003/06/27 17:26:28 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,10 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.0 2003/03/21 13:42:51 breholee Exp $
+// $Id: Dimension.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Dimension.hh"
+
+using std::string ;
 
 namespace certi {
 
@@ -44,10 +46,10 @@ Dimension::setName(string s)
 
 // ----------------------------------------------------------------------------
 string
-Dimension::getName(void)
+Dimension::getName()
 {
     return name ;
-}   
+}
 
 // ----------------------------------------------------------------------------
 void
@@ -65,13 +67,13 @@ Dimension::setUpperBound(ULong v)
 
 // ----------------------------------------------------------------------------
 DimensionHandle
-Dimension::getHandle(void)
+Dimension::getHandle()
 {
     return handle ;
 }
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.0 2003/03/21 13:42:51 breholee Exp $
+// $Id: Dimension.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $
 
 

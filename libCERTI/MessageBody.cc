@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,9 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: MessageBody.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "MessageBody.hh"
 
 // Comment this out if you don't want to use Integer encoding in stream.
@@ -34,7 +34,7 @@ namespace certi {
 /*! To create a WRITE body, with its own buffer(it will be deleted by the
   destructor). No Read operations should be made.
 */
-MessageBody::MessageBody(void)
+MessageBody::MessageBody()
 {
     Length = 0 ;
     GetPtr = Buffer ;
@@ -45,7 +45,7 @@ MessageBody::MessageBody(void)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-MessageBody::~MessageBody(void)
+MessageBody::~MessageBody()
 {
 }
 
@@ -53,7 +53,7 @@ MessageBody::~MessageBody(void)
 //! getLength.
 /*! Body must have been frozen.
  */
-long MessageBody::getLength(void)
+long MessageBody::getLength()
 {
     return Length ;
 }
@@ -62,7 +62,7 @@ long MessageBody::getLength(void)
 //! getBuffer.
 /*! Body must have been frozen.
  */
-char *MessageBody::getBuffer(void)
+char *MessageBody::getBuffer()
 {
     return Buffer ;
 }
@@ -118,4 +118,4 @@ void MessageBody::writeString(const char *String)
 
 }
 
-// $Id: MessageBody.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: MessageBody.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,24 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_BROADCAST_LIST_HH
 #define _CERTI_INTERACTION_BROADCAST_LIST_HH
 
-#include <config.h>
-
-#include <list>
-using std::list ;
-
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
-#include "SecurityServer.hh"
-#include "PrettyDebug.hh"
-
-// Describe the BroadcastList's elements, and the possible states.
 #include "InteractionBroadcastLine.hh"
+#include "SecurityServer.hh"
+
+#include <list>
 
 namespace certi {
 
@@ -58,9 +51,9 @@ public:
     // -- Public Methods --
     // --------------------
     InteractionBroadcastList(NetworkMessage *theMsg);
-    ~InteractionBroadcastList(void);
+    ~InteractionBroadcastList();
 
-    void clear(void);
+    void clear();
     void addFederate(FederateHandle theFederate);
     void sendPendingMessage(SecurityServer *Server);
 
@@ -82,4 +75,4 @@ private:
 
 #endif // _CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,17 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: MessageBody.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_BODY_HH
 #define _CERTI_MESSAGE_BODY_HH
 
-#include <config.h>
+#include "RTItypes.hh"
 
 #include <cstring>
-//#include "network.hh"
-#include "RTItypes.hh"
 
 namespace certi {
 
@@ -95,7 +92,7 @@ public:
     // -- Read and Write Methods for Integer --
     // ----------------------------------------
 
-    inline unsigned short readShortInt(void)
+    inline unsigned short readShortInt()
     {
         unsigned short Result ;
         sgetn((char *) &Result, 2);
@@ -107,7 +104,7 @@ public:
         sputn((char *) &C, 2);
     };
 
-    inline unsigned long readLongInt(void)
+    inline unsigned long readLongInt()
     {
         unsigned long Result ;
         sgetn((char *) &Result, 4);
@@ -128,15 +125,15 @@ public:
     // -----------------------------
     // -- General Purpose Methods --
     // -----------------------------
-    MessageBody(void);
+    MessageBody();
 
     // To create a READ body, with a buffer of yours(it will NOT be deleted
     // by the destructor). No Write operations should be made.
     //MessageBody(char *InitBuffer, int InitLength);
-    ~MessageBody(void);
+    ~MessageBody();
 
-    long getLength(void);
-    char *getBuffer(void);
+    long getLength();
+    char *getBuffer();
 
 private:
 
@@ -166,4 +163,4 @@ private:
 
 #endif // _CERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: MessageBody.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUN.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UN_HH
@@ -31,7 +31,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#define NOM_FICHIER_SOCKET "ComFedRTI"
+#define NOM_FICHIER_SOCKET ".comFedRTI"
 
 namespace certi {
 // Signal Handler Types for a UNIX socket : - stSignalInterrupt :
@@ -125,4 +125,4 @@ private:
 
 #endif // _CERTI_SOCKET_UN_HH
 
-// $Id: SocketUN.hh,v 3.4 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUN.hh,v 3.5 2003/06/27 17:26:29 breholee Exp $

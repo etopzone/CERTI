@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.9 2003/04/22 16:42:27 breholee Exp $ 
+## $Id: Makefile.am,v 3.10 2003/06/27 17:26:28 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -24,16 +24,16 @@ SecurityServer.hh SocketMC.hh SocketServer.hh SocketTCP.hh		\
 SocketUDP.hh Subscriber.hh XmlParser.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc converter.cc		\
-Dimension.cc Exception.cc Extent.cc FederateLevelList.cc		\
-FedParser_Build.cc FedParser_Store.cc FedTime.cc GAV.cc GAV_aux.cc	\
-GSSAPIHandler.cc Interaction.cc InteractionBroadcastList.cc		\
-InteractionSet.cc LBTS.cc Message.cc Message_RW.cc MessageBody.cc	\
-NetworkMessage.cc NetworkMessage_RW.cc Object.cc ObjectSet.cc		\
-ObjectAttribute.cc ObjectClass.cc ObjectClassAttribute.cc		\
-ObjectClassBroadcastList.cc ObjectClassSet.cc Parameter.cc		\
-Publisher.cc Range.cc RegionImp.cc RootObject.cc RoutingSpace.cc	\
-SecureTCPSocket.cc SecurityServer.cc SocketMC.cc SocketServer.cc	\
-SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc XmlParser.cc
+Dimension.cc Exception.cc Extent.cc FederateLevelList.cc FedParser.cc	\
+FedTime.cc GAV.cc GAV_aux.cc GSSAPIHandler.cc Interaction.cc		\
+InteractionBroadcastList.cc InteractionSet.cc LBTS.cc Message.cc	\
+Message_RW.cc MessageBody.cc NetworkMessage.cc NetworkMessage_RW.cc	\
+Object.cc ObjectSet.cc ObjectAttribute.cc ObjectClass.cc		\
+ObjectClassAttribute.cc ObjectClassBroadcastList.cc ObjectClassSet.cc	\
+Parameter.cc Publisher.cc Range.cc RegionImp.cc RootObject.cc		\
+RoutingSpace.cc SecureTCPSocket.cc SecurityServer.cc SocketMC.cc	\
+SocketServer.cc SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc	\
+XmlParser.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -41,4 +41,4 @@ libCERTI_la_LDFLAGS = -release 3.0.1
 
 LDADD = @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.9 2003/04/22 16:42:27 breholee Exp $
+## EOF $Id: Makefile.am,v 3.10 2003/06/27 17:26:28 breholee Exp $

@@ -19,10 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.11 2003/06/25 15:15:43 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "ObjectClassAttribute.hh"
+
+#include "PrettyDebug.hh"
+
+#include <iostream>
+#include <list>
+#include <assert.h>
+
+using std::list ;
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -89,7 +100,7 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
 //! No parameters constructor.
 /*! This constructor initialize the attribute with default parameters.
  */
-ObjectClassAttribute::ObjectClassAttribute(void)
+ObjectClassAttribute::ObjectClassAttribute()
     : LevelID(PublicLevelID), Order(RECEIVE),
       Transport(BEST_EFFORT), handle(0), space(0)
 {
@@ -119,7 +130,7 @@ ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *Source)
 
 // ----------------------------------------------------------------------------
 //! Destructor (Empty private Lists, and free Name memory).
-ObjectClassAttribute::~ObjectClassAttribute(void)
+ObjectClassAttribute::~ObjectClassAttribute()
 {
     if (Name != NULL) {
         free(Name);
@@ -188,7 +199,7 @@ ObjectClassAttribute::deleteSubscriber(int rank)
 // ----------------------------------------------------------------------------
 //! Displays the attribute information (handle, name and level id).
 void
-ObjectClassAttribute::display(void) const
+ObjectClassAttribute::display() const
 {
     cout << " Attribute " << handle << ':' ;
 
@@ -309,7 +320,7 @@ ObjectClassAttribute::setHandle(AttributeHandle h)
 
 // ----------------------------------------------------------------------------
 AttributeHandle
-ObjectClassAttribute::getHandle(void) const
+ObjectClassAttribute::getHandle() const
 {
     return handle ;
 }
@@ -323,7 +334,7 @@ ObjectClassAttribute::setSpace(SpaceHandle h)
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-ObjectClassAttribute::getSpace(void) const
+ObjectClassAttribute::getSpace() const
 {
     return space ;
 }
@@ -369,26 +380,26 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 {
     switch(ocblist->message->type) {
 
-    case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
-        list<Subscriber *>::iterator i ;
-        for (i = subscribers.begin(); i != subscribers.end(); i++) {
-            ocblist->addFederate((*i)->getHandle(), handle);
-        }
-    }
+      case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
+          list<Subscriber *>::iterator i ;
+          for (i = subscribers.begin(); i != subscribers.end(); i++) {
+              ocblist->addFederate((*i)->getHandle(), handle);
+          }
+      }
         break ;
 
-    case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-        list<Publisher *>::iterator i ;
-        for (i = publishers.begin(); i != publishers.end(); i++) {
-            ocblist->addFederate((*i)->getHandle(), handle);
-        }
-    }
+      case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+          list<Publisher *>::iterator i ;
+          for (i = publishers.begin(); i != publishers.end(); i++) {
+              ocblist->addFederate((*i)->getHandle(), handle);
+          }
+      }
         break ;
 
-    default: ; // on ne fait rien
+      default: ; // on ne fait rien
     }
 }
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.11 2003/06/25 15:15:43 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $

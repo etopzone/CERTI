@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,25 +19,30 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RoutingSpace.hh"
+
+using std::vector ;
+using std::cout ;
+using std::endl ;
+using std::string ;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 /** Constructor
  */
-RoutingSpace::RoutingSpace(void)
+RoutingSpace::RoutingSpace()
 {
-
 }
 
 // ----------------------------------------------------------------------------
 /** Destructor
  */
-RoutingSpace::~RoutingSpace(void)
+RoutingSpace::~RoutingSpace()
 {
     vector<Dimension*>::iterator i ;
     for (i = dimensions.begin(); i != dimensions.end(); i++) {
@@ -69,7 +73,7 @@ RoutingSpace::setHandle(SpaceHandle h)
 /** display (stdout) the routing space details
  */
 void
-RoutingSpace::display(void)
+RoutingSpace::display()
 {
     cout << "RoutingSpace « " << name << " »" << endl ;
 }
@@ -87,7 +91,7 @@ RoutingSpace::setName(string s)
 /** get the routing space's name
  */
 string
-RoutingSpace::getName(void)
+RoutingSpace::getName()
 {
     return name ;
 }
@@ -96,7 +100,7 @@ RoutingSpace::getName(void)
 /** get the routing space's handle
  */
 SpaceHandle
-RoutingSpace::getHandle(void)
+RoutingSpace::getHandle()
 {
     return handle ;
 }
@@ -145,4 +149,4 @@ RoutingSpace::getNbDimensions()
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $

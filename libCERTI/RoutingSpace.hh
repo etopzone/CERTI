@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -30,37 +29,35 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
-using namespace std ;
 
 namespace certi {
 
 class RoutingSpace
 {
 public:
-    RoutingSpace(void);
-    ~RoutingSpace(void);
+    RoutingSpace();
+    ~RoutingSpace();
 
-    void setName(string);
-    string getName(void);
+    void setName(std::string);
+    std::string getName();
     void setHandle(SpaceHandle);
-    SpaceHandle getHandle(void);
-    DimensionHandle getDimensionHandle(string) throw (NameNotFound);
-    string getDimensionName(DimensionHandle) throw (DimensionNotDefined);
-    long getNbDimensions(void);
+    SpaceHandle getHandle();
+    DimensionHandle getDimensionHandle(std::string) throw (NameNotFound);
+    std::string getDimensionName(DimensionHandle) throw (DimensionNotDefined);
+    long getNbDimensions();
 
-    void display(void);
+    void display();
     void addDimension(Dimension*);
 
 private:
     SpaceHandle handle ;
-    string name ;
-    vector<Dimension*> dimensions ;
+    std::string name ;
+    std::vector<Dimension*> dimensions ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $
 

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,24 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketTCP.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "SocketTCP.hh"
+
+#include "PrettyDebug.hh"
+
+#include <netdb.h>
+#include <errno.h>
+#include <ulimit.h>
+#include <assert.h>
+#include <unistd.h>
+#include <netinet/tcp.h>
+#include <iostream>
+
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -104,7 +117,7 @@ int SocketTCP::bind(unsigned int port, unsigned long addr)
 
 // ----------------------------------------------------------------------------
 //! changeReuseOption.
-void SocketTCP::changeReuseOption(void)
+void SocketTCP::changeReuseOption()
 {
     int on = 1 ;
 
@@ -235,7 +248,7 @@ SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-SocketTCP::SocketTCP(void)
+SocketTCP::SocketTCP()
 {
     _est_init_tcp = RTI_FALSE ;
 
@@ -249,7 +262,7 @@ SocketTCP::SocketTCP(void)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-SocketTCP::~SocketTCP(void)
+SocketTCP::~SocketTCP()
 {
     // Fermeture
     if (_est_init_tcp)
@@ -309,7 +322,8 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
 
 // ----------------------------------------------------------------------------
 //! close.
-void SocketTCP::close(void)
+void
+SocketTCP::close()
 {
     if (_est_init_tcp) {
         ::close(_socket_tcp);
@@ -329,7 +343,7 @@ int SocketTCP::listen(unsigned long howMuch)
 // ----------------------------------------------------------------------------
 //! getAddr.
 unsigned long
-SocketTCP::getAddr(void) const
+SocketTCP::getAddr() const
 {
     return(_sockIn.sin_addr.s_addr);
 }
@@ -337,7 +351,7 @@ SocketTCP::getAddr(void) const
 // ----------------------------------------------------------------------------
 //! getPort.
 unsigned int
-SocketTCP::getPort(void) const
+SocketTCP::getPort() const
 {
     return _sockIn.sin_port ;
 }
@@ -347,7 +361,7 @@ SocketTCP::getPort(void) const
   and is waiting in the internal buffer, else RTI_FALSE.
 */
 Boolean
-SocketTCP::isDataReady(void) const
+SocketTCP::isDataReady() const
 {
 #ifdef SOCKTCP_BUFFER_LENGTH
     return ((RBLength > 0) ? RTI_TRUE : RTI_FALSE);
@@ -359,7 +373,7 @@ SocketTCP::isDataReady(void) const
 // ----------------------------------------------------------------------------
 //! open
 int
-SocketTCP::open(void)
+SocketTCP::open()
 {
     return(((_socket_tcp=socket(AF_INET, SOCK_STREAM, 0))<0)?0:1);
 }
@@ -438,7 +452,7 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
 // ----------------------------------------------------------------------------
 //! Returns the address.
 unsigned long
-SocketTCP::returnAdress(void) const
+SocketTCP::returnAdress() const
 {
     return getAddr();
 }
@@ -446,7 +460,7 @@ SocketTCP::returnAdress(void) const
 // ----------------------------------------------------------------------------
 //! Returns the socket.
 int
-SocketTCP::returnSocket(void) const
+SocketTCP::returnSocket() const
 {
     return _socket_tcp ;
 }
@@ -486,4 +500,4 @@ int SocketTCP::timeoutTCP(int sec, int usec)
 
 }
 
-// $Id: SocketTCP.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketTCP.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $

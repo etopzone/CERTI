@@ -19,13 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 3.2 2003/06/26 15:20:25 breholee Exp $
+// $Id: DebugOStream.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
 #define _CERTI_DEBUGOSTREAM_HH
 
-#include <config.h>
 #include <iostream>
 
 // Attention, defining methods in the class declaration make them
@@ -259,4 +258,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 3.2 2003/06/26 15:20:25 breholee Exp $
+// $Id: DebugOStream.hh,v 3.3 2003/06/27 17:26:29 breholee Exp $

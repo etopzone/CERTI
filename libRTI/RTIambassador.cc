@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.30 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIambassador.cc,v 3.31 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
+#include "RTIambassador.hh"
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
@@ -37,7 +37,7 @@
 #include "converter.hh"
 #include "PrettyDebug.hh"
 
-#include "RTIambassador.hh"
+#include <signal.h>
 
 namespace certi {
 
@@ -2169,7 +2169,7 @@ RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
 // ----------------------------------------------------------------------------
 // Get Routing Space Handle
 SpaceHandle
-RTIambassador::getRoutingSpaceHandle(const char *name)
+RTIambassador::getRoutingSpaceHandle(const char *rs_name)
     throw (NameNotFound,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -2178,7 +2178,7 @@ RTIambassador::getRoutingSpaceHandle(const char *name)
     Message req, rep ;
 
     req.type = Message::GET_SPACE_HANDLE ;
-    req.setName(name);
+    req.setName(rs_name);
     this->executeService(&req, &rep);
 
     return rep.getSpace();
@@ -3247,4 +3247,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.30 2003/06/07 22:24:13 breholee Exp $
+// $Id: RTIambassador.cc,v 3.31 2003/06/27 17:26:29 breholee Exp $

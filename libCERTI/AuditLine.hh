@@ -19,24 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.5 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditLine.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
 #define _CERTI_AUDIT_LINE_HH
 
-// Project
-#include <config.h>
 #include "RTItypes.hh"
 
-// Standard libraries
 #include <fstream>
-#include <string>
-#include <time.h>
-
-using std::ofstream ;
-using std::endl ;
-using std::string ;
 
 namespace certi {
 
@@ -46,7 +37,7 @@ public:
     AuditLine();
     ~AuditLine();
 
-    void write(ofstream &); //!< Write data to file
+    void write(std::ofstream &); //!< Write data to file
     void addComment(const char *); //!< Add str at the end of comment.
 
     Handle federation ;
@@ -57,11 +48,11 @@ public:
 
 private:
     time_t date ; //!< date, automatically set at construction time.
-    string comment ; //!< comment internally managed.
+    std::string comment ; //!< comment internally managed.
 };
 
 }
 
 #endif // _CERTI_AUDIT_LINE_HH
 
-// $Id: AuditLine.hh,v 3.5 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditLine.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $

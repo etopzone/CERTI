@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.18 2003/06/25 16:19:42 breholee Exp $
+// $Id: Federation.hh,v 3.19 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -39,8 +39,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #endif // HAVE_XML
-
-using namespace certi ;
 
 namespace certi {
 namespace rtig {
@@ -457,4 +455,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.18 2003/06/25 16:19:42 breholee Exp $
+// $Id: Federation.hh,v 3.19 2003/06/27 17:26:28 breholee Exp $

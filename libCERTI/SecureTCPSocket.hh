@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Couche de securite utilisant GSSAPI au-dessus d'un socket TCP.
@@ -31,15 +30,10 @@
 #include "SocketTCP.hh"
 #include "GSSAPIHandler.hh"
 #include "RTItypes.hh"
-#include "PrettyDebug.hh"
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <pwd.h>
 
 namespace certi {
 
-class SecureTCPSocket : public certi::SocketTCP
+class SecureTCPSocket : public SocketTCP
 {
 public:
 
@@ -126,5 +120,5 @@ private:
 
 #endif // _CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
 

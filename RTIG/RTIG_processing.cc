@@ -18,10 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.12 2003/06/25 16:23:48 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.13 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RTIG.hh"
+
+#include <assert.h>
 
 namespace certi {
 namespace rtig {
@@ -916,4 +919,4 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.12 2003/06/25 16:23:48 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.13 2003/06/27 17:26:28 breholee Exp $

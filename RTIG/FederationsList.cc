@@ -18,10 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.14 2003/06/25 16:19:43 breholee Exp $
+// $Id: FederationsList.cc,v 3.15 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "FederationsList.hh"
+
+using std::list ;
 
 namespace certi {
 namespace rtig {
@@ -1118,5 +1121,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.14 2003/06/25 16:19:43 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.15 2003/06/27 17:26:28 breholee Exp $
 

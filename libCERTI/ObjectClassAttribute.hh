@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,20 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 #define _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
-
-#include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <list>
-using std::list ;
 
 #include "RTItypes.hh"
 #include "SecurityLevel.hh"
@@ -41,7 +31,7 @@ using std::list ;
 #include "Subscriber.hh"
 #include "Publisher.hh"
 #include "ObjectClassBroadcastList.hh"
-#include "PrettyDebug.hh"
+
 
 namespace certi {
 
@@ -66,25 +56,25 @@ public:
     // --------------------
     // -- Public Methods --
     // --------------------
-    ObjectClassAttribute(void);
+    ObjectClassAttribute();
     ObjectClassAttribute(ObjectClassAttribute *source);
-    ~ObjectClassAttribute(void);
+    ~ObjectClassAttribute();
 
-    void display(void) const ;
+    void display() const ;
 
     /*! Name attribute access(GetName reference must be considered READ-ONLY).
       NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
     */
-    char *getName(void) const {return Name ; };
+    char *getName() const {return Name ; };
 
     void setName(char *NewName)
         throw (ValueLengthExceeded, RTIinternalError);
 
     void setHandle(AttributeHandle h);
-    AttributeHandle getHandle(void) const ;
+    AttributeHandle getHandle() const ;
 
     void setSpace(SpaceHandle);
-    SpaceHandle getSpace(void) const ;
+    SpaceHandle getSpace() const ;
 
     // ----------------------
     // -- Security Methods --
@@ -148,4 +138,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.7 2003/04/09 16:41:10 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.8 2003/06/27 17:26:29 breholee Exp $

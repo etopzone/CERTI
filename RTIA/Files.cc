@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,21 +18,24 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.cc,v 3.6 2003/02/19 15:45:22 breholee Exp $
+// $Id: Files.cc,v 3.7 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Files.hh"
+
+using std::list ;
 
 namespace certi {
 namespace rtia {
 
 // ----------------------------------------------------------------------------
-Queues::Queues(void)
+Queues::Queues()
 {
 }
 
 // ----------------------------------------------------------------------------
-Queues::~Queues(void)
+Queues::~Queues()
 {
 }
 
@@ -194,4 +196,4 @@ Queues::insertTsoMessage(NetworkMessage *msg)
 
 }} // namespaces
 
-// $Id: Files.cc,v 3.6 2003/02/19 15:45:22 breholee Exp $
+// $Id: Files.cc,v 3.7 2003/06/27 17:26:28 breholee Exp $

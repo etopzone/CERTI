@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.13 2003/06/07 22:24:13 breholee Exp $
+// $Id: Interaction.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Interaction.hh"
+
+#include "PrettyDebug.hh"
+
+#include <iostream>
+#include <assert.h>
+
+using std::cout ;
+using std::endl ;
+using std::list ;
 
 namespace certi {
 
@@ -652,4 +661,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.13 2003/06/07 22:24:13 breholee Exp $
+// $Id: Interaction.cc,v 3.14 2003/06/27 17:26:28 breholee Exp $

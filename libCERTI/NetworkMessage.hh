@@ -19,18 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.9 2003/06/25 15:05:08 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
 #define _CERTI_NETWORK_MESSAGE
 
-#include <cstdio>
-#include <cstring>
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "fedtime.hh"
 #include "Exception.hh"
-#include "PrettyDebug.hh"
 #include "Socket.hh"
 #include "MessageBody.hh"
 
@@ -181,7 +177,7 @@ public:
         UShort bodySize ;
         HeaderUnion VP ; // Variable Part
     };
-    
+
 public :
 
     // --------------------
@@ -216,12 +212,10 @@ public :
     // Read and Write NetworkMessage Objects to and from Socket objects.
 
     void write(Socket *Socket)
-        throw (NetworkError,
-               NetworkSignal);
+        throw (NetworkError, NetworkSignal);
 
     void read(Socket *Socket)
-        throw (NetworkError,
-               NetworkSignal);
+        throw (NetworkError, NetworkSignal);
 
     // ------------------------------
     // -- Attribute Access Methods --
@@ -341,4 +335,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.9 2003/06/25 15:05:08 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.10 2003/06/27 17:26:29 breholee Exp $

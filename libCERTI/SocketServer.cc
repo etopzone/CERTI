@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.6 2003/06/25 16:02:15 breholee Exp $
+// $Id: SocketServer.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "SocketServer.hh"
+
+using std::list ;
 
 namespace certi {
 
@@ -311,4 +312,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.6 2003/06/25 16:02:15 breholee Exp $
+// $Id: SocketServer.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $

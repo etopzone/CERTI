@@ -18,15 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.9 2003/05/23 16:40:04 breholee Exp $
+// $Id: Federate.cc,v 3.10 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Federate.hh"
 
-// Project
-#include <config.h>
-
-// Standard
 #include <cstring>
 #include <string>
 
@@ -210,4 +207,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.9 2003/05/23 16:40:04 breholee Exp $
+// $Id: Federate.cc,v 3.10 2003/06/27 17:26:28 breholee Exp $

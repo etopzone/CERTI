@@ -18,10 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.9 2003/06/07 22:24:12 breholee Exp $
+// $Id: RTIA.cc,v 3.10 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RTIA.hh"
+
+#include <assert.h>
 
 namespace certi {
 namespace rtia {
@@ -74,7 +77,7 @@ void
 RTIA::displayStatistics()
 {
     if (stat.display()) {
-	cout << stat ;
+        cout << stat ;
     }
 }
 
@@ -124,4 +127,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.9 2003/06/07 22:24:12 breholee Exp $
+// $Id: RTIA.cc,v 3.10 2003/06/27 17:26:28 breholee Exp $

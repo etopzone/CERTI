@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,12 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketMC.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "SocketMC.hh"
+
+#include <arpa/inet.h>
+#include <ulimit.h>
+#include <unistd.h>
+#include <assert.h>
+#include <errno.h>
+#include <sys/time.h>
 
 namespace certi {
 
@@ -144,7 +149,7 @@ SocketMC::receive(void *Buffer, unsigned long)
 
 // ----------------------------------------------------------------------------
 int
-SocketMC::returnSocket(void) const
+SocketMC::returnSocket() const
 {
     return _socket_mc ;
 }
@@ -152,7 +157,7 @@ SocketMC::returnSocket(void) const
 
 // ----------------------------------------------------------------------------
 unsigned long
-SocketMC::returnAdress(void) const
+SocketMC::returnAdress() const
 {
     return _sin_e.sin_addr.s_addr ;
 }
@@ -210,8 +215,6 @@ char *SocketMC::receiveMC(NetworkMessage *message)
     return(inet_ntoa(_sin.sin_addr));
 }
 
-
-
 // ----------------------------------------------------------------------------
 int SocketMC::timeoutMC(int sec, int usec)
 {
@@ -236,5 +239,5 @@ int SocketMC::timeoutMC(int sec, int usec)
 
 }
 
-// EOF $Id: SocketMC.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
 

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,30 +19,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 3.2 2003/03/21 18:18:48 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "PrettyDebug.hh"
+
+#include <cstring>
+#include <iostream>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <iostream>
+
+using std::cout ;
+using std::cerr ;
+using std::endl ;
 
 DebugOStream DebugOStream::nullOutputStream(cout);
 DebugOStream PrettyDebug::defaultOutputStream(cerr);
 
-#ifdef TEST_DEBUGOSTREAM_PTR
 //Fix this pointer to the default initialisation of pointers for your compiler
 DebugOStream* PrettyDebug::nullOutputStreamPtr = 0 ; 
 DebugOStream& PrettyDebug::nullOutputStream = DebugOStream::nullOutputStream;
-#else
-DebugOStream* PrettyDebug::nullOutputStreamPtr = &(DebugOStream::nullOutputStream);
-#endif
-
-//Private
 
 // ----------------------------------------------------------------------------
 /** Print the message to the default output ostream.
  *  This function does NOT add any trailing \n. */
 void
 PrettyDebug::Print(DebugOStream& theOutputStream,
-                const char* theHeaderMessage, const char * Message)
+                   const char* theHeaderMessage, const char * Message)
 {
     if (Message != NULL)
         theOutputStream << theHeaderMessage << Message;
@@ -221,4 +225,4 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 
 #endif // NO_PRETTYDEBUG
 
-// $Id: PrettyDebug.cc,v 3.2 2003/03/21 18:18:48 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.4 2003/06/27 17:26:29 breholee Exp $

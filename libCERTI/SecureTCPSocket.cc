@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,12 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.4 2003/06/25 15:56:25 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.5 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "SecureTCPSocket.hh"
+
+#include "PrettyDebug.hh"
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <pwd.h>
 
 namespace certi {
 
@@ -301,4 +305,4 @@ void SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.4 2003/06/25 15:56:25 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.5 2003/06/27 17:26:29 breholee Exp $

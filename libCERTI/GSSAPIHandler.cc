@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,12 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.cc,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: GSSAPIHandler.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef WITH_GSSAPI
 
+#include <config.h>
 #include "GSSAPIHandler.hh"
+
+#include "RTItypes.hh"
+#include "PrettyDebug.hh"
+#include "SocketTCP.hh"
 
 namespace certi {
 
@@ -166,7 +170,7 @@ void GSSAPIHandler::acceptSecContext(SocketTCP *Socket)
 
 // ----------------------------------------------------------------------------
 //! GSSAPIHandler.
-GSSAPIHandler::GSSAPIHandler(void)
+GSSAPIHandler::GSSAPIHandler()
 {
     InitSecContext_Started = RTI_FALSE ;
 
@@ -183,7 +187,7 @@ GSSAPIHandler::GSSAPIHandler(void)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-GSSAPIHandler::~GSSAPIHandler(void)
+GSSAPIHandler::~GSSAPIHandler()
 {
     D.Out(pdTerm, "GSSAPI: Releasing GSSAPI objects.");
 
@@ -259,7 +263,7 @@ void GSSAPIHandler::getMessage(SocketTCP *Socket,
 
     switch(RTI_GSSAPI_USAGE) {
 
-    case RTI_GSS_NOTHING:
+      case RTI_GSS_NOTHING:
         // Get non-encrypted token.
         getToken(Socket, SealedToken);
 
@@ -271,7 +275,7 @@ void GSSAPIHandler::getMessage(SocketTCP *Socket,
         // to GSSAPIHandler::ReleaseBuffer.
         break ;
 
-    case RTI_GSS_SIGN_ONLY:
+      case RTI_GSS_SIGN_ONLY:
         // Get Token(ie "Buffer Length" + "Buffer" + "Signature Token")
         getToken(Socket, SealedToken);
 
@@ -305,7 +309,7 @@ void GSSAPIHandler::getMessage(SocketTCP *Socket,
 
         break ;
 
-    case RTI_GSS_ENCRYPT:
+      case RTI_GSS_ENCRYPT:
 
         // Get encrypted token.
         getToken(Socket, SealedToken);
@@ -321,7 +325,7 @@ void GSSAPIHandler::getMessage(SocketTCP *Socket,
         free(SealedToken.value);
         break ;
 
-    default:
+      default:
         printf("BAD VALUE FOR RTI_GSSAPI_USAGE\n");
         throw RTIinternalError();
     }
@@ -335,7 +339,7 @@ void GSSAPIHandler::getMessage(SocketTCP *Socket,
   freed by the caller. The returned name is stripped from any network
   address part(starting with a '@').
 */
-char *GSSAPIHandler::getRemoteName(void)
+char *GSSAPIHandler::getRemoteName()
 {
     gss_buffer_desc OutputName ;
     gss_OID OutputNameType ;
@@ -509,15 +513,15 @@ void GSSAPIHandler::releaseBuffer(gss_buffer_t IncomingBuffer)
 {
     switch(RTI_GSSAPI_USAGE) {
 
-    case RTI_GSS_NOTHING:
-    case RTI_GSS_SIGN_ONLY:
+      case RTI_GSS_NOTHING:
+      case RTI_GSS_SIGN_ONLY:
         // Buffer was allocated by GetToken
         free(IncomingBuffer->value);
         IncomingBuffer->value = NULL ;
         IncomingBuffer->length = 0 ;
         break ;
 
-    case RTI_GSS_ENCRYPT:
+      case RTI_GSS_ENCRYPT:
         gss_release_buffer(&Minor, IncomingBuffer);
     }
 }
@@ -539,12 +543,12 @@ GSSAPIHandler::sendMessage(SocketTCP *Socket,
 
     switch(RTI_GSSAPI_USAGE) {
 
-    case RTI_GSS_NOTHING:
+      case RTI_GSS_NOTHING:
         // Send clear-text message.
         sendToken(Socket, *OutcomingBuffer);
         break ;
 
-    case RTI_GSS_SIGN_ONLY:
+      case RTI_GSS_SIGN_ONLY:
         // Compute Signature Token
         Code = gss_sign(&Minor,
                         Context,
@@ -581,7 +585,7 @@ GSSAPIHandler::sendMessage(SocketTCP *Socket,
 
         break ;
 
-    case RTI_GSS_ENCRYPT:
+      case RTI_GSS_ENCRYPT:
 
         Code = gss_seal(&Minor,
                         Context,
@@ -687,4 +691,4 @@ void GSSAPIHandler::setRemoteName(char *PrincipalName)
 
 #endif // WITH_GSSAPI
 
-// $Id: GSSAPIHandler.cc,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: GSSAPIHandler.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $

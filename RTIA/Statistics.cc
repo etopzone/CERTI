@@ -20,12 +20,9 @@
 //
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "Statistics.hh"
 
-// Project
-#include <config.h>
-
-// Standard libraries
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -321,15 +318,15 @@ operator<<(ostream &s, Statistics &stat)
     s << "List of federate services " << endl
       << "--------------------------------------------------" << endl ;
 
-    int sentFederateMessages = 0 ;    
+    int sentFederateMessages = 0 ;
     std::map<Message::Type, int>::iterator fi ;
     std::map<Message::Type, int>::iterator fe = stat.federateServiceSet.end();
     for (fi = stat.federateServiceSet.begin(); fi != fe ; ++fi) {
-	int nb = fi->second ;
+        int nb = fi->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
             s << nb << ' ' << Statistics::fedMessageName[fi->first]
-	      << " (" << fi->first << ')' << endl ;
+              << " (" << fi->first << ')' << endl ;
         }
         sentFederateMessages += nb ;
     }
@@ -341,15 +338,15 @@ operator<<(ostream &s, Statistics &stat)
     std::map<NetworkMessage::Type, int>::iterator ri ;
     std::map<NetworkMessage::Type, int>::iterator re = stat.rtiServiceSet.end();
     for (ri = stat.rtiServiceSet.begin(); ri != re ; ++ri) {
-	int nb = ri->second ;
+        int nb = ri->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
             s << nb << ' ' << Statistics::rtiMessageName[ri->first]
-	      << " (" << ri->first << ')' << endl ;
+              << " (" << ri->first << ')' << endl ;
         }
         sentRtiMessages += nb ;
     }
-    
+
     s << endl
       << " Number of Federate messages : " << sentFederateMessages << endl
       << " Number of RTIG messages : " << sentRtiMessages << endl ;
@@ -359,4 +356,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.2 2003/06/23 17:05:39 breholee Exp $
+// $Id: Statistics.cc,v 3.3 2003/06/27 17:26:28 breholee Exp $

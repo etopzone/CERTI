@@ -19,37 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketTCP.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
 #define _CERTI_SOCKET_TCP_HH
 
-#include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <sys/time.h>
-#include <signal.h>
-#include <errno.h>
-#include <cstring>
-#include <ulimit.h>
-#include <assert.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <netinet/tcp.h>
-
 #include "Socket.hh"
 #include "RTItypes.hh"
-#include "PrettyDebug.hh"
+
+#include <sys/socket.h>
 
 // This is the read buffer of TCP sockets. It must be at least as long
 // as the longest data ever received by a socket.
@@ -144,8 +123,9 @@ private:
     int timeoutTCP(int, int);
 
 };
+
 }
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketTCP.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $

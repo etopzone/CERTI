@@ -19,27 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.6 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditFile.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
 #define _CERTI_AUDIT_FILE_HH
 
-// Project
-#include <config.h>
 #include "AuditLine.hh"
 #include "RTItypes.hh"
 #include "Exception.hh"
 
-// Standard libraries
 #include <fstream>
-#include <iostream>
-#include <cstdarg>
-
-using std::ofstream ;
-using std::ios ;
-using std::cerr ;
-using std::endl ;
 
 #define AUDIT_MIN_LEVEL 0
 #define AUDIT_MAX_LEVEL 10
@@ -81,7 +71,7 @@ public:
                  const char *Reason = NULL);
 
 protected:
-    ofstream *auditFile ; //!< Stream pointer to output file.
+    std::ofstream *auditFile ; //!< Stream pointer to output file.
     AuditLine *currentLine ; //!< Line currently being processed.
     char va_Buffer[1024] ; //!< Static buffer for va_printf operations.
 };
@@ -90,4 +80,4 @@ protected:
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.6 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditFile.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $

@@ -19,19 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.17 2003/06/25 15:15:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.18 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "ObjectClass.hh"
 
-// Project
-#include <config.h>
 #include "ObjectClassAttribute.hh"
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
 
-// Standard
 #include <iostream>
+#include <assert.h>
 
 using std::cout ;
 using std::endl ;
@@ -1628,4 +1627,4 @@ ObjectClass::getHandle() const
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.17 2003/06/25 15:15:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.18 2003/06/27 17:26:29 breholee Exp $

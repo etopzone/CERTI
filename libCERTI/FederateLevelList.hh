@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,13 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.7 2003/03/04 17:32:24 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
 #define _CERTI_FEDERATE_LEVEL_LIST_HH
 
-#include "RTItypes.hh"
 #include "SecurityLevel.hh"
 
 #include <map>
@@ -39,8 +37,8 @@ protected:
     std::map<char *, SecurityLevelID> tuple ;
 
 public:
-    FederateLevelList(void);
-    ~FederateLevelList(void);
+    FederateLevelList();
+    ~FederateLevelList();
 
     void addFederate(const char *the_name, SecurityLevelID the_level_id);
 
@@ -53,4 +51,4 @@ public:
 
 #endif // _CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.7 2003/03/04 17:32:24 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.8 2003/06/27 17:26:28 breholee Exp $

@@ -19,22 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.18 2003/06/07 22:24:13 breholee Exp $
+// $Id: Message.hh,v 3.19 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
 #define _CERTI_MESSAGE_HH
 
-#include <cstdio>
-#include <cstring>
-#include "baseTypes.hh"
-#include "RTItypes.hh"
+#include "fedtime.hh"
+#include "Exception.hh"
 #include "SocketUN.hh"
 #include "MessageBody.hh"
-#include "Exception.hh"
-#include "PrettyDebug.hh"
-#include "GAV.hh"
-#include "fedtime.hh"
 
 namespace certi {
 
@@ -262,7 +256,7 @@ public:
         UShort bodySize ;
         MessageHeaderUnion VP ; // Variable Part
     };
-    
+
 public:
     // Constructor & Destructor
     Message();
@@ -498,4 +492,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.18 2003/06/07 22:24:13 breholee Exp $
+// $Id: Message.hh,v 3.19 2003/06/27 17:26:29 breholee Exp $

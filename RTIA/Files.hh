@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,23 +18,18 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
+// $Id: Files.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FILES_HH
 #define _CERTI_RTIA_FILES_HH
 
-// Project
-#include <config.h>
 #include "FederationManagement.hh"
 #include "ObjectManagement.hh"
 #include "NetworkMessage.hh"
 
-// Standard libraries
 #include <list>
 #include <stdlib.h>
-
-using std::list ;
 
 namespace certi {
 namespace rtia {
@@ -46,8 +40,8 @@ class ObjectManagement ;
 class Queues
 {
 public:
-    Queues(void);
-    ~Queues(void);
+    Queues();
+    ~Queues();
 
     FederationManagement *fm ;
     ObjectManagement *om ;
@@ -83,4 +77,4 @@ private:
 
 #endif // _CERTI_RTIA_FILES_HH
 
-// $Id: Files.hh,v 3.4 2003/02/19 15:45:22 breholee Exp $
+// $Id: Files.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $

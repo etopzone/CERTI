@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,28 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.9 2003/05/23 09:42:58 breholee Exp $
+// $Id: Interaction.hh,v 3.10 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
 #define _CERTI_INTERACTION_HH
 
-#include <config.h>
-
-#include <list>
-using std::list ;
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include "PrettyDebug.hh"
 #include "RTItypes.hh"
+#include "SecurityServer.hh"
 #include "Parameter.hh"
 #include "Subscriber.hh"
 #include "Publisher.hh"
-#include "SecurityServer.hh"
 #include "InteractionBroadcastList.hh"
+
+#include <list>
 
 namespace certi {
 
@@ -71,9 +62,9 @@ private:
     SpaceHandle space ;
 
     //! List of this Interaction Class' Parameters.
-    list<Parameter*> parameterSet ;
+    list<Parameter *> parameterSet ;
     //! List of the Federates(Handles) who subscribed to this Class.
-    list<Subscriber*> subscribers ;
+    list<Subscriber *> subscribers ;
     //! List of the Federates(Handles) publishing this Class.
     list<Publisher *> publishers ;
 
@@ -179,4 +170,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.9 2003/05/23 09:42:58 breholee Exp $
+// $Id: Interaction.hh,v 3.10 2003/06/27 17:26:28 breholee Exp $

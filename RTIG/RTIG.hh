@@ -18,13 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.11 2003/06/25 16:23:48 breholee Exp $
+// $Id: RTIG.hh,v 3.12 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
 #define _CERTI_RTIG_HH
 
-#include <config.h>
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
@@ -34,15 +33,6 @@
 #include "FederationsList.hh"
 #include "AuditFile.hh"
 #include "cmdline.h"
-#include "PrettyDebug.hh"
-
-#include <iostream>
-#include <csignal>
-#include <new>
-
-using std::cout ;
-using std::endl ;
-using std::cerr ;
 
 namespace certi {
 namespace rtig {
@@ -56,7 +46,6 @@ namespace rtig {
 */
 class RTIG
 {
-    // ATTRIBUTES ----------------------------------------------------------
 private:
     int tcpPort ;
     int udpPort ;
@@ -68,7 +57,6 @@ private:
     AuditFile* auditServer ;
     FederationsList* federations ; //!< Manages federations.
 
-    // METHODS -------------------------------------------------------------
 public:
     RTIG();
     ~RTIG();
@@ -130,5 +118,4 @@ private:
 
 #endif // _CERTI_RTIG_HH
 
-// ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.11 2003/06/25 16:23:48 breholee Exp $
+// $Id: RTIG.hh,v 3.12 2003/06/27 17:26:28 breholee Exp $

@@ -18,13 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.14 2003/06/25 16:19:43 breholee Exp $
+// $Id: FederationsList.hh,v 3.15 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
 #define _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-#include <config.h>
 #include "Federation.hh"
 #include "SocketMC.hh"
 #include "SocketServer.hh"
@@ -32,8 +31,6 @@
 #include "PrettyDebug.hh"
 
 #include <list>
-
-using std::list ;
 
 namespace certi {
 namespace rtig {
@@ -465,4 +462,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.14 2003/06/25 16:19:43 breholee Exp $
+// $Id: FederationsList.hh,v 3.15 2003/06/27 17:26:28 breholee Exp $

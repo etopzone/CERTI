@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,32 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: LBTS.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_LBTS_HH
 #define _CERTI_LBTS_HH
 
-#include <config.h>
-
-#include <deque>
-using std::deque ;
-
-#include <float.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-
-#include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "FederateClock.hh"
 
-#include "PrettyDebug.hh"
+#include <deque>
 
 namespace certi {
 
-class LBTS : public deque<FederateClock *>
+class LBTS : public std::deque<FederateClock *>
 {
 public:
     FederationTime _LBTS ;
@@ -54,8 +41,8 @@ public:
     // ------------------------------
     // -- Constructor & Destructor --
     // ------------------------------
-    LBTS(void);
-    ~LBTS(void);
+    LBTS();
+    ~LBTS();
 
     // ---------------------
     // -- Insert & Delete --
@@ -70,10 +57,10 @@ public:
     void get(int i, FederateHandle &num_fed, FederationTime &the_time) const ;
 
     void exists(FederateHandle num_fed, Boolean &found, int &rank) const ;
-    void compute(void);
+    void compute();
 };
 }
 
 #endif // _CERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: LBTS.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $

@@ -19,10 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.5 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditFile.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "AuditFile.hh"
+
+#include <iostream>
+#include <cstdarg>
+
+using std::ofstream ;
+using std::ios ;
+using std::cerr ;
+using std::endl ;
 
 namespace certi {
 
@@ -177,4 +186,4 @@ AuditFile::setLevel(unsigned short eventLevel)
 
 }
 
-// $Id: AuditFile.cc,v 3.5 2003/06/25 14:53:37 breholee Exp $
+// $Id: AuditFile.cc,v 3.6 2003/06/27 17:26:28 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: LBTS.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "LBTS.hh"
+
+#include "PrettyDebug.hh"
+
+#include <float.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+using std::deque ;
 
 namespace certi {
 
@@ -32,7 +42,7 @@ static pdCDebug D("LBTS", "(LBTS) - ");
 // ----------------------------------------------------------------------------
 //! Compute the LBTS.
 void
-LBTS::compute(void)
+LBTS::compute()
 {
     FederationTime hl ;
 
@@ -54,14 +64,14 @@ LBTS::compute(void)
   _LBTS is set to infinite in case of constrained federate without any
   regulating federate.
 */
-LBTS::LBTS(void)
+LBTS::LBTS()
     : deque<FederateClock *>(), _LBTS(DBL_MAX), MyFederateNumber(0)
 {
 }
 
 // ----------------------------------------------------------------------------
 //! Empty deque and frees memory allocated to FederateClock.
-LBTS::~LBTS(void)
+LBTS::~LBTS()
 {
     while (!empty()) {
         delete front();
@@ -182,4 +192,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.3 2003/02/19 18:07:30 breholee Exp $
+// $Id: LBTS.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $

@@ -19,10 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.7 2003/06/25 14:48:07 breholee Exp $
+// $Id: GAV.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "GAV.hh"
+
+#include "PrettyDebug.hh"
+#include "converter.hh"
+
+#include <algorithm>
+#include <assert.h>
 
 namespace certi {
 
@@ -421,4 +428,4 @@ CParameterHandleValuePairSet::toPHVPS() const
 
 }
 
-// $Id: GAV.cc,v 3.7 2003/06/25 14:48:07 breholee Exp $
+// $Id: GAV.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $

@@ -19,12 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.17 2003/06/25 14:57:09 breholee Exp $
+// $Id: Message.cc,v 3.18 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "Message.hh"
+
+#include "RTItypes.hh"
+#include "PrettyDebug.hh"
+#include "GAV.hh"
+#include "converter.hh"
+
+#include <cstdio>
+#include <cstring>
 
 namespace certi {
 
@@ -584,4 +591,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.17 2003/06/25 14:57:09 breholee Exp $
+// $Id: Message.cc,v 3.18 2003/06/27 17:26:28 breholee Exp $

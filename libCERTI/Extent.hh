@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.1 2003/04/09 16:37:20 breholee Exp $
+// $Id: Extent.hh,v 3.2 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXTENT_HH
@@ -29,7 +28,6 @@
 #include "Range.hh"
 
 #include <vector>
-using std::vector ;
 
 namespace certi {
 
@@ -37,7 +35,7 @@ class Extent
 {
 public:
     Extent(int);
-    ~Extent(void);
+    ~Extent();
 
     ULong getRangeLowerBound(DimensionHandle)
         throw (ArrayIndexOutOfBounds);
@@ -52,11 +50,11 @@ public:
         throw (ArrayIndexOutOfBounds);
 
 private:
-    vector<Range*> ranges ;
+    std::vector<Range*> ranges ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.1 2003/04/09 16:37:20 breholee Exp $
+// $Id: Extent.hh,v 3.2 2003/06/27 17:26:28 breholee Exp $

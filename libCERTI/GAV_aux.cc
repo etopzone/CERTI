@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,10 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.8 2003/02/19 18:07:29 breholee Exp $
+// $Id: GAV_aux.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "GAV.hh"
+
+#include "PrettyDebug.hh"
+#include "converter.hh"
+
+#include <algorithm>
+#include <assert.h>
 
 // ----------------------------------------------------------------------------
 // AttributeHandleValuePair
@@ -44,7 +50,7 @@ AttributeHandleValuePair::AttributeHandleValuePair(Handle handle,
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandleValuePair::~AttributeHandleValuePair(void)
+AttributeHandleValuePair::~AttributeHandleValuePair()
 {
     delete _value ;
 }
@@ -52,14 +58,14 @@ AttributeHandleValuePair::~AttributeHandleValuePair(void)
 // ----------------------------------------------------------------------------
 // AttributeHandleValuePairSetImp
 // ----------------------------------------------------------------------------
-AttributeHandleValuePairSetImp::~AttributeHandleValuePairSetImp(void)
+AttributeHandleValuePairSetImp::~AttributeHandleValuePairSetImp()
 {
     empty();
 }
 
 // ----------------------------------------------------------------------------
 inline ULong
-AttributeHandleValuePairSetImp::size(void) const
+AttributeHandleValuePairSetImp::size() const
 {
     return list<AttributeHandleValuePair *>::size();
 }
@@ -195,7 +201,7 @@ AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet&,
 
 // ----------------------------------------------------------------------------
 void
-AttributeHandleValuePairSetImp::empty(void)
+AttributeHandleValuePairSetImp::empty()
 {
     while (!list<AttributeHandleValuePair *>::empty()) {
         delete front();
@@ -205,7 +211,7 @@ AttributeHandleValuePairSetImp::empty(void)
 
 // ----------------------------------------------------------------------------
 ULong
-AttributeHandleValuePairSetImp::start(void) const
+AttributeHandleValuePairSetImp::start() const
 {
     //not implemented
     return 0 ;
@@ -245,14 +251,14 @@ AttributeSetFactory::create(ULong)
 // ----------------------------------------------------------------------------
 // AttributeHandleSetImp
 // ----------------------------------------------------------------------------
-AttributeHandleSetImp::~AttributeHandleSetImp(void)
+AttributeHandleSetImp::~AttributeHandleSetImp()
 {
     empty();
 }
 
 // ----------------------------------------------------------------------------
 inline ULong
-AttributeHandleSetImp::size(void) const
+AttributeHandleSetImp::size() const
 {
     return list<AttributeHandle>::size();
 }
@@ -293,14 +299,14 @@ AttributeHandleSetImp::remove(AttributeHandle h)
 
 // ----------------------------------------------------------------------------
 void
-AttributeHandleSetImp::empty(void)
+AttributeHandleSetImp::empty()
 {
     list<AttributeHandle>::clear();
 }
 
 // ----------------------------------------------------------------------------
 inline Boolean
-AttributeHandleSetImp::isEmpty(void) const
+AttributeHandleSetImp::isEmpty() const
 {
     return ((list<AttributeHandle>::empty()) ? RTI_TRUE : RTI_FALSE);
 }
@@ -331,14 +337,14 @@ AttributeHandleSetFactory::create(ULong)
 // ----------------------------------------------------------------------------
 // FederateHandleSetImp
 // ----------------------------------------------------------------------------
-FederateHandleSetImp::~FederateHandleSetImp(void)
+FederateHandleSetImp::~FederateHandleSetImp()
 {
     empty();
 }
 
 // ----------------------------------------------------------------------------
 inline ULong
-FederateHandleSetImp::size(void) const
+FederateHandleSetImp::size() const
 {
     return list<FederateHandle>::size();
 }
@@ -379,7 +385,7 @@ FederateHandleSetImp::remove(FederateHandle h)
 
 // ----------------------------------------------------------------------------
 void
-FederateHandleSetImp::empty(void)
+FederateHandleSetImp::empty()
 {
     list<FederateHandle>::clear();
 }
@@ -423,7 +429,7 @@ ParameterHandleValuePair::ParameterHandleValuePair(Handle handle,
 }
 
 // ----------------------------------------------------------------------------
-ParameterHandleValuePair::~ParameterHandleValuePair(void)
+ParameterHandleValuePair::~ParameterHandleValuePair()
 {
     delete _value ;
 }
@@ -437,14 +443,14 @@ ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(ULong size)
     _transport = RELIABLE ;
 }
 
-ParameterHandleValuePairSetImp::~ParameterHandleValuePairSetImp(void)
+ParameterHandleValuePairSetImp::~ParameterHandleValuePairSetImp()
 {
     empty();
 }
 
 // ----------------------------------------------------------------------------
 inline ULong
-ParameterHandleValuePairSetImp::size(void) const
+ParameterHandleValuePairSetImp::size() const
 {
     return list<ParameterHandleValuePair *>::size();
 }
@@ -515,7 +521,7 @@ ParameterHandleValuePairSetImp::getValuePointer(ULong i,
 
 // ----------------------------------------------------------------------------
 inline TransportType
-ParameterHandleValuePairSetImp::getTransportType(void) const
+ParameterHandleValuePairSetImp::getTransportType() const
     throw (InvalidHandleValuePairSetContext)
 {
     return _transport ;
@@ -523,7 +529,7 @@ ParameterHandleValuePairSetImp::getTransportType(void) const
 
 // ----------------------------------------------------------------------------
 inline OrderType
-ParameterHandleValuePairSetImp::getOrderType(void) const
+ParameterHandleValuePairSetImp::getOrderType() const
     throw (InvalidHandleValuePairSetContext)
 {
     return _order ;
@@ -531,7 +537,7 @@ ParameterHandleValuePairSetImp::getOrderType(void) const
 
 // ----------------------------------------------------------------------------
 Region *
-ParameterHandleValuePairSetImp::getRegion(void) const
+ParameterHandleValuePairSetImp::getRegion() const
     throw (InvalidHandleValuePairSetContext,
            UnimplementedService)//CERTI
 {
@@ -580,7 +586,7 @@ ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet&,
 
 // ----------------------------------------------------------------------------
 void
-ParameterHandleValuePairSetImp::empty(void)
+ParameterHandleValuePairSetImp::empty()
 {
     while (!list<ParameterHandleValuePair *>::empty()) {
         delete front();
@@ -590,7 +596,7 @@ ParameterHandleValuePairSetImp::empty(void)
 
 // ----------------------------------------------------------------------------
 ULong
-ParameterHandleValuePairSetImp::start(void) const
+ParameterHandleValuePairSetImp::start() const
 {
     //not implemented
     return 0 ;
@@ -631,4 +637,4 @@ ParameterSetFactory::create(ULong size)
 
 } // namespace certi
 
-// $Id: GAV_aux.cc,v 3.8 2003/02/19 18:07:29 breholee Exp $
+// $Id: GAV_aux.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $

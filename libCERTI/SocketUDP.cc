@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.6 2003/06/25 16:13:04 breholee Exp $
+// $Id: SocketUDP.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#include "SocketUDP.hh"
 #include <config.h>
+#include "SocketUDP.hh"
 
 #include "RTItypes.hh"
 #include "PrettyDebug.hh"
@@ -31,6 +31,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <strings.h>
+#include <assert.h>
 
 using std::cout ;
 using std::endl ;
@@ -342,4 +343,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.6 2003/06/25 16:13:04 breholee Exp $
+// $Id: SocketUDP.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $

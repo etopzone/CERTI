@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,14 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.6 2003/06/07 22:24:12 breholee Exp $
+// $Id: Communications.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
 #define _CERTI_COMMUNICATIONS_HH
 
-// Project
-#include <config.h>
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
@@ -34,21 +31,11 @@
 #include "SocketUN.hh"
 #include "SecureTCPSocket.hh"
 #include "SocketUDP.hh"
-#include "PrettyDebug.hh"
-
-// Standard libraries
-#include <fstream>
-#include <iostream>
-#include <list>
-using std::ifstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
-using std::list ;
-
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
 #endif
+
+#include <list>
 
 namespace certi {
 namespace rtia {
@@ -61,8 +48,8 @@ class Communications : public SocketUN,
                        public SocketUDP
 {
 public:
-    Communications(void);
-    ~Communications(void);
+    Communications();
+    ~Communications();
 
     //! Send a message to RTIG.
     void sendMessage(NetworkMessage *Msg);
@@ -70,14 +57,14 @@ public:
     void receiveUN(Message *Msg);
     void readMessage(int&, NetworkMessage *, Message *);
     void requestFederateService(Message *req, Message *rep);
-    unsigned long getAddress(void);
-    unsigned int getPort(void);
+    unsigned long getAddress();
+    unsigned int getPort();
     void waitMessage(NetworkMessage *msg,
                      NetworkMessage::Type type_msg,
                      FederateHandle numeroFedere);
 
 private:
-    list<NetworkMessage *> waitingList ;
+    std::list<NetworkMessage *> waitingList ;
 
     Boolean searchMessage(NetworkMessage::Type type_msg,
                           FederateHandle numeroFedere,
@@ -88,4 +75,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.6 2003/06/07 22:24:12 breholee Exp $
+// $Id: Communications.hh,v 3.7 2003/06/27 17:26:28 breholee Exp $

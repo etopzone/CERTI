@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,13 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.11 2003/05/23 13:23:29 breholee Exp $
+// $Id: XmlParser.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "XmlParser.hh"
 
-// Project
-#include <config.h>
 #include "ObjectClassAttribute.hh"
 #include "RoutingSpace.hh"
 #include "PrettyDebug.hh"
@@ -205,7 +203,7 @@ XmlParser::parseClass(ObjectClass* parent)
                     h = root->getRoutingSpaceHandle(string(space));
                 }
                 catch (Exception &e) {
-                    cerr << "warning: Incorrect space name for attribute" 
+                    cerr << "warning: Incorrect space name for attribute"
                          << endl ;
                 }
                 attr->setSpace(h);
@@ -260,7 +258,7 @@ XmlParser::parseInteraction(Interaction* parent)
             h = root->getRoutingSpaceHandle(string(space));
         }
         catch (Exception &e) {
-            cerr << "warning: Incorrect space name for interaction" 
+            cerr << "warning: Incorrect space name for interaction"
                  << endl ;
         }
         current->setSpace(h);
@@ -291,7 +289,7 @@ XmlParser::parseInteraction(Interaction* parent)
 // ----------------------------------------------------------------------------
 //! Parse a routing space
 void
-XmlParser::parseRoutingSpace(void)
+XmlParser::parseRoutingSpace()
 {
     D[pdTrace] << "New Routing Space" << endl ;
 
@@ -318,7 +316,7 @@ XmlParser::parseRoutingSpace(void)
 // ----------------------------------------------------------------------------
 //! is the XML parser available ?
 bool
-XmlParser::exists(void)
+XmlParser::exists()
 {
     return true ;
 }
@@ -329,22 +327,22 @@ XmlParser::exists(void)
 
 namespace certi {
 
-XmlParser::XmlParser(RootObject *) 
-{ 
+XmlParser::XmlParser(RootObject *)
+{
 };
 
-RootObject *XmlParser::parse(string) 
-{ 
-    return 0 ; 
+RootObject *XmlParser::parse(string)
+{
+    return 0 ;
 }
 
-bool XmlParser::exists(void) 
-{ 
-    return false ; 
+bool XmlParser::exists()
+{
+    return false ;
 }
 
 } // namespace certi
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.11 2003/05/23 13:23:29 breholee Exp $
+// $Id: XmlParser.cc,v 3.12 2003/06/27 17:26:29 breholee Exp $

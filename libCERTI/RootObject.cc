@@ -19,10 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.10 2003/06/25 15:48:37 breholee Exp $
+// $Id: RootObject.cc,v 3.11 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "RootObject.hh"
+
+#include "PrettyDebug.hh"
+
+#include <string>
+#include <cstring>
+#include <stdio.h>
+
+using std::vector ;
 
 namespace certi {
 
@@ -261,4 +270,4 @@ RootObject::killFederate(FederateHandle the_federate)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.10 2003/06/25 15:48:37 breholee Exp $
+// $Id: RootObject.cc,v 3.11 2003/06/27 17:26:29 breholee Exp $

@@ -18,10 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $
+// $Id: main.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
+
 #include "RTIA.hh"
+
+#include <signal.h>
+#include <sys/types.h>
 
 using namespace certi ;
 using namespace rtia ;
@@ -33,27 +38,27 @@ void NewHandler();
 int
 main(int argc, char *argv[])
 {
-    signal(SIGINT, SignalHandler);
-    signal(SIGPIPE, SignalHandler);
+    std::signal(SIGINT, SignalHandler);
+    std::signal(SIGPIPE, SignalHandler);
 
     std::set_new_handler(NewHandler);
 
     RTIA rtia ;
 
     try {
-	rtia.execute();
+        rtia.execute();
     }
     catch (Exception &e) {
-	cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
-	if (e._reason)
-	    cerr << "Reason: " << e._reason << endl ;
-	
-	return EXIT_FAILURE ;
+        cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
+        if (e._reason)
+            cerr << "Reason: " << e._reason << endl ;
+
+        return EXIT_FAILURE ;
     }
 
     rtia.displayStatistics();
     cout << "RTIA: End execution." << endl ;
-    
+
     return EXIT_SUCCESS ;
 }
 
@@ -74,4 +79,4 @@ NewHandler()
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.8 2003/06/07 22:24:12 breholee Exp $
+// EOF $Id: main.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $

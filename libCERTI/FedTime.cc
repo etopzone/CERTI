@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,11 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedTime.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: FedTime.cc,v 3.5 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "fedtime.hh"
 
 namespace certi {
@@ -35,7 +33,7 @@ namespace certi {
 
 // ----------------------------------------------------------------------------
 FedTime*
-FedTimeFactory::makeZero(void)
+FedTimeFactory::makeZero()
     throw (MemoryExhausted)
 {
     RTIfedTime *fedtime ;
@@ -58,7 +56,7 @@ FedTimeFactory::decode(const char *)
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
-FedTime::~FedTime(void)
+FedTime::~FedTime()
 {
 }
 
@@ -67,7 +65,7 @@ FedTime::~FedTime(void)
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
-RTIfedTime::RTIfedTime(void)
+RTIfedTime::RTIfedTime()
 {
     _fedTime = 0 ;
     _zero = 0 ;
@@ -99,7 +97,7 @@ RTIfedTime::RTIfedTime(const RTIfedTime &time) : FedTime()
 }
 
 // ----------------------------------------------------------------------------
-RTIfedTime::~RTIfedTime(void)
+RTIfedTime::~RTIfedTime()
 {
 }
 
@@ -109,35 +107,35 @@ RTIfedTime::~RTIfedTime(void)
 
 // ----------------------------------------------------------------------------
 void
-RTIfedTime::setZero(void)
+RTIfedTime::setZero()
 {
     _zero = 0 ;
 }
 
 // ----------------------------------------------------------------------------
 Boolean
-RTIfedTime::isZero(void)
+RTIfedTime::isZero()
 {
     return ((_zero == 0) ? RTI_TRUE : RTI_FALSE);
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIfedTime::setEpsilon(void)
+RTIfedTime::setEpsilon()
 {
     //not implemented
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIfedTime::setPositiveInfinity(void)
+RTIfedTime::setPositiveInfinity()
 {
     //not implemented
 }
 
 // ----------------------------------------------------------------------------
 Boolean
-RTIfedTime::isPositiveInfinity(void)
+RTIfedTime::isPositiveInfinity()
 {
     //not implemented
     return RTI_FALSE ; // compatibilite avec le type retourne
@@ -145,7 +143,7 @@ RTIfedTime::isPositiveInfinity(void)
 
 // ----------------------------------------------------------------------------
 int
-RTIfedTime::encodedLength(void) const
+RTIfedTime::encodedLength() const
 {
     //not implemented
     return 0 ; // compatibilite avec le type retourne
@@ -160,7 +158,7 @@ RTIfedTime::encode(char *) const
 
 // ----------------------------------------------------------------------------
 int
-RTIfedTime::getPrintableLength(void) const
+RTIfedTime::getPrintableLength() const
 {
     //not implemented
     return 0 ; // compatibilite avec le type retourne
@@ -311,7 +309,7 @@ RTIfedTime::operator= (const FedTime &time)
 
 // ----------------------------------------------------------------------------
 Double
-RTIfedTime::getTime(void) const
+RTIfedTime::getTime() const
 {
     return _fedTime ;
 }
@@ -488,4 +486,4 @@ operator/(const Double &d, const FedTime &time)
 
 } // namespace certi
 
-// $Id: FedTime.cc,v 3.4 2003/02/19 18:07:29 breholee Exp $
+// $Id: FedTime.cc,v 3.5 2003/06/27 17:26:28 breholee Exp $

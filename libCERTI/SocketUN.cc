@@ -19,20 +19,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.6 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUN.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#include "SocketUN.hh"
 #include <config.h>
+#include "SocketUN.hh"
 
 #include "RTItypes.hh"
 
+#include <assert.h>
 #include <iostream>
 #include <unistd.h>
 #include <strings.h>
 #include <sstream>
+#include <stdio.h>
+#include <errno.h>
 
 using std::ostringstream ;
+using std::cout ;
+using std::endl ;
 
 namespace certi {
 
@@ -154,7 +159,7 @@ void SocketUN::connectUN(pid_t Server_pid)
 //! Does not open the socket, see Init methods.
 SocketUN::SocketUN(SignalHandlerType theType)
     : _socket_un(0), _est_serveur(RTI_FALSE), _est_init_un(RTI_FALSE),
-      HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)      
+      HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)
 {
 #ifdef SOCKUN_BUFFER_LENGTH
     RBLength = 0 ;
@@ -331,4 +336,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.6 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUN.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $

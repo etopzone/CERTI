@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.0 2003/03/21 13:42:56 breholee Exp $
+// $Id: Dimension.hh,v 3.1 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -30,22 +29,20 @@
 
 #include <string>
 
-using std::string ;
-
 namespace certi {
 
 class Dimension
 {
 public:
     Dimension(DimensionHandle);
-    void setName(string);
-    string getName(void);
-    DimensionHandle getHandle(void);
+    void setName(std::string);
+    std::string getName();
+    DimensionHandle getHandle();
     static void setLowerBound(ULong);
     static void setUpperBound(ULong);
 
 private:
-    string name ;
+    std::string name ;
     DimensionHandle handle ;
     static ULong axisLowerBound ;
     static ULong axisUpperBound ;
@@ -55,4 +52,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.0 2003/03/21 13:42:56 breholee Exp $
+// $Id: Dimension.hh,v 3.1 2003/06/27 17:26:28 breholee Exp $

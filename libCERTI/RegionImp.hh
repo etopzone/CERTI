@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RegionImp.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -30,7 +29,6 @@
 #include "RTItypes.hh"
 
 #include <vector>
-using std::vector ;
 
 namespace certi {
 
@@ -40,7 +38,7 @@ class RegionImp : public Region
 {
 public:
     RegionImp(long, SpaceHandle, long, long);
-    virtual ~RegionImp(void);
+    virtual ~RegionImp();
 
     virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
@@ -54,10 +52,10 @@ public:
     virtual void setRangeUpperBound(ExtentIndex, DimensionHandle, ULong)
         throw (ArrayIndexOutOfBounds);
 
-    virtual SpaceHandle getSpaceHandle(void) const
+    virtual SpaceHandle getSpaceHandle() const
         throw ();
 
-    virtual ULong getNumberOfExtents(void) const
+    virtual ULong getNumberOfExtents() const
         throw ();
 
     virtual ULong getRangeLowerBoundNotificationLimit(ExtentIndex,
@@ -68,19 +66,18 @@ public:
                                                       DimensionHandle) const
         throw (ArrayIndexOutOfBounds);
 
-    long getHandle(void);
+    long getHandle();
     void setHandle(long);
 
 private:
     SpaceHandle space ;
     long handle ;
-    vector<Extent*> extents ;
-    vector<Extent*> coExtents ;
-
+    std::vector<Extent*> extents ;
+    std::vector<Extent*> coExtents ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.1 2003/04/09 16:41:10 breholee Exp $
+// $Id: RegionImp.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,11 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.0 2003/03/21 13:43:01 breholee Exp $
+// $Id: Exception.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
-// Project
 #include <config.h>
+#include "Exception.hh"
+
 #include "baseTypes.hh"
 
 namespace certi {
@@ -70,4 +70,4 @@ Exception& Exception::operator = (const Exception &toCopy)
 
 } // namespace certi
 
-// $Id: Exception.cc,v 3.0 2003/03/21 13:43:01 breholee Exp $$
+// $Id: Exception.cc,v 3.1 2003/06/27 17:26:28 breholee Exp $$

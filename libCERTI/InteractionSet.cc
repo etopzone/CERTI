@@ -19,10 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.7 2003/05/23 09:45:15 breholee Exp $
+// $Id: InteractionSet.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "InteractionSet.hh"
+
+#include "PrettyDebug.hh"
+//#include "InteractionBroadcastList.hh"
+
+#include <iostream>
+
+using std::cout ;
+using std::endl ;
+using std::list ;
 
 namespace certi {
 
@@ -284,4 +294,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.7 2003/05/23 09:45:15 breholee Exp $
+// $Id: InteractionSet.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $

@@ -18,13 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
+// $Id: DataDistribution.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
+#include <config.h>
 #include "DataDistribution.hh"
 
-// Project
-#include <config.h>
 #include "ObjectClassAttribute.hh"
 #include "RegionImp.hh"
 
@@ -119,7 +118,7 @@ DataDistribution::createRegion(SpaceHandle space,
     req.federate = fm->federate ;
     req.space = space ;
     req.nbExtents = nb_extents ;
-    
+
     comm->sendMessage(&req);
     comm->waitMessage(&rep, NetworkMessage::CREATE_REGION, req.federate);
     e = rep.exception ;
@@ -169,4 +168,4 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.7 2003/06/07 22:24:12 breholee Exp $
+// $Id: DataDistribution.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $

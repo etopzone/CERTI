@@ -19,24 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.5 2003/06/25 16:02:15 breholee Exp $
+// $Id: SocketServer.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
 #define _CERTI_SOCKET_SERVER_HH
 
-#include <list>
-using std::list ;
-
 #include "RTItypes.hh"
 #include "Socket.hh"
 #include "SocketTCP.hh"
 #include "SocketUDP.hh"
-
 #include "NetworkMessage.hh"
-
 #include "SecurityLevel.hh"
 #include "SecureTCPSocket.hh"
+
+#include <list>
 
 namespace certi {
 
@@ -130,4 +127,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.5 2003/06/25 16:02:15 breholee Exp $
+// $Id: SocketServer.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $

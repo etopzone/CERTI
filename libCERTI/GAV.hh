@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,27 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.5 2003/06/25 14:47:05 breholee Exp $
+// $Id: GAV.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
 #define _CERTI_GAV_HH
 
-#include <config.h>
 #include "RTItypes.hh"
-#include "converter.hh"
-#include "PrettyDebug.hh"
 
 #include <list>
-#include <algorithm>
-#include <assert.h>
-
-using std::list ;
-using std::find ;
 
 namespace certi {
 
-class AttributeHandleSetImp : public list<AttributeHandle>, AttributeHandleSet
+class AttributeHandleSetImp
+    : public std::list<AttributeHandle>, AttributeHandleSet
 {
 public:
     virtual ~AttributeHandleSetImp();
@@ -62,7 +54,7 @@ public:
     virtual Boolean isMember(AttributeHandle h) const ;
 };
 
-class FederateHandleSetImp : public list<FederateHandle>, FederateHandleSet
+class FederateHandleSetImp : public std::list<FederateHandle>, FederateHandleSet
 {
 public:
     virtual ~FederateHandleSetImp();
@@ -100,7 +92,7 @@ public :
 };
 
 class AttributeHandleValuePairSetImp
-    : public list<AttributeHandleValuePair *>, AttributeHandleValuePairSet
+    : public std::list<AttributeHandleValuePair *>, AttributeHandleValuePairSet
 {
     // ATTRIBUTES
 public:
@@ -240,7 +232,7 @@ public:
 };
 
 class ParameterHandleValuePairSetImp
-    : public list<ParameterHandleValuePair *>, ParameterHandleValuePairSet
+    : public std::list<ParameterHandleValuePair *>, ParameterHandleValuePairSet
 {
 public:
     OrderType _order ;

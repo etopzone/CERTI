@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,20 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: GSSAPIHandler.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GSSAPI_HANDLER_HH
 #define _CERTI_GSSAPI_HANDLER_HH
 #ifdef WITH_GSSAPI
 
-#include <config.h>
-
-#include "RTItypes.hh" // For constants' values
-#include <stdio.h>
-
-#include "PrettyDebug.hh"
-#include "SocketTCP.hh"
 #include "gssapi.h"
 
 namespace certi {
@@ -47,15 +39,15 @@ public:
     // --------------------------------
     // -- Constructor and Destructor --
     // --------------------------------
-    GSSAPIHandler(void);
-    ~GSSAPIHandler(void);
+    GSSAPIHandler();
+    ~GSSAPIHandler();
 
     // -----------
     // -- Names --
     // -----------
     void setLocalName(char *PrincipalName);
     void setRemoteName(char *PrincipalName);
-    char *getRemoteName(void);
+    char *getRemoteName();
 
     // ------------------
     // -- Init Session --
@@ -112,4 +104,4 @@ private:
 #endif // WITH_GSSAPI
 #endif // _CERTI_GSSAPI_HANDLER_HH
 
-// $Id: GSSAPIHandler.hh,v 3.3 2003/02/19 18:07:29 breholee Exp $
+// $Id: GSSAPIHandler.hh,v 3.4 2003/06/27 17:26:28 breholee Exp $

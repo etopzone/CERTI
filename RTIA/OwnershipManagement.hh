@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,28 +18,18 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
 #define _CERTI_RTIA_OWM
 
-// Project
-#include <config.h>
 #include "FederationManagement.hh"
 #include "Communications.hh"
 #include "Files.hh"
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "RootObject.hh"
-#include "PrettyDebug.hh"
-
-// Standard libraries
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
 
 namespace certi {
 namespace rtia {
@@ -174,4 +163,4 @@ protected:
 
 #endif // _CERTI_RTIA_OWM
 
-// $Id: OwnershipManagement.hh,v 3.4 2003/02/19 15:45:23 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
