@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.6 2003/11/13 10:56:00 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.7 2003/12/01 16:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -187,8 +187,13 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
     return rep.getObject();
 }
 
-// ----------------------------------------------------------------------------
-// Associate Region For Updates
+/** Associate region for updates. Make attributes of an object
+    be updated through a routing region.
+    @param region Region to use for updates
+    @param object Object to associate to the region
+    @param attributes Handles of the involved attributes
+    @sa unassociateRegionForUpdates
+*/
 void
 RTIambassador::associateRegionForUpdates(Region &region,
                                          ObjectHandle object,
@@ -213,8 +218,12 @@ RTIambassador::associateRegionForUpdates(Region &region,
     executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// UnAssociate Region For Updates
+/** Unassociate region for updates. Make attributes of an object be updated
+    through the default region (ie. Declaration Management services)
+    @param region Region to unassociate
+    @param object Object to unassociate
+    @see associateRegionForUpdates
+ */
 void
 RTIambassador::unassociateRegionForUpdates(Region &region,
                                            ObjectHandle object)
@@ -236,14 +245,18 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
     executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Subscribe Object Class Attributes With Region
+/** Subscribe object class attributes with region.
+    @param handle Object class handle
+    @param region Region to subscribe with
+    @param attributes Attributes involved in the subscription
+    @sa unsubscribeObjectClassWithRegion
+ */
 void
-RTIambassador::
-subscribeObjectClassAttributesWithRegion(ObjectClassHandle object_class,
-                                         Region &region,
-					 const AttributeHandleSet &attributes,
-                                         Boolean passive)
+RTIambassador::subscribeObjectClassAttributesWithRegion(
+    ObjectClassHandle object_class,
+    Region &region,
+    const AttributeHandleSet &attributes,
+    Boolean passive)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            RegionNotKnown,
@@ -265,8 +278,11 @@ subscribeObjectClassAttributesWithRegion(ObjectClassHandle object_class,
     executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// UnSubscribe Object Class Attributes With Region
+/** Unsubscribe object class attributes with region.
+    @param handle Object Class handle
+    @param region Region to unsubscribe with
+    @sa subscribeObjectClassAttributesWithRegion
+ */
 void
 RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
                                                 Region &region)
@@ -425,4 +441,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.6 2003/11/13 10:56:00 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.7 2003/12/01 16:28:55 breholee Exp $
