@@ -316,48 +316,47 @@ Statistics::federateService(Message::Type service)
 ostream &
 operator<<(ostream &s, Statistics &stat)
 {
-    // Commented out because I had to do a cvs commit. It will be
-    // modified to use the new attributes in the next commit.
+    cout << endl << "RTIA: Statistics (processed messages)" << endl ;
 
-//     cout << endl << "RTIA: Statistics (processed messages)" << endl ;
+    s << "List of federate services " << endl
+      << "--------------------------------------------------" << endl ;
 
-//     s << "List of federate services " << endl
-//       << "--------------------------------------------------" << endl ;
+    int sentFederateMessages = 0 ;    
+    std::map<Message::Type, int>::iterator fi ;
+    std::map<Message::Type, int>::iterator fe = stat.federateServiceSet.end();
+    for (fi = stat.federateServiceSet.begin(); fi != fe ; ++fi) {
+	int nb = fi->second ;
+        if (nb || stat.displayZero()) {
+            s.width(8);
+            s << nb << ' ' << Statistics::fedMessageName[fi->first]
+	      << " (" << fi->first << ')' << endl ;
+        }
+        sentFederateMessages += nb ;
+    }
 
-//     int i = 1 ;
-//     int sentFederateMessages = 0 ;
-//     while (Statistics::federateStrMessages[i][0] != 0) {
-//         int nb = stat.federateServiceSet[(Message::Type) i] ;
-//         if (nb || stat.displayZero()) {
-//             s.width(8);
-//             s << nb << ' ' << Statistics::federateStrMessages[i] << endl ;
-//         }
-//         i++ ;
-//         sentFederateMessages += nb ;
-//     }
+    s << endl << "List of RTI services " << endl
+      << "--------------------------------------------------" << endl ;
 
-//     s << endl << "List of RTI services " << endl
-//       << "--------------------------------------------------" << endl ;
+    int sentRtiMessages = 0 ;
+    std::map<NetworkMessage::Type, int>::iterator ri ;
+    std::map<NetworkMessage::Type, int>::iterator re = stat.rtiServiceSet.end();
+    for (ri = stat.rtiServiceSet.begin(); ri != re ; ++ri) {
+	int nb = ri->second ;
+        if (nb || stat.displayZero()) {
+            s.width(8);
+            s << nb << ' ' << Statistics::rtiMessageName[ri->first]
+	      << " (" << ri->first << ')' << endl ;
+        }
+        sentRtiMessages += nb ;
+    }
+    
+    s << endl
+      << " Number of Federate messages : " << sentFederateMessages << endl
+      << " Number of RTIG messages : " << sentRtiMessages << endl ;
 
-//     i = 1 ;
-//     int sentRtiMessages = 0 ;
-//     while (Statistics::rtiStrMessages[i][0] != 0) {
-//         int nb = stat.rtiServiceSet[(NetworkMessage::Type) i] ;
-//         if (nb || stat.displayZero()) {
-//             s.width(8);
-//             s << nb << ' ' << Statistics::rtiStrMessages[i] << endl ;
-//         }
-//         i++ ;
-//         sentRtiMessages += nb ;
-//     }
-
-//     s << endl
-//       << " Number of Federate messages : " << sentFederateMessages << endl
-//       << " Number of RTIG messages : " << sentRtiMessages << endl ;
-
-//     return s ;
+    return s ;
 }
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.1 2003/06/07 22:24:12 breholee Exp $
+// $Id: Statistics.cc,v 3.2 2003/06/23 17:05:39 breholee Exp $
