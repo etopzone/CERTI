@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.17 2005/02/09 15:54:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,40 +31,22 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("MESSAGER", "(messageR) - ");
+static pdCDebug D("RTIG_MSG", __FILE__);
 
-// You can comment this out if you don't want to optimize network messages.
-#define USE_HEADER_AND_BODY
-
-
-// ----------
-// -- Read --
-// ----------
-
+// ----------------------------------------------------------------------------
+// read
 void
 NetworkMessage::read(Socket *socket)
-    throw (NetworkError,
-           NetworkSignal)
+    throw (NetworkError, NetworkSignal)
 {
-#ifdef USE_HEADER_AND_BODY
+    bool has_body = readHeader(socket);
 
-    // 1- Read Header
-    bool result = readHeader(socket);
-
-    // 2- if ReadHeader returned RTI_TRUE, Read Body.
-    if (result)
+    if (has_body)
         readBody(socket);
-#else
-    Socket->receive(this, sizeof(NetworkMessage));
-
-#endif
 }
 
-
-// --------------
-// -- ReadBody --
-// --------------
-
+// ----------------------------------------------------------------------------
+// readBody
 void
 NetworkMessage::readBody(Socket *socket)
 {
@@ -75,11 +57,9 @@ NetworkMessage::readBody(Socket *socket)
         throw RTIinternalError("ReadBody should not have been called.");
 
     // 1. Read Body from socket.
-
     socket->receive((void *) Body.getBuffer(), Header.bodySize);
 
     // 3. Read informations from Message Body according to message type.
-
     if ((Header.type == UPDATE_ATTRIBUTE_VALUES)
         || (Header.type == REFLECT_ATTRIBUTE_VALUES)) {
         object = Body.readLongInt();
@@ -91,9 +71,7 @@ NetworkMessage::readBody(Socket *socket)
             Body.readString(ValueArray[i], MAX_BYTES_PER_VALUE);
         }
     }
-
     else
-
         switch(Header.type) {
 
             // -- O_I Variable Part With Date(Body Not Empty) --
@@ -213,7 +191,8 @@ NetworkMessage::readBody(Socket *socket)
 	    region = Body.readLongInt();
 	    boolean = Boolean(Body.readShortInt());
 	    handleArraySize = Body.readShortInt();
-
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                handleArray[i] = Body.readShortInt();
 	    break ;
 
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
@@ -240,6 +219,16 @@ NetworkMessage::readBody(Socket *socket)
 	    interactionClass = Body.readLongInt();
 	    region = Body.readLongInt();
 	    boolean = Boolean(Body.readShortInt());
+	    break ;
+
+	  case DDM_REGISTER_OBJECT:
+	    objectClass = Body.readLongInt();
+	    object = Body.readLongInt();
+	    region = Body.readLongInt();
+	    readTag(&Body);
+	    handleArraySize = Body.readShortInt();
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                handleArray[i] = Body.readShortInt();
 	    break ;
 	    
             // -- Default Handler --
@@ -344,6 +333,7 @@ NetworkMessage::readHeader(Socket *socket)
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:
+	  case DDM_REGISTER_OBJECT:
             break ;
 
             // -- time Variable Part(No Body)[Continued]--
@@ -452,9 +442,6 @@ NetworkMessage::readFederationName(MessageBody *Body)
     Body->readString(federationName, MAX_FEDERATION_NAME_LENGTH);
 }
 
-
-
-
 // -------------------
 // -- ReadNomFedere --
 // -------------------
@@ -465,30 +452,17 @@ NetworkMessage::readFederateName(MessageBody *Body)
     Body->readString(federateName, MAX_FEDERATE_NAME_LENGTH);
 }
 
-
-// -----------
-// -- Write --
-// -----------
-
+// ----------------------------------------------------------------------------
+// write
 void
 NetworkMessage::write(Socket *socket)
-    throw (NetworkError,
-           NetworkSignal)
+    throw (NetworkError, NetworkSignal)
 {
+    bool needs_body = writeHeader(socket);
 
-#ifdef USE_HEADER_AND_BODY
-    // 1- Call WriteHeader
-    bool result = writeHeader(socket);
-
-    // 2- If WriteHeader returned RTI_TRUE, call WriteBody.
-    if (result)
+    if (needs_body)
         writeBody(socket);
-#else
-    socket->send(this, sizeof(NetworkMessage));
-#endif
-
 }
-
 
 // ---------------
 // -- WriteBody --
@@ -669,6 +643,16 @@ NetworkMessage::writeBody(Socket *socket)
 	    Body.writeLongInt(region);
 	    Body.writeShortInt(boolean);
 	    break ;
+
+	  case DDM_REGISTER_OBJECT:
+	    Body.writeLongInt(objectClass);
+	    Body.writeLongInt(object);
+	    Body.writeLongInt(region);
+	    Body.writeString(tag);
+            Body.writeShortInt(handleArraySize);
+	    for (i = 0 ; i < handleArraySize ; i ++)
+                Body.writeShortInt(handleArray[i]);
+	    break ;
 	    
             // -- Default Handler --
           default:
@@ -797,6 +781,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:	
+	  case DDM_REGISTER_OBJECT:
             Header.bodySize = 1 ;
             break ;
 
@@ -919,4 +904,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.16 2004/08/24 18:25:05 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.17 2005/02/09 15:54:18 breholee Exp $
