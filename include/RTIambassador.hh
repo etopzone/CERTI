@@ -1,3 +1,4 @@
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.3 2002/12/10 13:58:32 breholee Exp $
+// $Id: RTIambassador.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -1314,4 +1315,4 @@ public:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.3 2002/12/10 13:58:32 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $

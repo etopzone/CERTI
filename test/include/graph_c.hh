@@ -1,4 +1,5 @@
-// $Id: graph_c.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
+// $Id: graph_c.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $ 
 // ---------------------------------------------------------------------------
 
 #ifdef WITH_X11
@@ -541,4 +542,4 @@ void ModeNORMAL();
 #endif // GRAPH_C_HH
 #endif // WITH_X11
 
-// $Id: graph_c.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: graph_c.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $

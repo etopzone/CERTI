@@ -1,3 +1,4 @@
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: local_config.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: local_config.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Types utilises par le RTI : Constantes, exceptions, handles...
@@ -145,5 +146,5 @@
 
 #endif // _CERTI_RTI_CONFIG_HH
 
-// $Id: local_config.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: local_config.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
 

@@ -1,3 +1,4 @@
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: broadcast.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: broadcast.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// $Id: broadcast.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: broadcast.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $
 
 #ifndef _CERTI_BROADCAST_HH
 #define _CERTI_BROADCAST_HH
@@ -36,4 +37,4 @@ enum BroadcastState {bsSent, bsWaiting, bsNotSub};
 
 #endif // _CERTI_BROADCAST_HH
 
-// $Id: broadcast.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: broadcast.hh,v 3.1 2002/12/11 00:47:34 breholee Exp $

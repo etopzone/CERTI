@@ -1,3 +1,4 @@
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -18,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federate.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Federate.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -96,4 +97,4 @@ Federate::setRegulator(bool r)
 
 }}
 
-// $Id: Federate.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Federate.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
