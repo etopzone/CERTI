@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.13 2003/07/10 22:35:48 breholee Exp $
+// $Id: Interaction.hh,v 3.14 2003/10/20 09:30:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -128,9 +128,8 @@ public:
     InteractionClassHandle handle ; //!< Interaction class handle.
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
-    InteractionClassHandle parent ; //!< Parent Class' Handle.
-
-    list<InteractionClassHandle> children ; //!< Children Classes' Handles List
+    InteractionClassHandle parent ;
+    std::list<InteractionClassHandle> children ;
     UShort depth ;
 
     /*! Interaction messages' Transport Type(Reliable, Best Effort),
@@ -168,4 +167,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.13 2003/07/10 22:35:48 breholee Exp $
+// $Id: Interaction.hh,v 3.14 2003/10/20 09:30:44 breholee Exp $
