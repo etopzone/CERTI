@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.hh,v 3.4 2003/02/19 17:20:28 breholee Exp $
+// $Id: my_fed.hh,v 3.5 2003/03/19 08:59:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -64,7 +64,7 @@ public:
 
     void PublishAndsubscribe(void);
 
-    void RegisterObjects(void);
+    void RegisterObjects(const char *);
 
     void sendInteraction(const FedTime& InteractionTime,
                          ObjectHandle Id);

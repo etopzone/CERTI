@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.6 2003/02/19 17:20:28 breholee Exp $
+// $Id: my_fed.cc,v 3.7 2003/03/19 08:59:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -82,7 +82,7 @@ Fed::discoverObjectInstance(ObjectHandle theObject,
         throw RTIinternalError();
     }
     Remote[RemoteCount].ID = theObject ;
-    printf("Maintenant, je connais l'objet %ld\n", theObject);
+    printf("Discovered object %ld\n", theObject);
     RemoteCount++ ;
 }
 
@@ -315,7 +315,7 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
     }
 
     if (i == RemoteCount)
-        D.Out(pdError, "Fed: ERREUR: objet id non trouve(%d).", theObject);
+        D.Out(pdError, "Fed: error, id not found (%d).", theObject);
     else {
         Remote[i].Effacer();
 
@@ -360,9 +360,10 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
 
 // ----------------------------------------------------------------------------
 //! Get object IDs from the RTIA and register local objects.
-void Fed::RegisterObjects(void)
+void Fed::RegisterObjects(const char *s)
 {
-    Local.ID = RTIA->registerObjectInstance(BouleClassID);
+    Local.ID = RTIA->registerObjectInstance(BouleClassID, s);
+    //    Local.ID = RTIA->registerObjectInstance(BilleClassID, s);
     D.Out(pdRegister, "Local object registered under ID %d.", Local.ID);
 }
 
@@ -385,7 +386,7 @@ Fed::removeObjectInstance(ObjectHandle theObject,
     }
 
     if (i == RemoteCount)
-        printf("Fed: ERREUR: objet id non trouve(%ld)\n", theObject);
+        printf("Fed: error, id not found (%ld)\n", theObject);
     else {
         printf("Fed: RemoveObject id=%ld\n", theObject);
         Remote[i].Effacer();
@@ -588,10 +589,10 @@ Fed::attributeOwnershipUnavailable(ObjectHandle theObject,
         AttributeHandle handle = offeredAttributes.getHandle(j);
 
         if (handle == AttrXID) {
-            cout << "CALLBACK AttrXID indisponible" << endl ;
+            cout << "CALLBACK AttrXID unavailable" << endl ;
         }
         else if (handle == AttrYID) {
-            cout << "CALLBACK AttrYID indisponible" << endl ;
+            cout << "CALLBACK AttrYID unavailable" << endl ;
         }
         // else if (handle == AAttrTestID)
         // {
@@ -801,4 +802,4 @@ Fed::confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
     // }
 }
 
-// EOF $Id: my_fed.cc,v 3.6 2003/02/19 17:20:28 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.7 2003/03/19 08:59:30 breholee Exp $
