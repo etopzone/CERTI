@@ -1,42 +1,18 @@
+Warning: this is an old file, many file/class names have changed, some
+problems are probably solved or handled differently.
+-------------------------------------------------------------------------------
 1. Utiliser des pipes pour les communications Federe - RTIA, ce qui
    permettra de ne plus avoir de problemes de fichiers qui existent deja.
 
    >>  Attention, je ne sais pas si on peut faire un select sur un pipe !
 
-2. FAIT
-
-3. FAIT
-
-4. FAIT
-
-5. FAIT
-
-6. FAIT
-
-7. Faire des tests avec des User Supplied Tags, pour les SendInteraction,
-   les UAV, etc. Voir 21.
-
-8. FAIT
-
 9. Utiliser la liste de Federes Abonnes pour une instance d'objet,
    afin de limiter l'usage des BroadcastList. (voir CObject.hh)
-
-10. FAIT
 
 11. Si un federe fournit un nom d'instance lors du RegisterObject, alors
     ce nom doit etre unique (sinon exception "ObjectInstanceNotUnique").
 
     >> Pour l'instant on ne peut pas fournir de nom d'instance.
-
-12. FAIT
-
-13. FAIT
-
-14. FAIT
-
-15. FAIT
-
-16. FAIT
 
 17. Quand on fait un subscribe ou un unsubscribe alors que des instances 
     sont declarees dans la classe, faire des discover/remove object.
@@ -51,21 +27,6 @@
     passer un RemoveObject avant les UAV en attente. 
     On peut penser a la meme chose pour le RemoveObject, mais dans ce cas,
     c'est quand meme un autre probleme.
-
-19. Fait
-
-20. FAIT
-
-21. Verifier que les tags soient bien passe. Notamment, pour les UAV, le
-    Tag recu est RAV, c'est pas normal. Pour les RemoveObject, pas de
-    Reason, par de Tag. Pour les Discover, le Tag vaut "discover_reason" 
-    et pour Recevie Interaction "RI" ! 
-    >> FAIT
-
-    De meme, le Time vaut toujours 0.
-    >> Pas fait.
-
-22. Fait.
 
 23. Dans GetInteractionName de la LibRTI, on utilise dans le CMessage
     le champ ObjectHandle et pas la champ InteractionHandle. Ca doit chier
@@ -169,94 +130,3 @@
     Ca pourrait meme permettre d'utiliser des pipes, non ? Non pas forcement,
     parce que ca demande quand meme des initialisations differentes de celles
     des sockets.
-
------ FAIT ---------------------------------------------------------------
-
-2. Gerer l'heritage des interactions dans CRead.
-
-3. Gerer les interruptions pour les Sockets (Interrupted system Call)
-   non pas comme des NetworkError mais autrement.
-
-4. Verifier lors d'un UAV que le federe possede bien l'objet. Cela veut dire
-   qu'il faudrait d'ailleurs memoriser a qui sont les objets...
-
-5. Pour l'optimisation des communications, decoupe le message reseau
-   en deux parties, un en-tete fixe, puis un corps de taille variable.
-   Ce corps peut par exemple etre choisi parmi trois structures, une
-   minimale, une qui contient juste NomFederation et NomFedere, et une
-   troisieme comprenant un certain nombre de couple (NumeroAttribut, Valeur)
-   par exemple.
-
-   Cette optimisation passe par un redecoupage des methodes des objets
-   CMessageReseau, auquel on ajoutera une methode Send (Socket), qui 
-   s'occupera entierement de l'ecriture du message sur le socket, ainsi
-   qu'une methode receive.
-
-6. Un autre optimisation peut etre de gerer la memoire des messages par
-   un grand 'pool' alloue au depart, ou l'on alloue ensuite les messages.
-   au debut de ce pool, on peut prevoir un seul emplacement pour preparer
-   les en-tetes et les corps.
-
-   >>> En fait les allocs ne prennent pas tant de temps que ca, donc
-   c'est pas hyper grave.
-
-8. Gerer les tableaux de Values en interne pour les CMessage et CMessageReseau,
-   en ajoutant deux methodes SetValue et GetValue.
-
-10. Deux appels successifs a SubscribeObjectClassAttributes doivent
-    effacer les effets du premier, et ne tenir compte que du second.
-    Autrement dit, a la reception d'un subscribe sur un objet, on efface
-    d'abord les abonnements et ensuite on lit le message.
-
-12. Gerer le signal SIGPIPE au moins sur le RTIP (voir la doc de socket :
-     [...] The  protocols
-     optionally  keep  sockets  "warm"  by  forcing transmissions
-     roughly every minute in the absence of other  activity.   An
-     error is then indicated if no response can be elicited on an
-     otherwise  idle  connection  for  a  extended  period   (for
-     instance  5  minutes).  A SIGPIPE signal is raised if a pro-
-     cess sends on a broken stream; this causes naive  processes,
-     which do not handle the signal, to exit.
-
-    Ca arrive hyper souvent maintenant sur le RTIP.
-
-	>> Fait, mais il fallu d'une part ignorer le signal au niveau
-	   du SignalHandler de RTIP.cc, et d'autre part, gerer les erreurs
-	   de reseau qui en resultait et qui faisait crasher le RTIP
-	  (unexpected exception thrown). 
-
-	>> VOIR POINT #26.
-
-13. Dans RTIP::ChooseProcessingMethod, mettre les cas de m_MESSAGE_NULL
-    et de m_UAV devant dans le switch.
-
-14. Regarder pourquoi, dans le CSocketServer, quand on fait un CloseConnection,
-    et que l'option RTI_PRINTS_STATISTICS est presente, le socket n'affiche
-    pas les nombres d'octets envoyes et recus. En gros, normalement, en
-    faisant un delete socket ca affiche des trucs mais la non. Bug ?
-
-    >>> C'etait un probleme de destructeur avec la classe abstraire CSocket.
-
-15. Regarder si l'objet CRead libere bien toute sa memoire. (ou n'en alloue
-    pas trop).
-
-    >>> Les parametres et les attributs etaient alloues 100 par 100,
-    et les objets de l'arbre de lecture n'etaient jamais liberes.
-
-16. Regarder encore une fois et verifier que CRead libere bien toute sa
-    memoire. 
-  
-    >>> OK, c'etait StoreList qui ne liberait pas son deuxieme element.
-
-19. Sur le RTIP, ajouter au KillFederate de quoi enlever les objets
-    possedes par le federe tue.
-
-20. Pour le connect des sockets UNIX, se donner quelques essais.
-
-22. Dans GO.cc, pour les messages que l'on envoie au federe, on met le
-    Numero de federe a _GF->NumeroFedere. Pourquoi ? De plus, des fois on
-    met de meme le numero de federation du CMessage a _GF->NumeroFederation,
-    et des fois non. J'espere que personne ne compte dessus...
-
-    >> Fait pendant la mise en place des Messages a taille variable pour les
-	sockets UNIX.
