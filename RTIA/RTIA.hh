@@ -19,15 +19,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.5 2003/04/23 17:24:08 breholee Exp $
+// $Id: RTIA.hh,v 3.6 2003/05/23 14:46:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
 #define _CERTI_RTIA_HH
 
 // Project
-#include <config.h>
-#include "XmlParser.hh"
 #include "Communications.hh"
 #include "TimeManagement.hh"
 #include "FederationManagement.hh"
@@ -35,32 +33,17 @@
 #include "OwnershipManagement.hh"
 #include "DeclarationManagement.hh"
 #include "DataDistribution.hh"
-#include "FedParser.hh"
-#include "PrettyDebug.hh"
-
-// Standard libraries
-#include <sys/types.h>
-#include <unistd.h>
-#include <iostream>
-#include <csignal>
-#include <string>
-#include <fstream>
-using std::ifstream ;
-using std::ios ;
-using std::cout ;
-using std::endl ;
 
 namespace certi {
-class XmlParser ;
 namespace rtia {
 
 class RTIA
 {
 public:
-    RTIA(void);
-    ~RTIA(void);
+    RTIA();
+    ~RTIA();
 
-    void execute(void);
+    void execute();
 
 private:
     RootObject *rootObject ;
@@ -84,13 +67,13 @@ private:
 
     void processNetworkMessage(NetworkMessage*);
     void processFederateRequest(Message*);
-    void chooseFederateProcessing(Message *req, Message &rep, TypeException &e);
+    void chooseFederateProcessing(Message *, Message &, TypeException &);
 
-    void count(void);
+    void count();
 };
 
 }} // namespace certi
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.5 2003/04/23 17:24:08 breholee Exp $
+// $Id: RTIA.hh,v 3.6 2003/05/23 14:46:12 breholee Exp $
