@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.7 2003/03/19 08:54:18 breholee Exp $
+// $Id: XmlParser.cc,v 3.8 2003/03/21 14:03:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -216,7 +216,7 @@ XmlParser::parseInteraction(Interaction* parent)
             current->addParameter(param);
         }
         // Subinteraction
-        if ((!xmlStrcmp(cur->name, NODE_OBJECT_CLASS))) {
+        if ((!xmlStrcmp(cur->name, NODE_INTERACTION_CLASS))) {
             this->parseInteraction(current);
         }
         cur = cur->next ;
@@ -281,4 +281,4 @@ bool XmlParser::exists(void)
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.7 2003/03/19 08:54:18 breholee Exp $
+// $Id: XmlParser.cc,v 3.8 2003/03/21 14:03:36 breholee Exp $
