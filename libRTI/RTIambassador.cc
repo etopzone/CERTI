@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.34 2003/07/04 12:00:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.35 2003/10/20 12:39:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,7 +39,7 @@ using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("LIBRTI", "(libRTI) - ");
+static pdCDebug D("LIBRTI", __FILE__);
 
 // ----------------------------------------------------------------------------
 void
@@ -64,9 +64,8 @@ RTIambassador::executeService(Message *req, Message *rep)
         req->write((SocketUN *) this);
     }
     catch (NetworkError) {
-        cout << "LibRTI: Catched NetworkError (write), "
-             << "throw RTIinternalError." << endl ;
-        throw RTIinternalError();
+        cerr << "libRTI: exception: NetworkError (write)" << endl ;
+        throw RTIinternalError("libRTI: Network Write Error");
     }
 
     D.Out(pdDebug, "waiting RTIA reply.");
@@ -76,9 +75,8 @@ RTIambassador::executeService(Message *req, Message *rep)
         rep->read((SocketUN *) this);
     }
     catch (NetworkError) {
-        cout << "LibRTI: Catched NetworkError (read), "
-             << "throw RTIinternalError." << endl ;
-        throw RTIinternalError();
+        cerr << "libRTI: exception: NetworkError (read)" << endl ;
+        throw RTIinternalError("libRTI: Network Read Error");
     }
 
     D.Out(pdDebug, "RTIA reply received.");
@@ -444,7 +442,7 @@ RTIambassador::tick(TickTime minimum, TickTime maximum)
 void
 RTIambassador::processException(Message *msg)
 {
-    D.Out(pdExcept, "nom de l'exception : %d .", msg->getExceptionType());
+    D.Out(pdExcept, "n° de l'exception : %d .", msg->getExceptionType());
     switch(msg->getExceptionType()) {
       case e_NO_EXCEPTION: {
       } break ;
@@ -860,4 +858,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.34 2003/07/04 12:00:58 breholee Exp $
+// $Id: RTIambassador.cc,v 3.35 2003/10/20 12:39:04 breholee Exp $
