@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: billard.cc,v 3.5 2003/01/16 18:21:30 breholee Exp $
+// $Id: billard.cc,v 3.6 2003/01/20 17:45:49 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -148,7 +148,13 @@ int main(int argc, char**argv)
   FederationName = argv[3] ;
   DotFedFile = new char[strlen(FederationName)+5] ;
   strcpy(DotFedFile, FederationName);
+#ifdef HAVE_XML // if compiled with XML, use the .xml description
+  strcat(DotFedFile, ".xml");
+#else
   strcat(DotFedFile, ".fed");
+#endif
+  printf("Using %s file\n", DotFedFile);
+
   FederateName = argv[1] ;
   
   // Verifier que la federation existe
@@ -712,4 +718,4 @@ void Synchronize(RTI::RTIambassador *myRTIAmbassador,
 
 }
 
-// EOF $Id: billard.cc,v 3.5 2003/01/16 18:21:30 breholee Exp $
+// EOF $Id: billard.cc,v 3.6 2003/01/20 17:45:49 breholee Exp $

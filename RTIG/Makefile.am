@@ -1,6 +1,6 @@
-## CERTI rtig/Makefile.am 
+## CERTI RTIG Makefile.am 
 ## Copyright (C) 2001, 2002, 2003 ONERA
-## $Id: Makefile.am,v 3.1 2003/01/14 17:17:33 breholee Exp $
+## $Id: Makefile.am,v 3.2 2003/01/20 17:45:49 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -9,7 +9,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libCERTI	\
--I$(top_srcdir)/libpdebug
+-I$(top_srcdir)/libpdebug @XML_CFLAGS@ @HAVE_XML@
 
 bin_PROGRAMS = rtig
 
@@ -20,6 +20,6 @@ rtig_SOURCES = Federate.cc Federation.cc FederationsList.cc main.cc	\
 RTIG.cc RTIG_processing.cc Trace.cc cmdline.c getopt1.c getopt.c
 
 LDADD = -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lCERTI	\
--lpdebug @ETR_SOCKET_LIBS@
+-lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.1 2003/01/14 17:17:33 breholee Exp $
+## EOF $Id: Makefile.am,v 3.2 2003/01/20 17:45:49 breholee Exp $

@@ -1,9 +1,10 @@
-## $Id: Makefile.am,v 3.3 2003/01/15 18:18:13 breholee Exp $ 
+## $Id: Makefile.am,v 3.4 2003/01/20 17:45:49 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libpdebug
+INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libpdebug	\
+@XML_CFLAGS@ @HAVE_XML@
 
 lib_LTLIBRARIES = libCERTI.la
 
@@ -18,8 +19,9 @@ MessageBody.hh network.hh NetworkMessage.hh Object.hh			\
 ObjectAttribute.hh ObjectBroadcastLine.hh ObjectClass.hh		\
 ObjectClassAttribute.hh ObjectClassBroadcastList.hh ObjectClassSet.hh	\
 Parameter.hh parser.hh Publisher.hh RootObject.hh SecureTCPSocket.hh	\
-SecurityLevel.hh SecurityServer.hh service_type.hh SocketMC.hh		\
-SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh
+SecurityLevel.hh SecurityServer.hh service_type.hh		\
+SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh 	\
+Subscriber.hh XmlParser.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc baseTypes.cc		\
 FederateLevelList.cc FedParser_Build.cc FedParser_Store.cc FedTime.cc	\
@@ -30,10 +32,12 @@ NetworkMessage_RW.cc Object.cc ObjectAttribute.cc ObjectClass.cc	\
 ObjectClassAttribute.cc ObjectClassBroadcastList.cc ObjectClassSet.cc	\
 Parameter.cc Publisher.cc RootObject.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
-SocketUDP.cc SocketUN.cc Subscriber.cc
+SocketUDP.cc SocketUN.cc Subscriber.cc XmlParser.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
 libCERTI_la_LDFLAGS = -release 3.0.1
 
-## EOF $Id: Makefile.am,v 3.3 2003/01/15 18:18:13 breholee Exp $
+LDADD = @XML_LIBS@
+
+## EOF $Id: Makefile.am,v 3.4 2003/01/20 17:45:49 breholee Exp $

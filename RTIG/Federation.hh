@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.hh,v 3.5 2003/01/17 23:58:26 breholee Exp $
+// $Id: Federation.hh,v 3.6 2003/01/20 17:45:49 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -30,6 +30,14 @@
 #include <list>
 using std::list;
 
+#include <fstream>
+using std::ifstream;
+using std::ios;
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <string.h> // strlen
 
 #include "Federate.hh"
@@ -39,6 +47,7 @@ using std::list;
 #include "RTItypes.hh"
 #include "FedParser.hh" // CRead : FED file reader.
 #include "PrettyDebug.hh"
+#include "XmlParser.hh"
 
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -437,4 +446,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.5 2003/01/17 23:58:26 breholee Exp $
+// $Id: Federation.hh,v 3.6 2003/01/20 17:45:49 breholee Exp $

@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,12 +19,15 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.6 2003/01/17 23:58:26 breholee Exp $
+// $Id: Federation.cc,v 3.7 2003/01/20 17:45:49 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
 
 namespace certi {
+
+class XmlParser ;
+
 namespace rtig {
 
 static pdCDebug D("FEDERATION", "(Fed.tion) - ");
@@ -33,7 +36,6 @@ static pdCDebug D("FEDERATION", "(Fed.tion) - ");
 // Constructor
 
 #ifdef FEDERATION_USES_MULTICAST
-
 Federation::Federation(const char* federation_name,
                        FederationHandle federation_handle,
                        SocketServer *socket_server,
@@ -45,99 +47,134 @@ Federation::Federation(const char* federation_name,
                        SocketServer *socket_server,
                        AuditFile *audit_server)
 #endif
-  throw(CouldNotOpenRID,
-	ErrorReadingRID,
-	MemoryExhausted,
-	SecurityError,
-	RTIinternalError)
-  : list<Federate *>()
+    throw(CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
+          RTIinternalError)
+    : list<Federate *>()
 {
-  fedparser::FedParser *fed_reader;
-  char file_name [MAX_FEDERATION_NAME_LENGTH + 5];
+    fedparser::FedParser *fed_reader;
+    char file_name [MAX_FEDERATION_NAME_LENGTH + 5];
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
-  // Initialize Multicast
-  if(mc_link == NULL) {
-    D.Out(pdExcept, "Null Multicast socket for new Federation.");
-    throw RTIinternalError("NULL Multicast socket for new Federation.");
-  }
+    // Initialize Multicast
+    if(mc_link == NULL) {
+        D.Out(pdExcept, "Null Multicast socket for new Federation.");
+        throw RTIinternalError("NULL Multicast socket for new Federation.");
+    }
 
-  D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
-  MCLink = mc_link;
+    D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
+    MCLink = mc_link;
 #endif // FEDERATION_USES_MULTICAST // --------------
 
-  // Allocates Name
-  if ((federation_name == 0) || (federation_handle == 0))
-    throw RTIinternalError("Null init parameter in Federation creation.");
+    // Allocates Name
+    if ((federation_name == 0) || (federation_handle == 0))
+        throw RTIinternalError("Null init parameter in Federation creation.");
 
-  if(strlen(federation_name) > MAX_FEDERATION_NAME_LENGTH)
-    throw RTIinternalError("Federation name too long.");
+    if (strlen(federation_name) > MAX_FEDERATION_NAME_LENGTH)
+        throw RTIinternalError("Federation name too long.");
 
-  name = strdup(federation_name);
-  if(name == NULL)
-    throw MemoryExhausted("No memory left for Federation Name.");
+    name = strdup(federation_name);
+    if (name == 0)
+        throw MemoryExhausted("No memory left for Federation Name.");
 
-  // Default Attribute values
+    // Default Attribute values
+    handle = federation_handle;
 
-  handle = federation_handle;
+    this->paused = false ;
+    pauseLabel [0] = '\0';
 
-  this->paused = false ;
-  pauseLabel [0] = '\0';
+    nextObjectId = (ObjectHandle) 1 ;
+    nextFederateHandle = (FederateHandle) 1 ;
 
-  nextObjectId = (ObjectHandle) 1 ;
-  nextFederateHandle = (FederateHandle) 1 ;
+    D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
+          handle);
 
-  D.Out(pdInit,
-	"New Federation created with Handle %d, now reading FED.", handle);
+    // Initialize the Security Server.
+    server = new SecurityServer(socket_server, audit_server, handle);
+    if(server == NULL) throw RTIinternalError();
 
-  // Initialize the Security Server.
+    // Read FOM File to initialize Root Object.  
+    root = new RootObject(server);
 
-  server = new SecurityServer(socket_server, audit_server, handle);
+    if (root == 0)
+        throw MemoryExhausted("No memory left for Federation Root Object.");
 
-  if(server == NULL) throw RTIinternalError();
+    cout << "New federation: " << name << endl ;
+    cout << "Looking for .fed file... " ;
 
-  // Read FED File to initialize Root Object.
+    string filename = string(name) + ".fed" ;
+    ifstream *fdd = new ifstream(filename.c_str());
 
-  root = new RootObject(server);
+    if (fdd->is_open()) {
 
-  if(root == NULL)
-    throw MemoryExhausted("No memory left for Federation Root Object.");
+        cout << "yes" << endl ;
+        fed_reader = new fedparser::FedParser(root);
+        if (fed_reader == 0)
+            throw MemoryExhausted("No memory left to read FED file.");
 
-  fed_reader = new fedparser::FedParser(root);
-  if(fed_reader == NULL)
-    throw MemoryExhausted("No memory left to read FED file.");
+        server->Audit->addToLinef(", Fed File : %s", filename.c_str());
 
-  strcpy(file_name, name);
-  strcat(file_name, ".fed");
+        try {
+            fed_reader->readFile(filename.c_str());
+        }
+        catch(Exception *e) {
+            delete fed_reader;
+            delete server;
+            server = NULL;
+            delete root;
+            root = NULL;
+            throw e;
+        }
 
-  server->Audit->addToLinef(", Fed File : %s", file_name);
+        delete fed_reader;
 
-  try {
-    fed_reader->readFile(file_name);
-  }
-  catch(Exception *e) {
-    delete fed_reader;
-    delete server;
-    server = NULL;
-    delete root;
-    root = NULL;
-    throw e;
-  }
-
-  delete fed_reader;
-
-  // Retrieve the FED file last modification time(for Audit)
-  struct stat StatBuffer;
-  char *MTimeBuffer;
-
-  if(stat(file_name, &StatBuffer) == 0) {
-    MTimeBuffer = ctime(&StatBuffer.st_mtime);
-    MTimeBuffer [strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
-    server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
-  }
-  else
-    server->Audit->addToLinef("(could not retrieve last modif time, errno %d).",
-                              errno);
+        // Retrieve the FED file last modification time(for Audit)
+        struct stat StatBuffer;
+        char *MTimeBuffer;
+      
+        if (stat(file_name, &StatBuffer) == 0) {
+            MTimeBuffer = ctime(&StatBuffer.st_mtime);
+            MTimeBuffer [strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
+            server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
+        }
+        else
+            server->Audit->addToLinef("(could not retrieve last modif time, "
+                                      "errno %d).", errno);
+    }
+    else {
+        cout << "no" << endl ;
+#ifdef HAVE_XML
+        {        
+            cout << "Looking for .xml file... " ;
+            
+            filename = string(name) + ".xml" ;
+            delete fdd ;
+            fdd = new ifstream(filename.c_str());
+            
+            if (fdd->is_open()) {
+                
+                cout << "yes" << endl ;
+                
+                XmlParser *parser = new XmlParser(root);
+                server->Audit->addToLinef(", XML File : %s", filename.c_str());
+                
+                try {
+                    parser->parse(filename);
+                }
+                catch(Exception *e) {
+                    delete parser;
+                    delete server;
+                    server = NULL;
+                    delete root;
+                    root = NULL;
+                    throw e;
+                }
+                delete parser ;          
+            }
+            else 
+                cout << "no" << endl ;
+        }
+#endif // HAVE_XML
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -1163,5 +1200,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }}
 
-// $Id: Federation.cc,v 3.6 2003/01/17 23:58:26 breholee Exp $
+// $Id: Federation.cc,v 3.7 2003/01/20 17:45:49 breholee Exp $
 
