@@ -19,8 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Handled.hh,v 1.1 2004/01/09 15:54:55 breholee Exp $
+// $Id: Handled.hh,v 1.2 2004/05/17 21:59:27 breholee Exp $
 // ----------------------------------------------------------------------------
+
+#ifndef LIBCERTI_HANDLED_HH
+#define LIBCERTI_HANDLED_HH
 
 namespace certi {
 
@@ -28,14 +31,16 @@ template<typename T>
 class Handled
 {
 public:
-    Handled();
-    Handled(T);
+    typedef T handle_type ;
 
-    setHandle(T);
-    T getHandle() const ;
+    Handled();
+    Handled(handle_type);
+
+    void setHandle(handle_type);
+    handle_type getHandle() const ;
 
 protected:
-    T handle ;
+    handle_type handle ;
 };
 
 /** Default constructor. Handle is initialized with zero
@@ -64,7 +69,7 @@ Handled<T>::setHandle(T h)
 /** Get handle
     @return Handle value
 */
-template<typename T>
+template<class T>
 T
 Handled<T>::getHandle() const
 {
@@ -73,4 +78,6 @@ Handled<T>::getHandle() const
 
 } // certi
 
-// $Id: Handled.hh,v 1.1 2004/01/09 15:54:55 breholee Exp $
+#endif // LIBCERTI_HANDLED_HH
+
+// $Id: Handled.hh,v 1.2 2004/05/17 21:59:27 breholee Exp $
