@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.14 2003/07/10 15:06:49 breholee Exp $
+// $Id: Object.cc,v 3.15 2003/10/13 10:02:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -151,6 +151,20 @@ Object::setHandle(ObjectHandle h)
 }
 
 // ----------------------------------------------------------------------------
+ObjectClassHandle
+Object::getClass() const
+{
+    return classHandle ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Object::setClass(ObjectClassHandle h)
+{
+    classHandle = h ;
+}
+
+// ----------------------------------------------------------------------------
 FederateHandle
 Object::getOwner() const
 {
@@ -194,4 +208,4 @@ Object::unassociate(RegionImp *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.14 2003/07/10 15:06:49 breholee Exp $
+// $Id: Object.cc,v 3.15 2003/10/13 10:02:25 breholee Exp $

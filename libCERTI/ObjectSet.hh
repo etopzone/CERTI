@@ -69,7 +69,8 @@ public:
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
-    Object *registerObjectInstance(FederateHandle, ObjectHandle, const char *)
+    Object *registerObjectInstance(FederateHandle, ObjectClassHandle,
+				   ObjectHandle, const char *)
         throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 

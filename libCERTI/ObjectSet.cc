@@ -120,14 +120,13 @@ ObjectSet::getObjectClass(ObjectHandle the_object) const
     throw (ObjectNotKnown, FederateNotExecutionMember,
            ConcurrentAccessAttempted, RTIinternalError)
 {
-    // Object *object = getObject(the_object);
-
-    return 0 ;
+    return getObject(the_object)->getClass();
 }
 
 // ----------------------------------------------------------------------------
 Object *
 ObjectSet::registerObjectInstance(FederateHandle the_federate,
+				  ObjectClassHandle the_class,
                                   ObjectHandle the_object,
                                   const char *the_name)
     throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
@@ -149,6 +148,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 
     Object *object = new Object(the_federate);
     object->setHandle(the_object);
+    object->setClass(the_class);
 
     if (strlen(the_name)) {
         object->setName(the_name);
@@ -430,4 +430,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.7 2003/07/04 14:25:43 breholee Exp $
+// $Id: ObjectSet.cc,v 3.8 2003/10/13 10:02:25 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $
+// $Id: Object.hh,v 3.13 2003/10/13 10:02:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -74,6 +74,9 @@ public:
     ObjectHandle getHandle() const ;
     void setHandle(ObjectHandle h);
 
+    ObjectClassHandle getClass() const ;
+    void setClass(ObjectClassHandle h);
+
     FederateHandle getOwner() const ;
     void setOwner(FederateHandle);
 
@@ -88,6 +91,7 @@ private:
     std::deque<ObjectAttribute *> attributeState ;
 
     ObjectHandle handle ; //!< Object Instance ID
+    ObjectClassHandle classHandle ; //! Object Class
     ObjectName name ; //!< Instance name.
 
     /*! federate list subscribed to this class and with subscription region
@@ -100,4 +104,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $
+// $Id: Object.hh,v 3.13 2003/10/13 10:02:25 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.15 2003/07/09 15:58:47 breholee Exp $
+// $Id: RootObject.cc,v 3.16 2003/10/13 10:02:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -252,8 +252,8 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
           the_federate, the_object, the_class);
 
     Object *object ;
-    object = objects->registerObjectInstance(the_federate, the_object,
-                                             the_object_name);
+    object = objects->registerObjectInstance(the_federate, the_class, 
+					     the_object, the_object_name);
 
     ObjectClasses->registerObjectInstance(the_federate, object, the_class);
 }
@@ -324,4 +324,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.15 2003/07/09 15:58:47 breholee Exp $
+// $Id: RootObject.cc,v 3.16 2003/10/13 10:02:24 breholee Exp $
