@@ -20,17 +20,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.6 2003/02/19 18:07:29 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.7 2003/03/04 17:32:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
 #define _CERTI_FEDERATE_LEVEL_LIST_HH
 
-#include <map>
-using std::map ;
-
 #include "RTItypes.hh"
 #include "SecurityLevel.hh"
+
+#include <map>
 
 namespace certi {
 
@@ -49,8 +48,9 @@ public:
     // its associated level. If not found, return PublicLevelID.
     SecurityLevelID getLevel(const char *theName) const ;
 };
+
 }
 
 #endif // _CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.6 2003/02/19 18:07:29 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.7 2003/03/04 17:32:24 breholee Exp $
