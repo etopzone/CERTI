@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.10 2003/03/13 13:21:25 breholee Exp $
+// $Id: billard.cc,v 3.11 2003/03/19 08:58:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -78,7 +78,7 @@ extern void InitGraphe(int X, int Y, unsigned WIDHT, unsigned HEIGHT);
 RTI::RTIambassador *rtiamb ;
 Fed *fedamb ;
 
-static pdCDebug D("HERITAGE", "(main) - ");
+static pdCDebug D("BILLARD", "(main) - ");
 
 bool exit_billard ;
 int nbtick=0 ;
@@ -269,37 +269,37 @@ main(int argc, char **argv)
     Synchronize(rtiamb, fedamb, creator);
     D.Out(pdInit, "Initial synchronization done.");
 
+    // Creer ma boule
+    if (args_info.initx_given && args_info.inity_given) {
+        fedamb->Local.init(args_info.initx_arg, args_info.inity_arg);
+    }
+    else
+        fedamb->Local.init(id);
+    D.Out(pdTrace, "creation de la boule réussie.");
+
+    // Declarer la boule aux autres federes
+    fedamb->RegisterObjects(FederateName);
+    cout << "Created Object " << fedamb->Local.ID << endl ;
+    D.Out(pdInit, "Local Object registered under ID %d", fedamb->Local.ID);
+
     // Delay ?
     if (delay != 0) {
         while (delay >= 0) {
             sleep(1);
-            printf("\rDelay     : %5d\r", delay);
+            printf("\rDelay     : %5d", delay);
             fflush(stdout);
             delay-- ;
         }
         printf("\n");
     }
 
-    // Creer ma boule
-
-    if (args_info.initx_given && args_info.inity_given) {
-        fedamb->Local.init(args_info.initx_arg, args_info.inity_arg);
-    }
-    else
-        fedamb->Local.init(id);
-
-    D.Out(pdTrace, "creation de la boule réussie.");
-
-    // Declarer la boule aux autres federes
-    fedamb->RegisterObjects();
-    D.Out(pdInit, "Local Object registered under ID %d", fedamb->Local.ID);
     rtiamb->queryFederateTime(localTime);
 
     // ------------------------------
     // -- Boucle de la simulation --
     // ------------------------------
-    D.Out(pdTrace, "Debut de la boucle de simulation.");
-    D.Out(pdTrace, "L'objet local a pour ID %d.", fedamb->Local.ID);
+    D.Out(pdTrace, "Start simulation loop.");
+    D.Out(pdTrace, "Local object ID %d.", fedamb->Local.ID);
 
     exit_billard = false ;
     while (!exit_billard) {
@@ -352,7 +352,7 @@ main(int argc, char **argv)
                 CBoule *Local = & (fedamb->Local);
                 CBille *Remote = & (fedamb->Remote[i]);
 
-                D.Out(pdTrace, "Collision de %d et de %d.", Local->ID,
+                D.Out(pdTrace, "Collision between %d and %d.", Local->ID,
                       Remote->ID);
 #ifndef TEST_USES_GRAPHICS
                 // Meme message si on est en mode non graphique
@@ -379,21 +379,21 @@ main(int argc, char **argv)
                     Local->Direction(Remote->dx, Remote->dy);
 
             }
-            D.Out(pdTrace, "pas de collision entre les billes.");
+            D.Out(pdTrace, "no collision.");
 
         }
 
         // Teste la collision avec le bord
         fedamb->Local.CollisionBords(XMAX, YMAX);
-        D.Out(pdTrace, "traitement des collisions avec les bords.");
+        D.Out(pdTrace, "Border collisions...");
 
         // Mise a jour graphique
         fedamb->Local.Effacer();
-        D.Out(pdTrace, "boule effacee.");
+        D.Out(pdTrace, "Clear ball.");
 
         fedamb->Local.Deplacer();
         fedamb->Local.Afficher();
-        D.Out(pdTrace, "boule reaffichee.");
+        D.Out(pdTrace, "Redisplay ball.");
 
         // Envoie d'une mise a jour des attributs
         time_aux=new RTIfedTime(localTime.getTime()+TIME_STEP.getTime());
@@ -411,7 +411,7 @@ main(int argc, char **argv)
     // -----------------
     // -- Terminaison --
     // -----------------
-    D.Out(pdTrace, "Fin de la boucle de simulation.");
+    D.Out(pdTrace, "End of simulation loop.");
 
     fedamb->DeleteObjects(localTime);
     D.Out(pdTerm, "Local objects deleted.");
@@ -465,7 +465,7 @@ void
 sortir(int SignalNumber)
 {
     if (SignalNumber == SIGALRM) {
-        D.Out(pdTerm, "Alarme declenchee, fonction Sortir appellee");
+        D.Out(pdTerm, "Alarm signal received, exiting...");
         exit_billard = true ;
     }
     else {
@@ -513,6 +513,7 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
     while (1) {
         rtiamb->queryFederateTime(localTime);
 
+        cout << "Asking Time Regulation" << endl ;
         try {
             rtiamb->enableTimeRegulation(localTime, TIME_STEP);
             break ;
@@ -547,6 +548,7 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
             exit(-1);
         }
     }
+    cout << "Time Regulation Enabled" << endl ;
 
     D.Out(pdInit, "Time Regulating on.");
 
@@ -578,10 +580,10 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
             printf("\n");
         }
 
-        D.Out(pdInit, "Le createur peut demander de reprendre l'execution.");
+        D.Out(pdInit, "Creator can resume execution...");
         while (!fedamb->paused)
             try {
-                D.Out(pdInit, "je ne suis pas en pause");
+                D.Out(pdInit, "not paused");
                 D.Out(pdInit, "label - %s",
                       fedamb->CurrentPauseLabel);
                 rtiamb->tick(1.0, 2.0);
@@ -589,7 +591,7 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
             catch (Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d ", &e);
             }
-        D.Out(pdDebug, "je suis en pause");
+        D.Out(pdDebug, "paused");
 
         try {
             strcpy(fedamb->CurrentPauseLabel, "Unfreeze");
@@ -620,7 +622,7 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
 
         if (!fedamb->paused) {
             D.Out(pdInit,
-                  "le Federe n'est pas en pause, il est arrivé trop tot.");
+                  "Federate not paused: too early");
             while (!fedamb->paused) {
                 try {
                     rtiamb->tick(1.0, 2.0);
@@ -631,8 +633,8 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
                 }
             }
         }
-        D.Out(pdInit, "le Federe est en pause.");
-        D.Out(pdInit, "label avant pause achieved - %s.",
+        D.Out(pdInit, "Federate paused");
+        D.Out(pdInit, "label before pause achieved - %s.",
               fedamb->CurrentPauseLabel);
 
         try {
@@ -647,7 +649,7 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
         }
 
         D.Out(pdInit,
-              "Le federe attend le fin de la pause demandee par le createur.");
+              "Federate waiting end of pause...");
         while (fedamb->paused) {
             try {
                 rtiamb->tick(1.0, 2.0);
@@ -656,7 +658,7 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
             }
         }
-        D.Out(pdInit, "fin de la pause");
+        D.Out(pdInit, "End of pause");
         D.Out(pdInit, "label - %s", fedamb->CurrentPauseLabel);
         rtiamb->synchronizationPointAchieved(fedamb->CurrentPauseLabel);
         D.Out(pdInit, "Resume achieved");
@@ -672,8 +674,10 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     sigaction(SIGALRM, &a, NULL);
     // sigset(SIGALRM, sortir);
 
-    printf("Timer     : %5d\n", timer);
-    alarm(timer);
+    if (timer != 0) {
+        printf("Timer     : %5d\n", timer);
+        alarm(timer);
+    }
 }
 
-// EOF $Id: billard.cc,v 3.10 2003/03/13 13:21:25 breholee Exp $
+// EOF $Id: billard.cc,v 3.11 2003/03/19 08:58:12 breholee Exp $
