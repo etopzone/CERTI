@@ -19,33 +19,31 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.5 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG.hh,v 3.6 2003/03/05 13:12:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
 #define _CERTI_RTIG_HH
 
 #include <config.h>
-
-#include <iostream>
-using std::cout ;
-using std::endl ;
-
-#include <csignal>
-
 #include "baseTypes.hh"
 #include "RTItypes.hh"
 #include "NetworkMessage.hh"
 #include "SecureTCPSocket.hh"
 #include "SocketMC.hh"
-
 #include "SocketServer.hh"
 #include "FederationsList.hh"
 #include "AuditFile.hh"
-
+#include "cmdline.h"
 #include "PrettyDebug.hh"
 
-#include "cmdline.h"
+#include <iostream>
+#include <csignal>
+#include <new>
+
+using std::cout ;
+using std::endl ;
+using std::cerr ;
 
 namespace certi {
 namespace rtig {
@@ -127,4 +125,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.5 2003/02/19 14:29:38 breholee Exp $
+// $Id: RTIG.hh,v 3.6 2003/03/05 13:12:05 breholee Exp $

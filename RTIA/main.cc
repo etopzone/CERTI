@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.4 2003/02/19 15:45:24 breholee Exp $
+// $Id: main.cc,v 3.5 2003/03/05 13:10:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -32,12 +32,15 @@ using namespace rtia ;
 RTIA rtia ;
 
 extern "C" void SignalHandler(int Signal);
+void NewHandler(void);
 
 int
 main(void)
 {
     signal(SIGINT, SignalHandler);
     signal(SIGPIPE, SignalHandler);
+
+    std::set_new_handler(NewHandler);
 
     try {
         ::rtia.execute();
@@ -47,6 +50,7 @@ main(void)
         if (e._reason != NULL)
             printf("Reason: %s\n", e._reason);
     }
+    return EXIT_SUCCESS ;
 }
 
 void
@@ -59,4 +63,10 @@ SignalHandler(int Signal)
 
 }
 
-// EOF $Id: main.cc,v 3.4 2003/02/19 15:45:24 breholee Exp $
+void
+NewHandler(void)
+{
+    throw MemoryExhausted();
+}
+
+// EOF $Id: main.cc,v 3.5 2003/03/05 13:10:33 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.4 2003/02/19 14:29:38 breholee Exp $
+// $Id: main.cc,v 3.5 2003/03/05 13:12:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -40,6 +40,14 @@ extern "C" void SignalHandler(int sig)
 }
 
 // ----------------------------------------------------------------------------
+//! NewHandler
+void
+NewHandler(void)
+{
+    throw MemoryExhausted();
+}
+
+// ----------------------------------------------------------------------------
 //! RTIG server entry point.
 int main(int argc, char *argv[])
 {
@@ -54,12 +62,24 @@ int main(int argc, char *argv[])
     signal(SIGINT, SignalHandler);
     signal(SIGPIPE, SignalHandler);
 
-    rtip = new RTIG();
-    rtip->execute();
-    delete rtip ;
+    std::set_new_handler(NewHandler);
+
+    try {
+        rtip = new RTIG();
+        rtip->execute();
+        delete rtip ;
+    }
+    catch (MemoryExhausted &e) {
+        cerr << "RTIG: not enough memory. Exiting." << endl ;
+        exit(EXIT_FAILURE);
+    }
+    catch (Exception &e) {
+        cerr << "Unhandled exception in RTIG. Exiting." << endl ;
+        exit(EXIT_FAILURE);
+    }
 
     cout << "RTIG exiting." << endl ;
     exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.4 2003/02/19 14:29:38 breholee Exp $
+// $Id: main.cc,v 3.5 2003/03/05 13:12:05 breholee Exp $
