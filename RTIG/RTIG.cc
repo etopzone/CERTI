@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG.cc,v 3.8 2003/03/31 17:17:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -46,7 +46,9 @@ RTIG::RTIG()
     tcpPort = atoi(tcp_port_s);
     udpPort = atoi(udp_port_s);
 
-    socketServer = new SocketServer(&tcpSocketServer, &udpSocketServer, udpPort);
+    socketServer = new SocketServer(&tcpSocketServer,
+                                    &udpSocketServer,
+                                    udpPort);
 
     if (socketServer == NULL)
         throw RTIinternalError("No memory to create socketServer.");
@@ -116,20 +118,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
     case m_CREATE_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Create federation \"%s\".", msg->federation);
+        D.Out(pdTrace, "Create federation \"%s\".", msg->federationName);
         auditServer->setLevel(9);
         processCreateFederation(link, msg);
         break ;
 
     case m_DESTROY_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Destroy federation \"%s\".", msg->federation);
+        D.Out(pdTrace, "Destroy federation \"%s\".", msg->federationName);
         auditServer->setLevel(9);
         processDestroyFederation(link, msg);
         break ;
 
     case m_JOIN_FEDERATION_EXECUTION:
         D.Out(pdTrace, "federate \"%s\" joins federation \"%s\".",
-              msg->federate, msg->federation);
+              msg->federateName, msg->federationName);
         auditServer->setLevel(9);
         processJoinFederation(link, msg);
         break ;
@@ -864,4 +866,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG.cc,v 3.8 2003/03/31 17:17:59 breholee Exp $
