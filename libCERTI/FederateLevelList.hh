@@ -1,15 +1,13 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,11 +17,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.hh,v 3.9 2004/03/04 19:50:56 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.10 2005/04/05 19:28:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_FEDERATE_LEVEL_LIST_HH
-#define _CERTI_FEDERATE_LEVEL_LIST_HH
+#ifndef CERTI_FEDERATE_LEVEL_LIST_HH
+#define CERTI_FEDERATE_LEVEL_LIST_HH
 
 #include "SecurityLevel.hh"
 
@@ -34,9 +32,6 @@ namespace certi {
 
 class FederateLevelList
 {
-protected:
-    std::map<std::string, SecurityLevelID> tuple ;
-
 public:
     FederateLevelList();
     ~FederateLevelList();
@@ -47,10 +42,13 @@ public:
     // Try to find the given principal name in the database, and return
     // its associated level. If not found, return PublicLevelID.
     SecurityLevelID getLevel(const std::string &theName) const ;
+
+protected:
+    std::map<std::string, SecurityLevelID> tuple ;
 };
 
-}
+} // namespace certi
 
-#endif // _CERTI_FEDERATE_LEVEL_LIST_HH
+#endif // CERTI_FEDERATE_LEVEL_LIST_HH
 
-// $Id: FederateLevelList.hh,v 3.9 2004/03/04 19:50:56 breholee Exp $
+// $Id: FederateLevelList.hh,v 3.10 2005/04/05 19:28:22 breholee Exp $
