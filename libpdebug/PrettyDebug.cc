@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 3.6 2003/11/14 15:41:07 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.7 2003/11/21 16:32:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -50,7 +50,7 @@ PrettyDebug::Print(DebugOStream& theOutputStream,
                    const char* theHeaderMessage, const char * Message)
 {
     if (Message != NULL)
-	theOutputStream << theHeaderMessage << "> " << Message;
+	theOutputStream << "* " << theHeaderMessage << "> " << Message;
     else
         theOutputStream << theHeaderMessage << pdSEmptyMessage;
 }
@@ -86,7 +86,7 @@ PrettyDebug::ParseEnvString(const char *Name)
             Key = Value[i];
             Pos = strchr(DebugKeys, Key);
             if (Pos != 0)
-                Level_Map [Pos - DebugKeys] = &(PrettyDebug::defaultOutputStream);
+                Level_Map[Pos - DebugKeys] = &(PrettyDebug::defaultOutputStream);
         }
     }
     return;
@@ -227,4 +227,4 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 3.6 2003/11/14 15:41:07 breholee Exp $
+// $Id: PrettyDebug.cc,v 3.7 2003/11/21 16:32:33 breholee Exp $

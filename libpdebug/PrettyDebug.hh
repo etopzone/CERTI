@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 3.7 2003/11/14 15:41:07 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.8 2003/11/21 16:32:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -113,7 +113,7 @@ public:
         if (theReturnedOutputStreamPtr == PrettyDebug::nullOutputStreamPtr) {
             return(PrettyDebug::nullOutputStream);
         }
-        *theReturnedOutputStreamPtr << HeaderMessage << "> " ;
+        *theReturnedOutputStreamPtr << "* " << HeaderMessage << "> " ;
         return(*theReturnedOutputStreamPtr);
     }
 
@@ -127,4 +127,4 @@ public:
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 3.7 2003/11/14 15:41:07 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.8 2003/11/21 16:32:34 breholee Exp $
