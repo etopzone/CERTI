@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: RTIambassador.hh,v 3.2 2002/11/27 23:07:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -207,7 +207,7 @@ public:
 	  UnimplementedService);//CERTI
 
   void 
-  federateSaveCompleted()
+  federateSaveComplete()
     throw(SaveNotInitiated,
 	  FederateNotExecutionMember,
 	  ConcurrentAccessAttempted,
@@ -216,7 +216,7 @@ public:
 	  UnimplementedService);//CERTI
 
   void 
-  federateSaveNotCompleted()
+  federateSaveNotComplete()
     throw(SaveNotInitiated,
 	  FederateNotExecutionMember,
 	  ConcurrentAccessAttempted,
@@ -235,7 +235,7 @@ public:
 	  UnimplementedService);//CERTI
 
   void 
-  federateRestoreCompleted()
+  federateRestoreComplete()
     throw(UnknownLabel,
 	  RestoreNotRequested,
 	  RTICannotRestore,
@@ -246,7 +246,7 @@ public:
 	  UnimplementedService);//CERTI
 
   void 
-  federateRestoreNotCompleted()
+  federateRestoreNotComplete()
     throw(UnknownLabel,
 	  RestoreNotRequested,
 	  FederateNotExecutionMember, 
@@ -1338,4 +1338,4 @@ public:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.2 2002/11/27 23:07:19 breholee Exp $

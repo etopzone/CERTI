@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.2 2002/11/27 19:20:12 breholee Exp $
+// $Id: RTIambassador.cc,v 3.3 2002/11/27 23:07:19 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -736,9 +736,10 @@ throw(
 
 
 //-----------------------------------------------------------------
-// 2.12 Federate Save Completed
+// 2.12 Federate Save Complete
 
-void RTIambassador::federateSaveCompleted() 
+void 
+RTIambassador::federateSaveComplete() 
 throw(
   SaveNotInitiated,
   FederateNotExecutionMember,
@@ -750,7 +751,8 @@ throw(
   throw UnimplementedService();
 }
 
-void RTIambassador::federateSaveNotCompleted() 
+void 
+RTIambassador::federateSaveNotComplete() 
 throw(
   SaveNotInitiated,
   FederateNotExecutionMember,
@@ -782,9 +784,10 @@ throw(
 
 
 //-----------------------------------------------------------------
-// 2.17 Restore Completed
+// 2.17 Restore Complete
 
-void RTIambassador::federateRestoreCompleted()  
+void 
+RTIambassador::federateRestoreComplete()  
 throw(
   UnknownLabel,
   RestoreNotRequested,
@@ -798,7 +801,8 @@ throw(
   throw UnimplementedService();
 }
 
-void RTIambassador::federateRestoreNotCompleted() 
+void 
+RTIambassador::federateRestoreNotComplete() 
 throw(
   UnknownLabel,
   RestoreNotRequested,
@@ -4165,4 +4169,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.2 2002/11/27 19:20:12 breholee Exp $
+// $Id: RTIambassador.cc,v 3.3 2002/11/27 23:07:19 breholee Exp $
