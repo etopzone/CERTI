@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.28 2005/03/22 14:53:55 breholee Exp $
+// $Id: ObjectClass.cc,v 3.29 2005/03/25 17:32:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -97,7 +97,8 @@ ObjectClass::addAttributesToChild(ObjectClass *the_child)
   what is going on...
 */
 void
-ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *source)
+ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
+				   const Object *source)
 {
     // 1. Set ObjectHandle to local class Handle.
     ocbList->message->objectClass = handle ;
@@ -137,12 +138,15 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *so
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
+	  assert(source != 0);
           list<ObjectClassAttribute *>::const_iterator a ;
           for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-	      const RegionImp *region = 0 ;
-	      if (source != 0)
-		  region = source->getAttribute((*a)->getHandle())->getRegion();
-              (*a)->updateBroadcastList(ocbList, region);
+  	      ObjectAttribute *attr = source->getAttribute((*a)->getHandle());
+ 	      const RTIRegion *update_region = attr->getRegion();
+ 	      D[pdTrace] << "RAV: attr " << (*a)->getHandle()
+ 			 << " / region " << (update_region ? update_region->getHandle() : 0)
+ 			 << std::endl ;
+              (*a)->updateBroadcastList(ocbList, update_region);
           }
       } break ;
 
@@ -435,7 +439,7 @@ ObjectClass::getAttribute(AttributeHandle the_handle) const
 }
 
 // ----------------------------------------------------------------------------
-//! getInstanceWithId (private module).
+//! Get Object
 Object *
 ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     throw (ObjectNotKnown)
@@ -446,6 +450,9 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
             return (*o);
     }
 
+    D[pdError] << "Could not find object " << the_id << " among "
+	       << objectSet.size() << " objects of class "
+	       << handle << std::endl ;
     throw ObjectNotKnown();
 }
 
@@ -482,8 +489,8 @@ ObjectClass::isSubscribed(FederateHandle fed) const
 }
 
 // ----------------------------------------------------------------------------
-/*! Return RTI_TRUE if the object instance designated by 'theID' is
-  present in that class, else return RTI_FALSE.
+/*! Return 'true' if the object instance designated by 'theID' is
+  present in that class.
 */
 bool
 ObjectClass::isInstanceInClass(ObjectHandle theID)
@@ -630,6 +637,8 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     }
 
     objectSet.push_front(the_object);
+    D[pdTrace] << "Added object " << the_object->getHandle() << "/"
+	       << objectSet.size() << " to class " << handle << std::endl ;
 
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -739,7 +748,7 @@ bool
 ObjectClass::subscribe(FederateHandle fed,
                        AttributeHandle *attributes,
                        int nb_attributes,
-		       const RegionImp *region)
+		       const RTIRegion *region)
     throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
     D[pdTrace] << __func__ << " : fed " << fed << ", class " << handle
@@ -772,10 +781,10 @@ ObjectClass::subscribe(FederateHandle fed,
 //! update Attribute Values (with time).
 ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
-                                   ObjectHandle the_object,
+                                   Object *object,
                                    AttributeHandle *the_attributes,
                                    AttributeValue *the_values,
-                                   UShort the_size,
+                                   int the_size,
                                    FederationTime the_time,
                                    const char *the_tag)
     throw (ObjectNotKnown,
@@ -784,9 +793,6 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
            RTIinternalError,
            InvalidObjectHandle)
 {
-    // Pre-conditions checking
-    Object *object = getInstanceWithID(the_object);
-
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute * oa ;
     for (int i = 0 ; i < the_size ; i++) {
@@ -796,10 +802,6 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
             throw AttributeNotOwned();
     }
 
-    // Federate must be Owner of all attributes(not Owner of the instance).
-    // if (object->getOwner() != the_federate)
-    // throw AttributeNotOwned();
-
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
     if (server != NULL) {
@@ -808,7 +810,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
-        answer->object = the_object ;
+        answer->object = object->getHandle();
         answer->date = the_time ;
 
         strcpy(answer->label, the_tag);
@@ -824,9 +826,9 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         D.Out(pdProtocol,
               "Object %u updated in class %u, now broadcasting...",
-              the_object, handle);
+              object->getHandle(), handle);
 
-        broadcastClassMessage(ocbList);
+        broadcastClassMessage(ocbList, object);
     }
     else {
         D.Out(pdExcept,
@@ -1583,7 +1585,7 @@ ObjectClass::getHandle() const
 /** Unsubscribe this federate/region pair
  */
 void
-ObjectClass::unsubscribe(FederateHandle fed, const RegionImp *region)
+ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
     list<ObjectClassAttribute *>::iterator i ;
     for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
@@ -1657,4 +1659,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.28 2005/03/22 14:53:55 breholee Exp $
+// $Id: ObjectClass.cc,v 3.29 2005/03/25 17:32:24 breholee Exp $
