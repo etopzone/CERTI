@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.10 2003/04/17 17:00:21 breholee Exp $
+// $Id: RTIambassador.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -841,8 +841,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     notifyAboutRegionModification(Region &theRegion)
@@ -863,8 +862,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     ObjectHandle
     registerObjectInstanceWithRegion(ObjectClassHandle theClass,
@@ -1317,4 +1315,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.10 2003/04/17 17:00:21 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.11 2003/04/18 14:03:06 breholee Exp $

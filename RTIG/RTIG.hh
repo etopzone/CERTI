@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG.hh,v 3.8 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -118,6 +118,8 @@ private:
     void processAttributeOwnedByFederate(Socket*, NetworkMessage*);
     void processReleaseResponse(Socket*, NetworkMessage*);
     void processCancelAcquisition(Socket*, NetworkMessage*);
+    void processCreateRegion(Socket*, NetworkMessage*);
+    void processDeleteRegion(Socket*, NetworkMessage*);
 };
 
 }}
@@ -125,4 +127,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ----------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG.hh,v 3.8 2003/04/18 14:03:06 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.8 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -262,9 +262,9 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 
     // send synchronizationPointRegistrationSucceeded() to federate.
     NetworkMessage rep;
-    rep.type        = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
-    rep.federate    = req->federate ;
-    rep.federation  = req->federation ;
+    rep.type = m_SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+    rep.federate = req->federate ;
+    rep.federation = req->federation ;
     rep.setLabel(req->label);
     rep.write(link);
 
@@ -822,6 +822,51 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
     rep.write(link); // send answer to RTIA
 }
 
+// ----------------------------------------------------------------------------
+// processCreateRegion
+void
+RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    NetworkMessage rep ;
+
+    rep.region = federations->createRegion(req->federation,
+                                           req->federate,
+                                           req->space,
+                                           req->nbExtents);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation " 
+               << req->federation << " creates region " << rep.region 
+               << endl ;
+   
+    rep.type = m_CREATE_REGION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.write(link);
+}
+
+// ----------------------------------------------------------------------------
+// processDeleteRegion
+void
+RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->deleteRegion(req->federation, req->federate, req->region);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation " 
+               << req->federation << " deletes region " << req->region
+               << endl ;
+
+    NetworkMessage rep ;
+    rep.type = m_DELETE_REGION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.region = req->region ;
+    rep.write(link);
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.7 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.8 2003/04/18 14:03:06 breholee Exp $

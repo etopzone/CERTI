@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.8 2003/03/31 17:17:59 breholee Exp $
+// $Id: RTIG.cc,v 3.9 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -270,6 +270,18 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace, "cancelAttributeOwnershipAcquisition..");
         auditServer->setLevel(6);
         processCancelAcquisition(link, msg);
+        break ;
+
+    case m_CREATE_REGION:
+        D[pdTrace] << "createRegion" << endl ;
+        auditServer->setLevel(6);
+        processCreateRegion(link, msg);
+        break ;
+
+    case m_DELETE_REGION:
+        D[pdTrace] << "deleteRegion" << endl ;
+        auditServer->setLevel(6);
+        processDeleteRegion(link, msg);
         break ;
 
     default:
@@ -866,4 +878,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.8 2003/03/31 17:17:59 breholee Exp $
+// $Id: RTIG.cc,v 3.9 2003/04/18 14:03:06 breholee Exp $

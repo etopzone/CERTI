@@ -19,13 +19,16 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.4 2003/03/12 10:09:49 breholee Exp $
+// $Id: DataDistribution.hh,v 3.5 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
 #define _CERTI_DATA_DISTRIBUTION
 
 #include <config.h>
+#include "Communications.hh"
+#include "FederationManagement.hh"
+#include "RegionImp.hh"
 #include "RootObject.hh"
 
 namespace certi {
@@ -34,21 +37,38 @@ namespace rtia {
 class DataDistribution
 {
 public:
-    DataDistribution(RootObject *);
+    DataDistribution(RootObject *, FederationManagement *, Communications *);
 
     SpaceHandle getRoutingSpaceHandle(string);
+
     string getRoutingSpaceName(SpaceHandle);
+
     DimensionHandle getDimensionHandle(string, SpaceHandle)
         throw (SpaceNotDefined, NameNotFound);
+
     string getDimensionName(DimensionHandle, SpaceHandle)
         throw (SpaceNotDefined, DimensionNotDefined);
 
+    SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle)
+        throw (ObjectClassNotDefined, AttributeNotDefined);
+
+    SpaceHandle getInteractionSpace(InteractionClassHandle)
+        throw (InteractionClassNotDefined);
+
+    long createRegion(SpaceHandle, long, TypeException &)
+        throw (SpaceNotDefined);
+
+    void deleteRegion(long, TypeException &)
+        throw (RegionNotKnown, RegionInUse);
+
 private:
     RootObject *rootObject ;
+    FederationManagement *fm ;
+    Communications *comm ;
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.4 2003/03/12 10:09:49 breholee Exp $
+// $Id: DataDistribution.hh,v 3.5 2003/04/18 14:03:06 breholee Exp $

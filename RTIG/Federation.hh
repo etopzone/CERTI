@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.11 2003/03/24 14:02:44 breholee Exp $
+// $Id: Federation.hh,v 3.12 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -407,10 +407,18 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    // Data Distribution Management
+
+    long createRegion(FederateHandle, SpaceHandle, long)
+        throw (SpaceNotDefined, InvalidExtents, SaveInProgress,
+               RestoreInProgress, RTIinternalError);
+
+    void deleteRegion(FederateHandle, long)
+        throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, 
+               RTIinternalError);
+
 private:
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
+    // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
 
     Federate *getByName(const char *theName) const
@@ -421,10 +429,14 @@ private:
 
     FederateHandle getNewHandle(void)
         throw (RTIinternalError);
+
+    // Private attributes
+    bool saveInProgress ;
+    bool restoreInProgress ;
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.11 2003/03/24 14:02:44 breholee Exp $
+// $Id: Federation.hh,v 3.12 2003/04/18 14:03:06 breholee Exp $

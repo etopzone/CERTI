@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.20 2003/04/17 17:35:49 breholee Exp $
+// $Id: RTIambassador.cc,v 3.21 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,7 @@
 #include "Message.hh"
 #include "SocketUN.hh"
 #include "RootObject.hh"
+#include "RegionImp.hh"
 #include "fedtime.hh"
 #include "PrettyDebug.hh"
 
@@ -198,6 +199,7 @@ RTIambassador::objectToString(const char *init_string,
             i++ ;
         }
     }
+    end_string[j] = '\0' ;
 }
 
 // ----------------------------------------------------------------------------
@@ -234,6 +236,7 @@ RTIambassador::getObjectToStringLength(char *init_string,
             i++ ;
         }
     }
+    size++ ;
 }
 
 // ===========================================================================
@@ -1888,18 +1891,27 @@ RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
 // ----------------------------------------------------------------------------
 // Create Region
 Region*
-RTIambassador::createRegion(SpaceHandle /*theSpace*/,
-                            ULong /*numberOfExtents*/)
+RTIambassador::createRegion(SpaceHandle space,
+                            ULong nb_extents)
     throw (SpaceNotDefined,
            InvalidExtents,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.setType(CREATE_REGION);
+    req.setSpace(space);
+    req.setNumber(nb_extents);
+    executeService(&req, &rep);
+
+    Region *region = new RegionImp(rep.getRegion(), rep.getNumber(), 
+                                   space, nb_extents);
+
+    return region ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1922,17 +1934,26 @@ RTIambassador::notifyAboutRegionModification(Region &)
 // ----------------------------------------------------------------------------
 // Delete Region
 void
-RTIambassador::deleteRegion(Region *)
+RTIambassador::deleteRegion(Region *region)
     throw (RegionNotKnown,
            RegionInUse,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
            RestoreInProgress,
-           RTIinternalError,
-           UnimplementedService)
+           RTIinternalError)
 {
-    throw UnimplementedService();
+    if (region == 0) {
+        throw RegionNotKnown();
+    }
+
+    Message req, rep ;
+
+    req.setType(DELETE_REGION);
+    req.setRegion(((RegionImp *) region)->getHandle());
+    executeService(&req, &rep);
+
+    delete region ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2464,16 +2485,21 @@ RTIambassador::getDimensionName(DimensionHandle dimension,
 // ----------------------------------------------------------------------------
 // Get Attribute Routing Space Handle
 SpaceHandle
-RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle /*theHandle*/,
-                                              ObjectClassHandle /*whichClass*/)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
+                                              ObjectClassHandle objectClass)
+    throw (ObjectClassNotDefined, AttributeNotDefined, 
+           FederateNotExecutionMember, ConcurrentAccessAttempted,
+           RTIinternalError, UnimplementedService)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = GET_ATTRIBUTE_SPACE_HANDLE ;
+    req.setAttribute(attribute);
+    req.setObjectClass(objectClass);
+
+    executeService(&req, &rep);
+
+    return rep.getSpace();
 }
 
 // ----------------------------------------------------------------------------
@@ -2500,15 +2526,18 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
 // ----------------------------------------------------------------------------
 // Get Interaction Routing Space Handle
 SpaceHandle
-RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle)
-
-    throw (InteractionClassNotDefined,
-           FederateNotExecutionMember,
-           ConcurrentAccessAttempted,
-           RTIinternalError,
-           UnimplementedService)
+RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
+    throw (InteractionClassNotDefined, FederateNotExecutionMember,
+           ConcurrentAccessAttempted, RTIinternalError, UnimplementedService)
 {
-    throw UnimplementedService();
+    Message req, rep ;
+
+    req.type = GET_INTERACTION_SPACE_HANDLE ;
+    req.setInteractionClass(inter);
+
+    this->executeService(&req, &rep);
+
+    return rep.getSpace();
 }
 
 // ----------------------------------------------------------------------------
@@ -3815,4 +3844,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.20 2003/04/17 17:35:49 breholee Exp $
+// $Id: RTIambassador.cc,v 3.21 2003/04/18 14:03:06 breholee Exp $

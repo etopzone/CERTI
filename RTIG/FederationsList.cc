@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.10 2003/03/24 14:02:44 breholee Exp $
+// $Id: FederationsList.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -1002,7 +1002,47 @@ FederationsList::cancelAcquisition(FederationHandle handle,
     federation->cancelAcquisition(federate, id, attributes, list_size);
 }
 
-}}
+// ----------------------------------------------------------------------------
+long
+FederationsList::createRegion(FederationHandle federation,
+                              FederateHandle federate, 
+                              SpaceHandle space,
+                              long nb_extents)
+    throw (SpaceNotDefined, InvalidExtents, FederateNotExecutionMember,
+           SaveInProgress, RestoreInProgress, RTIinternalError)
+{
+    Federation *f = 0 ;
 
-// EOF $Id: FederationsList.cc,v 3.10 2003/03/24 14:02:44 breholee Exp $
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Create " << nb_extents << "-extent Region "
+               << "in space " << space << endl ;
+
+    return f->createRegion(federate, space, nb_extents);
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::deleteRegion(FederationHandle federation,
+                              FederateHandle federate,
+                              long region)
+    throw (RegionNotKnown, RegionInUse, FederateNotExecutionMember,
+           SaveInProgress, RestoreInProgress, RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Delete region " << region << endl ;
+
+    f->deleteRegion(federate, region);
+}
+
+}} // certi::rtig
+
+// EOF $Id: FederationsList.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
 

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.10 2003/04/17 17:00:21 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -259,7 +259,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         rep.object = om->registerObject(req->objectClass,
                                         req->getName(),
                                         date, heure, e);
-        break ; /*FAYET 25.07.01*/
+        break ; 
     }
 
         // 4.3
@@ -576,33 +576,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         // unimplemented
         break ;
 
-        // 7.1
-    case CREATE_REGION:
-        // unimplemented
-        break ;
-
-        // 7.2
-//     case CREATE_SUBSCRIPTION_REGION:
-//         // unimplemented
-//         break ;
-
-        // 7.3(1)
-//     case ASSOCIATE_UPDATE_REGION:
-//         // unimplemented
-//         break ;
-
-//         // 7.3(2)
-//     case DISASSOCIATE_UPDATE_REGION:
-//         // unimplemented
-//         break ;
-
-//         // 7.5
-//     case MODIFY_REGION:
-//         // unimplemented
-//         break ;
-
-        // 7.6
-    case DELETE_REGION:
+        // 7.5
+    case MODIFY_REGION:
         // unimplemented
         break ;
 
@@ -748,6 +723,32 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetDimensionName");
         rep.setName(ddm->getDimensionName(req->getDimension(),
                                           req->getSpace()).c_str());
+        break ;
+
+    case GET_ATTRIBUTE_SPACE_HANDLE:
+        // nb_requetes
+        D.Out(pdTrace, 
+              "Receiving Message from Federate, type GetAttributeSpaceHandle");
+        rep.setSpace(ddm->getAttributeSpace(req->getAttribute(),
+                                            req->getObjectClass()));
+        break ;
+
+    case GET_INTERACTION_SPACE_HANDLE:
+        // nb_requetes
+        D.Out(pdTrace,
+              "Receiving Message from Federate: GetInteractionSpaceHandle");
+        rep.setSpace(ddm->getInteractionSpace(req->getInteractionClass()));
+        break ;
+
+    case CREATE_REGION:
+        D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
+        rep.setRegion(ddm->createRegion(req->getSpace(), req->getNumber(),
+                                        e));
+        break ;
+
+    case DELETE_REGION:
+        D[pdTrace] << "Receiving Message from Federate: DeleteRegion" << endl ;
+        ddm->deleteRegion(req->getRegion(), e);
         break ;
 
         // 8.11
@@ -1136,4 +1137,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.10 2003/04/17 17:00:21 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.11 2003/04/18 14:03:06 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.13 2003/03/24 14:02:44 breholee Exp $
+// $Id: Federation.cc,v 3.14 2003/04/18 14:03:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -66,6 +66,10 @@ Federation::Federation(const char *federation_name,
     D.Out(pdInit, "New Federation %d will use Multicast.", federation_handle);
     MCLink = mc_link ;
 #endif // FEDERATION_USES_MULTICAST // --------------
+
+    // Flags
+    saveInProgress = false ;
+    restoreInProgress = false ;
 
     // Allocates Name
     if ((federation_name == 0) || (federation_handle == 0))
@@ -394,7 +398,8 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
                 msg->write(socket);
             }
             catch (RTIinternalError &e) {
-                D.Out(pdExcept, "Reference to a killed Federate while broadcasting.");
+                D[pdExcept] << "Reference to a killed Federate while "
+                            << "broadcasting." << endl ;
             }
             catch (NetworkError &e) {
                 D.Out(pdExcept, "Network error while broadcasting, ignoring.");
@@ -502,8 +507,8 @@ Federation::registerSynchronization(FederateHandle federate,
         (*j)->addSynchronizationLabel(label);
     }
 
-    D.Out(pdTerm, "Federation %d is now synchronizing for label %s.",
-          label, handle);
+    D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
+              << label << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1258,7 +1263,39 @@ Federation::cancelAcquisition(FederateHandle federate,
                                                              list_size);
 }
 
+// ----------------------------------------------------------------------------
+long
+Federation::createRegion(FederateHandle federate,
+                         SpaceHandle space,
+                         long nb_extents)
+    throw (SpaceNotDefined, InvalidExtents, SaveInProgress, RestoreInProgress,
+           RTIinternalError)
+{
+    this->check(federate);
+
+    return root->createRegion(space, nb_extents);
+}
+
+// ----------------------------------------------------------------------------
+void
+Federation::deleteRegion(FederateHandle federate,
+                         long region)
+    throw (RegionNotKnown, RegionInUse, SaveInProgress, RestoreInProgress, 
+           RTIinternalError)
+{
+    this->check(federate);
+
+    if (saveInProgress) {
+        throw SaveInProgress();
+    }
+    if (restoreInProgress) {
+        throw RestoreInProgress();
+    }
+
+    root->deleteRegion(region);
+}
+
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.13 2003/03/24 14:02:44 breholee Exp $
+// $Id: Federation.cc,v 3.14 2003/04/18 14:03:06 breholee Exp $
 
