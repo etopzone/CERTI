@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.16 2005/03/16 23:12:56 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.17 2005/03/17 15:49:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -78,18 +78,10 @@ public:
         throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
 
-    void subscribe(FederateHandle theFederateHandle,
-                   ObjectClassHandle theClassHandle,
-                   AttributeHandle *theAttributeList,
-                   UShort theListSize,
-		   const RegionImp * = 0)
+    void subscribe(FederateHandle, ObjectClassHandle, AttributeHandle *,
+                   int theListSize, const RegionImp * = 0)
         throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
-
-    // See Subscribe
-    void recursiveDiscovering(ObjectClassHandle theClassHandle,
-                              FederateHandle theFederate,
-                              ObjectClassHandle theOriginalClass);
 
     // Object Instance Management
     void deleteObject(FederateHandle theFederateHandle,
@@ -160,6 +152,11 @@ public:
                AttributeAcquisitionWasNotRequested, RTIinternalError);
 
 private:
+    void recursiveDiscovering(ObjectClassHandle theClassHandle,
+                              FederateHandle theFederate,
+                              ObjectClassHandle theOriginalClass)
+	throw (ObjectClassNotDefined);
+
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
     */
@@ -173,4 +170,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.16 2005/03/16 23:12:56 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.17 2005/03/17 15:49:25 breholee Exp $

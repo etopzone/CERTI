@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.16 2005/03/16 23:14:42 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.17 2005/03/17 15:49:24 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -329,24 +329,29 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! recursiveDiscovering.
+/** Recursively start discovery of existing objects whose class belongs to
+    the given class hierarchy.
+    @param current_handle Handle of the class of currently considered objects
+    @param federate Federate to send the discovery message to
+    @param super_handle Handle of the class actually subscribed by the federate
+ */
 void
 ObjectClassSet::recursiveDiscovering(ObjectClassHandle current_handle,
                                      FederateHandle federate,
-                                     ObjectClassHandle super_handle)
+                                     ObjectClassHandle superclass)
+    throw (ObjectClassNotDefined)
 {
-    // It may throw ObjectClassNotDefined
+    D[pdInit] << "Recursive Discovering on class " << current_handle
+	      << " for Federate " << federate << "." << std::endl ;
+
     ObjectClass *current = getWithHandle(current_handle);
 
-    D.Out(pdInit, "Recursive Discovering on class %d for Federate %d.",
-          current_handle, federate);
+    bool go_deeper = current->sendDiscoverMessages(federate, superclass);
 
-    bool result = current->sendDiscoverMessages(federate, super_handle);
-
-    if (result) {
+    if (go_deeper) {
         list<ObjectClassHandle>::const_iterator i ;
         for (i = current->sonSet.begin(); i != current->sonSet.end(); ++i) {
-            recursiveDiscovering(*i, federate, super_handle);
+            recursiveDiscovering(*i, federate, superclass);
         }
     }
 }
@@ -399,45 +404,29 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! subscribe.
+/** Subscribes a federate to a set of attributes with a region. Sends the
+    discovery messages if necessary.
+    @param federate Federate to subscribe
+    @param class_handle Class to be subscribed
+    @param attributes List of attributes to be subscribed
+    @param nb Number of attributes
+    @param region Subscription region (0 for default)
+ */
 void
-ObjectClassSet::subscribe(FederateHandle theFederateHandle,
-                          ObjectClassHandle theClassHandle,
-                          AttributeHandle *theAttributeList,
-                          UShort theListSize,
+ObjectClassSet::subscribe(FederateHandle federate,
+                          ObjectClassHandle class_handle,
+                          AttributeHandle *attributes,
+                          int nb,
 			  const RegionImp *region)
-    throw (ObjectClassNotDefined,
-           AttributeNotDefined,
-           RTIinternalError,
+    throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
            SecurityError)
 {
-    // It may throw ObjectClassNotDefined
-    ObjectClass *theClass = getWithHandle(theClassHandle);
+    ObjectClass *object_class = getWithHandle(class_handle);
 
-//     if (SubOrUnsub == RTI_TRUE)
-//         D.Out(pdInit, "Federate %d attempts to subscribe to Object Class %d.",
-//               theFederateHandle, theClassHandle);
-//     else
-//         D.Out(pdTerm, "Federate %d attempts to unsubscribe from Object "
-//               "Class %d.", theFederateHandle, theClassHandle);
+    bool need_discover = object_class->subscribe(federate, attributes, nb, region);
 
-    // It may throw AttributeNotDefined
-    bool need_discover = theClass->subscribe(theFederateHandle,
-					     theAttributeList,
-					     theListSize,
-					     0);
-
-    // If need_discover is true, the Federate has never been a subscriber of this
-    // class, so it my have missed some DiscoverObject messages, for this
-    // class or one of its sub-class. Therefore, we must start a recursive
-    // process to check this class and its subclass for possible instances
-    // to discover, until we have reached an already subscribed class in
-    // each branch.
     if (need_discover)
-        recursiveDiscovering(theClass->getHandle(), // Start process with this class
-                             theFederateHandle, // Send msgs to this Federate
-                             theClass->getHandle());
-    // Discovered objects belong to the same class, the original one.
+        recursiveDiscovering(class_handle, federate, class_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -681,4 +670,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.16 2005/03/16 23:14:42 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.17 2005/03/17 15:49:24 breholee Exp $
