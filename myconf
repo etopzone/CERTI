@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.5 2004/03/04 20:02:03 breholee Exp $
+# $Id: myconf,v 3.6 2004/04/16 16:03:55 breholee Exp $
 
 case $1 in
     sun)
@@ -21,7 +21,7 @@ case $1 in
 
     linux) 
 	echo GNU/Linux / GCC configuration ;
-	CXXFLAGS=" -W -Wall -ansi -Woverloaded-virtual -Wno-unused-function" ;
+	CXXFLAGS=" -Wall -ansi -Woverloaded-virtual -Wno-unused-function" ;
 	export CXXFLAGS
 	;;
 
@@ -45,4 +45,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# $Id: myconf,v 3.5 2004/03/04 20:02:03 breholee Exp $
+# $Id: myconf,v 3.6 2004/04/16 16:03:55 breholee Exp $
