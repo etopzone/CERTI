@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.7 2003/02/17 09:17:03 breholee Exp $ 
+## $Id: Makefile.am,v 3.8 2003/03/04 17:35:22 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -15,24 +15,25 @@ noinst_HEADERS = AuditFile.hh AuditLine.hh Dimension.hh Exception.hh	\
 Extent.hh FederateClock.hh FederateLevelList.hh FedParser.hh GAV.hh	\
 GSSAPIHandler.hh Interaction.hh InteractionBroadcastLine.hh		\
 InteractionBroadcastList.hh InteractionSet.hh LBTS.hh Message.hh	\
-MessageBody.hh NetworkMessage.hh Object.hh ObjectAttribute.hh		\
-ObjectBroadcastLine.hh ObjectClass.hh ObjectClassAttribute.hh		\
-ObjectClassBroadcastList.hh ObjectClassSet.hh Parameter.hh		\
-Publisher.hh Range.hh RegionImp.hh RootObject.hh RoutingSpace.hh	\
-SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh SocketMC.hh	\
-SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh XmlParser.hh
+MessageBody.hh NetworkMessage.hh Object.hh ObjectSet.hh			\
+ObjectAttribute.hh ObjectBroadcastLine.hh ObjectClass.hh		\
+ObjectClassAttribute.hh ObjectClassBroadcastList.hh ObjectClassSet.hh	\
+Parameter.hh Publisher.hh Range.hh RegionImp.hh RootObject.hh		\
+RoutingSpace.hh SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh	\
+SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh	\
+XmlParser.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc Exception.cc		\
 Dimension.cc Extent.cc FederateLevelList.cc FedParser_Build.cc		\
 FedParser_Store.cc FedTime.cc GAV.cc GAV_aux.cc GSSAPIHandler.cc	\
 Interaction.cc InteractionBroadcastList.cc InteractionSet.cc LBTS.cc	\
 Message.cc Message_RW.cc MessageBody.cc NetworkMessage.cc		\
-NetworkMessage_RW.cc Object.cc ObjectAttribute.cc ObjectClass.cc	\
-ObjectClassAttribute.cc ObjectClassBroadcastList.cc ObjectClassSet.cc	\
-Parameter.cc Publisher.cc Range.cc RegionImp.cc RootObject.cc		\
-RoutingSpace.cc SecureTCPSocket.cc SecurityServer.cc SocketMC.cc	\
-SocketServer.cc SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc	\
-XmlParser.cc
+NetworkMessage_RW.cc Object.cc ObjectSet.cc ObjectAttribute.cc		\
+ObjectClass.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc	\
+ObjectClassSet.cc Parameter.cc Publisher.cc Range.cc RegionImp.cc	\
+RootObject.cc RoutingSpace.cc SecureTCPSocket.cc SecurityServer.cc	\
+SocketMC.cc SocketServer.cc SocketTCP.cc SocketUDP.cc SocketUN.cc	\
+Subscriber.cc XmlParser.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -40,4 +41,4 @@ libCERTI_la_LDFLAGS = -release 3.0.1
 
 LDADD = @XML_LIBS@
 
-## EOF $Id: Makefile.am,v 3.7 2003/02/17 09:17:03 breholee Exp $
+## EOF $Id: Makefile.am,v 3.8 2003/03/04 17:35:22 breholee Exp $
