@@ -1,39 +1,43 @@
-## $Id: configure.in,v 3.5 2003/10/02 16:57:47 breholee Exp $ 
+## $Id: configure.in,v 3.6 2003/10/20 11:30:25 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
 
-# ========== Init ============================================================
+## Init
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.5 $)
+AC_REVISION($Revision: 3.6 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
-# ========== Programs ========================================================
+## Programs
+AC_PROG_YACC
+AM_PROG_LEX
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+YACC="$YACC -d "
+
+## Environment
+AC_CYGWIN
 AC_CANONICAL_HOST
 case x$host_os in
      xsolaris*) AC_DISABLE_SHARED ;;
 esac
-AC_PROG_LIBTOOL
 
-# ========== Autoheader ======================================================
+## Autoheader
 AH_TEMPLATE([socklen_t], [Define the type for socklen_t])
 
-# ========== Libraries =======================================================
-
-# ---------- UNIX/C++ --------------------------------------------------------
+## Unix
 AC_ETR_SOCKET_NSL
 AC_TYPE_SOCKLEN_T
 AC_FUNC_SELECT_ARGTYPES
 
-# ---------- GSSAPI ----------------------------------------------------------
-#ACX_WITH_GSSAPI
+# GSSAPI
+# ACX_WITH_GSSAPI
 
-# ---------- X11 -------------------------------------------------------------
+# X11
 AC_PATH_XTRA
 if test $no_x; then
     	AC_MSG_WARN([X11 files not found]);
@@ -51,7 +55,7 @@ else
 	AC_SUBST(WITH_X11)
 fi
 
-# ---------- XML -------------------------------------------------------------
+# XML
 AC_CHECK_PROG(XML2_CONFIG, xml2-config, xml2-config)
 if test "x$XML2_CONFIG" != x ; then
     XML_LIBS="`$XML2_CONFIG --libs`"
@@ -64,10 +68,10 @@ else
     AC_MSG_WARN([Libxml2 not found])
 fi
 
-# ========== Output ==========================================================
+# Output
 AC_OUTPUT([Makefile include/Makefile libpdebug/Makefile
 libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
-test/Makefile test/include/Makefile test/libgraphc/Makefile
-test/Billard/Makefile doc/Makefile])
+scripts/Makefile test/Makefile test/include/Makefile
+test/libgraphc/Makefile test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.5 2003/10/02 16:57:47 breholee Exp $
+## $Id: configure.in,v 3.6 2003/10/20 11:30:25 breholee Exp $
