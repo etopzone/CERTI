@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectBroadcastLine.hh,v 3.4 2003/02/21 17:36:39 breholee Exp $
+// $Id: ObjectBroadcastLine.hh,v 3.5 2005/03/11 13:42:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Classe privee pour les listes de diffusion. Les *BroadcastLine
