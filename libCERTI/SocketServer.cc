@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketServer.cc,v 3.6 2003/06/25 16:02:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -83,7 +82,7 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
 */
 void
 SocketServer::close(long socket,
-                    FederationHandle &federation_referenced,
+                    Handle &federation_referenced,
                     FederateHandle &federate_referenced)
     throw (RTIinternalError)
 {
@@ -136,7 +135,7 @@ SocketServer::SocketServer(SocketTCP *tcp_socket,
 
 // ----------------------------------------------------------------------------
 //! Destructor (frees tuple list).
-SocketServer::~SocketServer(void)
+SocketServer::~SocketServer()
 {
     // Deleting remaining tuples.
     while (!list<SocketTuple *>::empty()) {
@@ -160,7 +159,7 @@ SocketTuple::SocketTuple(Socket *tcp_link)
 
 // ----------------------------------------------------------------------------
 //! SocketTuple destructor.
-SocketTuple::~SocketTuple(void)
+SocketTuple::~SocketTuple()
 {
     if (ReliableLink != NULL) {
         ReliableLink->close();
@@ -202,7 +201,7 @@ SocketServer::getActiveSocket(fd_set *select_fdset) const
   reason why a RTIinternalError is thrown in that case.
 */
 Socket*
-SocketServer::getSocketLink(FederationHandle the_federation,
+SocketServer::getSocketLink(Handle the_federation,
                             FederateHandle the_federate,
                             TransportType the_type) const
     throw (FederateNotExecutionMember, RTIinternalError)
@@ -225,7 +224,7 @@ SocketServer::getSocketLink(FederationHandle the_federation,
 // ----------------------------------------------------------------------------
 //! getWithReferences.
 SocketTuple *
-SocketServer::getWithReferences(FederationHandle the_federation,
+SocketServer::getWithReferences(Handle the_federation,
                                 FederateHandle the_federate) const
     throw (FederateNotExecutionMember)
 {
@@ -264,7 +263,7 @@ SocketServer::getWithSocket(long socket_descriptor) const
   Throw RTIinternalError in case of a memory allocation problem.
 */
 void
-SocketServer::open(void)
+SocketServer::open()
     throw (RTIinternalError)
 {
     SecureTCPSocket *newLink = new SecureTCPSocket();
@@ -291,7 +290,7 @@ SocketServer::open(void)
 */
 void
 SocketServer::setReferences(long socket,
-                            FederationHandle federation_reference,
+                            Handle federation_reference,
                             FederateHandle federate_reference,
                             unsigned long address,
                             unsigned int port)
@@ -312,4 +311,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketServer.cc,v 3.6 2003/06/25 16:02:15 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketServer.hh,v 3.5 2003/06/25 16:02:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
@@ -46,7 +45,7 @@ namespace certi {
 class SocketTuple
 {
 public:
-    FederationHandle Federation ;
+    Handle Federation ;
     FederateHandle Federate ;
 
     SocketTCP *ReliableLink ;
@@ -70,21 +69,21 @@ public:
     SocketServer(SocketTCP *tcp_socket,
                  SocketUDP *udp_socket, int the_port);
 
-    ~SocketServer(void);
+    ~SocketServer();
 
     // --------------------------------
     // -- Connection related methods --
     // --------------------------------
-    void open(void)
+    void open()
         throw (RTIinternalError);
 
     void close(long socket, // Provided
-               FederationHandle &federation_referenced, // Returned
+               Handle &federation_referenced, // Returned
                FederateHandle &federate_referenced) // Returned
         throw (RTIinternalError);
 
     void setReferences(long the_socket,
-                       FederationHandle federation_reference,
+                       Handle federation_reference,
                        FederateHandle federate_reference,
                        unsigned long the_address,
                        unsigned int the_port)
@@ -105,13 +104,12 @@ public:
     // ------------------------------------------
     // -- Message Broadcasting related Methods --
     // ------------------------------------------
-    Socket *getSocketLink(FederationHandle the_federation,
+    Socket *getSocketLink(Handle the_federation,
                           FederateHandle the_federate,
                           TransportType the_type = RELIABLE) const
-        throw (FederateNotExecutionMember,
-               RTIinternalError);
+        throw (FederateNotExecutionMember, RTIinternalError);
 
-    SocketTuple *getWithReferences(FederationHandle the_federation,
+    SocketTuple *getWithReferences(Handle the_federation,
                                    FederateHandle the_federate) const
         throw (FederateNotExecutionMember);
 
@@ -132,4 +130,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SocketServer.hh,v 3.5 2003/06/25 16:02:15 breholee Exp $

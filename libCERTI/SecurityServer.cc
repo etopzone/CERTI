@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityServer.cc,v 3.5 2003/06/25 15:57:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "SecurityServer.hh"
@@ -96,7 +96,7 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
 //! SecurityServer constructor.
 SecurityServer::SecurityServer(SocketServer *theRTIGServer,
                                AuditFile *theAuditServer,
-                               FederationHandle theFederation)
+                               Handle theFederation)
     : list<SecurityLevel *>()
 {
     MyFederation = theFederation ;
@@ -109,7 +109,7 @@ SecurityServer::SecurityServer(SocketServer *theRTIGServer,
 
 // ----------------------------------------------------------------------------
 //! Removes existing SecurityLevel instances before deleting instance.
-SecurityServer::~SecurityServer(void)
+SecurityServer::~SecurityServer()
 {
     while (!empty()) {
         delete front();
@@ -153,7 +153,7 @@ SecurityServer::getLevelIDWithName(SecurityLevelName theName)
 // ----------------------------------------------------------------------------
 //! Insert the public level name and id into the list.
 void
-SecurityServer::insertPublicLevel(void)
+SecurityServer::insertPublicLevel()
 {
     SecurityLevel *PublicLevel ;
 
@@ -176,4 +176,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityServer.cc,v 3.5 2003/06/25 15:57:26 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityServer.hh,v 3.5 2003/06/25 15:57:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -59,7 +59,7 @@ public:
     // Initialize the Federation's SocketServer.
     SecurityServer(SocketServer *theRTIGServer,
                    AuditFile *theAuditFile,
-                   FederationHandle theFederation);
+                   Handle theFederation);
 
     // Free the List.
     ~SecurityServer();
@@ -74,7 +74,7 @@ public:
     // ----------------------------
     // -- Socket Related Methods --
     // ----------------------------
-    FederationHandle federation() const { return MyFederation ; };
+    Handle federation() const { return MyFederation ; };
 
     Socket *getSocketLink(FederateHandle theFederate,
                           TransportType theType = RELIABLE) const ;
@@ -99,7 +99,7 @@ private:
     // ------------------------
 
     SocketServer *RTIG_SocketServer ; // Never free this object.
-    FederationHandle MyFederation ;
+    Handle MyFederation ;
 
     SecurityLevelID LastLevelID ; //!< Last Level ID attributed.
 
@@ -111,11 +111,11 @@ private:
 
     SecurityLevelID getLevel(const char *theFederate) const ;
 
-    void insertPublicLevel(void);
+    void insertPublicLevel();
 };
 
 }
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.4 2003/02/19 18:07:30 breholee Exp $
+// $Id: SecurityServer.hh,v 3.5 2003/06/25 15:57:26 breholee Exp $
