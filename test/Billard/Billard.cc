@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Billard.cc,v 3.3 2003/10/20 09:37:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -30,8 +30,9 @@
 
 using std::string ;
 using std::endl ;
+using std::cout ;
 
-static pdCDebug D("BILLARD", __FILE__ "> ");
+static pdCDebug D("BILLARD", __FILE__);
 
 // ----------------------------------------------------------------------------
 Billard::Billard(string federate_name)
@@ -320,10 +321,11 @@ Billard::init(int x, int y)
 }
 
 // ----------------------------------------------------------------------------
-// create objects
+// create objects, regions, etc.
 void
 Billard::declare()
 {
+    // only objects in this class
     objects.declare(federateName);
 }
 
@@ -415,4 +417,4 @@ Billard::resign()
     D.Out(pdTerm, "Federation terminated.");
 }
 
-// $Id: Billard.cc,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Billard.cc,v 3.3 2003/10/20 09:37:27 breholee Exp $
