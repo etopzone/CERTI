@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FederationManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
@@ -254,8 +254,8 @@ joinFederationExecution(const FederateName Federate,
 // -------------------------------
 
 void 
-FederationManagement::resignFederationExecution(ResignAction action,
-					      TypeException &e)
+FederationManagement::resignFederationExecution(ResignAction,
+						TypeException &e)
 {
   NetworkMessage msg;
   TypeException exception = e_NO_EXCEPTION;
@@ -513,4 +513,4 @@ FederationManagement::initiateResume(const PauseLabel label)
 }
 }
 
-// $Id: FederationManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FederationManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

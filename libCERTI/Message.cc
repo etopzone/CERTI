@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Message.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -115,7 +115,7 @@ void Message::setLabel(char *NewLabel)
 // -- SetName --
 // -------------
 
-void Message::setName(char *NewName)
+void Message::setName(const char *NewName)
 {
   if(strlen(NewName) > MAX_USER_TAG_LENGTH)
     throw ValueLengthExceeded("Name too long to fit in Message.");
@@ -238,14 +238,14 @@ void Message::display(char *s)
   printf("    Type=%d:\n", Type);
   printf("    Date=%f:\n", Date);
   printf("    Exception=%d:\n", Exception);
-  printf("    ObjectHandle=%d:\n", objectClassHandle);
-  printf("    InteractionHandle=%d:\n", InteractionHandle);
-  printf("    AttribHandle=%d:\n", AttribHandle);
-  printf("    ParamHandle=%d:\n", ParamHandle);
-  printf("    Objectid=%d:\n", Objectid);
+  printf("    ObjectHandle=%ld:\n", objectClassHandle);
+  printf("    InteractionHandle=%ld:\n", InteractionHandle);
+  printf("    AttribHandle=%ld:\n", AttribHandle);
+  printf("    ParamHandle=%ld:\n", ParamHandle);
+  printf("    Objectid=%ld:\n", Objectid);
   printf("    HandleArraySize=%d:\n", HandleArraySize);
 }
 
 }
 
-// $Id: Message.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Message.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

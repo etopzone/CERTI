@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClass.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -250,7 +250,7 @@ namespace certi {
   // -------------------------
 
   void ObjectClass::checkFederateAccess(FederateHandle  theFederate,
-					 char           *Reason)
+					 const char *Reason)
     throw(SecurityError)
   {
     Boolean Result;
@@ -266,7 +266,7 @@ namespace certi {
 
     // BUG: Should use Audit.
     if(Result != RTI_TRUE) {
-      printf("Object Class %d : SecurityError for federate %d(%s).\n",
+      printf("Object Class %ld : SecurityError for federate %ld(%s).\n",
 	      Handle, theFederate, Reason);
       throw SecurityError("Federate should not access Object Class.");
     }
@@ -343,7 +343,7 @@ namespace certi {
   ObjectClassBroadcastList *
   ObjectClass::deleteInstance(FederateHandle   theFederateHandle,
 			       ObjectHandle         theObjectHandle,
-			       UserSuppliedTag  theUserTag)
+			       const char*   theUserTag)
     throw(DeletePrivilegeNotHeld,
 	   ObjectNotKnown,
 	   RTIinternalError)
@@ -415,17 +415,17 @@ namespace certi {
     Object               *Object    = NULL;
     ObjectClassAttribute *Attribute = NULL;
 
-    printf("      ObjectClass #%u \"%s\":\n", Handle, Name);
+    printf("      ObjectClass #%ld \"%s\":\n", Handle, Name);
 
     // Display inheritance
 
-    printf("         Parent Class Handle: %u\n", Father);
+    printf("         Parent Class Handle: %ld\n", Father);
     printf("         Security Level: %d\n",      LevelID);
     printf("         %d Child(s):\n",            SonSet.lg);
 
     for(i = 1; i <= SonSet.lg; i++) {
       Son = SonSet.Ieme(i);
-      printf("            Son %d Handle: %u\n", i, Son->Handle);
+      printf("            Son %d Handle: %ld\n", i, Son->Handle);
     }
 
     // Display Attributes
@@ -898,7 +898,6 @@ namespace certi {
     Boolean                WasPreviousSubscriber = RTI_FALSE;
 
     UShort                 Index;
-    Object               *Object    = NULL;
     ObjectClassAttribute *Attribute = NULL;
 
     // Check Security Levels
@@ -959,7 +958,7 @@ namespace certi {
 			 AttributeValue    *theValueArray,
 			 UShort             theArraySize,
 			 FederationTime     theTime,
-			 UserSuppliedTag    theUserTag)
+			 const char*     theUserTag)
     throw(ObjectNotKnown,
 	   AttributeNotDefined,
 	   AttributeNotOwned,
@@ -1082,6 +1081,8 @@ namespace certi {
     else {
       D.Out(pdDebug,"Only called on RTIG");
     }
+
+    return RTI_FALSE ; 
   }
 
 
@@ -1529,7 +1530,6 @@ namespace certi {
     Object                *Object = NULL;
     int                    compteur_assumption = 0;
     int                    compteur_acquisition = 0;
-    NetworkMessage         *AnswerNotification = NULL;
     NetworkMessage         *AnswerAssumption = NULL; 
     ObjectClassBroadcastList *List   = NULL;
     FederateHandle     NewOwner;
@@ -2022,7 +2022,6 @@ namespace certi {
     Object *Object = NULL;
     NetworkMessage         *Answer_confirmation = NULL;
     int          compteur_confirmation = 0;
-    FederateHandle    OldOwner;    
     ObjectClassAttribute *classAttribute = NULL; 
     ObjectAttribute   *attribute = NULL;
   
@@ -2112,4 +2111,4 @@ namespace certi {
 
 }
 
-// $Id: ObjectClass.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClass.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

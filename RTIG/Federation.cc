@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Federation.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -114,7 +114,7 @@ Federation::Federation(FederationExecutionName federation_name,
   strcpy(file_name, name);
   strcat(file_name, ".fed");
 
-  server->Audit->addToLine(", Fed File : %s", file_name);
+  server->Audit->addToLinef(", Fed File : %s", file_name);
 
   try {
     fed_reader->readFile(file_name);
@@ -137,11 +137,11 @@ Federation::Federation(FederationExecutionName federation_name,
   if(stat(file_name, &StatBuffer) == 0) {
     MTimeBuffer = ctime(&StatBuffer.st_mtime);
     MTimeBuffer [strlen(MTimeBuffer) - 1] = 0; // Remove trailing \n
-    server->Audit->addToLine("(Last modified %s)", MTimeBuffer);
+    server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
   }
   else
     server->
-      Audit->addToLine("(could not retrieve last modif time, errno %d).",
+      Audit->addToLinef("(could not retrieve last modif time, errno %d).",
 		       errno);
 
 }
@@ -390,7 +390,7 @@ broadcastInteraction(FederateHandle federate_handle,
 		     ParameterValue *parameter_values,
 		     UShort list_size,
 		     FederationTime time,
-		     UserSuppliedTag tag)
+		     const char*  tag)
   throw(FederateNotExecutionMember,
 	FederateNotPublishing,
 	InteractionClassNotDefined,
@@ -423,7 +423,7 @@ broadcastInteraction(FederateHandle federate_handle,
 void 
 Federation::deleteObject(FederateHandle federate,
 			 ObjectHandle id,
-			 UserSuppliedTag tag)
+			 const char*  tag)
   throw(FederateNotExecutionMember,
 	DeletePrivilegeNotHeld,
 	ObjectNotKnown,
@@ -909,7 +909,7 @@ Federation::updateAttributeValues(FederateHandle federate,
 				  AttributeValue *values,
 				  UShort list_size,
 				  FederationTime time,
-				  UserSuppliedTag tag)
+				  const char*  tag)
   throw(FederateNotExecutionMember,
 	ObjectNotKnown,
 	AttributeNotDefined,
@@ -1225,5 +1225,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }}
 
-// $Id: Federation.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Federation.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 

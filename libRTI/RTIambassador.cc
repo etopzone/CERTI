@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIambassador.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -56,7 +56,7 @@ void Sortir(const char *msg)              // FIXME: prototype?
 void 
 RTIambassador::executeService(Message *req,Message *rep)
 {
-  Boolean erreur;
+  //  Boolean erreur;
 
   // lever une exception si appel reentrant
   if(en_service)
@@ -108,9 +108,9 @@ RTIambassador::RTIambassador()
   throw(MemoryExhausted, RTIinternalError) : SocketUN(stIgnoreSignal)
 {
   en_service = RTI_FALSE;
-  char *rtiaexec = "rtia" ;
-  char *rtiaenv = getenv("CERTI_RTIA");
-  char *rtiacall ;
+  const char *rtiaexec = "rtia" ;
+  const char *rtiaenv = getenv("CERTI_RTIA");
+  const char *rtiacall ;
   if(rtiaenv) rtiacall = rtiaenv ;
   else rtiacall = rtiaexec ;
 
@@ -158,7 +158,7 @@ CAttributeHandleValuePairSet* RTIambassador::AHStoCAHVPS(
   cahvps = new CAttributeHandleValuePairSet();
   taille = ahs->size();
 
-  for( int i = 0;i<taille;i++)
+  for(unsigned int i = 0;i<taille;i++)
   {
     cahvp = new CAttributeHandleValuePair();
     cahvp->_attrib = ahs->getHandle(i);
@@ -180,14 +180,14 @@ CAttributeHandleValuePairSet* RTIambassador::AHVPStoCAHVPS(
   cahvps = new CAttributeHandleValuePairSet();
   taille = ahvps->size();
 
-  for( int i = 0;i<taille;i++)
+  for(unsigned int i = 0;i<taille;i++)
   {
     cahvp = new CAttributeHandleValuePair();
     cahvp->_attrib = ahvps->getHandle(i);
     ahvps->getValue(i,(char*)buff,valueLenght);
     // Avec sprintf on perd le rest de les donees si il y a une valeur 0 dedans.
     // Je fais une copie de chaque char
-    for(int i=0; i < valueLenght; i++) cahvp->_value.value[i] = buff[i];
+    for(unsigned int i=0; i < valueLenght; i++) cahvp->_value.value[i] = buff[i];
     //  sprintf(cahvp->_value.value,"%s",buff);
 //    sprintf(cahvp->_value.lenght,"%ld",valueLenght);
     cahvp->_value.lenght = valueLenght;
@@ -208,12 +208,12 @@ CParameterHandleValuePairSet* RTIambassador::PHVPStoCPHVPS(
   cphvps = new CParameterHandleValuePairSet();
   taille = phvps->size();
 
-  for( int i = 0;i<taille;i++)
+  for(unsigned int i = 0;i<taille;i++)
   {
     cphvp = new CParameterHandleValuePair();
     cphvp->_param = phvps->getHandle(i);
     phvps->getValue(i,(char*)buff,valueLenght);
-    for(int i=0; i < valueLenght; i++) cphvp->_value.value[i] = buff[i];
+    for(unsigned int i=0; i < valueLenght; i++) cphvp->_value.value[i] = buff[i];
     //    sprintf(cphvp->_value.value,"%s",buff);
 //    sprintf(cphvp->_value.lenght,"%ld",valueLenght);
     cphvp->_value.lenght = valueLenght;
@@ -234,7 +234,7 @@ RTIambassador::CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps)
   taille = cahvps->_size;
   ahvps = AttributeSetFactory::create( taille );
 
-  for( int i = 0;i<taille;i++)
+  for(unsigned int i = 0;i<taille;i++)
   {
     //cahvp = cahvps->getWithHandle( i );
     cahvp = cahvps->getIeme( i );
@@ -246,7 +246,7 @@ RTIambassador::CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps)
         char *valeur = new char[longueur];
 	valeur[0]='\0' ;
         stringToObject(cahvp->_value.value,valeur,longueur);
-	for(int i = 0; i < longueur; i++) cahvp->_value.value[i] = valeur[i];
+	for(unsigned int i = 0; i < longueur; i++) cahvp->_value.value[i] = valeur[i];
 	//  sprintf(cahvp->_value.value,"%s",valeur);
 
 	/*  ahvps->add(cahvp->_attrib,
@@ -279,7 +279,7 @@ RTIambassador::CPHVPStoPHVPS(CParameterHandleValuePairSet *cphvps)
   taille = cphvps->_size;
   phvps = ParameterSetFactory::create( taille );
 
-  for( int i = 0;i<taille;i++)
+  for(unsigned int i = 0;i<taille;i++)
   {
     //cphvp = cphvps->getWithHandle( i );
     cphvp = cphvps->getIeme( i );
@@ -291,7 +291,7 @@ RTIambassador::CPHVPStoPHVPS(CParameterHandleValuePairSet *cphvps)
         char *valeur = new char[longueur];
 	valeur[0] = '\0' ;
         stringToObject(cphvp->_value.value,valeur,longueur);
-		for(int i = 0; i < longueur; i++) cphvp->_value.value[i] = valeur[i];
+		for(unsigned int i = 0; i < longueur; i++) cphvp->_value.value[i] = valeur[i];
 		//  sprintf(cphvp->_value.value,"%s",valeur);
 
 		/*  phvps->add(cphvp->_param,
@@ -622,8 +622,8 @@ throw(
 // 2.5 RegisterFederationSynchronizationPoint
 
 void RTIambassador::registerFederationSynchronizationPoint(
-  const char *label, 
-  const char *theTag)
+  const char *label,
+  const char * /*theTag*/)
 throw(
   FederateNotExecutionMember,
   ConcurrentAccessAttempted,
@@ -650,9 +650,9 @@ throw(
 }
 
 void RTIambassador::registerFederationSynchronizationPoint(
-  const char                *label,
-  const char                *theTag,
-  const FederateHandleSet&   syncSet)
+  const char                */*label*/,
+  const char                */*theTag*/,
+  const FederateHandleSet&   /*syncSet*/)
 throw(
   FederateNotExecutionMember,
   ConcurrentAccessAttempted,
@@ -701,8 +701,8 @@ throw(
 // 2.9 Request Federation Save
 
 void RTIambassador::requestFederationSave(    
-  const char     *label,   
-  const FedTime&  theTime) 
+  const char     */*label*/,
+  const FedTime&  /*theTime*/)
 throw(
   FederationTimeAlreadyPassed,
   InvalidFederationTime,
@@ -717,7 +717,7 @@ throw(
 }
 
 void RTIambassador::requestFederationSave( 
-  const char *label)     
+  const char */*label*/)
   throw(
 	//  InvalidFederationTime,
 // 	 FederateNotExecutionMember,
@@ -786,7 +786,7 @@ throw(
 // 2.14 Request Restore
 
 void RTIambassador::requestFederationRestore(    
-  const char *label) 
+  const char */*label*/)
 throw(
   SpecifiedSaveLabelDoesNotExist,//CERTI
   FederateNotExecutionMember,
@@ -960,9 +960,9 @@ throw(
 // 3.5 Subscribe Object Class Attribute
 
 void RTIambassador::subscribeObjectClassAttributes(
-        ObjectClassHandle   theClass,      
+        ObjectClassHandle   theClass,
   const AttributeHandleSet& attributeList,
-        Boolean active)
+        Boolean /*active*/)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -1020,7 +1020,7 @@ throw(
 
 void RTIambassador::subscribeInteractionClass(
   InteractionClassHandle theClass,
-  Boolean active) 
+  Boolean /*active*/)
 throw(
   InteractionClassNotDefined,
   FederateNotExecutionMember,
@@ -1183,9 +1183,9 @@ throw(
 }
 
 void updateAttributeValues(
-	ObjectHandle                 theObject,
-  const AttributeHandleValuePairSet& theAttributes,
-  const char                         *theTag)
+	ObjectHandle                 /*theObject*/,
+  const AttributeHandleValuePairSet& /*theAttributes*/,
+  const char                         */*theTag*/)
 throw(
   ObjectNotKnown,
   AttributeNotDefined,
@@ -1257,9 +1257,9 @@ throw(
 }
 
 void sendInteraction(
-	InteractionClassHandle       theInteraction,
-  const ParameterHandleValuePairSet& theParameters,
-  const char                         *theTag)
+	InteractionClassHandle       /*theInteraction*/,
+  const ParameterHandleValuePairSet& /*theParameters*/,
+  const char                         */*theTag*/)
 throw(
   InteractionClassNotDefined,
   InteractionClassNotPublished,
@@ -1280,9 +1280,9 @@ throw(
 
 EventRetractionHandle             
 RTIambassador::deleteObjectInstance(
-        ObjectHandle    theObject, 
-  const FedTime&        theTime,  
-  const char            *theTag)   
+        ObjectHandle    theObject,
+  const FedTime&        theTime,
+  const char            *theTag)
 throw(
   ObjectNotKnown,
   DeletePrivilegeNotHeld,
@@ -1311,8 +1311,8 @@ throw(
 }
 
 void deleteObjectInstance(
-	ObjectHandle    theObject,
-  const char            *theTag)
+	ObjectHandle    /*theObject*/,
+  const char            */*theTag*/)
 throw(
   ObjectNotKnown,
   DeletePrivilegeNotHeld,
@@ -1330,7 +1330,7 @@ throw(
 // 4.9 Local Delete Object Instance
 
 void localDeleteObjectInstance(
-	ObjectHandle    theObject)
+	ObjectHandle    /*theObject*/)
 throw(
   ObjectNotKnown,
   FederateOwnsAttributes,//not implemented
@@ -1393,8 +1393,8 @@ throw(
 // 4.11 Change Interaction Transportation Type
 
 void RTIambassador::changeInteractionTransportationType(
-  InteractionClassHandle theClass, 
-  TransportationHandle   theType)  
+  InteractionClassHandle theClass,
+  TransportationHandle   theType)
 throw(
   InteractionClassNotDefined,
   InteractionClassNotPublished,
@@ -1424,8 +1424,8 @@ throw(
 // 4.14 Request Attribute Value Update
 
 void RTIambassador::requestObjectAttributeValueUpdate(
-        ObjectHandle        theObject,     
-  const	AttributeHandleSet& theAttributes) 
+        ObjectHandle        /*theObject*/,
+  const	AttributeHandleSet& /*theAttributes*/)
 throw(
   ObjectNotKnown,// not implemented
   AttributeNotDefined,
@@ -1440,8 +1440,8 @@ throw(
 }
 
 void RTIambassador::requestClassAttributeValueUpdate(
-        ObjectClassHandle   theClass,      
-  const	AttributeHandleSet& theAttributes) 
+        ObjectClassHandle   /*theClass*/,
+  const	AttributeHandleSet& /*theAttributes*/)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -1466,7 +1466,7 @@ throw(
 // 5.1 UnConditional Attribute Ownership Divestiture
 
 void RTIambassador::unconditionalAttributeOwnershipDivestiture(
-        ObjectHandle                      theObject,     
+        ObjectHandle                      theObject,
   const	AttributeHandleSet&               theAttributes)
 throw(
   ObjectNotKnown,
@@ -1486,11 +1486,11 @@ throw(
 
   req.HandleArraySize =	theAttributes.size();
 	 		
-  for(int i=0; i<theAttributes.size(); i++) {
+  for(unsigned int i=0; i<theAttributes.size(); i++) {
     req.HandleArray[i] =  theAttributes.getHandle(i);
   }
   
-  executeService(&req, &rep);  
+  executeService(&req, &rep);
  
  
 }
@@ -1499,7 +1499,7 @@ throw(
 // 5.2 Negotiated Attribute Ownership Divestiture
 
 void RTIambassador::negotiatedAttributeOwnershipDivestiture(
-        ObjectHandle                      theObject,     
+        ObjectHandle                      theObject,
   const AttributeHandleSet&               theAttributes,
   const char                *theTag)
 throw(
@@ -1526,7 +1526,7 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(int i=0; i<theAttributes.size(); i++)
+ for(unsigned int i=0; i<theAttributes.size(); i++)
      {
      req.HandleArray[i] =  theAttributes.getHandle(i);
     }
@@ -1542,7 +1542,7 @@ throw(
 void RTIambassador::attributeOwnershipAcquisition(
         ObjectHandle            theObject,         
   const AttributeHandleSet&     desiredAttributes, 
-  const UserSuppliedTag         theTag)            
+  const char*          theTag)            
 throw(
   ObjectNotKnown,
   ObjectClassNotPublished,
@@ -1568,12 +1568,12 @@ throw(
 
   req.HandleArraySize = desiredAttributes.size();
     
- for(int i=0; i<desiredAttributes.size(); i++)
+ for(unsigned int i=0; i<desiredAttributes.size(); i++)
      {
      req.HandleArray[i] =  desiredAttributes.getHandle(i);
     }
  
-  executeService(&req, &rep); 
+  executeService(&req, &rep);
  
 }
 
@@ -1582,8 +1582,8 @@ throw(
 
 AttributeHandleSet*
 RTIambassador::attributeOwnershipReleaseResponse(
-        ObjectHandle            theObject,         
-  const AttributeHandleSet&     theAttributes)            
+        ObjectHandle            theObject,
+  const AttributeHandleSet&     theAttributes)
 throw(
   ObjectNotKnown,
   AttributeNotDefined,
@@ -1603,7 +1603,7 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(int i=0; i<theAttributes.size(); i++)
+ for(unsigned int i=0; i<theAttributes.size(); i++)
      {
      req.HandleArray[i] =  theAttributes.getHandle(i);
     }
@@ -1615,7 +1615,7 @@ throw(
   AttributeHandleSet *AttributeSet;
   AttributeSet = AttributeHandleSetFactory::create(rep.HandleArraySize); 
   
-   for(int i = 0 ; i < rep.HandleArraySize; i++)
+   for(unsigned int i = 0 ; i < rep.HandleArraySize; i++)
      {
       AttributeSet->add(rep.HandleArray[i]);
     }
@@ -1629,7 +1629,7 @@ throw(
 // 5.9 Cancel Negociated Attribute Ownership Divestiture
 
 void RTIambassador::cancelnegotiatedAttributeOwnershipDivestiture(
-        ObjectHandle            theObject,         
+        ObjectHandle            theObject,
   const AttributeHandleSet&     theAttributes)            
 throw(
   ObjectNotKnown,
@@ -1650,7 +1650,7 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(int i=0; i<theAttributes.size(); i++)
+ for(unsigned int i=0; i<theAttributes.size(); i++)
      {
      req.HandleArray[i] =  theAttributes.getHandle(i);
     }
@@ -1664,7 +1664,7 @@ throw(
 // 5.10 Cancel Attribute Ownership Acquisition
 
 void RTIambassador::cancelattributeOwnershipAcquisition(
-        ObjectHandle            theObject,         
+        ObjectHandle            theObject,
   const AttributeHandleSet&     theAttributes)
 throw(
   ObjectNotKnown,
@@ -1685,12 +1685,12 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(int i=0; i<theAttributes.size(); i++)
+ for(unsigned int i=0; i<theAttributes.size(); i++)
      {
      req.HandleArray[i] =  theAttributes.getHandle(i);
     }
  
-  executeService(&req, &rep); 
+  executeService(&req, &rep);
  
 
 }
@@ -1699,7 +1699,7 @@ throw(
 // 5.12 Attribute Ownership Acquisition If Available
 
 void RTIambassador::attributeOwnershipAcquisitionIfAvailable(
-        ObjectHandle            theObject,         
+        ObjectHandle            theObject,
   const AttributeHandleSet&     desiredAttributes)
 throw(
   ObjectNotKnown,
@@ -1723,7 +1723,7 @@ throw(
 
   req.HandleArraySize = desiredAttributes.size();
     
- for(int i=0; i<desiredAttributes.size(); i++)
+ for(unsigned int i=0; i<desiredAttributes.size(); i++)
      {
      req.HandleArray[i] =  desiredAttributes.getHandle(i);
     D.Out(pdTrace, "Objet %u Attribut %u",theObject,req.HandleArray[i]);      
@@ -1736,8 +1736,8 @@ throw(
 // 5.14 Query Attribute Ownership
 
 void RTIambassador::queryAttributeOwnership(
-  ObjectHandle        theObject,    
-  AttributeHandle theAttribute) 
+  ObjectHandle        theObject,
+  AttributeHandle theAttribute)
 throw(
   ObjectNotKnown,
   AttributeNotDefined,
@@ -1802,8 +1802,8 @@ throw(
 // 6.1 Enable Time Regulation
 
 void RTIambassador::enableTimeRegulation(
-  const FedTime& theFederateTime, 
-  const FedTime& theLookahead) 
+  const FedTime& /*theFederateTime*/,
+  const FedTime& /*theLookahead*/)
 throw(
   FederationTimeAlreadyPassed,
   TimeRegulationAlreadyEnabled,//not implemented
@@ -1893,7 +1893,7 @@ throw(
 // 6.7 Time Advance Request
 
 void RTIambassador::timeAdvanceRequest(
- FedTime& theTime) 
+ FedTime& theTime)
 throw(
   TimeAdvanceAlreadyInProgress,
   FederationTimeAlreadyPassed,
@@ -1918,7 +1918,7 @@ throw(
 // 6.8 Time Advance Request Available
 
 void RTIambassador::timeAdvanceRequestAvailable(
-  const FedTime& theTime)
+  const FedTime& /*theTime*/)
 throw(
   InvalidFederationTime,
   FederationTimeAlreadyPassed,
@@ -1939,7 +1939,7 @@ throw(
 // 6.9 Next Event Request
 
 void RTIambassador::nextEventRequest(
-  const FedTime& theTime) 
+  const FedTime& theTime)
 throw(
   TimeAdvanceAlreadyInProgress,
   FederationTimeAlreadyPassed,
@@ -1963,7 +1963,7 @@ throw(
 // 6.10 Next Event Request Available
 
 void RTIambassador::nextEventRequestAvailable(
-  const FedTime& theTime) 
+  const FedTime& /*theTime*/)
 throw(
   InvalidFederationTime,
   FederationTimeAlreadyPassed,
@@ -1984,7 +1984,7 @@ throw(
 // 6.11 Flush Queue Request
 
 void RTIambassador::flushQueueRequest(
-  const FedTime& theTime) 
+  const FedTime& /*theTime*/)
 throw(
   TimeAdvanceAlreadyInProgress,
   FederationTimeAlreadyPassed,
@@ -2137,7 +2137,7 @@ throw(
 // 6.20 Retract
 
 void RTIambassador::retract(
-  EventRetractionHandle theHandle) 
+  EventRetractionHandle /*theHandle*/)
 throw(
   InvalidRetractionHandle,
   FederateNotExecutionMember,
@@ -2234,8 +2234,8 @@ throw(
 // 7.1 Create Region
 
 Region* RTIambassador::createRegion( 
-  SpaceHandle theSpace,   
-  ULong       numberOfExtents) 
+  SpaceHandle /*theSpace*/,
+  ULong       /*numberOfExtents*/)
 throw(
   SpaceNotDefined,
   InvalidExtents,
@@ -2254,7 +2254,7 @@ throw(
 // 7.2 Notify About Region Modification
 
 void notifyAboutRegionModification(
-  Region &theRegion)
+  Region &/*theRegion*/)
 throw(
   RegionNotKnown,
   InvalidExtents,
@@ -2273,7 +2273,7 @@ throw(
 // 7.3 Delete Region
 
 void deleteRegion(
-  Region *theRegion)
+  Region */*theRegion*/)
 throw(
   RegionNotKnown,
   RegionInUse,
@@ -2292,11 +2292,11 @@ throw(
 
 ObjectHandle                          
 registerObjectInstanceWithRegion(
- ObjectClassHandle theClass,
-  const char             *theObject,  
-        AttributeHandle   theAttributes[],  
-        Region           *theRegions[],
-        ULong             theNumberOfHandles) 
+ ObjectClassHandle /*theClass*/,
+  const char             */*theObject*/,
+        AttributeHandle   /*theAttributes[]*/,
+        Region           */*theRegions[]*/,
+        ULong             /*theNumberOfHandles*/)
 throw(
   ObjectClassNotDefined,
   ObjectClassNotPublished,
@@ -2317,10 +2317,10 @@ throw(
 
 ObjectHandle  
 registerObjectInstanceWithRegion(
-        ObjectClassHandle theClass,
-        AttributeHandle   theAttributes[],
-        Region           *theRegions[],
-        ULong             theNumberOfHandles)
+        ObjectClassHandle /*theClass*/,
+        AttributeHandle   /*theAttributes[]*/,
+        Region           */*theRegions[]*/,
+        ULong             /*theNumberOfHandles*/)
 throw(
   ObjectClassNotDefined,
   ObjectClassNotPublished,
@@ -2343,9 +2343,9 @@ throw(
 // 7.5 Associate Region For Updates
 
 void associateRegionForUpdates(
- Region             &theRegion,
- ObjectHandle        theObject,    
-  const AttributeHandleSet &theAttributes) 
+ Region             &/*theRegion*/,
+ ObjectHandle        /*theObject*/,
+  const AttributeHandleSet &/*theAttributes*/)
 throw(
   ObjectNotKnown,
   AttributeNotDefined,
@@ -2365,8 +2365,8 @@ throw(
 // 7.6 UnAssociate Region For Updates
 
 void unassociateRegionForUpdates(
-  Region       &theRegion,
-  ObjectHandle  theObject)
+  Region       &/*theRegion*/,
+  ObjectHandle  /*theObject*/)
 throw(
   ObjectNotKnown,
   InvalidRegionContext,
@@ -2387,10 +2387,10 @@ throw(
 // 7.7 Subscribe Object Class Attributes With Region
 
 void subscribeObjectClassAttributesWithRegion(
- ObjectClassHandle   theClass,      
- Region             &theRegion,     
-  const AttributeHandleSet &attributeList, 
-        Boolean        active)
+ ObjectClassHandle   /*theClass*/,
+ Region             &/*theRegion*/,
+  const AttributeHandleSet &/*attributeList*/,
+        Boolean        /*active*/)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -2411,8 +2411,8 @@ throw(
 // 7.8 UnSubscribe Object Class Attributes With Region
 
 void unsubscribeObjectClassWithRegion(
-  ObjectClassHandle theClass, 
-  Region           &theRegion)        
+  ObjectClassHandle /*theClass*/,
+  Region           &/*theRegion*/)
 throw(
   ObjectClassNotDefined,
   RegionNotKnown,
@@ -2432,9 +2432,9 @@ throw(
 // 7.9 Subscribe Interaction Class With Region
 
 void subscribeInteractionClassWithRegion(
-  InteractionClassHandle theClass,     
-  Region                &theRegion,
-  Boolean           active)
+  InteractionClassHandle /*theClass*/,
+  Region                &/*theRegion*/,
+  Boolean           /*active*/)
 throw(
   InteractionClassNotDefined,
   RegionNotKnown,
@@ -2455,8 +2455,8 @@ throw(
 // 7.10 UnSubscribe Interaction Class With Region
 
 void unsubscribeInteractionClassWithRegion(
-  InteractionClassHandle theClass,  
-  Region                &theRegion) 
+  InteractionClassHandle /*theClass*/,
+  Region                &/*theRegion*/)
 throw(
   InteractionClassNotDefined,
   InteractionClassNotSubscribed,
@@ -2477,11 +2477,11 @@ throw(
 
 EventRetractionHandle             
 sendInteractionWithRegion(
- InteractionClassHandle       theInteraction, 
-  const ParameterHandleValuePairSet &theParameters, 
-  const FedTime&                     theTime,  
-  const char                        *theTag, 
-  const Region                      &theRegion)
+ InteractionClassHandle       /*theInteraction*/,
+  const ParameterHandleValuePairSet &/*theParameters*/,
+  const FedTime&                     /*theTime*/,
+  const char                        */*theTag*/,
+  const Region                      &/*theRegion*/)
 throw(
   InteractionClassNotDefined,
   InteractionClassNotPublished,
@@ -2500,10 +2500,10 @@ throw(
 }
 
 void sendInteractionWithRegion(
- InteractionClassHandle       theInteraction, 
-  const ParameterHandleValuePairSet &theParameters, 
-  const char                        *theTag, 
-  const Region                      &theRegion)
+ InteractionClassHandle       /*theInteraction*/,
+  const ParameterHandleValuePairSet &/*theParameters*/,
+  const char                        */*theTag*/,
+  const Region                      &/*theRegion*/)
 throw(
   InteractionClassNotDefined,
   InteractionClassNotPublished,
@@ -2525,9 +2525,9 @@ throw(
 // 7.12 Request Class Attribute Value Update With Region
 
 void requestClassAttributeValueUpdateWithRegion(
- ObjectClassHandle   theClass,      
-  const AttributeHandleSet &theAttributes, 
-  const Region             &theRegion)     
+ ObjectClassHandle   /*theClass*/,
+  const AttributeHandleSet &/*theAttributes*/,
+  const Region             &/*theRegion*/)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -2757,7 +2757,7 @@ throw(
 
 ObjectHandle  
 RTIambassador::getObjectInstanceHandle(
-  const char *theName) 
+  const char */*theName*/)
 throw(
     ObjectNotKnown,
     NameNotFound,
@@ -2775,7 +2775,7 @@ throw(
 
 char * 
 RTIambassador::getObjectInstanceName(
-  ObjectHandle theHandle) 
+  ObjectHandle /*theHandle*/)
 throw(
   ObjectNotKnown,
   FederateNotExecutionMember,
@@ -2792,7 +2792,7 @@ throw(
 
 SpaceHandle 
 RTIambassador::getRoutingSpaceHandle(
-  const char *theName)
+  const char */*theName*/)
 throw(
   NameNotFound,
   FederateNotExecutionMember,
@@ -2809,7 +2809,7 @@ throw(
 
 char * 
 RTIambassador::getRoutingSpaceName(
-  const SpaceHandle theHandle) 
+  const SpaceHandle /*theHandle*/)
 throw(
   SpaceNotDefined,
   FederateNotExecutionMember,
@@ -2826,8 +2826,8 @@ throw(
 
 DimensionHandle
 RTIambassador::getDimensionHandle(
-  const char         *theName,
-        SpaceHandle   whichSpace)
+  const char         */*theName*/,
+        SpaceHandle   /*whichSpace*/)
 throw(
   SpaceNotDefined,
   NameNotFound,
@@ -2845,8 +2845,8 @@ throw(
 
 char *
 RTIambassador::getDimensionName(
-  DimensionHandle theHandle,
-  SpaceHandle     whichSpace)
+  DimensionHandle /*theHandle*/,
+  SpaceHandle     /*whichSpace*/)
 throw(
   SpaceNotDefined,
   DimensionNotDefined,
@@ -2864,8 +2864,8 @@ throw(
 
 SpaceHandle             
 RTIambassador::getAttributeRoutingSpaceHandle(
-  AttributeHandle   theHandle,   
-  ObjectClassHandle whichClass)  
+  AttributeHandle   /*theHandle*/,
+  ObjectClassHandle /*whichClass*/)
 throw(
   ObjectClassNotDefined,
   AttributeNotDefined,
@@ -2883,7 +2883,7 @@ throw(
 
 ObjectClassHandle    
 RTIambassador::getObjectClass(
-  ObjectHandle theObject)    
+  ObjectHandle /*theObject*/)
 throw(
   ObjectNotKnown,
   FederateNotExecutionMember,
@@ -2900,7 +2900,7 @@ throw(
 
 SpaceHandle 
 RTIambassador::getInteractionRoutingSpaceHandle(
-  InteractionClassHandle   theHandle)
+  InteractionClassHandle /*theHandle*/)
 throw(
   InteractionClassNotDefined,
   FederateNotExecutionMember,
@@ -2917,7 +2917,7 @@ throw(
 
 TransportationHandle
 RTIambassador::getTransportationHandle(
-  const char *theName)
+  const char * /*theName*/)
 throw(
   NameNotFound,
   FederateNotExecutionMember,
@@ -2934,7 +2934,7 @@ throw(
 
 char *             
 RTIambassador::getTransportationName(
-  TransportationHandle theHandle) 
+  TransportationHandle /*theHandle*/) 
 throw(
   InvalidTransportationHandle,
   FederateNotExecutionMember,
@@ -2951,7 +2951,7 @@ throw(
 
 OrderingHandle         
 RTIambassador::getOrderingHandle(
-  const char *theName) 
+  const char * /*theName*/) 
 throw(
   NameNotFound,
   FederateNotExecutionMember,
@@ -2968,7 +2968,7 @@ throw(
 
 char *               
 RTIambassador::getOrderingName(
-  OrderingHandle theHandle) 
+  OrderingHandle /*theHandle*/) 
 throw(
   InvalidOrderingHandle,
   FederateNotExecutionMember,
@@ -3465,8 +3465,8 @@ fed_amb->requestAttributeOwnershipRelease((ObjectHandle)vers_Fed.Objectid,
 
 Boolean        
 RTIambassador::tick(
-  TickTime minimum, 
-  TickTime maximum) 
+  TickTime /*minimum*/, 
+  TickTime /*maximum*/) 
 throw(
   SpecifiedSaveLabelDoesNotExist,
   ConcurrentAccessAttempted,
@@ -4228,4 +4228,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIambassador.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: GAV.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -57,7 +57,7 @@ CAttributeHandleValuePair::~CAttributeHandleValuePair()
 
 void CAttributeHandleValuePair::AfficheAttribute()
 {
-  printf("   Attrib: %2d %-9s %-11s Pub=%-3s Sub=%-3s \"%s,%s,%s\"\n",
+  printf("   Attrib: %2ld %-9s %-11s Pub=%-3s Sub=%-3s \"%s,%s,%s\"\n",
 	 _attrib,
 	(_order==1)?"RECEIVE":"TIMESTAMP",
 	(_transport==1)?"RELIABLE":"BEST_EFFORT",
@@ -86,7 +86,7 @@ CParameterHandleValuePair::~CParameterHandleValuePair()
 
 void CParameterHandleValuePair::AfficheParameter()
 {
-  printf("   Param: %2d                                        \"%s,%s,%s\"\n",
+  printf("   Param: %2ld                                      \"%s,%s,%s\"\n",
 	 _param,_value.name, _value.value, _value.type);
 }
 
@@ -829,4 +829,4 @@ void CParameterHandleValuePairSet::empty()
 
 }
 
-// $Id: GAV.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: GAV.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

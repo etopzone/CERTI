@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
-// $Id: ObjectClassSet.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 // Class ObjectClassSet, qui est la racine de l'arborescence des
 // classes d'objets.
@@ -149,7 +149,7 @@ public:
 
   void deleteObject(FederateHandle theFederateHandle,
 		    ObjectHandle theObjectHandle,
-		    UserSuppliedTag theTag)
+		    const char*  theTag)
     throw(DeletePrivilegeNotHeld,
 	  ObjectNotKnown,
 	  RTIinternalError);
@@ -170,7 +170,7 @@ public:
 			     AttributeValue *theValueArray,
 			     UShort theArraySize,
 			     FederationTime theTime,
-			     UserSuppliedTag theUserTag)
+			     const char*  theUserTag)
     throw(ObjectNotKnown,
 	  AttributeNotDefined,
 	  AttributeNotOwned,
@@ -312,4 +312,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: billard.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: billard.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -117,7 +117,7 @@ int main(int argc, char**argv)
   int              i            = 0;          // Variable de boucle 
   RTIfedTime       localTime(0.0);	      // Temps local du federe
   RTIfedTime*       time_aux;
-  FederateHandle   myFederateID;              // Mon numero de federe
+  FederateHandle   myFederateID = 0;          // Mon numero de federe
   Boolean          Createur     = RTI_FALSE;  // Suis-je le Createur ?
   char *FederationName ;
   char *FederateName ;
@@ -170,7 +170,7 @@ int main(int argc, char**argv)
 	 FederateName ,FederationName);
   
   Boolean      Joined    = RTI_FALSE;
-  int          numTries  = 0;
+  //  int          numTries  = 0;
 
 
   while( !Joined )
@@ -522,7 +522,7 @@ void InitialisationGraphique(FederateHandle  myFederateID)
 // -----------------------
 
 void SetTimeRegulation(RTI::RTIambassador     *myRTIAmbassador,
-			Boolean           Createur,
+			Boolean           /*Createur*/,
 			FedTime&          localTime)
 {
   // S'enregistrer comme regulateur.
@@ -712,4 +712,4 @@ void Synchronize(RTI::RTIambassador *myRTIAmbassador,
 
 }
 
-// EOF $Id: billard.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: billard.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

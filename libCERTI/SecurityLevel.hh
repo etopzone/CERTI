@@ -19,10 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
-// ---------------------------------------------------------------------------
-
-// $Id: SecurityLevel.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SecurityLevel.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -31,7 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef char           *SecurityLevelName;   // Max length MAX_USER_TAG_LENGTH
+typedef char* SecurityLevelName;   // Max length MAX_USER_TAG_LENGTH
 typedef unsigned short  SecurityLevelID;
 
 #define PublicLevelID    0
@@ -45,7 +42,7 @@ public:
   SecurityLevelName Name;
   SecurityLevelID   LevelID;
 
-  SecurityLevel(SecurityLevelName InitName,
+  SecurityLevel(const char *InitName,
 		SecurityLevelID   InitLevelID)
   { 
     if((InitName == NULL) ||(std::strlen(InitName) > MAX_USER_TAG_LENGTH))
@@ -61,4 +58,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SecurityLevel.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Communications.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -37,16 +37,12 @@ void Communications::waitMessage(NetworkMessage *msg,
 				 FederateHandle numeroFedere)
 {
   NetworkMessage *tampon;
-  Boolean test;
 
   assert(type_msg > 0 && type_msg < 100);
 
   D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);
 
-  // Est-ce que le message est deja arrive ? 
-  // test = searchMessage(type_msg, numeroFedere, msg);
-  // if(test) return;
- 
+  // Est-ce que le message est deja arrive ?  
   if(searchMessage(type_msg, numeroFedere, msg) == RTI_TRUE)
     return;
 
@@ -136,7 +132,6 @@ void
 Communications::requestFederateService(Message *req, 
 				       Message *rep)
 {
-  Boolean erreur;
   assert(req != NULL);
   D.Out(pdRequest, "Sending Request to Federate, Type %d.", req->Type);
   sendUN(req);
@@ -166,8 +161,6 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 {
   fd_set fdset;
   NetworkMessage *msg2;
-  int i;
- 
 
   // initialiser fdset pour pouvoir utiliser un select
   FD_ZERO(&fdset);
@@ -301,4 +294,4 @@ Communications::searchMessage(TypeNetworkMessage type_msg,
 }
 }
 
-// $Id: Communications.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Communications.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Parameter.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,10 +52,10 @@ Parameter::Parameter(ParameterName theName)
 void Parameter::display(void)
 {
   if(Name != NULL)
-    printf("            Parameter %d: \"%s\" [Level %d]\n",
+    printf("            Parameter %ld: \"%s\" [Level %d]\n",
 	    Handle, Name, LevelID);
   else
-    printf("            Parameter %d:(no name) [Level %d]\n",
+    printf("            Parameter %ld:(no name) [Level %d]\n",
 	    Handle, LevelID);
 }
 
@@ -84,4 +84,4 @@ void Parameter::setName(char *NewName)
 
 }
 
-// $Id: Parameter.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Parameter.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

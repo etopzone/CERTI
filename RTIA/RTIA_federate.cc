@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIA_federate.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -435,7 +435,7 @@ void RTIA::chooseFederateProcessing(Message *req,
       if(e == e_NO_EXCEPTION) { 
 	rep.HandleArraySize = theAttributes->size();
  
-	for(int i=0; i<theAttributes->size(); i++) {
+	for(unsigned int i=0; i<theAttributes->size(); i++) {
 	  rep.HandleArray[i] = theAttributes->getHandle(i);
 	}
       }
@@ -743,7 +743,6 @@ void RTIA::chooseFederateProcessing(Message *req,
 void RTIA::processFederateRequest(Message *req)
 {
   Message rep;
-  TypeException e;
 
   rep.Exception = e_NO_EXCEPTION;
   rep.Type = req->Type;
@@ -1076,8 +1075,8 @@ void RTIA::processFederateRequest(Message *req)
   D.Out(pdDebug, "Reponse emise sur le socket Unix.");
 
 }
-}
-}
 
-// $Id: RTIA_federate.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+}}
+
+// $Id: RTIA_federate.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 

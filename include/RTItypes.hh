@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTItypes.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Types utilises par le RTI : Constantes, exceptions, handles...
@@ -180,7 +180,7 @@ typedef char * FederateName; // See MAX_FEDERATE_NAME_LENGTH
 typedef char * FileName;
 typedef char * PauseLabel; // See MAX_USER_TAG_LENGTH
 typedef char * SaveLabel; // See MAX_USER_TAG_LENGTH
-typedef char * UserSuppliedTag; // See MAX_USER_TAG_LENGTH
+//typedef char * const char* ; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectClassName; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectName; // See MAX_USER_TAG_LENGTH
 typedef char * InteractionClassName; // See MAX_USER_TAG_LENGTH
@@ -373,7 +373,7 @@ public:
     
   // METHODS
 public:
-  ~AttributeHandleSet() { ; }
+  virtual ~AttributeHandleSet() { ; }
 
   virtual ULong size() const;
 
@@ -426,7 +426,7 @@ public:
 
   // METHODS
 public:
-  ~AttributeHandleValuePairSet() { ; }
+  virtual ~AttributeHandleValuePairSet() { ; }
 
   virtual ULong size() const ;
   virtual Handle getHandle(ULong i) const throw(ArrayIndexOutOfBounds);
@@ -549,7 +549,7 @@ public:
   ParameterHandleValuePair *_head;
 
 public:
-  ~ParameterHandleValuePairSet() { ; }
+  virtual ~ParameterHandleValuePairSet() { ; }
 
   virtual ULong size() const;
  
@@ -607,4 +607,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: RTItypes.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $

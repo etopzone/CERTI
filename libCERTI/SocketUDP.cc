@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketUDP.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -79,11 +79,11 @@ int SocketUDP::bind()
 // -- CreerClientUDP --(with hostname)
 // --------------------
 
-int SocketUDP::createUDPClient(unsigned int port, char * nom_serveur)
-  throw(NetworkError,
-	 NetworkSignal)
+int SocketUDP::createUDPClient(unsigned int,  // port 
+			       char *)        // nom serveur
+  throw(NetworkError, NetworkSignal)
 {
-  unsigned long addr = 0;
+  //  unsigned long addr = 0;
   struct sockaddr_in sock_temp;
   socklen_t taille = sizeof(struct sockaddr_in);
   char localhost[4096];
@@ -212,9 +212,9 @@ SocketUDP::~SocketUDP()
 
 #ifdef RTI_PRINTS_STATISTICS
   printf("\n");
-  printf("UDP Socket(%d): Total Sent Bytes      : %lld.\n",
+  printf("UDP Socket(%ld): Total Sent Bytes      : %lld.\n",
 	  _socket_udp, SentBytesCount);
-  printf("UDP Socket(%d): Total Received Bytes  : %lld.\n",
+  printf("UDP Socket(%ld): Total Received Bytes  : %lld.\n",
 	  _socket_udp, RcvdBytesCount);
   printf("\n");
 #endif
@@ -230,7 +230,7 @@ void SocketUDP::send(void * Message, unsigned long Size)
 	 NetworkSignal)
 {
   long nSent         = 0;
-  long expected_size = Size;
+  //  long expected_size = Size;
 
   D.Out(pdDebug, "Beginning to send UDP message... Size = %ld",Size);
 
@@ -388,4 +388,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketUDP.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

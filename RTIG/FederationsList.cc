@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: FederationsList.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -168,7 +168,7 @@ void FederationsList::createFederation(FederationExecutionName name,
 
   // It may throw RTIinternalError
   checkHandle(handle);
-  auditFile->addToLine(", Handle : %hu", handle);
+  auditFile->addToLinef(", Handle : %hu", handle);
   if(name == NULL) throw RTIinternalError("Invalid Federation Name.");
 
   // It should throw FederationExecutionDoesNotExist.
@@ -255,7 +255,7 @@ void
 FederationsList::destroyObject(FederationHandle handle,
 			       FederateHandle federate,
 			       ObjectHandle id,
-			       UserSuppliedTag tag)
+			       const char*  tag)
   throw(FederateNotExecutionMember,
 	FederationExecutionDoesNotExist,
 	DeletePrivilegeNotHeld,
@@ -419,7 +419,7 @@ FederationsList::updateAttribute(FederationHandle handle,
 				 AttributeValue *values,
 				 UShort list_size,
 				 FederationTime time,
-				 UserSuppliedTag tag)
+				 const char*  tag)
   throw(FederateNotExecutionMember,
 	FederationExecutionDoesNotExist,
 	ObjectNotKnown,
@@ -454,7 +454,7 @@ FederationsList::updateParameter(FederationHandle handle,
 				 ParameterValue *values,
 				 UShort list_size,
 				 FederationTime time,
-				 UserSuppliedTag tag)
+				 const char*  tag)
   throw(FederateNotExecutionMember,
 	FederateNotPublishing,
 	FederationExecutionDoesNotExist,
@@ -1046,5 +1046,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 

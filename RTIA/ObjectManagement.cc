@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: ObjectManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -84,10 +84,10 @@ ObjectManagement::requestID(ObjectHandlecount idCount,
 
 ObjectHandle
 ObjectManagement::registerObject(ObjectClassHandle theClassHandle,
-				 const char *theObjectName,/*FAYET 25.07.01*/ 
-				 FederationTime date,
-				 FederationTime heure,
-				 TypeException &e)
+				 const char *theObjectName, 
+				 FederationTime,
+				 FederationTime,
+				 TypeException & e)
 {
   NetworkMessage req,rep;
 
@@ -95,7 +95,7 @@ ObjectManagement::registerObject(ObjectClassHandle theClassHandle,
   req.NumeroFedere = _GF->federate;
   req.NumeroFederation = _GF->_numero_federation;
   req.objectClassHandle = theClassHandle;
-  strcpy(req.Label,(char*)theObjectName);/*FAYET 25.07.01*/ 
+  strcpy(req.Label,(char*)theObjectName);
  
   // BUG: A quoi servent Date et Heure ?
 
@@ -129,7 +129,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 					AttributeValue *valueArray,
 					UShort attribArraySize,
 					FederationTime theTime, 
-					UserSuppliedTag theTag,
+					const char*  theTag,
 					TypeException &e)
 {
   NetworkMessage req, rep;
@@ -170,10 +170,10 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 void 
 ObjectManagement::discoverObject(ObjectHandle theObjectHandle, 
 				 ObjectClassHandle theObjectClassHandle,
-				 const char *theObjectName,/*FAYET 25.07.01*/ 
+				 const char *theObjectName,
 				 FederationTime theTime,
 				 EventRetractionHandle theHandle,
-				 TypeException &e)
+				 TypeException &)
 {
   Message req, rep;
  
@@ -206,9 +206,9 @@ ObjectManagement::reflectAttributeValues(ObjectHandle theObjectHandle,
 					 AttributeValue *valueArray,
 					 UShort attribArraySize,
 					 FederationTime theTime, 
-					 const UserSuppliedTag theTag, 
+					 const char*  theTag, 
 					 EventRetractionHandle theHandle,
-					 TypeException &e)
+					 TypeException &)
 {
   Message req, rep;
   int i;
@@ -241,7 +241,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  ParameterValue *valueArray,
 				  UShort paramArraySize,
 				  FederationTime theTime, 
-				  UserSuppliedTag theTag,
+				  const char*  theTag,
 				  TypeException &e)
 {
   NetworkMessage req,rep;
@@ -294,9 +294,9 @@ ObjectManagement::receiveInteraction(InteractionClassHandle theInteraction,
 				     ParameterValue *valueArray,
 				     UShort paramArraySize,
 				     FederationTime theTime, 
-				     const UserSuppliedTag theTag, 
+				     const char*  theTag, 
 				     EventRetractionHandle theHandle,
-				     TypeException &e)
+				     TypeException &)
 {
   int i;
   Message req, rep;
@@ -324,7 +324,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle theInteraction,
 
 EventRetractionHandle 
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-			       UserSuppliedTag theTag,
+			       const char*  theTag,
 			       TypeException &e)
 {
   NetworkMessage req,rep;
@@ -358,9 +358,9 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 void 
 ObjectManagement::removeObject(ObjectHandle theObjectHandle,
 			       FederateHandle theFederateHandle,
-			       const UserSuppliedTag theTag, 
+			       const char*  theTag, 
 			       EventRetractionHandle theHandle,
-			       TypeException &e)
+			       TypeException &)
 {
   Message req,rep;
 
@@ -381,11 +381,12 @@ ObjectManagement::removeObject(ObjectHandle theObjectHandle,
 // -- 4.9(2) removeObject --
 // --------------------------
 
-void ObjectManagement::removeObject(ObjectHandle theObject, 
-				    ObjectRemovalReason theReason, 
-				    TypeException &e)
+void 
+ObjectManagement::removeObject(ObjectHandle, 
+			       ObjectRemovalReason,
+			       TypeException &)
 {
-  printf("GO.cc: RemoveObject(2) not implemented.\n");
+  printf("ObjectManagement.cc: RemoveObject(2) not implemented.\n");
   throw RTIinternalError();
 }
 
@@ -469,7 +470,6 @@ changeInteractionTransportType(InteractionClassHandle theClassID,
 			       TypeException &e)
 {
   NetworkMessage req,rep;
-  int i;
 
   req.Type = m_CHANGE_INTERACTION_TRANSPORT_TYPE;
   req.InteractionHandle = theClassID;
@@ -499,7 +499,6 @@ changeInteractionOrderType(InteractionClassHandle theClassID,
 			   TypeException &e)
 {
   NetworkMessage req,rep;
-  int i;
 
   req.Type = m_CHANGE_INTERACTION_ORDER_TYPE;
   req.InteractionHandle = theClassID;
@@ -591,12 +590,12 @@ requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
 // -- 4.15 provideAttributeValueUpdate --
 // --------------------------------------
 
-void ObjectManagement::
-provideAttributeValueUpdate(ObjectHandle theObject,
-			    AttributeValue &theAttributes,
-			    TypeException &e)
+void 
+ObjectManagement::provideAttributeValueUpdate(ObjectHandle,
+					      AttributeValue &,
+					      TypeException &)
 {
-  printf("GO.cc: provideAttributeValueUpdate not implemented.\n");
+  printf("ObjectManagement.cc: provideAttributeValueUpdate not implemented\n");
   throw RTIinternalError();
 }
 
@@ -605,8 +604,8 @@ provideAttributeValueUpdate(ObjectHandle theObject,
 // -- 4.16 retract --
 // ------------------
 
-void ObjectManagement::retract(EventRetractionHandle theHandle,
-			       TypeException &e)
+void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
+			       TypeException & /*e*/)
 {
   printf("GO.cc: retract not implemented.\n");
   throw RTIinternalError();
@@ -617,8 +616,9 @@ void ObjectManagement::retract(EventRetractionHandle theHandle,
 // -- 4.17 reflectRetraction --
 // ----------------------------
 
-void ObjectManagement::reflectRetraction(EventRetractionHandle theHandle,
-					 TypeException &e)
+void 
+ObjectManagement::reflectRetraction(EventRetractionHandle,
+				    TypeException &)
 {
   printf("GO.cc: reflectRetraction not implemented.\n");
   throw RTIinternalError();
@@ -723,4 +723,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 }
 }
 
-// $Id: ObjectManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

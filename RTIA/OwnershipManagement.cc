@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: OwnershipManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "OwnershipManagement.hh"
@@ -403,8 +403,7 @@ void
 OwnershipManagement::informAttributeOwnership(ObjectHandle theObject, 
 					      AttributeHandle theAttribute,
 					      FederateHandle theOwner,
-					      TypeException &e)
-
+					      TypeException &)
 {
   Message req, rep;
  
@@ -425,8 +424,8 @@ OwnershipManagement::informAttributeOwnership(ObjectHandle theObject,
 void 
 OwnershipManagement::attributeIsNotOwned(ObjectHandle theObject, 
 					 AttributeHandle theAttribute,
-					 FederateHandle theOwner,
-					 TypeException &e)
+					 FederateHandle,
+					 TypeException &)
 
 {
   Message req, rep;
@@ -451,8 +450,8 @@ OwnershipManagement::
 attributeOwnershipUnavailable(ObjectHandle theObject, 
 			      AttributeHandle *attribArray,
 			      UShort attribArraySize,
-			      FederateHandle theOwner,
-			      TypeException &e)
+			      FederateHandle,
+			      TypeException &)
 
 {
   Message req, rep;
@@ -482,9 +481,8 @@ OwnershipManagement::
 attributeOwnershipAcquisitionNotification(ObjectHandle theObject, 
 					  AttributeHandle *attribArray,
 					  UShort attribArraySize,
-					  FederateHandle theOwner,
-					  TypeException &e)
- 
+					  FederateHandle,
+					  TypeException &) 
 {
   Message req, rep;
  
@@ -512,10 +510,9 @@ OwnershipManagement::
 requestAttributeOwnershipAssumption(ObjectHandle theObject, 
 				    AttributeHandle *attribArray,
 				    UShort attribArraySize,
-				    FederateHandle theOwner,
+				    FederateHandle,
 				    char *theTag,
-				    TypeException &e)
- 
+				    TypeException &)
 {
   Message req, rep;
  
@@ -546,8 +543,7 @@ requestAttributeOwnershipRelease(ObjectHandle theObject,
 				 AttributeHandle *attribArray,
 				 UShort attribArraySize,
 				 char *theTag,
-				 TypeException &e)
-
+				 TypeException &)
 {
   Message req, rep;
  
@@ -577,8 +573,7 @@ OwnershipManagement::
 attributeOwnershipDivestitureNotification(ObjectHandle theObject, 
 					  AttributeHandle *attribArray,
 					  UShort attribArraySize,
-					  TypeException &e)
- 
+					  TypeException &) 
 {
   Message req, rep;
  
@@ -607,8 +602,7 @@ confirmAttributeOwnershipAcquisitionCancellation(
 						 ObjectHandle theObject, 
 						 AttributeHandle *attribArray,
 						 UShort attribArraySize,
-						 TypeException &e)
- 
+						 TypeException &) 
 {
   Message req, rep;
  
@@ -631,4 +625,4 @@ confirmAttributeOwnershipAcquisitionCancellation(
 }
 }
 
-// $Id: OwnershipManagement.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

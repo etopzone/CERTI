@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Message_RW.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,7 +67,6 @@ void Message::read(SocketUN *socket)
 void Message::readBody(SocketUN *socket)
 {  
   MessageBody    Body;
-  unsigned short  i;
 
   if(Header.BodySize == 0)
     throw RTIinternalError("ReadBody should not have been called.");
@@ -467,7 +466,8 @@ void Message::readFederateName(MessageBody *Body)
 // -- ReadRAction --
 // ---------------------
 
-void Message::readRAction(MessageBody *Body)
+void 
+Message::readRAction(MessageBody*)
 {
   // BUG: Should do something.
 }
@@ -527,7 +527,6 @@ void Message::write(SocketUN *socket)
 void Message::writeBody(SocketUN *socket)
 {
   MessageBody   Body;
-  unsigned short i;
 
   // 0- Copy the Header at the beginning of the Body, in order to
   //    make a single Socket->Emettre call while sending both.
@@ -924,7 +923,8 @@ Boolean Message::writeHeader(SocketUN *socket)
 // -- WriteRAction --
 // ---------------------
 
-void Message::writeRAction(MessageBody *Body)
+void 
+Message::writeRAction(MessageBody*)
 {
   // BUG: Should do something.
 }
@@ -943,4 +943,4 @@ void Message::writeValueArray(MessageBody *Body)
 
 }
 
-// $Id: Message_RW.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Message_RW.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

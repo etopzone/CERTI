@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -71,8 +71,9 @@ void ObjectClassAttribute::addSubscriber(FederateHandle theFederate)
 // -- CheckFederateAccess --
 // -------------------------
 
-void ObjectClassAttribute::checkFederateAccess(FederateHandle  theFederate,
-						 char           *Reason)
+void 
+ObjectClassAttribute::checkFederateAccess(FederateHandle theFederate,
+					  const char *Reason)
   throw(SecurityError)
 {
   Boolean Result;
@@ -85,7 +86,7 @@ void ObjectClassAttribute::checkFederateAccess(FederateHandle  theFederate,
 
   // BUG: Should use Audit.
   if(Result != RTI_TRUE) {
-    printf("Attribute %d : SecurityError for federate %d(%s).\n",
+    printf("Attribute %ld : SecurityError for federate %ld(%s).\n",
 	    Handle, theFederate, Reason);
     throw SecurityError("Federate should not access Object Class Attribute.");
   }
@@ -207,10 +208,10 @@ void ObjectClassAttribute::deleteSubscriber(int SubscriberRank)
 void ObjectClassAttribute::display(void)
 {
   if(Name != NULL)
-    printf("            Attribute %u: \"%s\" [Level %d]\n",    
+    printf("            Attribute %ld: \"%s\" [Level %d]\n",    
 	    Handle, Name, LevelID);
   else
-    printf("            Attribute %u:(no name) [Level %d]\n",
+    printf("            Attribute %ld:(no name) [Level %d]\n",
 	    Handle, LevelID);
 }
 
@@ -406,10 +407,13 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
     List->addFederate(Publisher->Handle,
 			 Handle); // Attribute handle
   }
-	break;	
+	break;
+
+	default: ;
+	  // on ne fait rien
 	}
 }
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

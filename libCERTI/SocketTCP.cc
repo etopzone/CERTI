@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketTCP.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -298,9 +298,9 @@ SocketTCP::~SocketTCP()
 
 #ifdef RTI_PRINTS_STATISTICS
   printf("\n");
-  printf("TCP Socket(%d): Total Sent Bytes      : %lld.\n",
+  printf("TCP Socket(%ld): Total Sent Bytes      : %lld.\n",
 	  _socket_tcp, SentBytesCount);
-  printf("TCP Socket(%d): Total Received Bytes  : %lld.\n",
+  printf("TCP Socket(%ld): Total Received Bytes  : %lld.\n",
 	  _socket_tcp, RcvdBytesCount);
   printf("\n");
 #endif
@@ -550,7 +550,7 @@ int SocketTCP::timeoutTCP(int sec, int usec)
   FD_ZERO(&fdset);
   FD_SET(_socket_tcp,&fdset);
 
-  while(i = select(ulimit(4,0), &fdset, NULL, NULL, &timeOut) < 0) {
+  while((i = select(ulimit(4,0), &fdset, NULL, NULL, &timeOut)) < 0) {
 
     // Si c'est un signal on leve NetWorkSignal
     if(errno == EINTR)
@@ -563,4 +563,4 @@ int SocketTCP::timeoutTCP(int sec, int usec)
 
 }
 
-// $Id: SocketTCP.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: SocketTCP.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

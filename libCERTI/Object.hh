@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Object.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -60,7 +60,7 @@ public:
 
   // Constructor(on est oblige de mettre un corps sinon ca compile pas)
   Object(FederateHandle theOwner)
-    : Owner(theOwner), Name(NULL), SF(), UR(0) { ID = 0; } ;
+    : Owner(theOwner), UR(0), Name(NULL), SF() { ID = 0; } ;
 
   Object(FederateHandle theOwner, ObjectName theName);
 
@@ -108,4 +108,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Object.hh,v 3.1 2002/11/26 15:48:01 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Trace.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Trace.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Trace.hh"
@@ -40,9 +40,9 @@ Trace::~Trace()
 
 void Trace::write(char *s)
 {
-  if(f_trace) fprintf(f_trace, "%u  %s\n", time(0), s);
+  if(f_trace) fprintf(f_trace, "%ld  %s\n", time(0), s);
 }
 
 }}
 
-// $Id: Trace.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Trace.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $

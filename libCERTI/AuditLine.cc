@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditLine.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -70,7 +70,7 @@ AuditLine::~AuditLine()
 //
 void AuditLine::write(FILE *AuditFile)
 {
-  fprintf(AuditFile, "%lu %2hu %3hu %3hu %2hu %3hu %s\n",
+  fprintf(AuditFile, "%lu %2hu %3lu %3hu %2hu %3hu %s\n",
 	  date, // Usually 9 digits at this time !
 	  federation, // 2 digits
 	  federate, // 3 digits
@@ -84,5 +84,5 @@ void AuditLine::write(FILE *AuditFile)
 
 }
 
-// $Id: AuditLine.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: AuditLine.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
 
