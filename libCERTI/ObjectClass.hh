@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.20 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClass.hh,v 3.21 2005/03/16 23:09:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -97,14 +97,11 @@ public:
                  bool PubOrUnpub)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-    Boolean subscribe(FederateHandle theFederate,
-                      AttributeHandle *theAttributeList,
-                      UShort theListSize,
-                      bool SubOrUnsub,
-		      const RegionImp * = 0)
+    bool subscribe(FederateHandle, AttributeHandle *, int, const RegionImp *)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
-    
-    void unsubscribe(FederateHandle, RegionImp *);
+
+    void unsubscribe(FederateHandle, const RegionImp *);
+    void unsubscribe(FederateHandle);
 
     // The second parameter is the Class of whose behalf the message
     // are sent. If SDM is called on the original class, the Federate
@@ -115,8 +112,7 @@ public:
     // on the child classes of this class.
     // Return RTI_FALSE if no messages were sent because the Federate had
     // already receive DO messages for this class(and all child classes).
-    Boolean sendDiscoverMessages(FederateHandle theFederate,
-                                 ObjectClassHandle theOriginalClass);
+    bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
 
     // Ownership Management
     ObjectClassBroadcastList *
@@ -180,8 +176,7 @@ public:
     ObjectClassBroadcastList *killFederate(FederateHandle theFederate)
         throw ();
 
-    ObjectClassAttribute *
-    getAttributeWithHandle(AttributeHandle the_handle) const
+    ObjectClassAttribute *getAttribute(AttributeHandle the_handle) const
         throw (AttributeNotDefined);
 
     // Instance Management
@@ -246,7 +241,7 @@ private:
         throw (ObjectNotKnown);
 
     bool isFederatePublisher(FederateHandle the_federate) const ;
-    bool isFederateSubscriber(FederateHandle the_federate) const ;
+    bool isSubscribed(FederateHandle) const ;
 
     // ATTRIBUTES
 
@@ -268,4 +263,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.20 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClass.hh,v 3.21 2005/03/16 23:09:26 breholee Exp $
