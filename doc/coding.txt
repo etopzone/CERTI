@@ -92,7 +92,6 @@ Comments
 - comments before methods should start with a line of '-' (ending at
   column 78), and then use Doxygen conventions. eg:
 
-// ----------------------------------------------------------------------------
 /** Brief comment. Detailed comments.
     With Doxygen commands such as:
     \param parameter Description
