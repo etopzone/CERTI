@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,10 +18,17 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.8 2003/05/15 20:57:41 breholee Exp $
+// $Id: Federate.cc,v 3.9 2003/05/23 16:40:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federate.hh"
+
+// Project
+#include <config.h>
+
+// Standard
+#include <cstring>
+#include <string>
 
 using std::string ;
 using std::list ;
@@ -34,19 +40,15 @@ namespace rtig {
 //! A new FederateName is allocated. theLink must have been opened before.
 Federate::Federate(const char *the_name, FederateHandle the_handle)
     throw (MemoryExhausted, RTIinternalError)
-    : saving(false), restoring(false)
+    : handle(the_handle), regulator(false), constrained(false), saving(false),
+      restoring(false)
 
 {
-    if ((the_name == NULL) || (the_handle == 0))
+    if ((the_name == NULL) || (handle == 0))
         throw RTIinternalError("Bad initialization param for Federate.");
 
     name = strdup(the_name);
     if (name == NULL) throw MemoryExhausted("Unable to allocate Federate name.");
-
-    handle = the_handle ;
-
-    regulator = false ;
-    constrained = false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -58,14 +60,18 @@ Federate::~Federate()
 }
 
 // ----------------------------------------------------------------------------
-// Get attributes
-
+//! Returns the federate handle.
 FederateHandle
 Federate::getHandle() const
 {
     return handle ;
 }
 
+// ----------------------------------------------------------------------------
+//! Changes the federate handle.
+/*! This service can be used for a restore from previous federation save.
+  Federates recover their previous handle.
+*/
 void
 Federate::setHandle(FederateHandle the_handle)
 {
@@ -73,19 +79,23 @@ Federate::setHandle(FederateHandle the_handle)
 }
 
 // ----------------------------------------------------------------------------
-//! getName.
+//! Returns the federate name pointer.
 const char *
 Federate::getName() const
 {
     return name ;
 }
 
+// ----------------------------------------------------------------------------
+//! Returns the federate constrained state.
 bool
 Federate::isConstrained() const
 {
     return constrained ;
 }
 
+// ----------------------------------------------------------------------------
+//! Returns the federate regulating state.
 bool
 Federate::isRegulator() const
 {
@@ -93,14 +103,15 @@ Federate::isRegulator() const
 }
 
 // ----------------------------------------------------------------------------
-// Set attributes
-
+//! Changes the federate constrained state.
 void
 Federate::setConstrained(bool c)
 {
     constrained = c ;
 }
 
+// ----------------------------------------------------------------------------
+//! Changes the federate regulating state.
 void
 Federate::setRegulator(bool r)
 {
@@ -108,24 +119,37 @@ Federate::setRegulator(bool r)
 }
 
 // ----------------------------------------------------------------------------
+//! Returns the federate saving state.
 bool
 Federate::isSaving() const
 {
     return saving ;
 }
 
+// ----------------------------------------------------------------------------
+//! Returns the federate restoring state.
 bool
 Federate::isRestoring() const
 {
     return restoring ;
 }
 
+// ----------------------------------------------------------------------------
+//! Put the federate in saving state.
+/*! This service is called by Federation saving services 'Request Federation
+  Save' and 'Federate Save Status'.
+*/
 void
 Federate::setSaving(bool save_status)
 {
     saving = save_status ;
 }
 
+// ----------------------------------------------------------------------------
+//! Put the federate in saving state.
+/*! This service is called by Federation restoring services 'Request Federation
+  Restore' and 'Federate Restore Status'.
+*/
 void
 Federate::setRestoring(bool restore_status)
 {
@@ -133,6 +157,7 @@ Federate::setRestoring(bool restore_status)
 }
 
 // ----------------------------------------------------------------------------
+//! Add a synchronization label to federate.
 void
 Federate::addSynchronizationLabel(const char *label)
     throw (RTIinternalError)
@@ -151,6 +176,7 @@ Federate::addSynchronizationLabel(const char *label)
 }
 
 // ----------------------------------------------------------------------------
+//! Removes a synchronization label from federate.
 void
 Federate::removeSynchronizationLabel(const char *label)
     throw (RTIinternalError)
@@ -168,6 +194,7 @@ Federate::removeSynchronizationLabel(const char *label)
 }
 
 // ----------------------------------------------------------------------------
+//! Returns whether the federate is already synchronized with this label.
 bool
 Federate::isSynchronizationLabel(const char *label) const
 {
@@ -183,4 +210,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.8 2003/05/15 20:57:41 breholee Exp $
+// $Id: Federate.cc,v 3.9 2003/05/23 16:40:04 breholee Exp $
