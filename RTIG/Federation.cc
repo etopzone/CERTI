@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.39 2004/08/24 18:25:05 breholee Exp $
+// $Id: Federation.cc,v 3.40 2005/02/09 15:43:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1594,6 +1594,49 @@ Federation::unsubscribeInteractionWR(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
+ObjectHandle
+Federation::registerObjectWithRegion(FederateHandle federate,
+				     ObjectClassHandle class_handle,
+				     const char *object_name,
+				     RegionHandle region_handle,
+				     int nb,
+				     AttributeHandle *attributes)
+    throw (ObjectClassNotDefined, ObjectClassNotPublished,
+	   AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
+	   InvalidRegionContext, ObjectAlreadyRegistered,
+	   SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    check(federate);
+
+    // Register object
+    ObjectHandle object = objectHandles.provide();
+    D[pdDebug] << "Register object with region : Object " << object
+	       << ", class " << class_handle << ", region " << region_handle
+	       << std::endl ;
+    string strname = "" ;    // create a name if necessary
+    strname += object_name ? string(object_name) : "HLA" + object ;
+
+    root->registerObjectInstance(federate, class_handle, object, 
+				 strname.c_str());
+
+    D[pdDebug] << "- object \"" << strname.c_str()
+	       << "\" registered" << std::endl ;
+
+    // Associate region
+    RegionImp *region = root->getRegion(region_handle);
+    root->getObject(object)->unassociate(region);
+	
+    for (int i = 0 ; i < nb ; ++i) {
+	root->getObjectAttribute(object, attributes[i])->associate(region);
+    }    
+
+    D[pdDebug] << "- " << nb << " attribute(s) associated with region "
+	       << region_handle << std::endl ;
+    return object ;
+}    
+
+// ----------------------------------------------------------------------------
 bool
 Federation::restoreXmlData()
 {
@@ -1717,5 +1760,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.39 2004/08/24 18:25:05 breholee Exp $
+// $Id: Federation.cc,v 3.40 2005/02/09 15:43:07 breholee Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.24 2005/02/09 15:43:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1031,6 +1031,32 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
     rep.write(link);
 }
 
+// ----------------------------------------------------------------------------
+// processRegisterObjectWithRegion
+void
+RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
+{
+    NetworkMessage rep ;
+    rep.object = federations.registerObjectWithRegion(req->federation,
+						      req->federate,
+						      req->objectClass,
+						      req->label,
+						      req->region,
+						      req->handleArraySize,
+						      req->handleArray);
+	
+    D.Out(pdRegister,
+          "Object \"%s\" of Federate %u has been registered under ID %u.",
+          req->label, req->federate, rep.object);
+
+    rep.type = NetworkMessage::DDM_REGISTER_OBJECT ;
+    rep.type = req->type ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+
+    rep.write(link); // Send answer to RTIA
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.23 2004/08/24 18:25:05 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.24 2005/02/09 15:43:07 breholee Exp $

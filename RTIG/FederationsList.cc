@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
+// $Id: FederationsList.cc,v 3.26 2005/02/09 15:43:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1165,6 +1165,30 @@ FederationsList::unsubscribeInteractionWR(Handle federation,
 }
 
 // ----------------------------------------------------------------------------
+// registerObjectWithRegion
+ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
+						       FederateHandle federate, 
+						       ObjectClassHandle handle,
+						       ObjectName tag,
+						       RegionHandle region,
+						       int nb,
+						       AttributeHandle *attrs)
+	throw (ObjectClassNotDefined, ObjectClassNotPublished,
+	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
+	       InvalidRegionContext, ObjectAlreadyRegistered,
+	       FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    return f->registerObjectWithRegion(federate, handle, tag, region, nb, attrs);
+}
+
+// ----------------------------------------------------------------------------
 void
 FederationsList::requestFederationSave(Handle the_federation,
                                        FederateHandle the_federate,
@@ -1241,5 +1265,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.25 2004/08/24 18:25:05 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.26 2005/02/09 15:43:07 breholee Exp $
 

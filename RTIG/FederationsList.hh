@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.24 2004/05/17 21:19:19 breholee Exp $
+// $Id: FederationsList.hh,v 3.25 2005/02/09 15:43:07 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -476,6 +476,15 @@ public:
 	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
+    ObjectHandle registerObjectWithRegion(Handle, FederateHandle, 
+					  ObjectClassHandle, ObjectName,
+					  RegionHandle, int, AttributeHandle *)
+	throw (ObjectClassNotDefined, ObjectClassNotPublished,
+	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
+	       InvalidRegionContext, ObjectAlreadyRegistered,
+	       FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
+	       RTIinternalError);               
+
     void setVerbose(bool flag) { verbose = flag ; }
     
 private:
@@ -491,4 +500,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.24 2004/05/17 21:19:19 breholee Exp $
+// $Id: FederationsList.hh,v 3.25 2005/02/09 15:43:07 breholee Exp $
