@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.25 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG.cc,v 3.26 2005/03/13 22:28:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -411,12 +411,13 @@ RTIG::execute()
         // Initialize fd_set structure with all opened sockets.
         FD_ZERO(&fd);
         FD_SET(tcpSocketServer.returnSocket(), &fd);
-        socketServer.addToFDSet(&fd);
+        int fd_max = socketServer.addToFDSet(&fd);
+	fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
 
         // Wait for an incoming message.
         result = 0 ;
-        result = select(sysconf(_SC_OPEN_MAX), &fd, NULL, NULL, NULL);
-        if ((result == -1)&& (errno == EINTR)) break ;
+        result = select(fd_max + 1, &fd, NULL, NULL, NULL);
+        if ((result == -1) && (errno == EINTR)) break ;
 
         // Is it a message from an already opened connection?
         link = socketServer.getActiveSocket(&fd);
@@ -950,4 +951,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.25 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG.cc,v 3.26 2005/03/13 22:28:46 breholee Exp $
