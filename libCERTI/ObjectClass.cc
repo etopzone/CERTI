@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.25 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClass.cc,v 3.26 2005/03/16 23:11:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -110,7 +110,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *so
             // If the attribute is not in that class, remove it from
             // the message.
             try {
-                getAttributeWithHandle(ocbList->message->handleArray[attr]);
+                getAttribute(ocbList->message->handleArray[attr]);
                 attr++ ;
             }
             catch (AttributeNotDefined &e) {
@@ -128,7 +128,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *so
           // been subscribed.
           FederateHandle federate = 0 ;
           for (federate = 1 ; federate <= MaxSubscriberHandle ; federate++) {
-              if (isFederateSubscriber(federate)) {
+              if (isSubscribed(federate)) {
                   ocbList->addFederate(federate);
               }
           }
@@ -414,14 +414,17 @@ ObjectClass::getAttributeName(AttributeHandle the_handle) const
     throw (AttributeNotDefined,
            RTIinternalError)
 {
-    return getAttributeWithHandle(the_handle)->getName();
+    return getAttribute(the_handle)->getName();
 }
 
 
 // ----------------------------------------------------------------------------
-//! getAttributeWithHandle (private module).
+/** Get attribute
+    @param the_handle Attribute's handle
+    @return attribute
+ */
 ObjectClassAttribute *
-ObjectClass::getAttributeWithHandle(AttributeHandle the_handle) const
+ObjectClass::getAttribute(AttributeHandle the_handle) const
     throw (AttributeNotDefined)
 {
     list<ObjectClassAttribute *>::const_iterator a ;
@@ -467,13 +470,17 @@ ObjectClass::isFederatePublisher(FederateHandle the_federate) const
 }
 
 // ----------------------------------------------------------------------------
-//! Return true if the Federate has subscribe to any attribute.
+/** Indicates whether a federate subscribed to this class, with any
+    attribute and any region
+    @param fed federate to check for subscription
+    @return true if the federate is subscribed
+ */
 bool
-ObjectClass::isFederateSubscriber(FederateHandle the_federate) const
+ObjectClass::isSubscribed(FederateHandle fed) const
 {
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isSubscribed(the_federate))
+        if ((*a)->isSubscribed(fed))
             return true ;
     }
     return false ;
@@ -512,8 +519,8 @@ ObjectClass::killFederate(FederateHandle the_federate)
 
         // Does federate subscribed something ?
         // Problem, no removeObject or discover must not be sent to it.
-        if (isFederateSubscriber(the_federate)) {
-            subscribe(the_federate, NULL, 0, RTI_FALSE);
+        if (isSubscribed(the_federate)) {
+            unsubscribe(the_federate);
         }
     }
     catch (SecurityError &e) {}
@@ -555,7 +562,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (UShort index = 0 ; index < theListSize ; index++)
-        getAttributeWithHandle(theAttributeList[index]);
+        getAttribute(theAttributeList[index]);
 
     // Check Security Levels
     checkFederateAccess(theFederateHandle, "Publish");
@@ -575,7 +582,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
     for (UShort i = 0 ; i < theListSize ; i++) {
         D.Out(pdInit, "ObjectClass %d: Federate %d publishes attribute %d.",
               handle, theFederateHandle, theAttributeList[i]);
-        attribute = getAttributeWithHandle(theAttributeList[i]);
+        attribute = getAttribute(theAttributeList[i]);
 	if (PubOrUnpub)
 	    attribute->publish(theFederateHandle);
 	else
@@ -668,31 +675,30 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 //! sendDiscoverMessages.
-Boolean
-ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
-                                  ObjectClassHandle theOriginalClass)
+bool
+ObjectClass::sendDiscoverMessages(FederateHandle federate,
+                                  ObjectClassHandle super_handle)
 {
     // 1- If this class is not the original class, and the Federate is a
     // subscriber of the class, the Recursive process must be stopped,
-    // because the Federate must have received all previous DiscoverObject
+    // because the Federate has received all previous DiscoverObject
     // Message for this class and its sub-classes.
-    if ((handle != theOriginalClass) && (isFederateSubscriber(theFederate))) {
-        return RTI_FALSE ;
-    }
+    if ((handle != super_handle) && isSubscribed(federate))
+        return false ;    
 
     // 2- If there is no instance of the class, return.(the recursive process
     // must continue).
     if (objectSet.empty())
-        return RTI_TRUE ;
+        return true ;
 
     // 3- Else prepare the common part of the Message.
     // Messages are sent on behalf of the original class.
     NetworkMessage message;
     message.type = NetworkMessage::DISCOVER_OBJECT ;
     message.federation = server->federation();
-    message.federate = theFederate ;
+    message.federate = federate ;
     message.exception = e_NO_EXCEPTION ;
-    message.objectClass = theOriginalClass ;
+    message.objectClass = super_handle ;
 
     // 4- For each Object instance in the class, send a Discover message.
     Socket *socket = NULL ;
@@ -700,14 +706,14 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         D.Out(pdInit,
               "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-              theFederate, (*o)->getHandle(), handle, message.label);
+              federate, (*o)->getHandle(), handle, message.label);
 
         message.object = (*o)->getHandle();
         message.setLabel((*o)->getName().c_str());
 
         // Send Message to Federate
         try {
-            socket = server->getSocketLink(theFederate);
+            socket = server->getSocketLink(federate);
             message.write(socket);
         }
         catch (RTIinternalError &e) {
@@ -720,7 +726,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     } // for each object instance
 
     // 5- The same method must be called on my sub-classes.
-    return RTI_TRUE ;
+    return true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -757,68 +763,39 @@ ObjectClass::setLevelId(SecurityLevelID new_levelID)
 }
 
 // ----------------------------------------------------------------------------
-/*! Return RTI_TRUE if theFederate had never subscribed to this class
-  before. In that case, ObjectClassSet will call SendDiscoverMessages
-  on this class and on all child classes to allow them to send
-  Discover Messages for already registered instances.
-*/
-Boolean
-ObjectClass::subscribe(FederateHandle theFederate,
-                       AttributeHandle *theAttributeList,
-                       UShort theListSize,
-                       bool SubOrUnsub,
+/** Subscribes a federate to some of this class attributes, with a
+    particular region.
+    @param fed Federate to subscribe
+    @param attributes Begining of the attribute-handle list
+    @param nb_attributes Number of attributes in the list
+    @param region Subscription region. Use 0 for default region.
+    @return true if the federate needs to discover objects of this
+    class because of this subscription
+ */
+bool
+ObjectClass::subscribe(FederateHandle fed,
+                       AttributeHandle *attributes,
+                       int nb_attributes,
 		       const RegionImp *region)
     throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
-    // Check Security Levels
-    checkFederateAccess(theFederate, "Subscribe");
+    checkFederateAccess(fed, "Subscribe");
 
-    // Do all attribute handles exist ? It may throw AttributeNotDefined.
-    for (UShort index = 0 ; index < theListSize ; index++)
-        getAttributeWithHandle(theAttributeList[index]);
+    for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
+        getAttribute(attributes[i]);
 
-    // Save the Federate number.
-    if (theFederate > MaxSubscriberHandle)
-        MaxSubscriberHandle = theFederate ;
+    if (nb_attributes > 0)
+	MaxSubscriberHandle = std::max(fed, MaxSubscriberHandle);
 
-    // A new subscribtion invalidates all previous subscription to the same
-    // object class, so we first remove all previous subscription information.
-    D.Out(pdInit,
-          "ObjectClass %d: Resetting previous Sub info of Federate %d.",
-          handle, theFederate);
+    bool was_subscriber = isSubscribed(fed);
 
-    Boolean wasPreviousSubscriber = RTI_FALSE ;
-    list<ObjectClassAttribute *>::iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isSubscribed(theFederate, region)) {
-            (*a)->unsubscribe(theFederate, region);
-            wasPreviousSubscriber = RTI_TRUE ;
-        }
+    unsubscribe(fed, region);
+
+    for (int i = 0 ; i < nb_attributes ; ++i) {
+	getAttribute(attributes[i])->subscribe(fed, region);
     }
-
-    // Subscribe to attributes one by one.
-    ObjectClassAttribute *attribute ;
-    for (UShort index = 0 ; index < theListSize ; index++) {
-        D.Out(pdInit,
-              "ObjectClass %d: Federate %d subscribes to attribute %d.",
-              handle, theFederate, theAttributeList[index]);
-        attribute = getAttributeWithHandle(theAttributeList[index]);
-        if (SubOrUnsub)
-	    attribute->subscribe(theFederate, region);
-	else
-	    attribute->unsubscribe(theFederate, region);
-    }
-
-    // If the Federate was not a subscriber before, and has now subscribed
-    // to at least one attribute, it must discover class' current instances.
-
-    // BUG: If the Federate unsubscribe, he should receive RemoveObject msgs?
-    if ((wasPreviousSubscriber == RTI_FALSE) && // Not sub. before
-        (SubOrUnsub == RTI_TRUE) && // subscribe(and not Unsub.)
-        (theListSize > 0)) // at least to 1 attribute.
-        return RTI_TRUE ;
-    else
-        return RTI_FALSE ;
+    
+    return (nb_attributes > 0) && !was_subscriber ;
 }
 
 // ----------------------------------------------------------------------------
@@ -913,7 +890,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (int index = 0 ; index < theListSize ; index++)
-        getAttributeWithHandle(theAttributeList[index]);
+        getAttribute(theAttributeList[index]);
 
     // Does federate owns every attributes.
     // Does federate has called NegotiatedAttributeOwnershipDivestiture.
@@ -922,7 +899,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     ObjectAttribute * oa ;
     ObjectClassAttribute * oca ;
     for (int i = 0 ; i < theListSize ; i++) {
-        oca = getAttributeWithHandle(theAttributeList[i]);
+        oca = getAttribute(theAttributeList[i]);
         oa = object->getAttribute(theAttributeList[i]);
 
         D.Out(pdDebug, "Attribute Name : %s", oca->getName());
@@ -1065,7 +1042,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (int index = 0 ; index < theListSize ; index++) {
-        getAttributeWithHandle(the_attributes[index]);
+        getAttribute(the_attributes[index]);
     }
 
     if (server) {
@@ -1079,7 +1056,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            oca = getAttributeWithHandle(the_attributes[i]);
+            oca = getAttribute(the_attributes[i]);
             oa = object->getAttribute(the_attributes[i]);
 
             // The federate has to publish attributes he desire to
@@ -1122,7 +1099,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         FederateHandle oldOwner ;
 
         for (int i = 0 ; i < theListSize ; i++) {
-            oca = getAttributeWithHandle(the_attributes[i]);
+            oca = getAttribute(the_attributes[i]);
             oa = object->getAttribute(the_attributes[i]);
 
             oldOwner = oa->getOwner();
@@ -1208,7 +1185,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (int index = 0 ; index < theListSize ; index++)
-        getAttributeWithHandle(theAttributeList[index]);
+        getAttribute(theAttributeList[index]);
 
     //Le fédéré est-il propriétaire de tous les attributs
     ObjectAttribute * oa ;
@@ -1232,7 +1209,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            oca = getAttributeWithHandle(theAttributeList[i]);
+            oca = getAttribute(theAttributeList[i]);
             oa = object->getAttribute(theAttributeList[i]);
 
             if (oa->hasCandidates()) {
@@ -1337,7 +1314,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     ObjectClassAttribute * oca ;
     for (int i = 0 ; i < theListSize ; i++) {
         // Do all attribute handles exist ? It may throw AttributeNotDefined.
-        oca = getAttributeWithHandle(theAttributeList[i]);
+        oca = getAttribute(theAttributeList[i]);
         oa = object->getAttribute(theAttributeList[i]);
 
         //Le fédéré est-il déjà propriétaire de certains attributs
@@ -1375,7 +1352,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
-            oca = getAttributeWithHandle(theAttributeList[i]);
+            oca = getAttribute(theAttributeList[i]);
             oa = object->getAttribute(theAttributeList[i]);
 
             oldOwner = oa->getOwner();
@@ -1468,7 +1445,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (int index = 0 ; index < the_size ; index++) {
-        getAttributeWithHandle(the_attributes[index]);
+        getAttribute(the_attributes[index]);
     }
 
     //Le fédéré est-il propriétaire de tous les attributs
@@ -1495,7 +1472,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
 
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < the_size ; i++) {
-            oca = getAttributeWithHandle(the_attributes[i]);
+            oca = getAttribute(the_attributes[i]);
             oa = object->getAttribute(the_attributes[i]);
 
             //Le demandeur le plus récent devient propriétaire
@@ -1560,7 +1537,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
 
     // Do all attribute handles exist ? It may throw AttributeNotDefined.
     for (int index = 0 ; index < list_size ; index++)
-        getAttributeWithHandle(attribute_list[index]);
+        getAttribute(attribute_list[index]);
 
     for (int i = 0 ; i < list_size ; i++)
         D.Out(pdDebug, "CancelAcquisition Object %u Attribute %u ",
@@ -1572,7 +1549,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
         ObjectClassAttribute * oca ;
 
         for (int i = 0 ; i < list_size ; i++) {
-            oca = getAttributeWithHandle(attribute_list[i]);
+            oca = getAttribute(attribute_list[i]);
             oa = object->getAttribute(attribute_list[i]);
 
             D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i], oa->getOwner());
@@ -1638,7 +1615,7 @@ ObjectClass::getHandle() const
 /** Unsubscribe this federate/region pair
  */
 void
-ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
+ObjectClass::unsubscribe(FederateHandle fed, const RegionImp *region)
 {
     list<ObjectClassAttribute *>::iterator i ;
     for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
@@ -1648,6 +1625,20 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
     }
 }
 
+// ----------------------------------------------------------------------------
+/** Unsubscribe this federate, for all regions currently subscribed
+ */
+void
+ObjectClass::unsubscribe(FederateHandle fed)
+{
+    list<ObjectClassAttribute *>::iterator i ;
+    for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
+	if ((*i)->isSubscribed(fed)) {
+	    (*i)->unsubscribe(fed);
+	}
+    }
+}
+
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.25 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClass.cc,v 3.26 2005/03/16 23:11:22 breholee Exp $
