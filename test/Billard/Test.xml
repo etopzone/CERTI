@@ -27,9 +27,10 @@
 		</objectClass>
 	</objects>
 	<interactions>
-		<interactionClass name="Bing">
-		                   transportation="HLAreliable"
-				   order="TimeStamp" />
+		<interactionClass name="Bing"
+		                  transportation="HLAreliable"
+				  order="TimeStamp"
+				  space="geo">
 			<parameter name="BoulNum" />
 			<parameter name="DX" />
 			<parameter name="DY" />
