@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.hh,v 3.5 2003/01/17 18:17:01 breholee Exp $
+// $Id: FederationsList.hh,v 3.6 2003/01/20 20:30:44 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -442,14 +442,12 @@ private:
   void checkHandle(FederationHandle theHandle) throw(RTIinternalError);
   // Throw an exception if Handle is not correct(too low or too big)
 
-  void searchFederation(FederationHandle theHandle,
-			Federation* &Federation,
-			int &Rank)
-    throw(FederationExecutionDoesNotExist, RTIinternalError);
+  int searchFederation(FederationHandle the_handle, Federation* &federation)
+      throw (FederationExecutionDoesNotExist, RTIinternalError);
 };
 
 }}
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.5 2003/01/17 18:17:01 breholee Exp $
+// $Id: FederationsList.hh,v 3.6 2003/01/20 20:30:44 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
+// $Id: FederationsList.cc,v 3.6 2003/01/20 20:30:44 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -71,14 +71,13 @@ FederationsList::addConstrained(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank; // Unused
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   // It may throw a bunch of exceptions.
   federation->addConstrained(federate);
@@ -98,13 +97,12 @@ FederationsList::addFederate(FederationHandle handle,
 {
   Federation *federation = NULL;
   FederateHandle federate;
-  int rank; // Unused
  
   // It may throw RTIinternalError
   checkHandle(handle);
 
   // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   // It may raise a bunch of exceptions
   federate = federation->add(name, tcp_link);
@@ -115,15 +113,12 @@ FederationsList::addFederate(FederationHandle handle,
 // ---------------------------------------------------------------------------
 // searchFederation
 
-void 
+int
 FederationsList::searchFederation(FederationHandle handle,
-				  Federation* &federation,
-				  int &rank)
-  throw(FederationExecutionDoesNotExist,
-	RTIinternalError)
+                                  Federation* &federation)
+    throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
   federation = NULL;
-  rank = 0;
 
   // It may raise RTIinternalError
   checkHandle(handle);
@@ -132,8 +127,7 @@ FederationsList::searchFederation(FederationHandle handle,
   for (int j = 1; i != end() ; i++, j++) {
     if ( (*i)->getHandle() == handle ) {
       federation = (*i);
-      rank = j;
-      return;
+      return j;
     }
   }
 
@@ -209,14 +203,13 @@ FederationsList::createRegulator(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank; // unused
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   // It may throw a bunch of exceptions.
   federation->addRegulator(federate, time);
@@ -233,13 +226,12 @@ FederationsList::requestId(FederationHandle handle,
   throw(TooManyIDsRequested)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->requestId(id_count, first_id, last_id);
 }
@@ -261,14 +253,13 @@ FederationsList::destroyObject(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   federation->deleteObject(federate, id, tag);
 }
@@ -313,13 +304,12 @@ void FederationsList::info(FederationHandle handle,
   throw(FederationExecutionDoesNotExist, RTIinternalError)
 {
   Federation *federation;
-  int rank;
 
   // It may raise RTIinternalError
   checkHandle(handle);
 
   // It may throw FederationExecutionNotFound
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   nb_federates = federation->getNbFederates();
   nb_regulators = federation->getNbRegulators();
@@ -347,7 +337,6 @@ FederationsList::registerObject(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -355,7 +344,7 @@ FederationsList::registerObject(FederationHandle handle,
   D.Out(pdTrace,"handle = %d, federate = %d.", handle,federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   D.Out(pdTrace,"theObjectClass = %d, name = %s.",object_class,name);
   return(federation->registerObject(federate,object_class,name));
@@ -387,14 +376,13 @@ FederationsList::updateRegulator(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank; // unused
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->updateRegulator(federate, time);
 }
@@ -421,14 +409,13 @@ FederationsList::updateAttribute(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->updateAttributeValues(federate, id, attributes, values,
 				    list_size, time, tag);
@@ -456,14 +443,13 @@ FederationsList::updateParameter(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->broadcastInteraction(federate, interaction, parameters, values, 
 				   list_size, time, tag);
@@ -485,13 +471,12 @@ FederationsList::setPause(FederationHandle handle,
           RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
 
   // It may throw RTIinternalError
   checkHandle(handle);
 
   // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   // It may throw a bunch of exceptions.
   if(state) federation->enterPause(federate, label);
@@ -515,14 +500,13 @@ FederationsList::publishInteraction(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->publishInteraction(federate, interaction, pub);
 }
@@ -548,14 +532,13 @@ FederationsList::publishObject(FederationHandle handle,
  
 {
   Federation *federation = NULL;
-  int rank;
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->publishObject(federate, object_class, attributes, list_size, 
 			    pub);
@@ -578,14 +561,13 @@ FederationsList::subscribeInteraction(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
- 
+
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->subscribeInteraction(federate, interaction, sub);
 }
@@ -610,14 +592,13 @@ FederationsList::subscribeObject(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   federation->subscribeObject(federate, object_class, attributes, list_size, 
 			      sub);
@@ -636,14 +617,13 @@ FederationsList::removeConstrained(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank; // unused
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   // It may throw a bunch of exceptions.
   federation->removeConstrained(federate);
@@ -659,13 +639,12 @@ FederationsList::destroyFederation(FederationHandle handle)
 	RTIinternalError)
 {
     Federation *federation;
-    int rank;
     
     // It may throw RTIinternalError
     checkHandle(handle);
     
     // It may throw FederationExecutionDoesNotExist
-    searchFederation(handle, federation, rank);
+    int rank = searchFederation(handle, federation);
     
     // It may throw FederatesCurrentlyJoined
     if(federation->empty()) {
@@ -690,13 +669,12 @@ FederationsList::remove(FederationHandle handle, FederateHandle federate)
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank; // unused
 
   // It may throw RTIinternalError.
   checkHandle(handle);
 
   // It may throw FederationExecutionDoesNotExist
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
 
   // It may throw FederateOwnsAttributes or FederateNotExecutionMember
   federation->remove(federate);
@@ -715,14 +693,13 @@ FederationsList::removeRegulator(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
 
   // It may throw RTIinternalError.
   checkHandle(handle);
   checkHandle(federate);
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   federation->removeRegulator(federate);
 }
@@ -735,7 +712,6 @@ FederationsList::killFederate(FederationHandle handle, FederateHandle federate)
   throw()
 {
   Federation *federation = NULL;
-  int rank;
 
   try {
     // It may throw RTIinternalError.
@@ -743,7 +719,7 @@ FederationsList::killFederate(FederationHandle handle, FederateHandle federate)
     checkHandle(federate);
  
     // It may throw FederationExecutionDoesNotExist.
-    searchFederation(handle, federation, rank);
+    searchFederation(handle, federation);
     federation->kill(federate);
   }
   catch(Exception &e) {
@@ -767,10 +743,9 @@ FederationsList::isOwner(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *f = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, f, rank);
+  searchFederation(handle, f);
  
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -797,10 +772,9 @@ FederationsList::searchOwner(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
  
   // It may throw RTIinternalError.
@@ -832,10 +806,9 @@ FederationsList::negotiateDivestiture(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
   
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -867,10 +840,9 @@ FederationsList::acquireIfAvailable(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
   
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -897,10 +869,9 @@ FederationsList::divest(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -930,10 +901,9 @@ FederationsList::acquire(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
 
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -958,10 +928,9 @@ FederationsList::cancelDivestiture(FederationHandle handle,
 	SaveInProgress, RestoreInProgress, RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
   
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -992,10 +961,9 @@ FederationsList::respondRelease(FederationHandle handle,
 	RTIinternalError)
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
   
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -1025,10 +993,9 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 	RTIinternalError) 
 {
   Federation *federation = NULL;
-  int rank;
  
   // It may throw FederationExecutionDoesNotExist.
-  searchFederation(handle, federation, rank);
+  searchFederation(handle, federation);
  
   // It may throw RTIinternalError.
   checkHandle(handle);
@@ -1041,5 +1008,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.5 2003/01/17 18:17:01 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.6 2003/01/20 20:30:44 breholee Exp $
 
