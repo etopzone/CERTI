@@ -18,24 +18,50 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $
+// $Id: BillardDDM.cc,v 3.10 2005/02/09 16:17:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
 #include "RegionImp.hh"
 
+#ifndef X_DISPLAY_MISSING
+#include "graph_c.hh"
+#endif
+
 using std::string ;
+using std::auto_ptr ;
 
-static PrettyDebug D("BILLARD_DDM", __FILE__);
+// ----------------------------------------------------------------------------
+namespace {
+PrettyDebug D("BILLARD_DDM", __FILE__);
 
+// ----------------------------------------------------------------------------
+/** Draw a square region
+ */
+void
+drawRegion(bool display, int position)
+{
+#ifndef X_DISPLAY_MISSING
+    point origin ;
+    origin.X = 100 * position;
+    origin.Y = 0 ;
+    rectangler region = Definerr(origin, 100, 100, COUL_UNIE,
+				 display ? GRAY : WHITE);
+    Drawrr(region);
+#endif
+}
+}
+
+// ----------------------------------------------------------------------------
 /** Constructor
  */
 BillardDDM::BillardDDM(string federate_name)
-    : Billard(federate_name), subRegion(0), pubRegion(0)
+    : Billard(federate_name), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardDDM" << std::endl ;
 }
 
+// ----------------------------------------------------------------------------
 /** Destructor
  */
 BillardDDM::~BillardDDM()
@@ -43,7 +69,7 @@ BillardDDM::~BillardDDM()
 }
 
 // ----------------------------------------------------------------------------
-/** Declare stuff
+/** Declare regions and ball
  */
 void
 BillardDDM::declare()
@@ -51,27 +77,26 @@ BillardDDM::declare()
     GeoID = rtiamb.getRoutingSpaceHandle("Geo");
     std::cout << "Geo space handle : " << GeoID << std::endl ;
 
-    // Ugly hardcoded choice of regions
-    regions.clear();
+    areas.clear();
     for (int i = 0 ; i < 5 ; ++i) {
-	regions.push_back(Area());
-	Area &area = regions.back();
+	areas.push_back(Area());
+	Area &area = areas.back();
 	area.x = 100 * i ;
 	area.y = 0 ;
 	area.size = 100 ;
-	std::cout << "Region " << i + 1 << "... " ;
+	std::cout << "Region " << i << "... " ;
 	area.region = rtiamb.createRegion(GeoID, 1);
 	std::cout << "ok" << std::endl ;
     }
 
-    int region = (int) local.x / 100 + 1 ;
-    AttributeHandle attrs[] = { AttrXID, AttrYID, AttrColorID } ;
+    int region = (int) local.x / 100 ;
+    AttributeHandle attrs[] = { AttrXID, AttrYID } ;
+    Region *regs[] = { areas[region].region, areas[region].region } ;
     std::cout << "Register ball with region..." << std::endl ;
     local.ID = rtiamb.registerObjectInstanceWithRegion(BouleClassID,
 						       federateName.c_str(),
-						       attrs,
-						       &(regions[region - 1].region),
-						       1);
+						       attrs, regs, 2);
+    D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
     pubRegion = region ;
 }
 
@@ -81,47 +106,57 @@ BillardDDM::declare()
 void
 BillardDDM::checkRegions()
 {
-    int region = (int) local.x / 100 + 1 ;
-    if (region != subRegion || region != pubRegion) {
-	AttributeHandleSet *attr_set = AttributeHandleSetFactory::create(3);
-	attr_set->add(AttrXID);
-	attr_set->add(AttrYID);
+    int region = (int) local.x / 100 ;
 
-	// Subscription
-	if (subRegion != 0) {
+    if (region != subRegion || region != pubRegion) {
+	if (subRegion != -1)
+	    drawRegion(true, subRegion);
+	drawRegion(false, region);
+	//	std::cout << "Connect to region " << region << std::endl ;
+	auto_ptr<AttributeHandleSet> a(AttributeHandleSetFactory::create(3));
+	a->add(AttrXID);
+	a->add(AttrYID);
+
+ 	// Subscription
+	if (subRegion != -1) {
 	    rtiamb.unsubscribeObjectClassWithRegion(
 		BilleClassID,
-		*(regions[subRegion - 1].region));
+		*(areas[subRegion].region));
 	}
 	rtiamb.subscribeObjectClassAttributesWithRegion(
-	    BilleClassID, *(regions[region - 1].region), *attr_set, RTI_TRUE);
-	subRegion = region ;
+	    BilleClassID, *(areas[region].region), *a, RTI_TRUE);
+  	subRegion = region ;
 
 	// Update region
-	rtiamb.unassociateRegionForUpdates(*(regions[pubRegion - 1].region),
-					   local.ID);
-	rtiamb.associateRegionForUpdates(*(regions[region - 1].region),
-					 local.ID, *attr_set);
-	pubRegion = region ;
-
-	attr_set->empty();
-	delete attr_set ;
+	if (pubRegion != -1) {
+	    rtiamb.unassociateRegionForUpdates(*(areas[pubRegion].region),
+					       local.ID);
+	}
+	rtiamb.associateRegionForUpdates(*(areas[region].region),
+					 local.ID, *a);
+	pubRegion = region ;	
     }
 }
 
 // ----------------------------------------------------------------------------
-/** Carry out publications and subscriptions
+/** Carry out publications and subscriptions. In this DDM demo, only object
+    publications are done. Other (un)publications and (un)subscriptions 
+    occur regularly in the checkRegions function.
  */
 void
 BillardDDM::publishAndSubscribe()
 {
-//    Billard::publishAndSubscribe();
-    // Get all class and attributes handles
-    getHandles();
+    auto_ptr<AttributeHandleSet> attributes(AttributeHandleSetFactory::create(3));
 
-    // Publish and subscribe to Bing interactions
-    rtiamb.subscribeInteractionClass(BingClassID, RTI_TRUE);
+    getHandles();
+    attributes->add(AttrXID);
+    attributes->add(AttrYID);
+    attributes->add(AttrColorID);
+
+    rtiamb.publishObjectClass(BouleClassID, *attributes);
     rtiamb.publishInteractionClass(BingClassID);
+
+    D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $
+// $Id: BillardDDM.cc,v 3.10 2005/02/09 16:17:28 breholee Exp $

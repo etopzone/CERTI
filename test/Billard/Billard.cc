@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.8 2004/08/24 18:25:05 breholee Exp $
+// $Id: Billard.cc,v 3.9 2005/02/09 16:17:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -416,9 +416,9 @@ Billard::step()
     local.x += local.dx ;
     local.y += local.dy ;
 
-    local.display();
-
     checkRegions();
+
+    local.display();
 
     sendUpdate(local.x, local.y, (int) local.color, next_step, local.ID);
 
@@ -890,4 +890,4 @@ Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.8 2004/08/24 18:25:05 breholee Exp $
+// $Id: Billard.cc,v 3.9 2005/02/09 16:17:28 breholee Exp $

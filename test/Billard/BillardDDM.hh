@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.7 2004/08/24 18:25:05 breholee Exp $
+// $Id: BillardDDM.hh,v 3.8 2005/02/09 16:17:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_DDM_HH
@@ -46,7 +46,7 @@ public:
     virtual void publishAndSubscribe();
 
 protected:
-    std::vector<Area> regions ;
+    std::vector<Area> areas ;
     int subRegion ;
     int pubRegion ;
     SpaceHandle GeoID ;
@@ -54,4 +54,4 @@ protected:
 
 #endif // CERTI_BILLARD_DDM_HH
 
-// $Id: BillardDDM.hh,v 3.7 2004/08/24 18:25:05 breholee Exp $
+// $Id: BillardDDM.hh,v 3.8 2005/02/09 16:17:28 breholee Exp $
