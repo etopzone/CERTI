@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.7 2003/10/27 10:18:56 breholee Exp $
+// $Id: SecurityServer.cc,v 3.8 2004/05/17 23:03:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,7 +43,7 @@ Socket*
 SecurityServer::getSocketLink(FederateHandle theFederate,
                               TransportType theType) const
 {
-    return RTIG_SocketServer->getSocketLink(MyFederation, theFederate, theType);
+    return RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
 }
 
 // ----------------------------------------------------------------------------
@@ -102,16 +102,15 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
 
 // ----------------------------------------------------------------------------
 //! SecurityServer constructor.
-SecurityServer::SecurityServer(SocketServer *theRTIGServer,
-                               AuditFile *theAuditServer,
+SecurityServer::SecurityServer(SocketServer &theRTIGServer,
+                               AuditFile &theAuditServer,
                                Handle theFederation)
-    : list<SecurityLevel *>()
+    :  list<SecurityLevel *>(), audit(theAuditServer),
+       RTIG_SocketServer(theRTIGServer)
 {
-    MyFederation = theFederation ;
-    RTIG_SocketServer = theRTIGServer ;
-    Audit = theAuditServer ;
+    myFederation = theFederation ;
 
-    if ((MyFederation == 0) || (RTIG_SocketServer == NULL) || (Audit == NULL))
+    if (myFederation == 0)
         throw RTIinternalError();
 }
 
@@ -190,4 +189,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.7 2003/10/27 10:18:56 breholee Exp $
+// $Id: SecurityServer.cc,v 3.8 2004/05/17 23:03:50 breholee Exp $

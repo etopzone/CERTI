@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.8 2003/10/27 10:18:56 breholee Exp $
+// $Id: SecurityServer.hh,v 3.9 2004/05/17 23:03:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -48,37 +48,18 @@ namespace certi {
 class SecurityServer : private std::list<SecurityLevel *>
 {
 public:
-
-    // ------------------------------
-    // -- Constructor & Destructor --
-    // ------------------------------
-
-    // Initialize the Federation's SocketServer.
-    SecurityServer(SocketServer *theRTIGServer,
-                   AuditFile *theAuditFile,
-                   Handle theFederation);
-
-    // Free the List.
+    SecurityServer(SocketServer &, AuditFile &, Handle);
     ~SecurityServer();
 
-    // -----------------------
-    // -- Public Components --
-    // -----------------------
-
     //! This part of the security server is linked to the RTIG Audit Server.
-    AuditFile *Audit ;
+    AuditFile &audit ;
 
-    // ----------------------------
-    // -- Socket Related Methods --
-    // ----------------------------
-    Handle federation() const { return MyFederation ; };
+    Handle federation() const { return myFederation ; };
 
     Socket *getSocketLink(FederateHandle theFederate,
                           TransportType theType = RELIABLE) const ;
 
-    // ------------------------------
-    // -- Security Related Methods --
-    // ------------------------------
+    // Security related methods
     Boolean dominates(SecurityLevelID A, SecurityLevelID B) const ;
 
     Boolean canFederateAccessData(FederateHandle theFederate,
@@ -90,22 +71,11 @@ public:
                           SecurityLevelID the_level_id);
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
-    SocketServer *RTIG_SocketServer ; // Never free this object.
-    Handle MyFederation ;
+    Handle myFederation ;
+    SocketServer &RTIG_SocketServer ;
 
     SecurityLevelID LastLevelID ; //!< Last Level ID attributed.
-
     FederateLevelList FedLevelList ;
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
     SecurityLevelID getLevel(const char *theFederate) const ;
 
     void insertPublicLevel();
@@ -115,4 +85,4 @@ private:
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.8 2003/10/27 10:18:56 breholee Exp $
+// $Id: SecurityServer.hh,v 3.9 2004/05/17 23:03:51 breholee Exp $
