@@ -180,7 +180,7 @@ ObjectSet::killFederate(FederateHandle the_federate)
     throw (RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::iterator i ;
-    for (i = begin() ; i != end() ; i++) {
+    for (i = begin(); i != end(); i++) {
         if (((*i).second)->getOwner() == the_federate) {
             std::map<ObjectHandle, Object *>::erase(i);
             i = begin();
@@ -203,7 +203,7 @@ ObjectSet::isAttributeOwnedByFederate(FederateHandle the_federate,
     Object *object = getObject(the_object);
 
     if (server == 0) {
-        throw RTIinternalError("isAttributeOwnedByFederate no called bu RTIG");
+        throw RTIinternalError("isAttributeOwnedByFederate not called by RTIG");
     }
 
     return object->isAttributeOwnedByFederate(the_federate, the_attribute);
@@ -219,6 +219,28 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
            RTIinternalError)
 {
     Object *object = getObject(the_object);
+
+    D.Out(pdDebug, "query attribute ownership for attribute %u and object %u",
+          the_attribute, the_object);
+
+    if (server) {
+        ObjectAttribute * oa ;
+        oa = object->getAttribute(the_attribute);
+
+        NetworkMessage *answer = new NetworkMessage ;
+        answer->federation = server->federation();
+        answer->exception = e_NO_EXCEPTION ;
+        answer->object = the_object ;
+        answer->handleArray[0] = the_attribute ;
+        answer->federate = oa->getOwner();
+        answer->type = answer->federate 
+            ? m_INFORM_ATTRIBUTE_OWNERSHIP : m_ATTRIBUTE_IS_NOT_OWNED ;
+
+        sendToFederate(answer, the_federate);
+    }
+    else {
+        D.Out(pdDebug, "Should only be called by RTIG");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -299,6 +321,31 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
            RTIinternalError)
 {
     Object *object = getObject(the_object);
+
+    ObjectAttribute * oa ;
+    for (int i = 0 ; i < the_size ; i++) {
+        oa = object->getAttribute(the_attributes[i]);
+
+        // Does federate owns every attributes.
+        if (oa->getOwner() != the_federate)
+            throw AttributeNotOwned();
+        // Does federate called NegotiatedAttributeOwnershipDivestiture
+        if (!oa->beingDivested())
+            throw AttributeDivestitureWasNotRequested();
+    }
+
+    if (server != NULL) {
+        for (int i = 0 ; i < the_size ; i++) {
+            oa = object->getAttribute(the_attributes[i]);
+            oa->setDivesting(RTI_FALSE);
+        }
+    }
+    else {
+        D.Out(pdExcept, "CancelNegotiatedAttributeOwnershipDivestiture should "
+              "not be called on the RTIA.");
+        throw RTIinternalError("CancelNegotiatedAttributeOwnershipDivestiture "
+                               "called on the RTIA.");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -347,6 +394,32 @@ ObjectSet::getObject(ObjectHandle the_object) const
     throw ObjectNotKnown("Object not found in map set.");
 }
 
+// ----------------------------------------------------------------------------
+//! sendToFederate.
+void
+ObjectSet::sendToFederate(NetworkMessage *msg,
+                          FederateHandle the_federate) const
+{
+    // Send the message 'msg' to the Federate which Handle is theFederate.
+    Socket *socket = NULL ;
+    try {
+#ifdef HLA_USES_UDP
+        socket = server->getSocketLink(the_federate, BEST_EFFORT);
+#else
+        socket = server->getSocketLink(the_federate);
+#endif
+        msg->write(socket);
+    }
+    catch (RTIinternalError &e) {
+        D.Out(pdExcept,
+              "Reference to a killed Federate while broadcasting.");
+    }
+    catch (NetworkError &e) {
+        D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+    }
+    // BUG: If except = 0, could use Multicast.
+}
+
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.2 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectSet.cc,v 3.3 2003/05/08 22:28:32 breholee Exp $

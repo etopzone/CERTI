@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.12 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.13 2003/05/08 22:28:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -155,13 +155,6 @@ public:
     // --------------------------
     // -- Ownership Management --
     // --------------------------
-    void queryAttributeOwnership(ObjectHandle theObject,
-                                 AttributeHandle theAttribute,
-                                 FederateHandle theFederateHandle)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               RTIinternalError);
-
     void
     negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                             ObjectHandle theObjectHandle,
@@ -212,17 +205,6 @@ public:
                FederateOwnsAttributes,
                RTIinternalError);
 
-    void
-    cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle,
-                                                  ObjectHandle theObjectHandle,
-                                                  AttributeHandle*,
-                                                  UShort theListSize)
-        throw (ObjectNotKnown,
-               AttributeNotDefined,
-               AttributeNotOwned,
-               AttributeDivestitureWasNotRequested,
-               RTIinternalError);
-
     AttributeHandleSet
     *attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                        ObjectHandle theObjectHandle,
@@ -269,4 +251,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.12 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.13 2003/05/08 22:28:32 breholee Exp $

@@ -210,6 +210,10 @@ protected:
 
     Object *getObject(ObjectHandle the_object) const
         throw (ObjectNotKnown);
+
+    void sendToFederate(NetworkMessage *msg,
+                        FederateHandle the_federate) const ;
+
 };
 
 } // namespace certi

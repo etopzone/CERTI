@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.12 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.13 2003/05/08 22:28:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -488,28 +488,6 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! queryAttributeOwnership.
-void
-ObjectClassSet::queryAttributeOwnership(ObjectHandle theObject,
-                                        AttributeHandle theAttribute,
-                                        FederateHandle theFederateHandle)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           RTIinternalError)
-{
-    D.Out(pdDebug, "queryAttributeOwnership sur l'attribut %u de l'objet %u",
-          theAttribute, theObject);
-
-    // It may throw ObjectNotKnown
-    ObjectClass * objectClass = getInstanceClass(theObject);
-
-    // It may throw a bunch of exceptions.
-    objectClass->queryAttributeOwnership(theObject,
-                                         theAttribute,
-                                         theFederateHandle);
-}
-
-// ----------------------------------------------------------------------------
 //! negotiatedAttributeOwnershipDivestiture.
 void
 ObjectClassSet::
@@ -652,31 +630,6 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! cancelNegotiatedAttributeOwnershipDivestiture.
-void
-ObjectClassSet::
-cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
-                                              ObjectHandle theObjectHandle,
-                                              AttributeHandle *theAttributeList,
-                                              UShort theListSize)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeDivestitureWasNotRequested,
-           RTIinternalError)
-{
-    // It may throw ObjectNotKnown
-    ObjectClass *objectClass = getInstanceClass(theObjectHandle);
-
-    // It may throw a bunch of exceptions.
-    objectClass->
-        cancelNegotiatedAttributeOwnershipDivestiture(theFederateHandle,
-                                                      theObjectHandle,
-                                                      theAttributeList,
-                                                      theListSize);
-}
-
-// ----------------------------------------------------------------------------
 //! attributeOwnershipReleaseResponse.
 AttributeHandleSet * ObjectClassSet::
 attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
@@ -724,4 +677,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.12 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.13 2003/05/08 22:28:32 breholee Exp $

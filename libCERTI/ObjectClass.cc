@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.13 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClass.cc,v 3.14 2003/05/08 22:28:32 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
@@ -111,31 +111,31 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList)
     // 3. Add class/attributes subscribers to the list.
     switch(ocbList->message->type) {
 
-    case m_DISCOVER_OBJECT:
-    case m_REMOVE_OBJECT: {
-        // For each federate, add it to list if at least one attribute has
-        // been subscribed.
-        FederateHandle federate = 0 ;
-        for (federate = 1 ; federate <= MaxSubscriberHandle ; federate++) {
-            if (isFederateSubscriber(federate)) {
-                ocbList->addFederate(federate);
-            }
-        }
-    }
+      case m_DISCOVER_OBJECT:
+      case m_REMOVE_OBJECT: {
+          // For each federate, add it to list if at least one attribute has
+          // been subscribed.
+          FederateHandle federate = 0 ;
+          for (federate = 1 ; federate <= MaxSubscriberHandle ; federate++) {
+              if (isFederateSubscriber(federate)) {
+                  ocbList->addFederate(federate);
+              }
+          }
+      }
         break ;
 
-    case m_REFLECT_ATTRIBUTE_VALUES:
-    case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-        // For each class attribute, update the list be adding federates who
-        // subscribed to the attribute.
-        list<ObjectClassAttribute *>::const_iterator a ;
-        for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-            (*a)->updateBroadcastList(ocbList);
-        }
-    }
+      case m_REFLECT_ATTRIBUTE_VALUES:
+      case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+          // For each class attribute, update the list be adding federates who
+          // subscribed to the attribute.
+          list<ObjectClassAttribute *>::const_iterator a ;
+          for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
+              (*a)->updateBroadcastList(ocbList);
+          }
+      }
         break ;
 
-    default:
+      default:
         throw RTIinternalError("BroadcastClassMsg: Unknown type.");
     }
 
@@ -800,13 +800,13 @@ ObjectClass::subscribe(FederateHandle theFederate,
 // ----------------------------------------------------------------------------
 //! update Attribute Values (with time).
 ObjectClassBroadcastList *
-ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
-                                   ObjectHandle theObjectHandle,
-                                   AttributeHandle *theAttributeArray,
-                                   AttributeValue *theValueArray,
-                                   UShort theArraySize,
-                                   FederationTime theTime,
-                                   const char *theUserTag)
+ObjectClass::updateAttributeValues(FederateHandle the_federate,
+                                   ObjectHandle the_object,
+                                   AttributeHandle *the_attributes,
+                                   AttributeValue *the_values,
+                                   UShort the_size,
+                                   FederationTime the_time,
+                                   const char *the_tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -814,19 +814,19 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
            InvalidObjectHandle)
 {
     // Pre-conditions checking
-    Object *object = getInstanceWithID(theObjectHandle);
+    Object *object = getInstanceWithID(the_object);
 
     // Ownership management: Test ownership on each attribute before updating.
     ObjectAttribute * oa ;
-    for (int i = 0 ; i < theArraySize ; i++) {
-        oa = object->getAttribute(theAttributeArray[i]);
+    for (int i = 0 ; i < the_size ; i++) {
+        oa = object->getAttribute(the_attributes[i]);
 
-        if (oa->getOwner() != theFederateHandle)
+        if (oa->getOwner() != the_federate)
             throw AttributeNotOwned();
     }
 
     // Federate must be Owner of all attributes(not Owner of the instance).
-    // if (object->getOwner() != theFederateHandle)
+    // if (object->getOwner() != the_federate)
     // throw AttributeNotOwned();
 
     // Prepare and Broadcast message for this class
@@ -835,25 +835,25 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
         NetworkMessage *answer = new NetworkMessage ;
         answer->type = m_REFLECT_ATTRIBUTE_VALUES ;
         answer->federation = server->federation();
-        answer->federate = theFederateHandle ;
+        answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
-        answer->object = theObjectHandle ;
-        answer->date = theTime ;
+        answer->object = the_object ;
+        answer->date = the_time ;
 
-        strcpy(answer->label, theUserTag);
+        strcpy(answer->label, the_tag);
 
-        answer->handleArraySize = theArraySize ;
+        answer->handleArraySize = the_size ;
 
-        for (int i = 0 ; i < theArraySize ; i++) {
-            answer->handleArray[i] = theAttributeArray[i] ;
-            answer->setValue(i, theValueArray[i]);
+        for (int i = 0 ; i < the_size ; i++) {
+            answer->handleArray[i] = the_attributes[i] ;
+            answer->setValue(i, the_values[i]);
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
 
         D.Out(pdProtocol,
               "Object %u updated in class %u, now broadcasting...",
-              theObjectHandle, handle);
+              the_object, handle);
 
         broadcastClassMessage(ocbList);
     }
@@ -866,50 +866,6 @@ ObjectClass::updateAttributeValues(FederateHandle theFederateHandle,
     // Return the BroadcastList in case it had to be passed to the parent
     // class.
     return ocbList ;
-}
-
-// ----------------------------------------------------------------------------
-//! queryAttributeOwnership.
-void
-ObjectClass::queryAttributeOwnership(ObjectHandle theObject,
-                                     AttributeHandle theAttribute,
-                                     FederateHandle theFederateHandle)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           RTIinternalError)
-{
-    // Pre-conditions checking
-
-    // may throw ObjectNotKnown
-    Object* object = getInstanceWithID(theObject);
-
-    // It may throw AttributeNotDefined
-    getAttributeWithHandle(theAttribute);
-
-    D.Out(pdDebug, "queryAttributeOwnership sur l'attribut %u de l'objet %u",
-          theAttribute, theObject);
-
-    if (server != NULL) {
-        ObjectAttribute * oa ;
-        oa = object->getAttribute(theAttribute);
-
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->federation = server->federation();
-        answer->exception = e_NO_EXCEPTION ;
-        answer->object = theObject ;
-        answer->handleArray[0] = theAttribute ;
-        answer->federate = oa->getOwner();
-
-        if (answer->federate != 0)
-            answer->type = m_INFORM_ATTRIBUTE_OWNERSHIP ;
-        else
-            answer->type = m_ATTRIBUTE_IS_NOT_OWNED ;
-
-        sendToFederate(answer, theFederateHandle);
-    }
-    else {
-        D.Out(pdDebug, "Only called on RTIG");
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1473,56 +1429,6 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! cancelNegotiatedAttributeOwnershipDivestiture.
-void
-ObjectClass::
-cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
-                                              ObjectHandle the_object,
-                                              AttributeHandle *the_attributes,
-                                              UShort the_size)
-    throw (ObjectNotKnown,
-           AttributeNotDefined,
-           AttributeNotOwned,
-           AttributeDivestitureWasNotRequested,
-           RTIinternalError)
-{
-    // Pre-conditions checking
-
-    // may throw ObjectNotKnown
-    Object *object = getInstanceWithID(the_object);
-
-    // Do all attribute handles exist ? It may throw AttributeNotDefined.
-    for (int index = 0 ; index < the_size ; index++) {
-        getAttributeWithHandle(the_attributes[index]);
-    }
-
-    ObjectAttribute * oa ;
-    for (int i = 0 ; i < the_size ; i++) {
-        oa = object->getAttribute(the_attributes[i]);
-
-        // Does federate owns every attributes.
-        if (oa->getOwner() != the_federate)
-            throw AttributeNotOwned();
-        // Does federate called NegotiatedAttributeOwnershipDivestiture
-        if (!oa->beingDivested())
-            throw AttributeDivestitureWasNotRequested();
-    }
-
-    if (server) {
-        for (int i = 0 ; i < the_size ; i++) {
-            oa = object->getAttribute(the_attributes[i]);
-            oa->setDivesting(RTI_FALSE);
-        }
-    }
-    else {
-        D.Out(pdExcept, "CancelNegotiatedAttributeOwnershipDivestiture should "
-              "not be called on the RTIA.");
-        throw RTIinternalError("CancelNegotiatedAttributeOwnershipDivestiture "
-                               "called on the RTIA.");
-    }
-}
-
-// ----------------------------------------------------------------------------
 //! attributeOwnershipReleaseResponse.
 AttributeHandleSet *
 ObjectClass::
@@ -1711,4 +1617,4 @@ ObjectClass::getHandle(void) const
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.13 2003/04/23 13:49:24 breholee Exp $
+// $Id: ObjectClass.cc,v 3.14 2003/05/08 22:28:32 breholee Exp $
