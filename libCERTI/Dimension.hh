@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 1.2 2003/02/19 18:07:29 breholee Exp $
+// $Id: Dimension.hh,v 1.3 2003/03/12 10:06:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -37,19 +37,22 @@ namespace certi {
 class Dimension
 {
 public:
-    Dimension(void);
+    Dimension(DimensionHandle);
     void setName(string);
+    string getName(void);
+    DimensionHandle getHandle(void);
     static void setLowerBound(ULong);
     static void setUpperBound(ULong);
 
 private:
     string name ;
-    static const ULong axisLowerBound = LONG_MAX ;
-    static const ULong axisUpperBound = LONG_MIN ;
+    DimensionHandle handle ;
+    static ULong axisLowerBound ;
+    static ULong axisUpperBound ;
 };
 
 } // namespace certi
 
 #endif
 
-// $Id: Dimension.hh,v 1.2 2003/02/19 18:07:29 breholee Exp $
+// $Id: Dimension.hh,v 1.3 2003/03/12 10:06:06 breholee Exp $
