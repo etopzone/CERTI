@@ -20,14 +20,19 @@ Content
 
 Then for .hh files:
 - multiple inclusion check
-- includes from the project (starting with <config.h>)
+- includes from the project
 - includes from external libraries (eg. libXML)
 - includes from standard libraries (eg. stdio.h, iostream)
-- usings (eg. "using std::string ;" )
 - #define's
 - declarations
 
 For the .cc files:
+- main associated .hh file
+- autoheader's config.h
+- implementation includes from the project
+- implementation includes from external libraries (eg. libXML)
+- implementation includes from standard libraries (eg. stdio.h, iostream)
+- usings (eg. "using std::string ;" )
 - definitions
 
 Identifiers
