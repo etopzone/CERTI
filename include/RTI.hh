@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTI.hh,v 3.3 2003/10/06 16:19:43 breholee Exp $
+// $Id: RTI.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_RTI_HH
-#define _CERTI_RTI_HH
+#ifndef CERTI_RTI_HH
+#define CERTI_RTI_HH
 
 // This header file sets aliases so that federates using RTI-NG API
 // can use CERTI
@@ -32,6 +32,6 @@
 
 namespace RTI = certi ;
 
-#endif // _CERTI_RTI_HH
+#endif // CERTI_RTI_HH
 
-// $Id: RTI.hh,v 3.3 2003/10/06 16:19:43 breholee Exp $
+// $Id: RTI.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $

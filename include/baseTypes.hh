@@ -19,16 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: baseTypes.hh,v 3.3 2003/10/06 16:19:44 breholee Exp $
+// $Id: baseTypes.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Declaration de la classe Exception et d'autres types de base Ulong
 // etc...
 
-#ifndef _CERTI_BASE_TYPES_HH
-#define _CERTI_BASE_TYPES_HH
+#ifndef CERTI_BASE_TYPES_HH
+#define CERTI_BASE_TYPES_HH
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace certi {
 
@@ -70,6 +70,6 @@ public: \
 
 }
 
-#endif // _CERTI_BASE_TYPES_HH
+#endif // CERTI_BASE_TYPES_HH
 
-// $Id: baseTypes.hh,v 3.3 2003/10/06 16:19:44 breholee Exp $
+// $Id: baseTypes.hh,v 3.4 2003/10/27 10:41:03 breholee Exp $

@@ -20,11 +20,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: certi.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: certi.hh,v 3.3 2003/10/27 10:41:03 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_CERTI_HH
-#define _CERTI_CERTI_HH
+#ifndef CERTI_CERTI_HH
+#define CERTI_CERTI_HH
 
 #include "baseTypes.hh"
 #include "RTItypes.hh"
@@ -32,6 +32,6 @@
 #include "RTIambassador.hh"
 #include "FederateAmbassador.hh"
 
-#endif // _CERTI_CERTI_HH
+#endif // CERTI_CERTI_HH
 
-// $Id: certi.hh,v 3.2 2003/02/19 17:20:28 breholee Exp $
+// $Id: certi.hh,v 3.3 2003/10/27 10:41:03 breholee Exp $
