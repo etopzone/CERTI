@@ -19,33 +19,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: Subscriber.hh,v 3.5 2003/07/09 15:59:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SUBSCRIBER_HH
 #define _CERTI_SUBSCRIBER_HH
 
 #include "RTItypes.hh"
+#include "RegionImp.hh"
 
 namespace certi {
 
-//! Contains the federate handle of a subscriber.
-/*! The description of the region of subscribtion, this attribute,
-  CSubscribeRegion Region, should exists. More to be implemented.
-*/
-class Subscriber {
-    // ATTRIBUTES
-protected:
-    FederateHandle handle ; //!< The ID of the Subscriber.
+class RegionImp ;
 
-    // METHODS
+class Subscriber
+{
 public:
     Subscriber(FederateHandle);
+    Subscriber(FederateHandle, RegionImp *);
+    
     FederateHandle getHandle() const ;
+    RegionImp *getRegion() const ;
+
+protected:
+    FederateHandle handle ; //!< The ID of the Subscriber.
+    RegionImp *region ;
 };
 
 }
 
 #endif // _CERTI_SUBSCRIBER_HH
 
-// $Id: Subscriber.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: Subscriber.hh,v 3.5 2003/07/09 15:59:37 breholee Exp $
