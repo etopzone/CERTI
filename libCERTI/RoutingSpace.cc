@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003, 2004  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.7 2004/05/17 23:06:59 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.8 2005/03/25 17:16:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ void
 RoutingSpace::addDimension(const Dimension &d)
 {
     dimensions.push_back(d);
-    //    assert(dimensions.back().getHandle() == dimensions.size());
+    assert(dimensions.back().getHandle() == dimensions.size());
 }
 
 // ----------------------------------------------------------------------------
@@ -137,6 +137,22 @@ RoutingSpace::size() const
     return dimensions.size();
 }
 
+// ----------------------------------------------------------------------------
+Extent
+RoutingSpace::createExtent() const
+{
+    Extent extent(size());
+
+    vector<Dimension>::const_iterator it ;
+    for (it = dimensions.begin(); it != dimensions.end(); ++it) {
+	Handle h = it->getHandle();
+	extent.setRangeLowerBound(h, it->getLowerBound());
+	extent.setRangeUpperBound(h, it->getUpperBound());
+    }
+
+    return extent ;
+}
+
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.7 2004/05/17 23:06:59 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.8 2005/03/25 17:16:14 breholee Exp $
