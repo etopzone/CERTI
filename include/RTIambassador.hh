@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.9 2003/03/12 10:02:38 breholee Exp $
+// $Id: RTIambassador.hh,v 3.10 2003/04/17 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -1297,22 +1297,6 @@ public:
                ConcurrentAccessAttempted,
                RTIinternalError);
 
-//     RegionToken
-//     getRegionToken(Region *)
-//         throw (FederateNotExecutionMember,
-//                ConcurrentAccessAttempted,
-//                RegionNotKnown,
-//                RTIinternalError,
-//                UnimplementedService);
-
-//     Region *
-//     getRegion(RegionToken)
-//         throw (FederateNotExecutionMember,
-//                ConcurrentAccessAttempted,
-//                RegionNotKnown,
-//                RTIinternalError,
-//                UnimplementedService);
-
 private:
     pid_t pid_RTIA ; //!< pid associated with rtia fork (private).
 
@@ -1333,4 +1317,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.9 2003/03/12 10:02:38 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.10 2003/04/17 17:00:21 breholee Exp $

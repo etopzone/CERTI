@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: Message_RW.cc,v 3.9 2003/04/17 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -166,11 +166,11 @@ Message::readBody(SocketUN *socket)
             // --- MessageO_I_Struct ---
 
         case PUBLISH_OBJECT_CLASS:
-        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
             readHandleArray(&Body);
             break ;
 
-        case REGISTER_OBJECT:
+        case REGISTER_OBJECT_INSTANCE:
             object = Body.readLongInt();
             readName(&Body); /*FAYET 25.07.01*/
             break ;
@@ -185,9 +185,9 @@ Message::readBody(SocketUN *socket)
             readResignAction(&Body);
             break ;
 
-        case DISCOVER_OBJECT:
-        case DELETE_OBJECT:
-        case REMOVE_OBJECT:
+        case DISCOVER_OBJECT_INSTANCE:
+        case DELETE_OBJECT_INSTANCE:
+        case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, Label, RAction
             object = Body.readLongInt();
             readTag(&Body);
@@ -239,7 +239,7 @@ Message::readBody(SocketUN *socket)
 
             // --- MessageT_O_Struct, Body not empty ---
 
-        case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+        case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
         case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
             object = Body.readLongInt();
@@ -324,7 +324,7 @@ Message::readHeader(SocketUN *socket)
         // --- MessageO_I_Struct, No Body ---
 
     case UNPUBLISH_OBJECT_CLASS:
-    case UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+    case UNSUBSCRIBE_OBJECT_CLASS:
         objectClass = header.VP.O_I.handle ;
         break ;
 
@@ -341,15 +341,15 @@ Message::readHeader(SocketUN *socket)
         // --- MessageO_I_Struct, Body not Empty ---
 
     case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
-    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE: // Body contains HandleArray
-    case REGISTER_OBJECT: // Body contains object
+    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
+    case REGISTER_OBJECT_INSTANCE: // Body contains object
     case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
         // ValueArray[] and resignAction.
-    case DISCOVER_OBJECT: // B.c. object, Tag and resignAction
+    case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
     case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
         // and ValueArray[]
-    case DELETE_OBJECT: // Body contains object, Tag.
-    case REMOVE_OBJECT: // B.c. object, Tag, Label&resignAction
+    case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
+    case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, Label&resignAction
     case GET_OBJECT_CLASS_HANDLE: // Body contains Name
     case GET_OBJECT_CLASS_NAME: // Body contains Name
     case GET_ATTRIBUTE_HANDLE: // B.c. Name and attribute.
@@ -389,7 +389,7 @@ Message::readHeader(SocketUN *socket)
 
         // --- MessageT_O_Struct, No Body ---
 
-    case CHANGE_INTERACTION_TRANSPORT_TYPE:
+    case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
     case CHANGE_INTERACTION_ORDER_TYPE:
         interactionClass = header.VP.T_O.handle ;
         transport = header.VP.T_O.transport ;
@@ -403,7 +403,7 @@ Message::readHeader(SocketUN *socket)
 
         // --- MessageT_O_Struct, Body not empty ---
 
-    case CHANGE_ATTRIBUTE_TRANSPORT_TYPE: // B.c. object, HandleArray.
+    case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, HandleArray.
     case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, HandleArray.
         handleArraySize = header.VP.T_O.size ;
         transport = header.VP.T_O.transport ;
@@ -411,22 +411,24 @@ Message::readHeader(SocketUN *socket)
         break ;
 
         // --- TimeStruct, No Body ---
-    case REQUEST_FEDERATION_TIME:
-    case REQUEST_LBTS:
-    case REQUEST_FEDERATE_TIME:
+        //    case REQUEST_FEDERATION_TIME:
+    case QUERY_LBTS:
+    case QUERY_FEDERATE_TIME:
     case TIME_ADVANCE_REQUEST:
     case NEXT_EVENT_REQUEST:
     case TIME_ADVANCE_GRANT:
         date = header.VP.time.date ;
         break ;
 
-    case SET_LOOKAHEAD:
-    case REQUEST_LOOKAHEAD:
+    case MODIFY_LOOKAHEAD:
+    case QUERY_LOOKAHEAD:
         lookahead = header.VP.time.date ;
         break ;
 
-    case SET_TIME_REGULATING:
-    case SET_TIME_CONSTRAINED:
+    case ENABLE_TIME_REGULATION:
+    case DISABLE_TIME_REGULATION:
+    case ENABLE_TIME_CONSTRAINED:
+    case DISABLE_TIME_CONSTRAINED:
     case TICK_REQUEST:
         boolean = header.VP.time.mode ;
         break ;
@@ -669,11 +671,11 @@ Message::writeBody(SocketUN *socket)
             // --- MessageO_I_Struct ---
 
         case PUBLISH_OBJECT_CLASS:
-        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+        case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
             writeHandleArray(&Body);
             break ;
 
-        case REGISTER_OBJECT:
+        case REGISTER_OBJECT_INSTANCE:
             Body.writeLongInt(object);
             Body.writeString(name);
             break ;
@@ -688,9 +690,9 @@ Message::writeBody(SocketUN *socket)
             writeResignAction(&Body);
             break ;
 
-        case DISCOVER_OBJECT:
-        case DELETE_OBJECT:
-        case REMOVE_OBJECT:
+        case DISCOVER_OBJECT_INSTANCE:
+        case DELETE_OBJECT_INSTANCE:
+        case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, label, resignAction
             Body.writeLongInt(object);
             Body.writeString(tag);
@@ -742,7 +744,7 @@ Message::writeBody(SocketUN *socket)
 
             // --- MessageT_O_Struct, Body not empty ---
 
-        case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+        case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
         case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
             Body.writeLongInt(object);
@@ -860,7 +862,7 @@ Message::writeHeader(SocketUN *socket)
         // --- MessageO_I_Struct, No Body ---
 
     case UNPUBLISH_OBJECT_CLASS:
-    case UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+    case UNSUBSCRIBE_OBJECT_CLASS:
         header.VP.O_I.handle = this->objectClass ;
         header.bodySize = 0 ;
         break ;
@@ -878,15 +880,15 @@ Message::writeHeader(SocketUN *socket)
         // --- MessageO_I_Struct, Body not Empty ---
 
     case PUBLISH_OBJECT_CLASS: // Body contains handleArray
-    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE: // Body contains handleArray
-    case REGISTER_OBJECT: // Body contains object
+    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains handleArray
+    case REGISTER_OBJECT_INSTANCE: // Body contains object
     case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
         // ValueArray[] and resignAction.
-    case DISCOVER_OBJECT: // B.c. object, Tag and resignAction
+    case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
     case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
         // and ValueArray[]
-    case DELETE_OBJECT: // Body contains object, Tag.
-    case REMOVE_OBJECT: // B.c. object, Tag, label&resignAction
+    case DELETE_OBJECT_INSTANCE: // Body contains object, Tag.
+    case REMOVE_OBJECT_INSTANCE: // B.c. object, Tag, label&resignAction
     case GET_OBJECT_CLASS_HANDLE: // Body contains name
     case GET_OBJECT_CLASS_NAME: // Body contains name
     case GET_ATTRIBUTE_HANDLE: // B.c. name and attribute.
@@ -930,10 +932,9 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 0 ;
         break ;
 
-
         // --- MessageT_O_Struct, No Body ---
 
-    case CHANGE_INTERACTION_TRANSPORT_TYPE:
+    case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
     case CHANGE_INTERACTION_ORDER_TYPE:
         header.VP.T_O.handle = interactionClass ;
         header.VP.T_O.transport = transport ;
@@ -949,7 +950,7 @@ Message::writeHeader(SocketUN *socket)
 
         // --- MessageT_O_Struct, Body not empty ---
 
-    case CHANGE_ATTRIBUTE_TRANSPORT_TYPE: // B.c. object, handleArray.
+    case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE: // B.c. object, handleArray.
     case CHANGE_ATTRIBUTE_ORDER_TYPE: // B.c. object, handleArray.
         header.VP.T_O.size = handleArraySize ;
         header.VP.T_O.transport = transport ;
@@ -958,9 +959,9 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
         // --- TimeStruct, No Body ---
-    case REQUEST_FEDERATION_TIME:
-    case REQUEST_LBTS:
-    case REQUEST_FEDERATE_TIME:
+        //    case REQUEST_FEDERATION_TIME:
+    case QUERY_LBTS:
+    case QUERY_FEDERATE_TIME:
     case TIME_ADVANCE_REQUEST:
     case NEXT_EVENT_REQUEST:
     case TIME_ADVANCE_GRANT:
@@ -969,14 +970,16 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
 
-    case SET_LOOKAHEAD:
-    case REQUEST_LOOKAHEAD:
+    case MODIFY_LOOKAHEAD:
+    case QUERY_LOOKAHEAD:
         header.VP.time.date = lookahead ;
         header.bodySize = 0 ;
         break ;
 
-    case SET_TIME_REGULATING:
-    case SET_TIME_CONSTRAINED:
+    case ENABLE_TIME_REGULATION:
+    case DISABLE_TIME_REGULATION:
+    case ENABLE_TIME_CONSTRAINED:
+    case DISABLE_TIME_CONSTRAINED:
     case TICK_REQUEST:
         header.VP.time.mode = boolean ;
         header.bodySize = 0 ;
@@ -1028,4 +1031,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.8 2003/04/09 16:41:10 breholee Exp $
+// $Id: Message_RW.cc,v 3.9 2003/04/17 17:00:21 breholee Exp $

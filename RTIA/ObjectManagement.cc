@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.6 2003/04/17 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectManagement.hh"
@@ -153,11 +153,8 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     return rep.eventRetraction ;
 }
 
-
-// ------------------------
-// -- 4.4 discoverObject --
-// ------------------------
-
+// ----------------------------------------------------------------------------
+//! 4.4 discoverObject.
 void
 ObjectManagement::discoverObject(ObjectHandle theObjectHandle,
                                  ObjectClassHandle theObjectClassHandle,
@@ -168,7 +165,7 @@ ObjectManagement::discoverObject(ObjectHandle theObjectHandle,
 {
     Message req, rep ;
 
-    req.type = DISCOVER_OBJECT ;
+    req.type = DISCOVER_OBJECT_INSTANCE ;
     req.object = theObjectHandle ;
     req.objectClass = theObjectClassHandle ;
     req.date = theTime ;
@@ -341,11 +338,8 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     return rep.eventRetraction ;
 }
 
-
-// --------------------------
-// -- 4.9(1) removeObject --
-// --------------------------
-
+// ----------------------------------------------------------------------------
+//! 4.9(1) removeObject.
 void
 ObjectManagement::removeObject(ObjectHandle theObjectHandle,
                                FederateHandle theFederateHandle,
@@ -355,7 +349,7 @@ ObjectManagement::removeObject(ObjectHandle theObjectHandle,
 {
     Message req, rep ;
 
-    req.type = REMOVE_OBJECT ;
+    req.type = REMOVE_OBJECT_INSTANCE ;
     req.object = theObjectHandle ;
     req.eventRetraction = theHandle ;
     req.setTag(theTag);
@@ -658,4 +652,4 @@ ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.5 2003/02/19 15:45:22 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.6 2003/04/17 17:00:21 breholee Exp $

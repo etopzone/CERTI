@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.18 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIambassador.cc,v 3.19 2003/04/17 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -618,7 +618,7 @@ RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
 }
 
 // ----------------------------------------------------------------------------
-// Subscribe Object Class Attribute
+// Subscribe Object Class Attributes
 void
 RTIambassador::
 subscribeObjectClassAttributes(ObjectClassHandle theClass,
@@ -639,7 +639,7 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
     CAttributeHandleValuePair *tmp ;
 
     // envoyer la requete au RTI
-    req.type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
+    req.type = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
     req.objectClass = theClass ;
     req.handleArraySize = attributeList_aux->_size ;
 
@@ -667,7 +667,7 @@ RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE ;
+    req.type = UNSUBSCRIBE_OBJECT_CLASS ;
     req.objectClass = theClass ;
     executeService(&req, &rep);
 }
@@ -738,7 +738,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = REGISTER_OBJECT ;
+    req.type = REGISTER_OBJECT_INSTANCE ;
     req.setName((char *) theObjectName);
     req.objectClass = theClass ;
     executeService(&req, &rep);
@@ -762,7 +762,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = REGISTER_OBJECT ;
+    req.type = REGISTER_OBJECT_INSTANCE ;
     req.setName("\0");
     req.objectClass = theClass ;
 
@@ -925,7 +925,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = DELETE_OBJECT ;
+    req.type = DELETE_OBJECT_INSTANCE ;
     req.object = (ObjectHandle) theObject ;
     req.date = (FederationTime) ((RTIfedTime&) theTime).getTime();
 
@@ -994,7 +994,7 @@ changeAttributeTransportationType(ObjectHandle theObject,
     theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
     // Envoyer la requete au RTI
-    req.type = CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
+    req.type = CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
     req.object = (ObjectHandle) theObject ;
     req.transport = theType_aux ;
 
@@ -1030,7 +1030,7 @@ changeInteractionTransportationType(InteractionClassHandle theClass,
     theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
     // envoyer la requete au RTI
-    req.type = CHANGE_INTERACTION_TRANSPORT_TYPE ;
+    req.type = CHANGE_INTERACTION_TRANSPORTATION_TYPE ;
     req.interactionClass = theClass ;
     req.transport = theType_aux ;
     executeService(&req, &rep);
@@ -1385,7 +1385,7 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = SET_TIME_REGULATING ;
+    req.type = ENABLE_TIME_REGULATION ;
     req.boolean = RTI_TRUE ;
     executeService(&req, &rep);
 }
@@ -1405,7 +1405,7 @@ RTIambassador::disableTimeRegulation(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = SET_TIME_REGULATING ;
+    req.type = DISABLE_TIME_REGULATION ;
     req.boolean = RTI_FALSE ;
     executeService(&req, &rep);
 }
@@ -1426,7 +1426,7 @@ RTIambassador::enableTimeConstrained(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = SET_TIME_CONSTRAINED ;
+    req.type = ENABLE_TIME_CONSTRAINED ;
     req.boolean = RTI_TRUE ;
     executeService(&req, &rep);
 }
@@ -1446,7 +1446,7 @@ RTIambassador::disableTimeConstrained(void)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = SET_TIME_CONSTRAINED ;
+    req.type = DISABLE_TIME_CONSTRAINED ;
     req.boolean = RTI_FALSE ;
     executeService(&req, &rep);
 }
@@ -1596,7 +1596,7 @@ RTIambassador::queryLBTS(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = REQUEST_LBTS ;
+    req.type = QUERY_LBTS ;
     executeService(&req, &rep);
 
     theTime = RTIfedTime(rep.date);
@@ -1615,7 +1615,7 @@ RTIambassador::queryFederateTime(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = REQUEST_FEDERATE_TIME ;
+    req.type = QUERY_FEDERATE_TIME ;
     executeService(&req, &rep);
 
     theTime = RTIfedTime(rep.date);
@@ -1649,7 +1649,7 @@ RTIambassador::modifyLookahead(const FedTime& theLookahead)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = SET_LOOKAHEAD ;
+    req.type = MODIFY_LOOKAHEAD ;
     req.lookahead =
         (FederationTimeDelta) ((RTIfedTime&) theLookahead).getTime();
     executeService(&req, &rep);
@@ -1668,7 +1668,7 @@ RTIambassador::queryLookahead(FedTime& theTime)
     Message req, rep ;
 
     // envoyer la requete au RTI
-    req.type = REQUEST_LOOKAHEAD ;
+    req.type = QUERY_LOOKAHEAD ;
     executeService(&req, &rep);
 
     RTIfedTime *tmp = new RTIfedTime((Double) rep.lookahead);
@@ -2621,7 +2621,7 @@ RTIambassador::tick(void)
                 fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
             } break ;
 
-            case DISCOVER_OBJECT: {
+            case DISCOVER_OBJECT_INSTANCE: {
                 fed_amb->
                     discoverObjectInstance((ObjectHandle) vers_Fed.object,
                                            vers_Fed.objectClass,
@@ -2690,7 +2690,7 @@ RTIambassador::tick(void)
                 delete theParameters_aux ;
             } break ;
 
-            case REMOVE_OBJECT: {
+            case REMOVE_OBJECT_INSTANCE: {
                 fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.object,
                                               RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
@@ -2701,7 +2701,7 @@ RTIambassador::tick(void)
                 // fed_amb->provideAttributeValueUpdate();
             } break ;
 
-            case REFLECT_RETRACTION: {
+            case REQUEST_RETRACTION: {
                 // fed_amb->reflectRetraction();
             } break ;
 
@@ -2952,7 +2952,7 @@ RTIambassador::tick(TickTime /*minimum*/,
                 fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
             } break ;
 
-            case DISCOVER_OBJECT: {
+            case DISCOVER_OBJECT_INSTANCE: {
                 fed_amb->
                     discoverObjectInstance((ObjectHandle) vers_Fed.object,
                                            vers_Fed.objectClass,
@@ -3012,7 +3012,7 @@ RTIambassador::tick(TickTime /*minimum*/,
                                             vers_Fed.eventRetraction);
             } break ;
 
-            case REMOVE_OBJECT: {
+            case REMOVE_OBJECT_INSTANCE: {
                 fed_amb->removeObjectInstance((ObjectHandle) vers_Fed.object,
                                               RTIfedTime(vers_Fed.date),
                                               (char *) vers_Fed.getTag(),
@@ -3023,7 +3023,7 @@ RTIambassador::tick(TickTime /*minimum*/,
                 // fed_amb->provideAttributeValueUpdate();
             } break ;
 
-            case REFLECT_RETRACTION: {
+            case REQUEST_RETRACTION: {
                 // fed_amb->reflectRetraction();
             } break ;
 
@@ -3601,30 +3601,6 @@ RTIambassador::processException(Message *msg)
     }
 }
 
-// ----------------------------------------------------------------------------
-// RegionToken
-// RTIambassador::getRegionToken(Region *)
-//     throw (FederateNotExecutionMember,
-//            ConcurrentAccessAttempted,
-//            RegionNotKnown,
-//            RTIinternalError,
-//            UnimplementedService) //CERTI
-// {
-//     throw UnimplementedService();
-// }
-
-// ----------------------------------------------------------------------------
-// Region *
-// RTIambassador::getRegion(RegionToken)
-//     throw (FederateNotExecutionMember,
-//            ConcurrentAccessAttempted,
-//            RegionNotKnown,
-//            RTIinternalError,
-//            UnimplementedService) //CERTI
-// {
-//     throw UnimplementedService();
-// }
-
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.18 2003/03/21 15:06:46 breholee Exp $
+// $Id: RTIambassador.cc,v 3.19 2003/04/17 17:00:21 breholee Exp $

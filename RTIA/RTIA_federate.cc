@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.9 2003/03/24 13:52:18 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.10 2003/04/17 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -130,27 +130,27 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 2.14(1)
-    case FEDERATE_SAVE_ACHIEVED:
+    case FEDERATE_SAVE_COMPLETE:
         // unimplemented
         break ;
 
         // 2.14(2)
-    case FEDERATE_SAVE_NOT_ACHIEVED:
+    case FEDERATE_SAVE_NOT_COMPLETE:
         // unimplemented
         break ;
 
         // 2.15
-    case REQUEST_RESTORE:
+    case REQUEST_FEDERATION_RESTORE:
         // unimplemented
         break ;
 
         // 2.17(1)
-    case RESTORE_ACHIEVED:
+    case FEDERATE_RESTORE_COMPLETE:
         // unimplemented
         break ;
 
         // 2.17(2)
-    case RESTORE_NOT_ACHIEVED:
+    case FEDERATE_RESTORE_NOT_COMPLETE:
         // unimplemented
         break ;
 
@@ -195,7 +195,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 3.3.(1)
-    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+    case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
         nb_requetes[12]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type SubscribeObjectClass.");
@@ -206,7 +206,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 3.3(2)
-    case UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
+    case UNSUBSCRIBE_OBJECT_CLASS:
         nb_requetes[13]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type UnsubscribeObjectClass.");
@@ -234,21 +234,21 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 4.1
-    case REQUEST_ID:
-        nb_requetes[16]++ ;
+//     case REQUEST_ID:
+//         nb_requetes[16]++ ;
 
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestIDs.");
+//         D.Out(pdTrace, "Receiving Message from Federate, type RequestIDs.");
 
-        ObjectHandle first ;
-        ObjectHandle last ;
-        om->requestID(req->idCount, first, last, e);
+//         ObjectHandle first ;
+//         ObjectHandle last ;
+//         om->requestID(req->idCount, first, last, e);
 
-        rep.firstId = first ;
-        rep.lastId = last ;
-        break ;
+//         rep.firstId = first ;
+//         rep.lastId = last ;
+//         break ;
 
         // 4.2
-    case REGISTER_OBJECT: {
+    case REGISTER_OBJECT_INSTANCE: {
         nb_requetes[17]++ ;
 
         FederationTime date = tm->requestFederateTime();
@@ -311,14 +311,14 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 4.8
-    case DELETE_OBJECT:
+    case DELETE_OBJECT_INSTANCE:
         nb_requetes[20]++ ;
         D.Out(pdTrace, "Receiving Message from Federate, type DeleteObject.");
         rep.eventRetraction = om->deleteObject(req->object, req->getTag(), e);
         break ;
 
         // 4.10
-    case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+    case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
         nb_requetes[21]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type ChangeAttribTransport.");
@@ -344,7 +344,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 4.12
-    case CHANGE_INTERACTION_TRANSPORT_TYPE:
+    case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
         nb_requetes[23]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type ChangeInterTransport.");
@@ -506,16 +506,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 6.1
-    case REQUEST_FEDERATION_TIME:
-        nb_requetes[25]++ ;
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type RequestFederationTime.");
+//     case REQUEST_FEDERATION_TIME:
+//         nb_requetes[25]++ ;
+//         D.Out(pdTrace,
+//               "Receiving Message from Federate, type RequestFederationTime.");
 
-        rep.date = tm->requestFederationTime();
-        break ;
+//         rep.date = tm->requestFederationTime();
+//         break ;
 
         // 6.2
-    case REQUEST_LBTS:
+    case QUERY_LBTS:
         nb_requetes[26]++ ;
         D.Out(pdTrace, "Receiving Message from Federate, type RequestLBTS.");
 
@@ -523,7 +523,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 6.3
-    case REQUEST_FEDERATE_TIME:
+    case QUERY_FEDERATE_TIME:
         nb_requetes[27]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type RequestFederateTime.");
@@ -532,12 +532,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 6.4
-    case REQUEST_MIN_NEXT_EVENT_TIME:
+    case QUERY_MIN_NEXT_EVENT_TIME:
         // unimplemented
         break ;
 
         // 6.5
-    case SET_LOOKAHEAD:
+    case MODIFY_LOOKAHEAD:
         nb_requetes[28]++ ;
         D.Out(pdTrace, "Receiving Message from Federate, type SetLookAhead.");
 
@@ -545,7 +545,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 6.6
-    case REQUEST_LOOKAHEAD:
+    case QUERY_LOOKAHEAD:
         nb_requetes[29]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type RequestLookAhead.");
@@ -577,29 +577,29 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 7.1
-    case CREATE_UPDATE_REGION:
+    case CREATE_REGION:
         // unimplemented
         break ;
 
         // 7.2
-    case CREATE_SUBSCRIPTION_REGION:
-        // unimplemented
-        break ;
+//     case CREATE_SUBSCRIPTION_REGION:
+//         // unimplemented
+//         break ;
 
         // 7.3(1)
-    case ASSOCIATE_UPDATE_REGION:
-        // unimplemented
-        break ;
+//     case ASSOCIATE_UPDATE_REGION:
+//         // unimplemented
+//         break ;
 
-        // 7.3(2)
-    case DISASSOCIATE_UPDATE_REGION:
-        // unimplemented
-        break ;
+//         // 7.3(2)
+//     case DISASSOCIATE_UPDATE_REGION:
+//         // unimplemented
+//         break ;
 
-        // 7.5
-    case MODIFY_REGION:
-        // unimplemented
-        break ;
+//         // 7.5
+//     case MODIFY_REGION:
+//         // unimplemented
+//         break ;
 
         // 7.6
     case DELETE_REGION:
@@ -751,17 +751,18 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 8.11
-    case GET_FEDERATE_HANDLE:
-        // unimplemented
-        break ;
+//     case GET_FEDERATE_HANDLE:
+//         // unimplemented
+//         break ;
 
-        // 8.12
-    case GET_FEDERATE_NAME:
-        // unimplemented
-        break ;
+//         // 8.12
+//     case GET_FEDERATE_NAME:
+//         // unimplemented
+//         break ;
 
         // 8.13
-    case SET_TIME_REGULATING:
+    case ENABLE_TIME_REGULATION:
+    case DISABLE_TIME_REGULATION:
         nb_requetes[40]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetTimeRegulating.");
@@ -770,7 +771,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
         // 8.14
-    case SET_TIME_CONSTRAINED:
+    case ENABLE_TIME_CONSTRAINED:
+    case DISABLE_TIME_CONSTRAINED:
         nb_requetes[41]++ ;
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetTimeConstrained.");
@@ -1134,4 +1136,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.9 2003/03/24 13:52:18 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.10 2003/04/17 17:00:21 breholee Exp $
