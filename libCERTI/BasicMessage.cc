@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.1 2003/11/10 14:43:01 breholee Exp $
+// $Id: BasicMessage.cc,v 3.2 2003/11/21 16:14:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
@@ -40,8 +40,6 @@ namespace certi {
 void
 BasicMessage::setExtents(const vector<Extent> &e)
 {
-//     extents.clear();
-//     std::copy(e.begin(), e.end(), std::back_inserter(extents));
     extents = e ;
     assert(extents.size() == e.size());
 }
@@ -63,12 +61,13 @@ BasicMessage::getExtents() const
 void
 BasicMessage::writeExtents(MessageBody &body) const
 {
-    D[pdDebug] << "Write " << extents.size() << " extents" << endl ;
+    D[pdDebug] << "Write " << extents.size() << " extent(s)" << endl ;
 
     body.writeLongInt(extents.size());
     if (extents.size() > 0) {
 	int n = extents[0].size();
 	body.writeLongInt(n);
+	D[pdDebug] << "Extent with " << n << " range(s)" << endl ;
 
 	for (int i = 0 ; i < extents.size(); ++i) {
 	    const Extent &e = extents[i] ;
@@ -90,15 +89,16 @@ void
 BasicMessage::readExtents(const MessageBody &body)
 {
     long nb_extents = body.readLongInt();
-    D[pdDebug] << "Read " << nb_extents << " extents" << endl ;
+    D[pdDebug] << "Read " << nb_extents << " extent(s)" << endl ;
 
     extents.clear();    
     if (nb_extents > 0) {
 	extents.reserve(nb_extents);
 	long nb_dimensions = body.readLongInt();
+	D[pdDebug] << "Extent with " << nb_dimensions << " range(s)" << endl ;
 	for (long i = 0 ; i < nb_extents ; ++i) {
 	    Extent e(nb_dimensions);
-	    for (long h = 0 ; h < nb_dimensions ; ++h) {
+	    for (long h = 1 ; h <= nb_dimensions ; ++h) {
 		e.setRangeLowerBound(h, body.readLongInt());
 		e.setRangeUpperBound(h, body.readLongInt());
 	    }
@@ -109,4 +109,4 @@ BasicMessage::readExtents(const MessageBody &body)
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.1 2003/11/10 14:43:01 breholee Exp $
+// $Id: BasicMessage.cc,v 3.2 2003/11/21 16:14:34 breholee Exp $
