@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: InteractionSet.hh,v 3.6 2003/04/09 16:38:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -85,6 +85,9 @@ public:
     void killFederate(FederateHandle the_federate)
         throw ();
 
+    Interaction *getByHandle(InteractionClassHandle the_handle)
+        throw (InteractionClassNotDefined, RTIinternalError);
+
     // ----------------------------------
     // -- Interaction Class Management --
     // ----------------------------------
@@ -138,16 +141,10 @@ private:
       This reference is passed to all new ObjectClass.
     */
     SecurityServer *server ;
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-    Interaction *getByHandle(InteractionClassHandle the_handle)
-        throw (InteractionClassNotDefined, RTIinternalError);
 };
 
 } // namespace certi
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.5 2003/02/19 18:07:30 breholee Exp $
+// $Id: InteractionSet.hh,v 3.6 2003/04/09 16:38:14 breholee Exp $
