@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.cc,v 3.5 2003/07/09 15:59:37 breholee Exp $
+// $Id: Subscriber.cc,v 3.6 2003/07/10 16:27:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,14 @@ Subscriber::getRegion() const
     return region ;
 }
 
+// ----------------------------------------------------------------------------
+bool
+Subscriber::match(FederateHandle fed, RegionImp *r) const
+{
+    return fed == handle && r == region ;
 }
 
-// $Id: Subscriber.cc,v 3.5 2003/07/09 15:59:37 breholee Exp $
+}
+
+// $Id: Subscriber.cc,v 3.6 2003/07/10 16:27:42 breholee Exp $
 
