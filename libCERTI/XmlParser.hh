@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.8 2003/05/23 13:23:29 breholee Exp $
+// $Id: XmlParser.hh,v 3.9 2003/10/20 12:51:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -46,7 +46,7 @@ class XmlParser
 {
 public:
     XmlParser(RootObject*);
-    RootObject* parse(string);
+    RootObject* parse(std::string);
     static bool exists(void);
 
 private:
@@ -60,7 +60,7 @@ private:
     int freeParameterHandle ;
     int freeSpaceHandle ;
 
-    string filename ;
+    std::string filename ;
     RootObject* root ;
     
 #ifdef HAVE_XML
@@ -73,4 +73,4 @@ private:
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.8 2003/05/23 13:23:29 breholee Exp $
+// $Id: XmlParser.hh,v 3.9 2003/10/20 12:51:46 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.16 2003/07/10 21:42:44 breholee Exp $
+// $Id: ObjectClass.hh,v 3.17 2003/10/20 12:49:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -221,7 +221,7 @@ public:
     // the Object Classes tree and set all Parent/Child dependences and
     // attributes.
     ObjectClassHandle Father ; //!< Object parent number.
-    list<ObjectClassHandle> sonSet ;
+    std::list<ObjectClassHandle> sonSet ;
 
     //! This Object help to find a TCPLink from a Federate Handle.
     SecurityServer *server ;
@@ -266,4 +266,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.16 2003/07/10 21:42:44 breholee Exp $
+// $Id: ObjectClass.hh,v 3.17 2003/10/20 12:49:17 breholee Exp $
