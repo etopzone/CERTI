@@ -19,10 +19,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federate.cc,v 3.8 2003/05/15 20:57:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federate.hh"
+
+using std::string ;
+using std::list ;
 
 namespace certi {
 namespace rtig {
@@ -49,7 +52,7 @@ Federate::Federate(const char *the_name, FederateHandle the_handle)
 // ----------------------------------------------------------------------------
 // Destructor
 
-Federate::~Federate(void)
+Federate::~Federate()
 {
     free(name);
 }
@@ -58,7 +61,7 @@ Federate::~Federate(void)
 // Get attributes
 
 FederateHandle
-Federate::getHandle(void) const
+Federate::getHandle() const
 {
     return handle ;
 }
@@ -72,19 +75,19 @@ Federate::setHandle(FederateHandle the_handle)
 // ----------------------------------------------------------------------------
 //! getName.
 const char *
-Federate::getName(void) const
+Federate::getName() const
 {
     return name ;
 }
 
 bool
-Federate::isConstrained(void) const
+Federate::isConstrained() const
 {
     return constrained ;
 }
 
 bool
-Federate::isRegulator(void) const
+Federate::isRegulator() const
 {
     return regulator ;
 }
@@ -106,13 +109,13 @@ Federate::setRegulator(bool r)
 
 // ----------------------------------------------------------------------------
 bool
-Federate::isSaving(void) const
+Federate::isSaving() const
 {
     return saving ;
 }
 
 bool
-Federate::isRestoring(void) const
+Federate::isRestoring() const
 {
     return restoring ;
 }
@@ -141,7 +144,10 @@ Federate::addSynchronizationLabel(const char *label)
         }
     }
 
-    synchronizationLabels.push_back(strdup(label));
+    char *copy = new char[strlen(label) + 1] ;
+    strcpy(copy, label);
+
+    synchronizationLabels.push_back(copy);
 }
 
 // ----------------------------------------------------------------------------
@@ -152,7 +158,7 @@ Federate::removeSynchronizationLabel(const char *label)
     list<char *>::iterator i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i), label)) {
-            delete (*i);
+            delete[] *i ;
             synchronizationLabels.erase(i);
             return ;
         }
@@ -177,4 +183,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federate.cc,v 3.8 2003/05/15 20:57:41 breholee Exp $

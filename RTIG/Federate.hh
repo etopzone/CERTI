@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federate.hh,v 3.8 2003/05/15 20:57:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -28,9 +28,8 @@
 #include <config.h>
 
 #include <list>
-using std::list ;
-
 #include <cstring>
+#include <string>
 
 #include "RTItypes.hh"
 // #include "SocketTCP.hh"
@@ -49,7 +48,7 @@ private:
     bool regulator ;
     bool constrained ; //!< = false by default.
 
-    list<char *> synchronizationLabels ; // List of labels to synchronize.
+    std::list<char *> synchronizationLabels ; // List of labels to synchronize.
 
 public:
     Federate(const char *the_name, FederateHandle)
@@ -85,4 +84,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.7 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federate.hh,v 3.8 2003/05/15 20:57:41 breholee Exp $

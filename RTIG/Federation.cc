@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.18 2003/05/08 21:47:44 breholee Exp $
+// $Id: Federation.cc,v 3.19 2003/05/15 20:57:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -55,7 +55,6 @@ Federation::Federation(const char *federation_name,
       restoreInProgress(false), restoreStatus(true)
 {
     fedparser::FedParser *fed_reader ;
-    char file_name[MAX_FEDERATION_NAME_LENGTH + 5] ;
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -136,7 +135,7 @@ Federation::Federation(const char *federation_name,
         struct stat StatBuffer ;
         char *MTimeBuffer ;
 
-        if (stat(file_name, &StatBuffer) == 0) {
+        if (stat(filename.c_str(), &StatBuffer) == 0) {
             MTimeBuffer = ctime(&StatBuffer.st_mtime);
             MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
             server->Audit->addToLinef("(Last modified %s)", MTimeBuffer);
@@ -208,7 +207,7 @@ Federation::~Federation()
 // ----------------------------------------------------------------------------
 // Get attributes
 int
-Federation::getNbFederates(void) const
+Federation::getNbFederates() const
 {
     return size();
 }
@@ -216,14 +215,14 @@ Federation::getNbFederates(void) const
 // ----------------------------------------------------------------------------
 //! Return true if federation is being synchronized.
 bool
-Federation::isSynchronizing(void) const
+Federation::isSynchronizing() const
 {
     return !synchronizationLabels.empty();
 }
 
 // ----------------------------------------------------------------------------
 FederationHandle
-Federation::getHandle(void) const
+Federation::getHandle() const
 {
     return handle ;
 }
@@ -231,13 +230,13 @@ Federation::getHandle(void) const
 // ----------------------------------------------------------------------------
 //! getName.
 const char *
-Federation::getName(void) const
+Federation::getName() const
 {
     return name ;
 }
 
 int
-Federation::getNbRegulators(void) const
+Federation::getNbRegulators() const
 {
     return regulators.size();
 }
@@ -773,7 +772,7 @@ Federation::getByName(const char *federate_name) const
 /*! Throw an exception if there are no more handles left(MAX_FEDERATEHANDLE).
  */
 FederateHandle
-Federation::getNewHandle(void)
+Federation::getNewHandle()
     throw (RTIinternalError)
 {
     if (nextFederateHandle > MAX_FEDERATEHANDLE) {
@@ -793,7 +792,7 @@ Federation::getNewHandle(void)
   FederatesCurrentlyJoined.
 */
 bool
-Federation::empty(void) const
+Federation::empty() const
     throw (FederatesCurrentlyJoined)
 {
     if (list<Federate *>::empty())
@@ -1080,8 +1079,9 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
     i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i).first, label)) {
-            delete (*i).first ;
-            delete (*i).second ;
+            // Allocated by strdup().
+            free(const_cast<char *>((*i).first));
+            free(const_cast<char *>((*i).second));
             synchronizationLabels.erase(i);
             break ;
         }
@@ -1495,7 +1495,7 @@ Federation::deleteRegion(FederateHandle federate,
 
 // ----------------------------------------------------------------------------
 void
-Federation::restoreXmlData(void)
+Federation::restoreXmlData()
 {
     xmlNodePtr cur ;
 
@@ -1563,7 +1563,7 @@ Federation::restoreXmlData(void)
 
 // ----------------------------------------------------------------------------
 void
-Federation::saveXmlData(void)
+Federation::saveXmlData()
 {
     doc = xmlNewDoc((const xmlChar *)"1.0");
     doc->children = xmlNewDocNode(doc, NULL, ROOT_NODE, NULL);
@@ -1602,5 +1602,5 @@ Federation::saveXmlData(void)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.18 2003/05/08 21:47:44 breholee Exp $
+// $Id: Federation.cc,v 3.19 2003/05/15 20:57:41 breholee Exp $
 
