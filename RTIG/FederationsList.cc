@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.cc,v 3.3 2002/12/11 14:47:24 breholee Exp $
+// $Id: FederationsList.cc,v 3.4 2003/01/10 10:03:13 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "FederationsList.hh"
@@ -60,11 +60,10 @@ FederationsList::~FederationsList()
 }
 
 // ---------------------------------------------------------------------------
-// addConstrained
-
+//! Adds a constrained federate to federation.
 void 
 FederationsList::addConstrained(FederationHandle handle, 
-				FederateHandle federate)
+                                FederateHandle federate)
   throw(FederationExecutionDoesNotExist,
 	FederateNotExecutionMember,
 	SaveInProgress,
@@ -1042,5 +1041,5 @@ FederationsList::cancelAcquisition(FederationHandle handle,
 
 }}
 
-// EOF $Id: FederationsList.cc,v 3.3 2002/12/11 14:47:24 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.4 2003/01/10 10:03:13 breholee Exp $
 

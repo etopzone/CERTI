@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: FederationsList.hh,v 3.3 2002/12/11 14:47:24 breholee Exp $
+// $Id: FederationsList.hh,v 3.4 2003/01/10 10:03:13 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -39,6 +39,8 @@ using std::list;
 namespace certi {
 namespace rtig {
 
+/*! FederationsList keep track on federation operations.
+*/
 class FederationsList : private list<Federation *>
 {
   // ATTRIBUTES --------------------------------------------------------------
@@ -452,4 +454,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.3 2002/12/11 14:47:24 breholee Exp $
+// $Id: FederationsList.hh,v 3.4 2003/01/10 10:03:13 breholee Exp $
