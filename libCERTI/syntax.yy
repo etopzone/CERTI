@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: syntax.yy,v 3.2 2003/11/13 10:45:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -113,7 +113,7 @@ space_list:
 
 space:
 	SPACE STRING { certi::fedparser::startSpace(); }
-	opt_dimension_list { certi::fedparser::end(); }
+	opt_dimension_list { certi::fedparser::endSpace(); }
 	R_PAR ;
 
 opt_dimension_list:

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: fed.hh,v 3.2 2003/11/13 10:45:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -60,7 +60,8 @@ void endFed();
 void endFederate();
 void endInteraction();
 void endObject();
+void endSpace();
 
 }}
 
-// $Id: fed.hh,v 3.1 2003/10/27 10:21:08 breholee Exp $
+// $Id: fed.hh,v 3.2 2003/11/13 10:45:56 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.2 2003/11/10 14:37:22 breholee Exp $
+// $Id: fed.cc,v 3.3 2003/11/13 10:45:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -60,7 +60,7 @@ static std::list<Interaction *> interactions ;
 static string federate ;
 static ObjectClassAttribute *attribute ;
 static Parameter *parameter ;
-static RoutingSpace *routing_space ;
+static RoutingSpace routing_space ;
 
 static int objectHandle = 1 ;
 static int interactionHandle = 1 ;
@@ -92,7 +92,6 @@ build(const char *filename, RootObject *root, bool v)
     federate = "" ;
     attribute = 0 ;
     parameter = 0 ;
-    routing_space = 0 ;
     int result = yyparse();    
     fclose(file);
 }
@@ -346,16 +345,25 @@ printTransport()
 void
 startSpace()
 {
-    routing_space = new RoutingSpace();
-    routing_space->setHandle(spaceHandle++);
-    routing_space->setName(arg);
-    root_object->addRoutingSpace(*routing_space);
+    routing_space = RoutingSpace();
+    routing_space.setHandle(spaceHandle++);
+    routing_space.setName(arg);
     dimensionHandle = 1 ;
 
     indent();
     cout << "(space \"" << arg.c_str() << "\" (id " 
-	 << routing_space->getHandle() << ")" ;
+	 << routing_space.getHandle() << ")" ;
     ++indentation ;
+}
+
+// ----------------------------------------------------------------------------
+void
+endSpace()
+{   
+    root_object->addRoutingSpace(routing_space);
+ 
+    --indentation ;
+    cout << ")" ;
 }
 
 // ----------------------------------------------------------------------------
@@ -364,7 +372,7 @@ addDimension()
 {
     Dimension dimension(dimensionHandle++);
     dimension.setName(arg);
-    routing_space->addDimension(dimension);
+    routing_space.addDimension(dimension);
 
     indent();
     cout << "(dimension \"" << arg.c_str() << "\" (id "
@@ -373,4 +381,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.2 2003/11/10 14:37:22 breholee Exp $
+// $Id: fed.cc,v 3.3 2003/11/13 10:45:56 breholee Exp $
