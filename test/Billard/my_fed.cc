@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.7 2003/03/19 08:59:30 breholee Exp $
+// $Id: my_fed.cc,v 3.8 2003/03/20 10:31:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,7 @@
 #include "PrettyDebug.hh"
 
 static pdCDebug D("FEDAMB", "(Fed_Amba) - ");
+extern bool verbose ;
 
 // ----------------------------------------------------------------------------
 //! Constructor.
@@ -293,7 +294,7 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
 void
 Fed::reflectAttributeValues(ObjectHandle theObject,
                             const AttributeHandleValuePairSet& theAttributes,
-                            const FedTime& /*theTime*/,
+                            const FedTime& theTime,
                             const char */*theTag*/,
                             EventRetractionHandle /*theHandle*/)
     throw (ObjectNotKnown,
@@ -308,6 +309,9 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
     // AttributeHandle *attribut ;
     ULong valueLength ;
     char *attrValue ;
+
+    if (verbose)
+        cout << "<= RAV " << ((RTIfedTime) theTime).getTime() << endl ;
 
     for (i=0 ; i<RemoteCount ; i++) {
         if (Remote[i].ID == theObject)
@@ -471,6 +475,8 @@ void Fed::SendUpdate(const FedTime& UpdateTime)
 
     try {
         RTIA->updateAttributeValues(Local.ID, *attributeSet, UpdateTime, "");
+        if (verbose)
+            cout << "-> UAV " << ((RTIfedTime) UpdateTime).getTime() << endl ;
     }
     catch (Exception& e) {
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
@@ -802,4 +808,4 @@ Fed::confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
     // }
 }
 
-// EOF $Id: my_fed.cc,v 3.7 2003/03/19 08:59:30 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.8 2003/03/20 10:31:56 breholee Exp $

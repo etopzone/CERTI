@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: billard.cc,v 3.11 2003/03/19 08:58:12 breholee Exp $
+// $Id: billard.cc,v 3.12 2003/03/20 10:31:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -92,6 +92,8 @@ int autostart = 0 ;
 int delay = 0 ;
 int timer = 0 ;
 
+bool verbose ;
+
 // ----------------------------------------
 // -- Declaration des fonctions internes --
 // ----------------------------------------
@@ -127,6 +129,8 @@ main(int argc, char **argv)
     gengetopt_args_info args_info ;
     if (cmdline_parser(argc, argv, &args_info) != 0)
         exit(EXIT_FAILURE);
+
+    verbose = args_info.verbose_flag ;
 
     rtiamb = new RTI::RTIambassador();
     fedamb = new Fed(rtiamb);
@@ -316,6 +320,8 @@ main(int argc, char **argv)
                   ((RTIfedTime&)localTime).getTime(),
                   ((RTIfedTime&)TIME_STEP).getTime());
             rtiamb->timeAdvanceRequest(*time_aux);
+            if (verbose)
+                cout << "-> TAR " << time_aux->getTime() << endl ;
         }
         catch (Exception& e) {
             D.Out(pdExcept, "******* Exception sur timeAdvanceRequest.");
@@ -333,6 +339,8 @@ main(int argc, char **argv)
         }
         try {
             rtiamb->queryFederateTime(localTime);
+            if (verbose)
+                cout << "<= TAG " << localTime.getTime() << endl ;
         }
         catch (Exception& e) {
             D.Out(pdExcept,
@@ -513,7 +521,6 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
     while (1) {
         rtiamb->queryFederateTime(localTime);
 
-        cout << "Asking Time Regulation" << endl ;
         try {
             rtiamb->enableTimeRegulation(localTime, TIME_STEP);
             break ;
@@ -541,14 +548,12 @@ SetTimeRegulation(RTI::RTIambassador *rtiamb,
                     exit(-1);
                 }
             }
-
         }
         catch (RTIinternalError) {
             printf("RTIinternalError Raised in setTimeRegulating.\n");
             exit(-1);
         }
     }
-    cout << "Time Regulation Enabled" << endl ;
 
     D.Out(pdInit, "Time Regulating on.");
 
@@ -680,4 +685,4 @@ Synchronize(RTI::RTIambassador *rtiamb, Fed *fedamb, bool creator)
     }
 }
 
-// EOF $Id: billard.cc,v 3.11 2003/03/19 08:58:12 breholee Exp $
+// EOF $Id: billard.cc,v 3.12 2003/03/20 10:31:56 breholee Exp $

@@ -28,6 +28,7 @@ struct gengetopt_args_info
   int inity_arg;	/* ball initial Y value.  */
   char * name_arg;	/* federate name.  */
   int timer_arg;	/* timer.  */
+  int verbose_flag;	/* verbose mode (default=off).  */
   int xoffset_arg;	/* X offset (X11).  */
   int yoffset_arg;	/* Y offset (X11).  */
 
@@ -41,6 +42,7 @@ struct gengetopt_args_info
   int inity_given ;	/* Whether inity was given.  */
   int name_given ;	/* Whether name was given.  */
   int timer_given ;	/* Whether timer was given.  */
+  int verbose_given ;	/* Whether verbose was given.  */
   int xoffset_given ;	/* Whether xoffset was given.  */
   int yoffset_given ;	/* Whether yoffset was given.  */
 

@@ -55,6 +55,7 @@ cmdline_parser_print_help (void)
   printf("   -YINT      --inity=INT          ball initial Y value\n");
   printf("   -nSTRING   --name=STRING        federate name\n");
   printf("   -tINT      --timer=INT          timer\n");
+  printf("   -v         --verbose            verbose mode (default=off)\n");
   printf("   -xINT      --xoffset=INT        X offset (X11)\n");
   printf("   -yINT      --yoffset=INT        Y offset (X11)\n");
 }
@@ -90,12 +91,14 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->inity_given = 0 ;
   args_info->name_given = 0 ;
   args_info->timer_given = 0 ;
+  args_info->verbose_given = 0 ;
   args_info->xoffset_given = 0 ;
   args_info->yoffset_given = 0 ;
 #define clear_args() { \
   args_info->coordinated_flag = 1;\
   args_info->federation_arg = NULL; \
   args_info->name_arg = NULL; \
+  args_info->verbose_flag = 0;\
 }
 
   clear_args();
@@ -119,12 +122,13 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "inity",	1, NULL, 'Y' },
         { "name",	1, NULL, 'n' },
         { "timer",	1, NULL, 't' },
+        { "verbose",	0, NULL, 'v' },
         { "xoffset",	1, NULL, 'x' },
         { "yoffset",	1, NULL, 'y' },
         { NULL,	0, NULL, 0 }
       };
 
-      c = getopt_long (argc, argv, "hVa:cd:f:X:Y:n:t:x:y:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVa:cd:f:X:Y:n:t:vx:y:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -226,6 +230,17 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
             }
           args_info->timer_given = 1;
           args_info->timer_arg = atoi (optarg);
+          break;
+
+        case 'v':	/* verbose mode.  */
+          if (args_info->verbose_given)
+            {
+              fprintf (stderr, "%s: `--verbose' (`-v') option given more than once\n", PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->verbose_given = 1;
+          args_info->verbose_flag = !(args_info->verbose_flag);
           break;
 
         case 'x':	/* X offset (X11).  */

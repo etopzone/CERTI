@@ -1,4 +1,4 @@
-# $Id: CommandLine.ggo,v 1.2 2003/03/13 13:21:22 breholee Exp $
+# $Id: CommandLine.ggo,v 1.3 2003/03/20 10:31:56 breholee Exp $
 #
 # This file is used by gengetopt to generate the command line parser.
 
@@ -14,7 +14,8 @@ option  "initx"		X	"ball initial X value"	int	no
 option  "inity"		Y	"ball initial Y value"	int	no
 option 	"name"		n	"federate name"		string	yes
 option  "timer"		t	"timer"			int	no
+option  "verbose"	v	"verbose mode"		flag	off
 option  "xoffset"	x	"X offset (X11)"	int	no
 option 	"yoffset"	y	"Y offset (X11)"	int	no
 
-# $Id: CommandLine.ggo,v 1.2 2003/03/13 13:21:22 breholee Exp $
+# $Id: CommandLine.ggo,v 1.3 2003/03/20 10:31:56 breholee Exp $
