@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Store.cc,v 3.9 2003/03/04 18:10:25 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.10 2003/03/12 10:04:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedParser.hh"
@@ -37,11 +37,6 @@ void FedParser::allocateAndRegisterObjectClass(void)
 {
     objStack.push_back(new ObjectClass);
 
-    if (objStack.back() == NULL) {
-        D.Out(pdError, "Memory Exhausted in ObjectClass allocation.");
-        throw RTIinternalError("Memory Exhausted in ObjectClass allocation.");
-    }
-
     objStack.back()->setHandle(objStack.size());
     objStack.back()->Depth = Depth ;
 
@@ -56,11 +51,6 @@ void FedParser::allocateAndRegisterInteractionClass(void)
     throw (RTIinternalError)
 {
     intStack.push_back(new Interaction);
-
-    if (intStack.back() == NULL) {
-        D.Out(pdError, "Memory Exhausted in InteractionClass allocation.");
-        throw RTIinternalError("Memory Exhausted.");
-    }
 
     intStack.back()->handle = intStack.size();
     intStack.back()->depth = Depth ;
@@ -568,12 +558,12 @@ void FedParser::storeString(String *x)
     }
     catch (ValueLengthExceeded) {
         cout << endl << endl << "Name Token too long : " << x->name << '.'
-             << endl ;
-        cout << "You must shorten your string or increase the MAX_USER_TAG_LENGTH constant." << endl ;
+             << endl << "You must shorten your string or increase the "
+             << "MAX_USER_TAG_LENGTH constant." << endl ;
         throw RTIinternalError("Name too long.");
     }
 }
 
 }} // namespace certi/fedparser
 
-// $Id: FedParser_Store.cc,v 3.9 2003/03/04 18:10:25 breholee Exp $
+// $Id: FedParser_Store.cc,v 3.10 2003/03/12 10:04:02 breholee Exp $
