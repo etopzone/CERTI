@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.2 2002/11/27 17:48:50 breholee Exp $
+// $Id: RTItypes.hh,v 3.3 2002/12/10 14:13:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Types utilises par le RTI : Constantes, exceptions, handles...
@@ -33,7 +33,7 @@
 #define RTI_VERSION PACKAGE"-"VERSION
 
 namespace certi {
-
+  class CAttributeHandleValuePairSet;
 // Each time a new exception is added, please handle this new case in
 // exception_type.hh and in RTIambassador.cc.
 RTI_EXCEPT(ArrayIndexOutOfBounds)
@@ -198,7 +198,7 @@ struct Value {
   ValueName name;
   ValueName value;
   ValueType type;
-  ULong lenght;
+  ULong length;
 };
  
 struct range_struct_s {
@@ -481,19 +481,25 @@ public:
 
 class CAttributeHandleValuePairSet
 {
+protected:
+  CAttributeHandleValuePair *_head;
 public:
   UShort _size; 
-  CAttributeHandleValuePair *_head;
 
 public:
-  CAttributeHandleValuePairSet();
- 
+  CAttributeHandleValuePairSet(void);
+  CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps);
+  CAttributeHandleValuePairSet(const AttributeHandleSet & ahs);
+  ~CAttributeHandleValuePairSet(void);
+
   void add(CAttributeHandleValuePair *att);
   CAttributeHandleValuePair *getWithHandle(AttributeHandle) const;
   CAttributeHandleValuePair *getWithName(AttributeName) const;
   CAttributeHandleValuePair *getIeme(UShort) const;
   void del(AttributeHandle);
-  void empty();
+  void empty(void);
+
+  AttributeHandleValuePairSet* toAHVPS(void) const;
 };	
 
 class CParameterHandleValuePair
@@ -510,21 +516,28 @@ public:
   void AfficheParameter();
 };
 
+class ParameterHandleValuePairSet;
+
 class CParameterHandleValuePairSet
 { 
+protected:
+  CParameterHandleValuePair *_head;
 public:
   UShort _size;
-  CParameterHandleValuePair *_head;
 
 public:
-  CParameterHandleValuePairSet();
-  
+  CParameterHandleValuePairSet(void);
+  CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps);
+  ~CParameterHandleValuePairSet(void);
+
   void add(CParameterHandleValuePair *par);
   CParameterHandleValuePair *getWithHandle(ParameterHandle) const;
   CParameterHandleValuePair *getWithName(ParameterName) const;
   CParameterHandleValuePair *getIeme(UShort) const;
   void del(ParameterHandle);
   void empty();
+
+  ParameterHandleValuePairSet* toPHVPS(void) const;
 };
 
 class ParameterHandleValuePair 
@@ -607,4 +620,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.2 2002/11/27 17:48:50 breholee Exp $
+// $Id: RTItypes.hh,v 3.3 2002/12/10 14:13:33 breholee Exp $
