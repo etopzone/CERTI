@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.2 2003/01/08 16:18:38 breholee Exp $ 
+## $Id: Makefile.am,v 3.3 2003/01/15 18:18:13 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -11,16 +11,15 @@ include_HEADERS = Socket.hh SocketUN.hh
 
 noinst_HEADERS = audit.hh AuditFile.hh AuditLine.hh broadcast.hh	\
 exception_type.hh fed_file.hh FederateClock.hh FederateLevelList.hh	\
-FederateLevelTuple.hh FedParser.hh GSSAPIHandler.hh Interaction.hh	\
+FedParser.hh GSSAPIHandler.hh Interaction.hh				\
 InteractionBroadcastLine.hh InteractionBroadcastList.hh			\
 InteractionSet.hh LBTS.hh List.hh Message.hh message_types.hh		\
 MessageBody.hh network.hh NetworkMessage.hh Object.hh			\
 ObjectAttribute.hh ObjectBroadcastLine.hh ObjectClass.hh		\
 ObjectClassAttribute.hh ObjectClassBroadcastList.hh ObjectClassSet.hh	\
 Parameter.hh parser.hh Publisher.hh RootObject.hh SecureTCPSocket.hh	\
-SecurityLevel.hh SecurityServer.hh service_type.hh		\
-SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh 	\
-Subscriber.hh
+SecurityLevel.hh SecurityServer.hh service_type.hh SocketMC.hh		\
+SocketServer.hh SocketTCP.hh SocketUDP.hh Subscriber.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc baseTypes.cc		\
 FederateLevelList.cc FedParser_Build.cc FedParser_Store.cc FedTime.cc	\
@@ -37,4 +36,4 @@ SocketUDP.cc SocketUN.cc Subscriber.cc
 # Too unstable to use -version-info, so :
 libCERTI_la_LDFLAGS = -release 3.0.1
 
-## EOF $Id: Makefile.am,v 3.2 2003/01/08 16:18:38 breholee Exp $
+## EOF $Id: Makefile.am,v 3.3 2003/01/15 18:18:13 breholee Exp $
