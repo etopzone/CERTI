@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.cc,v 3.0 2003/04/22 16:42:15 breholee Exp $
+// $Id: converter.cc,v 3.1 2003/05/13 08:18:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "converter.hh"
@@ -44,6 +44,7 @@ getStringToObjectLength(char *init_string, ULong& size)
                 counter++ ;
                 i++ ;
             }
+            i++ ;
             if ((counter%2)==0) size += (counter/2);
             else size += 1+((counter-1)/2);
             counter = 0 ;
@@ -113,9 +114,7 @@ stringToObject(char *init_string, char *end_string, ULong size)
     }
 }
 
-// ===========================================================================
-// Data Integrity
-// ===========================================================================
+// ----------------------------------------------------------------------------
 //! Convert an object string to a network capable message.
 /*! objectToString is used to convert data to a network message for sending.
   Special caracters are ?, \ and \0.
@@ -210,4 +209,4 @@ getObjectToStringLength(char *init_string,
 
 } // namespace certi
 
-// $Id: converter.cc,v 3.0 2003/04/22 16:42:15 breholee Exp $
+// $Id: converter.cc,v 3.1 2003/05/13 08:18:40 breholee Exp $
