@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.4 2003/04/22 16:42:27 breholee Exp $
+// $Id: GAV.hh,v 3.5 2003/06/25 14:47:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
@@ -43,9 +43,9 @@ namespace certi {
 class AttributeHandleSetImp : public list<AttributeHandle>, AttributeHandleSet
 {
 public:
-    virtual ~AttributeHandleSetImp(void);
+    virtual ~AttributeHandleSetImp();
 
-    virtual ULong size(void) const ;
+    virtual ULong size() const ;
 
     virtual AttributeHandle getHandle(ULong i) const
         throw (ArrayIndexOutOfBounds);
@@ -56,18 +56,18 @@ public:
     virtual void remove(AttributeHandle h)
         throw (AttributeNotDefined);
 
-    virtual void empty(void);
+    virtual void empty();
 
-    virtual Boolean isEmpty(void) const ;
+    virtual Boolean isEmpty() const ;
     virtual Boolean isMember(AttributeHandle h) const ;
 };
 
 class FederateHandleSetImp : public list<FederateHandle>, FederateHandleSet
 {
 public:
-    virtual ~FederateHandleSetImp(void);
+    virtual ~FederateHandleSetImp();
 
-    virtual ULong size(void) const ;
+    virtual ULong size() const ;
 
     virtual FederateHandle getHandle(ULong i) const
         throw (ArrayIndexOutOfBounds);
@@ -78,7 +78,7 @@ public:
     virtual void remove(FederateHandle h)
         throw (AttributeNotDefined, ArrayIndexOutOfBounds);
 
-    virtual void empty(void);
+    virtual void empty();
 
     virtual Boolean isMember(FederateHandle h) const ;
 };
@@ -96,7 +96,7 @@ public :
     AttributeHandleValuePair(Handle handle,
                              const char *value,
                              ULong value_length);
-    ~AttributeHandleValuePair(void);
+    ~AttributeHandleValuePair();
 };
 
 class AttributeHandleValuePairSetImp
@@ -109,9 +109,9 @@ public:
 
     // METHODS
 public:
-    virtual ~AttributeHandleValuePairSetImp(void);
+    virtual ~AttributeHandleValuePairSetImp();
 
-    virtual ULong size(void) const ;
+    virtual ULong size() const ;
     virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
     virtual ULong getValueLength(ULong i) const throw (ArrayIndexOutOfBounds);
 
@@ -140,8 +140,8 @@ public:
                ArrayIndexOutOfBounds,
                UnimplementedService);
 
-    virtual void empty(void);
-    virtual ULong start(void) const ;
+    virtual void empty();
+    virtual ULong start() const ;
     virtual ULong valid(ULong i) const ;
     virtual ULong next(ULong i) const ;
 };
@@ -158,33 +158,34 @@ public:
     CAttributeHandleValuePair *_next ;
 
 public:
-    CAttributeHandleValuePair(void);
-    ~CAttributeHandleValuePair(void);
+    CAttributeHandleValuePair();
+    ~CAttributeHandleValuePair();
 
-    void AfficheAttribute(void);
+    void AfficheAttribute();
 };
 
 class CAttributeHandleValuePairSet
 {
-protected:
-    CAttributeHandleValuePair *_head ;
 public:
     UShort _size ;
 
 public:
-    CAttributeHandleValuePairSet(void);
+    CAttributeHandleValuePairSet();
     CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps);
     CAttributeHandleValuePairSet(const AttributeHandleSet & ahs);
-    ~CAttributeHandleValuePairSet(void);
+    ~CAttributeHandleValuePairSet();
 
     void add(CAttributeHandleValuePair *att);
     CAttributeHandleValuePair *getWithHandle(AttributeHandle) const ;
     CAttributeHandleValuePair *getWithName(AttributeName) const ;
     CAttributeHandleValuePair *getIeme(UShort) const ;
     void del(AttributeHandle);
-    void empty(void);
+    void empty();
 
-    AttributeHandleValuePairSet* toAHVPS(void) const ;
+    AttributeHandleValuePairSet* toAHVPS() const ;
+
+protected:
+    CAttributeHandleValuePair *_head ;
 };
 
 class CParameterHandleValuePair
@@ -195,34 +196,36 @@ public:
     CParameterHandleValuePair *_next ;
 
 public:
-    CParameterHandleValuePair(void);
-    ~CParameterHandleValuePair(void);
+    CParameterHandleValuePair();
+    ~CParameterHandleValuePair();
 
-    void AfficheParameter(void);
+    void AfficheParameter();
 };
 
 class ParameterHandleValuePairSet ;
 
 class CParameterHandleValuePairSet
 {
-protected:
-    CParameterHandleValuePair *_head ;
 public:
     UShort _size ;
 
 public:
-    CParameterHandleValuePairSet(void);
+    CParameterHandleValuePairSet();
     CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps);
-    ~CParameterHandleValuePairSet(void);
+    ~CParameterHandleValuePairSet();
 
     void add(CParameterHandleValuePair *par);
     CParameterHandleValuePair *getWithHandle(ParameterHandle) const ;
     CParameterHandleValuePair *getWithName(ParameterName) const ;
     CParameterHandleValuePair *getIeme(UShort) const ;
     void del(ParameterHandle);
-    void empty(void);
+    void empty();
 
-    ParameterHandleValuePairSet* toPHVPS(void) const ;
+    ParameterHandleValuePairSet* toPHVPS() const ;
+
+protected:
+    CParameterHandleValuePair *_head ;
+
 };
 
 class ParameterHandleValuePair
@@ -233,7 +236,7 @@ public:
     char *_value ;
 
     ParameterHandleValuePair(Handle handle, const char *value, ULong length);
-    ~ParameterHandleValuePair(void);
+    ~ParameterHandleValuePair();
 };
 
 class ParameterHandleValuePairSetImp
@@ -245,9 +248,9 @@ public:
 
 public:
     ParameterHandleValuePairSetImp(ULong size);
-    virtual ~ParameterHandleValuePairSetImp(void);
+    virtual ~ParameterHandleValuePairSetImp();
 
-    virtual ULong size(void) const ;
+    virtual ULong size() const ;
 
     virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
 
@@ -259,13 +262,13 @@ public:
     virtual char *getValuePointer(ULong i, ULong& valueLength) const
         throw (ArrayIndexOutOfBounds);
 
-    virtual TransportType getTransportType(void) const
+    virtual TransportType getTransportType() const
         throw (InvalidHandleValuePairSetContext);
 
-    virtual OrderType getOrderType(void) const
+    virtual OrderType getOrderType() const
         throw (InvalidHandleValuePairSetContext);
 
-    virtual Region *getRegion(void) const
+    virtual Region *getRegion() const
         throw (InvalidHandleValuePairSetContext, UnimplementedService); //CERTI
 
     virtual void add(Handle h, const char *buff, ULong valueLength)
@@ -278,8 +281,8 @@ public:
                ArrayIndexOutOfBounds,
                UnimplementedService);
 
-    virtual void empty(void);
-    virtual ULong start(void) const ;
+    virtual void empty();
+    virtual ULong start() const ;
     virtual ULong valid(ULong i) const ;
     virtual ULong next(ULong i) const ;
 };
