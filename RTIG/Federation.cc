@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.20 2003/05/22 12:26:17 breholee Exp $
+// $Id: Federation.cc,v 3.21 2003/05/22 13:32:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -28,13 +28,6 @@
 #include "FedParser.hh"
 #include "XmlParser.hh"
 #include "PrettyDebug.hh"
-
-// Libraries
-#ifdef HAVE_XML
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#endif // HAVE_XML
 
 // Standard libraries
 #include <map>
@@ -1643,5 +1636,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.20 2003/05/22 12:26:17 breholee Exp $
+// $Id: Federation.cc,v 3.21 2003/05/22 13:32:40 breholee Exp $
 
