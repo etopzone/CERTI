@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 3.2 2003/03/21 18:18:48 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.3 2003/03/25 17:32:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_PRETTYDEBUG_HH
@@ -29,9 +29,12 @@
 #include <config.h>
 
 #include <cstring>
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 #include <stdarg.h>
+
+using std::cout ;
+using std::cerr ;
 
 #include "DebugOStream.hh"
 
@@ -131,4 +134,4 @@ public:
 
 #endif // _CERTI_PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 3.2 2003/03/21 18:18:48 breholee Exp $
+// $Id: PrettyDebug.hh,v 3.3 2003/03/25 17:32:25 breholee Exp $
