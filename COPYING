@@ -19,3 +19,6 @@ Lesser General Public License. This is a GPL-compatible license (this
 is why CERTI can be considered as GPL software). You should have
 received a copy of the GNU LGPL with this program, in the file
 "lesser.txt".
+
+In the "test" directory, the "Billard" application is GPL, and uses an
+LGPL graphics library called "libgraphc".
