@@ -52,17 +52,19 @@ public:
 
 protected:
     //! Collects number of messages exchanged between federate and RTIA.
-    std::map<Message::Type, int> federateServiceSet ;
+    std::vector<int> federateServiceSet ;
     //! Collects number of messages exchanged between RTIG and RTIA.
-    std::map<NetworkMessage::Type, int> rtiServiceSet ;
+    std::vector<int> rtiServiceSet ;
     //! Names of Message messages
-    static std::map<Message::Type, std::string> fedMessageName ;
+    static std::vector<std::string> fedMessageName ;
     //! Names of NetworkMessage-class messages
-    static std::map<NetworkMessage::Type, std::string> rtiMessageName ;
+    static std::vector<std::string> rtiMessageName ;
     //! Display number of sent messages, for each message type
     bool myDisplay ;
     //! Display messages information including messages not sent
     bool myDisplayZero ; 
+    //! names initialized ?
+    static bool initialized ;
 };
 
 }} // namespaces
