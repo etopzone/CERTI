@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.31 2003/07/10 22:51:38 breholee Exp $
+// $Id: Federation.cc,v 3.32 2003/10/13 10:11:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -964,8 +964,13 @@ Federation::registerObject(FederateHandle federate,
           "Federation %d: Federate %d registering Object %d of Class %d.",
           handle, federate, new_id, class_handle);
 
+    // create a name if necessary
+    string strname = "" ;
+    strname += object_name ? string(object_name) : "HLA" + new_id ;
+
     // Register Object.
-    root->registerObjectInstance(federate, class_handle, new_id, object_name);
+    root->registerObjectInstance(federate, class_handle, new_id, 
+				 strname.c_str());
     D.Out(pdDebug, "suite");
     return new_id ;
 }
@@ -1768,5 +1773,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.31 2003/07/10 22:51:38 breholee Exp $
+// $Id: Federation.cc,v 3.32 2003/10/13 10:11:33 breholee Exp $
 
