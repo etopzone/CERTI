@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.6 2003/04/09 16:38:14 breholee Exp $
+// $Id: InteractionSet.hh,v 3.7 2003/05/23 09:45:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -51,18 +50,18 @@ public:
     // -- Public Methods --
     // --------------------
     InteractionSet(SecurityServer *the_server);
-    ~InteractionSet(void);
+    ~InteractionSet();
 
     void addClass(Interaction *the_class);
     void buildParentRelation(Interaction *child, Interaction *parent);
-    void display(void) const ;
+    void display() const ;
 
     // --------------------------
     // -- RTI Support Services --
     // --------------------------
     InteractionClassHandle
     getInteractionClassHandle(const char *the_name)
-        throw (InteractionClassNotDefined, RTIinternalError);
+        throw (NameNotFound, RTIinternalError);
 
     const char *
     getInteractionClassName(InteractionClassHandle the_handle)
@@ -71,7 +70,7 @@ public:
     ParameterHandle
     getParameterHandle(const char *the_name,
                        InteractionClassHandle the_class)
-        throw (InteractionParameterNotDefined,
+        throw (NameNotFound,
                InteractionClassNotDefined,
                RTIinternalError);
 
@@ -147,4 +146,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.6 2003/04/09 16:38:14 breholee Exp $
+// $Id: InteractionSet.hh,v 3.7 2003/05/23 09:45:15 breholee Exp $

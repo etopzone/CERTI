@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.6 2003/02/19 18:07:29 breholee Exp $
+// $Id: InteractionSet.cc,v 3.7 2003/05/23 09:45:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "InteractionSet.hh"
@@ -119,7 +118,7 @@ InteractionSet::InteractionSet(SecurityServer *security_server)
 
 // ----------------------------------------------------------------------------
 //! Destructor (frees list).
-InteractionSet::~InteractionSet(void)
+InteractionSet::~InteractionSet()
 {
     while (!empty()) {
         delete front();
@@ -130,7 +129,7 @@ InteractionSet::~InteractionSet(void)
 // ----------------------------------------------------------------------------
 //! Print the Interactions tree to the standard output.
 void
-InteractionSet::display(void) const
+InteractionSet::display() const
 {
     cout << " Interactions :" << endl ;
 
@@ -160,7 +159,7 @@ InteractionSet::getByHandle(InteractionClassHandle the_handle)
 //! Return the interaction handle associated to name.
 InteractionClassHandle
 InteractionSet::getInteractionClassHandle(const char *the_name)
-    throw (InteractionClassNotDefined, RTIinternalError)
+    throw (NameNotFound, RTIinternalError)
 {
     if (the_name == NULL)
         throw RTIinternalError();
@@ -171,7 +170,7 @@ InteractionSet::getInteractionClassHandle(const char *the_name)
             return (*i)->handle ;
     }
 
-    throw InteractionClassNotDefined();
+    throw NameNotFound();
 }
 
 // ----------------------------------------------------------------------------
@@ -194,7 +193,7 @@ InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
 ParameterHandle
 InteractionSet::getParameterHandle(const char *the_name,
                                    InteractionClassHandle the_class)
-    throw (InteractionParameterNotDefined,
+    throw (NameNotFound,
            InteractionClassNotDefined,
            RTIinternalError)
 {
@@ -285,4 +284,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.6 2003/02/19 18:07:29 breholee Exp $
+// $Id: InteractionSet.cc,v 3.7 2003/05/23 09:45:15 breholee Exp $

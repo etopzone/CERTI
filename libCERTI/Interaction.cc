@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.11 2003/04/09 16:39:04 breholee Exp $
+// $Id: Interaction.cc,v 3.12 2003/05/23 09:42:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -210,7 +210,7 @@ Interaction::checkFederateAccess(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 //! Interaction.
-Interaction::Interaction(void)
+Interaction::Interaction()
     : handle(0), parent(0), depth(0), transport(BEST_EFFORT), order(RECEIVE),
       name(NULL), id(PublicLevelID)
 {
@@ -218,7 +218,7 @@ Interaction::Interaction(void)
 
 // ----------------------------------------------------------------------------
 //! Destructor.
-Interaction::~Interaction(void)
+Interaction::~Interaction()
 {
     if (name != NULL) {
         free(name);
@@ -291,7 +291,7 @@ Interaction::deleteSubscriber(int the_rank)
 // ----------------------------------------------------------------------------
 //! Print the Interaction to the standard output.
 void
-Interaction::display(void) const
+Interaction::display() const
 {
     cout << " Interaction " << handle << " \"" << name << "\" :" << endl ;
 
@@ -335,7 +335,7 @@ Interaction::getParameterByHandle(ParameterHandle the_handle) const
 //! Returns the parameter handle obtained by its name.
 ParameterHandle
 Interaction::getParameterHandle(const char *the_name) const
-    throw (InteractionParameterNotDefined,
+    throw (NameNotFound,
            RTIinternalError)
 {
     list<Parameter *>::const_iterator p ;
@@ -344,7 +344,7 @@ Interaction::getParameterHandle(const char *the_name) const
             return (*p)->Handle ;
     }
 
-    throw InteractionParameterNotDefined();
+    throw NameNotFound();
 }
 
 // ----------------------------------------------------------------------------
@@ -539,7 +539,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
   NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
 */
 const char *
-Interaction::getName(void) const
+Interaction::getName() const
 {
     return name ;
 }
@@ -645,11 +645,11 @@ Interaction::setSpace(SpaceHandle h)
 // ----------------------------------------------------------------------------
 // getSpace
 SpaceHandle
-Interaction::getSpace(void)
+Interaction::getSpace()
 {
     return space ;
 }
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.11 2003/04/09 16:39:04 breholee Exp $
+// $Id: Interaction.cc,v 3.12 2003/05/23 09:42:58 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.8 2003/04/09 16:39:04 breholee Exp $
+// $Id: Interaction.hh,v 3.9 2003/05/23 09:42:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -80,28 +80,28 @@ private:
 
     // METHODS ---------------------------------------------------------------
 public:
-    Interaction(void);
-    ~Interaction(void);
+    Interaction();
+    ~Interaction();
 
-    const char *getName(void) const ;
+    const char *getName() const ;
     void setName(const char *new_name)
         throw (ValueLengthExceeded, RTIinternalError);
 
     void setSpace(SpaceHandle);
-    SpaceHandle getSpace(void);
+    SpaceHandle getSpace();
 
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
 
     void addParametersToChild(Interaction *new_child);
-    void display(void) const ;
+    void display() const ;
 
     // -- Security Methods --
     void checkFederateAccess(FederateHandle the_federate,
                              const char *reason) const
         throw (SecurityError);
 
-    SecurityLevelID getLevelId(void) const { return id ; };
+    SecurityLevelID getLevelId() const { return id ; };
     void setLevelId(SecurityLevelID NewLevelID);
 
     // -- Publication and Subscription --
@@ -116,7 +116,7 @@ public:
 
     // -- RTI Support Services --
     ParameterHandle getParameterHandle(const char *) const
-        throw (InteractionParameterNotDefined, RTIinternalError);
+        throw (NameNotFound, RTIinternalError);
 
     const char *getParameterName(ParameterHandle) const
         throw (InteractionParameterNotDefined, RTIinternalError);
@@ -179,4 +179,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.8 2003/04/09 16:39:04 breholee Exp $
+// $Id: Interaction.hh,v 3.9 2003/05/23 09:42:58 breholee Exp $
