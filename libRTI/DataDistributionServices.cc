@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.10 2005/02/09 16:31:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -125,7 +125,7 @@ RTIambassador::deleteRegion(Region *region)
 // ----------------------------------------------------------------------------
 // Register Object Instance With Region
 ObjectHandle
-RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
                                                 const char *tag,
                                                 AttributeHandle attrs[],
                                                 Region *regions[],
@@ -143,22 +143,25 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
            RestoreInProgress,
            RTIinternalError)
 {
+    D[pdDebug] << "registerObjectInstanceWithRegion 1" << std::endl ;
     Message req, rep ;
 
     req.setType(Message::DDM_REGISTER_OBJECT);
-    req.setObjectClass(object);
+    req.setObjectClass(object_class);
     req.setTag(tag);
     req.setAHS(attrs, nb);
-    RegionImp *r = dynamic_cast<RegionImp *>(regions[0]);
-    req.setRegions(const_cast<const RegionImp **>(&r), nb);
+    req.setRegions(regions, nb);
 
+    D[pdDebug] << "registerObjectInstanceWithRegion 2" << std::endl ;
     executeService(&req, &rep);
+    D[pdDebug] << "registerObjectInstanceWithRegion 3" << std::endl ;
+
     return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
+RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
                                                 AttributeHandle attrs[],
                                                 Region *regions[],
                                                 ULong nb)
@@ -177,10 +180,9 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object,
     Message req, rep ;
 
     req.setType(Message::DDM_REGISTER_OBJECT);
-    req.setObject(object);
+    req.setObjectClass(object_class);
     req.setAHS(attrs, nb);
-    RegionImp *r = dynamic_cast<RegionImp *>(regions[0]);
-    req.setRegions(const_cast<const RegionImp **>(&r), nb);
+    req.setRegions(regions, nb);
 
     executeService(&req, &rep);
 
@@ -451,4 +453,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.9 2004/08/24 18:25:05 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.10 2005/02/09 16:31:42 breholee Exp $
