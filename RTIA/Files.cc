@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Files.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Files.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Files.hh"
@@ -40,7 +40,7 @@ Queues::nextTsoDate(Boolean &trouve, FederationTime &heure_logique)
 {
   NetworkMessage *msg_tampon;
 
-  if(_fileTSO.lg == 0) {
+  if(_fileTSO.getLength() == 0) {
     trouve = RTI_FALSE;
     heure_logique = -1.0;
   }
@@ -65,7 +65,7 @@ Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
   msg_donne = RTI_FALSE;
   msg_restant = RTI_FALSE;
 
-  if(_file_commandes.lg > 0) {
+  if(_file_commandes.getLength() > 0) {
     msg = _file_commandes.Ieme(1);
     
     // Supprimer de la file, mais garder le pointeur en memoire
@@ -73,7 +73,7 @@ Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
     _file_commandes.Supprimer(1);
     msg_donne = RTI_TRUE;
     
-    if(_file_commandes.lg > 0)
+    if(_file_commandes.getLength() > 0)
       msg_restant = RTI_TRUE;
     
     return msg;
@@ -94,7 +94,7 @@ Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
   msg_donne = RTI_FALSE;
   msg_restant = RTI_FALSE;
 
-  if(_fileFIFO.lg > 0) {
+  if(_fileFIFO.getLength() > 0) {
     msg_tampon = _fileFIFO.Ieme(1);
     
     // supprimer de la file, mais garder le pointeur en memoire
@@ -102,7 +102,7 @@ Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
     _fileFIFO.Supprimer(1);
     msg_donne = RTI_TRUE;
     
-    if(_fileFIFO.lg > 0)
+    if(_fileFIFO.getLength() > 0)
       msg_restant = RTI_TRUE;
     
     return(msg_tampon);
@@ -126,7 +126,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
   msg_donne = RTI_FALSE;
   msg_restant = RTI_FALSE;
 
-  if(_fileTSO.lg != 0) {
+  if(_fileTSO.getLength() != 0) {
     tampon_msg = _fileTSO.Ieme(1);
     if(tampon_msg->Date <= heure_logique) {
       // supprimer de la file, mais garder le pointeur en memoire
@@ -135,7 +135,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
       msg_donne = RTI_TRUE;
       
       // regarder si le message TSO suivant peut etre donne
-      if(_fileTSO.lg != 0) {
+      if(_fileTSO.getLength() != 0) {
 	NetworkMessage *tampon_msg2;
 	tampon_msg2 = _fileTSO.Ieme(1);
 	if(tampon_msg2->Date <= heure_logique)
@@ -172,7 +172,7 @@ Queues::insertBeginCommand(NetworkMessage *msg)
 void 
 Queues::insertLastCommand(NetworkMessage *msg)
 {
-  _file_commandes.Inserer(_file_commandes.lg+1, msg);
+  _file_commandes.Inserer(_file_commandes.getLength()+1, msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -183,7 +183,7 @@ Queues::insertLastCommand(NetworkMessage *msg)
 void 
 Queues::insertFifoMessage(NetworkMessage *msg)
 {
-  _fileFIFO.Inserer(_fileFIFO.lg+1, msg);
+  _fileFIFO.Inserer(_fileFIFO.getLength()+1, msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -197,9 +197,9 @@ Queues::insertTsoMessage(NetworkMessage *msg)
   NetworkMessage *msg_tampon = NULL;
   Boolean fin = RTI_FALSE;
 
-  if(_fileTSO.lg == 0) _fileTSO.Inserer(1, msg);    
-  else { // _fileTSO.lg >= 1
-    for(int i=1; i<=_fileTSO.lg && !fin; i++) {
+  if(_fileTSO.getLength() == 0) _fileTSO.Inserer(1, msg);    
+  else { // _fileTSO.getLength() >= 1
+    for(int i=1; i<=_fileTSO.getLength() && !fin; i++) {
       msg_tampon = _fileTSO.Ieme(i);
       // strictement superieur pour placer le nouveau message
       // a la suite des anciens ayant la meme heure logique
@@ -211,7 +211,7 @@ Queues::insertTsoMessage(NetworkMessage *msg)
     }
     if(fin == RTI_FALSE) {
       // inserer en fin de file
-      _fileTSO.Inserer(_fileTSO.lg+1, msg);
+      _fileTSO.Inserer(_fileTSO.getLength()+1, msg);
     }
   }
 }
@@ -219,4 +219,4 @@ Queues::insertTsoMessage(NetworkMessage *msg)
 }
 }
 
-// $Id: Files.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: Files.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $

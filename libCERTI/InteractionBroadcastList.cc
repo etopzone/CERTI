@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -98,7 +98,7 @@ void InteractionBroadcastList::clear(void)
 
   Message   = NULL;
 
-  while(lst.lg > 0) {
+  while(lst.getLength() > 0) {
     Line = lst.Ieme(1);
     lst.Supprimer(1);
     delete Line;
@@ -118,7 +118,7 @@ getLineWithFederate(FederateHandle theFederate)
   InteractionBroadcastLine *Line = NULL;
   int                        i;
 
-  for(i = 1; i <= lst.lg; i++) {
+  for(i = 1; i <= lst.getLength(); i++) {
     Line = lst.Ieme(i);
     if(Line->federate == theFederate)
       return Line;
@@ -141,7 +141,7 @@ sendPendingMessage(SecurityServer *Server)
 
   // Pour chaque ligne de la liste
 
-  for(LineIndex = 1; LineIndex <= lst.lg; LineIndex++) {
+  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
     Line = lst.Ieme(LineIndex);
       
     // Si le federe attend un message
@@ -177,4 +177,4 @@ sendPendingMessage(SecurityServer *Server)
 
 }
 
-// $Id: InteractionBroadcastList.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: InteractionBroadcastList.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -190,7 +190,7 @@ void ObjectClassBroadcastList::clear(void)
   Message   = NULL;
   MaxHandle = 0;
 
-  while(lst.lg > 0) {
+  while(lst.getLength() > 0) {
     Line = lst.Ieme(1);
     lst.Supprimer(1);
     delete Line;
@@ -210,7 +210,7 @@ getLineWithFederate(FederateHandle theFederate)
   ObjectBroadcastLine *Line = NULL;
   int                     i;
 
-  for(i = 1; i <= lst.lg; i++) {
+  for(i = 1; i <= lst.getLength(); i++) {
     Line = lst.Ieme(i);
     if(Line->Federate == theFederate)
       return Line;
@@ -247,7 +247,7 @@ sendPendingDOMessage(SecurityServer *Server)
   Socket                *socket         = NULL;
 
   // Pour chaque ligne de la liste
-  for(LineIndex = 1; LineIndex <= lst.lg; LineIndex++) {
+  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
     Line = lst.Ieme(LineIndex);
 
     // Si le federe attend un message(attribute 0 en attente)
@@ -320,7 +320,7 @@ sendPendingRAVMessage(SecurityServer *Server)
   NetworkMessage         *CurrentMessage = NULL;
   
 	// Pour chacunes des lignes :
-  for(LineIndex = 1; LineIndex <= lst.lg; LineIndex++) {
+  for(LineIndex = 1; LineIndex <= lst.getLength(); LineIndex++) {
     Line = lst.Ieme(LineIndex);
     
     // Si AU MOINS UN des attributs est en bsWaiting
@@ -388,4 +388,4 @@ sendPendingRAVMessage(SecurityServer *Server)
 
 }
 
-// $Id: ObjectClassBroadcastList.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

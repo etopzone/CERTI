@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: List.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: List.hh,v 3.1 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_LIST_HH
@@ -47,21 +47,20 @@ struct cellule
 class LISTEGEN
 {
 public:
-  int lg;
-
   LISTEGEN();
   LISTEGEN(LISTEGEN &);
   ~LISTEGEN();
 
-  void *Ieme(int);
-  void Inserer(int, void *);
-  void Supprimer(int);
+  void *Ieme(unsigned int pos);
+  void Inserer(unsigned int pos, void *);
+  void Supprimer(unsigned int pos);
   LISTEGEN & operator =(const LISTEGEN &);
 
-private:
-  cellule *_debut;
-  int _i_courant;
-  cellule *_cell_courante;
+protected:
+  int       lg;
+  cellule * _debut;
+  int       _i_courant;
+  cellule * _cell_courante;
 
   void PositionnerCelluleCourante(int i);
 };
@@ -73,6 +72,7 @@ template <class T>
 class List : public LISTEGEN
 {
 public:
+  inline unsigned int getLength(void) {return lg;}
   T Ieme(int i) {return((T) LISTEGEN::Ieme(i));}
   void Inserer(int i, T adr) {LISTEGEN::Inserer(i,adr);}
   void Rechercher(Boolean &trouve, int &rang, Boolean(*test)(T))
@@ -80,7 +80,7 @@ public:
     T tampon;
 
     trouve = RTI_FALSE;
-    for(int i=1; i<=lg && !trouve; i++)
+    for(unsigned int i=1; i<=lg && !trouve; i++)
       {
 	tampon = Ieme(i);
 	if(test(tampon))
@@ -95,4 +95,4 @@ public:
 
 #endif // _CERTI_LIST_HH
 
-// EOF $Id: List.hh,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// EOF $Id: List.hh,v 3.1 2002/11/30 22:13:32 breholee Exp $

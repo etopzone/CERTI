@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Object.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,7 +52,7 @@ Object::~Object()
     Name = NULL;
   }
 
-  while(SF.lg > 0) {
+  while(SF.getLength() > 0) {
     Federate = SF.Ieme(1);
     delete Federate;
     SF.Supprimer(1);
@@ -80,7 +80,7 @@ void Object::display(void)
 throw(AttributeNotDefined)
 {
 
- 	for(int k=1;k<=AttributeState.lg;k++)
+ 	for(int k=1;k<=AttributeState.getLength();k++)
 		{
 			if( AttributeState.Ieme(k)->Handle == theAttribute )
 			  return(AttributeState.Ieme(k));
@@ -132,4 +132,4 @@ void Object::setName(ObjectName theObjectName)
     
 }
 
-// $Id: Object.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Object.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federation.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Federation.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -205,7 +205,7 @@ Federation::getName(void)
 int
 Federation::getNbRegulators(void)
 {
-  return regulators.lg ;
+  return regulators.getLength() ;
 }
 
 // ---------------------------------------------------------------------------
@@ -251,7 +251,7 @@ Federation::add(FederateName federate_name, SocketTCP *tcp_link)
   // pour que le nouveau puisse calculer son LBTS.
 
   try {
-    for(i = 1; i <= regulators.lg; i++) {
+    for(i = 1; i <= regulators.getLength(); i++) {
       message.Type = m_MESSAGE_NULL;
       message.NumeroFederation = handle;
 
@@ -1225,5 +1225,5 @@ Federation::cancelAcquisition(FederateHandle federate,
 
 }}
 
-// $Id: Federation.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Federation.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Interaction.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,7 +37,7 @@ namespace certi {
   ParameterHandle Interaction::addParameter(Parameter *theParameter,
 					    bool Inherited)
   {
-    theParameter->Handle = parameterSet.lg + 1;
+    theParameter->Handle = parameterSet.getLength() + 1;
 
     // An inherited parameter keeps its security level, any other get the
     // default security level of the class.
@@ -66,7 +66,7 @@ namespace certi {
     // The Parameter List is read backwards to respect the same attribute
     // order for the child(Parameters are inserted at the beginning of the list)
 
-    for(ParamIndex = parameterSet.lg; ParamIndex > 0; ParamIndex--) {
+    for(ParamIndex = parameterSet.getLength(); ParamIndex > 0; ParamIndex--) {
       parameter = parameterSet.Ieme(ParamIndex);
       assert(parameter != NULL);
 
@@ -154,7 +154,7 @@ namespace certi {
     // Handle,ParamIndex); 
     // 3. Add Interaction subscribers to the list.
  
-    for(SubIndex = 1; SubIndex <= subscribers.lg; SubIndex++) { 
+    for(SubIndex = 1; SubIndex <= subscribers.getLength(); SubIndex++) { 
       theSubscriber = subscribers.Ieme(SubIndex);
       D.Out(pdDebug, "Ajout du Federe %d a la BroadcastList.",
 	    theSubscriber->getHandle());
@@ -272,38 +272,38 @@ namespace certi {
       name = NULL;
     }
 
-    while(parameterSet.lg > 0) {
+    while(parameterSet.getLength() > 0) {
       Parameter = parameterSet.Ieme(1);
       parameterSet.Supprimer(1);
       delete Parameter;
     }
 
     // Deleting Publishers
-    if(publishers.lg > 0)
+    if(publishers.getLength() > 0)
       D.Out(pdError, 
 	    "Interaction %d: publishers list not empty at termination.",
 	    handle);
  
-    while(publishers.lg > 0) {
+    while(publishers.getLength() > 0) {
       publisher = publishers.Ieme(1);
       publishers.Supprimer(1);
       delete publisher;
     }
  
     // Deleting Subscribers
-    if(subscribers.lg > 0)
+    if(subscribers.getLength() > 0)
       D.Out(pdError, 
 	    "Interaction %d: Subscribers list not empty at termination.",
 	    handle);
  
-    while(subscribers.lg > 0) {
+    while(subscribers.getLength() > 0) {
       Subscriber = subscribers.Ieme(1);
       subscribers.Supprimer(1);
       delete Subscriber;
     }
  
     // Deleting Sons
-    while(children.lg > 0) {
+    while(children.getLength() > 0) {
       Son = children.Ieme(1);
       children.Supprimer(1);
       delete Son;
@@ -356,18 +356,18 @@ namespace certi {
 
     printf(" Parent Class Handle: %ld\n", parent);
     printf(" Security Level: %d\n", id);
-    printf(" %d Child(s):\n", children.lg);
+    printf(" %d Child(s):\n", children.getLength());
 
-    for(i = 1; i <= children.lg; i++) {
+    for(i = 1; i <= children.getLength(); i++) {
       Son = children.Ieme(i);
       printf(" Son %d Handle: %ld\n", i, Son->handle);
     }
 
     // Display Parameters
 
-    printf(" %d Parameters:\n", parameterSet.lg);
+    printf(" %d Parameters:\n", parameterSet.getLength());
 
-    for(i = 1; i <= parameterSet.lg; i++) {
+    for(i = 1; i <= parameterSet.getLength(); i++) {
       Parameter = parameterSet.Ieme(i);
       Parameter->display();
     }
@@ -386,7 +386,7 @@ namespace certi {
     int i;
     Parameter *Parameter = NULL;
 
-    for(i = 1; i <= parameterSet.lg; i++) {
+    for(i = 1; i <= parameterSet.getLength(); i++) {
       Parameter = parameterSet.Ieme(i);
       if(Parameter->Handle == theHandle) 
 	return Parameter;
@@ -408,7 +408,7 @@ namespace certi {
     int i;
     Parameter *Parameter = NULL;
 
-    for(i = 1; i <= parameterSet.lg; i++) {
+    for(i = 1; i <= parameterSet.getLength(); i++) {
       Parameter = parameterSet.Ieme(i);
       if(strcmp(Parameter->getName(), theName) == 0)
 	return Parameter->Handle;
@@ -439,7 +439,7 @@ namespace certi {
     int i;
     Publisher *publisher;
 
-    for(i = 1; i <= publishers.lg; i++) {
+    for(i = 1; i <= publishers.getLength(); i++) {
       publisher = publishers.Ieme(i);
       if(publisher->Handle == theFederate)
 	return i;
@@ -458,7 +458,7 @@ namespace certi {
     int i;
     Subscriber *Subscriber;
 
-    for(i = 1; i <= subscribers.lg; i++) {
+    for(i = 1; i <= subscribers.getLength(); i++) {
       Subscriber = subscribers.Ieme(i);
       if(Subscriber->getHandle() == theFederate)
 	return i;
@@ -727,4 +727,4 @@ namespace certi {
   }
 }
 
-// $Id: Interaction.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Interaction.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClass.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ namespace certi {
     if(theAttribute == NULL)
       throw RTIinternalError("Tried to add NULL attribute.");
 
-    theAttribute->Handle         = AttributeSet.lg + 1;
+    theAttribute->Handle         = AttributeSet.getLength() + 1;
     theAttribute->server = server;
   
     // If the attribute is inherited, it keeps its security level.
@@ -71,7 +71,7 @@ namespace certi {
     // The Attribute List is read backwards to respect the same attribute
     // order for the child(Attributes are inserted at the beginning of the list)
 
-    for(AttribIndex = AttributeSet.lg; AttribIndex > 0; AttribIndex--) {
+    for(AttribIndex = AttributeSet.getLength(); AttribIndex > 0; AttribIndex--) {
       Attribute = AttributeSet.Ieme(AttribIndex);
       assert(Attribute != NULL);
 
@@ -142,7 +142,7 @@ namespace certi {
     case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
       // Pour chaque attribut de la classe, mettre a jour la liste en ajoutant
       // les federes qui ont souscrit a l'attribut.
-      for(AttrIndex = 1; AttrIndex <= AttributeSet.lg; AttrIndex++) {
+      for(AttrIndex = 1; AttrIndex <= AttributeSet.getLength(); AttrIndex++) {
 	Attribute = AttributeSet.Ieme(AttrIndex);
 	Attribute->updateBroadcastList(List);
       }
@@ -309,25 +309,25 @@ namespace certi {
     }
 
     // Deleting instances
-    if(ObjectSet.lg > 0) 
+    if(ObjectSet.getLength() > 0) 
       D.Out(pdError, 
 	     "ObjectClass %d : Instances remaining while exiting...", Handle);
 
-    while(ObjectSet.lg > 0) {
+    while(ObjectSet.getLength() > 0) {
       Instance = ObjectSet.Ieme(1);
       ObjectSet.Supprimer(1);
       delete Instance;
     }
     
     // Deleting Class Attributes
-    while(AttributeSet.lg > 0) {
+    while(AttributeSet.getLength() > 0) {
       Attribute = AttributeSet.Ieme(1);
       AttributeSet.Supprimer(1);
       delete Attribute;
     }
 
     // Deleting Sons
-    while(SonSet.lg > 0) {
+    while(SonSet.getLength() > 0) {
       Son = SonSet.Ieme(1);
       SonSet.Supprimer(1);
       delete Son;
@@ -365,7 +365,7 @@ namespace certi {
     }
 
     // 2. Remove Instance
-    for(ObjIndex = 1; ObjIndex <= ObjectSet.lg; ObjIndex ++) {
+    for(ObjIndex = 1; ObjIndex <= ObjectSet.getLength(); ObjIndex ++) {
       Object = ObjectSet.Ieme(ObjIndex);
       if(Object->ID == theObjectHandle) {
 	ObjectSet.Supprimer(ObjIndex);
@@ -421,27 +421,27 @@ namespace certi {
 
     printf("         Parent Class Handle: %ld\n", Father);
     printf("         Security Level: %d\n",      LevelID);
-    printf("         %d Child(s):\n",            SonSet.lg);
+    printf("         %d Child(s):\n",            SonSet.getLength());
 
-    for(i = 1; i <= SonSet.lg; i++) {
+    for(i = 1; i <= SonSet.getLength(); i++) {
       Son = SonSet.Ieme(i);
       printf("            Son %d Handle: %ld\n", i, Son->Handle);
     }
 
     // Display Attributes
 
-    printf("         %d Attribute(s):\n", AttributeSet.lg);
+    printf("         %d Attribute(s):\n", AttributeSet.getLength());
 
-    for(i = 1; i <= AttributeSet.lg; i++) {
+    for(i = 1; i <= AttributeSet.getLength(); i++) {
       Attribute = AttributeSet.Ieme(i);
       Attribute->display();
     }
 
     // Display Instances
 
-    printf("         %d Instances(s):\n", ObjectSet.lg);
+    printf("         %d Instances(s):\n", ObjectSet.getLength());
 
-    for(i = 1; i <= ObjectSet.lg; i++) {
+    for(i = 1; i <= ObjectSet.getLength(); i++) {
       Object = ObjectSet.Ieme(i);
       Object->display();
     }
@@ -460,7 +460,7 @@ namespace certi {
     int i;
     ObjectClassAttribute *Attribute = NULL;
 
-    for(i = 1; i <= AttributeSet.lg; i++) {
+    for(i = 1; i <= AttributeSet.getLength(); i++) {
       Attribute = AttributeSet.Ieme(i);
       if(strcmp(Attribute->getName(), theName) == 0)
 	return Attribute->Handle;
@@ -498,7 +498,7 @@ namespace certi {
     int i;
     ObjectClassAttribute *Attribute = NULL;
 
-    for(i = 1; i <= AttributeSet.lg; i++) {
+    for(i = 1; i <= AttributeSet.getLength(); i++) {
       Attribute = AttributeSet.Ieme(i);
       if(Attribute->Handle == theHandle)
 	return Attribute;
@@ -521,7 +521,7 @@ namespace certi {
     int i;
     Object *Object;
 
-    for(i = 1; i <= ObjectSet.lg; i++) {
+    for(i = 1; i <= ObjectSet.getLength(); i++) {
       Object = ObjectSet.Ieme(i);
       if(Object->ID == theID)
 	return Object;
@@ -541,8 +541,8 @@ namespace certi {
     int                    i         = 0;
     ObjectClassAttribute *Attribute = NULL;
 
-    D.Out(pdRegister, "AttributeSet.lg = %d.",AttributeSet.lg);
-    for(i = 1; i < AttributeSet.lg; i++) {/*MODIF <=*/
+    D.Out(pdRegister, "AttributeSet.getLength() = %d.",AttributeSet.getLength());
+    for(i = 1; i < AttributeSet.getLength(); i++) {/*MODIF <=*/
       Attribute = AttributeSet.Ieme(i);
       if(Attribute->IsPublishing(theFederate) == RTI_TRUE)
 	return RTI_TRUE;
@@ -561,7 +561,7 @@ namespace certi {
     int                    i         = 0;
     ObjectClassAttribute *Attribute = NULL;
 
-    for(i = 1; i < AttributeSet.lg; i++) {/*MODIF <=*/
+    for(i = 1; i < AttributeSet.getLength(); i++) {/*MODIF <=*/
       Attribute = AttributeSet.Ieme(i);
       if(Attribute->hasSubscribed(theFederate) == RTI_TRUE)
 	return RTI_TRUE;
@@ -615,7 +615,7 @@ namespace certi {
     } catch(SecurityError &e) {}
 
     // Est-ce que le federe possede des instances ?
-    for(i = 1; i <= ObjectSet.lg; i++) {
+    for(i = 1; i <= ObjectSet.getLength(); i++) {
       Object = ObjectSet.Ieme(i);
       if(Object->Owner == theFederate)
 	// Return non-NULL to indicate that :
@@ -662,7 +662,7 @@ namespace certi {
     D.Out(pdInit, "ObjectClass %d: Reset publish info of Federate %d.",
 	   Handle, theFederateHandle);
 
-    for(Index = 1; Index < AttributeSet.lg; Index ++) {/*MODIF <=*/
+    for(Index = 1; Index < AttributeSet.getLength(); Index ++) {/*MODIF <=*/
       Attribute = AttributeSet.Ieme(Index);
 
       if(Attribute->IsPublishing(theFederateHandle) == RTI_TRUE)
@@ -726,7 +726,7 @@ namespace certi {
 
     //Le fédéré ne possède que les attributs qu'il publie
 
-    for(int k=AttributeSet.lg;k>0;k--)
+    for(int k=AttributeSet.getLength();k>0;k--)
       {
 	Attribute = AttributeSet.Ieme(k);
 	if(Attribute->IsPublishing(theFederateHandle))
@@ -798,7 +798,7 @@ namespace certi {
     // 2- If there is no instance of the class, return.(the recursive process
     //    must continue).
 
-    if(ObjectSet.lg == 0)
+    if(ObjectSet.getLength() == 0)
       return RTI_TRUE;
 
     // 3- Else prepare the common part of the Message.
@@ -813,7 +813,7 @@ namespace certi {
 
     // 4- For each Object instance in the class, send a Discover message.
 
-    for(Index = 1; Index <= ObjectSet.lg; Index ++) {
+    for(Index = 1; Index <= ObjectSet.getLength(); Index ++) {
 
       Object = ObjectSet.Ieme(Index);
     
@@ -916,7 +916,7 @@ namespace certi {
     D.Out(pdInit, "ObjectClass %d: Resetting previous Sub info of Federate %d.",
 	   Handle, theFederate);
 
-    for(Index = 1; Index < AttributeSet.lg; Index ++) { /*MODIF <=*/
+    for(Index = 1; Index < AttributeSet.getLength(); Index ++) { /*MODIF <=*/
       Attribute = AttributeSet.Ieme(Index);
 
       if(Attribute->hasSubscribed(theFederate) == RTI_TRUE) {
@@ -979,7 +979,7 @@ namespace certi {
     //Test de propriété sur chaque attribut avant mise à jour
 
     for(i = 0; i < theArraySize; i++) 
-      for(int k=1;k<=Object->AttributeState.lg;k++)
+      for(int k=1;k<=Object->AttributeState.getLength();k++)
 	{
 	  if(theAttributeArray [i] == Object->AttributeState.Ieme(k)->Handle )
 	    {
@@ -1014,7 +1014,7 @@ namespace certi {
 	Answer->setValue(i,   theValueArray     [i]);
       }
 
-      List = new ObjectClassBroadcastList(Answer, AttributeSet.lg);
+      List = new ObjectClassBroadcastList(Answer, AttributeSet.getLength());
 
       D.Out(pdProtocol, 
 	     "Object %u updated in class %u, now broadcasting...", 
@@ -1066,7 +1066,7 @@ namespace certi {
   
     if(server != NULL) {
  
-      for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+      for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	{
 	  attribute = Object->AttributeState.Ieme(k);     
 	  if(theAttribute == attribute->Handle )
@@ -1122,7 +1122,7 @@ namespace certi {
       Answer->Objectid         = theObject;
       Answer->HandleArray[0]   = theAttribute;
   
-      for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+      for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	{
 	  attribute = Object->AttributeState.Ieme(k);     
 	  if(theAttribute == attribute->Handle )
@@ -1193,7 +1193,7 @@ namespace certi {
     D.Out(pdDebug, "NegotiatedDivestiture Demandeur : %u",theFederateHandle);
        
     for(int i = 0; i < theListSize; i++) 
-      for(int k=1;k<=Object->AttributeState.lg;k++)
+      for(int k=1;k<=Object->AttributeState.getLength();k++)
 	{
 	  classAttribute = AttributeSet.Ieme(k);
 	  attribute = Object->AttributeState.Ieme(k);
@@ -1221,13 +1221,13 @@ namespace certi {
       CDiffusion *diffusionAcquisition = new CDiffusion(); 
      
       for(int i = 0; i < theListSize; i++) 
-	for(int k=1;k<=Object->AttributeState.lg;k++)
+	for(int k=1;k<=Object->AttributeState.getLength();k++)
 	  {
 	    classAttribute = AttributeSet.Ieme(k);
 	    attribute = Object->AttributeState.Ieme(k);     
 	    if(theAttributeList [i] == attribute->Handle )
 	      {
-		if( attribute->OwnerCandidate.lg != 0 )
+		if( attribute->OwnerCandidate.getLength() != 0 )
 		  {//Un attributeOwnershipAcquisition est en cours sur cet
 		    //attribut
             
@@ -1306,7 +1306,7 @@ namespace certi {
 	  strcpy(AnswerAssumption->Label, theTag);
 	  AnswerAssumption->HandleArraySize  = compteur_assumption;
 
-	  List = new ObjectClassBroadcastList(AnswerAssumption, AttributeSet.lg);
+	  List = new ObjectClassBroadcastList(AnswerAssumption, AttributeSet.getLength());
 
 	  D.Out(pdProtocol, 
 		 "Object %u divestiture in class %u, now broadcasting...", 
@@ -1380,11 +1380,11 @@ namespace certi {
 	throw ObjectClassNotPublished();
       }
      
-      //rem AttributeSet.lg=AttributeState.lg
+      //rem AttributeSet.getLength()=AttributeState.getLength()
       int i;
       for(i = 0 ; i < theListSize ; i++)
 	{
-	  for(int k = 1 ; k <= AttributeSet.lg ; k++)
+	  for(int k = 1 ; k <= AttributeSet.getLength() ; k++)
 	    {
 	      classAttribute = AttributeSet.Ieme(k);
 	      attribute = Object->AttributeState.Ieme(k);     
@@ -1430,7 +1430,7 @@ namespace certi {
   
       for(i = 0; i < theListSize; i++)
 	{
-	  for(int k=1;k<=Object->AttributeState.lg;k++)
+	  for(int k=1;k<=Object->AttributeState.getLength();k++)
 	    {
 	      classAttribute = AttributeSet.Ieme(k);     
 	      attribute = Object->AttributeState.Ieme(k);       
@@ -1548,7 +1548,7 @@ namespace certi {
     //Le fédéré est-il propriétaire de tous les attributs
 
     for(int i = 0; i < theListSize; i++) 
-      for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+      for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	{
 	  attribute = Object->AttributeState.Ieme(k);      
 	  if(theAttributeList [i] == attribute->Handle )
@@ -1569,13 +1569,13 @@ namespace certi {
       CDiffusion *diffusionAcquisition = new CDiffusion(); 
  
       for(int i = 0; i < theListSize; i++) 
-	for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+	for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	  {
 	    classAttribute = AttributeSet.Ieme(k);     
 	    attribute = Object->AttributeState.Ieme(k);      
 	    if(theAttributeList [i] == attribute->Handle )
 	      {
-		if( attribute->OwnerCandidate.lg != 0 )
+		if( attribute->OwnerCandidate.getLength() != 0 )
 		  {
 		    //Un attributeOwnershipAcquisition est en cours sur cet
 		    //attribut
@@ -1626,7 +1626,7 @@ namespace certi {
 	  strcpy(AnswerAssumption->Label, "\0");
 	  AnswerAssumption->HandleArraySize  = compteur_assumption;
 
-	  List = new ObjectClassBroadcastList(AnswerAssumption, AttributeSet.lg);
+	  List = new ObjectClassBroadcastList(AnswerAssumption, AttributeSet.getLength());
 
 	  D.Out(pdProtocol, 
 		 "Object %u updated in class %u, now broadcasting...", 
@@ -1702,7 +1702,7 @@ namespace certi {
 	// Do all attribute handles exist ? It may throw AttributeNotDefined.   
 	getAttributeWithHandle(theAttributeList [i]);
       
-	for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+	for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	  {
 	    classAttribute = AttributeSet.Ieme(k);
 	    attribute = Object->AttributeState.Ieme(k);
@@ -1741,7 +1741,7 @@ namespace certi {
   
       for(int i = 0; i < theListSize; i++)
 	{
-	  for(int k=1;k<=Object->AttributeState.lg;k++)
+	  for(int k=1;k<=Object->AttributeState.getLength();k++)
 	    {
 	      classAttribute = AttributeSet.Ieme(k);
 	      attribute = Object->AttributeState.Ieme(k);     
@@ -1856,7 +1856,7 @@ namespace certi {
       getAttributeWithHandle(theAttributeList [Index]); 
 
     for(int i = 0; i < theListSize; i++) 
-      for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+      for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	{
 	  attribute = Object->AttributeState.Ieme(k);       
 	  if(theAttributeList [i] == attribute->Handle )
@@ -1874,7 +1874,7 @@ namespace certi {
     if(server != NULL) {
  
       for(int i = 0; i < theListSize; i++) 
-	for(int k = 1 ; k <= Object->AttributeState.lg ; k++)
+	for(int k = 1 ; k <= Object->AttributeState.getLength() ; k++)
 	  {
 	    if(theAttributeList [i] == attribute->Handle )
 	      attribute->setDivesting(RTI_FALSE);
@@ -1926,7 +1926,7 @@ namespace certi {
     //Y a-t-il des acquéreurs pour les attributs
 
     for(int i = 0; i < theListSize; i++) 
-      for(int k=1;k<=Object->AttributeState.lg;k++)
+      for(int k=1;k<=Object->AttributeState.getLength();k++)
 	{
 	  classAttribute = AttributeSet.Ieme(k);
 	  attribute = Object->AttributeState.Ieme(k);
@@ -1934,7 +1934,7 @@ namespace certi {
 	    {
 	      if( attribute->getOwner() != theFederateHandle )
 		throw AttributeNotOwned();
-	      if( attribute->OwnerCandidate.lg == 0 )           
+	      if( attribute->OwnerCandidate.getLength() == 0 )           
 		throw FederateWasNotAskedToReleaseAttribute();
  
 	    }
@@ -1948,7 +1948,7 @@ namespace certi {
       theAttribute = AttributeHandleSetFactory::create(theListSize); 
      
       for(int i = 0; i < theListSize; i++) 
-	for(int k=1;k<=Object->AttributeState.lg;k++)
+	for(int k=1;k<=Object->AttributeState.getLength();k++)
 	  {
 	    classAttribute = AttributeSet.Ieme(k);
 	    attribute = Object->AttributeState.Ieme(k);     
@@ -2040,11 +2040,11 @@ namespace certi {
 
     if(server != NULL) {
  
-      //rem AttributeSet.lg=AttributeState.lg
+      //rem AttributeSet.getLength()=AttributeState.getLength()
       int i;
       for(i = 0 ; i < theListSize ; i++)
 	{
-	  for(int k = 1 ; k <= AttributeSet.lg ; k++)
+	  for(int k = 1 ; k <= AttributeSet.getLength() ; k++)
 	    {
 	      classAttribute = AttributeSet.Ieme(k);
 	      attribute = Object->AttributeState.Ieme(k);     
@@ -2074,7 +2074,7 @@ namespace certi {
 
       for(i = 0; i < theListSize; i++)
 	{
-	  for(int k=1;k<=Object->AttributeState.lg;k++)
+	  for(int k=1;k<=Object->AttributeState.getLength();k++)
 	    {
 	      classAttribute = AttributeSet.Ieme(k);     
 	      attribute = Object->AttributeState.Ieme(k);       
@@ -2111,4 +2111,4 @@ namespace certi {
 
 }
 
-// $Id: ObjectClass.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClass.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

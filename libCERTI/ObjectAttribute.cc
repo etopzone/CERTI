@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -115,7 +115,7 @@ void ObjectAttribute::setDivesting(Boolean DivestingState)
 int ObjectAttribute::isCandidate(FederateHandle candidate)
   throw(RTIinternalError)
 {
-	for(int k=1;k <= OwnerCandidate.lg;k++)
+	for(int k=1;k <= OwnerCandidate.getLength();k++)
 		{
 		if(getCandidate(k) == candidate)
 				return(k);
@@ -142,7 +142,7 @@ void ObjectAttribute::addCandidate(FederateHandle candidate)
 void ObjectAttribute::removeCandidate(FederateHandle candidate)
   throw(RTIinternalError)
 {
-	for(int k=1;k <= OwnerCandidate.lg;k++)
+	for(int k=1;k <= OwnerCandidate.getLength();k++)
 		{
 		if(getCandidate(k) == candidate)
 			{
@@ -160,12 +160,12 @@ void ObjectAttribute::removeCandidate(FederateHandle candidate)
 FederateHandle ObjectAttribute::getCandidate(int indice)
   throw(RTIinternalError)
 {
-	if((indice <= 0)	||(indice > OwnerCandidate.lg))
-			throw RTIinternalError();
-	else
-			return(*(OwnerCandidate.Ieme(indice)));
+  if((indice <= 0)	||(indice > OwnerCandidate.getLength()))
+    throw RTIinternalError();
+  else
+    return(*(OwnerCandidate.Ieme(indice)));
 }
 
 }
 
-// $Id: ObjectAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

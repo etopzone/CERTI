@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: List.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: List.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,7 +48,7 @@ LISTEGEN::LISTEGEN(LISTEGEN &l)
 
   if(l.lg != 0)
   {
-    for(int i=1; i<=l.lg; i++)
+    for(unsigned int i=1; i<=l.lg; i++)
       Inserer(i, l.Ieme(i));
   }
 }
@@ -71,7 +71,7 @@ LISTEGEN::~LISTEGEN()
 
 
 //------------------------------------------------------------------
-void* LISTEGEN::Ieme(int i)
+void* LISTEGEN::Ieme(unsigned int i)
 {
   assert(i>0 && i<=lg);
 
@@ -82,7 +82,7 @@ void* LISTEGEN::Ieme(int i)
 
 
 //------------------------------------------------------------------
-void LISTEGEN::Supprimer(int i)
+void LISTEGEN::Supprimer(unsigned int i)
 {
   struct cellule *cell_a_detruire;
 
@@ -113,7 +113,7 @@ void LISTEGEN::Supprimer(int i)
 
 
 //------------------------------------------------------------------
-void LISTEGEN::Inserer(int i, void *e)
+void LISTEGEN::Inserer(unsigned int i, void *e)
 {
   struct cellule *p;
 
@@ -186,4 +186,4 @@ void LISTEGEN::PositionnerCelluleCourante(int i)
 
 }
 
-// $Id: List.cc,v 3.0 2002/11/21 01:27:51 breholee Exp $
+// $Id: List.cc,v 3.1 2002/11/30 22:13:32 breholee Exp $

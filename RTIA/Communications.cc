@@ -18,7 +18,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Communications.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -56,7 +56,7 @@ void Communications::waitMessage(NetworkMessage *msg,
 
   while((tampon->Type != type_msg) || 
 	((numeroFedere != 0) &&(tampon->NumeroFedere != numeroFedere))) {
-    _fileAttente.Inserer(_fileAttente.lg+1, tampon);
+    _fileAttente.Inserer(_fileAttente.getLength()+1, tampon);
     tampon = new NetworkMessage;
     tampon->read((SecureTCPSocket *) this);
     
@@ -174,7 +174,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     FD_SET(_socket_mc, &fdset);
 #endif
 
-  if(_fileAttente.lg > 0) {
+  if(_fileAttente.getLength() > 0) {
     // Il y a un message dans la file d'attente
     msg2 = _fileAttente.Ieme(1);
     _fileAttente.Supprimer(1);
@@ -203,7 +203,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
   }
   else {
  
-    // _fileAttente.lg == 0 et pas de data dans le buffer TCP
+    // _fileAttente.getLength() == 0 et pas de data dans le buffer TCP
     // Attendre un message(venant du federe ou du reseau)
  
     if(select(ulimit(4,0), &fdset, NULL, NULL, NULL) < 0 ) {
@@ -260,7 +260,7 @@ Communications::searchMessage(TypeNetworkMessage type_msg,
   int i;
   NetworkMessage *Message;
 
-  for(i = 1; i <= _fileAttente.lg; i++) {
+  for(i = 1; i <= _fileAttente.getLength(); i++) {
     Message = _fileAttente.Ieme(i);
  
     D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
@@ -294,4 +294,4 @@ Communications::searchMessage(TypeNetworkMessage type_msg,
 }
 }
 
-// $Id: Communications.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: Communications.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include <config.h>
@@ -149,22 +149,22 @@ ObjectClassAttribute::~ObjectClassAttribute()
   }
 
   // Deleting Publishers
-  if(Publishers.lg > 0)
+  if(Publishers.getLength() > 0)
     D.Out(pdError, 
 	   "Attribute %d: Publishers list not empty at termination.", Handle);
   
-  while(Publishers.lg > 0) {
+  while(Publishers.getLength() > 0) {
     Publisher = Publishers.Ieme(1);
     Publishers.Supprimer(1);
     delete Publisher;
   }
   
   // Deleting Subscribers
-  if(Subscribers.lg > 0)
+  if(Subscribers.getLength() > 0)
     D.Out(pdError, 
 	   "Attribute %d: Subscribers list not empty at termination.", Handle);
   
-  while(Subscribers.lg > 0) {
+  while(Subscribers.getLength() > 0) {
     Subscriber = Subscribers.Ieme(1);
     Subscribers.Supprimer(1);
     delete Subscriber;
@@ -238,7 +238,7 @@ int ObjectClassAttribute::getPublisherRank(FederateHandle theFederate)
   int i;
   Publisher *Publisher;
 
-  for(i = 1; i <= Publishers.lg; i++) {
+  for(i = 1; i <= Publishers.getLength(); i++) {
     Publisher = Publishers.Ieme(i);
     if(Publisher->Handle == theFederate)
       return i;
@@ -257,7 +257,7 @@ int ObjectClassAttribute::getSubscriberRank(FederateHandle theFederate)
   int i;
   Subscriber *Subscriber;
 
-  for(i = 1; i <= Subscribers.lg; i++) {
+  for(i = 1; i <= Subscribers.getLength(); i++) {
     Subscriber = Subscribers.Ieme(i);
     if(Subscriber->getHandle() == theFederate)
       return i;
@@ -393,7 +393,7 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 	
 	case m_REFLECT_ATTRIBUTE_VALUES:
 
-  for(SubIndex = 1; SubIndex <= Subscribers.lg; SubIndex++) {
+  for(SubIndex = 1; SubIndex <= Subscribers.getLength(); SubIndex++) {
     Subscriber = Subscribers.Ieme(SubIndex);
     List->addFederate(Subscriber->getHandle(),
 			 Handle); // Attribute handle
@@ -402,7 +402,7 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 	
 	case m_REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
 
-  for(PubIndex = 1; PubIndex <= Publishers.lg; PubIndex++) {
+  for(PubIndex = 1; PubIndex <= Publishers.getLength(); PubIndex++) {
     Publisher = Publishers.Ieme(PubIndex);
     List->addFederate(Publisher->Handle,
 			 Handle); // Attribute handle
@@ -416,4 +416,4 @@ void ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *List)
 
 }
 
-// $Id: ObjectClassAttribute.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.2 2002/11/30 22:13:32 breholee Exp $
