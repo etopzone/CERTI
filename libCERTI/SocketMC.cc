@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketMC.cc,v 3.7 2003/11/12 14:40:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -228,16 +228,25 @@ int SocketMC::timeoutMC(int sec, int usec)
 
     FD_ZERO(&fdset);
     FD_SET(_socket_mc, &fdset);
-    while (((i=select(ulimit(4, 0),
-                      SELECT_TYPE_ARG234 &fdset,
-                      NULL, NULL,
-                      &timeout)) < 0)
-           &&
-           (errno == EINTR));
-    return(i);
+    while ((i = portableSelect(&fdset, &timeout) < 0) && (errno == EINTR))
+	;
+    return i ;
+}
+
+// ----------------------------------------------------------------------------
+/** Portable select
+ */
+int
+SocketMC::portableSelect(fd_set *fdset, struct timeval *time_out)
+{
+#ifdef WITH_CYGWIN
+    return select(_socket_mc+1, SELECT_TYPE_ARG234 fdset, NULL, NULL, time_out);
+#else
+    return select(ulimit(4, 0), SELECT_TYPE_ARG234 fdset, NULL, NULL, time_out);
+#endif
 }
 
 }
 
-// EOF $Id: SocketMC.cc,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.7 2003/11/12 14:40:57 breholee Exp $
 

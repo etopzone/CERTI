@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketServer.cc,v 3.8 2003/11/12 14:40:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,17 +30,24 @@ using std::list ;
 namespace certi {
 
 // ----------------------------------------------------------------------------
-/*! This method is called when the RTIG wants to initialize its
-  FD_SET before doing a select. It will add all open socket to the set.
+/** This method is called when the RTIG wants to initialize its
+    FD_SET before doing a select. It will add all open socket to the set.
+    \return the highest file descriptor in the FD_SET
 */
-void
+int
 SocketServer::addToFDSet(fd_set *select_fdset)
 {
+    int fd_max = 0 ;
+
     list<SocketTuple *>::iterator i ;
     for (i = begin(); i != end(); i++) {
-        if ((*i)->ReliableLink != NULL)
-            FD_SET((*i)->ReliableLink->returnSocket(), select_fdset);
+        if ((*i)->ReliableLink != NULL) {
+	    int fd = (*i)->ReliableLink->returnSocket();
+            FD_SET(fd, select_fdset);
+	    fd_max = fd > fd_max ? fd : fd_max ;
+	}
     }
+    return fd_max ;
 }
 
 // ----------------------------------------------------------------------------
@@ -312,4 +319,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketServer.cc,v 3.8 2003/11/12 14:40:57 breholee Exp $

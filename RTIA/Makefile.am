@@ -1,6 +1,6 @@
 ## CERTI RTIA Makefile.am
 ## Copyright (C) 2001, 2002, 2003 ONERA
-## $Id: Makefile.am,v 3.4 2003/10/20 12:04:46 breholee Exp $
+## $Id: Makefile.am,v 3.5 2003/11/12 14:40:57 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -9,7 +9,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libCERTI	\
--I$(top_srcdir)/libpdebug @XML_CFLAGS@ @HAVE_XML@
+-I$(top_srcdir)/libpdebug @XML_CFLAGS@ @HAVE_XML@ @WITH_CYGWIN@
 
 bin_PROGRAMS = rtia
 
@@ -26,4 +26,4 @@ RTIA_network.cc Statistics.cc TimeManagement.cc
 LDADD = -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lCERTI	\
 -lpdebug @ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@
 
-## $Id: Makefile.am,v 3.4 2003/10/20 12:04:46 breholee Exp $
+## $Id: Makefile.am,v 3.5 2003/11/12 14:40:57 breholee Exp $

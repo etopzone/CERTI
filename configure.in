@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.7 2003/10/20 12:53:52 breholee Exp $ 
+## $Id: configure.in,v 3.8 2003/11/12 14:40:57 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,11 +6,11 @@
 ## Init
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.7 $)
+AC_REVISION($Revision: 3.8 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
-## Programs
+## Programs and system
 AC_PROG_YACC
 AM_PROG_LEX
 AC_PROG_CC
@@ -19,12 +19,11 @@ AC_PROG_INSTALL
 AC_CANONICAL_HOST
 case x$host_os in
      xsolaris*) AC_DISABLE_SHARED ;;
+     *-*-cygwin*) WITH_CYGWIN="-DWITH_CYGWIN" ;;
 esac
+AC_SUBST(WITH_CYGWIN)
 AC_PROG_LIBTOOL
 YACC="$YACC -d "
-
-## Environment
-AC_CYGWIN
 
 ## Autoheader
 AH_TEMPLATE([socklen_t], [Define the type for socklen_t])
@@ -74,4 +73,4 @@ libCERTI/Makefile RTIG/Makefile RTIA/Makefile libRTI/Makefile
 scripts/Makefile test/Makefile test/include/Makefile
 test/libgraphc/Makefile test/Billard/Makefile doc/Makefile])
 
-## $Id: configure.in,v 3.7 2003/10/20 12:53:52 breholee Exp $
+## $Id: configure.in,v 3.8 2003/11/12 14:40:57 breholee Exp $

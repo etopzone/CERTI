@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.7 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketTCP.cc,v 3.8 2003/11/12 14:40:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -478,30 +478,44 @@ void SocketTCP::setPort(unsigned int port)
 
 // ----------------------------------------------------------------------------
 //! timeoutTCP.
-int SocketTCP::timeoutTCP(int sec, int usec)
-{ int i ;
- fd_set fdset ;
- struct timeval timeOut ;
+int 
+SocketTCP::timeoutTCP(int sec, int usec)
+{
+    int i ;
+    fd_set fdset ;
+    struct timeval time_out ;
+    
+    assert(_est_init_tcp);
+    
+    time_out.tv_sec = sec ;
+    time_out.tv_usec = usec ;
+    
+    FD_ZERO(&fdset);
+    FD_SET(_socket_tcp, &fdset);
+    
+    while ((i = portableSelect(&fdset, &time_out)) < 0) {
 
- assert(_est_init_tcp);
-
- timeOut.tv_sec = sec ;
- timeOut.tv_usec = usec ;
-
- FD_ZERO(&fdset);
- FD_SET(_socket_tcp, &fdset);
-
- while ((i = select(ulimit(4, 0), &fdset, NULL, NULL, &timeOut)) < 0) {
-
-     // Si c'est un signal on leve NetWorkSignal
-     if (errno == EINTR)
-         throw NetworkSignal("TCP::TimeOut Interrompu par un signal.");
-     else
-         throw NetworkError();
- }
- return((i>0)?1:0);
+	if (errno == EINTR)
+	    throw NetworkSignal("TCP::TimeOut Interrompu par un signal.");
+	else
+	    throw NetworkError();
+    }
+    return (i > 0) ? 1 : 0 ;
 }
 
+// ----------------------------------------------------------------------------
+/** Portable select
+ */
+int
+SocketTCP::portableSelect(fd_set *fdset, struct timeval *time_out)
+{
+#ifdef WITH_CYGWIN
+    return select(_socket_tcp+1, fdset, NULL, NULL, time_out);
+#else
+    return select(ulimit(4, 0), fdset, NULL, NULL, time_out);
+#endif
 }
 
-// $Id: SocketTCP.cc,v 3.7 2003/08/20 18:40:02 breholee Exp $
+} // namespace
+
+// $Id: SocketTCP.cc,v 3.8 2003/11/12 14:40:58 breholee Exp $

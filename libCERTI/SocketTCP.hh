@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.7 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketTCP.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
@@ -123,10 +123,11 @@ private:
     int open();
     int timeoutTCP(int, int);
 
+    int portableSelect(fd_set *, struct timeval *);
 };
 
 }
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.7 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketTCP.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $

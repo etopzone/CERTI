@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.hh,v 3.5 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketMC.hh,v 3.6 2003/11/12 14:40:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_MC_HH
@@ -61,6 +61,8 @@ public:
     char *receiveMC(NetworkMessage *msg);
 
 private:
+    int portableSelect(fd_set *, struct timeval *);
+
     struct sockaddr_in _sin ;
     socklen_t _sinlen ;
 
@@ -70,7 +72,6 @@ private:
 
     int timeoutMC(int, int);
 
-    // BUG: Inutile, a virer.
     int _num_msg ;
 };
 
@@ -78,4 +79,4 @@ private:
 
 #endif // _CERTI_SOCKET_MC_HH
 
-// $Id: SocketMC.hh,v 3.5 2003/07/07 23:05:26 breholee Exp $
+// $Id: SocketMC.hh,v 3.6 2003/11/12 14:40:57 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.7 2003/10/20 09:27:24 breholee Exp $
+// $Id: SocketServer.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
@@ -95,7 +95,7 @@ public:
     // --------------------------
     // -- RTIG related methods --
     // --------------------------
-    void addToFDSet(fd_set *select_fdset);
+    int addToFDSet(fd_set *select_fdset);
     Socket *getActiveSocket(fd_set *select_fdset) const ;
 
     // ------------------------------------------
@@ -127,4 +127,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.7 2003/10/20 09:27:24 breholee Exp $
+// $Id: SocketServer.hh,v 3.8 2003/11/12 14:40:58 breholee Exp $
