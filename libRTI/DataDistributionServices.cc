@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.12 2005/04/05 12:16:25 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.13 2005/04/05 19:24:13 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -192,7 +192,6 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
            RestoreInProgress,
            RTIinternalError)
 {
-    D[pdDebug] << "registerObjectInstanceWithRegion 1" << std::endl ;
     Message req, rep ;
 
     req.setType(Message::DDM_REGISTER_OBJECT);
@@ -201,9 +200,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
     req.setAHS(attrs, nb);
     req.setRegions(build_region_handles(regions, nb));
 
-    D[pdDebug] << "registerObjectInstanceWithRegion 2" << std::endl ;
     executeService(&req, &rep);
-    D[pdDebug] << "registerObjectInstanceWithRegion 3" << std::endl ;
 
     return rep.getObject();
 }
@@ -238,6 +235,7 @@ RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
     return rep.getObject();
 }
 
+// ----------------------------------------------------------------------------
 /** Associate region for updates. Make attributes of an object
     be updated through a routing region.
     @param region Region to use for updates
@@ -272,6 +270,7 @@ RTIambassador::associateRegionForUpdates(Region &region,
     D[pdDebug] << "- Associate Region for Updates" << endl ;
 }
 
+// ----------------------------------------------------------------------------
 /** Unassociate region for updates. Make attributes of an object be updated
     through the default region (ie. Declaration Management services)
     @param region Region to unassociate
@@ -301,6 +300,7 @@ RTIambassador::unassociateRegionForUpdates(Region &region,
     D[pdDebug] << "- Unassociate Region for Updates" << endl ;
 }
 
+// ----------------------------------------------------------------------------
 /** Subscribe object class attributes with region.
     @param handle Object class handle
     @param region Region to subscribe with
@@ -336,6 +336,7 @@ RTIambassador::subscribeObjectClassAttributesWithRegion(
     D[pdDebug] << "- Subscribe Object Class Attributes with Region" << endl ;
 }
 
+// ----------------------------------------------------------------------------
 /** Unsubscribe object class attributes with region.
     @param handle Object Class handle
     @param region Region to unsubscribe with
@@ -448,6 +449,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
     return rep.getEventRetraction();
 }
 
+// ----------------------------------------------------------------------------
 void
 RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
                                          const ParameterHandleValuePairSet &par,
@@ -502,4 +504,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
 
 } // namespace certi
 
-// $Id: DataDistributionServices.cc,v 3.12 2005/04/05 12:16:25 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.13 2005/04/05 19:24:13 breholee Exp $
