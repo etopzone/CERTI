@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.5 2003/11/10 14:54:11 breholee Exp $
+// $Id: RegionImp.hh,v 3.6 2003/11/13 10:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -34,6 +34,13 @@ namespace certi {
 
 typedef unsigned long RegionHandle ;
 
+/** Implementation for the HLA Region interface. A region is a set of extents
+    in a routing space. It contains two sets of such extents : current values
+    (not commited to the RTI yet), and the last commited values. This 
+    implementation also keeps track of the routing space handle, and 
+    introduces a handle for the region.
+    \sa Region, RoutingSpace, Dimension, Extent
+ */
 class RegionImp : public Region
 {
 public:
@@ -87,4 +94,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.5 2003/11/10 14:54:11 breholee Exp $
+// $Id: RegionImp.hh,v 3.6 2003/11/13 10:43:02 breholee Exp $

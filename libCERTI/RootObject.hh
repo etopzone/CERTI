@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.18 2003/11/10 14:54:11 breholee Exp $
+// $Id: RootObject.hh,v 3.19 2003/11/13 10:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_ROOT_OBJECT_HH
-#define _CERTI_ROOT_OBJECT_HH
+#ifndef LIBCERTI_ROOT_OBJECT
+#define LIBCERTI_ROOT_OBJECT
 
 #include "InteractionSet.hh"
 #include "ObjectClassSet.hh"
@@ -84,14 +84,13 @@ public:
     ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
 						  AttributeHandle);
     
-    
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
     ObjectSet *objects ;
 
 private:
-    std::vector<RoutingSpace> routingSpaces ;
+    std::vector<RoutingSpace> spaces ;
     std::list<RegionImp *> regions ;
     SecurityServer *server ;
     long freeRegionHandle ;
@@ -99,6 +98,6 @@ private:
 
 } // namespace certi
 
-#endif // _CERTI_ROOT_OBJECT_HH
+#endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.18 2003/11/10 14:54:11 breholee Exp $
+// $Id: RootObject.hh,v 3.19 2003/11/13 10:43:02 breholee Exp $

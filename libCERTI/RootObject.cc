@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.19 2003/11/10 14:54:11 breholee Exp $
+// $Id: RootObject.cc,v 3.20 2003/11/13 10:43:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ RootObject::RootObject(SecurityServer *security_server)
 }
 
 // ----------------------------------------------------------------------------
-//! Delete object classes, interactions, objects and routing spaces.
+//! Delete object classes, interactions, objects
 RootObject::~RootObject()
 {
     delete ObjectClasses ;
@@ -71,10 +71,10 @@ RootObject::display() const
     cout << endl << "Root Object Tree :" << endl ;
     ObjectClasses->display();
     Interactions->display();
-    if (routingSpaces.size() > 0) {
+    if (spaces.size() > 0) {
         cout << "+ Routing Spaces :" << endl ;
 	vector<RoutingSpace>::const_iterator it ;
-        for (it = routingSpaces.begin(); it != routingSpaces.end(); ++it) {
+        for (it = spaces.begin(); it != spaces.end(); ++it) {
             it->display();
         }
     }
@@ -101,11 +101,15 @@ RootObject::registerFederate(const char *the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! add a routing space [HLA 1.3]
+/** Add a routing space. The actual routing space is a copy of the one
+    provided as parameter, and the handle may be modified.
+    \param rs Routing space to add
+ */
 void
 RootObject::addRoutingSpace(const RoutingSpace &rs)
 {
-    routingSpaces.push_back(rs);
+    spaces.push_back(rs);
+    spaces.back().setHandle(spaces.size());
 }
 
 // ----------------------------------------------------------------------------
@@ -115,11 +119,11 @@ RootObject::getRoutingSpaceHandle(string rs)
     throw (NameNotFound)
 {
     vector<RoutingSpace>::const_iterator i = std::find_if(
-	routingSpaces.begin(),
-	routingSpaces.end(),
+	spaces.begin(),
+	spaces.end(),
 	NameComparator<RoutingSpace>(rs));
     
-    if (i == routingSpaces.end()) throw NameNotFound();
+    if (i == spaces.end()) throw NameNotFound();
     else return i->getHandle();
 }
 
@@ -129,13 +133,8 @@ string
 RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    vector<RoutingSpace>::const_iterator i = std::find_if(
-	routingSpaces.begin(),
-	routingSpaces.end(),
-	HandleComparator<RoutingSpace>(handle));
-    
-    if (i == routingSpaces.end()) throw SpaceNotDefined();
-    else return i->getName();
+    if (handle <= 0 || handle > spaces.size()) throw SpaceNotDefined();
+    else return spaces[handle - 1].getName();
 }
 
 // ----------------------------------------------------------------------------
@@ -144,13 +143,8 @@ RoutingSpace &
 RootObject::getRoutingSpace(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    vector<RoutingSpace>::iterator i = std::find_if(
-	routingSpaces.begin(),
-	routingSpaces.end(),
-	HandleComparator<RoutingSpace>(handle));
-    
-    if (i == routingSpaces.end()) throw SpaceNotDefined();
-    else return *i ;
+    if (handle <= 0 || handle > spaces.size()) throw SpaceNotDefined();
+    else return spaces[handle - 1] ;
 }
 
 // ----------------------------------------------------------------------------
@@ -183,50 +177,47 @@ RootObject::modifyRegion(RegionHandle handle, const vector<Extent> &extents)
 {
     RegionImp *region = getRegion(handle);
 
-    // TODO: check extents are in the routing space, and number ok
+    // TODO (later in development) Use the expected exception, not an assert
     assert(region->getNumberOfExtents() == extents.size());
 
     region->setExtents(extents);
 }
 
 // ----------------------------------------------------------------------------
-//! delete a region
+/** Delete a region
+    \param region_handle Region to delete
+*/
 void
-RootObject::deleteRegion(RegionHandle handle)
+RootObject::deleteRegion(RegionHandle region_handle)
     throw (RegionNotKnown, RegionInUse)
 {
-    list<RegionImp *>::iterator i ;
+    list<RegionImp *>::iterator it = std::find_if(
+	regions.begin(),
+	regions.end(),
+	HandleComparator<RegionImp>(region_handle));
 
-    for (i = regions.begin(); i != regions.end(); i++) {
-        if ((*i)->getHandle() == handle) {
-            // TODO: check "in use"
-            regions.remove(*i);
-            delete *i ;
-            return ;
-        }
+    if (it == regions.end()) throw RegionNotKnown();
+    else {
+	// TODO: check RegionInUse
+	regions.remove(*it);
+	delete *it ;
     }
-    throw RegionNotKnown();
 }
 
 // ----------------------------------------------------------------------------
-//! get a region
+/** Get a region
+    \param region_handle Region to get
+    \return Pointer to the region
+*/
 RegionImp *
 RootObject::getRegion(RegionHandle handle)
     throw (RegionNotKnown)
 {
-//     list<RegionImp *>::iterator i ;
-
-//     for (i = regions.begin(); i != regions.end(); i++) {
-//         if ((*i)->getHandle() == handle) {
-//             return *i ;
-//         }
-//     }
-//     throw RegionNotKnown();
-
     list<RegionImp *>::iterator it = std::find_if(
 	regions.begin(), 
 	regions.end(),
 	HandleComparator<RegionImp>(handle));
+
     if (it == regions.end()) throw RegionNotKnown();
     else return *it ;
 }
@@ -320,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.19 2003/11/10 14:54:11 breholee Exp $
+// $Id: RootObject.cc,v 3.20 2003/11/13 10:43:02 breholee Exp $
