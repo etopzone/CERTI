@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.12 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.13 2005/03/11 13:38:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_ATTRIBUTE_HH
@@ -76,6 +76,8 @@ public:
 
     void associate(RegionImp *);
     void unassociate(RegionImp *);
+
+    const RegionImp *getRegion() const { return region ; };
     
 private:
     // Private Attributes
@@ -92,4 +94,4 @@ private:
 
 #endif // _CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.12 2004/05/18 13:18:54 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.13 2005/03/11 13:38:34 breholee Exp $
