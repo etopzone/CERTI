@@ -18,14 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $
+// $Id: Ball.cc,v 3.5 2004/01/09 16:45:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-
 #include "Ball.hh"
-
 #include "graph_c.hh"
+
+#include <cmath>
 
 using namespace std ;
 
@@ -123,8 +123,8 @@ Ball::collision(float largeur, float hauteur)
 bool
 Ball::collision(Ball *ab)
 {
-    return sqrt((x + dx - ab->x) * (x + dx - ab->x) +
-		(y + dy - ab->y) * (y + dy - ab->y)) <= 2 * radius ;
+    return std::sqrt((x + dx - ab->x) * (x + dx - ab->x) +
+		     (y + dy - ab->y) * (y + dy - ab->y)) <= 2 * radius ;
 }
 
 // ----------------------------------------------------------------------------
@@ -153,4 +153,4 @@ Ball::init(int x_, int y_)
     display();
 }
 
-// $Id: Ball.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $
+// $Id: Ball.cc,v 3.5 2004/01/09 16:45:08 breholee Exp $
