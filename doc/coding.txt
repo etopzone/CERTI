@@ -1,0 +1,167 @@
+CERTI Coding Standard
+=====================
+
+Files
+-----
+
+- C++ source code : .cc
+- C++ header file : .hh
+- no #pragma
+- no tabs (only spaces)
+- files must have a copyright
+- width 79 columns maximum
+- avoid files with more than 1000 lines (better, not mandatory)
+
+Content
+-------
+
+- emacs coding style line
+- copyright and license notice
+- CVS Id
+
+Then for .hh files:
+- multiple inclusion check (for .hh files)
+- includes from the project (starting with <config.h>)
+- includes from external libraries (eg. libXML)
+- includes from standard libraries (eg. stdio.h, iostream)
+- usings
+- #define's
+- declarations
+
+For the .cc files:
+- definitions
+
+Identifiers
+-----------
+
+- identifiers should be meaningful
+- allowed regexp: [A-Za-z][0-9A-Za-z_]*
+- case: - class           ClassName
+        - method          methodName()
+        - attribute       attributeName
+        - variable        variable_name
+        - namespace       namespacename
+        - template type   T
+
+Spaces
+------
+
+Required:
+- after keyword : if (expr) ...
+- after commas : func(param1, param2, param3);
+- around operators : (a && (b || c || d))
+
+But no spaces:
+- after function/method name                 :   obj.mymethod(p);
+- after [, (, ., ->, before [, ], ), ., ->   :   tab[a + f(obj->ref() + 1)]
+
+Indentation
+-----------
+
+- 4-space indentation
+- no indentation for namespaces
+
+Line wrap
+---------
+
+Always wrap after operator:  if (a && b && c &&
+                                 d && e) ...
+except for << and >> operators :
+       cout << a << b
+	    << c << endl ;
+
+Comments
+--------
+
+- should appear before code, not after 
+- comments before methods should start with a line of '-' (ending at
+  column 78), and then use Doxygen conventions. eg:
+
+// ----------------------------------------------------------------------------
+//! brief comment
+/*! long comment
+    etc.
+*/
+void
+MyClass::myMethod(parameters...)
+{
+    ...
+}
+
+Classes
+-------
+
+- private or protected attributes
+- public inheritance
+- order: public declarations, then protected, then private
+
+Class style
+-----------
+
+class ClassName
+{
+public:
+    ClassName();
+    ~ClassName();
+    ...
+
+protected:
+    ...
+
+private:
+    ...
+};
+
+Method style
+------------
+type
+ClassName::methodName(parameters)          // fit on 1 line
+    throw (exceptions)                     // fit on 1 line
+{
+    ...
+}
+
+type
+ClassName::methodName(long_param1,         // doesn't fit on 1 line
+                      long_param2)
+    throw (except1,                          // doesn't fit on 1 line
+           except2)
+{
+    ...
+}
+
+Braces style : K&R
+------------------
+
+if (expr) {
+    statement;
+    statement;
+}
+else if (expr) {
+    statement;
+else {
+    statement;
+}
+
+
+for (init; condition; incr) {
+    ...
+}
+
+
+do {
+    ...
+} while (expr);
+
+
+while (expr) {
+    ...
+}
+
+
+try {
+    ...
+}
+catch (type) {
+    ...
+}
