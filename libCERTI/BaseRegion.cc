@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: BaseRegion.cc,v 3.1 2005/03/28 19:21:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,12 +32,6 @@ namespace certi {
 // ----------------------------------------------------------------------------
 BaseRegion::BaseRegion(RegionHandle h)
     : Handled<RegionHandle>(h)
-{
-}
-
-// ----------------------------------------------------------------------------
-BaseRegion::BaseRegion(RegionHandle h, const vector<Extent> &ext)
-    : Handled<RegionHandle>(h), extents(ext)
 {
 }
 
@@ -162,4 +156,4 @@ BaseRegion::overlaps(const BaseRegion &region) const
 
 } // namespace certi
 
-// $Id: BaseRegion.cc,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: BaseRegion.cc,v 3.1 2005/03/28 19:21:09 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.hh,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: BaseRegion.hh,v 3.1 2005/03/28 19:21:09 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BASE_REGION_HH
@@ -38,7 +38,6 @@ class BaseRegion : public Handled<RegionHandle>
 {
 public:
     BaseRegion(RegionHandle);
-    BaseRegion(RegionHandle, const std::vector<Extent> &);
     virtual ~BaseRegion();
 
     virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
