@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// $Id: Communications.cc,v 3.10 2003/10/13 09:55:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -93,26 +93,26 @@ Communications::Communications()
     : SocketUN(), SecureTCPSocket(), SocketUDP()
 {
     char nom_serveur_RTIG[200] ;
+    char *default_host = "localhost" ;
 
     // Federate/RTIA link creation.
     acceptUN();
 
     // RTIG TCP link creation.
-    char *certihost = getenv("CERTI_HOST");
+    char *certihost = 0 ;
+    ifstream* file = new ifstream("RTIA.dat", ios::in);
 
-    ifstream* file = NULL ;
-    if (certihost==NULL) {
-        file = new ifstream("RTIA.dat", ios::in);
-        if (!file->is_open()) {
-            cout << "RTIA ERROR: Unable to find RTIG host." << endl ;
-            cout << "No RTIA.dat file found, no CERTI_HOST variable set" << endl ;
-            exit(-1);
-        }
-
-        file->get(nom_serveur_RTIG, 200);
-        file->close();
-        delete file ;
-        certihost = nom_serveur_RTIG ;
+    if (!file->is_open()) {
+	certihost = getenv("CERTI_HOST");
+	if (certihost == NULL) {
+	    certihost = default_host ;
+	}
+    }
+    else {
+	file->get(nom_serveur_RTIG, 200);
+	file->close();
+	delete file ;
+	certihost = nom_serveur_RTIG ;
     }
 
     const char *tcp_port = getenv("CERTI_TCP_PORT");
@@ -309,4 +309,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// $Id: Communications.cc,v 3.10 2003/10/13 09:55:52 breholee Exp $
