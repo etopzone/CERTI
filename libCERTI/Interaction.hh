@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.10 2003/06/27 17:26:28 breholee Exp $
+// $Id: Interaction.hh,v 3.11 2003/07/09 16:01:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -38,38 +38,6 @@ namespace certi {
 
 class Interaction
 {
-    // ATTRIBUTES ------------------------------------------------------------
-public:
-    InteractionClassHandle handle ; //!< Interaction class handle.
-    //! This Object helps to find a TCPLink given a Federate Handle.
-    SecurityServer *server ;
-    InteractionClassHandle parent ; //!< Parent Class' Handle.
-
-    list<InteractionClassHandle> children ; //!< Children Classes' Handles List
-    UShort depth ;
-
-    /*! Interaction messages' Transport Type(Reliable, Best Effort),
-      Currently not used.
-    */
-    TransportType transport ;
-
-    //! Interaction message Ordering Type(TSO, FIFO), currently not used.
-    OrderType order ;
-
-private:
-    char *name ; //!< Must be locally allocated and deleted.
-    SecurityLevelID id ; //!< The default Security Level for new parameters
-    SpaceHandle space ;
-
-    //! List of this Interaction Class' Parameters.
-    list<Parameter *> parameterSet ;
-    //! List of the Federates(Handles) who subscribed to this Class.
-    list<Subscriber *> subscribers ;
-    //! List of the Federates(Handles) publishing this Class.
-    list<Publisher *> publishers ;
-
-
-    // METHODS ---------------------------------------------------------------
 public:
     Interaction();
     ~Interaction();
@@ -105,6 +73,9 @@ public:
     void subscribe(bool subscribe, Subscriber *the_subscriber)
         throw (RegionNotKnown, InvalidRoutingSpace, RTIinternalError);
 
+    void subscribe(FederateHandle, RegionImp *);
+    void unsubscribe(FederateHandle, RegionImp *);
+    
     // -- RTI Support Services --
     ParameterHandle getParameterHandle(const char *) const
         throw (NameNotFound, RTIinternalError);
@@ -145,6 +116,24 @@ public:
 
     void broadcastInteractionMessage(InteractionBroadcastList *ibList);
 
+    // Attributes
+    
+    InteractionClassHandle handle ; //!< Interaction class handle.
+    //! This Object helps to find a TCPLink given a Federate Handle.
+    SecurityServer *server ;
+    InteractionClassHandle parent ; //!< Parent Class' Handle.
+
+    list<InteractionClassHandle> children ; //!< Children Classes' Handles List
+    UShort depth ;
+
+    /*! Interaction messages' Transport Type(Reliable, Best Effort),
+      Currently not used.
+    */
+    TransportType transport ;
+
+    //! Interaction message Ordering Type(TSO, FIFO), currently not used.
+    OrderType order ;
+
 private:
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined,
@@ -164,10 +153,23 @@ private:
     void deleteSubscriber(int the_rank);
     bool isSubscribed(FederateHandle the_handle) const ;
     int getSubscriberRank(FederateHandle the_federate) const ;
+
+    // Attributes
+    
+    char *name ; //!< Must be locally allocated and deleted.
+    SecurityLevelID id ; //!< The default Security Level for new parameters
+    SpaceHandle space ;
+
+    //! List of this Interaction Class' Parameters.
+    list<Parameter *> parameterSet ;
+    //! List of the Federates(Handles) who subscribed to this Class.
+    list<Subscriber *> subscribers ;
+    //! List of the Federates(Handles) publishing this Class.
+    list<Publisher *> publishers ;
 };
 
 } // namespace
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.10 2003/06/27 17:26:28 breholee Exp $
+// $Id: Interaction.hh,v 3.11 2003/07/09 16:01:37 breholee Exp $
