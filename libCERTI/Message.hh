@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.14 2003/05/09 00:27:17 breholee Exp $
+// $Id: Message.hh,v 3.15 2003/05/09 01:11:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -289,7 +289,7 @@ public:
 
     // If Value == NULL return a newly allocated copy of Value, else copy it
     // in Value.
-    char *getValue(int Rank, char *Value = NULL)
+    char *getValue(int Rank, char *Value = 0) const
         throw (RTIinternalError); // Bad Rank
 
     // Return a newly allocated ValueArray, exactly of size HandleArraySize.
@@ -346,20 +346,42 @@ public:
     ObjectClassHandle getObjectClass() const { return objectClass ; };
 
     void setResignAction(ResignAction);
+
     void setFedTime(const FedTime&);
+    FedTime& getFedTime() const { return *(new RTIfedTime(date)); };
+
     void setLookahead(const FedTime&);
     void setFederationTime(FederationTime);
 
     void setBoolean(Boolean);
-    void setObject(ObjectHandle);
-    void setTransportation(TransportationHandle);
-    void setOrdering(OrderingHandle);
-    void setEventRetraction(EventRetractionHandle);
-    void setParameter(ParameterHandle);
-    void setFederate(FederateHandle);
 
+    void setObject(ObjectHandle);
+    ObjectHandle getObject() const { return object ; };
+
+    void setTransportation(TransportationHandle);
+    TransportationHandle getTransportation() const
+    { return transportation ; };
+
+    void setOrdering(OrderingHandle);
+    OrderingHandle getOrdering() const { return ordering ; };
+
+    void setEventRetraction(EventRetractionHandle);
+    EventRetractionHandle getEventRetraction() const
+    { return eventRetraction ; };
+
+    void setParameter(ParameterHandle);
+    ParameterHandle getParameter() const { return parameter ; };
+
+    void setFederate(FederateHandle);
+    FederateHandle getFederate() const { return federate ; };
+
+    AttributeHandleSet* getAHS() const ;
     void setAHS(const AttributeHandleSet &);
+
+    AttributeHandleValuePairSet* getAHVPS() const ;
     void setAHVPS(const AttributeHandleValuePairSet &);
+
+    ParameterHandleValuePairSet* getPHVPS() const ;
     void setPHVPS(const ParameterHandleValuePairSet &);
 
     void setAttributes(AttributeHandle *, ushort);
@@ -463,4 +485,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.14 2003/05/09 00:27:17 breholee Exp $
+// $Id: Message.hh,v 3.15 2003/05/09 01:11:08 breholee Exp $

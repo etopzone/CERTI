@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.25 2003/05/08 23:32:54 breholee Exp $
+// $Id: RTIambassador.cc,v 3.26 2003/05/09 01:11:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -103,7 +103,7 @@ RTIambassador::executeService(Message *req, Message *rep)
   is launched. This process is used for data exchange with rtig server.
   This process connects to rtia after one second delay (UNIX socket).
 */
-RTIambassador::RTIambassador(void)
+RTIambassador::RTIambassador()
     throw (MemoryExhausted, RTIinternalError) : SocketUN(stIgnoreSignal)
 {
     is_reentrant = false ;
@@ -140,7 +140,7 @@ RTIambassador::RTIambassador(void)
 //! Closes processes.
 /*! When destructor is called, kill rtia process.
  */
-RTIambassador::~RTIambassador(void)
+RTIambassador::~RTIambassador()
 {
     kill(pid_RTIA, SIGINT);
 }
@@ -228,7 +228,7 @@ joinFederationExecution(const char *yourName,
     req.setFederationName(executionName);
 
     executeService(&req, &rep);
-    return rep.federate ;
+    return rep.getFederate();
 }
 
 // ----------------------------------------------------------------------------
@@ -356,7 +356,7 @@ RTIambassador::requestFederationSave(const char *label)
 // ----------------------------------------------------------------------------
 //! Federate Save Begun.
 void
-RTIambassador::federateSaveBegun(void)
+RTIambassador::federateSaveBegun()
     throw (SaveNotInitiated,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -431,7 +431,7 @@ RTIambassador::requestFederationRestore(const char *label)
 // ----------------------------------------------------------------------------
 //! Restore Complete.
 void
-RTIambassador::federateRestoreComplete(void)
+RTIambassador::federateRestoreComplete()
     throw (UnknownLabel,
            RestoreNotRequested,
            RTICannotRestore,
@@ -452,7 +452,7 @@ RTIambassador::federateRestoreComplete(void)
 // ----------------------------------------------------------------------------
 //! Federate Restore Not Complete.
 void
-RTIambassador::federateRestoreNotComplete(void)
+RTIambassador::federateRestoreNotComplete()
     throw (UnknownLabel,
            RestoreNotRequested,
            FederateNotExecutionMember,
@@ -674,7 +674,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
     req.setObjectClass(theClass);
     executeService(&req, &rep);
 
-    return rep.object ;
+    return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
@@ -698,7 +698,7 @@ RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
 
     executeService(&req, &rep);
 
-    return rep.object ;
+    return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
@@ -730,7 +730,7 @@ updateAttributeValues(ObjectHandle theObject,
 
     executeService(&req, &rep);
 
-    return rep.eventRetraction ;
+    return rep.getEventRetraction();
 }
 
 // ----------------------------------------------------------------------------
@@ -789,7 +789,7 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 
     executeService(&req, &rep);
 
-    return rep.eventRetraction ;
+    return rep.getEventRetraction();
 }
 
 // ----------------------------------------------------------------------------
@@ -844,7 +844,7 @@ RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     req.setTag(theTag);
 
     executeService(&req, &rep);
-    return rep.eventRetraction ;
+    return rep.getEventRetraction();
 }
 
 // ----------------------------------------------------------------------------
@@ -1101,13 +1101,7 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
     executeService(&req, &rep);
 
     if (rep.exception == e_NO_EXCEPTION) {
-        AttributeHandleSet *AttributeSet ;
-        AttributeSet = AttributeHandleSetFactory::create(rep.handleArraySize);
-
-        for (int i = 0 ; i < rep.handleArraySize ; i++) {
-            AttributeSet->add(rep.handleArray[i]);
-        }
-        return AttributeSet ;
+        return rep.getAHS();
     }
 
     return NULL ;
@@ -1271,7 +1265,7 @@ RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
 // ----------------------------------------------------------------------------
 // Disable Time Regulation
 void
-RTIambassador::disableTimeRegulation(void)
+RTIambassador::disableTimeRegulation()
     throw (FederationTimeAlreadyPassed,
            TimeRegulationWasNotEnabled, //not implemented
            ConcurrentAccessAttempted,
@@ -1291,7 +1285,7 @@ RTIambassador::disableTimeRegulation(void)
 // ----------------------------------------------------------------------------
 // Enable Time Constrained
 void
-RTIambassador::enableTimeConstrained(void)
+RTIambassador::enableTimeConstrained()
     throw (TimeConstrainedAlreadyEnabled, //not implemented
            EnableTimeConstrainedPending, //not implemented
            TimeAdvanceAlreadyInProgress, //not implemented
@@ -1312,7 +1306,7 @@ RTIambassador::enableTimeConstrained(void)
 // ----------------------------------------------------------------------------
 // Disable Time Constrained
 void
-RTIambassador::disableTimeConstrained(void)
+RTIambassador::disableTimeConstrained()
     throw (TimeConstrainedWasNotEnabled, //not implemented
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -1453,7 +1447,7 @@ RTIambassador::flushQueueRequest(const FedTime& theTime)
 // ----------------------------------------------------------------------------
 // Enable Asynchronous Delivery
 void
-RTIambassador::enableAsynchronousDelivery(void)
+RTIambassador::enableAsynchronousDelivery()
     throw (AsynchronousDeliveryAlreadyEnabled,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -1473,7 +1467,7 @@ RTIambassador::enableAsynchronousDelivery(void)
 // ----------------------------------------------------------------------------
 // Disable Asynchronous Delivery
 void
-RTIambassador::disableAsynchronousDelivery(void)
+RTIambassador::disableAsynchronousDelivery()
     throw (AsynchronousDeliveryAlreadyDisabled,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
@@ -1506,7 +1500,7 @@ RTIambassador::queryLBTS(FedTime& theTime)
     req.type = QUERY_LBTS ;
     executeService(&req, &rep);
 
-    theTime = RTIfedTime(rep.date);
+    theTime = rep.getFedTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1525,7 +1519,7 @@ RTIambassador::queryFederateTime(FedTime& theTime)
     req.type = QUERY_FEDERATE_TIME ;
     executeService(&req, &rep);
 
-    theTime = RTIfedTime(rep.date);
+    theTime = rep.getFedTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1976,7 +1970,7 @@ RTIambassador::getObjectClassHandle(const char *theName)
 
     executeService(&req, &rep);
 
-    return rep.objectClass ;
+    return rep.getObjectClass();
 }
 
 // ----------------------------------------------------------------------------
@@ -2021,7 +2015,7 @@ RTIambassador::getAttributeHandle(const char *theName,
 
     executeService(&req, &rep);
 
-    return rep.attribute ;
+    return rep.getAttribute();
 }
 
 // ----------------------------------------------------------------------------
@@ -2062,7 +2056,7 @@ RTIambassador::getInteractionClassHandle(const char *theName)
 
     executeService(&req, &rep);
 
-    return rep.interactionClass ;
+    return rep.getInteractionClass();
 }
 
 
@@ -2104,7 +2098,7 @@ RTIambassador::getParameterHandle(const char *theName,
 
     executeService(&req, &rep);
 
-    return rep.parameter ;
+    return rep.getParameter();
 }
 
 // ----------------------------------------------------------------------------
@@ -2148,7 +2142,7 @@ RTIambassador::getObjectInstanceHandle(const char *theName)
 
     executeService(&req, &rep);
 
-    return(rep.object);
+    return rep.getObject();
 }
 
 // ----------------------------------------------------------------------------
@@ -2288,7 +2282,7 @@ RTIambassador::getObjectClass(ObjectHandle theObject)
 
     executeService(&req, &rep);
 
-    return(rep.objectClass);
+    return rep.getObjectClass();
 }
 
 // ----------------------------------------------------------------------------
@@ -2326,7 +2320,7 @@ RTIambassador::getTransportationHandle(const char *theName)
 
     executeService(&req, &rep);
 
-    return(rep.transportation);
+    return rep.getTransportation();
 }
 
 // ----------------------------------------------------------------------------
@@ -2368,7 +2362,7 @@ RTIambassador::getOrderingHandle(const char *theName)
 
     executeService(&req, &rep);
 
-    return(rep.ordering);
+    return rep.getOrdering();
 }
 
 
@@ -2396,7 +2390,7 @@ RTIambassador::getOrderingName(OrderingHandle theHandle)
 // ----------------------------------------------------------------------------
 // Enable Class Relevance Advisory Switch
 void
-RTIambassador::enableClassRelevanceAdvisorySwitch(void)
+RTIambassador::enableClassRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -2415,7 +2409,7 @@ RTIambassador::enableClassRelevanceAdvisorySwitch(void)
 // ----------------------------------------------------------------------------
 // Disable Class Relevance Advisory Switch
 void
-RTIambassador::disableClassRelevanceAdvisorySwitch(void)
+RTIambassador::disableClassRelevanceAdvisorySwitch()
     throw (FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            SaveInProgress,
@@ -2547,16 +2541,12 @@ RTIambassador::disableInteractionRelevanceAdvisorySwitch()
 // ----------------------------------------------------------------------------
 // Tick
 Boolean
-RTIambassador::tick(void)
+RTIambassador::tick()
     throw (SpecifiedSaveLabelDoesNotExist,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    int i = 0 ;
     Message vers_RTI, vers_Fed ;
-
-    CAttributeHandleValuePairSet theAttributes ;
-    CParameterHandleValuePairSet theParameters ;
 
     // Throw exception if reentrant call.
     if (is_reentrant)
@@ -2642,7 +2632,7 @@ RTIambassador::tick(void)
 
               case INITIATE_FEDERATE_RESTORE:
                 fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
-                                                 vers_Fed.federate);
+                                                 vers_Fed.getFederate());
                 break ;
 
               case FEDERATION_RESTORED:
@@ -2652,220 +2642,149 @@ RTIambassador::tick(void)
               case FEDERATION_NOT_RESTORED:
                 fed_amb->federationNotRestored();
                 break ;
-
+  
               case START_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                      startRegistrationForObjectClass(vers_Fed.objectClass);
+                     startRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-
+  
               case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                      stopRegistrationForObjectClass(vers_Fed.objectClass);
+                     stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-
+  
               case TURN_INTERACTIONS_ON: {
-                  fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
+                 fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
-
+  
               case TURN_INTERACTIONS_OFF: {
-                  fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
+                 fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
-
+  
               case DISCOVER_OBJECT_INSTANCE: {
                   fed_amb->
-                      discoverObjectInstance(vers_Fed.object,
-                                             vers_Fed.objectClass,
-                                             (char *) (vers_Fed.getName()));
+                     discoverObjectInstance(vers_Fed.getObject(),
+                                            vers_Fed.getObjectClass(),
+                                            vers_Fed.getName());
               } break ;
-
+  
               case REFLECT_ATTRIBUTE_VALUES: {
-                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      CAttributeHandleValuePair *att =
-                          new CAttributeHandleValuePair ;
-
-                      att->_attrib = vers_Fed.handleArray[i] ;
-
-                      // BUG: Federate may be expecting to find value name
-                      // (a call to GetWithName for example).
-                      strcpy(att->_value.name, "");
-                      vers_Fed.getValue(i, att->_value.value);
-
-                      // BUG: Federate is expecting to find value type.
-                      strcpy(att->_value.type, "");
-
-                      theAttributes.add(att);
-                  }
-
-                  AttributeHandleValuePairSet* theAttributes_aux =
-                      theAttributes.toAHVPS();
-
+                 AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
                   fed_amb->
-                      reflectAttributeValues(vers_Fed.object,
-                                             *theAttributes_aux,
-                                             RTIfedTime(vers_Fed.date),
-                                             (char *) vers_Fed.getTag(),
+                     reflectAttributeValues(vers_Fed.getObject(),
+                                            *theAttributes,
+                                            vers_Fed.getFedTime(),
+                                            vers_Fed.getTag(),
                                              vers_Fed.eventRetraction);
-
-                  delete theAttributes_aux ;
+  
+                 delete theAttributes ;
               } break ;
-
+  
               case RECEIVE_INTERACTION: {
-                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      CParameterHandleValuePair *par =
-                          new CParameterHandleValuePair ;
-
-                      par->_param = vers_Fed.handleArray[i] ;
-
-                      // BUG: Federate may be expecting to find value name
-                      // (a call to GetWithName for example).
-                      strcpy(par->_value.name, "");
-
-                      vers_Fed.getValue(i, par->_value.value);
-
-                      // BUG: Federate is expecting to find value type.
-                      strcpy(par->_value.type, "");
-
-                      theParameters.add(par);
-                  }
-
-                  ParameterHandleValuePairSet *theParameters_aux ;
-                  theParameters_aux = theParameters.toPHVPS();
-
-                  fed_amb->receiveInteraction(vers_Fed.interactionClass,
-                                              *theParameters_aux,
-                                              RTIfedTime(vers_Fed.date),
-                                              (char *) vers_Fed.getTag(),
-                                              vers_Fed.eventRetraction);
-
-                  delete theParameters_aux ;
+                 ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
+  
+                 fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                                             *theParameters,
+                                             vers_Fed.getFedTime(),
+                                             vers_Fed.getTag(),
+                                             vers_Fed.getEventRetraction());
+  
+                 delete theParameters ;
               } break ;
-
+  
               case REMOVE_OBJECT_INSTANCE: {
-                  fed_amb->removeObjectInstance(vers_Fed.object,
-                                                RTIfedTime(vers_Fed.date),
-                                                (char *) vers_Fed.getTag(),
-                                                vers_Fed.eventRetraction);
+                 fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                                               vers_Fed.getFedTime(),
+                                               vers_Fed.getTag(),
+                                               vers_Fed.getEventRetraction());
               } break ;
-
+  
               case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+
+
+
                   // fed_amb->provideAttributeValueUpdate();
               } break ;
 
               case REQUEST_RETRACTION: {
-                  // fed_amb->reflectRetraction();
-              } break ;
 
+              } break ;
+  
               case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      requestAttributeOwnershipAssumption(vers_Fed.object,
-                                                          *AttributeSet,
-                                                          (char *)
+                     requestAttributeOwnershipAssumption(vers_Fed.getObject(),
+                                                         *attributeSet,
                                                           vers_Fed.getTag());
-                  AttributeSet->empty();
+                 delete attributeSet ;
               } break ;
-
+  
               case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-
-                  fed_amb->requestAttributeOwnershipRelease(vers_Fed.object,
-                                                            *AttributeSet,
-                                                            (char *)
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
+                 fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
+                                                           *attributeSet,
                                                             vers_Fed.getTag());
-
-                  AttributeSet->empty();
+  
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-                  fed_amb->attributeOwnershipUnavailable(vers_Fed.object,
-                                                         *AttributeSet);
-                  AttributeSet->empty();
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+ 
+                 fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                                                        *attributeSet);
+  
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      attributeOwnershipAcquisitionNotification(vers_Fed.object,
-                                                                *AttributeSet);
-                  AttributeSet->empty();
+                     attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
+                                                               *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      attributeOwnershipDivestitureNotification(vers_Fed.object,
-                                                                *AttributeSet);
-                  AttributeSet->empty();
+                     attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
+                                                               *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
                       confirmAttributeOwnershipAcquisitionCancellation
-                      (vers_Fed.object, *AttributeSet);
-                  AttributeSet->empty();
+                     (vers_Fed.getObject(), *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case INFORM_ATTRIBUTE_OWNERSHIP: {
                   fed_amb->
-                      informAttributeOwnership(vers_Fed.object,
-                                               vers_Fed.attribute,
-                                               vers_Fed.federate);
+                     informAttributeOwnership(vers_Fed.getObject(),
+                                              vers_Fed.getAttribute(),
+                                              vers_Fed.getFederate());
               } break ;
-
+  
               case ATTRIBUTE_IS_NOT_OWNED: {
-                  fed_amb->attributeIsNotOwned(vers_Fed.object,
-                                               vers_Fed.attribute);
+                 fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                                              vers_Fed.getAttribute());
               } break ;
-
+  
               case TIME_ADVANCE_GRANT: {
-                  fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
+                 fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
-
+  
               default: {
                   leave("RTI service requested by RTI is unknown.");
               }
@@ -2915,11 +2834,7 @@ RTIambassador::tick(TickTime /*minimum*/,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    int i = 0 ;
     Message vers_RTI, vers_Fed ;
-
-    CAttributeHandleValuePairSet theAttributes ;
-    CParameterHandleValuePairSet theParameters ;
 
     // Lever une exception si appel reentrant
     if (is_reentrant)
@@ -3003,7 +2918,7 @@ RTIambassador::tick(TickTime /*minimum*/,
 
               case INITIATE_FEDERATE_RESTORE:
                 fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
-                                                 vers_Fed.federate);
+                                                 vers_Fed.getFederate());
                 break ;
 
               case FEDERATION_RESTORED:
@@ -3013,216 +2928,149 @@ RTIambassador::tick(TickTime /*minimum*/,
               case FEDERATION_NOT_RESTORED:
                 fed_amb->federationNotRestored();
                 break ;
-
+  
               case START_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                      startRegistrationForObjectClass(vers_Fed.objectClass);
+                     startRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-
+  
               case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                      stopRegistrationForObjectClass(vers_Fed.objectClass);
+                     stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-
+  
               case TURN_INTERACTIONS_ON: {
-                  fed_amb->turnInteractionsOn(vers_Fed.interactionClass);
+                 fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
-
+  
               case TURN_INTERACTIONS_OFF: {
-                  fed_amb->turnInteractionsOff(vers_Fed.interactionClass);
+                 fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
-
+  
               case DISCOVER_OBJECT_INSTANCE: {
                   fed_amb->
-                      discoverObjectInstance(vers_Fed.object,
-                                             vers_Fed.objectClass,
-                                             (char *) (vers_Fed.getName()));
+                     discoverObjectInstance(vers_Fed.getObject(),
+                                            vers_Fed.getObjectClass(),
+                                            vers_Fed.getName());
               } break ;
-
+  
               case REFLECT_ATTRIBUTE_VALUES: {
-
-                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      CAttributeHandleValuePair *att =
-                          new CAttributeHandleValuePair ;
-
-                      att->_attrib = vers_Fed.handleArray[i] ;
-                      strcpy(att->_value.name, "");
-                      vers_Fed.getValue(i, att->_value.value);
-
-                      // BUG: Le federe s'attend surement a trouver le
-                      // type de la valeur.
-                      strcpy(att->_value.type, "");
-                      theAttributes.add(att);
-                  }
-
-                  AttributeHandleValuePairSet *theAttributes_aux =
-                      theAttributes.toAHVPS();
-
+                 AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
                   fed_amb->
-                      reflectAttributeValues(vers_Fed.object,
-                                             *theAttributes_aux,
-                                             RTIfedTime(vers_Fed.date),
-                                             (char *) vers_Fed.getTag(),
+                     reflectAttributeValues(vers_Fed.getObject(),
+                                            *theAttributes,
+                                            vers_Fed.getFedTime(),
+                                            vers_Fed.getTag(),
                                              vers_Fed.eventRetraction);
+ 
+                 delete theAttributes ;
               } break ;
-
+  
               case RECEIVE_INTERACTION: {
-
-                  for (i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-
-                      CParameterHandleValuePair *par =
-                          new CParameterHandleValuePair ;
-
-                      par->_param = vers_Fed.handleArray[i] ;
-                      strcpy(par->_value.name, "");
-                      vers_Fed.getValue(i, par->_value.value);
-
-                      // Pareil pour le type de la valeur.
-                      strcpy(par->_value.type, "");
-                      theParameters.add(par);
-                  }
-
-                  ParameterHandleValuePairSet *theParameters_aux =
-                      theParameters.toPHVPS();
-
-                  fed_amb->receiveInteraction(vers_Fed.interactionClass,
-                                              *theParameters_aux,
-                                              RTIfedTime(vers_Fed.date),
-                                              (char *) vers_Fed.getTag(),
-                                              vers_Fed.eventRetraction);
+                 ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
+  
+                 fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                                             *theParameters,
+                                             vers_Fed.getFedTime(),
+                                             vers_Fed.getTag(),
+                                             vers_Fed.getEventRetraction());
+  
+                 delete theParameters ;
               } break ;
-
+  
               case REMOVE_OBJECT_INSTANCE: {
-                  fed_amb->removeObjectInstance(vers_Fed.object,
-                                                RTIfedTime(vers_Fed.date),
-                                                (char *) vers_Fed.getTag(),
-                                                vers_Fed.eventRetraction);
+                 fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                                               vers_Fed.getFedTime(),
+                                               vers_Fed.getTag(),
+                                               vers_Fed.getEventRetraction());
               } break ;
-
+  
               case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+
                   // fed_amb->provideAttributeValueUpdate();
               } break ;
 
               case REQUEST_RETRACTION: {
-                  // fed_amb->reflectRetraction();
-              } break ;
 
+              } break ;
+  
               case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      requestAttributeOwnershipAssumption(vers_Fed.object,
-                                                          *AttributeSet,
-                                                          (char *)
+                     requestAttributeOwnershipAssumption(vers_Fed.getObject(),
+                                                         *attributeSet,
                                                           vers_Fed.getTag());
-                  AttributeSet->empty();
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-                  fed_amb->
-                      attributeOwnershipUnavailable(vers_Fed.object,
-                                                    *AttributeSet);
-                  AttributeSet->empty();
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
+                 fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                                                        *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
-
-                  fed_amb->
-                      requestAttributeOwnershipRelease((ObjectHandle)
-                                                       vers_Fed.object,
-                                                       *AttributeSet,
-                                                       (char *)
-                                                       vers_Fed.getTag());
-                  AttributeSet->empty();
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
+                 fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
+                                                           *attributeSet,
+                                                           vers_Fed.getTag());
+  
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      attributeOwnershipAcquisitionNotification((ObjectHandle)
-                                                                vers_Fed.object,
-                                                                *AttributeSet);
-                  AttributeSet->empty();
+                     attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
+                                                               *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
-                      attributeOwnershipDivestitureNotification((ObjectHandle)
-                                                                vers_Fed.object,
-                                                                *AttributeSet);
-                  AttributeSet->empty();
+                     attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
+                                                               *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-
-                  AttributeHandleSet *AttributeSet ;
-                  AttributeSet =
-                      AttributeHandleSetFactory::create(vers_Fed.handleArraySize);
-
-                  for (int i = 0 ; i < vers_Fed.handleArraySize ; i++) {
-                      AttributeSet->add(vers_Fed.handleArray[i]);
-                  }
+                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+  
                   fed_amb->
                       confirmAttributeOwnershipAcquisitionCancellation
-                      ((ObjectHandle) vers_Fed.object, *AttributeSet);
-                  AttributeSet->empty();
+                     (vers_Fed.getObject(), *attributeSet);
+ 
+                 delete attributeSet ;
               } break ;
-
+  
               case INFORM_ATTRIBUTE_OWNERSHIP: {
                   fed_amb->
-                      informAttributeOwnership((ObjectHandle) vers_Fed.object,
-                                               vers_Fed.attribute,
-                                               vers_Fed.federate);
+                     informAttributeOwnership(vers_Fed.getObject(),
+                                              vers_Fed.getAttribute(),
+                                              vers_Fed.getFederate());
               } break ;
-
+  
               case ATTRIBUTE_IS_NOT_OWNED: {
-                  fed_amb->attributeIsNotOwned((ObjectHandle) vers_Fed.object,
-                                               vers_Fed.attribute);
+                 fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                                              vers_Fed.getAttribute());
               } break ;
-
+  
               case TIME_ADVANCE_GRANT: {
-                  fed_amb->timeAdvanceGrant(RTIfedTime(vers_Fed.date));
+                 fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
-
+  
               default: {
+
                   leave("RTI service requested by RTI is unknown.");
               }
             }
@@ -3681,4 +3529,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.25 2003/05/08 23:32:54 breholee Exp $
+// $Id: RTIambassador.cc,v 3.26 2003/05/09 01:11:08 breholee Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.12 2003/05/09 00:27:17 breholee Exp $
+// $Id: Message.cc,v 3.13 2003/05/09 01:11:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,12 +53,9 @@ Message::~Message()
 {
 }
 
-
-// --------------
-// -- GetValue --
-// --------------
-
-char *Message::getValue(int Rank, char *Value)
+// ----------------------------------------------------------------------------
+//! getValue.
+char *Message::getValue(int Rank, char *Value) const
     throw (RTIinternalError)
 {
     // Pre-Checking
@@ -265,6 +262,20 @@ Message::setFederate(FederateHandle the_federate)
 }
 
 // ----------------------------------------------------------------------------
+AttributeHandleSet*
+Message::getAHS() const
+{
+    AttributeHandleSet *attributeSet ;
+    attributeSet = AttributeHandleSetFactory::create(handleArraySize);
+
+    for (int i = 0 ; i < handleArraySize ; i++) {
+        attributeSet->add(handleArray[i]);
+    }
+
+    return attributeSet ;
+}
+
+// ----------------------------------------------------------------------------
 void
 Message::setAHS(const AttributeHandleSet &the_attributes)
 {
@@ -273,6 +284,32 @@ Message::setAHS(const AttributeHandleSet &the_attributes)
     for (int i = 0 ; i < the_attributes.size(); i++) {
         handleArray[i] = the_attributes.getHandle(i);
     }
+}
+
+// ----------------------------------------------------------------------------
+AttributeHandleValuePairSet*
+Message::getAHVPS() const
+{
+    CAttributeHandleValuePairSet * theAttributes ;
+    theAttributes = new CAttributeHandleValuePairSet ;
+
+    for (int i = 0 ; i < handleArraySize ; i++) {
+        CAttributeHandleValuePair *att = new CAttributeHandleValuePair ;
+
+        att->_attrib = handleArray[i] ;
+
+        // BUG: Federate may be expecting to find value name
+        // (a call to GetWithName for example).
+        strcpy(att->_value.name, "");
+        getValue(i, att->_value.value);
+
+        // BUG: Federate is expecting to find value type.
+        strcpy(att->_value.type, "");
+
+        theAttributes->add(att);
+    }
+
+    return theAttributes->toAHVPS();
 }
 
 // ----------------------------------------------------------------------------
@@ -299,6 +336,33 @@ Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
         setValue(i, value);
     }
     delete theAttributes_aux ;
+}
+
+// ----------------------------------------------------------------------------
+ParameterHandleValuePairSet*
+Message::getPHVPS() const
+{
+    CParameterHandleValuePairSet* theParameters ;
+    theParameters = new CParameterHandleValuePairSet ;
+
+    for (int i = 0 ; i < handleArraySize ; i++) {
+        CParameterHandleValuePair *par = new CParameterHandleValuePair ;
+
+        par->_param = handleArray[i] ;
+
+        // BUG: Federate may be expecting to find value name
+        // (a call to GetWithName for example).
+        strcpy(par->_value.name, "");
+
+        getValue(i, par->_value.value);
+
+        // BUG: Federate is expecting to find value type.
+        strcpy(par->_value.type, "");
+
+        theParameters->add(par);
+    }
+
+    return theParameters->toPHVPS();
 }
 
 // ----------------------------------------------------------------------------
@@ -500,4 +564,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.12 2003/05/09 00:27:17 breholee Exp $
+// $Id: Message.cc,v 3.13 2003/05/09 01:11:08 breholee Exp $
