@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.21 2004/01/09 16:17:43 breholee Exp $
+// $Id: RootObject.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -131,8 +131,10 @@ string
 RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    if (handle <= 0 || handle > spaces.size()) throw SpaceNotDefined();
-    else return spaces[handle - 1].getName();
+    if (handle <= 0 || (size_t) handle > spaces.size())
+	throw SpaceNotDefined();
+    else
+	return spaces[handle - 1].getName();
 }
 
 // ----------------------------------------------------------------------------
@@ -141,8 +143,10 @@ RoutingSpace &
 RootObject::getRoutingSpace(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    if (handle <= 0 || handle > spaces.size()) throw SpaceNotDefined();
-    else return spaces[handle - 1] ;
+    if (handle <= 0 || (size_t) handle > spaces.size())
+	throw SpaceNotDefined();
+    else
+	return spaces[handle - 1] ;
 }
 
 // ----------------------------------------------------------------------------
@@ -177,7 +181,7 @@ RootObject::modifyRegion(RegionHandle handle, const vector<Extent> &extents)
     RegionImp *region = getRegion(handle);
 
     // TODO (later in development) Use the expected exception, not an assert
-    assert(region->getNumberOfExtents() == extents.size());
+    assert((size_t) region->getNumberOfExtents() == extents.size());
 
     region->setExtents(extents);
 }
@@ -311,4 +315,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.21 2004/01/09 16:17:43 breholee Exp $
+// $Id: RootObject.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $

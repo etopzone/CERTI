@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.10 2003/07/07 23:05:26 breholee Exp $
+// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -439,7 +439,7 @@ ParameterHandleValuePair::~ParameterHandleValuePair()
 // ----------------------------------------------------------------------------
 // ParameterHandleValuePairSetImp
 // ----------------------------------------------------------------------------
-ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(ULong size)
+ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(ULong)
 {
     _order = RECEIVE ;
     _transport = RELIABLE ;
@@ -639,4 +639,4 @@ ParameterSetFactory::create(ULong size)
 
 } // namespace certi
 
-// $Id: GAV_aux.cc,v 3.10 2003/07/07 23:05:26 breholee Exp $
+// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $

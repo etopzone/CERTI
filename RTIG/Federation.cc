@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.36 2004/01/09 16:29:49 breholee Exp $
+// $Id: Federation.cc,v 3.37 2004/03/04 20:19:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,10 +80,10 @@ Federation::Federation(const char *federation_name,
 #endif
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
-    : saveInProgress(false), restoreInProgress(false),
-      saveStatus(true), restoreStatus(true), verbose(true),
-      federateHandles(1),
-      objectHandles(1)
+    : federateHandles(1), objectHandles(1), saveInProgress(false),
+      restoreInProgress(false), saveStatus(true), restoreStatus(true),
+      verbose(true)
+
 {
     //    fedparser::FedParser *fed_reader ;
 
@@ -552,9 +552,8 @@ Federation::broadcastSynchronization(FederateHandle federate,
 void
 Federation::requestFederationSave(FederateHandle the_federate,
                                   const char *the_label,
-                                  FederationTime the_time)
-    throw (FederateNotExecutionMember,
-           SaveInProgress)
+                                  FederationTime /* the_time */)
+    throw (FederateNotExecutionMember, SaveInProgress)
 {
     check(the_federate);
 
@@ -1711,5 +1710,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.36 2004/01/09 16:29:49 breholee Exp $
+// $Id: Federation.cc,v 3.37 2004/03/04 20:19:04 breholee Exp $
 

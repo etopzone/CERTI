@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.20 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -280,7 +280,7 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! processSynchronizationAchieved.
 void
-RTIG::processSynchronizationAchieved(Socket *link, NetworkMessage *req)
+RTIG::processSynchronizationAchieved(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Label \"%s\" ended.", req->label);
 
@@ -294,7 +294,7 @@ RTIG::processSynchronizationAchieved(Socket *link, NetworkMessage *req)
 
 // ----------------------------------------------------------------------------
 void
-RTIG::processRequestFederationSave(Socket *link, NetworkMessage *req)
+RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Federation save request.");
 
@@ -303,7 +303,7 @@ RTIG::processRequestFederationSave(Socket *link, NetworkMessage *req)
 }
 // ----------------------------------------------------------------------------
 void
-RTIG::processFederateSaveBegun(Socket *link, NetworkMessage *req)
+RTIG::processFederateSaveBegun(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u save begun.", req->federate);
 
@@ -312,7 +312,7 @@ RTIG::processFederateSaveBegun(Socket *link, NetworkMessage *req)
 
 // ----------------------------------------------------------------------------
 void
-RTIG::processFederateSaveStatus(Socket *link, NetworkMessage *req)
+RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u save ended.", req->federate);
 
@@ -322,7 +322,7 @@ RTIG::processFederateSaveStatus(Socket *link, NetworkMessage *req)
 
 // ----------------------------------------------------------------------------
 void
-RTIG::processRequestFederationRestore(Socket *link, NetworkMessage *req)
+RTIG::processRequestFederationRestore(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u request restore.", req->federate);
 
@@ -332,7 +332,7 @@ RTIG::processRequestFederationRestore(Socket *link, NetworkMessage *req)
 
 // ----------------------------------------------------------------------------
 void
-RTIG::processFederateRestoreStatus(Socket *link, NetworkMessage *req)
+RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 {
     auditServer->addToLinef("Federate %u restore ended.", req->federate);
 
@@ -1043,4 +1043,4 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.20 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $

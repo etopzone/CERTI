@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.8 2003/11/12 14:40:57 breholee Exp $
+// $Id: SocketServer.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -131,7 +131,7 @@ SocketServer::close(long socket,
 // ----------------------------------------------------------------------------
 //! socketServer.
 SocketServer::SocketServer(SocketTCP *tcp_socket,
-                           SocketUDP *udp_socket, int the_port)
+                           SocketUDP *udp_socket, int /* the_port */)
     : list<SocketTuple *>()
 {
     if (tcp_socket == NULL)
@@ -319,4 +319,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.8 2003/11/12 14:40:57 breholee Exp $
+// $Id: SocketServer.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $

@@ -47,9 +47,9 @@ vector<string> Statistics::rtiMessageName(NetworkMessage::LAST);
 // ----------------------------------------------------------------------------
 //! Initialize the two sets used for collecting number of messages exchanged.
 Statistics::Statistics()
-    : myDisplay(true), myDisplayZero(false),
-      federateServiceSet(Message::LAST, 0),
-      rtiServiceSet(NetworkMessage::LAST, 0)
+    : federateServiceSet(Message::LAST, 0),
+      rtiServiceSet(NetworkMessage::LAST, 0),
+      myDisplay(true), myDisplayZero(false)
 {
     if (getenv("CERTI_NO_STATISTICS"))
 	myDisplay = false ;
@@ -359,4 +359,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.9 2004/01/09 16:42:32 breholee Exp $
+// $Id: Statistics.cc,v 3.10 2004/03/04 20:19:04 breholee Exp $

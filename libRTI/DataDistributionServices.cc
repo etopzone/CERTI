@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.7 2003/12/01 16:28:55 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.8 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -417,7 +417,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
 // ----------------------------------------------------------------------------
 // Request Class Attribute Value Update With Region
 void RTIambassador::
-requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
+requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
                                            const AttributeHandleSet &attrs,
                                            const Region &region)
     throw (ObjectClassNotDefined,
@@ -441,4 +441,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.7 2003/12/01 16:28:55 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.8 2004/03/04 20:19:05 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
+// $Id: Objects.cc,v 3.6 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Objects.hh"
@@ -76,7 +76,7 @@ Objects::step(RTIfedTime &time)
     for (it = remote.begin(); it != remote.end(); ++it) {
         if (it->ID != 0 && local.collision(&(*it))) {
 
-            Ball &ball = *it ;
+	    //            Ball &ball = *it ;
 
             billard.sendInteraction(local.dx, local.dy, time, it->ID);
 
@@ -209,4 +209,4 @@ Objects::discover(ObjectHandle h)
     remote.push_back(Ball(h));
 }
 
-// $Id: Objects.cc,v 3.5 2003/10/27 10:51:39 breholee Exp $
+// $Id: Objects.cc,v 3.6 2004/03/04 20:19:05 breholee Exp $

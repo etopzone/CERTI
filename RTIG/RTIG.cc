@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.21 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,7 +44,7 @@ static pdCDebug D("RTIG", __FILE__);
 // Constructor
 
 RTIG::RTIG()
-    : federationHandles(1), terminate(false)
+    : terminate(false), federationHandles(1)
 {
     // Start RTIG services
     const char *tcp_port_s = getenv("CERTI_TCP_PORT");
@@ -950,4 +950,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.21 2004/01/09 16:23:00 breholee Exp $
+// $Id: RTIG.cc,v 3.22 2004/03/04 20:19:05 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.6 2003/11/13 10:43:02 breholee Exp $
+// $Id: RegionImp.hh,v 3.7 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -32,7 +32,7 @@
 
 namespace certi {
 
-typedef unsigned long RegionHandle ;
+typedef Handle RegionHandle ;
 
 /** Implementation for the HLA Region interface. A region is a set of extents
     in a routing space. It contains two sets of such extents : current values
@@ -84,8 +84,8 @@ public:
     void add(const Extent &);
 
 private:
-    SpaceHandle space ;
     RegionHandle handle ;
+    SpaceHandle space ;
     std::vector<Extent> extents ;
     std::vector<Extent> coExtents ;
 };
@@ -94,4 +94,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.6 2003/11/13 10:43:02 breholee Exp $
+// $Id: RegionImp.hh,v 3.7 2004/03/04 20:19:05 breholee Exp $

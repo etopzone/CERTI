@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardNull.hh,v 3.1 2003/10/27 10:51:39 breholee Exp $
+// $Id: BillardNull.hh,v 3.2 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_NULL_HH
@@ -41,24 +41,24 @@ public:
     void federationSynchronized(const char *label)
         throw (FederateInternalError);
 
-    void initiateFederateSave(const char *label)
+    void initiateFederateSave(const char *)
         throw (FederateInternalError) {}
 
     void federationSaved()
         throw (FederateInternalError) {}
 
-    void requestFederationRestoreSucceeded(const char *label)
+    void requestFederationRestoreSucceeded(const char *)
         throw (FederateInternalError) {}
 
-    void requestFederationRestoreFailed(const char *label,
-                                        const char *reason)
+    void requestFederationRestoreFailed(const char *,
+                                        const char *)
         throw (FederateInternalError) {}
 
     void federationRestoreBegun()
         throw (FederateInternalError) {}
 
-    void initiateFederateRestore(const char *label,
-                                 RTI::FederateHandle handle)
+    void initiateFederateRestore(const char *,
+                                 RTI::FederateHandle)
         throw (SpecifiedSaveLabelDoesNotExist,
                CouldNotRestore,
                FederateInternalError) {}
@@ -211,4 +211,4 @@ public:
 
 #endif // CERTI_BILLARD_NULL_HH
 
-// $Id: BillardNull.hh,v 3.1 2003/10/27 10:51:39 breholee Exp $
+// $Id: BillardNull.hh,v 3.2 2004/03/04 20:19:05 breholee Exp $

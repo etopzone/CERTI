@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.13 2003/07/04 14:33:44 breholee Exp $
+// $Id: FederationManagement.cc,v 3.14 2004/03/04 20:19:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -429,7 +429,7 @@ FederationManagement::federationSynchronized(const char *label)
 void
 FederationManagement::requestFederationSave(const char *label,
                                             FederationTime the_time,
-                                            TypeException &e)
+                                            TypeException &)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label);
 
@@ -449,7 +449,7 @@ FederationManagement::requestFederationSave(const char *label,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateSaveBegun(TypeException &e)
+FederationManagement::federateSaveBegun(TypeException &)
 {
     D.Out(pdInit, "Beginning federate save.");
 
@@ -465,7 +465,7 @@ FederationManagement::federateSaveBegun(TypeException &e)
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateSaveStatus(bool status, TypeException &e)
+FederationManagement::federateSaveStatus(bool status, TypeException &)
 {
     D.Out(pdInit, "Federate %ssaved.", status ? "" : "not ");
 
@@ -515,7 +515,7 @@ FederationManagement::federationSavedStatus(bool status)
 // ----------------------------------------------------------------------------
 void
 FederationManagement::requestFederationRestore(const char *label,
-                                               TypeException &e)
+                                               TypeException &)
 {
     D.Out(pdInit, "Request for federation restore \"%s\".", label);
 
@@ -532,7 +532,7 @@ FederationManagement::requestFederationRestore(const char *label,
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::federateRestoreStatus(bool status, TypeException &e)
+FederationManagement::federateRestoreStatus(bool status, TypeException &)
 {
     D.Out(pdInit, "Federate %srestored.", status ? "" : "not ");
 
@@ -642,4 +642,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.13 2003/07/04 14:33:44 breholee Exp $
+// $Id: FederationManagement.cc,v 3.14 2004/03/04 20:19:04 breholee Exp $

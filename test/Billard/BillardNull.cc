@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardNull.cc,v 3.1 2003/10/27 10:51:39 breholee Exp $
+// $Id: BillardNull.cc,v 3.2 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardNull.hh"
@@ -93,7 +93,7 @@ BillardNull::reflectAttributeValues(ObjectHandle,
 
 // ----------------------------------------------------------------------------
 void
-BillardNull::removeObjectInstance(ObjectHandle theObject,
+BillardNull::removeObjectInstance(ObjectHandle,
 				  const FedTime &,
 				  const char *,
 				  EventRetractionHandle)
@@ -162,24 +162,24 @@ BillardNull::requestAttributeOwnershipRelease(ObjectHandle,
 
 // ----------------------------------------------------------------------------
 void
-BillardNull::informAttributeOwnership(ObjectHandle theObject,
-				      AttributeHandle theAttribute,
-				      FederateHandle theOwner)
+BillardNull::informAttributeOwnership(ObjectHandle,
+				      AttributeHandle,
+				      FederateHandle)
     throw (ObjectNotKnown, AttributeNotKnown, FederateInternalError)
 {
 }
 
 // ----------------------------------------------------------------------------
 void
-BillardNull::attributeIsNotOwned(ObjectHandle theObject,
-				 AttributeHandle theAttribute)
+BillardNull::attributeIsNotOwned(ObjectHandle,
+				 AttributeHandle)
     throw (ObjectNotKnown, AttributeNotKnown, FederateInternalError)
 {
 }
 
 // ----------------------------------------------------------------------------
 void
-BillardNull::attributeOwnershipUnavailable(ObjectHandle theObject,
+BillardNull::attributeOwnershipUnavailable(ObjectHandle,
 					   const AttributeHandleSet &)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -207,7 +207,7 @@ BillardNull::attributeOwnershipAcquisitionNotification(
 void
 BillardNull::attributeOwnershipDivestitureNotification(
     ObjectHandle,
-    const AttributeHandleSet& attrs)
+    const AttributeHandleSet &)
     throw (ObjectNotKnown,
            AttributeNotKnown,
            AttributeNotOwned,
@@ -233,8 +233,7 @@ BillardNull::requestAttributeOwnershipAssumption(ObjectHandle,
 void
 BillardNull::confirmAttributeOwnershipAcquisitionCancellation(
     ObjectHandle,
-    const AttributeHandleSet&
-    theAttributes)
+    const AttributeHandleSet &)
     throw (ObjectNotKnown,
            AttributeNotKnown,
            AttributeAlreadyOwned,
@@ -243,4 +242,4 @@ BillardNull::confirmAttributeOwnershipAcquisitionCancellation(
 {
 }
 
-// $Id: BillardNull.cc,v 3.1 2003/10/27 10:51:39 breholee Exp $
+// $Id: BillardNull.cc,v 3.2 2004/03/04 20:19:05 breholee Exp $

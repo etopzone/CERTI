@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederationServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: FederationServices.cc,v 3.2 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -42,7 +42,7 @@ static pdCDebug D("LIBRTI", "(libRTI FM) - ");
 */
 void
 RTIambassador::createFederationExecution(const char *executionName,
-                                         const char *FED)
+                                         const char */* FED */)
     throw (FederationExecutionAlreadyExists,
            ConcurrentAccessAttempted,
            CouldNotOpenFED, //not implemented
@@ -348,4 +348,4 @@ RTIambassador::federateRestoreNotComplete()
 
 }
 
-// $Id: FederationServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: FederationServices.cc,v 3.2 2004/03/04 20:19:05 breholee Exp $

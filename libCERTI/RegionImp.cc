@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.6 2003/12/01 16:21:26 breholee Exp $
+// $Id: RegionImp.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,7 +80,7 @@ RegionImp::getRangeLowerBound(ExtentIndex index,
                               DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= extents.size()) || (index < 0)) {
+    if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -96,7 +96,7 @@ RegionImp::getRangeUpperBound(ExtentIndex index,
                               DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= extents.size()) || (index < 0)) {
+    if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -112,7 +112,7 @@ RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= coExtents.size()) || (index < 0)) {
+    if (index >= coExtents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -128,7 +128,7 @@ RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index,
                                                DimensionHandle dimension) const
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= coExtents.size()) || (index < 0)) {
+    if (index >= coExtents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -145,7 +145,7 @@ RegionImp::setRangeLowerBound(ExtentIndex index,
                               ULong val)
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= extents.size()) || (index < 0)) {
+    if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -162,7 +162,7 @@ RegionImp::setRangeUpperBound(ExtentIndex index,
                               ULong val)
     throw (ArrayIndexOutOfBounds)
 {
-    if ((index >= extents.size()) || (index < 0)) {
+    if (index >= extents.size()) {
         throw ArrayIndexOutOfBounds();
     }
     else {
@@ -242,4 +242,4 @@ RegionImp::setExtents(const vector<Extent> &e)
 
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.6 2003/12/01 16:21:26 breholee Exp $
+// $Id: RegionImp.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $

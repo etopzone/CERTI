@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: helper.hh,v 1.1 2004/01/09 15:57:12 breholee Exp $
+// $Id: helper.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HELPER_HH
@@ -36,11 +36,11 @@ template<class T>
 class HandleComparator
 {
 public:
-    HandleComparator(long h) : handle(h) { };
+    HandleComparator(Handle h) : handle(h) { };
     bool operator()(const T *op) const { return op->getHandle() == handle ; };
     bool operator()(const T &op) const { return op.getHandle() == handle ; };
 private:
-    long handle ;
+    Handle handle ;
 };
 
 /** NameComparator is a comparison functor for objects having a getName()
@@ -61,4 +61,4 @@ private:
 
 #endif // LIBCERTI_HELPER_HH
 
-// $Id: helper.hh,v 1.1 2004/01/09 15:57:12 breholee Exp $
+// $Id: helper.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $

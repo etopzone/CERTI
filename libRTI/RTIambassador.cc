@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.35 2003/10/20 12:39:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.36 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -427,7 +427,7 @@ RTIambassador::tick()
 
 // ----------------------------------------------------------------------------
 Boolean
-RTIambassador::tick(TickTime minimum, TickTime maximum)
+RTIambassador::tick(TickTime, TickTime)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted,
            RTIinternalError)
 {
@@ -858,4 +858,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.35 2003/10/20 12:39:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.36 2004/03/04 20:19:05 breholee Exp $

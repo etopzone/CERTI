@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 1.1 2004/01/09 15:58:04 breholee Exp $
+// $Id: HandleManager.hh,v 1.2 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -64,7 +64,7 @@ HandleManager<T>::HandleManager(T init, size_t hmax)
  */
 template<typename T>
 HandleManager<T>::HandleManager(T init)
-    : highest(init), maximum(std::numeric_limits<T>::max()) { }
+    : maximum(std::numeric_limits<T>::max()), highest(init) { }
 
 /** Get a new handle
     @return handle

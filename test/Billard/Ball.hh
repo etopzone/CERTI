@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.hh,v 3.2 2003/10/27 10:51:38 breholee Exp $
+// $Id: Ball.hh,v 3.3 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BALL_HH
@@ -31,10 +31,11 @@ class Ball
 public:
     Ball(ObjectHandle);
 
-    float radius ;
-    float dx, dy ;
-    float olddx, olddy ;
     float x, y ;
+    float dx, dy ;
+    float radius ;
+
+    float olddx, olddy ;
     float color ;
 
     unsigned long ID ; // object handle
@@ -53,4 +54,4 @@ public:
 
 #endif // CERTI_BALL_HH
 
-// $Id: Ball.hh,v 3.2 2003/10/27 10:51:38 breholee Exp $
+// $Id: Ball.hh,v 3.3 2004/03/04 20:19:05 breholee Exp $

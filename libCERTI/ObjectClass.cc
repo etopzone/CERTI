@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.20 2003/07/10 21:49:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -581,7 +581,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 ObjectClassBroadcastList *
 ObjectClass::registerObjectInstance(FederateHandle the_federate,
                                     Object *the_object,
-                                    ObjectClassHandle the_class)
+                                    ObjectClassHandle)
     throw (ObjectClassNotPublished,
            ObjectAlreadyRegistered,
            RTIinternalError)
@@ -1643,4 +1643,4 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.20 2003/07/10 21:49:43 breholee Exp $
+// $Id: ObjectClass.cc,v 3.21 2004/03/04 20:19:05 breholee Exp $

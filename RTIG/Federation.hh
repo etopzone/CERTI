@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.27 2004/01/09 16:29:50 breholee Exp $
+// $Id: Federation.hh,v 3.28 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -487,11 +487,11 @@ private:
         throw (FederateNotExecutionMember);
 
     // Private attributes
-    bool verbose ;
     bool saveInProgress ;
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
     bool restoreStatus ; //!< True if restoring was correctly done.
+    bool verbose ;
     std::string saveLabel ; //!< The label associated with the save request.
 
 #ifdef HAVE_XML
@@ -503,4 +503,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.27 2004/01/09 16:29:50 breholee Exp $
+// $Id: Federation.hh,v 3.28 2004/03/04 20:19:05 breholee Exp $

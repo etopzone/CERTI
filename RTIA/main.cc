@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.11 2003/07/07 16:07:01 breholee Exp $
+// $Id: main.cc,v 3.12 2004/03/04 20:19:04 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,7 +37,7 @@ void NewHandler();
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char *argv[])
+main()
 {
     signal(SIGINT, SignalHandler);
     signal(SIGPIPE, SignalHandler);
@@ -80,4 +80,4 @@ NewHandler()
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.11 2003/07/07 16:07:01 breholee Exp $
+// EOF $Id: main.cc,v 3.12 2004/03/04 20:19:04 breholee Exp $

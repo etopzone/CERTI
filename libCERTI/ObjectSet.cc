@@ -59,10 +59,10 @@ ObjectSet::~ObjectSet()
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::changeAttributeTransportationType(ObjectHandle the_object,
-                                             AttributeHandle *the_attributes,
-                                             UShort the_size,
-                                             TransportType the_type)
+ObjectSet::changeAttributeTransportationType(ObjectHandle,
+                                             AttributeHandle *,
+                                             UShort,
+                                             TransportType)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -74,10 +74,10 @@ ObjectSet::changeAttributeTransportationType(ObjectHandle the_object,
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::changeAttributeOrderType(ObjectHandle the_object,
-                                    AttributeHandle *the_attributes,
-                                    UShort the_size,
-                                    TransportType the_type)
+ObjectSet::changeAttributeOrderType(ObjectHandle,
+                                    AttributeHandle *,
+                                    UShort,
+                                    TransportType)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -167,9 +167,9 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::deleteObjectInstance(FederateHandle the_federate,
+ObjectSet::deleteObjectInstance(FederateHandle,
                                 ObjectHandle the_object,
-                                const char *the_tag)
+                                const char *)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
@@ -253,11 +253,11 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 void ObjectSet::
-negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
-                                        ObjectHandle the_object,
-                                        AttributeHandle *the_attributes,
-                                        UShort the_size,
-                                        const char *the_tag)
+negotiatedAttributeOwnershipDivestiture(FederateHandle,
+                                        ObjectHandle,
+                                        AttributeHandle *,
+                                        UShort,
+                                        const char *)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -269,10 +269,10 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 void ObjectSet::
-attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
-                                         ObjectHandle the_object,
-                                         AttributeHandle *the_attributes,
-                                         UShort the_size)
+attributeOwnershipAcquisitionIfAvailable(FederateHandle,
+                                         ObjectHandle,
+                                         AttributeHandle *,
+                                         UShort)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -286,10 +286,10 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 void ObjectSet::
-unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
-                                           ObjectHandle the_object,
-                                           AttributeHandle *the_attributes,
-                                           UShort the_size)
+unconditionalAttributeOwnershipDivestiture(FederateHandle,
+                                           ObjectHandle,
+                                           AttributeHandle *,
+                                           UShort)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -300,11 +300,11 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::attributeOwnershipAcquisition(FederateHandle the_federate,
-                                         ObjectHandle the_object,
-                                         AttributeHandle *the_attributes,
-                                         UShort the_size,
-                                         const char *the_tag)
+ObjectSet::attributeOwnershipAcquisition(FederateHandle,
+                                         ObjectHandle,
+                                         AttributeHandle *,
+                                         UShort,
+                                         const char *)
 
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
@@ -358,10 +358,10 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 AttributeHandleSet *
-ObjectSet::attributeOwnershipReleaseResponse(FederateHandle the_federate,
-                                             ObjectHandle the_object,
-                                             AttributeHandle *the_attributes,
-                                             UShort the_size)
+ObjectSet::attributeOwnershipReleaseResponse(FederateHandle,
+                                             ObjectHandle,
+                                             AttributeHandle *,
+                                             UShort)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -370,15 +370,15 @@ ObjectSet::attributeOwnershipReleaseResponse(FederateHandle the_federate,
 {
     // Object *object = getObject(the_object);
 
-    return NULL ;
+    return 0 ;
 }
 
 // ----------------------------------------------------------------------------
 void
-ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
-                                               ObjectHandle the_object,
-                                               AttributeHandle *the_attributes,
-                                               UShort the_size)
+ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
+                                               ObjectHandle,
+                                               AttributeHandle *,
+                                               UShort)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeAlreadyOwned,
@@ -430,4 +430,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.8 2003/10/13 10:02:25 breholee Exp $
+// $Id: ObjectSet.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $

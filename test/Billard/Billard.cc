@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.6 2003/12/01 16:41:53 breholee Exp $
+// $Id: Billard.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -623,7 +623,7 @@ Billard::discoverObjectInstance(ObjectHandle theObject,
 /** Callback announce synchronization point
  */
 void
-Billard::announceSynchronizationPoint(const char *label, const char *tag)
+Billard::announceSynchronizationPoint(const char *label, const char */*tag*/)
     throw (FederateInternalError)
 {
     if (strcmp(label, "Init") == 0) {
@@ -728,20 +728,18 @@ Billard::receiveInteraction(InteractionClassHandle theInteraction,
 /** Callback : reflect attribute values
  */
 void
-Billard::reflectAttributeValues(ObjectHandle theObject,
-                            const AttributeHandleValuePairSet& theAttributes,
-                            const FedTime& theTime,
-                            const char */*theTag*/,
-                            EventRetractionHandle /*theHandle*/)
+Billard::reflectAttributeValues(
+    ObjectHandle theObject,
+    const AttributeHandleValuePairSet& theAttributes,
+    const FedTime& /*theTime*/,
+    const char */*theTag*/,
+    EventRetractionHandle /*theHandle*/)
     throw (ObjectNotKnown,
            AttributeNotKnown,
            InvalidFederationTime,
            FederateInternalError)
 {
     D.Out(pdTrace, "reflectAttributeValues");
-
-    int i=0 ;
-    float oldx, oldy ;
 
     float x1 = 0 ;
     float y1 = 0 ;
@@ -808,4 +806,4 @@ Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.6 2003/12/01 16:41:53 breholee Exp $
+// $Id: Billard.cc,v 3.7 2004/03/04 20:19:05 breholee Exp $
