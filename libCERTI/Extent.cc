@@ -19,11 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.6 2005/03/25 17:02:23 breholee Exp $
+// $Id: Extent.cc,v 3.7 2005/03/28 19:20:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Extent.hh"
+#include "Dimension.hh"
 #include "PrettyDebug.hh"
 
 using std::vector ;
@@ -42,7 +43,8 @@ namespace certi {
  */
 Extent::Extent(size_t n)
 {
-    ranges.resize(n);
+    Range range(Dimension::getLowerBound(), Dimension::getUpperBound());
+    ranges.resize(n, range);
 }
 
 // ----------------------------------------------------------------------------
@@ -125,4 +127,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.6 2005/03/25 17:02:23 breholee Exp $
+// $Id: Extent.cc,v 3.7 2005/03/28 19:20:00 breholee Exp $
