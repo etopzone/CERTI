@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.35 2003/11/10 14:31:34 breholee Exp $
+// $Id: Federation.cc,v 3.36 2004/01/09 16:29:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -59,7 +59,7 @@ class XmlParser ;
 
 namespace rtig {
 
-static pdCDebug D("FEDERATION", "(Fed.tion) - ");
+static PrettyDebug D("FEDERATION", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! Constructor
@@ -81,7 +81,9 @@ Federation::Federation(const char *federation_name,
     throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
     : saveInProgress(false), restoreInProgress(false),
-      saveStatus(true), restoreStatus(true), verbose(true)
+      saveStatus(true), restoreStatus(true), verbose(true),
+      federateHandles(1),
+      objectHandles(1)
 {
     //    fedparser::FedParser *fed_reader ;
 
@@ -107,9 +109,6 @@ Federation::Federation(const char *federation_name,
 
     // Default Attribute values
     handle = federation_handle ;
-
-    nextObjectId = (ObjectHandle) 1 ;
-    nextFederateHandle = (FederateHandle) 1 ;
 
     D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
           handle);
@@ -276,12 +275,9 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
         // Nothing to do.
     }
 
-    FederateHandle federate_handle = getNewHandle();
-
+    FederateHandle federate_handle = federateHandles.provide();
     Federate *federate = new Federate(federate_name, federate_handle);
-
     push_front(federate);
-
     D.Out(pdInit, "Federate %d joined Federation %d.", federate_handle, handle);
 
     // Send, to the newly added federate, a Null message from each regulating
@@ -456,7 +452,11 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
 }
 
 // ----------------------------------------------------------------------------
-//! Removes an object instance from federation.
+/** Removes an object instance from federation.
+    @param federate Federate requesting removal
+    @param id Object handle
+    @param tag Label for this operation
+ */
 void
 Federation::deleteObject(FederateHandle federate,
                          ObjectHandle id,
@@ -473,8 +473,9 @@ Federation::deleteObject(FederateHandle federate,
 
     D.Out(pdRegister, "Federation %d: Federate %d destroys object %d.",
           this->handle, federate, id);
-
+    
     root->deleteObjectInstance(federate, id, tag);
+    objectHandles.free(id);
 }
 
 // ----------------------------------------------------------------------------
@@ -781,25 +782,6 @@ Federation::getByName(const char *federate_name) const
 }
 
 // ----------------------------------------------------------------------------
-//! Return a brand new Federate Handle.
-/*! Throw an exception if there are no more handles left(MAX_FEDERATEHANDLE).
- */
-FederateHandle
-Federation::getNewHandle()
-    throw (RTIinternalError)
-{
-    if (nextFederateHandle > MAX_FEDERATEHANDLE) {
-        D.Out(pdExcept,
-              "Federation %d: Max Federate Handle count reached.", handle);
-        throw RTIinternalError("Max Federate Handle reached.");
-    }
-
-    FederateHandle new_handle = nextFederateHandle ;
-    nextFederateHandle++ ;
-    return new_handle ;
-}
-
-// ----------------------------------------------------------------------------
 //! Return true if no federates are in federation.
 /*! Return true if there are no Federates left in the Federation, else throw
   FederatesCurrentlyJoined.
@@ -832,16 +814,16 @@ Federation::check(FederateHandle federate_handle) const
 }
 
 // ----------------------------------------------------------------------------
-// killFederate
-/*! This Method tries to remove all references to this Federate in the
-  Federation. To be used when a Federate is supposed to have crashed.
+/** Make a federate resign the federation. This function tries to
+    remove all references to this federate in the federation. To be used
+    when a Federate is supposed to have crashed.
+    @param federate Handle of the federate to kill
 */
 void
 Federation::kill(FederateHandle federate)
     throw ()
 {
     // NOTE: Connection to the federate is already closed.
-
     D.Out(pdInit, "Killing Federate %d.", federate);
 
     // is regulator ?
@@ -935,15 +917,7 @@ Federation::registerObject(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
-    // Allocate new ID.
-    if (nextObjectId > MAX_OBJECTID) {
-        D.Out(pdError, "RTIinternalError : nextObjectId = %d, MAX = %d.",
-              nextObjectId, MAX_OBJECTID);
-        throw RTIinternalError("Too many IDs requested.");
-    }
-
-    ObjectHandle new_id = nextObjectId ;
-    nextObjectId++ ;
+    ObjectHandle new_id = objectHandles.provide();
 
     D.Out(pdRegister,
           "Federation %d: Federate %d registering Object %d of Class %d.",
@@ -956,14 +930,14 @@ Federation::registerObject(FederateHandle federate,
     // Register Object.
     root->registerObjectInstance(federate, class_handle, new_id, 
 				 strname.c_str());
-    D.Out(pdDebug, "suite");
     return new_id ;
 }
 
 // ----------------------------------------------------------------------------
-// removeFederate
-/*! BUG: Currently does not check if Federate owns attributes. The Federate
-  Object is deleted.
+/** Remove a federate.
+    @param federate_handle Handle of the federate to remove.
+    @bug Currently does not check if Federate owns attributes. The
+    Federate Object is deleted.
 */
 void
 Federation::remove(FederateHandle federate_handle)
@@ -972,6 +946,7 @@ Federation::remove(FederateHandle federate_handle)
     for (list<Federate *>::iterator i = begin(); i != end(); i++) {
         if ((*i)->getHandle() == federate_handle) {
             // BUG: RemoveFederate: Should see if Federate owns attributes
+	    federateHandles.free(federate_handle);
             delete (*i);
             erase(i);
 
@@ -1037,28 +1012,6 @@ Federation::removeRegulator(FederateHandle federate_handle)
     msg.date = 0 ;
 
     broadcastAnyMessage(&msg, 0);
-}
-
-// ----------------------------------------------------------------------------
-//! Return 'IDCount' unique IDs, ranging from FirstID to LastID.
-void
-Federation::requestId(ObjectHandlecount id_count,
-                      ObjectHandle &first_id,
-                      ObjectHandle &last_id)
-    throw (TooManyIDsRequested)
-{
-    // BUG: Should note a security threat for this service.
-
-    if (nextObjectId + id_count - 1 > MAX_OBJECTID)
-        throw TooManyIDsRequested();
-
-    first_id = nextObjectId ;
-    last_id = nextObjectId + id_count - 1 ;
-
-    D.Out(pdInit, "Federation %d returns %d new IDs starting at %d.",
-          handle, id_count, first_id);
-
-    nextObjectId = last_id + 1 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1758,5 +1711,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.35 2003/11/10 14:31:34 breholee Exp $
+// $Id: Federation.cc,v 3.36 2004/01/09 16:29:49 breholee Exp $
 

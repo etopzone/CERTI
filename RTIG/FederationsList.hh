@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.22 2003/11/10 14:31:37 breholee Exp $
+// $Id: FederationsList.hh,v 3.23 2004/01/09 16:29:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -87,12 +87,6 @@ public:
                   bool &is_syncing)
 #endif
         throw (FederationExecutionDoesNotExist, RTIinternalError);
-
-    void requestId(Handle theHandle,
-                   ObjectHandlecount IDCount,
-                   ObjectHandle &FirstID,
-                   ObjectHandle &LastID)
-        throw (TooManyIDsRequested);
 
     // Synchronization Management
     void manageSynchronization(Handle theHandle,
@@ -499,4 +493,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.22 2003/11/10 14:31:37 breholee Exp $
+// $Id: FederationsList.hh,v 3.23 2004/01/09 16:29:50 breholee Exp $

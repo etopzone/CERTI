@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.26 2003/11/10 14:31:35 breholee Exp $
+// $Id: Federation.hh,v 3.27 2004/01/09 16:29:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -28,6 +28,7 @@
 #include "RootObject.hh"
 #include "LBTS.hh"
 #include "SecurityServer.hh"
+#include "HandleManager.hh"
 #include "RTItypes.hh"
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -49,12 +50,12 @@ class Federation : private std::list<Federate *>
 private:
     Handle handle ;
     char *name ;
-    FederateHandle nextFederateHandle ;
 
     //! Labels and Tags not on synchronization.
     std::map<const char *, const char *> synchronizationLabels ;
 
-    ObjectHandle nextObjectId ;
+    HandleManager<FederateHandle> federateHandles ;
+    HandleManager<ObjectHandle> objectHandles ;
 
     // This object is initialized when the Federation is created, with
     // the reference of the RTIG managed Socket Server. The reference of
@@ -86,11 +87,6 @@ public:
                RTIinternalError);
 
     ~Federation();
-
-    void requestId(ObjectHandlecount IDCount,
-                   ObjectHandle &FirstID,
-                   ObjectHandle &LastID)
-        throw (TooManyIDsRequested);
 
     int getNbFederates() const ;
     int getNbRegulators() const ;
@@ -490,9 +486,6 @@ private:
     Federate *getByHandle(FederateHandle theHandle) const
         throw (FederateNotExecutionMember);
 
-    FederateHandle getNewHandle()
-        throw (RTIinternalError);
-
     // Private attributes
     bool verbose ;
     bool saveInProgress ;
@@ -510,4 +503,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.26 2003/11/10 14:31:35 breholee Exp $
+// $Id: Federation.hh,v 3.27 2004/01/09 16:29:50 breholee Exp $

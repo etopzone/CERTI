@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2004  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.22 2003/11/10 14:31:36 breholee Exp $
+// $Id: FederationsList.cc,v 3.23 2004/01/09 16:29:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -213,26 +213,6 @@ FederationsList::createRegulator(Handle handle,
 
     // It may throw a bunch of exceptions.
     federation->addRegulator(federate, time);
-}
-
-// ----------------------------------------------------------------------------
-// requestId
-void
-FederationsList::requestId(Handle handle,
-                           ObjectHandlecount id_count,
-                           ObjectHandle &first_id,
-                           ObjectHandle &last_id)
-    throw (TooManyIDsRequested)
-{
-    Federation *federation = NULL ;
-
-    // It may throw RTIinternalError.
-    checkHandle(handle);
-
-    // It may throw FederationExecutionDoesNotExist.
-    searchFederation(handle, federation);
-
-    federation->requestId(id_count, first_id, last_id);
 }
 
 // ----------------------------------------------------------------------------
@@ -1265,5 +1245,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.22 2003/11/10 14:31:36 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.23 2004/01/09 16:29:50 breholee Exp $
 
