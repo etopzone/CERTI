@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.hh,v 3.3 2003/01/14 17:17:33 breholee Exp $
+// $Id: RTIG.hh,v 3.4 2003/02/05 13:32:23 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_HH
@@ -38,7 +38,6 @@ using std::endl;
 #include "NetworkMessage.hh"
 #include "SecureTCPSocket.hh"
 #include "SocketMC.hh"
-#include "List.hh"
 
 #include "SocketServer.hh"
 #include "FederationsList.hh"
@@ -127,4 +126,4 @@ private:
 #endif // _CERTI_RTIG_HH
 
 // ---------------------------------------------------------------------------
-// $Id: RTIG.hh,v 3.3 2003/01/14 17:17:33 breholee Exp $
+// $Id: RTIG.hh,v 3.4 2003/02/05 13:32:23 breholee Exp $
