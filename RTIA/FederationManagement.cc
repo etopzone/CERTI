@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,10 +18,25 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.9 2003/05/09 00:27:17 breholee Exp $
+// $Id: FederationManagement.cc,v 3.10 2003/05/23 14:56:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FederationManagement.hh"
+
+// Project
+#include <config.h>
+#include "TimeManagement.hh"
+#include "PrettyDebug.hh"
+
+// Standard
+#include <list>
+#include <cstdio>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+using std::list ;
 
 namespace certi {
 namespace rtia {
@@ -49,11 +63,8 @@ FederationManagement::FederationManagement(Communications *GC)
     _nom_federe[0] = 0 ;
 }
 
-
-// -------------------------
-// -- ~FederationManagement --
-// -------------------------
-
+// ----------------------------------------------------------------------------
+//! Destructor.
 FederationManagement::~FederationManagement()
 {
     TypeException e ;
@@ -68,15 +79,14 @@ FederationManagement::~FederationManagement()
     // de la destruction de notre objet par RemoveObject(HARZI)
     // car le Remove Object ne diffuse pas le message
     if (_est_createur_federation) {
-        printf("RTIA: Je reste actif pour detruire la federation...\n");
+        cout << "RTIA: Staying active to destroy federation..." << endl ;
 
         destroyFederationExecution(_nom_federation, e);
-        while (e != e_NO_EXCEPTION)
-            {
-                sleep(1);
-                destroyFederationExecution(_nom_federation, e);
-            }
-        printf("RTIA: Federation detruite.\n");
+        while (e != e_NO_EXCEPTION) {
+            sleep(1);
+            destroyFederationExecution(_nom_federation, e);
+        }
+        cout << "RTIA: Federation destroyed" << endl ;
     }
 }
 
@@ -629,4 +639,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.9 2003/05/09 00:27:17 breholee Exp $
+// $Id: FederationManagement.cc,v 3.10 2003/05/23 14:56:45 breholee Exp $
