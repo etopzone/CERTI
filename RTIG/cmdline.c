@@ -39,7 +39,7 @@ cmdline_parser_print_help (void)
   "Usage: %s [OPTIONS]...\n", CMDLINE_PARSER_PACKAGE);
   printf("   -h  --help      Print help and exit\n");
   printf("   -V  --version   Print version and exit\n");
-  printf("   -v  --verbose   display more information (default=off)\n");
+  printf("   -v  --verbose   display more information (default=on)\n");
 }
 
 
@@ -54,7 +54,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->version_given = 0 ;
   args_info->verbose_given = 0 ;
 #define clear_args() { \
-  args_info->verbose_flag = 0;\
+  args_info->verbose_flag = 1;\
 }
 
   clear_args();

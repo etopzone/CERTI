@@ -24,7 +24,7 @@ extern "C" {
 
 struct gengetopt_args_info
 {
-  int verbose_flag;	/* display more information (default=off).  */
+  int verbose_flag;	/* display more information (default=on).  */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
