@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.3 2004/05/17 21:51:55 breholee Exp $
+// $Id: Dimension.cc,v 3.4 2005/03/28 19:14:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,7 +29,7 @@ using std::string ;
 
 namespace certi {
 
-ULong Dimension::axisLowerBound = LONG_MIN ;
+ULong Dimension::axisLowerBound = 0 ;
 ULong Dimension::axisUpperBound = LONG_MAX ;
 
 Dimension::Dimension(DimensionHandle h)
@@ -53,6 +53,6 @@ Dimension::setUpperBound(ULong v)
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.3 2004/05/17 21:51:55 breholee Exp $
+// $Id: Dimension.cc,v 3.4 2005/03/28 19:14:51 breholee Exp $
 
 
