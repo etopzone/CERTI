@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.15 2003/07/10 16:22:58 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.16 2003/07/10 22:44:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -121,23 +121,21 @@ ObjectClassAttribute::deletePublisher(FederateHandle fed)
             return ;
         }
     }
-    assert(false);
 }
 
 // ----------------------------------------------------------------------------
 //! Removes a subscribed federate
 void
-ObjectClassAttribute::deleteSubscriber(FederateHandle fed)
+ObjectClassAttribute::deleteSubscriber(FederateHandle fed, RegionImp *region)
 {
     list<Subscriber *>::iterator i ;
     for (i = subscribers.begin(); i != subscribers.end(); ++i) {
-	if ((*i)->getHandle() == fed) {
+	if ((*i)->match(fed, region)) {
             delete *i ;
             subscribers.erase(i);
             return ;
         }
     }
-    assert(false);
 }
 
 // ----------------------------------------------------------------------------
@@ -268,7 +266,7 @@ ObjectClassAttribute::unsubscribe(FederateHandle fed, RegionImp *region)
     throw (RTIinternalError)
 {
     if (hasSubscribed(fed, region)) {
-        deleteSubscriber(fed);
+        deleteSubscriber(fed, region);
         D[pdTerm] << "Attribute " << handle << ": Removed Federate "
 		  << fed << " from subscribers list." << endl ;
     }
@@ -348,4 +346,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist)
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.15 2003/07/10 16:22:58 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.16 2003/07/10 22:44:41 breholee Exp $

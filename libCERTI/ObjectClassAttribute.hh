@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.11 2003/07/10 16:22:58 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.12 2003/07/10 22:44:42 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -86,7 +86,7 @@ public:
 
 private:
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle);
+    void deleteSubscriber(FederateHandle, RegionImp *);
 
     AttributeHandle handle ; //!< The attribute handle.
     std::string name ; //!< The attribute name, must be locally allocated.
@@ -100,4 +100,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.11 2003/07/10 16:22:58 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.12 2003/07/10 22:44:42 breholee Exp $
