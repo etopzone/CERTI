@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 3.1 2003/04/09 08:04:24 breholee Exp $
+// $Id: DebugOStream.hh,v 3.2 2003/06/26 15:20:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
@@ -154,21 +153,21 @@ public:
         return(*this);
     }
 
-#ifdef _GLIBCPP_USE_LONG_LONG
-    //Specifique gcc
-    DebugOStream& operator<<(long long n)
-    {
-        if (this != &(DebugOStream::nullOutputStream)) ostr << n;
-        return(*this);
-    }
+// #ifdef _GLIBCPP_USE_LONG_LONG
+//     //Specifique gcc
+//     DebugOStream& operator<<(long long n)
+//     {
+//         if (this != &(DebugOStream::nullOutputStream)) ostr << n;
+//         return(*this);
+//     }
 
-    //Specifique gcc
-    DebugOStream& operator<<(unsigned long long n)
-    {
-        if (this != &(DebugOStream::nullOutputStream)) ostr << n;
-        return(*this);
-    }
-#endif
+//     //Specifique gcc
+//     DebugOStream& operator<<(unsigned long long n)
+//     {
+//         if (this != &(DebugOStream::nullOutputStream)) ostr << n;
+//         return(*this);
+//     }
+// #endif
 
     //Specifique gcc
     DebugOStream& operator<<(std::streambuf* sb)
@@ -260,4 +259,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 3.1 2003/04/09 08:04:24 breholee Exp $
+// $Id: DebugOStream.hh,v 3.2 2003/06/26 15:20:25 breholee Exp $
