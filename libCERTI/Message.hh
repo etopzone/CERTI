@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.26 2005/03/25 17:06:32 breholee Exp $
+// $Id: Message.hh,v 3.27 2005/04/05 12:28:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -199,7 +199,6 @@ public:
         DDM_UNSUBSCRIBE_ATTRIBUTES,
         DDM_SUBSCRIBE_INTERACTION,
         DDM_UNSUBSCRIBE_INTERACTION,
-        DDM_SEND_INTERACTION,
         DDM_REQUEST_UPDATE,
 
         // Support Services
@@ -479,4 +478,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.26 2005/03/25 17:06:32 breholee Exp $
+// $Id: Message.hh,v 3.27 2005/04/05 12:28:56 breholee Exp $
