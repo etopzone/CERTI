@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -19,16 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.5 2003/04/18 14:03:06 breholee Exp $
+// $Id: DataDistribution.hh,v 3.6 2003/05/23 14:16:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
 #define _CERTI_DATA_DISTRIBUTION
 
-#include <config.h>
+// Project
 #include "Communications.hh"
 #include "FederationManagement.hh"
-#include "RegionImp.hh"
 #include "RootObject.hh"
 
 namespace certi {
@@ -71,4 +69,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.5 2003/04/18 14:03:06 breholee Exp $
+// $Id: DataDistribution.hh,v 3.6 2003/05/23 14:16:47 breholee Exp $

@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2003  ONERA
@@ -19,10 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.5 2003/04/18 14:03:06 breholee Exp $
+// $Id: DataDistribution.cc,v 3.6 2003/05/23 14:16:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "DataDistribution.hh"
+
+// Project
+#include <config.h>
+#include "ObjectClassAttribute.hh"
+#include "RegionImp.hh"
 
 namespace certi {
 namespace rtia {
@@ -165,4 +169,4 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.5 2003/04/18 14:03:06 breholee Exp $
+// $Id: DataDistribution.cc,v 3.6 2003/05/23 14:16:47 breholee Exp $
