@@ -18,14 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// $Id: main.cc,v 3.10 2003/07/05 14:58:34 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "RTIA.hh"
 
-#include <signal.h>
+#include <csignal>
 #include <sys/types.h>
 
 using namespace certi ;
@@ -79,4 +79,4 @@ NewHandler()
     throw MemoryExhausted();
 }
 
-// EOF $Id: main.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// EOF $Id: main.cc,v 3.10 2003/07/05 14:58:34 breholee Exp $
