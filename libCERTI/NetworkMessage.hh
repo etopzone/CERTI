@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.15 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.16 2004/01/09 16:13:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -54,12 +54,6 @@ public:
         Boolean R_or_C ; // IsRegulator or IsConstrained
     };
 
-    struct ReqIDStruct {
-        ObjectHandlecount count ;
-        ObjectHandle first ;
-        ObjectHandle last ;
-    };
-
     struct T_O_Struct {
         ObjectClassHandle handle ;
         UShort handleArraySize ;
@@ -87,8 +81,7 @@ public:
     };
 
     union HeaderUnion {
-        TimeStruct time ; // Les noms des variables n'ont pas d'importance
-        ReqIDStruct ReqID ; // mais ils doivent etre presents.
+        TimeStruct time ;
         T_O_Struct T_O ;
         JoinStruct Join ;
         O_I_Struct O_I ;
@@ -96,7 +89,7 @@ public:
     };
 
     enum Type {
-        NOT_TYPED = 0, // Not used.
+        NOT_USED = 0, // Not used.
         CLOSE_CONNEXION,
         MESSAGE_NULL,
         CREATE_FEDERATION_EXECUTION,
@@ -136,7 +129,6 @@ public:
         UNSUBSCRIBE_INTERACTION_CLASS,
         TURN_INTERACTIONS_ON, // only RTIG->RTIA
         TURN_INTERACTIONS_OFF, // only RTIG->RTIA
-        REQUEST_ID,
         REGISTER_OBJECT,
         DISCOVER_OBJECT, // only RTIG->RTIA
         UPDATE_ATTRIBUTE_VALUES,
@@ -350,4 +342,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.15 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.16 2004/01/09 16:13:49 breholee Exp $

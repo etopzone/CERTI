@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.14 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.15 2004/01/09 16:13:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -358,13 +358,6 @@ NetworkMessage::readHeader(Socket *socket)
             constrained = Header.VP.time.R_or_C ;
             break ;
 
-            // -- ReqID Variable Part(No Body) --
-
-          case REQUEST_ID:
-            idCount = Header.VP.ReqID.count ;
-            firstId = Header.VP.ReqID.first ;
-            lastId = Header.VP.ReqID.last ;
-            break ;
             // -- T_O Variable Part --
 
           case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
@@ -837,15 +830,6 @@ NetworkMessage::writeHeader(Socket *socket)
             Header.VP.time.R_or_C = constrained ;
             break ;
 
-            // -- ReqID Variable Part(No Body) --
-
-          case REQUEST_ID:
-            Header.bodySize = 0 ;
-            Header.VP.ReqID.count = idCount ;
-            Header.VP.ReqID.first = firstId ;
-            Header.VP.ReqID.last = lastId ;
-            break ;
-
             // -- T_O Variable Part --
 
           case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
@@ -935,4 +919,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.14 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.15 2004/01/09 16:13:49 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.cc,v 3.10 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.11 2004/01/09 16:13:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -57,10 +57,9 @@ NetworkMessage::display(const char *s)
 // --------------------
 
 NetworkMessage::NetworkMessage()
+    : type(NOT_USED),
+      exception(e_NO_EXCEPTION)
 {
-    type = NOT_TYPED ;
-    exception = e_NO_EXCEPTION ;
-
     number = 0 ;
 
     federation = 0 ;
@@ -242,4 +241,4 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 
 }
 
-// $Id: NetworkMessage.cc,v 3.10 2003/11/10 14:43:02 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.11 2004/01/09 16:13:49 breholee Exp $
