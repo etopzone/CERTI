@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.2 2003/07/09 16:15:14 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.3 2003/07/10 21:32:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -350,7 +350,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
     req.setPHVPS(par);
     req.setFedTime(time);
     req.setTag(tag);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
 
     executeService(&req, &rep);
 
@@ -379,7 +379,7 @@ RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
     req.setInteractionClass(interaction);
     req.setPHVPS(par);
     req.setTag(tag);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
 
     executeService(&req, &rep);
 }
@@ -405,10 +405,10 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
     Message req, rep ;
     req.setType(Message::DDM_REQUEST_UPDATE);
     req.setAHS(attrs);
-    req.setRegion(dynamic_cast<RegionImp &>(region).getHandle());
+    req.setRegion(dynamic_cast<const RegionImp &>(region).getHandle());
     executeService(&req, &rep);    
 }
 
-}
+} // namespace
 
-// $Id: DataDistributionServices.cc,v 3.2 2003/07/09 16:15:14 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.3 2003/07/10 21:32:53 breholee Exp $
