@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.16 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.17 2005/03/16 23:16:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -72,6 +72,7 @@ public:
     void subscribe(FederateHandle, const RegionImp *)
 	throw (RTIinternalError, SecurityError);
     void unsubscribe(FederateHandle, const RegionImp *) throw (RTIinternalError);
+    void unsubscribe(FederateHandle) throw (RTIinternalError);
     
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
@@ -86,12 +87,13 @@ public:
 private:
     void deletePublisher(FederateHandle);
     void deleteSubscriber(FederateHandle, const RegionImp *);
+    void deleteSubscriber(FederateHandle);
 
     AttributeHandle handle ; //!< The attribute handle.
     std::string name ; //!< The attribute name, must be locally allocated.
     SpaceHandle space ; //!< Routing space
 
-    std::list<Subscriber *> subscribers ; //!< The subscriber's list.
+    std::list<Subscriber> subscribers ; //!< The subscriber's list.
     std::list<Publisher *> publishers ; //!< The publisher's list.
 
 };
@@ -100,4 +102,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.16 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.17 2005/03/16 23:16:59 breholee Exp $
