@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.9 2003/01/20 17:41:09 breholee Exp $
+// $Id: RTIambassador.cc,v 3.10 2003/01/20 22:06:58 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -2070,23 +2070,25 @@ RTIambassador::getObjectClassHandle(const char *theName)
 }
 
 // ---------------------------------------------------------------------------
-// Get Object Class Name
+//! Get Object Class Name
+/*! Returns the class name associated with the handle, memory has to
+  be freed by the caller.
+ */
 char *
-RTIambassador::getObjectClassName(ObjectClassHandle theHandle)
+RTIambassador::getObjectClassName(ObjectClassHandle handle)
     throw (ObjectClassNotDefined,
            FederateNotExecutionMember,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep ;
+    Message req, rep;
 
-    // envoyer la requete au RTI
     req.Type = GET_OBJECT_CLASS_NAME ;
-    req.objectClassHandle = theHandle ;
+    req.objectClassHandle = handle ;
 
     executeService(&req, &rep);
 
-    return(rep.getName());
+    return strdup(rep.getName());
 }
 
 // ---------------------------------------------------------------------------
@@ -2124,16 +2126,15 @@ RTIambassador::getAttributeName(AttributeHandle theHandle,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep ;
+    Message req, rep;
 
-    // envoyer la requete au RTI
-    req.Type = GET_ATTRIBUTE_NAME ;
-    req.AttribHandle = theHandle ;
-    req.objectClassHandle = whichClass ;
+    req.Type = GET_ATTRIBUTE_NAME;
+    req.AttribHandle = theHandle;
+    req.objectClassHandle = whichClass;
 
-    executeService(&req, &rep);
+    executeService(&req, &rep); // Send request to RTI.
 
-    return(rep.getName());
+    return(strdup(rep.getName()));
 }
 
 // ---------------------------------------------------------------------------
@@ -2166,15 +2167,14 @@ RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep ;
+    Message req, rep;
 
-    // envoyer la requete au RTI
-    req.Type = GET_INTERACTION_CLASS_NAME ;
-    req.InteractionHandle = theHandle ;
+    req.Type = GET_INTERACTION_CLASS_NAME;
+    req.InteractionHandle = theHandle;
 
-    executeService(&req, &rep);
+    executeService(&req, &rep); // Send request to RTI
 
-    return(rep.getName());
+    return(strdup(rep.getName()));
 }
 
 // ---------------------------------------------------------------------------
@@ -2211,16 +2211,15 @@ RTIambassador::getParameterName(ParameterHandle theHandle,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    Message req, rep ;
+    Message req, rep;
 
-    // envoyer la requete au RTI
-    req.Type = GET_PARAMETER_NAME ;
-    req.ParamHandle = theHandle ;
-    req.InteractionHandle = whichClass ;
+    req.Type = GET_PARAMETER_NAME;
+    req.ParamHandle = theHandle;
+    req.InteractionHandle = whichClass;
 
-    executeService(&req, &rep);
+    executeService(&req, &rep); // Send request to RTI.
 
-    return(rep.getName());
+    return(strdup(rep.getName()));
 }
 
 // ---------------------------------------------------------------------------
@@ -3581,4 +3580,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.9 2003/01/20 17:41:09 breholee Exp $
+// $Id: RTIambassador.cc,v 3.10 2003/01/20 22:06:58 breholee Exp $
