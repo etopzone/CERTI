@@ -1,0 +1,15 @@
+# $Id: CommandLine.ggo,v 1.1 2003/02/17 13:30:23 breholee Exp $
+#
+# This file is used by gengetopt to generate the command line parser.
+
+package "billard"
+purpose "CERTI test application"
+
+# Options
+option	"federation"	f	"federation name"	string	yes
+option 	"name"		n	"federate name"		string	yes
+option	"coordinated" 	c	"coordinated time"	flag	on
+option  "xoffset"	x	"X offset (X11)"	int	no
+option 	"yoffset"	y	"Y offset (X11)"	int	no
+
+# $Id: CommandLine.ggo,v 1.1 2003/02/17 13:30:23 breholee Exp $
