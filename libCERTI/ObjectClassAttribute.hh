@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.15 2005/03/11 13:47:18 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.16 2005/03/15 14:37:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -63,17 +63,15 @@ public:
 
     // Publish & subscribe methods
     bool isPublishing(FederateHandle) const ;
-    bool hasSubscribed(FederateHandle) const ;
-    bool hasSubscribed(FederateHandle, RegionImp *) const ;
+    bool isSubscribed(FederateHandle, const RegionImp *) const ;
+    bool isSubscribed(FederateHandle) const ;
 
     void publish(FederateHandle) throw (RTIinternalError, SecurityError);
     void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
 
-    void subscribe(FederateHandle) throw (RTIinternalError, SecurityError);
-    void subscribe(FederateHandle, RegionImp *)
+    void subscribe(FederateHandle, const RegionImp *)
 	throw (RTIinternalError, SecurityError);
-    void unsubscribe(FederateHandle) throw (RTIinternalError);
-    void unsubscribe(FederateHandle, RegionImp *) throw (RTIinternalError);
+    void unsubscribe(FederateHandle, const RegionImp *) throw (RTIinternalError);
     
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
@@ -87,7 +85,7 @@ public:
 
 private:
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle, RegionImp *);
+    void deleteSubscriber(FederateHandle, const RegionImp *);
 
     AttributeHandle handle ; //!< The attribute handle.
     std::string name ; //!< The attribute name, must be locally allocated.
@@ -102,4 +100,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.15 2005/03/11 13:47:18 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.16 2005/03/15 14:37:29 breholee Exp $

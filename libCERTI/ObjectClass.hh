@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.19 2005/03/11 14:58:44 breholee Exp $
+// $Id: ObjectClass.hh,v 3.20 2005/03/15 14:37:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -100,7 +100,8 @@ public:
     Boolean subscribe(FederateHandle theFederate,
                       AttributeHandle *theAttributeList,
                       UShort theListSize,
-                      bool SubOrUnsub)
+                      bool SubOrUnsub,
+		      const RegionImp * = 0)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
     
     void unsubscribe(FederateHandle, RegionImp *);
@@ -267,4 +268,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.19 2005/03/11 14:58:44 breholee Exp $
+// $Id: ObjectClass.hh,v 3.20 2005/03/15 14:37:29 breholee Exp $

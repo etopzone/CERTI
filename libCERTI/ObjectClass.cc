@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.24 2005/03/13 22:49:00 breholee Exp $
+// $Id: ObjectClass.cc,v 3.25 2005/03/15 14:37:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -473,7 +473,7 @@ ObjectClass::isFederateSubscriber(FederateHandle the_federate) const
 {
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->hasSubscribed(the_federate) == RTI_TRUE)
+        if ((*a)->isSubscribed(the_federate))
             return true ;
     }
     return false ;
@@ -766,7 +766,8 @@ Boolean
 ObjectClass::subscribe(FederateHandle theFederate,
                        AttributeHandle *theAttributeList,
                        UShort theListSize,
-                       bool SubOrUnsub)
+                       bool SubOrUnsub,
+		       const RegionImp *region)
     throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
     // Check Security Levels
@@ -789,8 +790,8 @@ ObjectClass::subscribe(FederateHandle theFederate,
     Boolean wasPreviousSubscriber = RTI_FALSE ;
     list<ObjectClassAttribute *>::iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->hasSubscribed(theFederate)) {
-            (*a)->unsubscribe(theFederate);
+        if ((*a)->isSubscribed(theFederate, region)) {
+            (*a)->unsubscribe(theFederate, region);
             wasPreviousSubscriber = RTI_TRUE ;
         }
     }
@@ -803,9 +804,9 @@ ObjectClass::subscribe(FederateHandle theFederate,
               handle, theFederate, theAttributeList[index]);
         attribute = getAttributeWithHandle(theAttributeList[index]);
         if (SubOrUnsub)
-	    attribute->subscribe(theFederate);
+	    attribute->subscribe(theFederate, region);
 	else
-	    attribute->unsubscribe(theFederate);
+	    attribute->unsubscribe(theFederate, region);
     }
 
     // If the Federate was not a subscriber before, and has now subscribed
@@ -1634,12 +1635,14 @@ ObjectClass::getHandle() const
 }
 
 // ----------------------------------------------------------------------------
+/** Unsubscribe this federate/region pair
+ */
 void
 ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 {
     list<ObjectClassAttribute *>::iterator i ;
     for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
-	if ((*i)->hasSubscribed(fed, region)) {
+	if ((*i)->isSubscribed(fed, region)) {
 	    (*i)->unsubscribe(fed, region);
 	}
     }
@@ -1647,4 +1650,4 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.24 2005/03/13 22:49:00 breholee Exp $
+// $Id: ObjectClass.cc,v 3.25 2005/03/15 14:37:29 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.14 2003/05/23 13:21:48 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.15 2005/03/15 14:37:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -406,7 +406,8 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
                           ObjectClassHandle theClassHandle,
                           AttributeHandle *theAttributeList,
                           UShort theListSize,
-                          bool SubOrUnsub)
+                          bool SubOrUnsub,
+			  const RegionImp *region)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
            RTIinternalError,
@@ -426,7 +427,8 @@ ObjectClassSet::subscribe(FederateHandle theFederateHandle,
     Boolean result = theClass->subscribe(theFederateHandle,
                                          theAttributeList,
                                          theListSize,
-                                         SubOrUnsub);
+                                         SubOrUnsub,
+					 region);
 
     // If Result is true, the Federate has never been a subscriber of this
     // class, so it my have missed some DiscoverObject messages, for this
@@ -683,4 +685,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.14 2003/05/23 13:21:48 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.15 2005/03/15 14:37:29 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.18 2005/03/11 13:47:18 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.19 2005/03/15 14:37:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -126,7 +126,8 @@ ObjectClassAttribute::deletePublisher(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! Removes a subscribed federate
 void
-ObjectClassAttribute::deleteSubscriber(FederateHandle fed, RegionImp *region)
+ObjectClassAttribute::deleteSubscriber(FederateHandle fed,
+				       const RegionImp *region)
 {
     list<Subscriber *>::iterator i ;
     for (i = subscribers.begin(); i != subscribers.end(); ++i) {
@@ -167,9 +168,14 @@ ObjectClassAttribute::isPublishing(FederateHandle fed) const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns true if federate has subscribed to this attribute
+/** Indicates whether a federate is subscribed with a particular region
+    @param fed federate 
+    @param region region
+    @return true if the federate/region pair is subscriber
+ */
 bool
-ObjectClassAttribute::hasSubscribed(FederateHandle fed, RegionImp *region) const
+ObjectClassAttribute::isSubscribed(FederateHandle fed,
+				   const RegionImp *region) const
 {
     list<Subscriber *>::const_iterator i ;
     for (i = subscribers.begin(); i != subscribers.end(); ++i) {
@@ -180,11 +186,19 @@ ObjectClassAttribute::hasSubscribed(FederateHandle fed, RegionImp *region) const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns true if federate has subscribed to this attribute
+/** Indicates whether a federate is subscribed with any region
+    @param fed federate 
+    @return true if the federate is subscriber
+ */
 bool
-ObjectClassAttribute::hasSubscribed(FederateHandle fed) const
+ObjectClassAttribute::isSubscribed(FederateHandle fed) const
 {
-    return hasSubscribed(fed, 0);
+    list<Subscriber *>::const_iterator i ;
+    for (i = subscribers.begin(); i != subscribers.end(); ++i) {
+        if ((*i)->getHandle() == fed)
+            return true ;
+    }
+    return false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -262,10 +276,10 @@ ObjectClassAttribute::getSpace() const
 // ----------------------------------------------------------------------------
 //! unsubscribe
 void
-ObjectClassAttribute::unsubscribe(FederateHandle fed, RegionImp *region)
+ObjectClassAttribute::unsubscribe(FederateHandle fed, const RegionImp *region)
     throw (RTIinternalError)
 {
-    if (hasSubscribed(fed, region)) {
+    if (isSubscribed(fed, region)) {
         deleteSubscriber(fed, region);
         D[pdTerm] << "Attribute " << handle << ": Removed Federate "
 		  << fed << " from subscribers list." << endl ;
@@ -277,21 +291,12 @@ ObjectClassAttribute::unsubscribe(FederateHandle fed, RegionImp *region)
 }
 
 // ----------------------------------------------------------------------------
-//! unsubscribe
-void
-ObjectClassAttribute::unsubscribe(FederateHandle fed)
-    throw (RTIinternalError)
-{
-    unsubscribe(fed, 0);
-}
-
-// ----------------------------------------------------------------------------
 //! subscribe
 void
-ObjectClassAttribute::subscribe(FederateHandle fed, RegionImp *region)
+ObjectClassAttribute::subscribe(FederateHandle fed, const RegionImp *region)
     throw (RTIinternalError, SecurityError)
 {
-    if (!hasSubscribed(fed, region)) {
+    if (!isSubscribed(fed, region)) {
         checkFederateAccess(fed, "Subscribe");
 
 	Subscriber *sub = new Subscriber(fed, region);
@@ -312,15 +317,6 @@ ObjectClassAttribute::subscribe(FederateHandle fed, RegionImp *region)
 }
 
 // ----------------------------------------------------------------------------
-//! subscribe
-void
-ObjectClassAttribute::subscribe(FederateHandle fed)
-    throw (RTIinternalError, SecurityError)
-{
-    subscribe(fed, 0);
-}
-
-// ----------------------------------------------------------------------------
 //! Add all attribute's subscribers to the broadcast list
 void
 ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
@@ -331,9 +327,8 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           list<Subscriber *>::iterator i ;
           for (i = subscribers.begin(); i != subscribers.end(); i++) {
-	      if ((*i)->match(region))
-		  ocblist->addFederate((*i)->getHandle(), handle);
-	      
+	      //     if ((*i)->match(region))
+		  ocblist->addFederate((*i)->getHandle(), handle);	      
           }
       } break ;
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
@@ -349,4 +344,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.18 2005/03/11 13:47:18 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.19 2005/03/15 14:37:29 breholee Exp $
