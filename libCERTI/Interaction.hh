@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.5 2003/01/20 21:49:14 breholee Exp $
+// $Id: Interaction.hh,v 3.6 2003/01/29 18:22:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -45,17 +45,6 @@ using std::endl;
 
 namespace certi {
 
-/*! We need to define a class because List only allows pointers, and
-  not integer for example.
-*/
-class InteractionChild {
-public:
-    InteractionClassHandle handle ;
-    InteractionChild(InteractionClassHandle the_handle) { 
-        handle = the_handle ; 
-    };
-};
-
 class Interaction
 {
     // ATTRIBUTES ------------------------------------------------------------ 
@@ -65,7 +54,7 @@ public:
     SecurityServer *server ;
     InteractionClassHandle parent ; //!< Parent Class' Handle.
 
-    list<InteractionChild *> children ; //!< Children Classes' Handles List
+    list<InteractionClassHandle> children ; //!< Children Classes' Handles List
     UShort depth ;
 
     /*! Interaction messages' Transport Type(Reliable, Best Effort),
@@ -77,7 +66,7 @@ public:
     OrderType order ;
 
 private: 
-    InteractionClassName name ; //!< Must be locally allocated and deleted. 
+    char * name ;        //!< Must be locally allocated and deleted. 
     SecurityLevelID id ; //!< The default Security Level for new parameters
 
     //! List of this Interaction Class' Parameters.
@@ -186,4 +175,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.5 2003/01/20 21:49:14 breholee Exp $
+// $Id: Interaction.hh,v 3.6 2003/01/29 18:22:47 breholee Exp $

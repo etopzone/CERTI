@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.7 2003/01/20 21:49:14 breholee Exp $
+// $Id: Interaction.cc,v 3.8 2003/01/29 18:22:47 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -254,7 +254,6 @@ Interaction::~Interaction(void)
 
     // Deleting Sons
     while (!children.empty()) {
-        delete children.front();
         children.pop_front();
     }
 }
@@ -302,9 +301,9 @@ Interaction::display(void) const
     cout << " Security Level: " << id << endl ;
     cout << " " << children.size() << " Child(s):" << endl ;
 
-    list<InteractionChild *>::const_iterator c = children.begin();
+    list<InteractionClassHandle>::const_iterator c = children.begin();
     for (int i = 1  ; c != children.end(); i++,c++) {
-        cout << " child " << i << " Handle: " << (*c)->handle << endl ;
+        cout << " child " << i << " Handle: " << (*c) << endl ;
     }
 
     // Display parameters
@@ -637,4 +636,4 @@ Interaction::subscribe(bool, Subscriber*)
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.7 2003/01/20 21:49:14 breholee Exp $
+// $Id: Interaction.cc,v 3.8 2003/01/29 18:22:47 breholee Exp $
