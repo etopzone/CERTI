@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.4 2003/02/21 15:27:08 breholee Exp $
+// $Id: XmlParser.hh,v 3.5 2003/03/19 08:54:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -59,6 +59,7 @@ using std::string ;
 #define ATTRIBUTE_NAME (const xmlChar*) "name"
 #define ATTRIBUTE_TRANSPORTATION (const xmlChar*) "transportation"
 #define ATTRIBUTE_ORDER (const xmlChar*) "order"
+#define ATTRIBUTE_SPACE (const xmlChar*) "space"
 
 #define VALUE_RELIABLE (const xmlChar*) "HLAreliable"
 #define VALUE_BESTEFFORT (const xmlChar*) "HLAbestEffort"
@@ -97,4 +98,4 @@ private:
 #endif // HAVE_XML
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.4 2003/02/21 15:27:08 breholee Exp $
+// $Id: XmlParser.hh,v 3.5 2003/03/19 08:54:18 breholee Exp $

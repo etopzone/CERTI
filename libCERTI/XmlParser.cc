@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.cc,v 3.6 2003/03/12 10:04:43 breholee Exp $
+// $Id: XmlParser.cc,v 3.7 2003/03/19 08:54:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef HAVE_XML
@@ -75,9 +75,23 @@ XmlParser::parse(string s)
         cerr << "Wrong XML file: not the expected root node" << endl ;
         return 0 ;
     }
-
-    // Main loop
     D.Out(pdTrace, "XML file looks ok, starting main loop");
+
+    // First Loop (Routing Spaces)
+    cur = xmlDocGetRootElement(doc);
+    cur = cur->xmlChildrenNode ;
+    while (cur != NULL) {
+        if ((!xmlStrcmp(cur->name, NODE_ROUTING_SPACE))) {
+            D.Out(pdTrace, "Found a routing space");
+            xmlNodePtr prev = cur ;
+            this->parseRoutingSpace();
+            cur = prev ;
+        }
+        cur = cur->next ;
+    }
+
+    // Second Loop (Object and Interaction classes)
+    cur = xmlDocGetRootElement(doc);
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_OBJECTS))) {
@@ -102,12 +116,6 @@ XmlParser::parse(string s)
                 }
                 cur = cur->next ;
             }
-            cur = prev ;
-        }
-        if ((!xmlStrcmp(cur->name, NODE_ROUTING_SPACE))) {
-            D.Out(pdTrace, "Found a routing space");
-            xmlNodePtr prev = cur ;
-            this->parseRoutingSpace();
             cur = prev ;
         }
         cur = cur->next ;
@@ -273,4 +281,4 @@ bool XmlParser::exists(void)
 
 #endif // HAVE_XML
 
-// $Id: XmlParser.cc,v 3.6 2003/03/12 10:04:43 breholee Exp $
+// $Id: XmlParser.cc,v 3.7 2003/03/19 08:54:18 breholee Exp $
