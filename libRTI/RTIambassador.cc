@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.26 2003/05/09 01:11:08 breholee Exp $
+// $Id: RTIambassador.cc,v 3.27 2003/05/09 01:50:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1572,7 +1572,7 @@ RTIambassador::queryLookahead(FedTime& theTime)
     req.type = QUERY_LOOKAHEAD ;
     executeService(&req, &rep);
 
-    RTIfedTime *tmp = new RTIfedTime((Double) rep.lookahead);
+    RTIfedTime *tmp = new RTIfedTime((Double) rep.getFederationTimeDelta());
     theTime = *(dynamic_cast<FedTime *>(tmp));
 }
 
@@ -2584,7 +2584,7 @@ RTIambassador::tick()
         if (vers_Fed.type == TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
-            return vers_Fed.boolean ;
+            return vers_Fed.getBoolean();
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une methode
@@ -2642,63 +2642,63 @@ RTIambassador::tick()
               case FEDERATION_NOT_RESTORED:
                 fed_amb->federationNotRestored();
                 break ;
-  
+
               case START_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                     startRegistrationForObjectClass(vers_Fed.getObjectClass());
+                      startRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-  
+
               case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                     stopRegistrationForObjectClass(vers_Fed.getObjectClass());
+                      stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-  
+
               case TURN_INTERACTIONS_ON: {
-                 fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
+                  fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
-  
+
               case TURN_INTERACTIONS_OFF: {
-                 fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
+                  fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
-  
+
               case DISCOVER_OBJECT_INSTANCE: {
                   fed_amb->
-                     discoverObjectInstance(vers_Fed.getObject(),
-                                            vers_Fed.getObjectClass(),
-                                            vers_Fed.getName());
+                      discoverObjectInstance(vers_Fed.getObject(),
+                                             vers_Fed.getObjectClass(),
+                                             vers_Fed.getName());
               } break ;
-  
+
               case REFLECT_ATTRIBUTE_VALUES: {
-                 AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
+                  AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
                   fed_amb->
-                     reflectAttributeValues(vers_Fed.getObject(),
-                                            *theAttributes,
-                                            vers_Fed.getFedTime(),
-                                            vers_Fed.getTag(),
-                                             vers_Fed.eventRetraction);
-  
-                 delete theAttributes ;
-              } break ;
-  
-              case RECEIVE_INTERACTION: {
-                 ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
-  
-                 fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
-                                             *theParameters,
+                      reflectAttributeValues(vers_Fed.getObject(),
+                                             *theAttributes,
                                              vers_Fed.getFedTime(),
                                              vers_Fed.getTag(),
                                              vers_Fed.getEventRetraction());
-  
-                 delete theParameters ;
+
+                  delete theAttributes ;
               } break ;
-  
+
+              case RECEIVE_INTERACTION: {
+                  ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
+
+                  fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                                              *theParameters,
+                                              vers_Fed.getFedTime(),
+                                              vers_Fed.getTag(),
+                                              vers_Fed.getEventRetraction());
+
+                  delete theParameters ;
+              } break ;
+
               case REMOVE_OBJECT_INSTANCE: {
-                 fed_amb->removeObjectInstance(vers_Fed.getObject(),
-                                               vers_Fed.getFedTime(),
-                                               vers_Fed.getTag(),
-                                               vers_Fed.getEventRetraction());
+                  fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                                                vers_Fed.getFedTime(),
+                                                vers_Fed.getTag(),
+                                                vers_Fed.getEventRetraction());
               } break ;
-  
+
               case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
 
 
@@ -2709,82 +2709,82 @@ RTIambassador::tick()
               case REQUEST_RETRACTION: {
 
               } break ;
-  
+
               case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     requestAttributeOwnershipAssumption(vers_Fed.getObject(),
-                                                         *attributeSet,
+                      requestAttributeOwnershipAssumption(vers_Fed.getObject(),
+                                                          *attributeSet,
                                                           vers_Fed.getTag());
-                 delete attributeSet ;
+                  delete attributeSet ;
               } break ;
-  
+
               case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
-                 fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
-                                                           *attributeSet,
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
+                  fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
+                                                            *attributeSet,
                                                             vers_Fed.getTag());
-  
-                 delete attributeSet ;
+
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
- 
-                 fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
-                                                        *attributeSet);
-  
-                 delete attributeSet ;
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
+                  fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                                                         *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
-                                                               *attributeSet);
- 
-                 delete attributeSet ;
+                      attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
+                                                                *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
-                                                               *attributeSet);
- 
-                 delete attributeSet ;
+                      attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
+                                                                *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
                       confirmAttributeOwnershipAcquisitionCancellation
-                     (vers_Fed.getObject(), *attributeSet);
- 
-                 delete attributeSet ;
+                      (vers_Fed.getObject(), *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case INFORM_ATTRIBUTE_OWNERSHIP: {
                   fed_amb->
-                     informAttributeOwnership(vers_Fed.getObject(),
-                                              vers_Fed.getAttribute(),
-                                              vers_Fed.getFederate());
+                      informAttributeOwnership(vers_Fed.getObject(),
+                                               vers_Fed.getAttribute(),
+                                               vers_Fed.getFederate());
               } break ;
-  
+
               case ATTRIBUTE_IS_NOT_OWNED: {
-                 fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
-                                              vers_Fed.getAttribute());
+                  fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                                               vers_Fed.getAttribute());
               } break ;
-  
+
               case TIME_ADVANCE_GRANT: {
-                 fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
+                  fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
-  
+
               default: {
                   leave("RTI service requested by RTI is unknown.");
               }
@@ -2870,7 +2870,7 @@ RTIambassador::tick(TickTime /*minimum*/,
         if (vers_Fed.type == TICK_REQUEST) {
             is_reentrant = false ;
             processException(&vers_Fed);
-            return vers_Fed.boolean ;
+            return vers_Fed.getBoolean();
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une
@@ -2928,63 +2928,63 @@ RTIambassador::tick(TickTime /*minimum*/,
               case FEDERATION_NOT_RESTORED:
                 fed_amb->federationNotRestored();
                 break ;
-  
+
               case START_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                     startRegistrationForObjectClass(vers_Fed.getObjectClass());
+                      startRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-  
+
               case STOP_REGISTRATION_FOR_OBJECT_CLASS: {
                   fed_amb->
-                     stopRegistrationForObjectClass(vers_Fed.getObjectClass());
+                      stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
-  
+
               case TURN_INTERACTIONS_ON: {
-                 fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
+                  fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
-  
+
               case TURN_INTERACTIONS_OFF: {
-                 fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
+                  fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
-  
+
               case DISCOVER_OBJECT_INSTANCE: {
                   fed_amb->
-                     discoverObjectInstance(vers_Fed.getObject(),
-                                            vers_Fed.getObjectClass(),
-                                            vers_Fed.getName());
+                      discoverObjectInstance(vers_Fed.getObject(),
+                                             vers_Fed.getObjectClass(),
+                                             vers_Fed.getName());
               } break ;
-  
+
               case REFLECT_ATTRIBUTE_VALUES: {
-                 AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
+                  AttributeHandleValuePairSet * theAttributes = vers_Fed.getAHVPS();
                   fed_amb->
-                     reflectAttributeValues(vers_Fed.getObject(),
-                                            *theAttributes,
-                                            vers_Fed.getFedTime(),
-                                            vers_Fed.getTag(),
-                                             vers_Fed.eventRetraction);
- 
-                 delete theAttributes ;
-              } break ;
-  
-              case RECEIVE_INTERACTION: {
-                 ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
-  
-                 fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
-                                             *theParameters,
+                      reflectAttributeValues(vers_Fed.getObject(),
+                                             *theAttributes,
                                              vers_Fed.getFedTime(),
                                              vers_Fed.getTag(),
                                              vers_Fed.getEventRetraction());
-  
-                 delete theParameters ;
+
+                  delete theAttributes ;
               } break ;
-  
+
+              case RECEIVE_INTERACTION: {
+                  ParameterHandleValuePairSet * theParameters = vers_Fed.getPHVPS();
+
+                  fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                                              *theParameters,
+                                              vers_Fed.getFedTime(),
+                                              vers_Fed.getTag(),
+                                              vers_Fed.getEventRetraction());
+
+                  delete theParameters ;
+              } break ;
+
               case REMOVE_OBJECT_INSTANCE: {
-                 fed_amb->removeObjectInstance(vers_Fed.getObject(),
-                                               vers_Fed.getFedTime(),
-                                               vers_Fed.getTag(),
-                                               vers_Fed.getEventRetraction());
+                  fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                                                vers_Fed.getFedTime(),
+                                                vers_Fed.getTag(),
+                                                vers_Fed.getEventRetraction());
               } break ;
-  
+
               case PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
 
                   // fed_amb->provideAttributeValueUpdate();
@@ -2993,82 +2993,82 @@ RTIambassador::tick(TickTime /*minimum*/,
               case REQUEST_RETRACTION: {
 
               } break ;
-  
+
               case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     requestAttributeOwnershipAssumption(vers_Fed.getObject(),
-                                                         *attributeSet,
+                      requestAttributeOwnershipAssumption(vers_Fed.getObject(),
+                                                          *attributeSet,
                                                           vers_Fed.getTag());
-                 delete attributeSet ;
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
-                 fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
-                                                        *attributeSet);
- 
-                 delete attributeSet ;
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
+                  fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                                                         *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
-                 fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
-                                                           *attributeSet,
-                                                           vers_Fed.getTag());
-  
-                 delete attributeSet ;
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
+                  fed_amb->requestAttributeOwnershipRelease(vers_Fed.getObject(),
+                                                            *attributeSet,
+                                                            vers_Fed.getTag());
+
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
-                                                               *attributeSet);
- 
-                 delete attributeSet ;
+                      attributeOwnershipAcquisitionNotification(vers_Fed.getObject(),
+                                                                *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
-                     attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
-                                                               *attributeSet);
- 
-                 delete attributeSet ;
+                      attributeOwnershipDivestitureNotification(vers_Fed.getObject(),
+                                                                *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-                 AttributeHandleSet *attributeSet = vers_Fed.getAHS();
-  
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
                   fed_amb->
                       confirmAttributeOwnershipAcquisitionCancellation
-                     (vers_Fed.getObject(), *attributeSet);
- 
-                 delete attributeSet ;
+                      (vers_Fed.getObject(), *attributeSet);
+
+                  delete attributeSet ;
               } break ;
-  
+
               case INFORM_ATTRIBUTE_OWNERSHIP: {
                   fed_amb->
-                     informAttributeOwnership(vers_Fed.getObject(),
-                                              vers_Fed.getAttribute(),
-                                              vers_Fed.getFederate());
+                      informAttributeOwnership(vers_Fed.getObject(),
+                                               vers_Fed.getAttribute(),
+                                               vers_Fed.getFederate());
               } break ;
-  
+
               case ATTRIBUTE_IS_NOT_OWNED: {
-                 fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
-                                              vers_Fed.getAttribute());
+                  fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                                               vers_Fed.getAttribute());
               } break ;
-  
+
               case TIME_ADVANCE_GRANT: {
-                 fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
+                  fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
-  
+
               default: {
 
                   leave("RTI service requested by RTI is unknown.");
@@ -3529,4 +3529,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.26 2003/05/09 01:11:08 breholee Exp $
+// $Id: RTIambassador.cc,v 3.27 2003/05/09 01:50:59 breholee Exp $

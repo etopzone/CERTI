@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.13 2003/05/09 01:11:08 breholee Exp $
+// $Id: Message.cc,v 3.14 2003/05/09 01:50:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -189,6 +189,13 @@ void
 Message::setResignAction(ResignAction the_action)
 {
     resignAction = the_action ;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setFederationTimeDelta(FederationTimeDelta the_lookahead)
+{
+    lookahead = the_lookahead ;
 }
 
 // ----------------------------------------------------------------------------
@@ -516,8 +523,8 @@ Message::operator = (const Message& msg)
     object = msg.object ;
     space = msg.space ;
     dimension = msg.dimension ;
-    transportation = msg.transportation ;
-    ordering = msg.ordering ;
+    // transportation = msg.transportation ;
+    // ordering = msg.ordering ;
 
     strcpy(tag, msg.tag);
     strcpy(name, msg.name);
@@ -558,10 +565,10 @@ Message::display(char *s)
     printf(" handleArraySize=%d:\n", handleArraySize);
     printf(" space %d:\n", space);
     printf(" dimension %d:\n", dimension);
-    printf(" transportation %d:\n", transportation);
-    printf(" ordering %d:\n", ordering);
+    // printf(" transportation %d:\n", transportation);
+    // printf(" ordering %d:\n", ordering);
 }
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.13 2003/05/09 01:11:08 breholee Exp $
+// $Id: Message.cc,v 3.14 2003/05/09 01:50:59 breholee Exp $

@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
+// $Id: TimeManagement.cc,v 3.9 2003/05/09 01:50:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -674,7 +674,7 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     req.setFederationTime(logical_time);
 
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
-          req.date);
+          req.getFederationTime());
 
     comm->requestFederateService(&req, &rep);
 
@@ -686,8 +686,8 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
 
 // ----------------------------------------------------------------------------
 /*! Either nextEventRequest or timeAdvanceRequest is called by federate to
-  to determine time to reach. It then calls tick() until a timeAdvanceGrant
-  is received.
+  determine time to reach. It then calls tick() until a timeAdvanceGrant is
+  received.
 */
 void
 TimeManagement::timeAdvanceRequest(FederationTime logical_time,
@@ -721,4 +721,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.8 2003/05/09 00:27:17 breholee Exp $
+// $Id: TimeManagement.cc,v 3.9 2003/05/09 01:50:59 breholee Exp $

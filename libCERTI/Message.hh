@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.15 2003/05/09 01:11:08 breholee Exp $
+// $Id: Message.hh,v 3.16 2003/05/09 01:50:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -334,6 +334,10 @@ public:
     long getRegion() const { return region ; };
     void setRegion(long);
 
+    void setFederationTimeDelta(FederationTimeDelta);
+    FederationTimeDelta getFederationTimeDelta() const
+    { return lookahead ; };
+
     void setAttribute(AttributeHandle);
     AttributeHandle getAttribute() const { return attribute ; };
 
@@ -343,30 +347,42 @@ public:
     };
 
     void setObjectClass(ObjectClassHandle);
+
     ObjectClassHandle getObjectClass() const { return objectClass ; };
 
     void setResignAction(ResignAction);
+    ResignAction getResignAction() const { return resignAction ; };
 
     void setFedTime(const FedTime&);
     FedTime& getFedTime() const { return *(new RTIfedTime(date)); };
 
     void setLookahead(const FedTime&);
+
     void setFederationTime(FederationTime);
+    FederationTime getFederationTime() const { return date ; };
 
     void setBoolean(Boolean);
+    Boolean getBoolean() const { return boolean ; };
 
     void setObject(ObjectHandle);
     ObjectHandle getObject() const { return object ; };
 
     void setTransportation(TransportationHandle);
     TransportationHandle getTransportation() const
-    { return transportation ; };
+    { return ((transport == RELIABLE) ? 1 : 0); };
+
+    TransportType getTransportType() const
+    { return transport ; };
 
     void setOrdering(OrderingHandle);
-    OrderingHandle getOrdering() const { return ordering ; };
+    OrderingHandle getOrdering() const
+    { return ((order == RECEIVE) ? 1 : 0); };
+
+    OrderType getOrderType() const { return order ; };
 
     void setEventRetraction(EventRetractionHandle);
     EventRetractionHandle getEventRetraction() const
+
     { return eventRetraction ; };
 
     void setParameter(ParameterHandle);
@@ -393,11 +409,13 @@ public:
     // -----------------------
 
     TypeService type ;
+    TypeException exception ;
+    char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
+
+protected:
     FederationTime date ;
     Boolean boolean ;
     FederationTimeDelta lookahead ;
-    TypeException exception ;
-    char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
     FederateHandle federate ;
     ResignAction resignAction ;
     UShort idCount ;
@@ -413,11 +431,12 @@ public:
     EventRetractionHandle eventRetraction ;
     SpaceHandle space ;
     DimensionHandle dimension ;
-    TransportationHandle transportation ;
-    OrderingHandle ordering ;
+    // TransportationHandle transportation ;
+    // OrderingHandle ordering ;
     unsigned long number ;
     long region ;
 
+public:
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
     AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
@@ -485,4 +504,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.15 2003/05/09 01:11:08 breholee Exp $
+// $Id: Message.hh,v 3.16 2003/05/09 01:50:59 breholee Exp $
