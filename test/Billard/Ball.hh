@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.hh,v 3.3 2004/03/04 20:19:05 breholee Exp $
+// $Id: Ball.hh,v 3.4 2005/03/28 19:02:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BALL_HH
@@ -38,6 +38,8 @@ public:
     float olddx, olddy ;
     float color ;
 
+    bool active ;
+
     unsigned long ID ; // object handle
 
     void display();
@@ -45,8 +47,8 @@ public:
     void move();
     void setPosition(float, float);
     void setDirection(float, float);
-    void collision(float, float);
-    bool collision(Ball *);
+    void checkBorderCollision(float, float);
+    bool checkBallCollision(Ball *);
 
     void init(int);
     void init(int, int);
@@ -54,4 +56,4 @@ public:
 
 #endif // CERTI_BALL_HH
 
-// $Id: Ball.hh,v 3.3 2004/03/04 20:19:05 breholee Exp $
+// $Id: Ball.hh,v 3.4 2005/03/28 19:02:39 breholee Exp $

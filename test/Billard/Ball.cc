@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.5 2004/01/09 16:45:08 breholee Exp $
+// $Id: Ball.cc,v 3.6 2005/03/28 19:02:38 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,7 +34,7 @@ using namespace std ;
     \param h HLA object handle
  */
 Ball::Ball(ObjectHandle h)
-    : x(-1.0), y(-1.0), dx(3.0), dy(3.0), radius(10.0), ID(h)
+    : x(-10.0), y(-10.0), dx(3.0), dy(3.0), radius(10.0), active(false), ID(h)
 {
 #ifndef X_DISPLAY_MISSING
     color = BLACK ;
@@ -52,7 +52,8 @@ Ball::display()
 
     centre.X = (int) x ;
     centre.Y = (int) y ;
-    disque = Definecr(centre, (int) radius, COUL_UNIE, (couleur) color);
+    disque = Definecr(centre, (int) radius, COUL_UNIE,
+		      active ? (couleur) color : GRAY);
     Drawcr(disque);
 #endif
 }
@@ -68,7 +69,7 @@ Ball::erase()
 
     centre.X = (int)x ;
     centre.Y = (int)y ;
-    disque = Definecr(centre, (int)radius, COUL_UNIE, WHITE);
+    disque = Definecr(centre, (int) radius, COUL_UNIE, WHITE);
     Drawcr(disque);
 #endif
 }
@@ -103,7 +104,7 @@ Ball::setDirection(float dxx, float dyy)
 // ----------------------------------------------------------------------------
 //! Detects and take into account collisions occured with window borders.
 void
-Ball::collision(float largeur, float hauteur)
+Ball::checkBorderCollision(float largeur, float hauteur)
 {
     // left/right collision
     if ((x < radius) || (x > largeur - radius)) {
@@ -121,10 +122,11 @@ Ball::collision(float largeur, float hauteur)
     \param ab Pointer to the other ball
  */
 bool
-Ball::collision(Ball *ab)
+Ball::checkBallCollision(Ball *ab)
 {
-    return std::sqrt((x + dx - ab->x) * (x + dx - ab->x) +
-		     (y + dy - ab->y) * (y + dy - ab->y)) <= 2 * radius ;
+    return active &&
+	(std::sqrt((x + dx - ab->x) * (x + dx - ab->x) +
+		   (y + dy - ab->y) * (y + dy - ab->y)) <= 2 * radius);
 }
 
 // ----------------------------------------------------------------------------
@@ -153,4 +155,4 @@ Ball::init(int x_, int y_)
     display();
 }
 
-// $Id: Ball.cc,v 3.5 2004/01/09 16:45:08 breholee Exp $
+// $Id: Ball.cc,v 3.6 2005/03/28 19:02:38 breholee Exp $
