@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClass.cc,v 3.17 2003/06/25 15:15:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClass.hh"
@@ -250,8 +250,8 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 // ----------------------------------------------------------------------------
 //! ObjectClass constructor (only one).
 ObjectClass::ObjectClass()
-    : handle(0), Father(0), server(NULL), Depth(0),
-      Name(NULL), LevelID(PublicLevelID), MaxSubscriberHandle(0)
+    : Father(0), server(NULL), Depth(0), Name(NULL), handle(0),
+      LevelID(PublicLevelID), MaxSubscriberHandle(0)
 {
 }
 
@@ -1628,4 +1628,4 @@ ObjectClass::getHandle() const
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.16 2003/06/07 22:24:13 breholee Exp $
+// $Id: ObjectClass.cc,v 3.17 2003/06/25 15:15:43 breholee Exp $
