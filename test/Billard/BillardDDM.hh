@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: BillardDDM.hh,v 3.4 2003/12/01 16:41:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_DDM_HH
@@ -32,6 +32,7 @@ class BillardDDM : public Billard
 {
 public:
     BillardDDM(std::string);
+    virtual ~BillardDDM();
 
     virtual void declare();
 
@@ -39,7 +40,7 @@ protected:
     virtual void getHandles();
 
     int regionSize ;
-    std::vector<Region *> regions ;
+    std::vector<std::vector<Region *> > regions ;
 
     SpaceHandle geo_id ;
     DimensionHandle dimx_id ;
@@ -52,4 +53,4 @@ protected:
 
 #endif // CERTI_BILLARD_DDM_HH
 
-// $Id: BillardDDM.hh,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: BillardDDM.hh,v 3.4 2003/12/01 16:41:54 breholee Exp $

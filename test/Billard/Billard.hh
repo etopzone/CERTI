@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.4 2003/10/27 10:51:38 breholee Exp $
+// $Id: Billard.hh,v 3.5 2003/12/01 16:41:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -55,6 +55,7 @@ class Billard : public BillardNull
 {
 public:
     Billard(std::string);
+    virtual ~Billard();
 
     void init(int);
     void init(int, int);
@@ -151,4 +152,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.4 2003/10/27 10:51:38 breholee Exp $
+// $Id: Billard.hh,v 3.5 2003/12/01 16:41:54 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
+// $Id: BillardDDM.cc,v 3.6 2003/12/01 16:41:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -33,19 +33,23 @@ using std::endl ;
 static pdCDebug D("BILLARD_DDM", __FILE__);
 
 // ----------------------------------------------------------------------------
-/** DDM Billard constructor
+
+/** Constructor
  */
 BillardDDM::BillardDDM(string federate)
     : Billard(federate), regionSize(100),
       geo_name("geo"), dimx_name("X"), dimy_name("Y")
-
 {
     if (verbose)
 	cout << "Billard 'DDM' Test" << endl ;
 }
 
-// ----------------------------------------------------------------------------
-/** Get DDM-related handles
+/** Destructor
+ */
+BillardDDM::~BillardDDM() { }
+
+/** Get DDM-related handles. Get the routing space handle, and
+    dimension handles.
  */
 void
 BillardDDM::getHandles()
@@ -72,8 +76,7 @@ BillardDDM::getHandles()
     done = true ;
 }
 
-// ----------------------------------------------------------------------------
-/** Create objects, regions, etc.
+/** Create objects and regions.
  */
 void
 BillardDDM::declare()
@@ -82,6 +85,7 @@ BillardDDM::declare()
     getHandles();
 
     for (int x = 0 ; x < XMAX ; x += regionSize) {
+	regions.resize(x + 1);
 	for (int y = 0 ; y < YMAX ; y += regionSize) {
 	    try {
 		Region *region = rtiamb.createRegion(geo_id, 1);
@@ -113,7 +117,7 @@ BillardDDM::declare()
 			   << endl ;
 
 		rtiamb.notifyAboutRegionModification(*region);
- 		regions.push_back(region);
+ 		regions[x].push_back(region);
 	    }
 	    catch (Exception &e) {
 		D[pdDebug] << __FILE__ << ":" << __LINE__ << ":exception:"
@@ -125,4 +129,36 @@ BillardDDM::declare()
     D[pdDebug] << "created " << regions.size() << " regions" << endl ;        
 }
 
-// $Id: BillardDDM.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
+/** Carry out publications and subscriptions
+ */
+void
+Billard::publishAndSubscribe()
+{
+    getHandles();
+
+    // Add PositionX et PositionY to the attribute set
+    AttributeHandleSet *AttributeSet = AttributeHandleSetFactory::create(3);
+    AttributeSet->add(AttrXID);
+    AttributeSet->add(AttrYID);
+
+    // Subscribe to Bille objects.
+    D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
+	       << AttrXID << " and " << AttrYID << "... " ;
+    rtiamb.subscribeObjectClassAttributes(BilleClassID, *AttributeSet,
+					  RTI_TRUE);
+    D[pdDebug] << "done." << endl ;
+
+    // Publish Boule Objects.
+    AttributeSet->add(AttrColorID);
+    rtiamb.publishObjectClass(BouleClassID, *AttributeSet);
+
+    // Publish and subscribe to Bing interactions
+    rtiamb.subscribeInteractionClass(BingClassID, RTI_TRUE);
+    rtiamb.publishInteractionClass(BingClassID);
+
+    AttributeSet->empty();
+
+    D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
+}
+
+// $Id: BillardDDM.cc,v 3.6 2003/12/01 16:41:54 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
+// $Id: Billard.cc,v 3.6 2003/12/01 16:41:53 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -35,7 +35,8 @@ using std::cout ;
 
 static pdCDebug D("BILLARD", __FILE__);
 
-// ----------------------------------------------------------------------------
+/** Constructor
+ */
 Billard::Billard(string federate_name)
     : rtiamb(), objects(rtiamb, *this, 500, 100),
       federateName(federate_name),
@@ -43,7 +44,10 @@ Billard::Billard(string federate_name)
       regulating(false), constrained(false), localTime(0.0), TIME_STEP(1.0),
       XMAX(500), YMAX(100) { }
 
-// ----------------------------------------------------------------------------
+/** Destructor
+ */
+Billard::~Billard() { }
+
 /** Get the federate handle
  */
 FederateHandle
@@ -804,4 +808,4 @@ Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.5 2003/11/21 16:36:17 breholee Exp $
+// $Id: Billard.cc,v 3.6 2003/12/01 16:41:53 breholee Exp $
