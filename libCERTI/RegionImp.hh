@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RegionImp.hh,v 3.3 2003/07/01 13:36:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -68,6 +68,12 @@ public:
 
     long getHandle();
     void setHandle(long);
+    long getNumberOfExtents();
+    void notify();
+
+    Extent *getExtent(ExtentIndex) const throw (ArrayIndexOutOfBounds);
+    std::vector<Extent *> *getExtents();    
+    void setExtents(const std::vector<Extent *> &) throw (InvalidExtents);
 
 private:
     SpaceHandle space ;
@@ -80,4 +86,4 @@ private:
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RegionImp.hh,v 3.3 2003/07/01 13:36:40 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RegionImp.cc,v 3.3 2003/07/01 13:36:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -198,6 +198,75 @@ RegionImp::setHandle(long h)
     handle = h ;
 }
 
+// ----------------------------------------------------------------------------
+// notify
+//
+void
+RegionImp::notify()
+{
+    vector<Extent *>::iterator e, c ;
+    vector<Extent *>::iterator end = extents.end();
+
+    for (e = extents.begin(), c = coExtents.begin(); e != end ; ++e) {
+	int n = (*e)->getNumberOfRanges();
+	for (int i = 0 ; i < n ; ++i) {
+	    (*c)->setRangeUpperBound(i, (*e)->getRangeUpperBound(i));
+	    (*c)->setRangeLowerBound(i, (*e)->getRangeLowerBound(i));
+	}
+    }
+}
+
+// ----------------------------------------------------------------------------
+// getNumberOfExtents
+//
+long
+RegionImp::getNumberOfExtents()
+{
+    return extents.size();
+}
+
+// ----------------------------------------------------------------------------
+// getExtent
+//
+Extent *
+RegionImp::getExtent(ExtentIndex i) const
+    throw (ArrayIndexOutOfBounds)
+{
+    if (i < 0 || i >= extents.size()) {
+	throw ArrayIndexOutOfBounds();
+    }
+    return extents[i] ;
+}
+
+// ----------------------------------------------------------------------------
+// getExtents
+//
+vector<Extent *> *
+RegionImp::getExtents()
+{
+    return &extents ;
+}
+
+// ----------------------------------------------------------------------------
+// setExtents
+//
+void
+RegionImp::setExtents(const vector<Extent *> &e)
+    throw (InvalidExtents)
+{
+    if (e.size() != extents.size())
+	throw InvalidExtents();
+
+    int n = extents.size();
+    for (int i = 0 ; i < n ; ++i) {
+	int m = e[i]->getNumberOfRanges();
+	for (int j = 0 ; j < m ; ++j) {
+	    extents[i]->setRangeUpperBound(j, e[i]->getRangeUpperBound(j));
+	    extents[i]->setRangeLowerBound(j, e[i]->getRangeLowerBound(j));
+	}
+    }
+}
+
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RegionImp.cc,v 3.3 2003/07/01 13:36:40 breholee Exp $
