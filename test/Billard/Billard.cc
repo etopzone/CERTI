@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.9 2005/02/09 16:17:28 breholee Exp $
+// $Id: Billard.cc,v 3.10 2005/03/28 19:05:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -28,6 +28,7 @@
 
 #include <unistd.h>
 
+using std::auto_ptr ;
 using std::string ;
 using std::endl ;
 using std::cout ;
@@ -369,6 +370,10 @@ Billard::step()
         D.Out(pdExcept, "******* Exception sur timeAdvanceRequest.");
     }
 
+    for (vector<Ball>::iterator it = remote.begin(); it != remote.end(); ++it) {
+	it->active = false ;
+    }	
+
     while (!granted) {
         try {
             tick();
@@ -395,7 +400,7 @@ Billard::step()
     vector<Ball>::iterator it ;
 
     for (it = remote.begin(); it != remote.end(); ++it) {
-        if (it->ID != 0 && local.collision(&(*it))) {
+        if (it->ID != 0 && it->active && local.checkBallCollision(&(*it))) {
             sendInteraction(local.dx, local.dy, next_step, it->ID);
             // On prend la vitesse de l'autre sauf dans le cas ou
             // on avait deja la meme. Dans ce cas, on inverse la notre.
@@ -406,11 +411,12 @@ Billard::step()
             else
                 local.setDirection(it->dx, it->dy);
         }
+        it->display();
         D.Out(pdTrace, "no collision.");
     }
 
     // Teste la collision avec le bord
-    local.collision(XMAX, YMAX);
+    local.checkBorderCollision(XMAX, YMAX);
     D.Out(pdTrace, "Border collisions...");
 
     local.x += local.dx ;
@@ -426,7 +432,7 @@ Billard::step()
 }
 
 // ----------------------------------------------------------------------------
-/** Check 
+/** Check DDM regions
  */
 void
 Billard::checkRegions()
@@ -492,26 +498,24 @@ Billard::publishAndSubscribe()
     getHandles();
 
     // Add PositionX et PositionY to the attribute set
-    AttributeHandleSet *AttributeSet = AttributeHandleSetFactory::create(3);
-    AttributeSet->add(AttrXID);
-    AttributeSet->add(AttrYID);
+    auto_ptr<AttributeHandleSet> attributes(AttributeHandleSetFactory::create(3));
+    attributes->add(AttrXID);
+    attributes->add(AttrYID);
 
     // Subscribe to Bille objects.
     D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
 	       << AttrXID << " and " << AttrYID << "... " ;
-    rtiamb.subscribeObjectClassAttributes(BilleClassID, *AttributeSet, RTI_TRUE);
+    rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI_TRUE);
     D[pdDebug] << "done." << endl ;
 
     // Publish Boule Objects.
-    AttributeSet->add(AttrColorID);
-    rtiamb.publishObjectClass(BouleClassID, *AttributeSet);
+    attributes->add(AttrColorID);
+    rtiamb.publishObjectClass(BouleClassID, *attributes);
 
     // Publish and subscribe to Bing interactions
     rtiamb.subscribeInteractionClass(BingClassID, RTI_TRUE);
     rtiamb.publishInteractionClass(BingClassID);
 
-    AttributeSet->empty();
-    delete AttributeSet ;
     D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
 }
 
@@ -669,8 +673,17 @@ Billard::discoverObjectInstance(ObjectHandle theObject,
         throw RTIinternalError();
     }
     
-    cout << "Discovered object " << theObject << endl ;
-    remote.push_back(Ball(theObject));
+    bool already = false ;
+    for (vector<Ball>::iterator i = remote.begin(); i != remote.end(); ++i) {
+	if (i->ID == theObject) {
+	    cout << "Rediscovered object " << theObject << endl ;
+	    already = true ;
+	}
+    }
+    if (!already) {
+	cout << "Discovered object " << theObject << endl ;
+	remote.push_back(Ball(theObject));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -854,7 +867,7 @@ Billard::reflectAttributeValues(
         it->y = y1 ;
         it->dy = it->y - oldy ;
 
-        it->display();
+	it->active = true ;
     }
 }
 
@@ -890,4 +903,4 @@ Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.9 2005/02/09 16:17:28 breholee Exp $
+// $Id: Billard.cc,v 3.10 2005/03/28 19:05:17 breholee Exp $
