@@ -1,15 +1,15 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.3 2003/06/27 17:26:28 breholee Exp $
+# $Id: myconf,v 3.4 2004/02/25 23:52:29 breholee Exp $
 
 case $1 in
     sun)
 	echo Sun Workshop configuration ;
 	CC=cc ;
 	CXX=CC ;
-	AR=CC ;
+#	AR=CC ;
 	CXXFLAGS=" -g " ;
-	AR_FLAGS=$CXXFLAGS" -xar -o" ;
+#	AR_FLAGS=$CXXFLAGS" -xar -o" ;
 	export CC CXX AR CXXFLAGS LDFLAGS AR_FLAGS
 	;;
 
@@ -43,4 +43,4 @@ esac
 
 ./configure --prefix=$HOME/CERTI $2 $3 $4 $5
 
-# $Id: myconf,v 3.3 2003/06/27 17:26:28 breholee Exp $
+# $Id: myconf,v 3.4 2004/02/25 23:52:29 breholee Exp $
