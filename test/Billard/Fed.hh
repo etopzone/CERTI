@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Fed.hh,v 3.2 2003/08/20 18:42:24 breholee Exp $
+// $Id: Fed.hh,v 3.3 2003/10/20 09:33:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef TH_MYFED_HH
@@ -248,11 +248,10 @@ private:
     void getHandles();
 
     Objects *objects ;
-
-    ofstream *logfile ;
+    std::ofstream *logfile ;
     bool log ;
-
     bool granted ;
+    SpaceHandle routingSpace ;
 
     // Federation State management
     RTI::RTIambassador *RTIA ;

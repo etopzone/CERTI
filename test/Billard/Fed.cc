@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Fed.cc,v 3.5 2003/10/08 13:31:18 breholee Exp $
+// $Id: Fed.cc,v 3.6 2003/10/20 09:33:47 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Fed.hh"
@@ -60,22 +60,17 @@ using std::endl ;
 #define PAR_DY "DY"
 #define PAR_BOUL "BoulNum"
 
-// Routing spaces
-#define RS_GEO "geo"
-
 // Types
 #define TYP_FLOAT "float"
 #define TYP_INT "int"
 
-static pdCDebug D("FEDAMB", __FILE__ "> ");
+static pdCDebug D("FEDAMB", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! Constructor.
 Fed::Fed(RTI::RTIambassador *rtia)
+    : RTIA(rtia), routingSpace(0), granted(false), paused(false)
 {
-    RTIA = rtia ;
-    granted = false ;
-    paused = false ;
     D.Out(pdInit, "Federate Ambassador created.");
 }
 
@@ -173,10 +168,6 @@ Fed::getHandles()
     ParamDYID = RTIA->getParameterHandle(PAR_DY, BingClassID);
     D.Out(pdInit, "BingClassID = %d, DX_ID = %d, DY_ID = %d",
           BingClassID, ParamDXID, ParamDYID);
-
-    // Routing spaces
-    //    GeoID = RTIA->getRoutingSpaceHandle(RS_GEO);
-    //    D[pdInit] << "GeoID = " << GeoID << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -473,20 +464,17 @@ Fed::reflectAttributeValues(ObjectHandle theObject,
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
 
-    objects->reflect(theObject, x1, y1);
+    objects->reflect(theObject, (int) x1, (int) y1);
 }
 
 // ----------------------------------------------------------------------------
 //! removeObjectInstance.
 void
 Fed::removeObjectInstance(ObjectHandle theObject,
-                          //ObjectRemovalReason theReason,
-                          const FedTime& /*theTime*/,
-                          const char */*theTag*/,
-                          EventRetractionHandle /*theHandle*/)
-    throw (ObjectNotKnown,
-           InvalidFederationTime,
-           FederateInternalError)
+                          const FedTime &,
+                          const char *,
+                          EventRetractionHandle)
+    throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError)
 {
     objects->remove(theObject);
 }
@@ -822,4 +810,4 @@ Fed::registerBallInstance(const char *s)
     return RTIA->registerObjectInstance(BouleClassID, s);
 }
 
-// EOF $Id: Fed.cc,v 3.5 2003/10/08 13:31:18 breholee Exp $
+// EOF $Id: Fed.cc,v 3.6 2003/10/20 09:33:47 breholee Exp $
