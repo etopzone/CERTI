@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.15 2003/07/03 16:23:43 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.16 2003/07/07 16:09:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -937,6 +937,29 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
     rep.write(link);
 }
 
+// ----------------------------------------------------------------------------
+// processAssociateRegion
+void
+RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
+{
+    // TODO: audit...
+
+    federations->associateRegion(req->federation, req->federate, req->object,
+				 req->region, req->handleArraySize,
+				 req->handleArray);
+
+    D[pdDebug] << "Federate " << req->federate << " of Federation "
+               << req->federation << " associates region " << req->region
+               << " to some attributes of object " << req->object << endl ;
+
+    NetworkMessage rep ;
+    rep.type = NetworkMessage::DDM_DELETE_REGION ;
+    rep.exception = e_NO_EXCEPTION ;
+    rep.federate = req->federate ;
+    rep.region = req->region ;
+    rep.write(link);
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.15 2003/07/03 16:23:43 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.16 2003/07/07 16:09:02 breholee Exp $

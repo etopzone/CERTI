@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.16 2003/07/01 13:31:24 breholee Exp $
+// $Id: FederationsList.cc,v 3.17 2003/07/07 16:09:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1064,6 +1064,28 @@ FederationsList::deleteRegion(Handle federation,
 
 // ----------------------------------------------------------------------------
 void
+FederationsList::associateRegion(Handle federation,
+				 FederateHandle federate,
+				 ObjectHandle object,
+				 RegionHandle region,
+				 unsigned short nb_attributes,
+				 AttributeHandle *attributes)
+	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
+	       RestoreInProgress, RTIinternalError)
+{
+    Federation *f = 0 ;
+
+    searchFederation(federation, f);
+    checkHandle(federation);
+    checkHandle(federate);
+
+    D[pdDebug] << "Associate region for updates " << region << endl ;
+
+    f->associateRegion(federate, object, region, nb_attributes, attributes);    
+}
+
+// ----------------------------------------------------------------------------
+void
 FederationsList::requestFederationSave(Handle the_federation,
                                        FederateHandle the_federate,
                                        const char *the_label,
@@ -1139,5 +1161,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.16 2003/07/01 13:31:24 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.17 2003/07/07 16:09:02 breholee Exp $
 

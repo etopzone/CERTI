@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.20 2003/07/01 13:31:24 breholee Exp $
+// $Id: Federation.hh,v 3.21 2003/07/07 16:09:02 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -439,6 +439,13 @@ public:
 	       RestoreInProgress,
                RTIinternalError);
 
+    void associateRegion(FederateHandle, ObjectHandle, RegionHandle,
+			 unsigned short, AttributeHandle *)
+	throw (RegionNotKnown,
+	       SaveInProgress,
+	       RestoreInProgress,
+	       RTIinternalError);
+	
 private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
@@ -468,4 +475,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.20 2003/07/01 13:31:24 breholee Exp $
+// $Id: Federation.hh,v 3.21 2003/07/07 16:09:02 breholee Exp $
