@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: TimeManagement.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: TimeManagement.cc,v 3.2 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "TimeManagement.hh"
@@ -29,45 +29,37 @@ namespace rtia {
 
 static pdCDebug D("RTIA_GT", "(RTIA GT ) - ");
 
-// -------------------------
-// -- AvanceeTempsEnCours --
-// -------------------------
-
-void TimeManagement::advance(Boolean &msg_restant,
-			     TypeException &e)
+// ---------------------------------------------------------------------------
+/*! This method is called by tick(). Calls are dispatched between timeAdvance
+    and nextEventAdvance.
+*/
+void
+TimeManagement::advance(Boolean &msg_restant, TypeException &e)
 {
-  switch(_avancee_en_cours)
-    {
+  switch(_avancee_en_cours) {
     case TAR:
-      D.Out(pdTrace, "Appel de TimeAdvanceEnCours.");
-      timeAdvance(msg_restant, e);
-      break;
- 
+        D.Out(pdTrace, "Call to TimeAdvance.");
+        timeAdvance(msg_restant, e);
+        break;
     case NER:
-      D.Out(pdTrace, "Appel de NextEventEnCours.");
-      nextEventAdvance(msg_restant, e);
-      break;
- 
+        D.Out(pdTrace, "Call to NextEventAdvance.");
+        nextEventAdvance(msg_restant, e);
+        break;
     default:
-      D.Out(pdTrace, 
-	    "Cas non prevu dans AvanceeTempsEnCours: %d.",
-	    _avancee_en_cours);
-      // On ne leve pas d'exception, ca peut etre un cas ou on a
-      // rien a faire, par exemple en cas d'attente active pendant
-      // une pause.
-    }
+        D.Out(pdTrace, "Unexpected case in advance: %d.", _avancee_en_cours);
+        // No exception is raised, ca peut etre un cas ou on a
+        // rien a faire, par exemple en cas d'attente active pendant
+        // une pause.
+  }
 }
 
-
-// -------------------
-// -- TimeManagement --
-// -------------------
-
+// ---------------------------------------------------------------------------
+//! Constructor.
 TimeManagement::TimeManagement(Communications *GC,
-			       Queues *GQueues,
-			       FederationManagement *GF,
-			       ObjectManagement *GO,
-			       OwnershipManagement *GP )
+                               Queues *GQueues,
+                               FederationManagement *GF,
+                               ObjectManagement *GO,
+                               OwnershipManagement *GP )
   : LBTS()
 {
   _GC = GC;
@@ -87,12 +79,8 @@ TimeManagement::TimeManagement(Communications *GC,
 
 }
 
-
-
-// -----------------------
-// -- EmettreMessageNul --
-// -----------------------
-
+// ---------------------------------------------------------------------------
+//! Send a null message to RTIG containing Local Time + Lookahead.
 void TimeManagement::sendNullMessage(FederationTime heure_logique)
 {
   NetworkMessage msg;
@@ -100,32 +88,28 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
   msg.Date = heure_logique;
   heure_logique += _lookahead_courant;
 
-  if(heure_logique > lastNullMessageDate)
-    {
+  if(heure_logique > lastNullMessageDate) {
       msg.Type = m_MESSAGE_NULL;
       msg.NumeroFederation = _GF->_numero_federation;
       msg.NumeroFedere = _GF->federate;
-      msg.Date = heure_logique;
+      msg.Date = heure_logique; // ? See 6 lines upper !
 
       _GC->sendMessage(&msg);
       lastNullMessageDate = heure_logique;
-      D.Out(pdDebug, "Message NULL emis.");
-    }
+      D.Out(pdDebug, "NULL message sent.");
+  }
   else {
-    D.Out(pdExcept, "Message nul non emis(Heure = %f, Dernier = %f).",
+    D.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
 	  heure_logique, lastNullMessageDate);
   }
 }
 
-
-// ---------------------------
-// -- ExecuterServiceFedere --
-// ---------------------------
-
+// ---------------------------------------------------------------------------
+//! Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
 Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
 {
 
-  D.Out(pdRequest, "Executer Service Federe : Type %d.", msg.Type);
+  D.Out(pdRequest, "Execute federate service: Type %d.", msg.Type);
 
   switch(msg.Type) {
  
@@ -148,8 +132,8 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
  
     }
     catch(RTIinternalError &e) {
-      printf("RTIA:RTIinternalError in discoverObject.\n");
-      throw e;
+        cout << "RTIA:RTIinternalError in discoverObject." << endl;
+        throw e;
     }
     break;
  
@@ -259,51 +243,43 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
     break; 
  
   default:
-    D.Out(pdExcept, 
-	  "Type de Message inconnu dans ExecuterServiceFedere.");
-    msg.display("ERREUR");
-    throw RTIinternalError("Message inconnu dans ExecuterServiceFed.");
-
+    D.Out(pdExcept, "Unknown message type in executeFederateService.");
+    msg.display("ERROR");
+    throw RTIinternalError("Unknown message in executeFederateService.");
   }
  
   return RTI_TRUE;
- 
 }
 
-
-// -----------------------
-// -- flushQueueRequest --
-// -----------------------
-
-void TimeManagement::
-flushQueueRequest(FederationTime heure_logique,
-		  TypeException &e)
+// ---------------------------------------------------------------------------
+//! Not implemented.
+void
+TimeManagement::flushQueueRequest(FederationTime heure_logique,
+                                  TypeException &e)
 {
   e = e_NO_EXCEPTION;
 
   // Verifications
-
   if(_avancee_en_cours != PAS_D_AVANCEE)
     e = e_TimeAdvanceAlreadyInProgress;
 
   if(heure_logique <= _heure_courante)
     e = e_FederationTimeAlreadyPassed;
 
-  if(e == e_NO_EXCEPTION)
-    {
-      // BUG: Non implementee.
-      D.Out(pdExcept, "flushQueueRequest non implementee.");
-      throw RTIinternalError("flushQueueRequest non implementee.");
-    }
+  if(e == e_NO_EXCEPTION) {
+      // BUG: Not implemented.
+      D.Out(pdExcept, "flushQueueRequest not implemented.");
+      throw RTIinternalError("flushQueueRequest not implemented.");
+  }
 }
 
-
-// ----------------------
-// -- NextEventEnCours --
-// ----------------------
-
-void TimeManagement::nextEventAdvance(Boolean &msg_restant,
-				      TypeException &e)
+// ---------------------------------------------------------------------------
+/*! nextEventAdvance is called by advance which is called by tick. This call
+    is done only if request type does correspond. It delivers TSO messages to
+    federate and if no messages are available, delivers a TimeAdvanceGrant.
+*/
+void
+TimeManagement::nextEventAdvance(Boolean &msg_restant, TypeException &e)
 {
   FederationTime dateTSO;
   FederationTime date_min = 0.0;
@@ -313,12 +289,9 @@ void TimeManagement::nextEventAdvance(Boolean &msg_restant,
 
   msg_restant = RTI_FALSE;
 
-  // Si le federe est contraint
   if(_est_contraint) {
  
-    // Calculer le minimum entre la date demandee par le federe
-    // et la date du premier message TSO
-
+    // Select lower value between expected time and first TSO message time.
     _GQueues->nextTsoDate(TSOPresent, dateTSO);
  
     if((TSOPresent) &&(dateTSO < date_avancee))
@@ -327,45 +300,41 @@ void TimeManagement::nextEventAdvance(Boolean &msg_restant,
       date_min = date_avancee;
  
     if(date_min < _LBTS) {
+      // nextEventRequest is done because either a TSO message can be
+      // delivered or no message with lower value than expected time is avail.
 
-      // Le nextEventRequest est termine car soit on peut donner un message
-      // TSO, soit on n'en a aucun de date inferieure a la date demandee.
-
-      // On memorise la nouvelle date objectif(qui peut etre celle du
-      // premier message TSO a donner, mais qui ne doit plus changer).
+      // New expected time is keep (can be first TSO message to deliver).
+      // This value must not be changed.
       date_avancee = date_min;
 
-      // Si on est regulateur, prevenir les autres de notre avancee.
+      // If federate is regulating, inform other federate we advanced.
       if(_est_regulateur)
-	sendNullMessage(date_min);
+        sendNullMessage(date_min);
 
-      // Donner tous les messages TSO de date 'date_min' au
-      // federe, 1 par 1.
-
+      // Deliver to federate every TSO messages with time 'date_min' (1 by 1).
       msg = _GQueues->giveTsoMessage(date_min, msg_donne, msg_restant);
       if(msg_donne)
-	// Renvoie le message au federe.
-	executeFederateService(*msg);
+          // Send message back to federate.
+          executeFederateService(*msg);
       else {
-	// Avance l'heure courante jusqu'a 'date_min'.
-	timeAdvanceGrant(date_min, e);
-	_avancee_en_cours = PAS_D_AVANCEE;
+          // Advance current time up to 'date_min'.
+          timeAdvanceGrant(date_min, e);
+          _avancee_en_cours = PAS_D_AVANCEE;
       }
     }
     else { // date_min < _LBTS
  
-      // On ne peut pas avancer jusqu'a la date requise, mais au
-      // moins jusqu'au LBTS. On previent les autres, sans
-      // distribuer de msg. TSO.
+      // Federate can't advance up to expected time but up to LBTS. Other
+      // federates are informed and no TSO message are sent.
       if(_est_regulateur)
-	sendNullMessage(_LBTS);
+          sendNullMessage(_LBTS);
     }
   }
 
-  else { // si federe non contraint
+  else { // if federate isn't constrained.
 
-    // N'etant pas contraint, le federe peut toujours avancer a sa guise.
-    // De plus il ne doit pas stocker de messages dans la file TSO.
+    // In this case, federate can advance freely. Moreover, there must be no
+    // message in TSO list.
     if(_est_regulateur)
       sendNullMessage(date_avancee);
 
@@ -373,16 +342,12 @@ void TimeManagement::nextEventAdvance(Boolean &msg_restant,
 
     _avancee_en_cours = PAS_D_AVANCEE;
   }
-
 }
 
-
-// ----------------------
-// -- nextEventRequest --
-// ----------------------
-
-void TimeManagement::nextEventRequest(FederationTime heure_logique,
-				      TypeException &e)
+// ---------------------------------------------------------------------------
+void
+TimeManagement::nextEventRequest(FederationTime heure_logique,
+                                 TypeException &e)
 {
   e = e_NO_EXCEPTION;
 
@@ -398,20 +363,16 @@ void TimeManagement::nextEventRequest(FederationTime heure_logique,
   if(e == e_NO_EXCEPTION) {
     _avancee_en_cours = NER;
     date_avancee = heure_logique;
-    D.Out(pdTrace, "NextEventRequest acceptee.");
+    D.Out(pdTrace, "NextEventRequest accepted.");
   }
   else {
-    D.Out(pdExcept, "NextEventRequest refusee(exception = %d).", e);
+    D.Out(pdExcept, "NextEventRequest refused (exception = %d).", e);
   }
-
 }
 
-
-// ---------------------------
-// -- requestFederationTime --
-// ---------------------------
-
-FederationTime TimeManagement::requestFederationTime()
+// ---------------------------------------------------------------------------
+FederationTime
+TimeManagement::requestFederationTime(void)
 {
   if(_heure_courante < _LBTS)
     return _heure_courante;
@@ -419,12 +380,8 @@ FederationTime TimeManagement::requestFederationTime()
     return _LBTS;
 }
 
-
-// ----------------------
-// -- requestLookahead --
-// ----------------------
-
-FederationTimeDelta TimeManagement::requestLookahead()
+// ---------------------------------------------------------------------------
+FederationTimeDelta TimeManagement::requestLookahead(void)
 {
   // BUG: C'est quoi cette salade ?
 
@@ -434,13 +391,9 @@ FederationTimeDelta TimeManagement::requestLookahead()
     return _lookahead_courant;
 }
 
-
-// ------------------
-// -- setLookahead --
-// ------------------
-
-void TimeManagement::setLookahead(FederationTimeDelta lookahead,
-				  TypeException &e)
+// ---------------------------------------------------------------------------
+void
+TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 {
   e = e_NO_EXCEPTION;
 
@@ -458,16 +411,11 @@ void TimeManagement::setLookahead(FederationTimeDelta lookahead,
     if(_est_regulateur)
       sendNullMessage(_heure_courante);
 
-    D.Out(pdRegister, "Nouveau Lookahead : %f.", _lookahead_courant);
+    D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant);
   }
- 
 }
 
-
-// ------------------------
-// -- setTimeConstrained --
-// ------------------------
-
+// ---------------------------------------------------------------------------
 void TimeManagement::setTimeConstrained(Boolean etat, TypeException &e)
 { 
   NetworkMessage msg;
@@ -501,11 +449,7 @@ void TimeManagement::setTimeConstrained(Boolean etat, TypeException &e)
   }
 }
 
-
-// -----------------------
-// -- setTimeRegulating --
-// -----------------------
-
+// ---------------------------------------------------------------------------
 void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
 {
   NetworkMessage msg;
@@ -554,49 +498,49 @@ void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
   }
 }
 
-// ----------
-// -- tick --
-// ----------
-
+// ---------------------------------------------------------------------------
+/*! Federate calls either nextEventRequest or timeAdvanceRequest to determine
+   which time to attain. It then calls tick() until a timeAdvanceGrant is
+   made.
+*/
 Boolean TimeManagement::tick(TypeException &e)
 {
   Boolean msg_donne = RTI_FALSE;
   Boolean msg_restant = RTI_FALSE;
   NetworkMessage *msg = NULL;
  
-  // Note: Tant que msg_donne = RTI_FALSE, msg_restant n'est pas
-  // significatif.
+  // Note: While msg_donne = RTI_FALSE, msg_restant doesn't matter.
 
-  // 1er essai, donner un message de commande.(requestPause, etc.)
+  // 1st try, give a command message. (requestPause, etc.)
   msg = _GQueues->giveCommandMessage(msg_donne, msg_restant);
 
 
-  // 2eme essai, donner un message FIFO.(discoverObject, etc.)
+  // 2nd try, give a FIFO message. (discoverObject, etc.)
   if(msg_donne == RTI_FALSE)
     msg = _GQueues->giveFifoMessage(msg_donne, msg_restant);
  
-  // Si on a finalement recupere quelquechose, l'envoyer au federe.
+  // If message exists, send it to federate.
   if(msg_donne == RTI_TRUE) {
-    D.Out(pdDebug, "TickRequest en traitement, Message a envoyer.");
+    D.Out(pdDebug, "TickRequest being processed, Message to send.");
     try {
       executeFederateService(*msg);
     }
     catch(RTIinternalError &e) {
-      printf("RTIA:RTIinternalError thrown in tick(Executer).\n");
-      throw e;
+        cout << "RTIA:RTIinternalError thrown in tick (execute)." << endl;
+        throw e;
     }
   }
  
-  // Si ca ne donne toujours rien, on essaye d'envoyer les messages TSO.
-  // Les messages a envoyer dependent du type d'avancee demandee.
+  // No message: we try to send TSO messages.
+  // Messages to be sent depends on asked advance type.
   else {
-    D.Out(pdDebug, "TickRequest en traitement, AvanceeTemps appele.");
+    D.Out(pdDebug, "TickRequest being processed, advance called.");
     try {
       advance(msg_restant, e);
     }
     catch(RTIinternalError &e) {
-      printf("RTIA:RTIinternalError thrown in tick(Avance).\n");
-      throw e;
+        cout << "RTIA:RTIinternalError thrown in tick (Advance)." << endl;
+        throw e;
     }
   }
  
@@ -605,13 +549,13 @@ Boolean TimeManagement::tick(TypeException &e)
   return msg_restant;
 }
 
-
-// ------------------------
-// -- TimeAdvanceEnCours --
-// ------------------------
-
-void TimeManagement::timeAdvance(Boolean &msg_restant,
-				 TypeException &e)
+// ---------------------------------------------------------------------------
+/*! timeAdvance is called by advance which is called by tick. This call is
+    done only if request type does correspond. It delivers TSO messages to
+    federate and if no messages are available, delivers a TimeAdvanceGrant.
+*/
+void
+TimeManagement::timeAdvance(Boolean &msg_restant, TypeException &e)
 {
   Boolean msg_donne;
   FederationTime min;
@@ -619,62 +563,56 @@ void TimeManagement::timeAdvance(Boolean &msg_restant,
 
   msg_restant = RTI_FALSE;
 
-  // si federe contraint
-  if(_est_contraint)
-    {
-      // donner un message TSO si possible
-      D.Out(pdDebug, "Temps local : %f, LBTS : %f.", date_avancee, _LBTS);
+  if(_est_contraint) {
+      // give a TSO message.
+      D.Out(pdDebug, "Logical time : %f, LBTS : %f.", date_avancee, _LBTS);
       min =(_LBTS<date_avancee)?(_LBTS):(date_avancee) ;
       msg = _GQueues->giveTsoMessage(min, msg_donne, msg_restant);
 
-      // si pas de message TSO a donner
-      if(!msg_donne)
-	{
-	  // si le LBTS autorise de donner un timeAdvanceGrant
-	  D.Out(pdDebug, "Temps local : %f, LBTS : %f, lookahead : %f.", 
+      // otherwise
+      if(!msg_donne) {
+     // if LBTS allows to give a timeAdvanceGrant.
+	  D.Out(pdDebug, "Logical time : %f, LBTS : %f, lookahead : %f.", 
 		date_avancee, _LBTS,_lookahead_courant);
-	  if(date_avancee < _LBTS)
-	    {
-	      // donner un timeAdvanceGrant au federe
+	  if(date_avancee < _LBTS) {
+	      // send a timeAdvanceGrant to federate.
 	      timeAdvanceGrant(date_avancee, e);
 
 	      if(e != e_NO_EXCEPTION)
 		return;
 
 	      _avancee_en_cours = PAS_D_AVANCEE;
-	    }
-	  // sinon ne rien donner au federe(tick vide)
-	}
-      else
-	{
-	  executeFederateService(*msg);
-	}
-    }
-  else // si federe non contraint
-    {
-      // donner au federe un timeAdvanceGrant
+      }
+	  // otherwise nothing has to be sent to federate (empty tick).
+      }
+      else {
+          executeFederateService(*msg);
+      }
+  }
+  else {
+      // if federate is not constrained, sent a timeAdvanceGrant to federate.
       timeAdvanceGrant(date_avancee, e);
       if(e != e_NO_EXCEPTION)
-	return;
+          return;
       _avancee_en_cours = PAS_D_AVANCEE;
-    }
+  }
 }
 
-
-// ----------------------
-// -- timeAdvanceGrant --
-// ----------------------
-
-void TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
-				      TypeException &e)
+// ---------------------------------------------------------------------------
+/*! Once every messages has been delivered to federate, logical time can be
+    advanced and send a timeAdvanceGrant to federate.
+*/
+void
+TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
+                                 TypeException &e)
 {
   Message req, rep;
 
   req.Type = TIME_ADVANCE_GRANT;
   req.Date = heure_logique;
 
-  D.Out(pdRegister, 
-	"TimeAdvanceGrant envoye au federe(heure = %f).", req.Date);
+  D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
+        req.Date);
 
   _GC->requestFederateService(&req, &rep);
 
@@ -684,13 +622,14 @@ void TimeManagement::timeAdvanceGrant(FederationTime heure_logique,
     _heure_courante = heure_logique;
 }
 
-
-// ------------------------
-// -- timeAdvanceRequest --
-// ------------------------
-
-void TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
-					TypeException &e)
+// ---------------------------------------------------------------------------
+/*! Either nextEventRequest or timeAdvanceRequest is called by federate to
+    to determine time to reach. It then calls tick() until a timeAdvanceGrant
+    is received.
+ */
+void
+TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
+                                   TypeException &e)
 {
   e = e_NO_EXCEPTION;
 
@@ -710,14 +649,14 @@ void TimeManagement::timeAdvanceRequest(FederationTime heure_logique,
     _avancee_en_cours = TAR;
     date_avancee = heure_logique;
 
-    D.Out(pdTrace, 
-	  "TimeAdvanceRequest(heure demandee=%f) acceptee.", date_avancee);
+    D.Out(pdTrace, "timeAdvanceRequest accepted (asked time=%f).",
+          date_avancee);
   }
   else {
-    D.Out(pdExcept, "TimeAdvanceRequest refusee(exception = %d).", e);
+    D.Out(pdExcept, "timeAdvanceRequest refused (exception = %d).", e);
   }
 }
-}
-}
 
-// $Id: TimeManagement.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+}} // namespaces
+
+// $Id: TimeManagement.cc,v 3.2 2003/01/16 17:55:33 breholee Exp $

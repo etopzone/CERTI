@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: TimeManagement.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: TimeManagement.hh,v 3.2 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -27,7 +27,10 @@
 
 #include <config.h>
 
-#include <stdio.h>
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -57,8 +60,8 @@ typedef enum {
   NER // NextEventRequest
 } TypeAvancee;
 
-//class Communications;;
-
+/*!
+ */
 class TimeManagement : public LBTS
 {
 public:
@@ -76,18 +79,9 @@ public:
   // --------------------------
   // -- Advance Time Methods --
   // --------------------------
-
-  // Le federe appelle soit nextEventR. soit timeAdvanceR. pour fixer un
-  // objectif de date a atteindre, puis appelle tick jusqu'a ce qu'il
-  // recoive un timeAdvanceGrant.
-
-  void nextEventRequest(FederationTime heure_logique,
-			TypeException &e);
-
+  void nextEventRequest(FederationTime heure_logique, TypeException &e);
   Boolean tick(TypeException &e);
-
-  void timeAdvanceRequest(FederationTime heure_logique,
-			  TypeException &e);
+  void timeAdvanceRequest(FederationTime heure_logique, TypeException &e);
 
   // --------------------------------
   // -- Change Federate Time State --
@@ -96,7 +90,7 @@ public:
   void setLookahead(FederationTimeDelta lookahead, TypeException &e);
   void setTimeConstrained(Boolean etat, TypeException &e);
   void setTimeRegulating(Boolean etat, TypeException &e);
-  void StopperAvanceTemps() { 
+  void StopperAvanceTemps(void) { 
     _avancee_en_cours = PAS_D_AVANCEE; 
   };
 
@@ -104,12 +98,12 @@ public:
   // -- Request Attribute Methods --
   // -------------------------------
 
-  FederationTime requestFederationTime();
-  FederationTime requestFederateTime() { return(_heure_courante); };
-  FederationTimeDelta requestLookahead();
-  FederationTime requestLBTS() { return _LBTS; };
-  Boolean requestContraintState() { return _est_contraint; };
-  Boolean requestRegulateurState() { return _est_regulateur; };
+  FederationTime requestFederationTime(void);
+  FederationTime requestFederateTime(void) { return(_heure_courante); };
+  FederationTimeDelta requestLookahead(void);
+  FederationTime requestLBTS(void) { return _LBTS; };
+  Boolean requestContraintState(void) { return _est_contraint; };
+  Boolean requestRegulateurState(void) { return _est_regulateur; };
 
 private:
 
@@ -129,7 +123,7 @@ private:
 
   FederationTime lastNullMessageDate;
 
-  // Type/date de la derniere requete(timeAdvance, nextEvent, flushQueue)
+  // Type/date from last request (timeAdvance, nextEvent, flushQueue)
   TypeAvancee _avancee_en_cours;
   FederationTime date_avancee;
 
@@ -142,37 +136,17 @@ private:
   // ---------------------
   // -- Private Methods --
   // ---------------------
-
-  // Dispatche les appels entre TimeAdvanceEnCours et NextEventEnCours.
-  // Appelee par tick.
-
   void advance(Boolean &msg_restant, TypeException &e);
-
-  // Les deux methodes suivantes sont appelees par tick suivant le
-  // type de request qui a ete fait avant. Elles delivrent les
-  // messages TSO au federe, ou s'il n'y a plus de messages,
-  // accorde un TimeAdvanceGrant.
-
   void timeAdvance(Boolean &msg_restant, TypeException &e);
   void nextEventAdvance(Boolean &msg_restant, TypeException &e);
-
-  // Une fois que tous les messages ont ete donnes au federe, on peut
-  // avancer le temps et donner un TimeAdvanceGrant au federe.
-
   void timeAdvanceGrant(FederationTime, TypeException &);
-
-  // Pas implemente.
   void flushQueueRequest(FederationTime, TypeException &);
-
-  // Delivre les messages TSO au federe(UAV, ReceiveInteraction, etc...)
   Boolean executeFederateService(NetworkMessage &msg);
-
-  // Emet un message nul vers le RTIG contenant Heure Locale + Lookahead.
   void sendNullMessage(FederationTime heure_logique);
 };
-}
-}
+
+}} // namespaces
 
 #endif // _CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: TimeManagement.hh,v 3.2 2003/01/16 17:55:33 breholee Exp $

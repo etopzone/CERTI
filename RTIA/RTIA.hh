@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,13 +19,17 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIA.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA.hh,v 3.2 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef RTIA_HH
 #define RTIA_HH
 
 #include <config.h>
+
+#include <iostream>
+using std::cout;
+using std::endl;
 
 #include "PrettyDebug.hh"
 
@@ -51,14 +55,9 @@ class RTIA
 {
 public:
 
-  RTIA();
-  ~RTIA();
-  void execute();
-  void processNetworkMessage(NetworkMessage*);
-  void processFederateRequest(Message*);
-  void chooseFederateProcessing(Message *req,
-				Message &rep,
-				TypeException &e);
+  RTIA(void);
+  ~RTIA(void);
+  void execute(void);
  
 private:
  
@@ -75,6 +74,10 @@ private:
   int nb_requetes[52];
   int TOTAL;
   int nb_evenements;
+
+  void processNetworkMessage(NetworkMessage*);
+  void processFederateRequest(Message*);
+  void chooseFederateProcessing(Message *req, Message &rep,	TypeException &e);
  
   void count(void);
 };
@@ -83,5 +86,5 @@ private:
 
 #endif
 
-// $Id: RTIA.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA.hh,v 3.2 2003/01/16 17:55:33 breholee Exp $
 

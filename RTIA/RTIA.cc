@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIA.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -113,45 +113,37 @@ const char *Messages_Fed [MSG_FED_MAX] = {
   "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION"
 };
 
-// ------------
-// -- Compte --
-// ------------
-
-void RTIA::count()
+// ---------------------------------------------------------------------------
+// Displays statistics (requests, rtig messages, ...).
+void RTIA::count(void)
 {
 #ifdef RTI_PRINTS_STATISTICS
 
   char* s = getenv("CERTI_NO_STATISTICS");
-  if(s) return ;
+  if(s) return;
 
-  int j;
-  printf("\nRTIA: Statistiques(messages traites)\n");
+  cout << endl << "RTIA: Statistics (processed messages)" << endl;
  
-  for(j = 0; j < MSG_FED_MAX ;j++)
-    printf(" Requetes Federe du type %s: %d\n", 
-	   Messages_Fed [j],nb_requetes[j]);
+  for(int j = 0; j < MSG_FED_MAX ;j++)
+      cout << " Federate request type " << Messages_Fed[j]
+           << ": " << nb_requetes[j] << endl;
  
-  printf("\n");
+  cout << endl;
  
-  for(j = 0; j < MSG_RTIG_MAX ;j++)
-    printf(" Messages RTIG du type %s: %d\n", 
-	   Messages_RTIG [j],nb_messages[j]);
+  for(int j = 0; j < MSG_RTIG_MAX ;j++)
+      cout << " RTIG messages type " << Messages_RTIG[j]
+           << ": " << nb_messages[j] << endl;
  
-  printf("\n Nombre d'interactions : %d\n",nb_evenements);
-  printf(" Nombre de messages RTIG : %d\n",TOTAL);
- 
+  cout << endl << " Number of interactions : " << nb_evenements << endl;
+  cout << " Number of RTIG messages : " << TOTAL << endl;
+
 #endif
 }
 
-
-// -----------
-// -- RTIA --
-// -----------
-
-RTIA::RTIA()
+// ---------------------------------------------------------------------------
+//! RTIA constructor.
+RTIA::RTIA(void)
 {
-  int j;
-
   // No SocketServer is passed to the RootObject.
   _theRootObj = new RootObject(NULL);
 
@@ -169,21 +161,18 @@ RTIA::RTIA()
   TOTAL = 0;
   nb_evenements = 0;
 
-  for(j = 0; j < MSG_FED_MAX; j++)
+  for(int j = 0; j < MSG_FED_MAX; j++)
     nb_requetes[j]=0;
  
-  for(j = 0; j < MSG_RTIG_MAX; j++)
+  for(int j = 0; j < MSG_RTIG_MAX; j++)
     nb_messages[j]=0;
 }
 
-
-// ------------
+// ---------------------------------------------------------------------------
 // -- ~RTIA --
-// ------------
-
-RTIA::~RTIA()
+RTIA::~RTIA(void)
 {
-  // BUG: destruction de la liaison TCP ?
+  // BUG: TCP link destroyed ?
 
   delete _GT;
   delete _GD;
@@ -193,27 +182,21 @@ RTIA::~RTIA()
   delete _GQueues;
   delete _GC;
 
-  // Affiche les statistiques 
+  // Display statistics.
   count();
 
-  printf("RTIA: Fin d'execution\n");
+  cout << "RTIA: End execution." << endl;
 }
 
 
-
-// ---------------
-// -- Execution --
-// ---------------
-
-// Boucle principale du RTIA
-
-void RTIA::execute()
+// ---------------------------------------------------------------------------
+//! RTIA mainloop.
+void RTIA::execute(void)
 {
   Message *msg_un;
   NetworkMessage *msg_tcp_udp;
   int n;
- 
- 
+
   while(!_GF->_fin_execution) {
  
     msg_tcp_udp = new NetworkMessage;
@@ -229,20 +212,23 @@ void RTIA::execute()
       delete msg_tcp_udp;
     }
 
-    if(n == 1)
-      {
-	processNetworkMessage(msg_tcp_udp);
-	delete msg_un;
-      }
-
-    if(n == 2)
-      {
-	processFederateRequest(msg_un);
-	delete msg_tcp_udp;
-      }
+    switch (n) {
+    case 0:
+        break;
+    case 1:
+        processNetworkMessage(msg_tcp_udp);
+        delete msg_un;
+        break;
+    case 2:
+        processFederateRequest(msg_un);
+        delete msg_tcp_udp;
+        break;
+    default:
+        assert(false);
+    }
   }
 }
 }
 }
 
-// $Id: RTIA.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $

@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIA_federate.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIA.hh"
@@ -32,13 +32,10 @@ namespace rtia {
 
 static pdCDebug D("RTIA", "(RTIA ) - ");
 
-// -----------------------------
-// -- ChoisirTraitementFedere --
-// -----------------------------
-
-void RTIA::chooseFederateProcessing(Message *req,
-				    Message &rep,
-				    TypeException &e)
+// ---------------------------------------------------------------------------
+//! Choose federate processing.
+void
+RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 {
   e = e_NO_EXCEPTION;
 
@@ -46,82 +43,80 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 2.1
   case CREATE_FEDERATION_EXECUTION:
-    nb_requetes [0] ++;
-    D.Out(pdTrace, "Receving Message from Federate, type CreateFederation.");
+    nb_requetes[0]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type CreateFederation.");
  
     _GF->createFederationExecution(req->getFederationName(), e);
-    D.Out(pdTrace, "Receving Message from Federate, "
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type CreateFederation done.");
  
     break;
  
     // 2.2
   case DESTROY_FEDERATION_EXECUTION:
-    nb_requetes [1] ++;
-    D.Out(pdTrace, "Receving Message from Federate, type DestroyFederation.");
+    nb_requetes[1]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type DestroyFederation.");
 
     _GF->destroyFederationExecution(req->getFederationName(), e);
     break;
  
     // 2.3
-  case JOIN_FEDERATION_EXECUTION:
-    char *nom_fed;
-    FedParser *lecture;
+  case JOIN_FEDERATION_EXECUTION: {
+    nb_requetes[2]++;
 
-    nb_requetes [2] ++;
-    D.Out(pdTrace, "Receving Message from Federate, type JoinFederation.");
+    D.Out(pdTrace, "Receiving Message from Federate, type JoinFederation.");
  
     rep.NumeroFedere = _GF->joinFederationExecution(req->getFederateName(),
 						  req->getFederationName(),
 						  e);
  
-    nom_fed = new char [MAX_FEDERATION_NAME_LENGTH+4];
+    char *nom_fed = new char [MAX_FEDERATION_NAME_LENGTH+4];
     strcpy(nom_fed, req->getFederationName());
     strcat(nom_fed, ".fed");
- 
-    lecture = new FedParser(_theRootObj);
+
+    FedParser *lecture = new FedParser(_theRootObj);
     lecture->readFile(nom_fed);
  
     delete nom_fed;
     delete lecture;
     break;
- 
+  } 
     // 2.4
   case RESIGN_FEDERATION_EXECUTION:
-    nb_requetes [3] ++;
-    D.Out(pdTrace, "Receving Message from Federate, type ResignFederation.");
+    nb_requetes[3]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type ResignFederation.");
  
     _GF->resignFederationExecution(req->RAction, e);
     break;
  
     // 2.5
   case REQUEST_PAUSE:
-    D.Out(pdTrace, "Receving Message from Federate, type RequestPause.");
-    nb_requetes [4] ++;
+    nb_requetes[4]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type RequestPause.");
 
     _GF->requestPause(req->getLabel(), e);
     break;
  
     // 2.7
   case PAUSE_ACHIEVED:
-    D.Out(pdTrace, "Receving Message from Federate, type PauseAchieved.");
-    nb_requetes [5] ++;
+    nb_requetes[5]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type PauseAchieved.");
 
     _GF->pauseAchieved(req->getLabel(), e);
     break;
  
     // 2.8
   case REQUEST_RESUME:
-    D.Out(pdTrace, "Receving Message from Federate, type RequestResume.");
-    nb_requetes [6] ++;
+    nb_requetes[6]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type RequestResume.");
 
     _GF->requestResume(req->getLabel(), e);
     break;
  
     // 2.10
   case RESUME_ACHIEVED:
-    D.Out(pdTrace, "Receving Message from Federate, type ResumeAchieved.");
-    nb_requetes [7] ++;
+    nb_requetes[7]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type ResumeAchieved.");
 
     _GF->resumeAchieved(e);
     break;
@@ -163,8 +158,8 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 3.1(1)
   case PUBLISH_OBJECT_CLASS:
-    D.Out(pdTrace,"Receving Message from Federate, type PublishObjectClass.");
-    nb_requetes [8] ++;
+    nb_requetes[8]++;
+    D.Out(pdTrace,"Receiving Message from Federate, type PublishObjectClass.");
 
     _GD->publishObjectClass(req->objectClassHandle, 
 			    req->HandleArray, 
@@ -174,36 +169,36 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 3.1(2)
   case UNPUBLISH_OBJECT_CLASS:
-    nb_requetes [9] ++;
+    nb_requetes[9]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type UnpublishObjectClass.");
+	  "Receiving Message from Federate, type UnpublishObjectClass.");
 
     _GD->unpublishObjectClass(req->objectClassHandle, e);
     break;
  
     // 3.2(1)
   case PUBLISH_INTERACTION_CLASS:
-    nb_requetes [10] ++;
+    nb_requetes[10]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type PublishInteractionClass.");
+	  "Receiving Message from Federate, type PublishInteractionClass.");
 
     _GD->publishInteractionClass(req->InteractionHandle, e);
     break;
  
     // 3.2(2)
   case UNPUBLISH_INTERACTION_CLASS:
-    nb_requetes [11] ++;
+    nb_requetes[11]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type UnpublishInteractionClass.");
+	  "Receiving Message from Federate, type UnpublishInteractionClass.");
 
     _GD->unpublishInteractionClass(req->InteractionHandle, e);
     break;
  
     // 3.3.(1)
   case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
-    nb_requetes [12] ++;
+    nb_requetes[12]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type SubscribeObjectClass.");
+	  "Receiving Message from Federate, type SubscribeObjectClass.");
     _GD->subscribeObjectClassAttribute(req->objectClassHandle, 
 				       req->HandleArray, 
 				       req->HandleArraySize, 
@@ -212,40 +207,40 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 3.3(2)
   case UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE:
-    nb_requetes [13] ++;
+    nb_requetes[13]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type UnsubscribeObjectClass.");
+	  "Receiving Message from Federate, type UnsubscribeObjectClass.");
  
-    // BUG: Pourquoi on ne lui passe pas les attributs ?
+    // BUG: Why attributes are not transmitted ?
     _GD->unsubscribeObjectClassAttribute(req->objectClassHandle, e);
     break;
  
     // 3.4(1)
   case SUBSCRIBE_INTERACTION_CLASS:
-    nb_requetes [14] ++;
+    nb_requetes[14]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type SubscribeInteraction.");
+	  "Receiving Message from Federate, type SubscribeInteraction.");
 
     _GD->subscribeInteractionClass(req->InteractionHandle, e);
     break;
  
     // 3.4(2)
   case UNSUBSCRIBE_INTERACTION_CLASS:
-    nb_requetes [15] ++;
+    nb_requetes[15]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type UnsubscribeInteraction.");
+	  "Receiving Message from Federate, type UnsubscribeInteraction.");
 
     _GD->unsubscribeInteractionClass(req->InteractionHandle, e);
     break;
  
     // 4.1
   case REQUEST_ID:
+    nb_requetes[16]++;
+
+    D.Out(pdTrace, "Receiving Message from Federate, type RequestIDs.");
+
     ObjectHandle first;
     ObjectHandle last;
-
-    D.Out(pdTrace, "Receving Message from Federate, type RequestIDs.");
-    nb_requetes [16] ++;
-
     _GO->requestID(req->IDcount, first, last, e);
 
     rep.FirstID = first;
@@ -254,11 +249,12 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 4.2
   case REGISTER_OBJECT: {
+    nb_requetes[17]++;
+
     FederationTime date = _GT->requestFederateTime();
     FederationTime heure = date + _GT->requestLookahead();
 
-    D.Out(pdTrace, "Receving Message from Federate, type RegisterObject.");
-    nb_requetes [17] ++;
+    D.Out(pdTrace, "Receiving Message from Federate, type RegisterObject.");
 
     rep.Objectid = _GO->registerObject(req->objectClassHandle, req->getName(), 
 				       date, heure, e);
@@ -267,8 +263,8 @@ void RTIA::chooseFederateProcessing(Message *req,
 
     // 4.3
   case UPDATE_ATTRIBUTE_VALUES: {
-    D.Out(pdTrace,"Receving Message from Federate, type UpdateAttribValues.");
-    nb_requetes [18] ++;
+    nb_requetes[18]++;
+    D.Out(pdTrace,"Receiving Message from Federate, type UpdateAttribValues.");
 
     AttributeValue *ValueArray = req->getValueArray();
 
@@ -290,8 +286,8 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 4.6
   case SEND_INTERACTION: {
-    D.Out(pdTrace, "Receving Message from Federate, type SendInteraction.");
-    nb_requetes [19] ++;
+    nb_requetes[19]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type SendInteraction.");
 
     ParameterValue *ValueArray =(ParameterValue *) req->getValueArray();
 
@@ -313,16 +309,16 @@ void RTIA::chooseFederateProcessing(Message *req,
 
     // 4.8
   case DELETE_OBJECT:
-    D.Out(pdTrace, "Receving Message from Federate, type DeleteObject.");
-    nb_requetes [20] ++;
+    nb_requetes[20]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type DeleteObject.");
     rep.Retract = _GO->deleteObject(req->Objectid, req->getTag(), e);
     break;
  
     // 4.10
   case CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
-    nb_requetes [21] ++;
+    nb_requetes[21]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type ChangeAttribTransport.");
+	  "Receiving Message from Federate, type ChangeAttribTransport.");
 
     _GO->changeAttributeTransportType(req->Objectid, 
 				      req->HandleArray,
@@ -333,8 +329,8 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 4.11
   case CHANGE_ATTRIBUTE_ORDER_TYPE:
-    D.Out(pdTrace, "Receving Message from Federate, type ChangeAttribOrder.");
-    nb_requetes [22] ++;
+    nb_requetes[22]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type ChangeAttribOrder.");
 
     _GO->changeAttributeOrderType(req->Objectid,
 				  req->HandleArray,
@@ -345,9 +341,9 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 4.12
   case CHANGE_INTERACTION_TRANSPORT_TYPE:
+    nb_requetes[23]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type ChangeInterTransport.");
-    nb_requetes [23] ++;
+	  "Receiving Message from Federate, type ChangeInterTransport.");
 
     _GO->changeInteractionTransportType(req->InteractionHandle,
 					req->Transport,
@@ -356,8 +352,8 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 4.13
   case CHANGE_INTERACTION_ORDER_TYPE:
-    D.Out(pdTrace, "Receving Message from Federate, type ChangeInterOrder.");
-    nb_requetes [24] ++;
+    nb_requetes[24]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type ChangeInterOrder.");
 
     _GO->changeInteractionOrderType(req->InteractionHandle, req->Order, e);
     break;
@@ -379,10 +375,10 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 5.1
   case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[47]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type unconditionalAttributeOwnershipDivestiture.");
-    nb_requetes [47] ++;
-    D.Out(pdTrace, "Objet %u nb d'Attribut %u ",
+    D.Out(pdTrace, "Object %u number of attributes %u ",
 	  req->Objectid,req->HandleArraySize);
     _GP->unconditionalAttributeOwnershipDivestiture(req->Objectid, 
 						    req->HandleArray, 
@@ -393,10 +389,10 @@ void RTIA::chooseFederateProcessing(Message *req,
 
     // 5.2
   case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[45]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type negotiatedAttributeOwnershipDivestiture.");
-    nb_requetes [45] ++;
-    D.Out(pdTrace, "Objet %u ; %u nb d'Attribut ",req->Objectid,
+    D.Out(pdTrace, "Object %u ; %u nb Attribute ",req->Objectid,
 	  req->HandleArraySize);
     _GP->negotiatedAttributeOwnershipDivestiture(req->Objectid,
 						 req->HandleArray, 
@@ -408,10 +404,10 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 5.6
   case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[48]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type attributeOwnershipAcquisition.");
-    nb_requetes [48] ++;
-    D.Out(pdTrace, "Objet %u ; Nb d'Attributs ",req->Objectid,
+    D.Out(pdTrace, "Object %u ; Nb d'Attributs ",req->Objectid,
 	  req->HandleArraySize);
     _GP->attributeOwnershipAcquisition(req->Objectid, 
 				       req->HandleArray, 
@@ -422,14 +418,14 @@ void RTIA::chooseFederateProcessing(Message *req,
     // 5.8
   case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
     {
-      D.Out(pdTrace, "Receving Message from Federate, "
+      nb_requetes[50]++;
+      D.Out(pdTrace, "Receiving Message from Federate, "
 	    "type attributeOwnershipRealeaseResponse.");
-      nb_requetes [50] ++;
-      D.Out(pdTrace, "Objet %u nb d'Attribut %u ",
+      D.Out(pdTrace, "Object %u nb Attribute %u ",
 	    req->Objectid,req->HandleArraySize);
 
-      AttributeHandleSet* theAttributes=_GP
-	->attributeOwnershipRealeaseResponse(req->Objectid,
+      AttributeHandleSet* theAttributes=
+          _GP->attributeOwnershipRealeaseResponse(req->Objectid,
 					     req->HandleArray, 
 					     req->HandleArraySize,
 					     e);
@@ -445,10 +441,10 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 5.9
   case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[49]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type cancelNegociatedAttributeOwnershipDivestiture.");
-    nb_requetes [49] ++;
-    D.Out(pdTrace, "Objet %u nb d'Attribut %u ",
+    D.Out(pdTrace, "Object %u nb Attribute %u ",
 	  req->Objectid, req->HandleArraySize);
     _GP->cancelnegotiatedAttributeOwnershipDivestiture(req->Objectid,
 						       req->HandleArray, 
@@ -459,10 +455,10 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 5.10
   case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[51]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type cancelAttributeOwnershipAcquisition.");
-    nb_requetes [51] ++;
-    D.Out(pdTrace, "Objet %u nb d'Attribut %u ",
+    D.Out(pdTrace, "Object %u nb Attribute %u ",
 	  req->Objectid,req->HandleArraySize);
     _GP->cancelattributeOwnershipAcquisition(req->Objectid,
 					     req->HandleArray, 
@@ -471,62 +467,59 @@ void RTIA::chooseFederateProcessing(Message *req,
     break; 
     // 5.12
   case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[46]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type attributeOwnershipAcquisitionIfAvailable.");
-    nb_requetes [46] ++;
-    D.Out(pdTrace, "Objet %u nb d'Attribut %u ",
+    D.Out(pdTrace, "Object %u nb Attribute %u ",
 	  req->Objectid,req->HandleArraySize);
     _GP->attributeOwnershipAcquisitionIfAvailable(req->Objectid,
 						  req->HandleArray, 
 						  req->HandleArraySize,
 						  e);
     break;
- 
- 
+
     // 5.14
   case QUERY_ATTRIBUTE_OWNERSHIP:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[44]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type queryAttributeOwnership.");
-    nb_requetes [44] ++;
-    D.Out(pdTrace, "Objet %u Attribut %u ",req->Objectid,req->AttribHandle);
+    D.Out(pdTrace, "Object %u Attribute %u ",req->Objectid,req->AttribHandle);
     _GP->queryAttributeOwnership(req->Objectid, req->AttribHandle, e);
 
     break;
- 
- 
+
     // 5.16
   case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-    D.Out(pdTrace, "Receving Message from Federate, "
+    nb_requetes[43]++;
+    D.Out(pdTrace, "Receiving Message from Federate, "
 	  "type isAttributeOwnedByFederate.");
-    nb_requetes [43] ++;
-    D.Out(pdTrace, "Objet %u Attribut %u ",req->Objectid,req->AttribHandle);
+    D.Out(pdTrace, "Object %u Attribute %u ",req->Objectid,req->AttribHandle);
     rep.setTag(_GP->attributeOwnedByFederate(req->Objectid,
 					     req->AttribHandle, e));
     break;
- 
- 
+
     // 6.1
   case REQUEST_FEDERATION_TIME:
-    nb_requetes [25] ++;
+    nb_requetes[25]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type RequestFederationTime.");
+	  "Receiving Message from Federate, type RequestFederationTime.");
 
     rep.Date = _GT->requestFederationTime();
     break;
 
     // 6.2
   case REQUEST_LBTS:
-    D.Out(pdTrace, "Receving Message from Federate, type RequestLBTS.");
-    nb_requetes [26] ++;
+    nb_requetes[26]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type RequestLBTS.");
 
     rep.Date = _GT->requestLBTS();
     break;
  
     // 6.3
   case REQUEST_FEDERATE_TIME:
-    nb_requetes [27] ++;
+    nb_requetes[27]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type RequestFederateTime.");
+	  "Receiving Message from Federate, type RequestFederateTime.");
 
     rep.Date = _GT->requestFederateTime();
     break;
@@ -538,34 +531,34 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 6.5
   case SET_LOOKAHEAD:
-    D.Out(pdTrace, "Receving Message from Federate, type SetLookAhead.");
-    nb_requetes [28] ++;
+    nb_requetes[28]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type SetLookAhead.");
 
     _GT->setLookahead(req->Lookahead, e);
     break;
  
     // 6.6
   case REQUEST_LOOKAHEAD:
-    D.Out(pdTrace, "Receving Message from Federate, type RequestLookAhead.");
-    nb_requetes [29] ++;
+    nb_requetes[29]++;
+    D.Out(pdTrace, "Receiving Message from Federate, type RequestLookAhead.");
 
     rep.Lookahead = _GT->requestLookahead(); 
     break;
  
     // 6.7
   case TIME_ADVANCE_REQUEST:
+    nb_requetes[30]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type TimeAdvanceRequest.");
-    nb_requetes [30] ++;
+	  "Receiving Message from Federate, type TimeAdvanceRequest.");
 
     _GT->timeAdvanceRequest(req->Date, e);
     break;
  
     // 6.8
   case NEXT_EVENT_REQUEST:
+    nb_requetes[31]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type NestEventRequest.");
-    nb_requetes [31] ++;
+	  "Receiving Message from Federate, type NestEventRequest.");
 
     _GT->nextEventRequest(req->Date, e); 
     break;
@@ -607,27 +600,27 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 8.1
   case GET_OBJECT_CLASS_HANDLE:
-    nb_requetes [32] ++;
+    nb_requetes[32]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type GetObjectClassHandle.");
+	  "Receiving Message from Federate, type GetObjectClassHandle.");
 
     rep.objectClassHandle = _GO->getObjectClassHandle(req->getName());
     break;
  
     // 8.2
   case GET_OBJECT_CLASS_NAME:
+    nb_requetes[33]++;
     D.Out(pdTrace,
-	  "Receving Message from Federate, type GetObjectClassName.");
-    nb_requetes [33] ++;
+	  "Receiving Message from Federate, type GetObjectClassName.");
 
     rep.setName(_GO->getObjectClassName(req->objectClassHandle));
     break;
  
     // 8.3
   case GET_ATTRIBUTE_HANDLE:
+    nb_requetes[34]++;
     D.Out(pdTrace,
-	  "Receving Message from Federate, type GetAttributeHandle.");
-    nb_requetes [34] ++;
+	  "Receiving Message from Federate, type GetAttributeHandle.");
 
     rep.AttribHandle = _GO->getAttributeHandle(req->getName(),
 					       req->objectClassHandle);
@@ -635,9 +628,9 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 8.4
   case GET_ATTRIBUTE_NAME:
+    nb_requetes[35]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type GetAttributeName.");
-    nb_requetes [35] ++;
+	  "Receiving Message from Federate, type GetAttributeName.");
 
     rep.setName(_GO->getAttributeName(req->AttribHandle,
 				      req->objectClassHandle));
@@ -645,27 +638,27 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 8.5
   case GET_INTERACTION_CLASS_HANDLE:
-    nb_requetes [36] ++;
+    nb_requetes[36]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type GetInteractionHandle.");
+	  "Receiving Message from Federate, type GetInteractionHandle.");
 
     rep.InteractionHandle = _GO->getInteractionClassHandle(req->getName());
     break;
  
     // 8.6
   case GET_INTERACTION_CLASS_NAME:
-    nb_requetes [37] ++;
+    nb_requetes[37]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type GetInteractionName.");
+	  "Receiving Message from Federate, type GetInteractionName.");
 
     rep.setName(_GO->getInteractionClassName(req->InteractionHandle));
     break;
  
     // 8.7
   case GET_PARAMETER_HANDLE:
+    nb_requetes[38]++;
     D.Out(pdTrace,
-	  "Receving Message from Federate, type GetParameterHandle.");
-    nb_requetes [38] ++;
+	  "Receiving Message from Federate, type GetParameterHandle.");
 
     rep.ParamHandle = _GO->getParameterHandle(req->getName(),
 					      req->InteractionHandle);
@@ -673,9 +666,9 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 8.8
   case GET_PARAMETER_NAME:
+    nb_requetes[39]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type GetParameterName.");
-    nb_requetes [39] ++;
+	  "Receiving Message from Federate, type GetParameterName.");
 
     rep.setName(_GO->getParameterName(req->ParamHandle,
 				      req->InteractionHandle));
@@ -703,45 +696,41 @@ void RTIA::chooseFederateProcessing(Message *req,
  
     // 8.13
   case SET_TIME_REGULATING:
+    nb_requetes[40]++;
     D.Out(pdTrace, 
-	  "Receving Message from Federate, type SetTimeRegulating.");
-    nb_requetes [40] ++;
+	  "Receiving Message from Federate, type SetTimeRegulating.");
 
     _GT->setTimeRegulating(req->Bool,e);
     break;
  
     // 8.14
   case SET_TIME_CONSTRAINED:
+    nb_requetes[41]++;
     D.Out(pdTrace,
-	  "Receving Message from Federate, type SetTimeConstrained.");
-    nb_requetes [41] ++;
+	  "Receiving Message from Federate, type SetTimeConstrained.");
 
     _GT->setTimeConstrained(req->Bool,e);
     break;
  
     // 8.15
   case TICK_REQUEST:
-    D.Out(pdDebug, "Receving Message from Federate, type TickRequest.");
-    nb_requetes [42] ++;
+    nb_requetes[42]++;
+    D.Out(pdDebug, "Receiving Message from Federate, type TickRequest.");
 
     rep.Bool = _GT->tick(e);
     break;
  
   default:
     D.Out(pdExcept, 
-	  "Receving Message from Federate, Unknown Type %d.", req->Type);
+	  "Receiving Message from Federate, Unknown Type %d.", req->Type);
     throw RTIinternalError();
   }
 }
 
-
-// ----------------------------
-// -- TraiterRequeteDuFedere --
-// ----------------------------
-
-// le RTIA traite une demande de service du federe
-
-void RTIA::processFederateRequest(Message *req)
+// ---------------------------------------------------------------------------
+//! RTIA processes a service request coming from federate.
+void
+RTIA::processFederateRequest(Message *req)
 {
   Message rep;
 
@@ -1008,12 +997,13 @@ void RTIA::processFederateRequest(Message *req)
     rep.Exception = e_RestoreNotRequested;
   }
   catch(RTIinternalError &e) {
-    if(e._reason != NULL)
-      printf("RTIA sends InternalError to Fed., reason : %s\n", e._reason);
-    else
-      printf("RTIA sends InternalError to Fed., no reason given.\n");
-    D.Out(pdExcept, "Catched %s Exception.", e._name);
-    rep.Exception = e_RTIinternalError;
+      cout << "RTIA sends InternalError to Fed., ";
+      if(e._reason != NULL)
+          cout << "reason : " << e._reason << endl;
+      else
+          cout << "no reason given." << endl;
+      D.Out(pdExcept, "Catched %s Exception.", e._name);
+      rep.Exception = e_RTIinternalError;
   }
   catch(SpaceNotDefined &e) {
     D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1073,11 +1063,10 @@ void RTIA::processFederateRequest(Message *req)
   delete req;
 
   _GC->sendUN(&rep);
-  D.Out(pdDebug, "Reponse emise sur le socket Unix.");
-
+  D.Out(pdDebug, "Reply send to Unix socket.");
 }
 
 }}
 
-// $Id: RTIA_federate.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.3 2003/01/16 17:55:33 breholee Exp $
 

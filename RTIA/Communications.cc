@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.cc,v 3.4 2002/12/11 12:50:14 breholee Exp $
+// $Id: Communications.cc,v 3.5 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Communications.hh"
@@ -29,10 +29,12 @@ namespace rtia {
 
 static pdCDebug D("RTIA_GCOM", "(RTIA GC ) - ");
 
-// -----------------
-// -- AttendreMsg --
-// -----------------
-
+// ---------------------------------------------------------------------------
+/*! Wait a message coming from RTIG. Parameters are :
+     1- Returned message,
+     2- Message type expected,
+     3- Federate which sent the message, 0 if indifferent.
+*/
 void Communications::waitMessage(NetworkMessage *msg, 
 				 TypeNetworkMessage type_msg, 
 				 FederateHandle numeroFedere)
@@ -43,13 +45,12 @@ void Communications::waitMessage(NetworkMessage *msg,
 
   D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);
 
-  // Est-ce que le message est deja arrive ?  
+  // Does a new message has arrived ?
   if(searchMessage(type_msg, numeroFedere, msg) == RTI_TRUE)
     return;
 
-  // Sinon on l'attend tant que le type de message recu est different,
-  // ou que le numero de federe ne correspond pas.
-
+  // Otherwise, wait for a message with same type than expected and with
+  // same federate number.
   tampon = new NetworkMessage;
   tampon->read((SecureTCPSocket *)this);
 
@@ -64,7 +65,7 @@ void Communications::waitMessage(NetworkMessage *msg,
     D.Out(pdProtocol, "Message of Type %d has arrived.", type_msg);    
   }
  
-  // BUG: Devrait utiliser l'operateur de copie.
+  // BUG: Should use copy operator.
   memcpy((void *) msg,(void *) tampon, sizeof(NetworkMessage));
   delete tampon;
  
@@ -72,18 +73,17 @@ void Communications::waitMessage(NetworkMessage *msg,
   assert(msg->Type == type_msg);
 }
 
-// ----------------------------
-// -- Communications --
-// ----------------------------
-
-Communications::Communications() : SocketUN(), SecureTCPSocket(), SocketUDP()
+// ---------------------------------------------------------------------------
+//! Communications.
+Communications::Communications(void)
+    : SocketUN(), SecureTCPSocket(), SocketUDP()
 {
   char nom_serveur_RTIG[200]; 
 
-  // creation communication Federe/RTIA
+  // Federate/RTIA link creation.
   acceptUN();
 
-  // creation liaison TCP avec le RTIG
+  // RTIG TCP link creation.
   char *certihost = getenv("CERTI_HOST");
 
   ifstream* file = NULL;
@@ -110,30 +110,23 @@ Communications::Communications() : SocketUN(), SecureTCPSocket(), SocketUDP()
   createUDPClient(atoi(udp_port), certihost);
 }
 
-
-// -----------------------------
-// -- ~Communications --
-// -----------------------------
-
-Communications::~Communications()
+// ---------------------------------------------------------------------------
+//! ~Communications.
+Communications::~Communications(void)
 {
-  NetworkMessage msg;
+  // Advertise RTIG that TCP link is being closed.
 
-  // Prevenir le RTIG de la fermeture de la liaison TCP
+  NetworkMessage msg;
   msg.Type = m_CLOSE_CONNEXION;
   msg.write((SecureTCPSocket *) this);
 
   SecureTCPSocket::close();
 }
 
-
-// ---------------------------
-// -- DemanderServiceFedere --
-// ---------------------------
-
+// ---------------------------------------------------------------------------
+//! Request a service to federate.
 void 
-Communications::requestFederateService(Message *req, 
-				       Message *rep)
+Communications::requestFederateService(Message *req, Message *rep)
 {
   assert(req != NULL);
   D.Out(pdRequest, "Sending Request to Federate, Type %d.", req->Type);
@@ -143,72 +136,71 @@ Communications::requestFederateService(Message *req,
   assert(req->Type == rep->Type);
 }
 
-unsigned long 
-Communications::getAddress()
+// ---------------------------------------------------------------------------
+unsigned long
+Communications::getAddress(void)
 {
   return((SocketUDP *) this)->getAddr();
 }
 
-unsigned int 
-Communications::getPort()
+// ---------------------------------------------------------------------------
+unsigned int
+Communications::getPort(void)
 {
   return((SocketUDP *) this)->getPort();
 }
 
-// -------------
-// -- LireMsg --
-// -------------
-
-void 
+// ---------------------------------------------------------------------------
+//! read message.
+/*! Reads a message either from the network or from the federate
+    Returns the actual source in the 1st parameter (RTIG=>1 federate=>2)
+*/
+void
 Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 {
+  // initialize fdset for use with select.
   fd_set fdset;
-  NetworkMessage *msg2;
-
-  // initialiser fdset pour pouvoir utiliser un select
   FD_ZERO(&fdset);
   FD_SET(_socket_un, &fdset);
   FD_SET(SecureTCPSocket::returnSocket(), &fdset);
   FD_SET(SocketUDP::returnSocket(), &fdset);
 
 #ifdef FEDERATION_USES_MULTICAST
-  // si communication multicast initialisee(lors du join federation)
+  // if multicast link is initialized (during join federation).
   if(_est_init_mc)
     FD_SET(_socket_mc, &fdset);
 #endif
 
   if(!waitingList.empty()) {
-    // Il y a un message dans la file d'attente
+    // One message is in waiting buffer.
+    NetworkMessage *msg2;
     msg2 = waitingList.front();
     waitingList.pop_front();
     memcpy(msg_reseau, msg2, TAILLE_MSG_RESEAU);
     delete msg2;
     n = 1;
-
   }
   else if(SecureTCPSocket::isDataReady() == RTI_TRUE) {
-    // Il y a des donnees en attente dans le buffer du socket TCP
-    // Lire un message venant de la liaison TCP avec le RTIG
+    // Datas are in TCP waiting buffer.
+    // Read a message from RTIG TCP link.
     msg_reseau->read((SecureTCPSocket *) this);
     n = 1;
   }
   else if(SocketUDP::isDataReady() == RTI_TRUE) {
-    // Il y a des donnees en attente dans le buffer du socket UDP
-    // Lire un message venant de la liaison UDP avec le RTIG
+    // Datas are in UDP waiting buffer.
+    // Read a message from RTIG UDP link.
     msg_reseau->read((SocketUDP *) this);
     n = 1;
   }
   else if(SocketUN::isDataReady() == RTI_TRUE) {
-    // Il y a des donnees en attente dans le buffer du socket UNIX
-    // Lire un message venant de la liaison UNIX avec le federe
+    // Datas are in UNIX waiting buffer.
+    // Read a message from federate UNIX link.
     msg->read((SocketUN *) this);
     n = 2;
   }
   else {
- 
-    // waitingList.empty() et pas de data dans le buffer TCP
-    // Attendre un message(venant du federe ou du reseau)
- 
+    // waitingList is empty and no data in TCP buffer.
+    // Wait a message (coming from federate or network).
     if(select(ulimit(4,0), &fdset, NULL, NULL, NULL) < 0 ) {
       if(errno == EINTR)
 	throw NetworkSignal();
@@ -216,58 +208,57 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 	throw NetworkError();
     }
  
-    // Un message au moins est recu, lire ce message
+    // At least one message has been received, read this message.
  
 #ifdef FEDERATION_USES_MULTICAST
     // Priorite aux messages venant du multicast(pour essayer d'eviter
     // un depassement de la file et donc la perte de messages)
 
     if(_est_init_mc && FD_ISSET(_socket_mc, &fdset)) {
-      // Lire un message venant du multicast
+      // Read a message coming from the multicast link.
       receiveMC(msg_reseau);
       n = 1;
     }
 #endif
 
     if(FD_ISSET(SecureTCPSocket::returnSocket(), &fdset)) {
-      // Lire un message venant de la liaison TCP avec le RTIG
+      // Read a message coming from the TCP link with RTIG.
       msg_reseau->read((SecureTCPSocket *) this);
       n = 1;
     }
+    else if(FD_ISSET(SocketUDP::returnSocket(), &fdset)) {
+        // Read a message coming from the UDP link with RTIG.
+        msg_reseau->read((SocketUDP *) this);
+        n = 1;
+    }
     else {
-      if(FD_ISSET(SocketUDP::returnSocket(), &fdset)) {
-	// Lire un message venant de la liaison UDP avec le RTIG
-	msg_reseau->read((SocketUDP *) this);
-	n = 1;
-      }
-      else {
-	// Lire un message venant du federe
-	assert(FD_ISSET(_socket_un, &fdset));
-	receiveUN(msg);
-	n = 2;
-      }   
+        // Read a message coming from the federate.
+        assert(FD_ISSET(_socket_un, &fdset));
+        receiveUN(msg);
+        n = 2;
     }
   }
 }
 
-
-// -------------------
-// -- RechercherMsg --
-// -------------------
-
-Boolean 
+// ---------------------------------------------------------------------------
+/*! Returns RTI_TRUE if a 'type_msg' message coming from federate
+  'numeroFedere' (or any other federate if numeroFedere == 0) was in
+  the queue and was copied in 'msg'. If no such message is found,
+  returns RTI_FALSE.
+*/
+Boolean
 Communications::searchMessage(TypeNetworkMessage type_msg,
                               FederateHandle numeroFedere,
                               NetworkMessage *msg)
 {
-    list<NetworkMessage *>::iterator i = waitingList.begin();
-    for (; i != waitingList.end() ; i++) {
+    list<NetworkMessage *>::iterator i ; 
+    for (i = waitingList.begin(); i != waitingList.end() ; i++) {
 
         D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
 
         if((*i)->Type == type_msg) {
             // if numeroFedere != 0, verify that federateNumbers are similar
-            if ( ((*i)->NumeroFedere==numeroFedere) || (numeroFedere == 0) ) {
+            if (((*i)->NumeroFedere==numeroFedere) || (numeroFedere == 0)) {
                 memcpy(msg, (*i), TAILLE_MSG_RESEAU);
                 waitingList.erase(i);
                 delete (*i);
@@ -283,4 +274,4 @@ Communications::searchMessage(TypeNetworkMessage type_msg,
 
 }}
 
-// $Id: Communications.cc,v 3.4 2002/12/11 12:50:14 breholee Exp $
+// $Id: Communications.cc,v 3.5 2003/01/16 17:55:33 breholee Exp $

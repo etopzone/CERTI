@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Communications.hh,v 3.2 2002/12/11 12:50:14 breholee Exp $
+// $Id: Communications.hh,v 3.3 2003/01/16 17:55:33 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -61,14 +61,14 @@ class Communications : public SocketUN,
 {
 public:
       
-  Communications();
-  ~Communications();
+  Communications(void);
+  ~Communications(void);
 
   // ---------------------
   // -- Network Methods --
   // ---------------------
 
-  // Emet un message vers le RTIG.
+  //! Send a message to RTIG.
   void sendMessage(NetworkMessage *Msg)
   { Msg->write((SecureTCPSocket *) this); };
 
@@ -78,29 +78,19 @@ public:
   void receiveUN(Message *Msg)
   { Msg->read((SocketUN *) this); };
 
-  // Lit un message venant soit du reseau soit du federe.
-  // Renvoie la source dans le premier parametre(1 ou 2).
   void readMessage(int&, NetworkMessage *, Message *);
 
-  // Attend un message venant du RTIG. Les parametres sont :
-  // 1- Le message retourne,
-  // 2- Le type de message attendu,
-  // 3- Le federe qui a envoye le message, ou 0 si indifferent.
   void waitMessage(NetworkMessage *msg, 
 		   TypeNetworkMessage type_msg, 
 		   FederateHandle numeroFedere);
  
   void requestFederateService(Message *req, Message *rep);
-  unsigned long getAddress(); 
-  unsigned int getPort();
+  unsigned long getAddress(void);
+  unsigned int getPort(void);
 
 private:
   list<NetworkMessage *> waitingList;
 
-  // Renvoie RTI_TRUE si un message du type "type_msg" venant du federe
-  // "numeroFedere"(ou de n'importe qui si numerofedere vaut 0) etait
-  // present dans la file d'attente et a ete copie dans "msg".
-  // Si aucun message n'a ete trouve, renvoie RTI_FALSE.
   Boolean searchMessage(TypeNetworkMessage type_msg,
 			FederateHandle numeroFedere,
 			NetworkMessage *msg);
@@ -110,4 +100,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.2 2002/12/11 12:50:14 breholee Exp $
+// $Id: Communications.hh,v 3.3 2003/01/16 17:55:33 breholee Exp $
