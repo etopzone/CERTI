@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: RTIG.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG.cc,v 3.4 2003/01/20 17:31:39 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "RTIG.hh"
@@ -73,7 +73,7 @@ RTIG::~RTIG()
   delete federations;
   delete auditServer;
 
-  cout << endl << "Fin processus RTIG" << endl;
+  cout << endl << "Stopping RTIG" << endl;
 }
 
 // ---------------------------------------------------------------------------
@@ -312,14 +312,12 @@ RTIG::execute(void)
   fd_set fd;
   Socket *link;
 
-  cout << "Launching RTIG server..." << endl;
-
   // create TCP and UDP connections for the RTIG server
   udpSocketServer.createUDPServer(udpPort);
   tcpSocketServer.createTCPServer(tcpPort);
   // udpSocketServer.createUDPServer(PORT_UDP_RTIG);
  
-  cout << "[" << PACKAGE << "-" << VERSION << "] RTIG up and running." << endl;
+  cout << "RTIG up and running." << endl;
  
   terminate = false ;
  
@@ -865,4 +863,4 @@ RTIG::signalHandler(int sig)
 
 }}
 
-// $Id: RTIG.cc,v 3.3 2003/01/10 10:37:56 breholee Exp $
+// $Id: RTIG.cc,v 3.4 2003/01/20 17:31:39 breholee Exp $
