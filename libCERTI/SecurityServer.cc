@@ -1,16 +1,16 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
@@ -20,37 +20,42 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: SecurityServer.cc,v 3.2 2003/01/16 13:18:53 breholee Exp $
 // ---------------------------------------------------------------------------
-
-#include <config.h>
 
 #include "SecurityServer.hh"
 
 namespace certi {
 
-// -----------------
-// -- ADominatesB --
-// -----------------
-
-Boolean  SecurityServer::dominates(SecurityLevelID A,
-				       SecurityLevelID B)
+// ---------------------------------------------------------------------------
+/*! Each call to this method is passed to the RTIG's SocketServer, by
+    including our Federation Handle.
+*/
+Socket*
+SecurityServer::getSocketLink(FederateHandle theFederate,
+                              TransportType theType) const
 {
-  if((A == B) ||(B == PublicLevelID))
-    return RTI_TRUE;
-  else
-    return RTI_FALSE;
+  return RTIG_SocketServer->getSocketLink(MyFederation, theFederate, theType);
 }
 
+// ---------------------------------------------------------------------------
+//! Compares two security level ID.
+Boolean
+SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
+{
+    return ((A == B) || (B == PublicLevelID)) ? RTI_TRUE : RTI_FALSE ;
+}
 
-
-// ---------------------------
-// -- CanFederateAccessData --
-// ---------------------------
-
-Boolean  SecurityServer::
-canFederateAccessData(FederateHandle    theFederate,
-		       SecurityLevelID   theDataLevelID)
+// ---------------------------------------------------------------------------
+/*! Determines if federate can access to datas.
+       1- Get the socket of this federate
+       2- Check if it is a secure socket
+       3- If yes, retrieve federate principal name.
+       4- Retrieve Federate level
+*/
+Boolean
+SecurityServer::canFederateAccessData(FederateHandle theFederate,
+                                      SecurityLevelID theDataLevelID)
 {
   Socket          *FederateSocket;
   SecureTCPSocket *SecureSocket;
@@ -62,9 +67,10 @@ canFederateAccessData(FederateHandle    theFederate,
   //(Killed federate/link will throw an RTIinternalError)
 
   try {
-    FederateSocket = getSocketLink(theFederate);
-  } catch(RTIinternalError &e) {
-    return dominates(PublicLevelID, theDataLevelID);
+      FederateSocket = getSocketLink(theFederate);
+  }
+  catch(RTIinternalError &e) {
+      return dominates(PublicLevelID, theDataLevelID);
   }
 
   // 2- Check if it is a secure socket
@@ -86,113 +92,89 @@ canFederateAccessData(FederateHandle    theFederate,
   return dominates(FederateLevel, theDataLevelID);
 }
 
-
-// ---------------------
-// -- SecurityServer --
-// ---------------------
-
-SecurityServer::
-SecurityServer(SocketServer    *theRTIGServer,
-		 AuditFile       *theAuditServer,
-		 FederationHandle  theFederation)
-  : List <SecurityLevel *>()
+// ---------------------------------------------------------------------------
+//! SecurityServer constructor.
+SecurityServer::SecurityServer(SocketServer *theRTIGServer,
+                               AuditFile *theAuditServer,
+                               FederationHandle theFederation)
+    : list<SecurityLevel *>()
 {
   MyFederation      = theFederation;
   RTIG_SocketServer = theRTIGServer;
   Audit             = theAuditServer;
 
-  if((MyFederation == 0) ||
-(RTIG_SocketServer == NULL) ||
-(Audit == NULL))
+  if ((MyFederation == 0) || (RTIG_SocketServer == NULL) || (Audit == NULL))
     throw RTIinternalError();
 }
 
-
-// ---------------------
-// -- SecurityServer --
-// ---------------------
-
-SecurityServer::~SecurityServer()
+// ---------------------------------------------------------------------------
+//! Removes existing SecurityLevel instances before deleting instance.
+SecurityServer::~SecurityServer(void)
 {
-  SecurityLevel *Level;
-
-  while(lg > 0) {
-    Level = Ieme(1);
-    Supprimer(1);
-    delete Level;
-  }
+    while (!empty()) {
+        delete front();
+        pop_front();
+    }
 }
 
-// ----------------------
-// -- getLevel --
-// ----------------------
-
-SecurityLevelID  SecurityServer::getLevel(const char *theFederate)
+// ---------------------------------------------------------------------------
+//! Returns the federate level id stored in a FederateLevelList.
+SecurityLevelID
+SecurityServer::getLevel(const char *theFederate) const
 {
   return FedLevelList.getLevel(theFederate);
 }
 
-
-// ------------------------
-// -- GetLevelIDWithName --
-// ------------------------
-
-SecurityLevelID  SecurityServer::
-getLevelIDWithName(SecurityLevelName theName)
+// ---------------------------------------------------------------------------
+//! Returns the level ID associated with name otherwise creates a new one.
+SecurityLevelID
+SecurityServer::getLevelIDWithName(SecurityLevelName theName)
 {
-  int               i;
-  SecurityLevel   *StoredLevel = NULL;
-
-  if(lg == 0)
+  if(empty())
     insertPublicLevel();
 
   if((theName == NULL) ||(strlen(theName) > MAX_USER_TAG_LENGTH))
     throw RTIinternalError("Security Level Name null or too long.");
 
-  for(i = 1; i <= lg; i++) {
-    StoredLevel = Ieme(i);
-    if(strcmp(StoredLevel->Name, theName) == 0)
-      return StoredLevel->LevelID;
+  list<SecurityLevel *>::const_iterator i = begin();
+  for (; i != end() ; i++) {
+    if( strcmp((*i)->Name, theName) == 0 )
+      return (*i)->LevelID;
   }
 
   // Level not Found
   LastLevelID ++;
-  StoredLevel = new SecurityLevel(theName, LastLevelID);
-  Inserer(lg + 1, StoredLevel);
+  SecurityLevel *StoredLevel = new SecurityLevel(theName, LastLevelID);
+  push_back(StoredLevel);
 
   return LastLevelID;
 }
 
-
-
-// -----------------------
-// -- InsertPublicLevel --
-// -----------------------
-
-void SecurityServer::insertPublicLevel(void)
+// ---------------------------------------------------------------------------
+//! Insert the public level name and id into the list.
+void
+SecurityServer::insertPublicLevel(void)
 {
-  SecurityLevel  *PublicLevel;
+  SecurityLevel *PublicLevel;
 
   PublicLevel = new SecurityLevel(PublicLevelName, PublicLevelID);
   assert(PublicLevel != NULL);
 
-  Inserer(1, PublicLevel);
+  push_front(PublicLevel);
 
   LastLevelID = PublicLevelID;
 }
 
-
-// ----------------------
-// -- RegisterFederate --
-// ----------------------
-
-void SecurityServer::registerFederate(FederateName      theFederate,
-					SecurityLevelID   theLevelID)
+// ---------------------------------------------------------------------------
+//! Register a new federate with security level id.
+void
+SecurityServer::registerFederate(FederateName theFederate,
+                                 SecurityLevelID theLevelID)
 {
   FedLevelList.addFederate(theFederate, theLevelID);
 }
 
 }
 
-// $Id: SecurityServer.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: SecurityServer.cc,v 3.2 2003/01/16 13:18:53 breholee Exp $
 
