@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.12 2003/07/09 16:04:46 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.13 2005/02/09 15:55:19 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -177,6 +177,8 @@ ObjectAttribute::setSpace(SpaceHandle h)
 }
 
 // ----------------------------------------------------------------------------
+/* Associate this attribute with a DDM region
+ */
 void
 ObjectAttribute::associate(RegionImp *r)
 {
@@ -184,12 +186,16 @@ ObjectAttribute::associate(RegionImp *r)
 }
 
 // ----------------------------------------------------------------------------
+/* Unassociate attribute from the provided region. If the attribute is
+   associated with a different region, nothing is changed.
+ */
 void
 ObjectAttribute::unassociate(RegionImp *r)
 {
-    region = region == r ? 0 : region ;
+    if (region == r)
+	region = 0 ;
 }
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.12 2003/07/09 16:04:46 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.13 2005/02/09 15:55:19 breholee Exp $
