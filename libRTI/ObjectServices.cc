@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: ObjectServices.cc,v 3.2 2005/04/05 12:15:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -168,8 +168,9 @@ RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.setFedTime(theTime);
     req.setTag(theTag);
     req.setPHVPS(theParameters);
+    req.setRegion(0);
     req.setBoolean(RTI_TRUE);
-
+    
     executeService(&req, &rep);
 
     return rep.getEventRetraction();
@@ -198,11 +199,11 @@ RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
     req.setInteractionClass(the_interaction);
     req.setTag(the_tag);
     req.setPHVPS(parameters);
+    req.setRegion(0);
     req.setBoolean(RTI_FALSE);
 
     executeService(&req, &rep);
 }
-
 
 // ----------------------------------------------------------------------------
 // Delete Object
@@ -378,4 +379,4 @@ RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 
 }
 
-// $Id: ObjectServices.cc,v 3.1 2003/07/04 12:00:58 breholee Exp $
+// $Id: ObjectServices.cc,v 3.2 2005/04/05 12:15:49 breholee Exp $
