@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: my_fed.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// $Id: my_fed.cc,v 3.10 2003/06/26 15:16:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -229,7 +229,7 @@ Fed::receiveInteraction(InteractionClassHandle theInteraction,
     D.Out(pdDebug, "receiveInteraction - nb attributs= %d",
           theParameters.size());
 
-    for (int j=0 ; j < theParameters.size(); j++) {
+    for (unsigned int j = 0 ; j < theParameters.size(); ++j) {
         ParameterHandle handle = theParameters.getHandle(j);
 
         valueLength = theParameters.getValueLength(j);
@@ -823,4 +823,4 @@ Fed::disableLog(void)
     log = false ;
 }
 
-// EOF $Id: my_fed.cc,v 3.9 2003/03/21 15:06:46 breholee Exp $
+// EOF $Id: my_fed.cc,v 3.10 2003/06/26 15:16:10 breholee Exp $
