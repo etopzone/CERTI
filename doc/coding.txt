@@ -35,6 +35,10 @@ For the .cc files:
 - usings (eg. "using std::string ;" )
 - definitions
 
+Note:
+« using namespace std ; » should never be used, because some platforms
+have name conflicts with the STL (e.g std::map vs Sun map struct)
+
 Identifiers
 -----------
 
@@ -85,9 +89,10 @@ Comments
   column 78), and then use Doxygen conventions. eg:
 
 // ----------------------------------------------------------------------------
-//! brief comment
-/*! long comment
-    etc.
+/** Brief comment. Detailed comments.
+    With Doxygen commands such as:
+    \param parameter Description
+    \return
 */
 void
 MyClass::myMethod(parameters...)
@@ -137,7 +142,7 @@ ClassName::methodName(long_param1,         // doesn't fit on 1 line
     ...
 }
 
-OR (very long parameter types/names) :
+OR (very looong parameter types/names) :
 
 type
 ClassName::methodName(
