@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.9 2004/03/04 19:50:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,47 +33,31 @@ namespace certi {
   with it.
 */
 void
-FederateLevelList::addFederate(const char *the_name,
+FederateLevelList::addFederate(const std::string &the_name,
                                SecurityLevelID the_level_id)
 {
-    if ((the_name == NULL) || (strlen(the_name) > MAX_FEDERATE_NAME_LENGTH))
-        throw RTIinternalError("Federate Name too long(principal name).");
-
-    char *nameCopy = strdup(the_name);
-    if (nameCopy == NULL)
-        throw RTIinternalError("Could not allocate memory.");
-
-    tuple[nameCopy] = the_level_id ;
+    tuple[the_name] = the_level_id ;
 }
 
 //! FederateLevelList constructor.
-FederateLevelList::FederateLevelList()
-{
-}
+FederateLevelList::FederateLevelList() { }
 
-//! Empty map before destroying instance.
-FederateLevelList::~FederateLevelList()
-{
-    while (!tuple.empty()) {
-        free((*tuple.begin()).first);
-        tuple.erase(tuple.begin());
-    }
-}
+/** Destructor */
+FederateLevelList::~FederateLevelList() { }
 
 // getLevel returns the level id associated the federate name given.
 SecurityLevelID
-FederateLevelList::getLevel(const char *theName) const
+FederateLevelList::getLevel(const std::string &theName) const
 {
-    std::map<char *, SecurityLevelID>::const_iterator i ;
-
-    i = tuple.find((char *) theName);
+    std::map<std::string, SecurityLevelID>::const_iterator i = tuple.find(
+	theName);
 
     if (i != tuple.end())
-        return (*i).second ;
+        return i->second ;
 
     return PublicLevelID ;
 }
 
 }
 
-// $Id: FederateLevelList.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.9 2004/03/04 19:50:56 breholee Exp $
