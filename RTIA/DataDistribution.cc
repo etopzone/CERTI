@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.10 2003/07/03 16:21:58 breholee Exp $
+// $Id: DataDistribution.cc,v 3.11 2003/07/07 16:07:51 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -200,7 +200,10 @@ DataDistribution::associateRegion(ObjectHandle object,
 				  AttributeHandle *attr,
 				  int nb,
 				  TypeException &e)
+    throw (RegionNotKnown)
 {
+    rootObject->getRegion(region);
+    
     NetworkMessage req, rep ;
 
     req.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
@@ -216,4 +219,4 @@ DataDistribution::associateRegion(ObjectHandle object,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.10 2003/07/03 16:21:58 breholee Exp $
+// $Id: DataDistribution.cc,v 3.11 2003/07/07 16:07:51 breholee Exp $
