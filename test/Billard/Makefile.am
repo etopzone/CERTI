@@ -1,6 +1,6 @@
 ## CERTI test/billard/Makefile.am
 ## Copyright (C) 2001, 2003 ONERA
-## $Id: Makefile.am,v 3.7 2003/10/27 10:51:39 breholee Exp $
+## $Id: Makefile.am,v 3.8 2003/10/27 10:56:48 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -29,6 +29,6 @@ LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
 -L$(top_builddir)/libCERTI -L$(top_builddir)/libpdebug -lRTI -lgraph	\
 -lCERTI -lpdebug @XLIBS@ @XML_LIBS@
 
-EXTRA_DIST = Test.fed Test.xml billard-init billard-1 billard-2 billard-3
+EXTRA_DIST = Test.fed Test.xml
 
-## EOF $Id: Makefile.am,v 3.7 2003/10/27 10:51:39 breholee Exp $
+## EOF $Id: Makefile.am,v 3.8 2003/10/27 10:56:48 breholee Exp $
