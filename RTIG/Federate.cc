@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federate.cc,v 3.2 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federate.cc,v 3.3 2003/01/29 17:55:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Federate.hh"
@@ -47,7 +47,7 @@ Federate::Federate(const char* the_name, FederateHandle the_handle)
 // ---------------------------------------------------------------------------
 // Destructor
 
-Federate::~Federate()
+Federate::~Federate(void)
 {
   free(name);
 }
@@ -56,7 +56,7 @@ Federate::~Federate()
 // Get attributes
 
 FederateHandle 
-Federate::getHandle(void)
+Federate::getHandle(void) const
 {
   return handle ;
 }
@@ -64,19 +64,19 @@ Federate::getHandle(void)
 // ---------------------------------------------------------------------------
 //! getName.
 const char*
-Federate::getName(void)
+Federate::getName(void) const
 {
-  return name;
+    return name ;
 }
 
 bool
-Federate::isConstrained(void)
+Federate::isConstrained(void) const
 {
   return constrained ;
 }
 
 bool
-Federate::isRegulator(void)
+Federate::isRegulator(void) const
 {
   return regulator ;
 }
@@ -98,4 +98,4 @@ Federate::setRegulator(bool r)
 
 }}
 
-// $Id: Federate.cc,v 3.2 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federate.cc,v 3.3 2003/01/29 17:55:00 breholee Exp $

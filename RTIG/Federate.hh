@@ -1,7 +1,7 @@
 // -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
 // This file is part of CERTI
 //
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Federate.hh,v 3.2 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federate.hh,v 3.3 2003/01/29 17:55:00 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATE_HH
@@ -37,23 +37,24 @@ class Federate
 {
   // ATTRIBUTES --------------------------------------------------------------
 private:
-  FederateHandle handle ; // Federate ID
-  FederateName name ;  
-  bool regulator ; // = false by default -- Used only on the RTIA,
-  // because on RTIG there is a upper level list of regulator Federates (in 
-  // Federation).
-  bool constrained ; // = false by default.
+  FederateHandle handle ; //!< Federate ID.
+  char *name ; //!< Federate name.
+  /*! = false by default -- Used only on the RTIA, because on RTIG there is a
+      upper level list of regulator Federates (in Federation).
+  */
+  bool regulator ;
+  bool constrained ; //!< = false by default.
 
   // METHODS -----------------------------------------------------------------
 public:
-  Federate(const char*, FederateHandle) 
+  Federate(const char *the_name, FederateHandle)
     throw(MemoryExhausted, RTIinternalError);
-  ~Federate();
+  ~Federate(void);
 
-  FederateHandle getHandle();
-  const char* getName(void);
-  bool isConstrained(void) ;
-  bool isRegulator(void);
+  FederateHandle getHandle(void) const ;
+  const char *getName(void) const ;
+  bool isConstrained(void) const ;
+  bool isRegulator(void) const ;
   void setConstrained(bool);
   void setRegulator(bool);
 };
@@ -62,4 +63,4 @@ public:
 
 #endif // _CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.2 2003/01/17 18:17:01 breholee Exp $
+// $Id: Federate.hh,v 3.3 2003/01/29 17:55:00 breholee Exp $
