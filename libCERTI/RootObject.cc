@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.17 2003/10/20 13:15:14 breholee Exp $
+// $Id: RootObject.cc,v 3.18 2003/10/27 10:17:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,12 +91,9 @@ RootObject::display() const
   security server is defined, else return PublicLevelID(on the RTIA).
 */
 SecurityLevelID
-RootObject::GetSecurityLevelID(SecurityLevelName theLevelName)
+RootObject::GetSecurityLevelID(const char *theLevelName)
 {
-    if (server != NULL)
-        return server->getLevelIDWithName(theLevelName);
-    else
-        return PublicLevelID ;
+    return server ? server->getLevelIDWithName(theLevelName) : PublicLevelID ;
 }
 
 // ----------------------------------------------------------------------------
@@ -328,4 +325,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.17 2003/10/20 13:15:14 breholee Exp $
+// $Id: RootObject.cc,v 3.18 2003/10/27 10:17:45 breholee Exp $

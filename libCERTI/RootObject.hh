@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.16 2003/10/20 13:15:14 breholee Exp $
+// $Id: RootObject.hh,v 3.17 2003/10/27 10:17:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -44,7 +44,7 @@ public:
 
     void display() const ;
 
-    SecurityLevelID GetSecurityLevelID(SecurityLevelName the_name);
+    SecurityLevelID GetSecurityLevelID(const char *the_name);
 
     void registerFederate(const char *the_federate,
                           SecurityLevelID the_level_id);
@@ -101,4 +101,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.16 2003/10/20 13:15:14 breholee Exp $
+// $Id: RootObject.hh,v 3.17 2003/10/27 10:17:45 breholee Exp $
