@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.12 2003/07/10 21:54:25 breholee Exp $
+// $Id: Interaction.hh,v 3.13 2003/07/10 22:35:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -65,17 +65,23 @@ public:
     void setLevelId(SecurityLevelID NewLevelID);
 
     // -- Publication and Subscription --
-    void publish(bool publish, FederateHandle the_handle)
+    void publish(FederateHandle)
         throw (FederateNotPublishing, RTIinternalError, SecurityError);
 
-    void subscribe(bool subscribe, FederateHandle the_handle)
+    void unpublish(FederateHandle)
+        throw (FederateNotPublishing, RTIinternalError, SecurityError);
+
+    void subscribe(FederateHandle)
         throw (FederateNotSubscribing, RTIinternalError, SecurityError);
 
-    void subscribe(bool subscribe, Subscriber *the_subscriber)
-        throw (RegionNotKnown, InvalidRoutingSpace, RTIinternalError);
+    void unsubscribe(FederateHandle)
+        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
 
-    void subscribe(FederateHandle, RegionImp *);
-    void unsubscribe(FederateHandle, RegionImp *);
+    void subscribe(FederateHandle, RegionImp *)
+        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
+
+    void unsubscribe(FederateHandle, RegionImp *)
+        throw (FederateNotSubscribing, RTIinternalError, SecurityError);
     
     // -- RTI Support Services --
     ParameterHandle getParameterHandle(const char *) const
@@ -140,9 +146,10 @@ private:
         throw (InteractionParameterNotDefined, RTIinternalError);
 
     void deletePublisher(FederateHandle);
-    void deleteSubscriber(FederateHandle);
+    void deleteSubscriber(FederateHandle, RegionImp *);
     bool isPublishing(FederateHandle);
     bool isSubscribed(FederateHandle);
+    bool isSubscribed(FederateHandle, RegionImp *);
 
     // Attributes    
     std::string name ;
@@ -161,4 +168,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.12 2003/07/10 21:54:25 breholee Exp $
+// $Id: Interaction.hh,v 3.13 2003/07/10 22:35:48 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.15 2003/07/10 21:54:25 breholee Exp $
+// $Id: Interaction.cc,v 3.16 2003/07/10 22:35:48 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -245,12 +245,12 @@ Interaction::deletePublisher(FederateHandle fed)
 // ----------------------------------------------------------------------------
 //! Delete a subscriber with rank (private module).
 void
-Interaction::deleteSubscriber(FederateHandle fed)
+Interaction::deleteSubscriber(FederateHandle fed, RegionImp *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->getHandle() == fed) {
-            delete (*s);
+        if ((*s)->match(fed, region)) {
+            delete *s ;
             subscribers.erase(s);
             return ;
         }
@@ -325,17 +325,25 @@ Interaction::getParameterName(ParameterHandle the_handle) const
 }
 
 // ----------------------------------------------------------------------------
-//! Return true if federate has subscribed to this attribute.
+//! Return true if federate has subscribed to this attribute w/ region
 bool
-Interaction::isSubscribed(FederateHandle fed)
+Interaction::isSubscribed(FederateHandle fed, RegionImp *region)
 {
     list<Subscriber *>::iterator s ;
     for (s = subscribers.begin(); s != subscribers.end(); ++s) {
-        if ((*s)->getHandle() == fed) {
+        if ((*s)->match(fed, region)) {
 	    return true ;
         }
     }
     return false ;
+}
+
+// ----------------------------------------------------------------------------
+//! Return true if federate has subscribed to this attribute w/ default region
+bool
+Interaction::isSubscribed(FederateHandle fed)
+{
+    return isSubscribed(fed, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -382,50 +390,49 @@ Interaction::killFederate(FederateHandle the_federate)
     try {
         // Is federate publishing something ? (not important)
         if (isPublishing(the_federate))
-            publish(RTI_FALSE, the_federate);
+            unpublish(the_federate);
 
         // Does federate subscribed to something ?
         if (isSubscribed(the_federate))
-            subscribe(RTI_FALSE, the_federate);
+            unsubscribe(the_federate);
     }
     catch (SecurityError &e) {}
 }
 
 // ----------------------------------------------------------------------------
-/*! Pour publier : PubOrUnpub = RTI_TRUE, sinon PubOrUnPub = RTI_FALSE.
-  theHandle : le numero du federe
-*/
+//! publish
 void
-Interaction::publish(bool publish, FederateHandle the_handle)
+Interaction::publish(FederateHandle the_handle)
     throw (FederateNotPublishing, RTIinternalError, SecurityError)
 {
-    bool alreadyPublishing = isPublishing(the_handle);
-
     checkFederateAccess(the_handle, (char *) "Publish");
+    
+    if (!isPublishing(the_handle)) {
+	D.Out(pdInit,
+	      "Interaction %d: Added Federate %d to publishers list.",
+	      handle, the_handle);
+	publishers.push_front(new Publisher(the_handle));
+    }
+    else
+	D.Out(pdError,
+	      "Interaction %d: Inconsistent publish request from"
+	      " Federate %d.", handle, the_handle);
+}
 
-    if (publish) {
-        // Federate wants to Publish
-        if (alreadyPublishing == RTI_FALSE) {
-            D.Out(pdInit,
-                  "Interaction %d: Added Federate %d to publishers list.",
-                  handle, the_handle);
-	    publishers.push_front(new Publisher(the_handle));
-        }
-        else
-            D.Out(pdError,
-                  "Interaction %d: Inconsistent publish request from"
-                  " Federate %d.", handle, the_handle);
+// ----------------------------------------------------------------------------
+//! publish
+void
+Interaction::unpublish(FederateHandle the_handle)
+    throw (FederateNotPublishing, RTIinternalError, SecurityError)
+{
+    if (isPublishing(the_handle)) {
+	D.Out(pdTerm,
+	      "Interaction %d: Removed Federate %d from publishers list.",
+	      handle, the_handle);
+	deletePublisher(the_handle);
     }
     else {
-        // Federate wants to Unpublish
-        if (alreadyPublishing == RTI_TRUE) {
-            D.Out(pdTerm,
-                  "Interaction %d: Removed Federate %d from publishers list.",
-                  handle, the_handle);
-            deletePublisher(the_handle);
-        }
-        else
-            throw FederateNotPublishing();
+	throw FederateNotPublishing();
     }
 }
 
@@ -514,58 +521,57 @@ Interaction::setLevelId(SecurityLevelID new_levelID)
 }
 
 // ----------------------------------------------------------------------------
-/*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
-  theHandle : the federate number.
-*/
+//! subscribe
 void
-Interaction::subscribe(bool subscribe, FederateHandle the_handle)
-    throw (FederateNotSubscribing,
-           RTIinternalError,
-           SecurityError)
+Interaction::subscribe(FederateHandle fed, RegionImp *region)
+    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
 {
-    bool alreadySubscribed = isSubscribed(the_handle);
+    checkFederateAccess(fed, "Subscribe");
 
-    checkFederateAccess(the_handle, "Subscribe");
-
-    if (subscribe) {
-        // Federate wants to Subscribe
-        if (alreadySubscribed == RTI_FALSE) {
-            subscribers.push_front(new Subscriber(the_handle));
-            D.Out(pdInit,
-                  "Parameter %d: Added Federate %d to subscribers list.",
-                  handle, the_handle);
-        }
-        else
-            D.Out(pdError,
-                  "Parameter %d: Unconsistent subscribe request from "
-                  "federate %d.", handle, the_handle);
+    if (!isSubscribed(fed, region)) {
+	subscribers.push_front(new Subscriber(fed, region));
+	D.Out(pdInit,
+	      "Parameter %d: Added Federate %d to subscribers list.",
+	      handle, fed);
     }
-    else {
-        // Federate wants to unsubscribe
-        if (alreadySubscribed == RTI_TRUE) {
-            deleteSubscriber(the_handle);
-            D.Out(pdTerm,
-                  "Parameter %d: Removed Federate %d from subscribers list.",
-                  handle, the_handle);
-        }
-        else
-            throw FederateNotSubscribing();
-    }
+    else
+	D.Out(pdError,
+	      "Parameter %d: Unconsistent subscribe request from "
+	      "federate %d.", handle, fed);    
 }
 
 // ----------------------------------------------------------------------------
-/*! To subscribe, 'subscribe' = RTI_TRUE, otherwise 'subscribe' = RTI_FALSE.
-  Is used to subscribe or not to an interaction in a region.
-*/
+//! subscribe
 void
-Interaction::subscribe(bool, Subscriber*)
-    throw (RegionNotKnown,
-           InvalidRoutingSpace,
-           RTIinternalError)
+Interaction::subscribe(FederateHandle fed)
+    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
 {
-    // BUG: Subscribe With Region Not Implemented
-    D.Out(pdExcept, "subscribe(with Region) not implemented in Interaction.");
-    throw RTIinternalError("subscribe(with Region) not implemented.");
+    subscribe(fed, 0);
+}
+
+// ----------------------------------------------------------------------------
+//! unsubscribe
+void
+Interaction::unsubscribe(FederateHandle fed, RegionImp *region)
+    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
+{
+    if (isSubscribed(fed)) {
+	deleteSubscriber(fed, region);
+	D.Out(pdTerm,
+	      "Parameter %d: Removed Federate %d from subscribers list.",
+	      handle, fed);
+    }
+    else
+	throw FederateNotSubscribing();
+}
+
+// ----------------------------------------------------------------------------
+//! unsubscribe
+void
+Interaction::unsubscribe(FederateHandle fed)
+    throw (FederateNotSubscribing, RTIinternalError, SecurityError)
+{
+    unsubscribe(fed, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -586,4 +592,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.15 2003/07/10 21:54:25 breholee Exp $
+// $Id: Interaction.cc,v 3.16 2003/07/10 22:35:48 breholee Exp $
