@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.16 2005/03/25 17:08:03 breholee Exp $ 
+## $Id: Makefile.am,v 3.17 2005/03/28 19:47:56 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -34,8 +34,8 @@ Object.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc		\
 ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
 Publisher.cc RootObject.cc RoutingSpace.cc RTIRegion.cc	\
 SecureTCPSocket.cc SecurityServer.cc SocketMC.cc SocketServer.cc	\
-SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc syntax.cc		\
-tokens.cc XmlParser.cc
+SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc syntax.yy		\
+tokens.ll XmlParser.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -45,4 +45,4 @@ LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
 
-## EOF $Id: Makefile.am,v 3.16 2005/03/25 17:08:03 breholee Exp $
+## EOF $Id: Makefile.am,v 3.17 2005/03/28 19:47:56 breholee Exp $
