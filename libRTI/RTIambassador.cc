@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.22.4.1 2003/04/22 21:44:54 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1823,7 +1823,7 @@ RTIambassador::createRegion(SpaceHandle space,
 // ----------------------------------------------------------------------------
 // Notify About Region Modification
 void
-RTIambassador::notifyAboutRegionModification(Region &)
+RTIambassador::notifyAboutRegionModification(Region &the_region)
     throw (RegionNotKnown,
            InvalidExtents,
            FederateNotExecutionMember,
@@ -1833,9 +1833,17 @@ RTIambassador::notifyAboutRegionModification(Region &)
            RTIinternalError,
            UnimplementedService)
 {
-    throw UnimplementedService();
-}
+    Message req, rep ;
+    RegionImp &region = dynamic_cast<RegionImp &>(the_region);
 
+    req.setType(MODIFY_REGION);
+    req.setRegion(region.getHandle());
+    for (int i = 0 ; i < region.getNumberOfExtents(); i++) {
+        req.addExtent(region.getExtent(i));
+    }
+
+    executeService(&req, &rep);
+}
 
 // ----------------------------------------------------------------------------
 // Delete Region
@@ -3750,4 +3758,4 @@ RTIambassador::processException(Message *msg)
 
 } // namespace certi
 
-// $Id: RTIambassador.cc,v 3.22 2003/04/22 16:43:04 breholee Exp $
+// $Id: RTIambassador.cc,v 3.22.4.1 2003/04/22 21:44:54 breholee Exp $
