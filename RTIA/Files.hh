@@ -1,4 +1,4 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,91 +19,67 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Files.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Files.hh,v 3.2 2002/12/11 12:34:13 breholee Exp $
 // ---------------------------------------------------------------------------
 
-#ifndef GFILES_HH
-#define GFILES_HH
+#ifndef _CERTI_FILES_HH
+#define _CERTI_FILES_HH
 
 #include <config.h>
 
-#include <stdio.h>
+#include <list>
+using std::list;
+
 #include <stdlib.h>
 
 #include "FederationManagement.hh"
 #include "ObjectManagement.hh"
 #include "NetworkMessage.hh"
-#include "Message.hh"
-#include "List.hh"
 
 namespace certi {
-  namespace rtia {
+namespace rtia {
 
-    class FederationManagement;
-    class ObjectManagement;
+class FederationManagement;
+class ObjectManagement;
 
-    class Queues
-    {
-    public:
-      FederationManagement *_GF;
-      ObjectManagement *_GO;
+class Queues
+{
+public:
+    FederationManagement *_GF;
+    ObjectManagement *_GO;
 
-      Queues();
-      ~Queues();
+    Queues();
+    ~Queues();
 
-      // File FIFO(First In First Out, or Receive Order)
+    // File FIFO(First In First Out, or Receive Order)
+    void insertFifoMessage(NetworkMessage *msg);
+    NetworkMessage *giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant);
 
-      void insertFifoMessage(NetworkMessage *msg);
+    // File TSO(Time Stamp Order)
+    void insertTsoMessage(NetworkMessage *msg);
+    NetworkMessage *giveTsoMessage(FederationTime heure_logique,
+                                   Boolean &msg_donne,
+                                   Boolean &msg_restant);
+    void nextTsoDate(Boolean &trouve, FederationTime &heure_logique);
 
-      NetworkMessage *giveFifoMessage(Boolean &msg_donne,
-				      Boolean &msg_restant);
+    // File Commandes(ex: requestPause)
+    void insertBeginCommand(NetworkMessage *msg);
+    void insertLastCommand(NetworkMessage *msg);
+    NetworkMessage *giveCommandMessage(Boolean &msg_donne,
+                                       Boolean &msg_restant);
 
-      // File TSO(Time Stamp Order)
+private:
+    // Attributes
+    list<NetworkMessage *> fifos ;      //!< FIFO list.
+    list<NetworkMessage *> tsos ;       //!< TSO list.
+    list<NetworkMessage *> commands ;   //!< commands list.
 
-      void insertTsoMessage(NetworkMessage *msg);
+    // Call a service on the federate.
+    void executeFederateService(NetworkMessage *);
+};
 
-      NetworkMessage *giveTsoMessage(FederationTime heure_logique,
-				     Boolean &msg_donne,
-				     Boolean &msg_restant);
+}}
 
-      void nextTsoDate(Boolean &trouve,
-		       FederationTime &heure_logique);
+#endif // _CERTI_FILES_HH
 
-      // File Commandes(ex: requestPause)
-
-      void insertBeginCommand(NetworkMessage *msg);
-
-      void insertLastCommand(NetworkMessage *msg);
-
-      NetworkMessage *giveCommandMessage(Boolean &msg_donne,
-					 Boolean &msg_restant);
-
-    private:
-
-      // ------------------------
-      // -- Private Attributes --
-      // ------------------------
-
-      // File FIFO
-      List <NetworkMessage*> _fileFIFO;
-
-      // File TSO
-      List <NetworkMessage*> _fileTSO;
-
-      // File de commandes
-      List <NetworkMessage*> _file_commandes;
-
-      // ---------------------
-      // -- Private Methods --
-      // ---------------------
-
-      // Call a service on the federate.
-      void executeFederateService(NetworkMessage *);
-
-    };
-  }
-}
-
-#endif
-
-// $Id: Files.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: Files.hh,v 3.2 2002/12/11 12:34:13 breholee Exp $

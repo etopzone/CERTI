@@ -1,4 +1,4 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
+// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 // ---------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002  ONERA
@@ -19,7 +19,7 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-// $Id: Files.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: Files.cc,v 3.3 2002/12/11 12:34:13 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #include "Files.hh"
@@ -36,20 +36,20 @@ Queues::~Queues() { }
 
 // Retourner l'heure logique du premier message de la file TSO.
 
-void 
-Queues::nextTsoDate(Boolean &trouve, FederationTime &heure_logique)
+void
+Queues::nextTsoDate(Boolean &found, FederationTime &time)
 {
-  NetworkMessage *msg_tampon;
+    NetworkMessage *msg_buffer;
 
-  if(_fileTSO.getLength() == 0) {
-    trouve = RTI_FALSE;
-    heure_logique = -1.0;
-  }
-  else {
-    msg_tampon = _fileTSO.Ieme(1);
-    trouve = RTI_TRUE;
-    heure_logique = msg_tampon->Date;
-  }
+    if(tsos.empty()) {
+        found = RTI_FALSE;
+        time = -1.0;
+    }
+    else {
+        msg_buffer = tsos.front();
+        found = RTI_TRUE;
+        time = msg_buffer->Date;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -58,28 +58,28 @@ Queues::nextTsoDate(Boolean &trouve, FederationTime &heure_logique)
 // Donner toutes les commandes au federe(en invoquant les services
 // "RTI Initiated" du federe).
 
-NetworkMessage* 
+NetworkMessage*
 Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
 {
-  NetworkMessage *msg;
+    NetworkMessage *msg;
 
-  msg_donne = RTI_FALSE;
-  msg_restant = RTI_FALSE;
+    msg_donne = RTI_FALSE;
+    msg_restant = RTI_FALSE;
 
-  if(_file_commandes.getLength() > 0) {
-    msg = _file_commandes.Ieme(1);
-    
-    // Supprimer de la file, mais garder le pointeur en memoire
-    // quand meme pour l'execution de ExecuterServiceFedere
-    _file_commandes.Supprimer(1);
-    msg_donne = RTI_TRUE;
-    
-    if(_file_commandes.getLength() > 0)
-      msg_restant = RTI_TRUE;
-    
-    return msg;
-  }
-  return NULL;
+    if (!commands.empty()) {
+        msg = commands.front();
+
+        // Supprimer de la file, mais garder le pointeur en memoire
+        // quand meme pour l'execution de ExecuterServiceFedere
+        commands.pop_front();
+        msg_donne = RTI_TRUE;
+
+        if (!commands.empty()) 
+            msg_restant = RTI_TRUE;
+
+        return msg ;
+    }
+    else return 0 ;
 }
 
 // ---------------------------------------------------------------------------
@@ -90,25 +90,25 @@ Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
 NetworkMessage*
 Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
 {
-  NetworkMessage *msg_tampon;
+    NetworkMessage *msg_tampon;
 
-  msg_donne = RTI_FALSE;
-  msg_restant = RTI_FALSE;
+    msg_donne = RTI_FALSE;
+    msg_restant = RTI_FALSE;
+    
+    if (!fifos.empty()) {
+        msg_tampon = fifos.front();
+        
+        // supprimer de la file, mais garder le pointeur en memoire
+        // quand meme pour l'execution de ExecuterServiceFedere
+        fifos.pop_front();
+        msg_donne = RTI_TRUE;
+        
+        if (!fifos.empty()) 
+            msg_restant = RTI_TRUE ;
 
-  if(_fileFIFO.getLength() > 0) {
-    msg_tampon = _fileFIFO.Ieme(1);
-    
-    // supprimer de la file, mais garder le pointeur en memoire
-    // quand meme pour l'execution de ExecuterServiceFedere
-    _fileFIFO.Supprimer(1);
-    msg_donne = RTI_TRUE;
-    
-    if(_fileFIFO.getLength() > 0)
-      msg_restant = RTI_TRUE;
-    
-    return(msg_tampon);
-  }
-  return NULL;
+        return msg_tampon ;
+    }
+    else return 0 ;
 }
 
 // ---------------------------------------------------------------------------
@@ -119,37 +119,35 @@ Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
 
 NetworkMessage *
 Queues::giveTsoMessage(FederationTime heure_logique,
-		       Boolean &msg_donne,
-		       Boolean &msg_restant)
+                       Boolean &msg_donne,
+                       Boolean &msg_restant)
 {
-  NetworkMessage *tampon_msg = NULL;
+    NetworkMessage *buffer_msg = NULL;
+    
+    msg_donne = RTI_FALSE;
+    msg_restant = RTI_FALSE;
+    
+    if (!tsos.empty()) {
+        buffer_msg = tsos.front();
+        if (buffer_msg->Date <= heure_logique) {
+            // supprimer de la file, mais garder le pointeur en memoire
+            // quand meme pour l'execution de ExecuterServiceFedere
+            tsos.pop_front();
+            msg_donne = RTI_TRUE;
 
-  msg_donne = RTI_FALSE;
-  msg_restant = RTI_FALSE;
+            // regarder si le message TSO suivant peut etre donne
+            if (!tsos.empty()) {
+                NetworkMessage *buffer_msg2;
+                buffer_msg2 = tsos.front();
 
-  if(_fileTSO.getLength() != 0) {
-    tampon_msg = _fileTSO.Ieme(1);
-    if(tampon_msg->Date <= heure_logique) {
-      // supprimer de la file, mais garder le pointeur en memoire
-      // quand meme pour l'execution de ExecuterServiceFedere
-      _fileTSO.Supprimer(1);
-      msg_donne = RTI_TRUE;
-      
-      // regarder si le message TSO suivant peut etre donne
-      if(_fileTSO.getLength() != 0) {
-	NetworkMessage *tampon_msg2;
-	tampon_msg2 = _fileTSO.Ieme(1);
-	if(tampon_msg2->Date <= heure_logique)
-	  msg_restant = RTI_TRUE;
-      }
-      return tampon_msg;
+                if (buffer_msg2->Date <= heure_logique) 
+                    msg_restant = RTI_TRUE ;
+            }
+            return buffer_msg ;
+        }
+        else return 0 ;
     }
-    else {
-      return NULL;
-    }
-  }
-  else // lg == 0
-    return NULL;
+    else return 0 ;
 }
 
 // ---------------------------------------------------------------------------
@@ -158,10 +156,10 @@ Queues::giveTsoMessage(FederationTime heure_logique,
 // Inserer un message contenant une commande(ex: requestPause)
 // en debut de la file des commandes
 
-void 
+void
 Queues::insertBeginCommand(NetworkMessage *msg)
 {
-  _file_commandes.Inserer(1, msg);
+    commands.push_front(msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -170,10 +168,10 @@ Queues::insertBeginCommand(NetworkMessage *msg)
 // Inserer un message contenant une commande en fin de la file des
 // commandes.
 
-void 
+void
 Queues::insertLastCommand(NetworkMessage *msg)
 {
-  _file_commandes.Inserer(_file_commandes.getLength()+1, msg);
+    commands.push_back(msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -181,10 +179,10 @@ Queues::insertLastCommand(NetworkMessage *msg)
 
 // Inserer un message en fin de file FIFO.
 
-void 
+void
 Queues::insertFifoMessage(NetworkMessage *msg)
 {
-  _fileFIFO.Inserer(_fileFIFO.getLength()+1, msg);
+    fifos.push_back(msg);
 }
 
 // ---------------------------------------------------------------------------
@@ -192,32 +190,30 @@ Queues::insertFifoMessage(NetworkMessage *msg)
 
 // La file TSO est triee selon l'Horloge Logique des messages.
 
-void 
+void
 Queues::insertTsoMessage(NetworkMessage *msg)
 {
-  NetworkMessage *msg_tampon = NULL;
-  Boolean fin = RTI_FALSE;
-
-  if(_fileTSO.getLength() == 0) _fileTSO.Inserer(1, msg);    
-  else { // _fileTSO.getLength() >= 1
-    for(int i=1; i<=_fileTSO.getLength() && !fin; i++) {
-      msg_tampon = _fileTSO.Ieme(i);
-      // strictement superieur pour placer le nouveau message
-      // a la suite des anciens ayant la meme heure logique
-      //(pour garder l'ordre de reception dans la file)
-      if(msg_tampon->Date > msg->Date) {
-	_fileTSO.Inserer(i, msg);
-	fin = RTI_TRUE;
-      }
+    if (tsos.empty()) {
+        tsos.push_front(msg);
+        return;
     }
-    if(fin == RTI_FALSE) {
-      // inserer en fin de file
-      _fileTSO.Inserer(_fileTSO.getLength()+1, msg);
+    else {
+        list<NetworkMessage *>::iterator i = tsos.begin();
+        for (; i != tsos.end() ; i++) {
+            // strictement superieur pour placer le nouveau message
+            // a la suite des anciens ayant la meme heure logique
+            //(pour garder l'ordre de reception dans la file)
+            if( (*i)->Date > msg->Date ) {
+                tsos.insert(i, msg);
+                return;
+            }
+        }
     }
-  }
+
+    // inserer en fin de file
+    tsos.push_back(msg);
 }
 
-}
-}
+}}
 
-// $Id: Files.cc,v 3.2 2002/12/11 00:47:33 breholee Exp $
+// $Id: Files.cc,v 3.3 2002/12/11 12:34:13 breholee Exp $
