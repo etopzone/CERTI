@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.10 2003/07/10 15:06:49 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.11 2005/04/05 20:11:36 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -288,9 +288,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
     // Ca ne va pas marcher avec les niveaux de securite !!!!
 
     try {
-        rootObject->Interactions->subscribe(fm->federate,
-                                            theClassHandle,
-                                            RTI_TRUE);
+        rootObject->Interactions->subscribe(fm->federate, theClassHandle, 0, true);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
         throw e ;
@@ -328,9 +326,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
     // Ca ne va pas marcher avec les niveaux de securite !!!!
 
     try {
-        rootObject->Interactions->subscribe(fm->federate,
-                                            theClassHandle,
-                                            RTI_FALSE);
+        rootObject->Interactions->subscribe(fm->federate, theClassHandle, 0, false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in subscribeInteractionClass.");
         throw e ;
@@ -456,4 +452,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.10 2003/07/10 15:06:49 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.11 2005/04/05 20:11:36 breholee Exp $
