@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.hh,v 3.9 2005/03/15 14:34:51 breholee Exp $
+// $Id: Subscriber.hh,v 3.10 2005/03/16 23:03:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SUBSCRIBER_HH
@@ -40,8 +40,10 @@ public:
     
     FederateHandle getHandle() const ;
     const RegionImp *getRegion() const ;
-    bool match(FederateHandle, const RegionImp *) const ;
+    bool equals(FederateHandle, const RegionImp *) const ;
     bool match(const RegionImp *) const ;
+
+    bool operator==(const Subscriber &) const ;
 
 protected:
     FederateHandle handle ; //!< The ID of the Subscriber.
@@ -52,4 +54,4 @@ protected:
 
 #endif // _CERTI_SUBSCRIBER_HH
 
-// $Id: Subscriber.hh,v 3.9 2005/03/15 14:34:51 breholee Exp $
+// $Id: Subscriber.hh,v 3.10 2005/03/16 23:03:37 breholee Exp $
