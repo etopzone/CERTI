@@ -19,18 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.17 2005/03/17 15:49:25 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.18 2005/03/21 13:37:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
 #define _CERTI_OBJECT_CLASS_SET_HH
 
-// Project
 #include "ObjectClass.hh"
 #include "SecurityServer.hh"
 
-// Standard
 #include <list>
+#include <string>
 
 namespace certi {
 
@@ -57,10 +56,10 @@ public:
                                  ObjectClassHandle the_class) const
         throw (AttributeNotDefined, ObjectClassNotDefined, RTIinternalError);
 
-    ObjectClassHandle getObjectClassHandle(const char *the_name) const
-        throw (NameNotFound, RTIinternalError);
+    ObjectClassHandle getObjectClassHandle(std::string) const
+        throw (NameNotFound);
 
-    const char *getObjectClassName(ObjectClassHandle the_handle) const
+    std::string getObjectClassName(ObjectClassHandle the_handle) const
         throw (ObjectClassNotDefined, RTIinternalError);
 
     ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
@@ -152,11 +151,6 @@ public:
                AttributeAcquisitionWasNotRequested, RTIinternalError);
 
 private:
-    void recursiveDiscovering(ObjectClassHandle theClassHandle,
-                              FederateHandle theFederate,
-                              ObjectClassHandle theOriginalClass)
-	throw (ObjectClassNotDefined);
-
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
     */
@@ -170,4 +164,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.17 2005/03/17 15:49:25 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.18 2005/03/21 13:37:46 breholee Exp $

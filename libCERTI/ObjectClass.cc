@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.26 2005/03/16 23:11:22 breholee Exp $
+// $Id: ObjectClass.cc,v 3.27 2005/03/21 13:37:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     // If the attribute is inherited, it keeps its security level.
     // If not, it takes the default security level of the class.
     if (is_inherited != RTI_TRUE)
-        theAttribute->level = LevelID ;
+        theAttribute->level = levelId ;
 
     attributeSet.push_front(theAttribute);
 
@@ -127,7 +127,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList, Object *so
           // For each federate, add it to list if at least one attribute has
           // been subscribed.
           FederateHandle federate = 0 ;
-          for (federate = 1 ; federate <= MaxSubscriberHandle ; federate++) {
+          for (federate = 1 ; federate <= maxSubscriberHandle ; federate++) {
               if (isSubscribed(federate)) {
                   ocbList->addFederate(federate);
               }
@@ -245,7 +245,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
     if (server == NULL)
         return ;
 
-    Boolean result = server->canFederateAccessData(the_federate, LevelID);
+    Boolean result = server->canFederateAccessData(the_federate, levelId);
 
     // BUG: Should use Audit.
     if (result != RTI_TRUE) {
@@ -256,10 +256,9 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! ObjectClass constructor (only one).
 ObjectClass::ObjectClass()
-    : Father(0), server(NULL), Depth(0), Name(NULL), handle(0),
-      LevelID(PublicLevelID), MaxSubscriberHandle(0)
+    : server(0), handle(0), maxSubscriberHandle(0), levelId(PublicLevelID),
+      superClass(0)
 {
 }
 
@@ -267,11 +266,6 @@ ObjectClass::ObjectClass()
 //! ObjectClass destructor (frees allocated memory).
 ObjectClass::~ObjectClass()
 {
-    if (Name != NULL) {
-        free(Name);
-        Name = NULL ;
-    }
-
     // Deleting instances
     if (!objectSet.empty())
         D.Out(pdError,
@@ -289,8 +283,8 @@ ObjectClass::~ObjectClass()
     }
 
     // Deleting Sons
-    while (!sonSet.empty()) {
-        sonSet.pop_front();
+    while (!subClasses.empty()) {
+        subClasses.pop_front();
     }
 }
 
@@ -362,16 +356,17 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
 //! Print the ObjectClasses tree to the standard output.
 void ObjectClass::display() const
 {
-    cout << " ObjectClass #" << handle << " \"" << Name << "\":" << endl ;
+    cout << " ObjectClass #" << handle << " \"" << name << "\":" << endl ;
 
     // Display inheritance
-    cout << " Parent Class Handle: " << Father << endl ;
-    cout << " Security Level: " << LevelID << endl ;
-    cout << " " << sonSet.size() << " Child(s):" << endl ;
+    cout << " Parent Class Handle: " << superClass << endl ;
+    cout << " Security Level: " << levelId << endl ;
+    cout << " " << subClasses.size() << " Child(s):" << endl ;
 
-    list<ObjectClassHandle>::const_iterator s = sonSet.begin();
-    for (int i = 1 ; s != sonSet.end(); s++, i++) {
-        cout << " Son " << i << " handle: "<< (*s) << endl ;
+    cout << " Subclasses handles:" ;
+    list<ObjectClass *>::const_iterator s = subClasses.begin();
+    for (s = subClasses.begin(); s != subClasses.end(); s++) {
+        cout << " " << (*s)->getHandle() << endl ;
     }
 
     // Display Attributes
@@ -674,44 +669,40 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! sendDiscoverMessages.
+/** Send a "Discover Object" message to a federate for each object of
+    this class, if the federate was not already subscribed. Subclass
+    objects are not considered. Objects may actually be of a
+    superclass.
+    @param federate Federate to send discovery messages to
+    @param super_handle Handle of the class of objects to be
+    discovered
+    @return true if the process should be applied to subclasses too
+ */
 bool
 ObjectClass::sendDiscoverMessages(FederateHandle federate,
                                   ObjectClassHandle super_handle)
 {
-    // 1- If this class is not the original class, and the Federate is a
-    // subscriber of the class, the Recursive process must be stopped,
-    // because the Federate has received all previous DiscoverObject
-    // Message for this class and its sub-classes.
+    // If we are in a subclass to which the federate is already subscribed,
     if ((handle != super_handle) && isSubscribed(federate))
         return false ;    
 
-    // 2- If there is no instance of the class, return.(the recursive process
-    // must continue).
-    if (objectSet.empty())
-        return true ;
-
-    // 3- Else prepare the common part of the Message.
-    // Messages are sent on behalf of the original class.
-    NetworkMessage message;
-    message.type = NetworkMessage::DISCOVER_OBJECT ;
-    message.federation = server->federation();
-    message.federate = federate ;
-    message.exception = e_NO_EXCEPTION ;
-    message.objectClass = super_handle ;
-
-    // 4- For each Object instance in the class, send a Discover message.
-    Socket *socket = NULL ;
+    // Else, send message for each object
     list<Object *>::const_iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
+	NetworkMessage message ;
         D.Out(pdInit,
               "Sending DiscoverObj to Federate %d for Object %u in class %u ",
               federate, (*o)->getHandle(), handle, message.label);
 
+	message.type = NetworkMessage::DISCOVER_OBJECT ;
+	message.federation = server->federation();
+	message.federate = federate ;
+	message.exception = e_NO_EXCEPTION ;
+	message.objectClass = super_handle ;
         message.object = (*o)->getHandle();
         message.setLabel((*o)->getName().c_str());
 
-        // Send Message to Federate
+	Socket *socket = NULL ;
         try {
             socket = server->getSocketLink(federate);
             message.write(socket);
@@ -723,32 +714,9 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
         catch (NetworkError &e) {
             D.Out(pdExcept, "Network error while sending DO msg, ignoring.");
         }
-    } // for each object instance
-
-    // 5- The same method must be called on my sub-classes.
-    return true ;
-}
-
-// ----------------------------------------------------------------------------
-//! setName.
-void
-ObjectClass::setName(const char *new_name)
-    throw (ValueLengthExceeded, RTIinternalError)
-{
-    // Check Length
-    if ((new_name == NULL) || (strlen(new_name) > MAX_USER_TAG_LENGTH)) {
-        D.Out(pdExcept, "Object class Name %s too long.", new_name);
-        throw ValueLengthExceeded("Object class name too long.");
     }
 
-    // Free previous name
-    if (Name != NULL)
-        free(Name);
-
-    // Store new name
-    Name = strdup(new_name);
-    if (Name == NULL)
-        throw RTIinternalError("Memory Exhausted.");
+    return true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -756,10 +724,10 @@ ObjectClass::setName(const char *new_name)
 void
 ObjectClass::setLevelId(SecurityLevelID new_levelID)
 {
-    if (server->dominates(new_levelID, LevelID) == RTI_FALSE)
+    if (server->dominates(new_levelID, levelId) == RTI_FALSE)
         throw SecurityError("Attempt to lower object class level.");
 
-    LevelID = new_levelID ;
+    levelId = new_levelID ;
 }
 
 // ----------------------------------------------------------------------------
@@ -785,7 +753,7 @@ ObjectClass::subscribe(FederateHandle fed,
         getAttribute(attributes[i]);
 
     if (nb_attributes > 0)
-	MaxSubscriberHandle = std::max(fed, MaxSubscriberHandle);
+	maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
 
     bool was_subscriber = isSubscribed(fed);
 
@@ -1639,6 +1607,54 @@ ObjectClass::unsubscribe(FederateHandle fed)
     }
 }
 
+// ----------------------------------------------------------------------------
+void
+ObjectClass::addSubclass(ObjectClass *c)
+{
+    subClasses.push_back(c);
+}
+
+// ----------------------------------------------------------------------------
+/** Recursively start discovery of existing objects.
+    @param federate Federate to send the discovery message to
+    @param super_handle Handle of the class actually subscribed by the federate
+ */
+void
+ObjectClass::recursiveDiscovering(FederateHandle federate,
+				  ObjectClassHandle subscription)
+	throw (ObjectClassNotDefined)
+{
+    D[pdInit] << "Recursive Discovering on class " << handle
+	      << " for Federate " << federate << "." << std::endl ;
+
+    bool go_deeper = sendDiscoverMessages(federate, subscription);
+
+    if (go_deeper) {
+        list<ObjectClass *>::const_iterator i ;
+        for (i = subClasses.begin(); i != subClasses.end(); ++i) {
+            (*i)->recursiveDiscovering(federate, subscription);
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------
+/** Apply a visitor object to the class hierarchy
+    @param v Visitor, its execute() function is called with current object, and
+    is expected to return 'true' if the process should continue on subclasses
+ */
+// void
+// ObjectClass::apply(Visitor &v)
+// {
+//     bool go_deeper = v.execute(*this);
+
+//     if (go_deeper) {
+//         list<ObjectClass *>::const_iterator i ;
+//         for (i = subClasses.begin(); i != subClasses.end(); ++i) {
+//             (*i)->apply(v);
+//         }
+//     }
+// }
+
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.26 2005/03/16 23:11:22 breholee Exp $
+// $Id: ObjectClass.cc,v 3.27 2005/03/21 13:37:46 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.21 2005/03/16 23:09:26 breholee Exp $
+// $Id: ObjectClass.hh,v 3.22 2005/03/21 13:37:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -34,6 +34,7 @@
 
 // Standard
 #include <list>
+#include <string>
 
 namespace certi {
 
@@ -53,35 +54,33 @@ public:
     CDiffusion() { size = 0 ; };
 };
 
-/*! This class is used to describe an object class. It also contains the
-  instance list from this class.
+/*! OMT object class. It also contains the instance list from this
+  class.
 */
 class ObjectClass {
 
 public:
-    // Constructor & Destructor
     ObjectClass();
     ~ObjectClass();
 
     void display() const ;
 
-    /*! Name attribute access(GetName reference must be considered
-      READ-ONLY).  NewName length must be lower or equal to
-      MAX_USER_TAG_LENGTH.
-    */
-    const char *getName() const { return Name ; };
-
-    void setName(const char *new_name)
-        throw (ValueLengthExceeded, RTIinternalError);
+    std::string getName() const { return name ; };
+    void setName(const char *new_name) { name = new_name ; };
+    void setName(const std::string &new_name) { name = new_name ; };
 
     void setHandle(ObjectClassHandle new_handle);
     ObjectClassHandle getHandle() const ;
+
+    void setSuperclass(ObjectClassHandle h) { superClass = h ; };
+    ObjectClassHandle getSuperclass() const { return superClass ; };
+    void addSubclass(ObjectClass *);
 
     // Security Methods
     void checkFederateAccess(FederateHandle, const char *)
         throw (SecurityError);
 
-    SecurityLevelID getLevelId() const { return LevelID ; };
+    SecurityLevelID getLevelId() const { return levelId ; };
 
     void setLevelId(SecurityLevelID NewLevelID);
 
@@ -208,23 +207,11 @@ public:
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
-    // PUBLIC ATTRIBUTES
-    // Note: Most of the folling Attributes should be private. In fact,
-    // they can not be reached from the RTIG and RTIA components, because
-    // they are hidden from them by ObjectClassSet.
-    // They were *temporarily* kept public for convenience in the
-    // CRead class that build
-
-    // the Object Classes tree and set all Parent/Child dependences and
-    // attributes.
-    ObjectClassHandle Father ; //!< Object parent number.
-    std::list<ObjectClassHandle> sonSet ;
+    void recursiveDiscovering(FederateHandle, ObjectClassHandle)
+	throw (ObjectClassNotDefined);
 
     //! This Object help to find a TCPLink from a Federate Handle.
     SecurityServer *server ;
-
-    //! Depth in the class tree structure. Used only by CRead.
-    UShort Depth ;
 
 private:
     void sendToFederate(NetworkMessage *msg, FederateHandle theFederate);
@@ -243,24 +230,19 @@ private:
     bool isFederatePublisher(FederateHandle the_federate) const ;
     bool isSubscribed(FederateHandle) const ;
 
-    // ATTRIBUTES
-
-    // Should be allocated and deleted locally.
-    char *Name ; //!< Object class name.
-    ObjectClassHandle handle ; //!< Object class number.
-
-    //! All non-inherited attributes have this default level.
-    SecurityLevelID LevelID ;
-
-    //! This Handle is the greatest handle of the class' subscribers.
-    FederateHandle MaxSubscriberHandle ;
-
+    // Attributes
+    std::string name ;
+    ObjectClassHandle handle ;
+    FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
+    SecurityLevelID levelId ; //! default level for non inherited attributes
     std::list<ObjectClassAttribute *> attributeSet ;
     std::list<Object *> objectSet ;
+    ObjectClassHandle superClass ;
+    std::list<ObjectClass *> subClasses ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.21 2005/03/16 23:09:26 breholee Exp $
+// $Id: ObjectClass.hh,v 3.22 2005/03/21 13:37:46 breholee Exp $

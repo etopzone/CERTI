@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.17 2005/03/17 15:49:24 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.18 2005/03/21 13:37:46 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -35,10 +35,11 @@
 using std::list ;
 using std::cout ;
 using std::endl ;
+using std::string ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTCLASSSET", "(ObjClSet) - ");
+static pdCDebug D("OBJECTCLASSSET", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! The class is not allocated, only the pointer is memorized.
@@ -53,24 +54,16 @@ ObjectClassSet::addClass(ObjectClass *newClass)
 }
 
 // ----------------------------------------------------------------------------
-/*! Build a Parent-Child relation between two object class, by setting the
-  Child's Parent handle, and registering the child in the Parent's sonSet.
-  Also copy all parent's Attributes in the child Class.
-*/
+/** Build an inheritance relation between two object classes.
+ */
 void
-ObjectClassSet::buildParentRelation(ObjectClass *child, ObjectClass *parent)
+ObjectClassSet::buildParentRelation(ObjectClass *subclass,
+				    ObjectClass *superclass)
 {
-    // Register Parent to Son
-    child->Father = parent->getHandle();
-
-    // Transfer Security Level
-    child->setLevelId(parent->getLevelId());
-
-    // Register Son to Parent
-    parent->sonSet.push_front(child->getHandle());
-
-    // Copy Parent Attribute into Child class.
-    parent->addAttributesToChild(child);
+    subclass->setSuperclass(superclass->getHandle());
+    subclass->setLevelId(superclass->getLevelId());
+    superclass->addSubclass(subclass);
+    superclass->addAttributesToChild(subclass);
 }
 
 // ----------------------------------------------------------------------------
@@ -116,7 +109,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
     ObjectClassHandle current_class = 0 ;
     if (ocbList != 0) {
 
-        current_class = oclass->Father ;
+        current_class = oclass->getSuperclass();
 
         while (current_class) {
             D.Out(pdRegister,
@@ -127,7 +120,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
             oclass = getWithHandle(current_class);
             oclass->broadcastClassMessage(ocbList);
 
-            current_class = oclass->Father ;
+            current_class = oclass->getSuperclass();
         }
 
         delete ocbList ;
@@ -211,26 +204,20 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(const char *the_name) const
-    throw (NameNotFound, RTIinternalError)
+ObjectClassSet::getObjectClassHandle(string class_name) const
+    throw (NameNotFound)
 {
-    if (the_name == 0)
-        throw RTIinternalError();
-
-    D.Out(pdRequest, "Looking for class \"%s\"...", the_name);
-
     list<ObjectClass *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        if (strcmp((*i)->getName(), the_name) == 0)
+        if ((*i)->getName() == class_name)
             return (*i)->getHandle();
     }
-
     throw NameNotFound();
 }
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
-const char *
+string
 ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
     throw (ObjectClassNotDefined,
            RTIinternalError)
@@ -276,7 +263,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
 
             // Broadcast RemoveObject message recursively
             if (ocbList != 0) {
-                currentClass = (*i)->Father ;
+                currentClass = (*i)->getSuperclass();
                 D.Out(pdExcept, "List not NULL");
                 while (currentClass != 0) {
                     D.Out(pdRegister,
@@ -288,7 +275,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
 
                     (*i)->broadcastClassMessage(ocbList);
 
-                    currentClass = (*i)->Father ;
+                    currentClass = (*i)->getSuperclass();
                 }
 
                 delete ocbList ;
@@ -329,34 +316,6 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
 }
 
 // ----------------------------------------------------------------------------
-/** Recursively start discovery of existing objects whose class belongs to
-    the given class hierarchy.
-    @param current_handle Handle of the class of currently considered objects
-    @param federate Federate to send the discovery message to
-    @param super_handle Handle of the class actually subscribed by the federate
- */
-void
-ObjectClassSet::recursiveDiscovering(ObjectClassHandle current_handle,
-                                     FederateHandle federate,
-                                     ObjectClassHandle superclass)
-    throw (ObjectClassNotDefined)
-{
-    D[pdInit] << "Recursive Discovering on class " << current_handle
-	      << " for Federate " << federate << "." << std::endl ;
-
-    ObjectClass *current = getWithHandle(current_handle);
-
-    bool go_deeper = current->sendDiscoverMessages(federate, superclass);
-
-    if (go_deeper) {
-        list<ObjectClassHandle>::const_iterator i ;
-        for (i = current->sonSet.begin(); i != current->sonSet.end(); ++i) {
-            recursiveDiscovering(*i, federate, superclass);
-        }
-    }
-}
-
-// ----------------------------------------------------------------------------
 //! registerInstance.
 void
 ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
@@ -381,7 +340,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
     // Broadcast DiscoverObject message recursively
     if (ocbList != 0) {
 
-        currentClass = theClass->Father ;
+        currentClass = theClass->getSuperclass();
 
         while (currentClass != 0) {
             D.Out(pdRegister,
@@ -393,7 +352,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
 
             theClass->broadcastClassMessage(ocbList);
 
-            currentClass = theClass->Father ;
+            currentClass = theClass->getSuperclass();
         }
 
         delete ocbList ;
@@ -426,7 +385,7 @@ ObjectClassSet::subscribe(FederateHandle federate,
     bool need_discover = object_class->subscribe(federate, attributes, nb, region);
 
     if (need_discover)
-        recursiveDiscovering(class_handle, federate, class_handle);
+	object_class->recursiveDiscovering(federate, class_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -463,7 +422,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
                                                  theUserTag);
 
     // Broadcast ReflectAttributeValues message recursively
-    currentClass = objectClass->Father ;
+    currentClass = objectClass->getSuperclass();
 
     while (currentClass != 0) {
         D.Out(pdProtocol,
@@ -474,7 +433,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle theFederateHandle,
         objectClass = getWithHandle(currentClass);
         objectClass->broadcastClassMessage(ocbList);
 
-        currentClass = objectClass->Father ;
+        currentClass = objectClass->getSuperclass();
     }
 
     delete ocbList ;
@@ -509,7 +468,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                              theTag);
 
     // Broadcast ReflectAttributeValues message recursively
-    currentClass = objectClass->Father ;
+    currentClass = objectClass->getSuperclass();
 
     while (currentClass != 0) {
         D.Out(pdProtocol,
@@ -520,7 +479,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         objectClass = getWithHandle(currentClass);
         objectClass->broadcastClassMessage(ocbList);
 
-        currentClass = objectClass->Father ;
+        currentClass = objectClass->getSuperclass();
     }
 
     delete ocbList ;
@@ -578,7 +537,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                                    theListSize);
 
     // Broadcast ReflectAttributeValues message recursively
-    currentClass = objectClass->Father ;
+    currentClass = objectClass->getSuperclass();
 
     while (currentClass != 0) {
         D.Out(pdProtocol,
@@ -589,7 +548,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         objectClass = getWithHandle(currentClass);
         objectClass->broadcastClassMessage(ocbList);
 
-        currentClass = objectClass->Father ;
+        currentClass = objectClass->getSuperclass();
     }
 
     delete ocbList ;
@@ -670,4 +629,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.17 2005/03/17 15:49:24 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.18 2005/03/21 13:37:46 breholee Exp $
