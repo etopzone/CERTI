@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.hh,v 3.4 2003/07/03 15:59:20 breholee Exp $
+// $Id: RegionImp.hh,v 3.5 2003/11/10 14:54:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_REGION_IMP_HH
@@ -37,7 +37,7 @@ typedef unsigned long RegionHandle ;
 class RegionImp : public Region
 {
 public:
-    RegionImp(long, SpaceHandle, long, long);
+    RegionImp(RegionHandle, SpaceHandle, size_t, size_t);
     virtual ~RegionImp();
 
     virtual ULong getRangeLowerBound(ExtentIndex, DimensionHandle) const
@@ -71,19 +71,20 @@ public:
     long getNumberOfExtents();
     void notify();
 
-    Extent *getExtent(ExtentIndex) const throw (ArrayIndexOutOfBounds);
-    std::vector<Extent *> *getExtents();    
-    void setExtents(const std::vector<Extent *> &) throw (InvalidExtents);
+    //const Extent &getExtent(ExtentIndex) const throw (ArrayIndexOutOfBounds);
+    const std::vector<Extent> &getExtents() const ;
+    void setExtents(const std::vector<Extent> &) throw (InvalidExtents);
+    void add(const Extent &);
 
 private:
     SpaceHandle space ;
     RegionHandle handle ;
-    std::vector<Extent*> extents ;
-    std::vector<Extent*> coExtents ;
+    std::vector<Extent> extents ;
+    std::vector<Extent> coExtents ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_REGION_IMP_HH
 
-// $Id: RegionImp.hh,v 3.4 2003/07/03 15:59:20 breholee Exp $
+// $Id: RegionImp.hh,v 3.5 2003/11/10 14:54:11 breholee Exp $

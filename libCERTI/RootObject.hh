@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.17 2003/10/27 10:17:45 breholee Exp $
+// $Id: RootObject.hh,v 3.18 2003/11/10 14:54:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -50,16 +50,16 @@ public:
                           SecurityLevelID the_level_id);
 
     // Data Distribution Management
-    void addRoutingSpace(RoutingSpace *);
-    RoutingSpace *getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
+    void addRoutingSpace(const RoutingSpace &);
+    RoutingSpace &getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
     SpaceHandle getRoutingSpaceHandle(std::string) throw (NameNotFound);
     std::string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
     void addRegion(RegionImp *);
-    long createRegion(SpaceHandle, long) throw (SpaceNotDefined);
-    void deleteRegion(long) throw (RegionNotKnown, RegionInUse);
-    RegionImp *getRegion(long) throw (RegionNotKnown);
-    void modifyRegion(long, std::vector<Extent *> *)
+    RegionHandle createRegion(SpaceHandle, long) throw (SpaceNotDefined);
+    void deleteRegion(RegionHandle) throw (RegionNotKnown, RegionInUse);
+    RegionImp *getRegion(RegionHandle) throw (RegionNotKnown);
+    void modifyRegion(RegionHandle, const std::vector<Extent> &)
 	throw (RegionNotKnown, InvalidExtents);
     
     // Object Management
@@ -91,7 +91,7 @@ public:
     ObjectSet *objects ;
 
 private:
-    std::vector<RoutingSpace *> routingSpaces ;
+    std::vector<RoutingSpace> routingSpaces ;
     std::list<RegionImp *> regions ;
     SecurityServer *server ;
     long freeRegionHandle ;
@@ -101,4 +101,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.17 2003/10/27 10:17:45 breholee Exp $
+// $Id: RootObject.hh,v 3.18 2003/11/10 14:54:11 breholee Exp $

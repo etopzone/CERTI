@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.3 2003/07/07 23:05:26 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.4 2003/11/10 14:54:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RoutingSpace.hh"
+#include "NameComparator.hh"
+#include "HandleComparator.hh"
 
 #include <iostream>
 
@@ -37,27 +39,19 @@ namespace certi {
 // ----------------------------------------------------------------------------
 /** Constructor
  */
-RoutingSpace::RoutingSpace()
-{
-}
+RoutingSpace::RoutingSpace() { }
 
 // ----------------------------------------------------------------------------
 /** Destructor
  */
-RoutingSpace::~RoutingSpace()
-{
-    vector<Dimension*>::iterator i ;
-    for (i = dimensions.begin(); i != dimensions.end(); i++) {
-        delete *i ;
-    }
-    dimensions.clear();
-}
+RoutingSpace::~RoutingSpace() { }
 
 // ----------------------------------------------------------------------------
-/** add a dimension
+/** Add a dimension. A copy of the dimension parameter is added in the
+    routing space.
  */
 void
-RoutingSpace::addDimension(Dimension* d)
+RoutingSpace::addDimension(const Dimension &d)
 {
     dimensions.push_back(d);
 }
@@ -75,7 +69,7 @@ RoutingSpace::setHandle(SpaceHandle h)
 /** display (stdout) the routing space details
  */
 void
-RoutingSpace::display()
+RoutingSpace::display() const
 {
     cout << "RoutingSpace « " << name << " »" << endl ;
 }
@@ -93,7 +87,7 @@ RoutingSpace::setName(string s)
 /** get the routing space's name
  */
 string
-RoutingSpace::getName()
+RoutingSpace::getName() const
 {
     return name ;
 }
@@ -102,7 +96,7 @@ RoutingSpace::getName()
 /** get the routing space's handle
  */
 SpaceHandle
-RoutingSpace::getHandle()
+RoutingSpace::getHandle() const
 {
     return handle ;
 }
@@ -111,44 +105,43 @@ RoutingSpace::getHandle()
 /** get the handle of the specified dimension
  */
 DimensionHandle
-RoutingSpace::getDimensionHandle(string dimension)
+RoutingSpace::getDimensionHandle(string dimension_name) const
     throw (NameNotFound)
 {
-    vector<Dimension *>::iterator i ;
+    vector<Dimension>::const_iterator it = std::find_if(
+	dimensions.begin(),
+	dimensions.end(),
+	NameComparator<Dimension>(dimension_name));
 
-    for (i = dimensions.begin(); i != dimensions.end(); i++) {
-        if ((*i)->getName() == dimension)
-            return (*i)->getHandle();
-    }
-    throw new NameNotFound();
+    if (it == dimensions.end())	throw NameNotFound();
+    else return it->getHandle();
 }
 
 // ----------------------------------------------------------------------------
 /** get the name of the specified dimension
  */
 string
-RoutingSpace::getDimensionName(DimensionHandle dimension)
+RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
     throw (DimensionNotDefined)
 {
-    vector<Dimension *>::iterator i ;
+    vector<Dimension>::const_iterator it = std::find_if(
+	dimensions.begin(),
+	dimensions.end(),
+	HandleComparator<Dimension>(dimension_handle));
 
-    for (i= dimensions.begin(); i != dimensions.end(); i++) {
-        if ((*i)->getHandle() == dimension) {
-            return (*i)->getName();
-        }
-    }
-    throw new DimensionNotDefined();
+    if (it == dimensions.end()) throw DimensionNotDefined();
+    else return it->getName();
 }
 
 // ----------------------------------------------------------------------------
 /** get the number of dimensions of this space
  */
-long
-RoutingSpace::getNbDimensions()
+size_t
+RoutingSpace::size() const
 {
     return dimensions.size();
 }
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.3 2003/07/07 23:05:26 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.4 2003/11/10 14:54:11 breholee Exp $

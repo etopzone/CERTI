@@ -19,14 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.18 2003/10/27 10:17:45 breholee Exp $
+// $Id: RootObject.cc,v 3.19 2003/11/10 14:54:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RootObject.hh"
-
 #include "PrettyDebug.hh"
+#include "NameComparator.hh"
+#include "HandleComparator.hh"
 
+#include <cassert>
 #include <string>
 #include <cstring>
 #include <stdio.h>
@@ -59,13 +61,6 @@ RootObject::~RootObject()
     delete ObjectClasses ;
     delete Interactions ;
     delete objects ;
-
-    vector<RoutingSpace *>::iterator i ;
-    vector<RoutingSpace *>::iterator end = routingSpaces.end();
-    for (i = routingSpaces.begin(); i < end ; ++i) {
-        delete *i ;
-    }
-    routingSpaces.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -78,10 +73,9 @@ RootObject::display() const
     Interactions->display();
     if (routingSpaces.size() > 0) {
         cout << "+ Routing Spaces :" << endl ;
-        for (vector<RoutingSpace *>::const_iterator i = routingSpaces.begin();
-             i != routingSpaces.end();
-             i++) {
-            (*i)->display();
+	vector<RoutingSpace>::const_iterator it ;
+        for (it = routingSpaces.begin(); it != routingSpaces.end(); ++it) {
+            it->display();
         }
     }
 }
@@ -107,13 +101,11 @@ RootObject::registerFederate(const char *the_federate,
 }
 
 // ----------------------------------------------------------------------------
-//! add a routing space[HLA 1.3]
+//! add a routing space [HLA 1.3]
 void
-RootObject::addRoutingSpace(RoutingSpace *rs)
+RootObject::addRoutingSpace(const RoutingSpace &rs)
 {
-    if (rs != 0) {
-        routingSpaces.push_back(rs);
-    }
+    routingSpaces.push_back(rs);
 }
 
 // ----------------------------------------------------------------------------
@@ -122,14 +114,13 @@ SpaceHandle
 RootObject::getRoutingSpaceHandle(string rs)
     throw (NameNotFound)
 {
-    vector<RoutingSpace *>::const_iterator i ;
-
-    for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
-        if ((*i)->getName() == rs) {
-            return (*i)->getHandle();
-        }
-    }
-    throw new NameNotFound();
+    vector<RoutingSpace>::const_iterator i = std::find_if(
+	routingSpaces.begin(),
+	routingSpaces.end(),
+	NameComparator<RoutingSpace>(rs));
+    
+    if (i == routingSpaces.end()) throw NameNotFound();
+    else return i->getHandle();
 }
 
 // ----------------------------------------------------------------------------
@@ -138,30 +129,28 @@ string
 RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    vector<RoutingSpace *>::const_iterator i ;
-
-    for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
-        if ((*i)->getHandle() == handle) {
-            return (*i)->getName().c_str();
-        }
-    }
-    throw SpaceNotDefined();
+    vector<RoutingSpace>::const_iterator i = std::find_if(
+	routingSpaces.begin(),
+	routingSpaces.end(),
+	HandleComparator<RoutingSpace>(handle));
+    
+    if (i == routingSpaces.end()) throw SpaceNotDefined();
+    else return i->getName();
 }
 
 // ----------------------------------------------------------------------------
 //! get a routing space
-RoutingSpace *
+RoutingSpace &
 RootObject::getRoutingSpace(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
-    vector<RoutingSpace *>::const_iterator i ;
-
-    for (i = routingSpaces.begin(); i != routingSpaces.end(); i++) {
-        if ((*i)->getHandle() == handle) {
-            return *i ;
-        }
-    }
-    throw new SpaceNotDefined();
+    vector<RoutingSpace>::iterator i = std::find_if(
+	routingSpaces.begin(),
+	routingSpaces.end(),
+	HandleComparator<RoutingSpace>(handle));
+    
+    if (i == routingSpaces.end()) throw SpaceNotDefined();
+    else return *i ;
 }
 
 // ----------------------------------------------------------------------------
@@ -174,37 +163,36 @@ RootObject::addRegion(RegionImp *region)
 
 // ----------------------------------------------------------------------------
 //! create (and add) a region
-long
+RegionHandle
 RootObject::createRegion(SpaceHandle handle, long nb_extents)
     throw (SpaceNotDefined)
 {
-    RoutingSpace *space = this->getRoutingSpace(handle);
+    RegionImp *region = new RegionImp(freeRegionHandle++, handle, nb_extents,
+				      getRoutingSpace(handle).size());
+    addRegion(region);
 
-    RegionImp *region = new RegionImp(freeRegionHandle++, handle,
-                                      space->getNbDimensions(), nb_extents);
-
-    this->addRegion(region);
-    //this->getRoutingSpace(space)->addRegion(region);
-
+    assert(region->getNumberOfExtents() == nb_extents);
     return region->getHandle();
 }
 
 // ----------------------------------------------------------------------------
 // modify a region
 void
-RootObject::modifyRegion(long handle, vector<Extent *> *extents)
+RootObject::modifyRegion(RegionHandle handle, const vector<Extent> &extents)
     throw (RegionNotKnown, InvalidExtents)
 {
     RegionImp *region = getRegion(handle);
 
-    // TODO: check extents are in the routing space
-    region->setExtents(*extents);
+    // TODO: check extents are in the routing space, and number ok
+    assert(region->getNumberOfExtents() == extents.size());
+
+    region->setExtents(extents);
 }
 
 // ----------------------------------------------------------------------------
 //! delete a region
 void
-RootObject::deleteRegion(long handle)
+RootObject::deleteRegion(RegionHandle handle)
     throw (RegionNotKnown, RegionInUse)
 {
     list<RegionImp *>::iterator i ;
@@ -223,17 +211,24 @@ RootObject::deleteRegion(long handle)
 // ----------------------------------------------------------------------------
 //! get a region
 RegionImp *
-RootObject::getRegion(long handle)
+RootObject::getRegion(RegionHandle handle)
     throw (RegionNotKnown)
 {
-    list<RegionImp *>::iterator i ;
+//     list<RegionImp *>::iterator i ;
 
-    for (i = regions.begin(); i != regions.end(); i++) {
-        if ((*i)->getHandle() == handle) {
-            return *i ;
-        }
-    }
-    throw RegionNotKnown();
+//     for (i = regions.begin(); i != regions.end(); i++) {
+//         if ((*i)->getHandle() == handle) {
+//             return *i ;
+//         }
+//     }
+//     throw RegionNotKnown();
+
+    list<RegionImp *>::iterator it = std::find_if(
+	regions.begin(), 
+	regions.end(),
+	HandleComparator<RegionImp>(handle));
+    if (it == regions.end()) throw RegionNotKnown();
+    else return *it ;
 }
 
 // ----------------------------------------------------------------------------
@@ -325,4 +320,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.18 2003/10/27 10:17:45 breholee Exp $
+// $Id: RootObject.cc,v 3.19 2003/11/10 14:54:11 breholee Exp $

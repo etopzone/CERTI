@@ -19,48 +19,38 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RegionImp.cc,v 3.4 2003/07/03 15:59:21 breholee Exp $
+// $Id: RegionImp.cc,v 3.5 2003/11/10 14:54:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RegionImp.hh"
+
+#include <cassert>
 
 using std::vector ;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
-// RegionImp
-//
-RegionImp::RegionImp(long h, SpaceHandle s, long dimensions, long nb_extents)
-{
-    handle = h ;
-    space = s ;
-
-    extents.reserve(nb_extents);
-    coExtents.reserve(nb_extents);
-
-    for (int i = 0 ; i < nb_extents ; i++) {
-        extents.push_back(new Extent(dimensions));
-        coExtents.push_back(new Extent(dimensions));
-    }
-}
+/** Region Constructor
+    \param region_handle Handle of this Region
+    \param space_handle Handle of the RoutingSpace of this Region
+    \param nb_extents Number of extents
+    \param nb_dimensions Number of dimensions
+ */
+RegionImp::RegionImp(RegionHandle region_handle,
+		     SpaceHandle space_handle,
+		     size_t nb_extents,
+		     size_t nb_dimensions)
+    : handle(region_handle),
+      space(space_handle),
+      extents(nb_extents, Extent(nb_dimensions)),
+      coExtents(nb_extents, Extent(nb_dimensions)) { }
 
 // ----------------------------------------------------------------------------
 // ~RegionImp
 //
-RegionImp::~RegionImp()
-{
-    vector<Extent*>::iterator i ;
-    for (i = extents.begin(); i != extents.end(); i++) {
-        delete *i ;
-    }
-    for (i = coExtents.begin(); i != coExtents.end(); i++) {
-        delete *i ;
-    }
-    extents.clear();
-    coExtents.clear();
-}
+RegionImp::~RegionImp() { }
 
 // ----------------------------------------------------------------------------
 // getSpaceHandle
@@ -94,7 +84,7 @@ RegionImp::getRangeLowerBound(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        return extents[index]->getRangeLowerBound(dimension);
+        return extents[index].getRangeLowerBound(dimension);
     }
 }
 
@@ -110,7 +100,7 @@ RegionImp::getRangeUpperBound(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        return extents[index]->getRangeUpperBound(dimension);
+        return extents[index].getRangeUpperBound(dimension);
     }
 }
 
@@ -126,7 +116,7 @@ RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        return coExtents[index]->getRangeLowerBound(dimension);
+        return coExtents[index].getRangeLowerBound(dimension);
     }
 }
 
@@ -142,7 +132,7 @@ RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        return coExtents[index]->getRangeUpperBound(dimension);
+        return coExtents[index].getRangeUpperBound(dimension);
     }
 }
 
@@ -159,7 +149,7 @@ RegionImp::setRangeLowerBound(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        extents[index]->setRangeLowerBound(dimension, val);
+        extents[index].setRangeLowerBound(dimension, val);
     }
 }
 
@@ -176,7 +166,7 @@ RegionImp::setRangeUpperBound(ExtentIndex index,
         throw ArrayIndexOutOfBounds();
     }
     else {
-        extents[index]->setRangeUpperBound(dimension, val);
+        extents[index].setRangeUpperBound(dimension, val);
     }
 }
 
@@ -199,26 +189,26 @@ RegionImp::setHandle(RegionHandle h)
 }
 
 // ----------------------------------------------------------------------------
-// notify
-//
+/** Update the Region after an update to the RTI. 
+ */
 void
 RegionImp::notify()
 {
-    vector<Extent *>::iterator e, c ;
-    vector<Extent *>::iterator end = extents.end();
+    vector<Extent>::iterator e, c ;
+    vector<Extent>::iterator end = extents.end();
 
     for (e = extents.begin(), c = coExtents.begin(); e != end ; ++e) {
-	int n = (*e)->getNumberOfRanges();
-	for (int i = 0 ; i < n ; ++i) {
-	    (*c)->setRangeUpperBound(i, (*e)->getRangeUpperBound(i));
-	    (*c)->setRangeLowerBound(i, (*e)->getRangeLowerBound(i));
+	int n = e->size() ;
+	for (int h = 1 ; h <= n ; ++h) {
+	    c->setRangeUpperBound(h, e->getRangeUpperBound(h));
+	    c->setRangeLowerBound(h, e->getRangeLowerBound(h));
 	}
     }
 }
 
 // ----------------------------------------------------------------------------
-// getNumberOfExtents
-//
+/** Get the number of extents in this region
+ */
 long
 RegionImp::getNumberOfExtents()
 {
@@ -226,47 +216,37 @@ RegionImp::getNumberOfExtents()
 }
 
 // ----------------------------------------------------------------------------
-// getExtent
-//
-Extent *
-RegionImp::getExtent(ExtentIndex i) const
-    throw (ArrayIndexOutOfBounds)
+/** Get the region's extents
+    \return The extents, as a vector
+ */
+const vector<Extent> &
+RegionImp::getExtents() const
 {
-    if (i < 0 || i >= extents.size()) {
-	throw ArrayIndexOutOfBounds();
-    }
-    return extents[i] ;
-}
-
-// ----------------------------------------------------------------------------
-// getExtents
-//
-vector<Extent *> *
-RegionImp::getExtents()
-{
-    return &extents ;
+    return extents ;
 }
 
 // ----------------------------------------------------------------------------
 // setExtents
 //
 void
-RegionImp::setExtents(const vector<Extent *> &e)
+RegionImp::setExtents(const vector<Extent> &e)
     throw (InvalidExtents)
 {
+    assert(e.size() == extents.size()); // TO REMOVE
     if (e.size() != extents.size())
 	throw InvalidExtents();
 
-    int n = extents.size();
-    for (int i = 0 ; i < n ; ++i) {
-	int m = e[i]->getNumberOfRanges();
-	for (int j = 0 ; j < m ; ++j) {
-	    extents[i]->setRangeUpperBound(j, e[i]->getRangeUpperBound(j));
-	    extents[i]->setRangeLowerBound(j, e[i]->getRangeLowerBound(j));
-	}
-    }
+//     int n = extents.size();
+//     for (int i = 0 ; i < n ; ++i) {
+// 	int m = e[i].size();
+// 	for (int j = 0 ; j < m ; ++j) {
+// 	    extents[i].setRangeUpperBound(j, e[i].getRangeUpperBound(j));
+// 	    extents[i].setRangeLowerBound(j, e[i].getRangeLowerBound(j));
+// 	}
+//     }
+    extents = e ;
 }
 
 } // namespace certi
 
-// $Id: RegionImp.cc,v 3.4 2003/07/03 15:59:21 breholee Exp $
+// $Id: RegionImp.cc,v 3.5 2003/11/10 14:54:11 breholee Exp $
