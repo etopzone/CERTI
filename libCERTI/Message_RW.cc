@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.19 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message_RW.cc,v 3.20 2004/09/23 09:15:18 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1020,7 +1020,6 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 1 ;
         break ;
 
-
       case SEND_INTERACTION: // B.c. Tag, handleArray[], ValueArray[]
       case RECEIVE_INTERACTION: // B.c. Tag, handleArray[],
         // ValueArray[], resignAction
@@ -1119,22 +1118,14 @@ Message::writeHeader(SocketUN *socket)
     return header.bodySize != 0 ;
 }
 
-
-// ---------------------
-// -- WriteresignAction --
-// ---------------------
-
+// ---------------------------------------------------------------
 void
 Message::writeResignAction(MessageBody*)
 {
-    assert(false);
+    //assert(false);
 }
 
-
-// ---------------------
-// -- WriteValueArray --
-// ---------------------
-
+// ---------------------------------------------------------------------------
 void
 Message::writeValueArray(MessageBody *Body)
 {
@@ -1145,4 +1136,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.19 2004/08/24 18:25:05 breholee Exp $
+// $Id: Message_RW.cc,v 3.20 2004/09/23 09:15:18 breholee Exp $
