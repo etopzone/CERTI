@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.23 2005/03/25 17:31:14 breholee Exp $
+// $Id: ObjectClass.hh,v 3.24 2005/03/28 19:26:40 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -101,17 +101,6 @@ public:
 
     void unsubscribe(FederateHandle, const RTIRegion *);
     void unsubscribe(FederateHandle);
-
-    // The second parameter is the Class of whose behalf the message
-    // are sent. If SDM is called on the original class, the Federate
-    // may be a subscriber of the class without stopping the
-    // process(because he has just subscribed)
-    //
-    // Return RTI_TRUE if the same SendDiscoverMessages method must be called
-    // on the child classes of this class.
-    // Return RTI_FALSE if no messages were sent because the Federate had
-    // already receive DO messages for this class(and all child classes).
-    bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
 
     // Ownership Management
     ObjectClassBroadcastList *
@@ -225,6 +214,17 @@ private:
     bool isFederatePublisher(FederateHandle the_federate) const ;
     bool isSubscribed(FederateHandle) const ;
 
+    // The second parameter is the Class of whose behalf the message
+    // are sent. If SDM is called on the original class, the Federate
+    // may be a subscriber of the class without stopping the
+    // process(because he has just subscribed)
+    //
+    // Return RTI_TRUE if the same SendDiscoverMessages method must be called
+    // on the child classes of this class.
+    // Return RTI_FALSE if no messages were sent because the Federate had
+    // already receive DO messages for this class(and all child classes).
+    bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
+
     // Attributes
     std::string name ;
     ObjectClassHandle handle ;
@@ -240,4 +240,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.23 2005/03/25 17:31:14 breholee Exp $
+// $Id: ObjectClass.hh,v 3.24 2005/03/28 19:26:40 breholee Exp $
