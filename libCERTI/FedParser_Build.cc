@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser_Build.cc,v 3.2 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.3 2003/01/20 17:38:34 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Classe FedParser chargee de lire les fichiers .fed, partie lecture
@@ -207,7 +207,7 @@ FedParser::readAtom(void)
     readListFirst module and stored by store module.
 */
 void
-FedParser::readFile(char *FedFile)
+FedParser::readFile(const char *FedFile)
     throw(CouldNotOpenRID, ErrorReadingRID, SecurityError, RTIinternalError)
 {
   FEDFile = new ifstream(FedFile, ios::in);
@@ -397,5 +397,5 @@ FedParser::skipLine(void)
 
 }}
 
-// $Id: FedParser_Build.cc,v 3.2 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser_Build.cc,v 3.3 2003/01/20 17:38:34 breholee Exp $
 

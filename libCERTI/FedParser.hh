@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedParser.hh,v 3.2 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser.hh,v 3.3 2003/01/20 17:38:34 breholee Exp $
 // ---------------------------------------------------------------------------
 
 #ifndef _CERTI_FED_PARSER_HH
@@ -69,7 +69,7 @@ public:
   // -- Public Entry Point --
   // ------------------------
 
-  void readFile(char *FedFile)
+  void readFile(const char *FedFile)
     throw(CouldNotOpenRID,
 	  ErrorReadingRID,
 	  SecurityError,
@@ -264,4 +264,4 @@ private:
 
 #endif // _CERTI_FED_PARSER_HH
 
-// $Id: FedParser.hh,v 3.2 2003/01/15 15:37:19 breholee Exp $
+// $Id: FedParser.hh,v 3.3 2003/01/20 17:38:34 breholee Exp $
