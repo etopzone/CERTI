@@ -20,11 +20,11 @@ Content
 - CVS Id
 
 Then for .hh files:
-- multiple inclusion check (for .hh files)
+- multiple inclusion check
 - includes from the project (starting with <config.h>)
 - includes from external libraries (eg. libXML)
 - includes from standard libraries (eg. stdio.h, iostream)
-- usings
+- usings (eg. "using std::string ;" )
 - #define's
 - declarations
 
@@ -47,7 +47,7 @@ Spaces
 ------
 
 Required:
-- after keyword : if (expr) ...
+- after keyword : while (expr) ...
 - after commas : func(param1, param2, param3);
 - around operators : (a && (b || c || d))
 
