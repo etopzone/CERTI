@@ -1,31 +1,33 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
+// $Id: GSSAPIHandler.hh,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GSSAPI_HANDLER_HH
 #define _CERTI_GSSAPI_HANDLER_HH
 #ifdef WITH_GSSAPI
+
+#include <config.h>
 
 #include "RTItypes.hh" // For constants' values
 #include <stdio.h>
@@ -36,110 +38,78 @@
 
 namespace certi {
 
-class GSSAPIHandler 
+class GSSAPIHandler
 {
 public:
 
-  typedef enum GSSRole {GSS_Client, GSS_Server};
+ typedef enum GSSRole {GSS_Client, GSS_Server};
 
-  // --------------------------------
-  // -- Constructor and Destructor --
-  // --------------------------------
+ // --------------------------------
+ // -- Constructor and Destructor --
+ // --------------------------------
+ GSSAPIHandler(void);
+ ~GSSAPIHandler(void);
 
-  GSSAPIHandler();
-  ~GSSAPIHandler();
+ // -----------
+ // -- Names --
+ // -----------
+ void setLocalName(char *PrincipalName);
+ void setRemoteName(char *PrincipalName);
+ char *getRemoteName(void);
 
-  // -----------
-  // -- Names --
-  // -----------
+ // ------------------
+ // -- Init Session --
+ // ------------------
+ void initSecContext(SocketTCP *Socket);
+ void acceptSecContext(SocketTCP *Socket);
 
-  void setLocalName(char *PrincipalName);
-  void setRemoteName(char *PrincipalName); //For client,before InitSecCntxt
-
-  // After the security context has been accepted, the server can retrieve
-  // the client principal name. The string is allocated with malloc and must
-  // be freed by the caller. The returned name is stripped from any network
-  // address part(starting with a '@').
-
-  char *getRemoteName();
-
-  // ------------------
-  // -- Init Session --
-  // ------------------
-
-  // Session Initiator must call SetRemoteName, and then InitSecContext.
-  // On the remote side, AcceptSecContext will be directly called.
-  // In both case, Local Name must have been previously set.
-
-  void initSecContext(SocketTCP *Socket);
-  void acceptSecContext(SocketTCP *Socket);
-
-  // ------------------------------
-  // -- Message Exchange Methods --
-  // ------------------------------
-
-  // All buffers contain clear-text messages. Incoming buffer value array
-  // is allocated by GetMessage, and must be freed by calling ReleaseBuffer.
-
-  void getMessage(SocketTCP *Socket, gss_buffer_t IncomingBuffer);
-  void releaseBuffer(gss_buffer_t IncomingBuffer);
-  void sendMessage(SocketTCP *Socket, gss_buffer_t OutcomingBuffer);
+ // ------------------------------
+ // -- Message Exchange Methods --
+ // ------------------------------
+ void getMessage(SocketTCP *Socket, gss_buffer_t IncomingBuffer);
+ void releaseBuffer(gss_buffer_t IncomingBuffer);
+ void sendMessage(SocketTCP *Socket, gss_buffer_t OutcomingBuffer);
 
 private:
 
-  // ---------------------
-  // -- Private Methods --
-  // ---------------------
+ // ---------------------
+ // -- Private Methods --
+ // ---------------------
+ void acquireCred(int initOrAccept);
+ void detectError(char *contextString = NULL);
 
-  // Retrieve credential for Local principal.
-  // Parameter can be GSS_C_INITIATE(client) or GSS_C_ACCEPT(server)
+ void getToken(SocketTCP *socket, gss_buffer_desc &buffer);
+ void sendToken(SocketTCP *socket, gss_buffer_desc buffer);
 
-  void acquireCred(int InitOrAccept);
+ // ------------------------
+ // -- Private Attributes --
+ // ------------------------
 
-  // Throw NetworkError exception if 'Code' is different from GSS_S_COMPLETE.
-  // An Error message is displayed, starting with ContextString if not NULL.
+ Boolean InitSecContext_Started ;
 
-  void detectError(char *ContextString = NULL);
+ // Principal Names
+ gss_name_t LocalName ; // Internal form
+ gss_name_t RemoteName ; // Internal form
 
-  // Send and receive Token. Network formet is :
-  //(unsigned long) Length(4 bytes = sizeof(long))
-  //(char *) Value(Length bytes)
-  // The GetToken method takes an empty buffer has a second parameter,
-  // and allocates(with calloc) enough space for the incoming token. Memory
-  // must be freed with free().
+ // Return Codes
+ OM_uint32 Code ;
+ OM_uint32 Minor ;
 
-  void getToken(SocketTCP *Socket, gss_buffer_desc &Buffer);
-  void sendToken(SocketTCP *Socket, gss_buffer_desc Buffer);
+ // Local credential
+ gss_cred_id_t Credential ;
 
-  // ------------------------
-  // -- Private Attributes --
-  // ------------------------
+ // Local context(Only initiator(client) may delete the context)
+ gss_ctx_id_t Context ;
 
-  Boolean InitSecContext_Started;
+ // Actual Mechanism
+ gss_OID MechType ;
 
-  // Principal Names
-  gss_name_t LocalName; // Internal form
-  gss_name_t RemoteName; // Internal form
-
-  // Return Codes
-  OM_uint32 Code;
-  OM_uint32 Minor;
-
-  // Local credential
-  gss_cred_id_t Credential;
-
-  // Local context(Only initiator(client) may delete the context)
-  gss_ctx_id_t Context;
-
-  // Actual Mechanism
-  gss_OID MechType;
-
-  // Role
-  Boolean IsClient;
+ // Role
+ Boolean IsClient ;
 };
 }
 
 #endif // WITH_GSSAPI
 #endif // _CERTI_GSSAPI_HANDLER_HH
 
-// $Id: GSSAPIHandler.hh,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: GSSAPIHandler.hh,v 3.2 2003/02/17 16:00:06 breholee Exp $

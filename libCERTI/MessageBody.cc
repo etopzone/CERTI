@@ -1,29 +1,27 @@
-// -*- mode:C++; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*- 
-// ---------------------------------------------------------------------------
+// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
+// ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002  ONERA
+// Copyright (C) 2002, 2003  ONERA
 //
-// This file is part of CERTI-libcerti
+// This file is part of CERTI-libCERTI
 //
-// CERTI-libcerti is free software; you can redistribute it and/or
+// CERTI-libCERTI is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation; either version 2 of
+// as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libcerti is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
-// License along with this program; if not, write to the Free Software
+// License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
-// ---------------------------------------------------------------------------
-
-#include <config.h>
+// $Id: MessageBody.cc,v 3.2 2003/02/17 16:00:06 breholee Exp $
+// ----------------------------------------------------------------------------
 
 #include "MessageBody.hh"
 
@@ -32,100 +30,92 @@
 
 namespace certi {
 
-// ------------------
-// -- MessageBody --
-// ------------------
-
-MessageBody::MessageBody()
+// ----------------------------------------------------------------------------
+/*! To create a WRITE body, with its own buffer(it will be deleted by the
+ destructor). No Read operations should be made.
+*/
+MessageBody::MessageBody(void)
 {
-  Length     = 0;
+ Length = 0 ;
+ GetPtr = Buffer ;
 
-  GetPtr     = Buffer;
-
-  if((sizeof(unsigned short) != 2) ||(sizeof(unsigned long) != 4))
-    throw RTIinternalError("MessageBody unabled to process ints.");
+ if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
+ throw RTIinternalError("MessageBody unabled to process ints.");
 }
 
-
-// -------------------
-// -- ~MessageBody --
-// -------------------
-
-MessageBody::~MessageBody()
+// ----------------------------------------------------------------------------
+//! Destructor.
+MessageBody::~MessageBody(void)
 {
 }
 
-
-// ---------------
-// -- GetLength --
-// ---------------
-
-long MessageBody::getLength()
+// ----------------------------------------------------------------------------
+//! getLength.
+/*! Body must have been frozen.
+ */
+long MessageBody::getLength(void)
 {
-  return Length;
+ return Length ;
 }
 
-
-// ---------------
-// -- GetBuffer --
-// ---------------
-
-char *MessageBody::getBuffer()
+// ----------------------------------------------------------------------------
+//! getBuffer.
+/*! Body must have been frozen.
+ */
+char *MessageBody::getBuffer(void)
 {
-  return Buffer;
+ return Buffer ;
 }
 
-
-// ----------------
-// -- ReadString --
-// ----------------
-
+// ----------------------------------------------------------------------------
+/*! Retrieve a string from the Body, and put it in Store. Store is at least
+ (StoreLen + 1) bytes long. Store must be NOT NULL.
+*/
 void MessageBody::readString(char *Store, unsigned short StoreLen)
 {
-  // Read String's Length
-  unsigned short StrLength = readShortInt();
+ // Read String's Length
+ unsigned short StrLength = readShortInt();
 
-  // Is the Store String long enough?
-  if(StrLength > StoreLen)
-    throw RTIinternalError("String in Message too long for storage.");
+ // Is the Store String long enough?
+ if (StrLength > StoreLen)
+ throw RTIinternalError("String in Message too long for storage.");
 
-  // Get string from stream
-  if(StrLength > 0)
-    sgetn(Store, StrLength);
+ // Get string from stream
+ if (StrLength > 0)
+ sgetn(Store, StrLength);
 
-  Store [StrLength] = '\0';
+ Store[StrLength] = '\0' ;
 }
 
-
-// -----------------
-// -- WriteString --
-// -----------------
-
+// ----------------------------------------------------------------------------
+/*! If the string is empty(or NULL), an empty string is written onto the
+ stream.
+*/
 void MessageBody::writeString(const char *String)
 {
-  unsigned short StrLength;
+ unsigned short StrLength ;
 
-  // NULL String is handled like an empty string
-  if(String == NULL) {
-    writeShortInt(0);
-    return;
-  }
+ // NULL String is handled like an empty string
+ if (String == NULL) {
+ writeShortInt(0);
+ return ;
+ }
 
-  // Write string length
-  StrLength = std::strlen(String);
+ // Write string length
+ StrLength = std::strlen(String);
 
-  // BUG: Should test string's length.
-  //if(StrLength > MAX_BYTES_PER_VALUE)
-  //  throw RTIinternalError("String too long.");
+ // BUG: Should test string's length.
+ //if (StrLength > MAX_BYTES_PER_VALUE)
+ // throw RTIinternalError("String too long.");
 
-  writeShortInt(StrLength);
+ writeShortInt(StrLength);
 
-  // WriteString
-  if(StrLength > 0) {
-    sputn((char *)String, StrLength);
-  }
+ // WriteString
+ if (StrLength > 0) {
+ sputn((char *)String, StrLength);
+ }
 }
 
 }
 
-// $Id: MessageBody.cc,v 3.1 2002/12/11 00:47:33 breholee Exp $
+// $Id: MessageBody.cc,v 3.2 2003/02/17 16:00:06 breholee Exp $
