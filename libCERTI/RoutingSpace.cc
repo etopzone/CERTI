@@ -20,18 +20,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: RoutingSpace.cc,v 1.3 2003/03/12 10:07:01 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "RoutingSpace.hh"
 
 namespace certi {
 
+// ----------------------------------------------------------------------------
 RoutingSpace::RoutingSpace(void)
 {
 
 }
 
+// ----------------------------------------------------------------------------
 RoutingSpace::~RoutingSpace(void)
 {
     vector<Dimension*>::iterator i ;
@@ -41,42 +43,85 @@ RoutingSpace::~RoutingSpace(void)
     dimensions.clear();
 }
 
+// ----------------------------------------------------------------------------
+// add a dimension
 void
 RoutingSpace::addDimension(Dimension* d)
 {
     dimensions.push_back(d);
 }
 
+// ----------------------------------------------------------------------------
+// set the routing space's handle
 void
 RoutingSpace::setHandle(SpaceHandle h)
 {
     handle = h ;
 }
 
+// ----------------------------------------------------------------------------
+// display (stdout) the routing space details
 void
 RoutingSpace::display(void)
 {
     cout << "RoutingSpace « " << name << " »" << endl ;
 }
 
+// ----------------------------------------------------------------------------
+// set the routing space's name
 void
 RoutingSpace::setName(string s)
 {
     name = s ;
 }
 
+// ----------------------------------------------------------------------------
+// get the routing space's name
 string
 RoutingSpace::getName(void)
 {
     return name ;
 }
 
+// ----------------------------------------------------------------------------
+// get the routing space's handle
 SpaceHandle
 RoutingSpace::getHandle(void)
 {
     return handle ;
 }
 
+// ----------------------------------------------------------------------------
+// get the handle of the specified dimension
+DimensionHandle
+RoutingSpace::getDimensionHandle(string dimension)
+    throw (NameNotFound)
+{
+    vector<Dimension *>::iterator i ;
+
+    for (i = dimensions.begin(); i != dimensions.end(); i++) {
+        if ((*i)->getName() == dimension)
+            return (*i)->getHandle();
+    }
+    throw new NameNotFound();
+}
+
+// ----------------------------------------------------------------------------
+// get the name of the specified dimension
+string
+RoutingSpace::getDimensionName(DimensionHandle dimension)
+    throw (DimensionNotDefined)
+{
+    vector<Dimension *>::iterator i ;
+
+    for (i= dimensions.begin(); i != dimensions.end(); i++) {
+        if ((*i)->getHandle() == dimension) {
+            return (*i)->getName();
+        }
+    }
+    throw new DimensionNotDefined();
+}
+
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 1.2 2003/02/19 18:07:30 breholee Exp $
+// $Id: RoutingSpace.cc,v 1.3 2003/03/12 10:07:01 breholee Exp $
