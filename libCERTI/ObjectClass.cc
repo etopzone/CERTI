@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.29 2005/03/25 17:32:24 breholee Exp $
+// $Id: ObjectClass.cc,v 3.30 2005/03/28 19:25:17 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,6 +28,7 @@
 #include "ObjectClassAttribute.hh"
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
+#include "helper.hh"
 
 #include <iostream>
 #include <assert.h>
@@ -122,7 +123,6 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 
     // 3. Add class/attributes subscribers to the list.
     switch(ocbList->message->type) {
-
       case NetworkMessage::DISCOVER_OBJECT:
       case NetworkMessage::REMOVE_OBJECT: {
           // For each federate, add it to list if at least one attribute has
@@ -275,18 +275,13 @@ ObjectClass::~ObjectClass()
         D.Out(pdError,
               "ObjectClass %d : Instances remaining while exiting...", handle);
 
-    // while (!objectSet.empty()) {
-    // delete objectSet.front();
-    // objectSet.pop_front();
-    // }
-
     // Deleting Class Attributes
     while (!attributeSet.empty()) {
         delete attributeSet.front();
         attributeSet.pop_front();
     }
 
-    // Deleting Sons
+    // Deleting subclasses
     while (!subClasses.empty()) {
         subClasses.pop_front();
     }
@@ -751,10 +746,6 @@ ObjectClass::subscribe(FederateHandle fed,
 		       const RTIRegion *region)
     throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
-    D[pdTrace] << __func__ << " : fed " << fed << ", class " << handle
-	       << ", " << nb_attributes << " attributes, region "
-	       << (region ? region->getHandle() : 0) << std::endl ;
-
     checkFederateAccess(fed, "Subscribe");
 
     for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
@@ -764,11 +755,12 @@ ObjectClass::subscribe(FederateHandle fed,
 	maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
 
     bool was_subscriber = isSubscribed(fed);
-    D[pdTrace] << __func__ << " : federate was "
-	       << (was_subscriber ? "" : "not ")
-	       << "subscriber." << std::endl ;
 
     unsubscribe(fed, region);
+
+    D[pdTrace] << __func__ << " : fed " << fed << ", class " << handle
+	       << ", " << nb_attributes << " attributes, region "
+	       << (region ? region->getHandle() : 0) << std::endl ;
 
     for (int i = 0 ; i < nb_attributes ; ++i) {
 	getAttribute(attributes[i])->subscribe(fed, region);
@@ -1587,6 +1579,9 @@ ObjectClass::getHandle() const
 void
 ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
+    D[pdTrace] << __func__ << ": fed " << fed << ", region "
+	       << (region ? region->getHandle() : 0) << std::endl ;
+
     list<ObjectClassAttribute *>::iterator i ;
     for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
 	if ((*i)->isSubscribed(fed, region)) {
@@ -1659,4 +1654,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.29 2005/03/25 17:32:24 breholee Exp $
+// $Id: ObjectClass.cc,v 3.30 2005/03/28 19:25:17 breholee Exp $
