@@ -278,6 +278,7 @@ Statistics::Statistics()
     RtiMsgName(NetworkMessage::DDM_MODIFY_REGION);
     RtiMsgName(NetworkMessage::DDM_DELETE_REGION);
     RtiMsgName(NetworkMessage::DDM_ASSOCIATE_REGION);
+    RtiMsgName(NetworkMessage::DDM_UNASSOCIATE_REGION);
 #undef addRtiName
 }
 
@@ -351,4 +352,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.4 2003/07/03 16:21:58 breholee Exp $
+// $Id: Statistics.cc,v 3.5 2003/07/07 23:05:26 breholee Exp $

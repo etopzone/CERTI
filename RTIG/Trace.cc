@@ -18,11 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Trace.cc,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: Trace.cc,v 3.6 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Trace.hh"
+
+#include <time.h>
 
 namespace certi {
 namespace rtig {
@@ -46,4 +48,4 @@ void Trace::write(const char *s)
 
 }}
 
-// $Id: Trace.cc,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: Trace.cc,v 3.6 2003/07/07 23:05:26 breholee Exp $

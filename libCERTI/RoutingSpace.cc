@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.3 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RoutingSpace.hh"
+
+#include <iostream>
 
 using std::vector ;
 using std::cout ;
@@ -149,4 +151,4 @@ RoutingSpace::getNbDimensions()
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.2 2003/06/27 17:26:29 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.3 2003/07/07 23:05:26 breholee Exp $

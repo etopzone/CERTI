@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.12 2003/07/03 16:19:47 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.13 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -171,7 +171,8 @@ public:
         DDM_CREATE_REGION,
         DDM_MODIFY_REGION,
         DDM_DELETE_REGION,
-        DDM_ASSOCIATE_REGION
+        DDM_ASSOCIATE_REGION,
+	DDM_UNASSOCIATE_REGION
     };
 
     struct HeaderStruct {
@@ -348,4 +349,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.12 2003/07/03 16:19:47 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.13 2003/07/07 23:05:26 breholee Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.11 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -50,7 +50,7 @@ ObjectAttribute::ObjectAttribute(AttributeHandle new_handle,
                                  FederateHandle new_owner,
                                  ObjectClassAttribute *associated_attribute)
     : handle(new_handle), owner(new_owner), divesting(RTI_FALSE), space(0),
-      source(associated_attribute)
+      source(associated_attribute), region(0)
 {
 }
 
@@ -183,7 +183,20 @@ ObjectAttribute::setSpace(SpaceHandle h)
     space = h ;
 }
 
+// ----------------------------------------------------------------------------
+void
+ObjectAttribute::associate(RegionImp *r)
+{
+    region = r ;
+}
+
+// ----------------------------------------------------------------------------
+void
+ObjectAttribute::unassociate(RegionImp *r)
+{
+    region = region == r ? 0 : region ;
+}
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.10 2003/06/27 17:26:29 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.11 2003/07/07 23:05:26 breholee Exp $

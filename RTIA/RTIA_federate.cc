@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.20 2003/07/03 16:21:58 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.21 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -668,6 +668,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 			     req->handleArray, req->handleArraySize, e);
 	break ;
 
+      case Message::DDM_UNASSOCIATE_REGION:
+	D[pdTrace] << "Receiving Message from Federate: Associate Region"
+		   << endl ;
+	ddm->unassociateRegion(req->getObject(), req->getRegion(), e);
+	break ;
+
       case Message::ENABLE_TIME_REGULATION:
       case Message::DISABLE_TIME_REGULATION:
         D.Out(pdTrace,
@@ -1042,4 +1048,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.20 2003/07/03 16:21:58 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.21 2003/07/07 23:05:26 breholee Exp $

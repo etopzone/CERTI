@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.28 2003/07/07 16:09:01 breholee Exp $
+// $Id: Federation.cc,v 3.29 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1547,8 +1547,23 @@ Federation::associateRegion(FederateHandle federate,
 
     RegionImp *region = root->getRegion(the_handle);
     for (int i = 0 ; i < nb ; ++i) {
-	// getObjectAttributeHandle(object, attributes[i])->associate(region);
+	root->getObjectAttribute(object, attributes[i])->associate(region);
     }
+}
+
+// ----------------------------------------------------------------------------
+//! unassociateRegion
+void
+Federation::unassociateRegion(FederateHandle federate, RegionHandle the_handle)
+    throw (RegionNotKnown, SaveInProgress, RestoreInProgress,
+	   RTIinternalError)
+{
+    check(federate);
+
+    RegionImp *region = root->getRegion(the_handle);
+
+	//root->getObjectAttribute(object, attributes[i])->unassociate(region);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1675,5 +1690,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.28 2003/07/07 16:09:01 breholee Exp $
+// $Id: Federation.cc,v 3.29 2003/07/07 23:05:26 breholee Exp $
 

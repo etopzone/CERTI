@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketTCP.hh,v 3.7 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
@@ -29,6 +29,7 @@
 #include "RTItypes.hh"
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 // This is the read buffer of TCP sockets. It must be at least as long
 // as the longest data ever received by a socket.
@@ -128,4 +129,4 @@ private:
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.6 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketTCP.hh,v 3.7 2003/07/07 23:05:26 breholee Exp $

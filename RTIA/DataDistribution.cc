@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.11 2003/07/07 16:07:51 breholee Exp $
+// $Id: DataDistribution.cc,v 3.12 2003/07/07 23:05:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -212,11 +212,34 @@ DataDistribution::associateRegion(ObjectHandle object,
     req.setAHS(attr, nb);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_ASSOCIATE_REGION, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::DDM_ASSOCIATE_REGION,
+		      req.federate);
+
+    e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+void
+DataDistribution::unassociateRegion(ObjectHandle object,
+				    RegionHandle region,
+				    TypeException &e)
+    throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
+{
+    rootObject->getRegion(region);
+    
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DDM_UNASSOCIATE_REGION ;
+    req.object = object ;
+    req.region = region ;
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DDM_UNASSOCIATE_REGION,
+		      req.federate);
 
     e = rep.exception ;
 }
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.11 2003/07/07 16:07:51 breholee Exp $
+// $Id: DataDistribution.cc,v 3.12 2003/07/07 23:05:25 breholee Exp $

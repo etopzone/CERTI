@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketMC.hh,v 3.5 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_MC_HH
@@ -29,6 +29,7 @@
 #include "NetworkMessage.hh"
 
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 namespace certi {
 
@@ -77,4 +78,4 @@ private:
 
 #endif // _CERTI_SOCKET_MC_HH
 
-// $Id: SocketMC.hh,v 3.4 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketMC.hh,v 3.5 2003/07/07 23:05:26 breholee Exp $

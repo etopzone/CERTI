@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUN.cc,v 3.8 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,6 +34,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/un.h>
 
 using std::ostringstream ;
 using std::cout ;
@@ -336,4 +337,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.7 2003/06/27 17:26:29 breholee Exp $
+// $Id: SocketUN.cc,v 3.8 2003/07/07 23:05:26 breholee Exp $

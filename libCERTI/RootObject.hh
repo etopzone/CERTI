@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.13 2003/07/03 16:18:33 breholee Exp $
+// $Id: RootObject.hh,v 3.14 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROOT_OBJECT_HH
@@ -79,6 +79,8 @@ public:
     ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
 						  AttributeHandle);
     
+    ObjectAttribute *getObjectAttribute(ObjectHandle, AttributeHandle);
+
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
@@ -95,4 +97,4 @@ private:
 
 #endif // _CERTI_ROOT_OBJECT_HH
 
-// $Id: RootObject.hh,v 3.13 2003/07/03 16:18:33 breholee Exp $
+// $Id: RootObject.hh,v 3.14 2003/07/07 23:05:26 breholee Exp $

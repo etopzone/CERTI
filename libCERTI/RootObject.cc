@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.13 2003/07/03 16:18:33 breholee Exp $
+// $Id: RootObject.cc,v 3.14 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -289,6 +289,15 @@ RootObject::getObjectClassAttribute(ObjectHandle object,
 	->getObjectClassAttribute();
 }
 
+// ----------------------------------------------------------------------------
+// getObjectClassAttribute
+ObjectAttribute *
+RootObject::getObjectAttribute(ObjectHandle object,
+			       AttributeHandle attribute)
+{
+    return objects->getObject(object)->getAttribute(attribute);
+}
+
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.13 2003/07/03 16:18:33 breholee Exp $
+// $Id: RootObject.cc,v 3.14 2003/07/07 23:05:26 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.17 2003/07/07 16:09:02 breholee Exp $
+// $Id: RTIG.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 #include "PrettyDebug.hh"
 
 #include <iostream>
+#include <csignal>
 #include "ulimit.h"
 #include "errno.h"
 
@@ -339,6 +340,12 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 	D[pdTrace] << "associateRegionForUpdates" << endl ;
         auditServer->setLevel(6);
         processAssociateRegion(link, msg);
+        break ;	
+
+      case NetworkMessage::DDM_UNASSOCIATE_REGION:
+	D[pdTrace] << "unassociateRegionForUpdates" << endl ;
+        auditServer->setLevel(6);
+        processUnassociateRegion(link, msg);
         break ;	
 
       default:
@@ -935,4 +942,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.17 2003/07/07 16:09:02 breholee Exp $
+// $Id: RTIG.cc,v 3.18 2003/07/07 23:05:26 breholee Exp $
