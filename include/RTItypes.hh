@@ -1,4 +1,3 @@
-// -*- mode:C++ ; tab-width:4 ; c-basic-offset:4 ; indent-tabs-mode:nil -*-
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002, 2003  ONERA
@@ -20,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.10 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTItypes.hh,v 3.11 2003/06/26 15:17:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_TYPES_HH
@@ -174,8 +173,7 @@ enum ResignAction {
 
 typedef ULong ExtentIndex ;
 typedef FederateAmbassador *FederateAmbassadorPtr ;
-typedef ULong FederateHandle ;
-typedef UShort FederationHandle ;
+typedef ULong FederateHandle;
 typedef Double FederationTime ;
 typedef Double FederationTimeDelta ;
 typedef ULong FederateID ;
@@ -467,4 +465,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.10 2003/02/19 17:20:28 breholee Exp $
+// $Id: RTItypes.hh,v 3.11 2003/06/26 15:17:06 breholee Exp $
