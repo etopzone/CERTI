@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: RTIambassador.cc,v 3.2 2002/11/27 19:20:12 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -56,8 +56,6 @@ void Sortir(const char *msg)              // FIXME: prototype?
 void 
 RTIambassador::executeService(Message *req,Message *rep)
 {
-  //  Boolean erreur;
-
   // lever une exception si appel reentrant
   if(en_service)
     throw ConcurrentAccessAttempted();
@@ -185,11 +183,7 @@ CAttributeHandleValuePairSet* RTIambassador::AHVPStoCAHVPS(
     cahvp = new CAttributeHandleValuePair();
     cahvp->_attrib = ahvps->getHandle(i);
     ahvps->getValue(i,(char*)buff,valueLenght);
-    // Avec sprintf on perd le rest de les donees si il y a une valeur 0 dedans.
-    // Je fais une copie de chaque char
-    for(unsigned int i=0; i < valueLenght; i++) cahvp->_value.value[i] = buff[i];
-    //  sprintf(cahvp->_value.value,"%s",buff);
-//    sprintf(cahvp->_value.lenght,"%ld",valueLenght);
+    memcpy(cahvp->_value.value, buff, valueLenght);
     cahvp->_value.lenght = valueLenght;
     cahvps->add(cahvp);
   }
@@ -213,9 +207,7 @@ CParameterHandleValuePairSet* RTIambassador::PHVPStoCPHVPS(
     cphvp = new CParameterHandleValuePair();
     cphvp->_param = phvps->getHandle(i);
     phvps->getValue(i,(char*)buff,valueLenght);
-    for(unsigned int i=0; i < valueLenght; i++) cphvp->_value.value[i] = buff[i];
-    //    sprintf(cphvp->_value.value,"%s",buff);
-//    sprintf(cphvp->_value.lenght,"%ld",valueLenght);
+    memcpy(cphvp->_value.value, buff, valueLenght);
     cphvp->_value.lenght = valueLenght;
     cphvps->add(cphvp);
   }
@@ -241,14 +233,12 @@ RTIambassador::CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps)
 
     if(cahvp != NULL) {
       if(&cahvp->_value != NULL) {
-// decodage
+	// decodage
         getStringToObjectLength(cahvp->_value.value,longueur);
         char *valeur = new char[longueur];
 	valeur[0]='\0' ;
         stringToObject(cahvp->_value.value,valeur,longueur);
-	for(unsigned int i = 0; i < longueur; i++) cahvp->_value.value[i] = valeur[i];
-	//  sprintf(cahvp->_value.value,"%s",valeur);
-
+	memcpy(cahvp->_value.value, valeur, longueur);
 	/*  ahvps->add(cahvp->_attrib,
 	             cahvp->_value.value,
 	(strlen(cahvp->_value.value)*sizeof(char)) ); */
@@ -258,9 +248,7 @@ RTIambassador::CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps)
 	             longueur );
       }
       else {
-        ahvps->add(cahvp->_attrib,
-                     '\0',
-                     0);
+        ahvps->add(cahvp->_attrib, '\0', 0);
       }
     }
   }
@@ -283,29 +271,25 @@ RTIambassador::CPHVPStoPHVPS(CParameterHandleValuePairSet *cphvps)
   {
     //cphvp = cphvps->getWithHandle( i );
     cphvp = cphvps->getIeme( i );
-  
+
     if(cphvp != NULL) {
       if(&cphvp->_value != NULL) {
-// decodage
+	// decodage
         getStringToObjectLength(cphvp->_value.value,longueur);
         char *valeur = new char[longueur];
 	valeur[0] = '\0' ;
         stringToObject(cphvp->_value.value,valeur,longueur);
-		for(unsigned int i = 0; i < longueur; i++) cphvp->_value.value[i] = valeur[i];
-		//  sprintf(cphvp->_value.value,"%s",valeur);
-
-		/*  phvps->add(cphvp->_param,
-  		     cphvp->_value.value,
-		(strlen(cphvp->_value.value)*sizeof(char)) );*/
+	memcpy(cphvp->_value.value, valeur, longueur);
+	/*  phvps->add(cphvp->_param,
+	    cphvp->_value.value,
+	    (strlen(cphvp->_value.value)*sizeof(char)) );*/
 
 	phvps->add(cphvp->_param,
   		     cphvp->_value.value,
 		     longueur );	
       }
       else {
-        phvps->add(cphvp->_param,
-                     '\0',
-                     0);
+        phvps->add(cphvp->_param,'\0', 0);
       }
     }
 
@@ -632,16 +616,15 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  char *label_aux = const_cast<char *>(label);
 
  if((strcmp(label,"Freeze") == 0)||(strcmp(label,"Init") == 0)) {
     req.Type     = REQUEST_PAUSE;
-    req.setLabel(label_aux);
+    req.setLabel(label);
   }
   else {
     if(strcmp(label,"Unfreeze") == 0) {
       req.Type = REQUEST_RESUME;
-      req.setLabel(label_aux);
+      req.setLabel(label);
     }
     else
       throw RTIinternalError();
@@ -679,18 +662,16 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  char *label_aux = const_cast<char *>(label);
-
 
   if((strcmp(label,"Freeze") == 0)||(strcmp(label,"Init") == 0)) {
     req.Type     = PAUSE_ACHIEVED;
-    req.setLabel(label_aux);
+    req.setLabel(label);
   }
   else {
-    if(strcmp(label,"Unfreeze") == 0)
-      req.Type = RESUME_ACHIEVED;
-    else
-      throw RTIinternalError();
+    if(strcmp(label,"Unfreeze") == 0) {
+      req.Type = RESUME_ACHIEVED ;
+      req.setLabel(label) ; 
+    } else throw RTIinternalError();
   }
 
   executeService(&req, &rep);
@@ -873,7 +854,6 @@ throw(
   // Envoyer la requete au RTI
   req.Type = PUBLISH_OBJECT_CLASS;
   req.objectClassHandle = theClass;
-
   req.HandleArraySize = attributeList_aux->_size;
 
   for(int i=0; i<attributeList_aux->_size; i++) {
@@ -980,7 +960,6 @@ throw(
   // envoyer la requete au RTI
   req.Type            = SUBSCRIBE_OBJECT_CLASS_ATTRIBUTE;
   req.objectClassHandle    = theClass;
-
   req.HandleArraySize = attributeList_aux->_size;
 
   for(int i=0; i < attributeList_aux->_size; i++) {
@@ -1006,12 +985,12 @@ throw(
   SecurityError,//RTI
   RTIinternalError)
 {
-        Message req, rep;
+  Message req, rep;
  
-        // envoyer la requete au RTI
-        req.Type = UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE;
-        req.objectClassHandle = theClass;
-	executeService(&req, &rep);
+  // envoyer la requete au RTI
+  req.Type = UNSUBSCRIBE_OBJECT_CLASS_ATTRIBUTE;
+  req.objectClassHandle = theClass;
+  executeService(&req, &rep);
 }
 
 
@@ -1054,12 +1033,12 @@ throw(
   SecurityError,//RTI
   RTIinternalError)
 {
-        Message req, rep;
- 
-        // envoyer la requete au RTI
-        req.Type = UNSUBSCRIBE_INTERACTION_CLASS;
-        req.InteractionHandle = theClass;
-	executeService(&req, &rep);
+  Message req, rep;
+
+  // envoyer la requete au RTI
+  req.Type = UNSUBSCRIBE_INTERACTION_CLASS;
+  req.InteractionHandle = theClass;
+  executeService(&req, &rep);
 }
 
 
@@ -1088,8 +1067,8 @@ ObjectHandle RTIambassador::registerObjectInstance(
   Message req, rep;
 
   // envoyer la requete au RTI
-  req.Type         = REGISTER_OBJECT;
-	req.setName((char*)theObjectName);/*FAYET 25.07.01*/
+  req.Type = REGISTER_OBJECT;
+  req.setName((char*)theObjectName);
   req.objectClassHandle = theClass;
   executeService(&req, &rep);
 	
@@ -1112,8 +1091,8 @@ ObjectHandle RTIambassador::registerObjectInstance(
   Message req, rep;
 
   // envoyer la requete au RTI
-  req.Type         = REGISTER_OBJECT;
-	req.setName("\0");/*FAYET 25.07.01*/	
+  req.Type = REGISTER_OBJECT;
+  req.setName("\0");
   req.objectClassHandle = theClass;
 
   executeService(&req, &rep);
@@ -1154,10 +1133,7 @@ throw(
   req.Objectid =(ObjectHandle)theObject;
   req.Date     =(FederationTime)((RTIfedTime&)theTime).getTime();
 
-  if( theTag != NULL )
-    req.setTag((char*)theTag);
-  else
-    req.setTag("");
+  req.setTag(theTag);
 
   req.HandleArraySize = theAttributes_aux->_size;
 
@@ -1165,9 +1141,7 @@ throw(
     tmp                = theAttributes_aux->getIeme(i);
     req.HandleArray[i] = tmp->_attrib;
 
-// codage
-   
- 
+    // codage
     getObjectToStringLength(tmp->_value.value,tmp->_value.lenght,longueur);
     char *valeur = new char[longueur];
     valeur[0]='\0';  // <-----
@@ -1232,10 +1206,7 @@ throw(
   req.InteractionHandle = theInteraction;
   req.Date              =(FederationTime)((RTIfedTime&)theTime).getTime();
 
-  if( theTag != NULL )
-    req.setTag((char*)theTag);
-  else
-    req.setTag("");
+  req.setTag(theTag);
 
   req.HandleArraySize = theParameters_aux->_size;
 
@@ -1243,7 +1214,7 @@ throw(
     tmp                = theParameters_aux->getIeme(i);
     req.HandleArray[i] = tmp->_param;
 
-// codage
+    // codage
     getObjectToStringLength(tmp->_value.value,tmp->_value.lenght,longueur);
     char *valeur = new char[longueur];
     valeur[0]='\0' ;
@@ -1300,10 +1271,7 @@ throw(
   req.Objectid =(ObjectHandle)theObject;
   req.Date     =(FederationTime)((RTIfedTime&)theTime).getTime();
 
-  if( theTag != NULL )
-    req.setTag((char*)theTag);
-  else
-    req.setTag("");
+  req.setTag(theTag);
 
   executeService(&req, &rep);
 
@@ -1369,9 +1337,7 @@ throw(
   CAttributeHandleValuePair *tmp;
   TransportType theType_aux;
 
-  if( theType == 1)
-       theType_aux = RELIABLE; 
-  else theType_aux = BEST_EFFORT;
+  theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
   // Envoyer la requete au RTI
   req.Type            = CHANGE_ATTRIBUTE_TRANSPORT_TYPE;
@@ -1406,18 +1372,16 @@ throw(
   RestoreInProgress,//not implemented
   RTIinternalError)
 {
-	Message req, rep;
-	TransportType theType_aux;
+  Message req, rep;
+  TransportType theType_aux;
 
-	if( theType == 1)
-  	     theType_aux = RELIABLE;
-	else theType_aux = BEST_EFFORT;
+  theType_aux = ((theType == 1) ? RELIABLE : BEST_EFFORT);
 
-	// envoyer la requete au RTI
-	req.Type = CHANGE_INTERACTION_TRANSPORT_TYPE;
-	req.InteractionHandle = theClass;
-	req.Transport = theType_aux;
-	executeService(&req, &rep);
+  // envoyer la requete au RTI
+  req.Type = CHANGE_INTERACTION_TRANSPORT_TYPE;
+  req.InteractionHandle = theClass;
+  req.Transport = theType_aux;
+  executeService(&req, &rep);
 }
 
 //-----------------------------------------------------------------
@@ -1519,20 +1483,15 @@ throw(
   req.Type = NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
   req.Objectid =(ObjectHandle)theObject;
 
-  if( theTag != NULL )
-    req.setTag((char*)theTag);
-  else
-    req.setTag("");
+  req.setTag(theTag);
 
   req.HandleArraySize = theAttributes.size();
     
- for(unsigned int i=0; i<theAttributes.size(); i++)
-     {
-     req.HandleArray[i] =  theAttributes.getHandle(i);
-    }
+  for(unsigned int i=0; i<theAttributes.size(); i++) {
+    req.HandleArray[i] =  theAttributes.getHandle(i);
+  }
  
   executeService(&req, &rep); 
- 
 }
 
 
@@ -1561,10 +1520,7 @@ throw(
   req.Type = ATTRIBUTE_OWNERSHIP_ACQUISITION;
   req.Objectid =(ObjectHandle)theObject;
 
-  if( theTag != NULL )
-    req.setTag((char*)theTag);
-  else
-    req.setTag("");
+  req.setTag(theTag);
 
   req.HandleArraySize = desiredAttributes.size();
     
@@ -1612,16 +1568,15 @@ throw(
 
   if(rep.Exception == e_NO_EXCEPTION)
   {
-  AttributeHandleSet *AttributeSet;
-  AttributeSet = AttributeHandleSetFactory::create(rep.HandleArraySize); 
+    AttributeHandleSet *AttributeSet;
+    AttributeSet = AttributeHandleSetFactory::create(rep.HandleArraySize); 
   
-   for(unsigned int i = 0 ; i < rep.HandleArraySize; i++)
-     {
+    for(unsigned int i = 0 ; i < rep.HandleArraySize; i++) {
       AttributeSet->add(rep.HandleArray[i]);
     }
- return(AttributeSet);
- }
- else
+    return(AttributeSet);
+  }
+
   return NULL;
 }
 
@@ -1650,14 +1605,10 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(unsigned int i=0; i<theAttributes.size(); i++)
-     {
-     req.HandleArray[i] =  theAttributes.getHandle(i);
-    }
- 
-  executeService(&req, &rep); 
- 
-
+  for(unsigned int i=0; i<theAttributes.size(); i++) {
+    req.HandleArray[i] =  theAttributes.getHandle(i);
+  }
+  executeService(&req, &rep);
 }
 
 //-----------------------------------------------------------------
@@ -1685,14 +1636,11 @@ throw(
 
   req.HandleArraySize = theAttributes.size();
     
- for(unsigned int i=0; i<theAttributes.size(); i++)
-     {
-     req.HandleArray[i] =  theAttributes.getHandle(i);
-    }
+  for(unsigned int i=0; i<theAttributes.size(); i++) {
+    req.HandleArray[i] =  theAttributes.getHandle(i);
+  }
  
   executeService(&req, &rep);
- 
-
 }
 
 //-----------------------------------------------------------------
@@ -1723,11 +1671,10 @@ throw(
 
   req.HandleArraySize = desiredAttributes.size();
     
- for(unsigned int i=0; i<desiredAttributes.size(); i++)
-     {
-     req.HandleArray[i] =  desiredAttributes.getHandle(i);
-    D.Out(pdTrace, "Objet %u Attribut %u",theObject,req.HandleArray[i]);      
-    }
+ for(unsigned int i=0; i<desiredAttributes.size(); i++) {
+   req.HandleArray[i] =  desiredAttributes.getHandle(i);
+   D.Out(pdTrace, "Objet %u Attribut %u",theObject,req.HandleArray[i]);      
+ }
   
   executeService(&req, &rep); 
 }
@@ -1753,7 +1700,7 @@ throw(
   // envoyer la requete au RTIA/RTIG
   req.Type         = QUERY_ATTRIBUTE_OWNERSHIP;
   req.Objectid   = theObject;  
- req.AttribHandle = theAttribute;
+  req.AttribHandle = theAttribute;
 
   executeService(&req, &rep);
 
@@ -1776,20 +1723,15 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-
  
   // envoyer la requete au RTIA
   req.Type         = IS_ATTRIBUTE_OWNED_BY_FEDERATE;
   req.Objectid   = theObject;  
- req.AttribHandle = theAttribute;
+  req.AttribHandle = theAttribute;
 
   executeService(&req, &rep);
    
- if(strcmp(rep.getTag(),"RTI_TRUE") == 0)
-   return(RTI_TRUE);
- else
-   return(RTI_FALSE);
-
+  return ((strcmp(rep.getTag(),"RTI_TRUE") == 0) ? RTI_TRUE : RTI_FALSE);
 }
 
 
@@ -2174,10 +2116,7 @@ throw(
   CAttributeHandleValuePair *tmp;
 
   OrderType theType_aux;
-
-  if( theType == 1)
-       theType_aux = RECEIVE;
-  else theType_aux = TIMESTAMP;
+  theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
 
   // Envoyer la requete au RTI
 
@@ -2212,12 +2151,10 @@ throw(
   RestoreInProgress,//not implemented
   RTIinternalError)
 {
- Message req, rep;
- OrderType theType_aux;
+  Message req, rep;
 
- if( theType == 1)
-      theType_aux = RECEIVE;
- else theType_aux = TIMESTAMP;
+  OrderType theType_aux;
+  theType_aux = ((theType == 1) ? RECEIVE : TIMESTAMP);
 
  // envoyer la requete au RTI
  req.Type = CHANGE_INTERACTION_ORDER_TYPE;
@@ -2592,7 +2529,7 @@ throw(
 
   executeService(&req, &rep);
 
-  return((char *)rep.getName());
+  return(rep.getName());
 }
 
 
@@ -2647,7 +2584,7 @@ throw(
 
   executeService(&req, &rep);
 
-  return((char *)rep.getName());
+  return(rep.getName());
 }
 
 
@@ -2695,7 +2632,7 @@ throw(
 
   executeService(&req, &rep);
 
-  return((char *)rep.getName());
+  return(rep.getName());
 }
 
 
@@ -2749,7 +2686,7 @@ throw(
 
   executeService(&req, &rep);
 
-  return((char *)rep.getName());
+  return(rep.getName());
 }
 
 //-----------------------------------------------------------------
@@ -3115,7 +3052,7 @@ Boolean RTIambassador::tick()
          ConcurrentAccessAttempted,
   RTIinternalError)
 {
-  int      i=0;
+  int i=0;
   Message vers_RTI, vers_Fed;
 
   CAttributeHandleValuePairSet theAttributes;
@@ -4228,4 +4165,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.1 2002/11/26 15:48:01 breholee Exp $
+// $Id: RTIambassador.cc,v 3.2 2002/11/27 19:20:12 breholee Exp $
