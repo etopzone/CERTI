@@ -19,7 +19,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.17 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federation.cc,v 3.18 2003/05/08 21:47:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Federation.hh"
@@ -1255,7 +1255,7 @@ Federation::queryAttributeOwnership(FederateHandle federate,
     D.Out(pdDebug, "Owner of Object %u Atrribute %u", id, attribute);
 
     // It may throw *NotDefined
-    root->ObjectClasses->queryAttributeOwnership(id, attribute, federate);
+    root->objects->queryAttributeOwnership(id, attribute, federate);
 }
 
 // ----------------------------------------------------------------------------
@@ -1395,11 +1395,10 @@ Federation::cancelDivestiture(FederateHandle federate,
     this->check(federate);
 
     // It may throw *NotDefined
-    root->ObjectClasses->
-        cancelNegotiatedAttributeOwnershipDivestiture(federate,
-                                                      id,
-                                                      attributes,
-                                                      list_size);
+    root->objects->cancelNegotiatedAttributeOwnershipDivestiture(federate,
+                                                                 id,
+                                                                 attributes,
+                                                                 list_size);
 
     D.Out(pdDebug, "CancelDivestiture sur Objet %u ", id);
 }
@@ -1603,5 +1602,5 @@ Federation::saveXmlData(void)
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.17 2003/05/05 20:21:39 breholee Exp $
+// $Id: Federation.cc,v 3.18 2003/05/08 21:47:44 breholee Exp $
 
