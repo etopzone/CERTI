@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.23 2005/03/11 14:58:44 breholee Exp $
+// $Id: ObjectClass.cc,v 3.24 2005/03/13 22:49:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -203,13 +203,13 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
     for (int i = 0 ; i < nbAttributes ; i++) {
         toFederate = diffusionList->DiffArray[i].federate ;
         if (toFederate != 0) {
-            NetworkMessage *answer = new NetworkMessage ;
-            answer->type = type ;
-            answer->federation = server->federation();
-            answer->federate = theFederate ;
-            answer->exception = e_NO_EXCEPTION ;
-            answer->object = theObjectHandle ;
-            strcpy(answer->label, theTag);
+            NetworkMessage answer;
+            answer.type = type ;
+            answer.federation = server->federation();
+            answer.federate = theFederate ;
+            answer.exception = e_NO_EXCEPTION ;
+            answer.object = theObjectHandle ;
+            strcpy(answer.label, theTag);
 
             int index = 0 ;
             for (int j = i ; j < nbAttributes ; j++) {
@@ -217,14 +217,14 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
                     D.Out(pdDebug, "handle : %u",
                           diffusionList->DiffArray[j].attribute);
                     diffusionList->DiffArray[j].federate = 0 ;
-                    answer->handleArray[index] = diffusionList
+                    answer.handleArray[index] = diffusionList
                         ->DiffArray[j].attribute ;
                     index++ ;
                 }
             }
-            answer->handleArraySize = index ;
+            answer.handleArraySize = index ;
             D.Out(pdDebug, "Envoi message type %u ", type);
-            sendToFederate(answer, toFederate);
+            sendToFederate(&answer, toFederate);
         }
     }
 }
@@ -687,12 +687,12 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
 
     // 3- Else prepare the common part of the Message.
     // Messages are sent on behalf of the original class.
-    NetworkMessage *message = new NetworkMessage ;
-    message->type = NetworkMessage::DISCOVER_OBJECT ;
-    message->federation = server->federation();
-    message->federate = theFederate ;
-    message->exception = e_NO_EXCEPTION ;
-    message->objectClass = theOriginalClass ;
+    NetworkMessage message;
+    message.type = NetworkMessage::DISCOVER_OBJECT ;
+    message.federation = server->federation();
+    message.federate = theFederate ;
+    message.exception = e_NO_EXCEPTION ;
+    message.objectClass = theOriginalClass ;
 
     // 4- For each Object instance in the class, send a Discover message.
     Socket *socket = NULL ;
@@ -700,15 +700,15 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         D.Out(pdInit,
               "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-              theFederate, (*o)->getHandle(), handle, message->label);
+              theFederate, (*o)->getHandle(), handle, message.label);
 
-        message->object = (*o)->getHandle();
-        message->setLabel((*o)->getName().c_str());
+        message.object = (*o)->getHandle();
+        message.setLabel((*o)->getName().c_str());
 
         // Send Message to Federate
         try {
             socket = server->getSocketLink(theFederate);
-            message->write(socket);
+            message.write(socket);
         }
         catch (RTIinternalError &e) {
             D.Out(pdExcept,
@@ -718,8 +718,6 @@ ObjectClass::sendDiscoverMessages(FederateHandle theFederate,
             D.Out(pdExcept, "Network error while sending DO msg, ignoring.");
         }
     } // for each object instance
-
-    delete message ;
 
     // 5- The same method must be called on my sub-classes.
     return RTI_TRUE ;
@@ -942,14 +940,12 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     FederateHandle NewOwner ;
 
     if (server != NULL) {
-        NetworkMessage *AnswerAssumption = NULL ;
-        NetworkMessage *AnswerDivestiture = NULL ;
-        AnswerDivestiture = new NetworkMessage ;
-        AnswerAssumption = new NetworkMessage ;
+        NetworkMessage *AnswerAssumption = new NetworkMessage ;
+        NetworkMessage AnswerDivestiture;
 
         AnswerAssumption->handleArraySize = theListSize ;
 
-        CDiffusion *diffusionAcquisition = new CDiffusion();
+        CDiffusion diffusionAcquisition;
 
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
@@ -971,13 +967,13 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // On réinitialise divesting
                 oa->setDivesting(RTI_FALSE);
 
-                diffusionAcquisition->DiffArray[compteur_acquisition]
+                diffusionAcquisition.DiffArray[compteur_acquisition]
                     .federate = NewOwner ;
-                diffusionAcquisition->DiffArray[compteur_acquisition]
+                diffusionAcquisition.DiffArray[compteur_acquisition]
                     .attribute = oa->getHandle();
                 compteur_acquisition++ ;
 
-                AnswerDivestiture->handleArray[compteur_divestiture]
+                AnswerDivestiture.handleArray[compteur_divestiture]
                     = theAttributeList[i] ;
                 compteur_divestiture++ ;
 
@@ -994,27 +990,24 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         }
 
         if (compteur_acquisition != 0) {
-            diffusionAcquisition->size = compteur_acquisition ;
-            sendToOwners(diffusionAcquisition, theObjectHandle,
+            diffusionAcquisition.size = compteur_acquisition ;
+            sendToOwners(&diffusionAcquisition, theObjectHandle,
                          theFederateHandle, theTag,
                          NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
         }
-        delete diffusionAcquisition ;
 
         if (compteur_divestiture !=0) {
-            AnswerDivestiture->type =
+            AnswerDivestiture.type =
                 NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION ;
-            AnswerDivestiture->federation = server->federation();
-            AnswerDivestiture->federate = theFederateHandle ;
-            AnswerDivestiture->exception = e_NO_EXCEPTION ;
-            AnswerDivestiture->object = theObjectHandle ;
-            strcpy(AnswerDivestiture->label, "\0");
-            AnswerDivestiture->handleArraySize = compteur_divestiture ;
+            AnswerDivestiture.federation = server->federation();
+            AnswerDivestiture.federate = theFederateHandle ;
+            AnswerDivestiture.exception = e_NO_EXCEPTION ;
+            AnswerDivestiture.object = theObjectHandle ;
+            strcpy(AnswerDivestiture.label, "\0");
+            AnswerDivestiture.handleArraySize = compteur_divestiture ;
 
-            sendToFederate(AnswerDivestiture, theFederateHandle);
+            sendToFederate(&AnswerDivestiture, theFederateHandle);
         }
-        else
-            delete AnswerDivestiture ;
 
         if (compteur_assumption !=0) {
             AnswerAssumption->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
@@ -1654,4 +1647,4 @@ ObjectClass::unsubscribe(FederateHandle fed, RegionImp *region)
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.23 2005/03/11 14:58:44 breholee Exp $
+// $Id: ObjectClass.cc,v 3.24 2005/03/13 22:49:00 breholee Exp $
