@@ -316,7 +316,7 @@ operator<<(ostream &s, Statistics &stat)
 {
     cout << endl << "RTIA: Statistics (processed messages)" << endl ;
 
-    s << "List of federate services " << endl
+    s << "List of federate initiated services " << endl
       << "--------------------------------------------------" << endl ;
 
     int sentFederateMessages = 0 ;
@@ -326,13 +326,12 @@ operator<<(ostream &s, Statistics &stat)
         int nb = fi->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
-            s << nb << ' ' << Statistics::fedMessageName[fi->first]
-              << " (" << fi->first << ')' << endl ;
+            s << nb << ' ' << Statistics::fedMessageName[fi->first] << endl ;
         }
         sentFederateMessages += nb ;
     }
 
-    s << endl << "List of RTI services " << endl
+    s << endl << "List of RTI initiated services " << endl
       << "--------------------------------------------------" << endl ;
 
     int sentRtiMessages = 0 ;
@@ -342,8 +341,7 @@ operator<<(ostream &s, Statistics &stat)
         int nb = ri->second ;
         if (nb || stat.displayZero()) {
             s.width(8);
-            s << nb << ' ' << Statistics::rtiMessageName[ri->first]
-              << " (" << ri->first << ')' << endl ;
+            s << nb << ' ' << Statistics::rtiMessageName[ri->first] << endl ;
         }
         sentRtiMessages += nb ;
     }
@@ -357,4 +355,4 @@ operator<<(ostream &s, Statistics &stat)
 
 }} // namespace certi::rtia
 
-// $Id: Statistics.cc,v 3.6 2003/07/09 16:12:24 breholee Exp $
+// $Id: Statistics.cc,v 3.7 2003/07/30 09:43:49 breholee Exp $
