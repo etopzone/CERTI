@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -175,7 +175,6 @@ Statistics::Statistics()
 	FED_MSG_NAME(Message::DDM_UNSUBSCRIBE_ATTRIBUTES);
 	FED_MSG_NAME(Message::DDM_SUBSCRIBE_INTERACTION);
 	FED_MSG_NAME(Message::DDM_UNSUBSCRIBE_INTERACTION);
-	FED_MSG_NAME(Message::DDM_SEND_INTERACTION);
 	FED_MSG_NAME(Message::DDM_REQUEST_UPDATE);
 
 	// Support Services
@@ -360,4 +359,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.11 2004/03/12 19:42:23 breholee Exp $
+// $Id: Statistics.cc,v 3.12 2005/04/05 12:20:22 breholee Exp $
