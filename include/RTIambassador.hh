@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.hh,v 3.15 2003/07/01 13:24:41 breholee Exp $
+// $Id: RTIambassador.hh,v 3.16 2003/07/05 14:34:22 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_AMBASSADOR_HH
@@ -850,8 +850,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     ObjectHandle
     registerObjectInstanceWithRegion(ObjectClassHandle theClass,
@@ -868,8 +867,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     associateRegionForUpdates(Region &,
@@ -895,8 +893,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     subscribeObjectClassAttributesWithRegion(ObjectClassHandle theClass,
@@ -911,8 +908,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     unsubscribeObjectClassWithRegion(ObjectClassHandle theClass,
@@ -924,8 +920,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     subscribeInteractionClassWithRegion(InteractionClassHandle theClass,
@@ -939,8 +934,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     unsubscribeInteractionClassWithRegion(InteractionClassHandle theClass,
@@ -952,8 +946,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     EventRetractionHandle
     sendInteractionWithRegion(InteractionClassHandle theInteraction,
@@ -971,8 +964,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     sendInteractionWithRegion(InteractionClassHandle theInteraction,
@@ -988,8 +980,7 @@ public:
                ConcurrentAccessAttempted,
                SaveInProgress,
                RestoreInProgress,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     void
     requestClassAttributeValueUpdateWithRegion(ObjectClassHandle theClass,
@@ -1127,8 +1118,7 @@ public:
                AttributeNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     ObjectClassHandle
     getObjectClass(ObjectHandle theObject)
@@ -1143,8 +1133,7 @@ public:
         throw (InteractionClassNotDefined,
                FederateNotExecutionMember,
                ConcurrentAccessAttempted,
-               RTIinternalError,
-               UnimplementedService);
+               RTIinternalError);
 
     TransportationHandle
     getTransportationHandle(const char *theName)
@@ -1283,4 +1272,4 @@ private:
 
 #endif // _CERTI_RTI_AMBASSADOR_HH
 
-// EOF $Id: RTIambassador.hh,v 3.15 2003/07/01 13:24:41 breholee Exp $
+// EOF $Id: RTIambassador.hh,v 3.16 2003/07/05 14:34:22 breholee Exp $
