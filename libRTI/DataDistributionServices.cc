@@ -19,17 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.4 2003/10/27 10:43:41 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.5 2003/11/10 15:03:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIambassador.hh"
-
 #include "Message.hh"
+
+#include <cassert>
+
+using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("LIBRTI", "(libRTI DDM) - ");
+static pdCDebug D("LIBRTI", __FILE__);
 
 // ===========================================================================
 // DATA DISTRIBUTION MANAGEMENT
@@ -56,9 +59,10 @@ RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
     req.setSpace(space);
     req.setNumber(nb_extents);
     executeService(&req, &rep);
-    Region *region = new RegionImp(rep.getRegion(), rep.getNumber(),
-                                   space, nb_extents);
+    Region *region = new RegionImp(rep.getRegion(), space, nb_extents,
+				   rep.getNumber());
 
+    assert(region->getNumberOfExtents() == nb_extents);
     return region ;
 }
 
@@ -78,6 +82,8 @@ RTIambassador::notifyAboutRegionModification(Region &r)
            RTIinternalError)
 {
     RegionImp &region = dynamic_cast<RegionImp &>(r);
+    D[pdDebug] << "Notify About Region " << region.getHandle()
+	      << " Modification" << endl ;
     Message req, rep ;
 
     req.setType(Message::DDM_MODIFY_REGION);
@@ -419,4 +425,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.4 2003/10/27 10:43:41 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.5 2003/11/10 15:03:56 breholee Exp $

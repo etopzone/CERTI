@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: BillardDDM.cc,v 3.4 2003/11/10 15:06:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -35,11 +35,12 @@ static pdCDebug D("BILLARD_DDM", __FILE__);
 // ----------------------------------------------------------------------------
 // DDM Billard constructor
 BillardDDM::BillardDDM(string federate)
-    : Billard(federate), regionSize(250),
+    : Billard(federate), regionSize(100),
       geo_name("geo"), dimx_name("X"), dimy_name("Y")
 
 {
-    cout << "Billard 'DDM' Test" << endl ;
+    if (verbose)
+	cout << "Billard 'DDM' Test" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -53,7 +54,6 @@ BillardDDM::getHandles()
     static bool done = false ;
     if (!done) {
 	geo_id = rtiamb.getRoutingSpaceHandle(geo_name);
-	return;
 	dimx_id = rtiamb.getDimensionHandle(dimx_name, geo_id);
 	dimy_id = rtiamb.getDimensionHandle(dimy_name, geo_id);
 	if (verbose) {
@@ -73,11 +73,8 @@ BillardDDM::declare()
 {
     Billard::declare();
     getHandles();
-    return ;
 
     int r = (XMAX / regionSize) * (YMAX / regionSize);
-    regions.reserve(r);
-    D[pdDebug] << "reserve " << r << " regions ..." << endl ;
 
     for (int x = 0 ; x < XMAX ; x += regionSize) {
 	for (int y = 0 ; y < YMAX ; y += regionSize) {
@@ -89,22 +86,32 @@ BillardDDM::declare()
 		try {
 		    assert(region);
 		    assert(region->getNumberOfExtents() == 1);
-		    D[pdDebug] << "set x lower bound " << x << endl ;
+
 		    region->setRangeLowerBound(0, dimx_id, x);
-		    D[pdDebug] << "set x upper bound " << x + regionSize
+		    D[pdDebug] << "x lower bound: "
+			       << region->getRangeLowerBound(0, dimx_id)
 			       << endl ;
+
 		    region->setRangeUpperBound(0, dimx_id, x + regionSize);
-		    D[pdDebug] << "set y lower bound " << y << endl ;
-		    region->setRangeLowerBound(0, dimy_id, y);
-		    D[pdDebug] << "set y upper bound " << y + regionSize
+		    D[pdDebug] << "x upper bound: " 
+			       << region->getRangeUpperBound(0, dimx_id)
 			       << endl ;
+
+		    region->setRangeLowerBound(0, dimy_id, y);
+		    D[pdDebug] << "y lower bound: "
+			       << region->getRangeLowerBound(0, dimy_id)
+			       << endl ;
+
 		    region->setRangeUpperBound(0, dimy_id, y + regionSize);
+		    D[pdDebug] << "y upper bound: "
+			       << region->getRangeUpperBound(0, dimy_id)
+			       << endl ;
 		}
 		catch (ArrayIndexOutOfBounds &e) {
 		    D[pdDebug] << __FILE__ << ":" << __LINE__ << ":"
 			 << e._name << ": " << e._reason << endl ;
 		}
-		// rtiamb.notifyAboutRegionModification(*region);
+		rtiamb.notifyAboutRegionModification(*region);
 		regions.push_back(region);
 	    }
 	    catch (Exception &e) {
@@ -117,4 +124,4 @@ BillardDDM::declare()
     D[pdDebug] << "created " << regions.size() << " regions" << endl ;        
 }
 
-// $Id: BillardDDM.cc,v 3.3 2003/10/27 10:51:38 breholee Exp $
+// $Id: BillardDDM.cc,v 3.4 2003/11/10 15:06:41 breholee Exp $
