@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.3 2002/11/27 23:07:19 breholee Exp $
+// $Id: RTIambassador.cc,v 3.4 2002/12/10 15:50:59 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // classe RTIambassador
@@ -39,11 +39,6 @@
 namespace certi {
 
 static pdCDebug D("LIBRTI", "(libRTI  ) - ");
-
-// Data integrity variable
-
-const char *new_char1 = "\?";
-const char *new_char2 = "\\";
 
 //-----------------------------------------------------------------
 void Sortir(const char *msg)              // FIXME: prototype?
@@ -143,352 +138,100 @@ RTIambassador::~RTIambassador()
 }
 
 //*******************************************************************
-//              Convertion des types
-//*******************************************************************
-
-CAttributeHandleValuePairSet* RTIambassador::AHStoCAHVPS(
-  const AttributeHandleSet *ahs)
-{
-  ULong taille;
-  CAttributeHandleValuePairSet* cahvps;
-  CAttributeHandleValuePair *cahvp;
-
-  cahvps = new CAttributeHandleValuePairSet();
-  taille = ahs->size();
-
-  for(unsigned int i = 0;i<taille;i++)
-  {
-    cahvp = new CAttributeHandleValuePair();
-    cahvp->_attrib = ahs->getHandle(i);
-    cahvps->add(cahvp);
-  }
-
-  return cahvps;
-}
-
-CAttributeHandleValuePairSet* RTIambassador::AHVPStoCAHVPS(
-  const AttributeHandleValuePairSet *ahvps)
-{
-  ULong taille;
-  ULong valueLenght;
-  char buff[1024];
-  CAttributeHandleValuePairSet *cahvps;
-  CAttributeHandleValuePair *cahvp;
-
-  cahvps = new CAttributeHandleValuePairSet();
-  taille = ahvps->size();
-
-  for(unsigned int i = 0;i<taille;i++)
-  {
-    cahvp = new CAttributeHandleValuePair();
-    cahvp->_attrib = ahvps->getHandle(i);
-    ahvps->getValue(i,(char*)buff,valueLenght);
-    memcpy(cahvp->_value.value, buff, valueLenght);
-    cahvp->_value.lenght = valueLenght;
-    cahvps->add(cahvp);
-  }
-  return cahvps;
-}
-
-CParameterHandleValuePairSet* RTIambassador::PHVPStoCPHVPS(
-  const ParameterHandleValuePairSet *phvps)
-{
-  ULong taille;
-  ULong valueLenght;
-  char buff[1024];
-  CParameterHandleValuePairSet *cphvps;
-  CParameterHandleValuePair *cphvp;
-
-  cphvps = new CParameterHandleValuePairSet();
-  taille = phvps->size();
-
-  for(unsigned int i = 0;i<taille;i++)
-  {
-    cphvp = new CParameterHandleValuePair();
-    cphvp->_param = phvps->getHandle(i);
-    phvps->getValue(i,(char*)buff,valueLenght);
-    memcpy(cphvp->_value.value, buff, valueLenght);
-    cphvp->_value.lenght = valueLenght;
-    cphvps->add(cphvp);
-  }
-
-  return cphvps;
-}
-
-AttributeHandleValuePairSet* 
-RTIambassador::CAHVPStoAHVPS(CAttributeHandleValuePairSet *cahvps)
-{
-  ULong taille;
-  ULong longueur;
-  CAttributeHandleValuePair *cahvp;
-  AttributeHandleValuePairSet *ahvps = NULL;
-
-  taille = cahvps->_size;
-  ahvps = AttributeSetFactory::create( taille );
-
-  for(unsigned int i = 0;i<taille;i++)
-  {
-    //cahvp = cahvps->getWithHandle( i );
-    cahvp = cahvps->getIeme( i );
-
-    if(cahvp != NULL) {
-      if(&cahvp->_value != NULL) {
-	// decodage
-        getStringToObjectLength(cahvp->_value.value,longueur);
-        char *valeur = new char[longueur];
-	valeur[0]='\0' ;
-        stringToObject(cahvp->_value.value,valeur,longueur);
-	memcpy(cahvp->_value.value, valeur, longueur);
-	/*  ahvps->add(cahvp->_attrib,
-	             cahvp->_value.value,
-	(strlen(cahvp->_value.value)*sizeof(char)) ); */
-
-	ahvps->add(cahvp->_attrib,
-	             cahvp->_value.value,
-	             longueur );
-      }
-      else {
-        ahvps->add(cahvp->_attrib, '\0', 0);
-      }
-    }
-  }
-
-  return ahvps;
-}
-
-ParameterHandleValuePairSet* 
-RTIambassador::CPHVPStoPHVPS(CParameterHandleValuePairSet *cphvps)
-{
-  ULong taille;
-  ULong longueur;
-  CParameterHandleValuePair *cphvp;
-  ParameterHandleValuePairSet *phvps = NULL;
-
-  taille = cphvps->_size;
-  phvps = ParameterSetFactory::create( taille );
-
-  for(unsigned int i = 0;i<taille;i++)
-  {
-    //cphvp = cphvps->getWithHandle( i );
-    cphvp = cphvps->getIeme( i );
-
-    if(cphvp != NULL) {
-      if(&cphvp->_value != NULL) {
-	// decodage
-        getStringToObjectLength(cphvp->_value.value,longueur);
-        char *valeur = new char[longueur];
-	valeur[0] = '\0' ;
-        stringToObject(cphvp->_value.value,valeur,longueur);
-	memcpy(cphvp->_value.value, valeur, longueur);
-	/*  phvps->add(cphvp->_param,
-	    cphvp->_value.value,
-	    (strlen(cphvp->_value.value)*sizeof(char)) );*/
-
-	phvps->add(cphvp->_param,
-  		     cphvp->_value.value,
-		     longueur );	
-      }
-      else {
-        phvps->add(cphvp->_param,'\0', 0);
-      }
-    }
-
-  }
-
-  return phvps;
-}
-
-//*******************************************************************
 //              Data Integrity
 //*******************************************************************
+//! Convert an object string to a network capable message.
+/*! objectToString is used to convert data to a network message for sending.
+    Special caracters are ?, \ and \0.
+     - \0 : it is converted to a single ?,
+     - ? : converted to pattern "\?[??]+\",
+     - \ : converted to pattern "\??[??]+\".
+     - other : keep caracter.
 
-void RTIambassador::objectToString(
-  const char *char_initial,
-  ULong taille,
-  char *char_final)
+     Differenciation between ? and \ is made on parity number of ? contained
+     between \.
+*/
+void RTIambassador::objectToString(const char *init_string,
+				   ULong size, char *end_string)
 {
-  ULong i =0;
-  while(i<taille) {
-    if(!strncmp(&char_initial[i],"\0",1)) {
-      strcat(char_final,new_char1);
-      i++;
-    }
-    else {
-      if(!strncmp(&char_initial[i],new_char1,1)) {
-        strcat(char_final,new_char2);
-        strcat(char_final,new_char1);
-        i++;
-        while(!strncmp(&char_initial[i],new_char1,1) &&(i<taille)) {
-          strcat(char_final,new_char1);
-          strcat(char_final,new_char1);
-          i++;
-        }
-        strcat(char_final,new_char2);
-      }
-      else {
-        if(!strncmp(&char_initial[i],new_char2,1)) {
-          strcat(char_final,new_char2);
-          strcat(char_final,new_char1);
-          strcat(char_final,new_char1);
-          i++;
-          while(!strncmp(&char_initial[i],new_char2,1) &&(i<taille)) {
-            strcat(char_final,new_char1);
-            strcat(char_final,new_char1);
-            i++;
-          }
-          strcat(char_final,new_char2);
-        }
-        else {
-          strncat(char_final,&char_initial[i],1);
-          i++;
-        }
-      }
-    }
-  }
-}
-
-void RTIambassador::stringToObject(
-  char *char_initial,
-  char *char_final,
-  ULong taille)
-{
-  ULong compteur = 0;
   ULong i = 0;
   ULong j = 0;
-  ULong indice =0;
-  ULong longueur = strlen(char_initial);
 
-  for( j=0; j<taille; j++) {
-    strcpy(&char_final[j],"\0");
-  }
-
-  while(i<longueur) {
-    if(!strncmp(&char_initial[i],"\0",1)) {
-      i++;
-      indice++;
+  while(i < size)
+    {
+      switch(init_string[i])
+	{
+	case '\0':
+	  end_string[j++] = '?';
+	  i++;
+	  break;
+	case '?':
+	  end_string[j++] = '\\';
+	  end_string[j++] = '?';
+	  i++;
+	  while((init_string[i]=='?') &&(i<size))
+	    {
+	      end_string[j++] = '?';
+	      end_string[j++] = '?';
+	      i++;
+	    }
+	  end_string[j++] = '\\';
+	  break;
+	case '\\':
+	  end_string[j++] = '\\';
+	  end_string[j++] = '?';
+	  end_string[j++] = '?';
+	  i++;
+	  while((init_string[i]=='\\') &&(i<size))
+	    {
+	      end_string[j++] = '?';
+	      end_string[j++] = '?';
+	      i++;
+	    }
+	  end_string[j++] = '\\';
+	  break;
+	default:
+	  end_string[j++] = init_string[i];
+	  i++;
+	}
     }
-    else {
-      if(!strncmp(&char_initial[i],new_char1,1)) {
-        i++;
-        indice++;
-      }
-      else {
-        if(!strncmp(&char_initial[i],new_char2,1)) {
-          i++;
-          while(!strncmp(&char_initial[i],new_char1,1) &&(i<longueur)) {
-            compteur++;
-            i++;
-          }
-          i++;
-          if((compteur%2)==0) {
-            for(j=0; j<(compteur/2); j++) {
-              strncpy(&char_final[indice],new_char2,1);
-              indice++;
-            }
-            compteur = 0;
-          }
-          else {
-            for(j=0; j<(1+((compteur-1)/2)); j++) {
-              strncpy(&char_final[indice],new_char1,1);
-              indice++;
-            }
-            compteur = 0;
-          }
-        }
-        else {
-            strncpy(&char_final[indice],&char_initial[i],1);
-            i++;
-            indice++;
-        }
-      }
-    }
-  }
 }
 
-void RTIambassador::getObjectToStringLength(
-  char *char_initial,
-  ULong taille_initiale,
-  ULong& taille)
+//! Returns buffer size needed for storing network message made by objectToString.
+void RTIambassador::getObjectToStringLength(char *init_string,
+					    ULong init_size, ULong& size)
 {
-  ULong compteur = 0;
+  ULong counter = 0;
   ULong i = 0;
-  taille = 0;
-  while(i<taille_initiale) {
-    if(!strncmp(&char_initial[i],"\0",1)) {
-      taille++;
-      i++;
+  size = 0;
+  while(i < init_size)
+    {
+      switch(init_string[i])
+	{
+	case '?':
+	  i++;
+	  while((init_string[i]=='?') &&(i < init_size))
+	    {
+	      counter++;
+	      i++;
+	    }
+	  size += 3+2*counter;
+	  counter = 0;
+	  break;
+	case '\\':
+	  i++;
+	  while((init_string[i]=='\\')&&(i < init_size))
+	    {
+	      counter++;
+	      i++;
+	    }
+	  size += 4+2*counter;
+	  counter = 0;
+	default:
+	  size++;
+	  i++;
+	}
     }
-    else {
-      if(!strncmp(&char_initial[i],new_char1,1)) {
-        i++;
-        while(!strncmp(&char_initial[i],new_char1,1) &&(i<taille_initiale)) {
-          compteur++;
-          i++;
-        }
-        taille+=3+2*compteur;
-        compteur = 0;
-      }
-      else {
-        if(!strncmp(&char_initial[i],new_char2,1)) {
-          i++;
-          while(!strncmp(&char_initial[i],new_char2,1)&&(i<taille_initiale)) {
-            compteur++;
-            i++;
-          }
-          taille+=4+2*compteur;
-          compteur = 0;
-        }
-        else {
-          taille++;
-          i++;
-        }
-      }
-    }
-  }
-}
-
-void 
-RTIambassador::getStringToObjectLength(
-  char *char_initial,
-  ULong& taille)
-{
-  ULong compteur = 0;
-  ULong longueur = strlen(char_initial);
-  ULong i = 0;
-  taille = 0;
-  while(i<longueur) {
-    if(!strncmp(&char_initial[i],"\0",1)) {
-      taille++;
-      i++;
-    }
-    else {
-      if(!strncmp(&char_initial[i],new_char1,1)) {
-        taille++;
-        i++;
-      }
-      else {
-        if(!strncmp(&char_initial[i],new_char2,1)) {
-          i++;
-          while(!strncmp(&char_initial[i],new_char1,1) &&(i<longueur)) {
-            compteur++;
-            i++;
-          }
-          if((compteur%2)==0) {
-            taille+=(compteur/2);
-            compteur = 0;
-          }
-          else {
-            taille+=1+((compteur-1)/2);
-            compteur = 0;
-          }
-        }
-        else {
-          taille++;
-          i++;
-        }
-      }
-    }
-  }
 }
 
 //*******************************************************************
@@ -852,7 +595,8 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  CAttributeHandleValuePairSet *attributeList_aux=AHStoCAHVPS(&attributeList);
+  CAttributeHandleValuePairSet * attributeList_aux;
+  attributeList_aux = new CAttributeHandleValuePairSet(attributeList);
   CAttributeHandleValuePair *tmp;
 
   // Envoyer la requete au RTI
@@ -958,7 +702,8 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  CAttributeHandleValuePairSet *attributeList_aux=AHStoCAHVPS(&attributeList);
+  CAttributeHandleValuePairSet *attributeList_aux;
+  attributeList_aux = new CAttributeHandleValuePairSet(attributeList);
   CAttributeHandleValuePair *tmp;
 
   // envoyer la requete au RTI
@@ -1112,8 +857,8 @@ EventRetractionHandle
 RTIambassador::updateAttributeValues(
         ObjectHandle                 theObject,     
   const AttributeHandleValuePairSet& theAttributes,
-  const FedTime&                     theTime,       
-  const char                         *theTag)        
+  const FedTime&                     theTime,
+  const char                         *theTag)
 throw(
   ObjectNotKnown,
   AttributeNotDefined,
@@ -1128,8 +873,9 @@ throw(
   ULong longueur;
   Message req, rep;
 
-  CAttributeHandleValuePairSet *theAttributes_aux
-    =AHVPStoCAHVPS(&theAttributes);
+  CAttributeHandleValuePairSet * theAttributes_aux;
+  theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
+
   CAttributeHandleValuePair *tmp;
   
   // Envoyer la requete au RTI
@@ -1141,21 +887,20 @@ throw(
 
   req.HandleArraySize = theAttributes_aux->_size;
 
-  for(int i=0; i<theAttributes_aux->_size; i++) {
+  for(UShort i=0; i<theAttributes_aux->_size; i++) {
     tmp                = theAttributes_aux->getIeme(i);
     req.HandleArray[i] = tmp->_attrib;
 
     // codage
-    getObjectToStringLength(tmp->_value.value,tmp->_value.lenght,longueur);
+    getObjectToStringLength(tmp->_value.value,tmp->_value.length,longueur);
     char *valeur = new char[longueur];
-    valeur[0]='\0';  // <-----
-    objectToString(tmp->_value.value, tmp->_value.lenght, valeur);
+    objectToString(tmp->_value.value, tmp->_value.length, valeur);
     req.setValue(i,valeur);
   }
 
   executeService(&req, &rep);
 
-  theAttributes_aux->empty(); // liberation de la memoire
+  delete theAttributes_aux;
 
   return(rep.Retract);
 }
@@ -1201,8 +946,8 @@ throw(
 {
   ULong longueur;
   Message req, rep;
-  CParameterHandleValuePairSet* theParameters_aux
-    =PHVPStoCPHVPS(&theParameters);
+  CParameterHandleValuePairSet* theParameters_aux;
+  theParameters_aux = new CParameterHandleValuePairSet(theParameters);
   CParameterHandleValuePair *tmp;
 
   // envoyer la requete au RTI
@@ -1219,15 +964,16 @@ throw(
     req.HandleArray[i] = tmp->_param;
 
     // codage
-    getObjectToStringLength(tmp->_value.value,tmp->_value.lenght,longueur);
+    getObjectToStringLength(tmp->_value.value,tmp->_value.length,longueur);
     char *valeur = new char[longueur];
-    valeur[0]='\0' ;
-    objectToString(tmp->_value.value,tmp->_value.lenght, valeur);
+    objectToString(tmp->_value.value,tmp->_value.length, valeur);
     req.setValue(i,valeur);
   }
 
   executeService(&req, &rep);
-  theParameters_aux->empty(); // liberation de la memoire
+
+  delete theParameters_aux;
+
   return(rep.Retract);
 }
 
@@ -1337,7 +1083,8 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  CAttributeHandleValuePairSet* theAttributes_aux=AHStoCAHVPS(&theAttributes);
+  CAttributeHandleValuePairSet* theAttributes_aux;
+  theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
   CAttributeHandleValuePair *tmp;
   TransportType theType_aux;
 
@@ -2116,7 +1863,8 @@ throw(
   RTIinternalError)
 {
   Message req, rep;
-  CAttributeHandleValuePairSet* theAttributes_aux = AHStoCAHVPS(&theAttributes);
+  CAttributeHandleValuePairSet* theAttributes_aux;
+  theAttributes_aux = new CAttributeHandleValuePairSet(theAttributes);
   CAttributeHandleValuePair *tmp;
 
   OrderType theType_aux;
@@ -3171,7 +2919,7 @@ Boolean RTIambassador::tick()
 	}
 
 	AttributeHandleValuePairSet*
-	  theAttributes_aux = CAHVPStoAHVPS(&theAttributes);
+	  theAttributes_aux = theAttributes.toAHVPS();
 	fed_amb->reflectAttributeValues((ObjectHandle)vers_Fed.Objectid,
 					*theAttributes_aux,
 					RTIfedTime(vers_Fed.Date),
@@ -3201,7 +2949,7 @@ Boolean RTIambassador::tick()
    theParameters.add(par);
  }
 
- ParameterHandleValuePairSet *theParameters_aux=CPHVPStoPHVPS(&theParameters);
+ ParameterHandleValuePairSet *theParameters_aux = theParameters.toPHVPS();
         fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
         *theParameters_aux,
             RTIfedTime(vers_Fed.Date),
@@ -3521,7 +3269,7 @@ throw(
    theAttributes.add(att);
  }
 
- AttributeHandleValuePairSet *theAttributes_aux=CAHVPStoAHVPS(&theAttributes);
+ AttributeHandleValuePairSet *theAttributes_aux=theAttributes.toAHVPS();
 
         fed_amb->reflectAttributeValues((ObjectHandle)vers_Fed.Objectid,
      *theAttributes_aux,
@@ -3550,7 +3298,7 @@ throw(
    theParameters.add(par);
  }
 
- ParameterHandleValuePairSet *theParameters_aux=CPHVPStoPHVPS(&theParameters);
+ ParameterHandleValuePairSet *theParameters_aux = theParameters.toPHVPS();
 
         fed_amb->receiveInteraction(vers_Fed.InteractionHandle,
         *theParameters_aux,
@@ -4169,4 +3917,4 @@ void RTIambassador::processException(Message *msg)
 
 }
 
-// $Id: RTIambassador.cc,v 3.3 2002/11/27 23:07:19 breholee Exp $
+// $Id: RTIambassador.cc,v 3.4 2002/12/10 15:50:59 breholee Exp $
