@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.15 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.16 2005/03/16 23:12:56 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -82,7 +82,6 @@ public:
                    ObjectClassHandle theClassHandle,
                    AttributeHandle *theAttributeList,
                    UShort theListSize,
-                   bool SubOrUnsub,
 		   const RegionImp * = 0)
         throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
                SecurityError);
@@ -174,4 +173,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.15 2005/03/15 14:37:29 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.16 2005/03/16 23:12:56 breholee Exp $
