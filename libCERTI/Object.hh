@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $
+// $Id: Object.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -46,13 +46,11 @@ public:
     */
     FederateHandle Owner ;
 
-    HLA_Region UR ;
-
     // --------------------
     // -- Public Methods --
     // --------------------
     Object(FederateHandle the_owner)
-        : Owner(the_owner), UR(0), name(NULL) { handle = 0 ; };
+        : Owner(the_owner), name(NULL) { handle = 0 ; };
 
     Object(FederateHandle the_owner, const char *the_name);
     ~Object();
@@ -102,4 +100,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.11 2003/07/09 16:04:46 breholee Exp $
+// $Id: Object.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $

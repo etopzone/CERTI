@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.11 2003/06/26 15:17:06 breholee Exp $
+// $Id: RTItypes.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTI_TYPES_HH
@@ -207,7 +207,7 @@ typedef char *ObjectName ; // See MAX_USER_TAG_LENGTH
 typedef char *SpaceName ;
 
 // Parameters and Attributes MUST share the same types.
-typedef char *AttributeName ; // See MAX_USER_TAG_LENGTH
+//typedef char *AttributeName ; // See MAX_USER_TAG_LENGTH
 typedef char AttributeValue[MAX_BYTES_PER_VALUE + 1] ;
 typedef char *ParameterName ; // See MAX_USER_TAG_LENGTH
 typedef AttributeValue ParameterValue ;
@@ -221,26 +221,6 @@ struct Value {
     ValueType type ;
     ULong length ;
 };
-
-// struct range_struct_s {
-// ULong first ;
-// ULong last ;
-// };
-// typedef struct range_struct_s Range ;
-
-// struct Extents_s {
-// ULong _length ;
-// Range* _buffer ;
-// };
-// typedef struct Extents_s Extents ;
-
-// struct ExtentSet_s {
-// ULong _length ;
-// Extents* _buffer ;
-// };
-// typedef struct ExtentSet_s ExtentSet ;
-
-typedef ULong HLA_Region ;
 
 struct Threshold_s {
     ULong value ;
@@ -465,4 +445,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.11 2003/06/26 15:17:06 breholee Exp $
+// $Id: RTItypes.hh,v 3.12 2003/07/10 15:06:49 breholee Exp $

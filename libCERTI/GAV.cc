@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: GAV.cc,v 3.9 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -161,7 +161,7 @@ getWithHandle(AttributeHandle attrib) const
 }
 
 CAttributeHandleValuePair *CAttributeHandleValuePairSet::
-getWithName(AttributeName valueName) const
+getWithName(const char *valueName) const
 {
     CAttributeHandleValuePair *tmp = _head ;
     for (int i=0 ; i<_size ; i++)
@@ -428,4 +428,4 @@ CParameterHandleValuePairSet::toPHVPS() const
 
 }
 
-// $Id: GAV.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: GAV.cc,v 3.9 2003/07/10 15:06:49 breholee Exp $

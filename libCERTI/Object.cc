@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.13 2003/07/09 16:04:46 breholee Exp $
+// $Id: Object.cc,v 3.14 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,7 +39,7 @@ namespace certi {
 // ----------------------------------------------------------------------------
 //! Constructor.
 Object::Object(FederateHandle the_owner, const char *the_name)
-    : Owner(the_owner), UR(0), handle(0)
+    : Owner(the_owner), handle(0)
 {
     setName(the_name);
 }
@@ -194,4 +194,4 @@ Object::unassociate(RegionImp *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.13 2003/07/09 16:04:46 breholee Exp $
+// $Id: Object.cc,v 3.14 2003/07/10 15:06:49 breholee Exp $

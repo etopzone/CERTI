@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.6 2003/06/27 17:26:28 breholee Exp $
+// $Id: GAV.hh,v 3.7 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
@@ -169,7 +169,7 @@ public:
 
     void add(CAttributeHandleValuePair *att);
     CAttributeHandleValuePair *getWithHandle(AttributeHandle) const ;
-    CAttributeHandleValuePair *getWithName(AttributeName) const ;
+    CAttributeHandleValuePair *getWithName(const char *) const ;
     CAttributeHandleValuePair *getIeme(UShort) const ;
     void del(AttributeHandle);
     void empty();

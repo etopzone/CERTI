@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.6 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -66,30 +66,13 @@ public:
                                        UShort attribArraySize,
                                        TypeException &e);
 
-    void subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                       AttributeHandle theAttribute,
-                                       HLA_Region theRegion,
-                                       TypeException &e);
-
     void unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                         TypeException &e);
-
-    void unsubscribeObjectClassAttribute(ObjectClassHandle theClass,
-                                         HLA_Region theRegion,
                                          TypeException &e);
 
     void subscribeInteractionClass(InteractionClassHandle theClassHandle,
                                    TypeException &e);
 
-    void subscribeInteractionClass(InteractionClassHandle theClass,
-                                   HLA_Region theRegion,
-                                   TypeException &e);
-
     void unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
-                                     TypeException &e);
-
-    void unsubscribeInteractionClass(InteractionClassHandle theClass,
-                                     HLA_Region theRegion,
                                      TypeException &e);
 
     void startRegistrationForObjectClass(ObjectClassHandle theClass,
@@ -115,4 +98,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.5 2003/06/27 17:26:28 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.6 2003/07/10 15:06:49 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.10 2003/07/10 15:06:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -244,18 +244,6 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 }
 
 // ----------------------------------------------------------------------------
-// subscribeObjectClassAttribute (with Region)
-void
-DeclarationManagement::subscribeObjectClassAttribute(ObjectClassHandle,
-                                                     AttributeHandle,
-                                                     HLA_Region,
-                                                     TypeException &e)
-{
-    // BUG: Not implemented in F.0
-    e = e_UnimplementedService ;
-}
-
-// ----------------------------------------------------------------------------
 // unsubscribeObjectClassAttribute
 void
 DeclarationManagement::
@@ -281,16 +269,6 @@ unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                       req.federate);
 
     e = rep.exception ;
-}
-
-// ----------------------------------------------------------------------------
-// unsubscribeObjectClassAttribute (with Region)
-void
-DeclarationManagement::unsubscribeObjectClassAttribute(ObjectClassHandle,
-                                                       HLA_Region,
-                                                       TypeException &e)
-{
-    e = e_UnimplementedService ;
 }
 
 // ----------------------------------------------------------------------------
@@ -327,19 +305,10 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, NetworkMessage::SUBSCRIBE_INTERACTION_CLASS, req.federate);
+    comm->waitMessage(&rep, NetworkMessage::SUBSCRIBE_INTERACTION_CLASS,
+		      req.federate);
 
     e = rep.exception ;
-}
-
-// ----------------------------------------------------------------------------
-// subscribeInteractionClass (with Region)
-void
-DeclarationManagement::subscribeInteractionClass(InteractionClassHandle,
-                                                 HLA_Region,
-                                                 TypeException &e)
-{
-    e = e_UnimplementedService ;
 }
 
 // ----------------------------------------------------------------------------
@@ -381,16 +350,6 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                       req.federate);
 
     e = rep.exception ;
-}
-
-// ----------------------------------------------------------------------------
-// unsubscribeInteractionClass (with Region)
-void
-DeclarationManagement::unsubscribeInteractionClass(InteractionClassHandle,
-                                                   HLA_Region,
-                                                   TypeException &e)
-{
-    e = e_UnimplementedService ;
 }
 
 // ----------------------------------------------------------------------------
@@ -497,4 +456,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.9 2003/06/27 17:26:28 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.10 2003/07/10 15:06:49 breholee Exp $
