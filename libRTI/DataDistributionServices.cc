@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DataDistributionServices.cc,v 3.5 2003/11/10 15:03:56 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.6 2003/11/13 10:56:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,7 +32,7 @@ using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("LIBRTI", __FILE__);
+static pdCDebug D("LIBRTI_DDM", __FILE__);
 
 // ===========================================================================
 // DATA DISTRIBUTION MANAGEMENT
@@ -425,4 +425,4 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle object,
 
 } // namespace
 
-// $Id: DataDistributionServices.cc,v 3.5 2003/11/10 15:03:56 breholee Exp $
+// $Id: DataDistributionServices.cc,v 3.6 2003/11/13 10:56:00 breholee Exp $
