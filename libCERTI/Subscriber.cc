@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscriber.cc,v 3.6 2003/07/10 16:27:42 breholee Exp $
+// $Id: Subscriber.cc,v 3.7 2005/03/11 13:36:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,7 +30,7 @@ namespace certi {
 // ----------------------------------------------------------------------------
 // Constructor
 Subscriber::Subscriber(FederateHandle h)
-    : handle(h)
+    : handle(h), region(0)
 {
 }
 
@@ -62,7 +62,20 @@ Subscriber::match(FederateHandle fed, RegionImp *r) const
     return fed == handle && r == region ;
 }
 
+// ----------------------------------------------------------------------------
+/** Check if subscriber's region matches (overlaps) with the one in
+    parameter. If one of them is the default region (null) the result
+    is 'true'
+ */
+bool
+Subscriber::match(const RegionImp *r) const
+{
+    if (region == 0 || r == 0)
+	return true ;
+    else
+	return region->overlaps(*r);
 }
 
-// $Id: Subscriber.cc,v 3.6 2003/07/10 16:27:42 breholee Exp $
+} // namespace certi
 
+// $Id: Subscriber.cc,v 3.7 2005/03/11 13:36:57 breholee Exp $
