@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Objects.cc,v 3.3 2003/10/13 10:08:12 breholee Exp $
+// $Id: Objects.cc,v 3.4 2003/10/20 11:13:37 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Objects.hh"
@@ -27,10 +27,12 @@
 
 #include <cassert>
 
-static pdCDebug D("BILLARD", __FILE__ "> ");
+static pdCDebug D("BILLARD", __FILE__);
 
 using std::string ;
 using std::vector ;
+using std::cout ;
+using std::endl ;
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -206,4 +208,4 @@ Objects::discover(ObjectHandle h)
     remote.push_back(Ball(h));
 }
 
-// $Id: Objects.cc,v 3.3 2003/10/13 10:08:12 breholee Exp $
+// $Id: Objects.cc,v 3.4 2003/10/20 11:13:37 breholee Exp $
