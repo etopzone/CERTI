@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.12 2003/06/27 17:26:28 breholee Exp $
+// $Id: FederationManagement.cc,v 3.13 2003/07/04 14:33:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -330,7 +330,7 @@ FederationManagement::unregisterSynchronization(const char *label,
     e = e_NO_EXCEPTION ;
 
     // Find if this label has been requested by federate or RTIG.
-    list<char *>::const_iterator i = synchronizationLabels.begin();
+    list<char *>::iterator i = synchronizationLabels.begin();
     bool exists = false ;
     for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i), label)) {
@@ -341,7 +341,11 @@ FederationManagement::unregisterSynchronization(const char *label,
     }
     if (!exists)
         e = e_UnknownLabel ;
-
+    else {
+	delete[] *i ;
+	synchronizationLabels.erase(i);
+    }
+    
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
 
@@ -638,4 +642,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.12 2003/06/27 17:26:28 breholee Exp $
+// $Id: FederationManagement.cc,v 3.13 2003/07/04 14:33:44 breholee Exp $
