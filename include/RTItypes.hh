@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypes.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTItypes.hh,v 3.5 2003/01/17 18:20:03 breholee Exp $
 // ---------------------------------------------------------------------------
 
 // Types utilises par le RTI : Constantes, exceptions, handles...
@@ -175,21 +175,16 @@ struct EventRetractionHandle_s {
 typedef struct EventRetractionHandle_s EventRetractionHandle;
 // All char * declarations should use null terminated strings
 
- 
 typedef char * FederationExecutionName; // See MAX_FEDERATION_NAME_LENGTH
 typedef char * FederateName; // See MAX_FEDERATE_NAME_LENGTH
-typedef char * FileName;
-typedef char * PauseLabel; // See MAX_USER_TAG_LENGTH
-typedef char * SaveLabel; // See MAX_USER_TAG_LENGTH
-//typedef char * const char* ; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectClassName; // See MAX_USER_TAG_LENGTH
 typedef char * ObjectName; // See MAX_USER_TAG_LENGTH
 typedef char * InteractionClassName; // See MAX_USER_TAG_LENGTH
- 
+
 // Parameters and Attributes MUST share the same types.
-typedef char *AttributeName; // See MAX_USER_TAG_LENGTH
+typedef char * AttributeName; // See MAX_USER_TAG_LENGTH
 typedef char AttributeValue[MAX_BYTES_PER_VALUE + 1];
-typedef AttributeName ParameterName; // See MAX_USER_TAG_LENGTH
+typedef char * ParameterName; // See MAX_USER_TAG_LENGTH
 typedef AttributeValue ParameterValue;
 
 typedef AttributeValue ValueName;
@@ -621,4 +616,4 @@ public:
 
 #endif // _CERTI_RTI_TYPES_HH
 
-// $Id: RTItypes.hh,v 3.4 2002/12/11 00:47:33 breholee Exp $
+// $Id: RTItypes.hh,v 3.5 2003/01/17 18:20:03 breholee Exp $
