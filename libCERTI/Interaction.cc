@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.23 2005/04/05 19:59:56 breholee Exp $
+// $Id: Interaction.cc,v 3.24 2005/04/07 11:32:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,20 +66,20 @@ Interaction::addParametersToChild(Interaction *the_child)
     // The Parameter List is read backward to respect the same attribute order
     // for the child (Parameters are inserted at the beginning of the list)
     Parameter *child = NULL ;
-    list<Parameter *>::reverse_iterator p ;
-    for (p = parameterSet.rbegin(); p != parameterSet.rend(); p++) {
-        assert((*p) != NULL);
+    list<Parameter *>::reverse_iterator it ;
+    for (it = parameterSet.rbegin(); it != parameterSet.rend(); it++) {
+        assert((*it) != NULL);
 
-        child = new Parameter(*p);
+        child = new Parameter(**it);
         assert(child != NULL);
 
         D.Out(pdProtocol,
               "ObjectClass %u adding new attribute %d to child class %u.",
-              handle, (*p)->getHandle(), the_child->handle);
+              handle, (*it)->getHandle(), the_child->handle);
 
         the_child->addParameter(child, RTI_TRUE);
 
-        if (child->getHandle() != (*p)->getHandle())
+        if (child->getHandle() != (*it)->getHandle())
             throw RTIinternalError("Error while copying child's attributes.");
     }
 }
@@ -277,7 +277,7 @@ Interaction::getParameterHandle(const char *the_name) const
 {
     list<Parameter *>::const_iterator p ;
     for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
-        if (strcmp((*p)->getName(), the_name) == 0)
+        if ((*p)->getName() == the_name)
             return (*p)->getHandle();
     }
 
@@ -291,7 +291,7 @@ Interaction::getParameterName(ParameterHandle the_handle) const
     throw (InteractionParameterNotDefined,
            RTIinternalError)
 {
-    return getParameterByHandle(the_handle)->getName();
+    return getParameterByHandle(the_handle)->getName().c_str();
 }
 
 // ----------------------------------------------------------------------------
@@ -488,4 +488,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.23 2005/04/05 19:59:56 breholee Exp $
+// $Id: Interaction.cc,v 3.24 2005/04/07 11:32:59 breholee Exp $

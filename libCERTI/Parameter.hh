@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002, 2003, 2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,55 +19,42 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
+// $Id: Parameter.hh,v 3.6 2005/04/07 11:32:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_PARAMETER_HH
-#define _CERTI_PARAMETER_HH
+#ifndef CERTI_PARAMETER_HH
+#define CERTI_PARAMETER_HH
 
 #include "certi.hh"
 #include "SecurityLevel.hh"
+
+#include <string>
 
 namespace certi {
 
 class Parameter
 {
 public:
+    Parameter();
+    Parameter(std::string);
+
+    void display();
+
+    const std::string getName() { return name ; };
+    void setName(const std::string &s) { name = s ; };
+
+    void setHandle(Handle p) { handle = p ; };
+    Handle getHandle() const { return handle ; };
+
     SecurityLevelID LevelID ;
 
 private:
-    ParameterHandle Handle ;
-    ParameterName Name ; // The Name is always locally allocated and deleted.
-
-public:
-    Parameter() { Name = NULL ; LevelID = PublicLevelID ; };
-    Parameter(Parameter *Init) {
-        Name = strdup(Init->Name);
-        LevelID = Init->LevelID ;
-    };
-
-    Parameter(ParameterName theName) // The 'theName' parameter is
-        // copied, it can deleted after
-        // the call.
-        throw (RTIinternalError);
-    ~Parameter() {if (Name != NULL) free(Name); }
-
-    void display(); // Print the parameter's attributes to
-    // stdout(see RootObj::Display)
-
-    // Name attribute access(GetName reference must be considered READ-ONLY).
-    // NewName lenght must be lower or equal to MAX_USER_TAG_LENGTH.
-    char *getName() {return Name ; };
-
-    void setName(const char *NewName)
-        throw (ValueLengthExceeded, RTIinternalError);
-
-    void setHandle(ParameterHandle p) { Handle = p ; }
-    ParameterHandle getHandle() const { return Handle ; }
+    Handle handle ;
+    std::string name ;
 };
 
-}
+} // namespace certi
 
-#endif // _CERTI_PARAMETER_HH
+#endif // CERTI_PARAMETER_HH
 
-// $Id: Parameter.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
+// $Id: Parameter.hh,v 3.6 2005/04/07 11:32:59 breholee Exp $

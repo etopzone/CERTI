@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.5 2003/10/27 10:16:36 breholee Exp $
+// $Id: Parameter.cc,v 3.6 2005/04/07 11:32:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,60 +30,24 @@
 
 namespace certi {
 
-// ----------------
-// -- Parameter --
-// ----------------
-
-Parameter::Parameter(ParameterName theName)
-    throw (RTIinternalError)
+Parameter::Parameter()
+    : LevelID(PublicLevelID), handle(0)
 {
-    if (theName != NULL) {
-        Name = strdup(theName);
-        if (Name == NULL)
-            throw RTIinternalError();
-    }
-
-    LevelID = PublicLevelID ;
 }
 
-
-// -------------
-// -- Display --
-// -------------
-
-void Parameter::display(void)
+Parameter::Parameter(std::string s)
+    : LevelID(PublicLevelID), handle(0), name(s)
 {
-    if (Name != NULL)
-        printf(" Parameter %ld: \"%s\"[Level %d]\n",
-               Handle, Name, LevelID);
-    else
-        printf(" Parameter %ld:(no name)[Level %d]\n",
-               Handle, LevelID);
 }
 
-
-// -------------
-// -- SetName --
-// -------------
 void
-Parameter::setName(const char *NewName)
-    throw (ValueLengthExceeded, RTIinternalError)
+Parameter::display(void)
 {
-    // Check Length
-    if ((NewName == NULL) || (std::strlen(NewName) > MAX_USER_TAG_LENGTH)) {
-        throw ValueLengthExceeded("Parameter name too long.");
-    }
-
-    // Free previous name
-    if (Name != NULL)
-        free(Name);
-
-    // Store new name
-    Name = strdup(NewName);
-    if (Name == NULL)
-        throw RTIinternalError("Memory Exhausted.");
+    std::cout << " Parameter " << handle << ": "
+	      << (name.length() == 0 ? "(no name)" : name.c_str())
+	      << " [Level " << LevelID << "]" << std::endl ;
 }
 
-}
+} // namespace certi
 
-// $Id: Parameter.cc,v 3.5 2003/10/27 10:16:36 breholee Exp $
+// $Id: Parameter.cc,v 3.6 2005/04/07 11:32:59 breholee Exp $
