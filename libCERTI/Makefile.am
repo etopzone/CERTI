@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.20 2005/04/05 20:02:12 breholee Exp $ 
+## $Id: Makefile.am,v 3.21 2005/04/09 15:17:31 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -18,10 +18,10 @@ Handled.hh HandleManager.hh helper.hh InteractionBroadcastList.hh	\
 Interaction.hh InteractionSet.hh LBTS.hh MessageBody.hh Message.hh	\
 Named.hh NetworkMessage.hh ObjectAttribute.hh ObjectClassAttribute.hh	\
 ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
-ObjectSet.hh Parameter.hh Publisher.hh RootObject.hh RoutingSpace.hh	\
-RTIRegion.hh SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh	\
-Socket.hh SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh		\
-SocketUN.hh Subscriber.hh XmlParser.hh Subscribable.hh
+ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
+SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
+SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
+Subscriber.hh XmlParser.hh Subscribable.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
@@ -31,10 +31,10 @@ InteractionSet.cc LBTS.cc MessageBody.cc Message.cc Message_RW.cc	\
 Named.cc NetworkMessage.cc NetworkMessage_RW.cc ObjectAttribute.cc	\
 Object.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc		\
 ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
-Publisher.cc RootObject.cc RoutingSpace.cc RTIRegion.cc	\
-SecureTCPSocket.cc SecurityServer.cc SocketMC.cc SocketServer.cc	\
-SocketTCP.cc SocketUDP.cc SocketUN.cc Subscriber.cc syntax.yy		\
-tokens.ll XmlParser.cc Subscribable.cc
+RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
+SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
+SocketUDP.cc SocketUN.cc Subscriber.cc syntax.yy tokens.ll		\
+XmlParser.cc Subscribable.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -44,4 +44,4 @@ LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
 
-## EOF $Id: Makefile.am,v 3.20 2005/04/05 20:02:12 breholee Exp $
+## EOF $Id: Makefile.am,v 3.21 2005/04/09 15:17:31 breholee Exp $

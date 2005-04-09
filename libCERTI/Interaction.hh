@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.19 2005/04/05 19:59:56 breholee Exp $
+// $Id: Interaction.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -29,10 +29,10 @@
 #include "SecurityServer.hh"
 #include "Parameter.hh"
 #include "Subscribable.hh"
-#include "Publisher.hh"
 #include "InteractionBroadcastList.hh"
 
 #include <list>
+#include <set>
 #include <string>
 
 namespace certi {
@@ -145,12 +145,13 @@ private:
 
     //! List of this Interaction Class' Parameters.
     std::list<Parameter *> parameterSet ;
-    //! List of the Federates(Handles) publishing this Class.
-    std::list<Publisher *> publishers ;
+
+    typedef std::set<FederateHandle> PublishersList ;
+    PublishersList publishers ;
 };
 
 } // namespace
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.19 2005/04/05 19:59:56 breholee Exp $
+// $Id: Interaction.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $

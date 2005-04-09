@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.19 2005/04/02 15:42:20 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -29,8 +29,9 @@
 #include "SecurityLevel.hh"
 
 #include "Subscribable.hh"
-#include "Publisher.hh"
 #include "ObjectClassBroadcastList.hh"
+
+#include <set>
 
 namespace certi {
 
@@ -81,7 +82,8 @@ private:
     std::string name ; //!< The attribute name, must be locally allocated.
     SpaceHandle space ; //!< Routing space
 
-    std::list<Publisher *> publishers ; //!< The publisher's list.
+    typedef std::set<FederateHandle> PublishersList ;
+    PublishersList publishers ; //!< The publisher's list.
 
 };
 
@@ -89,4 +91,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.19 2005/04/02 15:42:20 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $

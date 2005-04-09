@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.24 2005/04/07 11:32:59 breholee Exp $
+// $Id: Interaction.cc,v 3.25 2005/04/09 15:17:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -195,16 +195,8 @@ Interaction::~Interaction()
         parameterSet.pop_front();
     }
 
-    // Deleting Publishers
     if (!publishers.empty())
-        D.Out(pdError,
-              "Interaction %d: publishers list not empty at termination.",
-              handle);
-
-    while (!publishers.empty()) {
-        delete publishers.front();
-        publishers.pop_front();
-    }
+        D.Out(pdError, "Interaction %d: publishers list not empty at termination.", handle);
 
     // Deleting Sons
     while (!children.empty()) {
@@ -217,14 +209,9 @@ Interaction::~Interaction()
 void
 Interaction::deletePublisher(FederateHandle fed)
 {
-    list<Publisher *>::iterator p ;
-    for (p = publishers.begin(); p != publishers.end(); ++p) {
-        if ((*p)->getHandle() == fed) {
-            delete (*p);
-            publishers.erase(p);
-            return ;
-        }
-    }
+    PublishersList::iterator it = publishers.find(fed);
+    if (it != publishers.end())
+	publishers.erase(it);
 }
 
 // ----------------------------------------------------------------------------
@@ -299,13 +286,7 @@ Interaction::getParameterName(ParameterHandle the_handle) const
 bool
 Interaction::isPublishing(FederateHandle fed)
 {
-    list<Publisher *>::iterator p ;
-    for (p = publishers.begin(); p != publishers.end(); ++p) {
-        if ((*p)->getHandle() == fed) {
-	    return true ;
-        }
-    }
-    return false ;
+    return publishers.find(fed) != publishers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -356,15 +337,11 @@ Interaction::publish(FederateHandle the_handle)
     checkFederateAccess(the_handle, (char *) "Publish");
     
     if (!isPublishing(the_handle)) {
-	D.Out(pdInit,
-	      "Interaction %d: Added Federate %d to publishers list.",
-	      handle, the_handle);
-	publishers.push_front(new Publisher(the_handle));
+	D.Out(pdInit, "Interaction %d: Added Federate %d to publishers list.", handle, the_handle);
+	publishers.insert(the_handle);
     }
     else
-	D.Out(pdError,
-	      "Interaction %d: Inconsistent publish request from"
-	      " Federate %d.", handle, the_handle);
+	D.Out(pdError, "Interaction %d: Inconsistent publish request from Federate %d.", handle, the_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -488,4 +465,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.24 2005/04/07 11:32:59 breholee Exp $
+// $Id: Interaction.cc,v 3.25 2005/04/09 15:17:31 breholee Exp $

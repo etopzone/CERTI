@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.22 2005/04/02 15:42:20 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.23 2005/04/09 15:17:31 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,21 +39,6 @@ using std::endl ;
 namespace certi {
 
 static pdCDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
-
-// ----------------------------------------------------------------------------
-/*! Throw SecurityError if the Federate is not allowed to access the Object
-  Class, and print an Audit message containing Reason.
-*/
-void
-ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
-					  const char *reason) const
-{
-    if (server && !server->canFederateAccessData(fed, level)) {
-        cout << "Attribute " << handle << " : SecurityError for federate "
-             << fed << '(' << reason << ")." << endl ;
-        throw SecurityError("Federate should not access ObjectClassAttribute.");
-    }
-}
 
 // ----------------------------------------------------------------------------
 //! No parameters constructor.
@@ -82,19 +67,24 @@ ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *source)
 }
 
 // ----------------------------------------------------------------------------
-//! Destructor (Empty private Lists, and free Name memory)
+//! Destructor
 ObjectClassAttribute::~ObjectClassAttribute()
 {
-    // Deleting Publishers
-    if (!publishers.empty())
-        D[pdError] << "Attribute " << handle
-		   << ": Publishers list not empty at termination." << endl ;
+}
 
-    list<Publisher *>::iterator p ;
-    for (p = publishers.begin(); p != publishers.end(); p++) {
-        delete (*p);
+// ----------------------------------------------------------------------------
+/*! Throw SecurityError if the Federate is not allowed to access the Object
+  Class, and print an Audit message containing Reason.
+*/
+void
+ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
+					  const char *reason) const
+{
+    if (server && !server->canFederateAccessData(fed, level)) {
+        cout << "Attribute " << handle << " : SecurityError for federate "
+             << fed << '(' << reason << ")." << endl ;
+        throw SecurityError("Federate should not access ObjectClassAttribute.");
     }
-    publishers.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -102,14 +92,9 @@ ObjectClassAttribute::~ObjectClassAttribute()
 void
 ObjectClassAttribute::deletePublisher(FederateHandle fed)
 {
-    list<Publisher *>::iterator i ;
-    for (i = publishers.begin(); i != publishers.end(); ++i) {
-	if ((*i)->getHandle() == fed) {
-            delete *i ;
-            publishers.erase(i);
-	    return ;
-        }
-    }
+    PublishersList::iterator it = publishers.find(fed);
+    if (it != publishers.end())
+	publishers.erase(it);
 }
 
 // ----------------------------------------------------------------------------
@@ -132,12 +117,7 @@ ObjectClassAttribute::display() const
 bool
 ObjectClassAttribute::isPublishing(FederateHandle fed) const
 {
-    list<Publisher *>::const_iterator i = publishers.begin();
-    for (i = publishers.begin(); i != publishers.end(); i++) {
-        if ((*i)->getHandle() == fed)
-            return true ;
-    }
-    return false ;
+    return publishers.find(fed) != publishers.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -150,7 +130,7 @@ ObjectClassAttribute::publish(FederateHandle fed)
         checkFederateAccess(fed, "Publish");
         D[pdInit] << "Attribute " << handle << ": Added Federate " << fed
 		  << " to publishers list." << endl ;
-	publishers.push_front(new Publisher(fed));
+	publishers.insert(fed);
     }
     else
         D[pdError] << "Attribute " << handle
@@ -225,9 +205,9 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 	  addFederatesIfOverlap(*ocblist, region, handle);
       } break ;
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-          list<Publisher *>::iterator i ;
+          PublishersList::iterator i ;
           for (i = publishers.begin(); i != publishers.end(); i++) {
-              ocblist->addFederate((*i)->getHandle(), handle);
+              ocblist->addFederate(*i, handle);
           }
       } break ;
       
@@ -237,4 +217,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.22 2005/04/02 15:42:20 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.23 2005/04/09 15:17:31 breholee Exp $
