@@ -17,19 +17,38 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.2 2005/04/05 20:04:29 breholee Exp $
+// $Id: Subscribable.hh,v 3.3 2005/04/13 13:03:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
 #define CERTI_SUBSCRIBABLE_HH
 
-#include "Subscriber.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "InteractionBroadcastList.hh"
 
 #include <list>
 
 namespace certi {
+
+class RTIRegion ;
+
+class Subscriber
+{
+public:
+    Subscriber(FederateHandle);
+    Subscriber(FederateHandle, const RTIRegion *);
+    
+    FederateHandle getHandle() const ;
+    const RTIRegion *getRegion() const ;
+    bool equals(FederateHandle, const RTIRegion *) const ;
+    bool match(const RTIRegion *) const ;
+
+    bool operator==(const Subscriber &) const ;
+
+protected:
+    FederateHandle handle ; //!< The ID of the Subscriber.
+    const RTIRegion *region ; //!< the subscription region
+};
 
 class Subscribable
 {
@@ -58,4 +77,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.2 2005/04/05 20:04:29 breholee Exp $
+// $Id: Subscribable.hh,v 3.3 2005/04/13 13:03:10 breholee Exp $

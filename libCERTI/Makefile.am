@@ -1,5 +1,5 @@
 ## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.21 2005/04/09 15:17:31 breholee Exp $ 
+## $Id: Makefile.am,v 3.22 2005/04/13 13:03:10 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in
@@ -21,7 +21,7 @@ ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
 ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
-Subscriber.hh XmlParser.hh Subscribable.hh
+XmlParser.hh Subscribable.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
@@ -33,8 +33,8 @@ Object.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc		\
 ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
 RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
-SocketUDP.cc SocketUN.cc Subscriber.cc syntax.yy tokens.ll		\
-XmlParser.cc Subscribable.cc
+SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
+Subscribable.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -44,4 +44,4 @@ LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
 
-## EOF $Id: Makefile.am,v 3.21 2005/04/09 15:17:31 breholee Exp $
+## EOF $Id: Makefile.am,v 3.22 2005/04/13 13:03:10 breholee Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.2 2005/04/05 20:03:49 breholee Exp $
+// $Id: Subscribable.cc,v 3.3 2005/04/13 13:03:10 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,61 @@ PrettyDebug D("SUBSCRIBABLE", __FILE__);
 }
 
 namespace certi {
+
+// ----------------------------------------------------------------------------
+// Constructor
+Subscriber::Subscriber(FederateHandle h)
+    : handle(h), region(0)
+{
+}
+
+// ----------------------------------------------------------------------------
+// Constructor
+Subscriber::Subscriber(FederateHandle h, const RTIRegion *r)
+    : handle(h), region(r)
+{
+}
+
+// ----------------------------------------------------------------------------
+FederateHandle
+Subscriber::getHandle() const
+{
+    return handle ;
+}
+
+// ----------------------------------------------------------------------------
+const RTIRegion *
+Subscriber::getRegion() const
+{
+    return region ;
+}
+
+// ----------------------------------------------------------------------------
+bool
+Subscriber::operator==(const Subscriber &sub) const
+{
+    return (handle == sub.getHandle()) && (region == sub.getRegion());
+}
+
+// ----------------------------------------------------------------------------
+bool
+Subscriber::equals(FederateHandle fed, const RTIRegion *r) const
+{
+    return handle == fed && region == r ;
+}
+
+// ----------------------------------------------------------------------------
+/** Check if subscriber's region matches (overlaps) with the one in
+    parameter. If one of them is the default region (null) the result
+    is 'true'
+ */
+bool
+Subscriber::match(const RTIRegion *r) const
+{
+    D[pdTrace] << "Match test: " << (region ? region->getHandle() : 0) << " vs "
+	       << (r ? r->getHandle() : 0) << std::endl ;
+    return (region == 0) || (r == 0) || region->overlaps(*r);
+}
 
 // ----------------------------------------------------------------------------
 Subscribable::~Subscribable()
@@ -139,4 +194,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.2 2005/04/05 20:03:49 breholee Exp $
+// $Id: Subscribable.cc,v 3.3 2005/04/13 13:03:10 breholee Exp $
