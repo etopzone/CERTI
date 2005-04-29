@@ -1,11 +1,8 @@
-## CERTI libCERTI Makefile.am
-## $Id: Makefile.am,v 3.22 2005/04/13 13:03:10 breholee Exp $ 
-## ---------------------------------------------------------------------------
+## $Id: Makefile.am,v 3.23 2005/04/29 20:09:15 breholee Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libpdebug	\
-@XML_CFLAGS@ @HAVE_XML@
+INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@
 
 lib_LTLIBRARIES = libCERTI.la
 
@@ -21,7 +18,7 @@ ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
 ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
-XmlParser.hh Subscribable.hh
+XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
@@ -34,7 +31,7 @@ ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
 RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
-Subscribable.cc
+Subscribable.cc PrettyDebug.cc
 
 # libCERTI_la_LDFLAGS = -version-info 0:0:0
 # Too unstable to use -version-info, so :
@@ -43,5 +40,3 @@ libCERTI_la_LDFLAGS = -release 3.2
 LDADD = @XML_LIBS@
 
 EXTRA_DIST = syntax.h
-
-## EOF $Id: Makefile.am,v 3.22 2005/04/13 13:03:10 breholee Exp $
