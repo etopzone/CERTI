@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.24 2005/03/25 17:18:33 breholee Exp $
+// $Id: RootObject.cc,v 3.25 2005/04/30 17:18:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -121,7 +121,7 @@ RootObject::getRoutingSpaceHandle(string rs)
 	spaces.end(),
 	NameComparator<RoutingSpace>(rs));
     
-    if (i == spaces.end()) throw NameNotFound();
+    if (i == spaces.end()) throw NameNotFound("");
     else return i->getHandle();
 }
 
@@ -132,7 +132,7 @@ RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
     if (handle <= 0 || (size_t) handle > spaces.size())
-	throw SpaceNotDefined();
+	throw SpaceNotDefined("");
     else
 	return spaces[handle - 1].getName();
 }
@@ -144,7 +144,7 @@ RootObject::getRoutingSpace(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
     if (handle <= 0 || (size_t) handle > spaces.size())
-	throw SpaceNotDefined();
+	throw SpaceNotDefined("");
     else
 	return spaces[handle - 1] ;
 }
@@ -195,7 +195,7 @@ RootObject::deleteRegion(RegionHandle region_handle)
 	regions.end(),
 	HandleComparator<RTIRegion>(region_handle));
 
-    if (it == regions.end()) throw RegionNotKnown();
+    if (it == regions.end()) throw RegionNotKnown("");
     else {
 	// TODO: check RegionInUse
 	regions.remove(*it);
@@ -218,7 +218,7 @@ RootObject::getRegion(RegionHandle handle)
 	regions.end(),
 	HandleComparator<RTIRegion>(handle));
 
-    if (it == regions.end()) throw RegionNotKnown();
+    if (it == regions.end()) throw RegionNotKnown("");
     else return *it ;
 }
 
@@ -311,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.24 2005/03/25 17:18:33 breholee Exp $
+// $Id: RootObject.cc,v 3.25 2005/04/30 17:18:14 breholee Exp $

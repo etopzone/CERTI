@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.30 2005/03/28 19:25:17 breholee Exp $
+// $Id: ObjectClass.cc,v 3.31 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -45,7 +45,7 @@ static pdCDebug D("OBJECTCLASS", __FILE__);
 //! To be used only by CRead, it returns the new Attribute's Handle.
 AttributeHandle
 ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
-                          Boolean is_inherited)
+                          bool is_inherited)
 {
     if (theAttribute == NULL)
         throw RTIinternalError("Tried to add NULL attribute.");
@@ -55,7 +55,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
 
     // If the attribute is inherited, it keeps its security level.
     // If not, it takes the default security level of the class.
-    if (is_inherited != RTI_TRUE)
+    if (!is_inherited)
         theAttribute->level = levelId ;
 
     attributeSet.push_front(theAttribute);
@@ -249,10 +249,10 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
     if (server == NULL)
         return ;
 
-    Boolean result = server->canFederateAccessData(the_federate, levelId);
+    bool result = server->canFederateAccessData(the_federate, levelId);
 
     // BUG: Should use Audit.
-    if (result != RTI_TRUE) {
+    if (!result) {
         cout << "Object Class " << handle << " : SecurityError for federate "
              << the_federate << '(' << reason << ")." << endl ;
         throw SecurityError("Federate should not access Object Class.");
@@ -309,7 +309,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
     if ((server != 0) && (object->getOwner() != the_federate)) {
         D.Out(pdExcept, "Delete Object %d: Federate %d not owner.",
               the_object, the_federate);
-        throw DeletePrivilegeNotHeld();
+        throw DeletePrivilegeNotHeld("");
     }
 
     // 2. Remove Instance from list.
@@ -398,7 +398,7 @@ ObjectClass::getAttributeHandle(const char *the_name) const
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
           handle, the_name);
 
-    throw NameNotFound();
+    throw NameNotFound("");
 }
 
 // ----------------------------------------------------------------------------
@@ -430,7 +430,7 @@ ObjectClass::getAttribute(AttributeHandle the_handle) const
     D.Out(pdExcept, "ObjectClass %d: Attribute %d not defined.",
           handle, the_handle);
 
-    throw AttributeNotDefined();
+    throw AttributeNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -448,7 +448,7 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     D[pdError] << "Could not find object " << the_id << " among "
 	       << objectSet.size() << " objects of class "
 	       << handle << std::endl ;
-    throw ObjectNotKnown();
+    throw ObjectNotKnown("");
 }
 
 // ----------------------------------------------------------------------------
@@ -460,7 +460,7 @@ ObjectClass::isFederatePublisher(FederateHandle the_federate) const
 
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isPublishing(the_federate) == RTI_TRUE)
+        if ((*a)->isPublishing(the_federate))
             return true ;
     }
     return false ;
@@ -511,7 +511,7 @@ ObjectClass::killFederate(FederateHandle the_federate)
     try {
         // Does federate is publishing something ? (not important)
         if (isFederatePublisher(the_federate)) {
-            publish(the_federate, NULL, 0, RTI_FALSE);
+            publish(the_federate, NULL, 0, false);
         }
 
         // Does federate subscribed something ?
@@ -604,13 +604,13 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
         D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
-        throw ObjectAlreadyRegistered();
+        throw ObjectAlreadyRegistered("");
     }
 
     // This condition is only to be checked on the RTIG
     if ((server != NULL) && (!isFederatePublisher(the_federate))) {
         D.Out(pdExcept, "exception : ObjectClassNotPublished.");
-        throw ObjectClassNotPublished();
+        throw ObjectClassNotPublished("");
     }
 
     // Ownership management :
@@ -723,7 +723,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 void
 ObjectClass::setLevelId(SecurityLevelID new_levelID)
 {
-    if (server->dominates(new_levelID, levelId) == RTI_FALSE)
+    if (!server->dominates(new_levelID, levelId))
         throw SecurityError("Attempt to lower object class level.");
 
     levelId = new_levelID ;
@@ -791,7 +791,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         oa = object->getAttribute(the_attributes[i]);
 
         if (oa->getOwner() != the_federate)
-            throw AttributeNotOwned();
+            throw AttributeNotOwned("");
     }
 
     // Prepare and Broadcast message for this class
@@ -870,9 +870,9 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         D.Out(pdDebug, "Attribute Handle : %u", oa->getHandle());
         D.Out(pdDebug, "Attribute Owner : %u", oa->getOwner());
         if (oa->getOwner() != theFederateHandle)
-            throw AttributeNotOwned();
+            throw AttributeNotOwned("");
         if (oa->beingDivested())
-            throw AttributeAlreadyBeingDivested();
+            throw AttributeAlreadyBeingDivested("");
     }
 
     int compteur_acquisition = 0 ;
@@ -907,7 +907,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 oa->removeCandidate(NewOwner);
 
                 // On réinitialise divesting
-                oa->setDivesting(RTI_FALSE);
+                oa->setDivesting(false);
 
                 diffusionAcquisition.DiffArray[compteur_acquisition]
                     .federate = NewOwner ;
@@ -926,7 +926,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             else {
                 AnswerAssumption->handleArray[compteur_assumption]
                     = theAttributeList[i] ;
-                oa->setDivesting(RTI_TRUE);
+                oa->setDivesting(true);
                 compteur_assumption++ ;
             }
         }
@@ -1011,7 +1011,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         // Federate must publish the class.
         if (!isFederatePublisher(the_federate)) {
             D.Out(pdExcept, "exception : ObjectClassNotPublished.");
-            throw ObjectClassNotPublished();
+            throw ObjectClassNotPublished("");
         }
 
         //rem attributeSet.size()=attributeState.size()
@@ -1025,13 +1025,13 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
             // acquire.
             if (!oca->isPublishing(the_federate) &&
                 (strcmp(oca->getName(), "privilegeToDelete")))
-                throw AttributeNotPublished();
+                throw AttributeNotPublished("");
             // Does federate already owns some attributes.
             if (oa->getOwner() == the_federate)
-                throw FederateOwnsAttributes();
+                throw FederateOwnsAttributes("");
             // Does federate is on the way to acquire something.
             if (oa->isCandidate(the_federate))
-                throw AttributeAlreadyBeingAcquired();
+                throw AttributeAlreadyBeingAcquired("");
         }
 
         NetworkMessage *Answer_notification = new NetworkMessage ;
@@ -1079,7 +1079,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                 Answer_notification->handleArray[compteur_notification]
                     = the_attributes[i] ;
                 oa->setOwner(the_federate);
-                oa->setDivesting(RTI_FALSE);
+                oa->setDivesting(false);
                 compteur_notification++ ;
                 //object->Owner reste le champ de référence
                 //pour le privilegeToDelete
@@ -1155,7 +1155,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         oa = object->getAttribute(theAttributeList[i]);
 
         if (oa->getOwner() != theFederateHandle)
-            throw AttributeNotOwned();
+            throw AttributeNotOwned("");
     }
 
     int compteur_assumption = 0 ;
@@ -1187,7 +1187,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 oa->removeCandidate(NewOwner);
 
                 // We reinitialize divesting.
-                oa->setDivesting(RTI_FALSE);
+                oa->setDivesting(false);
 
                 diffusionAcquisition->DiffArray[compteur_acquisition]
                     .federate = NewOwner ;
@@ -1203,7 +1203,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 AnswerAssumption->handleArray[compteur_assumption] =
                     theAttributeList[i] ;
                 oa->setOwner(0);
-                oa->setDivesting(RTI_FALSE);
+                oa->setDivesting(false);
                 compteur_assumption++ ;
             }
         }
@@ -1281,11 +1281,11 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
         //Le fédéré est-il déjà propriétaire de certains attributs
         if (oa->getOwner() == theFederateHandle)
-            throw FederateOwnsAttributes();
+            throw FederateOwnsAttributes("");
         //Le fédéré publie-t-il les attributs
         if (!oca->isPublishing(theFederateHandle) &&
             (strcmp(oca->getName(), "privilegeToDelete") != 0))
-            throw AttributeNotPublished();
+            throw AttributeNotPublished("");
     }
 
     int compteur_notification = 0 ;
@@ -1296,7 +1296,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
         //Le fédéré doit publier la classe
         if (!isFederatePublisher(theFederateHandle)) {
             D.Out(pdExcept, "exception : ObjectClassNotPublished.");
-            throw ObjectClassNotPublished();
+            throw ObjectClassNotPublished("");
         }
 
         NetworkMessage *AnswerNotification = new NetworkMessage ;
@@ -1333,7 +1333,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                 AnswerNotification->handleArray[compteur_notification]
                     = theAttributeList[i] ;
                 oa->setOwner(theFederateHandle);
-                oa->setDivesting(RTI_FALSE);
+                oa->setDivesting(false);
                 compteur_notification++ ;
 
                 // object->Owner reste le champ de référence pour
@@ -1417,10 +1417,10 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
         oa = object->getAttribute(the_attributes[i]);
 
         if (oa->getOwner() != the_federate) {
-            throw AttributeNotOwned();
+            throw AttributeNotOwned("");
         }
         if (!oa->hasCandidates()) {
-            throw FederateWasNotAskedToReleaseAttribute();
+            throw FederateWasNotAskedToReleaseAttribute("");
         }
     }
 
@@ -1430,7 +1430,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
     if (server != NULL) {
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
-        theAttribute = AttributeHandleSetFactory::create(the_size);
+        theAttribute = RTI::AttributeHandleSetFactory::create(the_size);
 
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < the_size ; i++) {
@@ -1446,7 +1446,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
             oa->removeCandidate(newOwner);
 
             //On réinitialise divesting
-            oa->setDivesting(RTI_FALSE);
+            oa->setDivesting(false);
 
             diffusionAcquisition->DiffArray[compteur_acquisition].federate = newOwner ;
             diffusionAcquisition->DiffArray[compteur_acquisition].attribute =
@@ -1517,10 +1517,10 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
             D.Out(pdDebug, "Attribut %u Owner %u", attribute_list[i], oa->getOwner());
             // Does federate is already owning some attributes ?
             if (oa->getOwner() == federate_handle)
-                throw AttributeAlreadyOwned();
+                throw AttributeAlreadyOwned("");
             // Does federate is already doing an acquisition ?
             if (oa->isCandidate(federate_handle) == 0)
-                throw AttributeAcquisitionWasNotRequested();
+                throw AttributeAcquisitionWasNotRequested("");
         }
 
         NetworkMessage *answer_confirmation = new NetworkMessage ;
@@ -1654,4 +1654,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.30 2005/03/28 19:25:17 breholee Exp $
+// $Id: ObjectClass.cc,v 3.31 2005/04/30 17:16:08 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.12 2005/04/30 17:11:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,8 @@
 #include <assert.h>
 
 using std::list ;
+
+using namespace certi ;
 
 // ----------------------------------------------------------------------------
 // AttributeHandleValuePair
@@ -83,7 +85,7 @@ AttributeHandleValuePairSetImp::getHandle(ULong i) const
             return (*j)->_handle ;
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -97,7 +99,7 @@ AttributeHandleValuePairSetImp::getValueLength(ULong i) const
             return (*j)->_valueLength ;
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -116,7 +118,7 @@ AttributeHandleValuePairSetImp::getValue(ULong i,
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -133,19 +135,19 @@ AttributeHandleValuePairSetImp::getValuePointer(ULong i,
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
-inline TransportType
+TransportType
 AttributeHandleValuePairSetImp::getTransportType(ULong) const
-    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
+    throw (RTI::InvalidHandleValuePairSetContext)
 {
     return _transport ;
 }
 
 // ----------------------------------------------------------------------------
-inline OrderType
+OrderType
 AttributeHandleValuePairSetImp::getOrderType(ULong) const
     throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
@@ -153,12 +155,11 @@ AttributeHandleValuePairSetImp::getOrderType(ULong) const
 }
 
 // ----------------------------------------------------------------------------
-Region*
+RTI::Region *
 AttributeHandleValuePairSetImp::getRegion(ULong) const
-    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext,
-           UnimplementedService)//CERTI
+    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
 {
-    throw UnimplementedService();
+    throw RTIinternalError("Unimplemented service");
 }
 
 // ----------------------------------------------------------------------------
@@ -188,17 +189,16 @@ AttributeHandleValuePairSetImp::remove(Handle h)
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
 void
 AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet&,
                                          ULong&)
-    throw (ValueCountExceeded, ArrayIndexOutOfBounds,
-           UnimplementedService) //CERTI
+    throw (ValueCountExceeded, ArrayIndexOutOfBounds)
 {
-    throw UnimplementedService();
+    throw RTIinternalError("Unimplemented service");
 }
 
 // ----------------------------------------------------------------------------
@@ -239,8 +239,8 @@ AttributeHandleValuePairSetImp::next(ULong) const
 // AttributeSetFactory
 // ----------------------------------------------------------------------------
 
-AttributeHandleValuePairSet*
-AttributeSetFactory::create(ULong)
+RTI::AttributeHandleValuePairSet *
+RTI::AttributeSetFactory::create(ULong)
     throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
 {
     AttributeHandleValuePairSetImp *ahvps ;
@@ -277,7 +277,7 @@ AttributeHandleSetImp::getHandle(ULong i) const
             return (*h);
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -293,10 +293,10 @@ void
 AttributeHandleSetImp::remove(AttributeHandle h)
     throw (AttributeNotDefined)// not guaranteed safe while iterating
 {
-    if (isMember(h) == RTI_TRUE)
+    if (isMember(h) == RTI::RTI_TRUE)
         list<AttributeHandle>::remove(h);
     else
-        throw AttributeNotDefined();
+        throw AttributeNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -307,33 +307,28 @@ AttributeHandleSetImp::empty()
 }
 
 // ----------------------------------------------------------------------------
-inline Boolean
+RTI::Boolean
 AttributeHandleSetImp::isEmpty() const
 {
-    return ((list<AttributeHandle>::empty()) ? RTI_TRUE : RTI_FALSE);
+    return RTI::Boolean(list<AttributeHandle>::empty());
 }
 
 // ----------------------------------------------------------------------------
-Boolean
+RTI::Boolean
 AttributeHandleSetImp::isMember(AttributeHandle h) const
 {
-    list<AttributeHandle>::const_iterator result = find(begin(), end(), h);
-
-    if (result == end())
-        return RTI_FALSE ;
-    else
-        return RTI_TRUE ;
+    return RTI::Boolean(find(begin(), end(), h) != end());
 }
 
 // ----------------------------------------------------------------------------
 // AttributeHandleSetImpFactory
 // ----------------------------------------------------------------------------
 
-AttributeHandleSet*
-AttributeHandleSetFactory::create(ULong)
+RTI::AttributeHandleSet *
+RTI::AttributeHandleSetFactory::create(ULong)
     throw (MemoryExhausted, ValueCountExceeded)
 {
-    return ((AttributeHandleSet *)new AttributeHandleSetImp());
+    return new AttributeHandleSetImp();
 }
 
 // ----------------------------------------------------------------------------
@@ -363,7 +358,7 @@ FederateHandleSetImp::getHandle(ULong i) const
             return (*h);
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -377,12 +372,12 @@ FederateHandleSetImp::add(FederateHandle h)
 // ----------------------------------------------------------------------------
 void
 FederateHandleSetImp::remove(FederateHandle h)
-    throw (AttributeNotDefined, ArrayIndexOutOfBounds)
+    throw (ArrayIndexOutOfBounds)
 {
-    if (isMember(h) == RTI_TRUE)
+    if (isMember(h) == RTI::RTI_TRUE)
         list<FederateHandle>::remove(h);
     else
-        throw AttributeNotDefined();
+        throw AttributeNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -393,23 +388,18 @@ FederateHandleSetImp::empty()
 }
 
 // ----------------------------------------------------------------------------
-Boolean
+RTI::Boolean
 FederateHandleSetImp::isMember(FederateHandle h) const
 {
-    list<FederateHandle>::const_iterator result = find(begin(), end(), h);
-
-    if (result == end())
-        return RTI_FALSE ;
-    else
-        return RTI_TRUE ;
+    return RTI::Boolean(find(begin(), end(), h) != end());
 }
 
 // ----------------------------------------------------------------------------
 // FederateHandleSetFactory
 // ----------------------------------------------------------------------------
 
-FederateHandleSet*
-FederateHandleSetFactory::create(ULong)
+RTI::FederateHandleSet *
+RTI::FederateHandleSetFactory::create(ULong)
     throw (MemoryExhausted, ValueCountExceeded)
 {
     return ((FederateHandleSet *) new FederateHandleSetImp());
@@ -426,14 +416,14 @@ ParameterHandleValuePair::ParameterHandleValuePair(Handle handle,
     _handle = handle ;
     _valueLength = value_length ;
 
-    _value = (char *)malloc(value_length);
+    _value = (char *) malloc(value_length);
     memcpy(_value, value, value_length);
 }
 
 // ----------------------------------------------------------------------------
 ParameterHandleValuePair::~ParameterHandleValuePair()
 {
-    delete _value ;
+    free(_value);
 }
 
 // ----------------------------------------------------------------------------
@@ -451,7 +441,7 @@ ParameterHandleValuePairSetImp::~ParameterHandleValuePairSetImp()
 }
 
 // ----------------------------------------------------------------------------
-inline ULong
+ULong
 ParameterHandleValuePairSetImp::size() const
 {
     return list<ParameterHandleValuePair *>::size();
@@ -468,7 +458,7 @@ ParameterHandleValuePairSetImp::getHandle(ULong i) const
             return (*j)->_handle ;
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -482,7 +472,7 @@ ParameterHandleValuePairSetImp::getValueLength(ULong i) const
             return (*j)->_valueLength ;
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -501,7 +491,7 @@ ParameterHandleValuePairSetImp::getValue(ULong i,
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -518,7 +508,7 @@ ParameterHandleValuePairSetImp::getValuePointer(ULong i,
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
@@ -538,12 +528,11 @@ ParameterHandleValuePairSetImp::getOrderType() const
 }
 
 // ----------------------------------------------------------------------------
-Region *
+RTI::Region *
 ParameterHandleValuePairSetImp::getRegion() const
-    throw (InvalidHandleValuePairSetContext,
-           UnimplementedService)//CERTI
+    throw (InvalidHandleValuePairSetContext)
 {
-    throw UnimplementedService();
+    throw RTIinternalError("Unimplemented service");
 }
 
 // ----------------------------------------------------------------------------
@@ -573,17 +562,16 @@ ParameterHandleValuePairSetImp::remove(Handle h)
         }
     }
 
-    throw ArrayIndexOutOfBounds();
+    throw ArrayIndexOutOfBounds("");
 }
 
 // ----------------------------------------------------------------------------
 void
 ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet&,
                                          ULong&)
-    throw (ValueCountExceeded, ArrayIndexOutOfBounds,
-           UnimplementedService)//CERTI
+    throw (ValueCountExceeded, ArrayIndexOutOfBounds)
 {
-    throw UnimplementedService();
+    throw RTIinternalError("Unimplemented service");
 }
 
 // ----------------------------------------------------------------------------
@@ -624,10 +612,9 @@ ParameterHandleValuePairSetImp::next(ULong) const
 // ParameterSetFactory
 // ----------------------------------------------------------------------------
 
-ParameterHandleValuePairSet*
-ParameterSetFactory::create(ULong size)
-    throw (MemoryExhausted, ValueCountExceeded,
-           HandleValuePairMaximumExceeded)
+RTI::ParameterHandleValuePairSet *
+RTI::ParameterSetFactory::create(ULong size)
+    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
 {
     ParameterHandleValuePairSetImp *phvps ;
     phvps = new ParameterHandleValuePairSetImp(size);
@@ -639,4 +626,4 @@ ParameterSetFactory::create(ULong size)
 
 } // namespace certi
 
-// $Id: GAV_aux.cc,v 3.11 2004/03/04 20:19:05 breholee Exp $
+// $Id: GAV_aux.cc,v 3.12 2005/04/30 17:11:33 breholee Exp $

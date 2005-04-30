@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.17 2005/03/25 17:20:26 breholee Exp $
+// $Id: Object.cc,v 3.18 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,7 +91,7 @@ Object::getAttribute(AttributeHandle the_attribute) const
             return (*i);
     }
 
-    throw AttributeNotDefined();
+    throw AttributeNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -152,4 +152,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.17 2005/03/25 17:20:26 breholee Exp $
+// $Id: Object.cc,v 3.18 2005/04/30 17:16:08 breholee Exp $

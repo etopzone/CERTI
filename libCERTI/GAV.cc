@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.10 2005/03/13 22:40:49 breholee Exp $
+// $Id: GAV.cc,v 3.11 2005/04/30 17:11:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,8 +43,8 @@ CAttributeHandleValuePair::CAttributeHandleValuePair()
 {
     _order = RECEIVE ;
     _transport = RELIABLE ;
-    _isPublished = RTI_FALSE ;
-    _isSubscribed = RTI_FALSE ;
+    _isPublished = RTI::RTI_FALSE ;
+    _isSubscribed = RTI::RTI_FALSE ;
     _attrib = MAX_ATTRIBUTES_PER_CLASS ;
     _value.name[0] = '\0' ;
     _value.value[0] = '\0' ;
@@ -102,7 +102,7 @@ CAttributeHandleValuePairSet::CAttributeHandleValuePairSet()
 }
 
 CAttributeHandleValuePairSet::
-CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps) :
+CAttributeHandleValuePairSet(const RTI::AttributeHandleValuePairSet & ahvps) :
     _size(0), _head((CAttributeHandleValuePair *)NULL)
 {
     CAttributeHandleValuePair *cahvp ;
@@ -232,11 +232,11 @@ void CAttributeHandleValuePairSet::empty()
     assert(_size == 0);
 }
 
-AttributeHandleValuePairSet*
+RTI::AttributeHandleValuePairSet*
 CAttributeHandleValuePairSet::toAHVPS() const
 {
-    AttributeHandleValuePairSet *ahvps ;
-    ahvps = AttributeSetFactory::create(_size);
+    RTI::AttributeHandleValuePairSet *ahvps ;
+    ahvps = RTI::AttributeSetFactory::create(_size);
 
     for (int i = 0 ; i<_size ; i++) {
         CAttributeHandleValuePair *cahvp = getIeme(i);
@@ -272,14 +272,12 @@ CAttributeHandleValuePairSet::toAHVPS() const
 
 CParameterHandleValuePairSet::CParameterHandleValuePairSet()
     : _size(0), _head((CParameterHandleValuePair *) NULL)
-
 {
 }
 
 CParameterHandleValuePairSet::
-CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps)
+CParameterHandleValuePairSet(const RTI::ParameterHandleValuePairSet &phvps)
     : _size(0), _head((CParameterHandleValuePair *) NULL)
-
 {
     CParameterHandleValuePair *cphvp = NULL ;
     ULong valueLength = 0 ;
@@ -396,7 +394,7 @@ void CParameterHandleValuePairSet::empty()
     assert(_size == 0);
 }
 
-ParameterHandleValuePairSet*
+RTI::ParameterHandleValuePairSet *
 CParameterHandleValuePairSet::toPHVPS() const
 {
     ULong longueur ;
@@ -425,9 +423,9 @@ CParameterHandleValuePairSet::toPHVPS() const
             else phvps->add(cphvp->_param, '\0', 0);
         }
     }
-    return (ParameterHandleValuePairSet *)phvps ;
+    return (RTI::ParameterHandleValuePairSet *)phvps ;
 }
 
 }
 
-// $Id: GAV.cc,v 3.10 2005/03/13 22:40:49 breholee Exp $
+// $Id: GAV.cc,v 3.11 2005/04/30 17:11:33 breholee Exp $

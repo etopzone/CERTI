@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.8 2005/03/25 17:16:14 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.9 2005/04/30 17:18:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -102,7 +102,7 @@ RoutingSpace::getDimensionHandle(string dimension_name) const
 	NameComparator<Dimension>(dimension_name));
 
     if (it == dimensions.end())
-	throw NameNotFound();
+	throw NameNotFound("");
     else
 	return it->getHandle();
 }
@@ -122,7 +122,7 @@ RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
 	HandleComparator<Dimension>(dimension_handle));
 
     if (it == dimensions.end())
-	throw DimensionNotDefined();
+	throw DimensionNotDefined("");
     else
 	return it->getName();
 }
@@ -155,4 +155,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.8 2005/03/25 17:16:14 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.9 2005/04/30 17:18:14 breholee Exp $

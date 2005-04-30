@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $
+// $Id: GAV.hh,v 3.9 2005/04/30 17:11:33 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_GAV_HH
@@ -32,7 +32,7 @@
 namespace certi {
 
 class AttributeHandleSetImp
-    : public std::list<AttributeHandle>, AttributeHandleSet
+    : public std::list<AttributeHandle>, public AttributeHandleSet
 {
 public:
     virtual ~AttributeHandleSetImp();
@@ -50,11 +50,11 @@ public:
 
     virtual void empty();
 
-    virtual Boolean isEmpty() const ;
-    virtual Boolean isMember(AttributeHandle h) const ;
+    virtual RTI::Boolean isEmpty() const ;
+    virtual RTI::Boolean isMember(AttributeHandle h) const ;
 };
 
-class FederateHandleSetImp : public std::list<FederateHandle>, FederateHandleSet
+class FederateHandleSetImp : public std::list<FederateHandle>, RTI::FederateHandleSet
 {
 public:
     virtual ~FederateHandleSetImp();
@@ -68,11 +68,11 @@ public:
         throw (ValueCountExceeded);
 
     virtual void remove(FederateHandle h)
-        throw (AttributeNotDefined, ArrayIndexOutOfBounds);
+        throw (RTI::ArrayIndexOutOfBounds);
 
     virtual void empty();
 
-    virtual Boolean isMember(FederateHandle h) const ;
+    virtual RTI::Boolean isMember(FederateHandle h) const ;
 };
 
 class AttributeHandleValuePair
@@ -92,7 +92,7 @@ public :
 };
 
 class AttributeHandleValuePairSetImp
-    : public std::list<AttributeHandleValuePair *>, AttributeHandleValuePairSet
+    : public std::list<AttributeHandleValuePair *>, RTI::AttributeHandleValuePairSet
 {
     // ATTRIBUTES
 public:
@@ -114,23 +114,20 @@ public:
         throw (ArrayIndexOutOfBounds);
 
     virtual TransportType getTransportType(ULong i) const
-        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
+        throw (RTI::InvalidHandleValuePairSetContext);
 
     virtual OrderType getOrderType(ULong i) const
         throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
 
-    virtual Region *getRegion(ULong i) const
-        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext,
-               UnimplementedService); //CERTI
+    virtual RTI::Region *getRegion(ULong i) const
+        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
 
     virtual void add(Handle h, const char *buff, ULong valueLength)
         throw (ValueLengthExceeded, ValueCountExceeded);
     virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
 
     virtual void moveFrom(const AttributeHandleValuePairSet& ahvps, ULong& i)
-        throw (ValueCountExceeded,
-               ArrayIndexOutOfBounds,
-               UnimplementedService);
+        throw (ValueCountExceeded, ArrayIndexOutOfBounds);
 
     virtual void empty();
     virtual ULong start() const ;
@@ -143,8 +140,8 @@ class CAttributeHandleValuePair
 public:
     OrderType _order ;
     TransportType _transport ;
-    Boolean _isPublished ;
-    Boolean _isSubscribed ;
+    RTI::Boolean _isPublished ;
+    RTI::Boolean _isSubscribed ;
     AttributeHandle _attrib ;
     Value _value ;
     CAttributeHandleValuePair *_next ;
@@ -163,8 +160,8 @@ public:
 
 public:
     CAttributeHandleValuePairSet();
-    CAttributeHandleValuePairSet(const AttributeHandleValuePairSet & ahvps);
-    CAttributeHandleValuePairSet(const AttributeHandleSet & ahs);
+    CAttributeHandleValuePairSet(const RTI::AttributeHandleValuePairSet & ahvps);
+    CAttributeHandleValuePairSet(const RTI::AttributeHandleSet & ahs);
     ~CAttributeHandleValuePairSet();
 
     void add(CAttributeHandleValuePair *att);
@@ -174,7 +171,7 @@ public:
     void del(AttributeHandle);
     void empty();
 
-    AttributeHandleValuePairSet* toAHVPS() const ;
+    RTI::AttributeHandleValuePairSet* toAHVPS() const ;
 
 protected:
     CAttributeHandleValuePair *_head ;
@@ -194,7 +191,7 @@ public:
     void AfficheParameter();
 };
 
-class ParameterHandleValuePairSet ;
+class RTI::ParameterHandleValuePairSet ;
 
 class CParameterHandleValuePairSet
 {
@@ -203,7 +200,7 @@ public:
 
 public:
     CParameterHandleValuePairSet();
-    CParameterHandleValuePairSet(const ParameterHandleValuePairSet & phvps);
+    CParameterHandleValuePairSet(const RTI::ParameterHandleValuePairSet & phvps);
     ~CParameterHandleValuePairSet();
 
     void add(CParameterHandleValuePair *par);
@@ -213,7 +210,7 @@ public:
     void del(ParameterHandle);
     void empty();
 
-    ParameterHandleValuePairSet* toPHVPS() const ;
+    RTI::ParameterHandleValuePairSet* toPHVPS() const ;
 
 protected:
     CParameterHandleValuePair *_head ;
@@ -232,7 +229,7 @@ public:
 };
 
 class ParameterHandleValuePairSetImp
-    : public std::list<ParameterHandleValuePair *>, ParameterHandleValuePairSet
+    : public std::list<ParameterHandleValuePair *>, RTI::ParameterHandleValuePairSet
 {
 public:
     OrderType _order ;
@@ -260,8 +257,8 @@ public:
     virtual OrderType getOrderType() const
         throw (InvalidHandleValuePairSetContext);
 
-    virtual Region *getRegion() const
-        throw (InvalidHandleValuePairSetContext, UnimplementedService); //CERTI
+    virtual RTI::Region *getRegion() const
+        throw (InvalidHandleValuePairSetContext);
 
     virtual void add(Handle h, const char *buff, ULong valueLength)
         throw (ValueLengthExceeded, ValueCountExceeded);
@@ -269,9 +266,7 @@ public:
     virtual void remove(Handle h) throw (ArrayIndexOutOfBounds);
 
     virtual void moveFrom(const ParameterHandleValuePairSet& phvps, ULong& i)
-        throw (ValueCountExceeded,
-               ArrayIndexOutOfBounds,
-               UnimplementedService);
+        throw (ValueCountExceeded, ArrayIndexOutOfBounds);
 
     virtual void empty();
     virtual ULong start() const ;

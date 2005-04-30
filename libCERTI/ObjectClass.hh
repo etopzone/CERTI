@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.24 2005/03/28 19:26:40 breholee Exp $
+// $Id: ObjectClass.hh,v 3.25 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -85,7 +85,7 @@ public:
     void setLevelId(SecurityLevelID NewLevelID);
 
     AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
-                                 Boolean is_inherited = RTI_FALSE);
+                                 bool is_inherited = false);
 
     void addAttributesToChild(ObjectClass *child);
 
@@ -240,4 +240,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.24 2005/03/28 19:26:40 breholee Exp $
+// $Id: ObjectClass.hh,v 3.25 2005/04/30 17:16:08 breholee Exp $

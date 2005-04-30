@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.14 2005/03/25 17:20:26 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.15 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
@@ -57,8 +57,8 @@ public:
     FederateHandle getOwner() const ;
     void setOwner(FederateHandle NewOwner);
 
-    void setDivesting(Boolean divesting_state);
-    Boolean beingDivested() const ;
+    void setDivesting(bool divesting_state);
+    bool beingDivested() const ;
 
     int isCandidate(FederateHandle candidate) const ;
     void addCandidate(FederateHandle candidate);
@@ -83,7 +83,7 @@ private:
     // Private Attributes
     AttributeHandle handle ; //!< The object attribute handle.
     FederateHandle owner ; //!< Federate who owns the attribute.
-    Boolean divesting ; //!< Divesting state.
+    bool divesting ; //!< Divesting state.
     std::list<FederateHandle> ownerCandidates ; //!< Federates candidate.
     SpaceHandle space ; //!< Associated routing space
     ObjectClassAttribute *source ; //!< The associated class attribute.
@@ -94,4 +94,4 @@ private:
 
 #endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.14 2005/03/25 17:20:26 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.15 2005/04/30 17:16:08 breholee Exp $

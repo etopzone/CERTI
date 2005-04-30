@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.19 2005/03/25 17:27:22 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.20 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -152,7 +152,7 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
     ObjectClass *objectClass = 0 ;
 
     if (the_name == 0)
-        throw RTIinternalError();
+        throw RTIinternalError("");
 
     D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
           the_name, the_class);
@@ -197,7 +197,7 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 
     D.Out(pdExcept, "Object instance %d not found in any object class.",
           theObjectHandle);
-    throw ObjectNotKnown();
+    throw ObjectNotKnown("");
 }
 
 // ----------------------------------------------------------------------------
@@ -216,7 +216,7 @@ ObjectClassSet::getObject(ObjectHandle h) const
 	catch (ObjectNotKnown &e) {
 	}
     }
-    throw ObjectNotKnown();
+    throw ObjectNotKnown("");
 }
 
 // ----------------------------------------------------------------------------
@@ -230,7 +230,7 @@ ObjectClassSet::getObjectClassHandle(string class_name) const
         if ((*i)->getName() == class_name)
             return (*i)->getHandle();
     }
-    throw NameNotFound();
+    throw NameNotFound("");
 }
 
 // ----------------------------------------------------------------------------
@@ -319,7 +319,7 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
     // It may throw ObjectClassNotDefined
     ObjectClass *theClass = getWithHandle(theClassHandle);
 
-    if (PubOrUnpub == RTI_TRUE)
+    if (PubOrUnpub)
         D.Out(pdInit, "Federate %d attempts to publish Object Class %d.",
               theFederateHandle, theClassHandle);
     else
@@ -642,4 +642,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.19 2005/03/25 17:27:22 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.20 2005/04/30 17:16:08 breholee Exp $

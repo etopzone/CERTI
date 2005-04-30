@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.14 2005/03/25 17:20:26 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.15 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -42,7 +42,7 @@ static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 ObjectAttribute::ObjectAttribute(AttributeHandle new_handle,
                                  FederateHandle new_owner,
                                  ObjectClassAttribute *associated_attribute)
-    : handle(new_handle), owner(new_owner), divesting(RTI_FALSE), space(0),
+    : handle(new_handle), owner(new_owner), divesting(false), space(0),
       source(associated_attribute), region(0)
 {
 }
@@ -80,7 +80,7 @@ ObjectAttribute::setOwner(FederateHandle newOwner)
 
 // ----------------------------------------------------------------------------
 //! Returns attribute divesting state.
-Boolean
+bool
 ObjectAttribute::beingDivested() const
 {
     return divesting ;
@@ -89,7 +89,7 @@ ObjectAttribute::beingDivested() const
 // ----------------------------------------------------------------------------
 //! Put object attribute in divesting state.
 void
-ObjectAttribute::setDivesting(Boolean divestingState)
+ObjectAttribute::setDivesting(bool divestingState)
 {
     divesting = divestingState ;
 }
@@ -131,14 +131,14 @@ ObjectAttribute::getCandidate(unsigned int indice) const
     throw (RTIinternalError)
 {
     if ((indice <= 0) || (indice > ownerCandidates.size()))
-        throw RTIinternalError();
+        throw RTIinternalError("");
 
     list<FederateHandle>::const_iterator i = ownerCandidates.begin();
     for (unsigned int j = 1 ; i != ownerCandidates.end(); i++, j++) {
         if (j == indice)
             return (*i);
     }
-    throw RTIinternalError();
+    throw RTIinternalError("");
 }
 
 // ----------------------------------------------------------------------------
@@ -198,4 +198,4 @@ ObjectAttribute::unassociate(RTIRegion *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.14 2005/03/25 17:20:26 breholee Exp $
+// $Id: ObjectAttribute.cc,v 3.15 2005/04/30 17:16:08 breholee Exp $

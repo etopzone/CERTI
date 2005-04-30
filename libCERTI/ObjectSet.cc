@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -334,16 +334,16 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
 
         // Does federate owns every attributes.
         if (oa->getOwner() != the_federate)
-            throw AttributeNotOwned();
+            throw AttributeNotOwned("");
         // Does federate called NegotiatedAttributeOwnershipDivestiture
         if (!oa->beingDivested())
-            throw AttributeDivestitureWasNotRequested();
+            throw AttributeDivestitureWasNotRequested("");
     }
 
     if (server != NULL) {
         for (int i = 0 ; i < the_size ; i++) {
             oa = object->getAttribute(the_attributes[i]);
-            oa->setDivesting(RTI_FALSE);
+            oa->setDivesting(false);
         }
     }
     else {
@@ -428,4 +428,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.10 2004/05/18 13:18:55 breholee Exp $
+// $Id: ObjectSet.cc,v 3.11 2005/04/30 17:16:08 breholee Exp $

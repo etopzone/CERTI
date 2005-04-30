@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.11 2005/04/05 20:07:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.12 2005/04/30 17:16:08 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -115,7 +115,7 @@ ObjectClassBroadcastList::addFederate(FederateHandle theFederate,
     if (theAttribute > maxHandle) {
         D.Out(pdExcept, "Bad attribute handle: %u > %u.", theAttribute,
               maxHandle);
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     ObjectBroadcastLine *line = getLineWithFederate(theFederate);
@@ -213,11 +213,11 @@ ObjectClassBroadcastList::isWaiting(ObjectBroadcastLine *line)
 {
     for (unsigned int attrIndex = 1 ; attrIndex <= maxHandle ; attrIndex++) {
         if (line->state[attrIndex] == ObjectBroadcastLine::waiting) {
-            return RTI_TRUE ;
+            return true ;
         }
     }
 
-    return RTI_FALSE ;
+    return false ;
 }
 
 
@@ -377,4 +377,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.11 2005/04/05 20:07:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.12 2005/04/30 17:16:08 breholee Exp $
