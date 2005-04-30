@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.12 2003/06/27 17:26:28 breholee Exp $
+// $Id: TimeManagement.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,7 +34,7 @@ static pdCDebug D("RTIA_TM", "(RTIA TM) ");
   and nextEventAdvance.
 */
 void
-TimeManagement::advance(Boolean &msg_restant, TypeException &e)
+TimeManagement::advance(bool &msg_restant, TypeException &e)
 {
     switch(_avancee_en_cours) {
       case TAR:
@@ -76,9 +76,8 @@ TimeManagement::TimeManagement(Communications *GC,
 
     _heure_courante = 0.0 ;
     _lookahead_courant = EPSILON ;
-    _est_regulateur = RTI_FALSE ;
-    _est_contraint = RTI_FALSE ;
-
+    _est_regulateur = false ;
+    _est_contraint = false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -108,7 +107,8 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 
 // ----------------------------------------------------------------------------
 //! Deliver TSO messages to federate (UAV, ReceiveInteraction, etc...).
-Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
+bool
+TimeManagement::executeFederateService(NetworkMessage &msg)
 {
     D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
 
@@ -306,7 +306,7 @@ Boolean TimeManagement::executeFederateService(NetworkMessage &msg)
         throw RTIinternalError("Unknown message in executeFederateService.");
     }
 
-    return RTI_TRUE ;
+    return true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -337,15 +337,15 @@ TimeManagement::flushQueueRequest(FederationTime heure_logique,
   federate and if no messages are available, delivers a TimeAdvanceGrant.
 */
 void
-TimeManagement::nextEventAdvance(Boolean &msg_restant, TypeException &e)
+TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
 {
     FederationTime dateTSO ;
     FederationTime date_min = 0.0 ;
-    Boolean TSOPresent ;
-    Boolean msg_donne ;
+    bool TSOPresent ;
+    bool msg_donne ;
     NetworkMessage *msg ;
 
-    msg_restant = RTI_FALSE ;
+    msg_restant = false ;
 
     if (_est_contraint) {
 
@@ -478,7 +478,8 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 }
 
 // ----------------------------------------------------------------------------
-void TimeManagement::setTimeConstrained(Boolean etat, TypeException &e)
+void
+TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 {
     NetworkMessage msg ;
 
@@ -491,7 +492,6 @@ void TimeManagement::setTimeConstrained(Boolean etat, TypeException &e)
 
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_RTIinternalError ;
-
 
     if (e == e_NO_EXCEPTION) {
         _est_contraint = etat ;
@@ -512,7 +512,8 @@ void TimeManagement::setTimeConstrained(Boolean etat, TypeException &e)
 }
 
 // ----------------------------------------------------------------------------
-void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
+void
+TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 {
     NetworkMessage msg ;
 
@@ -530,14 +531,6 @@ void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
         e = e_RTIinternalError ;
         D.Out(pdRegister, "erreur e_RTIinternalError avancee_en_cours");
     }
-
-    // Si il existe d'autres federes regulateurs plus avances
-    // if ((etat == RTI_TRUE) &&
-    //(lg > 0) &&
-    //(_heure_courante +_lookahead_courant < _LBTS)) {
-    // e = e_FederationTimeAlreadyPassed ;
-    // D.Out(pdRegister, "erreur e_FederationTimeAlreadyPassed ");
-    // }
 
     // Si aucune erreur, prevenir le RTIG et devenir regulateur.
     if (e == e_NO_EXCEPTION) {
@@ -564,24 +557,25 @@ void TimeManagement::setTimeRegulating(Boolean etat, TypeException &e)
   which time to attain. It then calls tick() until a timeAdvanceGrant is
   made.
 */
-Boolean TimeManagement::tick(TypeException &e)
+bool
+TimeManagement::tick(TypeException &e)
 {
-    Boolean msg_donne = RTI_FALSE ;
-    Boolean msg_restant = RTI_FALSE ;
+    bool msg_donne = false ;
+    bool msg_restant = false ;
     NetworkMessage *msg = NULL ;
 
-    // Note: While msg_donne = RTI_FALSE, msg_restant doesn't matter.
+    // Note: While msg_donne = RTI::RTI_FALSE, msg_restant doesn't matter.
 
     // 1st try, give a command message. (requestPause, etc.)
     msg = queues->giveCommandMessage(msg_donne, msg_restant);
 
 
     // 2nd try, give a FIFO message. (discoverObject, etc.)
-    if (msg_donne == RTI_FALSE)
+    if (!msg_donne)
         msg = queues->giveFifoMessage(msg_donne, msg_restant);
 
     // If message exists, send it to federate.
-    if (msg_donne == RTI_TRUE) {
+    if (msg_donne) {
         D.Out(pdDebug, "TickRequest being processed, Message to send.");
         try {
             executeFederateService(*msg);
@@ -616,13 +610,13 @@ Boolean TimeManagement::tick(TypeException &e)
   federate and if no messages are available, delivers a TimeAdvanceGrant.
 */
 void
-TimeManagement::timeAdvance(Boolean &msg_restant, TypeException &e)
+TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
 {
-    Boolean msg_donne ;
+    bool msg_donne ;
     FederationTime min ;
     NetworkMessage *msg ;
 
-    msg_restant = RTI_FALSE ;
+    msg_restant = false ;
 
     if (_est_contraint) {
         // give a TSO message.
@@ -721,4 +715,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.12 2003/06/27 17:26:28 breholee Exp $
+// $Id: TimeManagement.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $

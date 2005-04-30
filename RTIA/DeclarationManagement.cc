@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.11 2005/04/05 20:11:36 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.12 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -68,7 +68,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                            theClassHandle,
                                            attribArray,
                                            attribArraySize,
-                                           RTI_TRUE);
+                                           true);
     }
     catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in PublishObjectClass.");
@@ -115,7 +115,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
                                            theClassHandle,
                                            attribArray,
                                            attribArraySize,
-                                           RTI_FALSE);
+                                           false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in UnpublishObjectClass.");
         throw e ;
@@ -152,7 +152,7 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     try {
         rootObject->Interactions->publish(fm->federate,
                                           theInteractionHandle,
-                                          RTI_TRUE);
+                                          true);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in publishInteractionClass.");
         throw e ;
@@ -187,7 +187,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
     try {
         rootObject->Interactions->publish(fm->federate,
                                           theInteractionHandle,
-                                          RTI_FALSE);
+                                          false);
     } catch (Exception *e) {
         D.Out(pdExcept, "Exception catched in UnpublishInteractionClass.");
         throw e ;
@@ -372,7 +372,7 @@ startRegistrationForObjectClass(ObjectClassHandle the_class,
     if (rep.type != req.type) {
         D.Out(pdExcept, "Unknown response type when waiting for "
               "START_REGISTRATION_FOR_OBJECT_CLASS.");
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     e = rep.getExceptionType();
@@ -401,7 +401,7 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
     if (rep.type != req.type) {
         D.Out(pdExcept, "Unknown response type when waiting for "
               "START_REGISTRATION_FOR_OBJECT_CLASS.");
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     e = rep.getExceptionType();
@@ -422,7 +422,7 @@ DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
     if (rep.type != req.type) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_ON.");
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     e = rep.getExceptionType();
@@ -444,7 +444,7 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
     if (rep.type != req.type) {
         D.Out(pdExcept,
               "Unknown response type, expecting TURN_INTERACTIONS_OFF.");
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     e = rep.getExceptionType();
@@ -452,4 +452,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.11 2005/04/05 20:11:36 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.12 2005/04/30 16:38:39 breholee Exp $

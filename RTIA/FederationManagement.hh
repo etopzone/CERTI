@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.11 2004/05/18 13:18:52 breholee Exp $
+// $Id: FederationManagement.hh,v 3.12 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -51,7 +51,7 @@ public:
                                            const char *Federation,
                                            TypeException &e);
 
-    void resignFederationExecution(ResignAction action,
+    void resignFederationExecution(RTI::ResignAction action,
                                    TypeException &e);
 
     // Synchronization.
@@ -88,13 +88,13 @@ public:
     TimeManagement *tm ;
     Handle _numero_federation ;
     FederateHandle federate ;
-    Boolean _fin_execution ;
+    bool _fin_execution ;
     
 private:
     Communications *comm ;
 
-    Boolean _est_createur_federation ;
-    Boolean _est_membre_federation ;
+    bool _est_createur_federation ;
+    bool _est_membre_federation ;
 
     bool savingState ;
     bool restoringState ;
@@ -109,4 +109,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.11 2004/05/18 13:18:52 breholee Exp $
+// $Id: FederationManagement.hh,v 3.12 2005/04/30 16:38:39 breholee Exp $

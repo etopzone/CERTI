@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.12 2004/03/04 20:19:04 breholee Exp $
+// $Id: main.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,7 +77,7 @@ SignalHandler(int Signal)
 void
 NewHandler()
 {
-    throw MemoryExhausted();
+    throw MemoryExhausted("");
 }
 
-// EOF $Id: main.cc,v 3.12 2004/03/04 20:19:04 breholee Exp $
+// EOF $Id: main.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $

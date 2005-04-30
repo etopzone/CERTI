@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.12 2005/03/13 22:12:08 breholee Exp $
+// $Id: Communications.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,7 +60,7 @@ void Communications::waitMessage(NetworkMessage *msg,
     D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);
 
     // Does a new message has arrived ?
-    if (searchMessage(type_msg, numeroFedere, msg) == RTI_TRUE)
+    if (searchMessage(type_msg, numeroFedere, msg))
         return ;
 
     // Otherwise, wait for a message with same type than expected and with
@@ -201,19 +201,19 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
         delete msg2 ;
         n = 1 ;
     }
-    else if (SecureTCPSocket::isDataReady() == RTI_TRUE) {
+    else if (SecureTCPSocket::isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
         msg_reseau->read((SecureTCPSocket *) this);
         n = 1 ;
     }
-    else if (SocketUDP::isDataReady() == RTI_TRUE) {
+    else if (SocketUDP::isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
         msg_reseau->read((SocketUDP *) this);
         n = 1 ;
     }
-    else if (SocketUN::isDataReady() == RTI_TRUE) {
+    else if (SocketUN::isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
         msg->read((SocketUN *) this);
@@ -224,9 +224,9 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
         // Wait a message (coming from federate or network).
         if (select(max_fd, &fdset, NULL, NULL, NULL) < 0) {
             if (errno == EINTR)
-                throw NetworkSignal();
+                throw NetworkSignal("");
             else
-                throw NetworkError();
+                throw NetworkError("");
         }
 
         // At least one message has been received, read this message.
@@ -262,12 +262,12 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 }
 
 // ----------------------------------------------------------------------------
-/*! Returns RTI_TRUE if a 'type_msg' message coming from federate
+/*! Returns true if a 'type_msg' message coming from federate
   'numeroFedere' (or any other federate if numeroFedere == 0) was in
   the queue and was copied in 'msg'. If no such message is found,
   returns RTI_FALSE.
 */
-Boolean
+bool
 Communications::searchMessage(NetworkMessage::Type type_msg,
                               FederateHandle numeroFedere,
                               NetworkMessage *msg)
@@ -286,11 +286,11 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
                 D.Out(pdProtocol,
                       "Message of Type %d was already here.",
                       type_msg);
-                return RTI_TRUE ;
+                return true ;
             }
         }
     }
-    return RTI_FALSE ;
+    return false ;
 }
 
 // ----------------------------------------------------------------------------
@@ -316,4 +316,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.12 2005/03/13 22:12:08 breholee Exp $
+// $Id: Communications.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.44 2005/04/05 20:18:06 breholee Exp $
+// $Id: Federation.cc,v 3.45 2005/04/30 16:41:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -131,7 +131,7 @@ Federation::Federation(const char *federation_name,
 
         cout << "yes" << endl ;
 	int err = fedparser::build(filename.c_str(), root, verbose);
-	if (err) throw ErrorReadingFED();
+	if (err) throw ErrorReadingFED("");
 	    
         // Retrieve the FED file last modification time(for Audit)
         struct stat StatBuffer ;
@@ -176,7 +176,7 @@ Federation::Federation(const char *federation_name,
             }
             else {
                 cout << "no" << endl ;
-		throw CouldNotOpenFED();
+		throw CouldNotOpenFED("");
 	    }
         }
     }
@@ -269,7 +269,7 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
 
     try {
         this->getByName(federate_name);
-        throw FederateAlreadyExecutionMember();
+        throw FederateAlreadyExecutionMember("");
     }
     catch (FederateNotExecutionMember &e) {
         // Nothing to do.
@@ -378,7 +378,7 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
     msg.exception = e_NO_EXCEPTION ;
     msg.federation = handle ;
     msg.federate = federate_handle ;
-    msg.regulator = RTI_TRUE ;
+    msg.regulator = true ;
     msg.date = time ;
 
     this->broadcastAnyMessage(&msg, 0);
@@ -510,7 +510,7 @@ Federation::registerSynchronization(FederateHandle federate,
     i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
         if (!strcmp((*i).first, label)) {
-            throw FederationAlreadyPaused(); // Label already pending.
+            throw FederationAlreadyPaused(""); // Label already pending.
         }
     }
 
@@ -802,7 +802,7 @@ Federation::empty() const
     if (list<Federate *>::empty())
         return true ;
     else
-        throw FederatesCurrentlyJoined();
+        throw FederatesCurrentlyJoined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -819,7 +819,7 @@ Federation::check(FederateHandle federate_handle) const
             return true ;
     }
 
-    throw FederateNotExecutionMember();
+    throw FederateNotExecutionMember("");
 }
 
 // ----------------------------------------------------------------------------
@@ -967,7 +967,7 @@ Federation::remove(FederateHandle federate_handle)
 
     D.Out(pdExcept, "Federation %d could not remove unknown federate %d.",
           handle, federate_handle);
-    throw FederateNotExecutionMember();
+    throw FederateNotExecutionMember("");
 }
 
 // ----------------------------------------------------------------------------
@@ -1017,7 +1017,7 @@ Federation::removeRegulator(FederateHandle federate_handle)
     msg.exception = e_NO_EXCEPTION ;
     msg.federation = handle ;
     msg.federate = federate_handle ;
-    msg.regulator = RTI_FALSE ;
+    msg.regulator = false ;
     msg.date = 0 ;
 
     broadcastAnyMessage(&msg, 0);
@@ -1475,10 +1475,10 @@ Federation::deleteRegion(FederateHandle federate,
     this->check(federate);
 
     if (saveInProgress) {
-        throw SaveInProgress();
+        throw SaveInProgress("");
     }
     if (restoreInProgress) {
-        throw RestoreInProgress();
+        throw RestoreInProgress("");
     }
 
     // TODO: check RegionInUse
@@ -1757,5 +1757,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.44 2005/04/05 20:18:06 breholee Exp $
+// $Id: Federation.cc,v 3.45 2005/04/30 16:41:27 breholee Exp $
 

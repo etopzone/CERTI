@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.10 2004/05/18 13:18:52 breholee Exp $
+// $Id: main.cc,v 3.11 2005/04/30 16:41:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,7 +53,7 @@ void
 NewHandler()
     throw (MemoryExhausted)
 {
-    throw MemoryExhausted();
+    throw MemoryExhausted("");
 }
 
 // ----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     bool verbose = args.verbose_flag ;
 
     if (verbose) {
-	cout << "CERTI RTIG " VERSION " - Copyright 2002, 2003, 2004  ONERA" 
+	cout << "CERTI RTIG " VERSION " - Copyright 2002-2005  ONERA" 
 	     << endl ;
 	cout << "This is free software ; see the source for copying "
 	     << "conditions. There is NO\nwarranty ; not even for "
@@ -95,4 +95,4 @@ int main(int argc, char *argv[])
     exit(EXIT_SUCCESS);
 }
 
-// $Id: main.cc,v 3.10 2004/05/18 13:18:52 breholee Exp $
+// $Id: main.cc,v 3.11 2005/04/30 16:41:28 breholee Exp $

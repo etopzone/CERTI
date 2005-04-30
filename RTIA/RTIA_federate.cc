@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.30 2005/04/05 12:21:39 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.31 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -123,7 +123,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           if (fdd->is_open()) {
 	      int result = certi::fedparser::build(filename.c_str(),
 						   rootObject, true);
-	      if (result) throw ErrorReadingFED();
+	      if (result) throw ErrorReadingFED("");
           }
           else {
               if (XmlParser::exists()) {
@@ -136,7 +136,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                       delete fdd ;
                       delete parser ;
                   }
-		  else throw CouldNotOpenFED();
+		  else throw CouldNotOpenFED("");
               }
           }
           break ;
@@ -752,7 +752,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       default:
         D.Out(pdExcept,
               "Receiving Message from Federate, Unknown Type %d.", req->type);
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     stat.federateService(req->type);
@@ -1101,4 +1101,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.30 2005/04/05 12:21:39 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.31 2005/04/30 16:38:39 breholee Exp $

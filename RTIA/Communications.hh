@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.8 2004/05/18 13:18:51 breholee Exp $
+// $Id: Communications.hh,v 3.9 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -65,13 +65,13 @@ public:
 private:
     std::list<NetworkMessage *> waitingList ;
 
-    Boolean searchMessage(NetworkMessage::Type type_msg,
-                          FederateHandle numeroFedere,
-                          NetworkMessage *msg);
+    bool searchMessage(NetworkMessage::Type type_msg,
+		       FederateHandle numeroFedere,
+		       NetworkMessage *msg);
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.8 2004/05/18 13:18:51 breholee Exp $
+// $Id: Communications.hh,v 3.9 2005/04/30 16:38:39 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.15 2004/05/17 21:24:47 breholee Exp $
+// $Id: FederationManagement.cc,v 3.16 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,10 +53,10 @@ FederationManagement::FederationManagement(Communications *GC)
     _numero_federation = 0 ;
     federate = 0 ;
 
-    _fin_execution = RTI_FALSE ;
+    _fin_execution = false ;
 
-    _est_createur_federation = RTI_FALSE ;
-    _est_membre_federation = RTI_FALSE ;
+    _est_createur_federation = false ;
+    _est_membre_federation = false ;
 
     _nom_federation[0] = 0 ;
     _nom_federe[0] = 0 ;
@@ -69,7 +69,7 @@ FederationManagement::~FederationManagement()
     TypeException e ;
 
     if (_est_membre_federation) {
-        resignFederationExecution(DELETE_OBJECTS, e);
+        resignFederationExecution(RTI::DELETE_OBJECTS, e);
     }
 
     // BUG: On devrait pouvoir quitter une federation que l'on a cree
@@ -118,7 +118,7 @@ createFederationExecution(const char *theName,
         if (reponse.exception == e_NO_EXCEPTION) {
             strcpy(_nom_federation, theName);
             _numero_federation = reponse.federation ;
-            _est_createur_federation = RTI_TRUE ;
+            _est_createur_federation = true ;
             D.Out(pdInit, "est createur");
         }
         else {
@@ -163,8 +163,8 @@ destroyFederationExecution(const char *theName,
         if (reponse.exception == e_NO_EXCEPTION) {
             _nom_federation[0] = 0 ;
             _numero_federation = 0 ;
-            _est_createur_federation = RTI_FALSE ;
-            _fin_execution = RTI_TRUE ;
+            _est_createur_federation = false ;
+            _fin_execution = true ;
         }
         else
             e = reponse.exception ;
@@ -227,7 +227,7 @@ joinFederationExecution(const char *Federate,
                 tm->insert(reponse.federate, reponse.date);
             }
 
-            _est_membre_federation = RTI_TRUE ;
+            _est_membre_federation = true ;
             return(federate);
         }
         else
@@ -242,7 +242,7 @@ joinFederationExecution(const char *Federate,
 // -------------------------------
 
 void
-FederationManagement::resignFederationExecution(ResignAction,
+FederationManagement::resignFederationExecution(RTI::ResignAction,
                                                 TypeException &e)
 {
     NetworkMessage msg ;
@@ -258,8 +258,8 @@ FederationManagement::resignFederationExecution(ResignAction,
     if (e == e_NO_EXCEPTION) {
         tm->StopperAvanceTemps();
 
-        if (tm->requestRegulateurState() == RTI_TRUE)
-            tm->setTimeRegulating(RTI_FALSE, exception);
+        if (tm->requestRegulateurState())
+            tm->setTimeRegulating(false, exception);
 
         msg.type = NetworkMessage::RESIGN_FEDERATION_EXECUTION ;
         msg.federation = _numero_federation ;
@@ -267,13 +267,13 @@ FederationManagement::resignFederationExecution(ResignAction,
 
         comm->sendMessage(&msg);
 
-        _est_membre_federation = RTI_FALSE ;
+        _est_membre_federation = false ;
         _numero_federation = 0 ;
         federate = 0 ;
 
         // BUG: Voir DestroyFederation ou ~GF.
         if (!_est_createur_federation)
-            _fin_execution = RTI_TRUE ;
+            _fin_execution = true ;
     }
 }
 
@@ -642,4 +642,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.15 2004/05/17 21:24:47 breholee Exp $
+// $Id: FederationManagement.cc,v 3.16 2005/04/30 16:38:39 breholee Exp $

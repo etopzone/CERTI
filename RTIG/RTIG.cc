@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.26 2005/03/13 22:28:46 breholee Exp $
+// $Id: RTIG.cc,v 3.27 2005/04/30 16:41:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -428,7 +428,7 @@ RTIG::execute()
                 do {
                     link = processIncomingMessage((SecureTCPSocket *)link);
                     if (link == NULL)break ;
-                } while (link->isDataReady()== RTI_TRUE);
+                } while (link->isDataReady());
             }
             catch (NetworkError &e) {
                 if (e._reason != NULL)
@@ -951,4 +951,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.26 2005/03/13 22:28:46 breholee Exp $
+// $Id: RTIG.cc,v 3.27 2005/04/30 16:41:28 breholee Exp $

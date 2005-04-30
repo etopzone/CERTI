@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,11 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.hh,v 3.6 2003/10/20 12:05:50 breholee Exp $
+// $Id: Files.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_RTIA_FILES_HH
-#define _CERTI_RTIA_FILES_HH
+#ifndef CERTI_RTIA_FILES_HH
+#define CERTI_RTIA_FILES_HH
 
 #include "FederationManagement.hh"
 #include "ObjectManagement.hh"
@@ -40,28 +40,24 @@ class ObjectManagement ;
 class Queues
 {
 public:
-    Queues();
-    ~Queues();
-
-    FederationManagement *fm ;
-    ObjectManagement *om ;
-
     // File FIFO(First In First Out, or Receive Order)
     void insertFifoMessage(NetworkMessage *msg);
-    NetworkMessage *giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant);
+    NetworkMessage *giveFifoMessage(bool &, bool &);
 
     // File TSO(Time Stamp Order)
     void insertTsoMessage(NetworkMessage *msg);
     NetworkMessage *giveTsoMessage(FederationTime heure_logique,
-                                   Boolean &msg_donne,
-                                   Boolean &msg_restant);
-    void nextTsoDate(Boolean &trouve, FederationTime &heure_logique);
+                                   bool &msg_donne,
+                                   bool &msg_restant);
+    void nextTsoDate(bool &trouve, FederationTime &heure_logique);
 
     // File Commandes(ex: requestPause)
     void insertBeginCommand(NetworkMessage *msg);
     void insertLastCommand(NetworkMessage *msg);
-    NetworkMessage *giveCommandMessage(Boolean &msg_donne,
-                                       Boolean &msg_restant);
+    NetworkMessage *giveCommandMessage(bool &msg_donne, bool &msg_restant);
+
+    FederationManagement *fm ;
+    ObjectManagement *om ;
 
 private:
     // Attributes
@@ -75,6 +71,6 @@ private:
 
 }} // namespace certi/rtia
 
-#endif // _CERTI_RTIA_FILES_HH
+#endif // CERTI_RTIA_FILES_HH
 
-// $Id: Files.hh,v 3.6 2003/10/20 12:05:50 breholee Exp $
+// $Id: Files.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $

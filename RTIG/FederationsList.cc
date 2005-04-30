@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.28 2005/04/05 12:24:20 breholee Exp $
+// $Id: FederationsList.cc,v 3.29 2005/04/30 16:41:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -160,7 +160,7 @@ void FederationsList::createFederation(const char *name,
     try {
         exists(name, unused);
         D.Out(pdExcept, "Federation %s already present.", name);
-        throw FederationExecutionAlreadyExists();
+        throw FederationExecutionAlreadyExists("");
     }
     catch (FederationExecutionDoesNotExist &e) {
         D.Out(pdDebug,
@@ -255,7 +255,7 @@ FederationsList::exists(const char *name,
     }
 
     D.Out(pdDebug, "EstPresent throws FederationExecutionDoesNotExist.");
-    throw FederationExecutionDoesNotExist();
+    throw FederationExecutionDoesNotExist("");
 }
 
 // ----------------------------------------------------------------------------
@@ -1264,5 +1264,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.28 2005/04/05 12:24:20 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.29 2005/04/30 16:41:28 breholee Exp $
 

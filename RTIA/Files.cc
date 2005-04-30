@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.cc,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: Files.cc,v 3.8 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,29 +30,19 @@ namespace certi {
 namespace rtia {
 
 // ----------------------------------------------------------------------------
-Queues::Queues()
-{
-}
-
-// ----------------------------------------------------------------------------
-Queues::~Queues()
-{
-}
-
-// ----------------------------------------------------------------------------
 //! Returns logical time from first message in TSO list.
 void
-Queues::nextTsoDate(Boolean &found, FederationTime &time)
+Queues::nextTsoDate(bool &found, FederationTime &time)
 {
     NetworkMessage *msg_buffer ;
 
     if (tsos.empty()) {
-        found = RTI_FALSE ;
+        found = false ;
         time = -1.0 ;
     }
     else {
         msg_buffer = tsos.front();
-        found = RTI_TRUE ;
+        found = true ;
         time = msg_buffer->date ;
     }
 }
@@ -61,22 +51,22 @@ Queues::nextTsoDate(Boolean &found, FederationTime &time)
 /*! Give all the commands to the federate (en invoquant les services
   "RTI Initiated" du federe).
 */
-NetworkMessage*
-Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
+NetworkMessage *
+Queues::giveCommandMessage(bool &msg_donne, bool &msg_restant)
 {
     NetworkMessage *msg ;
 
-    msg_donne = RTI_FALSE ;
-    msg_restant = RTI_FALSE ;
+    msg_donne = false ;
+    msg_restant = false ;
 
     if (!commands.empty()) {
         // remove from list but keep pointer to execute ExecuterServiceFedere.
         msg = commands.front();
         commands.pop_front();
-        msg_donne = RTI_TRUE ;
+        msg_donne = true ;
 
         if (!commands.empty())
-            msg_restant = RTI_TRUE ;
+            msg_restant = true ;
 
         return msg ;
     }
@@ -85,22 +75,22 @@ Queues::giveCommandMessage(Boolean &msg_donne, Boolean &msg_restant)
 
 // ----------------------------------------------------------------------------
 //! Give a FIFO message to federate.
-NetworkMessage*
-Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
+NetworkMessage *
+Queues::giveFifoMessage(bool &msg_donne, bool &msg_restant)
 {
     NetworkMessage *msg_tampon ;
 
-    msg_donne = RTI_FALSE ;
-    msg_restant = RTI_FALSE ;
+    msg_donne = false ;
+    msg_restant = false ;
 
     if (!fifos.empty()) {
         // remove from list but keep pointer to execute ExecuterServiceFedere.
         msg_tampon = fifos.front();
         fifos.pop_front();
-        msg_donne = RTI_TRUE ;
+        msg_donne = true ;
 
         if (!fifos.empty())
-            msg_restant = RTI_TRUE ;
+            msg_restant = true ;
 
         return msg_tampon ;
     }
@@ -113,13 +103,13 @@ Queues::giveFifoMessage(Boolean &msg_donne, Boolean &msg_restant)
 */
 NetworkMessage *
 Queues::giveTsoMessage(FederationTime heure_logique,
-                       Boolean &msg_donne,
-                       Boolean &msg_restant)
+                       bool &msg_donne,
+                       bool &msg_restant)
 {
     NetworkMessage *buffer_msg = NULL ;
 
-    msg_donne = RTI_FALSE ;
-    msg_restant = RTI_FALSE ;
+    msg_donne = false ;
+    msg_restant = false ;
 
     if (!tsos.empty()) {
         buffer_msg = tsos.front();
@@ -127,7 +117,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
             // remove from list but keep pointer to execute
             // ExecuterServiceFedere.
             tsos.pop_front();
-            msg_donne = RTI_TRUE ;
+            msg_donne = true ;
 
             // Test if next TSO message can be sent.
             if (!tsos.empty()) {
@@ -135,7 +125,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
                 buffer_msg2 = tsos.front();
 
                 if (buffer_msg2->date <= heure_logique)
-                    msg_restant = RTI_TRUE ;
+                    msg_restant = true ;
             }
             return buffer_msg ;
         }
@@ -196,4 +186,4 @@ Queues::insertTsoMessage(NetworkMessage *msg)
 
 }} // namespaces
 
-// $Id: Files.cc,v 3.7 2003/06/27 17:26:28 breholee Exp $
+// $Id: Files.cc,v 3.8 2005/04/30 16:38:39 breholee Exp $

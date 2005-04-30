@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.9 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -313,7 +313,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 
     if (e == e_NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
-        AttributeSet=AttributeHandleSetFactory::create(rep.handleArraySize);
+        AttributeSet = RTI::AttributeHandleSetFactory::create(rep.handleArraySize);
 
         for (int i = 0 ; i < rep.handleArraySize ; i++) {
             AttributeSet->add(rep.handleArray[i]);
@@ -509,4 +509,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: OwnershipManagement.cc,v 3.9 2005/04/30 16:38:39 breholee Exp $

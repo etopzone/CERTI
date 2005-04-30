@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
+// $Id: TimeManagement.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -69,33 +69,33 @@ public:
 
     // Advance Time Methods
     void nextEventRequest(FederationTime heure_logique, TypeException &e);
-    Boolean tick(TypeException &e);
+    bool tick(TypeException &e);
     void timeAdvanceRequest(FederationTime heure_logique, TypeException &e);
 
     // Change Federate Time State
     void setLookahead(FederationTimeDelta lookahead, TypeException &e);
-    void setTimeConstrained(Boolean etat, TypeException &e);
-    void setTimeRegulating(Boolean etat, TypeException &e);
-    void StopperAvanceTemps(void) {
+    void setTimeConstrained(bool etat, TypeException &e);
+    void setTimeRegulating(bool etat, TypeException &e);
+    void StopperAvanceTemps() {
         _avancee_en_cours = PAS_D_AVANCEE ;
     };
 
     // Request Attribute Methods
-    FederationTime requestFederationTime(void);
-    FederationTime requestFederateTime(void) { return(_heure_courante); };
-    FederationTimeDelta requestLookahead(void);
-    FederationTime requestLBTS(void) { return _LBTS ; };
-    Boolean requestContraintState(void) { return _est_contraint ; };
-    Boolean requestRegulateurState(void) { return _est_regulateur ; };
+    FederationTime requestFederationTime();
+    FederationTime requestFederateTime() { return(_heure_courante); };
+    FederationTimeDelta requestLookahead();
+    FederationTime requestLBTS() { return _LBTS ; };
+    bool requestContraintState() { return _est_contraint ; };
+    bool requestRegulateurState() { return _est_regulateur ; };
 
 private:
     // Methods
-    void advance(Boolean &msg_restant, TypeException &e);
-    void timeAdvance(Boolean &msg_restant, TypeException &e);
-    void nextEventAdvance(Boolean &msg_restant, TypeException &e);
+    void advance(bool &msg_restant, TypeException &e);
+    void timeAdvance(bool &msg_restant, TypeException &e);
+    void nextEventAdvance(bool &msg_restant, TypeException &e);
     void timeAdvanceGrant(FederationTime, TypeException &);
     void flushQueueRequest(FederationTime, TypeException &);
-    Boolean executeFederateService(NetworkMessage &msg);
+    bool executeFederateService(NetworkMessage &msg);
     void sendNullMessage(FederationTime heure_logique);
 
     // Other RTIA Objects
@@ -115,12 +115,12 @@ private:
     // Federate Data
     FederationTime _heure_courante ;
     FederationTimeDelta _lookahead_courant ;
-    Boolean _est_regulateur ;
-    Boolean _est_contraint ;
+    bool _est_regulateur ;
+    bool _est_contraint ;
 };
 
 }} // namespace certi/rtia
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
+// $Id: TimeManagement.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
