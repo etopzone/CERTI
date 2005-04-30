@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.cc,v 3.10 2005/03/28 19:05:17 breholee Exp $
+// $Id: Billard.cc,v 3.11 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -55,11 +55,11 @@ Billard::Billard(string federate_name)
 
 /** Destructor
  */
-Billard::~Billard() { }
+Billard::~Billard() throw (RTI::FederateInternalError) { }
 
 /** Get the federate handle
  */
-FederateHandle
+RTI::FederateHandle
 Billard::getHandle() const
 {
     return handle ;
@@ -82,7 +82,7 @@ Billard::join(string federation_name, string fdd_name)
         D.Out(pdInit, "Federation execution created.");
         creator = true ;
     }
-    catch (FederationExecutionAlreadyExists& e) {
+    catch (RTI::FederationExecutionAlreadyExists& e) {
         D.Out(pdInit, "Federation execution already created.");
     }
 
@@ -99,18 +99,18 @@ Billard::join(string federation_name, string fdd_name)
             joined = true ;
             break ;
         }
-        catch (FederateAlreadyExecutionMember& e) {
+        catch (RTI::FederateAlreadyExecutionMember& e) {
             D[pdExcept] << "Federate " << federateName.c_str()
                         << "already exists." << endl ;
 
             throw ;
         }
-        catch (FederationExecutionDoesNotExist& e) {
+        catch (RTI::FederationExecutionDoesNotExist& e) {
             D.Out(pdExcept, "Federate %s : FederationExecutionDoesNotExist.",
                   federateName.c_str());
             // sleep(1);
         }
-        catch (Exception& e) {
+        catch (RTI::Exception& e) {
             D.Out(pdExcept,
                   "Federate %s :Join Federation Execution failed : %d .",
                   federateName.c_str(), &e);
@@ -131,7 +131,7 @@ Billard::pause()
             rtiamb.registerFederationSynchronizationPoint(
                 "Init", "Waiting all players.");
         }
-        catch (Exception& e) {
+        catch (RTI::Exception& e) {
             D[pdExcept] << "Federate " << federateName.c_str()
                         << " : Register Synchronization Point failed : %d"
                         << endl ;
@@ -183,7 +183,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
                     regulating = true ;
                     break ;
                 }
-                catch (FederationTimeAlreadyPassed) {
+                catch (RTI::FederationTimeAlreadyPassed) {
                     // Si Je ne suis pas le premier, je vais les rattraper.
                     rtiamb.queryFederateTime(localTime);
 
@@ -196,13 +196,13 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
                         try {
                             tick();
                         }
-                        catch (RTIinternalError) {
+                        catch (RTI::RTIinternalError) {
                             printf("RTIinternalError Raised in tick.\n");
                             exit(-1);
                         }
                     }
                 }
-                catch (RTIinternalError) {
+                catch (RTI::RTIinternalError) {
                     printf("RTIinternalError Raised in setTimeRegulating.\n");
                     exit(-1);
                 }
@@ -248,7 +248,7 @@ Billard::synchronize(int autostart)
                 D.Out(pdInit, "not paused");
                 tick();
             }
-            catch (Exception& e) {
+            catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d ", &e);
             }
         D.Out(pdDebug, "paused");
@@ -256,7 +256,7 @@ Billard::synchronize(int autostart)
         try {
             rtiamb.synchronizationPointAchieved("Init");
         }
-        catch (Exception& e) {
+        catch (RTI::Exception& e) {
             D.Out(pdExcept, "**** Exception achieving a synchronization "
                   "point by creator : %d", &e);
         }
@@ -265,7 +265,7 @@ Billard::synchronize(int autostart)
             try {
                 tick();
             }
-            catch (Exception& e) {
+            catch (RTI::Exception& e) {
                 D.Out(pdExcept, "**** Exception ticking the RTI : %d.", &e);
             }
     }
@@ -282,7 +282,7 @@ Billard::synchronize(int autostart)
                 try {
                     tick();
                 }
-                catch (Exception& e) {
+                catch (RTI::Exception& e) {
                     D.Out(pdExcept,
                           "******** Exception ticking the RTI : %d.", &e);
                 }
@@ -295,7 +295,7 @@ Billard::synchronize(int autostart)
             rtiamb.synchronizationPointAchieved("Init");
             D.Out(pdInit, "Pause achieved.");
         }
-        catch (Exception& e) {
+        catch (RTI::Exception& e) {
             D.Out(pdExcept,
                   "**** Exception achieving a synchronization point : %d",
                   &e);
@@ -307,7 +307,7 @@ Billard::synchronize(int autostart)
             try {
                 tick();
             }
-            catch (Exception& e) {
+            catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
             }
         }
@@ -366,7 +366,7 @@ Billard::step()
 	granted = false ;
         rtiamb.timeAdvanceRequest(time_aux);
     }
-    catch (Exception& e) {
+    catch (RTI::Exception& e) {
         D.Out(pdExcept, "******* Exception sur timeAdvanceRequest.");
     }
 
@@ -378,14 +378,14 @@ Billard::step()
         try {
             tick();
         }
-        catch (Exception& e) {
+        catch (RTI::Exception& e) {
             D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
         }
     }
     try {
         rtiamb.queryFederateTime(localTime);
     }
-    catch (Exception& e) {
+    catch (RTI::Exception& e) {
         D.Out(pdExcept,
               "**** Exception asking for federate local time : ", &e);
     }
@@ -400,7 +400,7 @@ Billard::step()
     vector<Ball>::iterator it ;
 
     for (it = remote.begin(); it != remote.end(); ++it) {
-        if (it->ID != 0 && it->active && local.checkBallCollision(&(*it))) {
+        if (it->ID != 0 && local.checkBallCollision(&(*it))) {
             sendInteraction(local.dx, local.dy, next_step, it->ID);
             // On prend la vitesse de l'autre sauf dans le cas ou
             // on avait deja la meme. Dans ce cas, on inverse la notre.
@@ -450,7 +450,7 @@ Billard::resign()
         rtiamb.deleteObjectInstance(local.ID, localTime, "DO");
         D.Out(pdRegister, "Local object deleted from federation.");
     }
-    catch (Exception &e) {
+    catch (RTI::Exception &e) {
         D.Out(pdExcept, "**** Exception delete object : %d", &e);
     }
 
@@ -460,10 +460,10 @@ Billard::resign()
 
     try {
         rtiamb.resignFederationExecution(
-            DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES);
+            RTI::DELETE_OBJECTS_AND_RELEASE_ATTRIBUTES);
         D.Out(pdTerm, "Just resigned from federation");
     }
-    catch (Exception &e) {
+    catch (RTI::Exception &e) {
         D.Out(pdExcept,
               "** Exception during resignFederationExecution by federate");
     }
@@ -479,7 +479,7 @@ Billard::resign()
                 D.Out(pdTerm, "Federation destruction granted.");
                 break ;
             }
-            catch (FederatesCurrentlyJoined) {
+            catch (RTI::FederatesCurrentlyJoined) {
                 sleep(5);
             }
         }
@@ -498,14 +498,14 @@ Billard::publishAndSubscribe()
     getHandles();
 
     // Add PositionX et PositionY to the attribute set
-    auto_ptr<AttributeHandleSet> attributes(AttributeHandleSetFactory::create(3));
+    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
     attributes->add(AttrXID);
     attributes->add(AttrYID);
 
     // Subscribe to Bille objects.
     D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
 	       << AttrXID << " and " << AttrYID << "... " ;
-    rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI_TRUE);
+    rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI::RTI_TRUE);
     D[pdDebug] << "done." << endl ;
 
     // Publish Boule Objects.
@@ -513,7 +513,7 @@ Billard::publishAndSubscribe()
     rtiamb.publishObjectClass(BouleClassID, *attributes);
 
     // Publish and subscribe to Bing interactions
-    rtiamb.subscribeInteractionClass(BingClassID, RTI_TRUE);
+    rtiamb.subscribeInteractionClass(BingClassID, RTI::RTI_TRUE);
     rtiamb.publishInteractionClass(BingClassID);
 
     D.Out(pdInit, "Local Objects and Interactions published and subscribed.");
@@ -553,13 +553,13 @@ Billard::getHandles()
   InteractionTime.
 */
 void
-Billard::sendInteraction(double dx, double dy, const FedTime& InteractionTime,
-                     ObjectHandle id)
+Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTime,
+			 RTI::ObjectHandle id)
 {
     char buf[512] ;
-    ParameterHandleValuePairSet *parameterSet=NULL ;
+    RTI::ParameterHandleValuePairSet *parameterSet=NULL ;
 
-    parameterSet = ParameterSetFactory::create(3);
+    parameterSet = RTI::ParameterSetFactory::create(3);
 
     sprintf(buf, "%ld", id);
     parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
@@ -587,7 +587,7 @@ Billard::sendInteraction(double dx, double dy, const FedTime& InteractionTime,
     try {
         rtiamb.sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
     }
-    catch (Exception& e) {
+    catch (RTI::Exception& e) {
         D.Out(pdExcept, "**** Exception sending interaction : %d", &e);
     }
 
@@ -603,13 +603,13 @@ Billard::sendInteraction(double dx, double dy, const FedTime& InteractionTime,
     \param id Object handle (ball)
  */
 void
-Billard::sendUpdate(double x, double y, int color, const FedTime& UpdateTime,
-                ObjectHandle id)
+Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTime,
+		    RTI::ObjectHandle id)
 {
     char buf[512] ;
-    AttributeHandleValuePairSet *attributeSet ;
+    RTI::AttributeHandleValuePairSet *attributeSet ;
 
-    attributeSet = AttributeSetFactory::create(3);
+    attributeSet = RTI::AttributeSetFactory::create(3);
 
     D.Out(pdTrace, "SendUpdate.");
 
@@ -634,7 +634,7 @@ Billard::sendUpdate(double x, double y, int color, const FedTime& UpdateTime,
         // logfile << string(((RTIfedTime) UpdateTime).getTime()) << " : UAV "
         // << string(Local.x) << " " << string(Local.y) << endl ;
     }
-    catch (Exception& e) {
+    catch (RTI::Exception& e) {
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
     }
 
@@ -646,7 +646,7 @@ Billard::sendUpdate(double x, double y, int color, const FedTime& UpdateTime,
     \param s Object name to provide to the RTI
     \return The created object handle
  */
-ObjectHandle
+RTI::ObjectHandle
 Billard::registerBallInstance(const char *s)
 {
     return rtiamb.registerObjectInstance(BouleClassID, s);
@@ -660,17 +660,15 @@ Billard::registerBallInstance(const char *s)
 /** Callback : discover object instance
  */
 void
-Billard::discoverObjectInstance(ObjectHandle theObject,
-                            ObjectClassHandle theObjectClass,
-                            const char */*theObjectName*/)
-    throw (CouldNotDiscover,
-           ObjectClassNotKnown,
-           InvalidFederationTime,
-           FederateInternalError)
+Billard::discoverObjectInstance(RTI::ObjectHandle theObject,
+				RTI::ObjectClassHandle theObjectClass,
+				const char */*theObjectName*/)
+    throw (RTI::CouldNotDiscover, RTI::ObjectClassNotKnown, 
+	   RTI::FederateInternalError)
 {
     if (theObjectClass != BilleClassID) {
         D.Out(pdError, "Object of Unknown Class discovered.");
-        throw RTIinternalError();
+        throw RTI::FederateInternalError("");
     }
     
     bool already = false ;
@@ -691,10 +689,10 @@ Billard::discoverObjectInstance(ObjectHandle theObject,
  */
 void
 Billard::announceSynchronizationPoint(const char *label, const char */*tag*/)
-    throw (FederateInternalError)
+    throw (RTI::FederateInternalError)
 {
     if (strcmp(label, "Init") == 0) {
-        paused = RTI_TRUE ;
+        paused = true ;
         D.Out(pdProtocol, "announceSynchronizationPoint.");
     }
     else {
@@ -708,7 +706,7 @@ Billard::announceSynchronizationPoint(const char *label, const char */*tag*/)
  */
 void
 Billard::federationSynchronized(const char *label)
-    throw (FederateInternalError)
+    throw (RTI::FederateInternalError)
 {
     if (strcmp(label, "Init") == 0) {
         paused = false ;
@@ -721,21 +719,21 @@ Billard::federationSynchronized(const char *label)
 /** Callback : receive interaction
  */
 void
-Billard::receiveInteraction(InteractionClassHandle theInteraction,
-                        const ParameterHandleValuePairSet& theParameters,
-                        const FedTime& /*theTime*/,
+Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
+                        const RTI::ParameterHandleValuePairSet& theParameters,
+                        const RTI::FedTime& /*theTime*/,
                         const char */*theTag*/,
-                        EventRetractionHandle /*theHandle*/)
-    throw (InteractionClassNotKnown,
-           InteractionParameterNotKnown,
-           InvalidFederationTime,
-           FederateInternalError)
+                        RTI::EventRetractionHandle /*theHandle*/)
+    throw (RTI::InteractionClassNotKnown,
+           RTI::InteractionParameterNotKnown,
+           RTI::InvalidFederationTime,
+           RTI::FederateInternalError)
 {
     char *parmValue ;
-    ULong valueLength ;
+    RTI::ULong valueLength ;
     int dx1 = 0 ;
     int dy1 = 0 ;
-    ObjectHandle h1 = 0 ;
+    RTI::ObjectHandle h1 = 0 ;
     bool bille = false ;
 
     D.Out(pdTrace, "Fed : receiveInteraction");
@@ -749,7 +747,7 @@ Billard::receiveInteraction(InteractionClassHandle theInteraction,
           theParameters.size());
 
     for (unsigned int j = 0 ; j < theParameters.size(); ++j) {
-        ParameterHandle handle = theParameters.getHandle(j);
+        RTI::ParameterHandle handle = theParameters.getHandle(j);
 
         valueLength = theParameters.getValueLength(j);
         parmValue = new char[valueLength] ;
@@ -799,22 +797,22 @@ Billard::receiveInteraction(InteractionClassHandle theInteraction,
  */
 void
 Billard::reflectAttributeValues(
-    ObjectHandle theObject,
-    const AttributeHandleValuePairSet& theAttributes,
-    const FedTime& /*theTime*/,
+    RTI::ObjectHandle theObject,
+    const RTI::AttributeHandleValuePairSet& theAttributes,
+    const RTI::FedTime& /*theTime*/,
     const char */*theTag*/,
-    EventRetractionHandle /*theHandle*/)
-    throw (ObjectNotKnown,
-           AttributeNotKnown,
-           InvalidFederationTime,
-           FederateInternalError)
+    RTI::EventRetractionHandle /*theHandle*/)
+    throw (RTI::ObjectNotKnown,
+           RTI::AttributeNotKnown,
+           RTI::InvalidFederationTime,
+           RTI::FederateInternalError)
 {
     D.Out(pdTrace, "reflectAttributeValues");
 
     float x1 = 0 ;
     float y1 = 0 ;
 
-    ULong valueLength ;
+    RTI::ULong valueLength ;
     char *attrValue ;
 
     D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
@@ -822,7 +820,7 @@ Billard::reflectAttributeValues(
 
     for (unsigned int j=0 ; j<theAttributes.size(); j++) {
 
-        AttributeHandle handle = theAttributes.getHandle(j);
+        RTI::AttributeHandle handle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
         attrValue = new char[valueLength] ;
         theAttributes.getValue(j, attrValue, valueLength);
@@ -875,11 +873,11 @@ Billard::reflectAttributeValues(
 /** Callback : remove object instance
  */
 void
-Billard::removeObjectInstance(ObjectHandle theObject,
-                          const FedTime &,
-                          const char *,
-                          EventRetractionHandle)
-    throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError)
+Billard::removeObjectInstance(RTI::ObjectHandle theObject,
+			      const RTI::FedTime &,
+			      const char *,
+			      RTI::EventRetractionHandle)
+    throw (RTI::ObjectNotKnown, RTI::InvalidFederationTime, RTI::FederateInternalError)
 {
     vector<Ball>::iterator it ;
 
@@ -896,11 +894,11 @@ Billard::removeObjectInstance(ObjectHandle theObject,
 /** Callback : time advance granted
  */
 void
-Billard::timeAdvanceGrant(const FedTime& /*theTime*/)
-    throw (InvalidFederationTime, TimeAdvanceWasNotInProgress,
-           FederationTimeAlreadyPassed, FederateInternalError)
+Billard::timeAdvanceGrant(const RTI::FedTime& /*theTime*/)
+    throw (RTI::InvalidFederationTime, RTI::TimeAdvanceWasNotInProgress, 
+	   RTI::FederateInternalError)
 {    
     granted = true ;
 }
 
-// $Id: Billard.cc,v 3.10 2005/03/28 19:05:17 breholee Exp $
+// $Id: Billard.cc,v 3.11 2005/04/30 17:55:43 breholee Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ColoredBall.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: ColoredBall.hh,v 3.2 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_COLORED_BALL_HH
@@ -31,11 +31,11 @@ class ColoredBall : public Ball
 public:
     int Color ;
 
-    ColoredBall(ObjectHandle);
+    ColoredBall(RTI::ObjectHandle);
 
     void display();
 };
 
 #endif // CERTI_COLORED_BALL_HH
 
-// $Id: ColoredBall.hh,v 3.1 2003/08/06 14:37:47 breholee Exp $
+// $Id: ColoredBall.hh,v 3.2 2005/04/30 17:55:43 breholee Exp $

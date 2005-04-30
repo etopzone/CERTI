@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.cc,v 3.6 2005/03/28 19:02:38 breholee Exp $
+// $Id: Ball.cc,v 3.7 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,7 @@ using namespace std ;
 /** Ball constructor
     \param h HLA object handle
  */
-Ball::Ball(ObjectHandle h)
+Ball::Ball(RTI::ObjectHandle h)
     : x(-10.0), y(-10.0), dx(3.0), dy(3.0), radius(10.0), active(false), ID(h)
 {
 #ifndef X_DISPLAY_MISSING
@@ -155,4 +155,4 @@ Ball::init(int x_, int y_)
     display();
 }
 
-// $Id: Ball.cc,v 3.6 2005/03/28 19:02:38 breholee Exp $
+// $Id: Ball.cc,v 3.7 2005/04/30 17:55:43 breholee Exp $

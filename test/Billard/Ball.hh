@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Ball.hh,v 3.4 2005/03/28 19:02:39 breholee Exp $
+// $Id: Ball.hh,v 3.5 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BALL_HH
@@ -29,7 +29,7 @@
 class Ball
 {
 public:
-    Ball(ObjectHandle);
+    Ball(RTI::ObjectHandle);
 
     float x, y ;
     float dx, dy ;
@@ -56,4 +56,4 @@ public:
 
 #endif // CERTI_BALL_HH
 
-// $Id: Ball.hh,v 3.4 2005/03/28 19:02:39 breholee Exp $
+// $Id: Ball.hh,v 3.5 2005/04/30 17:55:43 breholee Exp $

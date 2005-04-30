@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2004  ONERA
+// Copyright (C) 2004-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,18 +18,17 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.hh,v 3.10 2005/03/28 19:03:29 breholee Exp $
+// $Id: BillardDDM.hh,v 3.11 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_DDM_HH
 #define CERTI_BILLARD_DDM_HH
 
 #include "RTI.hh"
-#include "BillardNull.hh"
 #include "Billard.hh"
 
 struct Area {
-    Region *region ;
+    RTI::Region *region ;
     long x ;
     long y ;
     long size ;
@@ -39,7 +38,7 @@ class BillardDDM : public Billard
 {
 public:
     BillardDDM(std::string);
-    virtual ~BillardDDM();
+    virtual ~BillardDDM() throw (RTI::FederateInternalError) { };
 
     virtual void checkRegions();
     virtual void declare();
@@ -50,11 +49,11 @@ protected:
     std::vector<Area> areas ;
     int subRegion ;
     int pubRegion ;
-    SpaceHandle GeoID ;
-    DimensionHandle dimX ;
-    DimensionHandle dimY ;
+    RTI::SpaceHandle GeoID ;
+    RTI::DimensionHandle dimX ;
+    RTI::DimensionHandle dimY ;
 };
 
 #endif // CERTI_BILLARD_DDM_HH
 
-// $Id: BillardDDM.hh,v 3.10 2005/03/28 19:03:29 breholee Exp $
+// $Id: BillardDDM.hh,v 3.11 2005/04/30 17:55:43 breholee Exp $

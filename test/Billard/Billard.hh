@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,14 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.6 2004/08/24 18:25:05 breholee Exp $
+// $Id: Billard.hh,v 3.7 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
 #define CERTI_BILLARD_HH
 
 #include "RTI.hh"
-#include "BillardNull.hh"
+#include "NullFederateAmbassador.hh"
+#include "fedtime.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
 
@@ -52,11 +53,11 @@
 #define TYP_FLOAT "float"
 #define TYP_INT "int"
 
-class Billard : public BillardNull
+class Billard : public NullFederateAmbassador
 {
 public:
     Billard(std::string);
-    virtual ~Billard();
+    virtual ~Billard() throw (RTI::FederateInternalError);
 
     void init(int);
     void init(int, int);
@@ -72,60 +73,74 @@ public:
     void synchronize(int);
     void tick();
 
-    FederateHandle getHandle() const ;
+    RTI::FederateHandle getHandle() const ;
 
     // Callbacks
     void announceSynchronizationPoint(const char *label, const char *tag)
-        throw (FederateInternalError);
+        throw (RTI::FederateInternalError);
 
     void federationSynchronized(const char *label)
-        throw (FederateInternalError);
+        throw (RTI::FederateInternalError);
 
-    void timeAdvanceGrant(const FedTime& theTime)
-        throw (InvalidFederationTime, TimeAdvanceWasNotInProgress,
-               FederationTimeAlreadyPassed, FederateInternalError);
+    void timeAdvanceGrant(const RTI::FedTime& theTime)
+        throw (RTI::FederateInternalError, RTI::TimeAdvanceWasNotInProgress, 
+	       RTI::InvalidFederationTime);
 
-    void discoverObjectInstance(ObjectHandle theObject,
-                                ObjectClassHandle theObjectClass,
+    void discoverObjectInstance(RTI::ObjectHandle theObject,
+                                RTI::ObjectClassHandle theObjectClass,
                                 const char *theObjectName)
-        throw (CouldNotDiscover, ObjectClassNotKnown, InvalidFederationTime,
-               FederateInternalError);
+        throw (RTI::FederateInternalError, RTI::ObjectClassNotKnown, RTI::CouldNotDiscover);
 
-    void reflectAttributeValues(ObjectHandle theObject,
-                                const AttributeHandleValuePairSet& theAttributes,
-                                const FedTime& theTime, const char *theTag,
-                                EventRetractionHandle theHandle)
-        throw (ObjectNotKnown, AttributeNotKnown, InvalidFederationTime,
-               FederateInternalError);
+    void reflectAttributeValues(RTI::ObjectHandle theObject,
+                                const RTI::AttributeHandleValuePairSet& theAttributes,
+                                const RTI::FedTime& theTime, const char *theTag,
+                                RTI::EventRetractionHandle theHandle)
+        throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown,
+	       RTI::InvalidFederationTime, RTI::FederateInternalError);
 
-    void receiveInteraction(InteractionClassHandle theInteraction,
-                            const ParameterHandleValuePairSet& theParameters,
-                            const FedTime& theTime, const char *theTag,
-                            EventRetractionHandle theHandle)
-        throw (InteractionClassNotKnown, InteractionParameterNotKnown,
-               InvalidFederationTime, FederateInternalError);
+    void reflectAttributeValues(RTI::ObjectHandle,
+                                const RTI::AttributeHandleValuePairSet &,
+                                const char *)
+        throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown,
+	       RTI::FederateInternalError) { };
 
-    void removeObjectInstance(ObjectHandle theObject, const FedTime& theTime,
+    void receiveInteraction(RTI::InteractionClassHandle theInteraction,
+                            const RTI::ParameterHandleValuePairSet& theParameters,
+                            const RTI::FedTime& theTime, const char *theTag,
+                            RTI::EventRetractionHandle theHandle)
+        throw (RTI::InteractionClassNotKnown, RTI::InteractionParameterNotKnown,
+               RTI::InvalidFederationTime, RTI::FederateInternalError);
+
+    void receiveInteraction(RTI::InteractionClassHandle,
+                            const RTI::ParameterHandleValuePairSet &,
+                            const char *)
+        throw (RTI::InteractionClassNotKnown, RTI::InteractionParameterNotKnown,
+	       RTI::FederateInternalError) { };
+
+    void removeObjectInstance(RTI::ObjectHandle theObject, const RTI::FedTime& theTime,
 			      const char *theTag,
-			      EventRetractionHandle theHandle)
-	throw (ObjectNotKnown, InvalidFederationTime, FederateInternalError);
+			      RTI::EventRetractionHandle theHandle)
+	throw (RTI::ObjectNotKnown, RTI::InvalidFederationTime, RTI::FederateInternalError);
 
-    ObjectHandle registerBallInstance(const char *);
+    void removeObjectInstance(RTI::ObjectHandle, const char *)
+	throw (RTI::ObjectNotKnown, RTI::FederateInternalError) { };
 
-    void sendInteraction(double, double, const FedTime &, ObjectHandle);
-    void sendUpdate(double, double, int, const FedTime &, ObjectHandle);
+    RTI::ObjectHandle registerBallInstance(const char *);
+
+    void sendInteraction(double, double, const RTI::FedTime &, RTI::ObjectHandle);
+    void sendUpdate(double, double, int, const RTI::FedTime &, RTI::ObjectHandle);
 
 protected:
     virtual void getHandles();
  
-    RTIambassador rtiamb ;
+    RTI::RTIambassador rtiamb ;
     ColoredBall local ;
     std::vector<Ball> remote ;
 
     std::string federateName ;
     std::string federationName ;
 
-    FederateHandle handle ;
+    RTI::FederateHandle handle ;
     bool creator ;
     long nbTicks ;
 
@@ -142,17 +157,17 @@ protected:
     bool verbose ;
 
     // Handles
-    ObjectClassHandle BilleClassID ;
-    ObjectClassHandle BouleClassID ;
-    AttributeHandle AttrXID ;
-    AttributeHandle AttrYID ;
-    AttributeHandle AttrColorID ;
-    InteractionClassHandle BingClassID ;
-    ParameterHandle ParamDXID ;
-    ParameterHandle ParamDYID ;
-    ParameterHandle ParamBoulID ;
+    RTI::ObjectClassHandle BilleClassID ;
+    RTI::ObjectClassHandle BouleClassID ;
+    RTI::AttributeHandle AttrXID ;
+    RTI::AttributeHandle AttrYID ;
+    RTI::AttributeHandle AttrColorID ;
+    RTI::InteractionClassHandle BingClassID ;
+    RTI::ParameterHandle ParamDXID ;
+    RTI::ParameterHandle ParamDYID ;
+    RTI::ParameterHandle ParamBoulID ;
 };
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.6 2004/08/24 18:25:05 breholee Exp $
+// $Id: Billard.hh,v 3.7 2005/04/30 17:55:43 breholee Exp $

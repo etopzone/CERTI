@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ColoredBall.cc,v 3.3 2003/11/12 14:37:15 breholee Exp $
+// $Id: ColoredBall.cc,v 3.4 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "ColoredBall.hh"
@@ -31,7 +31,7 @@ using namespace std ;
 
 // ----------------------------------------------------------------------------
 //! CBoule constructor.
-ColoredBall::ColoredBall(ObjectHandle h) : Ball(h)
+ColoredBall::ColoredBall(RTI::ObjectHandle h) : Ball(h)
 {
 #ifndef X_DISPLAY_MISSING
     Color = RED ;
@@ -54,4 +54,4 @@ ColoredBall::display()
 #endif
 }
 
-// $Id: ColoredBall.cc,v 3.3 2003/11/12 14:37:15 breholee Exp $
+// $Id: ColoredBall.cc,v 3.4 2005/04/30 17:55:43 breholee Exp $

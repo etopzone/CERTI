@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.7 2004/08/24 18:25:05 breholee Exp $
+// $Id: main.cc,v 3.8 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -106,7 +106,7 @@ main(int argc, char **argv)
 	// Joins federation
 	D[pdDebug] << "Create or join federation" << endl ;
 	billard->join(federation, fedfile);
-	FederateHandle handle = billard->getHandle();
+	RTI::FederateHandle handle = billard->getHandle();
 
 	// Display...
 	Display *display = Display::instance();
@@ -175,12 +175,12 @@ main(int argc, char **argv)
 	delete billard ;
 	delete display ;
     }
-    catch (Exception &e) {
+    catch (RTI::Exception &e) {
 	cerr << "Billard: exception: " << e._name << " [" 
 	     << (e._reason ? e._reason : "undefined") << "]" << endl ;
     }
 
-    cout << "Exiting." << endl ;
+    std::cout << "Exiting." << std::endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -245,4 +245,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.7 2004/08/24 18:25:05 breholee Exp $
+// EOF $Id: main.cc,v 3.8 2005/04/30 17:55:43 breholee Exp $

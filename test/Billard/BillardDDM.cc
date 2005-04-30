@@ -18,10 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.14 2005/03/28 19:03:29 breholee Exp $
+// $Id: BillardDDM.cc,v 3.15 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
+#include "PrettyDebug.hh"
 
 #ifndef X_DISPLAY_MISSING
 #include "graph_c.hh"
@@ -59,13 +60,6 @@ BillardDDM::BillardDDM(string federate_name)
     : Billard(federate_name), numberOfRegions(4), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardDDM" << std::endl ;
-}
-
-// ----------------------------------------------------------------------------
-/** Destructor
- */
-BillardDDM::~BillardDDM()
-{
 }
 
 // ----------------------------------------------------------------------------
@@ -113,13 +107,13 @@ BillardDDM::checkRegions()
     if (region != subRegion || region != pubRegion) {
 	std::cout << "Updating regions ..." << std::endl ;
 
-	auto_ptr<AttributeHandleSet> a(AttributeHandleSetFactory::create(3));
+	auto_ptr<RTI::AttributeHandleSet> a(RTI::AttributeHandleSetFactory::create(3));
 	a->add(AttrXID);
 	a->add(AttrYID);
 
  	// Subscription
 	rtiamb.subscribeObjectClassAttributesWithRegion(
-	    BilleClassID, *(areas[region].region), *a, RTI_TRUE);
+	    BilleClassID, *(areas[region].region), *a, RTI::RTI_TRUE);
 	if (subRegion != -1) {
 	    rtiamb.unsubscribeObjectClassWithRegion(
 		BilleClassID,
@@ -144,7 +138,7 @@ BillardDDM::checkRegions()
 void
 BillardDDM::publishAndSubscribe()
 {
-    auto_ptr<AttributeHandleSet> attributes(AttributeHandleSetFactory::create(3));
+    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
 
     getHandles();
     attributes->add(AttrXID);
@@ -157,4 +151,4 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.14 2005/03/28 19:03:29 breholee Exp $
+// $Id: BillardDDM.cc,v 3.15 2005/04/30 17:55:43 breholee Exp $
