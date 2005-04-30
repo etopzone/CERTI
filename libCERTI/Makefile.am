@@ -1,12 +1,10 @@
-## $Id: Makefile.am,v 3.23 2005/04/29 20:09:15 breholee Exp $ 
+## $Id: Makefile.am,v 3.24 2005/04/30 14:17:32 breholee Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@
 
 lib_LTLIBRARIES = libCERTI.la
-
-include_HEADERS = Socket.hh SocketUN.hh
 
 noinst_HEADERS = AuditFile.hh AuditLine.hh BaseRegion.hh		\
 BasicMessage.hh converter.hh Dimension.hh Exception.hh Extent.hh	\
@@ -18,7 +16,8 @@ ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
 ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
-XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh
+XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
+SocketUN.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
