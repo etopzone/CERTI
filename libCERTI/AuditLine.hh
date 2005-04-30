@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditLine.hh,v 3.9 2005/04/30 16:48:25 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
 #define _CERTI_AUDIT_LINE_HH
 
-#include <certi.hh>
+#include "certi.hh"
 #include "Exception.hh"
 
 #include <fstream>
@@ -67,4 +67,4 @@ private:
 
 #endif // _CERTI_AUDIT_LINE_HH
 
-// $Id: AuditLine.hh,v 3.8 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditLine.hh,v 3.9 2005/04/30 16:48:25 breholee Exp $
