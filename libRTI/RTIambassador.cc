@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -19,79 +19,64 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.36 2004/03/04 20:19:05 breholee Exp $
+// $Id: RTIambassador.cc,v 3.37 2005/04/30 17:42:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-#include "RTIambassador.hh"
+#include "certi.hh"
 
-#include "FederateAmbassador.hh"
+#include "RTIambPrivateRefs.hh"
+
+#include "FedRegion.hh"
 #include "Message.hh"
 #include "PrettyDebug.hh"
 
 #include <signal.h>
 #include <iostream>
 #include <unistd.h>
+#include <cassert>
 
 using std::cout ;
 using std::cerr ;
 using std::endl ;
 
-namespace certi {
+namespace {
 
 static pdCDebug D("LIBRTI", __FILE__);
 
-// ----------------------------------------------------------------------------
-void
-RTIambassador::leave(const char *msg)
+using namespace certi ;
+
+std::vector<RTI::Handle>
+build_region_handles(RTI::Region **regions, int nb)
+    throw (RTI::RegionNotKnown)
 {
-    cout << "libRTI: " << msg << endl ;
-    exit(EXIT_FAILURE);
+    std::vector<RTI::Handle> vect(nb);
+    for (int i = 0 ; i < nb ; ++i) {
+	RTI::Region *region = regions[i] ;
+	try {
+	    vect[i] = dynamic_cast<FedRegion *>(region)->getHandle();
+	}
+	catch (std::bad_cast) {
+	    throw RTI::RegionNotKnown("");
+	}
+    }
+    return vect ;
 }
 
-// ----------------------------------------------------------------------------
-void
-RTIambassador::executeService(Message *req, Message *rep)
+RTI::Handle
+get_handle(const RTI::Region &region)
+    throw (RegionNotKnown, RTIinternalError)
 {
-    // raise exception if reentrant call.
-    if (is_reentrant)
-        throw ConcurrentAccessAttempted();
-
-    D.Out(pdDebug, "sending request to RTIA.");
-
-    is_reentrant = true ;
     try {
-        req->write((SocketUN *) this);
+	return dynamic_cast<const FedRegion &>(region).getHandle();
     }
-    catch (NetworkError) {
-        cerr << "libRTI: exception: NetworkError (write)" << endl ;
-        throw RTIinternalError("libRTI: Network Write Error");
+    catch (std::bad_cast) {
+	throw RTI::RegionNotKnown("");
     }
-
-    D.Out(pdDebug, "waiting RTIA reply.");
-
-    // waiting RTI reply.
-    try {
-        rep->read((SocketUN *) this);
-    }
-    catch (NetworkError) {
-        cerr << "libRTI: exception: NetworkError (read)" << endl ;
-        throw RTIinternalError("libRTI: Network Read Error");
-    }
-
-    D.Out(pdDebug, "RTIA reply received.");
-
-    if (rep->type != req->type) {
-        cout << "LibRTI: Assertion failed: rep->type != req->type" << endl ;
-        throw RTIinternalError("RTIambassador::executeService: "
-                               "rep->type != req->type");
-    }
-
-    is_reentrant = false ;
-    D.Out(pdDebug, "processing returned exception (from reply).");
-    processException(rep);
-    D.Out(pdDebug, "exception processed.");
+    throw RTI::RTIinternalError("");
 }
+
+} // anonymous namesapce
 
 // ----------------------------------------------------------------------------
 //! Start RTIambassador processes for communication with RTIG.
@@ -99,10 +84,14 @@ RTIambassador::executeService(Message *req, Message *rep)
   is launched. This process is used for data exchange with rtig server.
   This process connects to rtia after one second delay (UNIX socket).
 */
-RTIambassador::RTIambassador()
-    throw (MemoryExhausted, RTIinternalError) : SocketUN(stIgnoreSignal)
+RTI::RTIambassador::RTIambassador()
+    throw (MemoryExhausted, RTIinternalError)
 {
-    is_reentrant = false ;
+    privateRefs = new RTIambPrivateRefs();
+
+    privateRefs->socketUn = new SocketUN(stIgnoreSignal);
+	
+    privateRefs->is_reentrant = false ;
     const char *rtiaexec = "rtia" ;
     const char *rtiaenv = getenv("CERTI_RTIA");
     const char *rtiacall ;
@@ -110,7 +99,7 @@ RTIambassador::RTIambassador()
     else rtiacall = rtiaexec ;
 
     // creating RTIA process.
-    switch((pid_RTIA = fork())) {
+    switch((privateRefs->pid_RTIA = fork())) {
       case -1: // fork failed.
         perror("fork");
         throw RTIinternalError("fork failed in RTIambassador constructor");
@@ -127,7 +116,7 @@ RTIambassador::RTIambassador()
 
       default: // father process (Federe).
         sleep(1);
-        connectUN(pid_RTIA);
+        privateRefs->socketUn->connectUN(privateRefs->pid_RTIA);
         break ;
     }
 }
@@ -136,15 +125,17 @@ RTIambassador::RTIambassador()
 //! Closes processes.
 /*! When destructor is called, kill rtia process.
  */
-RTIambassador::~RTIambassador()
+RTI::RTIambassador::~RTIambassador()
+    throw (RTIinternalError)
 {
-    kill(pid_RTIA, SIGINT);
+    delete privateRefs ;
+    kill(privateRefs->pid_RTIA, SIGINT);
 }
 
 // ----------------------------------------------------------------------------
 // Tick
-Boolean
-RTIambassador::tick()
+RTI::Boolean
+RTI::RTIambassador::tick()
     throw (SpecifiedSaveLabelDoesNotExist,
            ConcurrentAccessAttempted,
            RTIinternalError)
@@ -152,42 +143,42 @@ RTIambassador::tick()
     Message vers_RTI, vers_Fed ;
 
     // Throw exception if reentrant call.
-    if (is_reentrant)
-        throw ConcurrentAccessAttempted();
+    if (privateRefs->is_reentrant)
+        throw ConcurrentAccessAttempted("");
 
-    is_reentrant = true ;
+    privateRefs->is_reentrant = true ;
 
     // Prevenir le RTI
     vers_RTI.type = Message::TICK_REQUEST ;
 
     try {
-        vers_RTI.write((SocketUN *) this);
+        vers_RTI.write(privateRefs->socketUn);
     }
     catch (NetworkError) {
         cout << "tick 1." << endl ;
         cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
              << endl ;
-        throw RTIinternalError();
+        throw RTIinternalError("");
     }
 
     for (;;) {
 
         // Lire la reponse du RTIA local
         try {
-            vers_Fed.read((SocketUN *) this);
+            vers_Fed.read(privateRefs->socketUn);
         }
         catch (NetworkError) {
             cout << "tick 2." << endl ;
             cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
                  << endl ;
-            throw RTIinternalError();
+            throw RTIinternalError("");
         }
 
         // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
         if (vers_Fed.type == Message::TICK_REQUEST) {
-            is_reentrant = false ;
-            processException(&vers_Fed);
-            return vers_Fed.getBoolean();
+            privateRefs->is_reentrant = false ;
+            privateRefs->processException(&vers_Fed);
+            return RTI::Boolean(vers_Fed.getBoolean());
         }
 
         // Sinon, le RTI nous demande un service, donc on appele une methode
@@ -198,74 +189,74 @@ RTIambassador::tick()
             switch (vers_Fed.type) {
 
               case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-                fed_amb->synchronizationPointRegistrationSucceeded(
+                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(
 		    vers_Fed.getLabel());
                 break ;
 
               case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
-                fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
+                privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
                                                       vers_Fed.getTag());
                 break ;
 
               case Message::FEDERATION_SYNCHRONIZED:
-                fed_amb->federationSynchronized(vers_Fed.getLabel());
+                privateRefs->fed_amb->federationSynchronized(vers_Fed.getLabel());
                 break ;
 
               case Message::INITIATE_FEDERATE_SAVE:
-                fed_amb->initiateFederateSave(vers_Fed.getLabel());
+                privateRefs->fed_amb->initiateFederateSave(vers_Fed.getLabel());
                 break ;
 
               case Message::FEDERATION_SAVED:
-                fed_amb->federationSaved();
+                privateRefs->fed_amb->federationSaved();
                 break ;
 
               case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-                fed_amb->requestFederationRestoreSucceeded(
+                privateRefs->fed_amb->requestFederationRestoreSucceeded(
                     vers_Fed.getLabel());
                 break ;
 
               case Message::REQUEST_FEDERATION_RESTORE_FAILED:
-                fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
+                privateRefs->fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
                                                         vers_Fed.getTag());
                 break ;
 
               case Message::FEDERATION_RESTORE_BEGUN:
-                fed_amb->federationRestoreBegun();
+                privateRefs->fed_amb->federationRestoreBegun();
                 break ;
 
               case Message::INITIATE_FEDERATE_RESTORE:
-                fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
+                privateRefs->fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
                                                  vers_Fed.getFederate());
                 break ;
 
               case Message::FEDERATION_RESTORED:
-                fed_amb->federationRestored();
+                privateRefs->fed_amb->federationRestored();
                 break ;
 
               case Message::FEDERATION_NOT_RESTORED:
-                fed_amb->federationNotRestored();
+                privateRefs->fed_amb->federationNotRestored();
                 break ;
 
               case Message::START_REGISTRATION_FOR_OBJECT_CLASS: {
-                  fed_amb->startRegistrationForObjectClass(
+                  privateRefs->fed_amb->startRegistrationForObjectClass(
 		      vers_Fed.getObjectClass());
               } break ;
 
               case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS: {
-                  fed_amb->
+                  privateRefs->fed_amb->
                       stopRegistrationForObjectClass(vers_Fed.getObjectClass());
               } break ;
 
               case Message::TURN_INTERACTIONS_ON: {
-                  fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
+                  privateRefs->fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
               } break ;
 
               case Message::TURN_INTERACTIONS_OFF: {
-                  fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
+                  privateRefs->fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
               } break ;
 
               case Message::DISCOVER_OBJECT_INSTANCE: {
-                  fed_amb->
+                  privateRefs->fed_amb->
                       discoverObjectInstance(vers_Fed.getObject(),
                                              vers_Fed.getObjectClass(),
                                              vers_Fed.getName());
@@ -273,7 +264,7 @@ RTIambassador::tick()
 
               case Message::REFLECT_ATTRIBUTE_VALUES: {
                   AttributeHandleValuePairSet *attributes = vers_Fed.getAHVPS();
-                  fed_amb->
+                  privateRefs->fed_amb->
                       reflectAttributeValues(vers_Fed.getObject(),
                                              *attributes,
                                              vers_Fed.getFedTime(),
@@ -286,7 +277,7 @@ RTIambassador::tick()
               case Message::RECEIVE_INTERACTION: {
                   ParameterHandleValuePairSet *parameters = vers_Fed.getPHVPS();
 
-                  fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                  privateRefs->fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
                                               *parameters,
                                               vers_Fed.getFedTime(),
                                               vers_Fed.getTag(),
@@ -296,7 +287,7 @@ RTIambassador::tick()
               } break ;
 
               case Message::REMOVE_OBJECT_INSTANCE: {
-                  fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                  privateRefs->fed_amb->removeObjectInstance(vers_Fed.getObject(),
                                                 vers_Fed.getFedTime(),
                                                 vers_Fed.getTag(),
                                                 vers_Fed.getEventRetraction());
@@ -306,7 +297,7 @@ RTIambassador::tick()
 
 
 
-                  // fed_amb->provideAttributeValueUpdate();
+                  // privateRefs->fed_amb->provideAttributeValueUpdate();
               } break ;
 
               case Message::REQUEST_RETRACTION: {
@@ -316,7 +307,7 @@ RTIambassador::tick()
               case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->
+                  privateRefs->fed_amb->
                       requestAttributeOwnershipAssumption(vers_Fed.getObject(),
                                                           *attributeSet,
                                                           vers_Fed.getTag());
@@ -326,7 +317,7 @@ RTIambassador::tick()
               case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->requestAttributeOwnershipRelease(
+                  privateRefs->fed_amb->requestAttributeOwnershipRelease(
 		      vers_Fed.getObject(),
 		      *attributeSet,
 		      vers_Fed.getTag());
@@ -337,7 +328,7 @@ RTIambassador::tick()
               case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                  privateRefs->fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
                                                          *attributeSet);
 
                   delete attributeSet ;
@@ -346,7 +337,7 @@ RTIambassador::tick()
               case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->attributeOwnershipAcquisitionNotification(
+                  privateRefs->fed_amb->attributeOwnershipAcquisitionNotification(
 		      vers_Fed.getObject(),
 		      *attributeSet);
 
@@ -356,7 +347,7 @@ RTIambassador::tick()
               case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->attributeOwnershipDivestitureNotification(
+                  privateRefs->fed_amb->attributeOwnershipDivestitureNotification(
 		      vers_Fed.getObject(),
 		      *attributeSet);
 
@@ -366,7 +357,7 @@ RTIambassador::tick()
               case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
                   AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-                  fed_amb->
+                  privateRefs->fed_amb->
                       confirmAttributeOwnershipAcquisitionCancellation
                       (vers_Fed.getObject(), *attributeSet);
 
@@ -374,23 +365,23 @@ RTIambassador::tick()
               } break ;
 
               case Message::INFORM_ATTRIBUTE_OWNERSHIP: {
-                  fed_amb->
+                  privateRefs->fed_amb->
                       informAttributeOwnership(vers_Fed.getObject(),
                                                vers_Fed.getAttribute(),
                                                vers_Fed.getFederate());
               } break ;
 
               case Message::ATTRIBUTE_IS_NOT_OWNED: {
-                  fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                  privateRefs->fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
                                                vers_Fed.getAttribute());
               } break ;
 
               case Message::TIME_ADVANCE_GRANT: {
-                  fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
+                  privateRefs->fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
 
               default: {
-                  leave("RTI service requested by RTI is unknown.");
+                  privateRefs->leave("RTI service requested by RTI is unknown.");
               }
             }
         }
@@ -414,448 +405,2238 @@ RTIambassador::tick()
         vers_RTI.type = vers_Fed.type ;
 
         try {
-            vers_RTI.write((SocketUN *) this);
+            vers_RTI.write(privateRefs->socketUn);
         }
         catch (NetworkError) {
             cout << "tick 3." << endl ;
             cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
                  << endl ;
-            throw RTIinternalError();
+            throw RTIinternalError("");
         }
     }
 }
 
 // ----------------------------------------------------------------------------
-Boolean
-RTIambassador::tick(TickTime, TickTime)
+RTI::Boolean
+RTI::RTIambassador::tick(TickTime, TickTime)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted,
            RTIinternalError)
 {
     return tick();
 }
 
+
 // ----------------------------------------------------------------------------
-//! Process exception from received message.
-/*! When a message is received from RTIA, it can contains an exception.
-  This exception is processed by this module and a new exception is thrown.
+//! Create Federation Execution.
+/*! Send a CREATE_FEDERATION_EXECUTION request type to inform rtia process a
+  new federation is being created.
 */
 void
-RTIambassador::processException(Message *msg)
+RTI::RTI::RTIambassador::createFederationExecution(const char *executionName,
+                                         const char */* FED */)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::ErrorReadingFED, RTI::CouldNotOpenFED, 
+	   RTI::FederationExecutionAlreadyExists)
 {
-    D.Out(pdExcept, "n° de l'exception : %d .", msg->getExceptionType());
-    switch(msg->getExceptionType()) {
-      case e_NO_EXCEPTION: {
-      } break ;
-
-      case e_ArrayIndexOutOfBounds: {
-          D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
-          throw ArrayIndexOutOfBounds(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeAlreadyOwned: {
-          D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
-          throw AttributeAlreadyOwned(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeAlreadyBeingAcquired: {
-          D.Out(pdExcept,
-		"Throwing e_AttributeAlreadyBeingAcquired exception.");
-          throw AttributeAlreadyBeingAcquired(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeAlreadyBeingDivested: {
-          D.Out(pdExcept,
-		"Throwing e_AttributeAlreadyBeingDivested exception.");
-          throw AttributeAlreadyBeingDivested(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeDivestitureWasNotRequested: {
-          D.Out(pdExcept,
-                "Throwing e_AttributeDivestitureWasNotRequested exception.");
-          throw AttributeDivestitureWasNotRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeAcquisitionWasNotRequested: {
-          D.Out(pdExcept,
-                "Throwing e_AttributeAcquisitionWasNotRequested exception.");
-          throw AttributeAcquisitionWasNotRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeNotDefined: {
-          D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
-          throw AttributeNotDefined(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeNotKnown: {
-          D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
-          throw AttributeNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeNotOwned: {
-          D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
-          throw AttributeNotOwned(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeNotPublished: {
-          D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
-          throw AttributeNotPublished(msg->getExceptionReason());
-      } break ;
-
-      case e_AttributeNotSubscribed: {
-          D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
-          throw AttributeNotSubscribed(msg->getExceptionReason());
-      } break ;
-
-      case e_ConcurrentAccessAttempted: {
-          D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
-          throw ConcurrentAccessAttempted(msg->getExceptionReason());
-      } break ;
-
-      case e_CouldNotDiscover: {
-          D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
-          throw CouldNotDiscover(msg->getExceptionReason());
-      } break ;
-
-      case e_CouldNotOpenRID: {
-          D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
-          throw CouldNotOpenRID(msg->getExceptionReason());
-      } break ;
-
-      case e_CouldNotRestore: {
-          D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
-          throw CouldNotRestore(msg->getExceptionReason());
-      } break ;
-
-      case e_DeletePrivilegeNotHeld: {
-          D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
-          throw DeletePrivilegeNotHeld(msg->getExceptionReason());
-      } break ;
-
-      case e_ErrorReadingRID: {
-          D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
-          throw ErrorReadingRID(msg->getExceptionReason());
-      } break ;
-
-      case e_EventNotKnown: {
-          D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
-          throw EventNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateAlreadyPaused: {
-          D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
-          throw FederateAlreadyPaused(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateAlreadyExecutionMember: {
-          D.Out(pdExcept,
-		"Throwing e_FederateAlreadyExecutionMember exception.");
-          throw FederateAlreadyExecutionMember(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateDoesNotExist: {
-          D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
-          throw FederateDoesNotExist(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateInternalError: {
-          D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
-          throw FederateInternalError(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateNameAlreadyInUse: {
-          D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
-          throw FederateNameAlreadyInUse(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateNotExecutionMember: {
-          D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
-          throw FederateNotExecutionMember(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateNotPaused: {
-          D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
-          throw FederateNotPaused(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateOwnsAttributes: {
-          D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
-          throw FederateOwnsAttributes(msg->getExceptionReason());
-      } break ;
-
-      case e_FederatesCurrentlyJoined: {
-          D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
-          throw FederatesCurrentlyJoined(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateWasNotAskedToReleaseAttribute: {
-          D.Out(pdExcept,
-                "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-          D.Out(pdDebug,
-                "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-          throw
-	      FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
-      } break ;
-
-      case e_FederationAlreadyPaused: {
-          D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
-          throw FederationAlreadyPaused(msg->getExceptionReason());
-      } break ;
-
-      case e_FederationExecutionAlreadyExists: {
-          D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
-          throw FederationExecutionAlreadyExists(msg->getExceptionReason());
-      } break ;
-
-      case e_FederationExecutionDoesNotExist: {
-          D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
-          throw FederationExecutionDoesNotExist(msg->getExceptionReason());
-      } break ;
-
-      case e_FederationNotPaused: {
-          D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
-          throw FederationNotPaused(msg->getExceptionReason());
-      } break ;
-
-      case e_FederationTimeAlreadyPassed: {
-          D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
-          throw FederationTimeAlreadyPassed(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateNotPublishing: {
-          D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
-          throw FederateNotPublishing(msg->getExceptionReason());
-      } break ;
-
-      case e_FederateNotSubscribing: {
-          D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
-          throw FederateNotSubscribing(msg->getExceptionReason());
-      } break ;
-
-      case e_RegionNotKnown: {
-          D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
-          throw RegionNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_IDsupplyExhausted: {
-          D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
-          throw IDsupplyExhausted(msg->getExceptionReason());
-      } break ;
-
-      case e_InteractionClassNotDefined: {
-          D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
-          throw InteractionClassNotDefined(msg->getExceptionReason());
-      } break ;
-
-      case e_InteractionClassNotKnown: {
-          D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
-          throw InteractionClassNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_InteractionClassNotPublished: {
-          D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
-          throw InteractionClassNotPublished(msg->getExceptionReason());
-      } break ;
-
-      case e_InteractionParameterNotDefined: {
-          D.Out(pdExcept,
-		"Throwing e_InteractionParameterNotDefined exception.");
-          throw InteractionParameterNotDefined(msg->getExceptionReason());
-      } break ;
-
-      case e_InteractionParameterNotKnown: {
-          D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
-          throw InteractionParameterNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidDivestitureCondition: {
-          D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
-          throw InvalidDivestitureCondition(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidExtents: {
-          D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
-          throw InvalidExtents(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidFederationTime: {
-          D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
-          throw InvalidFederationTime(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidFederationTimeDelta: {
-          D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
-          throw InvalidFederationTimeDelta(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidObjectHandle: {
-          D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
-          throw InvalidObjectHandle(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidOrderType: {
-          D.Out(pdExcept, "Throwing e_InvalidOrderType exception.");
-          throw InvalidOrderType(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidResignAction: {
-          D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
-          throw InvalidResignAction(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidRetractionHandle: {
-          D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
-          throw InvalidRetractionHandle(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidRoutingSpace: {
-          D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
-          throw InvalidRoutingSpace(msg->getExceptionReason());
-      } break ;
-
-      case e_InvalidTransportType: {
-          D.Out(pdExcept, "Throwing e_InvalidTransportType exception.");
-          throw InvalidTransportType(msg->getExceptionReason());
-      } break ;
-
-      case e_MemoryExhausted: {
-          D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
-          throw MemoryExhausted(msg->getExceptionReason());
-      } break ;
-
-      case e_NameNotFound: {
-          D.Out(pdExcept, "Throwing e_NameNotFound exception.");
-          throw NameNotFound(msg->getExceptionReason());
-      } break ;
-
-      case e_NoPauseRequested: {
-          D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
-          throw NoPauseRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_NoResumeRequested: {
-          D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
-          throw NoResumeRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectClassNotDefined: {
-          D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
-          throw ObjectClassNotDefined(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectClassNotKnown: {
-          D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
-          throw ObjectClassNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectClassNotPublished: {
-          D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
-          throw ObjectClassNotPublished(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectClassNotSubscribed: {
-          D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
-          throw ObjectClassNotSubscribed(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectNotKnown: {
-          D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
-          throw ObjectNotKnown(msg->getExceptionReason());
-      } break ;
-
-      case e_ObjectAlreadyRegistered: {
-          D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
-          throw ObjectAlreadyRegistered(msg->getExceptionReason());
-      } break ;
-
-      case e_RestoreInProgress: {
-          D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
-          throw RestoreInProgress(msg->getExceptionReason());
-      } break ;
-
-      case e_RestoreNotRequested: {
-          D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
-          throw RestoreNotRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_RTIinternalError: {
-          D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
-          throw RTIinternalError(msg->getExceptionReason());
-      } break ;
-
-      case e_SpaceNotDefined: {
-          D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
-          throw SpaceNotDefined(msg->getExceptionReason());
-      } break ;
-
-      case e_SaveInProgress: {
-          D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
-          throw SaveInProgress(msg->getExceptionReason());
-      } break ;
-
-      case e_SaveNotInitiated: {
-          D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
-          throw SaveNotInitiated(msg->getExceptionReason());
-      } break ;
-
-      case e_SecurityError: {
-          D.Out(pdExcept, "Throwing e_SecurityError exception.");
-          throw SecurityError(msg->getExceptionReason());
-      } break ;
-
-      case e_SpecifiedSaveLabelDoesNotExist: {
-          D.Out(pdExcept,
-		"Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
-          throw SpecifiedSaveLabelDoesNotExist(msg->getExceptionReason());
-      } break ;
-
-      case e_TimeAdvanceAlreadyInProgress: {
-          D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
-          throw TimeAdvanceAlreadyInProgress(msg->getExceptionReason());
-      } break ;
-
-      case e_TimeAdvanceWasNotInProgress: {
-          D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
-          throw TimeAdvanceWasNotInProgress(msg->getExceptionReason());
-      } break ;
-
-      case e_TooManyIDsRequested: {
-          D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
-          throw TooManyIDsRequested(msg->getExceptionReason());
-      } break ;
-
-      case e_UnableToPerformSave: {
-          D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
-          throw UnableToPerformSave(msg->getExceptionReason());
-      } break ;
-
-      case e_UnimplementedService: {
-          D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
-          throw UnimplementedService(msg->getExceptionReason());
-      } break ;
-
-      case e_UnknownLabel: {
-          D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
-          throw UnknownLabel(msg->getExceptionReason());
-      } break ;
-
-      case e_ValueCountExceeded: {
-          D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
-          throw ValueCountExceeded(msg->getExceptionReason());
-      } break ;
-
-      case e_ValueLengthExceeded: {
-          D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
-          throw ValueLengthExceeded(msg->getExceptionReason());
-      } break ;
-
-      default: {
-          D.Out(pdExcept, "Throwing unknown exception !");
-          cout << "LibRTI: Receiving unknown exception." << endl ;
-          throw RTIinternalError(msg->getExceptionReason());
-      } break ;
+    Message req, rep ;
+
+    req.type = Message::CREATE_FEDERATION_EXECUTION ;
+    req.setFederationName(executionName);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Destroy Federation Execution.
+void
+RTI::RTIambassador::destroyFederationExecution(const char *executionName)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
+	   RTI::FederationExecutionDoesNotExist, RTI::FederatesCurrentlyJoined)
+{
+    Message req, rep ;
+
+    req.type = Message::DESTROY_FEDERATION_EXECUTION ;
+    req.setFederationName(executionName);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Join Federation Execution.
+FederateHandle
+RTI::RTIambassador::joinFederationExecution(const char *yourName,
+				       const char *executionName,
+				       FederateAmbassadorPtr fedamb)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
+	   RTI::ConcurrentAccessAttempted, RTI::ErrorReadingFED, RTI::CouldNotOpenFED, 
+	   RTI::FederationExecutionDoesNotExist, RTI::FederateAlreadyExecutionMember)
+{
+    Message req, rep ;
+
+    privateRefs->fed_amb = (FederateAmbassador *) fedamb ;
+
+    req.type = Message::JOIN_FEDERATION_EXECUTION ;
+    req.setFederateName(yourName);
+    req.setFederationName(executionName);
+
+    privateRefs->executeService(&req, &rep);
+    return rep.getFederate();
+}
+
+// ----------------------------------------------------------------------------
+//! Resign Federation Execution.
+void
+RTI::RTIambassador::resignFederationExecution(ResignAction theAction)
+    throw (FederateOwnsAttributes,
+           FederateNotExecutionMember,
+           InvalidResignAction,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::RESIGN_FEDERATION_EXECUTION ;
+    req.setResignAction(theAction);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Register Federation Synchronization Point
+void
+RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
+                                                      const char *the_tag)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+    req.setLabel(label);
+    req.setTag(the_tag);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
+						      const char *theTag,
+						      const FederateHandleSet &)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+    req.setLabel(label);
+    req.setTag(theTag);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Synchronization Point Achieved
+void
+RTI::RTIambassador::synchronizationPointAchieved(const char *label)
+    throw (SynchronizationPointLabelWasNotAnnounced,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::SYNCHRONIZATION_POINT_ACHIEVED ;
+    req.setLabel(label);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Request Federation Save.
+void
+RTI::RTIambassador::requestFederationSave(const char *label,
+                                     const FedTime& theTime)
+    throw (FederationTimeAlreadyPassed,
+           InvalidFederationTime,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REQUEST_FEDERATION_SAVE ;
+    req.setFedTime(theTime);
+    req.setLabel(label);
+    req.setBoolean(true);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Request Federation Save.
+void
+RTI::RTIambassador::requestFederationSave(const char *label)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REQUEST_FEDERATION_SAVE ;
+    req.setLabel(label);
+    req.setBoolean(false);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Federate Save Begun.
+void
+RTI::RTIambassador::federateSaveBegun()
+    throw (SaveNotInitiated,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::FEDERATE_SAVE_BEGUN ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Federate Save Complete.
+void
+RTI::RTIambassador::federateSaveComplete()
+    throw (SaveNotInitiated,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::FEDERATE_SAVE_COMPLETE ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Federate Save Not Complete.
+void
+RTI::RTIambassador::federateSaveNotComplete()
+    throw (SaveNotInitiated,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::FEDERATE_SAVE_NOT_COMPLETE ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Request Restore.
+void
+RTI::RTIambassador::requestFederationRestore(const char *label)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REQUEST_FEDERATION_RESTORE ;
+    req.setLabel(label);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Restore Complete.
+void
+RTI::RTIambassador::federateRestoreComplete()
+    throw (RTI::RTIinternalError, RTI::SaveInProgress,
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember,
+	   RTI::RestoreNotRequested)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::FEDERATE_RESTORE_COMPLETE ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! Federate Restore Not Complete.
+void
+RTI::RTIambassador::federateRestoreNotComplete()
+    throw (RTI::RTIinternalError, RTI::SaveInProgress,
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember,
+	   RTI::RestoreNotRequested)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::FEDERATE_RESTORE_NOT_COMPLETE ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Publish Object Class
+void
+RTI::RTIambassador::publishObjectClass(ObjectClassHandle theClass,
+                                  const AttributeHandleSet& attributeList)
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::OwnershipAcquisitionPending, 
+	   RTI::AttributeNotDefined, RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::PUBLISH_OBJECT_CLASS ;
+    req.setObjectClass(theClass);
+    req.setAHS(attributeList);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// UnPublish Object Class
+void
+RTI::RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::OwnershipAcquisitionPending, RTI::ObjectClassNotPublished, 
+	   RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::UNPUBLISH_OBJECT_CLASS ;
+    req.setObjectClass(theClass);
+    privateRefs->executeService(&req, &rep);
+}
+
+
+// ----------------------------------------------------------------------------
+// Publish Interaction Class
+void
+RTI::RTIambassador::publishInteractionClass(InteractionClassHandle theInteraction)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::PUBLISH_INTERACTION_CLASS ;
+    req.setInteractionClass(theInteraction);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Publish Interaction Class
+void
+RTI::RTIambassador::unpublishInteractionClass(InteractionClassHandle theInteraction)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InteractionClassNotPublished, RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::UNPUBLISH_INTERACTION_CLASS ;
+    req.setInteractionClass(theInteraction);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Subscribe Object Class Attributes
+void
+RTI::RTIambassador::
+subscribeObjectClassAttributes(ObjectClassHandle theClass,
+                               const AttributeHandleSet& attributeList,
+                               RTI::Boolean active)
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
+	   RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
+    req.setObjectClass(theClass);
+    req.setAHS(attributeList);
+    req.setBoolean(active);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// UnSubscribe Object Class Attribute
+void
+RTI::RTIambassador::unsubscribeObjectClass(ObjectClassHandle theClass)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::ObjectClassNotSubscribed, RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::UNSUBSCRIBE_OBJECT_CLASS ;
+    req.setObjectClass(theClass);
+    privateRefs->executeService(&req, &rep);
+}
+
+
+// ----------------------------------------------------------------------------
+// Subscribe Interaction Class
+void
+RTI::RTIambassador::subscribeInteractionClass(InteractionClassHandle theClass,
+                                         RTI::Boolean /*active*/)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::FederateLoggingServiceCalls, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::SUBSCRIBE_INTERACTION_CLASS ;
+    req.setInteractionClass(theClass);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// UnSubscribe Interaction Class
+void
+RTI::RTIambassador::unsubscribeInteractionClass(InteractionClassHandle theClass)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InteractionClassNotSubscribed, RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::UNSUBSCRIBE_INTERACTION_CLASS ;
+    req.setInteractionClass(theClass);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Register Object
+ObjectHandle
+RTI::RTIambassador::registerObjectInstance(ObjectClassHandle theClass,
+                                      const char *theObjectName)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::ObjectAlreadyRegistered, 
+	   RTI::ObjectClassNotPublished, RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::REGISTER_OBJECT_INSTANCE ;
+    req.setName(theObjectName);
+    req.setObjectClass(theClass);
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getObject();
+}
+
+// ----------------------------------------------------------------------------
+ObjectHandle
+RTI::RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::ObjectClassNotPublished, RTI::ObjectClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::REGISTER_OBJECT_INSTANCE ;
+    req.setName("\0");
+    req.setObjectClass(theClass);
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getObject();
+}
+
+// ----------------------------------------------------------------------------
+// Update Attribute Values
+EventRetractionHandle
+RTI::RTIambassador::
+updateAttributeValues(ObjectHandle theObject,
+                      const AttributeHandleValuePairSet& theAttributes,
+                      const FedTime& theTime,
+                      const char *theTag)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           InvalidFederationTime,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
+    req.setObject(theObject);
+    req.setFedTime(theTime);
+    req.setTag(theTag);
+    req.setAHVPS(theAttributes);
+    req.setBoolean(true);
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getEventRetraction();
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
+                                     const AttributeHandleValuePairSet& attrs,
+                                     const char *the_tag)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::AttributeNotOwned, RTI::AttributeNotDefined, RTI::ObjectNotKnown)
+{
+    throw UnimplementedService("");
+
+    Message req, rep ;
+
+    req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
+    req.setObject(the_object);
+    req.setTag(the_tag);
+    req.setAHVPS(attrs);
+    req.setBoolean(false);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Send Interaction
+EventRetractionHandle
+RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
+                               const ParameterHandleValuePairSet& theParameters,
+                               const FedTime& theTime,
+                               const char *theTag)
+    throw (InteractionClassNotDefined,
+           InteractionClassNotPublished,
+           InteractionParameterNotDefined,
+           InvalidFederationTime,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::SEND_INTERACTION ;
+    req.setInteractionClass(theInteraction);
+    req.setFedTime(theTime);
+    req.setTag(theTag);
+    req.setPHVPS(theParameters);
+    req.setRegion(0);
+    req.setBoolean(true);
+    
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getEventRetraction();
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
+                               const ParameterHandleValuePairSet &parameters,
+                               const char *the_tag)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InteractionParameterNotDefined, RTI::InteractionClassNotPublished, 
+	   RTI::InteractionClassNotDefined)
+{
+    throw UnimplementedService("");
+
+    Message req, rep ;
+
+    req.type = Message::SEND_INTERACTION ;
+    req.setInteractionClass(the_interaction);
+    req.setTag(the_tag);
+    req.setPHVPS(parameters);
+    req.setRegion(0);
+    req.setBoolean(false);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Delete Object
+EventRetractionHandle
+RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
+                                    const FedTime& theTime,
+                                    const char *theTag)
+    throw (ObjectNotKnown,
+           DeletePrivilegeNotHeld,
+           InvalidFederationTime,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::DELETE_OBJECT_INSTANCE ;
+    req.setObject(theObject);
+    req.setFedTime(theTime);
+    req.setTag(theTag);
+
+    privateRefs->executeService(&req, &rep);
+    return rep.getEventRetraction();
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
+                                    const char *theTag)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::DeletePrivilegeNotHeld, RTI::ObjectNotKnown)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::DELETE_OBJECT_INSTANCE ;
+    req.setObject(theObject);
+    req.setTag(theTag);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Local Delete Object Instance
+void
+RTI::RTIambassador::localDeleteObjectInstance(ObjectHandle theObject)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::FederateOwnsAttributes, RTI::ObjectNotKnown)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::LOCAL_DELETE_OBJECT_INSTANCE ;
+    req.setObject(theObject);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+
+// ----------------------------------------------------------------------------
+// Change Attribute Transportation Type
+void
+RTI::RTIambassador::
+changeAttributeTransportationType(ObjectHandle theObject,
+                                  const AttributeHandleSet& theAttributes,
+                                  TransportationHandle theType)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InvalidTransportationHandle, RTI::AttributeNotOwned, 
+	   RTI::AttributeNotDefined, RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+
+    req.type = Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
+    req.setObject(theObject);
+    req.setTransportation(theType);
+    req.setAHS(theAttributes);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Change Interaction Transportation Type
+void
+RTI::RTIambassador::
+changeInteractionTransportationType(InteractionClassHandle theClass,
+                                    TransportationHandle theType)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::InvalidTransportationHandle, 
+	   RTI::InteractionClassNotPublished, RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::CHANGE_INTERACTION_TRANSPORTATION_TYPE ;
+    req.setInteractionClass(theClass);
+    req.setTransportation(theType);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Request Attribute Value Update
+void
+RTI::RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
+                                                 const AttributeHandleSet &ahs)
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
+	   RTI::ObjectNotKnown)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
+    req.setObject(theObject);
+    req.setAHS(ahs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
+                                                const AttributeHandleSet &attrs)
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
+	   RTI::ObjectClassNotDefined)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+
+    req.type = Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
+    req.setObjectClass(theClass);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// UnConditional Attribute Ownership Divestiture
+void
+RTI::RTIambassador::
+unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
+                                           const AttributeHandleSet &attrs)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.setObject(theObject);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Negotiated Attribute Ownership Divestiture
+void
+RTI::RTIambassador::
+negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
+                                        const AttributeHandleSet& attrs,
+                                        const char *theTag)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           AttributeAlreadyBeingDivested,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.setObject(theObject);
+    req.setTag(theTag);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Attribute Ownership Acquisition
+void
+RTI::RTIambassador::
+attributeOwnershipAcquisition(ObjectHandle theObject,
+                              const AttributeHandleSet& desiredAttributes,
+                              const char *theTag)
+    throw (ObjectNotKnown,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           FederateOwnsAttributes,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.setObject(theObject);
+    req.setTag(theTag);
+    req.setAHS(desiredAttributes);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Attribute Ownership Release Response
+AttributeHandleSet*
+RTI::RTIambassador::
+attributeOwnershipReleaseResponse(ObjectHandle theObject,
+                                  const AttributeHandleSet& attrs)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           FederateWasNotAskedToReleaseAttribute,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
+    req.setObject(theObject);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+
+    if (rep.getExceptionType() == e_NO_EXCEPTION) {
+        return rep.getAHS();
+    }
+
+    return NULL ;
+}
+
+// ----------------------------------------------------------------------------
+// Cancel Negotiated Attribute Ownership Divestiture
+void
+RTI::RTIambassador::
+cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
+                                              const AttributeHandleSet& attrs)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           AttributeDivestitureWasNotRequested,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
+    req.setObject(theObject);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Cancel Attribute Ownership Acquisition
+void
+RTI::RTIambassador::
+cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
+                                    const AttributeHandleSet& attrs)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeAlreadyOwned,
+           AttributeAcquisitionWasNotRequested,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
+    req.setObject(theObject);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Attribute Ownership Acquisition If Available
+void
+RTI::RTIambassador::
+attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
+                                         const AttributeHandleSet& desired)
+    throw (ObjectNotKnown,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           FederateOwnsAttributes,
+           AttributeAlreadyBeingAcquired,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
+    req.setObject(theObject);
+    req.setAHS(desired);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Query Attribute Ownership
+void
+RTI::RTIambassador::
+queryAttributeOwnership(ObjectHandle theObject,
+                        AttributeHandle theAttribute)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
+	   RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+
+    req.type = Message::QUERY_ATTRIBUTE_OWNERSHIP ;
+    req.setObject(theObject);
+    req.setAttribute(theAttribute);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// 5.16 Is Attribute Owned By Federate
+RTI::Boolean
+RTI::RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
+                                          AttributeHandle theAttribute)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
+    req.setObject(theObject);
+    req.setAttribute(theAttribute);
+
+    privateRefs->executeService(&req, &rep);
+
+    return ((strcmp(rep.getTag(), "RTI_TRUE") == 0) ? RTI_TRUE : RTI_FALSE);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Time Regulation
+void
+RTI::RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
+                                    const FedTime& /*theLookahead*/)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::FederateNotExecutionMember, 
+	   RTI::ConcurrentAccessAttempted, RTI::InvalidLookahead, 
+	   RTI::InvalidFederationTime, RTI::TimeAdvanceAlreadyInProgress, 
+	   RTI::EnableTimeRegulationPending, RTI::TimeRegulationAlreadyEnabled)
+{
+    Message req, rep ;
+    req.type = Message::ENABLE_TIME_REGULATION ;
+    req.setBoolean(true);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Time Regulation
+void
+RTI::RTIambassador::disableTimeRegulation()
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::FederateNotExecutionMember, RTI::ConcurrentAccessAttempted, 
+	   RTI::TimeRegulationWasNotEnabled)
+{
+    Message req, rep ;
+    req.type = Message::DISABLE_TIME_REGULATION ;
+    req.setBoolean(false);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Time Constrained
+void
+RTI::RTIambassador::enableTimeConstrained()
+    throw (TimeConstrainedAlreadyEnabled, //not implemented
+           EnableTimeConstrainedPending, //not implemented
+           TimeAdvanceAlreadyInProgress, //not implemented
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::ENABLE_TIME_CONSTRAINED ;
+    req.setBoolean(true);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Time Constrained
+void
+RTI::RTIambassador::disableTimeConstrained()
+    throw (TimeConstrainedWasNotEnabled, //not implemented
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::DISABLE_TIME_CONSTRAINED ;
+    req.setBoolean(false);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Time Advance Request
+void
+RTI::RTIambassador::timeAdvanceRequest(const FedTime& theTime)
+    throw (TimeAdvanceAlreadyInProgress,
+           FederationTimeAlreadyPassed,
+           InvalidFederationTime,
+           EnableTimeRegulationPending, //not implemented
+           EnableTimeConstrainedPending, //not implemented
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::TIME_ADVANCE_REQUEST ;
+    req.setFedTime(theTime);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Time Advance Request Available
+void
+RTI::RTIambassador::timeAdvanceRequestAvailable(const FedTime& theTime)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::EnableTimeConstrainedPending, RTI::EnableTimeRegulationPending, 
+	   RTI::TimeAdvanceAlreadyInProgress, RTI::FederationTimeAlreadyPassed, 
+	   RTI::InvalidFederationTime)
+{
+    throw RTIinternalError("Unimplemented Service");
+
+    Message req, rep ;
+
+    req.type = Message::TIME_ADVANCE_REQUEST_AVAILABLE ;
+    req.setFedTime(theTime);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Next Event Request
+void
+RTI::RTIambassador::nextEventRequest(const FedTime& theTime)
+    throw (TimeAdvanceAlreadyInProgress,
+           FederationTimeAlreadyPassed,
+           InvalidFederationTime,
+           EnableTimeRegulationPending, //not implemented
+           EnableTimeConstrainedPending, //not implemented
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::NEXT_EVENT_REQUEST ;
+    req.setFedTime(theTime);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Next Event Request Available
+void
+RTI::RTIambassador::nextEventRequestAvailable(const FedTime& theTime)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::EnableTimeConstrainedPending, RTI::EnableTimeRegulationPending, 
+	   RTI::TimeAdvanceAlreadyInProgress, RTI::FederationTimeAlreadyPassed, 
+	   RTI::InvalidFederationTime)
+{
+    throw RTI::RTIinternalError("Unimplemented Service");
+    Message req, rep ;
+
+    req.type = Message::NEXT_EVENT_REQUEST ;
+    req.setFedTime(theTime);
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Flush Queue Request
+void
+RTI::RTIambassador::flushQueueRequest(const FedTime& theTime)
+    throw (TimeAdvanceAlreadyInProgress,
+           FederationTimeAlreadyPassed,
+           InvalidFederationTime,
+           EnableTimeRegulationPending, //not implemented
+           EnableTimeConstrainedPending, //not implemented
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    throw RTIinternalError("Unimplemented Service");
+    Message req, rep ;
+
+    req.type = Message::FLUSH_QUEUE_REQUEST ;
+    req.setFedTime(theTime);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Asynchronous Delivery
+void
+RTI::RTIambassador::enableAsynchronousDelivery()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::AsynchronousDeliveryAlreadyEnabled)
+{
+    throw RTIinternalError("Unimplemented Service");
+    Message req, rep ;
+
+    req.type = Message::ENABLE_ASYNCHRONOUS_DELIVERY ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Asynchronous Delivery
+void
+RTI::RTIambassador::disableAsynchronousDelivery()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::AsynchronousDeliveryAlreadyDisabled)
+{
+    throw RTIinternalError("Unimplemented Service");
+    Message req, rep ;
+
+    req.type = Message::DISABLE_ASYNCHRONOUS_DELIVERY ;
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Query LBTS
+void
+RTI::RTIambassador::queryLBTS(FedTime& theTime)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::QUERY_LBTS ;
+    privateRefs->executeService(&req, &rep);
+
+    theTime = rep.getFedTime();
+}
+
+// ----------------------------------------------------------------------------
+// Query Federate Time
+void
+RTI::RTIambassador::queryFederateTime(FedTime& theTime)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::QUERY_FEDERATE_TIME ;
+    privateRefs->executeService(&req, &rep);
+
+    theTime = rep.getFedTime();
+}
+
+// ----------------------------------------------------------------------------
+// Query Minimum Next Event Time
+void
+RTI::RTIambassador::queryMinNextEventTime(FedTime& theTime)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    theTime = RTIfedTime(0.0);
+}
+
+// ----------------------------------------------------------------------------
+// Modify Lookahead
+void
+RTI::RTIambassador::modifyLookahead(const FedTime& theLookahead)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InvalidLookahead)
+{
+    Message req, rep ;
+
+    req.type = Message::MODIFY_LOOKAHEAD ;
+    req.setLookahead(theLookahead);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Query Lookahead
+void
+RTI::RTIambassador::queryLookahead(FedTime &theTime)
+    throw (FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::QUERY_LOOKAHEAD ;
+    privateRefs->executeService(&req, &rep);
+
+    try { 
+        RTIfedTime &ret = dynamic_cast<RTIfedTime&>(theTime); 
+        ret = RTIfedTime((Double) rep.getFederationTimeDelta());
+    }
+    catch (std::bad_cast) {
+	throw RTIinternalError("theTime is not a RTIfedTime object");
     }
 }
 
-} // namespace certi
+// ----------------------------------------------------------------------------
+// Retract
+void
+RTI::RTIambassador::retract(EventRetractionHandle handle)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::InvalidRetractionHandle)
+{
+    throw RTIinternalError("Unimplemented Service");
+    Message req, rep ;
 
-// $Id: RTIambassador.cc,v 3.36 2004/03/04 20:19:05 breholee Exp $
+    req.type = Message::RETRACT ;
+    req.setEventRetraction(handle);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Change Attribute Order Type
+void
+RTI::RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
+                                        const AttributeHandleSet& attrs,
+                                        OrderingHandle theType)
+    throw (RTI::RTIinternalError, 
+	   RTI::RestoreInProgress, RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::InvalidOrderingHandle, 
+	   RTI::AttributeNotOwned, RTI::AttributeNotDefined, RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+
+    req.type = Message::CHANGE_ATTRIBUTE_ORDER_TYPE ;
+    req.setObject(theObject);
+    req.setOrdering(theType);
+    req.setAHS(attrs);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Change Interaction Order Type
+void
+RTI::RTIambassador::changeInteractionOrderType(InteractionClassHandle theClass,
+                                          OrderingHandle theType)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
+	   RTI::SaveInProgress, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::InvalidOrderingHandle, 
+	   RTI::InteractionClassNotPublished, RTI::InteractionClassNotDefined)
+{
+    Message req, rep ;
+
+    req.type = Message::CHANGE_INTERACTION_ORDER_TYPE ;
+    req.setInteractionClass(theClass);
+    req.setOrdering(theType);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+/** Create a routing region for data distribution management.
+    \param space The space handle of the region
+    \param nb_extents The number of extents
+    \return A Region object, associated with the created region
+ */
+RTI::Region *
+RTI::RTIambassador::createRegion(SpaceHandle space, ULong nb_extents)
+    throw (SpaceNotDefined,
+           InvalidExtents,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.setType(Message::DDM_CREATE_REGION);
+    req.setSpace(space);
+    req.setNumber(nb_extents);
+    privateRefs->executeService(&req, &rep);
+    Region *region = new FedRegion(rep.getRegion(), space,
+				   std::vector<Extent>(nb_extents,
+						       Extent(rep.getNumber())));
+
+    assert(region->getNumberOfExtents() == nb_extents);
+    return region ;
+}
+
+// ----------------------------------------------------------------------------
+/** Notify about region modification. Applies the changes done through
+    the region services to the RTI.
+    \param r The region to commit to the RTI
+ */
+void
+RTI::RTIambassador::notifyAboutRegionModification(Region &r)
+    throw (RegionNotKnown,
+           InvalidExtents,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    try {
+	FedRegion &region = dynamic_cast<FedRegion &>(r);
+	D[pdDebug] << "Notify About Region " << region.getHandle()
+		   << " Modification" << endl ;
+	Message req, rep ;
+	
+	req.setType(Message::DDM_MODIFY_REGION);
+	req.setRegion(region.getHandle());
+	req.setExtents(region.getExtents());
+	
+	privateRefs->executeService(&req, &rep);
+	region.commit();
+    }
+    catch (std::bad_cast) {
+	throw RegionNotKnown("");
+    }
+    catch (Exception &e) {
+	throw ;
+    }
+}
+
+// ----------------------------------------------------------------------------
+/** Delete region. Correctly destroys the region (through the RTI).
+    \attention Always use this function to destroy a region. Do NOT
+    use the C++ delete operator.
+ */
+void
+RTI::RTIambassador::deleteRegion(Region *region)
+    throw (RegionNotKnown,
+           RegionInUse,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    if (region == 0) {
+        throw RegionNotKnown("");
+    }
+
+    Message req, rep ;
+
+    req.setType(Message::DDM_DELETE_REGION);
+    try {
+	req.setRegion(dynamic_cast<FedRegion *>(region)->getHandle());
+    }
+    catch (std::bad_cast) {
+	throw RegionNotKnown("");
+    }
+    privateRefs->executeService(&req, &rep);
+
+    delete region ;
+}
+
+// ----------------------------------------------------------------------------
+// Register Object Instance With Region
+ObjectHandle
+RTI::RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
+                                                const char *tag,
+                                                AttributeHandle attrs[],
+                                                Region *regions[],
+                                                ULong nb)
+    throw (ObjectClassNotDefined,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           RegionNotKnown,
+           InvalidRegionContext,
+           ObjectAlreadyRegistered,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.setType(Message::DDM_REGISTER_OBJECT);
+    req.setObjectClass(object_class);
+    req.setTag(tag);
+    req.setAHS(attrs, nb);
+    req.setRegions(build_region_handles(regions, nb));
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getObject();
+}
+
+// ----------------------------------------------------------------------------
+ObjectHandle
+RTI::RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_class,
+                                                AttributeHandle attrs[],
+                                                Region *regions[],
+                                                ULong nb)
+    throw (ObjectClassNotDefined,
+           ObjectClassNotPublished,
+           AttributeNotDefined,
+           AttributeNotPublished,
+           RegionNotKnown,
+           InvalidRegionContext,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.setType(Message::DDM_REGISTER_OBJECT);
+    req.setObjectClass(object_class);
+    req.setAHS(attrs, nb);
+    req.setRegions(build_region_handles(regions, nb));
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getObject();
+}
+
+// ----------------------------------------------------------------------------
+/** Associate region for updates. Make attributes of an object
+    be updated through a routing region.
+    @param region Region to use for updates
+    @param object Object to associate to the region
+    @param attributes Handles of the involved attributes
+    @sa unassociateRegionForUpdates
+*/
+void
+RTI::RTIambassador::associateRegionForUpdates(Region &region,
+                                         ObjectHandle object,
+                                         const AttributeHandleSet &attributes)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           InvalidRegionContext,
+           RegionNotKnown,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    D[pdDebug] << "+ Associate Region for Updates" << endl ;
+
+    Message req, rep ;
+    
+    req.type = Message::DDM_ASSOCIATE_REGION ;
+    req.setObject(object);
+    req.setRegion(get_handle(region));
+    req.setAHS(attributes);
+
+    privateRefs->executeService(&req, &rep);
+    D[pdDebug] << "- Associate Region for Updates" << endl ;
+}
+
+// ----------------------------------------------------------------------------
+/** Unassociate region for updates. Make attributes of an object be updated
+    through the default region (ie. Declaration Management services)
+    @param region Region to unassociate
+    @param object Object to unassociate
+    @see associateRegionForUpdates
+ */
+void
+RTI::RTIambassador::unassociateRegionForUpdates(Region &region,
+                                           ObjectHandle object)
+    throw (ObjectNotKnown,
+           InvalidRegionContext,
+           RegionNotKnown,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    D[pdDebug] << "+ Unassociate Region for Updates" << endl ;
+    Message req, rep ;
+
+    req.type = Message::DDM_UNASSOCIATE_REGION ;
+    req.setObject(object);
+    req.setRegion(get_handle(region));
+
+    privateRefs->executeService(&req, &rep);
+    D[pdDebug] << "- Unassociate Region for Updates" << endl ;
+}
+
+// ----------------------------------------------------------------------------
+/** Subscribe object class attributes with region.
+    @param handle Object class handle
+    @param region Region to subscribe with
+    @param attributes Attributes involved in the subscription
+    @sa unsubscribeObjectClassWithRegion
+ */
+void
+RTI::RTIambassador::subscribeObjectClassAttributesWithRegion(
+    ObjectClassHandle object_class,
+    Region &region,
+    const AttributeHandleSet &attributes,
+    Boolean passive)
+    throw (ObjectClassNotDefined,
+           AttributeNotDefined,
+           RegionNotKnown,
+           InvalidRegionContext,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    D[pdDebug] << "+ Subscribe Object Class Attributes with Region" << endl ;
+    Message req, rep ;
+
+    req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
+    req.setObjectClass(object_class);
+    req.setRegion(get_handle(region));
+    req.setAHS(attributes);
+    req.setBoolean(passive);
+
+    privateRefs->executeService(&req, &rep);
+    D[pdDebug] << "- Subscribe Object Class Attributes with Region" << endl ;
+}
+
+// ----------------------------------------------------------------------------
+/** Unsubscribe object class attributes with region.
+    @param handle Object Class handle
+    @param region Region to unsubscribe with
+    @sa subscribeObjectClassAttributesWithRegion
+ */
+void
+RTI::RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_class,
+                                                Region &region)
+    throw (ObjectClassNotDefined,
+           RegionNotKnown,
+           ObjectClassNotSubscribed,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    D[pdDebug] << "+ Unsubscribe Object Class " << object_class
+	       << " with Region" << endl ;
+    Message req, rep ;
+
+    req.type = Message::DDM_UNSUBSCRIBE_ATTRIBUTES ;
+    req.setObjectClass(object_class);
+    req.setRegion(get_handle(region));
+
+    privateRefs->executeService(&req, &rep);
+    D[pdDebug] << "- Unsubscribe Object Class with Region" << endl ;
+}
+
+// ----------------------------------------------------------------------------
+// Subscribe Interaction Class With Region
+void
+RTI::RTIambassador::subscribeInteractionClassWithRegion(InteractionClassHandle ic,
+                                                   Region &region,
+                                                   RTI::Boolean passive)
+    throw (InteractionClassNotDefined,
+           RegionNotKnown,
+           InvalidRegionContext,
+           FederateLoggingServiceCalls,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::DDM_SUBSCRIBE_INTERACTION ;
+    req.setInteractionClass(ic);
+    req.setRegion(get_handle(region));
+    req.setBoolean(passive);
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// UnSubscribe Interaction Class With Region
+void
+RTI::RTIambassador::unsubscribeInteractionClassWithRegion(InteractionClassHandle ic,
+                                                     Region &region)
+    throw (InteractionClassNotDefined,
+           InteractionClassNotSubscribed,
+           RegionNotKnown,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::DDM_UNSUBSCRIBE_INTERACTION ;
+    req.setInteractionClass(ic);
+    req.setRegion(get_handle(region));
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Send Interaction With Region
+EventRetractionHandle
+RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
+                                         const ParameterHandleValuePairSet &par,
+                                         const FedTime &time,
+                                         const char *tag,
+                                         const Region &region)
+    throw (InteractionClassNotDefined,
+           InteractionClassNotPublished,
+           InteractionParameterNotDefined,
+           InvalidFederationTime,
+           RegionNotKnown,
+           InvalidRegionContext,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.setType(Message::SEND_INTERACTION);
+    req.setInteractionClass(interaction);
+    req.setPHVPS(par);
+    req.setFedTime(time);
+    req.setTag(tag);
+    req.setRegion(get_handle(region));
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getEventRetraction();
+}
+
+// ----------------------------------------------------------------------------
+void
+RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction,
+                                         const ParameterHandleValuePairSet &par,
+                                         const char *tag,
+                                         const Region &region)
+    throw (InteractionClassNotDefined,
+           InteractionClassNotPublished,
+           InteractionParameterNotDefined,
+           RegionNotKnown,
+           InvalidRegionContext,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.setType(Message::SEND_INTERACTION);
+    req.setInteractionClass(interaction);
+    req.setPHVPS(par);
+    req.setTag(tag);
+    req.setRegion(get_handle(region));
+
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Request Class Attribute Value Update With Region
+void RTI::RTIambassador::
+requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
+                                           const AttributeHandleSet &attrs,
+                                           const Region &region)
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
+	   RTI::RegionNotKnown, RTI::AttributeNotDefined, RTI::ObjectClassNotDefined)
+{
+    throw UnimplementedService("");
+
+    Message req, rep ;
+    req.setType(Message::DDM_REQUEST_UPDATE);
+    req.setAHS(attrs);
+    req.setRegion(get_handle(region));
+    privateRefs->executeService(&req, &rep);    
+}
+
+// ----------------------------------------------------------------------------
+/** Get object class handle
+    \param theName Name of the object class
+ */
+ObjectClassHandle
+RTI::RTIambassador::getObjectClassHandle(const char *theName)
+    throw (NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_OBJECT_CLASS_HANDLE ;
+    req.setName(theName);
+    privateRefs->executeService(&req, &rep);
+    return rep.getObjectClass();
+}
+
+// ----------------------------------------------------------------------------
+/** Get object class name.
+    \param handle Handle of the object class
+    \return The class name associated with the handle, memory has to
+    be freed by the caller.
+*/
+char *
+RTI::RTIambassador::getObjectClassName(ObjectClassHandle handle)
+    throw (ObjectClassNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_OBJECT_CLASS_NAME ;
+    req.setObjectClass(handle);
+    privateRefs->executeService(&req, &rep);
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+/** Get attribute handle.
+    \param theName Name of the attribute
+    \param whichClass Handle of the attribute's class
+ */
+AttributeHandle
+RTI::RTIambassador::getAttributeHandle(const char *theName,
+                                  ObjectClassHandle whichClass)
+    throw (ObjectClassNotDefined,
+           NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+
+{
+    Message req, rep ;
+    req.type = Message::GET_ATTRIBUTE_HANDLE ;
+    req.setName(theName);
+    req.setObjectClass(whichClass);
+    privateRefs->executeService(&req, &rep);
+    return rep.getAttribute();
+}
+
+// ----------------------------------------------------------------------------
+/** Get attribute name.
+    \param theHandle Handle of the attribute
+    \param whichClass Handle of the attribute's class
+ */
+
+char *
+RTI::RTIambassador::getAttributeName(AttributeHandle theHandle,
+                                ObjectClassHandle whichClass)
+    throw (ObjectClassNotDefined,
+           AttributeNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_ATTRIBUTE_NAME ;
+    req.setAttribute(theHandle);
+    req.setObjectClass(whichClass);
+    privateRefs->executeService(&req, &rep);
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+// Get Interaction Class Handle
+InteractionClassHandle
+RTI::RTIambassador::getInteractionClassHandle(const char *theName)
+    throw (NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_INTERACTION_CLASS_HANDLE ;
+    req.setName(theName);
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getInteractionClass();
+}
+
+// ----------------------------------------------------------------------------
+// Get Interaction Class Name
+char *
+RTI::RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
+    throw (InteractionClassNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_INTERACTION_CLASS_NAME ;
+    req.setInteractionClass(theHandle);
+
+    privateRefs->executeService(&req, &rep);
+
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+// Get Parameter Handle
+ParameterHandle
+RTI::RTIambassador::getParameterHandle(const char *theName,
+                                  InteractionClassHandle whichClass)
+    throw (InteractionClassNotDefined,
+           NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_PARAMETER_HANDLE ;
+    req.setName(theName);
+    req.setInteractionClass(whichClass);
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getParameter();
+}
+
+// ----------------------------------------------------------------------------
+// Get Parameter Name
+char *
+RTI::RTIambassador::getParameterName(ParameterHandle theHandle,
+                                InteractionClassHandle whichClass)
+    throw (InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_PARAMETER_NAME ;
+    req.setParameter(theHandle);
+    req.setInteractionClass(whichClass);
+
+    privateRefs->executeService(&req, &rep);
+
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+// Get Object Instance Handle
+ObjectHandle
+RTI::RTIambassador::getObjectInstanceHandle(const char *theName)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+   RTI::FederateNotExecutionMember, RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_OBJECT_INSTANCE_HANDLE ;
+    req.setName(theName);
+
+    privateRefs->executeService(&req, &rep);
+
+    return rep.getObject();
+}
+
+// ----------------------------------------------------------------------------
+// Get Object Instance Name
+char *
+RTI::RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+
+    req.type = Message::GET_OBJECT_INSTANCE_NAME ;
+    req.setObject(theHandle);
+
+    privateRefs->executeService(&req, &rep);
+
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+/** Get routing space handle
+    \param rs_name Name of the routing space
+ */
+SpaceHandle
+RTI::RTIambassador::getRoutingSpaceHandle(const char *rs_name)
+    throw (NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    D[pdDebug] << "Get routing space handle: " << rs_name << endl ;
+    Message req, rep ;
+    req.type = Message::GET_SPACE_HANDLE ;
+    req.setName(rs_name);
+    privateRefs->executeService(&req, &rep);
+    return rep.getSpace();
+}
+
+// ----------------------------------------------------------------------------
+/** Get routing space name
+    \param handle Handle of the routing space
+ */
+char *
+RTI::RTIambassador::getRoutingSpaceName(SpaceHandle handle)
+    throw (SpaceNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_SPACE_NAME ;
+    req.setSpace(handle);
+    privateRefs->executeService(&req, &rep);
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+/** Get dimension handle
+    \parameter dimension Name of the dimension
+    \parameter space The dimension's routing space handle
+ */
+DimensionHandle
+RTI::RTIambassador::getDimensionHandle(const char *dimension,
+                                  SpaceHandle space)
+    throw (SpaceNotDefined,
+           NameNotFound,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_DIMENSION_HANDLE ;
+    req.setName(dimension);
+    req.setSpace(space);
+    privateRefs->executeService(&req, &rep);
+    return rep.getDimension();
+}
+
+// ----------------------------------------------------------------------------
+/** Get dimension name
+    \param dimension Handle of the dimension
+    \param space The dimension's routing space handle
+ */
+char *
+RTI::RTIambassador::getDimensionName(DimensionHandle dimension,
+                                SpaceHandle space)
+    throw (SpaceNotDefined,
+           DimensionNotDefined,
+           FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_DIMENSION_NAME ;
+    req.setDimension(dimension);
+    req.setSpace(space);
+    privateRefs->executeService(&req, &rep);
+    return strdup(rep.getName());
+}
+
+// ----------------------------------------------------------------------------
+/** Get attribute routing space handle
+    \param attribute The attribute handle
+    \param object_class The attribute's class handle
+    \return The associated routing space handle
+ */
+SpaceHandle
+RTI::RTIambassador::getAttributeRoutingSpaceHandle(AttributeHandle attribute,
+                                              ObjectClassHandle object_class)
+    throw (ObjectClassNotDefined,
+	   AttributeNotDefined,
+           FederateNotExecutionMember,
+	   ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_ATTRIBUTE_SPACE_HANDLE ;
+    req.setAttribute(attribute);
+    req.setObjectClass(object_class);
+    privateRefs->executeService(&req, &rep);
+    return rep.getSpace();
+}
+
+// ----------------------------------------------------------------------------
+// Get Object Class
+ObjectClassHandle
+RTI::RTIambassador::getObjectClass(ObjectHandle theObject)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::ObjectNotKnown)
+{
+    Message req, rep ;
+    req.type = Message::GET_OBJECT_CLASS ;
+    req.setObject(theObject);
+    privateRefs->executeService(&req, &rep);
+    return rep.getObjectClass();
+}
+
+// ----------------------------------------------------------------------------
+/** Get interaction routing space handle
+    \param inter The interaction handle
+    \return The associated routing space
+ */
+SpaceHandle
+RTI::RTIambassador::getInteractionRoutingSpaceHandle(InteractionClassHandle inter)
+    throw (InteractionClassNotDefined,
+	   FederateNotExecutionMember,
+           ConcurrentAccessAttempted,
+	   RTIinternalError)
+{
+    Message req, rep ;
+    req.type = Message::GET_INTERACTION_SPACE_HANDLE ;
+    req.setInteractionClass(inter);
+    this->privateRefs->executeService(&req, &rep);
+    return rep.getSpace();
+}
+
+// ----------------------------------------------------------------------------
+// Get Transportation Handle
+RTI::TransportationHandle
+RTI::RTIambassador::getTransportationHandle(const char *theName)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::NameNotFound)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::GET_TRANSPORTATION_HANDLE ;
+    req.setName(theName);
+    privateRefs->executeService(&req, &rep);
+    return rep.getTransportation();
+}
+
+// ----------------------------------------------------------------------------
+// Get Transportation Name
+char *
+RTI::RTIambassador::getTransportationName(TransportationHandle theHandle)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::InvalidTransportationHandle)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::GET_TRANSPORTATION_NAME ;
+    req.setTransportation(theHandle);
+    privateRefs->executeService(&req, &rep);
+    return(strdup(rep.getName()));
+}
+
+// ----------------------------------------------------------------------------
+// Get Ordering Handle
+RTI::OrderingHandle
+RTI::RTIambassador::getOrderingHandle(const char *theName)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::NameNotFound)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::GET_ORDERING_HANDLE ;
+    req.setName(theName);
+    privateRefs->executeService(&req, &rep);
+    return rep.getOrdering();
+}
+
+
+// ----------------------------------------------------------------------------
+// Get Ordering Name
+char *
+RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
+    throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
+	   RTI::FederateNotExecutionMember, RTI::InvalidOrderingHandle)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::GET_ORDERING_NAME ;
+    req.setOrdering(theHandle);
+    privateRefs->executeService(&req, &rep);
+    return(strdup(rep.getName()));
+}
+
+// ----------------------------------------------------------------------------
+// Enable Class Relevance Advisory Switch
+void
+RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Class Relevance Advisory Switch
+void
+RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Attribute Relevance Advisory Switch
+void
+RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Attribute Relevance Advisory Switch
+void
+RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Attribute Scope Advisory Switch
+void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Attribute Scope Advisory Switch
+void
+RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Enable Interaction Relevance Advisory Switch
+void
+RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+// Disable Interaction Relevance Advisory Switch
+void
+RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
+    throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
+	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
+{
+    throw UnimplementedService("");
+    Message req, rep ;
+    req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    privateRefs->executeService(&req, &rep);
+}
+
+// $Id: RTIambassador.cc,v 3.37 2005/04/30 17:42:39 breholee Exp $
