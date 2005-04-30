@@ -1,27 +1,130 @@
-// ----------------------------------------------------------------------------
-// CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
-//
-// This file is part of CERTI-libRTI
-//
-// CERTI-libRTI is free software ; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation ; either version 2 of
-// the License, or (at your option) any later version.
-//
-// CERTI-libRTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY ; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: fedtime.hh,v 3.4 2004/05/18 13:15:06 breholee Exp $
-// ----------------------------------------------------------------------------
+// HLA 1.3 Header "fedtime.hh"
+// $Id: fedtime.hh,v 3.5 2005/04/30 16:30:43 breholee Exp $
 
-#include "certi.hh"
+#ifndef HLA_FEDTIME_HH
+#define HLA_FEDTIME_HH
 
-// $Id: fedtime.hh,v 3.4 2004/05/18 13:15:06 breholee Exp $
+#include <RTI.hh>
+#include <sys/types.h>
+#include <string.h>
+
+class RTI_EXPORT_FEDTIME RTIfedTime : public RTI::FedTime
+{
+public:
+    RTIfedTime();
+    RTIfedTime(const RTI::Double &);
+    RTIfedTime(const RTI::FedTime &);
+    RTIfedTime(const RTIfedTime &);
+    virtual ~RTIfedTime();
+
+public:
+    virtual void setZero();
+    virtual RTI::Boolean isZero();
+    virtual void setEpsilon();
+    virtual void setPositiveInfinity();
+    virtual RTI::Boolean isPositiveInfinity();
+    virtual int encodedLength() const;
+    virtual void encode(char *) const;
+    virtual int getPrintableLength() const;
+    virtual void getPrintableString(char *);
+
+    virtual RTI::FedTime& operator+=(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime& operator-=(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator<=(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator<(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator>=(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator>(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator==(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime & operator=(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Double getTime() const;
+
+    virtual RTI::Boolean operator==(const RTI::Double &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator!=(const RTI::FedTime &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::Boolean operator!=(const RTI::Double &) const
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator=(const RTIfedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator=(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator*=(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator/=(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator+=(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator-=(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator*=(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTI::FedTime &operator/=(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator+(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator+(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator-(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator-(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator*(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator*(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator/(const RTI::FedTime &)
+	throw (RTI::InvalidFederationTime);
+    
+    virtual RTIfedTime operator/(const RTI::Double &)
+	throw (RTI::InvalidFederationTime);
+    
+    friend RTI_STD::ostream RTI_EXPORT &operator<<(RTI_STD::ostream&, const RTI::FedTime &);
+
+private:
+    RTI::Double _fedTime ;
+    RTI::Double _zero ;
+    RTI::Double _epsilon ;
+    RTI::Double _positiveInfinity ;
+};
+
+RTIfedTime operator+(const RTI::Double &, const RTI::FedTime &);
+RTIfedTime operator-(const RTI::Double &, const RTI::FedTime &);
+RTIfedTime operator*(const RTI::Double &, const RTI::FedTime &);
+RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
+
+#endif // HLA_FEDTIME_HH
+
+// $Id: fedtime.hh,v 3.5 2005/04/30 16:30:43 breholee Exp $

@@ -1,36 +1,65 @@
-// ----------------------------------------------------------------------------
-// CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2004  ONERA
-//
-// This file is part of CERTI-libRTI
-//
-// CERTI-libRTI is free software ; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public License
-// as published by the Free Software Foundation ; either version 2 of
-// the License, or (at your option) any later version.
-//
-// CERTI-libRTI is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY ; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: RTI.hh,v 3.5 2004/05/18 13:15:03 breholee Exp $
-// ----------------------------------------------------------------------------
+// HLA 1.3 Header "RTI.hh"
+// $Id: RTI.hh,v 3.6 2005/04/30 16:30:43 breholee Exp $
 
-#ifndef CERTI_RTI_HH
-#define CERTI_RTI_HH
+#ifndef RTI_hh
+#define RTI_hh
 
-#include "certi.hh"
-#include "RTIambassador.hh"
-#include "FederateAmbassador.hh"
+#if defined(_WIN32)
+#pragma warning(disable: 4290)
+#pragma warning(disable: 4275)
+#pragma warning(disable: 4251)
+#if defined(BUILDING_RTI)
+#define RTI_EXPORT __declspec(dllexport)
+#else
+#define RTI_EXPORT __declspec(dllimport)
+#endif
+#if defined(BUILDING_FEDTIME)
+#define RTI_EXPORT_FEDTIME __declspec(dllexport)
+#else
+#define RTI_EXPORT_FEDTIME __declspec(dllimport)
+#endif
+#else
+#define RTI_EXPORT
+#define RTI_EXPORT_FEDTIME
+#endif
 
-namespace RTI = certi ;
+#ifdef RTI_USES_STD_FSTREAM
+#include <fstream>
+#define RTI_STD std
+#else
+#include <fstream.h>
+#define RTI_STD
+#endif
 
-#endif // CERTI_RTI_HH
+struct RTIambPrivateRefs ;
+struct RTIambPrivateData ;
 
-// $Id: RTI.hh,v 3.5 2004/05/18 13:15:03 breholee Exp $
+class RTI
+{
+public:
+#include "baseTypes.hh"
+#include "RTItypes.hh"
+
+    class RTI_EXPORT RTIambassador
+    {
+    public:
+#include "RTIambServices.hh"
+	RTIambPrivateData *privateData ;
+    private:
+	RTIambPrivateRefs* privateRefs ;
+    };
+
+    class RTI_EXPORT FederateAmbassador
+    {
+    public:
+#include "federateAmbServices.hh"
+    };
+};
+
+RTI_STD::ostream RTI_EXPORT & 
+operator<<(RTI_STD::ostream &, RTI::Exception *);
+
+RTI_STD::ostream RTI_EXPORT & 
+operator<<(RTI_STD::ostream &, RTI::Exception const &);
+
+#endif
