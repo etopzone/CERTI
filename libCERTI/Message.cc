@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.cc,v 3.26 2005/03/13 22:46:14 breholee Exp $
+// $Id: Message.cc,v 3.27 2005/04/30 16:58:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ namespace certi {
 
 Message::Message()
 {
-    fed_time._fedTime = 0.0;
+    fed_time.setZero();
     exception = e_NO_EXCEPTION ;
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
@@ -190,7 +190,7 @@ Message::setAttribute(AttributeHandle handle)
 
 // ----------------------------------------------------------------------------
 void
-Message::setResignAction(ResignAction the_action)
+Message::setResignAction(RTI::ResignAction the_action)
 {
     resignAction = the_action ;
 }
@@ -204,14 +204,14 @@ Message::setFederationTimeDelta(FederationTimeDelta the_lookahead)
 
 // ----------------------------------------------------------------------------
 void
-Message::setFedTime(const FedTime &the_time)
+Message::setFedTime(const RTI::FedTime &the_time)
 {
     fed_time = dynamic_cast<const RTIfedTime &>(the_time);
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setLookahead(const FedTime& the_lookahead)
+Message::setLookahead(const RTI::FedTime& the_lookahead)
 {
     lookahead = (FederationTimeDelta) ((RTIfedTime&) the_lookahead).getTime();
 }
@@ -225,7 +225,7 @@ Message::setFederationTime(FederationTime the_time)
 
 // ----------------------------------------------------------------------------
 void
-Message::setBoolean(Boolean the_bool)
+Message::setBoolean(bool the_bool)
 {
     boolean = the_bool ;
 }
@@ -239,14 +239,14 @@ Message::setObject(ObjectHandle the_object)
 
 // ----------------------------------------------------------------------------
 void
-Message::setTransportation(TransportationHandle the_transport)
+Message::setTransportation(RTI::TransportationHandle the_transport)
 {
     transport = ((the_transport == 1) ? RELIABLE : BEST_EFFORT);
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setOrdering(OrderingHandle the_ordering)
+Message::setOrdering(RTI::OrderingHandle the_ordering)
 {
     order = ((the_ordering == 1) ? RECEIVE : TIMESTAMP);
 }
@@ -290,7 +290,7 @@ AttributeHandleSet*
 Message::getAHS() const
 {
     AttributeHandleSet *attributeSet ;
-    attributeSet = AttributeHandleSetFactory::create(handleArraySize);
+    attributeSet = RTI::AttributeHandleSetFactory::create(handleArraySize);
 
     for (int i = 0 ; i < handleArraySize ; i++) {
         attributeSet->add(handleArray[i]);
@@ -322,7 +322,7 @@ Message::setAHS(const AttributeHandle *attr, int size)
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandleValuePairSet*
+RTI::AttributeHandleValuePairSet *
 Message::getAHVPS() const
 {
     CAttributeHandleValuePairSet theAttributes ;
@@ -348,7 +348,7 @@ Message::getAHVPS() const
 
 // ----------------------------------------------------------------------------
 void
-Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
+Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 {
     ULong length ;
     CAttributeHandleValuePairSet theAttributes_aux(the_attributes);
@@ -372,7 +372,7 @@ Message::setAHVPS(const AttributeHandleValuePairSet &the_attributes)
 }
 
 // ----------------------------------------------------------------------------
-ParameterHandleValuePairSet*
+RTI::ParameterHandleValuePairSet *
 Message::getPHVPS() const
 {
     CParameterHandleValuePairSet theParameters ;
@@ -399,7 +399,7 @@ Message::getPHVPS() const
 
 // ----------------------------------------------------------------------------
 void
-Message::setPHVPS(const ParameterHandleValuePairSet &the_parameters)
+Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
 {
     ULong length ;
     CParameterHandleValuePairSet theParameters_aux(the_parameters);
@@ -559,7 +559,6 @@ Message::operator=(const Message& msg)
     transport = msg.transport ;
     order = msg.order ;
 
-    eventRetraction.theEventTime = msg.eventRetraction.theEventTime ;
     eventRetraction.theSerialNumber = msg.eventRetraction.theSerialNumber ;
     eventRetraction.sendingFederate = msg.eventRetraction.sendingFederate ;
 
@@ -585,7 +584,7 @@ Message::display(char *s)
 {
     printf(" --- MESSAGE --- %s ---\n", s);
     printf(" type=%d:\n", type);
-    printf(" date=%f:\n", fed_time._fedTime);
+    printf(" date=%f:\n", fed_time.getTime());
     printf(" exception=%d:\n", exception);
     printf(" objectClass=%ld:\n", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
@@ -601,4 +600,4 @@ Message::display(char *s)
 
 } // namespace certi
 
-// $Id: Message.cc,v 3.26 2005/03/13 22:46:14 breholee Exp $
+// $Id: Message.cc,v 3.27 2005/04/30 16:58:14 breholee Exp $

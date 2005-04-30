@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.23 2005/04/05 12:27:37 breholee Exp $
+// $Id: Message_RW.cc,v 3.24 2005/04/30 16:58:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -139,7 +139,7 @@ Message::readBody(SocketUN *socket)
 	  case DDM_ASSOCIATE_REGION:
 	    object = Body.readLongInt();
 	    region = Body.readLongInt();
-	    boolean = Boolean(Body.readShortInt());
+	    boolean = Body.readLongInt();
 	    handleArraySize = Body.readShortInt();
             readHandleArray(&Body);
 	    break ;
@@ -156,7 +156,7 @@ Message::readBody(SocketUN *socket)
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    objectClass = Body.readLongInt();
 	    region = Body.readLongInt();
-	    boolean = Boolean(Body.readShortInt());
+	    boolean = Body.readLongInt();
 	    handleArraySize = Body.readShortInt();
             readHandleArray(&Body);
 	    break ;
@@ -175,7 +175,7 @@ Message::readBody(SocketUN *socket)
 	  case DDM_UNSUBSCRIBE_INTERACTION:
 	    interactionClass = Body.readLongInt();
 	    region = Body.readLongInt();
-	    boolean = Boolean(Body.readShortInt());
+	    boolean = Body.readLongInt();
 	    break ;
 	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
@@ -693,7 +693,7 @@ Message::writeBody(SocketUN *socket)
 	  case DDM_ASSOCIATE_REGION:
 	    Body.writeLongInt(object);
 	    Body.writeLongInt(region);
-	    Body.writeShortInt(boolean);
+	    Body.writeLongInt(boolean);
             Body.writeShortInt(handleArraySize);
             writeHandleArray(&Body);
 	    break ;
@@ -710,7 +710,7 @@ Message::writeBody(SocketUN *socket)
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
 	    Body.writeLongInt(objectClass);
 	    Body.writeLongInt(region);
-	    Body.writeShortInt(boolean);
+	    Body.writeLongInt(boolean);
             Body.writeShortInt(handleArraySize);
             writeHandleArray(&Body);
 	    break ;
@@ -729,7 +729,7 @@ Message::writeBody(SocketUN *socket)
 	  case DDM_UNSUBSCRIBE_INTERACTION:
 	    Body.writeLongInt(interactionClass);
 	    Body.writeLongInt(region);
-	    Body.writeShortInt(boolean);
+	    Body.writeLongInt(boolean);
 	    break ;
 	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
@@ -1136,4 +1136,4 @@ Message::writeValueArray(MessageBody *Body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.23 2005/04/05 12:27:37 breholee Exp $
+// $Id: Message_RW.cc,v 3.24 2005/04/30 16:58:14 breholee Exp $

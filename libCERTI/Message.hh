@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message.hh,v 3.27 2005/04/05 12:28:56 breholee Exp $
+// $Id: Message.hh,v 3.28 2005/04/30 16:58:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -41,7 +41,7 @@ class Message : public BasicMessage
 public:
     struct MessageTimeStruct {
         FederationTime date ; // Date, Logical Time, Lookahead, etc.
-        Boolean mode ; // IsRegulator or IsConstrained
+        bool mode ; // IsRegulator or IsConstrained
     };
 
     struct MessageT_O_Struct {
@@ -53,7 +53,7 @@ public:
 
     struct MessageJ_R_Struct {
         FederateHandle federate ; // Join
-        ResignAction action ; // Resign
+        RTI::ResignAction action ; // Resign
     };
 
     struct MessageO_I_Struct {
@@ -320,35 +320,35 @@ public:
     void setObjectClass(ObjectClassHandle);
     ObjectClassHandle getObjectClass() const { return objectClass ; };
 
-    void setResignAction(ResignAction);
-    ResignAction getResignAction() const { return resignAction ; };
+    void setResignAction(RTI::ResignAction);
+    RTI::ResignAction getResignAction() const { return resignAction ; };
 
-    void setFedTime(const FedTime&);
-    const FedTime& getFedTime() const { return fed_time; };
+    void setFedTime(const RTI::FedTime&);
+    const RTI::FedTime& getFedTime() const { return fed_time; };
 
-    void setLookahead(const FedTime&);
+    void setLookahead(const RTI::FedTime&);
 
     void setFederationTime(FederationTime);
-    FederationTime getFederationTime() const { return fed_time._fedTime ; };
+    FederationTime getFederationTime() const { return fed_time.getTime(); };
     
-    void setBoolean(Boolean);
-    Boolean getBoolean() const { return boolean ; };
+    void setBoolean(bool);
+    bool getBoolean() const { return boolean ; };
 
     void setObject(ObjectHandle);
     ObjectHandle getObject() const { return object ; };
 
-    void setTransportation(TransportationHandle);
-    TransportationHandle getTransportation() const
+    void setTransportation(RTI::TransportationHandle);
+    RTI::TransportationHandle getTransportation() const
     { return ((transport == RELIABLE) ? 1 : 0); };
 
     TransportType getTransportType() const
     { return transport ; };
 
-    void setOrdering(OrderingHandle);
-    OrderingHandle getOrdering() const
+    void setOrdering(RTI::OrderingHandle);
+    RTI::OrderingHandle getOrdering() const
     { return ((order == RECEIVE) ? 1 : 0); };
 
-    OrderType getOrderType() const { return order ; };
+    RTI::OrderType getOrderType() const { return order ; };
 
     void setEventRetraction(EventRetractionHandle);
     EventRetractionHandle getEventRetraction() const
@@ -365,11 +365,11 @@ public:
     void setAHS(const AttributeHandleSet &);
     void setAHS(const AttributeHandle *, int);
 
-    AttributeHandleValuePairSet* getAHVPS() const ;
-    void setAHVPS(const AttributeHandleValuePairSet &);
+    RTI::AttributeHandleValuePairSet* getAHVPS() const ;
+    void setAHVPS(const RTI::AttributeHandleValuePairSet &);
 
-    ParameterHandleValuePairSet* getPHVPS() const ;
-    void setPHVPS(const ParameterHandleValuePairSet &);
+    RTI::ParameterHandleValuePairSet* getPHVPS() const ;
+    void setPHVPS(const RTI::ParameterHandleValuePairSet &);
 
     void setAttributes(AttributeHandle *, ushort);
     void setAttributes(AttributeHandle *, AttributeValue *, ushort);
@@ -387,10 +387,10 @@ protected:
     char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
 
     RTIfedTime fed_time;
-    Boolean boolean ;
+    bool boolean ;
     FederationTimeDelta lookahead ;
     FederateHandle federate ;
-    ResignAction resignAction ;
+    RTI::ResignAction resignAction ;
     UShort idCount ;
     ObjectHandle firstId ;
     ObjectHandle lastId ;
@@ -478,4 +478,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.27 2005/04/05 12:28:56 breholee Exp $
+// $Id: Message.hh,v 3.28 2005/04/30 16:58:14 breholee Exp $

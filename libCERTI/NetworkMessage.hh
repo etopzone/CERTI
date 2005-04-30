@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.18 2005/03/25 17:06:32 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.19 2005/04/30 17:00:21 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_NETWORK_MESSAGE
@@ -51,7 +51,7 @@ class NetworkMessage : public BasicMessage
 public:
     struct TimeStruct {
         FederationTime date ; // Date, Logical Time
-        Boolean R_or_C ; // IsRegulator or IsConstrained
+        bool R_or_C ; // IsRegulator or IsConstrained
     };
 
     struct T_O_Struct {
@@ -262,10 +262,10 @@ public :
     int bestEffortPeer ;
     unsigned long bestEffortAddress ;
 
-    Boolean regulator ;
-    Boolean constrained ;
+    bool regulator ;
+    bool constrained ;
 
-    Boolean boolean ;
+    bool boolean ;
     
     FederationTime date ;
 
@@ -343,4 +343,4 @@ private:
 
 #endif // _CERTI_NETWORK_MESSAGE
 
-// $Id: NetworkMessage.hh,v 3.18 2005/03/25 17:06:32 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.19 2005/04/30 17:00:21 breholee Exp $
