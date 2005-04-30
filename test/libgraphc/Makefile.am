@@ -1,15 +1,15 @@
-## $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $ 
-## ---------------------------------------------------------------------------
-
-# @configure_input@
+## $Id: Makefile.am,v 3.1 2005/04/30 14:46:54 breholee Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir)/test/include @XCFLAGS@ @WITH_X11@
+INCLUDES = @XCFLAGS@ @WITH_X11@
+
+noinst_HEADERS = graph_c.hh
 
 lib_LIBRARIES = libgraph.a
+
 libgraph_a_SOURCES = graph_c.cc
 
 LDADD = @XLIBS@
 
-## EOF $Id: Makefile.am,v 3.0 2002/11/21 01:27:51 breholee Exp $
+## EOF $Id: Makefile.am,v 3.1 2005/04/30 14:46:54 breholee Exp $
