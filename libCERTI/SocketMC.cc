@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.cc,v 3.9 2005/03/14 19:16:24 breholee Exp $
+// $Id: SocketMC.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,7 +36,7 @@ namespace certi {
 // ----------------------------------------------------------------------------
 SocketMC::SocketMC()
 {
-    _est_init_mc = RTI_FALSE ;
+    _est_init_mc = false ;
     _num_msg = 1 ;
 }
 
@@ -46,7 +46,7 @@ SocketMC::~SocketMC()
     if (_est_init_mc) {
 	::close(_socket_mc);
 	::close(_socket_emetteur);
-	_est_init_mc = RTI_FALSE ;
+	_est_init_mc = false ;
     }
 }
 
@@ -113,7 +113,7 @@ SocketMC::CreerSocketMC(unsigned long addr, unsigned long port)
     _sinlen_e = sizeof(_sin_e);
 
     // l'initialisation de la communication multicast est reussie
-    _est_init_mc = RTI_TRUE ;
+    _est_init_mc = true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -155,7 +155,7 @@ SocketMC::close()
     if (_est_init_mc) {
 	::close(_socket_mc);
 	::close(_socket_emetteur);
-	_est_init_mc = RTI_FALSE ;
+	_est_init_mc = false ;
     }
 }
 
@@ -227,5 +227,5 @@ int SocketMC::timeoutMC(int sec, int usec)
 
 } // namespace certi
 
-// EOF $Id: SocketMC.cc,v 3.9 2005/03/14 19:16:24 breholee Exp $
+// EOF $Id: SocketMC.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
 

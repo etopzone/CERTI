@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketMC.hh,v 3.7 2005/03/14 19:16:24 breholee Exp $
+// $Id: SocketMC.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_MC_HH
@@ -37,7 +37,7 @@ class SocketMC : public Socket
 {
 public:
     int _socket_mc ;
-    Boolean _est_init_mc ;
+    bool _est_init_mc ;
 
     SocketMC();
     virtual ~SocketMC();
@@ -77,4 +77,4 @@ private:
 
 #endif // _CERTI_SOCKET_MC_HH
 
-// $Id: SocketMC.hh,v 3.7 2005/03/14 19:16:24 breholee Exp $
+// $Id: SocketMC.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $

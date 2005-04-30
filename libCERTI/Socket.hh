@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Socket.hh,v 3.7 2005/01/13 12:52:47 breholee Exp $
+// $Id: Socket.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_SOCKET_HH
-#define _CERTI_SOCKET_HH
+#ifndef CERTI_SOCKET_HH
+#define CERTI_SOCKET_HH
 
 #include "certi.hh"
 #include <sys/time.h>
@@ -38,19 +38,13 @@
 #define SOCKET_TYPE_S_TCP 3 // Secure TCP Socket class ID
 
 namespace certi {
-// Those Exceptions will be used by all Socket classes.
-RTI_EXCEPT(NetworkSignal) // Used when received a signal during system call.
-    RTI_EXCEPT(NetworkError) // Used for all other errors(connection closed...)
 
-    typedef unsigned long ByteCount ;
+typedef unsigned long ByteCount ;
 
 class Socket
 {
 public:
-
-    // -----------------------
-    // -- Read/Write Method --
-    // -----------------------
+    virtual ~Socket() {};
 
     virtual void send(void *Buffer, unsigned long Size) = 0 ;
     virtual void receive(void *Buffer, unsigned long Size) = 0 ;
@@ -59,25 +53,15 @@ public:
     // This method may be used for implementation using Read Buffers,
     // because in that case 'select' system calls are not trustworthy.
     // See Important Note in SocketTCP.hh
-    virtual Boolean isDataReady() const = 0 ;
-
-    // ---------------------
-    // -- Get Descriptors --
-    // ---------------------
+    virtual bool isDataReady() const = 0 ;
 
     virtual int getClass() const = 0 ;
     virtual int returnSocket() const = 0 ;
     virtual unsigned long returnAdress() const = 0 ;
-
-    // ----------------
-    // -- Descructor --
-    // ----------------
-
-    virtual ~Socket() {};
 };
 
 }
 
-#endif // _CERTI_SOCKET_HH
+#endif // CERTI_SOCKET_HH
 
-// $Id: Socket.hh,v 3.7 2005/01/13 12:52:47 breholee Exp $
+// $Id: Socket.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $

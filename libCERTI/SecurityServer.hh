@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.9 2004/05/17 23:03:51 breholee Exp $
+// $Id: SecurityServer.hh,v 3.10 2005/04/30 17:32:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -60,9 +60,9 @@ public:
                           TransportType theType = RELIABLE) const ;
 
     // Security related methods
-    Boolean dominates(SecurityLevelID A, SecurityLevelID B) const ;
+    bool dominates(SecurityLevelID A, SecurityLevelID B) const ;
 
-    Boolean canFederateAccessData(FederateHandle theFederate,
+    bool canFederateAccessData(FederateHandle theFederate,
                                   SecurityLevelID theDataLevelID);
 
     SecurityLevelID getLevelIDWithName(const char *theName);
@@ -85,4 +85,4 @@ private:
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.9 2004/05/17 23:03:51 breholee Exp $
+// $Id: SecurityServer.hh,v 3.10 2005/04/30 17:32:27 breholee Exp $

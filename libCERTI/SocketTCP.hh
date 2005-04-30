@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.hh,v 3.10 2005/03/14 18:55:51 breholee Exp $
+// $Id: SocketTCP.hh,v 3.11 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_TCP_HH
@@ -60,7 +60,7 @@ public :
     void receive(void *Buffer, unsigned long Size)
         throw (NetworkError, NetworkSignal);
 
-    Boolean isDataReady() const ;
+    bool isDataReady() const ;
 
     int getClass() const { return SOCKET_TYPE_TCP ; };
     int returnSocket() const ;
@@ -92,7 +92,7 @@ private:
     long _socket_tcp ;
 
     struct sockaddr_in _sockIn ;
-    Boolean _est_init_tcp ;
+    bool _est_init_tcp ;
 
     ByteCount SentBytesCount ;
     ByteCount RcvdBytesCount ;
@@ -110,4 +110,4 @@ private:
 
 #endif // _CERTI_SOCKET_TCP_HH
 
-// $Id: SocketTCP.hh,v 3.10 2005/03/14 18:55:51 breholee Exp $
+// $Id: SocketTCP.hh,v 3.11 2005/04/30 17:28:55 breholee Exp $

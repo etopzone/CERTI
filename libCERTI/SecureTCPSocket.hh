@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.6 2005/04/30 17:32:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 // Couche de securite utilisant GSSAPI au-dessus d'un socket TCP.
@@ -59,7 +59,7 @@ public:
 
     // FIXME: Peut-etre devrait-on regarder si un message est pret en interne,
     // et balancer une exception dans ce cas la.
-    Boolean isDataReady() const { return SocketTCP::isDataReady(); }
+    bool isDataReady() const { return SocketTCP::isDataReady(); }
     int getClass() const ;
 
 
@@ -78,8 +78,8 @@ private:
     // -- Private General Attributes --
     // --------------------------------
 
-    Boolean SessionInitialized ;
-    Boolean DecryptedMessageReady ;
+    bool SessionInitialized ;
+    bool DecryptedMessageReady ;
 
     GSSAPIHandler *GSSHandler ;
 
@@ -120,5 +120,5 @@ private:
 
 #endif // _CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.5 2004/05/18 13:18:55 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.6 2005/04/30 17:32:27 breholee Exp $
 

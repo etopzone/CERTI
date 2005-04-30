@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.6 2005/04/30 17:32:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,8 +43,8 @@ SecureTCPSocket::SecureTCPSocket()
     : SocketTCP()
 {
 #ifdef WITH_GSSAPI
-    SessionInitialized = RTI_FALSE ;
-    DecryptedMessageReady = RTI_FALSE ;
+    SessionInitialized = false ;
+    DecryptedMessageReady = false ;
 
     GSSHandler = new GSSAPIHandler();
 
@@ -89,7 +89,7 @@ SecureTCPSocket::send(void *Buffer, unsigned long Size)
 
     // If the GSSAPI session is not Initialized, start the HandShake.
 
-    if (SessionInitialized == RTI_FALSE)
+    if (!SessionInitialized)
         sendInitialToken();
 
     // Send Message
@@ -111,7 +111,7 @@ SecureTCPSocket::send(void *Buffer, unsigned long Size)
 
 void SecureTCPSocket::getMessage()
 {
-    if (DecryptedMessageReady == RTI_TRUE) {
+    if (DecryptedMessageReady) {
         D.Out(pdExcept, "Decrypted message already exists.");
         return ;
     }
@@ -125,7 +125,7 @@ void SecureTCPSocket::getMessage()
 
     GSSHandler->getMessage((SocketTCP *)this, &IncomingBuffer);
 
-    DecryptedMessageReady = RTI_TRUE ;
+    DecryptedMessageReady = true ;
 }
 
 #endif // WITH_GSSAPI
@@ -152,7 +152,7 @@ SecureTCPSocket::getClass() const
 
 void SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
 {
-    if (DecryptedMessageReady == RTI_FALSE)
+    if (!DecryptedMessageReady)
         getMessage();
 
     // Check available size
@@ -173,7 +173,7 @@ void SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
     if (CurrentOffset >= IncomingBuffer.length) {
         GSSHandler->releaseBuffer(&IncomingBuffer);
         CurrentOffset = 0 ;
-        DecryptedMessageReady = RTI_FALSE ;
+        DecryptedMessageReady = false ;
     }
 }
 
@@ -214,7 +214,7 @@ SecureTCPSocket::receive(void *Buffer, unsigned long Size)
 
     // If the GSSAPI session is not Initialized, start the HandShake.
 
-    if (SessionInitialized == RTI_FALSE)
+    if (!SessionInitialized)
         receiveInitialToken();
 
     getMessagePart(Buffer, Size);
@@ -248,7 +248,7 @@ void SecureTCPSocket::receiveInitialToken()
 
     D.Out(pdInit, "GSSAPI session initialized.");
 
-    SessionInitialized = RTI_TRUE ;
+    SessionInitialized = true ;
 }
 
 
@@ -283,7 +283,7 @@ void SecureTCPSocket::sendInitialToken()
 
     D.Out(pdInit, "GSSAPI session initialized.");
 
-    SessionInitialized = RTI_TRUE ;
+    SessionInitialized = true ;
 }
 
 
@@ -305,4 +305,4 @@ void SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.5 2003/06/27 17:26:29 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.6 2005/04/30 17:32:27 breholee Exp $

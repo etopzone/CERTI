@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.10 2005/03/14 18:55:51 breholee Exp $
+// $Id: SocketTCP.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -78,7 +78,7 @@ int SocketTCP::accept(SocketTCP *serveur)
         return 0 ;
     }
 
-    _est_init_tcp = RTI_TRUE ;
+    _est_init_tcp = true ;
 
     return 1 ;
 }
@@ -216,7 +216,7 @@ SocketTCP::createTCPClient(unsigned int port, unsigned long addr)
         exit(-1);
     }
 
-    _est_init_tcp = RTI_TRUE ;
+    _est_init_tcp = true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -242,14 +242,14 @@ SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
         exit(-1);
     }
 
-    _est_init_tcp = RTI_TRUE ;
+    _est_init_tcp = true ;
 }
 
 // ----------------------------------------------------------------------------
 //! Constructor.
 SocketTCP::SocketTCP()
 {
-    _est_init_tcp = RTI_FALSE ;
+    _est_init_tcp = false ;
 
     SentBytesCount = 0 ;
     RcvdBytesCount = 0 ;
@@ -304,7 +304,7 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
         if (nSent < 0) {
             D.Out(pdExcept, "Error while sending on TCP socket.");
             if (errno == EINTR)
-                throw NetworkSignal();
+                throw NetworkSignal("");
             else {
                 perror("TCP Socket(EmettreTCP) ");
                 throw NetworkError("Error while sending TCP message.");
@@ -330,7 +330,7 @@ SocketTCP::close()
 {
     if (_est_init_tcp) {
         ::close(_socket_tcp);
-        _est_init_tcp = RTI_FALSE ;
+        _est_init_tcp = false ;
     }
 }
 
@@ -363,13 +363,13 @@ SocketTCP::getPort() const
 /*! Return RTI_TRUE if any data as already been read from the system socket
   and is waiting in the internal buffer, else RTI_FALSE.
 */
-Boolean
+bool
 SocketTCP::isDataReady() const
 {
 #ifdef SOCKTCP_BUFFER_LENGTH
-    return ((RBLength > 0) ? RTI_TRUE : RTI_FALSE);
+    return RBLength > 0 ;
 #else
-    return RTI_FALSE ;
+    return false ;
 #endif
 }
 
@@ -425,7 +425,7 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
             if (nReceived < 0) {
                 D.Out(pdExcept, "Error while receiving on TCP socket.");
                 if (errno == EINTR)
-                    throw NetworkSignal();
+                    throw NetworkSignal("");
                 else {
                     perror("TCP Socket(RecevoirTCP) ");
                     throw NetworkError("Error while receiving TCP message.");
@@ -502,7 +502,7 @@ SocketTCP::timeoutTCP(int sec, int usec)
 	if (errno == EINTR)
 	    throw NetworkSignal("TCP::TimeOut Interrompu par un signal.");
 	else
-	    throw NetworkError();
+	    throw NetworkError("");
     }
     else 
 	return nb > 0 ;
@@ -510,4 +510,4 @@ SocketTCP::timeoutTCP(int sec, int usec)
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.10 2005/03/14 18:55:51 breholee Exp $
+// $Id: SocketTCP.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $

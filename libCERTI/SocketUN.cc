@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.cc,v 3.10 2004/05/18 13:18:56 breholee Exp $
+// $Id: SocketUN.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,8 +95,8 @@ void SocketUN::acceptUN()
 
     pD->Out(pdInit, "Server: Accept OK, server running.");
 
-    _est_init_un = RTI_TRUE ;
-    _est_serveur = RTI_TRUE ;
+    _est_init_un = true ;
+    _est_serveur = true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void SocketUN::connectUN(pid_t Server_pid)
     pD->Out(pdInit, "Client: Done.");
 
     if (Result != -1)
-        _est_init_un = RTI_TRUE ;
+        _est_init_un = true ;
     else
         error("Connect");
 }
@@ -159,7 +159,7 @@ void SocketUN::connectUN(pid_t Server_pid)
 // ----------------------------------------------------------------------------
 //! Does not open the socket, see Init methods.
 SocketUN::SocketUN(SignalHandlerType theType)
-    : _socket_un(0), _est_serveur(RTI_FALSE), _est_init_un(RTI_FALSE),
+    : _socket_un(0), _est_serveur(false), _est_init_un(false),
       HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)
 {
 #ifdef SOCKUN_BUFFER_LENGTH
@@ -176,10 +176,10 @@ SocketUN::~SocketUN()
 {
     if (_est_init_un) {
         close(_socket_un);
-        if (_est_serveur == RTI_TRUE)
+        if (_est_serveur)
             close(sock_connect);
         unlink(name.c_str());
-        if (_est_serveur == RTI_TRUE)
+        if (_est_serveur)
             pD->Out(pdTerm, "Server: Closed all sockets.");
         else
             pD->Out(pdTerm, "Client: Closed all sockets.");
@@ -227,7 +227,7 @@ SocketUN::send(void *buffer, unsigned long size)
 
                 // Incoming Signal
                 if (errno == EINTR) {
-                    if (HandlerType == stSignalInterrupt) throw NetworkSignal();
+                    if (HandlerType == stSignalInterrupt) throw NetworkSignal("");
                     else pD->Out(pdExcept, "EmettreUN ignoring signal interruption.");
                 }
                 // Other errors
@@ -260,18 +260,15 @@ void SocketUN::error(const char *msg)
 }
 
 // ----------------------------------------------------------------------------
-/*! Return RTI_TRUE if any data as already been read from the system socket
-  and is waiting in the internal buffer, else RTI_FALSE.
+/*! Indicates whether any data as already been read from the system socket
+  and is waiting in the internal buffer
 */
-Boolean SocketUN::isDataReady()
+bool SocketUN::isDataReady()
 {
 #ifdef SOCKUN_BUFFER_LENGTH
-    if (RBLength > 0)
-        return RTI_TRUE ;
-    else
-        return RTI_FALSE ;
+    return RBLength > 0 ;
 #else
-    return RTI_FALSE ;
+    return false ;
 #endif
 }
 
@@ -309,7 +306,7 @@ void SocketUN::receive(void *buffer, unsigned long Size)
                 // Incoming Signal
                 if (errno == EINTR) {
                     if (HandlerType == stSignalInterrupt)
-                        throw NetworkSignal();
+                        throw NetworkSignal("");
                     else
                         pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
                 }
@@ -343,4 +340,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 
 }
 
-// $Id: SocketUN.cc,v 3.10 2004/05/18 13:18:56 breholee Exp $
+// $Id: SocketUN.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $

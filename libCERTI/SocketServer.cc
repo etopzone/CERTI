@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $
+// $Id: SocketServer.cc,v 3.10 2005/04/30 17:32:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -135,7 +135,7 @@ SocketServer::SocketServer(SocketTCP *tcp_socket,
     : list<SocketTuple *>()
 {
     if (tcp_socket == NULL)
-        throw RTIinternalError();
+        throw RTIinternalError("");
 
     ServerSocketTCP = tcp_socket ;
     ServerSocketUDP = udp_socket ;
@@ -243,7 +243,7 @@ SocketServer::getWithReferences(Handle the_federation,
             return (*i);
     }
 
-    throw FederateNotExecutionMember();
+    throw FederateNotExecutionMember("");
 }
 
 // ----------------------------------------------------------------------------
@@ -319,4 +319,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.9 2004/03/04 20:19:05 breholee Exp $
+// $Id: SocketServer.cc,v 3.10 2005/04/30 17:32:27 breholee Exp $

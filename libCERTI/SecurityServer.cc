@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.8 2004/05/17 23:03:50 breholee Exp $
+// $Id: SecurityServer.cc,v 3.9 2005/04/30 17:32:27 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,10 +48,10 @@ SecurityServer::getSocketLink(FederateHandle theFederate,
 
 // ----------------------------------------------------------------------------
 //! Compares two security level ID.
-Boolean
+bool
 SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
 {
-    return ((A == B) || (B == PublicLevelID)) ? RTI_TRUE : RTI_FALSE ;
+    return A == B || B == PublicLevelID ;
 }
 
 // ----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ SecurityServer::dominates(SecurityLevelID A, SecurityLevelID B) const
   3- If yes, retrieve federate principal name.
   4- Retrieve Federate level
 */
-Boolean
+bool
 SecurityServer::canFederateAccessData(FederateHandle theFederate,
                                       SecurityLevelID theDataLevelID)
 {
@@ -111,7 +111,7 @@ SecurityServer::SecurityServer(SocketServer &theRTIGServer,
     myFederation = theFederation ;
 
     if (myFederation == 0)
-        throw RTIinternalError();
+        throw RTIinternalError("");
 }
 
 // ----------------------------------------------------------------------------
@@ -189,4 +189,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.8 2004/05/17 23:03:50 breholee Exp $
+// $Id: SecurityServer.cc,v 3.9 2005/04/30 17:32:27 breholee Exp $

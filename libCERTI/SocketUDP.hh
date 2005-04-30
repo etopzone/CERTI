@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUDP.hh,v 3.6 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UDP_HH
@@ -35,6 +35,9 @@ namespace certi {
 class SocketUDP : public Socket
 {
 public :
+    SocketUDP();
+    ~SocketUDP();
+
     // ---------------------------------------------
     // -- Fonctions heritee de la classe Socket --
     // ---------------------------------------------
@@ -47,7 +50,7 @@ public :
         throw (NetworkError,
                NetworkSignal);
 
-    Boolean isDataReady() const ;
+    bool isDataReady() const ;
 
     int getClass() const { return SOCKET_TYPE_UDP ; };
     int returnSocket() const ;
@@ -59,9 +62,6 @@ public :
     // --------------------------
     // -- UDP Specific Methods --
     // --------------------------
-
-    SocketUDP();
-    ~SocketUDP();
 
     void createUDPClient(unsigned int port, char *nom_serveur)
         throw (NetworkError,
@@ -86,7 +86,7 @@ private:
     // ------------------------
 
     //! TAG indiquant si c'est une liaison logique ou physique
-    Boolean PhysicalLink ;
+    bool PhysicalLink ;
 
     long _socket_udp ;
     struct sockaddr_in sock_local ;
@@ -98,7 +98,7 @@ private:
     struct hostent * hp_distant ;
 
     int _sock_local_length ;
-    Boolean _est_init_udp ;
+    bool _est_init_udp ;
 
     ByteCount SentBytesCount ;
     ByteCount RcvdBytesCount ;
@@ -120,5 +120,5 @@ private:
 
 #endif // _CERTI_SOCKET_UDP_HH
 
-// $Id: SocketUDP.hh,v 3.5 2003/06/26 15:13:38 breholee Exp $
+// $Id: SocketUDP.hh,v 3.6 2005/04/30 17:28:55 breholee Exp $
 

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUN.hh,v 3.6 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUN.hh,v 3.7 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_UN_HH
@@ -75,7 +75,7 @@ public:
     // -----------------
     // -- R/W Methods --
     // -----------------
-    Boolean isDataReady();
+    bool isDataReady();
 
     void send(void *Buffer, unsigned long Size)
         throw (NetworkError,
@@ -90,8 +90,8 @@ protected:
 
     int _socket_un ;
 
-    Boolean _est_serveur ;
-    Boolean _est_init_un ;
+    bool _est_serveur ;
+    bool _est_init_un ;
 
     SignalHandlerType HandlerType ;
 
@@ -125,4 +125,4 @@ private:
 
 #endif // _CERTI_SOCKET_UN_HH
 
-// $Id: SocketUN.hh,v 3.6 2003/08/20 18:40:02 breholee Exp $
+// $Id: SocketUN.hh,v 3.7 2005/04/30 17:28:55 breholee Exp $

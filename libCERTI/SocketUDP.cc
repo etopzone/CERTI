@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketUDP.cc,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketUDP.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,7 +49,7 @@ SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
 {
     assert(!_est_init_udp);
 
-    PhysicalLink = RTI_FALSE ;
+    PhysicalLink = false ;
 
     _socket_udp = socket_ouvert ;
     // Building Distant Address
@@ -59,7 +59,7 @@ SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
     sock_distant.sin_family = AF_INET ;
     sock_distant.sin_port = port ;
 
-    _est_init_udp = RTI_TRUE ;
+    _est_init_udp = true ;
 
     D.Out(pdDebug, "Attaching the federate to his address and to his peer...");
 }
@@ -99,7 +99,7 @@ SocketUDP::createUDPClient(unsigned int, // port
     if ((hp_local = (struct hostent *)gethostbyname(localhost)) == NULL)
         {
             perror("SocketUDP: gethostbyname");
-            throw NetworkError();
+            throw NetworkError("");
         }
 
     bcopy((char *)hp_local->h_addr, (char *) &sock_local.sin_addr,
@@ -113,21 +113,21 @@ SocketUDP::createUDPClient(unsigned int, // port
     if (!open())
         {
             perror("SocketUDP: Open");
-            throw NetworkError();
+            throw NetworkError("");
         }
 
 
     if (!bind())
         {
             perror("SocketUDP: Bind");
-            throw NetworkError();
+            throw NetworkError("");
         }
 
     // recuperation du port lie au socket _socket_udp
     getsockname(_socket_udp, (sockaddr *)&sock_temp, &taille);
     //HPUX: getsockname(_socket_udp, (sockaddr *)&sock_temp, (int*)&taille);
     sock_local.sin_port = sock_temp.sin_port ;
-    _est_init_udp = RTI_TRUE ;
+    _est_init_udp = true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -150,7 +150,7 @@ SocketUDP::createUDPServer(unsigned int port)
     hp_local = (struct hostent *) gethostbyname(localhost);
     if (hp_local == 0) {
         perror("SocketUDP: gethostbyname");
-        throw NetworkError();
+        throw NetworkError("");
     }
 
     bcopy((char *)hp_local->h_addr, (char *) &sock_local.sin_addr,
@@ -162,27 +162,27 @@ SocketUDP::createUDPServer(unsigned int port)
     if (!open())
         {
             perror("SocketUDP: Open");
-            throw NetworkError();
+            throw NetworkError("");
         }
 
     if (!bind())
         {
             perror("SocketUDP: Bind");
-            throw NetworkError();
+            throw NetworkError("");
         }
 
-    _est_init_udp = RTI_TRUE ;
+    _est_init_udp = true ;
 }
 
 // ----------------------------------------------------------------------------
 //! Constructor.
 SocketUDP::SocketUDP()
 {
-    _est_init_udp = RTI_FALSE ;
+    _est_init_udp = false ;
 
     hp_distant = NULL ;
     hp_local = NULL ;
-    PhysicalLink = RTI_TRUE ;
+    PhysicalLink = true ;
 
     BufferSize = 0 ;
     SentBytesCount = 0 ;
@@ -228,7 +228,7 @@ void SocketUDP::send(void * Message, unsigned long Size)
                    (struct sockaddr *)&sock_distant, sizeof(sock_distant));
     if (nSent < 0) {
         perror("Sendto");
-        throw NetworkError();
+        throw NetworkError("");
     };
     D.Out(pdDebug, "Sent UDP message.");
     SentBytesCount += nSent ;
@@ -240,8 +240,8 @@ void SocketUDP::close()
 {
     if (_est_init_udp) {
         D.Out(pdDebug, "Closing UDP object...");
-        _est_init_udp = RTI_FALSE ;
-        if (PhysicalLink == RTI_TRUE) {
+        _est_init_udp = false ;
+        if (PhysicalLink) {
             D.Out(pdDebug, "Closing physical UDP link...");
             ::close(_socket_udp);
         }
@@ -267,20 +267,22 @@ SocketUDP::getPort() const
 }
 
 // ----------------------------------------------------------------------------
-/*! Return RTI_TRUE if any data as already been read from the system socket
-  and is waiting in the internal buffer, else RTI_FALSE.
+/*! Return whether any data as already been read from the system socket
+  and is waiting in the internal buffer.
 */
-Boolean
+bool
 SocketUDP::isDataReady() const
 {
-    return ((BufferSize > 0) ? RTI_TRUE : RTI_FALSE);
+    return BufferSize > 0 ;
 }
 
 // ----------------------------------------------------------------------------
 //! open.
-int SocketUDP::open()
+int
+SocketUDP::open()
 {
-    return(((_socket_udp=socket(AF_INET, SOCK_DGRAM, 0))<0)?0:1);
+    _socket_udp = socket(AF_INET, SOCK_DGRAM, 0);
+    return _socket_udp >= 0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -302,7 +304,7 @@ SocketUDP::receive(void * Message, unsigned long Size)
         //HPUX:(struct sockaddr *)&sock_source, (int*) &taille);
         if (CR <= 0) {
             perror("Recvfrom");
-            throw NetworkError();
+            throw NetworkError("");
         }
         else {
             RcvdBytesCount += CR ;
@@ -312,7 +314,7 @@ SocketUDP::receive(void * Message, unsigned long Size)
 
     if (BufferSize < Size) {
         perror("Taille du Buffer inferieure a celle demandee");
-        throw NetworkError();
+        throw NetworkError("");
     }
     else {
         BufferSize -= Size ;
@@ -349,4 +351,4 @@ void SocketUDP::setPort(unsigned int port)
 
 }
 
-// $Id: SocketUDP.cc,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketUDP.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
