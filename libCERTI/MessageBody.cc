@@ -1,15 +1,13 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005 ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,11 +17,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.6 2004/01/09 16:07:29 breholee Exp $
+// $Id: MessageBody.cc,v 3.7 2005/04/30 18:44:35 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "MessageBody.hh"
+#include <cassert>
 
 namespace certi {
 
@@ -33,9 +32,6 @@ MessageBody::MessageBody()
 {
     buffer.reserve(200);
     getPtr = buffer.begin();
-
-    if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
-        throw RTIinternalError("MessageBody unabled to process ints.");
 }
 
 /** Constructor, with an initial buffer size.
@@ -45,14 +41,7 @@ MessageBody::MessageBody(size_t n)
 {
     buffer.resize(n);
     getPtr = buffer.begin();
-
-    if ((sizeof(unsigned short) != 2) || (sizeof(unsigned long) != 4))
-        throw RTIinternalError("MessageBody unabled to process ints.");
 }
-
-/** Destructor.
- */
-MessageBody::~MessageBody() { }
 
 /** Get the size of the buffer.
     \return buffer size
@@ -66,7 +55,7 @@ MessageBody::getLength() const
 /** Get buffer pointer.
     \return buffer pointer. 
 */
-const char *
+const unsigned char *
 MessageBody::getBuffer() const
 {
     return &(buffer[0]);
@@ -108,6 +97,45 @@ MessageBody::writeString(const char *s)
 	writeShortInt(0);
 }
 
+MessageBody &
+MessageBody::operator<<(unsigned long val)
+{
+    assert(val <= 4294967295U);
+    for (int c = 3 ; c >= 0 ; --c) {
+	buffer.push_back((val >> c * 8) & 0xFF);
+    }
+    return *this ;
+}
+
+const MessageBody &
+MessageBody::operator>>(unsigned long &val) const
+{
+    val = 0 ;
+    for (int i = 0 ; i < 4 ; ++i, ++getPtr) {
+	val |= static_cast<unsigned long>(*getPtr) << (3 - i) * 8 ;
+    }
+    return *this ;
+}
+
+MessageBody &
+MessageBody::operator<<(unsigned short val)
+{
+    for (int c = 1 ; c >= 0 ; --c) {
+	buffer.push_back((val >> c * 8) & 0xFF);
+    }
+    return *this ;
+}
+
+const MessageBody &
+MessageBody::operator>>(unsigned short &val) const
+{
+    val = 0 ;
+    for (int i = 0 ; i < 2 ; ++i, ++getPtr) {
+	val |= static_cast<unsigned short>(*getPtr) << (1 - i) * 8 ;
+    }
+    return *this ;
+}
+
 } // certi
 
-// $Id: MessageBody.cc,v 3.6 2004/01/09 16:07:29 breholee Exp $
+// $Id: MessageBody.cc,v 3.7 2005/04/30 18:44:35 breholee Exp $
