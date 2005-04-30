@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.6 2005/04/07 11:32:59 breholee Exp $
+// $Id: Parameter.cc,v 3.7 2005/04/30 17:18:50 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <cstring>
+#include <iostream>
 
 namespace certi {
 
@@ -50,4 +51,4 @@ Parameter::display(void)
 
 } // namespace certi
 
-// $Id: Parameter.cc,v 3.6 2005/04/07 11:32:59 breholee Exp $
+// $Id: Parameter.cc,v 3.7 2005/04/30 17:18:50 breholee Exp $
