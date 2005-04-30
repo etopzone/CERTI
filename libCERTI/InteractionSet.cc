@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003, 2005  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.12 2005/04/05 20:01:21 breholee Exp $
+// $Id: InteractionSet.cc,v 3.13 2005/04/30 16:52:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -164,7 +164,7 @@ InteractionSet::getByHandle(InteractionClassHandle the_handle)
             return (*i);
     }
 
-    throw InteractionClassNotDefined();
+    throw InteractionClassNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ InteractionSet::getInteractionClassHandle(const char *the_name)
     throw (NameNotFound, RTIinternalError)
 {
     if (the_name == NULL)
-        throw RTIinternalError();
+        throw RTIinternalError("");
 
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
@@ -182,7 +182,7 @@ InteractionSet::getInteractionClassHandle(const char *the_name)
             return (*i)->getHandle();
     }
 
-    throw NameNotFound();
+    throw NameNotFound("");
 }
 
 // ----------------------------------------------------------------------------
@@ -197,7 +197,7 @@ InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
             return (*i)->getName();
     }
 
-    throw InteractionClassNotDefined();
+    throw InteractionClassNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -210,7 +210,7 @@ InteractionSet::getParameterHandle(const char *the_name,
            RTIinternalError)
 {
     if (the_name == NULL)
-        throw RTIinternalError();
+        throw RTIinternalError("");
 
     // It may throw InteractionClassNotDefined
     Interaction *interaction = getByHandle(the_class);
@@ -303,4 +303,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.12 2005/04/05 20:01:21 breholee Exp $
+// $Id: InteractionSet.cc,v 3.13 2005/04/30 16:52:44 breholee Exp $

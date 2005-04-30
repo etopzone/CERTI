@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.hh,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: FedRegion.hh,v 3.1 2005/04/30 16:52:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FED_REGION_HH
@@ -32,7 +32,7 @@ class RoutingSpace ;
 
 namespace certi {
 
-class FedRegion : public BaseRegion, public Region
+class FedRegion : public BaseRegion, public RTI::Region
 {
 public:
     FedRegion(RegionHandle, SpaceHandle, const std::vector<Extent> &);
@@ -75,4 +75,4 @@ private:
 
 #endif // CERTI_FED_REGION_HH
 
-// $Id: FedRegion.hh,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: FedRegion.hh,v 3.1 2005/04/30 16:52:44 breholee Exp $

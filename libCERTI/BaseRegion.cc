@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.1 2005/03/28 19:21:09 breholee Exp $
+// $Id: BaseRegion.cc,v 3.2 2005/04/30 16:49:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ BaseRegion::getRangeLowerBound(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("Extent index above limit");
     }
     else {
         return extents[index].getRangeLowerBound(dimension);
@@ -69,7 +69,7 @@ BaseRegion::getRangeUpperBound(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("Extent index above limit");
     }
     else {
         return extents[index].getRangeUpperBound(dimension);
@@ -84,7 +84,7 @@ BaseRegion::setRangeLowerBound(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("Extent index above limit");
     }
     else {
         extents[index].setRangeLowerBound(dimension, val);
@@ -99,7 +99,7 @@ BaseRegion::setRangeUpperBound(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= extents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("Extent index above limit");
     }
     else {
         extents[index].setRangeUpperBound(dimension, val);
@@ -130,7 +130,7 @@ BaseRegion::replaceExtents(const vector<Extent> &e)
     throw (InvalidExtents)
 {
     if (e.size() != extents.size())
-	throw InvalidExtents();
+	throw InvalidExtents("Different number of extents");
 
     extents = e ;
 }
@@ -156,4 +156,4 @@ BaseRegion::overlaps(const BaseRegion &region) const
 
 } // namespace certi
 
-// $Id: BaseRegion.cc,v 3.1 2005/03/28 19:21:09 breholee Exp $
+// $Id: BaseRegion.cc,v 3.2 2005/04/30 16:49:44 breholee Exp $

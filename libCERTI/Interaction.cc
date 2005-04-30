@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.25 2005/04/09 15:17:31 breholee Exp $
+// $Id: Interaction.cc,v 3.26 2005/04/30 16:52:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,7 +77,7 @@ Interaction::addParametersToChild(Interaction *the_child)
               "ObjectClass %u adding new attribute %d to child class %u.",
               handle, (*it)->getHandle(), the_child->handle);
 
-        the_child->addParameter(child, RTI_TRUE);
+        the_child->addParameter(child, true);
 
         if (child->getHandle() != (*it)->getHandle())
             throw RTIinternalError("Error while copying child's attributes.");
@@ -130,7 +130,7 @@ Interaction::changeTransportationType(TransportType new_type,
         throw FederateNotPublishing("Change Interaction Transport Type.");
 
     if ((new_type != RELIABLE) && (new_type != BEST_EFFORT))
-        throw InvalidTransportType();
+        throw InvalidTransportType("");
 
     transport = new_type ;
 
@@ -150,7 +150,7 @@ Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
         throw FederateNotPublishing("Change Interaction Order Type.");
 
     if ((new_order != RECEIVE) && (new_order != TIMESTAMP))
-        throw InvalidOrderType();
+        throw InvalidOrderType("");
 
     D.Out(pdInit, "Interaction %d: New Order type is %d.", handle, order);
 }
@@ -253,7 +253,7 @@ Interaction::getParameterByHandle(ParameterHandle the_handle) const
             return (*p);
     }
 
-    throw InteractionParameterNotDefined();
+    throw InteractionParameterNotDefined("");
 }
 
 // ----------------------------------------------------------------------------
@@ -268,7 +268,7 @@ Interaction::getParameterHandle(const char *the_name) const
             return (*p)->getHandle();
     }
 
-    throw NameNotFound();
+    throw NameNotFound("");
 }
 
 // ----------------------------------------------------------------------------
@@ -303,7 +303,7 @@ Interaction::isReady(FederateHandle federate_handle,
 {
     // Is Federate Publishing Interaction?
     if (!isPublishing(federate_handle))
-        throw FederateNotPublishing();
+        throw FederateNotPublishing("");
 
     // Are Parameters Defined?
     for (UShort i = 0 ; i < list_size ; i++)
@@ -357,7 +357,7 @@ Interaction::unpublish(FederateHandle the_handle)
 	deletePublisher(the_handle);
     }
     else {
-	throw FederateNotPublishing();
+	throw FederateNotPublishing("");
     }
 }
 
@@ -380,7 +380,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 {
     // Pre-conditions checking
     if (!isPublishing(federate_handle))
-        throw FederateNotPublishing();
+        throw FederateNotPublishing("");
 
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
@@ -441,7 +441,7 @@ Interaction::setName(const char *new_name)
 void
 Interaction::setLevelId(SecurityLevelID new_levelID)
 {
-    if (server->dominates(new_levelID, id) == RTI_FALSE)
+    if (!server->dominates(new_levelID, id))
         throw SecurityError("Attempt to lower interaction class level.");
 
     id = new_levelID ;
@@ -465,4 +465,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.25 2005/04/09 15:17:31 breholee Exp $
+// $Id: Interaction.cc,v 3.26 2005/04/30 16:52:44 breholee Exp $

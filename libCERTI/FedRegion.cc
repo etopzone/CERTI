@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
+// $Id: FedRegion.cc,v 3.2 2005/04/30 16:52:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedRegion.hh"
@@ -98,7 +98,7 @@ FedRegion::getRangeLowerBoundNotificationLimit(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= coExtents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("");
     }
     else {
         return coExtents[index].getRangeLowerBound(dimension);
@@ -114,7 +114,7 @@ FedRegion::getRangeUpperBoundNotificationLimit(ExtentIndex index,
     throw (ArrayIndexOutOfBounds)
 {
     if (index >= coExtents.size()) {
-        throw ArrayIndexOutOfBounds();
+        throw ArrayIndexOutOfBounds("");
     }
     else {
         return coExtents[index].getRangeUpperBound(dimension);
@@ -140,4 +140,4 @@ FedRegion::commit()
 
 } // namespace certi
 
-// $Id: FedRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
+// $Id: FedRegion.cc,v 3.2 2005/04/30 16:52:44 breholee Exp $

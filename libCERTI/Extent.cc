@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.7 2005/03/28 19:20:00 breholee Exp $
+// $Id: Extent.cc,v 3.8 2005/04/30 16:49:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ Extent::getRangeLowerBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds();
+	throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
 	return ranges[handle - 1].first ;	
 }
@@ -68,7 +68,7 @@ Extent::getRangeUpperBound(DimensionHandle handle) const
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds();
+	throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
 	return ranges[handle - 1].second ;
 }
@@ -81,7 +81,7 @@ Extent::setRangeLowerBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds();
+	throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
 	ranges[handle - 1].first = val ;
 }
@@ -94,7 +94,7 @@ Extent::setRangeUpperBound(DimensionHandle handle, ULong val)
     throw (ArrayIndexOutOfBounds)
 {
     if ((handle <= 0) || (handle > ranges.size())) 
-	throw ArrayIndexOutOfBounds();
+	throw ArrayIndexOutOfBounds("Invalid dimension handle");
     else
 	ranges[handle - 1].second = val ;
 }
@@ -127,4 +127,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.7 2005/03/28 19:20:00 breholee Exp $
+// $Id: Extent.cc,v 3.8 2005/04/30 16:49:43 breholee Exp $
