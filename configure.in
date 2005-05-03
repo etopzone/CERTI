@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.10 2005/04/30 13:58:42 breholee Exp $ 
+## $Id: configure.in,v 3.11 2005/05/03 08:22:48 breholee Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 ## Init
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.10 $)
+AC_REVISION($Revision: 3.11 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -17,9 +17,9 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CANONICAL_HOST
-case x$host_os in
-     xsolaris*) AC_DISABLE_SHARED ;;
-     *-*-cygwin*) WITH_CYGWIN="-DWITH_CYGWIN" ;;
+case $host_os in
+     *cygwin*) WITH_CYGWIN=" -DWITH_CYGWIN " ;;
+     solaris*) AC_DISABLE_SHARED ;;
 esac
 AC_SUBST(WITH_CYGWIN)
 AC_PROG_LIBTOOL
@@ -59,15 +59,12 @@ if test "x$XML2_CONFIG" != x ; then
     XML_LIBS="`$XML2_CONFIG --libs`"
     XML_CFLAGS="`$XML2_CONFIG --cflags`"
     HAVE_XML="-DHAVE_XML"
-    AC_SUBST(XML_LIBS)
-    AC_SUBST(XML_CFLAGS)
-    AC_SUBST(HAVE_XML)
 fi
+AC_SUBST(XML_LIBS)
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(HAVE_XML)
 
 # Output
-
 AC_OUTPUT([Makefile include/Makefile libCERTI/Makefile RTIG/Makefile
 RTIA/Makefile libRTI/Makefile test/Makefile test/libgraphc/Makefile
 test/Billard/Makefile doc/Makefile])
-
-## $Id: configure.in,v 3.10 2005/04/30 13:58:42 breholee Exp $
