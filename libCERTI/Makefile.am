@@ -1,8 +1,10 @@
-## $Id: Makefile.am,v 3.24 2005/04/30 14:17:32 breholee Exp $ 
+## $Id: Makefile.am,v 3.25 2005/05/03 10:15:17 breholee Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@
+CLEANFILES = syntax.cc syntax.h tokens.cc
+
+INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@ @WITH_CYGWIN@
 
 lib_LTLIBRARIES = libCERTI.la
 
@@ -32,10 +34,6 @@ SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
 Subscribable.cc PrettyDebug.cc
 
-# libCERTI_la_LDFLAGS = -version-info 0:0:0
-# Too unstable to use -version-info, so :
-libCERTI_la_LDFLAGS = -release 3.2
-
-LDADD = @XML_LIBS@
+libCERTI_la_LDFLAGS = -version-info 1:0:0
 
 EXTRA_DIST = syntax.h
