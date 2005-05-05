@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.14 2005/04/30 16:30:43 breholee Exp $
+// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -17,18 +17,15 @@
 #define DEFAULT_SPACE_DIMENSION_NAME "dimension"
 #define MAX_USER_TAG_LENGTH "macro variable is deprecated"
 
-// RTI-1.3NG note: none of these versions are used by RTI-1.3NG; they
-// are here strictly for conformance with the C++ interface
-// specification
-#define RTI_VERSION "RTI-1.3NGv6"
-#define RTI_INTERNAL_VERSION "1.3NG"
+#define RTI_VERSION "CERTI_3.2"
+#define RTI_INTERNAL_VERSION "CERTI_3.2"
 
-#define RTI_MAJOR_VERSION 1
-#define RTI_MINOR_VERSION 3
+#define RTI_MAJOR_VERSION 3
+#define RTI_MINOR_VERSION 2
 #define RTI_RELEASE 0
 
-#define RTI_INTERNAL_MAJOR_VERSION 1
-#define RTI_INTERNAL_MINOR_VERSION 3
+#define RTI_INTERNAL_MAJOR_VERSION 3
+#define RTI_INTERNAL_MINOR_VERSION 2
 #define RTI_INTERNAL_RELEASE 0
 
 #define MAX_EXTENT ((RTI::ULong) ~0UL)
@@ -391,4 +388,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.14 2005/04/30 16:30:43 breholee Exp $
+// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
