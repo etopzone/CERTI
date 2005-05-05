@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// $Id: TimeManagement.cc,v 3.14 2005/05/05 20:23:57 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,7 +27,12 @@
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_TM", "(RTIA TM) ");
+namespace {
+
+PrettyDebug D("RTIA_TM", __FILE__);
+const double epsilon = 1.0e-9 ;
+
+}
 
 // ----------------------------------------------------------------------------
 /*! This method is called by tick(). Calls are dispatched between timeAdvance
@@ -75,7 +80,7 @@ TimeManagement::TimeManagement(Communications *GC,
     _avancee_en_cours = PAS_D_AVANCEE ;
 
     _heure_courante = 0.0 ;
-    _lookahead_courant = EPSILON ;
+    _lookahead_courant = epsilon ;
     _est_regulateur = false ;
     _est_contraint = false ;
 }
@@ -715,4 +720,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// $Id: TimeManagement.cc,v 3.14 2005/05/05 20:23:57 breholee Exp $
