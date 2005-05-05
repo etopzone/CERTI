@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedTime.cc,v 3.7 2005/04/30 17:06:45 breholee Exp $
+// $Id: FedTime.cc,v 3.8 2005/05/05 20:29:15 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,15 +27,21 @@
 #include "RTI.hh"
 #include "fedtime.hh"
 
+#include <limits>
+#include <sstream>
+
+using std::stringstream ;
+
 typedef RTI::FedTime FedTime ;
 typedef RTI::Double Double ;
 
 namespace
 {
 
-/** FedTime / RTIfedTime reference cast
+// ----------------------------------------------------------------------------
+/** FedTime to RTIfedTime reference cast
  */
-const RTIfedTime &
+inline const RTIfedTime &
 rft(const FedTime &time)
     throw (RTI::InvalidFederationTime)
 {
@@ -47,15 +53,22 @@ rft(const FedTime &time)
     }
 }
 
+inline bool
+is_infinity(const FedTime &time)
+{
+    return const_cast<FedTime &>(time).isPositiveInfinity() == RTI::RTI_TRUE ;
+}
+
+const double epsilon = 1.0e-9 ;
+const double infinity = std::numeric_limits<double>::max();
+const char *infinity_str = "+inf" ;
+
 } // anonymous namespace
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 // FedTimeFactory
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 FedTime *
 RTI::FedTimeFactory::makeZero()
     throw (RTI::MemoryExhausted)
@@ -63,54 +76,40 @@ RTI::FedTimeFactory::makeZero()
     return new RTIfedTime();
 }
 
-// ----------------------------------------------------------------------------
 FedTime *
 RTI::FedTimeFactory::decode(const char *)
     throw (RTI::MemoryExhausted)
 {
-    throw RTI::RTIinternalError("Not implemented");
+    throw RTIinternalError("Not implemented");
 }
 
 // ----------------------------------------------------------------------------
 // FedTime
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 FedTime::~FedTime()
 {
 }
 
 // ----------------------------------------------------------------------------
 // RTIfedTime
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime()
-{
-    _fedTime = 0 ;
-    _zero = 0 ;
-}
+    : _fedTime(0), _zero(0), _epsilon(0), _positiveInfinity(0) { }
 
-// ----------------------------------------------------------------------------
-RTIfedTime::RTIfedTime(const RTI::Double &dble)
-{
-    _fedTime = dble ;
-    _zero = _fedTime != 0 ;
-}
+RTIfedTime::RTIfedTime(const RTI::Double &time)
+    : _fedTime(time), _zero(0), _epsilon(0), _positiveInfinity(0) { }
 
-// ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const FedTime &time)
-{
-    const RTIfedTime &tmp(rft(time));
-    _fedTime = tmp._fedTime ;
-    _zero = tmp._zero ;
-}
+    : _fedTime(rft(time).getTime()),
+      _zero(0),
+      _epsilon(0),
+      _positiveInfinity(const_cast<FedTime &>(time).isPositiveInfinity()) { }
 
 // ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const RTIfedTime &time)
-    : FedTime(), _fedTime(time._fedTime), _zero(time._zero)
-{
-}
+    : FedTime(),
+      _fedTime(time._fedTime),
+      _zero(time._zero),
+      _epsilon(time._epsilon),
+      _positiveInfinity(time._positiveInfinity) { }
 
 // ----------------------------------------------------------------------------
 RTIfedTime::~RTIfedTime()
@@ -118,43 +117,41 @@ RTIfedTime::~RTIfedTime()
 }
 
 // ----------------------------------------------------------------------------
-// Overloaded functions from FedTime
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 void
 RTIfedTime::setZero()
 {
     _fedTime = 0 ;
     _zero = 0 ;
+    _epsilon = 0 ;
+    _positiveInfinity = 0 ;
 }
 
 // ----------------------------------------------------------------------------
 RTI::Boolean
 RTIfedTime::isZero()
 {
-    return RTI::Boolean(_zero == 0);
+    return RTI::Boolean(_fedTime == 0.0);
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIfedTime::setEpsilon()
 {
-    throw RTI::RTIinternalError("Not implemented");
+    _fedTime = epsilon ;
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIfedTime::setPositiveInfinity()
 {
-    throw RTI::RTIinternalError("Not implemented");
+    _positiveInfinity = 1.0 ;
 }
 
 // ----------------------------------------------------------------------------
-RTI::Boolean
+inline RTI::Boolean
 RTIfedTime::isPositiveInfinity()
 {
-    throw RTI::RTIinternalError("Not implemented");
+    return RTI::Boolean(_positiveInfinity != 0.0);
 }
 
 // ----------------------------------------------------------------------------
@@ -175,19 +172,30 @@ RTIfedTime::encode(char *) const
 int
 RTIfedTime::getPrintableLength() const
 {
-    throw RTI::RTIinternalError("Not implemented");
+    stringstream s ;
+
+    if (is_infinity(*this))
+	s << infinity_str ;
+    else
+	s << _fedTime ;
+
+    return s.str().length() + 1 ;
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIfedTime::getPrintableString(char *)
+RTIfedTime::getPrintableString(char *str)
 {
-    throw RTI::RTIinternalError("Not implemented");
-}
+    stringstream s ;
 
-// ----------------------------------------------------------------------------
-// Overloaded operators from FedTime
-// ----------------------------------------------------------------------------
+    if (is_infinity(*this))
+	s << infinity_str ;
+    else
+	s << _fedTime ;
+
+    s >> str ;
+    str[s.str().length()] = 0 ;
+}
 
 // ----------------------------------------------------------------------------
 FedTime &
@@ -195,7 +203,6 @@ RTIfedTime::operator+=(const FedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime += rft(time)._fedTime ;
-    _zero = _fedTime != 0 ;
     return *this;
 }
 
@@ -205,7 +212,6 @@ RTIfedTime::operator-=(const FedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime -= rft(time)._fedTime ;
-    _zero = _fedTime != 0 ;
     return *this;
 }
 
@@ -214,7 +220,12 @@ RTI::Boolean
 RTIfedTime::operator<=(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime <= rft(time)._fedTime);
+    if (const_cast<FedTime &>(time).isPositiveInfinity())
+	return RTI::RTI_TRUE ;
+    else if (is_infinity(*this))
+	return RTI::RTI_FALSE ;
+    else
+	return RTI::Boolean(_fedTime <= rft(time)._fedTime);
 }
 
 // ----------------------------------------------------------------------------
@@ -222,7 +233,10 @@ RTI::Boolean
 RTIfedTime::operator<(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime < rft(time)._fedTime);
+    if (is_infinity(*this))
+	return RTI::RTI_FALSE ;
+    else 
+	return RTI::Boolean(is_infinity(time) || _fedTime < rft(time)._fedTime);
 }
 
 // ----------------------------------------------------------------------------
@@ -230,7 +244,12 @@ RTI::Boolean
 RTIfedTime::operator>=(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime >= rft(time)._fedTime);
+    if (is_infinity(*this))
+	return RTI::RTI_TRUE ;
+    else if (is_infinity(time))
+	return RTI::RTI_FALSE ;
+    else
+	return RTI::Boolean(_fedTime >= rft(time)._fedTime);
 }
 
 // ----------------------------------------------------------------------------
@@ -238,15 +257,23 @@ RTI::Boolean
 RTIfedTime::operator>(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime > rft(time)._fedTime);
+    if (is_infinity(time))
+	return RTI::RTI_FALSE ;
+    else
+	return RTI::Boolean(is_infinity(*this) || _fedTime > rft(time)._fedTime);
 }
 
 // ----------------------------------------------------------------------------
-RTI::Boolean
+inline RTI::Boolean
 RTIfedTime::operator==(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime == rft(time)._fedTime);
+    if (is_infinity(*this) && is_infinity(time))
+	return RTI::RTI_TRUE ;
+    else if (is_infinity(*this) || is_infinity(time))
+	return RTI::RTI_FALSE ;
+    else
+	return RTI::Boolean(_fedTime == rft(time)._fedTime);
 }
 
 // ----------------------------------------------------------------------------
@@ -255,13 +282,9 @@ RTIfedTime::operator=(const FedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = rft(time)._fedTime ;
-    _zero = _fedTime != 0 ;
+    _positiveInfinity = rft(time)._positiveInfinity ;
     return *this ;
 }
-
-// ----------------------------------------------------------------------------
-// Implementation functions
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 RTI::Double
@@ -271,15 +294,11 @@ RTIfedTime::getTime() const
 }
 
 // ----------------------------------------------------------------------------
-// Implementation operators
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
 RTI::Boolean
 RTIfedTime::operator==(const Double &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime == time);
+    return RTI::Boolean(!is_infinity(*this) && _fedTime == time);
 }
 
 // ----------------------------------------------------------------------------
@@ -287,7 +306,7 @@ RTI::Boolean
 RTIfedTime::operator!=(const FedTime &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime != rft(time)._fedTime);
+    return RTI::Boolean(!(*this == time));
 }
 
 // ----------------------------------------------------------------------------
@@ -295,7 +314,7 @@ RTI::Boolean
 RTIfedTime::operator!=(const Double &time) const
     throw (RTI::InvalidFederationTime)
 {
-    return RTI::Boolean(_fedTime != time);
+    return RTI::Boolean(is_infinity(*this) || _fedTime != time);
 }
 
 // ----------------------------------------------------------------------------
@@ -304,7 +323,7 @@ RTIfedTime::operator=(const RTIfedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = time._fedTime ;
-    _zero = time._zero ;
+    _positiveInfinity = time._positiveInfinity ;
     return *this ;
 }
 
@@ -314,7 +333,7 @@ RTIfedTime::operator=(const Double &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = time ;
-    _zero = _fedTime != 0 ;
+    _positiveInfinity = 0.0 ;
     return *this ;
 }
 
@@ -435,18 +454,17 @@ RTIfedTime::operator/(const Double &time)
 }
 
 // ----------------------------------------------------------------------------
-// Implementation friends
-// ----------------------------------------------------------------------------
 std::ostream &
 operator<<(std::ostream &s, const FedTime &time)
 {
-    s << rft(time).getTime();
+    if (is_infinity(time))
+	s << infinity_str ;
+    else
+	s << rft(time).getTime();
     return s ;
 }
 
-// ----------------------------------------------------------------------------
-// Global operators
-// ----------------------------------------------------------------------------
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 RTIfedTime
@@ -486,4 +504,4 @@ operator/(const Double &d, const FedTime &time)
 
 } // namespace certi
 
-// $Id: FedTime.cc,v 3.7 2005/04/30 17:06:45 breholee Exp $
+// $Id: FedTime.cc,v 3.8 2005/05/05 20:29:15 breholee Exp $
