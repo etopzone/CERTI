@@ -1,0 +1,104 @@
+CERTI Setup
+===========
+
+The distribution file contains:
+- RTIG (RTI Gateway), central RTI process
+- RTIA (RTI Ambassador), local RTI component, there is one RTIA
+  process with each federate
+- libRTI library : each federate is linked to this library which
+  provides HLA sercices
+- libCERTI library : RTIG, RTIA and libRTI use it
+- test/Billard : test applications (balls moving and interacting on a 
+  board)
+
+Directories
+-----------
+
+The compilation directory is created when unpacking the tar file. It
+can be located anywhere and is just used during compilation and
+installation. Its name is certi-version, where version has to be
+replaced with the actual version number.
+
+The target directory : directory where files are installed. The usual
+Unix sub-directories are used : bin, lib, etc. This directory can be
+/usr or /usr/local for system-wide installations, or $HOME/CERTI in a
+user directory.
+
+The execution directory contains the federation files
+(.fed.). Programs (RTI and federates) are launched from this directory
+
+Archive file
+------------
+
+Usual untar command:
+
+    tar zxvf certi-version.tar.gz
+
+If your tar doesn't accept the z option, first unzip the tar file with
+gunzip then untar with "tar xvf file.tar". A directory named
+certi-version is then created.
+
+Configuration
+-------------
+
+First, the configuration script should be executed in the compilation
+directory. The syntax is :
+
+    env init ./configure options 
+
+where the optional env part is used to modify the environment during
+the compilation
+
+Examples
+
+    ./configure --prefix=$HOME/CERTI
+    env CC=gcc-3.0 CXX=g++-3.0 ./configure --prefix=/usr/local/certi
+
+
+Compilation
+-----------
+
+Next, CERTI should be compiled from the compilation directory, type:
+
+    make
+
+Installation
+------------
+
+This next step copies files from the compilation directory to the
+installation directory (the one in the --prefix option). The command
+is:
+
+    make install
+
+
+Testing with "Billard" application
+----------------------------------
+
+CERTI binaries and federates must appear in the PATH environment
+variable, so maybe you need to add directories to this variable:
+
+    export PATH=$PATH:$HOME/CERTI/bin
+ 
+Programs can now be launched from the execution directory (the one
+with the .fed files. You need to have either the CERTI_HOST
+environment variable set to the name of the machine on which the RTIG
+is running, or the RTIA.dat file containing this name.
+
+Example
+ 
+In 4 different terminals :
+ 
+    export PATH=$PATH:$HOME/CERTI/bin
+    export CERTI_HOST=your_host
+    cd $HOME/CERTI/share/federations
+ 
+Then these lines, one in each terminal:
+ 
+rtig                           # this script starts the RTIG
+billard -fTest -n1	       # this one starts the first "billard" instance
+billard -fTest -n2	       # this one a second "billard"
+billard -ftest -n3	       # this one a third "billard"
+
+Press ENTER in the first "billard" to start, and Ctrl-C to stop (or
+see options ("billard --help") for timeout options.
