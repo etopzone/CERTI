@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GAV.cc,v 3.11 2005/04/30 17:11:33 breholee Exp $
+// $Id: GAV.cc,v 3.12 2005/05/05 20:30:14 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -415,7 +415,7 @@ CParameterHandleValuePairSet::toPHVPS() const
                 valeur[0] = '\0' ;
                 stringToObject(cphvp->_value.value, valeur, longueur);
                 memcpy(cphvp->_value.value, valeur, longueur);
-                delete valeur;
+                delete[] valeur;
 
                 // adding new value to PHVPS
                 phvps->add(cphvp->_param, cphvp->_value.value, longueur);
@@ -428,4 +428,4 @@ CParameterHandleValuePairSet::toPHVPS() const
 
 }
 
-// $Id: GAV.cc,v 3.11 2005/04/30 17:11:33 breholee Exp $
+// $Id: GAV.cc,v 3.12 2005/05/05 20:30:14 breholee Exp $
