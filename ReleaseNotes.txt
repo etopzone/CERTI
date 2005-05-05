@@ -1,47 +1,36 @@
-Release Notes for CERTI 3.1
+Release Notes for CERTI 3.2
 ===========================
 
-Architectures
--------------
+* Architecture
 
-+ GNU/Linux
-+ Windows with Cygwin
+	GNU/Linux
 
-- Solaris: currently broken, fix expected in next minor release
-- HP UX: unknown
+* HLA
 
-HLA
----
+	Implemented services follow HLA 1.3 specification
 
-+ Implemented services follow HLA 1.3 specification
+* What's new
 
-What's new
-----------
+        Data Distribution Management :
+		- createRegion
+		- notifyAboutRegionModification
+		- deleteRegion
+		- registerObjectInstanceWithRegion
+		- associateRegionForUpdates
+		- unassociateRegionForUpdates
+		- subscribeObjectClassAttributesWithRegion
+		- unsubscribeObjectClassWithRegion
+		- subscribeInteractionClassWithRegion
+		- unsubscribeInteractionClassWithRegion
+		- sendInteractionWithRegion
+        Strict HLA 1.3 headers
+	Shared libraries
 
-+ HLA 1.3 compliant .fed parser
-+ New HLA services (some Support Services, Save/Restore (not fully tested),
-  Synchronization points)
-+ Mostly internal changes
+* Installation
 
-Installation
-------------
+	See doc/install.txt
 
-+ See doc/install.en.html
-
-Known bugs
-----------
-
-See bug tracker: https://savannah.nongnu.org/bugs/?group=certi
-
-Misc
-----
-
-+ Home page              http://www.nongnu.org/certi/
-+ Announce mailing list  http://mail.nongnu.org/mailman/listinfo/certi-announce
-
-+ Project page              https://savannah.nongnu.org/projects/certi/
-+ Bug tracking              https://savannah.nongnu.org/bugs/?group=certi
-+ Development mailing list  http://mail.nongnu.org/mailman/listinfo/certi-devel
-
--------------------------------------------------------------------------------
-$Id: ReleaseNotes.txt,v 3.1 2004/04/18 21:01:48 breholee Exp $
+-- 
+Home page    http://www.nongnu.org/certi/
+Project page https://savannah.nongnu.org/projects/certi/
+Known bugs   https://savannah.nongnu.org/bugs/?group=certi
