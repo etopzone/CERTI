@@ -2,28 +2,23 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketMC.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_SOCKET_MC_HH
-#define _CERTI_SOCKET_MC_HH
+#ifndef CERTI_SOCKET_MC_HH
+#define CERTI_SOCKET_MC_HH
 
 #include "Socket.hh"
 #include "NetworkMessage.hh"
@@ -44,18 +39,18 @@ public:
 
     void CreerSocketMC(char *addr, unsigned long port);
     void CreerSocketMC(unsigned long addr, unsigned long port);
-
-    void send(void *Buffer, unsigned long Size)
+    
+    virtual void send(const unsigned char *, size_t)
         throw (NetworkError, NetworkSignal);
-    void receive(void *Buffer, unsigned long Size)
+    virtual void receive(void *Buffer, unsigned long Size)
         throw (NetworkError, NetworkSignal);
 
-    int returnSocket() const ;
-    unsigned long returnAdress() const ;
+    virtual int returnSocket() const ;
+    virtual unsigned long returnAdress() const ;
 
-    int getClass() const { return SOCKET_TYPE_MC ; };
+    virtual int getClass() const { return SOCKET_TYPE_MC ; };
 
-    void close();
+    virtual void close();
 
     void sendMC(NetworkMessage *msg);
     char *receiveMC(NetworkMessage *msg);
@@ -73,8 +68,6 @@ private:
     int _num_msg ;
 };
 
-}
+} // namespace certi
 
-#endif // _CERTI_SOCKET_MC_HH
-
-// $Id: SocketMC.hh,v 3.8 2005/04/30 17:28:55 breholee Exp $
+#endif // CERTI_SOCKET_MC_HH

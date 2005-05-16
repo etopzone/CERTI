@@ -2,14 +2,12 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free softwarE ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.6 2005/04/30 17:32:27 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.7 2005/05/16 18:41:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,12 +31,9 @@
 
 namespace certi {
 
-static pdCDebug D("STCPSOCK", "(s-TCPsok) - ");
+static pdCDebug D("STCPSOCK", __FILE__);
 
-// ----------------------
-// -- SecureTCPSocket --
-// ----------------------
-
+// ----------------------------------------------------------------------------
 SecureTCPSocket::SecureTCPSocket()
     : SocketTCP()
 {
@@ -56,11 +51,7 @@ SecureTCPSocket::SecureTCPSocket()
     PeerName = NULL ;
 }
 
-
-// ----------------------
-// -- SecureTCPSocket --
-// ----------------------
-
+// ----------------------------------------------------------------------------
 SecureTCPSocket::~SecureTCPSocket()
 {
     if (PeerName != NULL) {
@@ -74,42 +65,29 @@ SecureTCPSocket::~SecureTCPSocket()
 #endif // WITH_GSSAPI
 }
 
-
-// -------------
-// -- Emettre --
-// -------------
-
+// ----------------------------------------------------------------------------
 void
-SecureTCPSocket::send(void *Buffer, unsigned long Size)
+SecureTCPSocket::send(const unsigned char *buffer, size_t size)
     throw (NetworkError, NetworkSignal)
 {
     D.Out(pdTrace, "SSocket: Sending.");
 
 #ifdef HLA_USES_GSSAPI
-
     // If the GSSAPI session is not Initialized, start the HandShake.
-
     if (!SessionInitialized)
         sendInitialToken();
 
     // Send Message
-
-    sendMessage(Buffer, Size);
-
+    sendMessage(buffer, size);
 #else
-
-    SocketTCP::send(Buffer, Size);
-
+    SocketTCP::send(buffer, size);
 #endif
 }
 
 #ifdef WITH_GSSAPI
-
-// ----------------
-// -- GetMessage --
-// ----------------
-
-void SecureTCPSocket::getMessage()
+// ----------------------------------------------------------------------------
+void
+SecureTCPSocket::getMessage()
 {
     if (DecryptedMessageReady) {
         D.Out(pdExcept, "Decrypted message already exists.");
@@ -127,13 +105,9 @@ void SecureTCPSocket::getMessage()
 
     DecryptedMessageReady = true ;
 }
-
 #endif // WITH_GSSAPI
 
-// --------------
-// -- GetClass --
-// --------------
-
+// ----------------------------------------------------------------------------
 int
 SecureTCPSocket::getClass() const
 {
@@ -145,12 +119,9 @@ SecureTCPSocket::getClass() const
 }
 
 #ifdef WITH_GSSAPI
-
-// --------------------
-// -- GetMessagePart --
-// --------------------
-
-void SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
+// ----------------------------------------------------------------------------
+void
+SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
 {
     if (!DecryptedMessageReady)
         getMessage();
@@ -176,13 +147,9 @@ void SecureTCPSocket::getMessagePart(void *Buffer, unsigned long Size)
         DecryptedMessageReady = false ;
     }
 }
-
 #endif // WITH_GSSAPI
 
-// -----------------
-// -- GetPeerName --
-// -----------------
-
+// ----------------------------------------------------------------------------
 const char *
 SecureTCPSocket::getPeerName()
 {
@@ -199,11 +166,7 @@ SecureTCPSocket::getPeerName()
     throw RTIinternalError("No peer's principal name.");
 }
 
-
-// --------------
-// -- Recevoir --
-// --------------
-
+// ----------------------------------------------------------------------------
 void
 SecureTCPSocket::receive(void *Buffer, unsigned long Size)
     throw (NetworkError, NetworkSignal)
@@ -229,12 +192,9 @@ SecureTCPSocket::receive(void *Buffer, unsigned long Size)
 }
 
 #ifdef WITH_GSSAPI
-
-// ----------------------
-// -- RecvInitialToken --
-// ----------------------
-
-void SecureTCPSocket::receiveInitialToken()
+// ----------------------------------------------------------------------------
+void
+SecureTCPSocket::receiveInitialToken()
 {
     D.Out(pdInit, "Receiving Initial Token.");
 
@@ -251,12 +211,9 @@ void SecureTCPSocket::receiveInitialToken()
     SessionInitialized = true ;
 }
 
-
-// ----------------------
-// -- SendInitialToken --
-// ----------------------
-
-void SecureTCPSocket::sendInitialToken()
+// ----------------------------------------------------------------------------
+void
+SecureTCPSocket::sendInitialToken()
 {
     uid_t CurrentUID ;
     struct passwd *PasswdEntry ;
@@ -286,12 +243,9 @@ void SecureTCPSocket::sendInitialToken()
     SessionInitialized = true ;
 }
 
-
-// -----------------
-// -- SendMessage --
-// -----------------
-
-void SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
+// ----------------------------------------------------------------------------
+void
+SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 {
     gss_buffer_desc OutputToken ;
 
@@ -300,9 +254,8 @@ void SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
     GSSHandler->sendMessage((SocketTCP *)this, &OutputToken);
 }
-
 #endif // WITH_GSSAPI
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.6 2005/04/30 17:32:27 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.7 2005/05/16 18:41:06 breholee Exp $
