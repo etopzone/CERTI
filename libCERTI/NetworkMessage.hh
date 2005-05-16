@@ -2,14 +2,12 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) Any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,11 +17,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.19 2005/04/30 17:00:21 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.20 2005/05/16 08:31:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_NETWORK_MESSAGE
-#define _CERTI_NETWORK_MESSAGE
+#ifndef CERTI_NETWORK_MESSAGE_HH
+#define CERTI_NETWORK_MESSAGE_HH
 
 #include "fedtime.hh"
 #include "Exception.hh"
@@ -184,14 +182,7 @@ public:
     };
 
 public :
-
-    // --------------------
-    // -- Public Methods --
-    // --------------------
-
-    // Constructor & Destructor
     NetworkMessage();
-    ~NetworkMessage();
 
     // Display method
     void display(const char *);
@@ -210,21 +201,12 @@ public :
     // See RemoveParameter for explanations.
     void removeAttribute(UShort Rank);
 
-    // ----------------------------
-    // -- Network Public Methods --(cf. NetworkMessage_RW.cc)
-    // ----------------------------
-
     // Read and Write NetworkMessage Objects to and from Socket objects.
-
     void write(Socket *Socket)
         throw (NetworkError, NetworkSignal);
 
     void read(Socket *Socket)
         throw (NetworkError, NetworkSignal);
-
-    // ------------------------------
-    // -- Attribute Access Methods --
-    // ------------------------------
 
     // Value Array Management
     void setValue(int Rank, const char *Value)
@@ -244,10 +226,6 @@ public :
     ParameterValue *getParamValueArray();
 
     void setAHS(const AttributeHandle *, int);
-
-    // -----------------------
-    // -- Public Attributes --
-    // -----------------------
 
     Type type ;
     TypeException exception ;
@@ -299,18 +277,6 @@ public :
     void setTag(const char *new_tag) { strcpy(tag, new_tag); }
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
-    HeaderStruct Header ;
-    AttributeValue ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
-
-    // ---------------------
-    // -- Private Methods --(cf. NetworkMessage_RW.cc)
-    // ---------------------
-
     // Read a Message Body from a Socket. Should be called after ReadHeader.
     void readBody(Socket *Socket);
 
@@ -330,17 +296,19 @@ private:
     bool writeHeader(Socket *Socket);
 
     // -- Others Private Read Methods --
-    void readLabel(MessageBody *Body);
-    void readTag(MessageBody *Body);
-    void readFederationName(MessageBody *Body);
-    void readFederateName(MessageBody *Body);
+    void readLabel(MessageBody &);
+    void readTag(MessageBody &);
+    void readFederationName(MessageBody &);
+    void readFederateName(MessageBody &);
 
+    HeaderStruct Header ;
+    AttributeValue ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
 #define TAILLE_MSG_RESEAU sizeof(NetworkMessage)
 
-}
+} // namespace certi
 
-#endif // _CERTI_NETWORK_MESSAGE
+#endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.19 2005/04/30 17:00:21 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.20 2005/05/16 08:31:06 breholee Exp $

@@ -1,25 +1,22 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.11 2004/01/09 16:13:49 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.12 2005/05/16 08:31:05 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,10 +31,7 @@ using std::vector ;
 
 namespace certi {
 
-// -------------
-// -- Affiche --
-// -------------
-
+// ----------------------------------------------------------------------------
 void
 NetworkMessage::display(const char *s)
 {
@@ -52,13 +46,9 @@ NetworkMessage::display(const char *s)
     printf(" handleArraySize = %d\n", handleArraySize);
 }
 
-// --------------------
-// -- NetworkMessage --
-// --------------------
-
+// ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-    : type(NOT_USED),
-      exception(e_NO_EXCEPTION)
+    : type(NOT_USED), exception(e_NO_EXCEPTION)
 {
     number = 0 ;
 
@@ -84,90 +74,58 @@ NetworkMessage::NetworkMessage()
     handleArraySize = 0 ;
 }
 
-
-// ---------------------
-// -- ~NetworkMessage --
-// ---------------------
-
-NetworkMessage::~NetworkMessage()
-{
-}
-
-
-// -------------------------
-// -- GetAttribValueArray --
-// -------------------------
-
+// ----------------------------------------------------------------------------
 AttributeValue *
 NetworkMessage::getAttribValueArray()
 {
-    int i ;
     AttributeValue *NewValueArray = NULL ;
 
-    NewValueArray = (AttributeValue *) calloc(handleArraySize,
-                                              sizeof(AttributeValue));
+    NewValueArray = (AttributeValue *) calloc(handleArraySize, sizeof(AttributeValue));
 
     if (NewValueArray == NULL)
         throw RTIinternalError("No memory.");
 
-    for (i = 0 ; i <handleArraySize ; i++)
+    for (int i = 0 ; i <handleArraySize ; i++)
         getValue(i, NewValueArray[i]);
 
     return NewValueArray ;
 }
 
-
-// ------------------------
-// -- GetParamValueArray --
-// ------------------------
-
+// ----------------------------------------------------------------------------
 ParameterValue *
 NetworkMessage::getParamValueArray()
 {
-    int i ;
     ParameterValue *NewValueArray = NULL ;
 
-    NewValueArray = (ParameterValue *) calloc(handleArraySize,
-                                              sizeof(ParameterValue));
+    NewValueArray = (ParameterValue *) calloc(handleArraySize, sizeof(ParameterValue));
 
     if (NewValueArray == NULL)
         throw RTIinternalError("No memory.");
 
-    for (i = 0 ; i < handleArraySize ; i++)
+    for (int i = 0 ; i < handleArraySize ; i++)
         getValue(i, NewValueArray[i]);
 
     return NewValueArray ;
 }
 
-
-// --------------
-// -- GetValue --
-// --------------
-
+// ----------------------------------------------------------------------------
 char *
 NetworkMessage::getValue(int Rank, char *Value)
     throw (RTIinternalError)
 {
     // Pre-Checking
-
     if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
-
     if (Value != NULL) {
         strcpy(Value, ValueArray[Rank]);
         return NULL ;
     } else
         return strdup(ValueArray[Rank]);
-
 }
 
-
-// ---------------------
-// -- RemoveAttribute --
-// ---------------------
-
+// ----------------------------------------------------------------------------
 void
 NetworkMessage::removeAttribute(UShort Rank)
 {
@@ -185,11 +143,7 @@ NetworkMessage::removeAttribute(UShort Rank)
     handleArraySize -- ;
 }
 
-
-// ---------------------
-// -- RemoveParameter --
-// ---------------------
-
+// ----------------------------------------------------------------------------
 void
 NetworkMessage::removeParameter(UShort Rank)
 {
@@ -207,11 +161,7 @@ NetworkMessage::removeParameter(UShort Rank)
     handleArraySize -- ;
 }
 
-
-// --------------
-// -- SetValue --
-// --------------
-
+// ----------------------------------------------------------------------------
 void
 NetworkMessage::setValue(int Rank, const char *Value)
     throw (RTIinternalError)
@@ -229,6 +179,29 @@ NetworkMessage::setValue(int Rank, const char *Value)
 }
 
 // ----------------------------------------------------------------------------
+// read
+void
+NetworkMessage::read(Socket *socket)
+    throw (NetworkError, NetworkSignal)
+{
+    bool has_body = readHeader(socket);
+
+    if (has_body)
+        readBody(socket);
+}
+
+// ----------------------------------------------------------------------------
+void
+NetworkMessage::write(Socket *socket)
+    throw (NetworkError, NetworkSignal)
+{
+    bool needs_body = writeHeader(socket);
+
+    if (needs_body)
+        writeBody(socket);
+}
+
+// ----------------------------------------------------------------------------
 void
 NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 {
@@ -239,6 +212,35 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
     }
 }
 
+// ----------------------------------------------------------------------------
+void
+NetworkMessage::readLabel(MessageBody &body)
+{
+    body.readString(label, MAX_USER_TAG_LENGTH);
 }
 
-// $Id: NetworkMessage.cc,v 3.11 2004/01/09 16:13:49 breholee Exp $
+// ----------------------------------------------------------------------------
+//! Read the tag contained into the message.
+void NetworkMessage::readTag(MessageBody &body)
+{
+    body.readString(tag, MAX_USER_TAG_LENGTH);
+}
+
+// ----------------------------------------------------------------------------
+//! Read the federation name.
+void
+NetworkMessage::readFederationName(MessageBody &body)
+{
+    body.readString(federationName, MAX_FEDERATION_NAME_LENGTH);
+}
+
+// ----------------------------------------------------------------------------
+void
+NetworkMessage::readFederateName(MessageBody &body)
+{
+    body.readString(federateName, MAX_FEDERATE_NAME_LENGTH);
+}
+
+} // namespace certi
+
+// $Id: NetworkMessage.cc,v 3.12 2005/05/16 08:31:05 breholee Exp $
