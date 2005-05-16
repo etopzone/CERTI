@@ -2,33 +2,30 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketUDP.hh,v 3.6 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_SOCKET_UDP_HH
-#define _CERTI_SOCKET_UDP_HH
+#ifndef CERTI_SOCKET_UDP_HH
+#define CERTI_SOCKET_UDP_HH
 
 #include "Socket.hh"
 
 #include <sys/socket.h>
 #include <netdb.h>
+
+#define BUFFER_MAXSIZE 2000
 
 namespace certi {
 
@@ -36,57 +33,45 @@ class SocketUDP : public Socket
 {
 public :
     SocketUDP();
-    ~SocketUDP();
+    virtual ~SocketUDP();
 
-    // ---------------------------------------------
-    // -- Fonctions heritee de la classe Socket --
-    // ---------------------------------------------
+    // Socket
+    virtual void send(const unsigned char *, size_t)
+        throw (NetworkError, NetworkSignal);
 
-    void send(void * Message, unsigned long Size)
+    virtual void receive(void * Message, unsigned long Size)
         throw (NetworkError,
                NetworkSignal);
 
-    void receive(void * Message, unsigned long Size)
-        throw (NetworkError,
-               NetworkSignal);
+    virtual bool isDataReady() const ;
 
-    bool isDataReady() const ;
+    virtual int getClass() const { return SOCKET_TYPE_UDP ; };
+    virtual int returnSocket() const ;
 
-    int getClass() const { return SOCKET_TYPE_UDP ; };
-    int returnSocket() const ;
+    virtual unsigned long returnAdress() const ;
 
-    unsigned long returnAdress() const ;
+    virtual void close();
 
-    void close();
-
-    // --------------------------
-    // -- UDP Specific Methods --
-    // --------------------------
-
+    // SocketUDP
     void createUDPClient(unsigned int port, char *nom_serveur)
-        throw (NetworkError,
-               NetworkSignal);
-    void createUDPServer(unsigned int port)
-        throw (NetworkError,
-               NetworkSignal);
+        throw (NetworkError, NetworkSignal);
 
-    void attach(int socket_ouvert, unsigned long Adresse,
-                unsigned int port)
-        throw (NetworkError,
-               NetworkSignal);
+    void createUDPServer(unsigned int port)
+        throw (NetworkError, NetworkSignal);
+
+    void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
+        throw (NetworkError, NetworkSignal);
 
     unsigned int getPort() const ;
     unsigned long getAddr() const ;
 
 private:
+    void setPort(unsigned int port);
 
-#define BUFFER_MAXSIZE 2000
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
-    //! TAG indiquant si c'est une liaison logique ou physique
-    bool PhysicalLink ;
+    int bind();
+    int open();
+    
+    bool PhysicalLink ; ///< tak indicating physical or logical link
 
     long _socket_udp ;
     struct sockaddr_in sock_local ;
@@ -106,19 +91,8 @@ private:
     char Buffer[4096] ;
 
     struct hostent * hp_local ;
-
-    // ---------------------
-    // -- Private Methods --
-    // ---------------------
-
-    void setPort(unsigned int port);
-
-    int bind();
-    int open();
 };
-}
 
-#endif // _CERTI_SOCKET_UDP_HH
+} // namespace certi
 
-// $Id: SocketUDP.hh,v 3.6 2005/04/30 17:28:55 breholee Exp $
-
+#endif // CERTI_SOCKET_UDP_HH

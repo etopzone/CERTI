@@ -2,24 +2,19 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketUDP.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +36,6 @@ namespace certi {
 static pdCDebug D("SOCKUDP", "(SocketUDP) - ");
 
 // ----------------------------------------------------------------------------
-//! attach.
 void
 SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
     throw (NetworkError,
@@ -65,8 +59,8 @@ SocketUDP::attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
 }
 
 // ----------------------------------------------------------------------------
-//! bind.
-int SocketUDP::bind()
+int
+SocketUDP::bind()
 {
     assert(!_est_init_udp);
 
@@ -143,7 +137,7 @@ SocketUDP::createUDPServer(unsigned int port)
 
     // Building Local Address
     memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
-    hp_local = (struct hostent *)malloc(sizeof(struct hostent));
+    hp_local = (struct hostent *) malloc(sizeof(struct hostent));
 
     gethostname(localhost, 4096);
 
@@ -158,24 +152,20 @@ SocketUDP::createUDPServer(unsigned int port)
     sock_local.sin_family = hp_local->h_addrtype ;
     sock_local.sin_port = htons((u_short)port);
 
+    if (!open()) {
+	perror("SocketUDP: Open");
+	throw NetworkError("");
+    }
 
-    if (!open())
-        {
-            perror("SocketUDP: Open");
-            throw NetworkError("");
-        }
-
-    if (!bind())
-        {
-            perror("SocketUDP: Bind");
-            throw NetworkError("");
-        }
+    if (!bind()) {
+	perror("SocketUDP: Bind");
+	throw NetworkError("");
+    }
 
     _est_init_udp = true ;
 }
 
 // ----------------------------------------------------------------------------
-//! Constructor.
 SocketUDP::SocketUDP()
 {
     _est_init_udp = false ;
@@ -190,7 +180,6 @@ SocketUDP::SocketUDP()
 }
 
 // ----------------------------------------------------------------------------
-//! Destructor.
 SocketUDP::~SocketUDP()
 {
     // Fermeture
@@ -212,31 +201,26 @@ SocketUDP::~SocketUDP()
 }
 
 // ----------------------------------------------------------------------------
-//! send.
-void SocketUDP::send(void * Message, unsigned long Size)
-    throw (NetworkError,
-           NetworkSignal)
+void
+SocketUDP::send(const unsigned char * Message, size_t Size)
+    throw (NetworkError, NetworkSignal)
 {
-    long nSent = 0 ;
-    // long expected_size = Size ;
-
     D.Out(pdDebug, "Beginning to send UDP message... Size = %ld", Size);
-
     assert(_est_init_udp);
 
-    nSent = sendto(_socket_udp, (char *)Message, Size, 0,
-                   (struct sockaddr *)&sock_distant, sizeof(sock_distant));
-    if (nSent < 0) {
+    int sent = sendto(_socket_udp, Message, Size, 0,
+		      (struct sockaddr *)&sock_distant, sizeof(sock_distant));
+    if (sent < 0) {
         perror("Sendto");
         throw NetworkError("");
     };
     D.Out(pdDebug, "Sent UDP message.");
-    SentBytesCount += nSent ;
+    SentBytesCount += sent ;
 }
 
 // ----------------------------------------------------------------------------
-//! close.
-void SocketUDP::close()
+void
+SocketUDP::close()
 {
     if (_est_init_udp) {
         D.Out(pdDebug, "Closing UDP object...");
@@ -249,7 +233,6 @@ void SocketUDP::close()
 }
 
 // ----------------------------------------------------------------------------
-//! getAddr.
 unsigned long
 SocketUDP::getAddr() const
 {
@@ -258,7 +241,6 @@ SocketUDP::getAddr() const
 }
 
 // ----------------------------------------------------------------------------
-//! getPort.
 unsigned int
 SocketUDP::getPort() const
 {
@@ -277,7 +259,6 @@ SocketUDP::isDataReady() const
 }
 
 // ----------------------------------------------------------------------------
-//! open.
 int
 SocketUDP::open()
 {
@@ -286,7 +267,6 @@ SocketUDP::open()
 }
 
 // ----------------------------------------------------------------------------
-//! receive.
 void
 SocketUDP::receive(void * Message, unsigned long Size)
     throw (NetworkError, NetworkSignal)
@@ -324,7 +304,6 @@ SocketUDP::receive(void * Message, unsigned long Size)
 }
 
 // ----------------------------------------------------------------------------
-//! returnAdress.
 unsigned long
 SocketUDP::returnAdress() const
 {
@@ -333,7 +312,6 @@ SocketUDP::returnAdress() const
 }
 
 // ----------------------------------------------------------------------------
-//! returnSocket.
 int
 SocketUDP::returnSocket() const
 {
@@ -342,13 +320,11 @@ SocketUDP::returnSocket() const
 }
 
 // ----------------------------------------------------------------------------
-//! setPort.
-void SocketUDP::setPort(unsigned int port)
+void
+SocketUDP::setPort(unsigned int port)
 {
     D.Out(pdDebug, "Affectation du Port UDP...");
     sock_local.sin_port=port ;
 }
 
-}
-
-// $Id: SocketUDP.cc,v 3.10 2005/04/30 17:28:55 breholee Exp $
+} // namespace certi

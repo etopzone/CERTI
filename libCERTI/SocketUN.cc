@@ -2,24 +2,19 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketUN.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,7 +41,8 @@ namespace certi {
 
 // ----------------------------------------------------------------------------
 //! Called by server to open the socket and wait for the connection.
-void SocketUN::acceptUN()
+void
+SocketUN::acceptUN()
 {
     struct sockaddr_un nom_client, nom_serveur ;
     socklen_t lg_nom ;
@@ -101,7 +97,8 @@ void SocketUN::acceptUN()
 
 // ----------------------------------------------------------------------------
 //! Called by client to connect.
-void SocketUN::connectUN(pid_t Server_pid)
+void
+SocketUN::connectUN(pid_t Server_pid)
 {
     int Attempt = 0 ;
     int Result ;
@@ -204,7 +201,7 @@ SocketUN::~SocketUN()
 // ----------------------------------------------------------------------------
 //! send.
 void
-SocketUN::send(void *buffer, unsigned long size)
+SocketUN::send(const unsigned char *buffer, size_t size)
     throw (NetworkError, NetworkSignal)
 {
     long sent = 0 ;
@@ -263,7 +260,8 @@ void SocketUN::error(const char *msg)
 /*! Indicates whether any data as already been read from the system socket
   and is waiting in the internal buffer
 */
-bool SocketUN::isDataReady()
+bool
+SocketUN::isDataReady()
 {
 #ifdef SOCKUN_BUFFER_LENGTH
     return RBLength > 0 ;
@@ -273,64 +271,59 @@ bool SocketUN::isDataReady()
 }
 
 // ----------------------------------------------------------------------------
-//! receive.
-void SocketUN::receive(void *buffer, unsigned long Size)
-    throw (NetworkError,
-           NetworkSignal)
+void
+SocketUN::receive(const unsigned char *buffer, size_t Size)
+    throw (NetworkError, NetworkSignal)
 {
     assert(_est_init_un);
 
     long nReceived = 0 ;
+
 #ifndef SOCKUN_BUFFER_LENGTH
     long RBLength = 0 ;
 #endif
 
     pD->Out(pdTrace, "Beginning to receive UN message...");
 
-    while (RBLength < Size)
-        {
+    while (RBLength < Size) {
 
 #ifdef SOCKUN_BUFFER_LENGTH
-            nReceived = read(_socket_un,
-                             ReadBuffer + RBLength,
-                             SOCKUN_BUFFER_LENGTH - RBLength);
+	nReceived = read(_socket_un, ReadBuffer + RBLength, SOCKUN_BUFFER_LENGTH - RBLength);
 #else
-            nReceived = read(_socket_un,
-                             (char *) buffer + RBLength,
-                             Size - RBLength);
+	nReceived = read(_socket_un, (char *) buffer + RBLength, Size - RBLength);
 #endif
 
-            if (nReceived < 0) {
-                pD->Out(pdExcept, "Error while receiving on UN socket.");
+	if (nReceived < 0) {
+	    pD->Out(pdExcept, "Error while receiving on UN socket.");
 
-                // Incoming Signal
-                if (errno == EINTR) {
-                    if (HandlerType == stSignalInterrupt)
-                        throw NetworkSignal("");
-                    else
-                        pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
-                }
-                // Other errors
-                else {
-                    perror("UN Socket(RecevoirUN) : ");
-                    throw NetworkError("Error while receiving UN message.");
-                }
-            }
-
-            if (nReceived == 0) {
-                pD->Out(pdExcept, "UN connection has been closed by peer.");
-                throw NetworkError("Connection closed by client.");
-            }
-
-            if (nReceived > 0) {
-                RBLength += nReceived ;
-                RcvdBytesCount += nReceived ;
-                pD->Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
-            }
-        }
-
+	    // Incoming Signal
+	    if (errno == EINTR) {
+		if (HandlerType == stSignalInterrupt)
+		    throw NetworkSignal("");
+		else
+		    pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
+	    }
+	    // Other errors
+	    else {
+		perror("UN Socket(RecevoirUN) : ");
+		throw NetworkError("Error while receiving UN message.");
+	    }
+	}
+	
+	if (nReceived == 0) {
+	    pD->Out(pdExcept, "UN connection has been closed by peer.");
+	    throw NetworkError("Connection closed by client.");
+	}
+	
+	if (nReceived > 0) {
+	    RBLength += nReceived ;
+	    RcvdBytesCount += nReceived ;
+	    pD->Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
+	}
+    }
+    
 #ifdef SOCKUN_BUFFER_LENGTH
-    memcpy(buffer, (void *) ReadBuffer, Size);
+    memcpy(const_cast<unsigned char *>(buffer), ReadBuffer, Size);
     memmove((void *) ReadBuffer,
             (void *)(ReadBuffer + Size),
             RBLength - Size);
@@ -338,6 +331,4 @@ void SocketUN::receive(void *buffer, unsigned long Size)
 #endif
 }
 
-}
-
-// $Id: SocketUN.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
+} // namespace certi

@@ -2,28 +2,23 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketUN.hh,v 3.7 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_SOCKET_UN_HH
-#define _CERTI_SOCKET_UN_HH
+#ifndef CERTI_SOCKET_UN_HH
+#define CERTI_SOCKET_UN_HH
 
 #include "Socket.hh"
 #include "PrettyDebug.hh"
@@ -60,30 +55,19 @@ typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
 class SocketUN
 {
 public:
-    // ------------------------------
-    // -- Constructor / Destructor --
-    // ------------------------------
     SocketUN(SignalHandlerType theType = stSignalInterrupt);
     ~SocketUN();
 
-    // ----------------------------
-    // -- Initialization Methods --
-    // ----------------------------
     void connectUN(pid_t Server_pid);
     void acceptUN();
 
-    // -----------------
-    // -- R/W Methods --
-    // -----------------
     bool isDataReady();
 
-    void send(void *Buffer, unsigned long Size)
-        throw (NetworkError,
-               NetworkSignal);
+    void send(const unsigned char *, size_t)
+        throw (NetworkError, NetworkSignal);
 
-    void receive(void *Buffer, unsigned long Size)
-        throw (NetworkError,
-               NetworkSignal);
+    void receive(const unsigned char *, size_t)
+        throw (NetworkError, NetworkSignal);
 
 protected:
     void error(const char *);
@@ -98,11 +82,6 @@ protected:
     std::string name ;
 
 private:
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
-
     ByteCount SentBytesCount ;
     ByteCount RcvdBytesCount ;
 
@@ -110,7 +89,6 @@ private:
     int sock_connect ;
 
     pdCDebug *pD ;
-
 
 #ifdef SOCKUN_BUFFER_LENGTH
     // This class can use a buffer to reduce the number of systems
@@ -121,8 +99,7 @@ private:
     unsigned long RBLength ;
 #endif
 };
-}
 
-#endif // _CERTI_SOCKET_UN_HH
+} // namespace certi
 
-// $Id: SocketUN.hh,v 3.7 2005/04/30 17:28:55 breholee Exp $
+#endif // CERTI_SOCKET_UN_HH
