@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.14 2005/04/30 14:30:30 breholee Exp $
+## $Id: Makefile.am,v 3.15 2005/05/16 20:23:55 breholee Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -7,7 +7,8 @@ feddir = $(prefix)/share/federations
 MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/libCERTI		\
--I$(top_srcdir)/test/libgraphc @XCFLAGS@ @WITH_X11@ @WITH_CYGWIN@
+-I$(top_srcdir)/test/libgraphc @XML_CFLAGS@ @HAVE_XML@ @XCFLAGS@	\
+@WITH_X11@ @WITH_CYGWIN@
 
 bin_PROGRAMS = billard
 
@@ -20,6 +21,7 @@ billard_SOURCES = Billard.cc BillardDDM.cc Ball.cc ColoredBall.cc	\
 Display.cc main.cc cmdline.c getopt.c getopt1.c
 
 LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
--L$(top_builddir)/libCERTI -lRTI -lgraph -lCERTI @XLIBS@
+-L$(top_builddir)/libCERTI -lRTI -lgraph -lCERTI @XLIBS@		\
+@ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@
 
 EXTRA_DIST = Test.fed Test.xml
