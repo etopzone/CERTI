@@ -2,24 +2,21 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Message.hh,v 3.28 2005/04/30 16:58:14 breholee Exp $
+// $Id: Message.hh,v 3.29 2005/05/16 08:26:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_MESSAGE_HH
@@ -267,14 +264,6 @@ public:
     // containing the actual Attrib/Param values. You must FREE this structure.
     AttributeValue *getValueArray();
 
-    // Strings Access
-
-    // All the Set* methods check the length of the string, and throw
-    // ValueLengthExceeded if the new string is too long.
-
-    // All the Get* methods return a pointer on the actual stored value.
-    // This pointer is READ-ONLY, and should not be de-allocated.
-
     const char *getLabel() const { return label ; };
     void setLabel(const char *new_label);
 
@@ -414,16 +403,11 @@ public:
     UShort handleArraySize ;
     AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
 
-    Message& operator = (const Message&);
+    Message &operator=(const Message &);
 
     void display(char *);
 
 private:
-
-    // ---------------------
-    // -- Private Methods --(cf. Message_RW.cc)
-    // ---------------------
-
     // Read a Message Body from a Socket. Should be called after
     // ReadHeader.
     void readBody(SocketUN *Socket);
@@ -446,24 +430,19 @@ private:
     bool writeHeader(SocketUN *Socket);
 
     // -- Other Private Read Methods --
-    void readHandleArray(MessageBody *Body);
-    void readLabel(MessageBody *Body);
-    void readName(MessageBody *Body);
-    void readFederationName(MessageBody *Body);
-    void readFederateName(MessageBody *Body);
-    void readResignAction(MessageBody *Body);
-    void readTag(MessageBody *Body);
-    void readValueArray(MessageBody *Body);
+    void readHandleArray(MessageBody &);
+    void readLabel(MessageBody &);
+    void readName(MessageBody &);
+    void readFederationName(MessageBody &);
+    void readFederateName(MessageBody &);
+    void readResignAction(MessageBody &);
+    void readTag(MessageBody &);
+    void readValueArray(MessageBody &);
 
     // -- Other Private Write Methods --
-    void writeHandleArray(MessageBody *Body);
-    void writeResignAction(MessageBody *Body);
-    void writeValueArray(MessageBody *Body);
-
-
-    // ------------------------
-    // -- Private Attributes --
-    // ------------------------
+    void writeHandleArray(MessageBody &);
+    void writeResignAction(MessageBody &);
+    void writeValueArray(MessageBody &);
 
     MessageHeader header ;
     char label[MAX_USER_TAG_LENGTH + 1] ;
@@ -478,4 +457,4 @@ private:
 
 #endif // _CERTI_MESSAGE_HH
 
-// $Id: Message.hh,v 3.28 2005/04/30 16:58:14 breholee Exp $
+// $Id: Message.hh,v 3.29 2005/05/16 08:26:20 breholee Exp $

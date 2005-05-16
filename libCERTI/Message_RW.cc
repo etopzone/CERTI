@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.24 2005/04/30 16:58:14 breholee Exp $
+// $Id: Message_RW.cc,v 3.25 2005/05/16 08:26:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -58,14 +58,14 @@ Message::readBody(SocketUN *socket)
 {
     assert(header.bodySize > 0);
 
-    MessageBody Body(header.bodySize);
+    MessageBody body(header.bodySize);
 
     // 1. Read Body from socket.
-    socket->receive((void *) Body.getBuffer(), header.bodySize);
+    socket->receive(body.getBuffer(), header.bodySize);
 
     // 3. Read informations from Message Body according to message type.
     if (header.exception != e_NO_EXCEPTION) {
-        Body.readString(exceptionReason, MAX_EXCEPTION_REASON_LENGTH);
+        body.readString(exceptionReason, MAX_EXCEPTION_REASON_LENGTH);
     }
     else {
 
@@ -76,14 +76,14 @@ Message::readBody(SocketUN *socket)
 
           case CREATE_FEDERATION_EXECUTION:
           case DESTROY_FEDERATION_EXECUTION:
-            readFederationName(&Body);
+            readFederationName(body);
             break ;
 
           case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
-            readLabel(&Body);
-            readTag(&Body);
+            readLabel(body);
+            readTag(body);
             break ;
 
           case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
@@ -94,22 +94,22 @@ Message::readBody(SocketUN *socket)
           case REQUEST_FEDERATION_RESTORE:
           case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
           case INITIATE_FEDERATE_RESTORE:
-            readLabel(&Body);
+            readLabel(body);
             break ;
 
           case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
           case QUERY_ATTRIBUTE_OWNERSHIP:
             // B.c. Objectid, AttribHandle and Tag.
-            object = Body.readLongInt();
-            attribute = Body.readShortInt();
-            readTag(&Body);
+            object = body.readLongInt();
+            attribute = body.readShortInt();
+            readTag(body);
             break ;
 
           case ATTRIBUTE_IS_NOT_OWNED:
           case INFORM_ATTRIBUTE_OWNERSHIP:
-            object = Body.readLongInt();
-            attribute = Body.readShortInt();
-            federate = Body.readShortInt();
+            object = body.readLongInt();
+            attribute = body.readShortInt();
+            federate = body.readShortInt();
             break ;
 
           case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
@@ -117,10 +117,10 @@ Message::readBody(SocketUN *socket)
           case ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
           case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-            object = Body.readLongInt();
-            handleArraySize = Body.readShortInt();
-            readHandleArray(&Body);
-            readTag(&Body);
+            object = body.readLongInt();
+            handleArraySize = body.readShortInt();
+            readHandleArray(body);
+            readTag(body);
             break ;
 
           case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
@@ -131,108 +131,108 @@ Message::readBody(SocketUN *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-            object = Body.readLongInt();
-            handleArraySize = Body.readShortInt();
-            readHandleArray(&Body);
+            object = body.readLongInt();
+            handleArraySize = body.readShortInt();
+            readHandleArray(body);
             break ;
 
 	  case DDM_ASSOCIATE_REGION:
-	    object = Body.readLongInt();
-	    region = Body.readLongInt();
-	    boolean = Body.readLongInt();
-	    handleArraySize = Body.readShortInt();
-            readHandleArray(&Body);
+	    object = body.readLongInt();
+	    region = body.readLongInt();
+	    boolean = body.readLongInt();
+	    handleArraySize = body.readShortInt();
+            readHandleArray(body);
 	    break ;
 
 	  case DDM_REGISTER_OBJECT:
-	    objectClass = Body.readLongInt();
-	    object = Body.readLongInt();
-	    readTag(&Body);
-	    handleArraySize = Body.readShortInt();
-            readHandleArray(&Body);
-	    readRegions(Body);
+	    objectClass = body.readLongInt();
+	    object = body.readLongInt();
+	    readTag(body);
+	    handleArraySize = body.readShortInt();
+            readHandleArray(body);
+	    readRegions(body);
 	    break ;
 
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
-	    objectClass = Body.readLongInt();
-	    region = Body.readLongInt();
-	    boolean = Body.readLongInt();
-	    handleArraySize = Body.readShortInt();
-            readHandleArray(&Body);
+	    objectClass = body.readLongInt();
+	    region = body.readLongInt();
+	    boolean = body.readLongInt();
+	    handleArraySize = body.readShortInt();
+            readHandleArray(body);
 	    break ;
 
 	  case DDM_UNASSOCIATE_REGION:
-	    object = Body.readLongInt();
-	    region = Body.readLongInt();
+	    object = body.readLongInt();
+	    region = body.readLongInt();
 	    break ;
 
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:	    
-	    objectClass = Body.readLongInt();
-	    region = Body.readLongInt();
+	    objectClass = body.readLongInt();
+	    region = body.readLongInt();
 	    break ;
 
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:
-	    interactionClass = Body.readLongInt();
-	    region = Body.readLongInt();
-	    boolean = Body.readLongInt();
+	    interactionClass = body.readLongInt();
+	    region = body.readLongInt();
+	    boolean = body.readLongInt();
 	    break ;
 	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
-            objectClass = Body.readLongInt();
-            attribute = Body.readLongInt();
-            space = Body.readLongInt();
+            objectClass = body.readLongInt();
+            attribute = body.readLongInt();
+            space = body.readLongInt();
             break ;
 
           case DDM_CREATE_REGION:
-            space = Body.readLongInt();
-            number = Body.readLongInt();
-            region = Body.readLongInt();
+            space = body.readLongInt();
+            number = body.readLongInt();
+            region = body.readLongInt();
             break ;
 
           case GET_INTERACTION_SPACE_HANDLE:
-            interactionClass = Body.readLongInt();
-            space = Body.readLongInt();
+            interactionClass = body.readLongInt();
+            space = body.readLongInt();
             break ;
 
             // --- MessageJ_R_Struct --
 
           case JOIN_FEDERATION_EXECUTION:
-            readFederationName(&Body);
-            readFederateName(&Body);
+            readFederationName(body);
+            readFederateName(body);
             break ;
 
             // --- MessageO_I_Struct ---
 
           case PUBLISH_OBJECT_CLASS:
           case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
-            readHandleArray(&Body);
+            readHandleArray(body);
             break ;
 
           case REGISTER_OBJECT_INSTANCE:
-            object = Body.readLongInt();
-            readName(&Body);
+            object = body.readLongInt();
+            readName(body);
             break ;
 
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, HandleArray[], ValueArray[] and RAction.
-            object = Body.readLongInt();
-            readTag(&Body);
-            readHandleArray(&Body);
-            readValueArray(&Body);
-            readResignAction(&Body);
+            object = body.readLongInt();
+            readTag(body);
+            readHandleArray(body);
+            readValueArray(body);
+            readResignAction(body);
             break ;
 
           case DISCOVER_OBJECT_INSTANCE:
           case DELETE_OBJECT_INSTANCE:
           case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, Label, RAction
-            object = Body.readLongInt();
-            readTag(&Body);
-            readName(&Body); /*FAYET 25.07.01*/
-            readLabel(&Body);
-            readResignAction(&Body);
+            object = body.readLongInt();
+            readTag(body);
+            readName(body); /*FAYET 25.07.01*/
+            readLabel(body);
+            readResignAction(body);
             break ;
 
           case GET_OBJECT_CLASS_HANDLE:
@@ -240,53 +240,53 @@ Message::readBody(SocketUN *socket)
           case GET_ATTRIBUTE_HANDLE:
           case GET_ATTRIBUTE_NAME:
             // B.c. Name(and attribute)
-            readName(&Body);
-            attribute = Body.readShortInt();
+            readName(body);
+            attribute = body.readShortInt();
             break ;
 
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
-            this->readName(&Body);
-            this->space = Body.readLongInt();
+            this->readName(body);
+            this->space = body.readLongInt();
             break ;
 
           case GET_DIMENSION_HANDLE:
           case GET_DIMENSION_NAME:
-            this->readName(&Body);
-            this->dimension = Body.readLongInt();
-            this->space = Body.readLongInt();
+            this->readName(body);
+            this->dimension = body.readLongInt();
+            this->space = body.readLongInt();
             break ;
 
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], RAction
-            readTag(&Body);
-            readHandleArray(&Body);
-            readValueArray(&Body);
-	    region = Body.readLongInt();
-            readResignAction(&Body);
+            readTag(body);
+            readHandleArray(body);
+            readValueArray(body);
+	    region = body.readLongInt();
+            readResignAction(body);
             break ;
 
           case GET_INTERACTION_CLASS_HANDLE:
           case GET_INTERACTION_CLASS_NAME:
           case GET_PARAMETER_HANDLE:
           case GET_PARAMETER_NAME:
-            // Body contains Name and ParamHandle
-            readName(&Body);
-            parameter = Body.readShortInt();
+            // body contains Name and ParamHandle
+            readName(body);
+            parameter = body.readShortInt();
             break ;
 
-            // --- MessageT_O_Struct, Body not empty ---
+            // --- MessageT_O_Struct, body not empty ---
 
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
-            object = Body.readLongInt();
-            readHandleArray(&Body);
+            object = body.readLongInt();
+            readHandleArray(body);
             break ;
 
 	  case DDM_MODIFY_REGION:
-	    readExtents(Body);
+	    readExtents(body);
 	    break ;
 	    
             // -- Default Handler --
@@ -306,7 +306,7 @@ bool
 Message::readHeader(SocketUN *socket)
 {
     // 1- Read Header from Socket
-    socket->receive((void *) &header, sizeof(MessageHeader));
+    socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
 
     // 2- Parse Header(Static Part)
     type = header.type ;
@@ -372,7 +372,7 @@ Message::readHeader(SocketUN *socket)
 
         // --- MessageJ_R_Struct --
 
-      case RESIGN_FEDERATION_EXECUTION: // No Body
+      case RESIGN_FEDERATION_EXECUTION: // No body
         resignAction = header.VP.J_R.action ;
         break ;
 
@@ -381,7 +381,7 @@ Message::readHeader(SocketUN *socket)
         federate = header.VP.J_R.federate ;
         break ;
 
-        // --- MessageO_I_Struct, No Body ---
+        // --- MessageO_I_Struct, No body ---
 
       case UNPUBLISH_OBJECT_CLASS:
       case UNSUBSCRIBE_OBJECT_CLASS:
@@ -398,7 +398,7 @@ Message::readHeader(SocketUN *socket)
         interactionClass = header.VP.O_I.handle ;
         break ;
 
-        // --- MessageO_I_Struct, Body not Empty ---
+        // --- MessageO_I_Struct, body not Empty ---
 
       case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
       case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
@@ -490,9 +490,6 @@ Message::readHeader(SocketUN *socket)
         boolean = header.VP.time.mode ;
         break ;
 
-
-        // -- Default Handler --
-
       default:
         D.Out(pdExcept, "Unknown type %d in ReadHeader.", header.type);
         throw RTIinternalError("Message: Received unknown Header type.");
@@ -502,86 +499,62 @@ Message::readHeader(SocketUN *socket)
     return header.bodySize != 0 ;
 }
 
+// ----------------------------------------------------------------------------
 void
-Message::readHandleArray(MessageBody *Body)
+Message::readHandleArray(MessageBody &body)
 {
-    Body->readBlock((char *) handleArray,
-                    handleArraySize * sizeof(AttributeHandle));
+    body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 }
 
-
-// ---------------
-// -- ReadLabel --
-// ---------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readLabel(MessageBody *Body)
+Message::readLabel(MessageBody &body)
 {
-    Body->readString(label, MAX_USER_TAG_LENGTH);
+    body.readString(label, MAX_USER_TAG_LENGTH);
 }
 
-
-// --------------
-// -- ReadName --
-// --------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readName(MessageBody *Body)
+Message::readName(MessageBody &body)
 {
-    Body->readString(name, MAX_USER_TAG_LENGTH);
+    body.readString(name, MAX_USER_TAG_LENGTH);
 }
 
-
-// -----------------------
-// -- ReadNomFederation --
-// -----------------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readFederationName(MessageBody *Body)
+Message::readFederationName(MessageBody &body)
 {
-    Body->readString(federationName, MAX_FEDERATION_NAME_LENGTH);
+    body.readString(federationName, MAX_FEDERATION_NAME_LENGTH);
 }
 
-
-// -------------------
-// -- ReadNomFedere --
-// -------------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readFederateName(MessageBody *Body)
+Message::readFederateName(MessageBody &body)
 {
-    Body->readString(federateName, MAX_FEDERATE_NAME_LENGTH);
+    body.readString(federateName, MAX_FEDERATE_NAME_LENGTH);
 }
 
-
-// ---------------------
-// -- ReadresignAction --
-// ---------------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readResignAction(MessageBody*)
+Message::readResignAction(MessageBody &)
 {
     // BUG: Should do something.
 }
 
-
-// -------------
-// -- ReadTag --
-// -------------
-
+// ----------------------------------------------------------------------------
 void
-Message::readTag(MessageBody *Body)
+Message::readTag(MessageBody &body)
 {
-    Body->readString(tag, MAX_USER_TAG_LENGTH);
+    body.readString(tag, MAX_USER_TAG_LENGTH);
 }
 
 // ----------------------------------------------------------------------------
 //! readValueArray.
 void
-Message::readValueArray(MessageBody *Body)
+Message::readValueArray(MessageBody &body)
 {
     for (int i = 0 ; i < handleArraySize ; i ++) {
-        Body->readString(valueArray[i], MAX_BYTES_PER_VALUE);
+        body.readString(valueArray[i], MAX_BYTES_PER_VALUE);
     }
 }
 
@@ -612,19 +585,19 @@ Message::write(SocketUN *socket)
 void
 Message::writeBody(SocketUN *socket)
 {
-    MessageBody Body ;
+    MessageBody body ;
 
     // 0- Copy the Header at the beginning of the Body, in order to
     // make a single Socket->Emettre call while sending both.
     // WARNING: As the Body size is not known yet, we will have to
     // change it in the copy also!
-    Body.writeBlock((char *) &header, sizeof(MessageHeader));
+    body.writeBlock((char *) &header, sizeof(MessageHeader));
 
     // If the message carry an exception, the Body will only contain the
     // exception reason.
 
     if (header.exception != e_NO_EXCEPTION) {
-        Body.writeString(exceptionReason);
+        body.writeString(exceptionReason);
     }
     else {
 
@@ -635,45 +608,45 @@ Message::writeBody(SocketUN *socket)
 
           case CREATE_FEDERATION_EXECUTION:
           case DESTROY_FEDERATION_EXECUTION:
-            Body.writeString(federationName);
+            body.writeString(federationName);
             break ;
 
           case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
-            Body.writeString(label);
-            Body.writeString(tag);
+            body.writeString(label);
+            body.writeString(tag);
             break ;
 
           case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
           case SYNCHRONIZATION_POINT_ACHIEVED:
           case FEDERATION_SYNCHRONIZED:
-            Body.writeString(label);
+            body.writeString(label);
             break ;
 
           case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
           case QUERY_ATTRIBUTE_OWNERSHIP:
             // B.c. object, attribute, Tag
-            Body.writeLongInt(object);
-            Body.writeShortInt(attribute);
-            Body.writeString(tag);
+            body.writeLongInt(object);
+            body.writeShortInt(attribute);
+            body.writeString(tag);
             break ;
 
           case ATTRIBUTE_IS_NOT_OWNED:
           case INFORM_ATTRIBUTE_OWNERSHIP:
-            Body.writeLongInt(object);
-            Body.writeShortInt(attribute);
-            Body.writeShortInt(federate);
+            body.writeLongInt(object);
+            body.writeShortInt(attribute);
+            body.writeShortInt(federate);
             break ;
 
           case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
           case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
           case ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-            Body.writeLongInt(object);
-            Body.writeShortInt(handleArraySize);
-            writeHandleArray(&Body);
-            Body.writeString(tag);
+            body.writeLongInt(object);
+            body.writeShortInt(handleArraySize);
+            writeHandleArray(body);
+            body.writeString(tag);
             break ;
 
           case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
@@ -685,108 +658,108 @@ Message::writeBody(SocketUN *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-            Body.writeLongInt(object);
-            Body.writeShortInt(handleArraySize);
-            writeHandleArray(&Body);
+            body.writeLongInt(object);
+            body.writeShortInt(handleArraySize);
+            writeHandleArray(body);
             break ;
 
 	  case DDM_ASSOCIATE_REGION:
-	    Body.writeLongInt(object);
-	    Body.writeLongInt(region);
-	    Body.writeLongInt(boolean);
-            Body.writeShortInt(handleArraySize);
-            writeHandleArray(&Body);
+	    body.writeLongInt(object);
+	    body.writeLongInt(region);
+	    body.writeLongInt(boolean);
+            body.writeShortInt(handleArraySize);
+            writeHandleArray(body);
 	    break ;
 
 	  case DDM_REGISTER_OBJECT:
-	    Body.writeLongInt(objectClass);
-	    Body.writeLongInt(object);
-	    Body.writeString(tag);
-            Body.writeShortInt(handleArraySize);
-            writeHandleArray(&Body);
-	    writeRegions(Body);
+	    body.writeLongInt(objectClass);
+	    body.writeLongInt(object);
+	    body.writeString(tag);
+            body.writeShortInt(handleArraySize);
+            writeHandleArray(body);
+	    writeRegions(body);
 	    break ;
 
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
-	    Body.writeLongInt(objectClass);
-	    Body.writeLongInt(region);
-	    Body.writeLongInt(boolean);
-            Body.writeShortInt(handleArraySize);
-            writeHandleArray(&Body);
+	    body.writeLongInt(objectClass);
+	    body.writeLongInt(region);
+	    body.writeLongInt(boolean);
+            body.writeShortInt(handleArraySize);
+            writeHandleArray(body);
 	    break ;
 
 	  case DDM_UNASSOCIATE_REGION:
-	    Body.writeLongInt(object);
-	    Body.writeLongInt(region);
+	    body.writeLongInt(object);
+	    body.writeLongInt(region);
 	    break ;
 
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
-	    Body.writeLongInt(objectClass);
-	    Body.writeLongInt(region);
+	    body.writeLongInt(objectClass);
+	    body.writeLongInt(region);
 	    break ;
 	    
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:
-	    Body.writeLongInt(interactionClass);
-	    Body.writeLongInt(region);
-	    Body.writeLongInt(boolean);
+	    body.writeLongInt(interactionClass);
+	    body.writeLongInt(region);
+	    body.writeLongInt(boolean);
 	    break ;
 	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
-            Body.writeLongInt(objectClass);
-            Body.writeLongInt(attribute);
-            Body.writeLongInt(space);
+            body.writeLongInt(objectClass);
+            body.writeLongInt(attribute);
+            body.writeLongInt(space);
             break ;
 
           case DDM_CREATE_REGION:
-            Body.writeLongInt(space);
-            Body.writeLongInt(number);
-            Body.writeLongInt(region);
+            body.writeLongInt(space);
+            body.writeLongInt(number);
+            body.writeLongInt(region);
             break ;
 
           case GET_INTERACTION_SPACE_HANDLE:
-            Body.writeLongInt(interactionClass);
-            Body.writeLongInt(space);
+            body.writeLongInt(interactionClass);
+            body.writeLongInt(space);
             break ;
 
             // --- MessageJ_R_Struct --
 
           case JOIN_FEDERATION_EXECUTION:
-            Body.writeString(federationName);
-            Body.writeString(federateName);
+            body.writeString(federationName);
+            body.writeString(federateName);
             break ;
 
             // --- MessageO_I_Struct ---
 
           case PUBLISH_OBJECT_CLASS:
           case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
-            writeHandleArray(&Body);
+            writeHandleArray(body);
             break ;
 
           case REGISTER_OBJECT_INSTANCE:
-            Body.writeLongInt(object);
-            Body.writeString(name);
+            body.writeLongInt(object);
+            body.writeString(name);
             break ;
 
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, handleArray[], ValueArray[] and resignAction.
-            Body.writeLongInt(object);
-            Body.writeString(tag);
-            writeHandleArray(&Body);
-            writeValueArray(&Body);
-            writeResignAction(&Body);
+            body.writeLongInt(object);
+            body.writeString(tag);
+            writeHandleArray(body);
+            writeValueArray(body);
+            writeResignAction(body);
             break ;
 
           case DISCOVER_OBJECT_INSTANCE:
           case DELETE_OBJECT_INSTANCE:
           case REMOVE_OBJECT_INSTANCE:
             // B.c. object, Tag, label, resignAction
-            Body.writeLongInt(object);
-            Body.writeString(tag);
-            Body.writeString(name);
-            Body.writeString(label);
-            writeResignAction(&Body);
+            body.writeLongInt(object);
+            body.writeString(tag);
+            body.writeString(name);
+            body.writeString(label);
+            writeResignAction(body);
             break ;
 
           case GET_OBJECT_CLASS_HANDLE:
@@ -794,31 +767,31 @@ Message::writeBody(SocketUN *socket)
           case GET_ATTRIBUTE_HANDLE:
           case GET_ATTRIBUTE_NAME:
             // B.c. name(and attribute)
-            Body.writeString(name);
-            Body.writeShortInt(attribute);
+            body.writeString(name);
+            body.writeShortInt(attribute);
             break ;
 
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
-            Body.writeString(name);
-            Body.writeLongInt(space);
+            body.writeString(name);
+            body.writeLongInt(space);
             break ;
 
           case GET_DIMENSION_HANDLE:
           case GET_DIMENSION_NAME:
-            Body.writeString(name);
-            Body.writeLongInt(dimension);
-            Body.writeLongInt(space);
+            body.writeString(name);
+            body.writeLongInt(dimension);
+            body.writeLongInt(space);
             break ;
 
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], resignAction
-            Body.writeString(tag);
-            writeHandleArray(&Body);
-            writeValueArray(&Body);
-	    Body.writeLongInt(region);
-            writeResignAction(&Body);
+            body.writeString(tag);
+            writeHandleArray(body);
+            writeValueArray(body);
+	    body.writeLongInt(region);
+            writeResignAction(body);
             break ;
 
           case GET_INTERACTION_CLASS_HANDLE:
@@ -826,8 +799,8 @@ Message::writeBody(SocketUN *socket)
           case GET_PARAMETER_HANDLE:
           case GET_PARAMETER_NAME:
             // Body contains name and parameter
-            Body.writeString(name);
-            Body.writeShortInt(parameter);
+            body.writeString(name);
+            body.writeShortInt(parameter);
             break ;
 
 
@@ -836,19 +809,19 @@ Message::writeBody(SocketUN *socket)
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
             // B.c. object, HandleArray
-            Body.writeLongInt(object);
-            writeHandleArray(&Body);
+            body.writeLongInt(object);
+            writeHandleArray(body);
             break ;
 
 	  case DDM_MODIFY_REGION:
-	    writeExtents(Body);
+	    writeExtents(body);
 	    break ;
 	    
             // -- Default Handler --
 
           default:
-            D.Out(pdExcept, "Unknown type %d in WriteBody.", header.type);
-            throw RTIinternalError("Message: Unknown type for Body.");
+            D.Out(pdExcept, "Unknown type %d in Writebody.", header.type);
+            throw RTIinternalError("Message: Unknown type for body.");
 
         }
     }
@@ -856,25 +829,21 @@ Message::writeBody(SocketUN *socket)
     // 2- Set Header.bodySize
 
     // Body Size does not include the copy of the Header!
-    header.bodySize = Body.getLength() - sizeof(MessageHeader);
+    header.bodySize = body.size() - sizeof(MessageHeader);
 
     // Put the real Body Size in the copy of the Header.
-    ((MessageHeader *) Body.getBuffer())->bodySize = header.bodySize ;
+    ((MessageHeader *) body.getBuffer())->bodySize = header.bodySize ;
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
-    socket->send((void *) Body.getBuffer(), Body.getLength());
+    socket->send(body.getBuffer(), body.size());
 }
 
-
-// ----------------------
-// -- WriteHandleArray --
-// ----------------------
-
-void Message::writeHandleArray(MessageBody *Body)
+// ----------------------------------------------------------------------------
+void
+Message::writeHandleArray(MessageBody &body)
 {
-    Body->writeBlock((char *) handleArray,
-                     handleArraySize * sizeof(AttributeHandle));
+    body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 }
 
 // ----------------------------------------------------------------------------
@@ -1111,29 +1080,28 @@ Message::writeHeader(SocketUN *socket)
 
     // 4- If Header.bodySize = 0, send message and return RTI_FALSE,
     // Else send nothing(will be done by WriteBody), and return RTI_TRUE.
-
     if (header.bodySize == 0)
-        socket->send((void *) &header, sizeof(MessageHeader));
+        socket->send((const unsigned char *) &header, sizeof(MessageHeader));
 
     return header.bodySize != 0 ;
 }
 
 // ---------------------------------------------------------------
 void
-Message::writeResignAction(MessageBody*)
+Message::writeResignAction(MessageBody &)
 {
     //assert(false);
 }
 
 // ---------------------------------------------------------------------------
 void
-Message::writeValueArray(MessageBody *Body)
+Message::writeValueArray(MessageBody &body)
 {
     for (int i = 0 ; i < handleArraySize ; i ++) {
-        Body->writeString(valueArray[i]);
+        body.writeString(valueArray[i]);
     }
 }
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.24 2005/04/30 16:58:14 breholee Exp $
+// $Id: Message_RW.cc,v 3.25 2005/05/16 08:26:20 breholee Exp $
