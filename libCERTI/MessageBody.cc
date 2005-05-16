@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.7 2005/04/30 18:44:35 breholee Exp $
+// $Id: MessageBody.cc,v 3.8 2005/05/16 08:22:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 namespace certi {
 
+// ----------------------------------------------------------------------------
 /** Constructor. Created MessageBody is empty, buffer size 0.
  */
 MessageBody::MessageBody()
@@ -43,15 +44,17 @@ MessageBody::MessageBody(size_t n)
     getPtr = buffer.begin();
 }
 
+// ----------------------------------------------------------------------------
 /** Get the size of the buffer.
-    \return buffer size
+    @return buffer size
 */
 size_t
-MessageBody::getLength() const
+MessageBody::size() const
 {
     return buffer.size();
 }
 
+// ----------------------------------------------------------------------------
 /** Get buffer pointer.
     \return buffer pointer. 
 */
@@ -61,6 +64,7 @@ MessageBody::getBuffer() const
     return &(buffer[0]);
 }
 
+// ----------------------------------------------------------------------------
 /** Read a string from the body, and put it in a buffer.
     @pre store is not null
     @param store Output buffer
@@ -80,6 +84,7 @@ MessageBody::readString(char *store, unsigned short store_length)
     store[length] = 0 ;
 }
 
+// ----------------------------------------------------------------------------
 /** Write a string. If the string is empty (or NULL), an empty string
     is written onto the stream.
     @param s String to copy
@@ -97,6 +102,7 @@ MessageBody::writeString(const char *s)
 	writeShortInt(0);
 }
 
+// ----------------------------------------------------------------------------
 MessageBody &
 MessageBody::operator<<(unsigned long val)
 {
@@ -107,6 +113,7 @@ MessageBody::operator<<(unsigned long val)
     return *this ;
 }
 
+// ----------------------------------------------------------------------------
 const MessageBody &
 MessageBody::operator>>(unsigned long &val) const
 {
@@ -117,6 +124,7 @@ MessageBody::operator>>(unsigned long &val) const
     return *this ;
 }
 
+// ----------------------------------------------------------------------------
 MessageBody &
 MessageBody::operator<<(unsigned short val)
 {
@@ -126,6 +134,7 @@ MessageBody::operator<<(unsigned short val)
     return *this ;
 }
 
+// ----------------------------------------------------------------------------
 const MessageBody &
 MessageBody::operator>>(unsigned short &val) const
 {
@@ -138,4 +147,4 @@ MessageBody::operator>>(unsigned short &val) const
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.7 2005/04/30 18:44:35 breholee Exp $
+// $Id: MessageBody.cc,v 3.8 2005/05/16 08:22:30 breholee Exp $

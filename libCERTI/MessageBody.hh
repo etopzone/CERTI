@@ -14,10 +14,9 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: MessageBody.hh,v 3.9 2005/04/30 18:44:35 breholee Exp $
+// $Id: MessageBody.hh,v 3.10 2005/05/16 08:22:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
@@ -30,6 +29,7 @@
 
 namespace certi {
 
+// ============================================================================
 /** MessageBody is a class managing a char buffer for Message exchange.
     It provide member functions to read and write integers and strings.
     To read the contents of a MessageBody, juste read the elements in
@@ -41,7 +41,7 @@ public:
     MessageBody();
     MessageBody(size_t);
 
-    size_t getLength() const ;
+    size_t size() const ;
     const unsigned char *getBuffer() const ;
 
     MessageBody &operator<<(unsigned long);
@@ -78,4 +78,4 @@ private:
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.9 2005/04/30 18:44:35 breholee Exp $
+// $Id: MessageBody.hh,v 3.10 2005/05/16 08:22:30 breholee Exp $
