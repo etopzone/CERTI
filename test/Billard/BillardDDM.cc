@@ -2,14 +2,14 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2004-2005  ONERA
 //
-// This file is part of CERTI
+// This file is part of Billard
 //
-// CERTI is free software ; you can redistribute it and/or modify
+// Billard is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
-// CERTI is distributed in the hope that it will be useful,
+// Billard is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.15 2005/04/30 17:55:43 breholee Exp $
+// $Id: BillardDDM.cc,v 3.16 2005/05/16 20:18:59 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -32,7 +32,7 @@ using std::string ;
 using std::auto_ptr ;
 using std::vector ;
 
-// ----------------------------------------------------------------------------
+// ============================================================================
 namespace {
 PrettyDebug D("BILLARD_DDM", __FILE__);
 
@@ -51,9 +51,10 @@ drawRegion(bool display, int position, int width)
     Drawrr(region);
 #endif
 }
-}
 
-// ----------------------------------------------------------------------------
+} // anonymous namespace
+
+// ============================================================================
 /** Constructor
  */
 BillardDDM::BillardDDM(string federate_name)
@@ -151,4 +152,17 @@ BillardDDM::publishAndSubscribe()
     D.Out(pdInit, "Local Objects and Interactions published.");
 }
 
-// $Id: BillardDDM.cc,v 3.15 2005/04/30 17:55:43 breholee Exp $
+// ----------------------------------------------------------------------------
+/** Resign federation
+ */
+void
+BillardDDM::resign()
+{
+    rtiamb.unsubscribeObjectClassWithRegion(BilleClassID, *(areas[subRegion].region));
+    rtiamb.unassociateRegionForUpdates(*areas[pubRegion].region, local.ID);
+
+    for (int i = 0 ; i < numberOfRegions ; ++i) {
+	rtiamb.deleteRegion(areas[i].region);
+    }
+    Billard::resign();
+}
