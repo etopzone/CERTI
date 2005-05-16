@@ -2,14 +2,12 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
@@ -19,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
+// $Id: SocketTCP.cc,v 3.12 2005/05/16 19:27:52 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -42,8 +40,8 @@ namespace certi {
 static pdCDebug D("SOCKTCP", "(SocketTCP) - ");
 
 // ----------------------------------------------------------------------------
-//! accept.
-int SocketTCP::accept(SocketTCP *serveur)
+int
+SocketTCP::accept(SocketTCP *serveur)
 {
     struct protoent *TCPent ;
     int optval = 1 ;
@@ -84,8 +82,8 @@ int SocketTCP::accept(SocketTCP *serveur)
 }
 
 // ----------------------------------------------------------------------------
-//! bind.
-int SocketTCP::bind(unsigned int port, unsigned long addr)
+int
+SocketTCP::bind(unsigned int port, unsigned long addr)
 {
     long Length, Result ;
 
@@ -115,8 +113,8 @@ int SocketTCP::bind(unsigned int port, unsigned long addr)
 }
 
 // ----------------------------------------------------------------------------
-//! changeReuseOption.
-void SocketTCP::changeReuseOption()
+void
+SocketTCP::changeReuseOption()
 {
     int on = 1 ;
 
@@ -140,8 +138,8 @@ void SocketTCP::changeReuseOption()
 }
 
 // ----------------------------------------------------------------------------
-//! connect.
-int SocketTCP::connect(unsigned int port, unsigned long addr)
+int
+SocketTCP::connect(unsigned int port, unsigned long addr)
 {
     int Result ;
     struct protoent *TCPent ;
@@ -182,7 +180,6 @@ int SocketTCP::connect(unsigned int port, unsigned long addr)
 }
 
 // ----------------------------------------------------------------------------
-//! createTCPClient by hostname.
 void
 SocketTCP::createTCPClient(unsigned int port, char *nom_serveur)
 {
@@ -200,7 +197,6 @@ SocketTCP::createTCPClient(unsigned int port, char *nom_serveur)
 }
 
 // ----------------------------------------------------------------------------
-//! createTCPClient by address.
 void
 SocketTCP::createTCPClient(unsigned int port, unsigned long addr)
 {
@@ -220,7 +216,6 @@ SocketTCP::createTCPClient(unsigned int port, unsigned long addr)
 }
 
 // ----------------------------------------------------------------------------
-//! create TCP server.
 void
 SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
 {
@@ -246,7 +241,6 @@ SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
 }
 
 // ----------------------------------------------------------------------------
-//! Constructor.
 SocketTCP::SocketTCP()
 {
     _est_init_tcp = false ;
@@ -260,7 +254,6 @@ SocketTCP::SocketTCP()
 }
 
 // ----------------------------------------------------------------------------
-//! Destructor.
 SocketTCP::~SocketTCP()
 {
     // Fermeture
@@ -282,26 +275,21 @@ SocketTCP::~SocketTCP()
 }
 
 // ----------------------------------------------------------------------------
-//! send.
-void SocketTCP::send(void *Buffer, unsigned long Size)
-    throw (NetworkError,
-           NetworkSignal)
+void
+SocketTCP::send(const unsigned char *buffer, size_t size)
+    throw (NetworkError, NetworkSignal)
 {
-    long nSent = 0 ;
     long total_sent = 0 ;
-    long expected_size = Size ;
+    long expected_size = size ;
 
     assert(_est_init_tcp);
 
     D.Out(pdDebug, "Beginning to send TCP message...");
 
     while (total_sent < expected_size) {
-        nSent = ::send(_socket_tcp,
-                       (char *) Buffer + total_sent,
-                       expected_size - total_sent,
-                       0);
+        int sent = ::send(_socket_tcp, buffer + total_sent, expected_size - total_sent, 0);
 
-        if (nSent < 0) {
+        if (sent < 0) {
             D.Out(pdExcept, "Error while sending on TCP socket.");
             if (errno == EINTR)
                 throw NetworkSignal("");
@@ -311,12 +299,12 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
             }
         }
 
-        if (nSent == 0) {
+        if (sent == 0) {
             D.Out(pdExcept, "No data could be sent, connection closed?.");
             throw NetworkError("Could not send any data on TCP socket.");
         }
 
-        total_sent += nSent ;
+        total_sent += sent ;
         D.Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, expected_size);
     }
 
@@ -324,7 +312,6 @@ void SocketTCP::send(void *Buffer, unsigned long Size)
 }
 
 // ----------------------------------------------------------------------------
-//! close.
 void
 SocketTCP::close()
 {
@@ -335,7 +322,6 @@ SocketTCP::close()
 }
 
 // ----------------------------------------------------------------------------
-//! listen.
 int SocketTCP::listen(unsigned long howMuch)
 {
     assert(!_est_init_tcp);
@@ -344,7 +330,6 @@ int SocketTCP::listen(unsigned long howMuch)
 }
 
 // ----------------------------------------------------------------------------
-//! getAddr.
 unsigned long
 SocketTCP::getAddr() const
 {
@@ -352,7 +337,6 @@ SocketTCP::getAddr() const
 }
 
 // ----------------------------------------------------------------------------
-//! getPort.
 unsigned int
 SocketTCP::getPort() const
 {
@@ -374,7 +358,6 @@ SocketTCP::isDataReady() const
 }
 
 // ----------------------------------------------------------------------------
-//! open
 int
 SocketTCP::open()
 {
@@ -382,8 +365,8 @@ SocketTCP::open()
 }
 
 // ----------------------------------------------------------------------------
-//! operator =.
-SocketTCP & SocketTCP::operator= (SocketTCP &theSocket)
+SocketTCP &
+SocketTCP::operator=(SocketTCP &theSocket)
 {
     _sockIn.sin_addr.s_addr=theSocket.getAddr();
     _sockIn.sin_port =theSocket.getPort();
@@ -393,10 +376,9 @@ SocketTCP & SocketTCP::operator= (SocketTCP &theSocket)
 }
 
 // ----------------------------------------------------------------------------
-//! receive.
-void SocketTCP::receive(void *Buffer, unsigned long Size)
-    throw (NetworkError,
-           NetworkSignal)
+void
+SocketTCP::receive(void *buffer, unsigned long size)
+    throw (NetworkError, NetworkSignal)
 {
     assert(_est_init_tcp);
 
@@ -407,7 +389,7 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
 
     D.Out(pdDebug, "Beginning to receive TCP message...");
 
-    while (RBLength < Size)
+    while (RBLength < size)
         {
 
 #ifdef SOCKTCP_BUFFER_LENGTH
@@ -417,8 +399,8 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
                              0);
 #else
             nReceived = recv(_socket_tcp,
-                             (char *) Buffer + RBLength,
-                             Size - RBLength,
+                             (char *) buffer + RBLength,
+                             size - RBLength,
                              0);
 #endif
 
@@ -440,20 +422,19 @@ void SocketTCP::receive(void *Buffer, unsigned long Size)
             RBLength += nReceived ;
             RcvdBytesCount += nReceived ;
 
-            D.Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
+            D.Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, size);
         }
 
 #ifdef SOCKTCP_BUFFER_LENGTH
-    memcpy(Buffer, (void *) ReadBuffer, Size);
+    memcpy(buffer, (void *) ReadBuffer, size);
     memmove((void *) ReadBuffer,
-            (void *)(ReadBuffer + Size),
-            RBLength - Size);
-    RBLength -= Size ;
+            (void *)(ReadBuffer + size),
+            RBLength - size);
+    RBLength -= size ;
 #endif
 }
 
 // ----------------------------------------------------------------------------
-//! Returns the address.
 unsigned long
 SocketTCP::returnAdress() const
 {
@@ -461,7 +442,6 @@ SocketTCP::returnAdress() const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns the socket.
 int
 SocketTCP::returnSocket() const
 {
@@ -510,4 +490,4 @@ SocketTCP::timeoutTCP(int sec, int usec)
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.11 2005/04/30 17:28:55 breholee Exp $
+// $Id: SocketTCP.cc,v 3.12 2005/05/16 19:27:52 breholee Exp $

@@ -2,28 +2,23 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: SocketTCP.hh,v 3.11 2005/04/30 17:28:55 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_SOCKET_TCP_HH
-#define _CERTI_SOCKET_TCP_HH
+#ifndef CERTI_SOCKET_TCP_HH
+#define CERTI_SOCKET_TCP_HH
 
 #include "Socket.hh"
 #include "certi.hh"
@@ -38,7 +33,7 @@
 
 namespace certi {
 
-/*! IMPORTANT NOTE: This TCP socket implementation uses a Read Buffer to
+/** This TCP socket implementation uses a Read Buffer to
   improve global read performances(by reducing Recv system calls). An
   important drawback of this improvement is that a socket can be marked as
   empty for the system, but in fact there is data waiting in the read
@@ -54,20 +49,20 @@ public :
     SocketTCP();
     virtual ~SocketTCP();
 
-    void send(void *Buffer, unsigned long Size)
+    virtual void send(const unsigned char *, size_t)
 	throw (NetworkError, NetworkSignal);
 
-    void receive(void *Buffer, unsigned long Size)
+    virtual void receive(void *Buffer, unsigned long Size)
         throw (NetworkError, NetworkSignal);
 
-    bool isDataReady() const ;
+    virtual bool isDataReady() const ;
 
-    int getClass() const { return SOCKET_TYPE_TCP ; };
-    int returnSocket() const ;
+    virtual int getClass() const { return SOCKET_TYPE_TCP ; };
+    virtual int returnSocket() const ;
 
-    unsigned long returnAdress() const ;
+    virtual unsigned long returnAdress() const ;
 
-    void close();
+    virtual void close();
 
     int accept(SocketTCP *serveur);
 
@@ -76,7 +71,7 @@ public :
     void createTCPServer(unsigned int port = 0,
 			 unsigned long addr = INADDR_ANY);
 
-    SocketTCP & operator= (SocketTCP &theSocket);
+    SocketTCP &operator=(SocketTCP &theSocket);
 
 private:
     unsigned int getPort() const ;
@@ -108,6 +103,4 @@ private:
 
 } // namespace certi
 
-#endif // _CERTI_SOCKET_TCP_HH
-
-// $Id: SocketTCP.hh,v 3.11 2005/04/30 17:28:55 breholee Exp $
+#endif // CERTI_SOCKET_TCP_HH
