@@ -1,9 +1,4 @@
 // HLA 1.3 Header "baseTypes.hh"
-// $Id: baseTypes.hh,v 3.6 2005/04/30 16:30:43 breholee Exp $
-
-#ifndef NULL
-#define NULL (0)
-#endif
 
 typedef unsigned short UShort ;
 typedef short Short ;
@@ -29,7 +24,7 @@ public:
     char *_reason ;
     const char *_name ;
     Exception(const char *reason);
-    Exception(ULong serial, const char *reason = NULL);
+    Exception(ULong serial, const char *reason = 0);
     Exception(const Exception &toCopy);
     virtual ~Exception();
     Exception &operator=(const Exception &);
@@ -41,12 +36,10 @@ public:
 class A : public Exception { \
 public: \
     static RTI_EXPORT const char *_ex ; \
-    A (const char *reason) : Exception (reason) { _name = _ex ; } \
-    A (ULong serial, const char *reason = NULL) \
-        : Exception (serial, reason) { _name = _ex ; } \
+    A (const char *reason) : Exception(reason) { _name = _ex ; } \
+    A (ULong serial, const char *reason = 0) \
+        : Exception(serial, reason) { _name = _ex ; } \
     A (A const &toCopy) : Exception(toCopy) { _name = _ex ; } \
     Exception *cloneSelf() const throw() { return (new A(_reason)); } \
     void throwSelf() const { throw *this ; } \
 };
-
-// $Id: baseTypes.hh,v 3.6 2005/04/30 16:30:43 breholee Exp $
