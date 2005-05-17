@@ -2,14 +2,14 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI
+// This file is part of Billard
 //
-// CERTI is free software ; you can redistribute it and/or modify
+// Billard is free software ; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation ; either version 2 of the License, or
 // (at your option) any later version.
 //
-// CERTI is distributed in the hope that it will be useful,
+// Billard is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
@@ -17,8 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-//
-// $Id: Billard.cc,v 3.11 2005/04/30 17:55:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "Billard.hh"
@@ -400,7 +398,7 @@ Billard::step()
     vector<Ball>::iterator it ;
 
     for (it = remote.begin(); it != remote.end(); ++it) {
-        if (it->ID != 0 && local.checkBallCollision(&(*it))) {
+        if (it->ID != 0 && it->active && local.checkBallCollision(&(*it))) {
             sendInteraction(local.dx, local.dy, next_step, it->ID);
             // On prend la vitesse de l'autre sauf dans le cas ou
             // on avait deja la meme. Dans ce cas, on inverse la notre.
@@ -900,5 +898,3 @@ Billard::timeAdvanceGrant(const RTI::FedTime& /*theTime*/)
 {    
     granted = true ;
 }
-
-// $Id: Billard.cc,v 3.11 2005/04/30 17:55:43 breholee Exp $
