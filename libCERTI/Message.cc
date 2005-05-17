@@ -2,24 +2,19 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: Message.cc,v 3.27 2005/04/30 16:58:14 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,15 +48,6 @@ Message::Message()
 }
 
 // ----------------------------------------------------------------------------
-//! Destructor
-//
-Message::~Message()
-{
-}
-
-// ----------------------------------------------------------------------------
-//! getValue
-//
 char *Message::getValue(int Rank, char *Value) const
     throw (RTIinternalError)
 {
@@ -81,8 +67,6 @@ char *Message::getValue(int Rank, char *Value) const
 }
 
 // ----------------------------------------------------------------------------
-// getValueArray
-//
 ParameterValue *
 Message::getValueArray()
 {
@@ -102,9 +86,8 @@ Message::getValueArray()
 }
 
 // ----------------------------------------------------------------------------
-// setLabel
-//
-void Message::setLabel(const char *NewLabel)
+void
+Message::setLabel(const char *NewLabel)
 {
     if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
         throw ValueLengthExceeded("Label too long to fit in Message.");
@@ -113,8 +96,6 @@ void Message::setLabel(const char *NewLabel)
 }
 
 // ----------------------------------------------------------------------------
-// setName
-//
 void
 Message::setName(const char *NewName)
 {
@@ -125,15 +106,12 @@ Message::setName(const char *NewName)
 }
 
 // ----------------------------------------------------------------------------
-// setType
-//
 void
 Message::setType(Type t)
 {
     type = t ;
 }
 // ----------------------------------------------------------------------------
-// setNbExtents
 void
 Message::setNumber(unsigned long nb)
 {
@@ -141,7 +119,6 @@ Message::setNumber(unsigned long nb)
 }
 
 // ----------------------------------------------------------------------------
-// setSpace
 void
 Message::setSpace(SpaceHandle handle)
 {
@@ -149,7 +126,6 @@ Message::setSpace(SpaceHandle handle)
 }
 
 // ----------------------------------------------------------------------------
-// setRegion
 void
 Message::setRegion(long handle)
 {
@@ -157,7 +133,6 @@ Message::setRegion(long handle)
 }
 
 // ----------------------------------------------------------------------------
-// setDimension
 void
 Message::setDimension(DimensionHandle handle)
 {
@@ -165,7 +140,6 @@ Message::setDimension(DimensionHandle handle)
 }
 
 // ----------------------------------------------------------------------------
-// setInteractionClass
 void
 Message::setInteractionClass(InteractionClassHandle handle)
 {
@@ -173,7 +147,6 @@ Message::setInteractionClass(InteractionClassHandle handle)
 }
 
 // ----------------------------------------------------------------------------
-// setObjectClass
 void
 Message::setObjectClass(ObjectClassHandle handle)
 {
@@ -181,7 +154,6 @@ Message::setObjectClass(ObjectClassHandle handle)
 }
 
 // ----------------------------------------------------------------------------
-// setAttribute
 void
 Message::setAttribute(AttributeHandle handle)
 {
@@ -367,7 +339,7 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
         char *value = new char[length] ;
         objectToString(tmp->_value.value, tmp->_value.length, value);
         setValue(i, value);
-        delete value;
+        delete[] value;
     }
 }
 
@@ -418,7 +390,7 @@ Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
         char *value = new char[length] ;
         objectToString(tmp->_value.value, tmp->_value.length, value);
         setValue(i, value);
-        delete value;
+        delete[] value;
     }
 }
 
@@ -599,5 +571,3 @@ Message::display(char *s)
 }
 
 } // namespace certi
-
-// $Id: Message.cc,v 3.27 2005/04/30 16:58:14 breholee Exp $
