@@ -15,12 +15,10 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-//
-// $Id: Message.hh,v 3.29 2005/05/16 08:26:20 breholee Exp $
 // ----------------------------------------------------------------------------
 
-#ifndef _CERTI_MESSAGE_HH
-#define _CERTI_MESSAGE_HH
+#ifndef CERTI_MESSAGE_HH
+#define CERTI_MESSAGE_HH
 
 #include "fedtime.hh"
 #include "Exception.hh"
@@ -242,9 +240,7 @@ public:
     };
 
 public:
-    // Constructor & Destructor
     Message();
-    ~Message();
 
     // Read and Write NetworkMessage Objects to and from Socket objects.
     void write(SocketUN *Socket) throw (NetworkError, NetworkSignal);
@@ -455,6 +451,4 @@ private:
 
 } // namespace certi
 
-#endif // _CERTI_MESSAGE_HH
-
-// $Id: Message.hh,v 3.29 2005/05/16 08:26:20 breholee Exp $
+#endif // CERTI_MESSAGE_HH
