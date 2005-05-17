@@ -2,24 +2,19 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: GAV_aux.cc,v 3.12 2005/04/30 17:11:33 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,14 +44,14 @@ AttributeHandleValuePair::AttributeHandleValuePair(Handle handle,
     _handle = handle ;
     _valueLength = value_length ;
 
-    _value = (char *)malloc(value_length);
+    _value = new char[value_length];
     memcpy(_value, value, value_length);
 }
 
 // ----------------------------------------------------------------------------
 AttributeHandleValuePair::~AttributeHandleValuePair()
 {
-    delete _value ;
+    delete[] _value ;
 }
 
 // ----------------------------------------------------------------------------
@@ -625,5 +620,3 @@ RTI::ParameterSetFactory::create(ULong size)
 }
 
 } // namespace certi
-
-// $Id: GAV_aux.cc,v 3.12 2005/04/30 17:11:33 breholee Exp $

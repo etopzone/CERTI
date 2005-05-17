@@ -2,24 +2,19 @@
 // CERTI - HLA RunTime Infrastructure
 // Copyright (C) 2002-2005  ONERA
 //
-// This file is part of CERTI-libCERTI
-//
-// CERTI-libCERTI is free software ; you can redistribute it and/or
+// This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation ; either version 2 of
 // the License, or (at your option) any later version.
 //
-// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// This program is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY ; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: GAV.cc,v 3.12 2005/05/05 20:30:14 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -252,7 +247,7 @@ CAttributeHandleValuePairSet::toAHVPS() const
                 valeur[0] = '\0' ;
                 stringToObject(cahvp->_value.value, valeur, longueur);
                 memcpy(cahvp->_value.value, valeur, longueur);
-                delete valeur;
+                delete[] valeur;
                 /* phvps->add(cahvp->_param,
                    cahvp->_value.value,
                    (strlen(cahvp->_value.value)*sizeof(char))); */
@@ -423,9 +418,7 @@ CParameterHandleValuePairSet::toPHVPS() const
             else phvps->add(cphvp->_param, '\0', 0);
         }
     }
-    return (RTI::ParameterHandleValuePairSet *)phvps ;
+    return phvps ;
 }
 
-}
-
-// $Id: GAV.cc,v 3.12 2005/05/05 20:30:14 breholee Exp $
+} // namespace certi
