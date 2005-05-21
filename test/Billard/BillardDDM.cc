@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.16 2005/05/16 20:18:59 breholee Exp $
+// $Id: BillardDDM.cc,v 3.17 2005/05/21 21:02:43 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -27,6 +27,8 @@
 #ifndef X_DISPLAY_MISSING
 #include "graph_c.hh"
 #endif
+
+#include <cmath>
 
 using std::string ;
 using std::auto_ptr ;
@@ -57,17 +59,17 @@ drawRegion(bool display, int position, int width)
 // ============================================================================
 /** Constructor
  */
-BillardDDM::BillardDDM(string federate_name)
+BillardStaticDDM::BillardStaticDDM(string federate_name)
     : Billard(federate_name), numberOfRegions(4), subRegion(-1), pubRegion(-1)
 {
-    std::cout << "BillardDDM" << std::endl ;
+    std::cout << "BillardStaticDDM" << std::endl ;
 }
 
 // ----------------------------------------------------------------------------
 /** Declare regions and ball
  */
 void
-BillardDDM::declare()
+BillardStaticDDM::declare()
 {
     int width = XMAX / numberOfRegions ;
 
@@ -75,22 +77,33 @@ BillardDDM::declare()
     dimX = rtiamb.getDimensionHandle("X", GeoID);
     dimY = rtiamb.getDimensionHandle("Y", GeoID);
 
-    areas.clear();
+    std::cout << "Create regions" ;
+
     for (int i = 0 ; i < numberOfRegions ; ++i) {
-	areas.push_back(Area());
-	Area &area = areas.back();
-	area.x = width * i ;
-	area.y = 0 ;
-	area.size = width ;
-	std::cout << "Region " << i << "... " ;
-	area.region = rtiamb.createRegion(GeoID, 1);
-	area.region->setRangeLowerBound(0, dimX, area.x);
-	area.region->setRangeUpperBound(0, dimX, area.x + width - 1);
-	area.region->setRangeLowerBound(0, dimY, 0);
-	area.region->setRangeUpperBound(0, dimY, YMAX);
-	rtiamb.notifyAboutRegionModification(*area.region);
-	std::cout << "ok" << std::endl ;
+
+
+	// Subscription region
+	RTI::Region *region = rtiamb.createRegion(GeoID, 1);
+	sub.push_back(region);
+	const int margin = 20 ;
+	region->setRangeLowerBound(0, dimX, std::max(0, width * i - margin));
+	region->setRangeUpperBound(0, dimX, std::min(XMAX - 1, width * (i + 1) - 1 + margin));
+	region->setRangeLowerBound(0, dimY, 0);
+	region->setRangeUpperBound(0, dimY, YMAX);
+	rtiamb.notifyAboutRegionModification(*region);
+	std::cout << "." ;
+
+	// Publication region
+	region = rtiamb.createRegion(GeoID, 1);
+	pub.push_back(region);
+	region->setRangeLowerBound(0, dimX, width * i);
+	region->setRangeUpperBound(0, dimX, width * (i + 1) - 1);
+	region->setRangeLowerBound(0, dimY, 0);
+	region->setRangeUpperBound(0, dimY, YMAX);
+	rtiamb.notifyAboutRegionModification(*region);
+	std::cout << "." ;
     }
+    std::cout << " done." << std::endl ;
 
     local.ID = registerBallInstance(federateName.c_str());
     D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
@@ -100,32 +113,30 @@ BillardDDM::declare()
 /** Check regions grid
  */
 void
-BillardDDM::checkRegions()
+BillardStaticDDM::checkRegions()
 {
     int width = XMAX / numberOfRegions ;
-    int region = (int) local.x / width ;
+    int region = static_cast<int>(local.x) / width ;
 
     if (region != subRegion || region != pubRegion) {
-	std::cout << "Updating regions ..." << std::endl ;
-
-	auto_ptr<RTI::AttributeHandleSet> a(RTI::AttributeHandleSetFactory::create(3));
-	a->add(AttrXID);
-	a->add(AttrYID);
+	auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+	attributes->add(AttrXID);
+	attributes->add(AttrYID);
 
  	// Subscription
-	rtiamb.subscribeObjectClassAttributesWithRegion(
-	    BilleClassID, *(areas[region].region), *a, RTI::RTI_TRUE);
+	rtiamb.subscribeObjectClassAttributesWithRegion(BilleClassID,
+							*sub[region],
+							*attributes,
+							RTI::RTI_TRUE);
 	if (subRegion != -1) {
-	    rtiamb.unsubscribeObjectClassWithRegion(
-		BilleClassID,
-		*(areas[subRegion].region));
+	    rtiamb.unsubscribeObjectClassWithRegion(BilleClassID, *sub[subRegion]);
 	}
   	subRegion = region ;
 
 	// Update region
-	rtiamb.associateRegionForUpdates(*areas[region].region, local.ID, *a);
+	rtiamb.associateRegionForUpdates(*pub[region], local.ID, *attributes);
 	if (pubRegion != -1) {
-	    rtiamb.unassociateRegionForUpdates(*areas[pubRegion].region, local.ID);
+	    rtiamb.unassociateRegionForUpdates(*pub[pubRegion], local.ID);
 	}
 	pubRegion = region ;	
     }
@@ -137,7 +148,7 @@ BillardDDM::checkRegions()
     occur regularly in the checkRegions function.
  */
 void
-BillardDDM::publishAndSubscribe()
+BillardStaticDDM::publishAndSubscribe()
 {
     auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
 
@@ -156,13 +167,104 @@ BillardDDM::publishAndSubscribe()
 /** Resign federation
  */
 void
-BillardDDM::resign()
+BillardStaticDDM::resign()
 {
-    rtiamb.unsubscribeObjectClassWithRegion(BilleClassID, *(areas[subRegion].region));
-    rtiamb.unassociateRegionForUpdates(*areas[pubRegion].region, local.ID);
+    if (subRegion != -1)
+	rtiamb.unsubscribeObjectClassWithRegion(BilleClassID, *(sub[subRegion]));
+
+    if (pubRegion != -1)
+	rtiamb.unassociateRegionForUpdates(*pub[pubRegion], local.ID);
 
     for (int i = 0 ; i < numberOfRegions ; ++i) {
-	rtiamb.deleteRegion(areas[i].region);
+	rtiamb.deleteRegion(sub[i]);
+	rtiamb.deleteRegion(pub[i]);
     }
+    Billard::resign();
+}
+
+// ============================================================================
+/** Constructor
+ */
+BillardDynamicDDM::BillardDynamicDDM(string federate_name)
+    : Billard(federate_name), region(0)
+{
+    std::cout << "BillardDynamicDDM" << std::endl ;
+}
+
+// ----------------------------------------------------------------------------
+/** Declare regions and ball
+ */
+void
+BillardDynamicDDM::declare()
+{
+    GeoID = rtiamb.getRoutingSpaceHandle("Geo");
+    dimX = rtiamb.getDimensionHandle("X", GeoID);
+    dimY = rtiamb.getDimensionHandle("Y", GeoID);
+
+    region = rtiamb.createRegion(GeoID, 1);
+
+    local.ID = registerBallInstance(federateName.c_str());
+    D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
+
+    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+    attributes->add(AttrXID);
+    attributes->add(AttrYID);
+
+    rtiamb.subscribeObjectClassAttributesWithRegion(BilleClassID,
+						    *region,
+						    *attributes,
+						    RTI::RTI_TRUE);
+    
+    rtiamb.associateRegionForUpdates(*region, local.ID, *attributes);
+}
+
+// ----------------------------------------------------------------------------
+/** Check regions grid
+ */
+void
+BillardDynamicDDM::checkRegions()
+{
+    const int margin = 40 ;
+    
+    region->setRangeLowerBound(0, dimX, std::max(0, static_cast<int>(local.x) - margin));
+    region->setRangeUpperBound(0, dimX, static_cast<int>(local.x) + margin);
+    region->setRangeLowerBound(0, dimY, std::max(0, static_cast<int>(local.y) - margin));
+    region->setRangeUpperBound(0, dimY, static_cast<int>(local.y) + margin);
+
+    rtiamb.notifyAboutRegionModification(*region);
+}
+
+// ----------------------------------------------------------------------------
+/** Carry out publications and subscriptions. In this DDM demo, only object
+    publications are done. Other (un)publications and (un)subscriptions 
+    occur regularly in the checkRegions function.
+ */
+void
+BillardDynamicDDM::publishAndSubscribe()
+{
+    auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
+
+    getHandles();
+    attributes->add(AttrXID);
+    attributes->add(AttrYID);
+    attributes->add(AttrColorID);
+
+    rtiamb.publishObjectClass(BouleClassID, *attributes);
+    rtiamb.publishInteractionClass(BingClassID);
+
+    D.Out(pdInit, "Local Objects and Interactions published.");
+}
+
+// ----------------------------------------------------------------------------
+/** Resign federation
+ */
+void
+BillardDynamicDDM::resign()
+{
+    rtiamb.unsubscribeObjectClassWithRegion(BilleClassID, *region);
+    rtiamb.unassociateRegionForUpdates(*region, local.ID);
+
+    rtiamb.deleteRegion(region);
+
     Billard::resign();
 }
