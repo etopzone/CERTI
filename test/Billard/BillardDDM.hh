@@ -25,18 +25,11 @@
 #include "RTI.hh"
 #include "Billard.hh"
 
-struct Area {
-    RTI::Region *region ;
-    long x ;
-    long y ;
-    long size ;
-};
-
-class BillardDDM : public Billard
+class BillardStaticDDM : public Billard
 {
 public:
-    BillardDDM(std::string);
-    virtual ~BillardDDM() throw (RTI::FederateInternalError) { };
+    BillardStaticDDM(std::string);
+    virtual ~BillardStaticDDM() throw (RTI::FederateInternalError) { };
 
     virtual void checkRegions();
     virtual void declare();
@@ -45,9 +38,28 @@ public:
 
 protected:
     const int numberOfRegions ;
-    std::vector<Area> areas ;
+    std::vector<RTI::Region *> sub ;
+    std::vector<RTI::Region *> pub ;
     int subRegion ;
     int pubRegion ;
+    RTI::SpaceHandle GeoID ;
+    RTI::DimensionHandle dimX ;
+    RTI::DimensionHandle dimY ;
+};
+
+class BillardDynamicDDM : public Billard
+{
+public:
+    BillardDynamicDDM(std::string);
+    virtual ~BillardDynamicDDM() throw (RTI::FederateInternalError) { };
+
+    virtual void checkRegions();
+    virtual void declare();
+    virtual void publishAndSubscribe();
+    virtual void resign();
+
+protected:
+    RTI::Region *region ;
     RTI::SpaceHandle GeoID ;
     RTI::DimensionHandle dimX ;
     RTI::DimensionHandle dimY ;
