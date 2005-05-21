@@ -34,6 +34,7 @@ using std::vector ;
 
 static pdCDebug D("BILLARD", __FILE__);
 
+// ----------------------------------------------------------------------------
 /** Constructor
  */
 Billard::Billard(string federate_name)
@@ -49,12 +50,18 @@ Billard::Billard(string federate_name)
       TIME_STEP(1.0),
       XMAX(500),
       YMAX(100)
-{ }
+{
+}
 
+// ----------------------------------------------------------------------------
 /** Destructor
  */
-Billard::~Billard() throw (RTI::FederateInternalError) { }
+Billard::~Billard()
+    throw (RTI::FederateInternalError)
+{
+}
 
+// ----------------------------------------------------------------------------
 /** Get the federate handle
  */
 RTI::FederateHandle
@@ -414,8 +421,8 @@ Billard::step()
     }
 
     // Teste la collision avec le bord
-    local.checkBorderCollision(XMAX, YMAX);
     D.Out(pdTrace, "Border collisions...");
+    local.checkBorderCollision(XMAX, YMAX);
 
     local.x += local.dx ;
     local.y += local.dy ;
@@ -426,7 +433,7 @@ Billard::step()
 
     sendUpdate(local.x, local.y, (int) local.color, next_step, local.ID);
 
-    D.Out(pdTrace, "fin tour de boucle.");
+    D.Out(pdTrace, "End of step");
 }
 
 // ----------------------------------------------------------------------------
@@ -843,12 +850,9 @@ Billard::reflectAttributeValues(
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
 
-    vector<Ball>::iterator it ;
-
-    for (it = remote.begin(); it != remote.end(); ++it) {
-        if (it->ID == theObject)
-            break ;
-    }
+    vector<Ball>::iterator it = remote.begin() ;
+    while (it != remote.end() && it->ID != theObject)
+	++it ;
 
     if (it == remote.end())
         D.Out(pdError, "Fed: error, id not found (%d).", theObject);

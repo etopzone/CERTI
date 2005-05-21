@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.8 2005/04/30 17:55:43 breholee Exp $
+// $Id: main.cc,v 3.9 2005/05/21 21:03:45 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,8 +95,7 @@ main(int argc, char **argv)
 	string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
 
 	// Create billard
-	Billard *billard = createBillard(args.demo_given, args.demo_arg, 
-					 federate);
+	std::auto_ptr<Billard> billard(createBillard(args.demo_given, args.demo_arg, federate));
 	billard->setVerbose(verbose);
 
 	int timer = args.timer_given ? args.timer_arg : 0 ;
@@ -109,7 +108,7 @@ main(int argc, char **argv)
 	RTI::FederateHandle handle = billard->getHandle();
 
 	// Display...
-	Display *display = Display::instance();
+	std::auto_ptr<Display> display(Display::instance());
 	int y_default = 25 + (handle - 1) * (display->getHeight() + 20);
 	display->setWindow(
 	    args.xoffset_given ? args.xoffset_arg : 400,
@@ -171,13 +170,13 @@ main(int argc, char **argv)
 	// End of simulation
 	D.Out(pdTrace, "End of simulation loop.");
 	billard->resign();
-
-	delete billard ;
-	delete display ;
     }
     catch (RTI::Exception &e) {
-	cerr << "Billard: exception: " << e._name << " [" 
+	cerr << "RTI Exception: " << e._name << " [" 
 	     << (e._reason ? e._reason : "undefined") << "]" << endl ;
+    }
+    catch (...) {
+	cerr << "Non-RTI Exception." << std::endl ;
     }
 
     std::cout << "Exiting." << std::endl ;
@@ -235,14 +234,19 @@ TerminateHandler()
 Billard *
 createBillard(bool demo, const char *s_demo, string name)
 {
+    string s = s_demo ;
+
     if (demo) {
 	D[pdDebug] << "Create billard " << s_demo << endl ;
-	if (!strcmp(s_demo, "DDM"))
-	    return new BillardDDM(name);
-	cout << "unknown keyword: " << s_demo << endl ;
+	if (s == "static-ddm")
+	    return new BillardStaticDDM(name);
+	else if (s == "dynamic-ddm")
+	    return new BillardDynamicDDM(name);
+	else
+	    cout << "unknown keyword: " << s_demo << endl ;
     }
     
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.8 2005/04/30 17:55:43 breholee Exp $
+// EOF $Id: main.cc,v 3.9 2005/05/21 21:03:45 breholee Exp $
