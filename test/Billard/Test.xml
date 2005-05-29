@@ -1,43 +1,23 @@
 <?xml version="1.0"?>
-<!-- *********************************************************************** -->
-<!-- Description de la Federation pour l'exemple Test Heritage               -->
-<!-- *********************************************************************** -->
-<!-- Cet exemple contient une classe Bille, avec deux attributs X et Y.      -->
-<!-- Cette classe est celle a laquelle les federes s'abonnent pour recevoir  -->
-<!-- les informations des autres federes.                                    -->
-<!-- De cette classe herite la classe Boule, qui contient en plus l'attribut -->
-<!-- Couleur. Chaque Federe gere son propre objet Boule, mais voit les Boules-->
-<!-- des autres sous la forme de Bille, c'est en dire en noir.               -->
 <objectModel>
         <objects>
 		<objectClass name="Bille">
-		      	<attribute name="PositionX"
-			           transportation="HLAreliable"
-				   order="TimeStamp"
-				   space="geo" />
-	      		<attribute name="PositionY"
-			           transportation="HLAreliable"
-				   order="TimeStamp"
-				   space="geo" />
+		      	<attribute name="PositionX" transportation="HLAreliable" order="TimeStamp" />
+	      		<attribute name="PositionY" transportation="HLAreliable" order="TimeStamp" />
 		      	<objectClass name="Boule">
-				<attribute name="Color" />
-                                           transportation="HLAreliable"
-  				           order="TimeStamp" />
+				<attribute name="Color" /> transportation="HLAreliable" order="TimeStamp" />
 			</objectClass>
 		</objectClass>
 	</objects>
 	<interactions>
-		<interactionClass name="Bing"
-		                  transportation="HLAreliable"
-				  order="TimeStamp"
-				  space="geo">
+		<interactionClass name="Bing" transportation="HLAreliable" order="TimeStamp">
 			<parameter name="BoulNum" />
 			<parameter name="DX" />
 			<parameter name="DY" />
 		</interactionClass>
   	</interactions>
-	<routingSpace name="geo">
-	        <dimension name="x" />
-		<dimension name="y" />
+	<routingSpace name="Geo">
+	        <dimension name="X" />
+		<dimension name="Y" />
 	</routingSpace>
 </objectModel>
