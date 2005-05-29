@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.9 2005/05/21 21:03:45 breholee Exp $
+// $Id: main.cc,v 3.10 2005/05/29 22:26:44 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -172,11 +172,11 @@ main(int argc, char **argv)
 	billard->resign();
     }
     catch (RTI::Exception &e) {
-	cerr << "RTI Exception: " << e._name << " [" 
-	     << (e._reason ? e._reason : "undefined") << "]" << endl ;
+	cerr << "RTI exception: " << e._name << " [" 
+	     << (e._reason ? e._reason : "undefined") << "]." << endl ;
     }
     catch (...) {
-	cerr << "Non-RTI Exception." << std::endl ;
+	cerr << "Error: unknown non-RTI exception." << std::endl ;
     }
 
     std::cout << "Exiting." << std::endl ;
@@ -234,10 +234,11 @@ TerminateHandler()
 Billard *
 createBillard(bool demo, const char *s_demo, string name)
 {
-    string s = s_demo ;
-
     if (demo) {
 	D[pdDebug] << "Create billard " << s_demo << endl ;
+
+	string s = s_demo ;
+
 	if (s == "static-ddm")
 	    return new BillardStaticDDM(name);
 	else if (s == "dynamic-ddm")
@@ -249,4 +250,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.9 2005/05/21 21:03:45 breholee Exp $
+// EOF $Id: main.cc,v 3.10 2005/05/29 22:26:44 breholee Exp $
