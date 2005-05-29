@@ -45,7 +45,7 @@ cmdline_parser_print_help (void)
   printf("   -fSTRING   --federation=STRING  federation name\n");
   printf("   -lSTRING   --logfile=STRING     file to log events\n");
   printf("   -nSTRING   --name=STRING        federate name\n");
-  printf("   -oSTRING   --demo=STRING        select demo\n");
+  printf("   -oSTRING   --demo=STRING        select demo (static-ddm, dynamic-ddm)\n");
   printf("   -tINT      --timer=INT          timer\n");
   printf("   -v         --verbose            verbose mode (default=off)\n");
   printf("   -xINT      --xoffset=INT        X offset (X11)\n");
@@ -213,7 +213,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           args_info->name_arg = gengetopt_strdup (optarg);
           break;
 
-        case 'o':	/* select demo.  */
+        case 'o':	/* select demo (static-ddm, dynamic-ddm).  */
           if (args_info->demo_given)
             {
               fprintf (stderr, "%s: `--demo' (`-o') option given more than once\n", CMDLINE_PARSER_PACKAGE);

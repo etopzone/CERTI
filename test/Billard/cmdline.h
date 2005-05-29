@@ -30,7 +30,7 @@ struct gengetopt_args_info
   char * federation_arg;	/* federation name.  */
   char * logfile_arg;	/* file to log events.  */
   char * name_arg;	/* federate name.  */
-  char * demo_arg;	/* select demo.  */
+  char * demo_arg;	/* select demo (static-ddm, dynamic-ddm).  */
   int timer_arg;	/* timer.  */
   int verbose_flag;	/* verbose mode (default=off).  */
   int xoffset_arg;	/* X offset (X11).  */
