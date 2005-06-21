@@ -98,7 +98,7 @@ Then these lines, one in each terminal:
 rtig                           # this script starts the RTIG
 billard -fTest -n1	       # this one starts the first "billard" instance
 billard -fTest -n2	       # this one a second "billard"
-billard -ftest -n3	       # this one a third "billard"
+billard -fTest -n3	       # this one a third "billard"
 
 Press ENTER in the first "billard" to start, and Ctrl-C to stop (or
 see options ("billard --help") for timeout options.
