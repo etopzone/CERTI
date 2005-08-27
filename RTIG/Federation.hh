@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.33 2005/04/05 12:24:20 breholee Exp $
+// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -44,7 +44,7 @@
 namespace certi {
 namespace rtig {
 
-class Federation : private std::list<Federate *>
+class Federation
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
@@ -489,13 +489,16 @@ private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
 
-    Federate *getByName(const char *theName) const
+    Federate &getFederate(const char *theName)
         throw (FederateNotExecutionMember);
 
-    Federate *getByHandle(FederateHandle theHandle) const
+    Federate &getFederate(FederateHandle theHandle)
         throw (FederateNotExecutionMember);
 
     // Private attributes
+    typedef std::vector<Federate> FederateList ;
+
+    FederateList federates ;
     bool saveInProgress ;
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
@@ -512,4 +515,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.33 2005/04/05 12:24:20 breholee Exp $
+// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
