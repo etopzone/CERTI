@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.7 2005/08/27 17:26:23 breholee Exp $
+// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -35,8 +35,6 @@
 #define MAX_BYTES_PER_VALUETYPE 20
 #undef MAX_PARAMETERS_PER_CLASS
 #define MAX_PARAMETERS_PER_CLASS 20
-#undef MAX_FEDERATION
-#define MAX_FEDERATION 20
 
 namespace certi {
 
@@ -274,4 +272,4 @@ const int MAX_BACKLOG = 256 ;
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.7 2005/08/27 17:26:23 breholee Exp $
+// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $

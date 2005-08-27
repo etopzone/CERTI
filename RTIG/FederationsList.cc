@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.29 2005/04/30 16:41:28 breholee Exp $
+// $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -166,10 +166,6 @@ void FederationsList::createFederation(const char *name,
         D.Out(pdDebug,
               "CreerFederation catches FederationExecutionDoesNotExist.");
     }
-
-    if (size() >= MAX_FEDERATION)
-        throw RTIinternalError("Too many federation executions.");
-
 
 #ifdef FEDERATION_USES_MULTICAST
     federation = new Federation(name, handle, socketServer, auditFile, mc_link);
@@ -1264,5 +1260,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.29 2005/04/30 16:41:28 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
 
