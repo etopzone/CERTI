@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.12 2005/05/16 19:27:52 breholee Exp $
+// $Id: SocketTCP.cc,v 3.13 2005/08/27 17:23:00 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -231,8 +231,7 @@ SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
         exit(-1);
     }
 
-    // BUG: On pourrait pas reduire ?
-    if (!listen(MAX_FEDERATION*MAX_FEDERATE)) {
+    if (!listen(MAX_BACKLOG)) {
         perror("SocketTCP: Listen");
         exit(-1);
     }
@@ -322,11 +321,12 @@ SocketTCP::close()
 }
 
 // ----------------------------------------------------------------------------
-int SocketTCP::listen(unsigned long howMuch)
+int
+SocketTCP::listen(unsigned long howMuch)
 {
     assert(!_est_init_tcp);
 
-    return((::listen(_socket_tcp, howMuch)<0)?0:1);
+    return ::listen(_socket_tcp, howMuch) >= 0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -490,4 +490,4 @@ SocketTCP::timeoutTCP(int sec, int usec)
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.12 2005/05/16 19:27:52 breholee Exp $
+// $Id: SocketTCP.cc,v 3.13 2005/08/27 17:23:00 breholee Exp $
