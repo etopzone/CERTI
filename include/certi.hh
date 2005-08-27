@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.6 2005/05/05 19:08:45 breholee Exp $
+// $Id: certi.hh,v 3.7 2005/08/27 17:26:23 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -37,8 +37,6 @@
 #define MAX_PARAMETERS_PER_CLASS 20
 #undef MAX_FEDERATION
 #define MAX_FEDERATION 20
-#undef MAX_FEDERATE
-#define MAX_FEDERATE 20
 
 namespace certi {
 
@@ -182,7 +180,7 @@ typedef char ValueType[MAX_BYTES_PER_VALUETYPE + 1] ;
 struct Value {
     ValueName name ;
     ValueName value ;
-    ValueType type ;
+    ValueName type ;
     ULong length ;
 };
 typedef RTI::Double FederationTimeDelta ;
@@ -198,6 +196,9 @@ const TransportType RELIABLE = 1 ;
 const TransportType BEST_EFFORT = 2 ;
 const OrderType RECEIVE = 1 ;
 const OrderType TIMESTAMP = 2 ;
+
+// Constants
+const int MAX_BACKLOG = 256 ;
 
 } // namespace certi
 
@@ -273,4 +274,4 @@ const OrderType TIMESTAMP = 2 ;
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.6 2005/05/05 19:08:45 breholee Exp $
+// $Id: certi.hh,v 3.7 2005/08/27 17:26:23 breholee Exp $
