@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.25 2005/05/16 08:26:20 breholee Exp $
+// $Id: Message_RW.cc,v 3.26 2005/11/29 17:48:06 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -288,6 +288,12 @@ Message::readBody(SocketUN *socket)
 	  case DDM_MODIFY_REGION:
 	    readExtents(body);
 	    break ;
+
+	  case GET_OBJECT_INSTANCE_HANDLE:
+	  case GET_OBJECT_INSTANCE_NAME:
+            object = body.readLongInt();
+	    readName(body);
+	    break;
 	    
             // -- Default Handler --
 
@@ -488,6 +494,13 @@ Message::readHeader(SocketUN *socket)
       case DISABLE_TIME_CONSTRAINED:
       case TICK_REQUEST:
         boolean = header.VP.time.mode ;
+        break ;
+
+      case GET_OBJECT_INSTANCE_HANDLE:
+      case GET_OBJECT_INSTANCE_NAME:
+	object = header.VP.O_I.handle;
+        handleArraySize = header.VP.O_I.size ;
+        setFederationTime(header.VP.O_I.date);
         break ;
 
       default:
@@ -817,6 +830,12 @@ Message::writeBody(SocketUN *socket)
 	    writeExtents(body);
 	    break ;
 	    
+	  case GET_OBJECT_INSTANCE_HANDLE:
+	  case GET_OBJECT_INSTANCE_NAME :
+	    body.writeLongInt(object);
+	    body.writeString(name);
+	    break;
+	    
             // -- Default Handler --
 
           default:
@@ -1071,6 +1090,14 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 0 ;
         break ;
 
+      case GET_OBJECT_INSTANCE_HANDLE:
+      case GET_OBJECT_INSTANCE_NAME:
+        header.VP.O_I.handle = object;
+        header.VP.O_I.size = handleArraySize ;
+        header.VP.O_I.date = getFederationTime() ;
+        header.bodySize = 1 ;
+        break ;
+
         // -- Default Handler --
       default:
         D.Out(pdExcept, "Unknown type %d in WriteHeader.", header.type);
@@ -1104,4 +1131,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.25 2005/05/16 08:26:20 breholee Exp $
+// $Id: Message_RW.cc,v 3.26 2005/11/29 17:48:06 breholee Exp $
