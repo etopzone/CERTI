@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.28 2005/04/05 20:18:54 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.29 2005/11/29 17:39:12 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -476,6 +476,7 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
     rep.type = req->type ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
+    rep.setLabel(req->label);
     // rep.object is set by the call of registerObject
 
     rep.write(link); // Send answer to RTIA
@@ -1061,4 +1062,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.28 2005/04/05 20:18:54 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.29 2005/11/29 17:39:12 breholee Exp $
