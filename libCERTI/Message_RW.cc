@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.26 2005/11/29 17:48:06 breholee Exp $
+// $Id: Message_RW.cc,v 3.27 2005/12/21 14:50:39 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,7 +116,6 @@ Message::readBody(SocketUN *socket)
           case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
           case ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-          case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
             object = body.readLongInt();
             handleArraySize = body.readShortInt();
             readHandleArray(body);
@@ -131,6 +130,7 @@ Message::readBody(SocketUN *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+          case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
             object = body.readLongInt();
             handleArraySize = body.readShortInt();
             readHandleArray(body);
@@ -1131,4 +1131,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.26 2005/11/29 17:48:06 breholee Exp $
+// $Id: Message_RW.cc,v 3.27 2005/12/21 14:50:39 breholee Exp $
