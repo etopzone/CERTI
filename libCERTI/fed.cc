@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.4 2004/02/26 00:08:49 breholee Exp $
+// $Id: fed.cc,v 3.5 2005/12/21 15:31:41 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -231,7 +231,6 @@ addAttribute()
 {
     attribute = new ObjectClassAttribute();
     objects.back()->addAttribute(attribute);
-    attribute->setHandle(attributeHandle++);
     attribute->setName(arg.c_str());
     attribute->transport = transport ;
     attribute->order = order ;
@@ -383,4 +382,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.4 2004/02/26 00:08:49 breholee Exp $
+// $Id: fed.cc,v 3.5 2005/12/21 15:31:41 breholee Exp $
