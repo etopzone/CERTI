@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  Benoît Bréholée
+// Copyright (C) 2002-2005  ONERA
 //
 // This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.1 2005/05/06 13:38:42 breholee Exp $
+// $Id: HandleManager.hh,v 3.2 2006/03/09 19:54:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER

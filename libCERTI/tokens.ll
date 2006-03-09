@@ -1,7 +1,7 @@
 %{
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  Benoît Bréholée
+// Copyright (C) 2003  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.2 2004/05/18 13:18:57 breholee Exp $
+// $Id: tokens.ll,v 3.3 2006/03/09 19:54:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2004  Benoît Bréholée
+// Copyright (C) 2004  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Handled.hh,v 3.0 2005/03/25 16:07:31 breholee Exp $
+// $Id: Handled.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLED_HH
@@ -80,4 +80,4 @@ Handled<T>::getHandle() const
 
 #endif // LIBCERTI_HANDLED_HH
 
-// $Id: Handled.hh,v 3.0 2005/03/25 16:07:31 breholee Exp $
+// $Id: Handled.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
