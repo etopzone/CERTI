@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This file is part of CERTI
 //
@@ -17,8 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-//
-// $Id: main.cc,v 3.11 2005/04/30 16:41:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -65,7 +63,7 @@ int main(int argc, char *argv[])
     bool verbose = args.verbose_flag ;
 
     if (verbose) {
-	cout << "CERTI RTIG " VERSION " - Copyright 2002-2005  ONERA" 
+	cout << "CERTI RTIG " VERSION " - Copyright 2002-2006  ONERA" 
 	     << endl ;
 	cout << "This is free software ; see the source for copying "
 	     << "conditions. There is NO\nwarranty ; not even for "
@@ -94,5 +92,3 @@ int main(int argc, char *argv[])
     }
     exit(EXIT_SUCCESS);
 }
-
-// $Id: main.cc,v 3.11 2005/04/30 16:41:28 breholee Exp $
