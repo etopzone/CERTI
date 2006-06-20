@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This file is part of CERTI
 //
@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.17 2005/04/30 16:38:39 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.1 2006/06/20 07:10:49 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -263,9 +263,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     e = rep.exception ;
 
     if (e == e_NO_EXCEPTION)
-        rootObject->ObjectClasses->deleteObject(fm->federate,
-                                                theObjectHandle,
-                                                theTag);
+	rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
 
     return rep.eventRetraction ;
 }
@@ -580,4 +578,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.17 2005/04/30 16:38:39 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.1 2006/06/20 07:10:49 breholee Exp $
