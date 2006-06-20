@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002, 2003  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This file is part of CERTI-libRTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: converter.cc,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: converter.cc,v 3.4 2006/06/20 07:14:28 breholee Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -201,6 +201,7 @@ getObjectToStringLength(const char *init_string,
             }
             size += 4 + 2 * counter ;
             counter = 0 ;
+	    break ;
           default:
             size++ ;
             i++ ;
@@ -211,4 +212,4 @@ getObjectToStringLength(const char *init_string,
 
 } // namespace certi
 
-// $Id: converter.cc,v 3.3 2003/06/27 17:26:29 breholee Exp $
+// $Id: converter.cc,v 3.4 2006/06/20 07:14:28 breholee Exp $
