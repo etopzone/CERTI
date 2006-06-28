@@ -1,23 +1,16 @@
-2006-05-14  Benoît Bréholée  <breholee@free.fr>
+2006-06-28  author  <breholee@free.fr>
 
-	* RTIG/RTIG_processing.cc:
-	bugfix: use of label during object registration
+	* VERSION, doc/billard.dox, doc/reference.dox, doc/user.dox:
+	version bump
 
-	* VERSION: version 3.2.1
+	* libCERTI/FedTime.cc, libCERTI/GAV_aux.cc, libCERTI/XmlParser.cc:
+	fix: C++ compliance (strict namespaces or exception declarations)
 
-	* libCERTI/Message_RW.cc:
-	bugfix: no tag for 'Attribute Ownership Divestiture Notification' service
+	* include/RTItypes.hh: fix: missing virtual destructor
 
-	* libCERTI/fed.cc: bugfix: attribute handle initialization
+2006-06-20  author  <breholee@free.fr>
 
-	* RTIG/main.cc: bump copyright
+	* libCERTI/converter.cc: fix: buffer size for network messages
 
-	* autogen.sh, bootstrap: replace bootstrap by autogen.sh
-
-2005-06-21  Benoît Bréholée  <breholee@free.fr>
-
-	* doc/install.txt: fixed typo
-
-2005-06-10  Benoît Bréholée  <breholee@free.fr>
-
-	* doc/Makefile.am: include the *.dox files in distribution
+	* RTIA/ObjectManagement.cc:
+	fix: delete object (was not removed from instance tree)
