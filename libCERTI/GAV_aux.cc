@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -231,21 +231,6 @@ AttributeHandleValuePairSetImp::next(ULong) const
 }
 
 // ----------------------------------------------------------------------------
-// AttributeSetFactory
-// ----------------------------------------------------------------------------
-
-RTI::AttributeHandleValuePairSet *
-RTI::AttributeSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
-{
-    AttributeHandleValuePairSetImp *ahvps ;
-    ahvps = new AttributeHandleValuePairSetImp ;
-    ahvps->_order = RECEIVE ;
-    ahvps->_transport = RELIABLE ;
-    return (AttributeHandleValuePairSet *) ahvps ;
-}
-
-// ----------------------------------------------------------------------------
 // AttributeHandleSetImp
 // ----------------------------------------------------------------------------
 AttributeHandleSetImp::~AttributeHandleSetImp()
@@ -316,17 +301,6 @@ AttributeHandleSetImp::isMember(AttributeHandle h) const
 }
 
 // ----------------------------------------------------------------------------
-// AttributeHandleSetImpFactory
-// ----------------------------------------------------------------------------
-
-RTI::AttributeHandleSet *
-RTI::AttributeHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return new AttributeHandleSetImp();
-}
-
-// ----------------------------------------------------------------------------
 // FederateHandleSetImp
 // ----------------------------------------------------------------------------
 FederateHandleSetImp::~FederateHandleSetImp()
@@ -387,17 +361,6 @@ RTI::Boolean
 FederateHandleSetImp::isMember(FederateHandle h) const
 {
     return RTI::Boolean(find(begin(), end(), h) != end());
-}
-
-// ----------------------------------------------------------------------------
-// FederateHandleSetFactory
-// ----------------------------------------------------------------------------
-
-RTI::FederateHandleSet *
-RTI::FederateHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return ((FederateHandleSet *) new FederateHandleSetImp());
 }
 
 // ----------------------------------------------------------------------------
@@ -603,10 +566,37 @@ ParameterHandleValuePairSetImp::next(ULong) const
     return 0 ;
 }
 
-// ----------------------------------------------------------------------------
-// ParameterSetFactory
-// ----------------------------------------------------------------------------
+} // namespace certi
 
+// ----------------------------------------------------------------------------
+RTI::AttributeHandleValuePairSet *
+RTI::AttributeSetFactory::create(ULong)
+    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
+{
+    AttributeHandleValuePairSetImp *ahvps ;
+    ahvps = new AttributeHandleValuePairSetImp ;
+    ahvps->_order = RECEIVE ;
+    ahvps->_transport = RELIABLE ;
+    return (AttributeHandleValuePairSet *) ahvps ;
+}
+
+// ----------------------------------------------------------------------------
+RTI::AttributeHandleSet *
+RTI::AttributeHandleSetFactory::create(ULong)
+    throw (MemoryExhausted, ValueCountExceeded)
+{
+    return new AttributeHandleSetImp();
+}
+
+// ----------------------------------------------------------------------------
+RTI::FederateHandleSet *
+RTI::FederateHandleSetFactory::create(ULong)
+    throw (MemoryExhausted, ValueCountExceeded)
+{
+    return ((FederateHandleSet *) new FederateHandleSetImp());
+}
+
+// ----------------------------------------------------------------------------
 RTI::ParameterHandleValuePairSet *
 RTI::ParameterSetFactory::create(ULong size)
     throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
@@ -618,5 +608,3 @@ RTI::ParameterSetFactory::create(ULong size)
     phvps->_transport = RELIABLE ;
     return (ParameterHandleValuePairSet *) phvps ;
 }
-
-} // namespace certi

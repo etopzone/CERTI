@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -16,15 +16,12 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: FedTime.cc,v 3.8 2005/05/05 20:29:15 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
-#include "RTI.hh"
+#include "certi.hh"
 #include "fedtime.hh"
 
 #include <limits>
@@ -64,8 +61,6 @@ const double infinity = std::numeric_limits<double>::max();
 const char *infinity_str = "+inf" ;
 
 } // anonymous namespace
-
-namespace certi {
 
 // ----------------------------------------------------------------------------
 // FedTimeFactory
@@ -469,7 +464,6 @@ operator<<(std::ostream &s, const FedTime &time)
 // ----------------------------------------------------------------------------
 RTIfedTime
 operator+(const Double &d, const FedTime &time)
-    throw (RTI::InvalidFederationTime)
 {
     RTIfedTime fedtime = d + rft(time).getTime();
     return fedtime ;
@@ -478,7 +472,6 @@ operator+(const Double &d, const FedTime &time)
 // ----------------------------------------------------------------------------
 RTIfedTime
 operator-(const Double &d, const FedTime &time)
-    throw (RTI::InvalidFederationTime)
 {
     RTIfedTime fedtime = d - rft(time).getTime();
     return fedtime ;
@@ -487,7 +480,6 @@ operator-(const Double &d, const FedTime &time)
 // ----------------------------------------------------------------------------
 RTIfedTime
 operator*(const Double &d, const FedTime &time)
-    throw (RTI::InvalidFederationTime)
 {
     RTIfedTime fedtime = d * rft(time).getTime();
     return fedtime ;
@@ -496,12 +488,7 @@ operator*(const Double &d, const FedTime &time)
 // ----------------------------------------------------------------------------
 RTIfedTime
 operator/(const Double &d, const FedTime &time)
-    throw (RTI::InvalidFederationTime)
 {
     RTIfedTime fedtime = d / rft(time).getTime();
     return fedtime ;
 }
-
-} // namespace certi
-
-// $Id: FedTime.cc,v 3.8 2005/05/05 20:29:15 breholee Exp $

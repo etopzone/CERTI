@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003  ONERA
+// Copyright (C) 2003-2006  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -16,10 +16,7 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
-// USA
-//
-// $Id: XmlParser.cc,v 3.16 2003/11/10 14:37:22 breholee Exp $
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -331,7 +328,7 @@ namespace certi {
 
 XmlParser::XmlParser(RootObject *)
 {
-};
+}
 
 RootObject *XmlParser::parse(string)
 {
@@ -346,5 +343,3 @@ bool XmlParser::exists()
 } // namespace certi
 
 #endif // HAVE_XML
-
-// $Id: XmlParser.cc,v 3.16 2003/11/10 14:37:22 breholee Exp $
