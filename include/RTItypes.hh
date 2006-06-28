@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
+// $Id: RTItypes.hh,v 3.15.2.1 2006/06/28 17:09:35 breholee Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -224,6 +224,8 @@ public:
 class RTI_EXPORT FederateHandleSet
 {
 public:
+    virtual ~FederateHandleSet() { }
+
     virtual ULong size() const = 0 ;
 
     virtual FederateHandle getHandle(ULong) const
@@ -388,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
+// $Id: RTItypes.hh,v 3.15.2.1 2006/06/28 17:09:35 breholee Exp $
