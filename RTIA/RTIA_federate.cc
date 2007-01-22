@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.31 2005/04/30 16:38:39 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.31.2.1 2007/01/22 13:54:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -281,7 +281,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           D.Out(pdTrace,
                 "Receiving Message from Federate, type UpdateAttribValues.");
 
-          AttributeValue *ValueArray = req->getValueArray();
+          ValueLengthPair *ValueArray = req->getValueArray();
 
           try {
               rep.setEventRetraction(
@@ -304,7 +304,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           D.Out(pdTrace,
                 "Receiving Message from Federate, type SendInteraction.");
 
-          ParameterValue *ValueArray = (ParameterValue *) req->getValueArray();
+          ParameterLengthPair *ValueArray = (ParameterLengthPair *) req->getValueArray();
 
           try {
               rep.setEventRetraction(
@@ -1101,4 +1101,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.31 2005/04/30 16:38:39 breholee Exp $
+// $Id: RTIA_federate.cc,v 3.31.2.1 2007/01/22 13:54:50 rousse Exp $

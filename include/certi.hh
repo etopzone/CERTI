@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $
+// $Id: certi.hh,v 3.6.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -35,6 +35,15 @@
 #define MAX_BYTES_PER_VALUETYPE 20
 #undef MAX_PARAMETERS_PER_CLASS
 #define MAX_PARAMETERS_PER_CLASS 20
+#undef MAX_FEDERATION
+#define MAX_FEDERATION 20
+#undef MAX_FEDERATE
+#define MAX_FEDERATE 20
+
+// next used in MessageBody constructor with no size
+#define BUFFER_SIZE_DEFAULT 200
+// next used in RTIG::processIncomingMessage method
+#define BUFFER_EXCEPTION_REASON_SIZE 256
 
 namespace certi {
 
@@ -178,7 +187,7 @@ typedef char ValueType[MAX_BYTES_PER_VALUETYPE + 1] ;
 struct Value {
     ValueName name ;
     ValueName value ;
-    ValueName type ;
+    ValueType type ;
     ULong length ;
 };
 typedef RTI::Double FederationTimeDelta ;
@@ -195,8 +204,12 @@ const TransportType BEST_EFFORT = 2 ;
 const OrderType RECEIVE = 1 ;
 const OrderType TIMESTAMP = 2 ;
 
-// Constants
-const int MAX_BACKLOG = 256 ;
+// next introduced in order to manage value including any char (as \0)
+typedef  struct vlp
+    {
+    AttributeValue value ;          // value is a lot of bytes
+    ULong length ;                  // length i.e. bytes number of the value
+} ValueLengthPair, ParameterLengthPair ;
 
 } // namespace certi
 
@@ -272,4 +285,4 @@ const int MAX_BACKLOG = 256 ;
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $
+// $Id: certi.hh,v 3.6.2.1 2007/01/22 13:54:51 rousse Exp $

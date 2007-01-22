@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
+// $Id: FederationsList.cc,v 3.29.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -166,6 +166,10 @@ void FederationsList::createFederation(const char *name,
         D.Out(pdDebug,
               "CreerFederation catches FederationExecutionDoesNotExist.");
     }
+
+    if (size() >= MAX_FEDERATION)
+        throw RTIinternalError("Too many federation executions.");
+
 
 #ifdef FEDERATION_USES_MULTICAST
     federation = new Federation(name, handle, socketServer, auditFile, mc_link);
@@ -361,7 +365,7 @@ FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
                                  AttributeHandle *attributes,
-                                 AttributeValue *values,
+                                 ValueLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
                                  const char *tag)
@@ -394,7 +398,7 @@ FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
                                  ParameterHandle *parameters,
-                                 ParameterValue *values,
+                                 ParameterLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region,
@@ -1260,5 +1264,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.29.2.1 2007/01/22 13:54:51 rousse Exp $
 

@@ -248,17 +248,30 @@ public:
 
     // -- Attribute Access Methods
     // Value Array Management
-    void setValue(int Rank, const char *Value)
+    // setValue : Value and its length are stored into valueArray[Rank]
+    // Parameter 1 : Rank (int) : valueArray rank
+    // Parameter 2 : Value (char *) : Value to store into valueArray[Rank]
+    //               Value is managed as a set of bytes
+    // Parameter 3 : length (unsigned long) : byte number of Value
+    void setValue(int Rank, const char *Value, unsigned long length)
         throw (RTIinternalError); // Bad Rank, Bad Value
 
     // If Value == NULL return a newly allocated copy of Value, else copy it
     // in Value.
-    char *getValue(int Rank, char *Value = 0) const
+    // getValue : Value and its length are tooken from valueArray[Rank]
+    // Parameter 1 : Rank (int) : valueArray rank
+    // Parameter 2 :length (unsigned long *) : byte number of Value tooken
+    //              from valueArray[Rank]
+    // Parameter 3 : Value (char *) : Value tooken from valueArray[Rank]
+    //               Value is managed as a set of bytes
+    // Note : if parametre 3 not present, Value is created and its address is returned
+    //        by getValue
+    char *getValue(int Rank, unsigned long *length, char *Value = 0) const
         throw (RTIinternalError); // Bad Rank
 
     // Return a newly allocated ValueArray, exactly of size HandleArraySize.
     // containing the actual Attrib/Param values. You must FREE this structure.
-    AttributeValue *getValueArray();
+    ValueLengthPair *getValueArray();
 
     const char *getLabel() const { return label ; };
     void setLabel(const char *new_label);
@@ -357,8 +370,9 @@ public:
     void setPHVPS(const RTI::ParameterHandleValuePairSet &);
 
     void setAttributes(AttributeHandle *, ushort);
-    void setAttributes(AttributeHandle *, AttributeValue *, ushort);
-    void setParameters(ParameterHandle *, ParameterValue *, ushort);
+
+    void setAttributes(AttributeHandle *, ValueLengthPair *, ushort);
+    void setParameters(ParameterHandle *, ParameterLengthPair *, ushort);
 
     void setException(TypeException, const char *the_reason = "\0");
     TypeException getExceptionType() const { return exception ; };
@@ -446,7 +460,8 @@ private:
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
-    AttributeValue valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    // valueArray is now a ValueLengthPair
+    ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
 } // namespace certi

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.20 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.20.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -412,7 +412,7 @@ void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
                                       AttributeHandle *attributes,
-                                      AttributeValue *values,
+                                      ValueLengthPair *values,
                                       UShort nb,
                                       FederationTime time,
                                       const char *tag)
@@ -642,4 +642,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.20 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClassSet.cc,v 3.20.2.1 2007/01/22 13:54:51 rousse Exp $

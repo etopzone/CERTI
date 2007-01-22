@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.8 2005/05/16 08:22:30 breholee Exp $
+// $Id: MessageBody.cc,v 3.8.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,7 +31,7 @@ namespace certi {
  */
 MessageBody::MessageBody()
 {
-    buffer.reserve(200);
+    buffer.reserve(BUFFER_SIZE_DEFAULT);
     getPtr = buffer.begin();
 }
 
@@ -147,4 +147,4 @@ MessageBody::operator>>(unsigned short &val) const
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.8 2005/05/16 08:22:30 breholee Exp $
+// $Id: MessageBody.cc,v 3.8.2.1 2007/01/22 13:54:51 rousse Exp $

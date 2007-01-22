@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.hh,v 3.33.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -44,7 +44,7 @@
 namespace certi {
 namespace rtig {
 
-class Federation
+class Federation : private std::list<Federate *>
 {
     // ATTRIBUTES --------------------------------------------------------------
 private:
@@ -240,7 +240,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                AttributeHandle *theAttributeList,
-                               AttributeValue *theValueList,
+                               ValueLengthPair *theValueList,
                                UShort theListSize,
                                FederationTime theTime,
                                const char *theTag)
@@ -259,7 +259,7 @@ public:
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               ParameterHandle *theParameterList,
-                              ParameterValue *theValueList,
+                              ParameterLengthPair *theValueList,
                               UShort theListSize,
                               FederationTime theTime,
 			      RegionHandle,
@@ -489,16 +489,13 @@ private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
 
-    Federate &getFederate(const char *theName)
+    Federate *getByName(const char *theName) const
         throw (FederateNotExecutionMember);
 
-    Federate &getFederate(FederateHandle theHandle)
+    Federate *getByHandle(FederateHandle theHandle) const
         throw (FederateNotExecutionMember);
 
     // Private attributes
-    typedef std::vector<Federate> FederateList ;
-
-    FederateList federates ;
     bool saveInProgress ;
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
@@ -515,4 +512,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.hh,v 3.33.2.1 2007/01/22 13:54:51 rousse Exp $

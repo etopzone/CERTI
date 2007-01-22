@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.17.2.1 2006/06/20 07:10:49 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.2 2007/01/22 13:54:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -88,7 +88,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
-                                        AttributeValue *valueArray,
+                                        ValueLengthPair *valueArray,
                                         UShort attribArraySize,
                                         FederationTime theTime,
                                         const char *theTag,
@@ -108,7 +108,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 
     for (i = 0 ; i < attribArraySize ; i++) {
         req.handleArray[i] = attribArray[i] ;
-        req.setValue(i, valueArray[i]);
+        req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
     strcpy(req.label, theTag);
@@ -152,7 +152,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          AttributeHandle *the_attributes,
-                                         AttributeValue *the_values,
+                                         ValueLengthPair *the_values,
                                          UShort the_size,
                                          FederationTime the_time,
                                          const char *the_tag,
@@ -176,7 +176,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 EventRetractionHandle
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   ParameterHandle *paramArray,
-                                  ParameterValue *valueArray,
+                                  ParameterLengthPair *valueArray,
                                   UShort paramArraySize,
                                   FederationTime theTime,
                                   const char *theTag,
@@ -203,7 +203,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     for (int i=0 ; i<paramArraySize ; i++) {
 	req.handleArray[i] = paramArray[i] ;
-	req.setValue(i, valueArray[i]);
+	req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
     strcpy(req.label, theTag);
@@ -222,7 +222,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      ParameterHandle *the_parameters,
-                                     ParameterValue *the_values,
+                                     ParameterLengthPair *the_values,
                                      UShort the_size,
                                      FederationTime the_time,
                                      const char *the_tag,
@@ -444,7 +444,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 
 void
 ObjectManagement::provideAttributeValueUpdate(ObjectHandle,
-                                              AttributeValue &,
+                                              ValueLengthPair &,
                                               TypeException &)
 {
     printf("ObjectManagement.cc: "
@@ -578,4 +578,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.17.2.1 2006/06/20 07:10:49 breholee Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.2 2007/01/22 13:54:50 rousse Exp $

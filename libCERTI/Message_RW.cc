@@ -551,9 +551,13 @@ Message::readTag(MessageBody &body)
 void
 Message::readValueArray(MessageBody &body)
 {
-    for (int i = 0 ; i < handleArraySize ; i ++) {
-        body.readString(valueArray[i], MAX_BYTES_PER_VALUE);
-    }
+// valueArray contains length and value
+// so we have to read length and then value with a readBlock
+    for (int i = 0 ; i < handleArraySize ; i ++)
+        {
+        valueArray[i].length = body.readLongInt() ;
+        body.readBlock((char *) valueArray[i].value, valueArray[i].length);
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -1095,8 +1099,12 @@ Message::writeResignAction(MessageBody &)
 void
 Message::writeValueArray(MessageBody &body)
 {
-    for (int i = 0 ; i < handleArraySize ; i ++) {
-        body.writeString(valueArray[i]);
+    // length and value are stored into valueArray 
+    // so we have to write length and then value with a writeBlock
+    for (int i = 0 ; i < handleArraySize ; i ++)
+        {
+        body.writeLongInt(valueArray[i].length) ;
+        body.writeBlock(valueArray[i].value, valueArray[i].length) ;
     }
 }
 

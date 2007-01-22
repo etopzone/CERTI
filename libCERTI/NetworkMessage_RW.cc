@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.20 2005/05/16 08:31:07 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.20.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,7 +52,8 @@ NetworkMessage::readBody(Socket *socket)
 	readLabel(body);
 	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
-	    body.readString(ValueArray[i], MAX_BYTES_PER_VALUE);
+            ValueArray[i].length = body.readLongInt();
+            body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
 	}
 	break ;
 	
@@ -63,7 +64,8 @@ NetworkMessage::readBody(Socket *socket)
 	body.readBlock((char *) handleArray,
 		       handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
-	    body.readString(ValueArray[i], MAX_BYTES_PER_VALUE);
+            ValueArray[i].length = body.readLongInt() ;
+            body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
 	}
 	region = body.readLongInt();
 	break ;
@@ -401,7 +403,8 @@ NetworkMessage::writeBody(Socket *socket)
 	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 	
 	for (i = 0 ; i < handleArraySize ; i ++) {
-	    body.writeString(ValueArray[i]);
+            body.writeLongInt(ValueArray[i].length) ;
+            body.writeBlock(ValueArray[i].value, ValueArray[i].length);
 	}
 	break ;
 	
@@ -413,7 +416,8 @@ NetworkMessage::writeBody(Socket *socket)
 	body.writeBlock((char *) handleArray,
 			handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
-	    body.writeString(ValueArray[i]);
+            body.writeLongInt(ValueArray[i].length);
+            body.writeBlock(ValueArray[i].value, ValueArray[i].length);
 	}
 	body.writeLongInt(region);
 	break ;
@@ -795,4 +799,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.20 2005/05/16 08:31:07 breholee Exp $
+// $Id: NetworkMessage_RW.cc,v 3.20.2.1 2007/01/22 13:54:51 rousse Exp $

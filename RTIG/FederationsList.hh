@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.27 2005/04/05 12:24:20 breholee Exp $
+// $Id: FederationsList.hh,v 3.27.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -246,7 +246,7 @@ public:
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
                          AttributeHandle *theAttributeList,
-                         AttributeValue *theValueList,
+                         ValueLengthPair *theValueList,
                          UShort theListSize,
                          FederationTime theTime,
                          const char *theTag)
@@ -291,7 +291,7 @@ public:
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
                          ParameterHandle *theParameterList,
-                         ParameterValue *theValueList,
+                         ParameterLengthPair *theValueList,
                          UShort theListSize,
                          FederationTime theTime,
 			 RegionHandle,
@@ -500,4 +500,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.27 2005/04/05 12:24:20 breholee Exp $
+// $Id: FederationsList.hh,v 3.27.2.1 2007/01/22 13:54:51 rousse Exp $

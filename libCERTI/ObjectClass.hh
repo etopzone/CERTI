@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.25 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClass.hh,v 3.25.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -187,7 +187,7 @@ public:
 
     ObjectClassBroadcastList *
     updateAttributeValues(FederateHandle, Object *, AttributeHandle *,
-			  AttributeValue *, int, FederationTime, const char *)
+                          ValueLengthPair *, int, FederationTime, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
@@ -240,4 +240,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.25 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClass.hh,v 3.25.2.1 2007/01/22 13:54:51 rousse Exp $

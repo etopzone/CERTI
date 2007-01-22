@@ -21,7 +21,6 @@
 #include "GAV.hh"
 
 #include "PrettyDebug.hh"
-#include "converter.hh"
 
 #include <algorithm>
 #include <assert.h>

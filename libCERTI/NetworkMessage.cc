@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.12 2005/05/16 08:31:05 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.12.2.1 2007/01/22 13:54:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -75,42 +75,53 @@ NetworkMessage::NetworkMessage()
 }
 
 // ----------------------------------------------------------------------------
-AttributeValue *
+ValueLengthPair *
 NetworkMessage::getAttribValueArray()
 {
-    AttributeValue *NewValueArray = NULL ;
 
-    NewValueArray = (AttributeValue *) calloc(handleArraySize, sizeof(AttributeValue));
+    ValueLengthPair *NewValueArray = NULL ;
+
+    NewValueArray = (ValueLengthPair *) calloc(handleArraySize, sizeof(ValueLengthPair));
+    
+    unsigned long length ;
 
     if (NewValueArray == NULL)
         throw RTIinternalError("No memory.");
 
     for (int i = 0 ; i <handleArraySize ; i++)
-        getValue(i, NewValueArray[i]);
+        {
+        getValue(i, &length, NewValueArray[i].value);
+        NewValueArray[i].length = length ;
+        }
 
     return NewValueArray ;
 }
 
 // ----------------------------------------------------------------------------
-ParameterValue *
+ParameterLengthPair *
 NetworkMessage::getParamValueArray()
 {
-    ParameterValue *NewValueArray = NULL ;
+    ParameterLengthPair *NewValueArray = NULL ;
 
-    NewValueArray = (ParameterValue *) calloc(handleArraySize, sizeof(ParameterValue));
+    NewValueArray = (ParameterLengthPair *) calloc(handleArraySize, sizeof(ParameterLengthPair));
 
     if (NewValueArray == NULL)
         throw RTIinternalError("No memory.");
 
+    unsigned long length ;
+
     for (int i = 0 ; i < handleArraySize ; i++)
-        getValue(i, NewValueArray[i]);
+        {
+        getValue(i, &length, NewValueArray[i].value);
+        NewValueArray[i].length = length ;
+        }
 
     return NewValueArray ;
 }
 
 // ----------------------------------------------------------------------------
 char *
-NetworkMessage::getValue(int Rank, char *Value)
+NetworkMessage::getValue(int Rank, unsigned long *length, char *Value)
     throw (RTIinternalError)
 {
     // Pre-Checking
@@ -118,11 +129,21 @@ NetworkMessage::getValue(int Rank, char *Value)
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
-    if (Value != NULL) {
-        strcpy(Value, ValueArray[Rank]);
+    // First, the length of the Value
+    *length = ValueArray[Rank].length ;
+    if (Value != NULL) 
+        // Value exists, we copy it with memcpy instead of strcpy
+        {
+        memcpy(Value, ValueArray[Rank].value, *length);
         return NULL ;
-    } else
-        return strdup(ValueArray[Rank]);
+        }
+    else
+        // Value doesn't exist, so create it then copy
+        {
+        char *Value = new char [*length] ;
+        memcpy(Value,ValueArray[Rank].value, *length) ;
+        return Value ;
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -137,7 +158,9 @@ NetworkMessage::removeAttribute(UShort Rank)
     // Shift Attribute Handles and Values
     for (AttribIndex = Rank ; AttribIndex < handleArraySize - 1 ; AttribIndex ++) {
         handleArray[AttribIndex] = handleArray[AttribIndex + 1] ;
-        strcpy(ValueArray[AttribIndex], ValueArray[AttribIndex + 1]);
+        ValueArray[AttribIndex].length = ValueArray[AttribIndex + 1].length ;
+        memcpy(ValueArray[AttribIndex].value,ValueArray[AttribIndex + 1].value,
+               ValueArray[AttribIndex + 1].length) ;
     }
 
     handleArraySize -- ;
@@ -155,7 +178,9 @@ NetworkMessage::removeParameter(UShort Rank)
     // Shift Parameter Handles and Values
     for (ParamIndex = Rank ; ParamIndex < handleArraySize - 1 ; ParamIndex ++) {
         handleArray[ParamIndex] = handleArray[ParamIndex + 1] ;
-        strcpy(ValueArray[ParamIndex], ValueArray[ParamIndex + 1]);
+        ValueArray[ParamIndex].length = ValueArray[ParamIndex + 1].length ;
+        memcpy(ValueArray[ParamIndex].value,ValueArray[ParamIndex + 1].value,
+               ValueArray[ParamIndex + 1].length) ;
     }
 
     handleArraySize -- ;
@@ -163,19 +188,22 @@ NetworkMessage::removeParameter(UShort Rank)
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::setValue(int Rank, const char *Value)
+NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
     throw (RTIinternalError)
 {
     // Pre-Checking
 
-    if ((Value == NULL) || (strlen(Value) > MAX_BYTES_PER_VALUE))
+    if ((Value == NULL) || (length > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
     if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank for message.");
 
     // Setting Value
-    strcpy(ValueArray[Rank], Value);
+    // First we store the length, then copy Value with memcpy instead of strcpy
+    ValueArray[Rank].length = length ;
+    memcpy(ValueArray[Rank].value, Value, length);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -243,4 +271,4 @@ NetworkMessage::readFederateName(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.12 2005/05/16 08:31:05 breholee Exp $
+// $Id: NetworkMessage.cc,v 3.12.2.1 2007/01/22 13:54:51 rousse Exp $

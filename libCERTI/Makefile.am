@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.25 2005/05/03 10:15:17 breholee Exp $ 
+## $Id: Makefile.am,v 3.25.2.1 2007/01/22 13:54:51 rousse Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -9,7 +9,7 @@ INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@ @WITH_CYGWIN@
 lib_LTLIBRARIES = libCERTI.la
 
 noinst_HEADERS = AuditFile.hh AuditLine.hh BaseRegion.hh		\
-BasicMessage.hh converter.hh Dimension.hh Exception.hh Extent.hh	\
+BasicMessage.hh Dimension.hh Exception.hh Extent.hh	\
 FederateLevelList.hh fed.hh FedRegion.hh GAV.hh GSSAPIHandler.hh	\
 Handled.hh HandleManager.hh helper.hh InteractionBroadcastList.hh	\
 Interaction.hh InteractionSet.hh LBTS.hh MessageBody.hh Message.hh	\
@@ -22,7 +22,7 @@ XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
 SocketUN.hh
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
-BasicMessage.cc converter.cc Dimension.cc Exception.cc Extent.cc	\
+BasicMessage.cc Dimension.cc Exception.cc Extent.cc	\
 fed.cc FederateLevelList.cc FedRegion.cc FedTime.cc GAV_aux.cc GAV.cc	\
 GSSAPIHandler.cc InteractionBroadcastList.cc Interaction.cc		\
 InteractionSet.cc LBTS.cc MessageBody.cc Message.cc Message_RW.cc	\

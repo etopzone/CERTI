@@ -23,7 +23,6 @@
 #include "certi.hh"
 #include "PrettyDebug.hh"
 #include "GAV.hh"
-#include "converter.hh"
 
 #include <cstdio>
 #include <cstring>
@@ -47,8 +46,9 @@ Message::Message()
     handleArraySize = 0 ;
 }
 
+//getValue allows Value as a set of bytes because length (parameter 2) is known
 // ----------------------------------------------------------------------------
-char *Message::getValue(int Rank, char *Value) const
+char *Message::getValue(int Rank, unsigned long *length, char *Value) const
     throw (RTIinternalError)
 {
     // Pre-Checking
@@ -57,30 +57,44 @@ char *Message::getValue(int Rank, char *Value) const
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
+    // First, the length of the Value
+    *length = valueArray[Rank].length ;  
 
-    if (Value != NULL) {
-        strcpy(Value, valueArray[Rank]);
+    if (Value != NULL)
+        // Value exists, we copy it with memcpy instead of strcpy
+        {
+        memcpy(Value,valueArray[Rank].value, *length) ;     
         return NULL ;
-    }
+        }
     else
-        return strdup(valueArray[Rank]);
+        // Value doesn't exists, so create it then copy
+        {
+        char *Value = new char [*length] ;
+        memcpy(Value,valueArray[Rank].value, *length) ;
+        return Value ;
+        }
 }
 
 // ----------------------------------------------------------------------------
-ParameterValue *
+ParameterLengthPair *
 Message::getValueArray()
 {
     int i ;
-    ParameterValue *NewValueArray = NULL ;
+    unsigned long length ;
 
-    NewValueArray = (ParameterValue *) calloc(handleArraySize,
-                                              sizeof(ParameterValue));
+    ParameterLengthPair *NewValueArray = NULL ;
+
+    NewValueArray = (ParameterLengthPair *) calloc(handleArraySize,
+                                              sizeof(ParameterLengthPair));
 
     if (NewValueArray == NULL)
         throw RTIinternalError("No memory.");
 
     for (i = 0 ; i < handleArraySize ; i++)
-        getValue(i, NewValueArray[i]);
+        {
+        getValue(i, &length, NewValueArray[i].value);
+        NewValueArray[i].length = length ;
+        }
 
     return NewValueArray ;
 }
@@ -307,7 +321,7 @@ Message::getAHVPS() const
         // BUG: Federate may be expecting to find value name
         // (a call to GetWithName for example).
         strcpy(att->_value.name, "");
-        getValue(i, att->_value.value);
+        getValue(i, &(att->_value.length), att->_value.value);
 
         // BUG: Federate is expecting to find value type.
         strcpy(att->_value.type, "");
@@ -332,13 +346,10 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
         CAttributeHandleValuePair *tmp = theAttributes_aux.getIeme(i);
         handleArray[i] = tmp->_attrib ;
 
-        // codage
-        getObjectToStringLength(tmp->_value.value,
-                                tmp->_value.length,
-                                length);
+        length = tmp->_value.length ;
         char *value = new char[length] ;
-        objectToString(tmp->_value.value, tmp->_value.length, value);
-        setValue(i, value);
+        memcpy(value,tmp->_value.value,tmp->_value.length) ;
+        setValue(i, value, length);
         delete[] value;
     }
 }
@@ -358,7 +369,7 @@ Message::getPHVPS() const
         // (a call to GetWithName for example).
         strcpy(par->_value.name, "");
 
-        getValue(i, par->_value.value);
+        getValue(i, &(par->_value.length), par->_value.value);
 
         // BUG: Federate is expecting to find value type.
         strcpy(par->_value.type, "");
@@ -383,13 +394,9 @@ Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
         CParameterHandleValuePair *tmp = theParameters_aux.getIeme(i);
         handleArray[i] = tmp->_param ;
 
-        // codage
-        getObjectToStringLength(tmp->_value.value,
-                                tmp->_value.length,
-                                length);
+        length = tmp->_value.length ;
         char *value = new char[length] ;
-        objectToString(tmp->_value.value, tmp->_value.length, value);
-        setValue(i, value);
+        setValue(i, value, length);
         delete[] value;
     }
 }
@@ -408,28 +415,29 @@ Message::setAttributes(AttributeHandle *the_attributes, ushort the_size)
 // ----------------------------------------------------------------------------
 void
 Message::setAttributes(AttributeHandle *the_attributes,
-                       AttributeValue *the_values,
+                       ValueLengthPair *the_values,
                        ushort the_size)
 {
     handleArraySize = the_size ;
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_attributes[i] ;
-        setValue(i, the_values[i]);
+        setValue(i, the_values[i].value,the_values[i].length ) ;
     }
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::setParameters(ParameterHandle * the_parameters,
-                       ParameterValue * the_values,
+                       ParameterLengthPair * the_values,
                        ushort the_size)
+
 {
     handleArraySize = the_size ;
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_parameters[i] ;
-        setValue(i, the_values[i]);
+        setValue(i, the_values[i].value, the_values[i].length);
     }
 }
 
@@ -477,20 +485,22 @@ Message::setTag(const char *new_tag)
 // setValue
 //
 void
-Message::setValue(int Rank, const char *Value)
+Message::setValue(int Rank, const char *Value, unsigned long length)
     throw (RTIinternalError)
 {
+
     // Pre-Checking
 
-    if ((Value == NULL) || (strlen(Value) > MAX_BYTES_PER_VALUE))
+    if ((Value == NULL) || (length > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
     if ((Rank < 0) || (Rank >= handleArraySize))
         throw RTIinternalError("Bad Rank for message.");
 
     // Setting Value
-
-    strcpy(valueArray[Rank], Value);
+    // First we store the length, then copy with memcpy instead of strcpy
+    valueArray[Rank].length = length ;
+    memcpy(valueArray[Rank].value, Value, length);
 }
 
 // ----------------------------------------------------------------------------
@@ -543,7 +553,10 @@ Message::operator=(const Message& msg)
         handleArray[i] = msg.handleArray[i] ;
 
     for (i=0 ; i<<handleArraySize ; i++)
-        strcpy(valueArray[i], msg.valueArray[i]);
+        {
+        valueArray[i].length = msg.valueArray[i].length ;
+        memcpy(valueArray[i].value, msg.valueArray[i].value, msg.valueArray[i].length );
+        }
 
     return *this ;
 }
