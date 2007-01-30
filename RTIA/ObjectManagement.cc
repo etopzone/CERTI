@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.17.2.2 2007/01/22 13:54:50 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.3 2007/01/30 10:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -287,7 +287,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
     // BUG: On fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
-    rootObject->ObjectClasses->deleteObject(the_federate, the_object, the_tag);
+    rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -578,4 +578,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.17.2.2 2007/01/22 13:54:50 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.17.2.3 2007/01/30 10:04:22 rousse Exp $

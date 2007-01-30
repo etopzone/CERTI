@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.6.2.1 2007/01/22 13:54:51 rousse Exp $
+// $Id: certi.hh,v 3.6.2.2 2007/01/30 10:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -255,7 +255,7 @@ typedef  struct vlp
 
 // Server Principal Name
 //(must be like "<rtip principal name>@<network machine name>")
-#define HLA_SERVER_PRINCIPAL_NAME "RTIG@brive"
+#define HLA_SERVER_PRINCIPAL_NAME "RTIG@server"
 
 // Expiration delay for GSSAPI sessions(must be greater then the longer
 // lifetime of a federate).[In seconds]
@@ -285,4 +285,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.6.2.1 2007/01/22 13:54:51 rousse Exp $
+// $Id: certi.hh,v 3.6.2.2 2007/01/30 10:04:22 rousse Exp $

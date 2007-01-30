@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// $Id: Communications.cc,v 3.13.2.1 2007/01/30 10:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -281,8 +281,8 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
             // if numeroFedere != 0, verify that federateNumbers are similar
             if (((*i)->federate == numeroFedere) || (numeroFedere == 0)) {
                 memcpy(msg, (*i), TAILLE_MSG_RESEAU);
-                waitingList.erase(i);
                 delete (*i);
+                waitingList.erase(i);
                 D.Out(pdProtocol,
                       "Message of Type %d was already here.",
                       type_msg);
@@ -316,4 +316,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// $Id: Communications.cc,v 3.13.2.1 2007/01/30 10:04:22 rousse Exp $

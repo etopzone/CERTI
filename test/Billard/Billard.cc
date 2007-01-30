@@ -150,6 +150,7 @@ Billard::pause()
 void
 Billard::tick()
 {
+    usleep( 0 ) ;
     rtiamb.tick();
     nbTicks++ ;
 }
@@ -255,6 +256,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d ", &e);
+                throw ;
             }
         D.Out(pdDebug, "paused");
 
@@ -272,6 +274,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "**** Exception ticking the RTI : %d.", &e);
+                throw ;
             }
     }
     else {
@@ -290,6 +293,7 @@ Billard::synchronize(int autostart)
                 catch (RTI::Exception& e) {
                     D.Out(pdExcept,
                           "******** Exception ticking the RTI : %d.", &e);
+                    throw ;
                 }
             }
         }
@@ -314,6 +318,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
+                throw ;
             }
         }
         D.Out(pdInit, "End of pause");
@@ -385,6 +390,7 @@ Billard::step()
         }
         catch (RTI::Exception& e) {
             D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
+            throw ;
         }
     }
     try {
@@ -509,7 +515,7 @@ Billard::publishAndSubscribe()
 
     // Subscribe to Bille objects.
     D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
-	       << AttrXID << " and " << AttrYID << "... " ;
+	       << AttrXID << " and " << AttrYID << "... " << endl ;
     rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI::RTI_TRUE);
     D[pdDebug] << "done." << endl ;
 

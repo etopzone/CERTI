@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.16 2005/04/30 16:38:39 breholee Exp $
+// $Id: FederationManagement.cc,v 3.16.2.1 2007/01/30 10:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -153,9 +153,7 @@ destroyFederationExecution(const char *theName,
         requete.federate = federate ;
         strcpy(requete.federationName, theName);
 
-        printf("EMISSION DE LA REQUETE\n");
         comm->sendMessage(&requete);
-        printf("ATTENTE DE LA REPONSE\n");
         comm->waitMessage(&reponse,
                           NetworkMessage::DESTROY_FEDERATION_EXECUTION,
                           federate);
@@ -642,4 +640,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.16 2005/04/30 16:38:39 breholee Exp $
+// $Id: FederationManagement.cc,v 3.16.2.1 2007/01/30 10:04:22 rousse Exp $
