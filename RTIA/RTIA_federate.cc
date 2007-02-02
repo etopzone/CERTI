@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.31.2.1 2007/01/22 13:54:50 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.31.2.2 2007/02/02 14:19:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,6 +116,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           rep.setFederate(fm->joinFederationExecution(req->getFederateName(),
                                                       req->getFederationName(),
                                                       e));
+
+          /// Set RTIA PrettyDebug federate name
+          PrettyDebug::setFederateName(req->getFederateName());
 
           D.Out(pdTrace, "Trying to use a .fed file");
           string filename = string(req->getFederationName()) + ".fed" ;
@@ -1101,4 +1104,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.31.2.1 2007/01/22 13:54:50 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.31.2.2 2007/02/02 14:19:35 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: PrettyDebug.cc,v 4.0.2.1 2007/02/02 14:19:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,6 +30,10 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <iostream>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <string>
 
 using std::cout ;
 using std::cerr ;
@@ -42,6 +46,8 @@ DebugOStream PrettyDebug::defaultOutputStream(cerr);
 DebugOStream* PrettyDebug::nullOutputStreamPtr = 0 ; 
 DebugOStream& PrettyDebug::nullOutputStream = DebugOStream::nullOutputStream;
 
+std::string PrettyDebug::federateName_ = "" ;
+
 // ----------------------------------------------------------------------------
 /** Print the message to the default output ostream.
  *  This function does NOT add any trailing \n. */
@@ -49,10 +55,16 @@ void
 PrettyDebug::Print(DebugOStream& theOutputStream,
                    const char* theHeaderMessage, const char * Message)
 {
+   char buffer[256] ;
+   struct timeval tv;
+   gettimeofday( &tv, NULL );
+
+   sprintf( buffer, "HLALOG - %d.%06d - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
+
     if (Message != NULL)
-	theOutputStream << "* " << theHeaderMessage << "> " << Message;
+      theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
     else
-        theOutputStream << theHeaderMessage << pdSEmptyMessage;
+      theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
 }
 
 // ----------------------------------------------------------------------------
@@ -111,8 +123,8 @@ PrettyDebug::PrettyDebug(const char *Name, const char *Header)
     else
         HeaderMessage = strdup("");
 
-     //Initialisation de LMessage à 0. Il est alloué la première fois
-     //dans la méthode Out.
+     //Initialisation de LMessage a 0. Il est alloue la premiere fois
+     //dans la methode Out.
     LMessage = 0;
 
     if ((LEnvVar == 0) || (HeaderMessage == 0)) {
@@ -173,7 +185,7 @@ PrettyDebug::disableDebugLevel(pdDebugLevel Level)
    constant is defined, the Out method has beed declared inline, and
    its body set to {} (see PrettyDebug.hh).
 
-   \attention: Problème, rien ne garantit qu'on ne dépassera pas le
+   \attention: Probleme, rien ne garantit qu'on ne depassera pas le
    nombre max de char dans le vsprintf. Mieux vaut utiliser la
    syntaxe C++ 
 */
@@ -191,10 +203,10 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
         if (Format != 0) { // Cat Header and Message strings 
             if (LMessage == 0) { // A final printed message is
                                  // Header+Message+\n(+\0) 
-                //Optimisation, on pouurait peut-être mettre LMessage
+                //Optimisation, on pourrait peut-etre mettre LMessage
                 //en static.  Mais il ne faudra pas que dans un D.Out
                 //qu'on appelle un autre D.Out car autrement, seul un
-                //message serait affiché.
+                //message serait affiche.
 
                 LMessage = (char *) malloc((pdMaxMessageSize+2) * sizeof(char));
 
@@ -205,14 +217,14 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
                                     "allocating initial memory for messages\n");
                     exit(EXIT_FAILURE);
                 }
-                else
-                    PrettyDebug::Print(PrettyDebug::defaultOutputStream, 
-                                    HeaderMessage, "Allocated initial memory "
-                                    "for Message buffer.\n");
+//                else
+//                    PrettyDebug::Print(PrettyDebug::defaultOutputStream, 
+//                                    HeaderMessage, "Allocated initial memory "
+//                                    "for Message buffer.\n");
             }
             va_list argptr; // Variable Argument list, see stdarg.h
             va_start(argptr, Format);
-            //Problème, rien ne garantit qu'on ne dépassera pas le
+            //Probleme, rien ne garantit qu'on ne depassera pas le
             //nombre max de char dans le vsprintf.
             vsprintf(LMessage, Format, argptr); 
             va_end(argptr);
@@ -227,4 +239,4 @@ PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: PrettyDebug.cc,v 4.0.2.1 2007/02/02 14:19:35 rousse Exp $

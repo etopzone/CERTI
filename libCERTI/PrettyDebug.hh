@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: PrettyDebug.hh,v 4.0.2.1 2007/02/02 14:19:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -30,6 +30,7 @@
 #endif
 
 #include "DebugOStream.hh"
+#include <string>
 
 #define pdSEmptyMessage "Pretty Debug Server empty Message."
 
@@ -73,6 +74,14 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 //---------------------------------------------------------------------------
 class PrettyDebug
 {
+    protected :
+       static std::string federateName_ ;
+    public :
+       static void setFederateName( const std::string &inName )
+          { federateName_ = inName ; }
+       static void setFederateName( const char *inName )
+          { federateName_ = inName ; }
+
 private:
     char* LEnvVar; /**< Name of the environment variable to look for. */
     char* LMessage; /**< The container of all printed debug
@@ -89,7 +98,7 @@ private:
        debug message must be printed in the ostream addressed. */
     DebugOStream* Level_Map [pdLast + 1];
 
-    static void Print(DebugOStream& theOutputStream, 
+    void Print(DebugOStream& theOutputStream, 
                       const char* theHeaderMessage, 
                       const char * Message);
 
@@ -113,7 +122,7 @@ public:
         if (theReturnedOutputStreamPtr == PrettyDebug::nullOutputStreamPtr) {
             return(PrettyDebug::nullOutputStream);
         }
-        *theReturnedOutputStreamPtr << "* " << HeaderMessage << "> " ;
+        Print( *theReturnedOutputStreamPtr, HeaderMessage, "" );
         return(*theReturnedOutputStreamPtr);
     }
 
@@ -127,4 +136,4 @@ public:
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: PrettyDebug.hh,v 4.0.2.1 2007/02/02 14:19:35 rousse Exp $

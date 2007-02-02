@@ -1,3 +1,17 @@
+2007-01-30 11:04  rousse
+
+	* ChangeLog, RTIA/Communications.cc, RTIA/FederationManagement.cc,
+	  RTIA/ObjectManagement.cc, include/certi.hh,
+	  libCERTI/Exception.cc, libCERTI/MessageBody.hh,
+	  test/Billard/Billard.cc: Ces modifications et corrections ont ete
+	  faites par M. JOUBERT que nous remercions : Dans writeShortInt et
+	  readShortInt la taille des unsigned short etait en dur.  Ajout du
+	  titre des exceptions.  Ajout de usleep dans le billard pour
+	  ameliorer son fonctionnement.  Deux traces de debug enlevees dans
+	  FederationManagement.cc Correction dans Communication.cc pour
+	  faire fonctionner le CERTI sous Cygwin.  Correction dans
+	  ObjectManagement.cc pour vraiment supprimer les objets.
+
 2007-01-24 10:13  rousse
 
 	* libCERTI/ObjectClass.cc: Bug #18863 fix.  Made by P. Siron
@@ -67,4 +81,3 @@
 2006-05-14 22:09  breholee
 
 	* VERSION: version 3.2.1
-

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.37 2005/04/30 17:42:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.37.2.1 2007/02/02 14:19:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -87,6 +87,8 @@ get_handle(const RTI::Region &region)
 RTI::RTIambassador::RTIambassador()
     throw (MemoryExhausted, RTIinternalError)
 {
+    PrettyDebug::setFederateName( "Federate-process" );
+
     privateRefs = new RTIambPrivateRefs();
 
     privateRefs->socketUn = new SocketUN(stIgnoreSignal);
@@ -116,7 +118,13 @@ RTI::RTIambassador::RTIambassador()
 
       default: // father process (Federe).
         sleep(1);
-        privateRefs->socketUn->connectUN(privateRefs->pid_RTIA);
+
+        if( privateRefs->socketUn->connectUN(privateRefs->pid_RTIA) )
+        {
+           D.Out( pdError, "Cannot connect to RTIA. Abort." ) ;
+           kill( privateRefs->pid_RTIA, SIGINT ) ;
+           throw RTIinternalError( "Cannot connect to RTIA" ) ;
+        };
         break ;
     }
 }
@@ -128,8 +136,8 @@ RTI::RTIambassador::RTIambassador()
 RTI::RTIambassador::~RTIambassador()
     throw (RTIinternalError)
 {
-    delete privateRefs ;
     kill(privateRefs->pid_RTIA, SIGINT);
+    delete privateRefs ;
 }
 
 // ----------------------------------------------------------------------------
@@ -387,18 +395,22 @@ RTI::RTIambassador::tick()
         }
         catch (InvalidFederationTime &e) {
             vers_RTI.setException(e_InvalidFederationTime, e._reason);
+            throw ;
         }
         catch (TimeAdvanceWasNotInProgress &e) {
             vers_RTI.setException(e_TimeAdvanceWasNotInProgress, e._reason);
+            throw ;
         }
         catch (FederationTimeAlreadyPassed &e) {
             vers_RTI.setException(e_FederationTimeAlreadyPassed, e._reason);
         }
         catch (FederateInternalError &e) {
             vers_RTI.setException(e_FederateInternalError, e._reason);
+            throw ;
         }
         catch (Exception &e) {
             vers_RTI.setException(e_RTIinternalError, e._reason);
+            throw ;
         }
 
         // retourner au RTI la reponse du service demande
@@ -1545,7 +1557,8 @@ RTI::RTIambassador::enableAsynchronousDelivery()
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AsynchronousDeliveryAlreadyEnabled)
 {
-    throw RTIinternalError("Unimplemented Service");
+    throw AsynchronousDeliveryAlreadyEnabled("Default value (non HLA)");
+
     Message req, rep ;
 
     req.type = Message::ENABLE_ASYNCHRONOUS_DELIVERY ;
@@ -2639,4 +2652,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.37 2005/04/30 17:42:39 breholee Exp $
+// $Id: RTIambassador.cc,v 3.37.2.1 2007/02/02 14:19:35 rousse Exp $

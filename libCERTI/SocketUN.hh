@@ -58,7 +58,7 @@ public:
     SocketUN(SignalHandlerType theType = stSignalInterrupt);
     ~SocketUN();
 
-    void connectUN(pid_t Server_pid);
+    int connectUN(pid_t Server_pid);
     void acceptUN();
 
     bool isDataReady();
