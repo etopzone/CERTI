@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.hh,v 3.35 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -240,7 +240,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                AttributeHandle *theAttributeList,
-                               AttributeValue *theValueList,
+                               ValueLengthPair *theValueList,
                                UShort theListSize,
                                FederationTime theTime,
                                const char *theTag)
@@ -259,7 +259,7 @@ public:
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               ParameterHandle *theParameterList,
-                              ParameterValue *theValueList,
+                              ParameterLengthPair *theValueList,
                               UShort theListSize,
                               FederationTime theTime,
 			      RegionHandle,
@@ -515,4 +515,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.34 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.hh,v 3.35 2007/02/21 10:21:15 rousse Exp $

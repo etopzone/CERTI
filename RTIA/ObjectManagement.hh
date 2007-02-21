@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.11 2005/04/05 12:21:39 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -53,7 +53,7 @@ public:
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
                           AttributeHandle *attribArray,
-                          AttributeValue *valueArray,
+                          ValueLengthPair *valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
                           const char *theTag,
@@ -68,7 +68,7 @@ public:
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 AttributeHandle *attribArray,
-                                AttributeValue *valueArray,
+                                ValueLengthPair *valueArray,
                                 UShort attribArraySize,
                                 FederationTime theTime,
                                 const char *theTag,
@@ -78,7 +78,7 @@ public:
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
                     ParameterHandle *paramArray,
-                    ParameterValue *valueArray,
+                    ParameterLengthPair *valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
                     const char *theTag,
@@ -87,7 +87,7 @@ public:
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             ParameterHandle *paramArray,
-                            ParameterValue *valueArray,
+                            ParameterLengthPair *valueArray,
                             UShort paramArraySize,
                             FederationTime theTime,
                             const char *theTag,
@@ -139,7 +139,7 @@ public:
                                       TypeException &e);
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
-                                     AttributeValue &theAttributes,
+                                     ValueLengthPair &theAttributes,
                                      TypeException &e);
 
     void retract(EventRetractionHandle theHandle, TypeException &e);
@@ -183,4 +183,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.11 2005/04/05 12:21:39 breholee Exp $
+// $Id: ObjectManagement.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $

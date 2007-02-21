@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.31 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClass.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -101,6 +101,8 @@ void
 ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 				   const Object *source)
 {
+    int i, trouve;
+
     // 1. Set ObjectHandle to local class Handle.
     ocbList->message->objectClass = handle ;
 
@@ -141,12 +143,20 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 	  assert(source != 0);
           list<ObjectClassAttribute *>::const_iterator a ;
           for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-  	      ObjectAttribute *attr = source->getAttribute((*a)->getHandle());
- 	      const RTIRegion *update_region = attr->getRegion();
- 	      D[pdTrace] << "RAV: attr " << (*a)->getHandle()
- 			 << " / region " << (update_region ? update_region->getHandle() : 0)
- 			 << std::endl ;
-              (*a)->updateBroadcastList(ocbList, update_region);
+              // Do not consider attributes that are not updated
+              trouve = 0;
+              for (i=0 ; i< ocbList->message->handleArraySize ; i++) {
+                  if ((*a)->getHandle() == ocbList->message->handleArray[i])
+                     trouve = 1;
+              }
+              if (trouve) {
+  	         ObjectAttribute *attr = source->getAttribute((*a)->getHandle());
+       	         const RTIRegion *update_region = attr->getRegion();
+ 	         D[pdTrace] << "RAV: attr " << (*a)->getHandle()
+ 			    << " / region " << (update_region ? update_region->getHandle() : 0)
+ 			    << std::endl ;
+                 (*a)->updateBroadcastList(ocbList, update_region);
+              }
           }
       } break ;
 
@@ -775,7 +785,7 @@ ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
                                    AttributeHandle *the_attributes,
-                                   AttributeValue *the_values,
+                                   ValueLengthPair *the_values,
                                    int the_size,
                                    FederationTime the_time,
                                    const char *the_tag)
@@ -811,7 +821,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         for (int i = 0 ; i < the_size ; i++) {
             answer->handleArray[i] = the_attributes[i] ;
-            answer->setValue(i, the_values[i]);
+            answer->setValue(i, the_values[i].value, the_values[i].length);
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
@@ -1654,4 +1664,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.31 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClass.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $

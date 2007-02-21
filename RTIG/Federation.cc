@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.46 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.cc,v 3.47 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -418,7 +418,7 @@ void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
                                  ParameterHandle *parameter_handles,
-                                 ParameterValue *parameter_values,
+                                 ParameterLengthPair *parameter_values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region_handle,
@@ -1125,7 +1125,7 @@ void
 Federation::updateAttributeValues(FederateHandle federate,
                                   ObjectHandle id,
                                   AttributeHandle *attributes,
-                                  AttributeValue *values,
+                                  ValueLengthPair *values,
                                   UShort list_size,
                                   FederationTime time,
                                   const char *tag)
@@ -1740,5 +1740,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.46 2005/08/27 17:29:11 breholee Exp $
+// $Id: Federation.cc,v 3.47 2007/02/21 10:21:15 rousse Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.11 2005/04/05 20:01:21 breholee Exp $
+// $Id: InteractionSet.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -109,7 +109,7 @@ public:
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               ParameterHandle *theParameterList,
-                              ParameterValue *theValueList,
+                              ParameterLengthPair *theValueList,
                               UShort theListSize,
                               FederationTime theTime,
 			      const RTIRegion *,
@@ -127,4 +127,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.11 2005/04/05 20:01:21 breholee Exp $
+// $Id: InteractionSet.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $

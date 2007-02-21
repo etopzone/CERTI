@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
+// $Id: RTItypes.hh,v 3.16 2007/02/21 10:21:15 rousse Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -17,8 +17,8 @@
 #define DEFAULT_SPACE_DIMENSION_NAME "dimension"
 #define MAX_USER_TAG_LENGTH "macro variable is deprecated"
 
-#define RTI_VERSION "CERTI_3.2"
-#define RTI_INTERNAL_VERSION "CERTI_3.2"
+#define RTI_VERSION "CERTI_3.2.3"
+#define RTI_INTERNAL_VERSION "CERTI_3.2.3"
 
 #define RTI_MAJOR_VERSION 3
 #define RTI_MINOR_VERSION 2
@@ -224,6 +224,8 @@ public:
 class RTI_EXPORT FederateHandleSet
 {
 public:
+    virtual ~FederateHandleSet() { }
+
     virtual ULong size() const = 0 ;
 
     virtual FederateHandle getHandle(ULong) const
@@ -388,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.15 2005/05/05 19:10:44 breholee Exp $
+// $Id: RTItypes.hh,v 3.16 2007/02/21 10:21:15 rousse Exp $

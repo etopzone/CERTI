@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.20 2005/05/16 08:31:06 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -209,21 +209,24 @@ public :
         throw (NetworkError, NetworkSignal);
 
     // Value Array Management
-    void setValue(int Rank, const char *Value)
-        throw (RTIinternalError); // Bad Rank, Bad Value
 
+    // setValue : Value and its length are stored into ValueArray[Rank]
+    void setValue(int Rank, const char *Value, unsigned long length)
+          throw (RTIinternalError); // Bad Rank, Bad Value
+
+    // getValue : Value and its length are tooken from ValueArray[Rank]
     // If Value == NULL return a newly allocated copy of Value, else copy it
     // in Value.
-    char *getValue(int Rank, char *Value = NULL)
+    char *getValue(int Rank, unsigned long *length, char *Value = NULL)
         throw (RTIinternalError); // Bad Rank
 
     // Return a newly allocated ValueArray, exactly of size AttribArraySize.
     // containing the actual Attribute values. You must FREE this structure.
-    AttributeValue *getAttribValueArray();
+    ValueLengthPair *getAttribValueArray();
 
     // Return a newly allocated ValueArray, exactly of size ParamArraySize,
     // containing the actual Parameter values. You must FREE this structure.
-    ParameterValue *getParamValueArray();
+    ParameterLengthPair *getParamValueArray();
 
     void setAHS(const AttributeHandle *, int);
 
@@ -302,7 +305,8 @@ private:
     void readFederateName(MessageBody &);
 
     HeaderStruct Header ;
-    AttributeValue ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    // ValueArray is now a ValueLengthPair
+    ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
 #define TAILLE_MSG_RESEAU sizeof(NetworkMessage)
@@ -311,4 +315,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.20 2005/05/16 08:31:06 breholee Exp $
+// $Id: NetworkMessage.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $

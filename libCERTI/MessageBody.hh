@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: MessageBody.hh,v 3.10 2005/05/16 08:22:30 breholee Exp $
+// $Id: MessageBody.hh,v 3.11 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
@@ -56,8 +56,8 @@ public:
     void writeLongInt(unsigned long c) { *this << c ; };
     unsigned long readLongInt() const { unsigned long result ; *this >> result ; return result ; };
 
-    void writeShortInt(unsigned short c) { sputn((char *) &c, 2); };
-    unsigned short readShortInt() const { unsigned short result ; sgetn((char *) &result, 2); return result ; };
+    void writeShortInt(unsigned short c) { sputn((char *) &c, sizeof(unsigned short)); };
+    unsigned short readShortInt() const { unsigned short result ; sgetn((char *) &result,sizeof(unsigned short) ); return result ; };
 
     void writeString(const char *);
     void readString(char *, unsigned short);
@@ -78,4 +78,4 @@ private:
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.10 2005/05/16 08:22:30 breholee Exp $
+// $Id: MessageBody.hh,v 3.11 2007/02/21 10:21:15 rousse Exp $

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2002-2005  ONERA
+// Copyright (C) 2002-2006  ONERA
 //
 // This program is free software ; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public License
@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.27 2005/12/21 14:50:39 breholee Exp $
+// $Id: Message_RW.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -566,9 +566,13 @@ Message::readTag(MessageBody &body)
 void
 Message::readValueArray(MessageBody &body)
 {
-    for (int i = 0 ; i < handleArraySize ; i ++) {
-        body.readString(valueArray[i], MAX_BYTES_PER_VALUE);
-    }
+// valueArray contains length and value
+// so we have to read length and then value with a readBlock
+    for (int i = 0 ; i < handleArraySize ; i ++)
+        {
+        valueArray[i].length = body.readLongInt() ;
+        body.readBlock((char *) valueArray[i].value, valueArray[i].length);
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -1124,11 +1128,15 @@ Message::writeResignAction(MessageBody &)
 void
 Message::writeValueArray(MessageBody &body)
 {
-    for (int i = 0 ; i < handleArraySize ; i ++) {
-        body.writeString(valueArray[i]);
+    // length and value are stored into valueArray 
+    // so we have to write length and then value with a writeBlock
+    for (int i = 0 ; i < handleArraySize ; i ++)
+        {
+        body.writeLongInt(valueArray[i].length) ;
+        body.writeBlock(valueArray[i].value, valueArray[i].length) ;
     }
 }
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.27 2005/12/21 14:50:39 breholee Exp $
+// $Id: Message_RW.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $

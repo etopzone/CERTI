@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // CERTI - HLA RunTime Infrastructure
-// Copyright (C) 2003, 2004  ONERA
+// Copyright (C) 2003-2006  ONERA
 //
 // This file is part of CERTI-libCERTI
 //
@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.6 2006/03/09 19:54:28 breholee Exp $
+// $Id: fed.cc,v 3.7 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -382,4 +382,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.6 2006/03/09 19:54:28 breholee Exp $
+// $Id: fed.cc,v 3.7 2007/02/21 10:21:15 rousse Exp $

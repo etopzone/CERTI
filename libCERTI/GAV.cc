@@ -21,7 +21,6 @@
 #include "GAV.hh"
 
 #include "PrettyDebug.hh"
-#include "converter.hh"
 
 #include <algorithm>
 #include <assert.h>
@@ -238,21 +237,7 @@ CAttributeHandleValuePairSet::toAHVPS() const
 
         if (cahvp != NULL) {
             if (&cahvp->_value != NULL) {
-                ULong longueur;
-                
-                // decodage
-                getStringToObjectLength(cahvp->_value.value, longueur);
-
-                char *valeur = new char[longueur] ;
-                valeur[0] = '\0' ;
-                stringToObject(cahvp->_value.value, valeur, longueur);
-                memcpy(cahvp->_value.value, valeur, longueur);
-                delete[] valeur;
-                /* phvps->add(cahvp->_param,
-                   cahvp->_value.value,
-                   (strlen(cahvp->_value.value)*sizeof(char))); */
-
-                ahvps->add(cahvp->_attrib, cahvp->_value.value, longueur);
+                ahvps->add(cahvp->_attrib, cahvp->_value.value, cahvp->_value.length);
             }
             else ahvps->add(cahvp->_attrib, '\0', 0);
         }
@@ -392,9 +377,7 @@ void CParameterHandleValuePairSet::empty()
 RTI::ParameterHandleValuePairSet *
 CParameterHandleValuePairSet::toPHVPS() const
 {
-    ULong longueur ;
     CParameterHandleValuePair *cphvp ;
-
     ParameterHandleValuePairSetImp *phvps ;
     phvps = new ParameterHandleValuePairSetImp(_size);
 
@@ -404,16 +387,8 @@ CParameterHandleValuePairSet::toPHVPS() const
         if (cphvp != NULL) {
             if (&cphvp->_value != NULL) {
 
-                // decoding string to object
-                getStringToObjectLength(cphvp->_value.value, longueur);
-                char *valeur = new char[longueur] ;
-                valeur[0] = '\0' ;
-                stringToObject(cphvp->_value.value, valeur, longueur);
-                memcpy(cphvp->_value.value, valeur, longueur);
-                delete[] valeur;
-
                 // adding new value to PHVPS
-                phvps->add(cphvp->_param, cphvp->_value.value, longueur);
+                phvps->add(cphvp->_param, cphvp->_value.value, cphvp->_value.length);
             }
             else phvps->add(cphvp->_param, '\0', 0);
         }

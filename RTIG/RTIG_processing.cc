@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.29 2005/11/29 17:39:12 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.30 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -487,7 +487,7 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 void
 RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
-    AttributeValue *ValueArray = NULL ;
+    ValueLengthPair *ValueArray = NULL ;
 
     auditServer << "ObjID = " << req->object
 		<< ", Date = " << req->date ;
@@ -523,7 +523,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 void
 RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 {
-    AttributeValue *values = NULL ;
+    ValueLengthPair *values = NULL ;
 
     // Prepare le Value Array
     auditServer << "IntID = " << req->interactionClass
@@ -1062,4 +1062,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.29 2005/11/29 17:39:12 breholee Exp $
+// $Id: RTIG_processing.cc,v 3.30 2007/02/21 10:21:15 rousse Exp $

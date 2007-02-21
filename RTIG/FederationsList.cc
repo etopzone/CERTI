@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
+// $Id: FederationsList.cc,v 3.31 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -361,7 +361,7 @@ FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
                                  AttributeHandle *attributes,
-                                 AttributeValue *values,
+                                 ValueLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
                                  const char *tag)
@@ -394,7 +394,7 @@ FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
                                  ParameterHandle *parameters,
-                                 ParameterValue *values,
+                                 ParameterLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region,
@@ -1260,5 +1260,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.30 2005/08/27 19:00:29 breholee Exp $
+// EOF $Id: FederationsList.cc,v 3.31 2007/02/21 10:21:15 rousse Exp $
 

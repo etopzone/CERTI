@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.12 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.13 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -73,6 +73,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     UShort currentSize ;
     AttributeHandle currentAttrib ;
     char buffer[MAX_BYTES_PER_VALUE + 1] ;
+    unsigned long length ;
 
     reducedMessage->handleArraySize = 0 ;
 
@@ -91,8 +92,9 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 
             if (message->type == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
                 // Copy Attribute Value.
-                message->getValue(i, buffer);
-                reducedMessage->setValue(currentSize, buffer);
+                message->getValue(i, &length, buffer);
+                reducedMessage->setValue(currentSize, buffer, length);
+
             }
         }
     }
@@ -377,4 +379,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.12 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.13 2007/02/21 10:21:15 rousse Exp $

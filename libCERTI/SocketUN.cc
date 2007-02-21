@@ -27,11 +27,13 @@
 #include <unistd.h>
 #include <strings.h>
 #include <sstream>
+#include <string>
 #include <stdio.h>
 #include <errno.h>
 #include <sys/un.h>
 
 using std::ostringstream ;
+using std::string ;
 using std::cout ;
 using std::endl ;
 
@@ -51,7 +53,10 @@ SocketUN::acceptUN()
 
     // Socket
     if ((sock_connect = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
+    {
+        pD->Out(pdError, "Cannot open Server UNIX Socket.");
         error("socket");
+    }
 
     pD->Out(pdInit, "Server has got UNIX Socket FpD->");
 
@@ -63,10 +68,11 @@ SocketUN::acceptUN()
     if (strlen(NOM_FICHIER_SOCKET) > 90)
         throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
 
-    ostringstream socket_name ;
-    socket_name << NOM_FICHIER_SOCKET << '.' << getpid();
-    name = socket_name.str();
-    strcpy(nom_serveur.sun_path, socket_name.str().c_str());
+    char buffer[256] ;
+    sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, getpid() ) ;
+    name = buffer ;
+    strcpy( nom_serveur.sun_path, name.c_str() );
+
 
     // Bind
     if (bind(sock_connect, (struct sockaddr*)&nom_serveur,
@@ -97,12 +103,16 @@ SocketUN::acceptUN()
 
 // ----------------------------------------------------------------------------
 //! Called by client to connect.
-void
+int
 SocketUN::connectUN(pid_t Server_pid)
 {
     int Attempt = 0 ;
-    int Result ;
+    int Result = 0 ;
     struct sockaddr_un nom_serveur ;
+
+    char buffer[256] ;
+    sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, Server_pid ) ;
+    name = buffer ;
 
     while (Attempt < MAX_ATTEMPTS) {
 
@@ -121,11 +131,7 @@ SocketUN::connectUN(pid_t Server_pid)
 
         if (strlen(NOM_FICHIER_SOCKET) > 90)
             throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-
-        ostringstream socket_name ;
-        socket_name << NOM_FICHIER_SOCKET << '.' << Server_pid ;
-        name = socket_name.str();
-        strcpy(nom_serveur.sun_path, socket_name.str().c_str());
+        strcpy( nom_serveur.sun_path, name.c_str() );
 
         // Connect
         Result = connect(_socket_un,
@@ -139,7 +145,7 @@ SocketUN::connectUN(pid_t Server_pid)
             break ;
 
         // Failure
-        printf("SocketUN: Connect, attempt #%d out of %d failed\n",
+        pD->Out(pdError, "SocketUN: Connect, attempt #%d out of %d failed",
                Attempt + 1, MAX_ATTEMPTS);
         sleep(1);
         Attempt ++ ;
@@ -147,10 +153,10 @@ SocketUN::connectUN(pid_t Server_pid)
 
     pD->Out(pdInit, "Client: Done.");
 
-    if (Result != -1)
+    if( Result == 0 )
         _est_init_un = true ;
-    else
-        error("Connect");
+
+    return Result ;
 }
 
 // ----------------------------------------------------------------------------
@@ -163,7 +169,7 @@ SocketUN::SocketUN(SignalHandlerType theType)
     RBLength = 0 ;
 #endif
 
-    pD = new pdCDebug("SOCKUN", "(SocketUN) - ");
+    pD = new pdCDebug("SOCKUN", "SocketUN");
     pD->Out(pdInit, "UNIX Socket created.");
 }
 
@@ -182,20 +188,11 @@ SocketUN::~SocketUN()
             pD->Out(pdTerm, "Client: Closed all sockets.");
     }
 
+    pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount ) ;
+    pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount ) ;
+
     delete pD ;
 
-#ifdef RTI_PRINTS_STATISTICS
-    cout << "Unix Socket " ;
-    cout.width(2);
-    cout << _socket_un << " : total = " ;
-    cout.width(9);
-    cout << SentBytesCount << "b sent " << endl ;
-    cout << "Unix Socket " ;
-    cout.width(2);
-    cout << _socket_un << " : total = " ;
-    cout.width(9);
-    cout << RcvdBytesCount << "b received" << endl ;
-#endif
 }
 
 // ----------------------------------------------------------------------------

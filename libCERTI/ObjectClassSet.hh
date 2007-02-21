@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.19 2005/03/25 17:25:06 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.20 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -96,7 +96,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                AttributeHandle *theAttribArray,
-                               AttributeValue *theValueArray,
+                               ValueLengthPair *theValueArray,
                                UShort theArraySize,
                                FederationTime theTime,
                                const char *theUserTag)
@@ -166,4 +166,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.19 2005/03/25 17:25:06 breholee Exp $
+// $Id: ObjectClassSet.hh,v 3.20 2007/02/21 10:21:15 rousse Exp $

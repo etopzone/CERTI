@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.3 2005/04/30 16:50:43 breholee Exp $
+// $Id: Exception.cc,v 3.4 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,113 +28,113 @@
 #include "certi.hh"
 
 // static members for HLA Exceptions
-const char *RTI::ArrayIndexOutOfBounds::_ex = 0 ;
-const char *RTI::AsynchronousDeliveryAlreadyDisabled::_ex = 0 ;
-const char *RTI::AsynchronousDeliveryAlreadyEnabled::_ex = 0 ;
-const char *RTI::AttributeAcquisitionWasNotRequested::_ex = 0 ;
-const char *RTI::AttributeAcquisitionWasNotCanceled::_ex = 0 ;
-const char *RTI::AttributeAlreadyBeingAcquired::_ex = 0 ;
-const char *RTI::AttributeAlreadyBeingDivested::_ex = 0 ;
-const char *RTI::AttributeAlreadyOwned::_ex = 0 ;
-const char *RTI::AttributeDivestitureWasNotRequested::_ex = 0 ;
-const char *RTI::AttributeNotDefined::_ex = 0 ;
-const char *RTI::AttributeNotKnown::_ex = 0 ;
-const char *RTI::AttributeNotOwned::_ex = 0 ;
-const char *RTI::AttributeNotPublished::_ex = 0 ;
-const char *RTI::ConcurrentAccessAttempted::_ex = 0 ;
-const char *RTI::CouldNotDiscover::_ex = 0 ;
-const char *RTI::CouldNotOpenFED::_ex = 0 ;
-const char *RTI::CouldNotRestore::_ex = 0 ;
-const char *RTI::DeletePrivilegeNotHeld::_ex = 0 ;
-const char *RTI::DimensionNotDefined::_ex = 0 ;
-const char *RTI::EnableTimeConstrainedPending::_ex = 0 ;
-const char *RTI::EnableTimeConstrainedWasNotPending::_ex = 0 ;
-const char *RTI::EnableTimeRegulationPending::_ex = 0 ;
-const char *RTI::EnableTimeRegulationWasNotPending::_ex = 0 ;
-const char *RTI::ErrorReadingFED::_ex = 0 ;
-const char *RTI::EventNotKnown::_ex = 0 ;
-const char *RTI::FederateAlreadyExecutionMember::_ex = 0 ;
-const char *RTI::FederateInternalError::_ex = 0 ;
-const char *RTI::FederateLoggingServiceCalls::_ex = 0 ;
-const char *RTI::FederateNotExecutionMember::_ex = 0 ;
-const char *RTI::FederateOwnsAttributes::_ex = 0 ;
-const char *RTI::FederateWasNotAskedToReleaseAttribute::_ex = 0 ;
-const char *RTI::FederatesCurrentlyJoined::_ex = 0 ;
-const char *RTI::FederationExecutionAlreadyExists::_ex = 0 ;
-const char *RTI::FederationExecutionDoesNotExist::_ex = 0 ;
-const char *RTI::FederationTimeAlreadyPassed::_ex = 0 ;
-const char *RTI::HandleValuePairMaximumExceeded::_ex = 0 ;
-const char *RTI::InteractionClassNotDefined::_ex = 0 ;
-const char *RTI::InteractionClassNotKnown::_ex = 0 ;
-const char *RTI::InteractionClassNotPublished::_ex = 0 ;
-const char *RTI::InteractionClassNotSubscribed::_ex = 0 ;
-const char *RTI::InteractionParameterNotDefined::_ex = 0 ;
-const char *RTI::InteractionParameterNotKnown::_ex = 0 ;
-const char *RTI::InvalidExtents::_ex = 0 ;
-const char *RTI::InvalidFederationTime::_ex = 0 ;
-const char *RTI::InvalidHandleValuePairSetContext::_ex = 0 ;
-const char *RTI::InvalidLookahead::_ex = 0 ;
-const char *RTI::InvalidOrderingHandle::_ex = 0 ;
-const char *RTI::InvalidRegionContext::_ex = 0 ;
-const char *RTI::InvalidResignAction::_ex = 0 ;
-const char *RTI::InvalidRetractionHandle::_ex = 0 ;
-const char *RTI::InvalidTransportationHandle::_ex = 0 ;
-const char *RTI::MemoryExhausted::_ex = 0 ;
-const char *RTI::NameNotFound::_ex = 0 ;
-const char *RTI::ObjectClassNotDefined::_ex = 0 ;
-const char *RTI::ObjectClassNotKnown::_ex = 0 ;
-const char *RTI::ObjectClassNotPublished::_ex = 0 ;
-const char *RTI::ObjectClassNotSubscribed::_ex = 0 ;
-const char *RTI::ObjectNotKnown::_ex = 0 ;
-const char *RTI::ObjectAlreadyRegistered::_ex = 0 ;
-const char *RTI::OwnershipAcquisitionPending::_ex = 0 ;
-const char *RTI::RegionInUse::_ex = 0 ;
-const char *RTI::RegionNotKnown::_ex = 0 ;
-const char *RTI::RestoreInProgress::_ex = 0 ;
-const char *RTI::RestoreNotRequested::_ex = 0 ;
-const char *RTI::RTIinternalError::_ex = 0 ;
-const char *RTI::SpaceNotDefined::_ex = 0 ;
-const char *RTI::SaveInProgress::_ex = 0 ;
-const char *RTI::SaveNotInitiated::_ex = 0 ;
-const char *RTI::SpecifiedSaveLabelDoesNotExist::_ex = 0 ;
-const char *RTI::SynchronizationPointLabelWasNotAnnounced::_ex = 0 ;
-const char *RTI::TimeAdvanceAlreadyInProgress::_ex = 0 ;
-const char *RTI::TimeAdvanceWasNotInProgress::_ex = 0 ;
-const char *RTI::TimeConstrainedAlreadyEnabled::_ex = 0 ;
-const char *RTI::TimeConstrainedWasNotEnabled::_ex = 0 ;
-const char *RTI::TimeRegulationAlreadyEnabled::_ex = 0 ;
-const char *RTI::TimeRegulationWasNotEnabled::_ex = 0 ;
-const char *RTI::UnableToPerformSave::_ex = 0 ;
-const char *RTI::ValueCountExceeded::_ex = 0 ;
-const char *RTI::ValueLengthExceeded::_ex = 0 ;
+const char *RTI::ArrayIndexOutOfBounds::_ex = "ArrayIndexOutOfBounds" ;
+const char *RTI::AsynchronousDeliveryAlreadyDisabled::_ex = "AsynchronousDeliveryAlreadyDisabled" ;
+const char *RTI::AsynchronousDeliveryAlreadyEnabled::_ex = "AsynchronousDeliveryAlreadyEnabled" ;
+const char *RTI::AttributeAcquisitionWasNotRequested::_ex = "AttributeAcquisitionWasNotRequested" ;
+const char *RTI::AttributeAcquisitionWasNotCanceled::_ex = "AttributeAcquisitionWasNotCanceled" ;
+const char *RTI::AttributeAlreadyBeingAcquired::_ex = "AttributeAlreadyBeingAcquired" ;
+const char *RTI::AttributeAlreadyBeingDivested::_ex = "AttributeAlreadyBeingDivested" ;
+const char *RTI::AttributeAlreadyOwned::_ex = "AttributeAlreadyOwned" ;
+const char *RTI::AttributeDivestitureWasNotRequested::_ex = "AttributeDivestitureWasNotRequested" ;
+const char *RTI::AttributeNotDefined::_ex = "AttributeNotDefined" ;
+const char *RTI::AttributeNotKnown::_ex = "AttributeNotKnown" ;
+const char *RTI::AttributeNotOwned::_ex = "AttributeNotOwned" ;
+const char *RTI::AttributeNotPublished::_ex = "AttributeNotPublished" ;
+const char *RTI::ConcurrentAccessAttempted::_ex = "ConcurrentAccessAttempted" ;
+const char *RTI::CouldNotDiscover::_ex = "CouldNotDiscover" ;
+const char *RTI::CouldNotOpenFED::_ex = "CouldNotOpenFED" ;
+const char *RTI::CouldNotRestore::_ex = "CouldNotRestore" ;
+const char *RTI::DeletePrivilegeNotHeld::_ex = "DeletePrivilegeNotHeld" ;
+const char *RTI::DimensionNotDefined::_ex = "DimensionNotDefined" ;
+const char *RTI::EnableTimeConstrainedPending::_ex = "EnableTimeConstrainedPending" ;
+const char *RTI::EnableTimeConstrainedWasNotPending::_ex = "EnableTimeConstrainedWasNotPending" ;
+const char *RTI::EnableTimeRegulationPending::_ex = "EnableTimeRegulationPending" ;
+const char *RTI::EnableTimeRegulationWasNotPending::_ex = "EnableTimeRegulationWasNotPending" ;
+const char *RTI::ErrorReadingFED::_ex = "ErrorReadingFED" ;
+const char *RTI::EventNotKnown::_ex = "EventNotKnown" ;
+const char *RTI::FederateAlreadyExecutionMember::_ex = "FederateAlreadyExecutionMember" ;
+const char *RTI::FederateInternalError::_ex = "FederateInternalError" ;
+const char *RTI::FederateLoggingServiceCalls::_ex = "FederateLoggingServiceCalls" ;
+const char *RTI::FederateNotExecutionMember::_ex = "FederateNotExecutionMember" ;
+const char *RTI::FederateOwnsAttributes::_ex = "FederateOwnsAttributes" ;
+const char *RTI::FederateWasNotAskedToReleaseAttribute::_ex = "FederateWasNotAskedToReleaseAttribute" ;
+const char *RTI::FederatesCurrentlyJoined::_ex = "FederatesCurrentlyJoined" ;
+const char *RTI::FederationExecutionAlreadyExists::_ex = "FederationExecutionAlreadyExists" ;
+const char *RTI::FederationExecutionDoesNotExist::_ex = "FederationExecutionDoesNotExist" ;
+const char *RTI::FederationTimeAlreadyPassed::_ex = "FederationTimeAlreadyPassed" ;
+const char *RTI::HandleValuePairMaximumExceeded::_ex = "HandleValuePairMaximumExceeded" ;
+const char *RTI::InteractionClassNotDefined::_ex = "InteractionClassNotDefined" ;
+const char *RTI::InteractionClassNotKnown::_ex = "InteractionClassNotKnown" ;
+const char *RTI::InteractionClassNotPublished::_ex = "InteractionClassNotPublished" ;
+const char *RTI::InteractionClassNotSubscribed::_ex = "InteractionClassNotSubscribed" ;
+const char *RTI::InteractionParameterNotDefined::_ex = "InteractionParameterNotDefined" ;
+const char *RTI::InteractionParameterNotKnown::_ex = "InteractionParameterNotKnown" ;
+const char *RTI::InvalidExtents::_ex = "InvalidExtents" ;
+const char *RTI::InvalidFederationTime::_ex = "InvalidFederationTime" ;
+const char *RTI::InvalidHandleValuePairSetContext::_ex = "InvalidHandleValuePairSetContext" ;
+const char *RTI::InvalidLookahead::_ex = "InvalidLookahead" ;
+const char *RTI::InvalidOrderingHandle::_ex = "InvalidOrderingHandle" ;
+const char *RTI::InvalidRegionContext::_ex = "InvalidRegionContext" ;
+const char *RTI::InvalidResignAction::_ex = "InvalidResignAction" ;
+const char *RTI::InvalidRetractionHandle::_ex = "InvalidRetractionHandle" ;
+const char *RTI::InvalidTransportationHandle::_ex = "InvalidTransportationHandle" ;
+const char *RTI::MemoryExhausted::_ex = "MemoryExhausted" ;
+const char *RTI::NameNotFound::_ex = "NameNotFound" ;
+const char *RTI::ObjectClassNotDefined::_ex = "ObjectClassNotDefined" ;
+const char *RTI::ObjectClassNotKnown::_ex = "ObjectClassNotKnown" ;
+const char *RTI::ObjectClassNotPublished::_ex = "ObjectClassNotPublished" ;
+const char *RTI::ObjectClassNotSubscribed::_ex = "ObjectClassNotSubscribed" ;
+const char *RTI::ObjectNotKnown::_ex = "ObjectNotKnown" ;
+const char *RTI::ObjectAlreadyRegistered::_ex = "ObjectAlreadyRegistered" ;
+const char *RTI::OwnershipAcquisitionPending::_ex = "OwnershipAcquisitionPending" ;
+const char *RTI::RegionInUse::_ex = "RegionInUse" ;
+const char *RTI::RegionNotKnown::_ex = "RegionNotKnown" ;
+const char *RTI::RestoreInProgress::_ex = "RestoreInProgress" ;
+const char *RTI::RestoreNotRequested::_ex = "RestoreNotRequested" ;
+const char *RTI::RTIinternalError::_ex = "RTIinternalError" ;
+const char *RTI::SpaceNotDefined::_ex = "SpaceNotDefined" ;
+const char *RTI::SaveInProgress::_ex = "SaveInProgress" ;
+const char *RTI::SaveNotInitiated::_ex = "SaveNotInitiated" ;
+const char *RTI::SpecifiedSaveLabelDoesNotExist::_ex = "SpecifiedSaveLabelDoesNotExist" ;
+const char *RTI::SynchronizationPointLabelWasNotAnnounced::_ex = "SynchronizationPointLabelWasNotAnnounced" ;
+const char *RTI::TimeAdvanceAlreadyInProgress::_ex = "TimeAdvanceAlreadyInProgress" ;
+const char *RTI::TimeAdvanceWasNotInProgress::_ex = "TimeAdvanceWasNotInProgress" ;
+const char *RTI::TimeConstrainedAlreadyEnabled::_ex = "TimeConstrainedAlreadyEnabled" ;
+const char *RTI::TimeConstrainedWasNotEnabled::_ex = "TimeConstrainedWasNotEnabled" ;
+const char *RTI::TimeRegulationAlreadyEnabled::_ex = "TimeRegulationAlreadyEnabled" ;
+const char *RTI::TimeRegulationWasNotEnabled::_ex = "TimeRegulationWasNotEnabled" ;
+const char *RTI::UnableToPerformSave::_ex = "UnableToPerformSave" ;
+const char *RTI::ValueCountExceeded::_ex = "ValueCountExceeded" ;
+const char *RTI::ValueLengthExceeded::_ex = "ValueLengthExceeded" ;
 
 // From certi.hh
-const char *certi::FederateNotPublishing::_ex = 0 ;
-const char *certi::FederateNotSubscribing::_ex = 0 ;
-const char *certi::InvalidObjectHandle::_ex = 0 ;
-const char *certi::InvalidOrderType::_ex = 0 ;
-const char *certi::InvalidTransportType::_ex = 0 ;
-const char *certi::SecurityError::_ex = 0 ;
-const char *certi::CouldNotOpenRID::_ex = 0 ;
-const char *certi::ErrorReadingRID::_ex = 0 ;
-const char *certi::FederationAlreadyPaused::_ex = 0 ;
-const char *certi::FederationNotPaused::_ex = 0 ;
-const char *certi::AttributeNotSubscribed::_ex = 0 ;
-const char *certi::FederateAlreadyPaused::_ex = 0 ;
-const char *certi::FederateDoesNotExist::_ex = 0 ;
-const char *certi::FederateNameAlreadyInUse::_ex = 0 ;
-const char *certi::FederateNotPaused::_ex = 0 ;
-const char *certi::IDsupplyExhausted::_ex = 0 ;
-const char *certi::InvalidDivestitureCondition::_ex = 0 ;
-const char *certi::InvalidFederationTimeDelta::_ex = 0 ;
-const char *certi::InvalidRoutingSpace::_ex = 0 ;
-const char *certi::NoPauseRequested::_ex = 0 ;
-const char *certi::NoResumeRequested::_ex = 0 ;
-const char *certi::TooManyIDsRequested::_ex = 0 ;
-const char *certi::UnimplementedService::_ex = 0 ;
-const char *certi::UnknownLabel::_ex = 0 ;
-const char *certi::NetworkError::_ex = 0 ;
-const char *certi::NetworkSignal::_ex = 0 ;
+const char *certi::FederateNotPublishing::_ex = "FederateNotPublishing" ;
+const char *certi::FederateNotSubscribing::_ex = "FederateNotSubscribing" ;
+const char *certi::InvalidObjectHandle::_ex = "InvalidObjectHandle" ;
+const char *certi::InvalidOrderType::_ex = "InvalidOrderType" ;
+const char *certi::InvalidTransportType::_ex = "InvalidTransportType" ;
+const char *certi::SecurityError::_ex = "SecurityError" ;
+const char *certi::CouldNotOpenRID::_ex = "CouldNotOpenRID" ;
+const char *certi::ErrorReadingRID::_ex = "ErrorReadingRID" ;
+const char *certi::FederationAlreadyPaused::_ex = "FederationAlreadyPaused" ;
+const char *certi::FederationNotPaused::_ex = "FederationNotPaused" ;
+const char *certi::AttributeNotSubscribed::_ex = "AttributeNotSubscribed" ;
+const char *certi::FederateAlreadyPaused::_ex = "FederateAlreadyPaused" ;
+const char *certi::FederateDoesNotExist::_ex = "FederateDoesNotExist" ;
+const char *certi::FederateNameAlreadyInUse::_ex = "FederateNameAlreadyInUse" ;
+const char *certi::FederateNotPaused::_ex = "FederateNotPaused" ;
+const char *certi::IDsupplyExhausted::_ex = "IDsupplyExhausted" ;
+const char *certi::InvalidDivestitureCondition::_ex = "InvalidDivestitureCondition" ;
+const char *certi::InvalidFederationTimeDelta::_ex = "InvalidFederationTimeDelta" ;
+const char *certi::InvalidRoutingSpace::_ex = "InvalidRoutingSpace" ;
+const char *certi::NoPauseRequested::_ex = "NoPauseRequested" ;
+const char *certi::NoResumeRequested::_ex = "NoResumeRequested" ;
+const char *certi::TooManyIDsRequested::_ex = "TooManyIDsRequested" ;
+const char *certi::UnimplementedService::_ex = "UnimplementedService" ;
+const char *certi::UnknownLabel::_ex = "UnknownLabel" ;
+const char *certi::NetworkError::_ex = "NetworkError" ;
+const char *certi::NetworkSignal::_ex = "NetworkSignal" ;
 
 RTI::Exception::~Exception()
 {
@@ -169,4 +169,4 @@ RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
     return *this ;
 }
 
-// $Id: Exception.cc,v 3.3 2005/04/30 16:50:43 breholee Exp $$
+// $Id: Exception.cc,v 3.4 2007/02/21 10:21:15 rousse Exp $$

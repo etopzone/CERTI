@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIA_network.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
+#include "ObjectClassAttribute.hh"
 
 namespace certi {
 namespace rtia {
@@ -89,34 +90,81 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
+          OrderType updateOrder  ;
+
           D.Out(pdTrace,
                 "Receving Message from RTIG, "
                 "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES.");
 
-          if (tm->requestContraintState())
-              // Verify that received TSO timestamp is >= current
-              // time + lookahead
-              queues->insertTsoMessage(msg);
-          else
-              queues->insertFifoMessage(msg);
 
-          break ;
+
+         // Here we assume all RO messages as asynchronous RO messages, which
+         // is contrary of HLA 1.3 default value.
+         //
+         // It is important to note that several attributes may be updated at
+         // the same time. Each attribute has its own order type, region, etc.
+         // So attributes which are meeting similar criteria should be sent
+         // together. It means that case REFLECT_ATTRIBUTE_VALUES can generate
+         // several messages in queues.
+         //
+         // At this point of development, we cannot assume this facility and
+         // decided to store message as TSO only if all attributes meets TSO
+         // criteria. Otherwise, a single message will be enqueue in FIFO.
+         
+         // Retrieve order type
+         updateOrder = TIMESTAMP;
+         for (UShort i=0; i< msg->handleArraySize; ++i)
+         {
+            if (rootObject->ObjectClasses->getWithHandle( msg->objectClass )
+                ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
+            {
+               updateOrder = RECEIVE;
+               break;
+            }
+         }
+         
+         // Decide which queue will be used
+         if(updateOrder == TIMESTAMP && tm->requestContraintState())    
+         {
+            // Update is TSO
+            queues->insertTsoMessage(msg); 
+         }
+         else
+         {
+            // Update is RO
+            queues->insertFifoMessage(msg);
+         }
+
+         break ;
       }
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
-          D.Out(pdTrace,
-                "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION.");
+         OrderType interactionOrder ;
 
-          if (tm->requestContraintState()) {
-              // Verify that received TSO timestamp is >= current
-              // time + lookahead
-              queues->insertTsoMessage(msg);
-          }
-          else
-              queues->insertFifoMessage(msg);
+         D.Out(pdTrace,
+            "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION.");
 
-          break ;
+         // Here we assume all RO messages as asynchronous RO messages, which
+         // is contrary of HLA 1.3 default value
+
+         // Retrieve order type
+         interactionOrder = rootObject->Interactions->
+            getByHandle(msg->interactionClass)->order;
+         
+         // Decide which queue will be used
+         if (interactionOrder == TIMESTAMP && tm->requestContraintState())
+         {
+            // Interaction is TSO
+            queues->insertTsoMessage(msg);
+         }
+         else
+         {
+            // Interaction is RO
+            queues->insertFifoMessage(msg);
+         }
+
+         break ;
       }
 
       case NetworkMessage::REMOVE_OBJECT:
@@ -254,4 +302,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.8 2003/06/27 17:26:28 breholee Exp $
+// $Id: RTIA_network.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.13 2005/04/30 16:52:44 breholee Exp $
+// $Id: InteractionSet.cc,v 3.14 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,7 +60,7 @@ void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      InteractionClassHandle interaction_handle,
                                      ParameterHandle *parameter_list,
-                                     ParameterValue *value_list,
+                                     ParameterLengthPair *value_list,
                                      UShort list_size,
                                      FederationTime the_time,
 				     const RTIRegion *region,
@@ -303,4 +303,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.13 2005/04/30 16:52:44 breholee Exp $
+// $Id: InteractionSet.cc,v 3.14 2007/02/21 10:21:15 rousse Exp $

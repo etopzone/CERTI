@@ -150,6 +150,7 @@ Billard::pause()
 void
 Billard::tick()
 {
+    usleep( 0 ) ;
     rtiamb.tick();
     nbTicks++ ;
 }
@@ -255,6 +256,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d ", &e);
+                throw ;
             }
         D.Out(pdDebug, "paused");
 
@@ -272,6 +274,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "**** Exception ticking the RTI : %d.", &e);
+                throw ;
             }
     }
     else {
@@ -290,6 +293,7 @@ Billard::synchronize(int autostart)
                 catch (RTI::Exception& e) {
                     D.Out(pdExcept,
                           "******** Exception ticking the RTI : %d.", &e);
+                    throw ;
                 }
             }
         }
@@ -314,6 +318,7 @@ Billard::synchronize(int autostart)
             }
             catch (RTI::Exception& e) {
                 D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
+                throw ;
             }
         }
         D.Out(pdInit, "End of pause");
@@ -385,6 +390,7 @@ Billard::step()
         }
         catch (RTI::Exception& e) {
             D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);
+            throw ;
         }
     }
     try {
@@ -509,7 +515,7 @@ Billard::publishAndSubscribe()
 
     // Subscribe to Bille objects.
     D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
-	       << AttrXID << " and " << AttrYID << "... " ;
+	       << AttrXID << " and " << AttrYID << "... " << endl ;
     rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI::RTI_TRUE);
     D[pdDebug] << "done." << endl ;
 
@@ -566,8 +572,10 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
 
     parameterSet = RTI::ParameterSetFactory::create(3);
 
-    sprintf(buf, "%ld", id);
-    parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
+    // OLD : sprintf(buf, "%ld", id);
+    // OLD : parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
+    memcpy(buf,&id,sizeof(id));
+    parameterSet->add(ParamBoulID, buf, sizeof(id));
 
     D.Out(pdDebug, "SendInteraction");
     D.Out(pdDebug, "SendInteraction - ParamBoulID= %u", ParamBoulID);
@@ -577,13 +585,19 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
     // D.Out(pdDebug, "SendInteraction - ParamBoulID= %u, x= %f, buf= %s",
     // ParamBoulID, Id, buf);
 
-    sprintf(buf, "%f", dx);
-    parameterSet->add(ParamDXID, buf, strlen(buf)+1);
+    // OLD : sprintf(buf, "%f", dx);
+    // OLD : parameterSet->add(ParamDXID, buf, strlen(buf)+1);
+    memcpy(buf,&dx,sizeof(dx)); 
+    parameterSet->add(ParamDXID, buf, sizeof(dx));
+
     D.Out(pdDebug, "SendInteraction - ParamDXID= %u, x= %f, buf= %s",
           ParamDXID, dx, buf);
 
-    sprintf(buf, "%f", dy);
-    parameterSet->add(ParamDYID, buf, strlen(buf)+1);
+    // OLD : sprintf(buf, "%f", dy);
+    // OLD : parameterSet->add(ParamDYID, buf, strlen(buf)+1);
+    memcpy(buf,&dy,sizeof(dy));
+    parameterSet->add(ParamDYID, buf, sizeof(dy));
+
     D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f, buf= %s",
           ParamDYID, dy, buf);
 
@@ -618,18 +632,25 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
 
     D.Out(pdTrace, "SendUpdate.");
 
-    sprintf(buf, "%f", x);
-    attributeSet->add(AttrXID, buf, strlen(buf)+1);
-    D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u",
-          AttrXID, x, attributeSet->size());
+    // OLD : sprintf(buf, "%f", x);
+    // OLD : attributeSet->add(AttrXID, buf, strlen(buf)+1);
+    memcpy(buf,&x,sizeof(x));
+    attributeSet->add(AttrXID, buf,sizeof(x));    
+    D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u, attribute size=%d",
+          AttrXID, x, attributeSet->size(),sizeof(x));
 
-    sprintf(buf, "%f", y);
-    attributeSet->add(AttrYID, buf, strlen(buf)+1);
+    // OLD : sprintf(buf, "%f", y);
+    // OLD : attributeSet->add(AttrYID, buf, strlen(buf)+1);
+    memcpy(buf,&y,sizeof(y));
+    attributeSet->add(AttrYID, buf,sizeof(y));
     D.Out(pdDebug, "SendUpdate - AttrYID= %u, y= %f, size= %u",
           AttrYID, y, attributeSet->size());
 
-    sprintf(buf, "%d", color);
-    attributeSet->add(AttrColorID, buf, strlen(buf)+1);
+    // OLD : sprintf(buf, "%d", color);
+    // OLD : attributeSet->add(AttrColorID, buf, strlen(buf)+1);
+    memcpy(buf,&color,sizeof(color));
+    attributeSet->add(AttrColorID, buf,sizeof(color));
+   
     D.Out(pdDebug, "SendUpdate - AttrColorID= %u, color= %f, size= %u",
           AttrColorID, color, attributeSet->size());
 
@@ -760,7 +781,10 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
 
         if (handle == ParamDXID) {
             if (parmValue != NULL) {
-                dx1 = atoi(parmValue);
+                // OLD : dx1 = atoi(parmValue);
+                double d_dx1 ;
+                memcpy(&d_dx1,parmValue,valueLength) ;
+                dx1 = d_dx1 ;
                 // Local.dx = atof(parmValue);
                 D.Out(pdDebug, "receiveInteraction(*) - dx= %s", parmValue);
                 delete[] parmValue ;
@@ -771,7 +795,10 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
         else
             if (handle == ParamDYID) {
                 if (parmValue != NULL) {
-                    dy1 = atoi(parmValue);
+                    // OLD : dy1 = atoi(parmValue);
+                    double d_dy1 ;
+                    memcpy(&d_dy1,parmValue,valueLength) ;
+                    dy1 = d_dy1 ;
                     // Local.dy = atof(parmValue);
                     D.Out(pdDebug, "receiveInteraction(*) - dy= %s", parmValue);
                     delete[] parmValue ;
@@ -782,7 +809,10 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
             else
                 if (handle == ParamBoulID) {
                     if (parmValue != NULL) {
-                        h1 = atoi(parmValue);
+                        // OLD : h1 = atoi(parmValue);
+                        RTI::ObjectHandle d_h1 ;
+                        memcpy(&d_h1,parmValue,valueLength) ;
+                        h1 = d_h1 ;
                         bille = true ;
                     }
                     else
@@ -832,7 +862,10 @@ Billard::reflectAttributeValues(
 
         if (handle == AttrXID) {
             if (attrValue != NULL) {
-                x1 = atof(attrValue);
+                // OLD : x1 = atof(attrValue);
+                double d_x1 ;
+                memcpy(&d_x1,attrValue,valueLength) ;
+                x1 = d_x1 ;
                 delete[] attrValue ;
             }
             else
@@ -840,7 +873,10 @@ Billard::reflectAttributeValues(
         }
         else if (handle == AttrYID) {
             if (attrValue != NULL) {
-                y1 = atof(attrValue);
+                // OLD : y1 = atof(attrValue);
+                double d_y1 ;
+                memcpy(&d_y1,attrValue,valueLength) ;
+                y1 = d_y1 ;
                 delete[] attrValue ;
             }
             else
@@ -849,7 +885,7 @@ Billard::reflectAttributeValues(
         else
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
     }
-
+    
     vector<Ball>::iterator it = remote.begin() ;
     while (it != remote.end() && it->ID != theObject)
 	++it ;

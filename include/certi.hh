@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $
+// $Id: certi.hh,v 3.9 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -35,6 +35,11 @@
 #define MAX_BYTES_PER_VALUETYPE 20
 #undef MAX_PARAMETERS_PER_CLASS
 #define MAX_PARAMETERS_PER_CLASS 20
+
+// next used in MessageBody constructor with no size
+#define BUFFER_SIZE_DEFAULT 200
+// next used in RTIG::processIncomingMessage method
+#define BUFFER_EXCEPTION_REASON_SIZE 256
 
 namespace certi {
 
@@ -198,6 +203,13 @@ const OrderType TIMESTAMP = 2 ;
 // Constants
 const int MAX_BACKLOG = 256 ;
 
+// next introduced in order to manage value including any char (as \0)
+typedef  struct vlp
+    {
+    AttributeValue value ;          // value is a lot of bytes
+    ULong length ;                  // length i.e. bytes number of the value
+} ValueLengthPair, ParameterLengthPair ;
+
 } // namespace certi
 
 // Define this if you want the complete object and interaction tree to
@@ -242,7 +254,7 @@ const int MAX_BACKLOG = 256 ;
 
 // Server Principal Name
 //(must be like "<rtip principal name>@<network machine name>")
-#define HLA_SERVER_PRINCIPAL_NAME "RTIG@brive"
+#define HLA_SERVER_PRINCIPAL_NAME "RTIG@server"
 
 // Expiration delay for GSSAPI sessions(must be greater then the longer
 // lifetime of a federate).[In seconds]
@@ -272,4 +284,4 @@ const int MAX_BACKLOG = 256 ;
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.8 2005/08/27 19:00:30 breholee Exp $
+// $Id: certi.hh,v 3.9 2007/02/21 10:21:15 rousse Exp $

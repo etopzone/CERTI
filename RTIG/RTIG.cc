@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.27 2005/04/30 16:41:28 breholee Exp $
+// $Id: RTIG.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -481,8 +481,8 @@ RTIG::processIncomingMessage(Socket *link)
 {
     NetworkMessage msg ;
     NetworkMessage rep ; // Server Answer(only if an exception is raised)
-    char buffer[256] ; // To store the exception reason
 
+    char buffer[BUFFER_EXCEPTION_REASON_SIZE] ; // To store the exception reason
     if (link == NULL) {
         D.Out(pdError, "NULL socket in processMessageRecu.");
         return NULL ;
@@ -951,4 +951,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.27 2005/04/30 16:41:28 breholee Exp $
+// $Id: RTIG.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $

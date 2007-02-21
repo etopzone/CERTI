@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.26 2005/04/30 16:52:44 breholee Exp $
+// $Id: Interaction.cc,v 3.27 2007/02/21 10:21:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -368,7 +368,7 @@ Interaction::unpublish(FederateHandle the_handle)
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
                              ParameterHandle *parameter_list,
-                             ParameterValue *value_list,
+                             ParameterLengthPair *value_list,
                              UShort list_size,
                              FederationTime time,
 			     const RTIRegion *region,
@@ -398,7 +398,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->handleArraySize = list_size ;
         for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
-            answer->setValue(i, value_list[i]);
+            answer->setValue(i, value_list[i].value, value_list[i].length);
         }
 
         D.Out(pdProtocol, "Preparing broadcast list.");
@@ -465,4 +465,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.26 2005/04/30 16:52:44 breholee Exp $
+// $Id: Interaction.cc,v 3.27 2007/02/21 10:21:15 rousse Exp $
