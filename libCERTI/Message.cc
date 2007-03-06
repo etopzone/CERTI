@@ -44,6 +44,26 @@ Message::Message()
     name[0] = '\0' ;
     label[0] = '\0' ;
     handleArraySize = 0 ;
+    objectClass = 0 ; 
+    object = 0 ;
+    boolean = false ;
+    type = NOT_USED ;
+    lookahead = 0 ;
+    federate = 0 ;
+    resignAction = RTI::NO_ACTION ;
+    idCount = 0 ;
+    firstId = 0 ;
+    lastId = 0 ;
+    interactionClass = 0 ;
+    attribute = 0 ;
+    parameter = 0 ;
+    transport = 0 ;
+    order = 0 ;
+    space = 0 ;
+    dimension = 0 ;
+    number = 0 ;
+    region = 0 ;
+
 }
 
 //getValue allows Value as a set of bytes because length (parameter 2) is known
@@ -552,7 +572,7 @@ Message::operator=(const Message& msg)
     for (i=0 ; i < handleArraySize ; i++)
         handleArray[i] = msg.handleArray[i] ;
 
-    for (i=0 ; i<<handleArraySize ; i++)
+    for (i=0 ; i < handleArraySize ; i++)
         {
         valueArray[i].length = msg.valueArray[i].length ;
         memcpy(valueArray[i].value, msg.valueArray[i].value, msg.valueArray[i].length );

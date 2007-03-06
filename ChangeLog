@@ -1,3 +1,52 @@
+2007-02-21 11:21  rousse
+
+	* AUTHORS, ChangeLog, VERSION, autogen.sh, RTIA/Communications.cc,
+	  RTIA/FederationManagement.cc, RTIA/ObjectManagement.cc,
+	  RTIA/ObjectManagement.hh, RTIA/RTIA_federate.cc,
+	  RTIA/RTIA_network.cc, RTIA/TimeManagement.cc, RTIG/Federation.cc,
+	  RTIG/Federation.hh, RTIG/FederationsList.cc,
+	  RTIG/FederationsList.hh, RTIG/RTIG.cc, RTIG/RTIG_processing.cc,
+	  RTIG/main.cc, doc/billard.dox, doc/reference.dox, doc/user.dox,
+	  include/RTItypes.hh, include/certi.hh, libCERTI/Exception.cc,
+	  libCERTI/FedTime.cc, libCERTI/GAV.cc, libCERTI/GAV_aux.cc,
+	  libCERTI/Interaction.cc, libCERTI/Interaction.hh,
+	  libCERTI/InteractionSet.cc, libCERTI/InteractionSet.hh,
+	  libCERTI/Makefile.am, libCERTI/Message.cc, libCERTI/Message.hh,
+	  libCERTI/MessageBody.cc, libCERTI/MessageBody.hh,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
+	  libCERTI/ObjectClass.cc, libCERTI/ObjectClass.hh,
+	  libCERTI/ObjectClassBroadcastList.cc, libCERTI/ObjectClassSet.cc,
+	  libCERTI/ObjectClassSet.hh, libCERTI/PrettyDebug.cc,
+	  libCERTI/PrettyDebug.hh, libCERTI/SocketUN.cc,
+	  libCERTI/SocketUN.hh, libCERTI/XmlParser.cc,
+	  libCERTI/converter.cc, libCERTI/converter.hh, libCERTI/fed.cc,
+	  libRTI/RTIambassador.cc, test/Billard/Billard.cc: Merge
+	  CERTI_3_2-branch to head
+
+2007-02-06 15:10  rousse
+
+	* VERSION: VERSION change from 3.2.2 to 3.2.3
+
+2007-02-06 14:57  rousse
+
+	* AUTHORS: [no log message]
+
+2007-02-06 14:50  rousse
+
+	* include/RTItypes.hh: New version 3.2.3
+
+2007-02-02 15:19  rousse
+
+	* ChangeLog, RTIA/RTIA_federate.cc, RTIA/RTIA_network.cc,
+	  libCERTI/PrettyDebug.cc, libCERTI/PrettyDebug.hh,
+	  libCERTI/SocketUN.cc, libCERTI/SocketUN.hh,
+	  libRTI/RTIambassador.cc: Second set of modifications suggested by
+	  M. JOUBERT (Thanx !) CERTI log modifications (federate name and
+	  time) RTIA kill correction transmission of asynchronous RO
+	  messages crash into ostringstream lib. corrected and many others
+	  little problems.
+
 2007-01-30 11:04  rousse
 
 	* ChangeLog, RTIA/Communications.cc, RTIA/FederationManagement.cc,
@@ -81,3 +130,4 @@
 2006-05-14 22:09  breholee
 
 	* VERSION: version 3.2.1
+
