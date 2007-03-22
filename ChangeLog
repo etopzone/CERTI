@@ -1,3 +1,17 @@
+2007-03-06 15:09  rousse
+
+	* ChangeLog, libCERTI/Message.cc: Le constructeur de Message oublie
+	  d'initialiser certaines variables.  Dans certains cas object ou
+	  objecClass a une valeur indeterminee qui ne gene pas dans le
+	  contexte de la requete mais provoque le declenchement d'un assert
+	  en 64 bits.  Ceci devrait regler les bugs #14850 et #19124
+
+	  Message constructor don't initialize some variables.	Some time,
+	  object or objectClass has undetermined value. In the context of
+	  the request no problem occurs but in an 64 bits system, an assert
+	  will stop execution.	Correction made will fix bugs #14850 et
+	  #19124
+
 2007-02-21 11:21  rousse
 
 	* AUTHORS, ChangeLog, VERSION, autogen.sh, RTIA/Communications.cc,
@@ -130,4 +144,3 @@
 2006-05-14 22:09  breholee
 
 	* VERSION: version 3.2.1
-

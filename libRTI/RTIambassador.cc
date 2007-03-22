@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.38 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIambassador.cc,v 3.39 2007/03/22 14:18:01 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -445,7 +445,7 @@ RTI::RTIambassador::tick(TickTime, TickTime)
 */
 void
 RTI::RTI::RTIambassador::createFederationExecution(const char *executionName,
-                                         const char */* FED */)
+                                         const char *FED)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::ErrorReadingFED, RTI::CouldNotOpenFED, 
 	   RTI::FederationExecutionAlreadyExists)
@@ -454,6 +454,7 @@ RTI::RTI::RTIambassador::createFederationExecution(const char *executionName,
 
     req.type = Message::CREATE_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
+    req.setFEDid(FED);
 
     privateRefs->executeService(&req, &rep);
 }
@@ -2652,4 +2653,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.38 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIambassador.cc,v 3.39 2007/03/22 14:18:01 rousse Exp $

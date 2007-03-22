@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: FederationsList.hh,v 3.29 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -56,10 +56,10 @@ public:
 #ifdef FEDERATION_USES_MULTICAST
     void createFederation(const char *, FederationHandle, SocketMC*)
 #else
-        void createFederation(const char *, Handle)
+        void createFederation(const char *, Handle, const char *FEDid)
 #endif
         throw (FederationExecutionAlreadyExists,
-               CouldNotOpenRID,
+               CouldNotOpenFED,
                ErrorReadingRID,
                MemoryExhausted,
                SecurityError,
@@ -500,4 +500,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: FederationsList.hh,v 3.29 2007/03/22 14:18:00 rousse Exp $

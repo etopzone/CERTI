@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.13 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.14 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,11 +35,16 @@ namespace certi {
 void
 NetworkMessage::display(const char *s)
 {
-    printf(" --- MESSAGE RESEAU --- %s ---\n", s);
-    printf(" type = %d\n", type);
-    printf(" number = %ld-%d\n", federate, number);
-    printf(" date = %f\n", date);
-    printf(" exception = %d\n", exception);
+    printf(" -- NETWORK MESSAGE - %s -", s);
+    if ( type == CREATE_FEDERATION_EXECUTION )
+        printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",federationName,FEDid);
+    else if (type == JOIN_FEDERATION_EXECUTION )
+        printf("JOIN_FEDERATION_EXECUTION\n"); 
+    else
+        printf(" type = %d\n", type);
+    printf(" number = %ld-%d", federate, number);
+    printf(" date = %f ", date);
+    printf(" exception = %d ", exception);
     printf(" ObjectHandle = %ld\n", objectClass);
     printf(" interactionClass= %ld\n", interactionClass);
     printf(" object = %ld\n", object);
@@ -58,6 +63,7 @@ NetworkMessage::NetworkMessage()
     federationName[0] = '\0' ;
     federateName[0] = '\0' ;
     label[0] = '\0' ;
+    FEDid[0] = '\0' ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
@@ -269,6 +275,24 @@ NetworkMessage::readFederateName(MessageBody &body)
     body.readString(federateName, MAX_FEDERATE_NAME_LENGTH);
 }
 
+// ----------------------------------------------------------------------------
+// setFEDid
+//
+void
+NetworkMessage::setFEDid(const char *NewFEDid)
+{
+    if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
+        throw ValueLengthExceeded("FEDFILE name too long to fit in Network Message.");
+
+    strcpy(FEDid, NewFEDid);
+}
+
+// ----------------------------------------------------------------------------
+void
+NetworkMessage::readFEDid(MessageBody &body)
+{
+    body.readString(FEDid, MAX_FEDFILE_NAME_LENGTH);
+}
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.13 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.14 2007/03/22 14:18:00 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.35 2007/02/21 10:21:15 rousse Exp $
+// $Id: Federation.hh,v 3.36 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -50,6 +50,7 @@ class Federation
 private:
     Handle handle ;
     char *name ;
+    char *FEDid ;
 
     //! Labels and Tags not on synchronization.
     std::map<const char *, const char *> synchronizationLabels ;
@@ -81,9 +82,9 @@ public:
                AuditFile &,
                SocketMC*)
 #else
-        Federation(const char *, Handle, SocketServer &, AuditFile &)
+        Federation(const char *, Handle, SocketServer &, AuditFile &, const char *)
 #endif
-        throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
+        throw (CouldNotOpenFED, ErrorReadingRID, MemoryExhausted, SecurityError,
                RTIinternalError);
 
     ~Federation();
@@ -515,4 +516,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.35 2007/02/21 10:21:15 rousse Exp $
+// $Id: Federation.hh,v 3.36 2007/03/22 14:18:00 rousse Exp $

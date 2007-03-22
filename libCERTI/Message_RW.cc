@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: Message_RW.cc,v 3.29 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -75,6 +75,10 @@ Message::readBody(SocketUN *socket)
             // --- No Variable Part, Body not empty ---
 
           case CREATE_FEDERATION_EXECUTION:
+            readFederationName(body);
+            readFEDid(body) ;
+            break ;
+
           case DESTROY_FEDERATION_EXECUTION:
             readFederationName(body);
             break ;
@@ -562,6 +566,12 @@ Message::readTag(MessageBody &body)
 }
 
 // ----------------------------------------------------------------------------
+void
+Message::readFEDid(MessageBody &body)
+{
+    body.readString(FEDid, MAX_FEDFILE_NAME_LENGTH);
+}
+// ----------------------------------------------------------------------------
 //! readValueArray.
 void
 Message::readValueArray(MessageBody &body)
@@ -624,6 +634,10 @@ Message::writeBody(SocketUN *socket)
             // --- No Variable Part, Body not empty ---
 
           case CREATE_FEDERATION_EXECUTION:
+            body.writeString(federationName);
+            body.writeString(FEDid);
+            break ;
+
           case DESTROY_FEDERATION_EXECUTION:
             body.writeString(federationName);
             break ;
@@ -1139,4 +1153,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: Message_RW.cc,v 3.29 2007/03/22 14:18:00 rousse Exp $

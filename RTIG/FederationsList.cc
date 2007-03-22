@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.31 2007/02/21 10:21:15 rousse Exp $
+// $Id: FederationsList.cc,v 3.32 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 using std::list ;
 using std::endl ;
+using std::cout ;
 
 namespace certi {
 namespace rtig {
@@ -126,7 +127,6 @@ FederationsList::searchFederation(Handle handle,
             return j ;
         }
     }
-
     D.Out(pdExcept, "Unknown Federation Handle %d.", handle);
     throw FederationExecutionDoesNotExist("Bad Federation Handle.");
 }
@@ -139,10 +139,11 @@ void FederationsList::createFederation(const char *name,
                                        SocketMC *mc_link)
 #else
     void FederationsList::createFederation(const char *name,
-                                           Handle handle)
+                                           Handle handle,
+                                           const char *FEDid)
 #endif
     throw (FederationExecutionAlreadyExists,
-           CouldNotOpenRID,
+           CouldNotOpenFED,
            ErrorReadingRID,
            MemoryExhausted,
            SecurityError,
@@ -170,9 +171,9 @@ void FederationsList::createFederation(const char *name,
 #ifdef FEDERATION_USES_MULTICAST
     federation = new Federation(name, handle, socketServer, auditFile, mc_link);
 #else
-    federation = new Federation(name, handle, socketServer, auditFile);
-#endif
 
+    federation = new Federation(name, handle, socketServer, auditFile, FEDid);
+#endif
     if (federation == NULL)
         throw MemoryExhausted("No memory left for new Federation.");
 
@@ -624,11 +625,10 @@ FederationsList::destroyFederation(Handle handle)
 
     // It may throw FederationExecutionDoesNotExist
     int rank = searchFederation(handle, federation);
-
     // It may throw FederatesCurrentlyJoined
     if (federation->empty()) {
         list<Federation *>::iterator i = begin();
-        for (int j = 1 ; i != end() && j <= rank ; j++) {
+        for (int j = 1 ; i != end() && j <= rank ; j++, i++) {
             if (j == rank) {
                 erase(i);
             }
@@ -1260,5 +1260,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.31 2007/02/21 10:21:15 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.32 2007/03/22 14:18:00 rousse Exp $
 

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.22 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -71,6 +71,10 @@ NetworkMessage::readBody(Socket *socket)
 	break ;
 	
       case CREATE_FEDERATION_EXECUTION:
+	readFederationName(body);
+	readFEDid(body);
+	break ;
+
       case DESTROY_FEDERATION_EXECUTION:
 	readFederationName(body);
 	break ;
@@ -425,6 +429,10 @@ NetworkMessage::writeBody(Socket *socket)
 	// -- No Variable Part --
 
       case CREATE_FEDERATION_EXECUTION:
+	body.writeString(federationName);
+	body.writeString(FEDid);
+	break ;
+
       case DESTROY_FEDERATION_EXECUTION:
 	body.writeString(federationName);
 	break ;
@@ -799,4 +807,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.22 2007/03/22 14:18:00 rousse Exp $

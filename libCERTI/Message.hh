@@ -378,6 +378,8 @@ public:
     TypeException getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason ; };
 
+    const char *getFEDid() const { return FEDid ; };
+    void setFEDid(const char *FEDid);
     // Public attributes
     Type type ;
 
@@ -448,6 +450,7 @@ private:
     void readResignAction(MessageBody &);
     void readTag(MessageBody &);
     void readValueArray(MessageBody &);
+    void readFEDid(MessageBody &);
 
     // -- Other Private Write Methods --
     void writeHandleArray(MessageBody &);
@@ -460,6 +463,7 @@ private:
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
+    char FEDid[MAX_FEDFILE_NAME_LENGTH + 1] ;
     // valueArray is now a ValueLengthPair
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };

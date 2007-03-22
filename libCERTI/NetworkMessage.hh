@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.22 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -239,6 +239,7 @@ public :
     FederateHandle federate ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
+    char FEDid[MAX_FEDFILE_NAME_LENGTH + 1] ;
 
     int bestEffortPeer ;
     unsigned long bestEffortAddress ;
@@ -278,6 +279,7 @@ public :
 
     void setLabel(const char *new_label) { strcpy(label, new_label); }
     void setTag(const char *new_tag) { strcpy(tag, new_tag); }
+    void setFEDid(const char *NewFEDid);
 
 private:
     // Read a Message Body from a Socket. Should be called after ReadHeader.
@@ -303,6 +305,7 @@ private:
     void readTag(MessageBody &);
     void readFederationName(MessageBody &);
     void readFederateName(MessageBody &);
+    void readFEDid(MessageBody &body);
 
     HeaderStruct Header ;
     // ValueArray is now a ValueLengthPair
@@ -315,4 +318,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.22 2007/03/22 14:18:00 rousse Exp $

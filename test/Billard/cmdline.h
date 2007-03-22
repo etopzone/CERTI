@@ -37,6 +37,7 @@ struct gengetopt_args_info
   int yoffset_arg;	/* Y offset (X11).  */
   int initx_arg;	/* ball initial X value.  */
   int inity_arg;	/* ball initial Y value.  */
+  char * filename_arg;  /* FED filename */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
@@ -53,6 +54,7 @@ struct gengetopt_args_info
   int yoffset_given ;	/* Whether yoffset was given.  */
   int initx_given ;	/* Whether initx was given.  */
   int inity_given ;	/* Whether inity was given.  */
+  char * filename_given ; /* Whether FED filename */
 
 } ;
 

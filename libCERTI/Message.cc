@@ -63,6 +63,7 @@ Message::Message()
     dimension = 0 ;
     number = 0 ;
     region = 0 ;
+    FEDid[0] = '\0' ;
 
 }
 
@@ -524,6 +525,18 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
 }
 
 // ----------------------------------------------------------------------------
+// setFEDid
+//
+void
+Message::setFEDid(const char *NewFEDid)
+{
+    if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
+        throw ValueLengthExceeded("FEDFILE name too long to fit in Message.");
+
+    strcpy(FEDid, NewFEDid);
+}
+
+// ----------------------------------------------------------------------------
 // operator=
 //
 Message &
@@ -578,6 +591,8 @@ Message::operator=(const Message& msg)
         memcpy(valueArray[i].value, msg.valueArray[i].value, msg.valueArray[i].length );
         }
 
+    strcpy(FEDid, msg.FEDid) ;
+
     return *this ;
 }
 
@@ -587,11 +602,16 @@ Message::operator=(const Message& msg)
 void
 Message::display(char *s)
 {
-    printf(" --- MESSAGE --- %s ---\n", s);
-    printf(" type=%d:\n", type);
-    printf(" date=%f:\n", fed_time.getTime());
-    printf(" exception=%d:\n", exception);
-    printf(" objectClass=%ld:\n", objectClass);
+    printf(" -- MESSAGE - %s -", s);
+    if ( type == CREATE_FEDERATION_EXECUTION )
+      printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",federationName,FEDid) ;
+    else if ( type == JOIN_FEDERATION_EXECUTION )
+      printf("JOIN_FEDERATION_EXECUTION\n") ;
+    else
+        printf(" type=%d :", type);
+    printf(" date=%f: ", fed_time.getTime());
+    printf(" exception=%d: ", exception);
+    printf(" objectClass=%ld: ", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);
     printf(" parameter=%ld:\n", parameter);

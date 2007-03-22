@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: certi.hh,v 3.10 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -35,6 +35,7 @@
 #define MAX_BYTES_PER_VALUETYPE 20
 #undef MAX_PARAMETERS_PER_CLASS
 #define MAX_PARAMETERS_PER_CLASS 20
+#define MAX_FEDFILE_NAME_LENGTH 100
 
 // next used in MessageBody constructor with no size
 #define BUFFER_SIZE_DEFAULT 200
@@ -284,4 +285,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: certi.hh,v 3.10 2007/03/22 14:18:00 rousse Exp $

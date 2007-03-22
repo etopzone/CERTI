@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.30 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.31 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 #include <assert.h>
 
 using std::endl ;
+using std::cout ;
 
 namespace certi {
 namespace rtig {
@@ -39,6 +40,7 @@ void
 RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 {
     char *federation = req->federationName ;
+    char *FEDid = req->FEDid ;
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
     auditServer << "Federation Name : " << federation ;
@@ -65,7 +67,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     ClientSockets.push_front(com_mc);
 
 #else
-    federations.createFederation(federation, h);
+    federations.createFederation(federation, h, FEDid);
 #endif
 
     // Prepare answer for RTIA
@@ -73,6 +75,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     rep.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federation = h ;
+    strcpy(rep.FEDid,FEDid) ;
 
     rep.write(link); // Send answer to RTIA
 
@@ -1062,4 +1065,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.30 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.31 2007/03/22 14:18:00 rousse Exp $

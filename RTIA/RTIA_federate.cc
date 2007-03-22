@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.33 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -84,6 +84,7 @@ RTIA::saveAndRestoreStatus(Message::Type type)
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
+        throw (CouldNotOpenFED)
 {
     // Verify not in saving or restoring state.
     saveAndRestoreStatus(req->type);
@@ -95,11 +96,11 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::CREATE_FEDERATION_EXECUTION:
         D.Out(pdTrace,
               "Receiving Message from Federate, type CreateFederation.");
-
+        // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
+        strcpy(fm->_FEDid, req->getFEDid()) ;
         fm->createFederationExecution(req->getFederationName(), e);
         D.Out(pdTrace, "Receiving Message from Federate, "
               "type CreateFederation done.");
-
         break ;
 
       case Message::DESTROY_FEDERATION_EXECUTION:
@@ -120,28 +121,53 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           /// Set RTIA PrettyDebug federate name
           PrettyDebug::setFederateName(req->getFederateName());
 
-          D.Out(pdTrace, "Trying to use a .fed file");
-          string filename = string(req->getFederationName()) + ".fed" ;
+          string filename = fm->_FEDid ;
+          int nbcar_filename=filename.length();
+          bool is_a_fed = false ;
+          bool is_an_xml = false ;
+
+          // Hope there is a . before fed or xml
+          if ( filename.at(nbcar_filename-4) != '.' )
+              throw CouldNotOpenFED(". missing or not in place");
+
+          string extension = filename.substr(nbcar_filename-3,3) ;
+          if ( !strcasecmp(extension.c_str(),"fed") )
+              {
+              is_a_fed = true ;
+              D.Out(pdTrace, "Trying to use .fed file");
+              }
+          else if  ( !strcasecmp(extension.c_str(),"xml") )
+              {
+              is_an_xml = true ;
+              D.Out(pdTrace, "Trying to use .fed file");
+              } 
+          else 
+              throw CouldNotOpenFED("nor .fed nor .xml");
+    
           ifstream *fdd = new ifstream(filename.c_str());
-          if (fdd->is_open()) {
-	      int result = certi::fedparser::build(filename.c_str(),
-						   rootObject, true);
-	      if (result) throw ErrorReadingFED("");
-          }
-          else {
-              if (XmlParser::exists()) {
-                  D.Out(pdTrace, "Trying to use a .xml file");
-                  filename = string(req->getFederationName()) + ".xml" ;
-                  fdd = new ifstream(filename.c_str());
-                  if (fdd->is_open()) {
+          if (fdd->is_open())
+              {
+              if ( is_a_fed )
+                  {        
+	          int result = certi::fedparser::build(filename.c_str(),
+		    				   rootObject, true);
+	          if (result) throw ErrorReadingFED("invalid .fed");
+                  }
+              else if ( is_an_xml )
+                  {
+                  if (XmlParser::exists())
+                      {
                       XmlParser *parser = new XmlParser(rootObject);
                       parser->parse(filename);
                       delete fdd ;
                       delete parser ;
+                      }
+		   else 
+                       throw CouldNotOpenFED("no XmlParser");
                   }
-		  else throw CouldNotOpenFED("");
               }
-          }
+          else
+              throw CouldNotOpenFED("File not found");
           break ;
       }
       case Message::RESIGN_FEDERATION_EXECUTION:
@@ -1104,4 +1130,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.33 2007/03/22 14:18:00 rousse Exp $

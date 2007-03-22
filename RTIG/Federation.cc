@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.47 2007/02/21 10:21:15 rousse Exp $
+// $Id: Federation.cc,v 3.48 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,9 +77,10 @@ Federation::Federation(const char *federation_name,
     Federation::Federation(const char *federation_name,
                            Handle federation_handle,
                            SocketServer &socket_server,
-                           AuditFile &audit_server)
+                           AuditFile &audit_server,
+                           const char *FEDid_name)
 #endif
-    throw (CouldNotOpenRID, ErrorReadingRID, MemoryExhausted, SecurityError,
+    throw (CouldNotOpenFED, ErrorReadingRID, MemoryExhausted, SecurityError,
            RTIinternalError)
     : federateHandles(1), objectHandles(1), saveInProgress(false),
       restoreInProgress(false), saveStatus(true), restoreStatus(true),
@@ -111,6 +112,8 @@ Federation::Federation(const char *federation_name,
     // Default Attribute values
     handle = federation_handle ;
 
+    FEDid = strdup(FEDid_name) ;
+
     D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
           handle);
 
@@ -121,43 +124,59 @@ Federation::Federation(const char *federation_name,
     root = new RootObject(server);
 
     cout << "New federation: " << name << endl ;
-    cout << "Looking for .fed file... " ;
 
-    string filename = string(name) + ".fed" ;
+    string filename = string(FEDid) ;
+    cout << "Looking for FOM file... " << filename << endl ; 
+
+    int nbcar_filename = filename.length() ;
+    bool is_a_fed = false ;
+    bool is_an_xml = false ;
+    // hope there is a . before fed or xml
+    if ( filename.at(nbcar_filename-4) != '.' )
+        throw CouldNotOpenFED(". missing or not in place");
+
+    string extension = filename.substr(nbcar_filename-3,3) ;
+    if ( !strcasecmp(extension.c_str(),"fed") )
+        {
+        is_a_fed = true ;
+        D.Out(pdTrace, "Trying to use .fed file");
+        }
+    else if  ( !strcasecmp(extension.c_str(),"xml") )
+        {
+        is_an_xml = true ;
+        D.Out(pdTrace, "Trying to use .fed file");
+        } 
+    else 
+        throw CouldNotOpenFED("nor .fed nor .xml");
+       
     ifstream fdd(filename.c_str());
 
-    if (fdd.is_open()) {
+    if (fdd.is_open())
+        {
 	fdd.close();
-
-        cout << "yes" << endl ;
-	int err = fedparser::build(filename.c_str(), root, verbose);
-	if (err) throw ErrorReadingFED("");
+        if ( is_a_fed )
+            {
+            cout << "fed" << endl;
+	    int err = fedparser::build(filename.c_str(), root, verbose);
+	    if (err) throw ErrorReadingFED("");
 	    
-        // Retrieve the FED file last modification time(for Audit)
-        struct stat StatBuffer ;
-        char *MTimeBuffer ;
+            // Retrieve the FED file last modification time(for Audit)
+            struct stat StatBuffer ;
+            char *MTimeBuffer ;
 
-        if (stat(filename.c_str(), &StatBuffer) == 0) {
-            MTimeBuffer = ctime(&StatBuffer.st_mtime);
-            MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
-            server->audit << "(Last modified " << MTimeBuffer << ")" ;
-        }
-        else
-            server->audit << "(could not retrieve last modif time, errno "
-			  << errno << ")." ;
-    }
-    else {
-        cout << "no" << endl ;
-        if (XmlParser::exists()) {
-            cout << "Looking for .xml file... " ;
-
-            filename = string(name) + ".xml" ;
-            fdd.open(filename.c_str());
-
-            if (fdd.is_open()) {
-		fdd.close();
-                cout << "yes" << endl ;
-
+            if (stat(filename.c_str(), &StatBuffer) == 0) {
+                MTimeBuffer = ctime(&StatBuffer.st_mtime);
+                MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
+                server->audit << "(Last modified " << MTimeBuffer << ")" ;
+            }
+            else
+                server->audit << "(could not retrieve last modif time, errno "
+		    	  << errno << ")." ;
+            }
+        else if ( is_an_xml )
+            {
+            cout << "xml" << endl ;
+            if (XmlParser::exists()) {
                 XmlParser *parser = new XmlParser(root);
                 server->audit << ", XML File : " << filename.c_str() ;
 
@@ -175,7 +194,7 @@ Federation::Federation(const char *federation_name,
                 delete parser ;
             }
             else {
-                cout << "no" << endl ;
+                cout << "nor fed nor xml" << endl ;
 		throw CouldNotOpenFED("");
 	    }
         }
@@ -196,6 +215,7 @@ Federation::~Federation()
 
     // Free local allocations
     free(name);
+    free(FEDid);
     delete root ;
 
     delete server ;
@@ -1740,5 +1760,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.47 2007/02/21 10:21:15 rousse Exp $
+// $Id: Federation.cc,v 3.48 2007/03/22 14:18:00 rousse Exp $
 

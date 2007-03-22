@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.17 2007/02/21 10:21:15 rousse Exp $
+// $Id: FederationManagement.cc,v 3.18 2007/03/22 14:18:00 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,6 +60,7 @@ FederationManagement::FederationManagement(Communications *GC)
 
     _nom_federation[0] = 0 ;
     _nom_federe[0] = 0 ;
+    _FEDid[0] = 0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -109,6 +110,7 @@ createFederationExecution(const char *theName,
     if (e == e_NO_EXCEPTION) {
         requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
         strcpy(requete.federationName, theName);
+        strcpy(requete.FEDid, _FEDid) ;
 
         comm->sendMessage(&requete);
 
@@ -640,4 +642,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.17 2007/02/21 10:21:15 rousse Exp $
+// $Id: FederationManagement.cc,v 3.18 2007/03/22 14:18:00 rousse Exp $

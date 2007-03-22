@@ -1,11 +1,11 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.1 2005/04/30 16:30:43 breholee Exp $
+// $Id: RTIambServices.hh,v 3.2 2007/03/22 14:18:00 rousse Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
 // Federation Management -------------------
 
-void createFederationExecution(const char *, const char *)
+void createFederationExecution(const char *executionName, const char *FEDid)
     throw (FederationExecutionAlreadyExists, CouldNotOpenFED, ErrorReadingFED,
 	   ConcurrentAccessAttempted, RTIinternalError);
 
@@ -487,4 +487,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.1 2005/04/30 16:30:43 breholee Exp $
+// $Id: RTIambServices.hh,v 3.2 2007/03/22 14:18:00 rousse Exp $

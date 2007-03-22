@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.10 2005/05/29 22:26:44 breholee Exp $
+// $Id: main.cc,v 3.11 2007/03/22 14:18:01 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -92,7 +92,8 @@ main(int argc, char **argv)
 	// Federation and .fed names
 	string federation = args.federation_arg ;
 	string federate = args.name_arg ;
-	string fedfile = args.federation_arg + WITH_XML ? ".xml" : ".fed" ;
+        // -F option gives filename (FED)
+        string fedfile = args.filename_arg ;
 
 	// Create billard
 	std::auto_ptr<Billard> billard(createBillard(args.demo_given, args.demo_arg, federate));
@@ -250,4 +251,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.10 2005/05/29 22:26:44 breholee Exp $
+// EOF $Id: main.cc,v 3.11 2007/03/22 14:18:01 rousse Exp $

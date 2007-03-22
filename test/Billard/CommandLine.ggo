@@ -17,3 +17,4 @@ option  "xoffset"	x	"X offset (X11)"	int	no
 option 	"yoffset"	y	"Y offset (X11)"	int	no
 option  "initx"		X	"ball initial X value"	int	no
 option  "inity"		Y	"ball initial Y value"	int	no
+option  "filename"      F       "FED filename"          string  yes

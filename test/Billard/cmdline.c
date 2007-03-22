@@ -52,6 +52,7 @@ cmdline_parser_print_help (void)
   printf("   -yINT      --yoffset=INT        Y offset (X11)\n");
   printf("   -XINT      --initx=INT          ball initial X value\n");
   printf("   -YINT      --inity=INT          ball initial Y value\n");
+  printf("   -FSTRING   --filename=STRING    FED file name\n");
 }
 
 
@@ -90,6 +91,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->yoffset_given = 0 ;
   args_info->initx_given = 0 ;
   args_info->inity_given = 0 ;
+  args_info->filename_given = 0 ;
 #define clear_args() { \
   args_info->coordinated_flag = 1;\
   args_info->federation_arg = NULL; \
@@ -97,6 +99,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->name_arg = NULL; \
   args_info->demo_arg = NULL; \
   args_info->verbose_flag = 0;\
+  args_info->filename_arg = NULL;\
 }
 
   clear_args();
@@ -127,11 +130,12 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "yoffset",	1, NULL, 'y' },
         { "initx",	1, NULL, 'X' },
         { "inity",	1, NULL, 'Y' },
+        { "filename",   1, NULL, 'F' },
         { NULL,	0, NULL, 0 }
       };
 
       stop_char = 0;
-      c = getopt_long (argc, argv, "hVa:cd:f:l:n:o:t:vx:y:X:Y:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVa:cd:f:l:n:o:t:vx:y:X:Y:F:", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -290,6 +294,16 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           args_info->inity_arg = strtol (optarg,&stop_char,0);
           break;
 
+       case 'F':	/* FED file name  */
+          if (args_info->filename_given)
+            {
+              fprintf (stderr, "%s: `--filename' (`-F') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->filename_given = 1;
+          args_info->filename_arg = gengetopt_strdup (optarg);
+          break;
 
         case 0:	/* Long option with no short option */
 
@@ -312,6 +326,11 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   if (! args_info->name_given)
     {
       fprintf (stderr, "%s: '--name' ('-n') option required\n", CMDLINE_PARSER_PACKAGE);
+      missing_required_options = 1;
+    }
+  if (! args_info->filename_given)
+    {
+      fprintf (stderr, "%s: '--filename' ('-F') option required\n", CMDLINE_PARSER_PACKAGE);
       missing_required_options = 1;
     }
   if ( missing_required_options )
