@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.31 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.32 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -90,7 +90,8 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 {
     char *federation = req->federationName ;
     char *federate = req->federateName ;
-
+    char filename[MAX_FEDFILE_NAME_LENGTH + 1] ;
+    
     unsigned int peer = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
 
@@ -120,7 +121,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
                       pause, com_mc);
     assert(com_mc != NULL);
 #else
-    federations.info(num_federation, nb_federes, nb_regulateurs, pause);
+    federations.info(num_federation, nb_federes, nb_regulateurs, pause, filename);
 #endif
 
     // Store Federate <->Socket reference.
@@ -132,6 +133,69 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     auditServer << "(" << num_federation << ")with handle " << num_federe
 		<< ". Socket " << link->returnSocket();
+
+    // Open FED file et says to RTIA if success
+    FILE *fdd ;
+    if ( (fdd=fopen(filename,"r")) == NULL )
+        {
+        cout << "erreur ouverture FEDid" << filename << endl;
+        abort();
+        }
+
+    // RTIG says OK to RTIA
+    NetworkMessage repFED ;
+    repFED.type = NetworkMessage::GET_FED_FILE ;
+    repFED.exception = e_NO_EXCEPTION ;
+    repFED.federate = num_federe ;
+    repFED.federation = num_federation ;
+    repFED.number = 0 ;
+    strcpy(repFED.FEDid,filename) ;   
+
+    // Send answer
+    repFED.write(link);
+
+    // Wait for OK from RTIA
+    NetworkMessage msg ;
+    msg.read(link);
+    assert ( msg.number == 0 );
+
+    // RTIA has opened working file then RTIG has to transfer file contents
+    // line by line
+    char file_line[MAX_BYTES_PER_VALUE+1];
+    int num_line = 0 ;
+    while ( fgets(file_line,MAX_BYTES_PER_VALUE,fdd) != NULL )
+        {
+        num_line++;
+        // RTIG sends line to RTIA and number gives line number
+        repFED.type = NetworkMessage::GET_FED_FILE ;
+        repFED.exception = e_NO_EXCEPTION ;
+        repFED.federate = num_federe ;
+        repFED.federation = num_federation ;
+        repFED.number = num_line ;
+        strcpy(repFED.FEDid,filename) ;
+        // line transfered
+        repFED.handleArraySize = 1 ;
+        repFED.setValue(0,file_line,strlen(file_line)+1);  
+
+        // Send answer
+        repFED.write(link);
+
+        // Wait for OK from RTIA
+        msg.read(link);
+        assert ( msg.number == num_line );
+        }
+    
+    // close
+    fclose(fdd) ;
+        repFED.type = NetworkMessage::GET_FED_FILE ;
+        repFED.exception = e_NO_EXCEPTION ;
+        repFED.federate = num_federe ;
+        repFED.federation = num_federation ;
+        repFED.number = 0 ;
+        strcpy(repFED.FEDid,filename) ;   
+
+        // Send answer
+        repFED.write(link);
 
     // Prepare answer
     NetworkMessage rep ;
@@ -1065,4 +1129,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.31 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.32 2007/04/03 09:43:39 rousse Exp $

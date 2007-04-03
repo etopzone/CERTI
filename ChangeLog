@@ -1,3 +1,33 @@
+2007-03-22 15:18  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc,
+	  RTIA/FederationManagement.hh, RTIA/RTIA.hh,
+	  RTIA/RTIA_federate.cc, RTIG/Federation.cc, RTIG/Federation.hh,
+	  RTIG/FederationsList.cc, RTIG/FederationsList.hh,
+	  RTIG/RTIG_processing.cc, include/RTIambServices.hh,
+	  include/certi.hh, libCERTI/Message.cc, libCERTI/Message.hh,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
+	  libRTI/RTIambassador.cc, test/Billard/CommandLine.ggo,
+	  test/Billard/cmdline.c, test/Billard/cmdline.h,
+	  test/Billard/main.cc: Correction BUG #19192 Le nom du fichier de
+	  la federation (.fed ou .xml) est pris en compte dans
+	  createFederationExecution.  Cela peut être le path du fichier.
+	  Le fichier doit avoir fed ou xml (non case sensitif) comme
+	  extension.  Le Billard a ete modifie par rajout de l'option -F
+	  qui doit etre suivie par ce nom du fichier (ou le path).  Par
+	  exemple : billard -fTest -n1 -t30 -Ffederations/Test.fed
+	  Auparavant, le nom du fichier etait construit a partir du nom de
+	  la federation en rajoutant l'extension fed ou xml.
+
+	  BUG #19192 fixed Federation file name (.fed or .xml) is processed
+	  by createFederationExecution.  path file name is allowed.
+	  Extension must be .fed or .xml (no case sensitive).  Billard has
+	  been modified by adding -F option with federation file name (or
+	  path).  For example : billard -fTest -n1 -t30
+	  -Ffederations/Test.fed Before, file name was built from
+	  federation name added with .fed or .xml extension.
+
 2007-03-06 15:09  rousse
 
 	* ChangeLog, libCERTI/Message.cc: Le constructeur de Message oublie

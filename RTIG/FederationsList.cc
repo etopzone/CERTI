@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.32 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationsList.cc,v 3.33 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -267,7 +267,8 @@ void FederationsList::info(Handle handle,
     void FederationsList::info(Handle handle,
                                int &nb_federates,
                                int &nb_regulators,
-                               bool &is_syncing)
+                               bool &is_syncing,
+                               char *FED_Filename)
 #endif
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
@@ -282,6 +283,7 @@ void FederationsList::info(Handle handle,
     nb_federates = federation->getNbFederates();
     nb_regulators = federation->getNbRegulators();
     is_syncing = federation->isSynchronizing();
+    strcpy(FED_Filename,federation->getFEDid());
 
 #ifdef FEDERATION_USES_MULTICAST
     comm_mc = federation->MCLink ;
@@ -1260,5 +1262,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.32 2007/03/22 14:18:00 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.33 2007/04/03 09:43:39 rousse Exp $
 

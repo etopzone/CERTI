@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.29 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationsList.hh,v 3.30 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -82,7 +82,8 @@ public:
         void info(Handle theHandle,
                   int &nb_federes,
                   int &nb_regulateurs,
-                  bool &is_syncing)
+                  bool &is_syncing,
+                  char *FED_Filename)
 #endif
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
@@ -500,4 +501,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.29 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationsList.hh,v 3.30 2007/04/03 09:43:39 rousse Exp $

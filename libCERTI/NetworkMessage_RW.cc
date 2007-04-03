@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.22 2007/03/22 14:18:00 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.23 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -25,6 +25,8 @@
 #include "PrettyDebug.hh"
 
 using std::vector ;
+using std::endl;
+using std::cout;
 
 namespace certi {
 
@@ -46,6 +48,18 @@ NetworkMessage::readBody(Socket *socket)
 
     // 3. Read informations from Message Body according to message type.
     switch(Header.type) {
+      case GET_FED_FILE:
+        number = body.readShortInt();
+        unsigned short nb;      
+        nb = body.readShortInt();
+        body.readBlock(FEDid,nb);
+        if ( number >= 1 )  // open (0) and close (0) no more information
+            {
+            ValueArray[0].length = body.readLongInt();
+            body.readBlock(ValueArray[0].value, ValueArray[0].length) ;
+	    }
+	break ;
+            
       case UPDATE_ATTRIBUTE_VALUES:
       case REFLECT_ATTRIBUTE_VALUES:
 	object = body.readLongInt();
@@ -307,6 +321,7 @@ NetworkMessage::readHeader(Socket *socket)
       case DDM_SUBSCRIBE_INTERACTION:
       case DDM_UNSUBSCRIBE_INTERACTION:
       case DDM_REGISTER_OBJECT:
+      case GET_FED_FILE:
 	break ;
 
       case SET_TIME_REGULATING:
@@ -400,6 +415,17 @@ NetworkMessage::writeBody(Socket *socket)
 
     // 1- Prepare body Structure according to Message type
     switch(Header.type) {
+      case GET_FED_FILE:
+        body.writeShortInt(number);
+        body.writeShortInt(strlen(FEDid));
+        body.writeBlock(FEDid,strlen(FEDid));
+        if ( number >= 1 )  // open (0) and close (0) no more information
+            {
+            body.writeLongInt(ValueArray[0].length);
+            body.writeBlock(ValueArray[0].value, ValueArray[0].length);
+            }
+      break;
+
       case UPDATE_ATTRIBUTE_VALUES:
       case REFLECT_ATTRIBUTE_VALUES:
 	body.writeLongInt(object);
@@ -690,6 +716,7 @@ NetworkMessage::writeHeader(Socket *socket)
       case DDM_SUBSCRIBE_INTERACTION:
       case DDM_UNSUBSCRIBE_INTERACTION:	
       case DDM_REGISTER_OBJECT:
+      case GET_FED_FILE:
 	Header.bodySize = 1 ;
 	break ;
 
@@ -807,4 +834,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.22 2007/03/22 14:18:00 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.23 2007/04/03 09:43:39 rousse Exp $

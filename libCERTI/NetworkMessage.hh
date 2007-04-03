@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.22 2007/03/22 14:18:00 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.23 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -168,6 +168,7 @@ public:
 	DDM_UNSUBSCRIBE_ATTRIBUTES,
 	DDM_SUBSCRIBE_INTERACTION,
 	DDM_UNSUBSCRIBE_INTERACTION,
+        GET_FED_FILE,
 
 	LAST
     };
@@ -318,4 +319,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.22 2007/03/22 14:18:00 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.23 2007/04/03 09:43:39 rousse Exp $

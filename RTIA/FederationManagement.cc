@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.18 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationManagement.cc,v 3.19 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,6 +36,7 @@
 #include <assert.h>
 
 using std::list ;
+using std::string ;
 
 namespace certi {
 namespace rtia {
@@ -179,8 +180,9 @@ joinFederationExecution(const char *Federate,
                         const char *Federation,
                         TypeException &e)
 {
-    NetworkMessage requete, reponse ;
+    NetworkMessage requete, reponse, requeteFED ;
     int i, nb ;
+    char filename[MAX_FEDFILE_NAME_LENGTH] ; // Pour s'en servir pour le nom du fichier temporaire
 
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
 
@@ -202,11 +204,94 @@ joinFederationExecution(const char *Federate,
 
         comm->sendMessage(&requete);
 
-        // On attend la reponse du RTIG(de n'importe quel federe)
+        // Waiting RTIG answer for FED file opened
+        comm->waitMessage(&reponse, NetworkMessage::GET_FED_FILE, 0);
+        if ( reponse.exception != e_NO_EXCEPTION)
+            {
+            // Bad answer from RTIG
+            e = e_RTIinternalError ;
+            }
+        // RTIA have to open a new file for working
+        // We have to build a name for working file, name begins by :RTIA
+        strcpy(filename,":RTIA:");
+        // First pid converted in char and added
+        // Then federation name added also
+        // Last file type : fed or xml ?
+        char pid_name[10];
+        sprintf(pid_name,"%d:",getpid());
+        strcat(filename,pid_name); 
+        strcat(filename,Federation);     
+        string filename_RTIG = reponse.FEDid ;
+        int nbcar_filename_RTIG=filename_RTIG.length();        
+        string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
+          if ( !strcasecmp(extension.c_str(),"fed") )
+              {
+              strcat(filename,".fed");
+              }
+          else if  ( !strcasecmp(extension.c_str(),"xml") )
+              {
+              strcat(filename,".xml");
+              } 
+          else 
+              throw CouldNotOpenFED("nor .fed nor .xml"); 
+        // FED filename for working must be stored
+        strcpy(_FEDid,filename) ;              
+        // RTIA opens working file
+        FILE *fdd;
+        if ( (fdd=fopen(filename,"w")) == NULL )
+            {
+            e = e_RTIinternalError ;
+            }           
+        // RTIA says RTIG OK for file transfer
+        requete.type = NetworkMessage::GET_FED_FILE ;
+        strcpy(requete.federationName, Federation);
+        strcpy(requete.federateName, Federate);
+        if ( e == e_NO_EXCEPTION)
+            requete.number = 0 ;  // OK for open
+        else
+            requete.number = 1 ;
+
+        comm->sendMessage(&requete);
+
+        // Now read loop from RTIG to get line contents and then write it into file
+        char *file_line = NULL ;
+        unsigned long length=0 ;
+        int num_line = 0 ; // no line read
+        for (;;)
+            {
+            comm->waitMessage(&reponse, NetworkMessage::GET_FED_FILE, 0);
+            if ( reponse.exception != e_NO_EXCEPTION)
+                {
+                cout << "Bad answer from RTIG" << endl ;
+                e = e_RTIinternalError ;
+                break ;
+                }
+            // Line read
+            num_line++ ;
+            // Check for EOF
+            if ( reponse.number == 0 )
+                break;
+            assert ( num_line == reponse.number ) ;
+            reponse.handleArraySize = 1 ;
+            file_line = reponse.getValue(0,&length) ;
+            int nbw = fputs(file_line,fdd);
+            file_line = NULL ;
+            // RTIA says OK to RTIG
+            requete.type = NetworkMessage::GET_FED_FILE ;
+            strcpy(requete.federationName, Federation);
+            strcpy(requete.federateName, Federate);
+            requete.number = num_line ;
+
+            comm->sendMessage(&requete);            
+            }
+        // close working file
+        fclose(fdd);                           
+
+        // Waiting RTIG answer (from any federate)
         comm->waitMessage(&reponse, NetworkMessage::JOIN_FEDERATION_EXECUTION, 0);
 
-        // Si c'est positif, cette reponse contient le nombre de regulateurs.
-        // On attend alors un message NULL de chacun d'eux.
+        // If OK, regulators number is inside the answer.
+        // Then we except a NULL message from each.
         if (reponse.exception == e_NO_EXCEPTION) {
             strcpy(_nom_federation, Federation);
             strcpy(_nom_federe, Federate);
@@ -642,4 +727,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.18 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationManagement.cc,v 3.19 2007/04/03 09:43:39 rousse Exp $

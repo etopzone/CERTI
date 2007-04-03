@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.48 2007/03/22 14:18:00 rousse Exp $
+// $Id: Federation.cc,v 3.49 2007/04/03 09:43:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -265,6 +265,14 @@ int
 Federation::getNbRegulators() const
 {
     return regulators.size();
+}
+
+// ----------------------------------------------------------------------------
+//! Returns the FEDid name given in 'Create Federation Execution'.
+const char *
+Federation::getFEDid() const
+{
+    return FEDid ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1760,5 +1768,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.48 2007/03/22 14:18:00 rousse Exp $
+// $Id: Federation.cc,v 3.49 2007/04/03 09:43:39 rousse Exp $
 
