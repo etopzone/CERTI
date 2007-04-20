@@ -16,6 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
+// $Id
 
 #include <config.h>
 #include "Message.hh"
@@ -332,25 +333,19 @@ Message::setAHS(const AttributeHandle *attr, int size)
 RTI::AttributeHandleValuePairSet *
 Message::getAHVPS() const
 {
-    CAttributeHandleValuePairSet theAttributes ;
+    RTI::AttributeHandleValuePairSet *ahvps ;
+    ahvps = RTI::AttributeSetFactory::create(handleArraySize);
 
-    for (int i = 0 ; i < handleArraySize ; i++) {
-        CAttributeHandleValuePair *att = new CAttributeHandleValuePair ;
+    unsigned long length ;
+    char *value ;
 
-        att->_attrib = handleArray[i] ;
+    for (int i = 0 ; i < handleArraySize ; i++)
+        {
+        value = getValue(i, &length);
+        ahvps->add(handleArray[i], value, length);
+        }
 
-        // BUG: Federate may be expecting to find value name
-        // (a call to GetWithName for example).
-        strcpy(att->_value.name, "");
-        getValue(i, &(att->_value.length), att->_value.value);
-
-        // BUG: Federate is expecting to find value type.
-        strcpy(att->_value.type, "");
-
-        theAttributes.add(att);
-    }
-
-    return theAttributes.toAHVPS();
+    return ahvps ;
 }
 
 // ----------------------------------------------------------------------------
@@ -358,18 +353,23 @@ void
 Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 {
     ULong length ;
-    CAttributeHandleValuePairSet theAttributes_aux(the_attributes);
 
-    const int size(theAttributes_aux._size);
+    unsigned long size ;
+    size = the_attributes.size() ;
     handleArraySize = size ;
 
-    for (int i = 0 ; i < size ; i++) {
-        CAttributeHandleValuePair *tmp = theAttributes_aux.getIeme(i);
-        handleArray[i] = tmp->_attrib ;
+    for (unsigned long i = 0 ; i < size ; i++) {
 
-        length = tmp->_value.length ;
+        // handle stored into handleArray[i]
+        handleArray[i] = the_attributes.getHandle(size-1-i);
+        // value length extracted from the_attributes
+        length = the_attributes.getValueLength(size-1-i) ;
+        // then we can create value
         char *value = new char[length] ;
-        memcpy(value,tmp->_value.value,tmp->_value.length) ;
+        // copying into value
+        the_attributes.getValue(size-1-i,value,length) ;
+
+        // value and its length are stored into valueArray[i]
         setValue(i, value, length);
         delete[] value;
     }
@@ -379,26 +379,19 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 RTI::ParameterHandleValuePairSet *
 Message::getPHVPS() const
 {
-    CParameterHandleValuePairSet theParameters ;
+    ParameterHandleValuePairSetImp *phvps ;
+    phvps = new ParameterHandleValuePairSetImp(handleArraySize);
 
-    for (int i = 0 ; i < handleArraySize ; i++) {
-        CParameterHandleValuePair *par = new CParameterHandleValuePair ;
+    unsigned long length ;
+    char *value ;
 
-        par->_param = handleArray[i] ;
+    for (int i = 0 ; i < handleArraySize ; i++)
+        {
+        value = getValue(i, &length);
+        phvps->add(handleArray[i], value, length);
+        }
 
-        // BUG: Federate may be expecting to find value name
-        // (a call to GetWithName for example).
-        strcpy(par->_value.name, "");
-
-        getValue(i, &(par->_value.length), par->_value.value);
-
-        // BUG: Federate is expecting to find value type.
-        strcpy(par->_value.type, "");
-
-        theParameters.add(par);
-    }
-
-    return theParameters.toPHVPS();
+    return phvps ;
 }
 
 // ----------------------------------------------------------------------------
@@ -406,20 +399,20 @@ void
 Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
 {
     ULong length ;
-    CParameterHandleValuePairSet theParameters_aux(the_parameters);
 
-    const int size(theParameters_aux._size);
+    unsigned long size ;
+    size = the_parameters.size() ;
     handleArraySize = size ;
 
-    for (int i = 0 ; i < size ; i++) {
-        CParameterHandleValuePair *tmp = theParameters_aux.getIeme(i);
-        handleArray[i] = tmp->_param ;
-
-        length = tmp->_value.length ;
+    for (unsigned long i = 0 ; i < size ; i++)
+        {
+        handleArray[i] = the_parameters.getHandle(size-1-i);
+        length = the_parameters.getValueLength(size-1-i) ;
         char *value = new char[length] ;
+        the_parameters.getValue(size-1-i, value, length) ;
         setValue(i, value, length);
         delete[] value;
-    }
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -511,6 +504,9 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
 {
 
     // Pre-Checking
+    // Yes, I know, but common error, this may help user...
+  if ( length > MAX_BYTES_PER_VALUE )
+     std :: cout << "Message::setValue too high length = " << length << std :: endl;
 
     if ((Value == NULL) || (length > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");

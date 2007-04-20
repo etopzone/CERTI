@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIG.cc,v 3.29 2007/04/20 08:27:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -576,6 +576,11 @@ RTIG::processIncomingMessage(Socket *link)
         CPY_NOT_NULL(e);
         rep.exception = e_CouldNotOpenRID ;
     }
+    catch (CouldNotOpenFED &e) {
+        D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
+        CPY_NOT_NULL(e);
+        rep.exception = e_CouldNotOpenFED ;
+    }
     catch (CouldNotRestore &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
@@ -951,4 +956,4 @@ RTIG::signalHandler(int sig)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.28 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIG.cc,v 3.29 2007/04/20 08:27:07 rousse Exp $

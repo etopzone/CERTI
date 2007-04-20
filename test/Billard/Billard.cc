@@ -90,6 +90,10 @@ Billard::join(string federation_name, string fdd_name)
     catch (RTI::FederationExecutionAlreadyExists& e) {
         D.Out(pdInit, "Federation execution already created.");
     }
+    catch (RTI::CouldNotOpenFED& e) {
+        D.Out(pdExcept, "BILLARD : Could not use FED file.");
+        exit(0);
+    }
 
     // join federation
     bool joined = false ;

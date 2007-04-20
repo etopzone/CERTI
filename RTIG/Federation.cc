@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.49 2007/04/03 09:43:39 rousse Exp $
+// $Id: Federation.cc,v 3.50 2007/04/20 08:27:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -126,14 +126,27 @@ Federation::Federation(const char *federation_name,
     cout << "New federation: " << name << endl ;
 
     string filename = string(FEDid) ;
-    cout << "Looking for FOM file... " << filename << endl ; 
+    cout << "Looking for FOM file... " << filename ; 
+
+    // Try to open to verify if file exists
+    FILE *fftry ;
+    if ( (fftry=fopen(FEDid,"r")) == NULL)
+        {
+        cout << "... failed : ";
+        throw CouldNotOpenFED("FED file unknown.");
+        }
+    else
+        {
+        cout << "... opened." << endl ;
+        fclose(fftry) ;
+        }
 
     int nbcar_filename = filename.length() ;
     bool is_a_fed = false ;
     bool is_an_xml = false ;
     // hope there is a . before fed or xml
     if ( filename.at(nbcar_filename-4) != '.' )
-        throw CouldNotOpenFED(". missing or not in place");
+        throw CouldNotOpenFED("FED file incorrect filename : character . missing or not in place");
 
     string extension = filename.substr(nbcar_filename-3,3) ;
     if ( !strcasecmp(extension.c_str(),"fed") )
@@ -147,7 +160,7 @@ Federation::Federation(const char *federation_name,
         D.Out(pdTrace, "Trying to use .fed file");
         } 
     else 
-        throw CouldNotOpenFED("nor .fed nor .xml");
+        throw CouldNotOpenFED("FED file incorrect filename : nor .fed nor .xml file");
        
     ifstream fdd(filename.c_str());
 
@@ -156,7 +169,6 @@ Federation::Federation(const char *federation_name,
 	fdd.close();
         if ( is_a_fed )
             {
-            cout << "fed" << endl;
 	    int err = fedparser::build(filename.c_str(), root, verbose);
 	    if (err) throw ErrorReadingFED("");
 	    
@@ -175,7 +187,6 @@ Federation::Federation(const char *federation_name,
             }
         else if ( is_an_xml )
             {
-            cout << "xml" << endl ;
             if (XmlParser::exists()) {
                 XmlParser *parser = new XmlParser(root);
                 server->audit << ", XML File : " << filename.c_str() ;
@@ -1768,5 +1779,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.49 2007/04/03 09:43:39 rousse Exp $
+// $Id: Federation.cc,v 3.50 2007/04/20 08:27:07 rousse Exp $
 

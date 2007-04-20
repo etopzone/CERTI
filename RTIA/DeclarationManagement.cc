@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.12 2005/04/30 16:38:39 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.13 2007/04/20 08:27:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -353,7 +353,6 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 void
 DeclarationManagement::
 startRegistrationForObjectClass(ObjectClassHandle the_class,
-                                // CAttributeHandleValuePairSet &theAttributes,
                                 TypeException &e)
 {
     Message req, rep ;
@@ -452,4 +451,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.12 2005/04/30 16:38:39 breholee Exp $
+// $Id: DeclarationManagement.cc,v 3.13 2007/04/20 08:27:06 rousse Exp $

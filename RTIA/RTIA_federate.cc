@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.33 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -113,11 +113,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::JOIN_FEDERATION_EXECUTION: {
           D.Out(pdTrace,
                 "Receiving Message from Federate, type JoinFederation.");
-
           rep.setFederate(fm->joinFederationExecution(req->getFederateName(),
                                                       req->getFederationName(),
                                                       e));
-
           /// Set RTIA PrettyDebug federate name
           PrettyDebug::setFederateName(req->getFederateName());
 
@@ -783,7 +781,6 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, Unknown Type %d.", req->type);
         throw RTIinternalError("");
     }
-
     stat.federateService(req->type);
 }
 
@@ -857,6 +854,10 @@ RTIA::processFederateRequest(Message *req)
     catch (CouldNotOpenRID &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
         rep.setException(e_CouldNotOpenRID);
+    }
+    catch (CouldNotOpenFED &e) {
+        D.Out(pdExcept, "Catched %s Exception.", e._name);
+        rep.setException(e_CouldNotOpenFED);
     }
     catch (CouldNotRestore &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1130,4 +1131,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.33 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $

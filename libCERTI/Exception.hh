@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.0 2003/03/21 13:43:07 breholee Exp $
+// $Id: Exception.hh,v 3.1 2007/04/20 08:27:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -46,6 +46,7 @@ typedef enum {
     e_ConcurrentAccessAttempted,
     e_CouldNotDiscover,
     e_CouldNotOpenRID,
+    e_CouldNotOpenFED,
     e_CouldNotRestore,
     e_DeletePrivilegeNotHeld,
     e_ErrorReadingRID,
@@ -117,4 +118,4 @@ typedef enum {
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.0 2003/03/21 13:43:07 breholee Exp $
+// $Id: Exception.hh,v 3.1 2007/04/20 08:27:07 rousse Exp $

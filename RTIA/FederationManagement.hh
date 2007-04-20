@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.13 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationManagement.hh,v 3.14 2007/04/20 08:27:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -43,7 +43,10 @@ public:
     void checkFederationRestoring(void) throw (RestoreInProgress);
 
     // -- Create/Destroy --
-    void createFederationExecution(const char *theName, TypeException &e);
+    void createFederationExecution(const char *theName, TypeException &e)
+         throw ( FederationExecutionAlreadyExists,
+                 CouldNotOpenFED,
+                 RTIinternalError);
     void destroyFederationExecution(const char *theName, TypeException &e);
 
     // -- Join/Resign --
@@ -110,4 +113,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.13 2007/03/22 14:18:00 rousse Exp $
+// $Id: FederationManagement.hh,v 3.14 2007/04/20 08:27:07 rousse Exp $

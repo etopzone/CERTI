@@ -1,3 +1,30 @@
+2007-04-03 11:43  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc, RTIA/Statistics.cc,
+	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
+	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc:
+	  Modification dans la prise en compte du fichier des federations
+	  (.fed ou .xml) : Ce fichier est maintenant uniquement lu par le
+	  RTIG.  Le RTIA, lors du Join fédération (JOIN_FEDERATE_EXECUTION)
+	  obtient le contenu de ce fichier (transmis par le RTIG) et cree
+	  une copie de travail de ce fichier en local.	Le nom de ce
+	  fichier est construit comme suit : :RTIA:pid du processus
+	  RTIA:nom de la fédération.fed ou .xml C'est ce fichier de travail
+	  qui est alors lu et analyse par le RTIA.  CONSEQUENCE : le federe
+	  doit indiquer le nom (et le path avec) du fichier de federation
+	  vu par le RTIG.  On peut ainsi fonctionner de maniere
+	  independante, sans NFS et sans recopie de ce fichier.
+
+	  federation files (.fed or .xml) management has changed : This
+	  file is now read only by RTIG.  RTIA, during federation join
+	  ((JOIN_FEDERATE_EXECUTION) get file contents from RTIG et make a
+	  working file copy locally.  File name is built as : :RTIA:RTIA
+	  pid:federation name:.fed ou .xml RTIA reads and analyze this
+	  working file.  IMPACT : federate must gives name (including path)
+	  of this file view by RTIG.  Then, NFS is not needed, nor files
+	  recopy.
+
 2007-03-22 15:18  rousse
 
 	* ChangeLog, RTIA/FederationManagement.cc,
