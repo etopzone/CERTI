@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.10 2007/04/20 12:32:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,7 +35,9 @@ static pdCDebug D("RTIA", "(RTIA net) ");
 void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
-    switch(msg->type) {
+  NetworkMessage::Type msgType = msg->type;
+
+    switch(msgType) {
 
       case NetworkMessage::MESSAGE_NULL:
       {
@@ -291,15 +293,15 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
       default:
       {
           D.Out(pdTrace,
-                "Receving Message from RTIG, unknown type %d.", msg->type);
+                "Receving Message from RTIG, unknown type %d.", msgType);
           delete msg ;
           throw RTIinternalError("Unknown Message type received from RTIG.");
       }
     }
 
-    stat.rtiService(msg->type);
+    stat.rtiService(msgType);
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.10 2007/04/20 12:32:52 erk Exp $
