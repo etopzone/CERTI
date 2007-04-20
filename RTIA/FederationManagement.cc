@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.20 2007/04/20 08:27:07 rousse Exp $
+// $Id: FederationManagement.cc,v 3.21 2007/04/20 12:33:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -425,7 +425,7 @@ FederationManagement::unregisterSynchronization(const char *label,
     // Find if this label has been requested by federate or RTIG.
     list<char *>::iterator i = synchronizationLabels.begin();
     bool exists = false ;
-    for (; i != synchronizationLabels.end(); i++) {
+    for (; i != synchronizationLabels.end(); ++i) {
         if (!strcmp((*i), label)) {
             // Label already pending.
             exists = true ;
@@ -435,8 +435,12 @@ FederationManagement::unregisterSynchronization(const char *label,
     if (!exists)
         e = e_UnknownLabel ;
     else {
-	delete[] *i ;
-	synchronizationLabels.erase(i);
+      /* delete[] *i ;
+       * the label has been allocated using strdup (i.e. malloc-like)
+       * so that we MUST use free (and not delete[]) to free it :))
+       */
+      free(*i);
+      synchronizationLabels.erase(i);
     }
     
     if (!_est_membre_federation)
@@ -735,4 +739,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.20 2007/04/20 08:27:07 rousse Exp $
+// $Id: FederationManagement.cc,v 3.21 2007/04/20 12:33:45 erk Exp $
