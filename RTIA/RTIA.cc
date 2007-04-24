@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.11 2005/04/30 16:38:39 breholee Exp $
+// $Id: RTIA.cc,v 3.12 2007/04/24 15:10:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,7 +44,7 @@ RTIA::RTIA()
 
     comm = new Communications();
     queues = new Queues ;
-    fm = new FederationManagement(comm);
+    fm = new FederationManagement(comm,&stat);
     om = new ObjectManagement(comm, fm, rootObject);
     owm = new OwnershipManagement(comm, fm);
     dm = new DeclarationManagement(comm, fm, rootObject);
@@ -127,4 +127,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.11 2005/04/30 16:38:39 breholee Exp $
+// $Id: RTIA.cc,v 3.12 2007/04/24 15:10:31 erk Exp $

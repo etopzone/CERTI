@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.14 2007/04/20 08:27:07 rousse Exp $
+// $Id: FederationManagement.hh,v 3.15 2007/04/24 15:10:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -27,6 +27,7 @@
 #include "certi.hh"
 #include "NetworkMessage.hh"
 #include "Communications.hh"
+#include "Statistics.hh"
 
 namespace certi {
 namespace rtia {
@@ -36,7 +37,7 @@ class TimeManagement ;
 class FederationManagement
 {
 public:
-    FederationManagement(Communications *);
+  FederationManagement(Communications *, Statistics*);
     ~FederationManagement();
 
     void checkFederationSaving(void) throw (SaveInProgress);
@@ -96,6 +97,7 @@ public:
 
 private:
     Communications *comm ;
+    Statistics     *stat;
 
     bool _est_createur_federation ;
     bool _est_membre_federation ;
@@ -113,4 +115,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.14 2007/04/20 08:27:07 rousse Exp $
+// $Id: FederationManagement.hh,v 3.15 2007/04/24 15:10:31 erk Exp $

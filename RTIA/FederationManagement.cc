@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.21 2007/04/20 12:33:45 erk Exp $
+// $Id: FederationManagement.cc,v 3.22 2007/04/24 15:10:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -45,10 +45,11 @@ static pdCDebug D("RTIA_FM", "(RTIA FM) ");
 
 // ----------------------------------------------------------------------------
 //! FederationManagement.
-FederationManagement::FederationManagement(Communications *GC)
+  FederationManagement::FederationManagement(Communications *GC, Statistics* stat)
     : savingState(false), restoringState(false)
 {
     comm = GC ;
+    this->stat = stat ;
     tm = NULL ;
 
     _numero_federation = 0 ;
@@ -214,6 +215,7 @@ joinFederationExecution(const char *Federate,
 
         // Waiting RTIG answer for FED file opened
         comm->waitMessage(&reponse, NetworkMessage::GET_FED_FILE, 0);
+
         if ( reponse.exception != e_NO_EXCEPTION)
             {
             // Bad answer from RTIG
@@ -221,6 +223,7 @@ joinFederationExecution(const char *Federate,
             }
         else
             {
+	    stat->rtiService(NetworkMessage::GET_FED_FILE);
             // RTIA have to open a new file for working
             // We have to build a name for working file, name begins by :RTIA
             strcpy(filename,":RTIA:");
@@ -274,6 +277,7 @@ joinFederationExecution(const char *Federate,
                     e = e_RTIinternalError ;
                     break ;
                     }
+		stat->rtiService(NetworkMessage::GET_FED_FILE);
                 // Line read
                 num_line++ ;
                 // Check for EOF
@@ -739,4 +743,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.21 2007/04/20 12:33:45 erk Exp $
+// $Id: FederationManagement.cc,v 3.22 2007/04/24 15:10:31 erk Exp $
