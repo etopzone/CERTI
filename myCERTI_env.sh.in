@@ -1,0 +1,33 @@
+#!/bin/sh
+# @configure_input@
+
+if [ $# -gt 0 ];
+then
+   export CERTI_HOST=$1
+else
+   export CERTI_HOST=localhost
+fi
+
+ARCH=`arch`
+if [ "$ARCH" = "i686" ];
+then
+  NBITS="32bits"
+else
+  NBITS="64bits"
+fi
+
+echo "Arch <$ARCH> is $NBITS"
+echo "Using CERTI_HOST=$CERTI_HOST"
+
+export CERTI_HOME=@prefix@
+alias go_certi_home='pushd $CERTI_HOME'
+echo "Using CERTI installation at <$CERTI_HOME>..."
+
+export CERTI_FED=$CERTI_HOME/share/federations
+alias go_certi_fed='pushd $CERTI_FED'
+
+export PATH=$PATH:$CERTI_HOME/bin:$CERTI_HOME/scripts
+
+export LD_LIBRARY_PATH=$CERTI_HOME/lib:$LD_LIBRARY_PATH
+
+
