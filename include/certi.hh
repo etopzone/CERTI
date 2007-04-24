@@ -16,16 +16,17 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.10 2007/03/22 14:18:00 rousse Exp $
+// $Id: certi.hh,v 3.11 2007/04/24 13:53:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
 
 #include "RTI.hh"
+//#include <vector>
 
 // Deprecated HLA macros still in use
-#define MAX_BYTES_PER_VALUE 80
+#define MAX_BYTES_PER_VALUE 150
 #define MAX_FEDERATE_NAME_LENGTH 64
 #define MAX_FEDERATION_NAME_LENGTH 64
 #undef MAX_USER_TAG_LENGTH
@@ -174,13 +175,16 @@ RTI_EXCEPT(NetworkError)
 
 // Deprecated HLA types still in use
 typedef char AttributeValue[MAX_BYTES_PER_VALUE + 1] ;
+
+//  typedef std::vector<char>  AttributeValue;
 typedef RTI::Double FederationTime ;
 typedef UShort ObjectHandlecount ;
 typedef char *ObjectName ;
 typedef AttributeValue ParameterValue ;
 typedef char *ParameterName ;
 typedef AttributeValue ValueName ;
-typedef char ValueType[MAX_BYTES_PER_VALUETYPE + 1] ;
+  typedef char ValueType[MAX_BYTES_PER_VALUETYPE + 1] ;
+  //  typedef std::vector<char>  ValueType;
 struct Value {
     ValueName name ;
     ValueName value ;
@@ -285,4 +289,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.10 2007/03/22 14:18:00 rousse Exp $
+// $Id: certi.hh,v 3.11 2007/04/24 13:53:39 erk Exp $
