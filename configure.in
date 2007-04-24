@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.12 2005/05/23 13:00:37 breholee Exp $ 
+## $Id: configure.in,v 3.13 2007/04/24 13:30:02 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 ## Init
 AC_INIT([RTIG/RTIG.cc])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.12 $)
+AC_REVISION($Revision: 3.13 $)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
 
@@ -54,6 +54,18 @@ else
 	AC_SUBST(WITH_X11)
 fi
 
+# check for X11 bitmaps 
+# see bug #18888 : configure script does not check for x11-bitmaps header
+# https://savannah.nongnu.org/bugs/index.php?18888
+AC_CHECK_HEADERS([X11/bitmaps/cntr_ptr X11/bitmaps/dot X11/bitmaps/dropbar8 X11/bitmaps/left_ptr X11/bitmaps/right_ptr X11/bitmaps/menu16],[X11_BITMAPS_OK="yes"],[X11_BITMAPS_OK="no"])
+AC_MSG_CHECKING([xbitmaps headers and libraries])
+if test "$X11_BITMAPS_OK" = "yes"; then
+     AC_MSG_RESULT([OK, X11 bitmaps headers])
+else 
+     AC_MSG_RESULT([NOK, cannot billard test application])
+     AC_MSG_ERROR([Cannot proceed please install xbitmaps])
+fi
+
 # XML
 AC_CHECK_PROG(XML2_CONFIG, xml2-config, xml2-config)
 if test "x$XML2_CONFIG" != x ; then
@@ -68,4 +80,5 @@ AC_SUBST(HAVE_XML)
 # Output
 AC_OUTPUT([Makefile include/Makefile libCERTI/Makefile RTIG/Makefile
 RTIA/Makefile libRTI/Makefile test/Makefile test/libgraphc/Makefile
-test/Billard/Makefile doc/Makefile])
+test/Billard/Makefile doc/Makefile
+myCERTI_env.sh])
