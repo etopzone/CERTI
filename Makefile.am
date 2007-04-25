@@ -10,5 +10,5 @@ scriptsdir = $(prefix)/share/scripts
 
 scripts_DATA = myCERTI_env.sh
 
-EXTRA_DIST = myconf gpl.txt lesser.txt VERSION certi-small.xpm myCERTI_env.sh
+EXTRA_DIST = myconf gpl.txt lesser.txt certi-small.xpm myCERTI_env.sh
 
