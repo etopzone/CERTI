@@ -1,12 +1,17 @@
 #!/bin/sh
 # @configure_input@
 
+export CERTI_VERSION="@PACKAGE_VERSION@"
+echo "CERTI version <$CERTI_VERSION>"
+
 if [ $# -gt 0 ];
 then
    export CERTI_HOST=$1
 else
    export CERTI_HOST=localhost
 fi
+
+echo "Using CERTI_HOST=$CERTI_HOST"
 
 ARCH=`arch`
 if [ "$ARCH" = "i686" ];
@@ -16,8 +21,7 @@ else
   NBITS="64bits"
 fi
 
-echo "Arch <$ARCH> is $NBITS"
-echo "Using CERTI_HOST=$CERTI_HOST"
+echo "Current machine architecture is <$ARCH> assumed to be $NBITS"
 
 export CERTI_HOME=@prefix@
 alias go_certi_home='pushd $CERTI_HOME'

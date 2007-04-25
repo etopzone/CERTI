@@ -1,14 +1,15 @@
-## $Id: configure.in,v 3.13 2007/04/24 13:30:02 erk Exp $ 
+## $Id: configure.in,v 3.14 2007/04/25 09:17:52 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
-
 ## Init
-AC_INIT([RTIG/RTIG.cc])
+AC_INIT([certi],[3.2.3-testV1.1], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
-AC_REVISION($Revision: 3.13 $)
+
+AC_REVISION($Revision: 3.14 $)
+AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE([certi], `cat $srcdir/VERSION`)
+AM_INIT_AUTOMAKE
 
 ## Programs and system
 AC_PROG_YACC
