@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.14 2007/04/25 09:17:52 erk Exp $ 
+## $Id: configure.in,v 3.15 2007/04/26 14:42:51 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 AC_INIT([certi],[3.2.3-testV1.1], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.14 $)
+AC_REVISION($Revision: 3.15 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -39,9 +39,18 @@ CXXFLAGS="$CXXFLAGS -DRTI_USES_STD_FSTREAM "
 
 # X11
 AC_PATH_XTRA
-if test $no_x; then
-    	AC_MSG_WARN([X11 files not found]);
-else
+
+# check for X11 bitmaps 
+# see bug #18888 : configure script does not check for x11-bitmaps header
+# https://savannah.nongnu.org/bugs/index.php?18888
+AC_CHECK_HEADERS([X11/bitmaps/cntr_ptr X11/bitmaps/dot X11/bitmaps/dropbar8 X11/bitmaps/left_ptr X11/bitmaps/right_ptr X11/bitmaps/menu16],[X11_BITMAPS_OK="yes"],[X11_BITMAPS_OK="no"])
+AC_MSG_CHECKING([xbitmaps headers and libraries])
+if test "$X11_BITMAPS_OK" = "yes"; then
+     AC_MSG_RESULT([OK, X11 bitmaps headers])
+
+     if test $no_x; then
+    	AC_MSG_WARN([Some X11 files were not found]);
+     else
 	X_LIBRARY_PATH=$x_libraries
 	XCFLAGS="$X_CFLAGS"	
 	XLFLAGS="$X_LIBS"
@@ -53,18 +62,11 @@ else
 	AC_SUBST(XLIBS)
 	AC_SUBST(XCFLAGS)
 	AC_SUBST(WITH_X11)
-fi
-
-# check for X11 bitmaps 
-# see bug #18888 : configure script does not check for x11-bitmaps header
-# https://savannah.nongnu.org/bugs/index.php?18888
-AC_CHECK_HEADERS([X11/bitmaps/cntr_ptr X11/bitmaps/dot X11/bitmaps/dropbar8 X11/bitmaps/left_ptr X11/bitmaps/right_ptr X11/bitmaps/menu16],[X11_BITMAPS_OK="yes"],[X11_BITMAPS_OK="no"])
-AC_MSG_CHECKING([xbitmaps headers and libraries])
-if test "$X11_BITMAPS_OK" = "yes"; then
-     AC_MSG_RESULT([OK, X11 bitmaps headers])
+     fi
 else 
-     AC_MSG_RESULT([NOK, cannot billard test application])
-     AC_MSG_ERROR([Cannot proceed please install xbitmaps])
+     AC_MSG_RESULT([NOK, billard test application will be text-only])      
+     # Do as if X was not found it will be generate a "clean" billard compilation
+     AC_DEFINE(X_DISPLAY_MISSING)     
 fi
 
 # XML

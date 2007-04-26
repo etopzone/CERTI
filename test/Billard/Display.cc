@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Display.cc,v 3.2 2003/11/12 14:37:15 breholee Exp $
+// $Id: Display.cc,v 3.3 2007/04/26 14:42:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Display.hh"
@@ -46,8 +46,11 @@ void
 Display::show()
 {
     std::cout << "Display(" << x << ", " << y << ", " << XMAX << ", " << YMAX ;
+#ifndef X_DISPLAY_MISSING
     InitGraphe(x, y, XMAX, YMAX);
+#endif
     std::cout << ")" << std::endl ;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -74,4 +77,4 @@ Display::instance()
     return myInstance ;
 }
 
-// $Id: Display.cc,v 3.2 2003/11/12 14:37:15 breholee Exp $
+// $Id: Display.cc,v 3.3 2007/04/26 14:42:50 erk Exp $

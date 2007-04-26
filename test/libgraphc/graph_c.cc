@@ -17,12 +17,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: graph_c.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $ 
+// $Id: graph_c.cc,v 3.5 2007/04/26 14:42:51 erk Exp $ 
 // ---------------------------------------------------------------------------
 
-#ifndef X_DISPLAY_MISSING
+
 
 #include <config.h>
+
+#ifndef X_DISPLAY_MISSING
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> 
@@ -2208,4 +2210,4 @@ void ModeNORMAL()
 
 #endif // X_DISPLAY_MISSING
 
-// $Id: graph_c.cc,v 3.4 2003/11/12 14:37:15 breholee Exp $
+// $Id: graph_c.cc,v 3.5 2007/04/26 14:42:51 erk Exp $
