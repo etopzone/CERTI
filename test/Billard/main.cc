@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.11 2007/03/22 14:18:01 rousse Exp $
+// $Id: main.cc,v 3.12 2007/04/27 16:15:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -132,6 +132,7 @@ main(int argc, char **argv)
 	struct sigaction a ;
 	a.sa_handler = sortir ;
 	sigemptyset(&a.sa_mask);
+        a.sa_flags   = SA_RESTART;
 	sigaction(SIGALRM, &a, NULL);
 
 	// set timer
@@ -251,4 +252,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.11 2007/03/22 14:18:01 rousse Exp $
+// EOF $Id: main.cc,v 3.12 2007/04/27 16:15:55 erk Exp $
