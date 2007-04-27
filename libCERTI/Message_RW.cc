@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.29 2007/03/22 14:18:00 rousse Exp $
+// $Id: Message_RW.cc,v 3.30 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -869,7 +869,7 @@ Message::writeBody(SocketUN *socket)
     header.bodySize = body.size() - sizeof(MessageHeader);
 
     // Put the real Body Size in the copy of the Header.
-    ((MessageHeader *) body.getBuffer())->bodySize = header.bodySize ;
+    (reinterpret_cast<MessageHeader *>(body.getBufferRW()))->bodySize = header.bodySize ;
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
@@ -1153,4 +1153,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.29 2007/03/22 14:18:00 rousse Exp $
+// $Id: Message_RW.cc,v 3.30 2007/04/27 16:24:50 erk Exp $

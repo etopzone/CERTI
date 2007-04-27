@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.23 2007/04/03 09:43:39 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.24 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -411,7 +411,10 @@ NetworkMessage::writeBody(Socket *socket)
     // make a single Socket->Emettre call while sending both.
     // WARNING: As the body size is not known yet, we will have to
     // change it in the copy also!
-    body.writeBlock((char *) &Header, sizeof(HeaderStruct));
+    body.writeBlock(reinterpret_cast<char *>(&Header), sizeof(HeaderStruct));
+    
+    D.Out(pdTrace, "HeaderStruct size is : <%d> out of <%d> bytes MAX in body\n",
+	  sizeof(HeaderStruct),BUFFER_SIZE_DEFAULT);
 
     // 1- Prepare body Structure according to Message type
     switch(Header.type) {
@@ -613,8 +616,8 @@ NetworkMessage::writeBody(Socket *socket)
     Header.bodySize = body.size() - sizeof(HeaderStruct);
 
     // Put the real body Size in the copy of the Header.
-    ((HeaderStruct *) body.getBuffer())->bodySize = Header.bodySize ;
-
+    (reinterpret_cast<HeaderStruct *>(body.getBufferRW()))->bodySize = Header.bodySize ;
+    D.Out(pdTrace,"Sending MessageBody of size <%d>",body.size());
     socket->send(body.getBuffer(), body.size());
 }
 
@@ -834,4 +837,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.23 2007/04/03 09:43:39 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.24 2007/04/27 16:24:50 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: MessageBody.hh,v 3.11 2007/02/21 10:21:15 rousse Exp $
+// $Id: MessageBody.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
@@ -30,11 +30,13 @@
 namespace certi {
 
 // ============================================================================
-/** MessageBody is a class managing a char buffer for Message exchange.
-    It provide member functions to read and write integers and strings.
-    To read the contents of a MessageBody, juste read the elements in
-    the order they were written.
-*/
+/** 
+ * MessageBody is a class managing a char buffer for Message exchange.
+ * It provides member functions to read and write integers and strings.
+ * To read the contents of a MessageBody, juste read the elements in
+ * the order they were written.
+ */
+/* FIXME EN. shouldn't we use just that need strstream? */
 class MessageBody
 {
 public:
@@ -43,6 +45,8 @@ public:
 
     size_t size() const ;
     const unsigned char *getBuffer() const ;
+
+    unsigned char *getBufferRW();
 
     MessageBody &operator<<(unsigned long);
     const MessageBody &operator>>(unsigned long &) const ;
@@ -78,4 +82,4 @@ private:
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.11 2007/02/21 10:21:15 rousse Exp $
+// $Id: MessageBody.hh,v 3.12 2007/04/27 16:24:50 erk Exp $

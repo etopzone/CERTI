@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.5 2005/03/25 17:00:52 breholee Exp $
+// $Id: BasicMessage.hh,v 3.6 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -32,9 +32,11 @@
 
 namespace certi {
 
-/** Base class for messages. It contains common attributes and methods
-    for Message and NetworkMessage classes.
-    \sa Message, NetworkMessage
+/** 
+ * Base class for messages. 
+ * It contains common attributes and methods
+ * for Message and NetworkMessage classes.
+ * \sa Message, NetworkMessage
  */
 class BasicMessage
 {
@@ -61,4 +63,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.5 2005/03/25 17:00:52 breholee Exp $
+// $Id: BasicMessage.hh,v 3.6 2007/04/27 16:24:50 erk Exp $

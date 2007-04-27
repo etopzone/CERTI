@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: MessageBody.cc,v 3.10 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -61,7 +61,24 @@ MessageBody::size() const
 const unsigned char *
 MessageBody::getBuffer() const
 {
+
+  return &(buffer[0]);
+
+//   if (buffer.size() >0 ) {
+//     return &(buffer[0]);
+//   } else {
+//     return NULL;
+//   }
+}
+
+unsigned char *
+MessageBody::getBufferRW()
+{
+  if (buffer.size() >0 ) {
     return &(buffer[0]);
+  } else {
+    return NULL;
+  }
 }
 
 // ----------------------------------------------------------------------------
@@ -147,4 +164,4 @@ MessageBody::operator>>(unsigned short &val) const
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.9 2007/02/21 10:21:15 rousse Exp $
+// $Id: MessageBody.cc,v 3.10 2007/04/27 16:24:50 erk Exp $

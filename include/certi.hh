@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.11 2007/04/24 13:53:39 erk Exp $
+// $Id: certi.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -39,7 +39,9 @@
 #define MAX_FEDFILE_NAME_LENGTH 100
 
 // next used in MessageBody constructor with no size
-#define BUFFER_SIZE_DEFAULT 200
+// EN. change from 200-->236 because HeaderStruct is 36
+//     see MessageBody code for reason
+#define BUFFER_SIZE_DEFAULT 236
 // next used in RTIG::processIncomingMessage method
 #define BUFFER_EXCEPTION_REASON_SIZE 256
 
@@ -289,4 +291,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.11 2007/04/24 13:53:39 erk Exp $
+// $Id: certi.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
