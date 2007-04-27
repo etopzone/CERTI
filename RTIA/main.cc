@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// $Id: main.cc,v 3.14 2007/04/27 16:22:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -69,8 +69,10 @@ SignalHandler(int Signal)
 {
     int pid = getpid();
 
-    printf("\nRTIA: Received signal %d. Killing myself softly.\n", Signal);
-    kill(SIGKILL, pid);
+    printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
+    //exit(0);
+    //If you want to KILL yourself exit is enough :))
+    //kill(SIGKILL, pid);
 }
 
 // ----------------------------------------------------------------------------
@@ -80,4 +82,4 @@ NewHandler()
     throw MemoryExhausted("");
 }
 
-// EOF $Id: main.cc,v 3.13 2005/04/30 16:38:39 breholee Exp $
+// EOF $Id: main.cc,v 3.14 2007/04/27 16:22:05 erk Exp $
