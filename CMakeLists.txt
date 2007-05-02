@@ -1,0 +1,201 @@
+
+PROJECT(CERTI CXX)
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4.4)
+ENABLE_LANGUAGE(C)
+
+# Use CERTI specific CMake modules first
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts)
+#SET(CMAKE_VERBOSE_MAKEFILE ON)
+
+# Load Checker macros
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckLibraryExists)
+
+#INCLUDE(TestBigEndian)
+#TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+#MESSAGE(STATUS "IS_BIG_ENDIAN is : ${IS_BIG_ENDIAN}")
+
+OPTION(BUILD_SHARED
+  "Build libraries as shared library" ON)
+
+SET(CMAKE_BUILD_TYPE "Debug")
+
+IF (BUILD_SHARED)
+  SET(BUILD_SHARED_LIBS ON)
+ELSE (BUILD_SHARED)
+  SET(BUILD_SHARED_LIBS OFF)
+ENDIF (BUILD_SHARED)
+
+SET(PACKAGE_NAME      "CERTI")
+SET(PACKAGE_VERSION_MAJOR "3")
+SET(PACKAGE_VERSION_MINOR "2")
+SET(PACKAGE_VERSION_PATCH "pre4_CVS")
+SET(PACKAGE_VERSION   "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}.${PACKAGE_VERSION_PATCH}")
+# Autotools compatibility var
+SET(VERSION ${PACKAGE_VERSION})
+SET(PACKAGE_BUGREPORT "certi-devel@nongnu.org")
+
+MESSAGE(STATUS "Configuring ${PACKAGE_NAME} version ${PACKAGE_VERSION}")
+
+# FIND PACKAGEs
+################ Autotool HAVE_xxx compatibility #########
+FIND_FILE(HAVE_DLFCN_H NAMES dlfcn.h)
+FIND_FILE(HAVE_INTTYPES_H NAMES inttypes.h)
+FIND_FILE(HAVE_MEMORY_H NAMES memory.h)
+FIND_FILE(HAVE_STDINT_H NAMES stdint.h)
+FIND_FILE(HAVE_STDLIB_H NAMES stdlib.h)
+FIND_FILE(HAVE_STRING_H NAMES string.h)
+FIND_FILE(HAVE_STRINGS_H NAMES strings.h)
+
+FIND_FILE(HAVE_SYS_SELECT_H NAMES select.h
+  PATH_SUFFIXES sys)
+FIND_FILE(HAVE_SYS_SOCKET_H NAMES socket.h
+  PATH_SUFFIXES sys)
+FIND_FILE(HAVE_SYS_STAT_H NAMES stat.h
+  PATH_SUFFIXES sys)
+FIND_FILE(HAVE_SYS_TYPES_H NAMES types.h
+  PATH_SUFFIXES sys)
+
+FIND_FILE(HAVE_UNISTD_H NAMES unistd.h)
+
+# FIXME find a way to do this properly
+SET(SELECT_TYPE_ARG1 "int")
+SET(SELECT_TYPE_ARG234 "(fd_set *)")
+SET(SELECT_TYPE_ARG5 "(struct timeval *)")
+SET(YYTEXT_POINTER 1)
+
+SET(HAVE_NAMESPACES 1)
+SET(HAVE_NUMERIC_LIMITS 1)
+SET(STDC_HEADERS 1)
+
+ADD_DEFINITIONS(-DHAVE_CONFIG_H=1)
+
+################ Socket library Check ####################
+CHECK_LIBRARY_EXISTS("socket" "connect" "/usr/lib" SOCKET_LIBRARY_HAS_CONNECT)
+IF (SOCKET_LIBRARY_HAS_CONNECT)
+  MESSAGE(STATUS "Socket library needed for system ${CMAKE_SYSTEM_NAME}")
+  SET(SOCKET_LIBRARY "socket")
+ELSE (SOCKET_LIBRARY_HAS_CONNECT)
+  SET(SOCKET_LIBRARY)
+ENDIF (SOCKET_LIBRARY_HAS_CONNECT)
+
+################ LIBXML install Check ####################
+FIND_PACKAGE(LibXml2 REQUIRED)
+
+################ X11 install Check ####################
+FIND_PACKAGE(X11)
+IF (X11_FOUND)
+
+  FIND_FILE(HAVE_X11_BITMAPS_CNTR_PTR
+    NAMES cntr_ptr
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+
+  FIND_FILE(HAVE_X11_BITMAPS_DOT
+    NAMES dot
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+      
+  FIND_FILE(HAVE_X11_BITMAPS_DROPBAR8
+    NAMES dropbar8
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+
+  FIND_FILE(HAVE_X11_BITMAPS_LEFT_PTR
+    NAMES left_ptr
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+
+  FIND_FILE(HAVE_X11_BITMAPS_MENU16
+    NAMES menu16
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+
+  FIND_FILE(HAVE_X11_BITMAPS_RIGHT_PTR
+    NAMES right_ptr
+    PATH_SUFFIXES X11/bitmaps
+    DOC "X11 bitmaps header")
+
+  
+ELSE (X11_FOUND)
+  SET(X_DISPLAY_MISSING 1)
+ENDIF (X11_FOUND)
+
+################ LEX YACC Check ####################
+FIND_PACKAGE(LexYacc)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+
+# Globally used include dir
+INCLUDE_DIRECTORIES(include)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+# Globally used compiler flags
+ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
+
+
+ADD_SUBDIRECTORY( include ) 
+ADD_SUBDIRECTORY( libCERTI ) 
+ADD_SUBDIRECTORY( RTIG ) 
+ADD_SUBDIRECTORY( RTIA ) 
+ADD_SUBDIRECTORY( libRTI ) 
+ADD_SUBDIRECTORY( test ) 
+ADD_SUBDIRECTORY( doc EXCLUDE_FROM_ALL) 
+
+
+########### install files ###############
+
+INSTALL_FILES(FILES 
+  myCERTI_env.sh
+  DESTINATION share/scripts)
+
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
+SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
+#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
+#SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+SET(CPACK_PACKAGE_NAME certi)
+SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
+
+#SET(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+SET(CPACK_SOURCE_GENERATOR "TGZ")
+SET(CPACK_GENERATOR "TGZ")
+EXECUTE_PROCESS(COMMAND uname -m
+  OUTPUT_VARIABLE MACHINE)
+STRING(REPLACE "\n" "" 
+  MACHINE
+  ${MACHINE})
+SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${MACHINE})
+
+SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*")
+SET(CPACK_PACKAGE_VERSION ${PACKAGE_VERSION})
+SET(CPACK_PACKAGE_VERSION_MAJOR ${PACKAGE_VERSION_MAJOR})
+SET(CPACK_PACKAGE_VERSION_MINOR ${PACKAGE_VERSION_MINOR})
+SET(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
+
+INCLUDE(CPack)
+INCLUDE(UsePackageBackup)
+
+IF (WIN32)
+  MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")
+ELSE (WIN32)
+  MESSAGE(STATUS "*** CERTI has been successfully configured ********")
+ENDIF (WIN32)
+
+
+#original Makefile.am contents follow:
+
+### Process this file with automake to produce Makefile.in
+#
+## @configure_input@
+#
+#MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in
+#
+#SUBDIRS = include libCERTI RTIG RTIA libRTI test doc
+#
+#scriptsdir = $(prefix)/share/scripts
+#
+#scripts_DATA = myCERTI_env.sh
+#
+#EXTRA_DIST = myconf gpl.txt lesser.txt certi-small.xpm myCERTI_env.sh
+#
