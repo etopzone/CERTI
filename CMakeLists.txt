@@ -128,6 +128,8 @@ FIND_PACKAGE(LexYacc)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
+
+
 # Globally used include dir
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -143,12 +145,6 @@ ADD_SUBDIRECTORY( libRTI )
 ADD_SUBDIRECTORY( test ) 
 ADD_SUBDIRECTORY( doc EXCLUDE_FROM_ALL) 
 
-
-########### install files ###############
-
-INSTALL_FILES(FILES 
-  myCERTI_env.sh
-  DESTINATION share/scripts)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
@@ -175,6 +171,21 @@ SET(CPACK_PACKAGE_VERSION_PATCH ${PACKAGE_VERSION_PATCH})
 
 INCLUDE(CPack)
 INCLUDE(UsePackageBackup)
+INCLUDE(UseRPMTools)
+IF(RPMTools_FOUND)
+  RPMTools_ADD_RPM_TARGETS(certi)
+ENDIF(RPMTools_FOUND)
+#INCLUDE(UseDebian)
+#ADD_DEBIAN_TARGETS(certi)
+
+########### install files ###############
+SET(prefix ${CMAKE_INSTALL_PREFIX})
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/myCERTI_env.sh.in
+  ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.sh @ONLY)
+
+INSTALL(FILES 
+  ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.sh
+  DESTINATION share/scripts)
 
 IF (WIN32)
   MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")
