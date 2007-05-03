@@ -80,8 +80,12 @@ ELSE (SOCKET_LIBRARY_HAS_CONNECT)
   SET(SOCKET_LIBRARY)
 ENDIF (SOCKET_LIBRARY_HAS_CONNECT)
 
-################ LIBXML install Check ####################
+################ LIBXML2 install Check ####################
 FIND_PACKAGE(LibXml2 REQUIRED)
+IF (LIBXML2_FOUND)
+  ADD_DEFINITIONS(-DHAVE_XML ${LIBXML2_DEFINITIONS})
+  INCLUDE_DIRECTORIES(LIBXML2_INCLUDE_DIR)
+ENDIF (LIBXML2_FOUND)
 
 ################ X11 install Check ####################
 FIND_PACKAGE(X11)
