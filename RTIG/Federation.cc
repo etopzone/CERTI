@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.50 2007/04/20 08:27:07 rousse Exp $
+// $Id: Federation.cc,v 3.51 2007/05/03 13:41:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,7 +34,9 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <errno.h>
 
 using std::pair ;
@@ -88,6 +90,7 @@ Federation::Federation(const char *federation_name,
 
 {
     //    fedparser::FedParser *fed_reader ;
+  struct stat file_stat;
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -125,8 +128,46 @@ Federation::Federation(const char *federation_name,
 
     cout << "New federation: " << name << endl ;
 
-    string filename = string(FEDid) ;
-    cout << "Looking for FOM file... " << filename ; 
+
+    // We should try to open FOM file from different
+    // predefined places:
+    //
+    // 1 - bare filename considered as a path provided through FEDid_name
+    //
+    // 2 - getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
+    //
+    // 3 - default (unix) installation place plus FEDid_name 
+    //     "/usr/local/share/federation/" + FEDid_name
+    //
+    string filename   = string(FEDid) ;
+    bool   filefound  = false;
+    cout << "Looking for FOM file... " << endl ; 
+
+    cout << "   Trying... " << filename;
+    filefound = (0==stat(filename.c_str(),&file_stat));
+
+    if (!filefound) {
+      cout << " --> cannot access." <<endl;
+      filename = "/usr/local/share/federation/"+string(FEDid_name);
+      cout << "   Now trying..." << filename;
+    }
+    filefound = (0==stat(filename.c_str(),&file_stat));
+
+    if (!filefound) {
+      cout << " --> cannot access." <<endl;
+      filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
+      cout << "   Now trying..." << filename;
+    }
+    filefound = (0==stat(filename.c_str(),&file_stat));
+    
+    if (!filefound) {
+      cout << " --> cannot access." <<endl;
+      cerr << "Next step will fail"<<endl;
+    }
+
+    // now really assign FEDid
+    free(FEDid);
+    FEDid = strdup(filename.c_str());
 
     // Try to open to verify if file exists
     FILE *fftry ;
@@ -141,14 +182,16 @@ Federation::Federation(const char *federation_name,
         fclose(fftry) ;
         }
 
-    int nbcar_filename = filename.length() ;
-    bool is_a_fed = false ;
-    bool is_an_xml = false ;
+    int  nbcar_filename = filename.length() ;
+    bool is_a_fed       = false ;
+    bool is_an_xml      = false ;
+    
     // hope there is a . before fed or xml
     if ( filename.at(nbcar_filename-4) != '.' )
-        throw CouldNotOpenFED("FED file incorrect filename : character . missing or not in place");
+        throw CouldNotOpenFED("FED file incorrect filename, cannot find extension (character '.' is missing [or not in reverse 4th place])");
 
     string extension = filename.substr(nbcar_filename-3,3) ;
+    D.Out(pdTrace,"filename is: %s (extension is <%s>",filename.c_str(),extension.c_str());
     if ( !strcasecmp(extension.c_str(),"fed") )
         {
         is_a_fed = true ;
@@ -157,7 +200,7 @@ Federation::Federation(const char *federation_name,
     else if  ( !strcasecmp(extension.c_str(),"xml") )
         {
         is_an_xml = true ;
-        D.Out(pdTrace, "Trying to use .fed file");
+        D.Out(pdTrace, "Trying to use .xml file");
         } 
     else 
         throw CouldNotOpenFED("FED file incorrect filename : nor .fed nor .xml file");
@@ -1779,5 +1822,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.50 2007/04/20 08:27:07 rousse Exp $
+// $Id: Federation.cc,v 3.51 2007/05/03 13:41:37 erk Exp $
 
