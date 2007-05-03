@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.25 2005/04/30 17:18:14 breholee Exp $
+// $Id: RootObject.cc,v 3.26 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -113,7 +113,7 @@ RootObject::addRoutingSpace(const RoutingSpace &rs)
 // ----------------------------------------------------------------------------
 //! get a routing space handle
 SpaceHandle
-RootObject::getRoutingSpaceHandle(string rs)
+RootObject::getRoutingSpaceHandle(std::string rs)
     throw (NameNotFound)
 {
     vector<RoutingSpace>::const_iterator i = std::find_if(
@@ -175,7 +175,7 @@ RootObject::createRegion(SpaceHandle handle, unsigned long nb_extents)
 // ----------------------------------------------------------------------------
 // modify a region
 void
-RootObject::modifyRegion(RegionHandle handle, const vector<Extent> &extents)
+RootObject::modifyRegion(RegionHandle handle, const std::vector<Extent> &extents)
     throw (RegionNotKnown, InvalidExtents)
 {
     RTIRegion *region = getRegion(handle);
@@ -206,7 +206,7 @@ RootObject::deleteRegion(RegionHandle region_handle)
 
 // ----------------------------------------------------------------------------
 /** Get a region
-    \param region_handle Region to get
+    \param handle RegionHandle to get
     \return Pointer to the region
 */
 RTIRegion *
@@ -311,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.25 2005/04/30 17:18:14 breholee Exp $
+// $Id: RootObject.cc,v 3.26 2007/05/03 15:46:31 rousse Exp $

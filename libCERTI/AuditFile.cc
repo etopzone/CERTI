@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.8 2004/05/18 13:18:52 breholee Exp $
+// $Id: AuditFile.cc,v 3.9 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "AuditFile.hh"
@@ -40,7 +40,7 @@ namespace certi {
 //! AuditFile constructor to write to file
 /*! Audit file is used to store information about actions taken by the RTIG
  */
-AuditFile::AuditFile(const string logfile)
+AuditFile::AuditFile(const std::string logfile)
     : auditFile(logfile.c_str(), ios::app)
 {
     if (!auditFile.is_open()) {
@@ -71,7 +71,7 @@ AuditFile::~AuditFile()
   current status and a comment. Then write line to file.
 */
 void
-AuditFile::endLine(unsigned short event_status, string reason)
+AuditFile::endLine(unsigned short event_status, std::string reason)
 {
     if (currentLine.started())
 	currentLine.end(event_status, reason);
@@ -119,7 +119,7 @@ void
 AuditFile::putLine(unsigned short event_type,
                    unsigned short event_level,
                    unsigned short event_status,
-                   string reason)
+                   std::string reason)
 {
     if (event_level >= AUDIT_CURRENT_LEVEL) {
 	AuditLine line(event_type, event_level, event_status, reason);
@@ -214,4 +214,4 @@ AuditFile::operator<<(double n)
 
 }
 
-// $Id: AuditFile.cc,v 3.8 2004/05/18 13:18:52 breholee Exp $
+// $Id: AuditFile.cc,v 3.9 2007/05/03 15:46:31 rousse Exp $

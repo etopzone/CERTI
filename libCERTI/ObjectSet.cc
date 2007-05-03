@@ -90,7 +90,7 @@ ObjectSet::changeAttributeOrderType(ObjectHandle,
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-ObjectSet::getObjectInstanceHandle(string the_name) const
+ObjectSet::getObjectInstanceHandle(std::string the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
@@ -126,7 +126,7 @@ Object *
 ObjectSet::registerObjectInstance(FederateHandle the_federate,
 				  ObjectClassHandle the_class,
                                   ObjectHandle the_object,
-                                  string the_name)
+                                  std::string the_name)
     throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
            SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -428,4 +428,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.11 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectSet.cc,v 3.12 2007/05/03 15:46:31 rousse Exp $

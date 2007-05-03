@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
+// $Id: RTIRegion.cc,v 3.2 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTIRegion.hh"
@@ -31,9 +31,8 @@ namespace certi {
 // ----------------------------------------------------------------------------
 /** Region Constructor
     @param region_handle Handle of this Region
-    @param space_handle Handle of the RoutingSpace of this Region
+    @param routing_space RoutingSpace of this Region
     @param nb_extents Number of extents
-    @param nb_dimensions Number of dimensions
  */
 RTIRegion::RTIRegion(RegionHandle region_handle,
 		     const RoutingSpace &routing_space,
@@ -60,4 +59,4 @@ RTIRegion::getSpaceHandle() const
 
 } // namespace certi
 
-// $Id: RTIRegion.cc,v 3.1 2005/03/28 19:22:19 breholee Exp $
+// $Id: RTIRegion.cc,v 3.2 2007/05/03 15:46:31 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.4 2007/02/21 10:21:15 rousse Exp $
+// $Id: Exception.cc,v 3.5 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,9 @@
 
 #include "certi.hh"
 
+/*! \cond
+  Doxygen will ignore because it doesn't like this and I don't know why
+*/
 // static members for HLA Exceptions
 const char *RTI::ArrayIndexOutOfBounds::_ex = "ArrayIndexOutOfBounds" ;
 const char *RTI::AsynchronousDeliveryAlreadyDisabled::_ex = "AsynchronousDeliveryAlreadyDisabled" ;
@@ -135,7 +138,8 @@ const char *certi::UnimplementedService::_ex = "UnimplementedService" ;
 const char *certi::UnknownLabel::_ex = "UnknownLabel" ;
 const char *certi::NetworkError::_ex = "NetworkError" ;
 const char *certi::NetworkSignal::_ex = "NetworkSignal" ;
-
+/*! \endcond
+*/
 RTI::Exception::~Exception()
 {
 }
@@ -169,4 +173,4 @@ RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
     return *this ;
 }
 
-// $Id: Exception.cc,v 3.4 2007/02/21 10:21:15 rousse Exp $$
+// $Id: Exception.cc,v 3.5 2007/05/03 15:46:31 rousse Exp $$

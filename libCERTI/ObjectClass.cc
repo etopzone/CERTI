@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClass.cc,v 3.33 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1623,8 +1623,8 @@ ObjectClass::addSubclass(ObjectClass *c)
 
 // ----------------------------------------------------------------------------
 /** Recursively start discovery of existing objects.
-    @param federate Federate to send the discovery message to
-    @param super_handle Handle of the class actually subscribed by the federate
+    @param federate FederateHandle to send the discovery message to
+    @param subscription ObjectClassHandle of the class actually subscribed by the federate
  */
 void
 ObjectClass::recursiveDiscovering(FederateHandle federate,
@@ -1664,4 +1664,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.32 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClass.cc,v 3.33 2007/05/03 15:46:31 rousse Exp $

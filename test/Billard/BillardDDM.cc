@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.17 2005/05/21 21:02:43 breholee Exp $
+// $Id: BillardDDM.cc,v 3.18 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -59,7 +59,7 @@ drawRegion(bool display, int position, int width)
 // ============================================================================
 /** Constructor
  */
-BillardStaticDDM::BillardStaticDDM(string federate_name)
+BillardStaticDDM::BillardStaticDDM(std::string federate_name)
     : Billard(federate_name), numberOfRegions(4), subRegion(-1), pubRegion(-1)
 {
     std::cout << "BillardStaticDDM" << std::endl ;
@@ -185,7 +185,7 @@ BillardStaticDDM::resign()
 // ============================================================================
 /** Constructor
  */
-BillardDynamicDDM::BillardDynamicDDM(string federate_name)
+BillardDynamicDDM::BillardDynamicDDM(std::string federate_name)
     : Billard(federate_name), region(0)
 {
     std::cout << "BillardDynamicDDM" << std::endl ;

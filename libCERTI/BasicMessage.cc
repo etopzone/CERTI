@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.6 2005/03/25 17:00:52 breholee Exp $
+// $Id: BasicMessage.cc,v 3.7 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "BasicMessage.hh"
@@ -38,7 +38,7 @@ namespace certi {
 /** Set extents
  */
 void
-BasicMessage::setExtents(const vector<Extent> &e)
+BasicMessage::setExtents(const std::vector<Extent> &e)
 {
     extents = e ;
     assert(extents.size() == e.size());
@@ -156,4 +156,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.6 2005/03/25 17:00:52 breholee Exp $
+// $Id: BasicMessage.cc,v 3.7 2007/05/03 15:46:31 rousse Exp $

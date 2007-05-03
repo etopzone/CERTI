@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.22 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -222,7 +222,7 @@ ObjectClassSet::getObject(ObjectHandle h) const
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(string class_name) const
+ObjectClassSet::getObjectClassHandle(std::string class_name) const
     throw (NameNotFound)
 {
     list<ObjectClass *>::const_iterator i ;
@@ -642,4 +642,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.22 2007/05/03 15:46:31 rousse Exp $

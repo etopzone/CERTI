@@ -330,7 +330,7 @@ XmlParser::XmlParser(RootObject *)
 {
 }
 
-RootObject *XmlParser::parse(string)
+RootObject *XmlParser::parse(std::string)
 {
     return 0 ;
 }

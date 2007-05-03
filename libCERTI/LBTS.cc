@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.5 2004/05/17 22:10:10 breholee Exp $
+// $Id: LBTS.cc,v 3.6 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -84,10 +84,10 @@ LBTS::exists(FederateHandle federate) const
 
 // ----------------------------------------------------------------------------
 /** Get all the federate handle and time in a list of pairs
-    @param l Output parameter, list receiving values
+    @param v Output parameter, list receiving values
 */
 void
-LBTS::get(vector<FederateClock> &v) const
+LBTS::get(std::vector<FederateClock> &v) const
 {
     v.reserve(v.size() + clocks.size());
     std::copy(clocks.begin(), clocks.end(), std::back_inserter(v));
@@ -151,4 +151,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.5 2004/05/17 22:10:10 breholee Exp $
+// $Id: LBTS.cc,v 3.6 2007/05/03 15:46:31 rousse Exp $

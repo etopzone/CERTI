@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.cc,v 3.2 2005/04/30 16:52:44 breholee Exp $
+// $Id: FedRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "FedRegion.hh"
@@ -30,7 +30,7 @@ using std::vector ;
 namespace certi {
 
 // ----------------------------------------------------------------------------
-FedRegion::FedRegion(RegionHandle h, SpaceHandle s, const vector<Extent> &ext)
+FedRegion::FedRegion(RegionHandle h, SpaceHandle s, const std::vector<Extent> &ext)
     : BaseRegion(h), space(s), coExtents(ext)
 {
     setExtents(ext);
@@ -140,4 +140,4 @@ FedRegion::commit()
 
 } // namespace certi
 
-// $Id: FedRegion.cc,v 3.2 2005/04/30 16:52:44 breholee Exp $
+// $Id: FedRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $

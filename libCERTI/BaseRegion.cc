@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.2 2005/04/30 16:49:44 breholee Exp $
+// $Id: BaseRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -118,7 +118,7 @@ BaseRegion::getExtents() const
 
 // ----------------------------------------------------------------------------
 void
-BaseRegion::setExtents(const vector<Extent> &e)
+BaseRegion::setExtents(const std::vector<Extent> &e)
 {
     extents = e ;
 }
@@ -126,7 +126,7 @@ BaseRegion::setExtents(const vector<Extent> &e)
 // ----------------------------------------------------------------------------
 // Replace extents
 void
-BaseRegion::replaceExtents(const vector<Extent> &e)
+BaseRegion::replaceExtents(const std::vector<Extent> &e)
     throw (InvalidExtents)
 {
     if (e.size() != extents.size())
@@ -156,4 +156,4 @@ BaseRegion::overlaps(const BaseRegion &region) const
 
 } // namespace certi
 
-// $Id: BaseRegion.cc,v 3.2 2005/04/30 16:49:44 breholee Exp $
+// $Id: BaseRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $

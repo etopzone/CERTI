@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.20 2005/03/28 19:08:02 breholee Exp $
+// $Id: DataDistribution.cc,v 3.21 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -47,7 +47,7 @@ DataDistribution::DataDistribution(RootObject *root_object,
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-DataDistribution::getRoutingSpaceHandle(string name) const 
+DataDistribution::getRoutingSpaceHandle(std::string name) const 
 {
     return rootObject->getRoutingSpaceHandle(name);
 }
@@ -65,7 +65,7 @@ DataDistribution::getRoutingSpaceName(SpaceHandle handle) const
 // getDimensionHandle
 //
 DimensionHandle
-DataDistribution::getDimensionHandle(string dimension, SpaceHandle space) const
+DataDistribution::getDimensionHandle(std::string dimension, SpaceHandle space) const
     throw (SpaceNotDefined, NameNotFound)
 {
     return rootObject->getRoutingSpace(space).getDimensionHandle(dimension);
@@ -413,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.20 2005/03/28 19:08:02 breholee Exp $
+// $Id: DataDistribution.cc,v 3.21 2007/05/03 15:46:31 rousse Exp $

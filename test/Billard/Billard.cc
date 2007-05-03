@@ -37,7 +37,7 @@ static pdCDebug D("BILLARD", __FILE__);
 // ----------------------------------------------------------------------------
 /** Constructor
  */
-Billard::Billard(string federate_name)
+Billard::Billard(std::string federate_name)
     : rtiamb(),
       local(0),
       federateName(federate_name),
@@ -76,7 +76,7 @@ Billard::getHandle() const
     \param fdd_name Federation designator (.fed file)
  */
 void
-Billard::join(string federation_name, string fdd_name)
+Billard::join(std::string federation_name, std::string fdd_name)
 {
     federationName = federation_name ;
 

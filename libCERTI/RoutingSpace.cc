@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.9 2005/04/30 17:18:14 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.10 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -72,7 +72,7 @@ RoutingSpace::display() const
     \param s Routing space name
  */
 void
-RoutingSpace::setName(string s)
+RoutingSpace::setName(std::string s)
 {
     name = s ;
 }
@@ -93,7 +93,7 @@ RoutingSpace::getName() const
     \return Dimension handle
  */
 DimensionHandle
-RoutingSpace::getDimensionHandle(string dimension_name) const
+RoutingSpace::getDimensionHandle(std::string dimension_name) const
     throw (NameNotFound)
 {
     vector<Dimension>::const_iterator it = std::find_if(
@@ -155,4 +155,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.9 2005/04/30 17:18:14 breholee Exp $
+// $Id: RoutingSpace.cc,v 3.10 2007/05/03 15:46:31 rousse Exp $

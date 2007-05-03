@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.39 2007/03/22 14:18:01 rousse Exp $
+// $Id: RTIambassador.cc,v 3.40 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1958,9 +1958,10 @@ RTI::RTIambassador::unassociateRegionForUpdates(Region &region,
 
 // ----------------------------------------------------------------------------
 /** Subscribe object class attributes with region.
-    @param handle Object class handle
+    @param object_class ObjectClassHandle
     @param region Region to subscribe with
-    @param attributes Attributes involved in the subscription
+    @param attributes AttributeHandleSet involved in the subscription
+    @param passive Boolean
     @sa unsubscribeObjectClassWithRegion
  */
 void
@@ -1994,7 +1995,7 @@ RTI::RTIambassador::subscribeObjectClassAttributesWithRegion(
 
 // ----------------------------------------------------------------------------
 /** Unsubscribe object class attributes with region.
-    @param handle Object Class handle
+    @param object_class ObjectClassHandle
     @param region Region to unsubscribe with
     @sa subscribeObjectClassAttributesWithRegion
  */
@@ -2391,8 +2392,8 @@ RTI::RTIambassador::getRoutingSpaceName(SpaceHandle handle)
 
 // ----------------------------------------------------------------------------
 /** Get dimension handle
-    \parameter dimension Name of the dimension
-    \parameter space The dimension's routing space handle
+    \param dimension Name of the dimension
+    \param space The dimension's routing SpaceHandle
  */
 DimensionHandle
 RTI::RTIambassador::getDimensionHandle(const char *dimension,
@@ -2653,4 +2654,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.39 2007/03/22 14:18:01 rousse Exp $
+// $Id: RTIambassador.cc,v 3.40 2007/05/03 15:46:31 rousse Exp $

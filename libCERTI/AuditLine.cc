@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.8 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditLine.cc,v 3.9 2007/05/03 15:46:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -51,7 +51,7 @@ AuditLine::AuditLine()
 /*! 
  */
 AuditLine::AuditLine(unsigned short event_type, unsigned short event_level,
-		     unsigned short event_status, string reason)
+		     unsigned short event_status, std::string reason)
     : federation(0), federate(0),
       type(event_type), level(event_level), status(event_status),
       modified(false), date(0), comment(reason)
@@ -76,7 +76,7 @@ AuditLine::addComment(const std::string &str)
 // ----------------------------------------------------------------------------
 //! Finish the line with a status and reason
 void
-AuditLine::end(unsigned short event_status, const string reason)
+AuditLine::end(unsigned short event_status, const std::string reason)
 {
     status = event_status ;    
     addComment(reason);
@@ -95,7 +95,7 @@ AuditLine::end(unsigned short event_status, const string reason)
   - comment : detailed comment.
 */
 void
-AuditLine::write(ofstream &audit_file)
+AuditLine::write(std::ofstream &audit_file)
 {
     audit_file << date << ' ' << federation << ' ' << federate << ' '
                << type << ' ' << level << ' ' << status << ' '
@@ -127,5 +127,5 @@ AuditLine::setLevel(unsigned short l)
 
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.8 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditLine.cc,v 3.9 2007/05/03 15:46:31 rousse Exp $
 
