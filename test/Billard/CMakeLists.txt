@@ -20,7 +20,11 @@ SET(billard_SRCS
 
 ADD_EXECUTABLE(billard ${billard_SRCS})
 
-TARGET_LINK_LIBRARIES(billard ${SOCKET_LIBRARY} ${LIBXML2_LIBRARIES} graphc CERTI RTI)
+TARGET_LINK_LIBRARIES(billard ${SOCKET_LIBRARY} ${LIBXML2_LIBRARIES} graph CERTI RTI)
+
+IF (X11_FOUND)
+  TARGET_LINK_LIBRARIES(billard ${X11_LIBRARIES})
+ENDIF (X11_FOUND)
 
 INSTALL(TARGETS billard
   DESTINATION bin)
@@ -34,7 +38,7 @@ INSTALL(FILES
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.1 2007/05/02 14:50:15 erk Exp $
+### $Id: CMakeLists.txt,v 1.2 2007/05/03 08:24:01 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #
