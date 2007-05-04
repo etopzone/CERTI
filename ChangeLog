@@ -1,20 +1,255 @@
+2007-05-04 12:59  tag CERTI-3_2_4
+
+2007-05-04 12:59  erk
+
+	* CMakeLists.txt (1.5, CERTI-3_2_4): Install FindCERTI.cmake
+
+2007-05-04 10:41  erk
+
+	* Makefile.am (3.7), RTIA/Makefile.am (3.7), RTIG/Makefile.am
+	  (3.7), doc/Makefile.am (3.3), include/Makefile.am (3.3),
+	  libCERTI/Makefile.am (3.27), libRTI/Makefile.am (3.6),
+	  test/Makefile.am (3.2), test/Billard/Makefile.am (3.16),
+	  test/libgraphc/Makefile.am (3.2) (utags: CERTI-3_2_4): Please put
+	  CMakeLists.txt's in the autotools generated dist
+
+2007-05-04 10:40  erk
+
+	* CMakeLists.txt (1.4), configure.in (3.18, CERTI-3_2_4): Bump to
+	  version 3.2.4
+
+2007-05-04 10:40  erk
+
+	* myconf (3.9, CERTI-3_2_4): Update for out-of-source build with
+	  autoconf
+
+2007-05-03 17:46  rousse
+
+	* RTIA/DataDistribution.cc (3.21), RTIG/Federation.cc (3.52),
+	  libCERTI/AuditFile.cc (3.9), libCERTI/AuditLine.cc (3.9),
+	  libCERTI/BaseRegion.cc (3.3), libCERTI/BasicMessage.cc (3.7),
+	  libCERTI/Exception.cc (3.5), libCERTI/FedRegion.cc (3.3),
+	  libCERTI/LBTS.cc (3.6), libCERTI/ObjectClass.cc (3.33),
+	  libCERTI/ObjectClassSet.cc (3.22), libCERTI/ObjectSet.cc (3.12),
+	  libCERTI/RTIRegion.cc (3.2), libCERTI/RootObject.cc (3.26),
+	  libCERTI/RoutingSpace.cc (3.10), libCERTI/XmlParser.cc (3.18),
+	  libRTI/RTIambassador.cc (3.40), test/Billard/Billard.cc (3.16),
+	  test/Billard/BillardDDM.cc (3.18) (utags: CERTI-3_2_4): ---
+	  FRANCAIS --- Modifications mineures sur des commentaires ---
+	  ENGLISH --- Minor corrections inside comments
+
+2007-05-03 15:41  erk
+
+	* RTIG/Federation.cc (3.51): Elementary 'automatic' fed file search
+	  support
+
+2007-05-03 15:32  erk
+
+	* CMakeLists.txt (1.3): Handle libxml2 properly for XML fed file
+
+2007-05-03 10:41  erk
+
+	* CMakeLists.txt (1.2), scripts/FindMd5sum.cmake (1.1,
+	  CERTI-3_2_4): ADD RPM generation support (needs testing)
+
+2007-05-03 10:24  erk
+
+	* libCERTI/CMakeLists.txt (1.2), scripts/UseDebian.cmake (1.1),
+	  scripts/UseRPMTools.cmake (1.1), test/Billard/CMakeLists.txt
+	  (1.2) (utags: CERTI-3_2_4): First functional CMake build
+
+2007-05-02 16:50  erk
+
+	* config.h.cmake (1.1, CERTI-3_2_4): Oups should have been
+	  committed with previous "first step CMake" commit
+
+2007-05-02 16:50  erk
+
+	* CMakeLists.txt (1.1), RTIA/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  RTIG/CMakeLists.txt (1.1, CERTI-3_2_4), doc/CMakeLists.txt (1.1,
+	  CERTI-3_2_4), include/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  libCERTI/CMakeLists.txt (1.1), libRTI/CMakeLists.txt (1.1,
+	  CERTI-3_2_4), scripts/FindCERTI.cmake (1.1, CERTI-3_2_4),
+	  scripts/FindLexYacc.cmake (1.1, CERTI-3_2_4),
+	  scripts/UsePackageBackup.cmake (1.1, CERTI-3_2_4),
+	  scripts/package_source_dated.cmake (1.1, CERTI-3_2_4),
+	  test/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  test/Billard/CMakeLists.txt (1.1), test/libgraphc/CMakeLists.txt
+	  (1.1, CERTI-3_2_4): First step toward CMake build system usage
+	  (not functionnal for this shot)
+
+2007-05-02 13:55  erk
+
+	* autogen.sh (1.3, CERTI-3_2_4), configure.in (3.17): Prepare CERTI
+	  release 3.2.4 Update autogen.sh since VERSION file disappeared
+
+2007-04-27 18:39  tag CERTI_TESTS_V2_dev
+
+2007-04-27 18:39  erk
+
+	* configure.in (3.16, CERTI_TESTS_V2_dev): Update version
+
+2007-04-27 18:24  erk
+
+	* include/certi.hh (3.12), libCERTI/BasicMessage.hh (3.6),
+	  libCERTI/MessageBody.cc (3.10), libCERTI/MessageBody.hh (3.12),
+	  libCERTI/Message_RW.cc (3.30), libCERTI/NetworkMessage_RW.cc
+	  (3.24) (utags: CERTI-3_2_4, CERTI_TESTS_V2_dev): Add more space
+	  in message body because we want to be sure that send will not
+	  resize() the MessageBody::buffer.  The MessageBody buffer should
+	  contains HeaderStruct (36) plus MAX_BYTES_PER_VALUE (150) at
+	  least.
+
+2007-04-27 18:22  erk
+
+	* RTIA/main.cc (3.14, CERTI-3_2_4, CERTI_TESTS_V2_dev): Suicide is
+	  not the way to go :)) You should NEVER send yourself SIGKILL In
+	  this case the process will terminate after receiving SIGALARM
+	  because the SIGALARM will break execute() statement and let the
+	  RTIA process terminate.
+
+2007-04-27 18:15  erk
+
+	* test/Billard/main.cc (3.12, CERTI-3_2_4, CERTI_TESTS_V2_dev):
+	  Finally got the "real" core dump bug.  The core dump only occurs
+	  on xenomai-enabled kernel but the code is definitely buggy and
+	  "unitialized" memory access was catch by valgrind too.
+
+2007-04-26 16:42  erk
+
+	* test/Billard/Display.cc (3.3, CERTI-3_2_4, CERTI_TESTS_V2_dev),
+	  configure.in (3.15), test/libgraphc/graph_c.cc (3.5, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev): Improve bug #18888 : configure script does
+	  not check for x11-bitmaps header correction.	Now CERTI will
+	  compile even if X11 headers are missing either totally or
+	  partially (missing xbitmaps) Billard will compile and run but
+	  produce no output.
+
+2007-04-25 11:20  tag CERTI_TESTS_V1_1_dev
+
+2007-04-25 11:20  erk
+
+	* Makefile.am (3.6, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev): Oups
+	  forgot to suppress VERSION from EXTRA_DIST
+
+2007-04-25 11:17  erk
+
+	* VERSION (3.36), configure.in (3.14, CERTI_TESTS_V1_1_dev),
+	  myCERTI_env.sh.in (1.2, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev): Update configure script in order to
+	  respect up to date autoconf/automake style As a consequence
+	  Suppress VERSION file Add CERTI_VERSION env var definition in
+	  myCERTI_env.sh
+
+2007-04-24 17:10  erk
+
+	* RTIA/: FederationManagement.cc (3.22), FederationManagement.hh
+	  (3.15), RTIA.cc (3.12) (utags: CERTI-3_2_4, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V2_dev): Add GET_FED_FILE statistics
+
+2007-04-24 15:53  erk
+
+	* include/certi.hh (3.11, CERTI_TESTS_V1_1_dev): Temporary fix for
+	  bug #19685 : Message::setValue with length > MAX_BYTES_PER_VALUE
+	  fails
+
+2007-04-24 15:30  erk
+
+	* Makefile.am (3.5), configure.in (3.13): Add myCERTI_env.sh.in
+	  configuration to $prefix/share/scripts/myCERTI_env.sh Correct bug
+	  #18888 : configure script does not check for x11-bitmaps header
+
+2007-04-24 15:24  erk
+
+	* myCERTI_env.sh.in (1.1): Add an helper shell scripts for CERTI
+	  usage The script define some env var and alias This will be
+	  processed by configure
+
+2007-04-23 09:59  erk
+
+	* VERSION (3.35): Update to identified test VERSION
+
+2007-04-20 14:33  tag CERTI_TESTS_V1_dev
+
+2007-04-20 14:33  erk
+
+	* RTIA/FederationManagement.cc (3.21, CERTI_TESTS_V1_dev): Beware
+	  that malloc/free and new/delete should match
+
+2007-04-20 14:32  erk
+
+	* RTIA/RTIA_network.cc (3.10, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev): Do not use msg object
+	  after it has been delete
+
+2007-04-20 10:27  tag CERTI-3_2_3devJYR1
+
+2007-04-20 10:27  rousse
+
+	* ChangeLog (3.7, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIA/DeclarationManagement.cc (3.13, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIA/FederationManagement.cc (3.20), RTIA/FederationManagement.hh
+	  (3.14, CERTI_TESTS_V1_dev), RTIA/RTIA_federate.cc (3.34,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), RTIG/Federation.cc (3.50,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIG/FederationsList.cc (3.34, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev), RTIG/RTIG.cc (3.29,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), RTIG/RTIG_processing.cc (3.33, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/Exception.hh (3.1, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev), libCERTI/GAV.cc (3.15,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), libCERTI/GAV.hh (3.11, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/Message.cc (3.32, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/NetworkMessage.cc (3.15, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  test/Billard/Billard.cc (3.15, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev) (utags:
+	  CERTI-3_2_3devJYR1): ----- FRANCAIS ----- Correction effectuee
+	  dans FederationManagement.cc pour eviter des plantages a cause de
+	  certaines parties du Network Message mal initialisees pendant le
+	  JOIN FEDERATION EXECUTION.  Amelioration de la remontee de
+	  certaines erreurs pendant le traitement du fichier FED.
+	  Amelioration (suppression de classes de travail intermediaires)
+	  du fonctionnement.  ----- ENGLISH ----- Corrections made in
+	  FederationManagement.cc to prevent crash due to bad
+	  initialization (sometimes) of Network Message  during JOIN
+	  FEDERATION EXECUTION.  Improvment of exceptions return during FED
+	  file process.  Processing improvment (some working classes
+	  deleted).
+
 2007-04-03 11:43  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, RTIA/Statistics.cc,
-	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
-	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
-	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc:
-	  Modification dans la prise en compte du fichier des federations
-	  (.fed ou .xml) : Ce fichier est maintenant uniquement lu par le
-	  RTIG.  Le RTIA, lors du Join fédération (JOIN_FEDERATE_EXECUTION)
-	  obtient le contenu de ce fichier (transmis par le RTIG) et cree
-	  une copie de travail de ce fichier en local.	Le nom de ce
-	  fichier est construit comme suit : :RTIA:pid du processus
-	  RTIA:nom de la fédération.fed ou .xml C'est ce fichier de travail
-	  qui est alors lu et analyse par le RTIA.  CONSEQUENCE : le federe
-	  doit indiquer le nom (et le path avec) du fichier de federation
-	  vu par le RTIG.  On peut ainsi fonctionner de maniere
-	  independante, sans NFS et sans recopie de ce fichier.
+	* ChangeLog (3.6), RTIA/FederationManagement.cc (3.19),
+	  RTIA/Statistics.cc (3.13, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  RTIG/Federation.cc (3.49), RTIG/Federation.hh (3.37, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev,
+	  CERTI-3_2_3devJYR1), RTIG/FederationsList.cc (3.33),
+	  RTIG/FederationsList.hh (3.30, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  RTIG/RTIG_processing.cc (3.32), libCERTI/NetworkMessage.hh (3.23,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  libCERTI/NetworkMessage_RW.cc (3.23, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1): Modification dans la
+	  prise en compte du fichier des federations (.fed ou .xml) : Ce
+	  fichier est maintenant uniquement lu par le RTIG.  Le RTIA, lors
+	  du Join fédération (JOIN_FEDERATE_EXECUTION) obtient le contenu
+	  de ce fichier (transmis par le RTIG) et cree une copie de travail
+	  de ce fichier en local.  Le nom de ce fichier est construit comme
+	  suit : :RTIA:pid du processus RTIA:nom de la fédération.fed ou
+	  .xml C'est ce fichier de travail qui est alors lu et analyse par
+	  le RTIA.  CONSEQUENCE : le federe doit indiquer le nom (et le
+	  path avec) du fichier de federation vu par le RTIG.  On peut
+	  ainsi fonctionner de maniere independante, sans NFS et sans
+	  recopie de ce fichier.
 
 	  federation files (.fed or .xml) management has changed : This
 	  file is now read only by RTIG.  RTIA, during federation join
