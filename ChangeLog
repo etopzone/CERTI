@@ -1,4 +1,23 @@
-2007-05-04 12:59  tag CERTI-3_2_4
+2007-05-04 16:05  tag CERTI-3_2_4
+
+2007-05-04 16:05  erk
+
+	* Makefile.am (3.8, CERTI-3_2_4): Forgot to add scripts/*.cmake to
+	  DIST see https://savannah.nongnu.org/bugs/index.php?19796
+
+2007-05-04 14:54  erk
+
+	* libCERTI/XmlParser.cc (3.19, CERTI-3_2_4): Correct bug #19534
+	  https://savannah.nongnu.org/bugs/?19534
+
+2007-05-04 13:05  erk
+
+	* ChangeLog (3.8, CERTI-3_2_4): Update ChangeLog for CERTI 3.2.4
+	  cvs2cl -t -r --delta CERTI-3_2_3:CERTI-3_2_4 --prune -T --accum
+
+2007-05-04 12:59  erk
+
+	* CMakeLists.txt (1.5, CERTI-3_2_4): Install FindCERTI.cmake
 
 2007-05-04 12:59  erk
 
