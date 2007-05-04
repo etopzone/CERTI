@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.1 2005/04/30 14:46:54 breholee Exp $ 
+## $Id: Makefile.am,v 3.2 2007/05/04 08:41:23 erk Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -12,4 +12,6 @@ libgraph_a_SOURCES = graph_c.cc
 
 LDADD = @XLIBS@
 
-## EOF $Id: Makefile.am,v 3.1 2005/04/30 14:46:54 breholee Exp $
+EXTRA_DIST = CMakeLists.txt
+
+## EOF $Id: Makefile.am,v 3.2 2007/05/04 08:41:23 erk Exp $

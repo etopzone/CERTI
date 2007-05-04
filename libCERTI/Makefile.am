@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.26 2007/02/21 10:21:15 rousse Exp $ 
+## $Id: Makefile.am,v 3.27 2007/05/04 08:41:22 erk Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -36,4 +36,4 @@ Subscribable.cc PrettyDebug.cc
 
 libCERTI_la_LDFLAGS = -version-info 1:0:0
 
-EXTRA_DIST = syntax.h
+EXTRA_DIST = syntax.h CMakeLists.txt

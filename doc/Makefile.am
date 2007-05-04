@@ -6,4 +6,4 @@ docdir = $(prefix)/share/doc
 doc_DATA = index.html certi.html install.txt
 
 EXTRA_DIST = certi.html index.html install.txt billard.dox	\
-reference.dox user.dox
+reference.dox user.dox CMakeLists.txt
