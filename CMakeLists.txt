@@ -191,6 +191,10 @@ INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.sh
   DESTINATION share/scripts)
 
+INSTALL(FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindCERTI.cmake
+  DESTINATION share/scripts)
+
 IF (WIN32)
   MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")
 ELSE (WIN32)
