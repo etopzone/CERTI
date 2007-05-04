@@ -297,7 +297,6 @@ XmlParser::parseRoutingSpace()
     RoutingSpace current ;
     current.setHandle(freeSpaceHandle++);
     current.setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
-    root->addRoutingSpace(current);
 
     // Dimensions
     cur = cur->xmlChildrenNode ;
@@ -309,6 +308,13 @@ XmlParser::parseRoutingSpace()
         }
         cur = cur->next ;
     }
+    // Routing Space should be added after the 
+    // Dimension has been added since addRoutingSpace store a copy
+    // of the object and not a reference
+    // see bug #19534
+    // https://savannah.nongnu.org/bugs/?19534
+    root->addRoutingSpace(current);
+    
     cur = prev ;
 }
 
