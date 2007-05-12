@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.52 2007/05/03 15:46:31 rousse Exp $
+// $Id: Federation.cc,v 3.53 2007/05/12 23:29:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -150,15 +150,16 @@ Federation::Federation(const char *federation_name,
       cout << " --> cannot access." <<endl;
       filename = "/usr/local/share/federation/"+string(FEDid_name);
       cout << "   Now trying..." << filename;
+      filefound = (0==stat(filename.c_str(),&file_stat));	
     }
-    filefound = (0==stat(filename.c_str(),&file_stat));
+    
 
-    if (!filefound) {
+    if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
       cout << " --> cannot access." <<endl;
       filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
       cout << "   Now trying..." << filename;
-    }
-    filefound = (0==stat(filename.c_str(),&file_stat));
+      filefound = (0==stat(filename.c_str(),&file_stat));
+    }    
     
     if (!filefound) {
       cout << " --> cannot access." <<endl;
@@ -1822,5 +1823,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.52 2007/05/03 15:46:31 rousse Exp $
+// $Id: Federation.cc,v 3.53 2007/05/12 23:29:40 erk Exp $
 
