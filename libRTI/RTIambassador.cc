@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.40 2007/05/03 15:46:31 rousse Exp $
+// $Id: RTIambassador.cc,v 3.41 2007/05/14 12:01:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -515,6 +515,10 @@ RTI::RTIambassador::resignFederationExecution(ResignAction theAction)
 
 // ----------------------------------------------------------------------------
 //! Register Federation Synchronization Point
+/**
+    @param label Synchronization point label
+    @param the_tag User-supplied tag
+*/
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
                                                       const char *the_tag)
@@ -534,10 +538,16 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 }
 
 // ----------------------------------------------------------------------------
+//! Register Federation Synchronization Point with set of federates (UNIMPLEMENTED)
+/**
+    @param label Synchronization point label
+    @param the_tag User-supplied tag
+    @param set set of federate designators
+*/
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 						      const char *theTag,
-						      const FederateHandleSet &)
+						      const FederateHandleSet &set)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
@@ -2654,4 +2664,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.40 2007/05/03 15:46:31 rousse Exp $
+// $Id: RTIambassador.cc,v 3.41 2007/05/14 12:01:41 rousse Exp $

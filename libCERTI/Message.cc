@@ -122,13 +122,22 @@ Message::getValueArray()
 }
 
 // ----------------------------------------------------------------------------
+/** set label into Message
+    @param NewLabel copied (strcpy) into Message label
+*/
 void
 Message::setLabel(const char *NewLabel)
 {
-    if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
-        throw ValueLengthExceeded("Label too long to fit in Message.");
-
-    strcpy(label, NewLabel);
+    if ( NewLabel )
+        {
+        if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
+            throw ValueLengthExceeded("Label too long to fit in Message.");
+        strcpy(label, NewLabel);
+        }
+    else
+        {
+        strcpy(label, "") ;
+        }
 }
 
 // ----------------------------------------------------------------------------
