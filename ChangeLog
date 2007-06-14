@@ -1,3 +1,10 @@
+2007-05-14 14:01  rousse
+
+	* ChangeLog, libCERTI/Message.cc, libRTI/RTIambassador.cc:
+	  Prévention contre un label null provoquant l'abort du RTIA
+
+	  avoid RTIA crash in case of NULL label
+
 2007-05-13 01:30  erk
 
 	* CMakeLists.txt: Add GCC compiler option in order to use Eclipse
@@ -402,11 +409,3 @@
 
 	* ChangeLog: CERTI 3.2.1 release
 
-2006-05-14 22:27  breholee
-
-	* RTIG/RTIG_processing.cc: bugfix: use of label during object
-	  registration
-
-2006-05-14 22:09  breholee
-
-	* VERSION: version 3.2.1

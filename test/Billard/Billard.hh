@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.7 2005/04/30 17:55:43 breholee Exp $
+// $Id: Billard.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -72,6 +72,7 @@ public:
     virtual void checkRegions();
     void synchronize(int);
     void tick();
+    void tick2();
 
     RTI::FederateHandle getHandle() const ;
 
@@ -170,4 +171,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.7 2005/04/30 17:55:43 breholee Exp $
+// $Id: Billard.hh,v 3.8 2007/06/14 13:00:21 siron Exp $

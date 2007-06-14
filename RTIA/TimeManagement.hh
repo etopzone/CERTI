@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
+// $Id: TimeManagement.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -88,6 +88,9 @@ public:
     bool requestContraintState() { return _est_contraint ; };
     bool requestRegulateurState() { return _est_regulateur ; };
 
+    // Attribute
+    bool _ongoing_tick;  // tick2 processing
+
 private:
     // Methods
     void advance(bool &msg_restant, TypeException &e);
@@ -123,4 +126,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
+// $Id: TimeManagement.hh,v 3.8 2007/06/14 13:00:21 siron Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.15 2007/02/21 10:21:15 rousse Exp $
+// $Id: TimeManagement.cc,v 3.16 2007/06/14 13:00:21 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -78,6 +78,7 @@ TimeManagement::TimeManagement(Communications *GC,
     lastNullMessageDate = 0.0 ;
 
     _avancee_en_cours = PAS_D_AVANCEE ;
+    _ongoing_tick = false ;
 
     _heure_courante = 0.0 ;
     _lookahead_courant = epsilon ;
@@ -116,6 +117,7 @@ bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
     D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
+    _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
 
     switch (msg.type) {
 
@@ -675,6 +677,8 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
           req.getFederationTime());
 
+    _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
+
     comm->requestFederateService(&req, &rep);
 
     e = rep.getExceptionType();
@@ -720,4 +724,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.15 2007/02/21 10:21:15 rousse Exp $
+// $Id: TimeManagement.cc,v 3.16 2007/06/14 13:00:21 siron Exp $

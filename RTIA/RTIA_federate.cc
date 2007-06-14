@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.35 2007/06/14 13:00:20 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -771,9 +771,17 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST:
-        D.Out(pdDebug, "Receiving Message from Federate, type TickRequest.");
-
+        if (req->getBoolean()) {
+           tm->_ongoing_tick = true ;
+           D.Out(pdDebug, "Receiving Message from Federate, type TickRequest2.");
+           
+        }
+        else {
+           D.Out(pdDebug, "Receiving Message from Federate, type TickRequest.");
+           
+        }
         rep.setBoolean(tm->tick(e));
+
         break ;
 
       default:
@@ -1125,10 +1133,13 @@ RTIA::processFederateRequest(Message *req)
 
     delete req ;
 
-    comm->sendUN(&rep);
-    D.Out(pdDebug, "Reply send to Unix socket.");
+    if (!tm->_ongoing_tick) {
+        comm->sendUN(&rep);
+        D.Out(pdDebug, "Reply send to Unix socket.");
+    }
+    // else, this answer is differed until a no empty tick
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.35 2007/06/14 13:00:20 siron Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.41 2007/05/14 12:01:41 rousse Exp $
+// $Id: RTIambassador.cc,v 3.42 2007/06/14 13:00:21 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -148,6 +148,30 @@ RTI::RTIambassador::tick()
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
+   // non-blocking tick, returns immediately with or without 1 callback
+   return tick_kernel (false);
+}
+
+// ----------------------------------------------------------------------------
+// Tick
+RTI::Boolean
+RTI::RTIambassador::tick2()
+    throw (SpecifiedSaveLabelDoesNotExist,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
+   // blocking tick, waits until a callback delivery, be careful
+   return tick_kernel (true);
+}
+
+// ----------------------------------------------------------------------------
+// Tick_kernel
+RTI::Boolean
+RTI::RTIambassador::tick_kernel(bool locked)
+    throw (SpecifiedSaveLabelDoesNotExist,
+           ConcurrentAccessAttempted,
+           RTIinternalError)
+{
     Message vers_RTI, vers_Fed ;
 
     // Throw exception if reentrant call.
@@ -158,6 +182,10 @@ RTI::RTIambassador::tick()
 
     // Prevenir le RTI
     vers_RTI.type = Message::TICK_REQUEST ;
+    if (locked)
+       vers_RTI.setBoolean(true);
+    else
+       vers_RTI.setBoolean(false);
 
     try {
         vers_RTI.write(privateRefs->socketUn);
@@ -2664,4 +2692,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.41 2007/05/14 12:01:41 rousse Exp $
+// $Id: RTIambassador.cc,v 3.42 2007/06/14 13:00:21 siron Exp $

@@ -158,6 +158,12 @@ Billard::tick()
     rtiamb.tick();
     nbTicks++ ;
 }
+void
+Billard::tick2()
+{
+    rtiamb.tick2();
+    nbTicks++ ;
+}
 
 // ----------------------------------------------------------------------------
 /** Set time regulation (time regulating and time constrained)
@@ -390,7 +396,7 @@ Billard::step()
 
     while (!granted) {
         try {
-            tick();
+            tick2();
         }
         catch (RTI::Exception& e) {
             D.Out(pdExcept, "******** Exception ticking the RTI : %d.", &e);

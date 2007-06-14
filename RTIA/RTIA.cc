@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.12 2007/04/24 15:10:31 erk Exp $
+// $Id: RTIA.cc,v 3.13 2007/06/14 13:00:20 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -122,9 +122,42 @@ RTIA::execute()
           default:
             assert(false);
         }
-    }
+
+        // special case, blocking tick (tick2)
+        while (!fm->_fin_execution && tm->_ongoing_tick) {
+	    // read a message from the rtig
+            // same code is reused, but only the case 1 should match
+
+            msg_tcp_udp = new NetworkMessage ;
+            msg_un = new Message ;
+
+            try {
+                comm->readMessage(n, msg_tcp_udp, msg_un);
+            }
+            catch (NetworkSignal) {
+                fm->_fin_execution = true ;
+                n = 0 ;
+                delete msg_un ;
+                delete msg_tcp_udp ;
+            }
+
+            switch (n) {
+              case 0:
+                break ;
+              case 1:
+                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callbak
+                msg_un->type = Message::TICK_REQUEST ;
+                msg_un->setBoolean(true) ;
+                processFederateRequest(msg_un);  //could reset _ongoing_tick                
+                break ;
+              case 2:
+              default:
+                assert(false);
+            }
+        }   
+    }   
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.12 2007/04/24 15:10:31 erk Exp $
+// $Id: RTIA.cc,v 3.13 2007/06/14 13:00:20 siron Exp $

@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.9 2007/05/04 08:40:18 erk Exp $
+# $Id: myconf,v 3.10 2007/06/14 13:00:20 siron Exp $
 
 case $1 in
     sun)
@@ -58,9 +58,9 @@ case $1 in
 esac
 
 WHERE=`dirname $0`
-$WHERE/configure --prefix=$HOME/CERTI/Linux-i386 $SHARED $2 $3 $4 $5
+$WHERE/configure --prefix=$HOME/CERTI-3.2.4 $SHARED $2 $3 $4 $5
 make clean
 make
 make install
 
-# $Id: myconf,v 3.9 2007/05/04 08:40:18 erk Exp $
+# $Id: myconf,v 3.10 2007/06/14 13:00:20 siron Exp $
