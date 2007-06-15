@@ -673,9 +673,13 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
 
     try {
         if ( notimestamp )
+            {
             rtiamb.updateAttributeValues(id, *attributeSet, "");
+            }
         else
+            {
             rtiamb.updateAttributeValues(id, *attributeSet, UpdateTime, "");
+            }
     }
     catch (RTI::Exception& e) {
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.42 2007/06/14 13:00:21 siron Exp $
+// $Id: RTIambassador.cc,v 3.43 2007/06/15 11:42:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -969,8 +969,6 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AttributeNotOwned, RTI::AttributeNotDefined, RTI::ObjectNotKnown)
 {
-    throw UnimplementedService("");
-
     Message req, rep ;
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
@@ -2692,4 +2690,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.42 2007/06/14 13:00:21 siron Exp $
+// $Id: RTIambassador.cc,v 3.43 2007/06/15 11:42:04 rousse Exp $
