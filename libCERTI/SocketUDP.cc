@@ -133,13 +133,13 @@ SocketUDP::createUDPServer(unsigned int port)
 {
     assert(!_est_init_udp);
 
-    char localhost[4096] ;
+    char localhost[MAXHOSTNAMELEN+1] ;
 
     // Building Local Address
     memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
     hp_local = (struct hostent *) malloc(sizeof(struct hostent));
 
-    gethostname(localhost, 4096);
+    gethostname(localhost,MAXHOSTNAMELEN) ;
 
     hp_local = (struct hostent *) gethostbyname(localhost);
     if (hp_local == 0) {

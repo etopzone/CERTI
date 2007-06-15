@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.12 2007/04/27 16:15:55 erk Exp $
+// $Id: main.cc,v 3.13 2007/06/15 08:14:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -98,6 +98,20 @@ main(int argc, char **argv)
 	// Create billard
 	std::auto_ptr<Billard> billard(createBillard(args.demo_given, args.demo_arg, federate));
 	billard->setVerbose(verbose);
+
+        // With or without timestamp ?
+        if ( args.notimestamp_flag == 0 )
+            {
+            // without timestamp
+            billard->setNotimestamp(true) ;
+            cout<<"without TIMESTAMP. If you want TIMESTAMP remove -e option."<<endl;
+            }
+        else
+            {
+            // with timestamp
+            billard->setNotimestamp(false) ;
+            cout<<"with TIMESTAMP. If you want without TIMESTAMP add -e option."<<endl;
+            }
 
 	int timer = args.timer_given ? args.timer_arg : 0 ;
 	int delay = args.delay_given ? args.delay_arg : 0 ;
@@ -252,4 +266,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.12 2007/04/27 16:15:55 erk Exp $
+// EOF $Id: main.cc,v 3.13 2007/06/15 08:14:17 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.20 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.21 2007/06/15 08:14:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -103,6 +103,16 @@ public:
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
+    void updateAttributeValues(FederateHandle theFederateHandle,
+                               ObjectHandle theObjectHandle,
+                               AttributeHandle *theAttribArray,
+                               ValueLengthPair *theValueArray,
+                               UShort theArraySize,
+                               const char *theUserTag)
+        throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+               RTIinternalError, InvalidObjectHandle);
+
+
     // Ownership Management
     void negotiatedAttributeOwnershipDivestiture(FederateHandle,
                                                  ObjectHandle theObjectHandle,
@@ -166,4 +176,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.20 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.21 2007/06/15 08:14:17 rousse Exp $

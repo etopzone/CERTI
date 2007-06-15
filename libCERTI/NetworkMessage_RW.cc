@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.24 2007/04/27 16:24:50 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.25 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -61,9 +61,20 @@ NetworkMessage::readBody(Socket *socket)
 	break ;
             
       case UPDATE_ATTRIBUTE_VALUES:
+	object = body.readLongInt();
+	readLabel(body);
+	boolean = body.readLongInt();   // true means with time
+	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+	for (i = 0 ; i < handleArraySize ; i ++) {
+            ValueArray[i].length = body.readLongInt();
+            body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
+	}
+	break ;
+
       case REFLECT_ATTRIBUTE_VALUES:
 	object = body.readLongInt();
 	readLabel(body);
+	boolean = body.readLongInt();    // true means with time
 	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
             ValueArray[i].length = body.readLongInt();
@@ -396,7 +407,6 @@ NetworkMessage::readHeader(Socket *socket)
     }
 
     // 4- If Header.bodySize is not 0, return RTI_TRUE, else RTI_FALSE
-
     return Header.bodySize ;
 }
 
@@ -430,9 +440,21 @@ NetworkMessage::writeBody(Socket *socket)
       break;
 
       case UPDATE_ATTRIBUTE_VALUES:
+	body.writeLongInt(object);
+	body.writeString(label);
+	body.writeLongInt(boolean);    // true means with time
+	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+	
+	for (i = 0 ; i < handleArraySize ; i ++) {
+            body.writeLongInt(ValueArray[i].length) ;
+            body.writeBlock(ValueArray[i].value, ValueArray[i].length);
+	}
+	break ;
+
       case REFLECT_ATTRIBUTE_VALUES:
 	body.writeLongInt(object);
 	body.writeString(label);
+        body.writeLongInt(boolean);
 	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 	
 	for (i = 0 ; i < handleArraySize ; i ++) {
@@ -641,6 +663,12 @@ NetworkMessage::writeHeader(Socket *socket)
 	break ;
 	
       case UPDATE_ATTRIBUTE_VALUES:
+	Header.bodySize = 1 ;
+        Header.VP.O_I.handle = objectClass ;
+        Header.VP.O_I.size = handleArraySize ;
+        Header.VP.O_I.date = date ;
+	break ;
+
       case REFLECT_ATTRIBUTE_VALUES:
 	Header.bodySize = 1 ;
         Header.VP.O_I.handle = objectClass ;
@@ -837,4 +865,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.24 2007/04/27 16:24:50 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.25 2007/06/15 08:14:16 rousse Exp $

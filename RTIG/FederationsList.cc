@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $
+// $Id: FederationsList.cc,v 3.35 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -134,10 +134,20 @@ FederationsList::searchFederation(Handle handle,
 // ----------------------------------------------------------------------------
 // createFederation
 #ifdef FEDERATION_USES_MULTICAST
+/** createFederation (with FEDERATION_USES_MULTICAST defined)
+/   @param name Federation name
+    @param handle Federation handle
+    @param mc_link
+*/
 void FederationsList::createFederation(const char *name,
                                        Handle handle,
                                        SocketMC *mc_link)
 #else
+/** createFederation (with FEDERATION_USES_MULTICAST not defined)
+    @param name Federation name
+    @param handle Federation handle
+    @param FEDid execution id. of the federation (i.e. file name)
+*/
     void FederationsList::createFederation(const char *name,
                                            Handle handle,
                                            const char *FEDid)
@@ -367,7 +377,7 @@ FederationsList::updateRegulator(Handle handle,
 }
 
 // ----------------------------------------------------------------------------
-// updateAttribute
+// updateAttribute with time
 void
 FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
@@ -399,6 +409,37 @@ FederationsList::updateAttribute(Handle handle,
                                       list_size, time, tag);
 }
 
+// ----------------------------------------------------------------------------
+// updateAttribute without time
+void
+FederationsList::updateAttribute(Handle handle,
+                                 FederateHandle federate,
+                                 ObjectHandle id,
+                                 AttributeHandle *attributes,
+                                 ValueLengthPair *values,
+                                 UShort list_size,
+                                 const char *tag)
+    throw (FederateNotExecutionMember,
+           FederationExecutionDoesNotExist,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->updateAttributeValues(federate, id, attributes, values,
+                                      list_size, tag);
+}
 // ----------------------------------------------------------------------------
 // updateParameter
 void
@@ -1271,5 +1312,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.34 2007/04/20 08:27:07 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.35 2007/06/15 08:14:16 rousse Exp $
 

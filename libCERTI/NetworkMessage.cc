@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.15 2007/04/20 08:27:07 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.16 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -215,7 +215,10 @@ NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
 }
 
 // ----------------------------------------------------------------------------
-// read
+/** read a NetworkMessage
+    First read Header and upon readHeader result read or not the Body with readBody
+    @param socket 
+*/
 void
 NetworkMessage::read(Socket *socket)
     throw (NetworkError, NetworkSignal)
@@ -246,6 +249,16 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
     for (int i = 0 ; i < size ; ++i) {
         handleArray[i] = attr[i] ;
     }
+}
+
+// ----------------------------------------------------------------------------
+/** Store a boolean into a NetworkMessage
+    @bool the_bool boolean
+*/
+void
+NetworkMessage::setBoolean(bool the_bool)
+{
+    boolean = the_bool ;
 }
 
 // ----------------------------------------------------------------------------
@@ -297,4 +310,4 @@ NetworkMessage::readFEDid(MessageBody &body)
 }
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.15 2007/04/20 08:27:07 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.16 2007/06/15 08:14:16 rousse Exp $

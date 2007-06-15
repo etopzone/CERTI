@@ -46,6 +46,7 @@ Billard::Billard(std::string federate_name)
       nbTicks(0),
       regulating(false),
       constrained(false),
+      notimestamp(false),      // i.e. with time
       localTime(0.0),
       TIME_STEP(1.0),
       XMAX(500),
@@ -167,6 +168,8 @@ Billard::tick2()
 
 // ----------------------------------------------------------------------------
 /** Set time regulation (time regulating and time constrained)
+    @param start_constrained boolean, if true federate is constrained
+    @param start_regulating boolean, if true federate is regulating
  */
 void
 Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
@@ -175,6 +178,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
 
     if (start_constrained) {
         if (!constrained) {
+            // change from no constrained to constrained
             rtiamb.enableTimeConstrained();
             constrained = true ;
             D.Out(pdInit, "Time Constrained enabled.");
@@ -183,6 +187,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
     }
     else {
         if (constrained) {
+            // change from constrained to no constrained
             rtiamb.disableTimeConstrained();
             constrained = false ;
             D.Out(pdInit, "Time Constrained disabled.");
@@ -191,6 +196,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
 
     if (start_regulating) {
         if (!regulating) {
+            // change from no regulating to regulating
             for (;;) {
                 rtiamb.queryFederateTime(localTime);
 
@@ -227,6 +233,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
     }
     else {
         if (regulating) {
+            // change from regulating to no regulating
             rtiamb.disableTimeRegulation();
             regulating = false ;
         }
@@ -665,10 +672,10 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
           AttrColorID, color, attributeSet->size());
 
     try {
-        rtiamb.updateAttributeValues(id, *attributeSet, UpdateTime, "");
-        // if (log)
-        // logfile << string(((RTIfedTime) UpdateTime).getTime()) << " : UAV "
-        // << string(Local.x) << " " << string(Local.y) << endl ;
+        if ( notimestamp )
+            rtiamb.updateAttributeValues(id, *attributeSet, "");
+        else
+            rtiamb.updateAttributeValues(id, *attributeSet, UpdateTime, "");
     }
     catch (RTI::Exception& e) {
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
@@ -838,7 +845,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
 }
 
 // ----------------------------------------------------------------------------
-/** Callback : reflect attribute values
+/** Callback : reflect attribute values with time
  */
 void
 Billard::reflectAttributeValues(
@@ -852,7 +859,7 @@ Billard::reflectAttributeValues(
            RTI::InvalidFederationTime,
            RTI::FederateInternalError)
 {
-    D.Out(pdTrace, "reflectAttributeValues");
+    D.Out(pdTrace, "reflectAttributeValues with time");
 
     float x1 = 0 ;
     float y1 = 0 ;
@@ -917,6 +924,82 @@ Billard::reflectAttributeValues(
     }
 }
 
+// ----------------------------------------------------------------------------
+/** Callback : reflect attribute values without time
+ */
+void
+Billard::reflectAttributeValues(
+    RTI::ObjectHandle theObject,
+    const RTI::AttributeHandleValuePairSet& theAttributes,
+    const char */*theTag*/)
+    throw (RTI::ObjectNotKnown,
+           RTI::AttributeNotKnown,
+           RTI::FederateInternalError)
+{
+    D.Out(pdTrace, "reflectAttributeValues without time");
+
+    float x1 = 0 ;
+    float y1 = 0 ;
+
+    RTI::ULong valueLength ;
+    char *attrValue ;
+
+    D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
+          theAttributes.size());
+
+    for (unsigned int j=0 ; j<theAttributes.size(); j++) {
+
+        RTI::AttributeHandle handle = theAttributes.getHandle(j);
+        valueLength = theAttributes.getValueLength(j);
+        attrValue = new char[valueLength] ;
+        theAttributes.getValue(j, attrValue, valueLength);
+
+        if (handle == AttrXID) {
+            if (attrValue != NULL) {
+                // OLD : x1 = atof(attrValue);
+                double d_x1 ;
+                memcpy(&d_x1,attrValue,valueLength) ;
+                x1 = d_x1 ;
+                delete[] attrValue ;
+            }
+            else
+                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        }
+        else if (handle == AttrYID) {
+            if (attrValue != NULL) {
+                // OLD : y1 = atof(attrValue);
+                double d_y1 ;
+                memcpy(&d_y1,attrValue,valueLength) ;
+                y1 = d_y1 ;
+                delete[] attrValue ;
+            }
+            else
+                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        }
+        else
+            D.Out(pdError, "Fed: ERREUR: handle inconnu.");
+    }
+    
+    vector<Ball>::iterator it = remote.begin() ;
+    while (it != remote.end() && it->ID != theObject)
+	++it ;
+
+    if (it == remote.end())
+        D.Out(pdError, "Fed: error, id not found (%d).", theObject);
+    else {
+        it->erase();
+
+        float oldx = it->x ;
+        it->x = x1 ;
+        it->dx = it->x - oldx ;
+
+        float oldy = it->y ;
+        it->y = y1 ;
+        it->dy = it->y - oldy ;
+
+	it->active = true ;
+    }
+}
 // ----------------------------------------------------------------------------
 /** Callback : remove object instance
  */

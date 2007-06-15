@@ -196,7 +196,10 @@ SocketUN::~SocketUN()
 }
 
 // ----------------------------------------------------------------------------
-//! send.
+//! send Message using Socket UNIX.
+/**    @param buffer buffer to send
+       @param size   buffer size
+*/
 void
 SocketUN::send(const unsigned char *buffer, size_t size)
     throw (NetworkError, NetworkSignal)

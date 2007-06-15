@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.30 2007/04/03 09:43:39 rousse Exp $
+// $Id: FederationsList.hh,v 3.31 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -250,6 +250,22 @@ public:
                          ValueLengthPair *theValueList,
                          UShort theListSize,
                          FederationTime theTime,
+                         const char *theTag)
+        throw (FederateNotExecutionMember,
+               FederationExecutionDoesNotExist,
+               ObjectNotKnown,
+               AttributeNotDefined,
+               AttributeNotOwned,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void updateAttribute(Handle theHandle,
+                         FederateHandle theFederateHandle,
+                         ObjectHandle theObjectHandle,
+                         AttributeHandle *theAttributeList,
+                         ValueLengthPair *theValueList,
+                         UShort theListSize,
                          const char *theTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
@@ -501,4 +517,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.30 2007/04/03 09:43:39 rousse Exp $
+// $Id: FederationsList.hh,v 3.31 2007/06/15 08:14:16 rousse Exp $

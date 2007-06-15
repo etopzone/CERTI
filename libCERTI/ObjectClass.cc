@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.33 2007/05/03 15:46:31 rousse Exp $
+// $Id: ObjectClass.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -780,7 +780,7 @@ ObjectClass::subscribe(FederateHandle fed,
 }
 
 // ----------------------------------------------------------------------------
-//! update Attribute Values (with time).
+//! update Attribute Values with time.
 ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
@@ -813,7 +813,74 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
         answer->object = object->getHandle();
+        // with time
         answer->date = the_time ;
+        answer->boolean = true ;
+
+        strcpy(answer->label, the_tag);
+
+        answer->handleArraySize = the_size ;
+
+        for (int i = 0 ; i < the_size ; i++) {
+            answer->handleArray[i] = the_attributes[i] ;
+            answer->setValue(i, the_values[i].value, the_values[i].length);
+        }
+
+        ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
+
+        D.Out(pdProtocol,
+              "Object %u updated in class %u, now broadcasting...",
+              object->getHandle(), handle);
+
+        broadcastClassMessage(ocbList, object);
+    }
+    else {
+        D.Out(pdExcept,
+              "UpdateAttributeValues should not be called on the RTIA.");
+        throw RTIinternalError("UpdateAttributeValues called on the RTIA.");
+    }
+
+    // Return the BroadcastList in case it had to be passed to the parent
+    // class.
+    return ocbList ;
+}
+
+// ----------------------------------------------------------------------------
+//! update Attribute Values without time.
+ObjectClassBroadcastList *
+ObjectClass::updateAttributeValues(FederateHandle the_federate,
+                                   Object *object,
+                                   AttributeHandle *the_attributes,
+                                   ValueLengthPair *the_values,
+                                   int the_size,
+                                   const char *the_tag)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           RTIinternalError,
+           InvalidObjectHandle)
+{
+    // Ownership management: Test ownership on each attribute before updating.
+    ObjectAttribute * oa ;
+    for (int i = 0 ; i < the_size ; i++) {
+        oa = object->getAttribute(the_attributes[i]);
+
+        if (oa->getOwner() != the_federate)
+            throw AttributeNotOwned("");
+    }
+
+    // Prepare and Broadcast message for this class
+    ObjectClassBroadcastList *ocbList = NULL ;
+    if (server != NULL) {
+        NetworkMessage *answer = new NetworkMessage ;
+        answer->type = NetworkMessage::REFLECT_ATTRIBUTE_VALUES ;
+        answer->federation = server->federation();
+        answer->federate = the_federate ;
+        answer->exception = e_NO_EXCEPTION ;
+        answer->object = object->getHandle();
+        // without time
+        answer->date = 0 ;
+        answer->boolean = false ;
 
         strcpy(answer->label, the_tag);
 
@@ -1664,4 +1731,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.33 2007/05/03 15:46:31 rousse Exp $
+// $Id: ObjectClass.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $

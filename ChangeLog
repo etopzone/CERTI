@@ -1,3 +1,16 @@
+2007-06-14 15:00  siron
+
+	* ChangeLog, myconf, RTIA/RTIA.cc, RTIA/RTIA_federate.cc,
+	  RTIA/TimeManagement.cc, RTIA/TimeManagement.hh,
+	  include/RTIambServices.hh, libRTI/RTIambassador.cc,
+	  test/Billard/Billard.cc, test/Billard/Billard.hh: Development of
+	  a blocking tick: tick2.  The first version of tick returns
+	  immediately with or without the delivery of one callback. This
+	  can imply an active polling in the federate code. This new
+	  version waits until that one callback can be delivered. We can
+	  observe a performance improvement because the OS scheduler is
+	  less sollicitated.
+
 2007-05-14 14:01  rousse
 
 	* ChangeLog, libCERTI/Message.cc, libRTI/RTIambassador.cc:

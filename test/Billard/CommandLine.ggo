@@ -7,6 +7,7 @@ purpose "CERTI test application"
 option  "auto"          a       "auto start"            int     no
 option	"coordinated" 	c	"coordinated time"	flag	on
 option  "delay"		d	"delay before 1st step" int	no
+option  "notimestamp"   e       "no timestamp"		flag	off    
 option	"federation"	f	"federation name"	string	yes
 option  "logfile"	l	"file to log events"	string  no
 option 	"name"		n	"federate name"		string	yes

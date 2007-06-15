@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.30 2007/04/27 16:24:50 erk Exp $
+// $Id: Message_RW.cc,v 3.31 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -219,6 +219,16 @@ Message::readBody(SocketUN *socket)
             break ;
 
           case UPDATE_ATTRIBUTE_VALUES:
+            // B.c. object, Tag, HandleArray[], ValueArray[] and RAction.
+            // and boolean (true means UAV with time, false without time)
+            object = body.readLongInt();
+            readTag(body);
+            readHandleArray(body);
+            readValueArray(body);
+            readResignAction(body);
+            boolean = body.readLongInt();
+            break ;
+
           case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, HandleArray[], ValueArray[] and RAction.
             object = body.readLongInt();
@@ -234,7 +244,7 @@ Message::readBody(SocketUN *socket)
             // B.c. object, Tag, Label, RAction
             object = body.readLongInt();
             readTag(body);
-            readName(body); /*FAYET 25.07.01*/
+            readName(body);
             readLabel(body);
             readResignAction(body);
             break ;
@@ -413,8 +423,6 @@ Message::readHeader(SocketUN *socket)
       case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
       case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
       case REGISTER_OBJECT_INSTANCE: // Body contains object
-      case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
-        // ValueArray[] and resignAction.
       case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
       case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
         // and ValueArray[]
@@ -424,6 +432,13 @@ Message::readHeader(SocketUN *socket)
       case GET_OBJECT_CLASS_NAME: // Body contains Name
       case GET_ATTRIBUTE_HANDLE: // B.c. Name and attribute.
       case GET_ATTRIBUTE_NAME: // B.c. Name and attribute.
+        objectClass = header.VP.O_I.handle ;
+        handleArraySize = header.VP.O_I.size ;
+        setFederationTime(header.VP.O_I.date);
+        break ;
+
+     case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, HandleArray[]
+        // ValueArray[] and resignAction.
         objectClass = header.VP.O_I.handle ;
         handleArraySize = header.VP.O_I.size ;
         setFederationTime(header.VP.O_I.date);
@@ -775,11 +790,13 @@ Message::writeBody(SocketUN *socket)
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, handleArray[], ValueArray[] and resignAction.
+            // and also a boolean (true UAV or RAV with time, false without time)
             body.writeLongInt(object);
             body.writeString(tag);
             writeHandleArray(body);
             writeValueArray(body);
             writeResignAction(body);
+            body.writeLongInt(boolean);
             break ;
 
           case DISCOVER_OBJECT_INSTANCE:
@@ -1009,8 +1026,6 @@ Message::writeHeader(SocketUN *socket)
       case PUBLISH_OBJECT_CLASS: // Body contains handleArray
       case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains handleArray
       case REGISTER_OBJECT_INSTANCE: // Body contains object
-      case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
-        // ValueArray[] and resignAction.
       case DISCOVER_OBJECT_INSTANCE: // B.c. object, Tag and resignAction
       case REFLECT_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
         // and ValueArray[]
@@ -1023,6 +1038,18 @@ Message::writeHeader(SocketUN *socket)
         header.VP.O_I.handle = objectClass ;
         header.VP.O_I.size = handleArraySize ;
         header.VP.O_I.date = getFederationTime() ;
+        header.bodySize = 1 ;
+        break ;
+
+      case UPDATE_ATTRIBUTE_VALUES: // B.c. object, Tag, handleArray[]
+        // ValueArray[] and resignAction.
+        header.VP.O_I.handle = objectClass ;
+        header.VP.O_I.size = handleArraySize ;
+        // UAV with time (boolean=true) needs date
+        if ( boolean )
+            header.VP.O_I.date = getFederationTime() ;
+        else
+            header.VP.O_I.date = 0 ;
         header.bodySize = 1 ;
         break ;
 
@@ -1153,4 +1180,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.30 2007/04/27 16:24:50 erk Exp $
+// $Id: Message_RW.cc,v 3.31 2007/06/15 08:14:16 rousse Exp $

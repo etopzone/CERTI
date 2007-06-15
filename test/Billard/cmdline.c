@@ -42,6 +42,7 @@ cmdline_parser_print_help (void)
   printf("   -aINT      --auto=INT           auto start\n");
   printf("   -c         --coordinated        coordinated time (default=on)\n");
   printf("   -dINT      --delay=INT          delay before 1st step\n");
+  printf("   -e         --notimestamp        no timestamp (default=off)\n");
   printf("   -fSTRING   --federation=STRING  federation name\n");
   printf("   -lSTRING   --logfile=STRING     file to log events\n");
   printf("   -nSTRING   --name=STRING        federate name\n");
@@ -92,6 +93,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->initx_given = 0 ;
   args_info->inity_given = 0 ;
   args_info->filename_given = 0 ;
+  args_info->notimestamp_given = 0 ;
 #define clear_args() { \
   args_info->coordinated_flag = 1;\
   args_info->federation_arg = NULL; \
@@ -100,6 +102,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
   args_info->demo_arg = NULL; \
   args_info->verbose_flag = 0;\
   args_info->filename_arg = NULL;\
+  args_info->notimestamp_flag = 1;\
 }
 
   clear_args();
@@ -120,6 +123,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         { "auto",	1, NULL, 'a' },
         { "coordinated",	0, NULL, 'c' },
         { "delay",	1, NULL, 'd' },
+        { "notimestamp",	0, NULL, 'e' },
         { "federation",	1, NULL, 'f' },
         { "logfile",	1, NULL, 'l' },
         { "name",	1, NULL, 'n' },
@@ -135,7 +139,7 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
       };
 
       stop_char = 0;
-      c = getopt_long (argc, argv, "hVa:cd:f:l:n:o:t:vx:y:X:Y:F:", long_options, &option_index);
+      c = getopt_long (argc, argv, "hVa:cd:f:l:n:o:t:vx:y:X:Y:F:e", long_options, &option_index);
 
       if (c == -1) break;	/* Exit from `while (1)' loop.  */
 
@@ -165,7 +169,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'c':	/* coordinated time.  */
           if (args_info->coordinated_given)
             {
-              fprintf (stderr, "%s: `--coordinated' (`-c') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--coordinated' (`-c') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -184,10 +189,23 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
           args_info->delay_arg = strtol (optarg,&stop_char,0);
           break;
 
+        case 'e':	/* no time stamp.  */
+          if (args_info->notimestamp_given)
+            {
+              fprintf (stderr, "%s: `--notimestamp' (`-e') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
+              clear_args ();
+              exit (EXIT_FAILURE);
+            }
+          args_info->notimestamp_given = 1;
+          args_info->notimestamp_flag = !(args_info->notimestamp_flag);
+          break;
+
         case 'f':	/* federation name.  */
           if (args_info->federation_given)
             {
-              fprintf (stderr, "%s: `--federation' (`-f') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--federation' (`-f') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -198,7 +216,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'l':	/* file to log events.  */
           if (args_info->logfile_given)
             {
-              fprintf (stderr, "%s: `--logfile' (`-l') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--logfile' (`-l') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -242,7 +261,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'v':	/* verbose mode.  */
           if (args_info->verbose_given)
             {
-              fprintf (stderr, "%s: `--verbose' (`-v') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--verbose' (`-v') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -253,7 +273,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'x':	/* X offset (X11).  */
           if (args_info->xoffset_given)
             {
-              fprintf (stderr, "%s: `--xoffset' (`-x') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--xoffset' (`-x') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -264,7 +285,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
         case 'y':	/* Y offset (X11).  */
           if (args_info->yoffset_given)
             {
-              fprintf (stderr, "%s: `--yoffset' (`-y') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--yoffset' (`-y') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }
@@ -297,7 +319,8 @@ cmdline_parser (int argc, char * const *argv, struct gengetopt_args_info *args_i
        case 'F':	/* FED file name  */
           if (args_info->filename_given)
             {
-              fprintf (stderr, "%s: `--filename' (`-F') option given more than once\n", CMDLINE_PARSER_PACKAGE);
+              fprintf (stderr, "%s: `--filename' (`-F') option given more than once\n",
+                       CMDLINE_PARSER_PACKAGE);
               clear_args ();
               exit (EXIT_FAILURE);
             }

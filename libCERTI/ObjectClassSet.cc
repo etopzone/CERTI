@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.22 2007/05/03 15:46:31 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.23 2007/06/15 08:14:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassSet.hh"
@@ -407,7 +407,7 @@ ObjectClassSet::subscribe(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-//! updateAttributeValues.
+//! updateAttributeValues with time
 void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
@@ -433,6 +433,51 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
     ObjectClassBroadcastList *ocbList = NULL ;
     ocbList = object_class->updateAttributeValues(
 	federate, object, attributes, values, nb, time, tag);
+
+    // Broadcast ReflectAttributeValues message recursively
+    current_class = object_class->getSuperclass();
+
+    while (current_class != 0) {
+        D.Out(pdProtocol,
+              "Broadcasting RAV msg to parent class %d for instance %d.",
+              current_class, object_handle);
+
+        // It may throw ObjectClassNotDefined
+        object_class = getWithHandle(current_class);
+        object_class->broadcastClassMessage(ocbList, object);
+
+        current_class = object_class->getSuperclass();
+    }
+
+    delete ocbList ;
+}
+
+// ----------------------------------------------------------------------------
+//! updateAttributeValues without time
+void
+ObjectClassSet::updateAttributeValues(FederateHandle federate,
+                                      ObjectHandle object_handle,
+                                      AttributeHandle *attributes,
+                                      ValueLengthPair *values,
+                                      UShort nb,
+                                      const char *tag)
+    throw (ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           RTIinternalError,
+           InvalidObjectHandle)
+{
+    Object *object = getObject(object_handle);
+    ObjectClass *object_class = getWithHandle(object->getClass());
+    ObjectClassHandle current_class = object_class->getHandle();
+
+    D.Out(pdProtocol, "Federate %d Updating object %d from class %d.",
+          federate, object_handle, current_class);
+
+    // It may throw a bunch of exceptions
+    ObjectClassBroadcastList *ocbList = NULL ;
+    ocbList = object_class->updateAttributeValues(
+	federate, object, attributes, values, nb, tag);
 
     // Broadcast ReflectAttributeValues message recursively
     current_class = object_class->getSuperclass();
@@ -642,4 +687,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.22 2007/05/03 15:46:31 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.23 2007/06/15 08:14:17 rousse Exp $

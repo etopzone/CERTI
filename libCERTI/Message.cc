@@ -67,8 +67,15 @@ Message::Message()
     FEDid[0] = '\0' ;
 
 }
-
-//getValue allows Value as a set of bytes because length (parameter 2) is known
+/** getValue : Value and its length are tooken from valueArray[Rank]
+    @param Rank valueArray rank
+    @param length byte number of Value tooken from valueArray[Rank] (modified)
+    @param Value Value tooken from valueArray[Rank]
+           Value is managed as a set of bytes
+    Note : if Value is not present, Value is created and its address is returned
+           by getValue
+    getValue allows Value as a set of bytes because length (parameter 2) is known
+*/
 // ----------------------------------------------------------------------------
 char *Message::getValue(int Rank, unsigned long *length, char *Value) const
     throw (RTIinternalError)
@@ -98,6 +105,8 @@ char *Message::getValue(int Rank, unsigned long *length, char *Value) const
 }
 
 // ----------------------------------------------------------------------------
+/** Return a newly allocated ValueArray, exactly of size HandleArraySize.
+*/
 ParameterLengthPair *
 Message::getValueArray()
 {
@@ -122,8 +131,8 @@ Message::getValueArray()
 }
 
 // ----------------------------------------------------------------------------
-/** set label into Message
-    @param NewLabel copied (strcpy) into Message label
+/** set label into a Message
+    @param NewLabel copied (strcpy) into Message label (NULL label is stored as an empty string)
 */
 void
 Message::setLabel(const char *NewLabel)
@@ -220,6 +229,9 @@ Message::setFederationTimeDelta(FederationTimeDelta the_lookahead)
 }
 
 // ----------------------------------------------------------------------------
+/** Store FedTime into a Message
+    @param the_time federation time
+*/
 void
 Message::setFedTime(const RTI::FedTime &the_time)
 {
@@ -241,6 +253,9 @@ Message::setFederationTime(FederationTime the_time)
 }
 
 // ----------------------------------------------------------------------------
+/** Store a boolean into a Message
+    @bool the_bool boolean
+*/
 void
 Message::setBoolean(bool the_bool)
 {
@@ -248,6 +263,9 @@ Message::setBoolean(bool the_bool)
 }
 
 // ----------------------------------------------------------------------------
+/** Store ObjectHandle into a Message
+    @param the_object object handle
+*/
 void
 Message::setObject(ObjectHandle the_object)
 {
@@ -358,6 +376,9 @@ Message::getAHVPS() const
 }
 
 // ----------------------------------------------------------------------------
+/** store attribute set into handleArray and valueArray of a Message
+    @param the_attributes attribute set
+*/
 void
 Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 {
@@ -489,7 +510,9 @@ Message::setFederateName(const char *NewNomFedere)
 
 // ----------------------------------------------------------------------------
 // setTag
-//
+/** Store Tag into a Message
+    @param new_tag tag (NULL tag is stored as an empty string)
+*/
 void
 Message::setTag(const char *new_tag)
 {

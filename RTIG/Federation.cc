@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.53 2007/05/12 23:29:40 erk Exp $
+// $Id: Federation.cc,v 3.54 2007/06/15 08:14:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -70,12 +70,26 @@ static PrettyDebug D("FEDERATION", __FILE__);
   result in RootObj.
 */
 #ifdef FEDERATION_USES_MULTICAST
+/** with FEDERATION_USES_MULTICAST defined
+    @param federation_name
+    @param federation_handle
+    @param socket_server
+    @param audit_server
+    @param mc_link
+*/
 Federation::Federation(const char *federation_name,
                        FederationHandle federation_handle,
                        SocketServer &socket_server,
                        AuditFile &audit_server,
                        SocketMC *mc_link)
 #else
+/** with FEDERATION_USES_MULTICAST not defined
+    @param federation_name
+    @param federation_handle
+    @param socket_server
+    @param audit_server
+    @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
+*/
     Federation::Federation(const char *federation_name,
                            Handle federation_handle,
                            SocketServer &socket_server,
@@ -1202,7 +1216,7 @@ Federation::subscribeObject(FederateHandle federate,
 }
 
 // ----------------------------------------------------------------------------
-// updateAttributeValues
+// updateAttributeValues with time
 
 void
 Federation::updateAttributeValues(FederateHandle federate,
@@ -1232,6 +1246,35 @@ Federation::updateAttributeValues(FederateHandle federate,
           handle, federate, id);
 }
 
+// ----------------------------------------------------------------------------
+// updateAttributeValues without time
+
+void
+Federation::updateAttributeValues(FederateHandle federate,
+                                  ObjectHandle id,
+                                  AttributeHandle *attributes,
+                                  ValueLengthPair *values,
+                                  UShort list_size,
+                                  const char *tag)
+    throw (FederateNotExecutionMember,
+           ObjectNotKnown,
+           AttributeNotDefined,
+           AttributeNotOwned,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
+
+    // It may throw *NotDefined
+    root->ObjectClasses->updateAttributeValues(federate, id, attributes, values,
+                                               list_size, tag);
+
+    D.Out(pdRegister,
+          "Federation %d: Federate %d updated attributes of Object %d.",
+          handle, federate, id);
+}
 // ----------------------------------------------------------------------------
 //! Update the current time of a regulator federate.
 void
@@ -1823,5 +1866,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.53 2007/05/12 23:29:40 erk Exp $
+// $Id: Federation.cc,v 3.54 2007/06/15 08:14:15 rousse Exp $
 

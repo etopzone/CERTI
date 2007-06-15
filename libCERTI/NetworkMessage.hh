@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.23 2007/04/03 09:43:39 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.24 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -231,6 +231,9 @@ public :
 
     void setAHS(const AttributeHandle *, int);
 
+    void setBoolean(bool);
+    bool getBoolean() const { return boolean ; };
+
     Type type ;
     TypeException exception ;
 
@@ -319,4 +322,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.23 2007/04/03 09:43:39 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.24 2007/06/15 08:14:16 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.10 2007/04/20 12:32:52 erk Exp $
+// $Id: RTIA_network.cc,v 3.11 2007/06/15 08:14:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -112,18 +112,27 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
          // At this point of development, we cannot assume this facility and
          // decided to store message as TSO only if all attributes meets TSO
          // criteria. Otherwise, a single message will be enqueue in FIFO.
-         
-         // Retrieve order type
-         updateOrder = TIMESTAMP;
-         for (UShort i=0; i< msg->handleArraySize; ++i)
-         {
-            if (rootObject->ObjectClasses->getWithHandle( msg->objectClass )
-                ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
-            {
-               updateOrder = RECEIVE;
-               break;
-            }
-         }
+ 
+         // Here we have to consider RAV without time
+         if ( !msg->getBoolean() )
+             {
+             // without time
+             updateOrder = RECEIVE ;
+             }
+         else
+             {        
+             // Retrieve order type
+             updateOrder = TIMESTAMP;
+             for (UShort i=0; i< msg->handleArraySize; ++i)
+               {
+                if (rootObject->ObjectClasses->getWithHandle( msg->objectClass )
+                    ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
+                {
+                   updateOrder = RECEIVE;
+                   break;
+                }
+               }
+             }
          
          // Decide which queue will be used
          if(updateOrder == TIMESTAMP && tm->requestContraintState())    
@@ -304,4 +313,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.10 2007/04/20 12:32:52 erk Exp $
+// $Id: RTIA_network.cc,v 3.11 2007/06/15 08:14:15 rousse Exp $

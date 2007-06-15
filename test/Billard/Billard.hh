@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
+// $Id: Billard.hh,v 3.9 2007/06/15 08:14:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -66,8 +66,9 @@ public:
     void pause();
     virtual void publishAndSubscribe();
     void resign();
-    void setTimeRegulation(bool, bool);
+    void setTimeRegulation(bool constrained, bool regulating);
     void setVerbose(bool flag) { verbose = flag ; }
+    void setNotimestamp(bool flag) { notimestamp = flag ; }
     void step();
     virtual void checkRegions();
     void synchronize(int);
@@ -103,7 +104,7 @@ public:
                                 const RTI::AttributeHandleValuePairSet &,
                                 const char *)
         throw (RTI::ObjectNotKnown, RTI::AttributeNotKnown,
-	       RTI::FederateInternalError) { };
+	       RTI::FederateInternalError);
 
     void receiveInteraction(RTI::InteractionClassHandle theInteraction,
                             const RTI::ParameterHandleValuePairSet& theParameters,
@@ -147,6 +148,7 @@ protected:
 
     bool regulating ;
     bool constrained ;
+    bool notimestamp ;   // true no timestamp i.e.false means with time
     RTIfedTime localTime ;
     const RTIfedTime TIME_STEP ;
 
@@ -171,4 +173,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
+// $Id: Billard.hh,v 3.9 2007/06/15 08:14:17 rousse Exp $

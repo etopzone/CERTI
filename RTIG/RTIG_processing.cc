@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.33 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -574,11 +574,14 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     auditServer << "ObjID = " << req->object
 		<< ", Date = " << req->date ;
 
-    // Prepare le Value Array
+    // Get Value Array
     ValueArray = req->getAttribValueArray();
 
-    // Propage l'appel
-    federations.updateAttribute(req->federation,
+    // Forward the call
+    if ( req->getBoolean() )
+        {
+        // UAV with time
+        federations.updateAttribute(req->federation,
                                  req->federate,
                                  req->object,
                                  req->handleArray,
@@ -586,9 +589,21 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->handleArraySize,
                                  req->date,
                                  req->label);
+        }
+    else
+        {
+        // UAV without time
+        federations.updateAttribute(req->federation,
+                                 req->federate,
+                                 req->object,
+                                 req->handleArray,
+                                 ValueArray,
+                                 req->handleArraySize,
+                                 req->label);
+        }
     free(ValueArray);
 
-    // Prepare la reponse
+    // Building answer (Network Message re)
     NetworkMessage rep ;
     rep.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
     rep.exception = e_NO_EXCEPTION ;
@@ -1144,4 +1159,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.33 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.19 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.20 2007/06/15 08:14:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -84,7 +84,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 }
 
 // ----------------------------------------------------------------------------
-//! updateAttributeValues
+//! updateAttributeValues with time
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
@@ -97,12 +97,14 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     NetworkMessage req, rep ;
     int i ;
 
-    // Mise en place de la requete
+    // Building request (req NetworkMessage)
     req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
     req.date = theTime ;
+    // true for UAV with time
+    req.setBoolean(true);
 
     req.handleArraySize = attribArraySize ;
 
@@ -121,6 +123,42 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     return rep.eventRetraction ;
 }
 
+// ----------------------------------------------------------------------------
+//! updateAttributeValues without time
+void
+ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
+                                        AttributeHandle *attribArray,
+                                        ValueLengthPair *valueArray,
+                                        UShort attribArraySize,
+                                        const char *theTag,
+                                        TypeException &e)
+{
+    NetworkMessage req, rep ;
+    int i ;
+
+    // Building request (req NetworkMessage)
+    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+    req.object = theObjectHandle ;
+    // false for UAV without time
+    req.setBoolean(false);
+
+    req.handleArraySize = attribArraySize ;
+
+    for (i = 0 ; i < attribArraySize ; i++) {
+        req.handleArray[i] = attribArray[i] ;
+        req.setValue(i, valueArray[i].value, valueArray[i].length);
+    }
+
+    strcpy(req.label, theTag);
+
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
+
+    e = rep.exception ;
+
+}
 // ----------------------------------------------------------------------------
 //! discoverObject.
 void
@@ -578,4 +616,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.19 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.20 2007/06/15 08:14:15 rousse Exp $

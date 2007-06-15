@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.13 2007/06/15 08:14:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -56,6 +56,13 @@ public:
                           ValueLengthPair *valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
+                          const char *theTag,
+                          TypeException &e);
+
+    void updateAttributeValues(ObjectHandle theObjectHandle,
+                          AttributeHandle *attribArray,
+                          ValueLengthPair *valueArray,
+                          UShort attribArraySize,
                           const char *theTag,
                           TypeException &e);
 
@@ -183,4 +190,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.13 2007/06/15 08:14:15 rousse Exp $

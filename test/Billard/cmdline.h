@@ -38,6 +38,7 @@ struct gengetopt_args_info
   int initx_arg;	/* ball initial X value.  */
   int inity_arg;	/* ball initial Y value.  */
   char * filename_arg;  /* FED filename */
+  char notimestamp_flag;/* no timestamp (default=off i.e. with timestamp) */
 
   int help_given ;	/* Whether help was given.  */
   int version_given ;	/* Whether version was given.  */
@@ -55,6 +56,7 @@ struct gengetopt_args_info
   int initx_given ;	/* Whether initx was given.  */
   int inity_given ;	/* Whether inity was given.  */
   char * filename_given ; /* Whether FED filename */
+  char notimestamp_given ;/* Whether notimestamp given */
 
 } ;
 
