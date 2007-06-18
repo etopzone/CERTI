@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.9 2007/06/15 08:14:17 rousse Exp $
+// $Id: Billard.hh,v 3.10 2007/06/18 08:13:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -130,6 +130,8 @@ public:
     RTI::ObjectHandle registerBallInstance(const char *);
 
     void sendInteraction(double, double, const RTI::FedTime &, RTI::ObjectHandle);
+    void sendInteraction(double, double, RTI::ObjectHandle);
+
     void sendUpdate(double, double, int, const RTI::FedTime &, RTI::ObjectHandle);
 
 protected:
@@ -173,4 +175,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.9 2007/06/15 08:14:17 rousse Exp $
+// $Id: Billard.hh,v 3.10 2007/06/18 08:13:58 rousse Exp $

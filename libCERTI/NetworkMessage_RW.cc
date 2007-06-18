@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.25 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.26 2007/06/18 08:13:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -50,9 +50,7 @@ NetworkMessage::readBody(Socket *socket)
     switch(Header.type) {
       case GET_FED_FILE:
         number = body.readShortInt();
-        unsigned short nb;      
-        nb = body.readShortInt();
-        body.readBlock(FEDid,nb);
+        body.readString(FEDid,MAX_FEDFILE_NAME_LENGTH);
         if ( number >= 1 )  // open (0) and close (0) no more information
             {
             ValueArray[0].length = body.readLongInt();
@@ -430,8 +428,7 @@ NetworkMessage::writeBody(Socket *socket)
     switch(Header.type) {
       case GET_FED_FILE:
         body.writeShortInt(number);
-        body.writeShortInt(strlen(FEDid));
-        body.writeBlock(FEDid,strlen(FEDid));
+        body.writeString(FEDid);
         if ( number >= 1 )  // open (0) and close (0) no more information
             {
             body.writeLongInt(ValueArray[0].length);
@@ -865,4 +862,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.25 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.26 2007/06/18 08:13:58 rousse Exp $

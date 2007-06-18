@@ -1,3 +1,28 @@
+2007-06-15 13:42  rousse
+
+	* libRTI/RTIambassador.cc, test/Billard/Billard.cc: Correction
+	  d'une petite erreur lors de la fusion cvs precedente.  Little bug
+	  correction coming from last cvs merge.
+
+2007-06-15 10:14  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
+	  RTIA/RTIA_network.cc, RTIG/Federation.cc, RTIG/Federation.hh,
+	  RTIG/FederationsList.cc, RTIG/FederationsList.hh,
+	  RTIG/RTIG_processing.cc, libCERTI/Message.cc,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
+	  libCERTI/ObjectClass.cc, libCERTI/ObjectClass.hh,
+	  libCERTI/ObjectClassSet.cc, libCERTI/ObjectClassSet.hh,
+	  libCERTI/SocketUDP.cc, libCERTI/SocketUN.cc,
+	  test/Billard/Billard.cc, test/Billard/Billard.hh,
+	  test/Billard/CommandLine.ggo, test/Billard/cmdline.c,
+	  test/Billard/cmdline.h, test/Billard/main.cc: FRANCAIS :
+	  Realisation du service updateAttributeValues sans estampille.
+	  Rajout de l'option -e (signifie sans estampille) dans le billard.
+	  ENGLISH : Implemantation of updateAttributeValues without time
+	  stamp.  Option -e added (i.e. without time stamp) for Billard.
+
 2007-06-14 15:00  siron
 
 	* ChangeLog, myconf, RTIA/RTIA.cc, RTIA/RTIA_federate.cc,
@@ -421,4 +446,3 @@
 2006-05-14 22:40  breholee
 
 	* ChangeLog: CERTI 3.2.1 release
-

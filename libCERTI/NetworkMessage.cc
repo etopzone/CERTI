@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.16 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.17 2007/06/18 08:13:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,6 +80,13 @@ NetworkMessage::NetworkMessage()
     interactionClass = 0 ;
 
     handleArraySize = 0 ;
+        
+    for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
+        {
+        ValueArray[i].length = 0 ;
+        ValueArray[i].value[0]  = '\0' ;
+        }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -200,7 +207,6 @@ NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
     throw (RTIinternalError)
 {
     // Pre-Checking
-
     if ((Value == NULL) || (length > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
@@ -310,4 +316,4 @@ NetworkMessage::readFEDid(MessageBody &body)
 }
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.16 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.17 2007/06/18 08:13:58 rousse Exp $

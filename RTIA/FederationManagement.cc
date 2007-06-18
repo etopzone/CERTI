@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.22 2007/04/24 15:10:31 erk Exp $
+// $Id: FederationManagement.cc,v 3.23 2007/06/18 08:13:57 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -225,13 +225,13 @@ joinFederationExecution(const char *Federate,
             {
 	    stat->rtiService(NetworkMessage::GET_FED_FILE);
             // RTIA have to open a new file for working
-            // We have to build a name for working file, name begins by :RTIA
-            strcpy(filename,":RTIA:");
+            // We have to build a name for working file, name begins by _RTIA_
+            strcpy(filename,"_RTIA_");
             // First pid converted in char and added
             // Then federation name added also
             // Last file type : fed or xml ?
             char pid_name[10];
-            sprintf(pid_name,"%d:",getpid());
+            sprintf(pid_name,"%d_",getpid());
             strcat(filename,pid_name); 
             strcat(filename,Federation);     
             string filename_RTIG = reponse.FEDid ;
@@ -743,4 +743,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.22 2007/04/24 15:10:31 erk Exp $
+// $Id: FederationManagement.cc,v 3.23 2007/06/18 08:13:57 rousse Exp $

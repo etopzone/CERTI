@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.10 2007/04/27 16:24:50 erk Exp $
+// $Id: MessageBody.cc,v 3.11 2007/06/18 08:13:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -102,8 +102,9 @@ MessageBody::readString(char *store, unsigned short store_length)
 }
 
 // ----------------------------------------------------------------------------
-/** Write a string. If the string is empty (or NULL), an empty string
-    is written onto the stream.
+/** Write a string.
+    If the string is NOT empty (or NOT NULL) : write length (strlen) then chars    
+    If the string is empty (or NULL), write only length (i.e. zero).
     @param s String to copy
 */
 void 
@@ -164,4 +165,4 @@ MessageBody::operator>>(unsigned short &val) const
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.10 2007/04/27 16:24:50 erk Exp $
+// $Id: MessageBody.cc,v 3.11 2007/06/18 08:13:58 rousse Exp $

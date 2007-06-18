@@ -65,7 +65,11 @@ Message::Message()
     number = 0 ;
     region = 0 ;
     FEDid[0] = '\0' ;
-
+    for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
+        {
+        valueArray[i].length = 0 ;
+        valueArray[i].value[0]  = '\0' ;
+        }
 }
 /** getValue : Value and its length are tooken from valueArray[Rank]
     @param Rank valueArray rank
