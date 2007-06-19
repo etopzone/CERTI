@@ -1,3 +1,14 @@
+2007-06-18 10:13  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc, libCERTI/Message.cc,
+	  libCERTI/MessageBody.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage_RW.cc, test/Billard/Billard.hh: FRENCH Le
+	  nom du fichier fed de travail contenait des : ce qui gene le
+	  passage sous Windows.  Ils ont ete remplaces par des _ Merci
+	  Jean-Michel et Eric.	ANGLAIS Workind fed file name contains :
+	  character. This don't work under Windows.  : character is now
+	  replaced by  _ character Thanx to Jean-Michel and Eric.
+
 2007-06-15 13:42  rousse
 
 	* libRTI/RTIambassador.cc, test/Billard/Billard.cc: Correction

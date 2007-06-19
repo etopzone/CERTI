@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.35 2007/06/14 13:00:20 siron Exp $
+// $Id: RTIA_federate.cc,v 3.36 2007/06/19 13:07:11 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -137,7 +137,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           else if  ( !strcasecmp(extension.c_str(),"xml") )
               {
               is_an_xml = true ;
-              D.Out(pdTrace, "Trying to use .fed file");
+              D.Out(pdTrace, "Trying to use .xml file");
               } 
           else 
               throw CouldNotOpenFED("nor .fed nor .xml");
@@ -1142,4 +1142,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.35 2007/06/14 13:00:20 siron Exp $
+// $Id: RTIA_federate.cc,v 3.36 2007/06/19 13:07:11 rousse Exp $

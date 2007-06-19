@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.23 2007/06/18 08:13:57 rousse Exp $
+// $Id: FederationManagement.cc,v 3.24 2007/06/19 13:07:11 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -191,7 +191,7 @@ joinFederationExecution(const char *Federate,
 {
     NetworkMessage requete, reponse, requeteFED ;
     int i, nb ;
-    char filename[MAX_FEDFILE_NAME_LENGTH] ; // Pour s'en servir pour le nom du fichier temporaire
+    char filename[MAX_FEDFILE_NAME_LENGTH] ; // Needed for working file name
 
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
 
@@ -743,4 +743,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.23 2007/06/18 08:13:57 rousse Exp $
+// $Id: FederationManagement.cc,v 3.24 2007/06/19 13:07:11 rousse Exp $
