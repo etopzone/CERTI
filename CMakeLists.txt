@@ -145,8 +145,6 @@ FIND_PACKAGE(LexYacc)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
-
-
 # Globally used include dir
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -169,31 +167,68 @@ ENDIF (WIN32)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
 SET(CPACK_PACKAGE_VENDOR "ONERA/DTIM")
-#SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-#SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/CERTI_DESCRIPTION.txt")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
 SET(CPACK_PACKAGE_NAME certi)
 SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
 
 IF (WIN32)
-SET(CPACK_SOURCE_GENERATOR "ZIP")
-SET(CPACK_GENERATOR "ZIP")
-ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
-	COMMAND cpack -G ZIP --config CPackSourceConfig.cmake
-	COMMENTS "Build a ZIP file containing the source")
+  SET(CPACK_SOURCE_GENERATOR "ZIP")
+  SET(CPACK_GENERATOR "ZIP")
+  ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
+    COMMAND cpack -G ZIP --config CPackSourceConfig.cmake
+    COMMENTS "Build a ZIP file containing the source")
+
+  # NSIS installer specific part
+  INCLUDE(InstallRequiredSystemLibraries)
+  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
+  SET(CPACK_NSIS_CREATE_ICONS "
+	    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\RTIG.lnk\\\" \\\"$INSTDIR\\\\bin\\\\RTIG.exe\\\"
+	    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard.exe\\\" \\\"-n 1 -t 10 -FTest.fed -fTest\\\"
+	")
+  SET(CPACK_NSIS_DELETE_ICONS "
+	    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\RTIG.lnk\\\"
+	    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard.lnk\\\"
+	")
+  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} CERTI (HLA RTI)")
+  SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\savannah.nongnu.org\\\\projects\\\\certi")
+  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.ts2p.org\\\\tsp")
+  SET(CPACK_NSIS_CONTACT "certi-devel@nongnu.org")
+  SET(CPACK_NSIS_MODIFY_PATH ON)
+	
+  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
+		CopyFiles \\\"$INSTDIR\\\\bin\\\\CERTI.dll\\\" \\\"$SYSDIR\\\"
+		CopyFiles \\\"$INSTDIR\\\\bin\\\\RTI.dll\\\" \\\"$SYSDIR\\\"
+    ")
+	
+	
+#	SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
+#		MessageBox MB_OK \\\"Copy Libraries to the system directory\\\"
+#	")
+	
+	SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS ${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS} "
+		Delete \\\"$SYSDIR\\\\CERTI.dll\\\"
+		Delete \\\"$SYSDIR\\\\RTI.dll\\\"
+	")
+	
+#	SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS ${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS} "
+#		MessageBox MB_OK \\\"Delete Libraries from the system directory\\\"
+#	")
 ELSE (WIN32)
-SET(CPACK_SOURCE_GENERATOR "TGZ")
-SET(CPACK_GENERATOR "TGZ")
+  SET(CPACK_SOURCE_GENERATOR "TGZ")
+  SET(CPACK_GENERATOR "TGZ")
 ENDIF (WIN32)
 
 IF (NOT WIN32)
-EXECUTE_PROCESS(COMMAND uname -m
-  OUTPUT_VARIABLE MACHINE)
-STRING(REPLACE "\n" "" 
-  MACHINE
-  ${MACHINE})
-  ELSE (NOT WIN32)
-  SET(MACHINE "BOF")
-  ENDIF (NOT WIN32)
+  EXECUTE_PROCESS(COMMAND uname -m
+    OUTPUT_VARIABLE MACHINE)
+  STRING(REPLACE "\n" "" 
+    MACHINE
+    ${MACHINE})
+ELSE (NOT WIN32)
+  SET(MACHINE "Win32NoName")
+ENDIF (NOT WIN32)
+
 SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${MACHINE})
 
 SET(CPACK_SOURCE_IGNORE_FILES "/CVS/;/\\\\.svn/;\\\\.swp$;\\\\.#;/#;.*~;cscope.*")
@@ -230,20 +265,3 @@ ELSE (WIN32)
   MESSAGE(STATUS "*** CERTI has been successfully configured ********")
 ENDIF (WIN32)
 
-
-#original Makefile.am contents follow:
-
-### Process this file with automake to produce Makefile.in
-#
-## @configure_input@
-#
-#MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure config.h.in stamp-h.in
-#
-#SUBDIRS = include libCERTI RTIG RTIA libRTI test doc
-#
-#scriptsdir = $(prefix)/share/scripts
-#
-#scripts_DATA = myCERTI_env.sh
-#
-#EXTRA_DIST = myconf gpl.txt lesser.txt certi-small.xpm myCERTI_env.sh
-#
