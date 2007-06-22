@@ -1,0 +1,4 @@
+CERTI is an efficient and Open Source
+HLA Runtime Infrastructure (RTI).
+
+More explanation to come soon...
