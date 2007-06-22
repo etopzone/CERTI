@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.15 2005/03/25 17:20:26 breholee Exp $
+// $Id: Object.hh,v 3.16 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -36,7 +36,7 @@
 
 namespace certi {
 
-class Object : public Named, public Handled<ObjectHandle>
+class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle>
 {
 public:
     Object(FederateHandle the_owner)
@@ -88,4 +88,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.15 2005/03/25 17:20:26 breholee Exp $
+// $Id: Object.hh,v 3.16 2007/06/22 08:51:37 erk Exp $

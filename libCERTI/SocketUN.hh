@@ -20,13 +20,16 @@
 #ifndef CERTI_SOCKET_UN_HH
 #define CERTI_SOCKET_UN_HH
 
-#include "Socket.hh"
-#include "PrettyDebug.hh"
-
-#include <sys/socket.h>
-#include <netdb.h>
+#ifdef _WIN32						//dotNet
+	#include "SocketTCP.hh"
+#else
+	#include <netdb.h>
+	#include <sys/socket.h>
+#endif
 
 #define NOM_FICHIER_SOCKET ".comFedRTI"
+#include "Socket.hh"
+#include "PrettyDebug.hh"
 
 namespace certi {
 // Signal Handler Types for a UNIX socket : - stSignalInterrupt :
@@ -52,52 +55,62 @@ typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
   Therefore, before returning to a select loop, be sure to call the
   IsDataReady method to check whether any data is waiting for processing.
 */
-class SocketUN
+class CERTI_EXPORT SocketUN
 {
 public:
-    SocketUN(SignalHandlerType theType = stSignalInterrupt);
-    ~SocketUN();
+	SocketUN(SignalHandlerType theType = stSignalInterrupt);
+	~SocketUN();
 
-    int connectUN(pid_t Server_pid);
-    void acceptUN();
+	#ifdef _WIN32
+		void connectUN(int Server_pid);			// Called by client to connect
+	#else
+		int connectUN(pid_t Server_pid);
+	#endif
+	void acceptUN();									//Called by server
 
-    bool isDataReady();
+	bool isDataReady();
 
-    void send(const unsigned char *, size_t)
-        throw (NetworkError, NetworkSignal);
-
-    void receive(const unsigned char *, size_t)
-        throw (NetworkError, NetworkSignal);
+	void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
+	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
 
 protected:
-    void error(const char *);
+	void error(const char *);
 
-    int _socket_un ;
+	#ifdef _WIN32
+		SOCKET _socket_un;
+	#else
+		int _socket_un;
+	#endif
 
-    bool _est_serveur ;
-    bool _est_init_un ;
+	bool _est_serveur ;
+	bool _est_init_un ;
 
-    SignalHandlerType HandlerType ;
+	SignalHandlerType HandlerType ;
 
-    std::string name ;
+	std::string name ;
 
 private:
-    ByteCount SentBytesCount ;
-    ByteCount RcvdBytesCount ;
+	#ifdef _WIN32
+		unsigned long SentBytesCount;
+		unsigned long RcvdBytesCount;
+	#else
+		ByteCount SentBytesCount ;
+		ByteCount RcvdBytesCount ;
+	#endif
 
-    // la socket du serveur RTIA qui a ete cree par le federe-client
-    int sock_connect ;
+	// la socket du serveur RTIA qui a ete cree par le federe-client
+	int sock_connect ;
 
-    pdCDebug *pD ;
+	pdCDebug *pD ;
 
-#ifdef SOCKUN_BUFFER_LENGTH
-    // This class can use a buffer to reduce the number of systems
-    // calls when reading a lot of small amouts of data. Each time a
-    // Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
+	#ifdef SOCKUN_BUFFER_LENGTH
+		// This class can use a buffer to reduce the number of systems
+		// calls when reading a lot of small amouts of data. Each time a
+		// Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
 
-    char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
-    unsigned long RBLength ;
-#endif
+		char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
+		unsigned long RBLength ;
+	#endif
 };
 
 } // namespace certi

@@ -19,9 +19,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "XmlParser.hh"
+#include "Certi_Win.h"
 
+#include "XmlParser.hh"
 #include "ObjectClassAttribute.hh"
 #include "RoutingSpace.hh"
 #include "PrettyDebug.hh"

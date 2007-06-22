@@ -1,26 +1,30 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.6 2005/04/30 16:30:43 breholee Exp $
+// $Id: RTI.hh,v 3.7 2007/06/22 08:51:35 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
 
 #if defined(_WIN32)
-#pragma warning(disable: 4290)
-#pragma warning(disable: 4275)
-#pragma warning(disable: 4251)
-#if defined(BUILDING_RTI)
-#define RTI_EXPORT __declspec(dllexport)
+	#include <windows.h>
+	#pragma warning(disable: 4290)
+	#pragma warning(disable: 4275)
+	#pragma warning(disable: 4251)
+	#pragma warning(disable: 4273)
+	#pragma warning(disable: 4996)
+	#if defined(RTI_EXPORTS)
+		#define RTI_EXPORT __declspec(dllexport)
+	#else
+		#define RTI_EXPORT __declspec(dllimport)
+	#endif
+	
+	#if defined(CERTI_EXPORTS)
+		#define CERTI_EXPORT __declspec(dllexport)
+	#else
+		#define CERTI_EXPORT __declspec(dllimport)
+	#endif
 #else
-#define RTI_EXPORT __declspec(dllimport)
-#endif
-#if defined(BUILDING_FEDTIME)
-#define RTI_EXPORT_FEDTIME __declspec(dllexport)
-#else
-#define RTI_EXPORT_FEDTIME __declspec(dllimport)
-#endif
-#else
-#define RTI_EXPORT
-#define RTI_EXPORT_FEDTIME
+	#define RTI_EXPORT  
+	#define CERTI_EXPORT  
 #endif
 
 #ifdef RTI_USES_STD_FSTREAM
@@ -56,10 +60,10 @@ public:
     };
 };
 
-RTI_STD::ostream RTI_EXPORT & 
+RTI_STD::ostream CERTI_EXPORT & 
 operator<<(RTI_STD::ostream &, RTI::Exception *);
 
-RTI_STD::ostream RTI_EXPORT & 
+RTI_STD::ostream CERTI_EXPORT & 
 operator<<(RTI_STD::ostream &, RTI::Exception const &);
 
 #endif

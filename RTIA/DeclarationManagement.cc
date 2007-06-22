@@ -18,16 +18,20 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.13 2007/04/20 08:27:06 rousse Exp $
+// $Id: DeclarationManagement.cc,v 3.14 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "DeclarationManagement.hh"
 
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#endif
 
 namespace certi {
 namespace rtia {
@@ -451,4 +455,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.13 2007/04/20 08:27:06 rousse Exp $
+// $Id: DeclarationManagement.cc,v 3.14 2007/06/22 08:51:34 erk Exp $

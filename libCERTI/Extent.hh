@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.7 2005/03/11 13:32:46 breholee Exp $
+// $Id: Extent.hh,v 3.8 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_EXTENT_HH
@@ -42,7 +42,7 @@ typedef std::vector<Range> RangeSet ;
     using a set of extents.
     @sa RoutingSpace, Dimension, RegionImp
  */
-class Extent
+class CERTI_EXPORT Extent
 {
 public:
     Extent(size_t);
@@ -70,4 +70,4 @@ private:
 
 #endif // CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.7 2005/03/11 13:32:46 breholee Exp $
+// $Id: Extent.hh,v 3.8 2007/06/22 08:51:36 erk Exp $

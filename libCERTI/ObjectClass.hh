@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.27 2007/06/15 08:14:16 rousse Exp $
+// $Id: ObjectClass.hh,v 3.28 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -57,7 +57,7 @@ public:
 /*! OMT object class. It also contains the instance list from this
   class.
 */
-class ObjectClass {
+class CERTI_EXPORT ObjectClass {
 
 public:
     ObjectClass();
@@ -246,4 +246,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.27 2007/06/15 08:14:16 rousse Exp $
+// $Id: ObjectClass.hh,v 3.28 2007/06/22 08:51:38 erk Exp $

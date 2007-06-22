@@ -17,13 +17,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "SocketUN.hh"
+#include "Certi_Win.h"
 
 #include "certi.hh"
+#include "SocketUN.hh"
+#include "baseTypes.hh"
 
-#include <assert.h>
-#include <iostream>
+#ifdef _WIN32
+#include "SocketTCP.hh"
+#else
 #include <unistd.h>
 #include <strings.h>
 #include <sstream>
@@ -31,6 +33,10 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/un.h>
+#endif
+
+#include <iostream>
+#include <assert.h>
 
 using std::ostringstream ;
 using std::string ;
@@ -46,6 +52,42 @@ namespace certi {
 void
 SocketUN::acceptUN()
 {
+#ifdef _WIN32							//dotNet
+	struct sockaddr_in nom_client, nom_serveur;
+	int lg_nom;
+	int result;
+
+	assert(SocketTCP::winsockInitialized());
+
+	if((sock_connect=socket(AF_INET,SOCK_STREAM,0)) < 0)
+		error("socket");
+
+	memset(&nom_serveur, 0, sizeof(nom_serveur));
+
+	nom_serveur.sin_family      = AF_INET;
+	nom_serveur.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+
+	// TEMPO : UNIX socket emulation with TCP/IP sockets
+	int pid = getpid();
+	// make sure it is contained in a short
+	if (pid > 65535)
+		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
+
+	nom_serveur.sin_port = htons(pid);
+
+	lg_nom = sizeof(nom_serveur);
+
+	result = ::bind(sock_connect,(sockaddr *)&nom_serveur, lg_nom);
+
+	if((result <0) &&(WSAGetLastError() == WSAEADDRINUSE))
+		{// Error on Bind. If the error is "Address already in use", allow
+		// the user to choose to "reuse address" and then try again.
+		error("bind");
+		}
+
+	pD->Out(pdInit, "Server: Bind succeeded, now listening.");
+#else
+
     struct sockaddr_un nom_client, nom_serveur ;
     socklen_t lg_nom ;
 
@@ -53,10 +95,10 @@ SocketUN::acceptUN()
 
     // Socket
     if ((sock_connect = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-    {
-        pD->Out(pdError, "Cannot open Server UNIX Socket.");
-        error("socket");
-    }
+		{
+		pD->Out(pdError, "Cannot open Server UNIX Socket.");
+		error("socket");
+		}
 
     pD->Out(pdInit, "Server has got UNIX Socket FpD->");
 
@@ -80,83 +122,115 @@ SocketUN::acceptUN()
         error("bind");
 
     pD->Out(pdInit, "Server: Bind succeeded, now listening.");
+#endif
 
-    // Listen
-    if (listen(sock_connect, 10) == -1)
-        error("listen");
+// Listen
+if (listen(sock_connect, 10) == -1)
+  error("listen");
 
-    pD->Out(pdInit, "Server: Listen returned, now accepting.");
+pD->Out(pdInit, "Server: Listen returned, now accepting.");
 
-    // Accept
-    lg_nom = sizeof(struct sockaddr_un);
-    if ((_socket_un = accept(sock_connect,
-                             (struct sockaddr*)&nom_client,
-                             &lg_nom)) < 0)
-        // HPUX:(int*) &lg_nom)) < 0)
-        error("accept");
+// Accept
+lg_nom = sizeof(struct sockaddr_in);
+if ((_socket_un = accept(sock_connect,
+                       (struct sockaddr*)&nom_client,
+                       &lg_nom)) < 0)
+  // HPUX:(int*) &lg_nom)) < 0)
+  error("accept");
 
-    pD->Out(pdInit, "Server: Accept OK, server running.");
+pD->Out(pdInit, "Server: Accept OK, server running.");
 
-    _est_init_un = true ;
-    _est_serveur = true ;
+_est_init_un = true ;
+_est_serveur = true ;
 }
 
 // ----------------------------------------------------------------------------
 //! Called by client to connect.
-int
-SocketUN::connectUN(pid_t Server_pid)
+#ifdef _WIN32
+	void SocketUN::connectUN(int Server_pid)
+#else
+	int SocketUN::connectUN(pid_t Server_pid)
+#endif
 {
-    int Attempt = 0 ;
-    int Result = 0 ;
-    struct sockaddr_un nom_serveur ;
+int Attempt = 0 ;
+int Result = 0 ;
 
-    char buffer[256] ;
-    sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, Server_pid ) ;
-    name = buffer ;
+#ifdef _WIN32
+	struct sockaddr_in nom_serveur;
+	int lg_nom;
+	struct hostent *hptr = NULL;
+	assert(SocketTCP::winsockInitialized());
+#else
+	struct sockaddr_un nom_serveur;
+#endif
 
-    while (Attempt < MAX_ATTEMPTS) {
+char buffer[256] ;
+sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, Server_pid ) ;
+name = buffer ;
 
-        pD->Out(pdInit, "Opening Client UNIX Socket.");
+while (Attempt < MAX_ATTEMPTS) 
+	{
+	pD->Out(pdInit, "Opening Client UNIX Socket.");
+	
+// Socket--------------------------------------------------
+#ifdef _WIN32							//dotNet
+	if((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+		error("socket");
 
-        // Socket
-        if ((_socket_un = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
-            error("socket");
+	pD->Out(pdInit, "Client has got UNIX Socket FpD->");
 
-        pD->Out(pdInit, "Client has got UNIX Socket FpD->");
+	// Clear and set Server adress
+	memset(&nom_serveur, 0, sizeof(nom_serveur));
 
-        // Clear and set Server adress
-        memset(&nom_serveur, 0, sizeof(nom_serveur));
+	nom_serveur.sin_family      = AF_INET;
+	nom_serveur.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
-        nom_serveur.sun_family = AF_UNIX ;
+	if (Server_pid > 65535)
+		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
+	nom_serveur.sin_port= htons(Server_pid);
 
-        if (strlen(NOM_FICHIER_SOCKET) > 90)
-            throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-        strcpy( nom_serveur.sun_path, name.c_str() );
+	lg_nom = sizeof(nom_serveur);
+	Result = ::connect(_socket_un,(sockaddr *)&nom_serveur, lg_nom);
+	
+	//pD->Out(pdInit, "Client: Connect returned %d.", Result);
+#else
+	if ((_socket_un = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
+		error("socket");
 
-        // Connect
-        Result = connect(_socket_un,
-                         (struct sockaddr*) &nom_serveur,
-                         sizeof(struct sockaddr_un));
+	pD->Out(pdInit, "Client has got UNIX Socket FpD->");
 
-        pD->Out(pdInit, "Client: Connect returned %d.", Result);
+	memset(&nom_serveur, 0, sizeof(nom_serveur));	// Clear and set Server adress
+	nom_serveur.sun_family = AF_UNIX ;
 
-        // Success ? Yes->break
-        if (Result == 0)
-            break ;
+	if (strlen(NOM_FICHIER_SOCKET) > 90)
+		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
+	strcpy( nom_serveur.sun_path, name.c_str() );
+	Result = connect(_socket_un,
+						 (struct sockaddr*) &nom_serveur,
+						 sizeof(struct sockaddr_un));
+	pD->Out(pdInit, "Client: Connect returned %d.", Result);
+#endif
 
-        // Failure
-        pD->Out(pdError, "SocketUN: Connect, attempt #%d out of %d failed",
-               Attempt + 1, MAX_ATTEMPTS);
-        sleep(1);
-        Attempt ++ ;
-    }
+	if (Result == 0)		// Success ? Yes->break
+		break ;
 
-    pD->Out(pdInit, "Client: Done.");
+	// Failure
+	pD->Out(pdError, "SocketUN: Connect, attempt #%d out of %d failed",
+			Attempt + 1, MAX_ATTEMPTS);
+	sleep(1);
+	Attempt ++ ;
+	}
 
-    if( Result == 0 )
-        _est_init_un = true ;
+pD->Out(pdInit, "Client: Done.");
 
-    return Result ;
+if( Result == 0 )
+	_est_init_un = true ;
+
+#ifdef _WIN32
+return ; //Result ;
+#else
+return Result ;
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -165,34 +239,49 @@ SocketUN::SocketUN(SignalHandlerType theType)
     : _socket_un(0), _est_serveur(false), _est_init_un(false),
       HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)
 {
-#ifdef SOCKUN_BUFFER_LENGTH
-    RBLength = 0 ;
+#ifdef _WIN32							//dotNet
+	SocketTCP::winsockStartup();
 #endif
 
-    pD = new pdCDebug("SOCKUN", "SocketUN");
-    pD->Out(pdInit, "UNIX Socket created.");
+#ifdef SOCKUN_BUFFER_LENGTH
+	RBLength = 0 ;
+#endif
+
+ pD = new pdCDebug("SOCKUN", "SocketUN");
+ pD->Out(pdInit, "UNIX Socket created.");
 }
 
 // ----------------------------------------------------------------------------
 //! Close the socket.
 SocketUN::~SocketUN()
 {
-    if (_est_init_un) {
-        close(_socket_un);
-        if (_est_serveur)
-            close(sock_connect);
-        unlink(name.c_str());
-        if (_est_serveur)
-            pD->Out(pdTerm, "Server: Closed all sockets.");
-        else
-            pD->Out(pdTerm, "Client: Closed all sockets.");
-    }
+if (_est_init_un) 
+	{
+	#ifdef _WIN32							//dotNet
+		closesocket(_socket_un);
+		if(_est_serveur == RTI_TRUE)
+			closesocket(sock_connect);
+	#else
+		close(_socket_un);
+		if (_est_serveur)
+			close(sock_connect);
+		unlink(name.c_str());
+	#endif
+	
+	if (_est_serveur)
+		pD->Out(pdTerm, "Server: Closed all sockets.");
+	else
+		pD->Out(pdTerm, "Client: Closed all sockets.");
+	}
 
-    pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount ) ;
-    pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount ) ;
+#ifdef _WIN32							//dotNet
+  SocketTCP::winsockShutdown();
+#endif
 
-    delete pD ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount ) ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount ) ;
 
+delete pD ;
 }
 
 // ----------------------------------------------------------------------------
@@ -204,56 +293,68 @@ void
 SocketUN::send(const unsigned char *buffer, size_t size)
     throw (NetworkError, NetworkSignal)
 {
-    long sent = 0 ;
-    unsigned long total_sent = 0 ;
+long sent = 0 ;
+unsigned long total_sent = 0 ;
 
-    assert(_est_init_un);
+assert(_est_init_un);
 
-    pD->Out(pdTrace, "Beginning to send UN message...");
+pD->Out(pdTrace, "Beginning to send UN message...");
 
-    while (total_sent < size) {
-        sent = write(_socket_un, (char *) buffer + total_sent, size - total_sent);
+while (total_sent < size) 
+	{
+	#ifdef _WIN32							//dotNet
+		sent = ::send(_socket_un, (char *) buffer + total_sent, size - total_sent, 0);
+	#else
+		sent = write(_socket_un, (char *) buffer + total_sent, size - total_sent);
+	#endif
 
-        if (sent > 0) {
-            total_sent += sent ;
-            pD->Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, size);
-        }
-        else {
-            if (sent < 0) {
-                pD->Out(pdExcept, "Error while sending on UN socket.");
-
-                // Incoming Signal
-                if (errno == EINTR) {
-                    if (HandlerType == stSignalInterrupt) throw NetworkSignal("");
-                    else pD->Out(pdExcept, "EmettreUN ignoring signal interruption.");
-                }
-                // Other errors
-                else {
-                    perror("UN Socket(EmettreUN) : ");
-                    throw NetworkError("Error while sending UN message.");
-                }
-            }
-
-            if (sent == 0) {
-                pD->Out(pdExcept, "No data could be sent, connection closed?.");
-                throw NetworkError("Could not send any data on UN socket.");
-            }
-        }
-    }
-    SentBytesCount += total_sent ;
+	if (sent > 0) 
+		{
+		total_sent += sent ;
+		pD->Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, size);
+		}
+	else 
+		{
+		if (sent < 0) 
+			{
+			pD->Out(pdExcept, "Error while sending on UN socket.");
+			
+			#ifdef _WIN32							//dotNet
+				if(WSAGetLastError() == WSAEINTR)
+			#else
+				if(errno == EINTR)
+			#endif
+				{// Incoming Signal
+				if (HandlerType == stSignalInterrupt) throw NetworkSignal("");
+				else pD->Out(pdExcept, "EmettreUN ignoring signal interruption.");
+				}		
+			else // Other errors
+				{
+				perror("UN Socket(EmettreUN) : ");
+					throw NetworkError("Error while sending UN message.");
+			}	}
+			
+		if (sent == 0) 
+			{
+			pD->Out(pdExcept, "No data could be sent, connection closed?.");
+			throw NetworkError("Could not send any data on UN socket.");
+			}
+		}
+	}
+SentBytesCount += total_sent ;
 }
 
 // ----------------------------------------------------------------------------
 //! error.
 void SocketUN::error(const char *msg)
 {
-    char m[100] ;
+char m[100] ;
 
-    m[0] = 0 ;
-    strcat(m, "SocketUN: ");
-    strcat(m, msg);
-    perror(m);
-    exit(-1);
+m[0] = 0 ;
+strcat(m, "SocketUN: ");
+strcat(m, msg);
+perror(m);
+exit(-1);
 }
 
 // ----------------------------------------------------------------------------
@@ -275,59 +376,79 @@ void
 SocketUN::receive(const unsigned char *buffer, size_t Size)
     throw (NetworkError, NetworkSignal)
 {
-    assert(_est_init_un);
+assert(_est_init_un);
 
-    long nReceived = 0 ;
+long nReceived = 0 ;
 
 #ifndef SOCKUN_BUFFER_LENGTH
-    long RBLength = 0 ;
+	long RBLength = 0 ;
 #endif
 
-    pD->Out(pdTrace, "Beginning to receive UN message...");
+pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)",Size);
 
-    while (RBLength < Size) {
+while (RBLength < Size) 
+	{
+	#ifdef _WIN32							//dotNet
+		#ifdef SOCKTCP_BUFFER_LENGTH
+				nReceived = recv(_socket_un,
+						 ReadBuffer + RBLength,
+						 SOCKUN_BUFFER_LENGTH - RBLength,
+						 0);
+		#else
+				nReceived = recv(_socket_un,
+						 (char *) Buffer + RBLength,
+						 Size - RBLength,
+						 0);
+		#endif
+	#else
+		#ifdef SOCKUN_BUFFER_LENGTH
+		nReceived = read(_socket_un, ReadBuffer + RBLength, SOCKUN_BUFFER_LENGTH - RBLength);
+		#else
+		nReceived = read(_socket_un, (char *) buffer + RBLength, Size - RBLength);
+		#endif
+	#endif
+
+	if (nReceived < 0)
+		{
+		pD->Out(pdExcept, "Error while receiving on UN socket.");
+	
+		#ifdef _WIN32							//dotNet
+			if(WSAGetLastError() == WSAEINTR)
+		#else
+			if(errno == EINTR)
+		#endif
+			{// Incoming Signal
+			if (HandlerType == stSignalInterrupt)
+				throw NetworkSignal("");
+			else
+				pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
+			}
+		else 
+			{// Other errors
+			perror("UN Socket(RecevoirUN) : ");
+			throw NetworkError("Error while receiving UN message.");
+			}
+		}
+
+	if (nReceived == 0) 
+		{
+		pD->Out(pdExcept, "UN connection has been closed by peer.");
+		throw NetworkError("Connection closed by client.");
+		}
+	else if (nReceived > 0) 
+		{
+		RBLength += nReceived ;
+		RcvdBytesCount += nReceived ;
+		}
+	}
+pD->Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
 
 #ifdef SOCKUN_BUFFER_LENGTH
-	nReceived = read(_socket_un, ReadBuffer + RBLength, SOCKUN_BUFFER_LENGTH - RBLength);
-#else
-	nReceived = read(_socket_un, (char *) buffer + RBLength, Size - RBLength);
-#endif
-
-	if (nReceived < 0) {
-	    pD->Out(pdExcept, "Error while receiving on UN socket.");
-
-	    // Incoming Signal
-	    if (errno == EINTR) {
-		if (HandlerType == stSignalInterrupt)
-		    throw NetworkSignal("");
-		else
-		    pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
-	    }
-	    // Other errors
-	    else {
-		perror("UN Socket(RecevoirUN) : ");
-		throw NetworkError("Error while receiving UN message.");
-	    }
-	}
-	
-	if (nReceived == 0) {
-	    pD->Out(pdExcept, "UN connection has been closed by peer.");
-	    throw NetworkError("Connection closed by client.");
-	}
-	
-	if (nReceived > 0) {
-	    RBLength += nReceived ;
-	    RcvdBytesCount += nReceived ;
-	    pD->Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, Size);
-	}
-    }
-    
-#ifdef SOCKUN_BUFFER_LENGTH
-    memcpy(const_cast<unsigned char *>(buffer), ReadBuffer, Size);
-    memmove((void *) ReadBuffer,
-            (void *)(ReadBuffer + Size),
-            RBLength - Size);
-    RBLength -= Size ;
+memcpy(const_cast<unsigned char *>(buffer), ReadBuffer, Size);
+memmove((void *) ReadBuffer,
+(void *)(ReadBuffer + Size),
+RBLength - Size);
+RBLength -= Size ;
 #endif
 }
 

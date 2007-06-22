@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: MessageBody.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
+// $Id: MessageBody.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
@@ -40,46 +40,51 @@ namespace certi {
 class MessageBody
 {
 public:
-    MessageBody();
-    MessageBody(size_t);
+	MessageBody();
+	MessageBody(size_t);
+	~MessageBody();
 
-    size_t size() const ;
-    const unsigned char *getBuffer() const ;
+	size_t size() const ;													//Buffer size (char)
+	
+	const unsigned char *getBuffer() const ;					
+	unsigned char *getBufferModeRW();
 
-    unsigned char *getBufferRW();
+	//--------------------------------------------------------------------------------------OUT
+	MessageBody &operator<<(unsigned long);							//Write Buffer
+	MessageBody &operator<<(unsigned short);
 
-    MessageBody &operator<<(unsigned long);
-    const MessageBody &operator>>(unsigned long &) const ;
+	void writeString(char *data)								{ sPutS(data);};					
+	void writeBlock(char *block, unsigned short size)	{ sPutB(block, size);};
+	void writeLongInt(unsigned long data)					{ *this << data;};
+	void writeShortInt(unsigned short data)				{ *this << data;};
+		
+	//--------------------------------------------------------------------------------------IN
+	const MessageBody &operator>>(unsigned long &);					//Read Buffer
+	const MessageBody &operator>>(unsigned short &);
 
-    MessageBody &operator<<(unsigned short);
-    const MessageBody &operator>>(unsigned short &) const ;
-
-    void writeBlock(char *block, unsigned short size) { sputn(block, size); };
-    void readBlock(char *block, unsigned short size) const { sgetn(block, size); };
-
-    void writeLongInt(unsigned long c) { *this << c ; };
-    unsigned long readLongInt() const { unsigned long result ; *this >> result ; return result ; };
-
-    void writeShortInt(unsigned short c) { sputn((char *) &c, sizeof(unsigned short)); };
-    unsigned short readShortInt() const { unsigned short result ; sgetn((char *) &result,sizeof(unsigned short) ); return result ; };
-
-    void writeString(const char *);
-    void readString(char *, unsigned short);
+	void readString(char *data, unsigned short size)	{ sGetS(data, size);};
+	void readBlock(char *block, unsigned short size)	{ sGetB(block, size);};
+	unsigned long readLongInt() const;	
+	unsigned short readShortInt() const; 
+	void	addToWritePointer(unsigned int nbWritten) {wPtr+=nbWritten;};
 
 private:
-    void sputn(char *ptr, unsigned short size) { std::copy(ptr, ptr + size, std::back_inserter(buffer)); };
+   // FIXME is this reasonable?
+   MessageBody* me() const { return const_cast<MessageBody*>(this);}
+	void sGetS(char *pData, unsigned int storeSize);
+	void sGetB(char *pData, unsigned int reqSize);
 
-    void sgetn(char *ptr, unsigned short size) const {
-	for (int i = 0 ; i < size ; ++i, ++getPtr)
-	    ptr[i] = *getPtr ;
-    };
+	void sPutS(char *pData);
+	void sPutB(char *pData, unsigned int storeSize);
 
-    std::vector<unsigned char> buffer ;
-    mutable std::vector<unsigned char>::iterator getPtr ;
+	unsigned char		*buffer;		//Buffer
+	unsigned int		wPtr;			//Write Pointer
+	unsigned int		rPtr;			//Read Pointer
+	unsigned int		bSize;		//Buffer Size
 };
 
 } // certi
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
+// $Id: MessageBody.hh,v 3.13 2007/06/22 08:51:37 erk Exp $

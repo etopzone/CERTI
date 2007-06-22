@@ -19,18 +19,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
+// $Id: ObjectClass.cc,v 3.35 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "ObjectClass.hh"
+#include "Certi_Win.h"
 
+#include "ObjectClass.hh"
 #include "ObjectClassAttribute.hh"
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
 
-#include <iostream>
+#ifdef _WIN32
+	#include <windows.h>
+	#include <algorithm>
+	#ifdef max
+		#undef max
+	#endif
+#else
+	#include <iostream>
+#endif
 #include <assert.h>
 
 using std::cout ;
@@ -768,7 +776,7 @@ ObjectClass::subscribe(FederateHandle fed,
 
     unsubscribe(fed, region);
 
-    D[pdTrace] << __func__ << " : fed " << fed << ", class " << handle
+    D[pdTrace] << __FUNCTION__ << " : fed " << fed << ", class " << handle
 	       << ", " << nb_attributes << " attributes, region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
@@ -1656,7 +1664,7 @@ ObjectClass::getHandle() const
 void
 ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
-    D[pdTrace] << __func__ << ": fed " << fed << ", region "
+    D[pdTrace] << __FUNCTION__ << ": fed " << fed << ", region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
     list<ObjectClassAttribute *>::iterator i ;
@@ -1731,4 +1739,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
+// $Id: ObjectClass.cc,v 3.35 2007/06/22 08:51:38 erk Exp $

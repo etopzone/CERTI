@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.27 2007/05/04 08:41:22 erk Exp $ 
+## $Id: Makefile.am,v 3.28 2007/06/22 08:51:37 erk Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -32,7 +32,7 @@ ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
 RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
-Subscribable.cc PrettyDebug.cc
+Subscribable.cc PrettyDebug.cc PrettyDebEx.cc
 
 libCERTI_la_LDFLAGS = -version-info 1:0:0
 

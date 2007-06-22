@@ -16,12 +16,12 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.26 2007/06/18 08:13:58 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.27 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "NetworkMessage.hh"
+#include "Certi_Win.h"
 
+#include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 
 using std::vector ;
@@ -30,7 +30,13 @@ using std::cout;
 
 namespace certi {
 
-static pdCDebug D("RTIG_MSG", __FILE__);
+static pdCDebug D("RTIG_MSG","(NetWorkMS) - ");
+
+// ----------------------------------------------------------------------------
+void NetworkMessage::trace(const char* context)
+{
+D.Mes(pdMessage,'N',this->type,context);
+}
 
 // ----------------------------------------------------------------------------
 // readBody
@@ -45,8 +51,15 @@ NetworkMessage::readBody(Socket *socket)
 
     // 1. Read Body from socket.
     socket->receive((void *) body.getBuffer(), Header.bodySize);
-
+    // FIXME EN: we must update the write pointer of the 
+	 //           MessageBody because we have just written 
+	 //           on it using direct pointer access !! (nasty usage)
+	 body.addToWritePointer(Header.bodySize);
+	 
     // 3. Read informations from Message Body according to message type.
+	//D.Mes(pdMessage, 'N',Header.type);
+	this->trace("NetworkMessage::readBody ");
+
     switch(Header.type) {
       case GET_FED_FILE:
         number = body.readShortInt();
@@ -635,7 +648,8 @@ NetworkMessage::writeBody(Socket *socket)
     Header.bodySize = body.size() - sizeof(HeaderStruct);
 
     // Put the real body Size in the copy of the Header.
-    (reinterpret_cast<HeaderStruct *>(body.getBufferRW()))->bodySize = Header.bodySize ;
+    // FIXME do we really need the body size in the header??
+    (reinterpret_cast<HeaderStruct *>(body.getBufferModeRW()))->bodySize = Header.bodySize ;
     D.Out(pdTrace,"Sending MessageBody of size <%d>",body.size());
     socket->send(body.getBuffer(), body.size());
 }
@@ -862,4 +876,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.26 2007/06/18 08:13:58 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.27 2007/06/22 08:51:37 erk Exp $

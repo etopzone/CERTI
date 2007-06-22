@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.11 2007/06/15 08:14:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.12 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,7 +35,10 @@ static pdCDebug D("RTIA", "(RTIA net) ");
 void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
-  NetworkMessage::Type msgType = msg->type;
+NetworkMessage::Type msgType = msg->type;
+
+//D.Mes(pdMessage, 'N', msgType);
+msg->trace("RTIA::processNetworkMessage ");
 
     switch(msgType) {
 
@@ -313,4 +316,4 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.11 2007/06/15 08:14:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.12 2007/06/22 08:51:34 erk Exp $

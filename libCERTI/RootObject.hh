@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.21 2005/03/25 17:18:33 breholee Exp $
+// $Id: RootObject.hh,v 3.22 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -37,7 +37,7 @@
 
 namespace certi {
 
-class RootObject
+class CERTI_EXPORT RootObject
 {
 public:
     RootObject(SecurityServer *);
@@ -103,4 +103,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.21 2005/03/25 17:18:33 breholee Exp $
+// $Id: RootObject.hh,v 3.22 2007/06/22 08:51:39 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.16 2007/06/14 13:00:21 siron Exp $
+// $Id: TimeManagement.cc,v 3.17 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,8 +116,11 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
-    D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
-    _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
+  D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
+
+  msg.trace("TimeManagement::executeFederateService ");
+
+  _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
 
     switch (msg.type) {
 
@@ -724,4 +727,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.16 2007/06/14 13:00:21 siron Exp $
+// $Id: TimeManagement.cc,v 3.17 2007/06/22 08:51:34 erk Exp $

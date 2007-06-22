@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.7 2005/05/16 18:41:06 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.8 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SECURE_TCP_SOCKET_HH
@@ -27,12 +27,17 @@
 #include "GSSAPIHandler.hh"
 #include "certi.hh"
 
+#ifndef _WIN32		     
+  #include <unistd.h>  
+  #include <pwd.h>
+#endif
+
 namespace certi {
 
 // ============================================================================
 /** Security layer using GSSAPI over a TCP socket
  */
-class SecureTCPSocket : public SocketTCP
+class CERTI_EXPORT SecureTCPSocket : public SocketTCP
 {
 public:
     SecureTCPSocket();
@@ -90,5 +95,5 @@ private:
 
 #endif // CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.7 2005/05/16 18:41:06 breholee Exp $
+// $Id: SecureTCPSocket.hh,v 3.8 2007/06/22 08:51:39 erk Exp $
 

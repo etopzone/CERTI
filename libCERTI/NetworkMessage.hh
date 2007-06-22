@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.24 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.25 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -44,7 +44,7 @@
 
 namespace certi {
 
-class NetworkMessage : public BasicMessage
+class CERTI_EXPORT NetworkMessage : public BasicMessage
 {
 public:
     struct TimeStruct {
@@ -187,6 +187,7 @@ public :
 
     // Display method
     void display(const char *);
+	 void trace(const char* context);
 
     // Parameter and Attribute Management
     // Remove the Parameter of rank 'Rank' in the ParamArray and its value in
@@ -322,4 +323,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.24 2007/06/15 08:14:16 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.25 2007/06/22 08:51:37 erk Exp $

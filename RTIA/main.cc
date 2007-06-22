@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.14 2007/04/27 16:22:05 erk Exp $
+// $Id: main.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,7 +40,9 @@ int
 main()
 {
     signal(SIGINT, SignalHandler);
-    signal(SIGPIPE, SignalHandler);
+	#ifndef _WIN32
+		signal(SIGPIPE, SignalHandler);
+	#endif
 
     set_new_handler(NewHandler);
 
@@ -82,4 +84,4 @@ NewHandler()
     throw MemoryExhausted("");
 }
 
-// EOF $Id: main.cc,v 3.14 2007/04/27 16:22:05 erk Exp $
+// EOF $Id: main.cc,v 3.15 2007/06/22 08:51:34 erk Exp $

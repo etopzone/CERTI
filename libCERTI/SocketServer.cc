@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.10 2005/04/30 17:32:27 breholee Exp $
+// $Id: SocketServer.cc,v 3.11 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "SocketServer.hh"
 
 using std::list ;
@@ -111,8 +111,9 @@ SocketServer::close(long socket,
             if (((*i)->ReliableLink != NULL) &&
                 ((*i)->ReliableLink->returnSocket() == socket)) {
                 delete (*i);
-                tmp = erase(i); // i is dereferenced.
-                i = tmp-- ; // loop will increment i ;
+                i= erase(i); // i is dereferenced.
+                //tmp = erase(i); // i is dereferenced.
+                //i = tmp-- ; // loop will increment i ;
             }
         }
     }
@@ -319,4 +320,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.10 2005/04/30 17:32:27 breholee Exp $
+// $Id: SocketServer.cc,v 3.11 2007/06/22 08:51:39 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.5 2005/03/25 17:16:14 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.6 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -34,7 +34,7 @@
 
 namespace certi {
 
-class RoutingSpace : public Handled<SpaceHandle>
+class CERTI_EXPORT RoutingSpace : public Handled<SpaceHandle>
 {
 public:
     RoutingSpace();
@@ -61,5 +61,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.5 2005/03/25 17:16:14 breholee Exp $
+// $Id: RoutingSpace.hh,v 3.6 2007/06/22 08:51:39 erk Exp $
 

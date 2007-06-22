@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.16 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTItypes.hh,v 3.17 2007/06/22 08:51:35 erk Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -141,10 +141,10 @@ typedef ULong UniqueID ;
 typedef Double TickTime ;
 typedef ULong RegionToken ;
 
-class RTI_EXPORT AttributeHandleValuePairSet
+class AttributeHandleValuePairSet
 {
 public:
-    virtual ~AttributeHandleValuePairSet() { }
+    virtual ~AttributeHandleValuePairSet() {}
 
     virtual ULong size() const = 0 ;
 
@@ -185,14 +185,14 @@ public:
     virtual ULong next(ULong i) const = 0 ;
 };
 
-class RTI_EXPORT AttributeSetFactory
+class CERTI_EXPORT AttributeSetFactory
 {
 public:
     static AttributeHandleValuePairSet* create(ULong)
 	throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
 };
 
-class RTI_EXPORT AttributeHandleSet
+class AttributeHandleSet
 {
 public:
     virtual ~AttributeHandleSet() { }
@@ -214,14 +214,14 @@ public:
     virtual Boolean isMember(AttributeHandle h) const = 0 ;
 };
 
-class RTI_EXPORT AttributeHandleSetFactory
+class CERTI_EXPORT AttributeHandleSetFactory
 {
 public:
     static AttributeHandleSet *create(ULong)
 	throw(MemoryExhausted, ValueCountExceeded);
 };
 
-class RTI_EXPORT FederateHandleSet
+class FederateHandleSet
 {
 public:
     virtual ~FederateHandleSet() { }
@@ -242,14 +242,14 @@ public:
     virtual Boolean isMember(FederateHandle) const = 0 ;
 };
 
-class RTI_EXPORT FederateHandleSetFactory
+class CERTI_EXPORT FederateHandleSetFactory
 {
 public:
     static FederateHandleSet *create(ULong)
 	throw (MemoryExhausted, ValueCountExceeded);
 };
 
-class RTI_EXPORT ParameterHandleValuePairSet
+class  ParameterHandleValuePairSet
 {
 public:
     virtual ~ParameterHandleValuePairSet() { }
@@ -293,14 +293,14 @@ public:
     virtual ULong next(ULong i) const = 0 ;
 };
 
-class RTI_EXPORT ParameterSetFactory
+class CERTI_EXPORT ParameterSetFactory
 {
 public:
     static ParameterHandleValuePairSet *create(ULong)
 	throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
 };
 
-class RTI_EXPORT Region
+class Region
 {
 public:
     virtual ~Region() { }
@@ -330,10 +330,10 @@ public:
 	throw (ArrayIndexOutOfBounds) = 0 ;
 } ;
 
-class RTI_EXPORT_FEDTIME FedTime
+class FedTime
 {
-public:
-    virtual ~FedTime();
+public:    
+    virtual ~FedTime(){};
 
     virtual void setZero() = 0 ;
     virtual Boolean isZero() = 0 ;
@@ -371,7 +371,7 @@ public:
     virtual void getPrintableString(char *) = 0 ;
 };
 
-class RTI_EXPORT_FEDTIME FedTimeFactory
+class CERTI_EXPORT FedTimeFactory
 {
 public:
     static FedTime *makeZero()
@@ -390,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.16 2007/02/21 10:21:15 rousse Exp $
+// $Id: RTItypes.hh,v 3.17 2007/06/22 08:51:35 erk Exp $

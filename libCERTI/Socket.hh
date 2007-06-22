@@ -21,9 +21,17 @@
 #define CERTI_SOCKET_HH
 
 #include "certi.hh"
-#include <sys/time.h>
-#include <sys/types.h>
-#include <netinet/in.h>
+	#ifdef _WIN32
+	#ifndef _WINSOCK2API_
+		#ifndef _WINSOCKAPI_
+			#include <winsock2.h>
+		#endif
+	#endif
+#else
+	#include <sys/time.h>
+	#include <sys/types.h>
+	#include <netinet/in.h>
+#endif
 
 // Those values are returned by the GetClass method.
 #define SOCKET_TYPE_TCP 0 // TCP Socket class ID
@@ -38,20 +46,25 @@ typedef unsigned long ByteCount ;
 class Socket
 {
 public:
-    virtual ~Socket() {};
+	virtual ~Socket() {};
 
-    virtual void send(const unsigned char *, size_t) = 0 ;
-    virtual void receive(void *Buffer, unsigned long Size) = 0 ;
-    virtual void close() = 0 ;
+	virtual void send(const unsigned char *, size_t) = 0 ;
+	virtual void receive(void *Buffer, unsigned long Size) = 0 ;
+	virtual void close() = 0 ;
 
-    // This method may be used for implementation using Read Buffers,
-    // because in that case 'select' system calls are not trustworthy.
-    // See Important Note in SocketTCP.hh
-    virtual bool isDataReady() const = 0 ;
+	// This method may be used for implementation using Read Buffers,
+	// because in that case 'select' system calls are not trustworthy.
+	// See Important Note in SocketTCP.hh
+	virtual bool isDataReady() const = 0 ;
 
-    virtual int getClass() const = 0 ;
-    virtual int returnSocket() const = 0 ;
-    virtual unsigned long returnAdress() const = 0 ;
+	virtual int getClass() const = 0 ;
+	virtual unsigned long returnAdress() const = 0 ;
+
+	#ifdef _WIN32
+		virtual SOCKET returnSocket() = 0;
+	#else
+		virtual int returnSocket() = 0;
+	#endif
 };
 
 } // namespace certi

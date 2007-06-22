@@ -20,6 +20,8 @@
 // ----------------------------------------------------------------------------
 
 #include <config.h>
+#include "Certi_Win.h"
+
 #include "Ball.hh"
 #include "graph_c.hh"
 

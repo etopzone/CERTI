@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.18 2007/05/03 15:46:31 rousse Exp $
+// $Id: BillardDDM.cc,v 3.19 2007/06/22 08:51:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -28,7 +28,18 @@
 #include "graph_c.hh"
 #endif
 
+#include "Certi_Win.h"
+
 #include <cmath>
+
+#ifdef _WIN32
+	#ifdef max
+		#undef max
+	#endif
+	#ifdef min
+		#undef min
+	#endif
+#endif
 
 using std::string ;
 using std::auto_ptr ;

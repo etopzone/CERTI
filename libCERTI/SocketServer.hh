@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketServer.hh,v 3.10 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SOCKET_SERVER_HH
@@ -60,7 +60,7 @@ public:
   niveau de la federation et de ses objets, qui contient en plus des
   fonctionnalites de securite)
 */
-class SocketServer : private std::list<SocketTuple *>
+class CERTI_EXPORT SocketServer : private std::list<SocketTuple *>
 {
 public:
     SocketServer(SocketTCP *tcp_socket,
@@ -127,4 +127,4 @@ private:
 
 #endif // _CERTI_SOCKET_SERVER_HH
 
-// $Id: SocketServer.hh,v 3.9 2004/05/18 13:18:55 breholee Exp $
+// $Id: SocketServer.hh,v 3.10 2007/06/22 08:51:39 erk Exp $

@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.43 2007/06/15 11:42:04 rousse Exp $
+// $Id: RTIambassador.cc,v 3.44 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "certi.hh"
 
 #include "RTIambPrivateRefs.hh"
@@ -31,9 +31,15 @@
 #include "Message.hh"
 #include "PrettyDebug.hh"
 
-#include <signal.h>
-#include <iostream>
+#ifdef _WIN32
+#include <config.h>
+#include <stdio.h>
+#include <string.h>
+#else 
 #include <unistd.h>
+#endif
+#include <iostream>
+#include <signal.h>
 #include <cassert>
 
 using std::cout ;
@@ -84,6 +90,7 @@ get_handle(const RTI::Region &region)
   is launched. This process is used for data exchange with rtig server.
   This process connects to rtia after one second delay (UNIX socket).
 */
+
 RTI::RTIambassador::RTIambassador()
     throw (MemoryExhausted, RTIinternalError)
 {
@@ -99,8 +106,40 @@ RTI::RTIambassador::RTIambassador()
     const char *rtiacall ;
     if (rtiaenv) rtiacall = rtiaenv ;
     else rtiacall = rtiaexec ;
+    
+#ifdef WIN32
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
 
-    // creating RTIA process.
+  ZeroMemory( &si, sizeof(si) );
+  si.cb = sizeof(si);
+  ZeroMemory( &pi, sizeof(pi) );
+
+  // Start the child process. 
+  if( !CreateProcess( NULL, // No module name (use command line). 
+        (char*)rtiacall,	// Command line. 
+        NULL,					// Process handle not inheritable. 
+        NULL,					// Thread handle not inheritable. 
+        FALSE,					// Set handle inheritance to FALSE. 
+        0,   					// No creation flags. 
+        NULL,					// Use parent's environment block. 
+        NULL,					// Use parent's starting directory. 
+        &si,					// Pointer to STARTUPINFO structure.
+        &pi ))					// Pointer to PROCESS_INFORMATION structure.
+				 
+		{
+		printf("Error code : %d\n", GetLastError());
+		errno = GetLastError();
+		perror("CreateProcess");
+		exit(-1);
+		}
+    
+   privateRefs->handle_RTIA = pi.hProcess;
+   privateRefs->pid_RTIA = pi.dwProcessId;
+
+  sleep(1);
+  privateRefs->socketUn->connectUN(privateRefs->pid_RTIA);
+#else
     switch((privateRefs->pid_RTIA = fork())) {
       case -1: // fork failed.
         perror("fork");
@@ -127,6 +166,7 @@ RTI::RTIambassador::RTIambassador()
         };
         break ;
     }
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -136,8 +176,12 @@ RTI::RTIambassador::RTIambassador()
 RTI::RTIambassador::~RTIambassador()
     throw (RTIinternalError)
 {
-    kill(privateRefs->pid_RTIA, SIGINT);
-    delete privateRefs ;
+#ifdef WIN32
+	TerminateProcess(privateRefs->handle_RTIA, 1);
+#else
+	kill(privateRefs->pid_RTIA, SIGINT);
+#endif
+delete privateRefs ;
 }
 
 // ----------------------------------------------------------------------------
@@ -221,17 +265,19 @@ RTI::RTIambassador::tick_kernel(bool locked)
         // du FederateAmbassador.
 
         vers_RTI.setException(e_NO_EXCEPTION);
+
         try {
+				//D.Mes( pdMessage, 'M', vers_Fed.type);
+				vers_Fed.trace("RTI::RTIambassador::tick ");
+				
             switch (vers_Fed.type) {
 
               case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(
-		    vers_Fed.getLabel());
+                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
                 break ;
 
               case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
-                privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),
-                                                      vers_Fed.getTag());
+                privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),vers_Fed.getTag());
                 break ;
 
               case Message::FEDERATION_SYNCHRONIZED:
@@ -472,19 +518,27 @@ RTI::RTIambassador::tick(TickTime, TickTime)
   new federation is being created.
 */
 void
-RTI::RTI::RTIambassador::createFederationExecution(const char *executionName,
-                                         const char *FED)
+//RTI::
+RTI::RTIambassador::createFederationExecution(	const char *executionName,
+																const char *FED)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::ErrorReadingFED, RTI::CouldNotOpenFED, 
 	   RTI::FederationExecutionAlreadyExists)
 {
-    Message req, rep ;
+Message req, rep ;
 
-    req.type = Message::CREATE_FEDERATION_EXECUTION ;
-    req.setFederationName(executionName);
-    req.setFEDid(FED);
+req.type = Message::CREATE_FEDERATION_EXECUTION ;
+req.setFederationName(executionName);
+req.setFEDid(FED);
 
-    privateRefs->executeService(&req, &rep);
+/*#ifdef WIN32
+	if(!stricmp(FED,executionName)) {
+#else
+	if(!strcasecmp(FED,exeName)) {
+#endif
+}*/
+
+privateRefs->executeService(&req, &rep);
 }
 
 // ----------------------------------------------------------------------------
@@ -2690,4 +2744,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.43 2007/06/15 11:42:04 rousse Exp $
+// $Id: RTIambassador.cc,v 3.44 2007/06/22 08:51:40 erk Exp $

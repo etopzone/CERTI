@@ -17,17 +17,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.7 2005/05/16 18:41:06 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.8 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "SecureTCPSocket.hh"
 
 #include "PrettyDebug.hh"
 
 #include <sys/types.h>
 #include <unistd.h>
-#include <pwd.h>
+//#include <pwd.h>
 
 namespace certi {
 
@@ -258,4 +258,4 @@ SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.7 2005/05/16 18:41:06 breholee Exp $
+// $Id: SecureTCPSocket.cc,v 3.8 2007/06/22 08:51:39 erk Exp $

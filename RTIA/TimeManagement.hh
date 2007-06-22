@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
+// $Id: TimeManagement.hh,v 3.9 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -37,11 +37,15 @@
 #include "PrettyDebug.hh"
 
 // Standard libraries
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#endif
 
 using std::cout ;
 using std::endl ;
@@ -126,4 +130,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.8 2007/06/14 13:00:21 siron Exp $
+// $Id: TimeManagement.hh,v 3.9 2007/06/22 08:51:34 erk Exp $

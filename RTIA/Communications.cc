@@ -18,19 +18,29 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.14 2007/02/21 10:21:15 rousse Exp $
+// $Id: Communications.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Communications.hh"
-
+#include <assert.h>
 #include "PrettyDebug.hh"
 
+#ifdef WIN32
+#include "Certi_Win.h"
+#include <windows.h>
+	#ifdef max
+		#undef max
+	#endif
+#else
 #include <fstream>
 #include <iostream>
-#include <assert.h>
 #include <unistd.h>
 #include <errno.h>
+#endif
+
+
+
 
 using std::ifstream ;
 using std::ios ;
@@ -182,14 +192,23 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     FD_SET(tcp_fd, &fdset);
     FD_SET(udp_fd, &fdset);
 
-    int max_fd = std::max(_socket_un, std::max(tcp_fd, udp_fd));
+	#ifdef _WIN32	//For Windows, First "Select" argument isn't used
+		int	max_fd= 0;
+	#else
+		int max_fd = std::max(_socket_un, std::max(tcp_fd, udp_fd));
+	#endif
 
 #ifdef FEDERATION_USES_MULTICAST
     // if multicast link is initialized (during join federation).
     if (_est_init_mc) {
         FD_SET(_socket_mc, &fdset);
-        max_fd = std::max(max_fd, _socket_mc);
-    }
+
+ 		#ifdef _WIN32	//For Windows, First "Select" argument isn't used
+			max_fd= 0;
+		#else
+			max_fd = std::max(max_fd, _socket_mc);
+		#endif
+   }
 #endif
 
     if (!waitingList.empty()) {
@@ -223,9 +242,13 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
         if (select(max_fd, &fdset, NULL, NULL, NULL) < 0) {
-            if (errno == EINTR)
+			#ifdef _WIN32							//dotNet
+				 if(WSAGetLastError() == WSAEINTR)
+			#else
+				 if(errno == EINTR)
+			#endif
                 throw NetworkSignal("");
-            else
+				else
                 throw NetworkError("");
         }
 
@@ -316,4 +339,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.14 2007/02/21 10:21:15 rousse Exp $
+// $Id: Communications.cc,v 3.15 2007/06/22 08:51:34 erk Exp $

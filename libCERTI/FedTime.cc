@@ -19,11 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 
 #include "certi.hh"
 #include "fedtime.hh"
 
+#ifdef _WIN32
+	#ifdef max
+		#undef max
+	#endif
+#endif
+
+#include <algorithm>
 #include <limits>
 #include <sstream>
 
@@ -80,9 +87,9 @@ RTI::FedTimeFactory::decode(const char *)
 
 // ----------------------------------------------------------------------------
 // FedTime
-FedTime::~FedTime()
-{
-}
+//FedTime::~FedTime()
+//{
+//}
 
 // ----------------------------------------------------------------------------
 // RTIfedTime

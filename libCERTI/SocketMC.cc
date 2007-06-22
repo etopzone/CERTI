@@ -17,32 +17,52 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "SocketMC.hh"
+#include "Certi_Win.h"
 
-#include <arpa/inet.h>
-#include <unistd.h>
+#include "SocketMC.hh"
+#include "config.h"
+
+#ifdef _WIN32								//dotNet
+	#include "SocketTCP.hh"
+#else
+	#include <arpa/inet.h>
+	#include <unistd.h>
+	#include <errno.h>
+	#include <sys/time.h>
+#endif
 #include <assert.h>
-#include <errno.h>
-#include <sys/time.h>
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 SocketMC::SocketMC()
 {
-    _est_init_mc = false ;
-    _num_msg = 1 ;
+_est_init_mc = false ;
+_num_msg = 1 ;
+#ifdef _WIN32								//dotNet
+  SocketTCP::winsockStartup();
+#endif
 }
 
 // ----------------------------------------------------------------------------
 SocketMC::~SocketMC()
 {
-    if (_est_init_mc) {
-	::close(_socket_mc);
-	::close(_socket_emetteur);
+if (_est_init_mc) 
+	{
+	#ifdef _WIN32							//dotNet
+		 closesocket(_socket_mc);
+		 closesocket(_socket_emetteur);
+	#else
+		 ::close(_socket_mc);
+		 ::close(_socket_emetteur);
+	#endif
 	_est_init_mc = false ;
-    }
+	}
+	
+#ifdef _WIN32								//dotNet
+	SocketTCP::winsockShutdown();
+#endif
+
 }
 
 
@@ -58,57 +78,61 @@ SocketMC::CreerSocketMC(char *addr, unsigned long port)
 void
 SocketMC::CreerSocketMC(unsigned long addr, unsigned long port)
 {
-    struct ip_mreq _mreq ;
-    unsigned long _mreqlen ;
+struct ip_mreq _mreq ;
+unsigned long _mreqlen ;
 
-    assert(!_est_init_mc);
-    assert(addr>0);
+assert(!_est_init_mc);
+assert(addr>0);
 
-    // creation du socket recepteur
-    _socket_mc = socket(AF_INET, SOCK_DGRAM, 0);
-    if (_socket_mc < 0) {
+#ifdef _WIN32								//dotNet
+	assert(SocketTCP::winsockInitialized());
+#endif
+
+// creation du socket recepteur
+_socket_mc = socket(AF_INET, SOCK_DGRAM, 0);
+if (_socket_mc < 0) {
 	perror("socket1");
 	exit(-1);
-    }
+	}
 
-    memset(&_sin, sizeof(_sin), sizeof(_sin));
-    _sin.sin_family = AF_INET ;
-    _sin.sin_addr.s_addr = htonl(INADDR_ANY);
-    _sin.sin_port = htons(port);
-    _sinlen = sizeof(_sin);
+memset(&_sin, sizeof(_sin), sizeof(_sin));
+_sin.sin_family = AF_INET ;
+_sin.sin_addr.s_addr = htonl(INADDR_ANY);
+_sin.sin_port = htons(port);
+_sinlen = sizeof(_sin);
 
-    if (bind(_socket_mc, (struct sockaddr *)&_sin, _sinlen) < 0) {
+if (bind(_socket_mc, (struct sockaddr *)&_sin, _sinlen) < 0) {
 	perror("SocketMC: bind");
 	exit(-1);
-    }
+	}
 
-    // joindre le groupe multiCast
-    _mreq.imr_multiaddr.s_addr = addr ;
-    _mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-    _mreqlen = sizeof(_mreq);
-    if (setsockopt(_socket_mc,
-                   IPPROTO_IP,
-                   IP_ADD_MEMBERSHIP,
-                   (char *)&_mreq, _mreqlen) < 0) {
+// joindre le groupe multiCast
+_mreq.imr_multiaddr.s_addr = addr ;
+_mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+_mreqlen = sizeof(_mreq);
+if (setsockopt(_socket_mc,
+             IPPROTO_IP,
+             IP_ADD_MEMBERSHIP,
+             (char *)&_mreq, _mreqlen) < 0) {
 	perror("setsockopt");
 	exit(-1);
-    }
+	}
 
-    // creation du socket emetteur
-    _socket_emetteur = socket(AF_INET, SOCK_DGRAM, 0);
-    if (_socket_emetteur < 0) {
+// creation du socket emetteur
+_socket_emetteur = socket(AF_INET, SOCK_DGRAM, 0);
+if (_socket_emetteur < 0) {
 	perror("socket2");
 	exit(-1);
-    }
+	}
 
-    memset(&_sin_e, sizeof(_sin_e), sizeof(_sin_e));
-    _sin_e.sin_family = AF_INET ;
-    _sin_e.sin_port = htons(port);
-    _sin_e.sin_addr.s_addr = addr ;
-    _sinlen_e = sizeof(_sin_e);
+memset(&_sin_e, sizeof(_sin_e), sizeof(_sin_e));
+_sin_e.sin_family = AF_INET ;
+_sin_e.sin_port = htons(port);
+_sin_e.sin_addr.s_addr = addr ;
+_sinlen_e = sizeof(_sin_e);
 
-    // l'initialisation de la communication multicast est reussie
-    _est_init_mc = true ;
+// l'initialisation de la communication multicast est reussie
+_est_init_mc = true ;
 }
 
 // ----------------------------------------------------------------------------
@@ -130,12 +154,12 @@ SocketMC::receive(void *Buffer, unsigned long)
 }
 
 // ----------------------------------------------------------------------------
-int
-SocketMC::returnSocket() const
-{
-    return _socket_mc ;
-}
-
+#ifdef _WIN32
+	SOCKET SocketMC::returnSocket()	{ return _socket_mc;}
+#else
+	int SocketMC::returnSocket()		{ return _socket_mc;}
+#endif
+										
 // ----------------------------------------------------------------------------
 unsigned long
 SocketMC::returnAdress() const
@@ -147,11 +171,16 @@ SocketMC::returnAdress() const
 void
 SocketMC::close()
 {
-    if (_est_init_mc) {
-	::close(_socket_mc);
-	::close(_socket_emetteur);
+if (_est_init_mc) {
+	#ifdef _WIN32							//dotNet
+		 closesocket(_socket_mc);
+		 closesocket(_socket_emetteur);
+	#else
+		 ::close(_socket_mc);
+		 ::close(_socket_emetteur);
+	#endif
 	_est_init_mc = false ;
-    }
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -202,22 +231,30 @@ SocketMC::receiveMC(NetworkMessage *message)
  */
 int SocketMC::timeoutMC(int sec, int usec)
 {
-    assert(_est_init_mc);
+assert(_est_init_mc);
 
-    struct timeval timeout ;
-    timeout.tv_sec = sec ;
-    timeout.tv_usec = usec ;
+struct timeval timeout ;
+timeout.tv_sec = sec ;
+timeout.tv_usec = usec ;
 
-    fd_set fdset ;
-    FD_ZERO(&fdset);
-    FD_SET(_socket_mc, &fdset);
+fd_set fdset ;
+FD_ZERO(&fdset);
+FD_SET(_socket_mc, &fdset);
 
-    int nb = 0 ;
-    do {
+int nb = 0 ;
+bool check;
+do
+	{
 	nb = select(_socket_mc+1, SELECT_TYPE_ARG234 &fdset, NULL, NULL, &timeout);
-    } while (nb < 0 && errno == EINTR);
+	
+	#ifdef _WIN32								//dotNet
+			check= (WSAGetLastError() == WSAEINTR);
+	#else
+			check= (errno == EINTR);
+	#endif
+	} while ((nb < 0) && check);
 
-    return nb ;
+return nb ;
 }
 
 } // namespace certi

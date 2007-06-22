@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: Interaction.hh,v 3.22 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -37,7 +37,7 @@
 
 namespace certi {
 
-class Interaction : public Subscribable
+class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
     Interaction();
@@ -154,4 +154,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.21 2007/02/21 10:21:15 rousse Exp $
+// $Id: Interaction.hh,v 3.22 2007/06/22 08:51:37 erk Exp $

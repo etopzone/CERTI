@@ -16,14 +16,19 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.11 2005/04/13 12:04:01 breholee Exp $
+// $Id: Federate.cc,v 3.12 2007/06/22 08:51:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federate.hh"
 
+#ifdef WIN32
+#include <windows.h>
+#include <algorithm>
+#else
 #include <cstring>
 #include <string>
+#endif
 
 using std::string ;
 
@@ -80,4 +85,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.11 2005/04/13 12:04:01 breholee Exp $
+// $Id: Federate.cc,v 3.12 2007/06/22 08:51:35 erk Exp $

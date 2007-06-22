@@ -22,75 +22,94 @@
 
 #include "Socket.hh"
 
-#include <sys/socket.h>
-#include <netdb.h>
+#ifdef _WIN32					//dotNet
+	#ifndef _WINSOCK2API_
+		#ifndef _WINSOCKAPI_
+			#include <winsock2.h>
+		#endif
+	#endif
+#else
+  #include <sys/socket.h>
+  #include <netdb.h>
+#endif
 
 #define BUFFER_MAXSIZE 2000
 
 namespace certi {
 
-class SocketUDP : public Socket
+class CERTI_EXPORT SocketUDP : public Socket
 {
 public :
-    SocketUDP();
-    virtual ~SocketUDP();
+	SocketUDP();
+	virtual ~SocketUDP();
 
-    // Socket
-    virtual void send(const unsigned char *, size_t)
-        throw (NetworkError, NetworkSignal);
+	// Socket
+	virtual void send(const unsigned char *, size_t)
+	throw (NetworkError, NetworkSignal);
 
-    virtual void receive(void * Message, unsigned long Size)
-        throw (NetworkError,
-               NetworkSignal);
+	virtual void receive(void * Message, unsigned long Size)
+		throw (NetworkError,	NetworkSignal);
 
-    virtual bool isDataReady() const ;
+	virtual bool isDataReady() const ;
 
-    virtual int getClass() const { return SOCKET_TYPE_UDP ; };
-    virtual int returnSocket() const ;
+	virtual int getClass() const { return SOCKET_TYPE_UDP ; };
+	#ifdef _WIN32					//dotNet
+		SOCKET returnSocket();
+	#else
+		int returnSocket();
+	#endif
+	virtual unsigned long returnAdress() const ;
 
-    virtual unsigned long returnAdress() const ;
+	virtual void close();
 
-    virtual void close();
+	// SocketUDP
+	void createUDPClient(unsigned int port, char *nom_serveur)
+	throw (NetworkError, NetworkSignal);
 
-    // SocketUDP
-    void createUDPClient(unsigned int port, char *nom_serveur)
-        throw (NetworkError, NetworkSignal);
+	void createUDPServer(unsigned int port)
+	throw (NetworkError, NetworkSignal);
 
-    void createUDPServer(unsigned int port)
-        throw (NetworkError, NetworkSignal);
+	void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
+	throw (NetworkError, NetworkSignal);
 
-    void attach(int socket_ouvert, unsigned long Adresse, unsigned int port)
-        throw (NetworkError, NetworkSignal);
-
-    unsigned int getPort() const ;
-    unsigned long getAddr() const ;
+	unsigned int getPort() const ;
+	unsigned long getAddr() const ;
 
 private:
-    void setPort(unsigned int port);
+	void setPort(unsigned int port);
 
-    int bind();
-    int open();
-    
-    bool PhysicalLink ; ///< tak indicating physical or logical link
+	int bind();
+	int open();
 
-    long _socket_udp ;
-    struct sockaddr_in sock_local ;
+	bool PhysicalLink ; ///< tak indicating physical or logical link
 
-    struct sockaddr_in sock_source ;
-    char *Addr_Source ;
-    unsigned int Port_Source ;
-    struct sockaddr_in sock_distant ;
-    struct hostent * hp_distant ;
+	#ifdef _WIN32					//dotNet
+		SOCKET _socket_udp;
+	#else
+		long _socket_udp;
+	#endif
+	struct sockaddr_in sock_local ;
 
-    int _sock_local_length ;
-    bool _est_init_udp ;
+	struct sockaddr_in sock_source ;
+	char *Addr_Source ;
+	unsigned int Port_Source ;
+	struct sockaddr_in sock_distant ;
+	struct hostent * hp_distant ;
 
-    ByteCount SentBytesCount ;
-    ByteCount RcvdBytesCount ;
-    unsigned long BufferSize ;
-    char Buffer[4096] ;
+	int _sock_local_length ;
+	bool _est_init_udp ;
 
-    struct hostent * hp_local ;
+	#ifdef _WIN32					//dotNet
+		unsigned long SentBytesCount;
+		unsigned long RcvdBytesCount;
+	#else
+		ByteCount SentBytesCount ;
+		ByteCount RcvdBytesCount ;
+	#endif
+	unsigned long BufferSize ;
+	char Buffer[4096] ;
+
+	struct hostent * hp_local ;
 };
 
 } // namespace certi

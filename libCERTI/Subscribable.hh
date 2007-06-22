@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.3 2005/04/13 13:03:10 breholee Exp $
+// $Id: Subscribable.hh,v 3.4 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
@@ -50,7 +50,7 @@ protected:
     const RTIRegion *region ; //!< the subscription region
 };
 
-class Subscribable
+class CERTI_EXPORT Subscribable
 {
 public:
     virtual ~Subscribable();
@@ -77,4 +77,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.3 2005/04/13 13:03:10 breholee Exp $
+// $Id: Subscribable.hh,v 3.4 2007/06/22 08:51:40 erk Exp $

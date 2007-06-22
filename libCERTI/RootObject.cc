@@ -19,18 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.26 2007/05/03 15:46:31 rousse Exp $
+// $Id: RootObject.cc,v 3.27 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "RootObject.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
 
-#include <cassert>
 #include <string>
-#include <cstring>
 #include <stdio.h>
+#include <cstring>
+#include <cassert>
 
 using std::vector ;
 using std::cout ;
@@ -311,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.26 2007/05/03 15:46:31 rousse Exp $
+// $Id: RootObject.cc,v 3.27 2007/06/22 08:51:39 erk Exp $

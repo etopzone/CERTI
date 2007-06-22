@@ -23,7 +23,7 @@ SET(rtia_SRCS
 
 ADD_EXECUTABLE(rtia ${rtia_SRCS})
 
-TARGET_LINK_LIBRARIES(rtia ${SOCKET_LIBRARY} ${LIBXML2_LIBRARIES} CERTI)
+TARGET_LINK_LIBRARIES(rtia ${SOCKET_LIBRARY} ${LIBXML2_LIBRARIES} CERTI RTI)
 
 INSTALL(TARGETS rtia DESTINATION bin)
 
@@ -33,7 +33,7 @@ INSTALL(TARGETS rtia DESTINATION bin)
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.1 2007/05/02 14:50:15 erk Exp $
+### $Id: CMakeLists.txt,v 1.2 2007/06/22 08:51:34 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #

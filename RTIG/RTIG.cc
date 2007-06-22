@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.29 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIG.cc,v 3.30 2007/06/22 08:51:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,10 +26,14 @@
 
 #include "PrettyDebug.hh"
 
-#include <iostream>
-#include <csignal>
+#ifdef WIN32
+#include <signal.h>
+#else
 #include <unistd.h>
+#include <iostream>
+#endif
 #include <errno.h>
+#include <csignal>
 
 using std::cout ;
 using std::endl ;
@@ -83,6 +87,9 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
     // This may throw a security error.
     socketServer.checkMessage(link->returnSocket(), msg);
 
+	//D.Mes(pdMessage, 'N', msg->type);
+	msg->trace("RTIG::chooseProcessingMethod ");
+	
     switch(msg->type) {
       case NetworkMessage::MESSAGE_NULL:
         D.Out(pdDebug, "Message Null.");
@@ -301,8 +308,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::DDM_MODIFY_REGION:
-	D[pdTrace] << "modifyRegion" << endl ;
-	auditServer.setLevel(6);
+		D[pdTrace] << "modifyRegion" << endl ;
+		auditServer.setLevel(6);
         processModifyRegion(link, msg);
         break ;
 
@@ -393,61 +400,73 @@ RTIG::closeConnection(Socket *link, bool emergency)
 void
 RTIG::execute()
 {
-    int result ;
-    fd_set fd ;
-    Socket *link ;
+int result ;
+fd_set fd ;
+Socket *link ;
 
-    // create TCP and UDP connections for the RTIG server
-    udpSocketServer.createUDPServer(udpPort);
-    tcpSocketServer.createTCPServer(tcpPort);
-    // udpSocketServer.createUDPServer(PORT_UDP_RTIG);
+// create TCP and UDP connections for the RTIG server
+udpSocketServer.createUDPServer(udpPort);
+tcpSocketServer.createTCPServer(tcpPort);
+// udpSocketServer.createUDPServer(PORT_UDP_RTIG);
 
-    if (verbose) {
+if (verbose) {
 	cout << "CERTI RTIG up and running ..." << endl ;
-    }
-    terminate = false ;
+	}
+terminate = false ;
 
-    while (!terminate) {
-        // Initialize fd_set structure with all opened sockets.
-        FD_ZERO(&fd);
-        FD_SET(tcpSocketServer.returnSocket(), &fd);
-        int fd_max = socketServer.addToFDSet(&fd);
-	fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
+while (!terminate) {
+	// Initialize fd_set structure with all opened sockets.
+	FD_ZERO(&fd);
+	FD_SET(tcpSocketServer.returnSocket(), &fd);
 
-        // Wait for an incoming message.
-        result = 0 ;
-        result = select(fd_max + 1, &fd, NULL, NULL, NULL);
-        if ((result == -1) && (errno == EINTR)) break ;
+	#if WIN32
+		 int highest_fd = socketServer.addToFDSet(&fd);
+		 int server_socket = tcpSocketServer.returnSocket();   
+		 highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
+		 
+		 result = 0;	// Wait for an incoming message.
+		 result = select(highest_fd+1, &fd, NULL, NULL, NULL);
+		 
+		 if((result == -1)&&(WSAGetLastError() == WSAEINTR)) break;
+	#else
+		int fd_max = socketServer.addToFDSet(&fd);
+		fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
+	
+		result = 0 ;	// Wait for an incoming message.
+		result = select(fd_max + 1, &fd, NULL, NULL, NULL);
+		
+		if((result == -1)&&(errno == EINTR)) break;
+	#endif
 
-        // Is it a message from an already opened connection?
-        link = socketServer.getActiveSocket(&fd);
-        if (link != NULL) {
-            D.Out(pdCom, "Incoming message on socket %ld.",
-		  link->returnSocket());
-            try {
-                do {
-                    link = processIncomingMessage((SecureTCPSocket *)link);
-                    if (link == NULL)break ;
-                } while (link->isDataReady());
-            }
-            catch (NetworkError &e) {
-                if (e._reason != NULL)
-                    D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason);
-                else
-                    D.Out(pdExcept, "Catching Network Error, no reason string.");
-                cout << "RTIG dropping client connection " << link->returnSocket()
-                     << '.' << endl ;
-                closeConnection((SecureTCPSocket *)link, true);
-                link = NULL ;
-            }
-        }
+	// Is it a message from an already opened connection?
+	link = socketServer.getActiveSocket(&fd);
+	if (link != NULL) {
+		D.Out(pdCom, "Incoming message on socket %ld.",
+		link->returnSocket());
+		try {
+			do {
+				link = processIncomingMessage((SecureTCPSocket *)link);
+				if (link == NULL)break ;
+				} while (link->isDataReady());
+			}
+		catch (NetworkError &e) {
+			if (e._reason != NULL)
+			D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason);
+			else
+			D.Out(pdExcept, "Catching Network Error, no reason string.");
+			cout << "RTIG dropping client connection " << link->returnSocket()
+			<< '.' << endl ;
+			closeConnection((SecureTCPSocket *)link, true);
+			link = NULL ;
+			}
+		}
 
-        // Or on the server socket ?
-        if (FD_ISSET(tcpSocketServer.returnSocket(), &fd)) {
-            D.Out(pdCom, "Demande de connexion.");
-            openConnection();
-        }
-    }
+	// Or on the server socket ?
+	if (FD_ISSET(tcpSocketServer.returnSocket(), &fd)) {
+		D.Out(pdCom, "Demande de connexion.");
+		openConnection();
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -948,12 +967,14 @@ RTIG::processIncomingMessage(Socket *link)
 void
 RTIG::signalHandler(int sig)
 {
-    D.Out(pdError, "Received Signal %d.", sig);
+D.Out(pdError, "Received Signal %d.", sig);
 
-    if (sig == SIGINT) terminate = true ;
-    if (sig == SIGPIPE) cout << "Ignoring 'Broken pipe' signal." << endl ;
+if (sig == SIGINT) terminate = true ;
+#ifndef WIN32
+	if (sig == SIGPIPE) cout << "Ignoring 'Broken pipe' signal." << endl ;
+#endif
 }
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.29 2007/04/20 08:27:07 rousse Exp $
+// $Id: RTIG.cc,v 3.30 2007/06/22 08:51:35 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.10 2005/04/30 17:32:27 breholee Exp $
+// $Id: SecurityServer.hh,v 3.11 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -45,7 +45,7 @@ namespace certi {
   aux differents niveaux de securite, des niveaux a chacun des federes, et
   en reglementant les acces aux donnees par les federes.
 */
-class SecurityServer : private std::list<SecurityLevel *>
+class CERTI_EXPORT SecurityServer : private std::list<SecurityLevel *>
 {
 public:
     SecurityServer(SocketServer &, AuditFile &, Handle);
@@ -85,4 +85,4 @@ private:
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.10 2005/04/30 17:32:27 breholee Exp $
+// $Id: SecurityServer.hh,v 3.11 2007/06/22 08:51:39 erk Exp $

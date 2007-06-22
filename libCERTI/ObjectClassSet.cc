@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.23 2007/06/15 08:14:17 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.24 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "ObjectClassSet.hh"
+#include "Certi_Win.h"
 
 // Project
-#include <config.h>
+#include "ObjectClassSet.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
 
@@ -687,4 +687,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.23 2007/06/15 08:14:17 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.24 2007/06/22 08:51:38 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: LBTS.hh,v 3.7 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
@@ -27,12 +27,17 @@
 
 #include "certi.hh"
 
+#ifndef _WIN32				//dotNet
+#include <unistd.h>
+#include <stdlib.h>
+#endif
+
 #include <map>
 #include <vector>
 
 namespace certi {
 
-class LBTS
+class CERTI_EXPORT LBTS
 {
 public:
     typedef std::pair<FederateHandle, FederationTime> FederateClock ;
@@ -63,4 +68,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.6 2004/05/18 13:18:53 breholee Exp $
+// $Id: LBTS.hh,v 3.7 2007/06/22 08:51:37 erk Exp $

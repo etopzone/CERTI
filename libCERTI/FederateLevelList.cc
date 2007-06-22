@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FederateLevelList.cc,v 3.9 2004/03/04 19:50:56 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.10 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "FederateLevelList.hh"
 
 namespace certi {
@@ -60,4 +60,4 @@ FederateLevelList::getLevel(const std::string &theName) const
 
 }
 
-// $Id: FederateLevelList.cc,v 3.9 2004/03/04 19:50:56 breholee Exp $
+// $Id: FederateLevelList.cc,v 3.10 2007/06/22 08:51:36 erk Exp $

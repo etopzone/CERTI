@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.0 2005/04/30 17:39:18 breholee Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.1 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -36,6 +36,10 @@ struct RTIambPrivateRefs
     void executeService(Message *requete, Message *reponse);
     void leave(const char *msg);
 
+	#ifdef WIN32
+	  HANDLE	handle_RTIA;
+	#endif
+
     pid_t pid_RTIA ; //!< pid associated with rtia fork (private).
 
     //! Federate Ambassador reference for module calls.
@@ -49,4 +53,4 @@ struct RTIambPrivateRefs
     SocketUN *socketUn ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.0 2005/04/30 17:39:18 breholee Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.1 2007/06/22 08:51:40 erk Exp $

@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.36 2007/06/19 13:07:11 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.37 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
+#include "Certi_Win.h"
 
 #include "fed.hh"
 #include "XmlParser.hh"
@@ -41,6 +42,8 @@ void
 RTIA::saveAndRestoreStatus(Message::Type type)
     throw (SaveInProgress, RestoreInProgress)
 {
+//D.Mes(pdMessage, 'N', type);
+
     switch (type) {
       case Message::RESIGN_FEDERATION_EXECUTION:
       case Message::TICK_REQUEST:
@@ -1142,4 +1145,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.36 2007/06/19 13:07:11 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.37 2007/06/22 08:51:34 erk Exp $

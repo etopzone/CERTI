@@ -18,11 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.54 2007/06/15 08:14:15 rousse Exp $
+// $Id: Federation.cc,v 3.55 2007/06/22 08:51:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
+
+#ifdef WIN32
+#include "Certi_Win.h"
+#endif
 
 #include "fed.hh"
 #include "XmlParser.hh"
@@ -30,6 +34,13 @@
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
 
+#ifdef WIN32
+#include <windows.h>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#else
 #include <map>
 #include <fstream>
 #include <iostream>
@@ -38,6 +49,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
+#endif
 
 using std::pair ;
 using std::ifstream ;
@@ -104,7 +116,7 @@ Federation::Federation(const char *federation_name,
 
 {
     //    fedparser::FedParser *fed_reader ;
-  struct stat file_stat;
+  STAT_STRUCT file_stat;
 
 #ifdef FEDERATION_USES_MULTICAST // -----------------
     // Initialize Multicast
@@ -158,22 +170,21 @@ Federation::Federation(const char *federation_name,
     cout << "Looking for FOM file... " << endl ; 
 
     cout << "   Trying... " << filename;
-    filefound = (0==stat(filename.c_str(),&file_stat));
+    filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
 
     if (!filefound) {
       cout << " --> cannot access." <<endl;
       filename = "/usr/local/share/federation/"+string(FEDid_name);
       cout << "   Now trying..." << filename;
-      filefound = (0==stat(filename.c_str(),&file_stat));	
+      filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
-    
 
     if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
       cout << " --> cannot access." <<endl;
       filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
-      cout << "   Now trying..." << filename;
-      filefound = (0==stat(filename.c_str(),&file_stat));
-    }    
+      cout << "   Now trying..." << filename;      
+      filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+    }
     
     if (!filefound) {
       cout << " --> cannot access." <<endl;
@@ -231,11 +242,19 @@ Federation::Federation(const char *federation_name,
 	    if (err) throw ErrorReadingFED("");
 	    
             // Retrieve the FED file last modification time(for Audit)
-            struct stat StatBuffer ;
+            STAT_STRUCT StatBuffer ;
+            #ifdef _WIN32
+            char MTimeBuffer[26];
+            #else
             char *MTimeBuffer ;
+            #endif
 
-            if (stat(filename.c_str(), &StatBuffer) == 0) {
+            if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
+            #ifdef _WIN32                
+                ctime_s(&MTimeBuffer[0],26,&StatBuffer.st_mtime);
+            #else
                 MTimeBuffer = ctime(&StatBuffer.st_mtime);
+            #endif    
                 MTimeBuffer[strlen(MTimeBuffer) - 1] = 0 ; // Remove trailing \n
                 server->audit << "(Last modified " << MTimeBuffer << ")" ;
             }
@@ -1866,5 +1885,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.54 2007/06/15 08:14:15 rousse Exp $
+// $Id: Federation.cc,v 3.55 2007/06/22 08:51:35 erk Exp $
 

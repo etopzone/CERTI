@@ -16,11 +16,14 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
+// $Id: certi.hh,v 3.13 2007/06/22 08:51:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 #include "RTI.hh"
 //#include <vector>
@@ -291,4 +294,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.12 2007/04/27 16:24:50 erk Exp $
+// $Id: certi.hh,v 3.13 2007/06/22 08:51:35 erk Exp $

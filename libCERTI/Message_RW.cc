@@ -17,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.31 2007/06/15 08:14:16 rousse Exp $
+// $Id: Message_RW.cc,v 3.32 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "Message.hh"
 
 #include <cassert>
@@ -29,10 +29,15 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("RTIA_MSG", __FILE__);
+static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
 
 // You can comment this out if you don't want to optimize network messages.
 #define USE_HEADER_AND_BODY
+
+void Message::trace(const char* context)
+{
+D.Mes(pdMessage,'M',this->type,context);
+}
 
 // ----------------------------------------------------------------------------
 //! Read NetworkMessage Objects from Socket objects.
@@ -62,14 +67,21 @@ Message::readBody(SocketUN *socket)
 
     // 1. Read Body from socket.
     socket->receive(body.getBuffer(), header.bodySize);
-
+	 // FIXME EN: we must update the write pointer of the 
+	 //           MessageBody because we have just written 
+	 //           on it using direct pointer access !! (nasty usage)
+	 body.addToWritePointer(header.bodySize);
+	
     // 3. Read informations from Message Body according to message type.
     if (header.exception != e_NO_EXCEPTION) {
         body.readString(exceptionReason, MAX_EXCEPTION_REASON_LENGTH);
     }
     else {
-
+ 
         // 1- Prepare Body Structure according to Message Type
+			//D.Mes(pdMessage, 'M', header.type);
+			this->trace("RTIG::chooseProcessingMethod ");
+
         switch(header.type) {
 
             // --- No Variable Part, Body not empty ---
@@ -886,7 +898,7 @@ Message::writeBody(SocketUN *socket)
     header.bodySize = body.size() - sizeof(MessageHeader);
 
     // Put the real Body Size in the copy of the Header.
-    (reinterpret_cast<MessageHeader *>(body.getBufferRW()))->bodySize = header.bodySize ;
+    (reinterpret_cast<MessageHeader *>(body.getBufferModeRW()))->bodySize = header.bodySize ;
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
@@ -1180,4 +1192,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.31 2007/06/15 08:14:16 rousse Exp $
+// $Id: Message_RW.cc,v 3.32 2007/06/22 08:51:37 erk Exp $

@@ -199,11 +199,13 @@ static char *posixly_correct;
 # define my_index	strchr
 #else
 
-# if HAVE_STRING_H
-#  include <string.h>
-# else
+#ifdef WIN32
+#include <windows.h>
+#elif HAVE_STRING_H
+#include <string.h>
+#else
 #  include <strings.h>
-# endif
+#endif
 
 /* Avoid depending on library functions or files
    whose names are inconsistent.  */

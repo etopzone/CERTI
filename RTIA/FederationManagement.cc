@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.24 2007/06/19 13:07:11 rousse Exp $
+// $Id: FederationManagement.cc,v 3.25 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,12 +27,16 @@
 #include "TimeManagement.hh"
 #include "PrettyDebug.hh"
 
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <list>
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
+#endif
 #include <assert.h>
 
 using std::list ;
@@ -85,7 +89,7 @@ FederationManagement::~FederationManagement()
 
         destroyFederationExecution(_nom_federation, e);
         while (e != e_NO_EXCEPTION) {
-            sleep(1);
+				sleep(1);
             destroyFederationExecution(_nom_federation, e);
         }
         cout << "RTIA: Federation destroyed" << endl ;
@@ -227,6 +231,7 @@ joinFederationExecution(const char *Federate,
             // RTIA have to open a new file for working
             // We have to build a name for working file, name begins by _RTIA_
             strcpy(filename,"_RTIA_");
+
             // First pid converted in char and added
             // Then federation name added also
             // Last file type : fed or xml ?
@@ -743,4 +748,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.24 2007/06/19 13:07:11 rousse Exp $
+// $Id: FederationManagement.cc,v 3.25 2007/06/22 08:51:34 erk Exp $

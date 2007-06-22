@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.8 2005/04/30 16:49:43 breholee Exp $
+// $Id: Extent.cc,v 3.9 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "Extent.hh"
 #include "Dimension.hh"
 #include "PrettyDebug.hh"
@@ -127,4 +127,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.8 2005/04/30 16:49:43 breholee Exp $
+// $Id: Extent.cc,v 3.9 2007/06/22 08:51:36 erk Exp $

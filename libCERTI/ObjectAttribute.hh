@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.15 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.16 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
@@ -42,7 +42,7 @@ class ObjectClassAttribute ;
   - current owner,
   - divesting state.
 */
-class ObjectAttribute {
+class CERTI_EXPORT ObjectAttribute {
 
 public:
     // Public Methods
@@ -94,4 +94,4 @@ private:
 
 #endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.15 2005/04/30 17:16:08 breholee Exp $
+// $Id: ObjectAttribute.hh,v 3.16 2007/06/22 08:51:38 erk Exp $

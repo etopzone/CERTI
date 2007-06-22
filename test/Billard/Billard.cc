@@ -19,12 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // ----------------------------------------------------------------------------
 
-#include "Billard.hh"
-
 #include <config.h>
+#include "Certi_Win.h"
+
+#include "Billard.hh"
 #include "PrettyDebug.hh"
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 using std::auto_ptr ;
 using std::string ;

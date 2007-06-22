@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.1 2007/02/21 10:21:15 rousse Exp $
+// $Id: PrettyDebug.hh,v 4.2 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -31,15 +31,13 @@
 
 #include "DebugOStream.hh"
 #include <string>
+#include "RTI.hh"
 
 #define pdSEmptyMessage "Pretty Debug Server empty Message."
 
 // Pretty Debug Basic types
 typedef unsigned TDebugLevel;
 
-// Alias
-class PrettyDebug ;
-typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
 
 // Pretty Debug Constants
 #define pdMaxMessageSize 255  // greater then pdTooLongInitMessage length!
@@ -54,6 +52,7 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
                     pdDebug, /**< Debug D */
                     pdError, /**< Error E */
                     pdInit, /**< Initialization I */
+                    pdMessage, /**< Message Type M */
                     pdProtocol, /**< Protocol P */
                     pdRegister, /**< Object Registration R */
                     pdRequest, /**< Client Request S */
@@ -68,31 +67,31 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 // debug level are enabled, and all others are not enabled.
 
 // KEEP THE SAME ORDER AS IN THE pdDebugLevel ENUM!
-#define pdDebugKeysString ":ACDEIPRSTWXZ\0"
-
+#define pdDebugKeysString ":ACDEIMPRSTWXZ\0"
 
 //---------------------------------------------------------------------------
-class PrettyDebug
-{
-    protected :
-       static std::string federateName_ ;
+class CERTI_EXPORT PrettyDebug {
+    
     public :
        static void setFederateName( const std::string &inName )
           { federateName_ = inName ; }
        static void setFederateName( const char *inName )
           { federateName_ = inName ; }
-
+protected :
+       static std::string federateName_ ;
 private:
-    char* LEnvVar; /**< Name of the environment variable to look for. */
-    char* LMessage; /**< The container of all printed debug
-                       messages. Start with the Header specified at
-                       construction time */
-    char* HeaderMessage; /**< The header message specified at
-                            construction time. */
+    char* LEnvVar;			/**< Name of the environment variable to look for. */
+    char* LMessage;			/**< The container of all printed debug messages. 
+											Start with the Header specified at construction time */
+    char* HeaderMessage;	/**< The header message specified at construction time. */
  
     static DebugOStream defaultOutputStream;
     static DebugOStream* nullOutputStreamPtr;
     static DebugOStream& nullOutputStream;
+    
+    #ifdef _WIN32				//Mutex : Print Control
+		 static HANDLE	g_hMutex;
+    #endif
  
     /** If Level_Map[Level] != &PrettyDebug::nullOutputStream, then the
        debug message must be printed in the ostream addressed. */
@@ -129,11 +128,16 @@ public:
 #ifdef NDEBUG
     inline void Out(pdDebugLevel Level, const char *Format, ...) {};
 #else
-    void Out(pdDebugLevel Level, const char *Format, ...);
+	void Out(pdDebugLevel Level, const char *Format, ...);
+	void Mes(pdDebugLevel Level, const char type, const short testMess, const char *context);
 #endif
 
 };
 
+
+// Alias
+typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
+
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.1 2007/02/21 10:21:15 rousse Exp $
+// $Id: PrettyDebug.hh,v 4.2 2007/06/22 08:51:39 erk Exp $

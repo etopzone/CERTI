@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.23 2005/04/09 15:17:31 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.24 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "ObjectClassAttribute.hh"
+#include "Certi_Win.h"
 
+#include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
 
@@ -217,4 +217,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.23 2005/04/09 15:17:31 breholee Exp $
+// $Id: ObjectClassAttribute.cc,v 3.24 2007/06/22 08:51:38 erk Exp $

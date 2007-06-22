@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.13 2007/06/15 08:14:17 rousse Exp $
+// $Id: main.cc,v 3.14 2007/06/22 08:51:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,18 +33,22 @@
 #include "cmdline.h"
 
 #include "graph_c.hh"
+#include "Certi_Win.h"
 #include "RTI.hh"
 
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <memory.h>
 #include <math.h>
 #include <iostream>
 #include <signal.h>
 #include <exception>
+
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 using std::string ;
 using std::cout ;
@@ -53,7 +57,12 @@ using std::cerr ;
 
 static pdCDebug D("BILLARD", __FILE__);
 
-extern "C" void sortir(int SignalNumber);
+#ifdef _WIN32
+extern "C" void WINAPI WaitForEnd_Win(int *delai);
+#else
+extern "C" void WaitForEnd_Unx(int SignalNumber);
+#endif
+
 void ExceptionHandler();
 void TerminateHandler();
 
@@ -77,8 +86,10 @@ main(int argc, char **argv)
 
     try {
 	// Handlers
-	signal(SIGINT, sortir);
-	signal(SIGALRM, sortir);
+	signal(SIGINT, WaitForEnd_Unx);
+	#ifndef _WIN32
+		signal(SIGALRM, WaitForEnd_Unx);
+	#endif
 	std::set_terminate(TerminateHandler);
 	std::set_unexpected(ExceptionHandler);
 
@@ -143,17 +154,21 @@ main(int argc, char **argv)
 	billard->synchronize(autostart);
 
 	// Countdown
-	struct sigaction a ;
-	a.sa_handler = sortir ;
-	sigemptyset(&a.sa_mask);
-        a.sa_flags   = SA_RESTART;
-	sigaction(SIGALRM, &a, NULL);
+	#ifdef _WIN32
+		CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)WaitForEnd_Win,&timer,0,NULL);	
+	#else
+		struct sigaction a ;
+		a.sa_handler = WaitForEnd_Unx ;
+		sigemptyset(&a.sa_mask);
+		a.sa_flags   = SA_RESTART;
+		sigaction(SIGALRM, &a, NULL);
 
-	// set timer
-	if (timer != 0) {
-	    printf("Timer ... : %5d\n", timer);
-	    alarm(timer);
-	}
+		// set timer
+		if (timer != 0) {
+			 printf("Timer ... : %5d\n", timer);
+			 alarm(timer);
+		}
+	#endif
 
 	// Create object
 	if (args.initx_given && args.inity_given) {
@@ -202,24 +217,39 @@ main(int argc, char **argv)
 /** Signal handler
  */
 void
-sortir(int number)
+WaitForEnd_Unx(int number)
 {
-    switch (number) {
-      case SIGALRM: {
-	  D.Out(pdTerm, "Alarm signal received, exiting...");
-	  exit_billard = true ;
-      } break ;
-      case SIGINT: {
-	  cout << "Exit request received" << endl ;
-	  exit_billard = true ;
-      } break ;
-      default: {
-	  D.Out(pdTerm, "Emergency stop, destroying Ambassadors.");
-	  D.Out(pdTerm, "Federate terminated.");
-	  exit(EXIT_FAILURE);
-      } 
-    }
+switch (number) 
+	{
+	#ifndef _WIN32
+	case SIGALRM: {
+		D.Out(pdTerm, "Alarm signal received, exiting...");
+		exit_billard = true ;
+		} break ;
+	#endif
+		
+	case SIGINT: {
+		cout << "Exit request received" << endl ;
+		exit_billard = true ;
+		} break ;
+		
+	default: {
+		D.Out(pdTerm, "Emergency stop, destroying Ambassadors.");
+		D.Out(pdTerm, "Federate terminated.");
+		exit(EXIT_FAILURE);
+		} 
+	}
 }
+
+#ifdef _WIN32
+void WINAPI WaitForEnd_Win(int *delai)
+{
+
+if (*delai) sleep(*delai); else sleep(INFINITE);
+D.Out(pdTerm, "Alarm signal received, exiting...");
+exit_billard = true ;
+}
+#endif
 
 // ----------------------------------------------------------------------------
 /** Exception handler
@@ -266,4 +296,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.13 2007/06/15 08:14:17 rousse Exp $
+// EOF $Id: main.cc,v 3.14 2007/06/22 08:51:41 erk Exp $

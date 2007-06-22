@@ -18,9 +18,9 @@
 // ----------------------------------------------------------------------------
 // $id
 
-#include <config.h>
-#include "GAV.hh"
+#include "Certi_Win.h"
 
+#include "GAV.hh"
 #include "PrettyDebug.hh"
 
 #include <algorithm>

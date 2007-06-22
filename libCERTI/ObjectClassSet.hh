@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.21 2007/06/15 08:14:17 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.22 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -36,7 +36,7 @@ namespace certi {
 /*! Class ObjectClassSet, qui est la racine de l'arborescence des
   classes d'objets.
 */
-class ObjectClassSet : private std::list<ObjectClass *>
+class CERTI_EXPORT ObjectClassSet : private std::list<ObjectClass *>
 {
 
 public:
@@ -176,4 +176,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.21 2007/06/15 08:14:17 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.22 2007/06/22 08:51:38 erk Exp $

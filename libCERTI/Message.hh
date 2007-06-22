@@ -20,18 +20,20 @@
 #ifndef CERTI_MESSAGE_HH
 #define CERTI_MESSAGE_HH
 
-#include "fedtime.hh"
+#include "Certi_Win.h"
+
 #include "Exception.hh"
 #include "SocketUN.hh"
 #include "MessageBody.hh"
 #include "BasicMessage.hh"
+#include "fedtime.hh"
 
 namespace certi {
 
 /*! The Message class is used to formalize messages that are going to be
   exchanged between the RTI and the federate.
 */
-class Message : public BasicMessage
+class CERTI_EXPORT Message : public BasicMessage
 {
 public:
     struct MessageTimeStruct {
@@ -241,6 +243,7 @@ public:
 
 public:
     Message();
+	 void trace(const char* context);
 
     // Read and Write NetworkMessage Objects to and from Socket objects.
     void write(SocketUN *Socket) throw (NetworkError, NetworkSignal);
@@ -370,7 +373,6 @@ public:
     void setPHVPS(const RTI::ParameterHandleValuePairSet &);
 
     void setAttributes(AttributeHandle *, ushort);
-
     void setAttributes(AttributeHandle *, ValueLengthPair *, ushort);
     void setParameters(ParameterHandle *, ParameterLengthPair *, ushort);
 
@@ -468,6 +470,6 @@ private:
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
-} // namespace certi
+}; // namespace certi
 
 #endif // CERTI_MESSAGE_HH

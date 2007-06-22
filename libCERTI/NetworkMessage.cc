@@ -16,12 +16,12 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.17 2007/06/18 08:13:58 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.18 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "NetworkMessage.hh"
+#include "Certi_Win.h"
 
+#include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 
 #include <cstdio>
@@ -44,6 +44,7 @@ NetworkMessage::display(const char *s)
         printf("GET_FED_FILE : number %ld\n",number) ;
     else
         printf(" type = %d\n", type);
+        
     printf(" number = %ld-%d", federate, number);
     printf(" date = %f ", date);
     printf(" exception = %d ", exception);
@@ -80,7 +81,7 @@ NetworkMessage::NetworkMessage()
     interactionClass = 0 ;
 
     handleArraySize = 0 ;
-        
+
     for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
         {
         ValueArray[i].length = 0 ;
@@ -316,4 +317,4 @@ NetworkMessage::readFEDid(MessageBody &body)
 }
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.17 2007/06/18 08:13:58 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.18 2007/06/22 08:51:37 erk Exp $

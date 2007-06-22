@@ -7,20 +7,32 @@ SET(RTI_LIB_SRCS
   RTIambassador.cc
   RTIambPrivateRefs.cc
   )
+  
+SET(RTI_LIB_INCLUDE
+../include/baseTypes.hh
+../include/certi.hh
+../include/Certi_Win.h
+../include/federateAmbServices.hh
+../include/NullFederateAmbassador.hh
+../include/RTI.hh
+../include/RTIambServices.hh
+../include/RTItypes.hh
+)
 
-ADD_LIBRARY(RTI SHARED ${RTI_LIB_SRCS})
+#SOURCE_GROUP("RTI\\Header" FILES ${RTI_LIB_INCLUDE})
+
+ADD_LIBRARY(RTI SHARED ${RTI_LIB_SRCS} ${RTI_LIB_INCLUDE})
+TARGET_LINK_LIBRARIES(RTI CERTI)
 
 #SET_TARGET_PROPERTIES(RTI PROPERTIES VERSION 1.0.0 SOVERSION 0 )
-INSTALL(TARGETS RTI 
-  DESTINATION lib)
-
+INSTALL(TARGETS RTI DESTINATION lib)
 
 ########### install files ###############
 
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.1 2007/05/02 14:50:15 erk Exp $
+### $Id: CMakeLists.txt,v 1.2 2007/06/22 08:51:40 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #

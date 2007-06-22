@@ -17,7 +17,7 @@ enum Boolean {
     RTI_TRUE
 };
 
-class RTI_EXPORT Exception
+class CERTI_EXPORT Exception
 {
 public:
     ULong _serial ;
@@ -33,9 +33,9 @@ public:
 };
 
 #define RTI_EXCEPT(A) \
-class A : public Exception { \
+class CERTI_EXPORT A : public Exception { \
 public: \
-    static RTI_EXPORT const char *_ex ; \
+    static const char *_ex ; \
     A (const char *reason) : Exception(reason) { _name = _ex ; } \
     A (ULong serial, const char *reason = 0) \
         : Exception(serial, reason) { _name = _ex ; } \

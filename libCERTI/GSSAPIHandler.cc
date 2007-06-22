@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: GSSAPIHandler.cc,v 3.5 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef WITH_GSSAPI
 
-#include <config.h>
-#include "GSSAPIHandler.hh"
+#include "Certi_Win.h"
 
+#include "GSSAPIHandler.hh"
 #include "RTItypes.hh"
 #include "PrettyDebug.hh"
 #include "SocketTCP.hh"
@@ -691,4 +691,4 @@ void GSSAPIHandler::setRemoteName(char *PrincipalName)
 
 #endif // WITH_GSSAPI
 
-// $Id: GSSAPIHandler.cc,v 3.4 2003/06/27 17:26:28 breholee Exp $
+// $Id: GSSAPIHandler.cc,v 3.5 2007/06/22 08:51:36 erk Exp $

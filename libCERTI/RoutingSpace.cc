@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.10 2007/05/03 15:46:31 rousse Exp $
+// $Id: RoutingSpace.cc,v 3.11 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "RoutingSpace.hh"
 #include "helper.hh"
 
@@ -155,4 +155,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.10 2007/05/03 15:46:31 rousse Exp $
+// $Id: RoutingSpace.cc,v 3.11 2007/06/22 08:51:39 erk Exp $

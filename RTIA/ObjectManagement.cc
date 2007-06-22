@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.20 2007/06/15 08:14:15 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.21 2007/06/22 08:51:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,12 +27,15 @@
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
 
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <iostream>
-
+#endif
 using std::cout ;
 using std::endl ;
 using std::string ;
@@ -616,4 +619,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.20 2007/06/15 08:14:15 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.21 2007/06/22 08:51:34 erk Exp $

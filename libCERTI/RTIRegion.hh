@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIRegion.hh,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: RTIRegion.hh,v 3.1 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTI_REGION_HH
@@ -31,7 +31,7 @@ namespace certi {
 
 class RoutingSpace ;
 
-class RTIRegion : public BaseRegion
+class CERTI_EXPORT RTIRegion : public BaseRegion
 {
 public:
     RTIRegion(RegionHandle, const RoutingSpace &, size_t);
@@ -48,4 +48,4 @@ protected:
 
 #endif // CERTI_RTI_REGION_HH
 
-// $Id: RTIRegion.hh,v 3.0 2005/03/25 16:55:25 breholee Exp $
+// $Id: RTIRegion.hh,v 3.1 2007/06/22 08:51:39 erk Exp $

@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.9 2003/10/20 12:51:46 breholee Exp $
+// $Id: XmlParser.hh,v 3.10 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -42,7 +42,7 @@
 
 namespace certi {
 
-class XmlParser
+class CERTI_EXPORT XmlParser
 {
 public:
     XmlParser(RootObject*);
@@ -73,4 +73,4 @@ private:
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.9 2003/10/20 12:51:46 breholee Exp $
+// $Id: XmlParser.hh,v 3.10 2007/06/22 08:51:40 erk Exp $

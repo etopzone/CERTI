@@ -24,6 +24,10 @@
 #include "RTIG.hh"
 #include "certi.hh"
 
+#ifdef WIN32
+#include <signal.h>
+#endif
+
 #include <new>
 #include <csignal>
 
@@ -72,7 +76,9 @@ int main(int argc, char *argv[])
     }
 
     std::signal(SIGINT, SignalHandler);
-    std::signal(SIGPIPE, SignalHandler);
+	#ifndef WIN32
+		std::signal(SIGPIPE, SignalHandler);
+	#endif
 
     std::set_new_handler(NewHandler);
 

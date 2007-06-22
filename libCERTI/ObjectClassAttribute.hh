@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.21 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -39,7 +39,7 @@ namespace certi {
   transportation mode and name). This class also keeps track of published and
   subscribed federates.
 */
-class ObjectClassAttribute : public Subscribable {
+class CERTI_EXPORT ObjectClassAttribute : public Subscribable {
 
 public:
     ObjectClassAttribute();
@@ -91,4 +91,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.20 2005/04/09 15:17:31 breholee Exp $
+// $Id: ObjectClassAttribute.hh,v 3.21 2007/06/22 08:51:38 erk Exp $

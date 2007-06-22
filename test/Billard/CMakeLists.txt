@@ -3,6 +3,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/test/libgraphc
   )
 
+IF (WIN32)
+ADD_DEFINITIONS(-DHAVE_STRING_H)
+ENDIF (WIN32)
 
 ########### next target ###############
 
@@ -38,7 +41,7 @@ INSTALL(FILES
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.2 2007/05/03 08:24:01 erk Exp $
+### $Id: CMakeLists.txt,v 1.3 2007/06/22 08:51:41 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #

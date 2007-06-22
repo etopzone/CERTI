@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.2 2006/03/09 19:54:28 breholee Exp $
+// $Id: HandleManager.hh,v 3.3 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -26,6 +26,12 @@
 #include "certi.hh"
 
 #include <limits>
+
+#ifdef _WIN32
+#ifdef max
+#undef max
+#endif
+#endif 
 
 namespace certi {
 

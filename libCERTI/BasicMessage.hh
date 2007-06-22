@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.6 2007/04/27 16:24:50 erk Exp $
+// $Id: BasicMessage.hh,v 3.7 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -38,7 +38,7 @@ namespace certi {
  * for Message and NetworkMessage classes.
  * \sa Message, NetworkMessage
  */
-class BasicMessage
+class CERTI_EXPORT BasicMessage
 {
 public:
     void setExtents(const std::vector<Extent> &);
@@ -48,6 +48,8 @@ public:
     void setRegions(const std::vector<RegionHandle> &);
     const std::vector<RegionHandle> &getRegions() const ;
 
+	 virtual void trace(const char* context)=0;
+	 
 protected:
     void readExtents(const MessageBody &);
     void writeExtents(MessageBody &) const ;
@@ -63,4 +65,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.6 2007/04/27 16:24:50 erk Exp $
+// $Id: BasicMessage.hh,v 3.7 2007/06/22 08:51:36 erk Exp $

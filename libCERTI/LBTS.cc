@@ -19,19 +19,21 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.6 2007/05/03 15:46:31 rousse Exp $
+// $Id: LBTS.cc,v 3.7 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
-#include "LBTS.hh"
+#include "Certi_Win.h"
 
+#include "LBTS.hh"
 #include "PrettyDebug.hh"
 
+#ifndef _WIN32
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <unistd.h>
+	#include <stdlib.h>
+#endif
 #include <float.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
 
 using std::vector ;  
 
@@ -151,4 +153,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.6 2007/05/03 15:46:31 rousse Exp $
+// $Id: LBTS.cc,v 3.7 2007/06/22 08:51:37 erk Exp $

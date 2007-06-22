@@ -23,49 +23,64 @@
 #include "Socket.hh"
 #include "NetworkMessage.hh"
 
-#include <sys/socket.h>
-#include <netinet/in.h>
+#ifdef _WIN32					//dotNet
+	#ifndef _WINSOCK2API_
+	#ifndef _WINSOCKAPI_
+	#include <winsock.h>
+	#endif
+	#endif
+#else
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+#endif
 
 namespace certi {
 
 class SocketMC : public Socket
 {
 public:
-    int _socket_mc ;
-    bool _est_init_mc ;
+	int _socket_mc ;
+	bool _est_init_mc ;
 
-    SocketMC();
-    virtual ~SocketMC();
+	SocketMC();
+	virtual ~SocketMC();
 
-    void CreerSocketMC(char *addr, unsigned long port);
-    void CreerSocketMC(unsigned long addr, unsigned long port);
-    
-    virtual void send(const unsigned char *, size_t)
-        throw (NetworkError, NetworkSignal);
-    virtual void receive(void *Buffer, unsigned long Size)
-        throw (NetworkError, NetworkSignal);
+	void CreerSocketMC(char *addr, unsigned long port);
+	void CreerSocketMC(unsigned long addr, unsigned long port);
 
-    virtual int returnSocket() const ;
-    virtual unsigned long returnAdress() const ;
+	virtual void send(const unsigned char *, size_t)
+	  throw (NetworkError, NetworkSignal);
+	virtual void receive(void *Buffer, unsigned long Size)
+	  throw (NetworkError, NetworkSignal);
 
-    virtual int getClass() const { return SOCKET_TYPE_MC ; };
+	#ifdef _WIN32
+                SOCKET returnSocket();
+	#else
+		virtual int returnSocket();
+	#endif
 
-    virtual void close();
+	virtual unsigned long returnAdress() const ;
+	virtual int getClass() const { return SOCKET_TYPE_MC ; };
+	virtual void close();
 
-    void sendMC(NetworkMessage *msg);
-    char *receiveMC(NetworkMessage *msg);
-
+	void sendMC(NetworkMessage *msg);
+	char *receiveMC(NetworkMessage *msg);
+	
 private:
-    struct sockaddr_in _sin ;
-    socklen_t _sinlen ;
+	struct sockaddr_in _sin ;
+	struct sockaddr_in _sin_e ;
+	#ifdef _WIN32					//dotNet
+		int _sinlen;
+		SOCKET _socket_emetteur;
+	#else
+		socklen_t _sinlen;
+		int _socket_emetteur;
+	#endif    
+	int _sinlen_e ;
 
-    int _socket_emetteur ;
-    struct sockaddr_in _sin_e ;
-    int _sinlen_e ;
+	int timeoutMC(int, int);
 
-    int timeoutMC(int, int);
-
-    int _num_msg ;
+	int _num_msg ;
 };
 
 } // namespace certi

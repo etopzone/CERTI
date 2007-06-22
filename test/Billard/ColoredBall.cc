@@ -18,12 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ColoredBall.cc,v 3.4 2005/04/30 17:55:43 breholee Exp $
+// $Id: ColoredBall.cc,v 3.5 2007/06/22 08:51:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ColoredBall.hh"
 
 #include <config.h>
+#include "Certi_Win.h"
 
 #include "graph_c.hh"
 
@@ -54,4 +55,4 @@ ColoredBall::display()
 #endif
 }
 
-// $Id: ColoredBall.cc,v 3.4 2005/04/30 17:55:43 breholee Exp $
+// $Id: ColoredBall.cc,v 3.5 2007/06/22 08:51:41 erk Exp $

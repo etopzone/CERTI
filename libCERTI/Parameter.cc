@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.7 2005/04/30 17:18:50 breholee Exp $
+// $Id: Parameter.cc,v 3.8 2007/06/22 08:51:38 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "Parameter.hh"
 
 #include <stdio.h>
@@ -51,4 +51,4 @@ Parameter::display(void)
 
 } // namespace certi
 
-// $Id: Parameter.cc,v 3.7 2005/04/30 17:18:50 breholee Exp $
+// $Id: Parameter.cc,v 3.8 2007/06/22 08:51:38 erk Exp $

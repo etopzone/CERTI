@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.35 2007/06/15 08:14:16 rousse Exp $
+// $Id: FederationsList.cc,v 3.36 2007/06/22 08:51:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -682,7 +682,9 @@ FederationsList::destroyFederation(Handle handle)
         list<Federation *>::iterator i = begin();
         for (int j = 1 ; i != end() && j <= rank ; j++, i++) {
             if (j == rank) {
-                erase(i);
+					// FIXME EN:comment utiliser erase(iterator) dans une boucle.
+                i=erase(i);
+                break;
             }
         }
         delete federation ;
@@ -1312,5 +1314,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.35 2007/06/15 08:14:16 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.36 2007/06/22 08:51:35 erk Exp $
 

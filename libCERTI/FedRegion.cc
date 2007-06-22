@@ -19,11 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $
+// $Id: FedRegion.cc,v 3.4 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
+#include "Certi_Win.h"
 #include "FedRegion.hh"
-#include <config.h>
 
 using std::vector ;
 
@@ -140,4 +140,4 @@ FedRegion::commit()
 
 } // namespace certi
 
-// $Id: FedRegion.cc,v 3.3 2007/05/03 15:46:31 rousse Exp $
+// $Id: FedRegion.cc,v 3.4 2007/06/22 08:51:36 erk Exp $

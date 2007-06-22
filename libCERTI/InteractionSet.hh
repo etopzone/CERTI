@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
+// $Id: InteractionSet.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -32,7 +32,7 @@
 
 namespace certi {
 
-class InteractionSet : private std::list<Interaction *>
+class CERTI_EXPORT InteractionSet : private std::list<Interaction *>
 {
 
 public:
@@ -127,4 +127,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.12 2007/02/21 10:21:15 rousse Exp $
+// $Id: InteractionSet.hh,v 3.13 2007/06/22 08:51:37 erk Exp $

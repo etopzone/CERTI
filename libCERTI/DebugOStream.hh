@@ -19,17 +19,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: DebugOStream.hh,v 4.1 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
 #define _CERTI_DEBUGOSTREAM_HH
 
 #include <iostream>
+#include "RTI.hh"
 
 /** Stream used by PrettyDebug
  */
-class DebugOStream
+class CERTI_EXPORT DebugOStream
 {
 private:
     std::ostream& ostr;
@@ -257,4 +258,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 4.0 2005/04/29 20:06:08 breholee Exp $
+// $Id: DebugOStream.hh,v 4.1 2007/06/22 08:51:36 erk Exp $

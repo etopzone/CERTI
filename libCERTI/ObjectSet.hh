@@ -36,7 +36,7 @@
 
 namespace certi {
 
-class ObjectSet : private std::map<ObjectHandle, Object *>
+class CERTI_EXPORT ObjectSet : private std::map<ObjectHandle, Object *>
 {
 public:
     // Public Methods.

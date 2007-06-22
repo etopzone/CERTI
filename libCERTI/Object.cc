@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.18 2005/04/30 17:16:08 breholee Exp $
+// $Id: Object.cc,v 3.19 2007/06/22 08:51:37 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
+
 #include "Object.hh"
 
 #include <iostream>
@@ -152,4 +153,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.18 2005/04/30 17:16:08 breholee Exp $
+// $Id: Object.cc,v 3.19 2007/06/22 08:51:37 erk Exp $

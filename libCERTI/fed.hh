@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.3 2006/03/09 19:54:28 breholee Exp $
+// $Id: fed.hh,v 3.4 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RootObject.hh"
@@ -30,7 +30,7 @@ namespace certi {
 namespace fedparser {
 
 // public interface
-int build(const char *, RootObject *, bool);
+int CERTI_EXPORT build(const char *, RootObject *, bool);
 
 // internal functions
 void indent();
@@ -64,4 +64,4 @@ void endSpace();
 
 }}
 
-// $Id: fed.hh,v 3.3 2006/03/09 19:54:28 breholee Exp $
+// $Id: fed.hh,v 3.4 2007/06/22 08:51:40 erk Exp $

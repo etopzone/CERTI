@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.9 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditFile.hh,v 3.10 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
@@ -54,7 +54,7 @@ namespace certi {
   will set the line's status (or Result) and flush the line into the Audit
   file.
 */
-class AuditFile
+class CERTI_EXPORT AuditFile
 {
 public:
     AuditFile(const std::string); // Open LogFileName for writing.
@@ -84,4 +84,4 @@ protected:
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.9 2004/05/18 13:18:53 breholee Exp $
+// $Id: AuditFile.hh,v 3.10 2007/06/22 08:51:36 erk Exp $

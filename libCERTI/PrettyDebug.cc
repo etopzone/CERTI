@@ -19,21 +19,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.1 2007/02/21 10:21:15 rousse Exp $
+// $Id: PrettyDebug.cc,v 4.2 2007/06/22 08:51:39 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "PrettyDebug.hh"
+#include "Message.hh"
+#include "NetworkMessage.hh"
 
-#include <cstring>
-#include <iostream>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <iostream>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <string>
+#include <cstring>
+#ifdef _WIN32
+	#include <time.h>
+	#include <sys/timeb.h>
+#else
+	#include <sys/types.h>
+	#include <sys/time.h>
+	#include <unistd.h>
+	#include <string>
+#endif
 
 using std::cout ;
 using std::cerr ;
@@ -46,6 +52,10 @@ DebugOStream PrettyDebug::defaultOutputStream(cerr);
 DebugOStream* PrettyDebug::nullOutputStreamPtr = 0 ; 
 DebugOStream& PrettyDebug::nullOutputStream = DebugOStream::nullOutputStream;
 
+#ifdef _WIN32		//Mutex switch ON
+	HANDLE PrettyDebug::g_hMutex= CreateMutex(NULL,FALSE,"HLA");	
+#endif
+
 std::string PrettyDebug::federateName_ = "" ;
 
 // ----------------------------------------------------------------------------
@@ -55,16 +65,33 @@ void
 PrettyDebug::Print(DebugOStream& theOutputStream,
                    const char* theHeaderMessage, const char * Message)
 {
-   char buffer[256] ;
-   struct timeval tv;
-   gettimeofday( &tv, NULL );
+char buffer[256] ;
 
-   sprintf( buffer, "HLALOG - %d.%06d - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
+#ifdef _WIN32
+	if (WaitForSingleObject(g_hMutex,INFINITE) == WAIT_OBJECT_0)
+		{//Wait for Mutex
+		struct _timeb timebuffer;_ftime(&timebuffer );
+		sprintf(buffer,"HLALOG - %I64d.%03hd s - %s", timebuffer.time,timebuffer.millitm,federateName_.c_str());
 
-    if (Message != NULL)
-      theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
-    else
-      theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
+		if (Message != NULL)
+			theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
+		else
+			theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
+			
+		theOutputStream.flush();
+		ReleaseMutex(g_hMutex);
+		}
+#else
+	struct timeval tv;
+	gettimeofday( &tv, NULL );
+	sprintf( buffer, "HLALOG - %d.%06d - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
+
+	if (Message != NULL)
+		theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
+	else
+		theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
+	theOutputStream.flush();	
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -74,34 +101,37 @@ PrettyDebug::Print(DebugOStream& theOutputStream,
 void
 PrettyDebug::ParseEnvString(const char *Name)
 {
-    unsigned int i;
-    const char *pdInitMessage = " variable read, content = ";
-    const char *pdTooLongInitMessage = "Env Var read(string too long).";
-    char *Value = getenv(Name); // The value of the variable Name
-    char  Key; // A character from the value compared to keys.
-    char *Pos; // The position of Key in pdDebugKeys
-    char *DebugKeys = (char *) pdDebugKeysString ; // needs a non const string
-  
-    for (i = pdUnused; i < pdLast + 1; i++) // Clear current level map
-        Level_Map[i] = PrettyDebug::nullOutputStreamPtr;
-  
-    if (Value != 0) { // Print Debug Init Message
-        int length = strlen(LEnvVar) + strlen(pdInitMessage) + strlen(Value);
-        if (length < pdMaxMessageSize)
-            cout << LEnvVar << pdInitMessage << Value << endl;
-        else
-            cout << LEnvVar << pdTooLongInitMessage << endl;
-        
-         // Compare each char of Value to content of the pgDebugKeys
-         // string, to enable matching debug levels.
-        for (i = 0; i < strlen(Value); i++) {
-            Key = Value[i];
-            Pos = strchr(DebugKeys, Key);
-            if (Pos != 0)
-                Level_Map[Pos - DebugKeys] = &(PrettyDebug::defaultOutputStream);
-        }
-    }
-    return;
+unsigned int i;
+char *Value = getenv(Name); // The value of the variable Name
+char  Key; // A character from the value compared to keys.
+char *Pos; // The position of Key in pdDebugKeys
+char *DebugKeys = (char *) pdDebugKeysString ; // needs a non const string
+
+for (i = pdUnused; i < pdLast + 1; i++) // Clear current level map
+	Level_Map[i] = PrettyDebug::nullOutputStreamPtr;
+
+if (Value != 0) 
+	{ // Print Debug Init Message
+	const char *pdInitMessage = " variable read, content = ";
+	const char *pdTooLongInitMessage = "Env Var read(string too long).";
+	
+	int length = strlen(LEnvVar) + strlen(pdInitMessage) + strlen(Value);
+	if (length < pdMaxMessageSize)
+		cout << LEnvVar << pdInitMessage << Value << endl;
+	else
+		cout << LEnvVar << pdTooLongInitMessage << endl;
+
+	// Compare each char of Value to content of the pgDebugKeys 
+	// string, to enable matching debug levels.
+	for (i = 0; i < strlen(Value); i++) 
+		{
+		Key = Value[i];
+		Pos = strchr(DebugKeys, Key);
+		if (Pos != 0)
+			 Level_Map[Pos - DebugKeys] = &(PrettyDebug::defaultOutputStream);
+		}
+	}
+return;
 }
 
 // ---------------------------------------------------------------------------- 
@@ -111,28 +141,30 @@ PrettyDebug::ParseEnvString(const char *Name)
  *  whatever you need. */
 PrettyDebug::PrettyDebug(const char *Name, const char *Header)
 {
-    if (Name == 0) {
-        PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
-                        "Error in pgCDebug constructor, no Name specified.\n");
-        exit(EXIT_FAILURE);
-    }
+if (Name == 0) 
+	{
+	PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
+	"Error in pgCDebug constructor, no Name specified.\n");
+	exit(EXIT_FAILURE);
+	}
 
-    LEnvVar = strdup(Name);
-    if (Header != 0)
-        HeaderMessage = strdup(Header);
-    else
-        HeaderMessage = strdup("");
+LEnvVar = strdup(Name);
+if (Header != 0)
+	HeaderMessage = strdup(Header);
+else
+	HeaderMessage = strdup("");
 
-     //Initialisation de LMessage a 0. Il est alloue la premiere fois
-     //dans la methode Out.
-    LMessage = 0;
+//Initialisation de LMessage a 0. Il est alloue la premiere fois
+//dans la methode Out.
+LMessage = 0;
 
-    if ((LEnvVar == 0) || (HeaderMessage == 0)) {
-        PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
-                        "Error in pgCDebug constructor memory allocation.\n");
-        exit(EXIT_FAILURE);
-    }
-    ParseEnvString(Name);
+if ((LEnvVar == 0) || (HeaderMessage == 0)) 
+	{
+	PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
+	"Error in pgCDebug constructor memory allocation.\n");
+	exit(EXIT_FAILURE);
+	}
+ParseEnvString(Name);
 }
 
 // ----------------------------------------------------------------------------
@@ -186,57 +218,60 @@ PrettyDebug::disableDebugLevel(pdDebugLevel Level)
    its body set to {} (see PrettyDebug.hh).
 
    \attention: Probleme, rien ne garantit qu'on ne depassera pas le
-   nombre max de char dans le vsprintf. Mieux vaut utiliser la
-   syntaxe C++ 
+   nombre max de char dans le vsprintf. Mieux vaut utiliser la syntaxe C++ 
 */
 void
 PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
 {
-    const char *pdEmptyMessage = "Pretty Debug received an empty Message.";
-    DebugOStream* theOutputStreamPtr = Level_Map[Level];
+DebugOStream* theOutputStreamPtr = Level_Map[Level];
 
-    //Warnings messages
-    //if (LEnvVar == 0) cout << endl << "ENV VAR NULL CALLING OUT METHOD ";
-    //if (HeaderMessage == 0) cout << "HEADER NULL CALLING OUT METHOD" << endl;
+//Warnings messages
+//if (LEnvVar == 0) cout << endl << "ENV VAR NULL CALLING OUT METHOD ";
+//if (HeaderMessage == 0) cout << "HEADER NULL CALLING OUT METHOD" << endl;
 
-    if (theOutputStreamPtr != PrettyDebug::nullOutputStreamPtr) {
-        if (Format != 0) { // Cat Header and Message strings 
-            if (LMessage == 0) { // A final printed message is
-                                 // Header+Message+\n(+\0) 
-                //Optimisation, on pourrait peut-etre mettre LMessage
-                //en static.  Mais il ne faudra pas que dans un D.Out
-                //qu'on appelle un autre D.Out car autrement, seul un
-                //message serait affiche.
+if (theOutputStreamPtr != PrettyDebug::nullOutputStreamPtr) 
+	{
+	if (Format != 0) 
+		{ // Cat Header and Message strings 
+		if (LMessage == 0) 
+			{ // A final printed message is
+						// Header+Message+\n(+\0) 
+			//Optimisation, on pourrait peut-etre mettre LMessage
+			//en static.  Mais il ne faudra pas que dans un D.Out
+			//qu'on appelle un autre D.Out car autrement, seul un
+			//message serait affiche.
 
-                LMessage = (char *) malloc((pdMaxMessageSize+2) * sizeof(char));
+			LMessage = (char *) malloc((pdMaxMessageSize+2) * sizeof(char));
 
-                if (LMessage == 0) { 
-                    PrettyDebug::Print(PrettyDebug::defaultOutputStream,
-                                    HeaderMessage, 
-                                    "Error in pgCDebug Out method while "
-                                    "allocating initial memory for messages\n");
-                    exit(EXIT_FAILURE);
-                }
-//                else
-//                    PrettyDebug::Print(PrettyDebug::defaultOutputStream, 
-//                                    HeaderMessage, "Allocated initial memory "
-//                                    "for Message buffer.\n");
-            }
-            va_list argptr; // Variable Argument list, see stdarg.h
-            va_start(argptr, Format);
-            //Probleme, rien ne garantit qu'on ne depassera pas le
-            //nombre max de char dans le vsprintf.
-            vsprintf(LMessage, Format, argptr); 
-            va_end(argptr);
-        }
-        else
-            strcpy(LMessage, pdEmptyMessage);
-        strcat(LMessage, "\n"); // Add trailing \n
-        PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, LMessage);
-    }
-    return;
+			if (LMessage == 0)
+				{ 
+				PrettyDebug::Print(PrettyDebug::defaultOutputStream,
+								HeaderMessage, 
+								"Error in pgCDebug Out method while "
+								"allocating initial memory for messages\n");
+				exit(EXIT_FAILURE);
+				}
+		//                else
+		//                    PrettyDebug::Print(PrettyDebug::defaultOutputStream, 
+		//                                    HeaderMessage, "Allocated initial memory "
+		//                                    "for Message buffer.\n");
+			}
+		va_list argptr; // Variable Argument list, see stdarg.h
+		va_start(argptr, Format);
+		//Probleme, rien ne garantit qu'on ne depassera pas le
+		//nombre max de char dans le vsprintf.
+		vsprintf(LMessage, Format, argptr); 
+		va_end(argptr);
+		}
+	else
+		strcpy(LMessage, "Pretty Debug received an empty Message.");
+		
+	strcat(LMessage, "\n"); // Add trailing \n
+	PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, LMessage);
+	}
+return;
 }
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.1 2007/02/21 10:21:15 rousse Exp $
+// $Id: PrettyDebug.cc,v 4.2 2007/06/22 08:51:39 erk Exp $

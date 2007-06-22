@@ -18,13 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Display.cc,v 3.3 2007/04/26 14:42:50 erk Exp $
+// $Id: Display.cc,v 3.4 2007/06/22 08:51:41 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Display.hh"
-
 #include <config.h>
+#include "Certi_Win.h"
 
+#include "Display.hh"
 #include "graph_c.hh"
 
 #include <iostream>
@@ -77,4 +77,4 @@ Display::instance()
     return myInstance ;
 }
 
-// $Id: Display.cc,v 3.3 2007/04/26 14:42:50 erk Exp $
+// $Id: Display.cc,v 3.4 2007/06/22 08:51:41 erk Exp $

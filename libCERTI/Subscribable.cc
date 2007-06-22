@@ -17,13 +17,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.3 2005/04/13 13:03:10 breholee Exp $
+// $Id: Subscribable.cc,v 3.4 2007/06/22 08:51:40 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
+
 #include "Subscribable.hh"
 #include "helper.hh"
 #include "PrettyDebug.hh"
+
+#ifdef _WIN32
+//#include <algorithm>
+#endif
 
 namespace {
 
@@ -194,4 +199,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.3 2005/04/13 13:03:10 breholee Exp $
+// $Id: Subscribable.cc,v 3.4 2007/06/22 08:51:40 erk Exp $

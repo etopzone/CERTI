@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.4 2005/03/28 19:14:51 breholee Exp $
+// $Id: Dimension.cc,v 3.5 2007/06/22 08:51:36 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include <config.h>
+#include "Certi_Win.h"
 #include "Dimension.hh"
 
 using std::string ;
@@ -53,6 +53,6 @@ Dimension::setUpperBound(ULong v)
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.4 2005/03/28 19:14:51 breholee Exp $
+// $Id: Dimension.cc,v 3.5 2007/06/22 08:51:36 erk Exp $
 
 
