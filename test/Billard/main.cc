@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.14 2007/06/22 08:51:41 erk Exp $
+// $Id: main.cc,v 3.15 2007/06/25 13:07:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -59,9 +59,8 @@ static pdCDebug D("BILLARD", __FILE__);
 
 #ifdef _WIN32
 extern "C" void WINAPI WaitForEnd_Win(int *delai);
-#else
-extern "C" void WaitForEnd_Unx(int SignalNumber);
 #endif
+extern "C" void WaitForEnd_Unx(int SignalNumber);
 
 void ExceptionHandler();
 void TerminateHandler();
@@ -296,4 +295,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.14 2007/06/22 08:51:41 erk Exp $
+// EOF $Id: main.cc,v 3.15 2007/06/25 13:07:54 erk Exp $
