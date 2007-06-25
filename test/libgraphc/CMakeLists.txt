@@ -5,11 +5,13 @@ ADD_LIBRARY(graph STATIC graph_c.cc)
 ########### install files ###############
 
 INSTALL(TARGETS graph
-  DESTINATION lib)
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.2 2007/06/22 08:51:41 erk Exp $ 
+### $Id: CMakeLists.txt,v 1.3 2007/06/25 13:09:59 erk Exp $ 
 #
 #MAINTAINERCLEANFILES = Makefile.in
 #
@@ -23,4 +25,4 @@ INSTALL(TARGETS graph
 #
 #LDADD = @XLIBS@
 #
-### EOF $Id: CMakeLists.txt,v 1.2 2007/06/22 08:51:41 erk Exp $
+### EOF $Id: CMakeLists.txt,v 1.3 2007/06/25 13:09:59 erk Exp $

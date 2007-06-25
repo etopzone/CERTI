@@ -20,13 +20,15 @@ ADD_EXECUTABLE(rtig ${rtig_SRCS})
 TARGET_LINK_LIBRARIES(rtig ${SOCKET_LIBRARY} ${LIBXML2_LIBRARIES} CERTI)
 
 INSTALL(TARGETS rtig 
-  DESTINATION bin)
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 ########### install files ###############
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.1 2007/05/02 14:50:15 erk Exp $
+### $Id: CMakeLists.txt,v 1.2 2007/06/25 13:09:58 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #

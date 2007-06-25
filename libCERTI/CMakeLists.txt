@@ -179,14 +179,15 @@ TARGET_LINK_LIBRARIES(CERTI ${LIBXML2_LIBRARIES} ${SOCKET_LIBRARY})
 #SET_TARGET_PROPERTIES(CERTI PROPERTIES VERSION 1.0.0 SOVERSION 0 )
 
 INSTALL(TARGETS CERTI 
-  DESTINATION lib )
-
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 ########### install files ###############
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.3 2007/06/22 08:51:36 erk Exp $ 
+### $Id: CMakeLists.txt,v 1.4 2007/06/25 13:09:58 erk Exp $ 
 #
 #MAINTAINERCLEANFILES = Makefile.in
 #

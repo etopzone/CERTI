@@ -30,10 +30,13 @@ IF (X11_FOUND)
 ENDIF (X11_FOUND)
 
 INSTALL(TARGETS billard
-  DESTINATION bin)
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 
 ########### install files ###############
+
 
 INSTALL(FILES  
   Test.fed Test.xml 
@@ -41,7 +44,7 @@ INSTALL(FILES
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.3 2007/06/22 08:51:41 erk Exp $
+### $Id: CMakeLists.txt,v 1.4 2007/06/25 13:09:59 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.55 2007/06/22 08:51:35 erk Exp $
+// $Id: Federation.cc,v 3.56 2007/06/25 13:09:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -172,19 +172,38 @@ Federation::Federation(const char *federation_name,
     cout << "   Trying... " << filename;
     filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
 
+#ifdef _WIN32
     if (!filefound) {
+      char temp[260];
       cout << " --> cannot access." <<endl;
-      filename = "/usr/local/share/federation/"+string(FEDid_name);
+      GetCurrentDirectory(260,temp);
+      filename = string(temp);
+      filename = filename + "\\share\\federations\\"+string(FEDid_name);
       cout << "   Now trying..." << filename;
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
-
+    
+    if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
+      cout << " --> cannot access." <<endl;
+      filename = string(getenv("CERTI_HOME"))+"\\share\\federations\\"+FEDid_name;
+      cout << "   Now trying..." << filename;      
+      filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+    }
+#else
+    if (!filefound) {
+      cout << " --> cannot access." <<endl;
+      filename = "/usr/local/share/federations/"+string(FEDid_name);
+      cout << "   Now trying..." << filename;
+      filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+    }
+    
     if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
       cout << " --> cannot access." <<endl;
       filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
       cout << "   Now trying..." << filename;      
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
+#endif
     
     if (!filefound) {
       cout << " --> cannot access." <<endl;
@@ -1885,5 +1904,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.55 2007/06/22 08:51:35 erk Exp $
+// $Id: Federation.cc,v 3.56 2007/06/25 13:09:58 erk Exp $
 

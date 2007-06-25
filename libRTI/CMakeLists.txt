@@ -25,14 +25,17 @@ ADD_LIBRARY(RTI SHARED ${RTI_LIB_SRCS} ${RTI_LIB_INCLUDE})
 TARGET_LINK_LIBRARIES(RTI CERTI)
 
 #SET_TARGET_PROPERTIES(RTI PROPERTIES VERSION 1.0.0 SOVERSION 0 )
-INSTALL(TARGETS RTI DESTINATION lib)
+INSTALL(TARGETS RTI 
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)
 
 ########### install files ###############
 
 
 #original Makefile.am contents follow:
 
-### $Id: CMakeLists.txt,v 1.2 2007/06/22 08:51:40 erk Exp $
+### $Id: CMakeLists.txt,v 1.3 2007/06/25 13:09:58 erk Exp $
 ###
 ### Process this file with automake to produce Makefile.in
 #
