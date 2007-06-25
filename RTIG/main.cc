@@ -36,6 +36,7 @@ using namespace certi::rtig ;
 using std::cerr ;
 using std::cout ;
 using std::endl ;
+using std::string ;
 
 static RTIG *rti ;
 
@@ -65,6 +66,17 @@ int main(int argc, char *argv[])
     gengetopt_args_info args ;
     if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
     bool verbose = args.verbose_flag ;
+    
+#if _WIN32   
+   string dn = string(argv[0]);
+   dn = dn.substr(0,dn.find_last_of("\\"));
+   dn = dn.substr(0,dn.find_last_of("\\"));
+   if (NULL==getenv("CERTI_HOME")) {
+      dn = "CERTI_HOME="+dn+"\\";
+      cout << "Updating : " << dn << endl;
+		putenv(dn.c_str());
+   }
+#endif
 
     if (verbose) {
 	cout << "CERTI RTIG " VERSION " - Copyright 2002-2006  ONERA" 
