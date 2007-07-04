@@ -1,18 +1,75 @@
 
-########### install files ###############
 
-INSTALL_FILES(  FILES  index.html certi.html install.txt )
+IF (BUILD_API_DOC)
+    FIND_PACKAGE(Doxygen)
+ENDIF(BUILD_API_DOC)
 
+IF (DOXYGEN_FOUND)  
+  SET(REF_DOXYGEN_INPUT ${CMAKE_BINARY_DIR}/reference.dox)
+  SET(REF_DOC_DIR ${CMAKE_BINARY_DIR}/doc/reference CACHE PATH "reference documentation directory")
+  SET(REF_DOXYGEN_OUTPUT ${REF_DOC_DIR}/html/index.html)
+#SET(STATIC_PAGES  ${CMAKE_CURRENT_SOURCE_DIR}/footer/footer.html ${CMAKE_CURRENT_SOURCE_DIR}/header/header.html)  
+  
+  SET(DOXYGEN_INPUT_USER ${CMAKE_BINARY_DIR}/user.dox)
+  SET(DOXYGEN_INPUT_BILLARD ${CMAKE_BINARY_DIR}/billard.doxy)  
+  
+  SET(BILLARD_DOC_DIR ${CMAKE_BINARY_DIR}/doc/billard CACHE PATH "billard documentation directory")
+  SET(USER_DOC_DIR ${CMAKE_BINARY_DIR}/doc/user CACHE PATH "user documentation directory")
+  
+IF (WIN32)
+  SET(DOXYGEN_GENERATE_MAN NO)
+  FIND_PROGRAM(HHC_PROGRAM 
+    NAMES hhc.exe 
+    PATHS "c:/Program Files/HTML Help Workshop"
+    DOC "HTML Help Compiler program")
+ELSE (WIN32)
+  SET(DOXYGEN_GENERATE_MAN YES)
+  SET(HHC_PROGRAM)
+ENDIF (WIN32)
 
+CONFIGURE_FILE(
+  ${CMAKE_CURRENT_SOURCE_DIR}/reference.dox.in
+  ${REF_DOXYGEN_INPUT})
 
-#original Makefile.am contents follow:
+FILE(MAKE_DIRECTORY ${REF_DOC_DIR}/html)
 
-### Process this file with automake to produce Makefile.in
-#
-## @configure_input@
-#
-#docdir = $(prefix)/share/doc
-#doc_DATA = index.html certi.html install.txt
-#
-#EXTRA_DIST = certi.html index.html install.txt billard.dox	\
-#reference.dox user.dox
+#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/tsp.css ${APIDOC_DIR}/html/tsp.css COPYONLY)
+#FILE(GLOB header_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/header/*.htm*)
+#FILE(GLOB footer_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/footer/*.htm*)
+#FILE(GLOB images_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/images/*.png)
+
+# Copy necessary doc files
+#FOREACH (file ${header_files} ${footer_files} ${images_files})
+#  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${file} ${APIDOC_DIR}/html/${file} COPYONLY)
+#ENDFOREACH (file)
+
+ADD_CUSTOM_COMMAND(
+  OUTPUT ${REF_DOXYGEN_OUTPUT}
+  COMMAND ${CMAKE_COMMAND} -E echo_append "Building Reference Documentation..."
+  COMMAND ${DOXYGEN_EXECUTABLE} ${REF_DOXYGEN_INPUT}
+  COMMAND ${CMAKE_COMMAND} -E echo "Done."
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+  DEPENDS ${REF_DOXYGEN_INPUT}
+  )
+
+ADD_CUSTOM_TARGET(doc ALL DEPENDS ${REF_DOXYGEN_OUTPUT})
+
+ADD_CUSTOM_TARGET(doc_forced
+  COMMAND ${CMAKE_COMMAND} -E echo_append "Building Reference Documentation..."
+  COMMAND ${DOXYGEN_EXECUTABLE} ${REF_DOXYGEN_INPUT}
+  COMMAND ${CMAKE_COMMAND} -E echo "Done."
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+  
+FILE(GLOB_RECURSE doc_files RELATIVE ${REF_DOC_DIR} ${REF_DOC_DIR}/*)
+FOREACH(file ${doc_files})
+  GET_FILENAME_COMPONENT(file_prefix ${file} PATH)
+  INSTALL(FILES ${REF_DOC_DIR}/${file}
+    DESTINATION share/doc/certi/${file_prefix})
+ENDFOREACH(file)
+
+ENDIF (DOXYGEN_FOUND)
+
+INSTALL(FILES  
+    index.html certi.html install.txt
+    DESTINATION share/doc/certi)

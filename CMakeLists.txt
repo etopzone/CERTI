@@ -17,6 +17,9 @@ TEST_BIG_ENDIAN(BIG_ENDIAN)
 
 OPTION(BUILD_SHARED
   "Build libraries as shared library" ON)
+  
+OPTION(BUILD_API_DOC
+  "Build doxygen documentation" OFF)
 
 SET(CMAKE_BUILD_TYPE "Debug")
 
