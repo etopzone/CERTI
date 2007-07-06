@@ -445,9 +445,7 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = "${CMAKE_BINARY_DIR}/include" \
-	                     "${CMAKE_SOURCE_DIR}/include" \
-			             "${CMAKE_SOURCE_DIR}/src" \
-			             "${CMAKE_BINARY_DIR}/src" \
+	                     "${CMAKE_SOURCE_DIR}/include" \			             
                          "${CMAKE_SOURCE_DIR}/libCERTI" \
                          "${CMAKE_SOURCE_DIR}/libRTI" \
                          "${CMAKE_SOURCE_DIR}/RTIG" \
