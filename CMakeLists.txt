@@ -23,6 +23,8 @@ OPTION(BUILD_API_DOC
 
 SET(CMAKE_BUILD_TYPE "Debug")
 
+# Use this in order to make Eclipse CDT parser handle error message smoothly
+# see  http://www.cmake.org/Wiki/CMake:Eclipse
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
