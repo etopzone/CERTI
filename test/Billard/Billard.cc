@@ -20,7 +20,6 @@
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-#include "Certi_Win.h"
 
 #include "Billard.hh"
 #include "PrettyDebug.hh"

@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIRegion.cc,v 3.3 2007/06/22 08:51:39 erk Exp $
+// $Id: RTIRegion.cc,v 3.4 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "RTIRegion.hh"
 #include "RoutingSpace.hh"
 
@@ -59,4 +59,4 @@ RTIRegion::getSpaceHandle() const
 
 } // namespace certi
 
-// $Id: RTIRegion.cc,v 3.3 2007/06/22 08:51:39 erk Exp $
+// $Id: RTIRegion.cc,v 3.4 2007/07/06 09:25:18 erk Exp $

@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.35 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClass.cc,v 3.36 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "ObjectClass.hh"
 #include "ObjectClassAttribute.hh"
@@ -983,7 +983,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // An attributeOwnershipAcquisition is on the way
                 // with this attribute.
 
-                // Le demandeur le plus récent devient propriétaire
+                // Le demandeur le plus rï¿½cent devient propriï¿½taire
                 NewOwner = oa->getCandidate(1);
 
                 oa->setOwner(NewOwner);
@@ -991,7 +991,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // On le supprime de la liste des demandeurs
                 oa->removeCandidate(NewOwner);
 
-                // On réinitialise divesting
+                // On rï¿½initialise divesting
                 oa->setDivesting(false);
 
                 diffusionAcquisition.DiffArray[compteur_acquisition]
@@ -1137,7 +1137,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         CDiffusion *diffusionDivestiture = new CDiffusion();
 
         //
-        //Ce service ne doit pas ajouter le fédéré demandeur à la liste
+        //Ce service ne doit pas ajouter le fï¿½dï¿½rï¿½ demandeur ï¿½ la liste
         //des candidats!!!
         //
         int compteur_unavailable = 0 ;
@@ -1151,7 +1151,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
 
             oldOwner = oa->getOwner();
             if ((oldOwner == 0) || (oa->beingDivested())) {
-                //Cet attribut est libre ou offert par son propriétaire
+                //Cet attribut est libre ou offert par son propriï¿½taire
                 //S'il est offert
                 if (oa->beingDivested()) {
                     diffusionDivestiture->DiffArray[compteur_divestiture].federate
@@ -1166,7 +1166,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                 oa->setOwner(the_federate);
                 oa->setDivesting(false);
                 compteur_notification++ ;
-                //object->Owner reste le champ de référence
+                //object->Owner reste le champ de rï¿½fï¿½rence
                 //pour le privilegeToDelete
                 if (strcmp(oca->getName(), "privilegeToDelete") == 0)
                     object->setOwner(the_federate);
@@ -1234,7 +1234,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     for (int index = 0 ; index < theListSize ; index++)
         getAttribute(theAttributeList[index]);
 
-    //Le fédéré est-il propriétaire de tous les attributs
+    //Le fï¿½dï¿½rï¿½ est-il propriï¿½taire de tous les attributs
     ObjectAttribute * oa ;
     for (int i = 0 ; i < theListSize ; i++) {
         oa = object->getAttribute(theAttributeList[i]);
@@ -1263,7 +1263,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // An attributeOwnershipAcquisition is on the way
                 // on this attribute.
 
-                // Le demandeur le plus récent devient propriétaire
+                // Le demandeur le plus rï¿½cent devient propriï¿½taire
                 NewOwner = oa->getCandidate(1);
 
                 oa->setOwner(NewOwner);
@@ -1349,7 +1349,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
            FederateOwnsAttributes,
            RTIinternalError)
 {
-    //Les vérifications des conditions doivent être faites avant
+    //Les vï¿½rifications des conditions doivent ï¿½tre faites avant
     //toute modification!!!
 
     // Pre-conditions checking
@@ -1364,10 +1364,10 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
         oca = getAttribute(theAttributeList[i]);
         oa = object->getAttribute(theAttributeList[i]);
 
-        //Le fédéré est-il déjà propriétaire de certains attributs
+        //Le fï¿½dï¿½rï¿½ est-il dï¿½jï¿½ propriï¿½taire de certains attributs
         if (oa->getOwner() == theFederateHandle)
             throw FederateOwnsAttributes("");
-        //Le fédéré publie-t-il les attributs
+        //Le fï¿½dï¿½rï¿½ publie-t-il les attributs
         if (!oca->isPublishing(theFederateHandle) &&
             (strcmp(oca->getName(), "privilegeToDelete") != 0))
             throw AttributeNotPublished("");
@@ -1378,7 +1378,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
     int compteur_release = 0 ;
     FederateHandle oldOwner ;
     if (server != NULL) {
-        //Le fédéré doit publier la classe
+        //Le fï¿½dï¿½rï¿½ doit publier la classe
         if (!isFederatePublisher(theFederateHandle)) {
             D.Out(pdExcept, "exception : ObjectClassNotPublished.");
             throw ObjectClassNotPublished("");
@@ -1404,7 +1404,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
             oldOwner = oa->getOwner();
             if ((oldOwner == 0) || (oa->beingDivested())) {
-                //Cet attribut est libre ou offert par son propriétaire s'il est offert
+                //Cet attribut est libre ou offert par son propriï¿½taire s'il est offert
                 if (oa->beingDivested()) {
                     diffusionDivestiture->DiffArray[compteur_divestiture].federate =
                         oldOwner ;
@@ -1421,7 +1421,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                 oa->setDivesting(false);
                 compteur_notification++ ;
 
-                // object->Owner reste le champ de référence pour
+                // object->Owner reste le champ de rï¿½fï¿½rence pour
                 // le privilegeToDelete
                 if (strcmp(oca->getName(), "privilegeToDelete") == 0)
                     object->setOwner(theFederateHandle);
@@ -1432,7 +1432,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                     oa->getHandle();
                 compteur_release++ ;
 
-                //On l'enlève de la liste des demandeurs s'il y était
+                //On l'enlï¿½ve de la liste des demandeurs s'il y ï¿½tait
                 oa->removeCandidate(theFederateHandle);
 
                 //pour le rajouter en 1ere position
@@ -1495,8 +1495,8 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
         getAttribute(the_attributes[index]);
     }
 
-    //Le fédéré est-il propriétaire de tous les attributs
-    //Y a-t-il des acquéreurs pour les attributs
+    //Le fï¿½dï¿½rï¿½ est-il propriï¿½taire de tous les attributs
+    //Y a-t-il des acquï¿½reurs pour les attributs
     ObjectAttribute * oa ;
     for (int i = 0 ; i < the_size ; i++) {
         oa = object->getAttribute(the_attributes[i]);
@@ -1522,7 +1522,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
             oca = getAttribute(the_attributes[i]);
             oa = object->getAttribute(the_attributes[i]);
 
-            //Le demandeur le plus récent devient propriétaire
+            //Le demandeur le plus rï¿½cent devient propriï¿½taire
             newOwner = oa->getCandidate(1);
 
             oa->setOwner(newOwner);
@@ -1530,7 +1530,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
             //On le supprime de la liste des demandeurs
             oa->removeCandidate(newOwner);
 
-            //On réinitialise divesting
+            //On rï¿½initialise divesting
             oa->setDivesting(false);
 
             diffusionAcquisition->DiffArray[compteur_acquisition].federate = newOwner ;
@@ -1739,4 +1739,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.35 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClass.cc,v 3.36 2007/07/06 09:25:18 erk Exp $

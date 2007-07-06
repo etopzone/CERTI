@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.15 2007/06/25 13:07:54 erk Exp $
+// $Id: main.cc,v 3.16 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,7 @@
 #include "cmdline.h"
 
 #include "graph_c.hh"
-#include "Certi_Win.h"
+
 #include "RTI.hh"
 
 #include <cstdio>
@@ -295,4 +295,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.15 2007/06/25 13:07:54 erk Exp $
+// EOF $Id: main.cc,v 3.16 2007/07/06 09:25:19 erk Exp $

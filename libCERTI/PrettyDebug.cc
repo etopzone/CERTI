@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.2 2007/06/22 08:51:39 erk Exp $
+// $Id: PrettyDebug.cc,v 4.3 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "PrettyDebug.hh"
 #include "Message.hh"
 #include "NetworkMessage.hh"
@@ -274,4 +274,4 @@ return;
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.2 2007/06/22 08:51:39 erk Exp $
+// $Id: PrettyDebug.cc,v 4.3 2007/07/06 09:25:17 erk Exp $

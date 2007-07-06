@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.44 2007/06/22 08:51:40 erk Exp $
+// $Id: RTIambassador.cc,v 3.45 2007/07/06 09:25:20 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "certi.hh"
 
 #include "RTIambPrivateRefs.hh"
@@ -107,7 +107,7 @@ RTI::RTIambassador::RTIambassador()
     if (rtiaenv) rtiacall = rtiaenv ;
     else rtiacall = rtiaexec ;
     
-#ifdef WIN32
+#ifdef _WIN32
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
 
@@ -176,7 +176,7 @@ RTI::RTIambassador::RTIambassador()
 RTI::RTIambassador::~RTIambassador()
     throw (RTIinternalError)
 {
-#ifdef WIN32
+#ifdef _WIN32
 	TerminateProcess(privateRefs->handle_RTIA, 1);
 #else
 	kill(privateRefs->pid_RTIA, SIGINT);
@@ -531,7 +531,7 @@ req.type = Message::CREATE_FEDERATION_EXECUTION ;
 req.setFederationName(executionName);
 req.setFEDid(FED);
 
-/*#ifdef WIN32
+/*#ifdef _WIN32
 	if(!stricmp(FED,executionName)) {
 #else
 	if(!strcasecmp(FED,exeName)) {
@@ -2744,4 +2744,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.44 2007/06/22 08:51:40 erk Exp $
+// $Id: RTIambassador.cc,v 3.45 2007/07/06 09:25:20 erk Exp $

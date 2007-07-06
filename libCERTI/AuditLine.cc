@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditLine.cc,v 3.11 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "AuditLine.hh"
 
 #include "certi.hh"
@@ -127,5 +127,5 @@ AuditLine::setLevel(unsigned short l)
 
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditLine.cc,v 3.11 2007/07/06 09:25:17 erk Exp $
 

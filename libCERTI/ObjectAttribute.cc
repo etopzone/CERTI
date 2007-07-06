@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.16 2007/06/22 08:51:37 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.17 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "ObjectAttribute.hh"
 #include "RTIRegion.hh"
@@ -199,4 +199,4 @@ ObjectAttribute::unassociate(RTIRegion *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.16 2007/06/22 08:51:37 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.17 2007/07/06 09:25:19 erk Exp $

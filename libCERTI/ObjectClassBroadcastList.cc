@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.14 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.15 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
@@ -379,4 +379,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.14 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.15 2007/07/06 09:25:17 erk Exp $

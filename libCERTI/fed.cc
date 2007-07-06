@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.8 2007/06/22 08:51:40 erk Exp $
+// $Id: fed.cc,v 3.9 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "fed.hh"
 #include "ObjectClassAttribute.hh"
 #include "Dimension.hh"
@@ -383,4 +383,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.8 2007/06/22 08:51:40 erk Exp $
+// $Id: fed.cc,v 3.9 2007/07/06 09:25:18 erk Exp $

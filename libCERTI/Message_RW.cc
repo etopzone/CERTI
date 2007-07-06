@@ -17,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.32 2007/06/22 08:51:37 erk Exp $
+// $Id: Message_RW.cc,v 3.33 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "Message.hh"
 
 #include <cassert>
@@ -1192,4 +1192,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.32 2007/06/22 08:51:37 erk Exp $
+// $Id: Message_RW.cc,v 3.33 2007/07/06 09:25:17 erk Exp $

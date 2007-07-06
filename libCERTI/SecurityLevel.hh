@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.7 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityLevel.hh,v 3.8 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -47,7 +47,7 @@ public:
     SecurityLevel(const char *InitName,
                   SecurityLevelID InitLevelID)
     {
-/*#ifdef WIN32
+/*#ifdef _WIN32
     if((InitName == NULL) ||(strlen(InitName) > MAX_USER_TAG_LENGTH))
 #else
     if((InitName == NULL) ||(std::strlen(InitName) > MAX_USER_TAG_LENGTH))
@@ -66,4 +66,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.7 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityLevel.hh,v 3.8 2007/07/06 09:25:18 erk Exp $

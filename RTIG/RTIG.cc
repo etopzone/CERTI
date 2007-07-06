@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.30 2007/06/22 08:51:35 erk Exp $
+// $Id: RTIG.cc,v 3.31 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,7 +26,7 @@
 
 #include "PrettyDebug.hh"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <signal.h>
 #else
 #include <unistd.h>
@@ -977,4 +977,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.30 2007/06/22 08:51:35 erk Exp $
+// $Id: RTIG.cc,v 3.31 2007/07/06 09:25:19 erk Exp $

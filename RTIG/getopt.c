@@ -199,7 +199,7 @@ static char *posixly_correct;
 # define my_index	strchr
 #else
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #elif HAVE_STRING_H
 #include <string.h>

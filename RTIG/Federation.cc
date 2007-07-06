@@ -18,14 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.56 2007/06/25 13:09:58 erk Exp $
+// $Id: Federation.cc,v 3.57 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 
-#ifdef WIN32
-#include "Certi_Win.h"
+#ifdef _WIN32
+
 #endif
 
 #include "fed.hh"
@@ -34,7 +34,7 @@
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #include <time.h>
 #include <sys/types.h>
@@ -1904,5 +1904,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.56 2007/06/25 13:09:58 erk Exp $
+// $Id: Federation.cc,v 3.57 2007/07/06 09:25:19 erk Exp $
 

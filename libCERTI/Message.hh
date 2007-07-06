@@ -20,7 +20,7 @@
 #ifndef CERTI_MESSAGE_HH
 #define CERTI_MESSAGE_HH
 
-#include "Certi_Win.h"
+
 
 #include "Exception.hh"
 #include "SocketUN.hh"

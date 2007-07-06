@@ -24,7 +24,7 @@
 #include "RTIG.hh"
 #include "certi.hh"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <signal.h>
 #endif
 

@@ -17,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.12 2007/06/22 08:51:37 erk Exp $
+// $Id: MessageBody.cc,v 3.13 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "MessageBody.hh"
 #include <cassert>
 
@@ -180,4 +180,4 @@ return *this ;
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.12 2007/06/22 08:51:37 erk Exp $
+// $Id: MessageBody.cc,v 3.13 2007/07/06 09:25:18 erk Exp $

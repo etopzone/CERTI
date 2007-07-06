@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.19 2007/06/22 08:51:41 erk Exp $
+// $Id: BillardDDM.cc,v 3.20 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -27,8 +27,6 @@
 #ifndef X_DISPLAY_MISSING
 #include "graph_c.hh"
 #endif
-
-#include "Certi_Win.h"
 
 #include <cmath>
 

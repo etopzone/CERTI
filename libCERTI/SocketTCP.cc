@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.14 2007/06/22 08:51:39 erk Exp $
+// $Id: SocketTCP.cc,v 3.15 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32							//dotNet
@@ -30,7 +30,7 @@
 	#include <iostream>
 #endif
 
-#include "Certi_Win.h"
+
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
@@ -597,4 +597,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.14 2007/06/22 08:51:39 erk Exp $
+// $Id: SocketTCP.cc,v 3.15 2007/07/06 09:25:18 erk Exp $

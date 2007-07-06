@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.15 2007/06/22 08:51:37 erk Exp $
+// $Id: InteractionSet.cc,v 3.16 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "InteractionSet.hh"
 #include "PrettyDebug.hh"
@@ -303,4 +303,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.15 2007/06/22 08:51:37 erk Exp $
+// $Id: InteractionSet.cc,v 3.16 2007/07/06 09:25:17 erk Exp $

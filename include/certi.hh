@@ -16,13 +16,28 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.13 2007/06/22 08:51:35 erk Exp $
+// $Id: certi.hh,v 3.14 2007/07/06 09:25:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
-#ifdef WIN32
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+	typedef unsigned short		ushort;
+
+	#define  strcasecmp			strcmp
+	#define	sleep(a)				Sleep(a * 1000)
+	#define	usleep(a)			Sleep(a / 1000)
+	#define	STAT_FUNCTION		_stat
+	#define	STAT_STRUCT			struct _stat
+
+	typedef	int					pid_t;
+
+	#include	<algorithm>
+	#include	<process.h>
+#else
+	#define	STAT_FUNCTION		stat
+	#define	STAT_STRUCT			struct stat
 #endif
 
 #include "RTI.hh"
@@ -294,4 +309,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.13 2007/06/22 08:51:35 erk Exp $
+// $Id: certi.hh,v 3.14 2007/07/06 09:25:20 erk Exp $

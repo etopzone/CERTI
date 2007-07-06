@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.27 2007/06/22 08:51:39 erk Exp $
+// $Id: RootObject.cc,v 3.28 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "RootObject.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
@@ -311,4 +311,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.27 2007/06/22 08:51:39 erk Exp $
+// $Id: RootObject.cc,v 3.28 2007/07/06 09:25:17 erk Exp $

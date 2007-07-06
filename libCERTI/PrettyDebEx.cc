@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.1 2007/06/22 08:51:38 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.2 2007/07/06 09:25:17 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "PrettyDebug.hh"
 #include "Message.hh"
 #include "NetworkMessage.hh"
@@ -305,4 +305,4 @@ PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, theMessage);
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.1 2007/06/22 08:51:38 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.2 2007/07/06 09:25:17 erk Exp $

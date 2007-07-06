@@ -1,16 +1,15 @@
 // HLA 1.3 Header "fedtime.hh"
-// $Id: fedtime.hh,v 3.6 2007/06/22 08:51:35 erk Exp $
+// $Id: fedtime.hh,v 3.7 2007/07/06 09:25:20 erk Exp $
 
 #ifndef HLA_FEDTIME_HH
 #define HLA_FEDTIME_HH
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #else 
 #include <sys/types.h>
 #include <string.h>
 #endif
-#include "Certi_Win.h"
 #include "RTI.hh"
 
 class CERTI_EXPORT RTIfedTime : public RTI::FedTime
@@ -132,4 +131,4 @@ RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
 
 #endif // HLA_FEDTIME_HH
 
-// $Id: fedtime.hh,v 3.6 2007/06/22 08:51:35 erk Exp $
+// $Id: fedtime.hh,v 3.7 2007/07/06 09:25:20 erk Exp $

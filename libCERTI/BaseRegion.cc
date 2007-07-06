@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BaseRegion.cc,v 3.4 2007/06/22 08:51:36 erk Exp $
+// $Id: BaseRegion.cc,v 3.5 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "BaseRegion.hh"
 
 using std::vector ;
@@ -156,4 +156,4 @@ BaseRegion::overlaps(const BaseRegion &region) const
 
 } // namespace certi
 
-// $Id: BaseRegion.cc,v 3.4 2007/06/22 08:51:36 erk Exp $
+// $Id: BaseRegion.cc,v 3.5 2007/07/06 09:25:18 erk Exp $

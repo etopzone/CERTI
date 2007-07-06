@@ -18,12 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.37 2007/06/22 08:51:34 erk Exp $
+// $Id: RTIA_federate.cc,v 3.38 2007/07/06 09:25:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
-#include "Certi_Win.h"
+
 
 #include "fed.hh"
 #include "XmlParser.hh"
@@ -1145,4 +1145,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.37 2007/06/22 08:51:34 erk Exp $
+// $Id: RTIA_federate.cc,v 3.38 2007/07/06 09:25:20 erk Exp $

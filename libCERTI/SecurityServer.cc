@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.10 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityServer.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "SecurityServer.hh"
 #include "PrettyDebug.hh"
@@ -190,4 +190,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.10 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityServer.cc,v 3.11 2007/07/06 09:25:18 erk Exp $

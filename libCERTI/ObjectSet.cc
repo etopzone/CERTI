@@ -21,7 +21,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 // Project
 #include "ObjectSet.hh"
@@ -428,4 +428,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.13 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectSet.cc,v 3.14 2007/07/06 09:25:17 erk Exp $

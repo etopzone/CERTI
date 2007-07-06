@@ -17,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.4 2007/06/22 08:51:40 erk Exp $
+// $Id: Subscribable.cc,v 3.5 2007/07/06 09:25:19 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 
 #include "Subscribable.hh"
 #include "helper.hh"
@@ -199,4 +199,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.4 2007/06/22 08:51:40 erk Exp $
+// $Id: Subscribable.cc,v 3.5 2007/07/06 09:25:19 erk Exp $

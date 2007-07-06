@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditFile.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "AuditFile.hh"
 
 #include <iostream>
@@ -45,8 +45,8 @@ AuditFile::AuditFile(const std::string logfile)
     : auditFile(logfile.c_str(), ios::app)
 {
     if (!auditFile.is_open()) {
-        cerr << "Could not open Audit file « " << logfile.c_str() 
-	     << " »." << endl ;
+        cerr << "Could not open Audit file ï¿½ " << logfile.c_str() 
+	     << " ï¿½." << endl ;
         throw RTIinternalError("Could not open Audit file.");
     }
 
@@ -215,4 +215,4 @@ AuditFile::operator<<(double n)
 
 }
 
-// $Id: AuditFile.cc,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditFile.cc,v 3.11 2007/07/06 09:25:18 erk Exp $

@@ -19,10 +19,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.6 2007/06/22 08:51:36 erk Exp $
+// $Id: Exception.cc,v 3.7 2007/07/06 09:25:18 erk Exp $
 // ----------------------------------------------------------------------------
 
-#include "Certi_Win.h"
+
 #include "Exception.hh"
 
 #include "certi.hh"
@@ -173,4 +173,4 @@ RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
     return *this ;
 }
 
-// $Id: Exception.cc,v 3.6 2007/06/22 08:51:36 erk Exp $$
+// $Id: Exception.cc,v 3.7 2007/07/06 09:25:18 erk Exp $$

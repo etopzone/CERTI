@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.10 2007/06/22 08:51:34 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.11 2007/07/06 09:25:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,7 +26,7 @@
 
 #include "PrettyDebug.hh"
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #else
 #include <stdio.h>
@@ -513,4 +513,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.10 2007/06/22 08:51:34 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.11 2007/07/06 09:25:20 erk Exp $

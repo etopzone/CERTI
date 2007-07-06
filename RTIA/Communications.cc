@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
+// $Id: Communications.cc,v 3.16 2007/07/06 09:25:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,17 +26,16 @@
 #include <assert.h>
 #include "PrettyDebug.hh"
 
-#ifdef WIN32
-#include "Certi_Win.h"
-#include <windows.h>
+#ifdef _WIN32
+    #include <windows.h>
 	#ifdef max
 		#undef max
 	#endif
 #else
-#include <fstream>
-#include <iostream>
-#include <unistd.h>
-#include <errno.h>
+    #include <fstream>
+    #include <iostream>
+    #include <unistd.h>
+	#include <errno.h>
 #endif
 
 
@@ -339,4 +338,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
+// $Id: Communications.cc,v 3.16 2007/07/06 09:25:20 erk Exp $
