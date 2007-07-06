@@ -15,11 +15,12 @@ INCLUDE(CheckLibraryExists)
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
 
+# default behaviour is to build library as shared on all platform
 OPTION(BUILD_SHARED
-  "Build libraries as shared library" ON)
+             "Build libraries as shared library" ON)
   
 OPTION(BUILD_API_DOC
-  "Build doxygen documentation" OFF)
+             "Build doxygen documentation" OFF)
 
 SET(CMAKE_BUILD_TYPE "Debug")
 
@@ -32,13 +33,11 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
-
 IF (WIN32)
 	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 	SET(LIBRARY_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH})
 ENDIF(WIN32)
 	
-
 IF (BUILD_SHARED)
   SET(BUILD_SHARED_LIBS ON)
 ELSE (BUILD_SHARED)
@@ -48,7 +47,7 @@ ENDIF (BUILD_SHARED)
 SET(PACKAGE_NAME      "CERTI")
 SET(PACKAGE_VERSION_MAJOR "3")
 SET(PACKAGE_VERSION_MINOR "2")
-SET(PACKAGE_VERSION_PATCH "5pre2")
+SET(PACKAGE_VERSION_PATCH "5pre3")
 SET(PACKAGE_VERSION   "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}.${PACKAGE_VERSION_PATCH}")
 # Autotools compatibility var
 SET(VERSION ${PACKAGE_VERSION})
@@ -92,23 +91,23 @@ ADD_DEFINITIONS(-DHAVE_CONFIG_H=1)
 ################ Socket library Check ####################
 CHECK_LIBRARY_EXISTS("socket" "connect" "/usr/lib" SOCKET_LIBRARY_HAS_CONNECT)
 IF (SOCKET_LIBRARY_HAS_CONNECT)
-  MESSAGE(STATUS "Socket library needed for system ${CMAKE_SYSTEM_NAME}")
-  SET(SOCKET_LIBRARY "socket")
+    MESSAGE(STATUS "Socket library needed for system ${CMAKE_SYSTEM_NAME}")
+    SET(SOCKET_LIBRARY "socket")
 ELSE (SOCKET_LIBRARY_HAS_CONNECT)
-  SET(SOCKET_LIBRARY)
+    SET(SOCKET_LIBRARY)
 ENDIF (SOCKET_LIBRARY_HAS_CONNECT)
 
 IF (WIN32)
-SET(SOCKET_LIBRARY "Ws2_32")
+    SET(SOCKET_LIBRARY "Ws2_32")
 ENDIF (WIN32)
 
 ################ LIBXML2 install Check ####################
 FIND_PACKAGE(LibXml2)
 IF (LIBXML2_FOUND)
-  ADD_DEFINITIONS(-DHAVE_XML ${LIBXML2_DEFINITIONS})
-  INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
-  ELSE (LIBXML2_FOUND)
-  SET(LIBXML2_LIBRARIES "")
+    ADD_DEFINITIONS(-DHAVE_XML ${LIBXML2_DEFINITIONS})
+    INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+ELSE (LIBXML2_FOUND)
+    SET(LIBXML2_LIBRARIES "")
 ENDIF (LIBXML2_FOUND)
 
 ################ X11 install Check ####################
@@ -144,8 +143,7 @@ IF (X11_FOUND)
     NAMES right_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-
-  
+      
 ELSE (X11_FOUND)
   SET(X_DISPLAY_MISSING 1)
 ENDIF (X11_FOUND)
@@ -153,15 +151,15 @@ ENDIF (X11_FOUND)
 ################ LEX YACC Check ####################
 FIND_PACKAGE(LexYacc)
 
+## now we may generate the Autotools compatible config.h
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/config.h )
+                            ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
 # Globally used include dir
 INCLUDE_DIRECTORIES(include)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 # Globally used compiler flags
 ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
-
 
 ADD_SUBDIRECTORY( include ) 
 ADD_SUBDIRECTORY( libCERTI ) 
@@ -179,30 +177,31 @@ SET(CPACK_PACKAGE_NAME certi)
 SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME})
 
 IF (WIN32)
-  SET(CPACK_SOURCE_GENERATOR "ZIP")
-  SET(CPACK_GENERATOR "NSIS;ZIP")
-  ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
-    COMMAND cpack -G ZIP --config CPackSourceConfig.cmake
-    COMMENTS "Build a ZIP file containing the source")
-
-  # NSIS installer specific part
-  INCLUDE(InstallRequiredSystemLibraries)
-  SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
-  SET(CPACK_NSIS_CREATE_ICONS "
-	    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\RTIG.lnk\\\" \\\"$INSTDIR\\\\bin\\\\RTIG.exe\\\"
-	    CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard.exe\\\" \\\"-n 1 -t 10 -FTest.fed -fTest\\\"
-	")
-  SET(CPACK_NSIS_DELETE_ICONS "
-	    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\RTIG.lnk\\\"
-	    Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard.lnk\\\"
-	")
-  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} CERTI (HLA RTI)")
-  SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\savannah.nongnu.org\\\\projects\\\\certi")
-  SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.ts2p.org\\\\tsp")
-  SET(CPACK_NSIS_CONTACT "certi-devel@nongnu.org")
-  SET(CPACK_NSIS_MODIFY_PATH ON)
+    SET(CPACK_SOURCE_GENERATOR "ZIP")
+    SET(CPACK_GENERATOR "NSIS;ZIP")
+    ## Add a custom target callable from IDE (Mostly for Visual Studio)
+    ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
+              COMMAND cpack -G ZIP --config CPackSourceConfig.cmake
+              COMMENTS "Build a ZIP file containing the source")
+              
+    # NSIS installer specific part
+    INCLUDE(InstallRequiredSystemLibraries)
+    SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
+    SET(CPACK_NSIS_CREATE_ICONS "
+	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\RTIG.lnk\\\" \\\"$INSTDIR\\\\bin\\\\RTIG.exe\\\"
+	      CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Billard.lnk\\\" \\\"$INSTDIR\\\\bin\\\\billard.exe\\\" \\\"-n 1 -t 10 -FTest.fed -fTest\\\"
+	      ")
+    SET(CPACK_NSIS_DELETE_ICONS "
+	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\RTIG.lnk\\\"
+	      Delete \\\"$SMPROGRAMS\\\\$MUI_TEMP\\\\Billard.lnk\\\"
+	      ")
+    SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} CERTI (HLA RTI)")
+    SET(CPACK_NSIS_HELP_LINK "https:\\\\\\\\savannah.nongnu.org\\\\projects\\\\certi")
+    SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.ts2p.org\\\\tsp")
+    SET(CPACK_NSIS_CONTACT "certi-devel@nongnu.org")
+    SET(CPACK_NSIS_MODIFY_PATH ON)
 	
-  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
+    SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
 		CopyFiles \\\"$INSTDIR\\\\bin\\\\CERTI.dll\\\" \\\"$SYSDIR\\\"
 		CopyFiles \\\"$INSTDIR\\\\bin\\\\RTI.dll\\\" \\\"$SYSDIR\\\"
     ")
@@ -259,9 +258,6 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/myCERTI_env.sh.in
 
 INSTALL(FILES 
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.sh
-  DESTINATION share/scripts)
-
-INSTALL(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindCERTI.cmake
   DESTINATION share/scripts)
 
@@ -270,4 +266,3 @@ IF (WIN32)
 ELSE (WIN32)
   MESSAGE(STATUS "*** CERTI has been successfully configured ********")
 ENDIF (WIN32)
-

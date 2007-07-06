@@ -807,7 +807,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
                 // OLD : dx1 = atoi(parmValue);
                 double d_dx1 ;
                 memcpy(&d_dx1,parmValue,valueLength) ;
-                dx1 = d_dx1 ;
+                dx1 = static_cast<int>(d_dx1);
                 // Local.dx = atof(parmValue);
                 D.Out(pdDebug, "receiveInteraction(*) - dx= %s", parmValue);
                 delete[] parmValue ;
@@ -821,7 +821,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
                     // OLD : dy1 = atoi(parmValue);
                     double d_dy1 ;
                     memcpy(&d_dy1,parmValue,valueLength) ;
-                    dy1 = d_dy1 ;
+                    dy1 = static_cast<int>(d_dy1);
                     // Local.dy = atof(parmValue);
                     D.Out(pdDebug, "receiveInteraction(*) - dy= %s", parmValue);
                     delete[] parmValue ;

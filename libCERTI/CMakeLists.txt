@@ -1,44 +1,42 @@
+
 SET(CERTI_FEDERATION_SRCS
-fed.cc
-FederateLevelList.cc
-FedRegion.cc
-fed.hh
-FederateLevelList.hh
-FedRegion.hh
+    fed.cc fed.hh
+    FederateLevelList.cc FederateLevelList.hh
+    FedRegion.cc FedRegion.hh
 )
  
 SET(CERTI_DECLARATION_SRCS
-InteractionBroadcastList.cc
-Interaction.cc
-InteractionSet.cc
-InteractionBroadcastList.hh
-Interaction.hh
-InteractionSet.hh
+    InteractionBroadcastList.cc
+    Interaction.cc
+    InteractionSet.cc
+    InteractionBroadcastList.hh
+    Interaction.hh
+    InteractionSet.hh
 )
  
 SET(CERTI_OBJECT_SRCS
-ObjectAttribute.cc
-Object.cc
-ObjectClassAttribute.cc
-ObjectClassBroadcastList.cc
-ObjectClass.cc
-ObjectClassSet.cc
-ObjectSet.cc
-Named.cc
-Parameter.cc
-RootObject.cc
-Subscribable.cc
-ObjectAttribute.hh
-Object.hh
-ObjectClassAttribute.hh
-ObjectClassBroadcastList.hh
-ObjectClass.hh
-ObjectClassSet.hh
-ObjectSet.hh
-Named.hh
-Parameter.hh
-RootObject.hh
-Subscribable.hh
+    ObjectAttribute.cc
+    Object.cc
+    ObjectClassAttribute.cc
+    ObjectClassBroadcastList.cc
+    ObjectClass.cc
+    ObjectClassSet.cc
+    ObjectSet.cc
+    Named.cc
+    Parameter.cc
+    RootObject.cc
+    Subscribable.cc
+    ObjectAttribute.hh
+    Object.hh
+    ObjectClassAttribute.hh
+    ObjectClassBroadcastList.hh
+    ObjectClass.hh
+    ObjectClassSet.hh
+    ObjectSet.hh
+    Named.hh
+    Parameter.hh
+    RootObject.hh
+    Subscribable.hh
 )
 
 SET(CERTI_OWNERSHIP_SRCS
@@ -104,11 +102,7 @@ GSSAPIHandler.hh
 Socket.hh
 )
 
-#IF (NOT WIN32)
-   SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
-#ELSE (NOT WIN32)
-#   SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketWIN.cc SocketWIN.hh)
-#ENDIF (NOT WIN32)
+SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
 
 SOURCE_GROUP("Source Files\\Socket" FILES ${CERTI_SOCKET_SRCS})
 SOURCE_GROUP("Source Files\\Federation" FILES ${CERTI_FEDERATION_SRCS})
@@ -152,6 +146,7 @@ SOURCE_GROUP("Source Files\\Generated" FILES ${CERTI_GENERATED_SRCS})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
+# FIXME we should FindGnuWin32 in the main CMakeList.txt
 IF (WIN32)
     INCLUDE_DIRECTORIES("C:/Program Files/GnuWin32/include")
 ENDIF (WIN32)
@@ -159,17 +154,17 @@ ENDIF (WIN32)
 SET(CERTI_EXPORTED_INCLUDES
 	../include/fedtime.hh)
 
-ADD_LIBRARY(CERTI SHARED
-${CERTI_FEDERATION_SRCS}
-${CERTI_DECLARATION_SRCS}
-${CERTI_OBJECT_SRCS}
-${CERTI_OWNERSHIP_SRCS}
-${CERTI_DDM_SRCS}
-${CERTI_TIME_SRCS}
-${CERTI_SUPPORT_SRCS}
-${CERTI_SOCKET_SRCS}
-${CERTI_GENERATED_SRCS}	
-${CERTI_EXPORTED_INCLUDES}
+ADD_LIBRARY(CERTI
+    ${CERTI_FEDERATION_SRCS}
+    ${CERTI_DECLARATION_SRCS}
+    ${CERTI_OBJECT_SRCS}
+    ${CERTI_OWNERSHIP_SRCS}
+    ${CERTI_DDM_SRCS}
+    ${CERTI_TIME_SRCS}
+    ${CERTI_SUPPORT_SRCS}
+    ${CERTI_SOCKET_SRCS}
+    ${CERTI_GENERATED_SRCS}	
+    ${CERTI_EXPORTED_INCLUDES}
 )
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
@@ -182,47 +177,3 @@ INSTALL(TARGETS CERTI
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
-
-########### install files ###############
-
-#original Makefile.am contents follow:
-
-### $Id: CMakeLists.txt,v 1.4 2007/06/25 13:09:58 erk Exp $ 
-#
-#MAINTAINERCLEANFILES = Makefile.in
-#
-#CLEANFILES = syntax.cc syntax.h tokens.cc
-#
-#INCLUDES = -I$(top_srcdir)/include @XML_CFLAGS@ @HAVE_XML@ @WITH_CYGWIN@
-#
-#lib_LTLIBRARIES = libCERTI.la
-#
-#noinst_HEADERS = AuditFile.hh AuditLine.hh BaseRegion.hh		\
-#BasicMessage.hh Dimension.hh Exception.hh Extent.hh	\
-#FederateLevelList.hh fed.hh FedRegion.hh GAV.hh GSSAPIHandler.hh	\
-#Handled.hh HandleManager.hh helper.hh InteractionBroadcastList.hh	\
-#Interaction.hh InteractionSet.hh LBTS.hh MessageBody.hh Message.hh	\
-#Named.hh NetworkMessage.hh ObjectAttribute.hh ObjectClassAttribute.hh	\
-#ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
-#ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
-#SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
-#SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
-#XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
-#SocketUN.hh
-#
-#libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
-#BasicMessage.cc Dimension.cc Exception.cc Extent.cc	\
-#fed.cc FederateLevelList.cc FedRegion.cc FedTime.cc GAV_aux.cc GAV.cc	\
-#GSSAPIHandler.cc InteractionBroadcastList.cc Interaction.cc		\
-#InteractionSet.cc LBTS.cc MessageBody.cc Message.cc Message_RW.cc	\
-#Named.cc NetworkMessage.cc NetworkMessage_RW.cc ObjectAttribute.cc	\
-#Object.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc		\
-#ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
-#RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
-#SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
-#SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
-#Subscribable.cc PrettyDebug.cc
-#
-#libCERTI_la_LDFLAGS = -version-info 1:0:0
-#
-#EXTRA_DIST = syntax.h
