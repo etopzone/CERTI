@@ -1,3 +1,181 @@
+2007-07-06 16:20  erk
+
+	* libCERTI/CMakeLists.txt, test/libgraphc/CMakeLists.txt,
+	  CMakeLists.txt, include/CMakeLists.txt, libRTI/CMakeLists.txt,
+	  test/Billard/Billard.cc: Clean-up CMakeLists.txt files and add
+	  static_cast in order to avoid compiler warning
+
+2007-07-06 11:25  erk
+
+	* libCERTI/ObjectClassAttribute.cc, libCERTI/AuditLine.cc,
+	  libCERTI/BasicMessage.cc, libCERTI/FedRegion.cc,
+	  libCERTI/FedTime.cc, libCERTI/GAV.cc, libCERTI/GAV_aux.cc,
+	  libCERTI/GSSAPIHandler.cc, libCERTI/Interaction.cc,
+	  libCERTI/InteractionBroadcastList.cc, libCERTI/InteractionSet.cc,
+	  libCERTI/Message.hh, libCERTI/Message_RW.cc,
+	  libCERTI/ObjectClassBroadcastList.cc, libCERTI/ObjectClassSet.cc,
+	  libCERTI/ObjectSet.cc, libCERTI/Parameter.cc,
+	  libCERTI/PrettyDebEx.cc, libCERTI/PrettyDebug.cc,
+	  libCERTI/RootObject.cc, libCERTI/SocketMC.cc,
+	  libCERTI/XmlParser.cc, libCERTI/AuditFile.cc,
+	  libCERTI/BaseRegion.cc, libCERTI/Dimension.cc,
+	  libCERTI/Exception.cc, libCERTI/Extent.cc,
+	  libCERTI/FederateLevelList.cc, libCERTI/LBTS.cc,
+	  libCERTI/Message.cc, libCERTI/MessageBody.cc,
+	  libCERTI/NetworkMessage.cc, libCERTI/NetworkMessage_RW.cc,
+	  libCERTI/Object.cc, libCERTI/ObjectClass.cc,
+	  libCERTI/RTIRegion.cc, libCERTI/RoutingSpace.cc,
+	  libCERTI/SecurityLevel.hh, libCERTI/SecurityServer.cc,
+	  libCERTI/SocketServer.cc, libCERTI/SocketTCP.cc,
+	  libCERTI/SocketUN.cc, libCERTI/fed.cc, RTIG/Federate.cc,
+	  RTIG/Federation.cc, RTIG/RTIG.cc, RTIG/getopt.c, RTIG/main.cc,
+	  libCERTI/ObjectAttribute.cc, libCERTI/SecureTCPSocket.cc,
+	  libCERTI/SocketUDP.cc, libCERTI/Subscribable.cc,
+	  test/Billard/Ball.cc, test/Billard/Billard.cc,
+	  test/Billard/BillardDDM.cc, test/Billard/ColoredBall.cc,
+	  test/Billard/main.cc, RTIA/Communications.cc,
+	  RTIA/DeclarationManagement.cc, RTIA/FederationManagement.cc,
+	  RTIA/ObjectManagement.cc, RTIA/OwnershipManagement.cc,
+	  RTIA/RTIA_federate.cc, RTIA/TimeManagement.hh,
+	  include/Certi_Win.h, include/Makefile.am, include/certi.hh,
+	  include/fedtime.hh, libRTI/RTIambPrivateRefs.hh,
+	  libRTI/RTIambassador.cc, test/Billard/Display.cc: Suppress
+	  Certi_Win.h file and put all this stuff in certi.hh Use _WIN32
+	  predefined Windows platform specific MACRO instead of WIN32 which
+	  is a CMake defined one see
+	  http://predef.sourceforge.net/preos.html#sec22
+
+2007-07-06 11:23  erk
+
+	* CMakeLists.txt: Add comment about compiler options for Eclipse
+	  CDT
+
+2007-07-06 11:22  erk
+
+	* doc/reference.dox.in: Suppress Wrong src subdir
+
+2007-07-05 13:51  erk
+
+	* CMakeLists.txt: Change pre-version to pre2
+
+2007-07-04 22:47  erk
+
+	* doc/Makefile.am, doc/billard.dox.in, doc/user.dox.in,
+	  CMakeLists.txt, doc/CMakeLists.txt, doc/reference.dox.in: Add
+	  doxygen documentation generation using CMake
+
+2007-07-04 18:58  erk
+
+	* AUTHORS: Update AUTHORs Added J.M. Mathé (Windows (re)port) and
+	  E. Noulard (CMake usage and bug fixes)
+
+2007-07-04 15:19  erk
+
+	* CMakeLists.txt: Missing $ for LIBXML var usage
+
+2007-06-25 15:09  erk
+
+	* CMakeLists.txt, RTIA/CMakeLists.txt, RTIG/CMakeLists.txt,
+	  RTIG/Federation.cc, libCERTI/CMakeLists.txt,
+	  libRTI/CMakeLists.txt, test/Billard/CMakeLists.txt,
+	  test/libgraphc/CMakeLists.txt: Update NSIS installer Install lib
+	  and binary in the same bin dir in order to avoid to install DLL
+	  in system folder
+
+2007-06-25 15:09  erk
+
+	* RTIG/main.cc: Detect where rtig is installed on Win32 in order to
+	  seek relative path correctly for Test.fed (we set up CERTI_HOME
+	  to be ../share/federations)
+
+2007-06-25 15:07  erk
+
+	* test/Billard/main.cc: Wait Unix called in Unix AND windows case
+
+2007-06-22 16:13  erk
+
+	* include/Makefile.am: typo in the included filename Certi_Win.hh
+	  instead of Certi_Win.h
+
+2007-06-22 11:18  erk
+
+	* CMakeLists.txt: Added ZIP format for generator on Unix
+
+2007-06-22 11:16  erk
+
+	* CMakeLists.txt: Added preliminary NSIS installer config to be
+	  tested on Win32 Box
+
+2007-06-22 11:05  erk
+
+	* CERTI_DESCRIPTION.txt, doc/certi.bmp, doc/certi.png: Add logos
+	  and CERTI description file for NSIS installer
+
+2007-06-22 10:51  erk
+
+	* CMakeLists.txt, RTIA/CMakeLists.txt, RTIA/Communications.cc,
+	  RTIA/DeclarationManagement.cc, RTIA/FederationManagement.cc,
+	  RTIA/ObjectManagement.cc, RTIA/OwnershipManagement.cc,
+	  RTIA/RTIA_federate.cc, RTIA/RTIA_network.cc,
+	  RTIA/TimeManagement.cc, RTIA/TimeManagement.hh, RTIA/main.cc,
+	  RTIG/Federate.cc, RTIG/Federation.cc, RTIG/Federation.hh,
+	  RTIG/FederationsList.cc, RTIG/RTIG.cc, RTIG/cmdline.c,
+	  RTIG/getopt.c, RTIG/main.cc, include/Certi_Win.h,
+	  include/Makefile.am, include/RTI.hh, include/RTItypes.hh,
+	  include/baseTypes.hh, include/certi.hh, include/fedtime.hh,
+	  libCERTI/AuditFile.cc, libCERTI/AuditFile.hh,
+	  libCERTI/AuditLine.cc, libCERTI/BaseRegion.cc,
+	  libCERTI/BaseRegion.hh, libCERTI/BasicMessage.cc,
+	  libCERTI/BasicMessage.hh, libCERTI/CMakeLists.txt,
+	  libCERTI/DebugOStream.hh, libCERTI/Dimension.cc,
+	  libCERTI/Exception.cc, libCERTI/Extent.cc, libCERTI/Extent.hh,
+	  libCERTI/FedRegion.cc, libCERTI/FedRegion.hh,
+	  libCERTI/FedTime.cc, libCERTI/FederateLevelList.cc,
+	  libCERTI/GAV.cc, libCERTI/GAV_aux.cc, libCERTI/GSSAPIHandler.cc,
+	  libCERTI/HandleManager.hh, libCERTI/Interaction.cc,
+	  libCERTI/Interaction.hh, libCERTI/InteractionBroadcastList.cc,
+	  libCERTI/InteractionSet.cc, libCERTI/InteractionSet.hh,
+	  libCERTI/LBTS.cc, libCERTI/LBTS.hh, libCERTI/Makefile.am,
+	  libCERTI/Message.cc, libCERTI/Message.hh,
+	  libCERTI/MessageBody.cc, libCERTI/MessageBody.hh,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
+	  libCERTI/Object.cc, libCERTI/Object.hh,
+	  libCERTI/ObjectAttribute.cc, libCERTI/ObjectAttribute.hh,
+	  libCERTI/ObjectClass.cc, libCERTI/ObjectClass.hh,
+	  libCERTI/ObjectClassAttribute.cc,
+	  libCERTI/ObjectClassAttribute.hh,
+	  libCERTI/ObjectClassBroadcastList.cc, libCERTI/ObjectClassSet.cc,
+	  libCERTI/ObjectClassSet.hh, libCERTI/ObjectSet.cc,
+	  libCERTI/ObjectSet.hh, libCERTI/Parameter.cc,
+	  libCERTI/PrettyDebEx.cc, libCERTI/PrettyDebug.cc,
+	  libCERTI/PrettyDebug.hh, libCERTI/RTIRegion.cc,
+	  libCERTI/RTIRegion.hh, libCERTI/RootObject.cc,
+	  libCERTI/RootObject.hh, libCERTI/RoutingSpace.cc,
+	  libCERTI/RoutingSpace.hh, libCERTI/SecureTCPSocket.cc,
+	  libCERTI/SecureTCPSocket.hh, libCERTI/SecurityLevel.hh,
+	  libCERTI/SecurityServer.cc, libCERTI/SecurityServer.hh,
+	  libCERTI/Socket.hh, libCERTI/SocketMC.cc, libCERTI/SocketMC.hh,
+	  libCERTI/SocketServer.cc, libCERTI/SocketServer.hh,
+	  libCERTI/SocketTCP.cc, libCERTI/SocketTCP.hh,
+	  libCERTI/SocketUDP.cc, libCERTI/SocketUDP.hh,
+	  libCERTI/SocketUN.cc, libCERTI/SocketUN.hh,
+	  libCERTI/Subscribable.cc, libCERTI/Subscribable.hh,
+	  libCERTI/XmlParser.cc, libCERTI/XmlParser.hh, libCERTI/fed.cc,
+	  libCERTI/fed.hh, libRTI/CMakeLists.txt,
+	  libRTI/RTIambPrivateRefs.hh, libRTI/RTIambassador.cc,
+	  test/Billard/Ball.cc, test/Billard/Billard.cc,
+	  test/Billard/BillardDDM.cc, test/Billard/CMakeLists.txt,
+	  test/Billard/ColoredBall.cc, test/Billard/Display.cc,
+	  test/Billard/cmdline.c, test/Billard/main.cc,
+	  test/libgraphc/CMakeLists.txt: Beware relatively big WIN32 port
+	  merge Should be OK on WIN32 and Linux
+
+2007-06-19 15:07  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc:
+	  Petites choses sans importance.  Little things.
+
 2007-06-18 10:13  rousse
 
 	* ChangeLog, RTIA/FederationManagement.cc, libCERTI/Message.cc,

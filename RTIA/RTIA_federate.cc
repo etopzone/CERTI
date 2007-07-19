@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.38 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIA_federate.cc,v 3.39 2007/07/19 12:21:14 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -314,7 +314,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           ValueLengthPair *ValueArray = req->getValueArray();
 
           try {
-              rep.setEventRetraction(
+              if (req->getBoolean() )
+                  {
+                  rep.setEventRetraction(
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
                                             ValueArray,
@@ -322,6 +324,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                             req->getFederationTime(),
                                             req->getTag(),
                                             e));
+                  }
+              else
+                  {
+		  om->updateAttributeValues(req->getObject(),
+                                            req->handleArray,
+                                            ValueArray,
+                                            req->handleArraySize,
+                                            req->getTag(),
+                                            e);
+                  }
               free(ValueArray);
           } catch (Exception *e) {
               free(ValueArray);
@@ -1145,4 +1157,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.38 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIA_federate.cc,v 3.39 2007/07/19 12:21:14 rousse Exp $
