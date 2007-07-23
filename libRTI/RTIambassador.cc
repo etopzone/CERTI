@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.45 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIambassador.cc,v 3.46 2007/07/23 14:13:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1035,7 +1035,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 }
 
 // ----------------------------------------------------------------------------
-// Send Interaction
+// Send Interaction with time
 EventRetractionHandle
 RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
                                const ParameterHandleValuePairSet& theParameters,
@@ -1067,6 +1067,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 }
 
 // ----------------------------------------------------------------------------
+// Send Interaction without time
 void
 RTI::RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
                                const ParameterHandleValuePairSet &parameters,
@@ -1076,7 +1077,6 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
 	   RTI::InteractionParameterNotDefined, RTI::InteractionClassNotPublished, 
 	   RTI::InteractionClassNotDefined)
 {
-    throw UnimplementedService("");
 
     Message req, rep ;
 
@@ -2744,4 +2744,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.45 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIambassador.cc,v 3.46 2007/07/23 14:13:25 rousse Exp $

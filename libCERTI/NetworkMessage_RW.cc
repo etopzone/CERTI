@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.28 2007/07/06 09:25:18 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.29 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -97,6 +97,7 @@ NetworkMessage::readBody(Socket *socket)
       case SEND_INTERACTION:
       case RECEIVE_INTERACTION:
 	readLabel(body);
+	boolean = body.readLongInt();   // true means with time
 	body.readBlock((char *) handleArray,
 		       handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
@@ -452,7 +453,7 @@ NetworkMessage::writeBody(Socket *socket)
       case UPDATE_ATTRIBUTE_VALUES:
 	body.writeLongInt(object);
 	body.writeString(label);
-	body.writeLongInt(boolean);    // true means with time
+	body.writeLongInt(boolean);    // true means with time (stored in header)
 	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
 	
 	for (i = 0 ; i < handleArraySize ; i ++) {
@@ -478,6 +479,7 @@ NetworkMessage::writeBody(Socket *socket)
       case SEND_INTERACTION:
       case RECEIVE_INTERACTION:
 	body.writeString(label);
+	body.writeLongInt(boolean);    // true means with time (stored in header)
 	body.writeBlock((char *) handleArray,
 			handleArraySize * sizeof(AttributeHandle));
 	for (i = 0 ; i < handleArraySize ; i ++) {
@@ -876,4 +878,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.28 2007/07/06 09:25:18 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.29 2007/07/23 14:13:24 rousse Exp $

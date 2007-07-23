@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.22 2007/06/22 08:51:37 erk Exp $
+// $Id: Interaction.hh,v 3.23 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -113,6 +113,18 @@ public:
                InteractionParameterNotDefined,
                RTIinternalError);
 
+    InteractionBroadcastList *
+    sendInteraction(FederateHandle federate_handle,
+                    ParameterHandle *parameter_list,
+                    ParameterLengthPair *value_list,
+                    UShort list_size,
+		    const RTIRegion *,
+                    const char *the_tag)
+        throw (FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               RTIinternalError);
+
     void broadcastInteractionMessage(InteractionBroadcastList *, const RTIRegion *);
 
     //! This Object helps to find a TCPLink given a Federate Handle.
@@ -154,4 +166,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.22 2007/06/22 08:51:37 erk Exp $
+// $Id: Interaction.hh,v 3.23 2007/07/23 14:13:24 rousse Exp $

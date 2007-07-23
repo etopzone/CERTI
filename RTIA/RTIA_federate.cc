@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.39 2007/07/19 12:21:14 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.40 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -308,14 +308,14 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       }
 
       case Message::UPDATE_ATTRIBUTE_VALUES: {
-          D.Out(pdTrace,
-                "Receiving Message from Federate, type UpdateAttribValues.");
 
           ValueLengthPair *ValueArray = req->getValueArray();
 
           try {
               if (req->getBoolean() )
                   {
+                  D.Out(pdTrace,
+   "Receiving Message from Federate, type UpdateAttribValues with TIMESTAMP.");
                   rep.setEventRetraction(
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
@@ -327,6 +327,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   }
               else
                   {
+                  D.Out(pdTrace,
+   "Receiving Message from Federate, type UpdateAttribValues without TIMESTAMP.");
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
                                             ValueArray,
@@ -1157,4 +1159,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.39 2007/07/19 12:21:14 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.40 2007/07/23 14:13:23 rousse Exp $

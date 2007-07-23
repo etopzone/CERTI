@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.22 2007/07/06 09:25:20 erk Exp $
+// $Id: ObjectManagement.cc,v 3.23 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -213,7 +213,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 }
 
 // ----------------------------------------------------------------------------
-//! sendInteraction
+//! sendInteraction with time
 EventRetractionHandle
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   ParameterHandle *paramArray,
@@ -226,7 +226,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 {
     NetworkMessage req, rep ;
 
-    // Test local pour savoir si l'interaction est correcte.
+    // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
                                       theInteraction,
                                       paramArray,
@@ -235,6 +235,8 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     // Preparation du message au RTI.
     req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
+    // true for UAV with time
+    req.setBoolean(true);
     req.date = theTime ;
     req.region = region ;
     req.federation = fm->_numero_federation ;
@@ -249,13 +251,58 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     strcpy(req.label, theTag);
 
-    // Emission et attente de la reponse.
+    // Send network message and then wait for answer.
     comm->sendMessage(&req);
     comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
 
     e = rep.exception ;
 
     return rep.eventRetraction ;
+}
+
+// ----------------------------------------------------------------------------
+//! sendInteraction without time
+void
+ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
+                                  ParameterHandle *paramArray,
+                                  ParameterLengthPair *valueArray,
+                                  UShort paramArraySize,
+                                  const char *theTag,
+				  RegionHandle region,
+                                  TypeException &e)
+{
+    NetworkMessage req, rep ;
+
+    // Local test to know if interaction is correct.
+    rootObject->Interactions->isReady(fm->federate,
+                                      theInteraction,
+                                      paramArray,
+                                      paramArraySize);
+
+    // Building Network message to RTI.
+    req.type = NetworkMessage::SEND_INTERACTION ;
+    req.interactionClass = theInteraction ;
+    // false for UAV without time
+    req.setBoolean(false);
+    req.region = region ;
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+
+    req.handleArraySize = paramArraySize ;
+
+    for (int i=0 ; i<paramArraySize ; i++) {
+	req.handleArray[i] = paramArray[i] ;
+	req.setValue(i, valueArray[i].value, valueArray[i].length);
+    }
+
+    strcpy(req.label, theTag);
+
+    // Send network message and then wait for answer.
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
+
+    e = rep.exception ;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -619,4 +666,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.22 2007/07/06 09:25:20 erk Exp $
+// $Id: ObjectManagement.cc,v 3.23 2007/07/23 14:13:23 rousse Exp $

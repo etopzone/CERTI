@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.35 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -627,7 +627,9 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 		<< ", date = " << req->date ;
     values = req->getParamValueArray();
 
-    federations.updateParameter(req->federation,
+    if ( req->getBoolean() )
+        {
+        federations.updateParameter(req->federation,
 				req->federate,
 				req->interactionClass,
 				req->handleArray,
@@ -636,6 +638,18 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				req->date,
 				req->region,
 				req->label);
+        }
+    else
+        {
+        federations.updateParameter(req->federation,
+				req->federate,
+				req->interactionClass,
+				req->handleArray,
+				values,
+				req->handleArraySize,
+				req->region,
+				req->label);
+        }
     free(values);
 
     D.Out(pdDebug, "Mise A Jour des parametres de l'interaction %d terminee",
@@ -1159,4 +1173,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.34 2007/06/15 08:14:16 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.35 2007/07/23 14:13:24 rousse Exp $

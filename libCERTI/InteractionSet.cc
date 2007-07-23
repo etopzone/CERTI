@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.16 2007/07/06 09:25:17 erk Exp $
+// $Id: InteractionSet.cc,v 3.17 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -80,6 +80,48 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                              value_list,
                                              list_size,
                                              the_time,
+					     region,
+                                             the_tag);
+
+    // Pass the Message(and its BroadcastList) to the Parent Classes.
+    if (ibList != NULL) {
+        //currentClass = theInteraction->parent ;
+        //while (CurrentClass != 0) {
+        // theInteraction = getByHandle(CurrentClass);
+        // theInteraction->broadcastInteractionMessage(List);
+        // CurrentClass = theInteraction->Father ;
+        //}
+        delete ibList ;
+    }
+    else
+        // BroadcastInteraction should not be called on the RTIA(see IsReady)
+        throw RTIinternalError("BroadcastInteraction called by RTIA.");
+}
+
+// ----------------------------------------------------------------------------
+//! broadcastInteraction without time
+void
+InteractionSet::broadcastInteraction(FederateHandle federate_handle,
+                                     InteractionClassHandle interaction_handle,
+                                     ParameterHandle *parameter_list,
+                                     ParameterLengthPair *value_list,
+                                     UShort list_size,
+				     const RTIRegion *region,
+                                     const char *the_tag)
+    throw (FederateNotPublishing,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           RTIinternalError)
+{
+    // It may throw InteractionClassNotDefined.
+    //InteractionClassHandle currentClass = interaction_handle ;
+    Interaction *theInteraction = getByHandle(interaction_handle);
+
+    InteractionBroadcastList *ibList ;
+    ibList = theInteraction->sendInteraction(federate_handle,
+                                             parameter_list,
+                                             value_list,
+                                             list_size,
 					     region,
                                              the_tag);
 
@@ -303,4 +345,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.16 2007/07/06 09:25:17 erk Exp $
+// $Id: InteractionSet.cc,v 3.17 2007/07/23 14:13:24 rousse Exp $

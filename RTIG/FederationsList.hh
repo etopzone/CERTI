@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.31 2007/06/15 08:14:16 rousse Exp $
+// $Id: FederationsList.hh,v 3.32 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -322,6 +322,22 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    void updateParameter(Handle theFederation,
+                         FederateHandle theFederateHandle,
+                         InteractionClassHandle theInteractionHandle,
+                         ParameterHandle *theParameterList,
+                         ParameterLengthPair *theValueList,
+                         UShort theListSize,
+			 RegionHandle,
+                         const char *theTag)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               FederationExecutionDoesNotExist,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
 
     // --------------------------
     // -- Ownership Management --
@@ -517,4 +533,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.31 2007/06/15 08:14:16 rousse Exp $
+// $Id: FederationsList.hh,v 3.32 2007/07/23 14:13:24 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
+// $Id: InteractionSet.hh,v 3.14 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -119,6 +119,18 @@ public:
                InteractionParameterNotDefined,
                RTIinternalError);
 
+    void broadcastInteraction(FederateHandle theFederateHandle,
+                              InteractionClassHandle theInteractionHandle,
+                              ParameterHandle *theParameterList,
+                              ParameterLengthPair *theValueList,
+                              UShort theListSize,
+			      const RTIRegion *,
+                              const char *theTag)
+        throw (FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               RTIinternalError);
+
 private:
     SecurityServer *server ;
 };
@@ -127,4 +139,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
+// $Id: InteractionSet.hh,v 3.14 2007/07/23 14:13:24 rousse Exp $

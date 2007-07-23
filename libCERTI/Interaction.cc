@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.29 2007/07/06 09:25:17 erk Exp $
+// $Id: Interaction.cc,v 3.30 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -364,6 +364,7 @@ Interaction::unpublish(FederateHandle the_handle)
 // ----------------------------------------------------------------------------
 /*! Called by RTIG in order to start the broadcasting of an Interaction
   Message(to all federates who subscribed to this Interaction Class).
+  with time
 */
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
@@ -391,7 +392,62 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->federation = server->federation();
         answer->federate = federate_handle ;
         answer->interactionClass = handle ; // Interaction Class Handle
+        answer->setBoolean(true) ; // with time
 	answer->date = time ;
+
+        strcpy(answer->label, the_tag);
+
+        answer->handleArraySize = list_size ;
+        for (int i = 0 ; i < list_size ; i++) {
+            answer->handleArray[i] = parameter_list[i] ;
+            answer->setValue(i, value_list[i].value, value_list[i].length);
+        }
+
+        D.Out(pdProtocol, "Preparing broadcast list.");
+        ibList = new InteractionBroadcastList(answer);
+
+        broadcastInteractionMessage(ibList, region);
+    }
+    else
+        // SendInteraction should not be called on the RTIA.
+        throw RTIinternalError("SendInteraction called by RTIA.");
+
+    // Return the BroadcastList in case it had to be passed to the
+    // parent class.
+    return ibList ;
+}
+
+// ----------------------------------------------------------------------------
+/*! Called by RTIG in order to start the broadcasting of an Interaction
+  Message(to all federates who subscribed to this Interaction Class).
+  without time
+*/
+InteractionBroadcastList *
+Interaction::sendInteraction(FederateHandle federate_handle,
+                             ParameterHandle *parameter_list,
+                             ParameterLengthPair *value_list,
+                             UShort list_size,
+			     const RTIRegion *region,
+                             const char *the_tag)
+    throw (FederateNotPublishing,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           RTIinternalError)
+{
+    // Pre-conditions checking
+    if (!isPublishing(federate_handle))
+        throw FederateNotPublishing("");
+
+    // Prepare and Broadcast message for this class
+    InteractionBroadcastList *ibList = NULL ;
+    if (server != NULL) {
+        NetworkMessage *answer = new NetworkMessage ;
+        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
+        answer->exception = e_NO_EXCEPTION ;
+        answer->federation = server->federation();
+        answer->federate = federate_handle ;
+        answer->interactionClass = handle ; // Interaction Class Handle
+	answer->setBoolean(false) ; // without time
 
         strcpy(answer->label, the_tag);
 
@@ -465,4 +521,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.29 2007/07/06 09:25:17 erk Exp $
+// $Id: Interaction.cc,v 3.30 2007/07/23 14:13:24 rousse Exp $

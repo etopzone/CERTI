@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.57 2007/07/06 09:25:19 erk Exp $
+// $Id: Federation.cc,v 3.58 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -579,6 +579,47 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
                                              parameter_values,
                                              list_size,
                                              time,
+					     region,
+                                             tag);
+    D.Out(pdRequest, "Federation %d: Broadcasted Interaction %d from Federate "
+          "%d nb params %d.", handle, interaction, federate_handle, list_size);
+    for (int i=0 ; i < list_size ; i++)
+        D.Out(pdRequest,
+              " Param %d Value %s",
+              parameter_handles[i],
+              parameter_values[i]);
+}
+
+// ----------------------------------------------------------------------------
+//! broadcastInteraction without time
+void
+Federation::broadcastInteraction(FederateHandle federate_handle,
+                                 InteractionClassHandle interaction,
+                                 ParameterHandle *parameter_handles,
+                                 ParameterLengthPair *parameter_values,
+                                 UShort list_size,
+				 RegionHandle region_handle,
+                                 const char *tag)
+    throw (FederateNotExecutionMember,
+           FederateNotPublishing,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember.
+    this->check(federate_handle);
+
+    const RTIRegion *region = 0 ;
+    if (region_handle != 0)
+	region = root->getRegion(region_handle);
+
+    root->Interactions->broadcastInteraction(federate_handle,
+                                             interaction,
+                                             parameter_handles,
+                                             parameter_values,
+                                             list_size,
 					     region,
                                              tag);
     D.Out(pdRequest, "Federation %d: Broadcasted Interaction %d from Federate "
@@ -1904,5 +1945,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.57 2007/07/06 09:25:19 erk Exp $
+// $Id: Federation.cc,v 3.58 2007/07/23 14:13:23 rousse Exp $
 

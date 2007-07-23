@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.36 2007/06/22 08:51:35 erk Exp $
+// $Id: FederationsList.cc,v 3.37 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -441,7 +441,7 @@ FederationsList::updateAttribute(Handle handle,
                                       list_size, tag);
 }
 // ----------------------------------------------------------------------------
-// updateParameter
+// updateParameter with time
 void
 FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
@@ -474,6 +474,38 @@ FederationsList::updateParameter(Handle handle,
                                      list_size, time, region, tag);
 }
 
+// ----------------------------------------------------------------------------
+// updateParameter without time
+void
+FederationsList::updateParameter(Handle handle,
+                                 FederateHandle federate,
+                                 InteractionClassHandle interaction,
+                                 ParameterHandle *parameters,
+                                 ParameterLengthPair *values,
+                                 UShort list_size,
+				 RegionHandle region,
+                                 const char *tag)
+    throw (FederateNotExecutionMember,
+           FederateNotPublishing,
+           FederationExecutionDoesNotExist,
+           InteractionClassNotDefined,
+           InteractionParameterNotDefined,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    federation->broadcastInteraction(federate, interaction, parameters, values,
+                                     list_size, region, tag);
+}
 // ----------------------------------------------------------------------------
 /*! Called by processRegisterSynchronization and
   processSynchronizationAchieved.
@@ -1314,5 +1346,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.36 2007/06/22 08:51:35 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.37 2007/07/23 14:13:23 rousse Exp $
 

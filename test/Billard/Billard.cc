@@ -620,10 +620,17 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
     D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f, buf= %s",
           ParamDYID, dy, buf);
 
-    D.Out(pdRegister, "Sending interaction(DX= %f, DY= %f).", dx, dy);
-
     try {
-        rtiamb.sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
+        if ( notimestamp )
+            {
+            D.Out(pdRegister, "Sending interaction without time (DX= %f, DY= %f).", dx, dy);
+            rtiamb.sendInteraction(BingClassID, *parameterSet, "");
+            }
+        else
+            {
+            D.Out(pdRegister, "Sending interaction wit time (DX= %f, DY= %f).", dx, dy);
+            rtiamb.sendInteraction(BingClassID, *parameterSet, InteractionTime, "");
+            }
     }
     catch (RTI::Exception& e) {
         D.Out(pdExcept, "**** Exception sending interaction : %d", &e);

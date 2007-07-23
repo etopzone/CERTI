@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.39 2007/06/22 08:51:35 erk Exp $
+// $Id: Federation.hh,v 3.40 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -294,6 +294,21 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+   void broadcastInteraction(FederateHandle theFederateHandle,
+                              InteractionClassHandle theInteractionHandle,
+                              ParameterHandle *theParameterList,
+                              ParameterLengthPair *theValueList,
+                              UShort theListSize,
+			      RegionHandle,
+                              const char *theTag)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               InteractionClassNotDefined,
+               InteractionParameterNotDefined,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
     void publishInteraction(FederateHandle theFederateHandle,
                             InteractionClassHandle theInteractionHandle,
                             bool PubOrUnpub)
@@ -537,4 +552,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.39 2007/06/22 08:51:35 erk Exp $
+// $Id: Federation.hh,v 3.40 2007/07/23 14:13:23 rousse Exp $

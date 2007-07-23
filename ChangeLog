@@ -1,3 +1,9 @@
+2007-07-19 14:21  rousse
+
+	* ChangeLog, RTIA/RTIA_federate.cc: Jolie erreur dans
+	  RTIA_federate.cc pour l'appel de updateAttributeValues.  Nice bug
+	  in RTIA_federate.cc calling updateAttributeValues.
+
 2007-07-06 16:20  erk
 
 	* libCERTI/CMakeLists.txt, test/libgraphc/CMakeLists.txt,

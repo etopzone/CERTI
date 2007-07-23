@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.33 2007/07/06 09:25:17 erk Exp $
+// $Id: Message_RW.cc,v 3.34 2007/07/23 14:13:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -286,11 +286,13 @@ Message::readBody(SocketUN *socket)
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], RAction
+            // and boolean (true means SI with time, false without time)
             readTag(body);
             readHandleArray(body);
             readValueArray(body);
 	    region = body.readLongInt();
             readResignAction(body);
+            boolean = body.readLongInt();
             break ;
 
           case GET_INTERACTION_CLASS_HANDLE:
@@ -847,11 +849,13 @@ Message::writeBody(SocketUN *socket)
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
             // B.c. Tag, HandleArray[], ValueArray[], resignAction
+           // and also a boolean (true SI or RI with time, false without time)
             body.writeString(tag);
             writeHandleArray(body);
             writeValueArray(body);
 	    body.writeLongInt(region);
             writeResignAction(body);
+            body.writeLongInt(boolean);
             break ;
 
           case GET_INTERACTION_CLASS_HANDLE:
@@ -1066,8 +1070,19 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
       case SEND_INTERACTION: // B.c. Tag, handleArray[], ValueArray[]
-      case RECEIVE_INTERACTION: // B.c. Tag, handleArray[],
-        // ValueArray[], resignAction
+      case RECEIVE_INTERACTION: 
+        header.VP.O_I.handle = interactionClass ;
+        header.VP.O_I.size = handleArraySize ;
+       // SI with time (boolean=true) needs date
+        if ( boolean )
+            header.VP.O_I.date = getFederationTime() ;
+        else
+            header.VP.O_I.date = 0 ;
+        header.bodySize = 1 ;
+        break ;
+
+      // B.c. Tag, handleArray[],
+      // ValueArray[], resignAction
       case GET_INTERACTION_CLASS_HANDLE: // Body contains name
       case GET_INTERACTION_CLASS_NAME: // Body contains name
       case GET_PARAMETER_HANDLE: // Body contains name and parameter
@@ -1192,4 +1207,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.33 2007/07/06 09:25:17 erk Exp $
+// $Id: Message_RW.cc,v 3.34 2007/07/23 14:13:24 rousse Exp $

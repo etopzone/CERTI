@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.13 2007/06/15 08:14:15 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.14 2007/07/23 14:13:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -88,6 +88,15 @@ public:
                     ParameterLengthPair *valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
+                    const char *theTag,
+		    RegionHandle,
+                    TypeException &e);
+
+    void
+    sendInteraction(InteractionClassHandle theInteraction,
+                    ParameterHandle *paramArray,
+                    ParameterLengthPair *valueArray,
+                    UShort paramArraySize,
                     const char *theTag,
 		    RegionHandle,
                     TypeException &e);
@@ -190,4 +199,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.13 2007/06/15 08:14:15 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.14 2007/07/23 14:13:23 rousse Exp $
