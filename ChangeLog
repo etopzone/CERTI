@@ -1,3 +1,15 @@
+2007-07-23 16:13  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
+	  RTIA/RTIA_federate.cc, RTIG/Federation.cc, RTIG/Federation.hh,
+	  RTIG/FederationsList.cc, RTIG/FederationsList.hh,
+	  RTIG/RTIG_processing.cc, libCERTI/Interaction.cc,
+	  libCERTI/Interaction.hh, libCERTI/InteractionSet.cc,
+	  libCERTI/InteractionSet.hh, libCERTI/Message_RW.cc,
+	  libCERTI/NetworkMessage_RW.cc, libRTI/RTIambassador.cc,
+	  test/Billard/Billard.cc: Update et send sans estampille Update
+	  and send without timestamp
+
 2007-07-19 14:21  rousse
 
 	* ChangeLog, RTIA/RTIA_federate.cc: Jolie erreur dans
