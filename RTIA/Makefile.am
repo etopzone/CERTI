@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.7 2007/05/04 08:41:22 erk Exp $
+## $Id: Makefile.am,v 3.8 2007/07/25 14:35:05 erk Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -22,6 +22,6 @@ ObjectManagement.cc OwnershipManagement.cc RTIA.cc RTIA_federate.cc	\
 RTIA_network.cc Statistics.cc TimeManagement.cc
 
 LDADD = -L$(top_builddir)/libCERTI -lCERTI @ETR_SOCKET_LIBS@	\
-@XML_LIBS@ @LEXLIB@
+@XML_LIBS@ @LEXLIB@ @POSIX_LIBS@
 
 EXTRA_DIST = CMakeLists.txt

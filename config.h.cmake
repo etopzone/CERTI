@@ -101,4 +101,12 @@
 #cmakedefine YYTEXT_POINTER 1
 
 /* Define the type for socklen_t */
-#cmakedefine socklen_t @SOCKLEN_TYPE@
+#cmakedefine socklen_t @SOCKLEN_TYPE@ 
+
+/* Define to 1 if you have clock_xxxx API */
+#cmakedefine HAVE_POSIX_CLOCK 1
+
+/* Define to 1 if the processor have TSC support */
+#cmakedefine HAVE_TSC_CLOCK 1
+
+

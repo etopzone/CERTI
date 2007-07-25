@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.19 2007/07/24 09:41:57 rousse Exp $ 
+## $Id: configure.in,v 3.20 2007/07/25 14:35:06 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 AC_INIT([certi],[3.2.5pre4], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.19 $)
+AC_REVISION($Revision: 3.20 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -20,6 +20,9 @@ AC_PROG_INSTALL
 AC_CANONICAL_HOST
 case $host_os in
      *cygwin*) WITH_CYGWIN=" -DWITH_CYGWIN " ;;
+     
+     # Check for RDTSC
+	 i686*|i586*|x86_64*) CXXFLAGS="$CXXFLAGS -DHAVE_TSC_CLOCK ";;     
 esac
 AC_SUBST(WITH_CYGWIN)
 AC_PROG_LIBTOOL
@@ -36,6 +39,15 @@ AC_CXX_HAVE_NUMERIC_LIMITS
 
 ## Additional flags
 CXXFLAGS="$CXXFLAGS -DRTI_USES_STD_FSTREAM "
+
+# Check for posix RT lib containing clock_getres
+AC_SEARCH_LIBS([clock_getres],[rt],[POSIX_LIBS="-lrt"],POSIX_LIBS="")
+if test "$POSIX_LIBS" != ""; then
+	CXXFLAGS="$CXXFLAGS -DHAVE_POSIX_CLOCK "	
+	AC_MSG_NOTICE("OK found POSIX rt libs will compile PosixClock")
+else 
+    AC_MSG_WARN("clock_getres not found PosixClock won't be available")
+fi
 
 # X11
 AC_PATH_XTRA
@@ -78,10 +90,12 @@ if test "x$XML2_CONFIG" != x ; then
 fi
 AC_SUBST(XML_LIBS)
 AC_SUBST(XML_CFLAGS)
+AC_SUBST(POSIX_LIBS)
 AC_SUBST(HAVE_XML)
+
 
 # Output
 AC_OUTPUT([Makefile include/Makefile libCERTI/Makefile RTIG/Makefile
 RTIA/Makefile libRTI/Makefile test/Makefile test/libgraphc/Makefile
-test/Billard/Makefile doc/Makefile
+test/Billard/Makefile test/utility/Makefile doc/Makefile
 myCERTI_env.sh])

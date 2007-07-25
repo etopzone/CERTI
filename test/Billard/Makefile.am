@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.16 2007/05/04 08:41:23 erk Exp $
+## $Id: Makefile.am,v 3.17 2007/07/25 14:35:08 erk Exp $
 ##
 ## Process this file with automake to produce Makefile.in
 
@@ -22,6 +22,6 @@ Display.cc main.cc cmdline.c getopt.c getopt1.c
 
 LDADD = -L$(top_builddir)/libRTI -L$(top_builddir)/test/libgraphc	\
 -L$(top_builddir)/libCERTI -lRTI -lgraph -lCERTI @XLIBS@		\
-@ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@
+@ETR_SOCKET_LIBS@ @XML_LIBS@ @LEXLIB@ @POSIX_LIBS@
 
 EXTRA_DIST = Test.fed Test.xml CMakeLists.txt

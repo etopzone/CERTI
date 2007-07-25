@@ -68,6 +68,7 @@ SET(CERTI_SUPPORT_SRCS
 AuditFile.cc
 AuditLine.cc
 BasicMessage.cc
+Clock.cc Clock.hh
 MessageBody.cc
 Message.cc
 Message_RW.cc
@@ -88,6 +89,18 @@ XmlParser.hh
 PrettyDebug.hh
 )
 
+IF (HAVE_POSIX_CLOCK)
+    SET(CERTI_SUPPORT_SRCS 
+           ${CERTI_SUPPORT_SRCS}
+           PosixClock.cc PosixClock.hh)              
+ENDIF(HAVE_POSIX_CLOCK)
+
+IF (HAVE_TSC_CLOCK)
+    SET(CERTI_SUPPORT_SRCS 
+           ${CERTI_SUPPORT_SRCS}
+           TSCClock.cc TSCClock.hh)              
+ENDIF(HAVE_TSC_CLOCK)
+
 SET(CERTI_SOCKET_SRCS
 SocketServer.cc
 SocketTCP.cc
@@ -101,6 +114,7 @@ SecurityServer.hh
 GSSAPIHandler.hh
 Socket.hh
 )
+
 
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
 
@@ -170,6 +184,10 @@ ADD_LIBRARY(CERTI
 SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
                         
 TARGET_LINK_LIBRARIES(CERTI ${LIBXML2_LIBRARIES} ${SOCKET_LIBRARY})
+
+IF (HAVE_POSIX_CLOCK)
+    TARGET_LINK_LIBRARIES(CERTI rt)
+ENDIF (HAVE_POSIX_CLOCK)
 
 #SET_TARGET_PROPERTIES(CERTI PROPERTIES VERSION 1.0.0 SOVERSION 0 )
 
