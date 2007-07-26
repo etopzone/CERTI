@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.30 2007/07/26 12:23:56 erk Exp $ 
+## $Id: Makefile.am,v 3.31 2007/07/26 14:19:14 erk Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -22,11 +22,11 @@ XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
 SocketUN.hh Clock.hh
 
 if HAVE_POSIX_CLOCK
-noinst_HEADERS += PosixClock.hh
+	noinst_HEADERS += PosixClock.hh
 endif
 
 if HAVE_TSC_CLOCK
-noinst_HEADERS += PosixClock.hh
+	noinst_HEADERS += TSCClock.hh
 endif
 
 
@@ -45,11 +45,11 @@ Subscribable.cc PrettyDebug.cc PrettyDebEx.cc \
 Clock.cc
 
 if HAVE_POSIX_CLOCK
-libCERTI_la_SOURCES += PosixClock.cc
+	libCERTI_la_SOURCES += PosixClock.cc
 endif
 
 if HAVE_TSC_CLOCK
-libCERTI_la_SOURCES += TSCClock.cc
+	libCERTI_la_SOURCES += TSCClock.cc
 endif
 
 

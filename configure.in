@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.21 2007/07/26 12:23:55 erk Exp $ 
+## $Id: configure.in,v 3.22 2007/07/26 14:19:14 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 AC_INIT([certi],[3.2.5pre4], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.21 $)
+AC_REVISION($Revision: 3.22 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -29,10 +29,11 @@ case $host in
 	 *i686*|*i586*|*x86_64*)
 	    AC_MSG_NOTICE([TSC enabled processor detected])
 	    CXXFLAGS="$CXXFLAGS -DHAVE_TSC_CLOCK "
-	    AM_CONDITIONAL([HAVE_TSC_CLOCK], [test "true"="true"])	    
+	    AM_CONDITIONAL([HAVE_TSC_CLOCK], [test true=true])	    
 	    ;;   
 	 *)
-	 	AM_CONDITIONAL([HAVE_TSC_CLOCK], [test "true"="false"])	    
+	 	AC_MSG_NOTICE([TSC support DISABLED on this arch])
+	 	AM_CONDITIONAL([HAVE_TSC_CLOCK], [test true=false])	    
 	    ;; 		    
 esac
 
