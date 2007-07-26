@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.29 2007/07/25 14:35:07 erk Exp $ 
+## $Id: Makefile.am,v 3.30 2007/07/26 12:23:56 erk Exp $ 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -19,7 +19,16 @@ ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
 XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
-SocketUN.hh
+SocketUN.hh Clock.hh
+
+if HAVE_POSIX_CLOCK
+noinst_HEADERS += PosixClock.hh
+endif
+
+if HAVE_TSC_CLOCK
+noinst_HEADERS += PosixClock.hh
+endif
+
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc Dimension.cc Exception.cc Extent.cc	\
@@ -33,7 +42,16 @@ RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
 Subscribable.cc PrettyDebug.cc PrettyDebEx.cc \
-Clock.cc PosixClock.cc TSCClock.cc
+Clock.cc
+
+if HAVE_POSIX_CLOCK
+libCERTI_la_SOURCES += PosixClock.cc
+endif
+
+if HAVE_TSC_CLOCK
+libCERTI_la_SOURCES += TSCClock.cc
+endif
+
 
 libCERTI_la_LDFLAGS = -version-info 1:0:0
 

@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.20 2007/07/25 14:35:06 erk Exp $ 
+## $Id: configure.in,v 3.21 2007/07/26 12:23:55 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 AC_INIT([certi],[3.2.5pre4], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.20 $)
+AC_REVISION($Revision: 3.21 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -18,12 +18,25 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CANONICAL_HOST
-case $host_os in
-     *cygwin*) WITH_CYGWIN=" -DWITH_CYGWIN " ;;
-     
-     # Check for RDTSC
-	 i686*|i586*|x86_64*) CXXFLAGS="$CXXFLAGS -DHAVE_TSC_CLOCK ";;     
+case $host in
+     *cygwin*) 
+       WITH_CYGWIN=" -DWITH_CYGWIN "
+       ;;
 esac
+
+case $host in     
+     # Check for RDTSC
+	 *i686*|*i586*|*x86_64*)
+	    AC_MSG_NOTICE([TSC enabled processor detected])
+	    CXXFLAGS="$CXXFLAGS -DHAVE_TSC_CLOCK "
+	    AM_CONDITIONAL([HAVE_TSC_CLOCK], [test "true"="true"])	    
+	    ;;   
+	 *)
+	 	AM_CONDITIONAL([HAVE_TSC_CLOCK], [test "true"="false"])	    
+	    ;; 		    
+esac
+
+
 AC_SUBST(WITH_CYGWIN)
 AC_PROG_LIBTOOL
 YACC="$YACC -d "
@@ -42,8 +55,9 @@ CXXFLAGS="$CXXFLAGS -DRTI_USES_STD_FSTREAM "
 
 # Check for posix RT lib containing clock_getres
 AC_SEARCH_LIBS([clock_getres],[rt],[POSIX_LIBS="-lrt"],POSIX_LIBS="")
+AM_CONDITIONAL([HAVE_POSIX_CLOCK], [test "$POSIX_LIBS" != ""])     
 if test "$POSIX_LIBS" != ""; then
-	CXXFLAGS="$CXXFLAGS -DHAVE_POSIX_CLOCK "	
+	CXXFLAGS="$CXXFLAGS -DHAVE_POSIX_CLOCK "		
 	AC_MSG_NOTICE("OK found POSIX rt libs will compile PosixClock")
 else 
     AC_MSG_WARN("clock_getres not found PosixClock won't be available")
