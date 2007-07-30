@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.23 2007/07/23 14:13:23 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.24 2007/07/30 15:24:43 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -87,7 +87,16 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 }
 
 // ----------------------------------------------------------------------------
-//! updateAttributeValues with time
+//! updateAttributeValues
+/** with time
+    @param theObjectHandle Object handle
+    @param attribArray attribute handles array (pointer)
+    @param valueArray value array (pointer)
+    @param attribArraySize attribute and value array size
+    @param theTime time of the federation
+    @param theTag user tag (pointer)
+    @param e exception address (may be modified)
+*/
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
@@ -127,7 +136,15 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 }
 
 // ----------------------------------------------------------------------------
-//! updateAttributeValues without time
+//! updateAttributeValues
+/** without time
+    @param theObjectHandle Object handle
+    @param attribArray attribute handles array (pointer)
+    @param valueArray value array (pointer)
+    @param attribArraySize attribute and value array size
+    @param theTag user tag (pointer)
+    @param e exception address (may be modified)
+*/
 void
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
@@ -666,4 +683,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.23 2007/07/23 14:13:23 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.24 2007/07/30 15:24:43 rousse Exp $

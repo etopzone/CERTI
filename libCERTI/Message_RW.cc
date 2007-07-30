@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.34 2007/07/23 14:13:24 rousse Exp $
+// $Id: Message_RW.cc,v 3.35 2007/07/30 15:24:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -802,6 +802,16 @@ Message::writeBody(SocketUN *socket)
             break ;
 
           case UPDATE_ATTRIBUTE_VALUES:
+            // B.c. object, Tag, handleArray[], ValueArray[] and resignAction.
+            // and also a boolean (true UAV or RAV with time, false without time)
+            body.writeLongInt(object);
+            body.writeString(tag);
+            writeHandleArray(body);
+            writeValueArray(body);
+            writeResignAction(body);
+            body.writeLongInt(boolean);
+            break ;
+
           case REFLECT_ATTRIBUTE_VALUES:
             // B.c. object, Tag, handleArray[], ValueArray[] and resignAction.
             // and also a boolean (true UAV or RAV with time, false without time)
@@ -1207,4 +1217,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.34 2007/07/23 14:13:24 rousse Exp $
+// $Id: Message_RW.cc,v 3.35 2007/07/30 15:24:44 rousse Exp $

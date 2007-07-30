@@ -1,3 +1,58 @@
+2007-07-30 17:17  rousse
+
+	* test/utility/Makefile.in: test/utility/Makefile.in not in cvs
+
+2007-07-30 09:30  erk
+
+	* configure.in, libCERTI/Clock.cc, libCERTI/Clock.hh,
+	  libCERTI/Makefile.am, libCERTI/PosixClock.cc,
+	  libCERTI/PosixClock.hh, libCERTI/TSCClock.cc,
+	  libCERTI/TSCClock.hh, test/utility/CertiUtilTests.cc: Solaris
+	  (and probably others) AutoXXXX build is now OK.  Argh!!! Automake
+	  conditional handling sucks...
+
+2007-07-30 08:29  erk
+
+	* .cvsignore: Update .cvsignore with more autoconf generated files
+
+2007-07-26 16:19  erk
+
+	* configure.in, libCERTI/Makefile.am: Fix Solaris compile at
+	  least...
+
+2007-07-26 14:23  erk
+
+	* configure.in, libCERTI/Makefile.am: Should fix Solaris compile
+
+2007-07-26 09:27  erk
+
+	* test/libgraphc/.cvsignore: Ignore autoXXX generated files
+
+2007-07-25 16:37  erk
+
+	* RTIA/.cvsignore, test/.cvsignore, .cvsignore, RTIG/.cvsignore,
+	  doc/.cvsignore, include/.cvsignore, libCERTI/.cvsignore,
+	  libRTI/.cvsignore, test/Billard/.cvsignore: Ignore autoXXX
+	  generated files
+
+2007-07-25 16:35  erk
+
+	* RTIA/Makefile.am, CMakeLists.txt, config.h.cmake, configure.in,
+	  test/Makefile.am, test/utility/CMakeLists.txt,
+	  test/utility/CertiUtilTests.cc, test/utility/Makefile.am,
+	  test/utility/Makefile.in, libCERTI/CMakeLists.txt,
+	  libCERTI/Clock.cc, libCERTI/Clock.hh, libCERTI/Makefile.am,
+	  libCERTI/PosixClock.cc, libCERTI/PosixClock.hh,
+	  libCERTI/PrettyDebug.hh, libCERTI/TSCClock.cc,
+	  libCERTI/TSCClock.hh, test/CMakeLists.txt, RTIG/Makefile.am,
+	  test/Billard/Makefile.am: Add Clock support in libCERTI in order
+	  to have handy tools for profiling
+
+2007-07-24 11:41  rousse
+
+	* CMakeLists.txt, ChangeLog, configure.in: Numero de version beta
+	  mis a jour Update beta version number
+
 2007-07-23 16:13  rousse
 
 	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.35 2007/07/23 14:13:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.36 2007/07/30 15:24:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -611,6 +611,9 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.date = req->date ;
     rep.handleArraySize = 0 ;
+    // Don't forget label and tag
+    strcpy(rep.label,req->label) ;
+    strcpy(rep.tag,req->tag) ;
 
     rep.write(link); // send answer to RTIA
 }
@@ -661,6 +664,9 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.interactionClass = req->interactionClass ;
     rep.handleArraySize = 0 ;
+    // Don't forget label and tag
+    strcpy(rep.label,req->label) ;
+    strcpy(rep.tag,req->tag) ;
 
     rep.write(link); // send answer to RTIA
 }
@@ -1173,4 +1179,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.35 2007/07/23 14:13:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.36 2007/07/30 15:24:44 rousse Exp $

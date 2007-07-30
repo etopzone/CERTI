@@ -683,11 +683,11 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
     try {
         if ( notimestamp )
             {
-            rtiamb.updateAttributeValues(id, *attributeSet, "");
+            rtiamb.updateAttributeValues(id, *attributeSet, "coucou");
             }
         else
             {
-            rtiamb.updateAttributeValues(id, *attributeSet, UpdateTime, "");
+            rtiamb.updateAttributeValues(id, *attributeSet, UpdateTime, "coucou");
             }
     }
     catch (RTI::Exception& e) {
