@@ -4,6 +4,8 @@
 #include "Clock.hh"
 #include <time.h>
 
+namespace certi {
+
 /**
  * A Clock implemented using POSIX clock_xxxxx API.
  */ 
@@ -29,7 +31,7 @@ public:
 	/**
 	 * Get the current ticks value.
 	 * @return the current ticks value
-	 */
+	 */ 
 	virtual uint64_t getCurrentTicksValue();
 	/**
 	 * Convert a number of ticks into a double value
@@ -44,4 +46,5 @@ private:
 	clockid_t       clockId;
 };
 
+}
 #endif /*POSIXCLOCK_HH_*/

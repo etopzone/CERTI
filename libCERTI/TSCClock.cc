@@ -1,6 +1,9 @@
 #include "TSCClock.hh"
 #include <stdio.h>
 
+namespace certi {
+
+}
 TSCClock::TSCClock() : Clock("TSCClock")
 {
 	resolution = 1.0e3/getProcessorFrequency();	
@@ -41,4 +44,6 @@ double TSCClock::getProcessorFrequency() {
 	  }  
 	  fclose(fdcpu);  
 	  return freq;
+}
+
 }

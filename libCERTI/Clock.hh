@@ -32,6 +32,8 @@
 #include <stdint.h>
 #include <string>
 
+namespace certi {
+
 class Clock
 {
 public:
@@ -90,5 +92,7 @@ public:
 protected:
 	std::string name;
 };
+
+}
 
 #endif /*CLOCK_HH_*/

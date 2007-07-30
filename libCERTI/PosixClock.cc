@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 
+namespace certi {
+
 PosixClock::PosixClock(clockid_t clockId) : Clock("PosixClock")
 {
 		this->clockId = clockId;
@@ -27,4 +29,6 @@ PosixClock::tick2NanoSecond(const uint64_t ticks) {
 
 PosixClock::~PosixClock()
 {
+}
+
 }

@@ -30,7 +30,7 @@ using std::endl;
 #include "PrettyDebug.hh"
 
 #include "Clock.hh"
-void clockTests(Clock& aClock) {
+void clockTests(certi::Clock& aClock) {
 	uint64_t tick1;
 	uint64_t tick2;
 	cout << "Testing clock <" << aClock.getName() << "> BEGIN..." <<endl; 
@@ -54,10 +54,10 @@ int
 main(int argc, char **argv)
 {	
 #ifdef HAVE_POSIX_CLOCK	
-	PosixClock posixClk;
+	certi::PosixClock posixClk;
 #endif
 #ifdef HAVE_TSC_CLOCK	
-	TSCClock   tscClk;
+	certi::TSCClock   tscClk;
 #endif
 	
 	cout << "CERTI Utility Tests->BEGIN..."<< endl ;

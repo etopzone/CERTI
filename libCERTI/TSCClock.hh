@@ -3,6 +3,7 @@
 
 #include "Clock.hh"
 
+namespace certi {
 /**
  * The TSCClock is a Clock using the Time Stamp Counter 
  * which may be found in Pentium-like processors
@@ -59,5 +60,5 @@ private:
 	double resolution;
 
 };
-
+}
 #endif /*TSCCLOCK_HH_*/

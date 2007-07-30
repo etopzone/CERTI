@@ -1,4 +1,20 @@
-## $Id: Makefile.am,v 3.31 2007/07/26 14:19:14 erk Exp $ 
+## $Id: Makefile.am,v 3.32 2007/07/30 07:30:21 erk Exp $
+
+if HAVE_POSIX_CLOCK
+POSIX_CLK_HEADER = PosixClock.hh
+POSIX_CLK_SOURCE = PosixClock.cc
+else 
+POSIX_CLK_HEADER =
+POSIX_CLK_SOURCE =
+endif
+
+if HAVE_TSC_CLOCK
+TSC_CLK_HEADER = TSCClock.hh
+TSC_CLK_SOURCE = TSCClock.cc
+else
+TSC_CLK_HEADER =
+TSC_CLK_SOURCE =  
+endif 
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -19,15 +35,7 @@ ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
 XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
-SocketUN.hh Clock.hh
-
-if HAVE_POSIX_CLOCK
-	noinst_HEADERS += PosixClock.hh
-endif
-
-if HAVE_TSC_CLOCK
-	noinst_HEADERS += TSCClock.hh
-endif
+SocketUN.hh Clock.hh $(POSIX_CLK_HEADER) $(TSC_CLK_HEADER)
 
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
@@ -42,16 +50,7 @@ RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
 Subscribable.cc PrettyDebug.cc PrettyDebEx.cc \
-Clock.cc
-
-if HAVE_POSIX_CLOCK
-	libCERTI_la_SOURCES += PosixClock.cc
-endif
-
-if HAVE_TSC_CLOCK
-	libCERTI_la_SOURCES += TSCClock.cc
-endif
-
+Clock.cc $(POSIX_CLK_SOURCE) $(TSC_CLK_SOURCE)
 
 libCERTI_la_LDFLAGS = -version-info 1:0:0
 

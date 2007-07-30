@@ -18,6 +18,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Clock.hh"
+namespace certi {
 
 Clock::Clock(const std::string name)
 {
@@ -41,4 +42,6 @@ Clock::getDeltaNanoSecond(const uint64_t previousTicks) {
 
 Clock::~Clock()
 {
+}
+
 }
