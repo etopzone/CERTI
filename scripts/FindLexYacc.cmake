@@ -3,7 +3,7 @@ SET(PATH_DIR /usr/local/bin /usr/bin)
 
 MESSAGE(STATUS "Looking for lex...")
 FIND_PROGRAM(LEX_PROGRAM 
-  NAMES lex flex 
+  NAMES flex lex
   PATHS ${PATH_DIR}
   DOC "A lex-compatible lexer generator")
 IF (LEX_PROGRAM) 
