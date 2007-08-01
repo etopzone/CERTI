@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.24 2007/07/30 15:24:43 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.25 2007/08/01 06:51:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -249,7 +249,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArray,
                                       paramArraySize);
 
-    // Preparation du message au RTI.
+    // Building network message (req) to RTIG.
     req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
     // true for UAV with time
@@ -296,7 +296,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArray,
                                       paramArraySize);
 
-    // Building Network message to RTI.
+    // Building network message (req) to RTIG.
     req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
     // false for UAV without time
@@ -683,4 +683,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.24 2007/07/30 15:24:43 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.25 2007/08/01 06:51:06 rousse Exp $

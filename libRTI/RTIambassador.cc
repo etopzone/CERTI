@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.46 2007/07/23 14:13:25 rousse Exp $
+// $Id: RTIambassador.cc,v 3.47 2007/08/01 06:51:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1035,7 +1035,14 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 }
 
 // ----------------------------------------------------------------------------
-// Send Interaction with time
+/** Send Interaction with time
+    This service (HLA 1.3) send an interaction into the federation.
+    As the federation time argument is supplied, an event retraction designator is returned.
+    @param theInteraction Interaction class designator
+    @param theParameters Set of interaction parameters designator and value pairs
+    @param theTime Federation time
+    @param theTag User-supplied tag
+*/
 EventRetractionHandle
 RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
                                const ParameterHandleValuePairSet& theParameters,
@@ -1067,11 +1074,17 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 }
 
 // ----------------------------------------------------------------------------
-// Send Interaction without time
+/** Send Interaction without time
+    This service (HLA 1.3) send an interaction into the federation.
+    None is returned.
+    @param theInteraction Interaction class designator
+    @param theParameters Set of interaction parameters designator and value pairs
+    @param theTag User-supplied tag
+*/
 void
-RTI::RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
-                               const ParameterHandleValuePairSet &parameters,
-                               const char *the_tag)
+RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
+                               const ParameterHandleValuePairSet &theParameters,
+                               const char *theTag)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::InteractionParameterNotDefined, RTI::InteractionClassNotPublished, 
@@ -1081,9 +1094,9 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle the_interaction,
     Message req, rep ;
 
     req.type = Message::SEND_INTERACTION ;
-    req.setInteractionClass(the_interaction);
-    req.setTag(the_tag);
-    req.setPHVPS(parameters);
+    req.setInteractionClass(theInteraction);
+    req.setTag(theTag);
+    req.setPHVPS(theParameters);
     req.setRegion(0);
     req.setBoolean(false);
 
@@ -2744,4 +2757,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.46 2007/07/23 14:13:25 rousse Exp $
+// $Id: RTIambassador.cc,v 3.47 2007/08/01 06:51:07 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.40 2007/07/23 14:13:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.41 2007/08/01 06:51:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -345,14 +345,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::SEND_INTERACTION: {
-          D.Out(pdTrace,
-                "Receiving Message from Federate, type SendInteraction.");
 
           ParameterLengthPair *ValueArray = (ParameterLengthPair *) req->getValueArray();
 
           try {
-              rep.setEventRetraction(
-                  om->sendInteraction(req->getInteractionClass(),
+              if (req->getBoolean() )
+                  {
+                  D.Out(pdTrace,
+   "Receiving Message from Federate, type SendInteraction with TIMESTAMP.");
+                  rep.setEventRetraction(
+                      om->sendInteraction(req->getInteractionClass(),
                                       req->handleArray,
                                       ValueArray,
                                       req->handleArraySize,
@@ -360,6 +362,20 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                       req->getTag(),
 				      req->getRegion(),
                                       e));
+                  }
+            else
+                  {
+                  D.Out(pdTrace,
+   "Receiving Message from Federate, type SendInteraction without TIMESTAMP.");
+                      om->sendInteraction(req->getInteractionClass(),
+                                      req->handleArray,
+                                      ValueArray,
+                                      req->handleArraySize,
+                                      req->getFederationTime(),
+                                      req->getTag(),
+				      req->getRegion(),
+                                      e);
+                  }
               free(ValueArray);
           } catch (Exception *e) {
               free(ValueArray);
@@ -1159,4 +1175,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.40 2007/07/23 14:13:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.41 2007/08/01 06:51:06 rousse Exp $

@@ -1,3 +1,16 @@
+2007-07-31 16:52  erk
+
+	* scripts/FindLexYacc.cmake: Find Flex first would be better if
+	  available
+
+2007-07-30 17:24  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIG/RTIG_processing.cc,
+	  libCERTI/Message.cc, libCERTI/Message_RW.cc,
+	  test/Billard/Billard.cc: Meilleure gestion du tag dans update
+	  attribute values et send interaction Better tag managing in
+	  update attribute values and send interaction
+
 2007-07-30 17:17  rousse
 
 	* test/utility/Makefile.in: test/utility/Makefile.in not in cvs
