@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.36 2007/07/30 15:24:44 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.37 2007/08/09 09:22:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,6 +33,7 @@ namespace certi {
 namespace rtig {
 
 static PrettyDebug D("RTIG", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! Creates a new federation.
@@ -625,7 +626,10 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 {
     ValueLengthPair *values = NULL ;
 
-    // Prepare le Value Array
+    G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processSendInteraction");
+
+    // Building Value Array
     auditServer << "IntID = " << req->interactionClass
 		<< ", date = " << req->date ;
     values = req->getParamValueArray();
@@ -655,7 +659,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
         }
     free(values);
 
-    D.Out(pdDebug, "Mise A Jour des parametres de l'interaction %d terminee",
+    D.Out(pdDebug, "Interaction %d parameters update completed",
           req->interactionClass);
 
     NetworkMessage rep ;
@@ -667,8 +671,12 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     // Don't forget label and tag
     strcpy(rep.label,req->label) ;
     strcpy(rep.tag,req->tag) ;
-
+    G.Out(pdGendoc,"processSendInteraction===>write");
     rep.write(link); // send answer to RTIA
+
+    G.Out(pdGendoc,"exit RTIG::processSendInteraction");
+    G.Out(pdGendoc,"END ** SEND INTERACTION SERVICE **");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1179,4 +1187,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.36 2007/07/30 15:24:44 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.37 2007/08/09 09:22:44 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.17 2007/07/23 14:13:24 rousse Exp $
+// $Id: InteractionSet.cc,v 3.18 2007/08/09 09:22:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -37,6 +37,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("INTERACTIONSET", "(InterSet) - ");
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
 //! addClass.
@@ -55,7 +56,7 @@ InteractionSet::addClass(Interaction *the_class)
 }
 
 // ----------------------------------------------------------------------------
-//! broadcastInteraction.
+//! broadcastInteraction with time.
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      InteractionClassHandle interaction_handle,
@@ -70,6 +71,9 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
            InteractionParameterNotDefined,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction with time") ;
+
     // It may throw InteractionClassNotDefined.
     //InteractionClassHandle currentClass = interaction_handle ;
     Interaction *theInteraction = getByHandle(interaction_handle);
@@ -96,6 +100,9 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
     else
         // BroadcastInteraction should not be called on the RTIA(see IsReady)
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
+
+    G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction with time") ;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -113,6 +120,9 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
            InteractionParameterNotDefined,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter InteractionSet::broadcastInteraction without time") ;
+
     // It may throw InteractionClassNotDefined.
     //InteractionClassHandle currentClass = interaction_handle ;
     Interaction *theInteraction = getByHandle(interaction_handle);
@@ -138,6 +148,9 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
     else
         // BroadcastInteraction should not be called on the RTIA(see IsReady)
         throw RTIinternalError("BroadcastInteraction called by RTIA.");
+
+    G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction without time") ;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -345,4 +358,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.17 2007/07/23 14:13:24 rousse Exp $
+// $Id: InteractionSet.cc,v 3.18 2007/08/09 09:22:45 rousse Exp $

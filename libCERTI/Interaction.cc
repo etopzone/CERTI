@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.30 2007/07/23 14:13:24 rousse Exp $
+// $Id: Interaction.cc,v 3.31 2007/08/09 09:22:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -37,6 +37,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("INTERACTION", "(Interact) - ");
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
 //! Used only by CRead, return the new parameter's handle.
@@ -94,6 +95,9 @@ void
 Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
 					 const RTIRegion *region)
 {
+
+    G.Out(pdGendoc,"enter Interaction::broadcastInteractionMessage");
+
     // 1. Set InteractionHandle to local class Handle.
     ibList->message->interactionClass = handle ;
 
@@ -115,6 +119,9 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
     // 4. Send pending messages.
     D.Out(pdDebug, "Calling SendPendingMessage...");
     ibList->sendPendingMessage(server);
+
+    G.Out(pdGendoc,"exit Interaction::broadcastInteractionMessage");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -379,6 +386,9 @@ Interaction::sendInteraction(FederateHandle federate_handle,
            InteractionParameterNotDefined,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Interaction::sendInteraction with time");
+
     // Pre-conditions checking
     if (!isPublishing(federate_handle))
         throw FederateNotPublishing("");
@@ -412,6 +422,8 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         // SendInteraction should not be called on the RTIA.
         throw RTIinternalError("SendInteraction called by RTIA.");
 
+    G.Out(pdGendoc,"exit Interaction::sendInteraction with time");
+
     // Return the BroadcastList in case it had to be passed to the
     // parent class.
     return ibList ;
@@ -434,6 +446,9 @@ Interaction::sendInteraction(FederateHandle federate_handle,
            InteractionParameterNotDefined,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Interaction::sendInteraction without time");
+
     // Pre-conditions checking
     if (!isPublishing(federate_handle))
         throw FederateNotPublishing("");
@@ -465,6 +480,8 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     else
         // SendInteraction should not be called on the RTIA.
         throw RTIinternalError("SendInteraction called by RTIA.");
+
+    G.Out(pdGendoc,"exit Interaction::sendInteraction without time");
 
     // Return the BroadcastList in case it had to be passed to the
     // parent class.
@@ -521,4 +538,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.30 2007/07/23 14:13:24 rousse Exp $
+// $Id: Interaction.cc,v 3.31 2007/08/09 09:22:45 rousse Exp $

@@ -1,3 +1,10 @@
+2007-08-01 08:51  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/RTIA_federate.cc,
+	  libRTI/RTIambassador.cc: Amelioration de la prise en compte du
+	  send interaction sans estampille Improvment of send interaction
+	  without timestamp
+
 2007-07-31 16:52  erk
 
 	* scripts/FindLexYacc.cmake: Find Flex first would be better if
@@ -13,7 +20,7 @@
 
 2007-07-30 17:17  rousse
 
-	* test/utility/Makefile.in: test/utility/Makefile.in not in cvs
+	* test/utility/Makefile.in: test/utimity/Makefile.in not in cvs
 
 2007-07-30 09:30  erk
 

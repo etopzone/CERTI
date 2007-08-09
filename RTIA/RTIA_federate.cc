@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.41 2007/08/01 06:51:06 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.42 2007/08/09 09:22:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,6 +35,7 @@ namespace certi {
 namespace rtia {
 
 static pdCDebug D("RTIA", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
 //! Verify that federate is not in saving or restoring state.
@@ -347,7 +348,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::SEND_INTERACTION: {
 
           ParameterLengthPair *ValueArray = (ParameterLengthPair *) req->getValueArray();
-
+          G.Out(pdGendoc,"S_I into RTIA::chooseFederateProcessing") ;
           try {
               if (req->getBoolean() )
                   {
@@ -371,7 +372,6 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                       req->handleArray,
                                       ValueArray,
                                       req->handleArraySize,
-                                      req->getFederationTime(),
                                       req->getTag(),
 				      req->getRegion(),
                                       e);
@@ -1175,4 +1175,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.41 2007/08/01 06:51:06 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.42 2007/08/09 09:22:44 rousse Exp $

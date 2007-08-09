@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.58 2007/07/23 14:13:23 rousse Exp $
+// $Id: Federation.cc,v 3.59 2007/08/09 09:22:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -75,6 +75,7 @@ class XmlParser ;
 namespace rtig {
 
 static PrettyDebug D("FEDERATION", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! Constructor
@@ -547,8 +548,7 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
 }
 
 // ----------------------------------------------------------------------------
-//! broadcastInteraction
-
+//! broadcastInteraction with time
 void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
@@ -566,6 +566,9 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
            RestoreInProgress,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Federation::broadcastInteraction with time");
+
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
 
@@ -588,6 +591,9 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
               " Param %d Value %s",
               parameter_handles[i],
               parameter_values[i]);
+
+    G.Out(pdGendoc,"exit Federation::broadcastInteraction with time");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -608,6 +614,9 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
            RestoreInProgress,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Federation::broadcastInteraction without time");
+
     // It may throw FederateNotExecutionMember.
     this->check(federate_handle);
 
@@ -629,6 +638,9 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
               " Param %d Value %s",
               parameter_handles[i],
               parameter_values[i]);
+
+    G.Out(pdGendoc,"exit Federation::broadcastInteraction without time");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1945,5 +1957,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.58 2007/07/23 14:13:23 rousse Exp $
+// $Id: Federation.cc,v 3.59 2007/08/09 09:22:44 rousse Exp $
 

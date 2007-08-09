@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.25 2007/08/01 06:51:06 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.26 2007/08/09 09:22:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,6 +44,7 @@ namespace certi {
 namespace rtia {
 
 static pdCDebug D("RTIA_OM", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
@@ -242,7 +243,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   TypeException &e)
 {
     NetworkMessage req, rep ;
-
+    G.Out(pdGendoc,"ObjectManagement::sendInteraction with time") ;
     // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
                                       theInteraction,
@@ -289,7 +290,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   TypeException &e)
 {
     NetworkMessage req, rep ;
-
+    G.Out(pdGendoc,"ObjectManagement::sendInteraction without time");
     // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
                                       theInteraction,
@@ -683,4 +684,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.25 2007/08/01 06:51:06 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.26 2007/08/09 09:22:44 rousse Exp $

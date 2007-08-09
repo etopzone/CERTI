@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.3 2007/07/25 14:35:07 erk Exp $
+// $Id: PrettyDebug.hh,v 4.4 2007/08/09 09:22:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -51,6 +51,7 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
                     pdCom, /**< Communication C */
                     pdDebug, /**< Debug D */
                     pdError, /**< Error E */
+                    pdGendoc, /**< Gendoc G */
                     pdInit, /**< Initialization I */
                     pdMessage, /**< Message Type M */
                     pdProtocol, /**< Protocol P */
@@ -67,7 +68,7 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 // debug level are enabled, and all others are not enabled.
 
 // KEEP THE SAME ORDER AS IN THE pdDebugLevel ENUM!
-#define pdDebugKeysString ":ACDEIMPRSTWXZ\0"
+#define pdDebugKeysString ":ACDEGIMPRSTWXZ\0"
 
 //---------------------------------------------------------------------------
 class CERTI_EXPORT PrettyDebug {
@@ -82,7 +83,7 @@ protected :
 private:
     char* LEnvVar;			/**< Name of the environment variable to look for. */
     char* LMessage;			/**< The container of all printed debug messages. 
-											Start with the Header specified at construction time */
+					Start with the Header specified at construction time */
     char* HeaderMessage;	/**< The header message specified at construction time. */
  
     static DebugOStream defaultOutputStream;
@@ -125,7 +126,7 @@ public:
         Print( *theReturnedOutputStreamPtr, HeaderMessage, "" );
         return(*theReturnedOutputStreamPtr);
     }
-
+ 
 #ifdef NDEBUG
     inline void Out(pdDebugLevel Level, const char *Format, ...) {};
 #else
@@ -141,4 +142,4 @@ typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.3 2007/07/25 14:35:07 erk Exp $
+// $Id: PrettyDebug.hh,v 4.4 2007/08/09 09:22:45 rousse Exp $

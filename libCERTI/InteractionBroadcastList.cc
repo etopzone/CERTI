@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.10 2007/07/06 09:25:17 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.11 2007/08/09 09:22:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,6 +32,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("INTBROADCASTLIST", "(broadcas) - ");
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
 /*! Add a federate to the list. If it was not present in the list, a new line
@@ -62,6 +63,9 @@ InteractionBroadcastList::addFederate(FederateHandle federate)
 */
 InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
 {
+
+    G.Out(pdGendoc,"enter InteractionBroadcastList::InteractionBroadcastList");
+
     if (theMsg == 0)
         throw RTIinternalError("Null Broadcast Message.");
 
@@ -75,6 +79,9 @@ InteractionBroadcastList::InteractionBroadcastList(NetworkMessage *theMsg)
                                          InteractionBroadcastLine::sent);
         lines.push_front(firstLine);
     }
+
+    G.Out(pdGendoc,"exit InteractionBroadcastList::InteractionBroadcastList");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -124,6 +131,9 @@ InteractionBroadcastList::getLineWithFederate(FederateHandle federate)
 void
 InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 {
+
+    G.Out(pdGendoc,"enter InteractionBroadcastList::sendPendingMessage");
+
     list<InteractionBroadcastLine *>::iterator i ;
     for (i = lines.begin(); i != lines.end(); i++) {
         // If federate is waiting for a message.
@@ -140,6 +150,9 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 #else
                 socket = server->getSocketLink((*i)->federate);
 #endif
+
+                G.Out(pdGendoc,"sendPendingMessage===>write");
+
                 message->write(socket);
             }
             catch (RTIinternalError &e) {
@@ -157,8 +170,11 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
             D.Out(pdProtocol, "No message sent to Federate %d.",
                   (*i)->federate);
     }
+
+    G.Out(pdGendoc,"exit InteractionBroadcastList::sendPendingMessage");
+
 }
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.10 2007/07/06 09:25:17 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.11 2007/08/09 09:22:45 rousse Exp $

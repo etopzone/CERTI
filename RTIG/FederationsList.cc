@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.37 2007/07/23 14:13:23 rousse Exp $
+// $Id: FederationsList.cc,v 3.38 2007/08/09 09:22:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -32,6 +32,7 @@ namespace certi {
 namespace rtig {
 
 static PrettyDebug D("FEDERATIONSLIST", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -463,6 +464,8 @@ FederationsList::updateParameter(Handle handle,
 {
     Federation *federation = NULL ;
 
+    G.Out(pdGendoc,"enter FederationsList::updateParameter with time");
+
     // It may throw RTIinternalError.
     checkHandle(handle);
     checkHandle(federate);
@@ -472,6 +475,9 @@ FederationsList::updateParameter(Handle handle,
 
     federation->broadcastInteraction(federate, interaction, parameters, values,
                                      list_size, time, region, tag);
+
+    G.Out(pdGendoc,"exit FederationsList::updateParameter with time");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -496,6 +502,8 @@ FederationsList::updateParameter(Handle handle,
 {
     Federation *federation = NULL ;
 
+    G.Out(pdGendoc,"enter FederationsList::updateParameter without time");
+
     // It may throw RTIinternalError.
     checkHandle(handle);
     checkHandle(federate);
@@ -505,6 +513,8 @@ FederationsList::updateParameter(Handle handle,
 
     federation->broadcastInteraction(federate, interaction, parameters, values,
                                      list_size, region, tag);
+
+    G.Out(pdGendoc,"exit FederationsList::updateParameter without time");
 }
 // ----------------------------------------------------------------------------
 /*! Called by processRegisterSynchronization and
@@ -1346,5 +1356,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.37 2007/07/23 14:13:23 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.38 2007/08/09 09:22:44 rousse Exp $
 
