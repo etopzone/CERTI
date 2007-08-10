@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.3 2006/03/09 19:54:28 breholee Exp $
+// $Id: syntax.yy,v 3.4 2007/08/10 13:53:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -186,6 +186,7 @@ interaction_class_items:
 	| interaction_security_level parameter_list
 	| interaction_class_list
 	| interaction_security_level interaction_class_list
+	| parameter_list interaction_class_list
 	| interaction_security_level parameter_list interaction_class_list
 	| ;
 
