@@ -39,7 +39,7 @@ class Clock
 public:
 	/**
 	 * The Clock default constructor.
-	 * @param[in] the clock name
+	 * @param[in] name the clock name
 	 */
 	Clock(const std::string name);
 	/**

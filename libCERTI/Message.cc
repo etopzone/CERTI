@@ -258,7 +258,7 @@ Message::setFederationTime(FederationTime the_time)
 
 // ----------------------------------------------------------------------------
 /** Store a boolean into a Message
-    @bool the_bool boolean
+    @param[in] the_bool boolean
 */
 void
 Message::setBoolean(bool the_bool)

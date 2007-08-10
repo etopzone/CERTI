@@ -30,9 +30,11 @@
 
 namespace certi {
 
-/*! The Message class is used to formalize messages that are going to be
-  exchanged between the RTI and the federate.
-*/
+/**
+ * The Message class is used to formalize messages that are going to be
+ * exchanged between the RTI and the federate.
+ * @ingroup libCERTI
+ */
 class CERTI_EXPORT Message : public BasicMessage
 {
 public:
