@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.14 2007/07/06 09:25:20 erk Exp $
+// $Id: certi.hh,v 3.15 2007/08/10 14:45:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -42,6 +42,12 @@
 
 #include "RTI.hh"
 //#include <vector>
+	
+/**
+ * @defgroup libCERTI The CERTI library.
+ * @ingroup CERTI_Libraries
+ * The CERTI library contains CERTI specific HLA implementation
+ */
 
 // Deprecated HLA macros still in use
 #define MAX_BYTES_PER_VALUE 150
@@ -309,4 +315,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.14 2007/07/06 09:25:20 erk Exp $
+// $Id: certi.hh,v 3.15 2007/08/10 14:45:49 erk Exp $

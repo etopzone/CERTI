@@ -1,0 +1,109 @@
+/* -*- c -*- 
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002, 2003, 2004  ONERA
+//
+// This file is part of CERTI
+//
+// CERTI-libCERTI is free software ; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation ; either version 2 of
+// the License, or (at your option) any later version.
+//
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+// ----------------------------------------------------------------------------
+*/
+ 
+/**
+ * @mainpage
+ * \section intro_sec Introduction
+ *
+ * This is the CERTI documentation.
+ * CERTI is an Open Source HLA compliant RunTime Infrastructure (RTI).
+ * You'll find hereafter the documentation for the main modules
+ * of the CERTI project.
+ *
+ * \section certi_modules Main CERTI Modules
+ * The main CERTI modules are:
+ * <ul>
+ *   <li> \ref libCERTI </li>
+ *   <li> \ref libRTI </li>
+ *   <li> \ref billard </li> 
+ * </ul>
+ * 
+ * \section certi_sdk Installing and using CERTI SDK
+ * 
+ * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
+ * The primary format of distribution is gzip compressed tar archive (.tar.gz)
+ * and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
+ *
+ * \subsection certi_sdk_TARGZ Tarball based SDK
+ * 
+ * If you get a tarball source CERTI distribution such as you may found in the download 
+ * section of the Savannah project 
+ * <a>http://download.savannah.nongnu.org/releases/certi/</a>, 
+ * you should follow these steps: 
+ * <ol>
+ * <li>untar the archive: tar zxvf certi-\<version\>-Source.tar.gz 
+ *     this should create a certi-\<version\>-Source directory
+ * </li>
+ * \verbatim
+ tar zxvf certi-3.2.4-Source.tar.gz
+ ... wait for tar ending ... \endverbatim
+ * <li>Prepare separate build directory and run CMake
+ * </li>
+ * \verbatim
+ mkdir build_certi
+ cd build_certi
+ cmake /path/to/certi-\<version\>-Source
+ ... wait for cmake run  ending ... \endverbatim
+ * <li>
+ * <li>compile your certi</li>
+ * \verbatim
+ make
+ ... wait the compilation end ... \endverbatim
+ * <li>build your binary package </li>
+ * \verbatim
+ make package \endverbatim
+ * </ol>
+ * After that you will have a compiled and usable CERTI package.
+ *  
+ */
+
+/**
+ * @defgroup certi CERT Run Time Infrastructure (CERTI)
+ * The CERTI is an Open Source HLA Run Time Infrastructure (RTI)
+ * CERTI is a networked enabled  multi-consumer multi-provider
+ * protocol for sampling data, certi is designed for efficiency
+ * and ease of use.
+ * The CERTI itself consists in a set of libraries and tests applications.
+ * @see HLA_Libraries the (normative) HLA Run Time Libraries
+ * @see CERTI_Libraries the private CERTI library. 
+ * @see CERTI_Applications Some applications bundled with CERTI.
+ * More informations on
+ * <A HREF="http://savannah.nongnu.org/projects/certi">http://savannah.nongnu.org/projects/certi</A>.
+ */
+ 
+ /**
+  * @defgroup HLA_Libraries the normatives HLA libraries
+  * This group of libraries contains the HLA/IEEE-1516 compliant normative libraries.
+  */
+
+/**
+ * @defgroup CERTI_Libraries The CERTI libraries
+ * The CERTI programming libraries.
+ * @ingroup certi
+ */
+
+/**
+ * @defgroup CERTI_Applications Applications bundled with CERTI.
+ * @ingroup certi
+ */

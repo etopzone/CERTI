@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.47 2007/08/01 06:51:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.48 2007/08/10 14:45:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -623,7 +623,7 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 //! Register Federation Synchronization Point with set of federates (UNIMPLEMENTED)
 /**
     @param label Synchronization point label
-    @param the_tag User-supplied tag
+    @param theTag User-supplied tag
     @param set set of federate designators
 */
 void
@@ -2757,4 +2757,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.47 2007/08/01 06:51:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.48 2007/08/10 14:45:49 erk Exp $

@@ -449,7 +449,8 @@ INPUT                  = "${CMAKE_BINARY_DIR}/include" \
                          "${CMAKE_SOURCE_DIR}/libCERTI" \
                          "${CMAKE_SOURCE_DIR}/libRTI" \
                          "${CMAKE_SOURCE_DIR}/RTIG" \
-                         "${CMAKE_SOURCE_DIR}/RTIA"
+                         "${CMAKE_SOURCE_DIR}/RTIA" \
+                         "${CMAKE_SOURCE_DIR}/doc"
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -458,8 +459,8 @@ INPUT                  = "${CMAKE_BINARY_DIR}/include" \
 # *.c *.cc *.cxx *.cpp *.c++ *.java *.ii *.ixx *.ipp *.i++ *.inl *.h *.hh *.hxx 
 # *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm
 
-FILE_PATTERNS          = *.cc \
-                         *.hh 
+FILE_PATTERNS          = *.cc *.hh \
+                         				*.dox \ 
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
