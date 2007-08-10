@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.17 2007/08/10 14:45:48 erk Exp $
+// $Id: main.cc,v 3.18 2007/08/10 14:50:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,10 +77,11 @@ Billard *createBillard(bool, const char *, string);
 
 // ----------------------------------------------------------------------------
 /**
- * @defgroup Billard_Applications The Billard application 
+ * @defgroup Billard_Application The Billard application 
  * The CERTI "Billard" test program
  * @ingroup CERTI_Applications
  */
+
 int
 main(int argc, char **argv)
 {
@@ -298,4 +299,4 @@ createBillard(bool demo, const char *s_demo, string name)
     return new Billard(name);
 }
 
-// EOF $Id: main.cc,v 3.17 2007/08/10 14:45:48 erk Exp $
+// EOF $Id: main.cc,v 3.18 2007/08/10 14:50:25 erk Exp $

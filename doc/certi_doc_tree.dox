@@ -36,7 +36,7 @@
  * <ul>
  *   <li> \ref libCERTI </li>
  *   <li> \ref libRTI </li>
- *   <li> \ref billard </li> 
+ *   <li> \ref Billard_Application </li> 
  * </ul>
  * 
  * \section certi_sdk Installing and using CERTI SDK
