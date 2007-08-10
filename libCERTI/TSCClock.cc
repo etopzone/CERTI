@@ -3,7 +3,6 @@
 
 namespace certi {
 
-}
 TSCClock::TSCClock() : Clock("TSCClock")
 {
 	resolution = 1.0e3/getProcessorFrequency();	
