@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.26 2007/07/06 09:25:20 erk Exp $
+// $Id: FederationManagement.cc,v 3.27 2007/08/20 09:48:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,6 +46,7 @@ namespace certi {
 namespace rtia {
 
 static pdCDebug D("RTIA_FM", "(RTIA FM) ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! FederationManagement.
@@ -108,6 +109,7 @@ createFederationExecution(const char *theName,
 {
     NetworkMessage requete, reponse ;
 
+    G.Out(pdGendoc,"enter FederationManagement::createFederationExecution");
     D.Out(pdInit, "Creating Federation %s.", theName);
 
     e = e_NO_EXCEPTION ;
@@ -120,6 +122,8 @@ createFederationExecution(const char *theName,
         requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
         strcpy(requete.federationName, theName);
         strcpy(requete.FEDid, _FEDid) ;
+
+        G.Out(pdGendoc,"createFederationExecution====>send Message to RTIG");
 
         comm->sendMessage(&requete);
 
@@ -142,6 +146,9 @@ createFederationExecution(const char *theName,
             D.Out(pdInit, "deja cree");
         }
     }
+
+    G.Out(pdGendoc,"exit FederationManagement::createFederationExecution");
+
 }
 
 
@@ -197,6 +204,7 @@ joinFederationExecution(const char *Federate,
     int i, nb ;
     char filename[MAX_FEDFILE_NAME_LENGTH] ; // Needed for working file name
 
+    G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
 
     e = e_NO_EXCEPTION ;
@@ -214,6 +222,8 @@ joinFederationExecution(const char *Federate,
 
         requete.bestEffortAddress = comm->getAddress();
         requete.bestEffortPeer = comm->getPort();
+
+        G.Out(pdGendoc,"joinFederationExecution====>send Message to RTIG");
 
         comm->sendMessage(&requete);
 
@@ -266,7 +276,10 @@ joinFederationExecution(const char *Federate,
             if ( e == e_NO_EXCEPTION)
                 requeteFED.number = 0 ;  // OK for open
             else
-                requeteFED.number = 1 ;  
+                requeteFED.number = 1 ; 
+
+            G.Out(pdGendoc,"joinFederationExecution====> begin FED file get from RTIG");
+ 
             comm->sendMessage(&requeteFED);
     
             // Now read loop from RTIG to get line contents and then write it into file
@@ -303,7 +316,9 @@ joinFederationExecution(const char *Federate,
             // close working file
             fclose(fdd); 
             }                          
-            
+ 
+        G.Out(pdGendoc,"joinFederationExecution====> end FED file get from RTIG"); 
+          
          // Waiting RTIG answer (from any federate)
         comm->waitMessage(&reponse, NetworkMessage::JOIN_FEDERATION_EXECUTION, 0);
 
@@ -330,12 +345,13 @@ joinFederationExecution(const char *Federate,
             }
 
             _est_membre_federation = true ;
+            G.Out(pdGendoc,"exit(%d) FederationManagement::joinFederationExecution",federate);
             return(federate);
         }
         else
             e = reponse.exception ;
     }
-
+    G.Out(pdGendoc,"exit(0) FederationManagement::joinFederationExecution");
     return(0);
 }
 
@@ -748,4 +764,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.26 2007/07/06 09:25:20 erk Exp $
+// $Id: FederationManagement.cc,v 3.27 2007/08/20 09:48:17 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.37 2007/08/09 09:22:44 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.38 2007/08/20 09:48:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -42,6 +42,9 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 {
     char *federation = req->federationName ;
     char *FEDid = req->FEDid ;
+
+    G.Out(pdGendoc,"BEGIN ** CREATE FEDERATION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processCreateFederation");
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
     auditServer << "Federation Name : " << federation ;
@@ -78,10 +81,15 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     rep.federation = h ;
     strcpy(rep.FEDid,FEDid) ;
 
+    G.Out(pdGendoc,"processCreateFederation===>write");
+
     rep.write(link); // Send answer to RTIA
 
     D.Out(pdInit, "Federation \"%s\" created with Handle %d.",
           federation, rep.federation);
+
+    G.Out(pdGendoc,"exit RTIG::processCreateFederation");
+    G.Out(pdGendoc,"END ** CREATE FEDERATION SERVICE **");
 }
 
 // ----------------------------------------------------------------------------
@@ -102,6 +110,9 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     int nb_regulateurs ;
     int nb_federes ;
     bool pause ;
+
+    G.Out(pdGendoc,"BEGIN ** JOIN FEDERATION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processJoinFederation");
 
     if ((federation == NULL) || (federate == NULL))
         throw RTIinternalError("Invalid Federation/Federate Name.");
@@ -169,6 +180,8 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     // Send answer
     D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
           repFED.type,repFED.FEDid);
+
+    G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
     repFED.write(link);
 
     if ( e ==  e_NO_EXCEPTION )  
@@ -217,6 +230,9 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         strcpy(repFED.FEDid,filename) ;   
 
         // Send answer
+
+        G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
+
         repFED.write(link);
         }
     // END of FED file processing
@@ -231,7 +247,14 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
           federate, num_federation, num_federe);
 
     // Send answer
+
+    G.Out(pdGendoc,"processJoinFederation====>write");
+
     rep.write(link);
+
+    G.Out(pdGendoc,"exit RTIG::processJoinFederation");
+    G.Out(pdGendoc,"END ** JOIN FEDERATION SERVICE **");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1187,4 +1210,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.37 2007/08/09 09:22:44 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.38 2007/08/20 09:48:17 rousse Exp $

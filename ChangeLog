@@ -1,3 +1,43 @@
+2007-08-10 16:50  erk
+
+	* test/Billard/main.cc, doc/certi_doc_tree.dox: Should add Billard
+	  as CERTI app in doyxgen ?
+
+2007-08-10 16:45  erk
+
+	* doc/certi_doc_tree.dox, doc/certi_doxygen.cnf.in,
+	  test/Billard/main.cc, doc/CMakeLists.txt, doc/reference.dox.in,
+	  include/RTI.hh, include/certi.hh, libRTI/RTIambassador.cc: Build
+	  more structured doxygen doc.
+
+2007-08-10 16:45  erk
+
+	* libCERTI/: Clock.hh, Message.cc, Message.hh, NetworkMessage.cc:
+	  Small doxygen warning fix
+
+2007-08-10 15:53  erk
+
+	* libCERTI/syntax.yy: Should fix bug #20727, Syntax error on valid
+	  file?
+
+2007-08-10 13:32  erk
+
+	* libCERTI/: Clock.cc, PosixClock.cc, TSCClock.cc: Spurious } error
+
+2007-08-10 13:31  erk
+
+	* scripts/FindCERTI.cmake: Small Update
+
+2007-08-09 11:22  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/RTIA_federate.cc,
+	  RTIG/Federation.cc, RTIG/FederationsList.cc,
+	  RTIG/RTIG_processing.cc, libCERTI/Interaction.cc,
+	  libCERTI/InteractionBroadcastList.cc, libCERTI/InteractionSet.cc,
+	  libCERTI/PrettyDebug.hh: Ajout d'une option (GENDOC - G) pour
+	  ameliorer la generation de la documenntation Improvment of
+	  documentation generation by adding a new option ( GENDOC - G)
+
 2007-08-01 08:51  rousse
 
 	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/RTIA_federate.cc,

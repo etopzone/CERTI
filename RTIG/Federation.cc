@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.59 2007/08/09 09:22:44 rousse Exp $
+// $Id: Federation.cc,v 3.60 2007/08/20 09:48:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -136,6 +136,8 @@ Federation::Federation(const char *federation_name,
 
     if (strlen(federation_name) > MAX_FEDERATION_NAME_LENGTH)
         throw RTIinternalError("Federation name too long.");
+
+    G.Out(pdGendoc,"enter Federation::Federation");
 
     name = strdup(federation_name);
 
@@ -307,6 +309,9 @@ Federation::Federation(const char *federation_name,
 	    }
         }
     }
+
+    G.Out(pdGendoc,"exit Federation::Federation");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1957,5 +1962,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.59 2007/08/09 09:22:44 rousse Exp $
+// $Id: Federation.cc,v 3.60 2007/08/20 09:48:17 rousse Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.42 2007/08/09 09:22:44 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.43 2007/08/20 09:48:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1171,8 +1171,9 @@ RTIA::processFederateRequest(Message *req)
         D.Out(pdDebug, "Reply send to Unix socket.");
     }
     // else, this answer is differed until a no empty tick
+
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.42 2007/08/09 09:22:44 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.43 2007/08/20 09:48:17 rousse Exp $

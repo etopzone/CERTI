@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.38 2007/08/09 09:22:44 rousse Exp $
+// $Id: FederationsList.cc,v 3.39 2007/08/20 09:48:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -96,6 +96,9 @@ FederationsList::addFederate(Handle handle,
            MemoryExhausted,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter FederationsList::addFederate");
+
     // It may throw RTIinternalError
     checkHandle(handle);
 
@@ -105,6 +108,8 @@ FederationsList::addFederate(Handle handle,
 
     // It may raise a bunch of exceptions
     FederateHandle federate = federation->add(name, tcp_link);
+
+    G.Out(pdGendoc,"exit FederationsList::addFederate");
 
     return federate ;
 }
@@ -163,6 +168,7 @@ void FederationsList::createFederation(const char *name,
     Federation *federation = NULL ;
     Handle unused ;
 
+    G.Out(pdGendoc,"enter FederationsList::createFederation");
     // It may throw RTIinternalError
     checkHandle(handle);
     auditFile << ", Handle : " << (long) handle ;
@@ -199,6 +205,8 @@ void FederationsList::createFederation(const char *name,
 
     push_front(federation);
     D.Out(pdInit, "New Federation created with Handle %d.", handle);
+
+    G.Out(pdGendoc,"exit FederationsList::createFederation");
 }
 
 // ----------------------------------------------------------------------------
@@ -1356,5 +1364,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.38 2007/08/09 09:22:44 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.39 2007/08/20 09:48:17 rousse Exp $
 
