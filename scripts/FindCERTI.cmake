@@ -17,7 +17,7 @@
 # CERTI_INCLUDE         - the 
 # CERTI_BINARY_DIRS     - the directory(ies) where the rtig, rtia programs resides
 # CERTI_LIBRARY_DIRS    - the directory(ies) where libraries reside
-# CERTI_INCLUDE_DIRS    - the directory(ies) where ONC RPC includes file are found
+# CERTI_INCLUDE_DIRS    - the directory(ies) where CERTI includes file are found
 
 MESSAGE(STATUS "Looking for CERTI library and programs...")
 
