@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.39 2007/08/20 09:48:17 rousse Exp $
+// $Id: FederationsList.cc,v 3.40 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -541,6 +541,9 @@ FederationsList::manageSynchronization(Handle handle,
            RestoreInProgress,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter FederationsList::manageSynchronization for all federates");
+
     checkHandle(handle); // It may throw RTIinternalError
 
     // It may throw FederationExecutionDoesNotExist
@@ -552,6 +555,46 @@ FederationsList::manageSynchronization(Handle handle,
         federation->registerSynchronization(federate, label, tag);
     else
         federation->unregisterSynchronization(federate, label);
+
+    G.Out(pdGendoc,"exit  FederationsList::manageSynchronization for all federates");
+
+}
+
+// ----------------------------------------------------------------------------
+void
+FederationsList::manageSynchronization(Handle handle,
+                                       FederateHandle federate,
+                                       bool state,
+                                       const char *label,
+                                       const char *tag,
+                                       unsigned short federate_setSize,
+                                       FederateHandle *federate_set)
+    throw (FederationAlreadyPaused,
+           FederationNotPaused,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+
+    G.Out(pdGendoc,"enter FederationsList::manageSynchronization with federates set");
+
+    checkHandle(handle); // It may throw RTIinternalError
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(handle, federation);
+
+    // state true means register else unregister
+    // It may throw a bunch of exceptions.
+    if (state)
+        federation->registerSynchronization(federate, label, tag,
+                                            (unsigned short)federate_setSize, federate_set);
+    else
+        federation->unregisterSynchronization(federate, label);
+
+    G.Out(pdGendoc,"exit  FederationsList::manageSynchronization with federates set");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -564,6 +607,9 @@ FederationsList::broadcastSynchronization(Handle handle,
     throw (FederationExecutionDoesNotExist,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter FederationsList::broadcastSynchronization");
+
     checkHandle(handle); // It may throw RTIinternalError
 
     // It may throw FederationExecutionDoesNotExist
@@ -571,7 +617,39 @@ FederationsList::broadcastSynchronization(Handle handle,
     searchFederation(handle, federation);
 
     federation->broadcastSynchronization(federate, label, tag);
+
+    G.Out(pdGendoc,"exit  FederationsList::broadcastSynchronization");
+
 }
+
+// ----------------------------------------------------------------------------
+//! Called by processRegisterSynchronization.
+// Broadcast only on the federates into a set
+void
+FederationsList::broadcastSynchronization(Handle handle,
+                                          FederateHandle federate,
+                                          const char *label,
+                                          const char *tag,
+                                          unsigned short federate_setSize,
+                                          FederateHandle *federate_set)
+    throw (FederationExecutionDoesNotExist,
+           RTIinternalError)
+{
+
+    G.Out(pdGendoc,"enter FederationsList::broadcastSynchronization onto a federate set");
+
+    checkHandle(handle); // It may throw RTIinternalError
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = NULL ;
+    searchFederation(handle, federation);
+
+    federation->broadcastSynchronization(federate, label, tag, federate_setSize, federate_set);
+
+    G.Out(pdGendoc,"exit  FederationsList::broadcastSynchronization onto a federate set");
+
+}
+
 
 // ----------------------------------------------------------------------------
 // publishInteraction
@@ -722,6 +800,8 @@ FederationsList::destroyFederation(Handle handle)
 {
     Federation *federation ;
 
+    G.Out(pdGendoc,"enter FederationsList::destroyFederation");
+
     // It may throw RTIinternalError
     checkHandle(handle);
 
@@ -739,6 +819,8 @@ FederationsList::destroyFederation(Handle handle)
         }
         delete federation ;
     }
+
+    G.Out(pdGendoc,"exit FederationsList::destroyFederation");
 }
 
 // ----------------------------------------------------------------------------
@@ -752,6 +834,8 @@ FederationsList::remove(Handle handle, FederateHandle federate)
 {
     Federation *federation = NULL ;
 
+    G.Out(pdGendoc,"enter FederationsList::remove");
+
     // It may throw RTIinternalError.
     checkHandle(handle);
 
@@ -760,6 +844,8 @@ FederationsList::remove(Handle handle, FederateHandle federate)
 
     // It may throw FederateOwnsAttributes or FederateNotExecutionMember
     federation->remove(federate);
+
+    G.Out(pdGendoc,"exit FederationsList::remove");
 }
 
 // ----------------------------------------------------------------------------
@@ -1364,5 +1450,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.39 2007/08/20 09:48:17 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.40 2007/08/27 14:13:50 rousse Exp $
 

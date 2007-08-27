@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.60 2007/08/20 09:48:17 rousse Exp $
+// $Id: Federation.cc,v 3.61 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -553,6 +553,60 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
 }
 
 // ----------------------------------------------------------------------------
+//! Broadcast 'msg' to some Federates except the specified one
+void
+Federation::broadcastSomeMessage(NetworkMessage *msg,
+                                FederateHandle except_federate,
+                                FederateHandle *fede_array,
+                                int nbfed)
+{
+    int ifed ;
+    Socket *socket = NULL ;
+
+    if ( fede_array != NULL || nbfed == 0)
+        {
+        // Broadcast the message 'msg' to some Federates (done in fede_array)
+        // in the Federation
+        // except to Federate whose Handle is 'Except_Federate'.
+        for (FederateList::const_iterator i = federates.begin(); i != federates.end(); ++i)
+            {
+            if (i->getHandle() != except_federate)
+                {
+                ifed = 0 ;
+                while ( ifed < nbfed )
+                    {
+                    if ( i->getHandle() == fede_array[ifed] )
+                        // Federate i has to be informed because into fede_array
+                        {
+                        try
+                            {
+#ifdef HLA_USES_UDP
+                            socket = server->getSocketLink(i->getHandle(), BEST_EFFORT);
+#else
+                            socket = server->getSocketLink(i->getHandle());
+#endif
+                            msg->write(socket);
+                            }
+                        catch (RTIinternalError &e)
+                            {
+                            D[pdExcept] << "Reference to a killed Federate while "
+                                        << "broadcasting." << endl ;
+                            }
+                        catch (NetworkError &e)
+                            {
+                            D.Out(pdExcept, "Network error while broadcasting, ignoring.");
+                            }
+                        }
+                    ifed++;
+                    } 
+                }
+            }
+        }
+
+    // BUG: If except = 0, could use Multicast.
+}
+
+// ----------------------------------------------------------------------------
 //! broadcastInteraction with time
 void
 Federation::broadcastInteraction(FederateHandle federate_handle,
@@ -687,6 +741,9 @@ Federation::registerSynchronization(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Federation::registerSynchronization for all federates");
+
     this->check(federate); // It may throw FederateNotExecutionMember.
 
     if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
@@ -713,6 +770,63 @@ Federation::registerSynchronization(FederateHandle federate,
 
     D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
               << label << endl ;
+
+    G.Out(pdGendoc,"exit  Federation::registerSynchronization for all federates");
+
+
+}
+
+// ----------------------------------------------------------------------------
+//! Add a new synchronization point (with federates set) to federation.
+void
+Federation::registerSynchronization(FederateHandle federate,
+                                    const char *label,
+                                    const char *tag,
+                                    unsigned short federate_setSize,
+                                    FederateHandle *federate_set)
+    throw (FederateNotExecutionMember,
+           FederationAlreadyPaused,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+
+    G.Out(pdGendoc,"enter Federation::registerSynchronization for federates set");
+
+    this->check(federate); // It may throw FederateNotExecutionMember.
+
+    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
+        throw RTIinternalError("Bad pause label(null or too long).");
+
+    // Verify label does not already exists
+    std::map<const char *, const char *>::const_iterator i ;
+    i = synchronizationLabels.begin();
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i).first, label)) {
+            throw FederationAlreadyPaused(""); // Label already pending.
+        }
+    }
+
+    // If not already in pending labels, insert to list.
+    synchronizationLabels.insert(pair<const char *, const char *>(strdup(label),
+                                                                  strdup(tag)));
+
+    // Add label to each federate into the set only (may throw RTIinternalError).
+    FederateList::iterator j ;
+    for (int i=0 ; i < federate_setSize  ;i++ )
+        {
+        for (j = federates.begin(); j != federates.end(); ++j)
+            {
+            if ( i == j->getHandle() ) j->addSynchronizationLabel(label);
+            }
+        }
+
+    D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
+              << label << endl ;
+
+    G.Out(pdGendoc,"exit  Federation::registerSynchronization for federates set");
+
+
 }
 
 // ----------------------------------------------------------------------------
@@ -725,6 +839,9 @@ Federation::broadcastSynchronization(FederateHandle federate,
                                      const char *tag)
     throw (RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Federation::broadcastSynchronization");
+
     this->check(federate); // It may throw FederateNotExecutionMember.
 
     if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
@@ -738,8 +855,50 @@ Federation::broadcastSynchronization(FederateHandle federate,
     msg.setLabel(label);
     msg.setTag(tag);
 
+    G.Out(pdGendoc,"      broadcastSynchronization is calling broadcastAnyMessage for all federates");
+
     broadcastAnyMessage(&msg, 0);
+
+    G.Out(pdGendoc,"exit  Federation::broadcastSynchronization");
+
 }
+
+// ----------------------------------------------------------------------------
+/*! Broadcast an 'Announce Synchronization Point' when registering a new
+  synchronization point onto a set of federates
+*/
+void
+Federation::broadcastSynchronization(FederateHandle federate,
+                                     const char *label,
+                                     const char *tag,
+                                     unsigned short federate_setSize,
+                                     FederateHandle *federate_set)
+    throw (RTIinternalError)
+{
+
+    G.Out(pdGendoc,"enter Federation::broadcastSynchronization to some federates");
+
+    this->check(federate); // It may throw FederateNotExecutionMember.
+
+    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
+        throw RTIinternalError("Bad pause label(null or too long).");
+
+    // broadcast announceSynchronizationPoint() to all federates in federation.
+    NetworkMessage msg ;
+    msg.type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT ;
+    msg.federate = federate ;
+    msg.federation = handle ;
+    msg.setLabel(label);
+    msg.setTag(tag);
+
+    G.Out(pdGendoc,"      broadcastSynchronization is calling broadcastAnyMessage for some federates");
+
+    broadcastSomeMessage(&msg, 0, federate_set, (unsigned short)federate_setSize);
+
+    G.Out(pdGendoc,"exit  Federation::broadcastSynchronization to some federates");
+
+}
+
 
 // ----------------------------------------------------------------------------
 //! Request a federation save.
@@ -1217,6 +1376,9 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
            RestoreInProgress,
            RTIinternalError)
 {
+
+    G.Out(pdGendoc,"enter Federation::unregisterSynchronization");
+
     this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
     if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
@@ -1259,6 +1421,9 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
     broadcastAnyMessage(&msg, 0);
 
     D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label);
+
+    G.Out(pdGendoc,"exit  Federation::unregisterSynchronization");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1962,5 +2127,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.60 2007/08/20 09:48:17 rousse Exp $
+// $Id: Federation.cc,v 3.61 2007/08/27 14:13:50 rousse Exp $
 

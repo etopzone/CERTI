@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.38 2007/08/20 09:48:17 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.39 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -263,9 +263,17 @@ void
 RTIG::processResignFederation(Handle federation,
                               FederateHandle federe)
 {
+
+    G.Out(pdGendoc,"BEGIN ** RESIGN FEDERATION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processResignFederation");
+
     federations.remove(federation, federe);
     D.Out(pdInit, "Federate %u is resigning from federation %u.",
           federe, federation);
+
+    G.Out(pdGendoc,"exit RTIG::processResignFederation");
+    G.Out(pdGendoc,"END ** RESIGN FEDERATION SERVICE **");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -275,6 +283,9 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 {
     Handle num_federation ;
     char *federation = req->federationName ;
+
+    G.Out(pdGendoc,"BEGIN ** DESTROY FEDERATION SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processDestroyFederation");
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
@@ -289,7 +300,13 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
 
+    G.Out(pdGendoc,"processDestroyFederation===>write");
+
     rep.write(link);
+
+    G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
+    G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -359,14 +376,28 @@ RTIG::processMessageNull(NetworkMessage *msg)
 void
 RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 {
+
+    G.Out(pdGendoc,"BEGIN ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
+    G.Out(pdGendoc,"enter RTIG::processRegisterSynchronization");
+
     auditServer << "Label \"" << req->label << "\" registered. Tag is \""
 		<< req->tag << "\"" ;
-    
-    federations.manageSynchronization(req->federation,
-                                       req->federate,
-                                       true,
-                                       req->label,
-                                       req->tag);
+
+    // boolean true means a federates set exists
+    if ( req->boolean )
+        federations.manageSynchronization(req->federation,
+                                          req->federate,
+                                          true,
+                                          req->label,
+                                          req->tag,
+                                          req->handleArraySize,
+                                          req->handleArray);
+    else
+        federations.manageSynchronization(req->federation,
+                                          req->federate,
+                                          true,
+                                          req->label,
+                                          req->tag);
     D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
     // send synchronizationPointRegistrationSucceeded() to federate.
@@ -375,12 +406,28 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.federation = req->federation ;
     rep.setLabel(req->label);
+
+    G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
+
     rep.write(link);
 
-    federations.broadcastSynchronization(req->federation,
+    // boolean true means a federates set exists
+    if ( req->boolean )
+        federations.broadcastSynchronization(req->federation,
+                                          req->federate,
+                                          req->label,
+                                          req->tag,
+                                          req->handleArraySize,
+                                          req->handleArray);
+    else
+        federations.broadcastSynchronization(req->federation,
                                           req->federate,
                                           req->label,
                                           req->tag);
+
+    G.Out(pdGendoc,"exit  RTIG::processRegisterSynchronization");
+    G.Out(pdGendoc,"END   ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -1210,4 +1257,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.38 2007/08/20 09:48:17 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.39 2007/08/27 14:13:50 rousse Exp $

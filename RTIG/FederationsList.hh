@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.32 2007/07/23 14:13:24 rousse Exp $
+// $Id: FederationsList.hh,v 3.33 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -100,10 +100,33 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    void manageSynchronization(Handle theHandle,
+                               FederateHandle theFederate,
+                               bool state,
+                               const char *the_label,
+                               const char *the_tag,
+                               unsigned short federate_setSize,
+                               FederateHandle *federate_set)
+        throw (FederationAlreadyPaused,
+               FederationNotPaused,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
     void broadcastSynchronization(Handle handle,
                                   FederateHandle federate,
                                   const char *label,
                                   const char *tag)
+        throw (FederationExecutionDoesNotExist,
+               RTIinternalError);
+
+    void broadcastSynchronization(Handle handle,
+                                  FederateHandle federate,
+                                  const char *label,
+                                  const char *tag,
+                                  unsigned short federate_setSize,
+                                  FederateHandle *federate_set)
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
@@ -533,4 +556,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.32 2007/07/23 14:13:24 rousse Exp $
+// $Id: FederationsList.hh,v 3.33 2007/08/27 14:13:50 rousse Exp $

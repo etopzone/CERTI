@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.29 2007/07/23 14:13:24 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.30 2007/08/27 14:13:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -117,6 +117,18 @@ NetworkMessage::readBody(Socket *socket)
 	break ;
 	
       case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+	readLabel(body);
+	readTag(body);
+	boolean = body.readLongInt();
+        // boolean true means there is an handleArray
+        if ( boolean)
+            {
+            handleArraySize = body.readShortInt();
+	    for (i = 0 ; i < handleArraySize ; i ++)
+	        handleArray[i] = body.readShortInt();
+            }
+	break ;
+
       case ANNOUNCE_SYNCHRONIZATION_POINT:
 	readLabel(body);
 	readTag(body);
@@ -501,9 +513,21 @@ NetworkMessage::writeBody(Socket *socket)
 	break ;
 
       case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-      case ANNOUNCE_SYNCHRONIZATION_POINT:
 	body.writeString(label);
 	body.writeString(tag);
+	body.writeLongInt(boolean);
+        // boolean true means we have an handleArray
+        if ( boolean )
+            {
+	    body.writeShortInt(handleArraySize);
+	    for (i = 0 ; i < handleArraySize ; i ++)
+	        body.writeShortInt(handleArray[i]);
+            }        
+	break ;
+
+      case ANNOUNCE_SYNCHRONIZATION_POINT:
+	body.writeString(label);
+	body.writeString(tag);       
 	break ;
 
       case SYNCHRONIZATION_POINT_ACHIEVED:
@@ -878,4 +902,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.29 2007/07/23 14:13:24 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.30 2007/08/27 14:13:51 rousse Exp $

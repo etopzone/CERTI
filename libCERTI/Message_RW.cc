@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.35 2007/07/30 15:24:44 rousse Exp $
+// $Id: Message_RW.cc,v 3.36 2007/08/27 14:13:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -96,6 +96,17 @@ Message::readBody(SocketUN *socket)
             break ;
 
           case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+            readLabel(body);
+            readTag(body);
+            boolean = body.readLongInt();
+            // boolean true means federates set exists
+            if ( boolean )
+                {
+                handleArraySize = body.readShortInt();
+                readHandleArray(body);
+                }
+            break ;
+
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
             readLabel(body);
@@ -672,6 +683,17 @@ Message::writeBody(SocketUN *socket)
             break ;
 
           case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+            body.writeString(label);
+            body.writeString(tag);
+            body.writeLongInt(boolean);
+            // boolean true means federates set exists
+            if ( boolean )
+                {
+                body.writeShortInt(handleArraySize);
+                writeHandleArray(body);
+                }
+            break ;
+
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
             body.writeString(label);
@@ -1217,4 +1239,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.35 2007/07/30 15:24:44 rousse Exp $
+// $Id: Message_RW.cc,v 3.36 2007/08/27 14:13:51 rousse Exp $

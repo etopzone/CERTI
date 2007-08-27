@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.40 2007/07/23 14:13:23 rousse Exp $
+// $Id: Federation.hh,v 3.41 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -163,6 +163,17 @@ public:
                RestoreInProgress,
                RTIinternalError);
 
+    void registerSynchronization(FederateHandle the_federate,
+                                 const char *the_label,
+                                 const char *the_tag,
+                                 unsigned short federate_setSize,
+                                 FederateHandle *federate_set)
+        throw (FederateNotExecutionMember,
+               FederationAlreadyPaused,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
     void unregisterSynchronization(FederateHandle theFederate,
                                    const char *theLabel)
         throw (FederateNotExecutionMember,
@@ -175,6 +186,14 @@ public:
                                   const char *label,
                                   const char *tag)
         throw (RTIinternalError);
+
+    void broadcastSynchronization(FederateHandle federate,
+                                  const char *label,
+                                  const char *tag,
+                                  unsigned short federate_setSize,
+                                  FederateHandle *federate_set)
+        throw (RTIinternalError);
+
 
     // Save Management.
     void requestFederationSave(FederateHandle, const char *, FederationTime)
@@ -526,6 +545,8 @@ private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
 
+    void broadcastSomeMessage(NetworkMessage *msg, FederateHandle Except,FederateHandle *fede_array, int nbfed);
+
     Federate &getFederate(const char *theName)
         throw (FederateNotExecutionMember);
 
@@ -552,4 +573,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.40 2007/07/23 14:13:23 rousse Exp $
+// $Id: Federation.hh,v 3.41 2007/08/27 14:13:50 rousse Exp $

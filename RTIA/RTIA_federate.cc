@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.43 2007/08/20 09:48:17 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.44 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -182,7 +182,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
         D.Out(pdTrace, "Receiving Message from Federate, type RequestPause.");
 
-        fm->registerSynchronization(req->getLabel(), req->getTag(), e);
+        // boolean true means with federates set
+        if ( req->getBoolean() )
+            fm->registerSynchronization(req->getLabel(), req->getTag(), 
+                (unsigned short)req->handleArraySize, req->handleArray, e);
+        else
+            fm->registerSynchronization(req->getLabel(), req->getTag(), e);
         break ;
 
       case Message::SYNCHRONIZATION_POINT_ACHIEVED:
@@ -1176,4 +1181,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.43 2007/08/20 09:48:17 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.44 2007/08/27 14:13:50 rousse Exp $

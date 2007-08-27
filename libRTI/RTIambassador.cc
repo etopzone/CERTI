@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.48 2007/08/10 14:45:49 erk Exp $
+// $Id: RTIambassador.cc,v 3.49 2007/08/27 14:13:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -49,6 +49,7 @@ using std::endl ;
 namespace {
 
 static pdCDebug D("LIBRTI", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 using namespace certi ;
 
@@ -527,6 +528,8 @@ RTI::RTIambassador::createFederationExecution(	const char *executionName,
 {
 Message req, rep ;
 
+G.Out(pdGendoc,"enter RTIambassador::createFederationExecution");
+
 req.type = Message::CREATE_FEDERATION_EXECUTION ;
 req.setFederationName(executionName);
 req.setFEDid(FED);
@@ -539,6 +542,9 @@ req.setFEDid(FED);
 }*/
 
 privateRefs->executeService(&req, &rep);
+
+G.Out(pdGendoc,"exit RTIambassador::createFederationExecution");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -550,10 +556,15 @@ RTI::RTIambassador::destroyFederationExecution(const char *executionName)
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::destroyFederationExecution");
+
     req.type = Message::DESTROY_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::destroyFederationExecution");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -590,13 +601,19 @@ RTI::RTIambassador::resignFederationExecution(ResignAction theAction)
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::resignFederationExecution");
+
     req.type = Message::RESIGN_FEDERATION_EXECUTION ;
     req.setResignAction(theAction);
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::resignFederationExecution");
+
 }
 
 // ----------------------------------------------------------------------------
-//! Register Federation Synchronization Point
+//! Register Federation Synchronization Point without set of federates 
+//  (all federates in the federation execution are informed)
 /**
     @param label Synchronization point label
     @param the_tag User-supplied tag
@@ -612,35 +629,55 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::registerFederationSynchronizationPoint for all federates");
+
     req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(the_tag);
+    // boolean false because without set of federates
+    req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for all federates");
+
 }
 
 // ----------------------------------------------------------------------------
 //! Register Federation Synchronization Point with set of federates (UNIMPLEMENTED)
+//  (only federates in the set are informed)
 /**
     @param label Synchronization point label
-    @param theTag User-supplied tag
+    @param the_tag User-supplied tag
     @param set set of federate designators
 */
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 						      const char *theTag,
-						      const FederateHandleSet &set)
+						      const FederateHandleSet &set_of_fed)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
     throw UnimplementedService("");
+
     Message req, rep ;
+
+    G.Out(pdGendoc,"enter RTIambassador::registerFederationSynchronizationPoint for some federates");
 
     req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(theTag);
+    // boolean true because with set of federates
+    req.setBoolean(true);
+    // and then we have to store this set (after its size)
+    req.handleArraySize = set_of_fed.size() ;
+    for (unsigned long i=0 ; i<set_of_fed.size() ; i++)
+        req.handleArray[i] = set_of_fed.getHandle(i) ;
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for some federates");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -2757,4 +2794,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.48 2007/08/10 14:45:49 erk Exp $
+// $Id: RTIambassador.cc,v 3.49 2007/08/27 14:13:51 rousse Exp $

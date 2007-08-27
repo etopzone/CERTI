@@ -1,3 +1,20 @@
+2007-08-27 15:18  erk
+
+	* libCERTI/Exception.cc: Fix bug #20892 : patch for RTI::Exception
+	  operator<< Integrated the patch provided by Jeff with slight
+	  modification.
+
+2007-08-25 14:30  erk
+
+	* scripts/FindCERTI.cmake: Typo due to [too]-fast copy/paste
+
+2007-08-20 11:48  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc,
+	  RTIG/Federation.cc, RTIG/FederationsList.cc,
+	  RTIG/RTIG_processing.cc: Amelioration trace documentation
+	  Enhancement documentation trace
+
 2007-08-10 16:50  erk
 
 	* test/Billard/main.cc, doc/certi_doc_tree.dox: Should add Billard

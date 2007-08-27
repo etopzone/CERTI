@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.27 2007/08/20 09:48:17 rousse Exp $
+// $Id: FederationManagement.cc,v 3.28 2007/08/27 14:13:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -403,6 +403,7 @@ FederationManagement::registerSynchronization(const char *label,
                                               TypeException &e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
+    G.Out(pdGendoc,"enter FederationManagement::registerSynchronization");
 
     assert(label != NULL);
 
@@ -431,10 +432,68 @@ FederationManagement::registerSynchronization(const char *label,
         req.federate = federate ;
         req.setLabel(label);
         req.setTag(tag);
+        // no federates set so boolean must be false
+        req.setBoolean(false) ;
+
+        G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
+
         comm->sendMessage(&req);
     }
+
+    G.Out(pdGendoc,"exit  FederationManagement::registerSynchronization");
+
 }
 
+// ----------------------------------------------------------------------------
+//! Register synchronization with set of federates
+void
+FederationManagement::registerSynchronization(const char *label,
+                                              const char *tag,
+                                              unsigned short array_size,
+                                              FederateHandle *fed_array,
+                                              TypeException &e)
+{
+    D.Out(pdProtocol, "RegisterSynchronization.");
+    G.Out(pdGendoc,"enter FederationManagement::registerSynchronization with federate set");
+
+    assert(label != NULL);
+
+    e = e_NO_EXCEPTION ;
+
+    list<char *>::const_iterator i = synchronizationLabels.begin();
+    bool exists = false ;
+    for (; i != synchronizationLabels.end(); i++) {
+        if (!strcmp((*i), label)) {
+            e = e_FederationAlreadyPaused ; // Label already pending.
+            exists = true ;
+            break ;
+        }
+    }
+
+    if (!exists)
+        synchronizationLabels.push_back(strdup(label));
+
+    if (!_est_membre_federation)
+        e = e_FederateNotExecutionMember ;
+
+    if (e == e_NO_EXCEPTION) {
+        NetworkMessage req ;
+        req.type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+        req.federation = _numero_federation ;
+        req.federate = federate ;
+        req.setLabel(label);
+        req.setTag(tag);
+        // federates set exists so boolean must be true
+        req.setBoolean(true) ;
+
+        G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
+
+        comm->sendMessage(&req);
+    }
+
+    G.Out(pdGendoc,"exit  FederationManagement::registerSynchronization with federate set");
+
+}
 // ----------------------------------------------------------------------------
 //! Unregister synchronization.
 void
@@ -764,4 +823,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.27 2007/08/20 09:48:17 rousse Exp $
+// $Id: FederationManagement.cc,v 3.28 2007/08/27 14:13:50 rousse Exp $
