@@ -55,8 +55,8 @@ struct gengetopt_args_info
   int yoffset_given ;	/* Whether yoffset was given.  */
   int initx_given ;	/* Whether initx was given.  */
   int inity_given ;	/* Whether inity was given.  */
-  char * filename_given ; /* Whether FED filename */
-  char notimestamp_given ;/* Whether notimestamp given */
+  int filename_given ; /* Whether FED filename */
+  int notimestamp_given ;/* Whether notimestamp given */
 
 } ;
 
