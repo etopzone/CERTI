@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.7 2007/07/06 09:25:18 erk Exp $
+// $Id: Exception.cc,v 3.8 2007/08/27 13:18:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -173,4 +173,17 @@ RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
     return *this ;
 }
 
-// $Id: Exception.cc,v 3.7 2007/07/06 09:25:18 erk Exp $$
+RTI_STD::ostream &
+operator<<(RTI_STD::ostream &os, RTI::Exception const &ex) {
+ os << ex._reason;
+ return os;
+}
+
+RTI_STD::ostream &
+ operator<<(RTI_STD::ostream &os, RTI::Exception *ex) {
+ os << ex->_reason;
+ return os;
+}
+
+
+// $Id: Exception.cc,v 3.8 2007/08/27 13:18:43 erk Exp $$
