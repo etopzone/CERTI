@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.28 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationManagement.cc,v 3.29 2007/08/29 09:48:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -485,6 +485,9 @@ FederationManagement::registerSynchronization(const char *label,
         req.setTag(tag);
         // federates set exists so boolean must be true
         req.setBoolean(true) ;
+        req.handleArraySize = array_size ;
+        for ( int j=0 ; j < array_size ; j++)
+            req.handleArray[j] = fed_array[j] ;
 
         G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
 
@@ -582,12 +585,17 @@ synchronizationPointRegistrationSucceeded(const char *label)
 
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationSucceeded");
+
     assert(label != NULL);
 
     req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     req.setLabel(label);
 
     comm->requestFederateService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  FederationManagement::synchronizationPointRegistrationSucceeded");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -823,4 +831,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.28 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationManagement.cc,v 3.29 2007/08/29 09:48:06 rousse Exp $

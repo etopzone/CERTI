@@ -140,8 +140,7 @@ Billard::pause()
     if (creator) {
         D.Out(pdInit, "Pause requested");
         try {
-            rtiamb.registerFederationSynchronizationPoint(
-                "Init", "Waiting all players.");
+            rtiamb.registerFederationSynchronizationPoint("Init", "Waiting all players.");
         }
         catch (RTI::Exception& e) {
             D[pdExcept] << "Federate " << federateName.c_str()
@@ -151,6 +150,37 @@ Billard::pause()
     }
 }
 
+// ----------------------------------------------------------------------------
+/** Creator put federation in pause for synchronization with a friend
+ */
+void
+Billard::pause_friend()
+{
+    if (creator) {
+        D.Out(pdInit, "Pause requested for friend");
+        try {
+            // For testing purpose
+             RTI::FederateHandle numfed ;
+             RTI::FederateHandleSet *federateSet = RTI::FederateHandleSetFactory::create(1) ;
+             cout << "Now we test Register Federation Synchronisation Point on some federates" << endl ;
+             cout << "Please enter a federate handle (zero means none)" << endl ;
+             cout << "This federate will be synchronized with the creator and not the others" << endl;
+             scanf("%d",&numfed) ;
+             if ( numfed != 0 )
+                 {
+                 // We store numfed into the federate set
+                 federateSet->add(numfed) ;
+                 rtiamb.registerFederationSynchronizationPoint("Friend","Synchro with a friend",
+                                                          *federateSet) ;
+                 }
+        }
+        catch (RTI::Exception& e) {
+            D[pdExcept] << "Federate " << federateName.c_str()
+                        << " : Register Synchronization Point failed : %d"
+                        << endl ;
+        }
+    }
+}
 // ----------------------------------------------------------------------------
 /** tick the RTI
  */
@@ -286,7 +316,7 @@ Billard::synchronize(int autostart)
             D.Out(pdExcept, "**** Exception achieving a synchronization "
                   "point by creator : %d", &e);
         }
-
+       
         while (paused)
             try {
                 tick();
@@ -751,6 +781,13 @@ Billard::announceSynchronizationPoint(const char *label, const char */*tag*/)
         paused = true ;
         D.Out(pdProtocol, "announceSynchronizationPoint.");
     }
+#ifdef TEST_RFSP
+    else if (strcmp(label, "Friend") == 0) {
+        std::cout<<"**** I am happy : I have a friend ****"<<std::endl;
+        paused = true ;
+        D.Out(pdProtocol, "announceSynchronizationPoint (friend).");
+    } 
+#endif       
     else {
         cout << "Unexpected synchronization label" << endl ;
         exit(1);

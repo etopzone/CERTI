@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.18 2007/08/10 14:50:25 erk Exp $
+// $Id: main.cc,v 3.19 2007/08/29 09:48:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -81,7 +81,6 @@ Billard *createBillard(bool, const char *, string);
  * The CERTI "Billard" test program
  * @ingroup CERTI_Applications
  */
-
 int
 main(int argc, char **argv)
 {
@@ -196,10 +195,40 @@ main(int argc, char **argv)
 	    printf("\n");
 	}
 
-	// Simlation loop
-	while (!exit_billard) {
+#ifdef TEST_RFSP
+	// Simulation loop
+        int numstep = 0 ;
+        if ( billard->getCreator() )
+            // Creator will stop and ask for the friendly federate
+            {
+	    while (!exit_billard)
+                {
+	        if ( numstep != 10 )
+                    {
+                    billard->step();
+                    }
+                else
+                    {
+                    std::cout<<"Creator stops after 10 steps"<<std::endl;
+                    billard->pause_friend() ;
+                    }
+                numstep++;
+                }
+            }
+        else
+            {
+ 	    while (!exit_billard)
+                {
+	        billard->step();
+                }
+            }
+#else
+	// Simulation loop
+ 	while (!exit_billard)
+            {
 	    billard->step();
-	}
+            }
+#endif
 
 	// End of simulation
 	D.Out(pdTrace, "End of simulation loop.");
@@ -298,5 +327,3 @@ createBillard(bool demo, const char *s_demo, string name)
     
     return new Billard(name);
 }
-
-// EOF $Id: main.cc,v 3.18 2007/08/10 14:50:25 erk Exp $

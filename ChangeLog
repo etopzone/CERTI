@@ -1,3 +1,21 @@
+2007-08-27 16:46  erk
+
+	* test/Billard/cmdline.h: Calm down compiler warning xxxx_given
+	  flags should be int however
+
+2007-08-27 16:13  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc,
+	  RTIA/FederationManagement.hh, RTIA/RTIA_federate.cc,
+	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
+	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage_RW.cc,
+	  libRTI/RTIambassador.cc: Service Register Federation
+	  Synchronization Point conforme a HLA 1.3 : ajout du 3eme
+	  parametre optionnel (ensemble de federes a informer) HLA 1.3
+	  compliance Service Register Federation Synchronization Point :
+	  parameter 3 added (set of federates to inform)
+
 2007-08-27 15:18  erk
 
 	* libCERTI/Exception.cc: Fix bug #20892 : patch for RTI::Exception

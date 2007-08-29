@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.61 2007/08/27 14:13:50 rousse Exp $
+// $Id: Federation.cc,v 3.62 2007/08/29 09:48:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -791,7 +791,7 @@ Federation::registerSynchronization(FederateHandle federate,
            RTIinternalError)
 {
 
-    G.Out(pdGendoc,"enter Federation::registerSynchronization for federates set");
+    G.Out(pdGendoc,"enter Federation::registerSynchronization for federate set");
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
@@ -817,14 +817,15 @@ Federation::registerSynchronization(FederateHandle federate,
         {
         for (j = federates.begin(); j != federates.end(); ++j)
             {
-            if ( i == j->getHandle() ) j->addSynchronizationLabel(label);
+            if ( (federate_set[i] == j->getHandle()) || (federate == j->getHandle()) ) 
+                             j->addSynchronizationLabel(label);
             }
         }
 
     D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
               << label << endl ;
 
-    G.Out(pdGendoc,"exit  Federation::registerSynchronization for federates set");
+    G.Out(pdGendoc,"exit  Federation::registerSynchronization for federate set");
 
 
 }
@@ -891,7 +892,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
     msg.setLabel(label);
     msg.setTag(tag);
 
-    G.Out(pdGendoc,"      broadcastSynchronization is calling broadcastAnyMessage for some federates");
+    G.Out(pdGendoc,"      broadcastSynchronization is calling broadcastSomeMessage");
 
     broadcastSomeMessage(&msg, 0, federate_set, (unsigned short)federate_setSize);
 
@@ -2127,5 +2128,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.61 2007/08/27 14:13:50 rousse Exp $
+// $Id: Federation.cc,v 3.62 2007/08/29 09:48:07 rousse Exp $
 

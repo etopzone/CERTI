@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.49 2007/08/27 14:13:51 rousse Exp $
+// $Id: RTIambassador.cc,v 3.50 2007/08/29 09:48:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -658,7 +658,6 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
 
     Message req, rep ;
 
@@ -667,12 +666,22 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
     req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
     req.setTag(theTag);
-    // boolean true because with set of federates
-    req.setBoolean(true);
-    // and then we have to store this set (after its size)
-    req.handleArraySize = set_of_fed.size() ;
-    for (unsigned long i=0 ; i<set_of_fed.size() ; i++)
-        req.handleArray[i] = set_of_fed.getHandle(i) ;
+    // boolean must be true because federate set exists but if size=0 (set empty)
+    // we have to put boolean false (HLA 1.3 compliance to inform ALL federates)
+    if ( set_of_fed.size() == 0 )
+        {
+        req.setBoolean(false) ;
+        }
+    else
+        {
+        req.setBoolean(true);
+        // and then we have to store this set (after the size)
+        req.handleArraySize = set_of_fed.size() ;
+        for (unsigned long i=0 ; i<set_of_fed.size() ; i++)
+            {
+            req.handleArray[i] = set_of_fed.getHandle(i) ;
+            }
+        }
 
     privateRefs->executeService(&req, &rep);
 
@@ -2794,4 +2803,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.49 2007/08/27 14:13:51 rousse Exp $
+// $Id: RTIambassador.cc,v 3.50 2007/08/29 09:48:07 rousse Exp $

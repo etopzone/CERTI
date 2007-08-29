@@ -16,11 +16,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.13 2007/07/06 09:25:19 erk Exp $
+// $Id: Federate.cc,v 3.14 2007/08/29 09:48:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federate.hh"
+#include "PrettyDebug.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -29,6 +30,8 @@
 #include <cstring>
 #include <string>
 #endif
+
+static PrettyDebug G("GENDOC",__FILE__);
 
 using std::string ;
 
@@ -53,12 +56,17 @@ void
 Federate::addSynchronizationLabel(const char *label)
     throw (RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federate::addSynchronizationLabel");
+
     string s = label ;
     SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), s);
     if (it == syncLabels.end())
 	syncLabels.push_back(s);
     else
 	throw RTIinternalError("Synchronization label pending in federate.");
+
+    G.Out(pdGendoc,"exit  Federate::addSynchronizationLabel");
+
 }
 
 // ----------------------------------------------------------------------------
@@ -85,4 +93,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.13 2007/07/06 09:25:19 erk Exp $
+// $Id: Federate.cc,v 3.14 2007/08/29 09:48:06 rousse Exp $

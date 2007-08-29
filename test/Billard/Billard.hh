@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.10 2007/06/18 08:13:58 rousse Exp $
+// $Id: Billard.hh,v 3.11 2007/08/29 09:48:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -53,6 +53,11 @@
 #define TYP_FLOAT "float"
 #define TYP_INT "int"
 
+// Test
+// TEST_RFSP defined is used for testing registerFederationSynchronizationPoint
+//           with a set of federates.
+//#define TEST_RFSP
+
 class Billard : public NullFederateAmbassador
 {
 public:
@@ -64,6 +69,7 @@ public:
     virtual void declare();
     void join(std::string, std::string);
     void pause();
+    void pause_friend();
     virtual void publishAndSubscribe();
     void resign();
     void setTimeRegulation(bool constrained, bool regulating);
@@ -134,6 +140,8 @@ public:
 
     void sendUpdate(double, double, int, const RTI::FedTime &, RTI::ObjectHandle);
 
+    bool getCreator(){return creator;};
+
 protected:
     virtual void getHandles();
  
@@ -175,4 +183,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.10 2007/06/18 08:13:58 rousse Exp $
+// $Id: Billard.hh,v 3.11 2007/08/29 09:48:07 rousse Exp $
