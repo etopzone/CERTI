@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.31 2007/08/09 09:22:45 rousse Exp $
+// $Id: Interaction.cc,v 3.32 2007/08/29 13:09:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -44,7 +44,10 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 ParameterHandle
 Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 {
-    the_parameter->setHandle(parameterSet.size() + 1);
+	// FIXME: the parameter handle has already been set
+	// in fed.cc::addParameter() why should it be set again
+	// here 
+    //the_parameter->setHandle(parameterSet.size() + 1);
 
     // An inherited parameter keeps its security level, any other get the
     // default security level of the class.
@@ -53,8 +56,10 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 
     parameterSet.push_front(the_parameter);
 
-    D[pdRegister] << "Interaction " << handle << "(\"" << name.c_str()
-		  << "\") has a new parameter " << the_parameter->getHandle();
+    D[pdRegister] << "Interaction " << handle << "[" << name.c_str()
+		  << "] has a new parameter " 
+		  << the_parameter->getHandle() << "[" << the_parameter->getName().c_str() << "]" 
+		  << std::flush;
 
     return the_parameter->getHandle();
 }
@@ -75,13 +80,17 @@ Interaction::addParametersToChild(Interaction *the_child)
         assert(child != NULL);
 
         D.Out(pdProtocol,
-              "ObjectClass %u adding new attribute %d to child class %u.",
+              "ObjectClass %u adding new parameter %d to child class %u.",
               handle, (*it)->getHandle(), the_child->handle);
 
         the_child->addParameter(child, true);
 
-        if (child->getHandle() != (*it)->getHandle())
+        /* FIXME EN: what is the purpose of the check ?? */ 
+        if (child->getHandle() != (*it)->getHandle()) {
             throw RTIinternalError("Error while copying child's attributes.");
+        } else {
+        	;
+        }
     }
 }
 
@@ -538,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.31 2007/08/09 09:22:45 rousse Exp $
+// $Id: Interaction.cc,v 3.32 2007/08/29 13:09:40 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.9 2007/07/06 09:25:18 erk Exp $
+// $Id: fed.cc,v 3.10 2007/08/29 13:09:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -231,11 +231,11 @@ void
 addAttribute()
 {
     attribute = new ObjectClassAttribute();
-    objects.back()->addAttribute(attribute);
     attribute->setName(arg.c_str());
     attribute->transport = transport ;
     attribute->order = order ;
-
+    objects.back()->addAttribute(attribute);
+    
     indent();
     cout << "(attribute \"" << arg.c_str() << "\" (id "
 	 << attribute->getHandle() << ")" ;
@@ -304,13 +304,13 @@ void
 addParameter()
 {
     parameter = new Parameter();
-    interactions.back()->addParameter(parameter);
     parameter->setHandle(parameterHandle++);
     parameter->setName(arg.c_str());
+    interactions.back()->addParameter(parameter);
 
     indent();
     cout << "(parameter \"" << arg.c_str() << "\" (id "
-	 << parameter->getHandle() << "))" ;
+	 << parameter->getHandle() << "))" << std::flush;
 }
 
 // ----------------------------------------------------------------------------
@@ -383,4 +383,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.9 2007/07/06 09:25:18 erk Exp $
+// $Id: fed.cc,v 3.10 2007/08/29 13:09:40 erk Exp $
