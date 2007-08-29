@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.4 2007/08/10 13:53:55 erk Exp $
+// $Id: syntax.yy,v 3.5 2007/08/29 13:07:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -32,7 +32,7 @@ using std::endl ;
 namespace certi {
 namespace fedparser {
 
-extern const char *arg ;
+extern std::string arg ;
 extern const char *fed_filename ;
 extern int line_number ;
 }}
