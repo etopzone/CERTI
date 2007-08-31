@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.12 2007/07/06 09:25:18 erk Exp $
+// $Id: RoutingSpace.cc,v 3.13 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -64,27 +64,7 @@ RoutingSpace::addDimension(const Dimension &d)
 void
 RoutingSpace::display() const
 {
-    cout << "RoutingSpace \"" << name << "\"" << endl ;
-}
-
-// ----------------------------------------------------------------------------
-/** Set the routing space's name
-    \param s Routing space name
- */
-void
-RoutingSpace::setName(std::string s)
-{
-    name = s ;
-}
-
-// ----------------------------------------------------------------------------
-/** Get the routing space's name
-    \return Routing space name
- */
-string
-RoutingSpace::getName() const
-{
-    return name ;
+    cout << "RoutingSpace \"" << getName() << "\"" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -155,4 +135,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.12 2007/07/06 09:25:18 erk Exp $
+// $Id: RoutingSpace.cc,v 3.13 2007/08/31 12:47:40 erk Exp $

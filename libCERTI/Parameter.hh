@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.hh,v 3.6 2005/04/07 11:32:59 breholee Exp $
+// $Id: Parameter.hh,v 3.7 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_PARAMETER_HH
@@ -27,22 +27,20 @@
 
 #include "certi.hh"
 #include "SecurityLevel.hh"
+#include "Named.hh"
 
 #include <string>
 
 namespace certi {
 
-class Parameter
+class Parameter : public Named
 {
 public:
     Parameter();
     Parameter(std::string);
 
     void display();
-
-    const std::string getName() { return name ; };
-    void setName(const std::string &s) { name = s ; };
-
+    
     void setHandle(Handle p) { handle = p ; };
     Handle getHandle() const { return handle ; };
 
@@ -50,11 +48,10 @@ public:
 
 private:
     Handle handle ;
-    std::string name ;
 };
 
 } // namespace certi
 
 #endif // CERTI_PARAMETER_HH
 
-// $Id: Parameter.hh,v 3.6 2005/04/07 11:32:59 breholee Exp $
+// $Id: Parameter.hh,v 3.7 2007/08/31 12:47:40 erk Exp $

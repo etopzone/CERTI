@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Named.hh,v 3.2 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -29,16 +29,54 @@
 
 namespace certi {
 
+/**
+ * A based class used for CERTI named object.
+ */
 class Named
 {
 public:
+	/** 
+	 * Default constructor. 
+	 * Name initialized with the empty string.
+	 */
     Named();
-    Named(std::string);
+    
+    /** 
+     * Constructor with inital value.
+     * @param[in] name Initial name
+     */	
+    Named(const std::string name);
 
-    void setName(std::string);
-    std::string getName() const ;
+    /**
+     *  Set name.
+     *  @param[in] name the new name
+     */
+    void setName(const std::string name);
+    
+    /**
+     *  Set name (char* version)
+     *  @param[in] name the new name
+     */
+    void setName(const char* name);
+    
+    /** 
+     * Get name.
+     * @return name value
+     */
+    const std::string getName() const ;
+    
+    /** 
+     * Get C-style name.
+     * @return pointer on name, as const char *
+     */
     const char *getCName() const ;
-    bool isNamed(const std::string &) const ;
+    
+    /** 
+     * Check if the name matches the provided parameter.
+     * @param name String to compare
+     * @return true if strings match
+     */
+    bool isNamed(const std::string& name) const ;
 
 protected:
     std::string name ;
@@ -48,4 +86,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Named.hh,v 3.2 2007/08/31 12:47:40 erk Exp $

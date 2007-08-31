@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.10 2007/06/22 08:51:40 erk Exp $
+// $Id: XmlParser.hh,v 3.11 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -48,7 +48,23 @@ public:
     XmlParser(RootObject*);
     RootObject* parse(std::string);
     static bool exists(void);
-
+    
+#if HAVE_XML
+	class CleanXmlGetProp {
+		public:
+		CleanXmlGetProp(_xmlNode* node, const xmlChar* propName) {
+			prop = xmlGetProp(node,propName);
+		}
+		operator const char*() {
+			return reinterpret_cast<const char*>(prop);
+		}
+		~CleanXmlGetProp(){
+			xmlFree(prop);
+		}
+		private:
+			xmlChar* prop;
+	};
+#endif
 private:
     void parseClass(ObjectClass *);
     void parseInteraction(Interaction *);
@@ -73,4 +89,4 @@ private:
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.10 2007/06/22 08:51:40 erk Exp $
+// $Id: XmlParser.hh,v 3.11 2007/08/31 12:47:40 erk Exp $

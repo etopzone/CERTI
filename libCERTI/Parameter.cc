@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.9 2007/07/06 09:25:17 erk Exp $
+// $Id: Parameter.cc,v 3.10 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -37,7 +37,7 @@ Parameter::Parameter()
 }
 
 Parameter::Parameter(std::string s)
-    : LevelID(PublicLevelID), handle(0), name(s)
+    : Named(s), LevelID(PublicLevelID), handle(0)
 {
 }
 
@@ -51,4 +51,4 @@ Parameter::display(void)
 
 } // namespace certi
 
-// $Id: Parameter.cc,v 3.9 2007/07/06 09:25:17 erk Exp $
+// $Id: Parameter.cc,v 3.10 2007/08/31 12:47:40 erk Exp $

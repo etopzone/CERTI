@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.62 2007/08/29 09:48:07 rousse Exp $
+// $Id: Federation.cc,v 3.63 2007/08/31 12:47:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2038,11 +2038,10 @@ Federation::restoreXmlData()
         return false ;
     }
 
-    char *tmp ;
-    tmp = (char *)xmlGetProp(cur, (const xmlChar*)"name");
-    if (strcmp(name, tmp) != 0) {
+    if (strcmp(name, XmlParser::CleanXmlGetProp(cur,(const xmlChar*)"name")) != 0) {
         cerr << "Wrong federation name" << endl ;
     }
+    
 
     cur = cur->xmlChildrenNode ;
 
@@ -2050,22 +2049,23 @@ Federation::restoreXmlData()
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
             for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
-                if (!strcmp(i->getName(), (char *) xmlGetProp(cur, (const xmlChar*) "name"))) {
+                if (!strcmp(i->getName(),XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
                     // Set federate constrained status
-                    if (!strcmp("true", (char *) xmlGetProp(cur, (const xmlChar*) "constrained")))
+                    if (!strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "constrained"))) {
                         status = true ;
-                    else
+                    }
+                    else {
                         status = false ;
+                    }
 
                     i->setConstrained(status);
 
                     // Set federate regulating status
-                    status = !strcmp("true", (char *) xmlGetProp(
-                                         cur, (const xmlChar *) "regulator"));
+                    status = !strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar *) "regulator"));
 
                     i->setRegulator(status);
 
-                    i->setHandle(strtol((char *) xmlGetProp(cur, (const xmlChar *) "handle"), 0, 10));
+                    i->setHandle(strtol(XmlParser::CleanXmlGetProp(cur, (const xmlChar *) "handle"), 0, 10));
                     break ;
                 }
             }
@@ -2128,5 +2128,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.62 2007/08/29 09:48:07 rousse Exp $
+// $Id: Federation.cc,v 3.63 2007/08/31 12:47:41 erk Exp $
 

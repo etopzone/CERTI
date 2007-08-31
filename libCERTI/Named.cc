@@ -19,60 +19,48 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Named.cc,v 3.2 2007/08/31 12:47:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
 
 namespace certi {
 
-/** Default constructor. Name initialized with the empty string.
- */
 Named::Named() { }
 
-/** Constructor with inital value.
-    @param s Initial name
-*/
-Named::Named(std::string s)
-    : name(s) { }
+Named::Named(std::string name)
+    : name(name) { }
 
-/** Set name.
-    @param s New name
-*/
 void
-Named::setName(std::string s)
+Named::setName(std::string name)
 {
-    name = s ;
+    this->name = name ;
 }
 
-/** Get name.
-    @return name value
-*/
-std::string
+void 
+Named::setName(const char* name) {
+    this->name = name;
+}
+
+const std::string
 Named::getName() const
 {
     return name ;
 }
 
-/** Get C-style name.
-    @return pointer on name, as const char *
-*/
+
 const char *
 Named::getCName() const
 {
     return name.c_str();
 }
 
-/** Check if the name matches the provided parameter.
-    @param s String to compare
-    @return true if strings match
- */
 bool
-Named::isNamed(const std::string &s) const
+Named::isNamed(const std::string &name) const
 {
-    return name == s ;
+    return (this->name == name) ;
 }
 
 } // certi
 
-// $Id: Named.cc,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Named.cc,v 3.2 2007/08/31 12:47:40 erk Exp $

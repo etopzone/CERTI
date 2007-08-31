@@ -158,11 +158,12 @@ XmlParser::parse(string s)
 void
 XmlParser::parseClass(ObjectClass* parent)
 {
-    D[pdTrace] << "New Object Class" << endl ;
+	xmlChar* tmpXmlChar = NULL;
+    D[pdTrace] << "New Object Class" << endl ;    
 
     xmlNodePtr prev = cur ;
     ObjectClass* current = new ObjectClass();
-    current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+    current->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
     current->setHandle(freeObjectClassHandle++);
     root->ObjectClasses->addClass(current);
     if (parent != 0)
@@ -175,25 +176,35 @@ XmlParser::parseClass(ObjectClass* parent)
             ObjectClassAttribute *attr = new ObjectClassAttribute();
 
             // Name
-            attr->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+            attr->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
             // Handle
             attr->setHandle(freeAttributeHandle++);
 
             // Transportation
-            if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
-                           VALUE_RELIABLE))
+            xmlChar* transport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
+            if (!xmlStrcmp(transport,VALUE_RELIABLE)) {
                 attr->transport = RELIABLE ;
-            else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
-                                VALUE_BESTEFFORT))
-                attr->transport = BEST_EFFORT ;
+            }
+            else {
+            	if (!xmlStrcmp(transport,VALUE_BESTEFFORT)) {
+            		attr->transport = BEST_EFFORT ;
+            	}
+            }
+            xmlFree(transport);
 
             // Order
-            if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_TSO))
+            xmlChar* order = xmlGetProp(cur, ATTRIBUTE_ORDER);
+            if (!xmlStrcmp(order, VALUE_TSO)) {
                 attr->order = TIMESTAMP ;
-            else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
-                attr->order = RECEIVE ;
-
+            }
+            else {
+            	if (!xmlStrcmp(order, VALUE_RO)) {            
+            		attr->order = RECEIVE ;
+            	}
+            }
+            xmlFree(order);
+            
             // Routing space
             char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
             if (space) {
@@ -207,6 +218,7 @@ XmlParser::parseClass(ObjectClass* parent)
                 }
                 attr->setSpace(h);
             }
+            xmlFree(space);
 
             // Attribute complete, adding to the class
             current->addAttribute(attr);
@@ -231,23 +243,34 @@ XmlParser::parseInteraction(Interaction* parent)
     Interaction* current = new Interaction();
 
     // Name
-    current->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+    current->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
     // Handle
     current->setHandle(freeInteractionClassHandle++);
 
     // Transportation
-    if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION), VALUE_RELIABLE))
+    xmlChar* transport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
+    if (!xmlStrcmp(transport, VALUE_RELIABLE)) {
         current->transport = RELIABLE ;
-    else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION),
-                        VALUE_BESTEFFORT))
-        current->transport = BEST_EFFORT ;
-
+    }
+    else {
+    	if (!xmlStrcmp(transport,VALUE_BESTEFFORT))  {
+    		current->transport = BEST_EFFORT ;
+    	}
+    }
+    xmlFree(transport);
+    
     // Order
-    if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_TSO))
+    xmlChar* order = xmlGetProp(cur, ATTRIBUTE_ORDER);
+    if (!xmlStrcmp(order, VALUE_TSO)) {
         current->order = TIMESTAMP ;
-    else if (!xmlStrcmp(xmlGetProp(cur, ATTRIBUTE_ORDER), VALUE_RO))
-        current->order = RECEIVE ;
+    }
+    else {
+    	if (!xmlStrcmp(order, VALUE_RO)) {    
+    		current->order = RECEIVE ;	
+    	}
+    }
+    xmlFree(order);
 
     // Routing space
     char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
@@ -262,6 +285,7 @@ XmlParser::parseInteraction(Interaction* parent)
         }
         current->setSpace(h);
     }
+    xmlFree(space);
 
     // Add to interactions list, and build inheritance relation
     root->Interactions->addClass(current);
@@ -272,7 +296,7 @@ XmlParser::parseInteraction(Interaction* parent)
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
             Parameter *param = new Parameter();
-            param->setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+            param->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
             param->setHandle(freeParameterHandle++);
             current->addParameter(param);
         }
@@ -295,15 +319,15 @@ XmlParser::parseRoutingSpace()
     DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;
     RoutingSpace current ;
-    current.setHandle(freeSpaceHandle++);
-    current.setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+    current.setHandle(freeSpaceHandle++);    
+    current.setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
     // Dimensions
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
             Dimension dimension(freeDimensionHandle++);
-            dimension.setName((char *) xmlGetProp(cur, ATTRIBUTE_NAME));
+            dimension.setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
             current.addDimension(dimension);
         }
         cur = cur->next ;
