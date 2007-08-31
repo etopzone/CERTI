@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: XmlParser.hh,v 3.11 2007/08/31 12:47:40 erk Exp $
+// $Id: XmlParser.hh,v 3.12 2007/08/31 13:43:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_XML_PARSER_HH
@@ -42,32 +42,81 @@
 
 namespace certi {
 
+/**
+ * The CERTI XML federation Object Model parser.
+ */
 class CERTI_EXPORT XmlParser
 {
 public:
-    XmlParser(RootObject*);
-    RootObject* parse(std::string);
+	
+	/**
+	 * Build a parser.
+	 * @param root the root object of the FOM.
+	 */
+	XmlParser(RootObject* root);
+	
+	/** 
+	 * Main method to parse .xml FOM file
+	 * @param[in] pathToXmlFile the path to the XML file.
+	 * @return the RootObject resulting from the parse. 
+	 */	   
+    RootObject* parse(std::string pathToXmlFile);
+  
+    /**
+     * Return true if the XML parser is available.
+     * XML Parser may not be available if CERTI was
+     * compiled without XML support. In this case you
+     * should use the .fed file parser.
+     * @return true if the XML parser is available
+     */
     static bool exists(void);
     
 #if HAVE_XML
+    /**
+     * XmlParser Inner class used to "cleany"
+     * get a property without memory leak.
+     */
 	class CleanXmlGetProp {
-		public:
+	public:
+		/**
+		 * Build a property object which
+		 * may be casted out in a const char*
+		 * @param[in] node the xml node
+		 * @param[in] propName the property name 
+		 */
 		CleanXmlGetProp(_xmlNode* node, const xmlChar* propName) {
 			prop = xmlGetProp(node,propName);
 		}
+		/**
+		 * Cast operator from CleanXmlGetProp to const char*
+		 */
 		operator const char*() {
 			return reinterpret_cast<const char*>(prop);
 		}
+		
 		~CleanXmlGetProp(){
 			xmlFree(prop);
 		}
-		private:
-			xmlChar* prop;
+	private:
+		xmlChar* prop;
 	};
 #endif
 private:
-    void parseClass(ObjectClass *);
-    void parseInteraction(Interaction *);
+	/**
+	 * Parse the current class node.
+	 * @param[in,out] parent the parent object class
+	 */
+    void parseClass(ObjectClass *parent);
+    
+    /**
+     * Parse the current interaction node
+     * @param[in,out] parent the parent interaction node
+     */
+    void parseInteraction(Interaction *parent);
+    
+    /** 
+     * Parse a routing space from current node.
+     */
     void parseRoutingSpace(void);
 
     int freeObjectClassHandle ;
@@ -80,8 +129,8 @@ private:
     RootObject* root ;
     
 #ifdef HAVE_XML
-    xmlDocPtr doc ;
-    xmlNodePtr cur ;    
+    xmlDocPtr  doc;
+    xmlNodePtr cur;    
 #endif 
 };
 
@@ -89,4 +138,4 @@ private:
 
 #endif // _CERTI_XML_PARSER_HH
 
-// $Id: XmlParser.hh,v 3.11 2007/08/31 12:47:40 erk Exp $
+// $Id: XmlParser.hh,v 3.12 2007/08/31 13:43:20 erk Exp $

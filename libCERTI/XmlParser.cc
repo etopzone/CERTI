@@ -69,12 +69,11 @@ XmlParser::XmlParser(RootObject* r)
 }
 
 // ----------------------------------------------------------------------------
-//! Main method to parse .xml file
 RootObject*
-XmlParser::parse(string s)
+XmlParser::parse(string pathToXmlFile)
 {
     D.Out(pdTrace, "Starting to parse XML file");
-    filename = s ;
+    filename = pathToXmlFile;
 
     // transportation = HLAreliable
     // order = TimeStamp
@@ -154,7 +153,6 @@ XmlParser::parse(string s)
 }
 
 // ----------------------------------------------------------------------------
-//! Parse the current class node
 void
 XmlParser::parseClass(ObjectClass* parent)
 {
@@ -233,7 +231,6 @@ XmlParser::parseClass(ObjectClass* parent)
 }
 
 // ----------------------------------------------------------------------------
-//! Parse the current interaction node
 void
 XmlParser::parseInteraction(Interaction* parent)
 {
@@ -310,7 +307,6 @@ XmlParser::parseInteraction(Interaction* parent)
 }
 
 // ----------------------------------------------------------------------------
-//! Parse a routing space
 void
 XmlParser::parseRoutingSpace()
 {
@@ -343,11 +339,10 @@ XmlParser::parseRoutingSpace()
 }
 
 // ----------------------------------------------------------------------------
-//! is the XML parser available ?
 bool
 XmlParser::exists()
 {
-    return true ;
+    return true;
 }
 
 } // namespace certi
