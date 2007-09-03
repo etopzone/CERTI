@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.21 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG.hh,v 3.22 2007/09/03 13:59:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -27,7 +27,6 @@
 #include "certi.hh"
 #include "NetworkMessage.hh"
 #include "SecureTCPSocket.hh"
-#include "SocketMC.hh"
 #include "SocketServer.hh"
 #include "FederationsList.hh"
 #include "AuditFile.hh"
@@ -37,13 +36,17 @@
 namespace certi {
 namespace rtig {
 
-/*! This class manages the rtig server. Each time a message is received, it is
-  processed by a RTI_processing.cc module.
-
-  These modules called "processXXX" are divided into two parts :
-  - one part for treating the received message.
-  - another part generating and sending back a response.
-*/
+/** 
+ * This class manages the RTIG server, aka RTI Gateway server. 
+ * Each time a message is received, it is
+ * processed by a RTI_processing.cc module.
+ *
+ * These modules called "processXXX" are divided into two parts :
+ * <ul>
+ *   <li> one part for treating the received message. </li>
+ *   <li> another part generating and sending back a response. </li>
+ * </li>
+ */
 class RTIG
 {
 public:
@@ -127,4 +130,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.21 2005/02/09 15:43:07 breholee Exp $
+// $Id: RTIG.hh,v 3.22 2007/09/03 13:59:48 erk Exp $

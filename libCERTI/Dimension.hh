@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.7 2007/09/03 13:26:05 erk Exp $
+// $Id: Dimension.hh,v 3.8 2007/09/03 13:59:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
@@ -45,7 +45,7 @@ public:
 	 * is a single axis segment with fixed lower and upper bound.
 	 * All dimensions of a Federation should share the same 
 	 * lower and upper bound. 
-	 * @param[in] the dimension object handle
+	 * @param[in] dimensionHandle the dimension object handle
 	 */
     Dimension(DimensionHandle dimensionHandle);
     
@@ -82,4 +82,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.7 2007/09/03 13:26:05 erk Exp $
+// $Id: Dimension.hh,v 3.8 2007/09/03 13:59:48 erk Exp $

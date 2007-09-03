@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.50 2007/08/29 09:48:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.51 2007/09/03 13:59:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -59,13 +59,13 @@ build_region_handles(RTI::Region **regions, int nb)
 {
     std::vector<RTI::Handle> vect(nb);
     for (int i = 0 ; i < nb ; ++i) {
-	RTI::Region *region = regions[i] ;
-	try {
-	    vect[i] = dynamic_cast<FedRegion *>(region)->getHandle();
-	}
-	catch (std::bad_cast) {
-	    throw RTI::RegionNotKnown("");
-	}
+    	RTI::Region *region = regions[i] ;
+    	try {
+    		vect[i] = dynamic_cast<FedRegion *>(region)->getHandle();
+    	}
+    	catch (std::bad_cast) {
+    		throw RTI::RegionNotKnown("");
+    	}
     }
     return vect ;
 }
@@ -648,8 +648,8 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 //  (only federates in the set are informed)
 /**
     @param label Synchronization point label
-    @param the_tag User-supplied tag
-    @param set set of federate designators
+    @param theTag User-supplied tag
+    @param set_of_fed set of federate designators
 */
 void
 RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
@@ -2803,4 +2803,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.50 2007/08/29 09:48:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.51 2007/09/03 13:59:48 erk Exp $
