@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.7 2007/08/31 12:47:40 erk Exp $
+// $Id: RoutingSpace.hh,v 3.8 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -38,17 +38,49 @@ namespace certi {
 class CERTI_EXPORT RoutingSpace : public Handled<SpaceHandle>, public Named
 {
 public:
+	/** 
+	 * Constructor
+	 */
     RoutingSpace();
+    
+    /** 
+     * Destructor
+     */
     ~RoutingSpace();
     
+    /** 
+     * Get the handle of the specified dimension
+     * @param dimension_name Dimension name
+     * @return Dimension handle
+     */
     DimensionHandle getDimensionHandle(std::string) const throw (NameNotFound);
+    
+    /** 
+     * Get the name of the specified dimension
+     * @param dimension_handle Dimension handle
+     * @return the Dimension name
+     */
     std::string getDimensionName(DimensionHandle) const
 	throw (DimensionNotDefined);
+    
+    /** 
+     * Get the number of dimensions of this space
+     * @return Number of dimensions
+     */
     size_t size() const ;
 
+    /** 
+     * Display (stdout) the routing space details
+     */
     void display() const ;
-    void addDimension(const Dimension &);
-
+    
+    /** 
+     * Add a dimension. A copy of the dimension parameter is added in the
+     * routing space.
+     * @param[int] d Dimension to add
+     */
+    void addDimension(const Dimension &d);
+    
     Extent createExtent() const ;
 
 private:
@@ -59,5 +91,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.7 2007/08/31 12:47:40 erk Exp $
+// $Id: RoutingSpace.hh,v 3.8 2007/09/03 13:26:05 erk Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Handled.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Handled.hh,v 3.2 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLED_HH
@@ -27,48 +27,66 @@
 
 namespace certi {
 
+/**
+ * CERTI Handled class.
+ * All classes for which there is an RTI::<handleType>
+ * should inherit from Handled< RTI::<handleType>>.
+ * @sa Dimension
+ * @sa Attribute
+ * @sa ObjectClass
+ */
 template<typename T>
 class Handled
 {
 public:
+	/**
+	 * The handle type from generic class template argument.
+	 */
     typedef T handle_type ;
 
+    /** 
+     * Default constructor. 
+     * Handle value is initialized with zero
+     */
     Handled();
-    Handled(handle_type);
+    
+    /**
+     * Create an handled.
+     * @param[in] hValue initial handle value
+     */
+    Handled(handle_type hValue);
 
-    void setHandle(handle_type);
+    /**
+     * Create an handled.
+     * @param[in] hValue the handle value
+     */
+    void setHandle(handle_type hValue);
+
+    /** 
+     * Get handle
+     * @return Handle value
+     */
     handle_type getHandle() const ;
 
 protected:
     handle_type handle ;
 };
 
-/** Default constructor. Handle is initialized with zero
- */
 template<typename T>
 Handled<T>::Handled()
     : handle(0) { }
 
-/** Constructor with initial value.
-    @param h Initial handle value
-*/
 template<typename T>
-Handled<T>::Handled(T h)
-    : handle(h) { }
+Handled<T>::Handled(T hValue)
+    : handle(hValue) { }
 
-/** Set handle
-    @param h New handle value
-*/
 template<typename T>
 void
-Handled<T>::setHandle(T h)
+Handled<T>::setHandle(T hValue)
 {
-    handle = h ;
+    handle = hValue ;
 }
 
-/** Get handle
-    @return Handle value
-*/
 template<class T>
 T
 Handled<T>::getHandle() const
@@ -80,4 +98,4 @@ Handled<T>::getHandle() const
 
 #endif // LIBCERTI_HANDLED_HH
 
-// $Id: Handled.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: Handled.hh,v 3.2 2007/09/03 13:26:05 erk Exp $

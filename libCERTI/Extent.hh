@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.8 2007/06/22 08:51:36 erk Exp $
+// $Id: Extent.hh,v 3.9 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_EXTENT_HH
@@ -37,10 +37,11 @@ typedef std::pair<ULong, ULong> Range ;
 typedef std::vector<Range> RangeSet ;
 
 // ----------------------------------------------------------------------------
-/** An extent is a subspace in a routing space. It is made of ranges in
-    each dimension of the routing space. Routing regions are described
-    using a set of extents.
-    @sa RoutingSpace, Dimension, RegionImp
+/** 
+ * An extent is a subspace in a routing space. It is made of ranges in
+ * each dimension of the routing space. Routing regions are described
+ * using a set of extents.
+ * @sa RoutingSpace, Dimension, RegionImp
  */
 class CERTI_EXPORT Extent
 {
@@ -70,4 +71,4 @@ private:
 
 #endif // CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.8 2007/06/22 08:51:36 erk Exp $
+// $Id: Extent.hh,v 3.9 2007/09/03 13:26:05 erk Exp $

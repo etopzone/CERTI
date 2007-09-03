@@ -19,40 +19,38 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.6 2007/07/06 09:25:18 erk Exp $
+// $Id: Dimension.cc,v 3.7 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
-
 #include "Dimension.hh"
-
-using std::string ;
 
 namespace certi {
 
 ULong Dimension::axisLowerBound = 0 ;
 ULong Dimension::axisUpperBound = LONG_MAX ;
 
-Dimension::Dimension(DimensionHandle h)
+Dimension::Dimension(DimensionHandle dimensionHandle)
 {
-    handle = h ;
+	/* initialize handle from superclass */
+    this->handle = dimensionHandle ;
 }
 
 // ----------------------------------------------------------------------------
 void
-Dimension::setLowerBound(ULong v)
+Dimension::setLowerBound(ULong lowerBound)
 {
-    Dimension::axisLowerBound = v ;
+    Dimension::axisLowerBound = lowerBound ;
 }
 
 // ----------------------------------------------------------------------------
 void
-Dimension::setUpperBound(ULong v)
+Dimension::setUpperBound(ULong upperBound)
 {
-    Dimension::axisUpperBound = v ;
+    Dimension::axisUpperBound = upperBound ;
 }
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.6 2007/07/06 09:25:18 erk Exp $
+// $Id: Dimension.cc,v 3.7 2007/09/03 13:26:05 erk Exp $
 
 

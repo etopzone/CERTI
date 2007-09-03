@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.13 2007/08/31 12:47:40 erk Exp $
+// $Id: RoutingSpace.cc,v 3.14 2007/09/03 13:26:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -37,20 +37,14 @@ using std::string ;
 namespace certi {
 
 // ----------------------------------------------------------------------------
-/** Constructor
- */
+
 RoutingSpace::RoutingSpace() { }
 
 // ----------------------------------------------------------------------------
-/** Destructor
- */
+
 RoutingSpace::~RoutingSpace() { }
 
 // ----------------------------------------------------------------------------
-/** Add a dimension. A copy of the dimension parameter is added in the
-    routing space.
-    \param d Dimension to add
- */
 void
 RoutingSpace::addDimension(const Dimension &d)
 {
@@ -59,8 +53,6 @@ RoutingSpace::addDimension(const Dimension &d)
 }
 
 // ----------------------------------------------------------------------------
-/** Display (stdout) the routing space details
- */
 void
 RoutingSpace::display() const
 {
@@ -68,10 +60,6 @@ RoutingSpace::display() const
 }
 
 // ----------------------------------------------------------------------------
-/** Get the handle of the specified dimension
-    \param dimension_name Dimension name
-    \return Dimension handle
- */
 DimensionHandle
 RoutingSpace::getDimensionHandle(std::string dimension_name) const
     throw (NameNotFound)
@@ -88,10 +76,6 @@ RoutingSpace::getDimensionHandle(std::string dimension_name) const
 }
 
 // ----------------------------------------------------------------------------
-/** Get the name of the specified dimension
-    \param dimension_handle Dimension handle
-    \return Dimension name
- */
 string
 RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
     throw (DimensionNotDefined)
@@ -108,9 +92,6 @@ RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
 }
 
 // ----------------------------------------------------------------------------
-/** Get the number of dimensions of this space
-    \return Number of dimensions
- */
 size_t
 RoutingSpace::size() const
 {
@@ -135,4 +116,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.13 2007/08/31 12:47:40 erk Exp $
+// $Id: RoutingSpace.cc,v 3.14 2007/09/03 13:26:05 erk Exp $
