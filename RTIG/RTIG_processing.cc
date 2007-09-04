@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.39 2007/08/27 14:13:50 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.40 2007/09/04 08:33:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1235,6 +1235,14 @@ void
 RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 {
     NetworkMessage rep ;
+    // FIXME bug #9869
+    // When we were passed a set of region
+    // we should register object for each region  
+    // the trouble comes from the fact that
+    // there is both
+    //     - req->region  (coming from NetworkMessage::region)
+    //     - req->regions (coming from BasicMessage::regions)
+    // would be nice to sort those thing out.
     rep.object = federations.registerObjectWithRegion(req->federation,
 						      req->federate,
 						      req->objectClass,
@@ -1257,4 +1265,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.39 2007/08/27 14:13:50 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.40 2007/09/04 08:33:15 erk Exp $

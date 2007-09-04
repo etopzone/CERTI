@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.0 2005/04/30 17:39:18 breholee Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.1 2007/09/04 08:33:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,6 +48,9 @@ void
 RTIambPrivateRefs::executeService(Message *req, Message *rep)
 {
     // raise exception if reentrant call.
+	// FIXME EN: On SMP machine may we really 
+	//           guarantee that the following protection
+	//           against re-entrance is an efficient one?
     if (is_reentrant)
         throw ConcurrentAccessAttempted("");
 
@@ -95,7 +98,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 void
 RTIambPrivateRefs::processException(Message *msg)
 {
-    D.Out(pdExcept, "n° de l'exception : %d .", msg->getExceptionType());
+    D.Out(pdExcept, "nï¿½ de l'exception : %d .", msg->getExceptionType());
     switch(msg->getExceptionType()) {
       case e_NO_EXCEPTION: {
       } break ;
@@ -509,4 +512,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.0 2005/04/30 17:39:18 breholee Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.1 2007/09/04 08:33:14 erk Exp $
