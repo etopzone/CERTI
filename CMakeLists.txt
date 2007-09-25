@@ -172,6 +172,7 @@ IF (X11_FOUND)
     DOC "X11 bitmaps header")
       
 ELSE (X11_FOUND)
+  MESSAGE(STATUS "X11 header not found: Billard Test Application will not have GUI.")
   SET(X_DISPLAY_MISSING 1)
 ENDIF (X11_FOUND)
 
