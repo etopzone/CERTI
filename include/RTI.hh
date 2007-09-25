@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.8 2007/08/10 14:45:49 erk Exp $
+// $Id: RTI.hh,v 3.9 2007/09/25 13:18:27 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -45,7 +45,7 @@ struct RTIambPrivateData ;
  * @{
  */ 
 
-class RTI
+class RTI_EXPORT RTI
 {
 public:
 #include "baseTypes.hh"

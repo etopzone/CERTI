@@ -29,11 +29,17 @@
 	#include <winsock.h>
 	#endif
 	#endif
+#if __MINGW32__
+ 	#define IP_ADD_MEMBERSHIP	5
+	struct ip_mreq {
+		struct in_addr imr_multiaddr;
+		struct in_addr imr_interface;
+	};
+#endif
 #else
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 #endif
-
 namespace certi {
 
 class SocketMC : public Socket

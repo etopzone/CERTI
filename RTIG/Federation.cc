@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.63 2007/08/31 12:47:41 erk Exp $
+// $Id: Federation.cc,v 3.64 2007/09/25 13:18:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -265,14 +265,14 @@ Federation::Federation(const char *federation_name,
 	    
             // Retrieve the FED file last modification time(for Audit)
             STAT_STRUCT StatBuffer ;
-            #ifdef _WIN32
+            #if defined(_WIN32) && not defined(__MINGW32__)
             char MTimeBuffer[26];
             #else
             char *MTimeBuffer ;
             #endif
 
             if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
-            #ifdef _WIN32                
+            #if defined(_WIN32) && not defined(__MINGW32__)                
                 ctime_s(&MTimeBuffer[0],26,&StatBuffer.st_mtime);
             #else
                 MTimeBuffer = ctime(&StatBuffer.st_mtime);
@@ -2128,5 +2128,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.63 2007/08/31 12:47:41 erk Exp $
+// $Id: Federation.cc,v 3.64 2007/09/25 13:18:27 erk Exp $
 

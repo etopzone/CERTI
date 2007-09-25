@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Billard.hh,v 3.11 2007/08/29 09:48:07 rousse Exp $
+// $Id: Billard.hh,v 3.12 2007/09/25 13:18:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_BILLARD_HH
@@ -29,6 +29,7 @@
 #include "fedtime.hh"
 #include "Ball.hh"
 #include "ColoredBall.hh"
+#include "certi.hh"
 
 #include <vector>
 
@@ -183,4 +184,4 @@ protected:
 
 #endif // CERTI_BILLARD_HH
 
-// $Id: Billard.hh,v 3.11 2007/08/29 09:48:07 rousse Exp $
+// $Id: Billard.hh,v 3.12 2007/09/25 13:18:27 erk Exp $
