@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.17 2007/06/22 08:51:35 erk Exp $
+// $Id: RTItypes.hh,v 3.18 2007/09/25 13:42:54 erk Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -141,7 +141,7 @@ typedef ULong UniqueID ;
 typedef Double TickTime ;
 typedef ULong RegionToken ;
 
-class AttributeHandleValuePairSet
+class CERTI_EXPORT AttributeHandleValuePairSet
 {
 public:
     virtual ~AttributeHandleValuePairSet() {}
@@ -192,7 +192,7 @@ public:
 	throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
 };
 
-class AttributeHandleSet
+class CERTI_EXPORT AttributeHandleSet
 {
 public:
     virtual ~AttributeHandleSet() { }
@@ -221,7 +221,7 @@ public:
 	throw(MemoryExhausted, ValueCountExceeded);
 };
 
-class FederateHandleSet
+class CERTI_EXPORT FederateHandleSet
 {
 public:
     virtual ~FederateHandleSet() { }
@@ -249,7 +249,7 @@ public:
 	throw (MemoryExhausted, ValueCountExceeded);
 };
 
-class  ParameterHandleValuePairSet
+class CERTI_EXPORT ParameterHandleValuePairSet
 {
 public:
     virtual ~ParameterHandleValuePairSet() { }
@@ -300,7 +300,7 @@ public:
 	throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded);
 };
 
-class Region
+class CERTI_EXPORT Region
 {
 public:
     virtual ~Region() { }
@@ -330,7 +330,7 @@ public:
 	throw (ArrayIndexOutOfBounds) = 0 ;
 } ;
 
-class FedTime
+class CERTI_EXPORT FedTime
 {
 public:    
     virtual ~FedTime(){};
@@ -390,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.17 2007/06/22 08:51:35 erk Exp $
+// $Id: RTItypes.hh,v 3.18 2007/09/25 13:42:54 erk Exp $
