@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.16 2007/09/25 13:18:27 erk Exp $
+// $Id: certi.hh,v 3.17 2007/09/25 13:25:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -32,7 +32,7 @@
 	#define  strcasecmp			strcmp
 	#define	STAT_FUNCTION		_stat
 	#define	STAT_STRUCT			struct _stat		
-#elif
+#else
 	#define	STAT_FUNCTION		stat
 	#define	STAT_STRUCT			struct stat
 #endif
@@ -312,4 +312,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.16 2007/09/25 13:18:27 erk Exp $
+// $Id: certi.hh,v 3.17 2007/09/25 13:25:31 erk Exp $
