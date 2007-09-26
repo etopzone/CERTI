@@ -1,5 +1,5 @@
 // HLA 1.3 Header "fedtime.hh"
-// $Id: fedtime.hh,v 3.7 2007/07/06 09:25:20 erk Exp $
+// $Id: fedtime.hh,v 3.8 2007/09/26 14:14:46 erk Exp $
 
 #ifndef HLA_FEDTIME_HH
 #define HLA_FEDTIME_HH
@@ -115,7 +115,7 @@ public:
     virtual RTIfedTime operator/(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
     
-    friend RTI_STD::ostream RTI_EXPORT &operator<<(RTI_STD::ostream&, const RTI::FedTime &);
+    friend RTI_STD::ostream CERTI_EXPORT &operator<<(RTI_STD::ostream&, const RTI::FedTime &);
 
 private:
     RTI::Double _fedTime ;
@@ -131,4 +131,4 @@ RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
 
 #endif // HLA_FEDTIME_HH
 
-// $Id: fedtime.hh,v 3.7 2007/07/06 09:25:20 erk Exp $
+// $Id: fedtime.hh,v 3.8 2007/09/26 14:14:46 erk Exp $
