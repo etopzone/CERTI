@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.25 2007/07/06 09:25:17 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.26 2007/09/27 13:59:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,6 +31,7 @@
 
 // Standard
 #include <iostream>
+#include <sstream>
 
 using std::list ;
 using std::cout ;
@@ -189,15 +190,17 @@ ObjectClass *
 ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
     throw (ObjectNotKnown)
 {
+	std::stringstream msg;
+	
     list<ObjectClass *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if ((*i)->isInstanceInClass(theObjectHandle) == true)
             return (*i);
     }
 
-    D.Out(pdExcept, "Object instance %d not found in any object class.",
-          theObjectHandle);
-    throw ObjectNotKnown("");
+	msg << "ObjectHandle <" << theObjectHandle <<"> not found in any object class.";
+    D.Out(pdExcept, msg.str().c_str());
+    throw ObjectNotKnown(msg.str().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -687,4 +690,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.25 2007/07/06 09:25:17 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.26 2007/09/27 13:59:33 erk Exp $

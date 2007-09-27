@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.9 2007/09/25 13:18:27 erk Exp $
+// $Id: RTI.hh,v 3.10 2007/09/27 13:59:33 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -68,10 +68,10 @@ public:
 };
 
 RTI_STD::ostream CERTI_EXPORT & 
-operator<<(RTI_STD::ostream &, RTI::Exception *);
+operator<<(RTI_STD::ostream &os, RTI::Exception *ex);
 
 RTI_STD::ostream CERTI_EXPORT & 
-operator<<(RTI_STD::ostream &, RTI::Exception const &);
+operator<<(RTI_STD::ostream &os, RTI::Exception const &ex);
 
 /** @} */
 

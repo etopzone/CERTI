@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.36 2007/07/06 09:25:18 erk Exp $
+// $Id: ObjectClass.cc,v 3.37 2007/09/27 13:59:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -29,6 +29,7 @@
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
+#include <sstream>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -457,16 +458,21 @@ Object *
 ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     throw (ObjectNotKnown)
 {
+	std::stringstream msg;
+	
     list<Object *>::const_iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_id)
             return (*o);
     }
 
-    D[pdError] << "Could not find object " << the_id << " among "
-	       << objectSet.size() << " objects of class "
-	       << handle << std::endl ;
-    throw ObjectNotKnown("");
+    msg << "Could not find ObjectHandle <" << the_id << "> among <"
+	       << objectSet.size() << "> objects of ObjectClass "
+	       << handle;
+	       
+    D[pdError] << msg.str().c_str() << std::endl ;
+	
+    throw ObjectNotKnown(msg.str().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -1739,4 +1745,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.36 2007/07/06 09:25:18 erk Exp $
+// $Id: ObjectClass.cc,v 3.37 2007/09/27 13:59:33 erk Exp $

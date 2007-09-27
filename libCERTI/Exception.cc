@@ -19,17 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.8 2007/08/27 13:18:43 erk Exp $
+// $Id: Exception.cc,v 3.9 2007/09/27 13:59:33 erk Exp $
 // ----------------------------------------------------------------------------
 
-
+#include <assert.h>
 #include "Exception.hh"
-
 #include "certi.hh"
+#include "PrettyDebug.hh"
+#include <sstream>
 
-/*! \cond
-  Doxygen will ignore because it doesn't like this and I don't know why
-*/
 // static members for HLA Exceptions
 const char *RTI::ArrayIndexOutOfBounds::_ex = "ArrayIndexOutOfBounds" ;
 const char *RTI::AsynchronousDeliveryAlreadyDisabled::_ex = "AsynchronousDeliveryAlreadyDisabled" ;
@@ -138,8 +136,9 @@ const char *certi::UnimplementedService::_ex = "UnimplementedService" ;
 const char *certi::UnknownLabel::_ex = "UnknownLabel" ;
 const char *certi::NetworkError::_ex = "NetworkError" ;
 const char *certi::NetworkSignal::_ex = "NetworkSignal" ;
-/*! \endcond
-*/
+
+static PrettyDebug PD_Exception("RTI_EXCEPTION",__FILE__);
+
 RTI::Exception::~Exception()
 {
 }
@@ -147,13 +146,13 @@ RTI::Exception::~Exception()
 RTI::Exception::Exception(const char *reason)
 {
     _reason = const_cast<char *>(reason);
-    _serial = 0 ;
+    _serial = 0 ;    
 }
 
 RTI::Exception::Exception(ULong serial, const char *reason)
 {
     _serial = serial ;
-    _reason = const_cast<char *>(reason);
+    _reason = const_cast<char *>(reason);      
 }
 
 
@@ -161,29 +160,50 @@ RTI::Exception::Exception(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
     _reason = toCopy._reason ;
-    _name = toCopy._name ;
+    _name = toCopy._name ;    
 }
 
 RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
     _reason = toCopy._reason ;
-    _name = toCopy._name ;
-
+    _name = toCopy._name ;    
     return *this ;
+}
+
+const char* RTI::Exception::displayMe() const {
+		
+	std::stringstream msg;
+		
+	msg << "RTI::Exception [";
+	 if (NULL!=_name) {
+		msg <<_name;
+	 } else {
+		 msg<<"<noname>";
+	 }
+	 msg <<",0x"<<std::hex<<_serial<<"]";
+	 msg << " - reason=";
+	 if (NULL !=_reason) {
+		 msg << _reason;
+	 } else {
+		 msg << "<noreason>";
+	 }
+	 msg << std::endl;
+	 msg << std::flush;
+	 
+	 PD_Exception[pdExcept] << msg.str().c_str();
+	 return msg.str().c_str();
 }
 
 RTI_STD::ostream &
 operator<<(RTI_STD::ostream &os, RTI::Exception const &ex) {
- os << ex._reason;
- return os;
+  // FIXME
+ return os << ex.displayMe();
 }
 
 RTI_STD::ostream &
  operator<<(RTI_STD::ostream &os, RTI::Exception *ex) {
- os << ex->_reason;
- return os;
+ assert(ex);
+ return os<<(*ex);
 }
 
-
-// $Id: Exception.cc,v 3.8 2007/08/27 13:18:43 erk Exp $$

@@ -23,23 +23,24 @@ public:
     ULong _serial ;
     char *_reason ;
     const char *_name ;
-    Exception(const char *reason);
-    Exception(ULong serial, const char *reason = 0);
+    Exception(const char *reason = NULL);
+    Exception(ULong serial, const char *reason = NULL);
     Exception(const Exception &toCopy);
     virtual ~Exception();
     Exception &operator=(const Exception &);
     virtual Exception *cloneSelf() const throw() = 0 ;
-    virtual void throwSelf() const = 0 ;
+    virtual void throwSelf() const = 0 ;	
+	const char* displayMe() const;
 };
 
 #define RTI_EXCEPT(A) \
 class CERTI_EXPORT A : public Exception { \
 public: \
     static const char *_ex ; \
-    A (const char *reason) : Exception(reason) { _name = _ex ; } \
+    A (const char *reason) : Exception(reason) { _name = #A ; this->displayMe();} \
     A (ULong serial, const char *reason = 0) \
-        : Exception(serial, reason) { _name = _ex ; } \
-    A (A const &toCopy) : Exception(toCopy) { _name = _ex ; } \
+        : Exception(serial, reason) { _name = #A ; this->displayMe(); } \
+    A (A const &toCopy) : Exception(toCopy) { _name = #A ; this->displayMe();} \
     Exception *cloneSelf() const throw() { return (new A(_reason)); } \
     void throwSelf() const { throw *this ; } \
 };
