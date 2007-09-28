@@ -29,7 +29,12 @@
  * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html 
  * or other hardware assisted clock like Pentium TSC.
  */
+ 
+#if defined(_WIN32) && defined(_MSC_VER) 
+#define	uint64_t			unsigned __int64
+#else
 #include <stdint.h>
+#endif
 #include <string>
 
 namespace certi {
