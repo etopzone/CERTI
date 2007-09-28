@@ -1,3 +1,131 @@
+2007-09-27 15:59  erk
+
+	* include/RTI.hh, include/baseTypes.hh, libCERTI/Exception.cc,
+	  libCERTI/ObjectClass.cc, libCERTI/ObjectClassSet.cc,
+	  libCERTI/ObjectSet.cc, test/utility/.cvsignore: Add
+	  RTI::Exception tracability mechanism.  If you want to see
+	  Exception.  set env var
+
+	  RTI_EXCEPTION to X
+
+2007-09-26 16:15  erk
+
+	* CMakeLists.txt, configure.in: Bump version in order to take into
+	  account several CERTI for Windows update
+
+2007-09-26 16:15  erk
+
+	* libCERTI/CMakeLists.txt, libRTI/CMakeLists.txt: Add .def file
+	  generation (and installation) when compiling with MinGW
+
+2007-09-26 16:14  erk
+
+	* include/fedtime.hh: Move from RTI_EXPORT to CERTI_EXPORT because
+	  the operator is implemented in libCERTI (and not libRTI)
+
+2007-09-25 15:42  erk
+
+	* include/RTItypes.hh: Export more symbols.  This is a preliminary
+	  fix for bug #21124 : Fedtime Library problem
+
+2007-09-25 15:25  erk
+
+	* include/certi.hh: Correct typo from Windows update
+
+2007-09-25 15:18  erk
+
+	* test/Billard/Billard.cc, RTIG/Federation.cc, include/RTI.hh,
+	  include/certi.hh, libCERTI/SocketMC.hh, test/Billard/Billard.hh:
+	  Update for compiling with mingw32 (should be OK both for DevC++
+	  and EclipseCDT/Wascana)
+
+2007-09-25 11:21  erk
+
+	* CMakeLists.txt: Display message when X11 not found
+
+2007-09-24 16:54  erk
+
+	* CMakeLists.txt: Updatenaming scheme on Windows platform
+
+2007-09-20 16:19  erk
+
+	* libCERTI/CMakeLists.txt, libRTI/CMakeLists.txt: Update SOVERSION
+	  for shared lib in order to be consistent with the value used by
+	  our autotools build
+
+2007-09-19 13:58  erk
+
+	* scripts/UseCERTI.cmake: Add a preliminary UseCERTI.cmake macro
+	  file.
+
+2007-09-19 13:58  erk
+
+	* scripts/FindCERTI.cmake: Added MESSAGE for lib search.  Implement
+	  cleaner way to use CERTI_HOME (if defined)
+
+2007-09-12 09:46  erk
+
+	* configure.in, CMakeLists.txt: Bump version from 3.2.5pre4 to
+	  3.2.5pre5
+
+2007-09-12 09:44  erk
+
+	* doc/Makefile.am: Update AutoXXX files
+
+2007-09-04 10:33  erk
+
+	* libRTI/RTIambPrivateRefs.cc, RTIG/RTIG_processing.cc: Added
+	  comment for possible bug.  In particular bug #19869
+
+2007-09-03 15:59  erk
+
+	* libCERTI/RoutingSpace.hh, RTIG/RTIG.hh, libCERTI/Dimension.hh,
+	  libRTI/RTIambassador.cc: More doxygen doc clean-up and less
+	  unnecessary include
+
+2007-09-03 15:26  erk
+
+	* libCERTI/: Dimension.cc, Dimension.hh, Extent.hh, Handled.hh,
+	  RoutingSpace.cc, RoutingSpace.hh: Improve Doxygen doc
+
+2007-08-31 15:43  erk
+
+	* libCERTI/: XmlParser.cc, XmlParser.hh: More doxygen documentation
+	  for Xml Parser please.
+
+2007-08-31 14:47  erk
+
+	* libCERTI/Named.cc, libCERTI/Named.hh, libCERTI/Parameter.cc,
+	  libCERTI/Parameter.hh, libCERTI/RoutingSpace.cc,
+	  libCERTI/RoutingSpace.hh, libCERTI/XmlParser.cc,
+	  libCERTI/XmlParser.hh, RTIG/Federation.cc,
+	  scripts/FindCERTI.cmake: Correct bug #19576 : XmlParser's memory
+	  leak bug Plus some cosmetic change in order to avoid
+	  setName/getName duplication.	All class which needs this now
+	  inherits from Named.
+
+2007-08-29 15:09  erk
+
+	* libCERTI/: Interaction.cc, fed.cc: Correct bug #20727 : Syntax
+	  error on valid file? We should always set up the element BEFORE
+	  adding it to container.  This has been done for parameter (of an
+	  interaction class) and for attributes.
+
+2007-08-29 15:07  erk
+
+	* libCERTI/syntax.yy: Type declaration mismatch for extern var
+
+2007-08-29 11:48  rousse
+
+	* ChangeLog, RTIA/FederationManagement.cc, RTIG/Federate.cc,
+	  RTIG/Federation.cc, libRTI/RTIambassador.cc,
+	  test/Billard/Billard.cc, test/Billard/Billard.hh,
+	  test/Billard/main.cc: Correction (enlever UnimplementedService)
+	  sur la definition de registerFederatio nSynchronizationPoint et
+	  test rajoute dans le billard
+	  registerFederationSynchronizationPoint definition corection
+	  (UnimplementedServic e deleted) and add test on billard
+
 2007-08-27 16:46  erk
 
 	* test/Billard/cmdline.h: Calm down compiler warning xxxx_given

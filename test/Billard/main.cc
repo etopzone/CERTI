@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.19 2007/08/29 09:48:07 rousse Exp $
+// $Id: main.cc,v 3.20 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -209,7 +209,8 @@ main(int argc, char **argv)
                     }
                 else
                     {
-                    std::cout<<"Creator stops after 10 steps"<<std::endl;
+                    std::cout<<"Creator stops after 10 steps for synchro with" 
+                               " friend"<<std::endl;
                     billard->pause_friend() ;
                     }
                 numstep++;

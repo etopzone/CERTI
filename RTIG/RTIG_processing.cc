@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.40 2007/09/04 08:33:15 erk Exp $
+// $Id: RTIG_processing.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -449,10 +449,22 @@ RTIG::processSynchronizationAchieved(Socket *, NetworkMessage *req)
 void
 RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"BEGIN ** REQUEST FEDERATION SAVE SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processRequestFederationSave");
+
     auditServer << "Federation save request." ;
 
-    federations.requestFederationSave(req->federation, req->federate,
-                                       req->label, req->date);
+    if ( req->boolean )
+        // With time
+        federations.requestFederationSave(req->federation, req->federate,
+                                          req->label, req->date);
+    else
+        // Without time
+        federations.requestFederationSave(req->federation, req->federate,
+                                          req->label);
+
+    G.Out(pdGendoc,"exit  RTIG::processRequestFederationSave");
+    G.Out(pdGendoc,"END   ** REQUEST FEDERATION SAVE SERVICE **");
 }
 // ----------------------------------------------------------------------------
 void
@@ -1265,4 +1277,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.40 2007/09/04 08:33:15 erk Exp $
+// $Id: RTIG_processing.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.44 2007/08/27 14:13:50 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.45 2007/09/28 14:07:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -188,6 +188,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                 (unsigned short)req->handleArraySize, req->handleArray, e);
         else
             fm->registerSynchronization(req->getLabel(), req->getTag(), e);
+        // Don't forget boolean for the answer
+        rep.setBoolean(req->getBoolean()) ;
         break ;
 
       case Message::SYNCHRONIZATION_POINT_ACHIEVED:
@@ -197,10 +199,22 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::REQUEST_FEDERATION_SAVE:
-        D.Out(pdTrace, "Receiving Message from Federate, type"
-              " RequestFederationSave.");
-
-        fm->requestFederationSave(req->getLabel(), req->getFederationTime(), e);
+        // boolean true means with time
+        if ( req->getBoolean() )
+            {
+            D.Out(pdTrace, "Receiving Message from Federate, type"
+                           " RequestFederationSave with time.");
+            fm->requestFederationSave(req->getLabel(),req->getFederationTime(),
+                                      e);
+            }
+        else
+            {
+            D.Out(pdTrace, "Receiving Message from Federate, type"
+                           " RequestFederationSave without time.");
+            fm->requestFederationSave(req->getLabel(),e);
+            }
+        // Don't forget boolean value (req Message) for the answer (rep Message)
+        rep.setBoolean(req->getBoolean()) ;
         break ;
 
       case Message::FEDERATE_SAVE_BEGUN:
@@ -320,8 +334,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           try {
               if (req->getBoolean() )
                   {
-                  D.Out(pdTrace,
-   "Receiving Message from Federate, type UpdateAttribValues with TIMESTAMP.");
+                  D.Out(pdTrace,"Receiving Message from Federate, type "
+                                "UpdateAttribValues with TIMESTAMP.");
                   rep.setEventRetraction(
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
@@ -333,8 +347,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   }
               else
                   {
-                  D.Out(pdTrace,
-   "Receiving Message from Federate, type UpdateAttribValues without TIMESTAMP.");
+                  D.Out(pdTrace,"Receiving Message from Federate, type "
+                                "UpdateAttribValues without TIMESTAMP.");
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
                                             ValueArray,
@@ -342,6 +356,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                             req->getTag(),
                                             e);
                   }
+              // Don't forget boolean value for the answer
+              rep.setBoolean(req->getBoolean()) ;
               free(ValueArray);
           } catch (Exception *e) {
               free(ValueArray);
@@ -1181,4 +1197,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.44 2007/08/27 14:13:50 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.45 2007/09/28 14:07:53 rousse Exp $

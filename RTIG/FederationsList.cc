@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.40 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationsList.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1374,12 +1374,15 @@ ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
 }
 
 // ----------------------------------------------------------------------------
+// requestFederationSave with time
 void
 FederationsList::requestFederationSave(Handle the_federation,
                                        FederateHandle the_federate,
                                        const char *the_label,
                                        FederationTime the_time)
 {
+    G.Out(pdGendoc,"enter FederationsList::requestFederationSave with time");
+
     checkHandle(the_federation);
 
     // It may throw FederationExecutionDoesNotExist
@@ -1387,8 +1390,29 @@ FederationsList::requestFederationSave(Handle the_federation,
     searchFederation(the_federation, federation);
 
     federation->requestFederationSave(the_federate, the_label, the_time);
+
+    G.Out(pdGendoc,"exit  FederationsList::requestFederationSave with time");
 }
 
+// ----------------------------------------------------------------------------
+// requestFederationSave without time
+void
+FederationsList::requestFederationSave(Handle the_federation,
+                                       FederateHandle the_federate,
+                                       const char *the_label)
+{
+    G.Out(pdGendoc,"enter FederationsList::requestFederationSave without time");
+
+    checkHandle(the_federation);
+
+    // It may throw FederationExecutionDoesNotExist
+    Federation *federation = 0 ;
+    searchFederation(the_federation, federation);
+
+    federation->requestFederationSave(the_federate, the_label);
+
+    G.Out(pdGendoc,"exit  FederationsList::requestFederationSave without time");
+}
 // ----------------------------------------------------------------------------
 void
 FederationsList::federateSaveBegun(Handle the_federation,
@@ -1450,5 +1474,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.40 2007/08/27 14:13:50 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.51 2007/09/03 13:59:48 erk Exp $
+// $Id: RTIambassador.cc,v 3.52 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -540,6 +540,7 @@ req.setFEDid(FED);
 	if(!strcasecmp(FED,exeName)) {
 #endif
 }*/
+G.Out(pdGendoc,"                     ====>executeService CREATE_FEDERATION_EXECUTION");
 
 privateRefs->executeService(&req, &rep);
 
@@ -579,6 +580,8 @@ RTI::RTIambassador::joinFederationExecution(const char *yourName,
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::joinFederationExecution");
+
     privateRefs->fed_amb = (FederateAmbassador *) fedamb ;
 
     req.type = Message::JOIN_FEDERATION_EXECUTION ;
@@ -586,6 +589,7 @@ RTI::RTIambassador::joinFederationExecution(const char *yourName,
     req.setFederationName(executionName);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::joinFederationExecution");
     return rep.getFederate();
 }
 
@@ -702,14 +706,18 @@ RTI::RTIambassador::synchronizationPointAchieved(const char *label)
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::synchronizationPointAchieved");
+
     req.type = Message::SYNCHRONIZATION_POINT_ACHIEVED ;
     req.setLabel(label);
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  RTIambassador::synchronizationPointAchieved");
 }
 
 // ----------------------------------------------------------------------------
-//! Request Federation Save.
+//! Request Federation Save with time.
 void
 RTI::RTIambassador::requestFederationSave(const char *label,
                                      const FedTime& theTime)
@@ -721,19 +729,26 @@ RTI::RTIambassador::requestFederationSave(const char *label,
            RestoreInProgress,
            RTIinternalError)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
+    G.Out(pdGendoc,"enter RTIambassador::requestFederationSave with time");
 
     req.type = Message::REQUEST_FEDERATION_SAVE ;
     req.setFedTime(theTime);
     req.setLabel(label);
+    // boolean true means time constrained
     req.setBoolean(true);
 
+    G.Out(pdGendoc,"      requestFederationSave===>executeService "
+                   "REQUEST_FEDERATION_SAVE");
+
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::requestFederationSave with time");
 }
 
 // ----------------------------------------------------------------------------
-//! Request Federation Save.
+//! Request Federation Save without time.
 void
 RTI::RTIambassador::requestFederationSave(const char *label)
     throw (FederateNotExecutionMember,
@@ -742,14 +757,20 @@ RTI::RTIambassador::requestFederationSave(const char *label)
            RestoreInProgress,
            RTIinternalError)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
+    G.Out(pdGendoc,"enter RTIambassador::requestFederationSave without time");
 
     req.type = Message::REQUEST_FEDERATION_SAVE ;
     req.setLabel(label);
+    // boolean false means without time
     req.setBoolean(false);
 
+    G.Out(pdGendoc,"      ====>executeService for REQUEST_FEDERATION_SAVE");
+
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  RTIambassador::requestFederationSave without time");
 }
 
 // ----------------------------------------------------------------------------
@@ -762,12 +783,15 @@ RTI::RTIambassador::federateSaveBegun()
            RestoreInProgress,
            RTIinternalError)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
+    G.Out(pdGendoc,"enter RTIambassador::federateSaveBegun");
 
     req.type = Message::FEDERATE_SAVE_BEGUN ;
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  RTIambassador::federateSaveBegun");
 }
 
 // ----------------------------------------------------------------------------
@@ -783,9 +807,12 @@ RTI::RTIambassador::federateSaveComplete()
     throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::federateSaveComplete");
+
     req.type = Message::FEDERATE_SAVE_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::federateSaveComplete");
 }
 
 // ----------------------------------------------------------------------------
@@ -801,9 +828,13 @@ RTI::RTIambassador::federateSaveNotComplete()
     throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::federateSaveNotComplete");
+
     req.type = Message::FEDERATE_SAVE_NOT_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  RTIambassador::federateSaveNotComplete");
 }
 
 // ----------------------------------------------------------------------------
@@ -816,10 +847,13 @@ RTI::RTIambassador::requestFederationRestore(const char *label)
     throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::requestFederationRestore");
+
     req.type = Message::REQUEST_FEDERATION_RESTORE ;
     req.setLabel(label);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::requestFederationRestore");
 }
 
 // ----------------------------------------------------------------------------
@@ -833,9 +867,12 @@ RTI::RTIambassador::federateRestoreComplete()
     throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::federateRestoreComplete");
+
     req.type = Message::FEDERATE_RESTORE_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::federateRestoreComplete");
 }
 
 // ----------------------------------------------------------------------------
@@ -849,9 +886,12 @@ RTI::RTIambassador::federateRestoreNotComplete()
     throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::federateRestoreNotComplete");
+
     req.type = Message::FEDERATE_RESTORE_NOT_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::federateRestoreNotComplete");
 }
 
 // ----------------------------------------------------------------------------
@@ -866,11 +906,14 @@ RTI::RTIambassador::publishObjectClass(ObjectClassHandle theClass,
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::publishObjectClass");
+
     req.type = Message::PUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     req.setAHS(attributeList);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::publishObjectClass");
 }
 
 // ----------------------------------------------------------------------------
@@ -884,9 +927,12 @@ RTI::RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
 {
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::unpublishObjectClass");
+
     req.type = Message::UNPUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::unpublishObjectClass");
 }
 
 
@@ -2803,4 +2849,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.51 2007/09/03 13:59:48 erk Exp $
+// $Id: RTIambassador.cc,v 3.52 2007/09/28 14:07:54 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.41 2007/08/27 14:13:50 rousse Exp $
+// $Id: Federation.hh,v 3.42 2007/09/28 14:07:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -198,6 +198,9 @@ public:
     // Save Management.
     void requestFederationSave(FederateHandle, const char *, FederationTime)
         throw (FederateNotExecutionMember, SaveInProgress);
+    void requestFederationSave(FederateHandle, const char *)
+        throw (FederateNotExecutionMember, SaveInProgress);
+
 
     void federateSaveBegun(FederateHandle)
         throw (FederateNotExecutionMember);
@@ -573,4 +576,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.41 2007/08/27 14:13:50 rousse Exp $
+// $Id: Federation.hh,v 3.42 2007/09/28 14:07:53 rousse Exp $

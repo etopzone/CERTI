@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.64 2007/09/25 13:18:27 erk Exp $
+// $Id: Federation.cc,v 3.65 2007/09/28 14:07:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -902,16 +902,18 @@ Federation::broadcastSynchronization(FederateHandle federate,
 
 
 // ----------------------------------------------------------------------------
-//! Request a federation save.
+//! Request a federation save with time.
 /*! This service puts each federate from federation in saving state.
   !! the_time is not managed yet.
 */
 void
 Federation::requestFederationSave(FederateHandle the_federate,
                                   const char *the_label,
-                                  FederationTime /* the_time */)
+                                  FederationTime time )
     throw (FederateNotExecutionMember, SaveInProgress)
 {
+    G.Out(pdGendoc,"enter Federation::requestFederationSave with time");
+
     check(the_federate);
 
     if (saveInProgress)
@@ -930,10 +932,57 @@ Federation::requestFederationSave(FederateHandle the_federate,
     msg.federate = the_federate ;
     msg.federation = handle ;
     msg.setLabel(the_label);
+    // boolean true means with time and needs time
+    msg.setBoolean(true);
+    msg.date = time;
+
+    G.Out(pdGendoc,"      requestFederationSave====>broadcast I_F_S to all");
 
     broadcastAnyMessage(&msg, 0);
+
+    G.Out(pdGendoc,"exit  Federation::requestFederationSave with time");
 }
 
+// ----------------------------------------------------------------------------
+//! Request a federation save without time.
+/*! This service puts each federate from federation in saving state.
+  !! the_time is not managed yet.
+*/
+void
+Federation::requestFederationSave(FederateHandle the_federate,
+                                  const char *the_label)
+    throw (FederateNotExecutionMember, SaveInProgress)
+{
+    G.Out(pdGendoc,"enter Federation::requestFederationSave without time");
+
+    check(the_federate);
+
+    if (saveInProgress)
+        throw SaveInProgress("Already in saving state.");
+
+    for (FederateList::iterator j = federates.begin(); j != federates.end(); ++j) {
+        j->setSaving(true);
+    }
+
+    saveStatus = true ;
+    saveInProgress = true ;
+    saveLabel = the_label ;
+
+    NetworkMessage msg ;
+    msg.type = NetworkMessage::INITIATE_FEDERATE_SAVE ;
+    msg.federate = the_federate ;
+    msg.federation = handle ;
+    msg.setLabel(the_label);
+    // boolean false means without time
+    msg.setBoolean(false);
+
+    G.Out(pdGendoc,"                  requestFederationSave====>broadcast I_F_S"
+                   " to all");
+   
+    broadcastAnyMessage(&msg, 0);
+
+    G.Out(pdGendoc,"exit  Federation::requestFederationSave without time");
+}
 // ----------------------------------------------------------------------------
 /*! Received from a federate to inform a save has been received and is being
   processed.
@@ -2128,5 +2177,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.64 2007/09/25 13:18:27 erk Exp $
+// $Id: Federation.cc,v 3.65 2007/09/28 14:07:53 rousse Exp $
 

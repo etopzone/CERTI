@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.33 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationsList.hh,v 3.34 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -130,8 +130,14 @@ public:
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
-    void requestFederationSave(Handle, FederateHandle, const char *,
-                               FederationTime);
+    void requestFederationSave(Handle the_federation, 
+                               FederateHandle the_federate, 
+                               const char *the_label,
+                               FederationTime the_time);
+
+    void requestFederationSave(Handle the_federation, 
+                               FederateHandle the_federate,
+                               const char *the_label);
 
     void federateSaveBegun(Handle, FederateHandle);
     void federateSaveStatus(Handle, FederateHandle, bool);
@@ -556,4 +562,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.33 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationsList.hh,v 3.34 2007/09/28 14:07:54 rousse Exp $

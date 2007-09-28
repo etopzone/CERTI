@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.36 2007/08/27 14:13:51 rousse Exp $
+// $Id: Message_RW.cc,v 3.37 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -30,6 +30,7 @@ using std::vector ;
 namespace certi {
 
 static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // You can comment this out if you don't want to optimize network messages.
 #define USE_HEADER_AND_BODY
@@ -116,12 +117,20 @@ Message::readBody(SocketUN *socket)
           case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
           case SYNCHRONIZATION_POINT_ACHIEVED:
           case FEDERATION_SYNCHRONIZED:
-          case REQUEST_FEDERATION_SAVE:
-          case INITIATE_FEDERATE_SAVE:
           case REQUEST_FEDERATION_RESTORE:
           case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
           case INITIATE_FEDERATE_RESTORE:
             readLabel(body);
+            break ;
+
+          case INITIATE_FEDERATE_SAVE:
+            readLabel(body);
+            break ;
+
+          case REQUEST_FEDERATION_SAVE:
+            readLabel(body);
+            // boolean true means with time (in the header)
+            boolean = body.readLongInt();
             break ;
 
           case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
@@ -445,6 +454,11 @@ Message::readHeader(SocketUN *socket)
 
         // --- MessageO_I_Struct, body not Empty ---
 
+      // RFS without time will receive date=0
+      case REQUEST_FEDERATION_SAVE:
+        setFederationTime(header.VP.O_I.date);
+      break ;
+
       case PUBLISH_OBJECT_CLASS: // Body contains HandleArray
       case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES: // Body contains HandleArray
       case REGISTER_OBJECT_INSTANCE: // Body contains object
@@ -693,6 +707,16 @@ Message::writeBody(SocketUN *socket)
                 writeHandleArray(body);
                 }
             break ;
+
+          // RFS needs label and boolean in the body and time in the header
+          case REQUEST_FEDERATION_SAVE:
+            body.writeString(label);
+            body.writeLongInt(boolean);
+            break;
+
+          case INITIATE_FEDERATE_SAVE:
+            body.writeString(label);
+            break;
 
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
@@ -1018,10 +1042,18 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
       case REQUEST_FEDERATION_SAVE: // Body contains Label
-        header.VP.O_I.date = getFederationTime() ;
+        // RFS with time (boolean=true) needs date
+        if ( boolean )
+            header.VP.O_I.date = getFederationTime() ;
+        else
+            header.VP.O_I.date = 0 ;
         header.bodySize = 1 ;
         break ;
 
+      case INITIATE_FEDERATE_SAVE: // Body contains label
+        header.bodySize = 1 ;
+        break ;
+        
       case FEDERATE_SAVE_BEGUN:
       case FEDERATE_SAVE_COMPLETE:
       case FEDERATE_SAVE_NOT_COMPLETE:
@@ -1239,4 +1271,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.36 2007/08/27 14:13:51 rousse Exp $
+// $Id: Message_RW.cc,v 3.37 2007/09/28 14:07:54 rousse Exp $

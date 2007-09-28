@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.30 2007/08/27 14:13:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.31 2007/09/28 14:07:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,6 +31,7 @@ using std::cout;
 namespace certi {
 
 static pdCDebug D("RTIG_MSG","(NetWorkMS) - ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 void NetworkMessage::trace(const char* context)
@@ -137,12 +138,22 @@ NetworkMessage::readBody(Socket *socket)
       case SYNCHRONIZATION_POINT_ACHIEVED:
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case FEDERATION_SYNCHRONIZED:
-      case REQUEST_FEDERATION_SAVE:
-      case INITIATE_FEDERATE_SAVE:
       case REQUEST_FEDERATION_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case INITIATE_FEDERATE_RESTORE:
 	readLabel(body);
+	break ;
+
+      case INITIATE_FEDERATE_SAVE:
+	readLabel(body);
+        // boolean true means with time (in the header)
+	boolean = body.readLongInt();
+	break ;
+
+      case REQUEST_FEDERATION_SAVE:
+	readLabel(body);
+        // boolean true means with time (in the header)
+        boolean = body.readLongInt();
 	break ;
 	
       case REQUEST_FEDERATION_RESTORE_FAILED:
@@ -292,8 +303,11 @@ NetworkMessage::readHeader(Socket *socket)
     // 2- Parse Header according to its type(Variable Part)
     switch (Header.type) {
       case MESSAGE_NULL:
-      case REQUEST_FEDERATION_SAVE:
 	date = Header.VP.time.date ;
+	break ;
+
+      case REQUEST_FEDERATION_SAVE:
+	date = Header.VP.O_I.date ;
 	break ;
 
       case UPDATE_ATTRIBUTE_VALUES:
@@ -311,6 +325,9 @@ NetworkMessage::readHeader(Socket *socket)
 	break ;
 
       case INITIATE_FEDERATE_SAVE:
+	date = Header.VP.O_I.date ;
+	break ;
+
       case REQUEST_FEDERATION_RESTORE:
       case INITIATE_FEDERATE_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
@@ -533,12 +550,22 @@ NetworkMessage::writeBody(Socket *socket)
       case SYNCHRONIZATION_POINT_ACHIEVED:
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case FEDERATION_SYNCHRONIZED:
-      case REQUEST_FEDERATION_SAVE:
-      case INITIATE_FEDERATE_SAVE:
       case REQUEST_FEDERATION_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case INITIATE_FEDERATE_RESTORE:
 	body.writeString(label);
+	break ;
+
+      case INITIATE_FEDERATE_SAVE:
+	body.writeString(label);
+        // boolean true means with time (in the header)
+        body.writeLongInt(boolean);
+	break ;
+
+      case REQUEST_FEDERATION_SAVE:
+        body.writeString(label);
+        // boolean true means with time (in the header)
+        body.writeLongInt(boolean);
 	break ;
 
       case REQUEST_FEDERATION_RESTORE_FAILED:
@@ -724,10 +751,18 @@ NetworkMessage::writeHeader(Socket *socket)
 
       case REQUEST_FEDERATION_SAVE:
 	Header.bodySize = 1 ;
-	Header.VP.O_I.date = date ;
+        // boolean true means with time
+        if ( boolean)
+	    Header.VP.O_I.date = date ;
 	break ;
 
       case INITIATE_FEDERATE_SAVE:
+        // boolean true means with time
+        if ( boolean)
+	    Header.VP.O_I.date = date ;
+	Header.bodySize = 1 ;
+	break ;
+
       case REQUEST_FEDERATION_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case REQUEST_FEDERATION_RESTORE_FAILED:
@@ -902,4 +937,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.30 2007/08/27 14:13:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.31 2007/09/28 14:07:54 rousse Exp $

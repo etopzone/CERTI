@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.29 2007/08/29 09:48:06 rousse Exp $
+// $Id: FederationManagement.cc,v 3.30 2007/09/28 14:07:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -615,12 +615,15 @@ FederationManagement::federationSynchronized(const char *label)
 }
 
 // ----------------------------------------------------------------------------
+// requestFederationSave with time
 void
 FederationManagement::requestFederationSave(const char *label,
                                             FederationTime the_time,
-                                            TypeException &)
+                                            TypeException &e)
 {
     D.Out(pdInit, "Request for federation save \"%s\".", label);
+    G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
+                   "with time");
 
     assert(label != 0);
 
@@ -628,12 +631,47 @@ FederationManagement::requestFederationSave(const char *label,
     req.type = NetworkMessage::REQUEST_FEDERATION_SAVE ;
     req.date = the_time ;
     req.setLabel(label);
+    req.federation = _numero_federation ;
+    req.federate = federate ;
+    // boolean true because with time
+    req.setBoolean(true);
+
+    G.Out(pdGendoc,"      requestFederationSave====>send Message R_F_S to RTIG");
+
     comm->sendMessage(&req);
 
     // Should make sure that RTIG don't have any save or restore recently set.
     // NetworkMessage rep ;
     // comm->waitMessage(&rep, NetworkMessage::REQUEST_FEDERATION_SAVE, federate);
     // e = rep.exception ;
+}
+
+// ----------------------------------------------------------------------------
+// requestFederationSave without time
+void
+FederationManagement::requestFederationSave(const char *label,
+                                            TypeException &e)
+{
+    D.Out(pdInit, "Request for federation save \"%s\".", label);
+    G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
+                   "without time");
+
+    assert(label != 0);
+
+    NetworkMessage req ;
+    req.type = NetworkMessage::REQUEST_FEDERATION_SAVE ;
+    req.setLabel(label);
+    req.federation = _numero_federation ;
+    req.federate = federate ;
+    // boolean false because without time
+    req.setBoolean(false);
+
+    G.Out(pdGendoc,"      requestFederationSave====>send Message R_F_S to RTIG");
+
+    comm->sendMessage(&req);
+
+    G.Out(pdGendoc,"exit  FederationManagement::requestFederationSave "
+                   "without time");
 }
 
 // ----------------------------------------------------------------------------
@@ -672,6 +710,7 @@ FederationManagement::federateSaveStatus(bool status, TypeException &)
 void
 FederationManagement::initiateFederateSave(const char *label)
 {
+    G.Out(pdGendoc,"enter FederationManagement::initiateFederateSave");
     D.Out(pdInit, "Initiate a federate save \"%s\".", label);
 
     savingState = true ;
@@ -684,6 +723,8 @@ FederationManagement::initiateFederateSave(const char *label)
     req.setLabel(label);
 
     comm->requestFederateService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  FederationManagement::initiateFederateSave");
 }
 
 // ----------------------------------------------------------------------------
@@ -831,4 +872,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.29 2007/08/29 09:48:06 rousse Exp $
+// $Id: FederationManagement.cc,v 3.30 2007/09/28 14:07:53 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.16 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationManagement.hh,v 3.17 2007/09/28 14:07:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -75,10 +75,11 @@ public:
                                       const char *tag);
 
     // Saving.
-    void requestFederationSave(const char *, FederationTime, TypeException &);
+    void requestFederationSave(const char *label, FederationTime the_time, TypeException &e);
+    void requestFederationSave(const char *label, TypeException &e);
     void federateSaveBegun(TypeException &);
     void federateSaveStatus(bool, TypeException &);
-    void initiateFederateSave(const char *);
+    void initiateFederateSave(const char *label);
     void federationSavedStatus(bool);
 
     // Restoring.
@@ -120,4 +121,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.16 2007/08/27 14:13:50 rousse Exp $
+// $Id: FederationManagement.hh,v 3.17 2007/09/28 14:07:53 rousse Exp $
