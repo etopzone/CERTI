@@ -23,8 +23,8 @@ public:
     ULong _serial ;
     char *_reason ;
     const char *_name ;
-    Exception(const char *reason = NULL);
-    Exception(ULong serial, const char *reason = NULL);
+    Exception(const char *reason);
+    Exception(ULong serial, const char *reason);
     Exception(const Exception &toCopy);
     virtual ~Exception();
     Exception &operator=(const Exception &);
