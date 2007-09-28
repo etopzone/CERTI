@@ -208,8 +208,10 @@ IF (WIN32)
     SET(CPACK_SOURCE_GENERATOR "ZIP")
     SET(CPACK_GENERATOR "NSIS;ZIP")
     ## Add a custom target callable from IDE (Mostly for Visual Studio)
+    GET_FILENAME_COMPONENT(CPACK_COMMAND ${CMAKE_COMMAND} PATH)
+    SET(CPACK_COMMAND ${CPACK_COMMAND}/cpack)
     ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
-              COMMAND cpack -G ZIP --config CPackSourceConfig.cmake
+              COMMAND ${CPACK_COMMAND} -G ZIP --config CPackSourceConfig.cmake
               COMMENTS "Build a ZIP file containing the source")
               
     # NSIS installer specific part
