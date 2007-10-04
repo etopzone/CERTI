@@ -1,3 +1,30 @@
+2007-09-28 17:27  erk
+
+	* CMakeLists.txt: Help to find CPack even if CPack is not in
+	  "default path"
+
+2007-09-28 17:26  erk
+
+	* libCERTI/Clock.hh: MSVC backport for missing <stdint.h> and
+	  uint64_t
+
+2007-09-28 17:22  erk
+
+	* include/baseTypes.hh: Change back default arg value since it
+	  worry MSVC with a link error (to be investigated later).
+
+2007-09-28 16:07  rousse
+
+	* ChangeLog, RTIA/Communications.cc, RTIA/FederationManagement.cc,
+	  RTIA/FederationManagement.hh, RTIA/RTIA_federate.cc,
+	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
+	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
+	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage_RW.cc,
+	  libRTI/RTIambassador.cc, test/Billard/Billard.hh,
+	  test/Billard/main.cc: Debut realisation du
+	  REQUEST_FEDERATION_SAVE (pas encore operationnel) Beginning
+	  REQUEST_FEDERATION_SAVE implementation (not yet implemented)
+
 2007-09-27 15:59  erk
 
 	* include/RTI.hh, include/baseTypes.hh, libCERTI/Exception.cc,

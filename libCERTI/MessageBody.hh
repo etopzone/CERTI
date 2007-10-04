@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: MessageBody.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
+// $Id: MessageBody.hh,v 3.14 2007/10/04 12:47:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_MESSAGE_BODY_HH
@@ -44,22 +44,22 @@ public:
 	MessageBody(size_t);
 	~MessageBody();
 
-	size_t size() const ;													//Buffer size (char)
+	size_t size() const ;					//Buffer size (char)
 	
 	const unsigned char *getBuffer() const ;					
 	unsigned char *getBufferModeRW();
 
 	//--------------------------------------------------------------------------------------OUT
-	MessageBody &operator<<(unsigned long);							//Write Buffer
+	MessageBody &operator<<(unsigned long);			//Write Buffer
 	MessageBody &operator<<(unsigned short);
 
-	void writeString(char *data)								{ sPutS(data);};					
+	void writeString(char *data)				{ sPutS(data);};					
 	void writeBlock(char *block, unsigned short size)	{ sPutB(block, size);};
-	void writeLongInt(unsigned long data)					{ *this << data;};
-	void writeShortInt(unsigned short data)				{ *this << data;};
+	void writeLongInt(unsigned long data)			{ *this << data;};
+	void writeShortInt(unsigned short data)			{ *this << data;};
 		
 	//--------------------------------------------------------------------------------------IN
-	const MessageBody &operator>>(unsigned long &);					//Read Buffer
+	const MessageBody &operator>>(unsigned long &);		//Read Buffer
 	const MessageBody &operator>>(unsigned short &);
 
 	void readString(char *data, unsigned short size)	{ sGetS(data, size);};
@@ -87,4 +87,4 @@ private:
 
 #endif // LIBCERTI_MESSAGE_BODY_HH
 
-// $Id: MessageBody.hh,v 3.13 2007/06/22 08:51:37 erk Exp $
+// $Id: MessageBody.hh,v 3.14 2007/10/04 12:47:30 rousse Exp $
