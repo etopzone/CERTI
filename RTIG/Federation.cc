@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.65 2007/09/28 14:07:53 rousse Exp $
+// $Id: Federation.cc,v 3.66 2007/10/16 09:25:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
+#include <sstream>
 
 #ifdef _WIN32
 
@@ -250,14 +251,15 @@ Federation::Federation(const char *federation_name,
         is_an_xml = true ;
         D.Out(pdTrace, "Trying to use .xml file");
         } 
-    else 
+    else {
         throw CouldNotOpenFED("FED file incorrect filename : nor .fed nor .xml file");
+    }
        
     ifstream fdd(filename.c_str());
 
     if (fdd.is_open())
         {
-	fdd.close();
+    	fdd.close();
         if ( is_a_fed )
             {
 	    int err = fedparser::build(filename.c_str(), root, verbose);
@@ -1175,12 +1177,15 @@ Federate &
 Federation::getFederate(const char *federate_name)
     throw (FederateNotExecutionMember)
 {
+	std::stringstream msg;
+	
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
         if (strcmp(i->getName(), federate_name) == 0)
             return *i ;
     }
 
-    throw FederateNotExecutionMember("Federate Name not found.");
+    msg << "Federate <"<<federate_name<<"> not [yet] member of Federation <" << getName() <<">.";
+    throw FederateNotExecutionMember(msg.str().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2177,5 +2182,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.65 2007/09/28 14:07:53 rousse Exp $
+// $Id: Federation.cc,v 3.66 2007/10/16 09:25:14 erk Exp $
 

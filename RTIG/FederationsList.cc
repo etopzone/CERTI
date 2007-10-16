@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $
+// $Id: FederationsList.cc,v 3.42 2007/10/16 09:25:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -279,8 +279,8 @@ FederationsList::exists(const char *name,
         }
     }
 
-    D.Out(pdDebug, "EstPresent throws FederationExecutionDoesNotExist.");
-    throw FederationExecutionDoesNotExist("");
+    D.Out(pdDebug, "exists throws FederationExecutionDoesNotExist.");
+    throw FederationExecutionDoesNotExist(name);
 }
 
 // ----------------------------------------------------------------------------
@@ -1235,7 +1235,7 @@ FederationsList::associateRegion(Handle federation,
 	       RestoreInProgress, RTIinternalError)
 {
     D[pdDebug] << "Associate region " << region << " for updates." << endl ;
-    D[pdDebug] << "F°:" << federation << ", F:" << federate << endl ;
+    D[pdDebug] << "Fï¿½:" << federation << ", F:" << federate << endl ;
 
     Federation *f = 0 ;
 
@@ -1474,5 +1474,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.41 2007/09/28 14:07:54 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.42 2007/10/16 09:25:44 erk Exp $
 
