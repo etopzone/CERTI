@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.23 2007/07/23 14:13:24 rousse Exp $
+// $Id: Interaction.hh,v 3.24 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -41,9 +41,8 @@ class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
     Interaction();
-    ~Interaction();
-
-    const char *getName() const ;
+    ~Interaction()
+    ;    
     void setName(const char *new_name)
         throw (ValueLengthExceeded, RTIinternalError);
 
@@ -150,8 +149,7 @@ private:
     void deletePublisher(FederateHandle);
     bool isPublishing(FederateHandle);
 
-    // Attributes    
-    std::string name ;
+    // Attributes       
     SecurityLevelID id ; //!< The default Security Level for new parameters
     SpaceHandle space ;
 
@@ -166,4 +164,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.23 2007/07/23 14:13:24 rousse Exp $
+// $Id: Interaction.hh,v 3.24 2007/10/16 09:28:21 erk Exp $

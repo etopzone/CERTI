@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.22 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.23 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -30,13 +30,14 @@
 
 #include <list>
 #include <string>
+#include <map>
 
 namespace certi {
 
 /*! Class ObjectClassSet, qui est la racine de l'arborescence des
   classes d'objets.
 */
-class CERTI_EXPORT ObjectClassSet : private std::list<ObjectClass *>
+class CERTI_EXPORT ObjectClassSet 
 {
 
 public:
@@ -163,6 +164,15 @@ public:
     Object *getObject(ObjectHandle) const throw (ObjectNotKnown);
 
 private:
+	typedef std::map<ObjectClassHandle,ObjectClass*,std::less<ObjectClassHandle> > Handle2ObjectClassMap_t;
+	typedef std::map<std::string,ObjectClass*,std::less<std::string> > Name2ObjectClassMap_t; 
+	typedef Handle2ObjectClassMap_t::const_iterator handledOC_const_iterator; 
+	typedef Name2ObjectClassMap_t::const_iterator namedOC_const_iterator;
+	Handle2ObjectClassMap_t OCFromHandle;	
+	Name2ObjectClassMap_t OCFromName;
+	
+	ObjectClassHandle
+	getFlatObjectClassHandle(std::string class_name) const throw (NameNotFound);
     /*! This object will help to find the TCPLink associated with a Federate.
       This reference is passed to all new ObjectClass.
     */
@@ -176,4 +186,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.22 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.23 2007/10/16 09:28:21 erk Exp $

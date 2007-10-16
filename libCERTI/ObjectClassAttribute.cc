@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.25 2007/07/06 09:25:16 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.26 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -60,7 +60,7 @@ ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *source)
     handle = source->getHandle();
     level = source->level ;
     space = source->getSpace();
-    name = source->name ;
+    setName(source->getName());
     order = source->order ;
     transport = source->transport ;
     server = source->server ;
@@ -157,14 +157,6 @@ ObjectClassAttribute::unpublish(FederateHandle fed)
 }
 
 // ----------------------------------------------------------------------------
-//! Sets the name of this attribute
-void
-ObjectClassAttribute::setName(const char *new_name)
-{
-    name = new_name == 0 ? "" : new_name ;
-}
-
-// ----------------------------------------------------------------------------
 void
 ObjectClassAttribute::setHandle(AttributeHandle h)
 {
@@ -217,4 +209,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.25 2007/07/06 09:25:16 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.26 2007/10/16 09:28:21 erk Exp $

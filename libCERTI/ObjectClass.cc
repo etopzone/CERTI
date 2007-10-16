@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.37 2007/09/27 13:59:33 erk Exp $
+// $Id: ObjectClass.cc,v 3.38 2007/10/16 09:28:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -410,7 +410,7 @@ ObjectClass::getAttributeHandle(const char *the_name) const
 {
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if (strcmp((*a)->getName(), the_name) == 0)
+        if (strcmp((*a)->getCName(), the_name) == 0)
             return (*a)->getHandle();
     }
 
@@ -427,7 +427,7 @@ ObjectClass::getAttributeName(AttributeHandle the_handle) const
     throw (AttributeNotDefined,
            RTIinternalError)
 {
-    return getAttribute(the_handle)->getName();
+    return getAttribute(the_handle)->getCName();
 }
 
 
@@ -648,7 +648,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
 				 *a);
 
         // privilegeToDelete is owned by federate even not published.
-        if (!strcmp((*a)->getName(), "privilegeToDelete")) {
+        if (!strcmp((*a)->getCName(), "privilegeToDelete")) {
             oa->setOwner(the_federate);
         }
 
@@ -957,7 +957,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         oca = getAttribute(theAttributeList[i]);
         oa = object->getAttribute(theAttributeList[i]);
 
-        D.Out(pdDebug, "Attribute Name : %s", oca->getName());
+        D.Out(pdDebug, "Attribute Name : %s", oca->getCName());
         D.Out(pdDebug, "Attribute Handle : %u", oa->getHandle());
         D.Out(pdDebug, "Attribute Owner : %u", oa->getOwner());
         if (oa->getOwner() != theFederateHandle)
@@ -1010,7 +1010,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                     = theAttributeList[i] ;
                 compteur_divestiture++ ;
 
-                if (!strcmp(oca->getName(), "privilegeToDelete")) {
+                if (!strcmp(oca->getCName(), "privilegeToDelete")) {
                     object->setOwner(NewOwner);
                 }
             }
@@ -1115,7 +1115,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
             // The federate has to publish attributes he desire to
             // acquire.
             if (!oca->isPublishing(the_federate) &&
-                (strcmp(oca->getName(), "privilegeToDelete")))
+                (strcmp(oca->getCName(), "privilegeToDelete")))
                 throw AttributeNotPublished("");
             // Does federate already owns some attributes.
             if (oa->getOwner() == the_federate)
@@ -1174,7 +1174,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                 compteur_notification++ ;
                 //object->Owner reste le champ de r�f�rence
                 //pour le privilegeToDelete
-                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                if (strcmp(oca->getCName(), "privilegeToDelete") == 0)
                     object->setOwner(the_federate);
             }
             else {
@@ -1286,7 +1286,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                     .attribute = oa->getHandle();
                 compteur_acquisition++ ;
 
-                if (!strcmp(oca->getName(), "privilegeToDelete")) {
+                if (!strcmp(oca->getCName(), "privilegeToDelete")) {
                     object->setOwner(NewOwner);
                 }
             }
@@ -1375,7 +1375,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
             throw FederateOwnsAttributes("");
         //Le f�d�r� publie-t-il les attributs
         if (!oca->isPublishing(theFederateHandle) &&
-            (strcmp(oca->getName(), "privilegeToDelete") != 0))
+            (strcmp(oca->getCName(), "privilegeToDelete") != 0))
             throw AttributeNotPublished("");
     }
 
@@ -1429,7 +1429,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
                 // object->Owner reste le champ de r�f�rence pour
                 // le privilegeToDelete
-                if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+                if (strcmp(oca->getCName(), "privilegeToDelete") == 0)
                     object->setOwner(theFederateHandle);
             }
             else {
@@ -1548,7 +1548,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
             D.Out(pdDebug, "Acquisition handle %u compteur %u",
                   the_attributes[i], compteur_acquisition);
 
-            if (strcmp(oca->getName(), "privilegeToDelete") == 0)
+            if (strcmp(oca->getCName(), "privilegeToDelete") == 0)
                 object->setOwner(newOwner);
         }
 
@@ -1745,4 +1745,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.37 2007/09/27 13:59:33 erk Exp $
+// $Id: ObjectClass.cc,v 3.38 2007/10/16 09:28:22 erk Exp $

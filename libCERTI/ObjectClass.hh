@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.28 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClass.hh,v 3.29 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -31,6 +31,7 @@
 #include "ObjectClassBroadcastList.hh"
 #include "certi.hh"
 #include "SecurityServer.hh"
+#include "Named.hh"
 
 // Standard
 #include <list>
@@ -57,7 +58,7 @@ public:
 /*! OMT object class. It also contains the instance list from this
   class.
 */
-class CERTI_EXPORT ObjectClass {
+class CERTI_EXPORT ObjectClass : public Named {
 
 public:
     ObjectClass();
@@ -65,16 +66,13 @@ public:
 
     void display() const ;
 
-    std::string getName() const { return name ; };
-    void setName(const char *new_name) { name = new_name ; };
-    void setName(const std::string &new_name) { name = new_name ; };
-
     void setHandle(ObjectClassHandle new_handle);
     ObjectClassHandle getHandle() const ;
 
     void setSuperclass(ObjectClassHandle h) { superClass = h ; };
     ObjectClassHandle getSuperclass() const { return superClass ; };
     void addSubclass(ObjectClass *);
+    ObjectClass* getSubClassByName(const std::string subClassName);
 
     // Security Methods
     void checkFederateAccess(FederateHandle, const char *)
@@ -231,8 +229,7 @@ private:
     // already receive DO messages for this class(and all child classes).
     bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
 
-    // Attributes
-    std::string name ;
+    // Attributes   
     ObjectClassHandle handle ;
     FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
     SecurityLevelID levelId ; //! default level for non inherited attributes
@@ -246,4 +243,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.28 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClass.hh,v 3.29 2007/10/16 09:28:21 erk Exp $

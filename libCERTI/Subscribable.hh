@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.4 2007/06/22 08:51:40 erk Exp $
+// $Id: Subscribable.hh,v 3.5 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
@@ -25,8 +25,9 @@
 
 #include "ObjectClassBroadcastList.hh"
 #include "InteractionBroadcastList.hh"
-
+#include "Named.hh"
 #include <list>
+
 
 namespace certi {
 
@@ -50,7 +51,7 @@ protected:
     const RTIRegion *region ; //!< the subscription region
 };
 
-class CERTI_EXPORT Subscribable
+class CERTI_EXPORT Subscribable : public Named
 {
 public:
     virtual ~Subscribable();
@@ -77,4 +78,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.4 2007/06/22 08:51:40 erk Exp $
+// $Id: Subscribable.hh,v 3.5 2007/10/16 09:28:21 erk Exp $

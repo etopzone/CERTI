@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.2 2007/08/31 12:47:40 erk Exp $
+// $Id: Named.cc,v 3.3 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -61,6 +61,36 @@ Named::isNamed(const std::string &name) const
     return (this->name == name) ;
 }
 
+bool
+Named::validateHLAName(const std::string& name) {
+    // FIXME EN. should implement clean validation scheme
+	// using IEEE-1516.2-2000 (§3.3.1 Names).
+	return true;
+}
+ 
+bool 
+Named::isQualifiedClassName(const std::string& name) {
+	
+	size_t idx = name.find_first_of('.',0);
+	return (idx!=std::string::npos);
+}
+		
+std::string 
+Named::getNextClassName(std::string& qualifiedClassName) {
+	std::string retval;
+	size_t idx = 0;
+	/* take the substring from start up to '.' (excluded) */
+	idx    = qualifiedClassName.find_first_of('.',0);	
+	if (idx!=std::string::npos) {
+		retval = qualifiedClassName.substr(0,idx-1);
+		/* update the string with the remaining string */
+		qualifiedClassName = qualifiedClassName.substr(idx);
+	} else {
+		retval = qualifiedClassName;
+	}
+	return retval;	
+}
+
 } // certi
 
-// $Id: Named.cc,v 3.2 2007/08/31 12:47:40 erk Exp $
+// $Id: Named.cc,v 3.3 2007/10/16 09:28:21 erk Exp $

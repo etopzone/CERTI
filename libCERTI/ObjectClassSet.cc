@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.26 2007/09/27 13:59:33 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.27 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -28,6 +28,7 @@
 #include "ObjectClassSet.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
+#include "Named.hh"
 
 // Standard
 #include <iostream>
@@ -40,7 +41,7 @@ using std::string ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTCLASSSET", __FILE__);
+static PrettyDebug D("OBJECTCLASSSET", __FILE__);
 
 // ----------------------------------------------------------------------------
 //! The class is not allocated, only the pointer is memorized.
@@ -49,9 +50,12 @@ ObjectClassSet::addClass(ObjectClass *newClass)
 {
     D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 
+    /* link to server */
     newClass->server = server ;
-
-    push_front(newClass);
+    /* store ref to new class in ObjectClass from Handle Map */
+    OCFromHandle[newClass->getHandle()] = newClass;
+    /* store ref to new class in ObjectClass from Name Map */
+    OCFromName[newClass->getName()] = newClass;
 }
 
 // ----------------------------------------------------------------------------
@@ -62,15 +66,14 @@ ObjectClassSet::buildParentRelation(ObjectClass *subclass,
 				    ObjectClass *superclass)
 {
     subclass->setSuperclass(superclass->getHandle());
-    subclass->setLevelId(superclass->getLevelId());
+    subclass->setLevelId(superclass->getLevelId());    
     superclass->addSubclass(subclass);
     superclass->addAttributesToChild(subclass);
 }
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)
-    : list<ObjectClass *>()
+ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)    
 {
     // It can be NULL on the RTIA.
     server = theSecurityServer ;
@@ -80,10 +83,16 @@ ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)
 //! Destructor.
 ObjectClassSet::~ObjectClassSet()
 {
-    while (!empty()) {
-        delete front();
-        pop_front();
-    }
+	/* clear name map */
+	OCFromName.clear();    
+	/* 
+	 * FIXME EN.
+	 * Should we delete the content or only clear the map?
+	 */
+	while (!OCFromHandle.empty()) {
+		delete (OCFromHandle.begin()->second);
+		OCFromHandle.erase(OCFromHandle.begin());
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -137,9 +146,9 @@ ObjectClassSet::display() const
 {
     cout << " ObjectClasses :" << endl ;
 
-    list<ObjectClass *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
-        (*i)->display();
+    handledOC_const_iterator i;    
+    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+        i->second->display();
     }
 }
 
@@ -192,10 +201,10 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 {
 	std::stringstream msg;
 	
-    list<ObjectClass *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
-        if ((*i)->isInstanceInClass(theObjectHandle) == true)
-            return (*i);
+	handledOC_const_iterator i ;
+    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+        if (i->second->isInstanceInClass(theObjectHandle) == true)
+            return (i->second);
     }
 
 	msg << "ObjectHandle <" << theObjectHandle <<"> not found in any object class.";
@@ -210,10 +219,12 @@ Object *
 ObjectClassSet::getObject(ObjectHandle h) const
     throw (ObjectNotKnown)
 {
-    list<ObjectClass *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
+	
+	handledOC_const_iterator i ;
+	
+    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
 	try {
-	    Object *object = (*i)->getInstanceWithID(h);
+	    Object *object = i->second->getInstanceWithID(h);
 	    return object ;
 	}
 	catch (ObjectNotKnown &e) {
@@ -225,15 +236,43 @@ ObjectClassSet::getObject(ObjectHandle h) const
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(std::string class_name) const
+ObjectClassSet::getFlatObjectClassHandle(std::string class_name) const
     throw (NameNotFound)
 {
-    list<ObjectClass *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
-        if ((*i)->getName() == class_name)
-            return (*i)->getHandle();
-    }
-    throw NameNotFound("");
+	namedOC_const_iterator iter;
+	
+	iter = OCFromName.find(class_name);
+	
+	if (iter != OCFromName.end()) {
+		return iter->second->getHandle();
+	} else {
+		throw NameNotFound(class_name.c_str());
+	}
+}
+
+ObjectClassHandle
+ObjectClassSet::getObjectClassHandle(std::string class_name) const
+    throw (NameNotFound)
+{    
+    std::string currentName;
+    std::string remainingName;
+    ObjectClassHandle currentHandle;
+    ObjectClass* currentClass;    
+    
+    if (Named::isQualifiedClassName(class_name)) {
+    	remainingName = class_name;
+    	/* the first current should be the Root Object Class */
+    	while (remainingName.length()>0) {
+    		currentName = Named::getNextClassName(remainingName);
+    		currentHandle = getFlatObjectClassHandle(currentName);
+    		currentClass = getWithHandle(currentHandle);
+    		
+    		throw RTIinternalError("NotImplemented");	 
+    	}
+    	
+    } else {
+    	return getFlatObjectClassHandle(class_name);
+    }    
 }
 
 // ----------------------------------------------------------------------------
@@ -254,15 +293,17 @@ ObjectClass *
 ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
     throw (ObjectClassNotDefined)
 {
-    list<ObjectClass *>::const_iterator i ;
-    for (i = begin(); i != end(); i++) {
-        if ((*i)->getHandle() == theHandle)
-            return (*i);
-    }
-
-    D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
-
-    throw ObjectClassNotDefined("Unknow class handle.");
+	
+	handledOC_const_iterator iter;
+	
+	iter = OCFromHandle.find(theHandle);
+		
+	if (iter != OCFromHandle.end()) {
+		return iter->second;
+	} else {
+		D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
+		throw ObjectClassNotDefined("Unknow class handle.");
+	}		    
 }
 
 // ----------------------------------------------------------------------------
@@ -270,21 +311,22 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
 void ObjectClassSet::killFederate(FederateHandle theFederate)
     throw ()
 {
-    ObjectClassBroadcastList *ocbList = NULL ;
-    ObjectClassHandle currentClass = 0 ;
-
-    list<ObjectClass *>::iterator i ;
-    for (i = begin(); i != end(); i++) {
+    ObjectClassBroadcastList *ocbList      = NULL ;
+    ObjectClassHandle         currentClass = 0 ;
+    
+    Handle2ObjectClassMap_t::iterator i;
+    
+    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
         // Call KillFederate on that class until it returns NULL.
         do {
             D.Out(pdExcept, "Kill Federate Handle %d .", theFederate);
-            ocbList = (*i)->killFederate(theFederate);
+            ocbList = i->second->killFederate(theFederate);
 
             D.Out(pdExcept, "Federate Handle %d Killed.", theFederate);
 
             // Broadcast RemoveObject message recursively
             if (ocbList != 0) {
-                currentClass = (*i)->getSuperclass();
+                currentClass = i->second->getSuperclass();
                 D.Out(pdExcept, "List not NULL");
                 while (currentClass != 0) {
                     D.Out(pdRegister,
@@ -292,11 +334,11 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
                           currentClass);
 
                     // It may throw ObjectClassNotDefined
-                    (*i) = getWithHandle(currentClass);
+                    i->second = getWithHandle(currentClass);
 
-                    (*i)->broadcastClassMessage(ocbList);
+                    i->second->broadcastClassMessage(ocbList);
 
-                    currentClass = (*i)->getSuperclass();
+                    currentClass = i->second->getSuperclass();
                 }
 
                 delete ocbList ;
@@ -690,4 +732,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.26 2007/09/27 13:59:33 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.27 2007/10/16 09:28:21 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.10 2007/08/29 13:09:40 erk Exp $
+// $Id: fed.cc,v 3.11 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -200,19 +200,21 @@ void
 startObject()
 {
     ObjectClass *object = new ObjectClass();
+    /* note how objectHandle counter is incremented */
     object->setHandle(objectHandle++);
     object->setName(arg.c_str());
 
     if (objects.size() > 0) {
-	ObjectClass *parent = objects.back();
-	root_object->ObjectClasses->buildParentRelation(object, parent);
+    	ObjectClass *parent = objects.back();
+    	root_object->ObjectClasses->buildParentRelation(object, parent);
     }
+    
     objects.push_back(object);
     root_object->ObjectClasses->addClass(object);
 
     indent();
     cout << "(class \"" << arg.c_str() << "\" (id " 
-	 << object->getHandle()	<< ")" ;
+	     << object->getHandle()	<< ")" ;
     ++indentation ;
 }
 
@@ -383,4 +385,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.10 2007/08/29 13:09:40 erk Exp $
+// $Id: fed.cc,v 3.11 2007/10/16 09:28:21 erk Exp $

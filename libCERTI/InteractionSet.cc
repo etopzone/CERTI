@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.18 2007/08/09 09:22:45 rousse Exp $
+// $Id: InteractionSet.cc,v 3.19 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -233,7 +233,7 @@ InteractionSet::getInteractionClassHandle(const char *the_name)
 
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
-        if (strcmp((*i)->getName(), the_name) == 0)
+        if (strcmp((*i)->getCName(), the_name) == 0)
             return (*i)->getHandle();
     }
 
@@ -249,7 +249,7 @@ InteractionSet::getInteractionClassName(InteractionClassHandle the_handle)
     list<Interaction *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if ((*i)->getHandle() == the_handle)
-            return (*i)->getName();
+            return (*i)->getCName();
     }
 
     throw InteractionClassNotDefined("");
@@ -358,4 +358,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.18 2007/08/09 09:22:45 rousse Exp $
+// $Id: InteractionSet.cc,v 3.19 2007/10/16 09:28:21 erk Exp $

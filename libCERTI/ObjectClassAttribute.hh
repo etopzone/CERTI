@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.21 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.22 2007/10/16 09:28:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -48,9 +48,6 @@ public:
 
     void display() const ;
 
-    const char *getName() const { return name.c_str(); };
-    void setName(const char *);
-
     void setHandle(AttributeHandle h);
     AttributeHandle getHandle() const ;
 
@@ -78,8 +75,7 @@ public:
 private:
     void deletePublisher(FederateHandle);
 
-    AttributeHandle handle ; //!< The attribute handle.
-    std::string name ; //!< The attribute name, must be locally allocated.
+    AttributeHandle handle ; //!< The attribute handle.    
     SpaceHandle space ; //!< Routing space
 
     typedef std::set<FederateHandle> PublishersList ;
@@ -91,4 +87,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.21 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.22 2007/10/16 09:28:21 erk Exp $

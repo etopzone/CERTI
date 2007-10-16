@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.32 2007/08/29 13:09:40 erk Exp $
+// $Id: Interaction.cc,v 3.33 2007/10/16 09:28:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -28,6 +28,7 @@
 #include "PrettyDebug.hh"
 
 #include <iostream>
+#include <sstream>
 #include <assert.h>
 
 using std::cout ;
@@ -498,22 +499,26 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 }
 
 // ----------------------------------------------------------------------------
-/*! Name attribute access(GetName reference must be considered READ-ONLY).
-  NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
-*/
-const char *
-Interaction::getName() const
-{
-    return name.c_str();
-}
-
-// ----------------------------------------------------------------------------
 //! Change the interaction name.
+// Name attribute access(GetName reference must be considered READ-ONLY).
+// NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
 void
 Interaction::setName(const char *new_name)
     throw (ValueLengthExceeded, RTIinternalError)
 {
-    name = new_name == 0 ? "" : new_name ;
+	std::stringstream msg;
+	
+	if (strlen(new_name)>MAX_USER_TAG_LENGTH) {
+		msg <<"<"<< new_name <<"> length <"<< strlen(new_name)
+			<<"> exceed MAX_USER_TAG_LENGTH = "<<MAX_USER_TAG_LENGTH;
+		throw ValueLengthExceeded(msg.str().c_str());
+	}
+	
+	if (new_name==0) {
+		Named::setName("");
+	} else {	
+		Named::setName(new_name);	
+	}    
 }
 
 // ----------------------------------------------------------------------------
@@ -547,4 +552,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.32 2007/08/29 13:09:40 erk Exp $
+// $Id: Interaction.cc,v 3.33 2007/10/16 09:28:22 erk Exp $
