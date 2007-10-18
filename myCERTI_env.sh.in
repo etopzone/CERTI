@@ -13,7 +13,7 @@ fi
 
 echo "Using CERTI_HOST=$CERTI_HOST"
 
-ARCH=`arch`
+ARCH=`uname -m`
 if [ "$ARCH" = "i686" ];
 then
   NBITS="32bits"
