@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.15 2007/07/06 09:25:18 erk Exp $
+// $Id: SocketTCP.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32							//dotNet
@@ -135,7 +135,7 @@ if (_est_init_tcp)
 }
 
 // ----------------------------------------------------------------------------
-int SocketTCP::connect(unsigned int port, unsigned long addr)
+int SocketTCP::connect(in_port_t port, in_addr_t addr)
 {
 int Result ;
 struct protoent *TCPent ;
@@ -146,6 +146,7 @@ assert(!_est_init_tcp);
 _sockIn.sin_family=AF_INET ;
 _sockIn.sin_port=htons(port);
 _sockIn.sin_addr.s_addr=addr ;
+
 
 Result = ::connect(_socket_tcp, (sockaddr*)&_sockIn, sizeof(_sockIn));
 
@@ -226,7 +227,7 @@ return 1 ;
 
 // ----------------------------------------------------------------------------
 int
-SocketTCP::bind(unsigned int port, unsigned long addr)
+SocketTCP::bind(in_port_t port, in_addr_t addr)
 {
 long Length, Result ;
 
@@ -285,7 +286,7 @@ if (setsockopt(_socket_tcp,
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPClient(unsigned int port, char *nom_serveur)
+SocketTCP::createTCPClient(in_port_t port, char *nom_serveur)
 {
 // recuperer les infos sur le serveur a partir du nom
 struct hostent *hptr = gethostbyname(nom_serveur);
@@ -295,7 +296,7 @@ if (hptr == 0)
 	exit(-1);
 	}
 
-unsigned long addr = 0 ;
+in_addr_t addr = 0 ;
 memcpy((void *) &addr, (void *) hptr->h_addr, hptr->h_length);
 
 createTCPClient(port, addr);
@@ -303,7 +304,7 @@ createTCPClient(port, addr);
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPClient(unsigned int port, unsigned long addr)
+SocketTCP::createTCPClient(in_port_t port, in_addr_t addr)
 {
 assert(!_est_init_tcp);
 
@@ -324,7 +325,7 @@ _est_init_tcp = true ;
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPServer(unsigned int port, unsigned long addr)
+SocketTCP::createTCPServer(in_port_t port, in_addr_t addr)
 {
 assert(!_est_init_tcp);
 
@@ -425,14 +426,14 @@ return ::listen(_socket_tcp, howMuch) >= 0 ;
 }
 
 // ----------------------------------------------------------------------------
-unsigned long
+in_addr_t
 SocketTCP::getAddr() const
 {
 return(_sockIn.sin_addr.s_addr);
 }
 
 // ----------------------------------------------------------------------------
-unsigned int
+in_port_t
 SocketTCP::getPort() const
 {
 return _sockIn.sin_port ;
@@ -552,7 +553,7 @@ int SocketTCP::returnSocket()		{ return _socket_tcp ;}
 
 // ----------------------------------------------------------------------------
 //! Change the port value.
-void SocketTCP::setPort(unsigned int port)
+void SocketTCP::setPort(in_port_t port)
 {
 _sockIn.sin_port=port ;
 }
@@ -597,4 +598,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.15 2007/07/06 09:25:18 erk Exp $
+// $Id: SocketTCP.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $

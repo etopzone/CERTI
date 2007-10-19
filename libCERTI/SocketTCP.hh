@@ -58,9 +58,9 @@ public :
 	virtual ~SocketTCP();
 	virtual void close();
 
-	void createTCPClient(unsigned int port, char *nom_serveur);
-	void createTCPClient(unsigned int port, unsigned long addr);
-	void createTCPServer(unsigned int port = 0, unsigned long addr = INADDR_ANY);
+	void createTCPClient(in_port_t port, char *nom_serveur);
+	void createTCPClient(in_port_t port, in_addr_t addr);
+	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY);
 
 	int accept(SocketTCP *serveur);
 	virtual void send(const unsigned char *, size_t)			throw (NetworkError, NetworkSignal);
@@ -84,13 +84,13 @@ public :
 
 private:
 	int open();
-	int connect(unsigned int port, unsigned long addr);
+	int connect(in_port_t port, in_addr_t addr);
 	int listen(unsigned long howMuch=5);
-	int bind(unsigned int port=0, unsigned long addr=INADDR_ANY);
+	int bind(in_port_t port=0, in_addr_t addr=INADDR_ANY);
 	void changeReuseOption();
-	void setPort(unsigned int port);
-	unsigned int getPort() const ;
-	unsigned long getAddr() const ;
+	void setPort(in_port_t port);
+	in_port_t getPort() const ;
+	in_addr_t getAddr() const ;
 	int timeoutTCP(int, int);
 
 	#ifdef _WIN32							//dotNet

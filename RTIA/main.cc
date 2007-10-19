@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
+// $Id: main.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -45,6 +45,12 @@ main()
 	#endif
 
     set_new_handler(NewHandler);
+
+    if (NULL!=getenv("RTIA_DEBUG")) {
+       cerr << "RTIA_DEBUG is set: Waiting <"<<  getenv("RTIA_DEBUG") 
+	    << " seconds> before starting RTIA"<<endl;
+        sleep(atoi(getenv("RTIA_DEBUG")));
+    }
 
     RTIA rtia ;
 
@@ -84,4 +90,4 @@ NewHandler()
     throw MemoryExhausted("");
 }
 
-// EOF $Id: main.cc,v 3.15 2007/06/22 08:51:34 erk Exp $
+// EOF $Id: main.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $
