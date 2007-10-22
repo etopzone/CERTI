@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.1 2007/09/04 08:33:14 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.2 2007/10/22 14:24:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,7 +39,7 @@ RTIambPrivateRefs::~RTIambPrivateRefs()
 void
 RTIambPrivateRefs::leave(const char *msg)
 {
-    std::cout << "libRTI: " << msg << std::endl ;
+    std::cout << "LibRTI:: " << msg << std::endl ;
     exit(EXIT_FAILURE);
 }
 
@@ -512,4 +512,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.1 2007/09/04 08:33:14 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.2 2007/10/22 14:24:53 erk Exp $

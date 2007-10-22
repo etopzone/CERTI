@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.52 2007/09/28 14:07:54 rousse Exp $
+// $Id: RTIambassador.cc,v 3.53 2007/10/22 14:24:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -237,9 +237,9 @@ RTI::RTIambassador::tick_kernel(bool locked)
     }
     catch (NetworkError) {
         cout << "tick 1." << endl ;
-        cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
+        cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
              << endl ;
-        throw RTIinternalError("");
+        throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick1) : NetworkError-->RTIinternalError");
     }
 
     for (;;) {
@@ -250,9 +250,9 @@ RTI::RTIambassador::tick_kernel(bool locked)
         }
         catch (NetworkError) {
             cout << "tick 2." << endl ;
-            cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
+            cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
                  << endl ;
-            throw RTIinternalError("");
+            throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick2) : NetworkError-->RTIinternalError");
         }
 
         // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
@@ -496,9 +496,9 @@ RTI::RTIambassador::tick_kernel(bool locked)
         }
         catch (NetworkError) {
             cout << "tick 3." << endl ;
-            cout << "LibRTI: Catched NetworkError, throw RTIinternalError."
+            cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
                  << endl ;
-            throw RTIinternalError("");
+            throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick 3) : NetworkError-->RTIinternalError");
         }
     }
 }
@@ -2849,4 +2849,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.52 2007/09/28 14:07:54 rousse Exp $
+// $Id: RTIambassador.cc,v 3.53 2007/10/22 14:24:53 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.20 2007/09/28 14:07:54 rousse Exp $
+// $Id: main.cc,v 3.21 2007/10/22 14:23:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -236,11 +236,11 @@ main(int argc, char **argv)
 	billard->resign();
     }
     catch (RTI::Exception &e) {
-	cerr << "RTI exception: " << e._name << " [" 
-	     << (e._reason ? e._reason : "undefined") << "]." << endl ;
+    	cerr << "Billard::main: RTI exception: " << e._name << " [" 
+    		 << (e._reason ? e._reason : "undefined") << "]." << endl ;
     }
     catch (...) {
-	cerr << "Error: unknown non-RTI exception." << std::endl ;
+	    cerr << "Billard::main: Error: unknown non-RTI exception." << std::endl ;
     }
 
     std::cout << "Exiting." << std::endl ;
