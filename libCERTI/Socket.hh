@@ -31,7 +31,11 @@
 	#include <sys/time.h>
 	#include <sys/types.h>
 	#include <netinet/in.h>
+	#include <netdb.h>
 #endif
+
+#include <string>
+#include <sstream>
 
 // Those values are returned by the GetClass method.
 #define SOCKET_TYPE_TCP 0 // TCP Socket class ID
@@ -65,6 +69,28 @@ public:
 	#else
 		virtual int returnSocket() = 0;
 	#endif
+
+	/**
+	 * This function build a string which represents
+	 * the provided IPv4 address as a "w.x.y.z".
+	 * @param[in] addr, the IPv4 address
+	 * @return the string "w.x.y.z"
+	 */
+	static const std::string addr2string(in_addr_t addr) {
+		typedef union {
+			uint32_t    addr;
+		    uint8_t     parts[4];
+		} addr_union_t;	
+		std::stringstream msg;
+		
+        addr_union_t uaddr;
+		uaddr.addr = (uint32_t)ntohl((uint32_t)(addr));
+		msg << ""  << static_cast<int>(uaddr.parts[3])
+		    << "." << static_cast<int>(uaddr.parts[2])
+		    << "." << static_cast<int>(uaddr.parts[1])
+		    << "." << static_cast<int>(uaddr.parts[0]);
+		return msg.str();
+	}
 };
 
 } // namespace certi

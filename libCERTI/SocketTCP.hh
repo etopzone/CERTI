@@ -58,12 +58,12 @@ public :
 	virtual ~SocketTCP();
 	virtual void close();
 
-	void createTCPClient(in_port_t port, char *nom_serveur);
-	void createTCPClient(in_port_t port, in_addr_t addr);
-	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY);
+	void createTCPClient(in_port_t port, char *nom_serveur) throw (NetworkError);
+	void createTCPClient(in_port_t port, in_addr_t addr) throw (NetworkError);
+	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
 
 	int accept(SocketTCP *serveur);
-	virtual void send(const unsigned char *, size_t)			throw (NetworkError, NetworkSignal);
+	virtual void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
 	virtual void receive(void *Buffer, unsigned long Size)	throw (NetworkError, NetworkSignal);
 
 	virtual bool isDataReady() const ;

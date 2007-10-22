@@ -31,10 +31,12 @@
 #include "SocketTCP.hh"
 #else
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
 #include <strings.h>
 #endif
 #include <assert.h>
+#include <errno.h>
 
 using std::cout ;
 using std::endl ;
@@ -88,6 +90,8 @@ SocketUDP::createUDPClient(unsigned int, // port
 // unsigned long addr = 0 ;
 struct sockaddr_in sock_temp ;
 char localhost[4096] ;
+std::stringstream msg;
+
 #ifdef _WIN32								//netDot
 	int taille = sizeof(struct sockaddr_in);
 #else
@@ -104,8 +108,13 @@ gethostname(localhost, 4096);
 
 if ((hp_local = (struct hostent *)gethostbyname(localhost)) == NULL)
 	{
-	perror("SocketUDP: gethostbyname");
-	throw NetworkError("");
+		msg << "gethostbyname gave NULL answer for hostname <"
+			<< localhost 
+			<< "> with error <"
+			<< strerror(errno) 
+			<< ">";
+		//perror("SocketUDP: gethostbyname");
+	   throw NetworkError(msg.str().c_str());
 	}
 
 #ifdef _WIN32								//netDot
@@ -146,6 +155,7 @@ SocketUDP::createUDPServer(unsigned int port)
   assert(!_est_init_udp);
   
   char localhost[MAXHOSTNAMELEN+1] ;
+  std::stringstream msg;
 
  // Building Local Address
  memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
@@ -156,8 +166,14 @@ SocketUDP::createUDPServer(unsigned int port)
  hp_local = (struct hostent *) gethostbyname(localhost);
  if (hp_local == 0) 
 	{
-	perror("SocketUDP: gethostbyname");
-	throw NetworkError("");
+	 msg << "gethostbyname gave NULL answer for hostname <"
+	 			<< localhost 
+	 			<< "> with error <"
+	 			<< strerror(errno) 
+	 			<< ">";
+	 		//perror("SocketUDP: gethostbyname");
+	 	   throw NetworkError(msg.str().c_str());
+		
 	}
 
 
@@ -233,6 +249,7 @@ void
 SocketUDP::send(const unsigned char * Message, size_t Size)
     throw (NetworkError, NetworkSignal)
 {
+	
 D.Out(pdDebug, "Beginning to send UDP message... Size = %ld", Size);
 assert(_est_init_udp);
 
@@ -241,7 +258,7 @@ int sent = sendto(_socket_udp, (char*)Message, Size, 0,
 if (sent < 0) 
 	{
 	perror("Sendto");
-	throw NetworkError("");
+	throw NetworkError("cannot sendto");
 	};
 D.Out(pdDebug, "Sent UDP message.");
 SentBytesCount += sent ;
@@ -329,7 +346,7 @@ if (BufferSize == 0)
 	if (CR <= 0) 
 		{
 		perror("Recvfrom");
-		throw NetworkError("");
+		throw NetworkError("cannot recvfrom");
 		}
 	else 
 		{
