@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $
+// $Id: main.cc,v 3.17 2007/10/22 14:24:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,66 +28,68 @@
 #include <sys/types.h>
 #include <signal.h>
 
-using namespace certi ;
-using namespace rtia ;
-using namespace std ;
+using namespace certi;
+using namespace rtia;
+using namespace std;
 
-extern "C" void SignalHandler(int Signal);
+extern "C"void SignalHandler(int Signal);
 void NewHandler();
 
 // ----------------------------------------------------------------------------
-int
-main()
-{
-    signal(SIGINT, SignalHandler);
-	#ifndef _WIN32
-		signal(SIGPIPE, SignalHandler);
-	#endif
+int main() {
+	signal(SIGINT, SignalHandler);
+#ifndef _WIN32
+	signal(SIGPIPE, SignalHandler);
+#endif
 
-    set_new_handler(NewHandler);
+	set_new_handler(NewHandler);
 
-    if (NULL!=getenv("RTIA_DEBUG")) {
-       cerr << "RTIA_DEBUG is set: Waiting <"<<  getenv("RTIA_DEBUG") 
-	    << " seconds> before starting RTIA"<<endl;
-        sleep(atoi(getenv("RTIA_DEBUG")));
-    }
+	if (NULL!=getenv("RTIA_DEBUG")) {
+		cerr << "RTIA:: RTIA_DEBUG is set: Waiting <"<< getenv("RTIA_DEBUG")
+				<< " seconds> before starting RTIA"<<endl;
+		sleep(atoi(getenv("RTIA_DEBUG")));
+	}
 
-    RTIA rtia ;
+	try {
+		RTIA rtia;
 
-    try {
-        rtia.execute();
-    }
-    catch (Exception &e) {
-        cerr << "\nRTIA has thrown " << e._name << " exception." << endl ;
-        if (e._reason)
-            cerr << "Reason: " << e._reason << endl ;
+		try {
+			rtia.execute();
+		}
+		catch (Exception &e) {
+			cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
+			if (e._reason) {
+				cerr << "RTIA:: Reason: " << e._reason << endl;
+			}
 
-        return EXIT_FAILURE ;
-    }
+			return (EXIT_FAILURE);
+		}
 
-    rtia.displayStatistics();
-    cout << "RTIA: End execution." << endl ;
+		rtia.displayStatistics();
+	} catch (Exception &e) {
+		cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
+		if (e._reason) {
+			cerr << "RTIA:: Reason: " << e._reason << endl;
+		}
+	}
+	cout << "RTIA:: End execution."<< endl ;
 
-    return EXIT_SUCCESS ;
+	return (EXIT_SUCCESS);
 }
 
 // ----------------------------------------------------------------------------
-void
-SignalHandler(int Signal)
-{
-    int pid = getpid();
+void SignalHandler(int Signal) {
+	int pid = getpid();
 
-    printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
-    //exit(0);
-    //If you want to KILL yourself exit is enough :))
-    //kill(SIGKILL, pid);
+	printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
+	//exit(0);
+	//If you want to KILL yourself exit is enough :))
+	//kill(SIGKILL, pid);
 }
 
 // ----------------------------------------------------------------------------
-void
-NewHandler()
-{
-    throw MemoryExhausted("");
+void NewHandler() {
+	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.16 2007/10/19 13:51:27 rousse Exp $
+// EOF $Id: main.cc,v 3.17 2007/10/22 14:24:23 erk Exp $
