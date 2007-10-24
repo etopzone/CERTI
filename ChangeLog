@@ -1,3 +1,49 @@
+2007-10-23 11:18  erk
+
+	* scripts/UseCERTI.cmake: Add libxml2 to CERTI_LIBRARIES if found
+	  this would ease user app link
+
+2007-10-23 11:18  erk
+
+	* scripts/FindCERTI.cmake: FindCERTI.cmake is now more compliant
+	  with FindXXX.cmake standard
+
+2007-10-22 16:37  erk
+
+	* Makefile.am: Add scripts UseCERTI.cmake in the distribution just
+	  like it has been done for CMakeLists.txt
+
+2007-10-22 16:25  erk
+
+	* libCERTI/: Socket.hh, SocketTCP.cc, SocketTCP.hh, SocketUDP.cc:
+	  Add more valuable error message content At least @IP involved in
+	  network error.
+
+2007-10-22 16:24  erk
+
+	* RTIA/main.cc: Add context prefix to error message.  Add try/catch
+	  block aroung RTIA object construction since network error may
+	  occur there.
+
+2007-10-22 16:23  erk
+
+	* test/Billard/main.cc, libRTI/RTIambPrivateRefs.cc,
+	  libRTI/RTIambassador.cc: Add context prefix to error message
+
+2007-10-20 00:16  erk
+
+	* CMakeLists.txt, scripts/FindCERTI.cmake: install UseCERTI.cmake
+	  just as FindCERTI.cmake
+
+	  this will ease the building of HLA application using CERTI and
+	  CMake
+
+2007-10-19 15:51  rousse
+
+	* ChangeLog, RTIA/main.cc, libCERTI/SocketTCP.cc,
+	  libCERTI/SocketTCP.hh: Amelioration du format des adresses et
+	  port pour socket TCP Improvement socketTCP adress and port
+
 2007-10-18 23:25  erk
 
 	* myCERTI_env.sh.in: arch command does not seem to be portable use

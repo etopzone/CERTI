@@ -1,4 +1,4 @@
-## $Id: configure.in,v 3.25 2007/09/26 14:15:55 erk Exp $ 
+## $Id: configure.in,v 3.26 2007/10/24 07:36:29 rousse Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
@@ -6,7 +6,7 @@
 AC_INIT([certi],[3.2.5pre6], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.25 $)
+AC_REVISION($Revision: 3.26 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
@@ -113,4 +113,4 @@ AC_SUBST(HAVE_XML)
 AC_OUTPUT([Makefile include/Makefile libCERTI/Makefile RTIG/Makefile
 RTIA/Makefile libRTI/Makefile test/Makefile test/libgraphc/Makefile
 test/Billard/Makefile test/utility/Makefile doc/Makefile
-myCERTI_env.sh])
+myCERTI_env.sh myCERTI_env.csh])
