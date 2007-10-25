@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.53 2007/10/22 14:24:53 erk Exp $
+// $Id: RTIambassador.cc,v 3.54 2007/10/25 08:07:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1753,7 +1753,7 @@ RTI::RTIambassador::enableAsynchronousDelivery()
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AsynchronousDeliveryAlreadyEnabled)
 {
-    throw AsynchronousDeliveryAlreadyEnabled("Default value (non HLA)");
+    // throw AsynchronousDeliveryAlreadyEnabled("Default value (non HLA)");
 
     Message req, rep ;
 
@@ -1770,7 +1770,6 @@ RTI::RTIambassador::disableAsynchronousDelivery()
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AsynchronousDeliveryAlreadyDisabled)
 {
-    throw RTIinternalError("Unimplemented Service");
     Message req, rep ;
 
     req.type = Message::DISABLE_ASYNCHRONOUS_DELIVERY ;
@@ -2849,4 +2848,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.53 2007/10/22 14:24:53 erk Exp $
+// $Id: RTIambassador.cc,v 3.54 2007/10/25 08:07:16 rousse Exp $

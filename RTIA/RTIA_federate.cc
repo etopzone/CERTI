@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.45 2007/09/28 14:07:53 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.46 2007/10/25 08:07:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -572,6 +572,18 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::QUERY_LBTS:
         D.Out(pdTrace, "Receiving Message from Federate, type RequestLBTS.");
+
+      case Message::ENABLE_ASYNCHRONOUS_DELIVERY:
+        D.Out(pdTrace, "Receiving Message from Federate, "
+                       "type EnableAsynchronousDelivery.");
+        tm->_asynchronous_delivery = true ;
+        break ;
+
+      case Message::DISABLE_ASYNCHRONOUS_DELIVERY:
+        D.Out(pdTrace, "Receiving Message from Federate, "
+                       "type DisableAsynchronousDelivery.");
+        tm->_asynchronous_delivery = false ;
+        break ;
 
         rep.setFederationTime(tm->requestLBTS());
         break ;
@@ -1197,4 +1209,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.45 2007/09/28 14:07:53 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.46 2007/10/25 08:07:16 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.17 2007/06/22 08:51:34 erk Exp $
+// $Id: TimeManagement.cc,v 3.18 2007/10/25 08:07:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -78,7 +78,8 @@ TimeManagement::TimeManagement(Communications *GC,
     lastNullMessageDate = 0.0 ;
 
     _avancee_en_cours = PAS_D_AVANCEE ;
-    _ongoing_tick = false ;
+    _ongoing_tick          = false ;
+    _asynchronous_delivery = false ;
 
     _heure_courante = 0.0 ;
     _lookahead_courant = epsilon ;
@@ -727,4 +728,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.17 2007/06/22 08:51:34 erk Exp $
+// $Id: TimeManagement.cc,v 3.18 2007/10/25 08:07:16 rousse Exp $

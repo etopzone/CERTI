@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_RW.cc,v 3.37 2007/09/28 14:07:54 rousse Exp $
+// $Id: Message_RW.cc,v 3.38 2007/10/25 08:07:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -423,6 +423,11 @@ Message::readHeader(SocketUN *socket)
       case DDM_UNSUBSCRIBE_INTERACTION:
       case DDM_REGISTER_OBJECT:
         break ;
+
+      // Body empty
+      case ENABLE_ASYNCHRONOUS_DELIVERY:
+      case DISABLE_ASYNCHRONOUS_DELIVERY:
+        break;
 
         // --- MessageJ_R_Struct --
 
@@ -1053,7 +1058,8 @@ Message::writeHeader(SocketUN *socket)
       case INITIATE_FEDERATE_SAVE: // Body contains label
         header.bodySize = 1 ;
         break ;
-        
+ 
+      // Body empty       
       case FEDERATE_SAVE_BEGUN:
       case FEDERATE_SAVE_COMPLETE:
       case FEDERATE_SAVE_NOT_COMPLETE:
@@ -1067,6 +1073,8 @@ Message::writeHeader(SocketUN *socket)
       case FEDERATION_RESTORED:
       case FEDERATION_NOT_RESTORED:
       case FEDERATION_RESTORE_BEGUN:
+      case ENABLE_ASYNCHRONOUS_DELIVERY:
+      case DISABLE_ASYNCHRONOUS_DELIVERY:
         header.bodySize = 0 ;
         break ;
 
@@ -1271,4 +1279,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_RW.cc,v 3.37 2007/09/28 14:07:54 rousse Exp $
+// $Id: Message_RW.cc,v 3.38 2007/10/25 08:07:16 rousse Exp $

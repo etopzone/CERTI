@@ -1,3 +1,10 @@
+2007-10-24 09:36  rousse
+
+	* CMakeLists.txt, ChangeLog, Makefile.am, configure.in,
+	  myCERTI_env.csh.in: Ajout de myCERTI_env.csh genere pour
+	  utilisation avec csh myCERTI_env.csh generated added for easy use
+	  with csh
+
 2007-10-23 11:18  erk
 
 	* scripts/UseCERTI.cmake: Add libxml2 to CERTI_LIBRARIES if found

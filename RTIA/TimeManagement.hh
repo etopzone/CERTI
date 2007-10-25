@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.10 2007/07/06 09:25:20 erk Exp $
+// $Id: TimeManagement.hh,v 3.11 2007/10/25 08:07:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -94,6 +94,7 @@ public:
 
     // Attribute
     bool _ongoing_tick;  // tick2 processing
+    bool _asynchronous_delivery ;
 
 private:
     // Methods
@@ -130,4 +131,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.10 2007/07/06 09:25:20 erk Exp $
+// $Id: TimeManagement.hh,v 3.11 2007/10/25 08:07:16 rousse Exp $
