@@ -1,3 +1,19 @@
+2007-10-26 15:00  rousse
+
+	* libCERTI/: CMakeLists.txt, Makefile.am, Message.hh, Message_R.cc,
+	  Message_RW.cc, Message_W.cc: FR : Debut restructuration
+	  Message_RW en 2 fichiers EN : Begin dividing Message_RW into 2
+	  files
+
+2007-10-25 10:07  rousse
+
+	* ChangeLog, RTIA/RTIA_federate.cc, RTIA/TimeManagement.cc,
+	  RTIA/TimeManagement.hh, libCERTI/Message_RW.cc,
+	  libRTI/RTIambassador.cc: FR : Preparation realisation
+	  EnableAsynchronousDelivery et DisableAsynchronousDelivery EN :
+	  Beginning implementation of services EnableAsynchronousDelivery
+	  and DisableAsynchronousDelivery
+
 2007-10-24 09:36  rousse
 
 	* CMakeLists.txt, ChangeLog, Makefile.am, configure.in,

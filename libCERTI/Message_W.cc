@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.1 2007/10/26 13:00:08 rousse Exp $
+// $Id: Message_W.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -339,11 +339,12 @@ Message::writeBody(SocketUN *socket)
             body.writeLongInt(object);
             break;
 
+          // FederationTime yet put in header
+          // Body contains objectClass,name,attribute
           case GET_OBJECT_CLASS_HANDLE:
           case GET_OBJECT_CLASS_NAME:
           case GET_ATTRIBUTE_HANDLE:
           case GET_ATTRIBUTE_NAME:
-            // B.c. name(and attribute)
             body.writeLongInt(objectClass);
             body.writeString(name);
             body.writeShortInt(attribute);
@@ -692,13 +693,11 @@ Message::writeHeader(SocketUN *socket)
         break ;
 
       // FederationTime yet in header
-      case GET_OBJECT_CLASS_HANDLE: // Body contains name
-      case GET_OBJECT_CLASS_NAME: // Body contains name
-      case GET_ATTRIBUTE_HANDLE: // B.c. name and attribute.
-      case GET_ATTRIBUTE_NAME: // B.c. name and attribute.
-        // header.VP.O_I.handle = objectClass ;
-        // header.VP.O_I.size = handleArraySize ;
-        // header.VP.O_I.date = getFederationTime() ;
+      // Body contains objectClass,name,attribute
+      case GET_OBJECT_CLASS_HANDLE:
+      case GET_OBJECT_CLASS_NAME:
+      case GET_ATTRIBUTE_HANDLE:
+      case GET_ATTRIBUTE_NAME:
         header.bodySize = 1 ;
         break ;
 
@@ -854,4 +853,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.1 2007/10/26 13:00:08 rousse Exp $
+// $Id: Message_W.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $

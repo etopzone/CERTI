@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.1 2007/10/26 13:00:07 rousse Exp $
+// $Id: Message_R.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -335,11 +335,11 @@ Message::readBody(SocketUN *socket)
             break ;
 
           // FederationTime yet got from header
+          // Body contains objectClass,name,attribute
           case GET_OBJECT_CLASS_HANDLE:
           case GET_OBJECT_CLASS_NAME:
           case GET_ATTRIBUTE_HANDLE:
           case GET_ATTRIBUTE_NAME:
-            // B.c. Name(and attribute)
             objectClass = body.readLongInt();
             readName(body);
             attribute = body.readShortInt();
@@ -624,13 +624,11 @@ Message::readHeader(SocketUN *socket)
         break ;
 
       // FederationTime yet got from header
-      case GET_OBJECT_CLASS_HANDLE: // Body contains Name
-      case GET_OBJECT_CLASS_NAME: // Body contains Name
-      case GET_ATTRIBUTE_HANDLE: // B.c. Name and attribute.
-      case GET_ATTRIBUTE_NAME: // B.c. Name and attribute.
-        // objectClass = header.VP.O_I.handle ;
-        // handleArraySize = header.VP.O_I.size ;
-        // setFederationTime(header.VP.O_I.date);
+      // Body contains objectClass,name,attribute
+      case GET_OBJECT_CLASS_HANDLE:
+      case GET_OBJECT_CLASS_NAME:
+      case GET_ATTRIBUTE_HANDLE:
+      case GET_ATTRIBUTE_NAME:
         break ;
 
       // FederationTime (maybe zero) yet got from header
@@ -825,4 +823,4 @@ Message::readValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.1 2007/10/26 13:00:07 rousse Exp $
+// $Id: Message_R.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
