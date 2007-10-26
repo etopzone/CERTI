@@ -240,6 +240,7 @@ public:
         Type type ;
         TypeException exception ;
         UShort bodySize ;
+        FederationTime date ;
         MessageHeaderUnion VP ; // Variable Part
     };
 

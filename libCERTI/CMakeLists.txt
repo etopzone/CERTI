@@ -71,7 +71,8 @@ BasicMessage.cc
 Clock.cc Clock.hh
 MessageBody.cc
 Message.cc
-Message_RW.cc
+Message_R.cc
+Message_W.cc
 NetworkMessage.cc
 NetworkMessage_RW.cc
 Exception.cc
