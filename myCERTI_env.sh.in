@@ -4,6 +4,21 @@
 export CERTI_VERSION="@PACKAGE_VERSION@"
 echo "CERTI version <$CERTI_VERSION>"
 
+# 1 : shell verification
+MYSHELL=`basename $SHELL`
+case $MYSHELL in
+    sh)   ;;
+	bash) ;;
+	zsh)  ;;
+	ksh)  ;;
+	*) 
+	 echo "You may not be using a bourne shell, please use myCERTI.csh"
+	 exit
+	 ;;
+esac
+
+# 2 CERTI_HOST (i.e. where rtig runs)
+
 if [ $# -gt 0 ];
 then
    export CERTI_HOST=$1
@@ -11,7 +26,7 @@ else
    export CERTI_HOST=localhost
 fi
 
-echo "Using CERTI_HOST=$CERTI_HOST"
+# 3 Architecture (i.e 32 or 64 bits)
 
 ARCH=`uname -m`
 if [ "$ARCH" = "i686" ];
@@ -23,15 +38,32 @@ fi
 
 echo "Current machine architecture is <$ARCH> assumed to be $NBITS"
 
+# 4 CERTI_HOME (i.e. where we find bin,lib,share,include about CERTI built)
+
 export CERTI_HOME=@prefix@
 alias go_certi_home='pushd $CERTI_HOME'
-echo "Using CERTI installation at <$CERTI_HOME>..."
 
+# 5 CERTI_FED (i.e. where we find (default) FED files
 export CERTI_FED=$CERTI_HOME/share/federations
 alias go_certi_fed='pushd $CERTI_FED'
 
+# 6 PATH (i.e. to run easily rtig and s.o.)
+# Note sometimes PATH is not modified
+
 export PATH=$PATH:$CERTI_HOME/bin:$CERTI_HOME/scripts
 
+# 7 LD_LIBRARY_PATH ( applications needs...)
+# Note LD_LIBRARY_PATH has to be extended sometimes
 export LD_LIBRARY_PATH=$CERTI_HOME/lib:$LD_LIBRARY_PATH
+
+echo "=========================================================="
+echo "** WARNING ** We hope you have made source myCERTI.sh **"
+echo "                                    ------"
+echo "If yes your variables for CERTI are now :"
+echo "CERTI_HOST      = " $CERTI_HOST
+echo "CERTI_HOME      = " $CERTI_HOME
+echo "CERTI_FED       = " $CERTI_FED
+echo "PATH            = " $PATH
+echo "LD_LIBRARY_PATH = " $LD_LIBRARY_PATH
 
 

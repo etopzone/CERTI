@@ -39,7 +39,7 @@ setenv CERTI_FED $CERTI_HOME/share/federations
 alias go_certi_fed='pushd $CERTI_FED'
 
 # 6 PATH (i.e. to run easily rtig and s.o.)
-# Note sometimes PATH no modified
+# Note sometimes PATH is not modified
 setenv MOREPATHBIN "$CERTI_HOME/bin"
 setenv MODIFPATH `echo $PATH | grep $MOREPATHBIN`
 if ( $MODIFPATH == "" ) then    
