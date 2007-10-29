@@ -29,17 +29,16 @@ fi
 # 3 Architecture (i.e 32 or 64 bits)
 
 ARCH=`uname -m`
-if [ "$ARCH" = "i686" ];
-then
-  NBITS="32bits"
-else
-  NBITS="64bits"
-fi
-
-echo "Current machine architecture is <$ARCH> assumed to be $NBITS"
+#if [ "$ARCH" = "i686" ];
+#then
+#  NBITS="32bits"
+#else
+# NBITS="64bits"
+#fi
+echo "Current machine architecture is <$ARCH>".
+# assumed to be $NBITS"
 
 # 4 CERTI_HOME (i.e. where we find bin,lib,share,include about CERTI built)
-
 export CERTI_HOME=@prefix@
 alias go_certi_home='pushd $CERTI_HOME'
 
@@ -48,13 +47,31 @@ export CERTI_FED=$CERTI_HOME/share/federations
 alias go_certi_fed='pushd $CERTI_FED'
 
 # 6 PATH (i.e. to run easily rtig and s.o.)
-# Note sometimes PATH is not modified
-
-export PATH=$PATH:$CERTI_HOME/bin:$CERTI_HOME/scripts
+# Not PATH is not modified
+# if to be added PATH is already there
+MOREPATHBIN=$CERTI_HOME/bin
+MODIFPATH=`echo $PATH | grep $MOREPATHBIN`
+if [ -z "$MODIFPATH" ];
+then
+	export PATH=$MOREPATHBIN:$PATH
+	echo "Your PATH variable has been modified for bin"
+fi
+MOREPATHSCRIPTS=$CERTI_HOME/scripts
+MODIFPATH=`echo $PATH | grep $MOREPATHSCRIPTS`
+if [ -z "$MODIFPATH" ];
+then
+	export PATH=$MOREPATHSCRIPTS:$PATH
+	echo "Your PATH variable has been modified for scripts"
+fi
 
 # 7 LD_LIBRARY_PATH ( applications needs...)
 # Note LD_LIBRARY_PATH has to be extended sometimes
-export LD_LIBRARY_PATH=$CERTI_HOME/lib:$LD_LIBRARY_PATH
+MOREPATHLIB=$CERTI_HOME/lib
+MODIFPATH=`echo $LD_LIBRARY_PATH | grep $MOREPATHLIB`
+if [ -z "$MODIFPATH" ];
+then
+    export LD_LIBRARY_PATH=$MOREPATHLIB:$LD_LIBRARY_PATH
+fi
 
 echo "=========================================================="
 echo "** WARNING ** We hope you have made source myCERTI.sh **"

@@ -23,12 +23,13 @@ endif
 # 3 Architecture (i.e 32 or 64 bits)
 
 setenv ARCH `uname -m`
-if ( $ARCH == "x86_64" ) then
-    setenv NBITS 64
-else
-    setenv NBITS 32
-endif
-echo "Current machine architecture is <$ARCH> assumed to be $NBITS bits."
+#if ( $ARCH == "x86_64" ) then
+#    setenv NBITS 64
+#else
+#    setenv NBITS 32
+#endif
+echo "Current machine architecture is <$ARCH>."
+# assumed to be $NBITS bits."
 
 # 4 CERTI_HOME (i.e. where we find bin,lib,share,include about CERTI built)
 setenv CERTI_HOME @prefix@
