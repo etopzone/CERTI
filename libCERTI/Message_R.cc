@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
+// $Id: Message_R.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -244,7 +244,8 @@ Message::readBody(SocketUN *socket)
 	    region = body.readLongInt();
 	    boolean = body.readLongInt();
 	    break ;
-	    
+
+          // Body contains objectClass,attribute,space	    
           case GET_ATTRIBUTE_SPACE_HANDLE:
             objectClass = body.readLongInt();
             attribute = body.readLongInt();
@@ -258,6 +259,7 @@ Message::readBody(SocketUN *socket)
             region = body.readLongInt();
             break ;
 
+          // Body contains interactionClass,space
           case GET_INTERACTION_SPACE_HANDLE:
             interactionClass = body.readLongInt();
             space = body.readLongInt();
@@ -345,12 +347,14 @@ Message::readBody(SocketUN *socket)
             attribute = body.readShortInt();
             break ;
 
+          // Body contains name,space
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
             this->readName(body);
             this->space = body.readLongInt();
             break ;
 
+          // Body contains name,dimension,space
           case GET_DIMENSION_HANDLE:
           case GET_DIMENSION_NAME:
             this->readName(body);
@@ -372,11 +376,11 @@ Message::readBody(SocketUN *socket)
             boolean = body.readLongInt();
             break ;
 
+          // Body contains interactionClass,name,parameter
           case GET_INTERACTION_CLASS_HANDLE:
           case GET_INTERACTION_CLASS_NAME:
           case GET_PARAMETER_HANDLE:
           case GET_PARAMETER_NAME:
-            // body contains Name and ParamHandle
             interactionClass = body.readLongInt();
             readName(body);
             parameter = body.readShortInt();
@@ -412,7 +416,7 @@ Message::readBody(SocketUN *socket)
             region = body.readLongInt();
 	    break ;
 
-
+          // Body contains object,name
 	  case GET_OBJECT_INSTANCE_HANDLE:
 	  case GET_OBJECT_INSTANCE_NAME:
             object = body.readLongInt();
@@ -534,8 +538,9 @@ Message::readHeader(SocketUN *socket)
                                                         // handleArray
       // Body contains object,handleArraySize,handleArray 
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      // Body contains objectClass,attribute,space
       case GET_ATTRIBUTE_SPACE_HANDLE:
-      case GET_INTERACTION_SPACE_HANDLE:
+      case GET_INTERACTION_SPACE_HANDLE: //Body contains interactionClass,space
       case DDM_CREATE_REGION:              // Body contains space,number,region
       case REQUEST_FEDERATION_RESTORE:           // Body contains label.
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED: // Body contains label.
@@ -648,22 +653,23 @@ Message::readHeader(SocketUN *socket)
         break ;
 
       // FederationTime yet got from header
-      case GET_INTERACTION_CLASS_HANDLE: // Body contains Name
-      case GET_INTERACTION_CLASS_NAME: // Body contains Name
-      case GET_PARAMETER_HANDLE: // Body contains Name and parameter
-      case GET_PARAMETER_NAME: // Body contains Name and parameter
-        // interactionClass = header.VP.O_I.handle ;
-        // handleArraySize = header.VP.O_I.size ;
-        // setFederationTime(header.VP.O_I.date );
+      // Body contains interactionClass,name,parameter
+      case GET_INTERACTION_CLASS_HANDLE:
+      case GET_INTERACTION_CLASS_NAME:
+      case GET_PARAMETER_HANDLE:
+      case GET_PARAMETER_NAME:
         break ;
 
+      // FederationTime yet got from header
+      // Body contains name,space
       case GET_SPACE_HANDLE:
       case GET_SPACE_NAME:
+        break ;
+
+      // FederationTime yet got from header
+      // Body contains name,dimension,space
       case GET_DIMENSION_NAME:
       case GET_DIMENSION_HANDLE:
-        this->space = header.VP.O_I.handle ;
-        handleArraySize = header.VP.O_I.size ;
-        setFederationTime(header.VP.O_I.date );
         break ;
 
       // Body contains interactionClass,transport,order
@@ -715,11 +721,11 @@ Message::readHeader(SocketUN *socket)
       case TICK_REQUEST:
         break ;
 
+
+      // FederationTime yet got from header
+      // Body contains object,name
       case GET_OBJECT_INSTANCE_HANDLE:
       case GET_OBJECT_INSTANCE_NAME:
-	object = header.VP.O_I.handle;
-        handleArraySize = header.VP.O_I.size ;
-        setFederationTime(header.VP.O_I.date);
         break ;
 
       // Body contains object,federationName,federate,handleArraySize,
@@ -823,4 +829,4 @@ Message::readValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
+// $Id: Message_R.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $

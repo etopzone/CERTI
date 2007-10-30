@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
+// $Id: Message_W.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -248,7 +248,8 @@ Message::writeBody(SocketUN *socket)
 	    body.writeLongInt(region);
 	    body.writeLongInt(boolean);
 	    break ;
-	    
+
+          // Body contains objectClass,attribute,space  
           case GET_ATTRIBUTE_SPACE_HANDLE:
             body.writeLongInt(objectClass);
             body.writeLongInt(attribute);
@@ -262,6 +263,7 @@ Message::writeBody(SocketUN *socket)
             body.writeLongInt(region);
             break ;
 
+          // Body contains interactionClass,space
           case GET_INTERACTION_SPACE_HANDLE:
             body.writeLongInt(interactionClass);
             body.writeLongInt(space);
@@ -350,12 +352,14 @@ Message::writeBody(SocketUN *socket)
             body.writeShortInt(attribute);
             break ;
 
+          // Body contains name,space
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
             body.writeString(name);
             body.writeLongInt(space);
             break ;
 
+          // Body contains name,dimension,space
           case GET_DIMENSION_HANDLE:
           case GET_DIMENSION_NAME:
             body.writeString(name);
@@ -378,11 +382,11 @@ Message::writeBody(SocketUN *socket)
             body.writeLongInt(boolean);
             break ;
 
+          // Body contains interactionClass,name,parameter
           case GET_INTERACTION_CLASS_HANDLE:
           case GET_INTERACTION_CLASS_NAME:
           case GET_PARAMETER_HANDLE:
           case GET_PARAMETER_NAME:
-            // Body contains name and parameter
             body.writeLongInt(interactionClass);
             body.writeString(name);
             body.writeShortInt(parameter);
@@ -417,7 +421,8 @@ Message::writeBody(SocketUN *socket)
 	  case DDM_DELETE_REGION:
             body.writeLongInt(region);
 	    break ;
-	    
+
+          // Body contains object,name	    
 	  case GET_OBJECT_INSTANCE_HANDLE:
 	  case GET_OBJECT_INSTANCE_NAME :
 	    body.writeLongInt(object);
@@ -556,8 +561,9 @@ Message::writeHeader(SocketUN *socket)
                                                         // handleArray
       // Body contains object,handleArraySize,handleArray 
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+      // Body contains objectClass,attribute,space
       case GET_ATTRIBUTE_SPACE_HANDLE:
-      case GET_INTERACTION_SPACE_HANDLE:
+      case GET_INTERACTION_SPACE_HANDLE: //Body contains interactionClass,space
       case INITIATE_FEDERATE_SAVE:         // Body contains label
       case DDM_CREATE_REGION:              // Body contains space,number,region
       // Body contains object,region,boolean,handleArraySize,handleArray
@@ -728,26 +734,26 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 1 ;
         break ;
 
-      // B.c. Tag, handleArray[],
-      // ValueArray[], resignAction
       // FederationTime yet put in header
-      case GET_INTERACTION_CLASS_HANDLE: // Body contains name
-      case GET_INTERACTION_CLASS_NAME: // Body contains name
-      case GET_PARAMETER_HANDLE: // Body contains name and parameter
-      case GET_PARAMETER_NAME: // Body contains name and parameter
-        // header.VP.O_I.handle = interactionClass ;
-        // header.VP.O_I.size = handleArraySize ;
-        // header.VP.O_I.date = getFederationTime() ;
+      // Body contains interactionClass,name,parameter
+      case GET_INTERACTION_CLASS_HANDLE:
+      case GET_INTERACTION_CLASS_NAME:
+      case GET_PARAMETER_HANDLE:
+      case GET_PARAMETER_NAME:
         header.bodySize = 1 ;
         break ;
 
+      // FederationTime yet put in header
+      // Body contains name,space
       case GET_SPACE_HANDLE:
       case GET_SPACE_NAME:
+        header.bodySize = 1 ;
+        break ;
+
+       // FederationTime yet put in header
+      // Body contains name,dimension,space
       case GET_DIMENSION_HANDLE:
       case GET_DIMENSION_NAME:
-        header.VP.O_I.handle = space ;
-        header.VP.O_I.size = handleArraySize ;
-        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
 
@@ -808,11 +814,10 @@ Message::writeHeader(SocketUN *socket)
         header.bodySize = 1 ;
         break ;
 
+      // FederationTime yet put in header
+      // Body contains object,name
       case GET_OBJECT_INSTANCE_HANDLE:
       case GET_OBJECT_INSTANCE_NAME:
-        header.VP.O_I.handle = object;
-        header.VP.O_I.size = handleArraySize ;
-        header.VP.O_I.date = getFederationTime() ;
         header.bodySize = 1 ;
         break ;
         
@@ -853,4 +858,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.2 2007/10/26 14:36:29 rousse Exp $
+// $Id: Message_W.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $
