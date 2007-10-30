@@ -67,13 +67,14 @@ public:
         RegionHandle region ;
     };
 
-    union MessageHeaderUnion {
-        MessageTimeStruct time ;
-        MessageT_O_Struct T_O ;
-        MessageJ_R_Struct J_R ;
-        MessageO_I_Struct O_I ;
-        Message_DDM ddm ;
-    };
+    // MessageHeaderUnion  deprecated
+    //union MessageHeaderUnion {
+    //    MessageTimeStruct time ;
+    //    MessageT_O_Struct T_O ;
+    //    MessageJ_R_Struct J_R ;
+    //    MessageO_I_Struct O_I ;
+    //    Message_DDM ddm ;
+    //};
 
     enum Type {
         NOT_USED = 0,
@@ -241,7 +242,7 @@ public:
         TypeException exception ;
         UShort bodySize ;
         FederationTime date ;
-        MessageHeaderUnion VP ; // Variable Part
+        //MessageHeaderUnion VP ; // Variable Part deprecated
     };
 
 public:

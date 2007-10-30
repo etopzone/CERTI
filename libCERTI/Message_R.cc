@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.4 2007/10/30 14:15:24 rousse Exp $
+// $Id: Message_R.cc,v 3.5 2007/10/30 15:24:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -47,7 +47,6 @@ Message::read(SocketUN *socket)
 
 }
 
-
 // ----------------------------------------------------------------------------
 //! Read a Message Body from a Socket, should be called after ReadHeader.
 void
@@ -76,14 +75,13 @@ Message::readBody(SocketUN *socket)
 
         switch(header.type) {
 
-            // --- No Variable Part, Body not empty ---
-
-          // Body contains FederationName, FEDid
+          // Body contains federationName, FEDid
           case CREATE_FEDERATION_EXECUTION:
             readFederationName(body);
             readFEDid(body) ;
             break ;
 
+          // Body contains federationName
           case DESTROY_FEDERATION_EXECUTION:
             readFederationName(body);
             break ;
@@ -256,16 +254,12 @@ Message::readBody(SocketUN *socket)
             space = body.readLongInt();
             break ;
 
-            // --- MessageJ_R_Struct --
-
           // Body contains federate,Federationname,FederateName
           case JOIN_FEDERATION_EXECUTION:
             federate = body.readShortInt();
             readFederationName(body);
             readFederateName(body);
             break ;
-
-            // --- MessageO_I_Struct ---
 
           // federationTime got from header
           // Body contains objectClass,handleArraySize,HandleArray
@@ -355,8 +349,9 @@ Message::readBody(SocketUN *socket)
 
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
-            // B.c. Tag, HandleArray[], ValueArray[], RAction
-            // and boolean (true means SI with time, false without time)
+            // Body contains interactionClass,handleArraySize,tag,handleArray,
+            // valueArray,region,resignAction,boolean
+            // boolean true means with time, false without time
             interactionClass = body.readLongInt();
             handleArraySize = body.readShortInt();
             readTag(body);
@@ -377,7 +372,6 @@ Message::readBody(SocketUN *socket)
             parameter = body.readShortInt();
             break ;
 
-            // --- MessageT_O_Struct, body not empty ---
           // Body contains handleArraySize,transport,order,object,HandleArray
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
@@ -705,4 +699,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.4 2007/10/30 14:15:24 rousse Exp $
+// $Id: Message_R.cc,v 3.5 2007/10/30 15:24:47 rousse Exp $

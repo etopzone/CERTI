@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.5 2007/10/30 14:15:24 rousse Exp $
+// $Id: Message_W.cc,v 3.6 2007/10/30 15:24:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -74,13 +74,13 @@ Message::writeBody(SocketUN *socket)
         // 1- Prepare Body Structure according to Message type
         switch(header.type) {
 
-            // --- No Variable Part, Body not empty ---
-
+          // Body contains federationName,FEDid
           case CREATE_FEDERATION_EXECUTION:
             body.writeString(federationName);
             body.writeString(FEDid);
             break ;
 
+          // Body contains federationName
           case DESTROY_FEDERATION_EXECUTION:
             body.writeString(federationName);
             break ;
@@ -262,16 +262,12 @@ Message::writeBody(SocketUN *socket)
             body.writeLongInt(space);
             break ;
 
-            // --- MessageJ_R_Struct --
-
           // Body contains federate,federatioName,federateName
           case JOIN_FEDERATION_EXECUTION:
             body.writeShortInt(federate);
             body.writeString(federationName);
             body.writeString(federateName);
             break ;
-
-            // --- MessageO_I_Struct ---need FederationTime into header
 
           // FederationTime yet put in header
           // Body contains objectClass,handleArraySize,HandleArray
@@ -385,7 +381,6 @@ Message::writeBody(SocketUN *socket)
             body.writeShortInt(parameter);
             break ;
 
-            // --- MessageT_O_Struct, Body not empty ---
           // Body contains handleArraySize,transport,order,object,HandleArray
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
@@ -689,4 +684,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.5 2007/10/30 14:15:24 rousse Exp $
+// $Id: Message_W.cc,v 3.6 2007/10/30 15:24:47 rousse Exp $
