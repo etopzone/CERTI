@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $
+// $Id: Message_R.cc,v 3.4 2007/10/30 14:15:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,13 +32,6 @@ namespace certi {
 static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
 static PrettyDebug G("GENDOC",__FILE__);
 
-// You can comment this out if you don't want to optimize network messages.
-#define USE_HEADER_AND_BODY
-
-void Message::trace(const char* context)
-{
-D.Mes(pdMessage,'M',this->type,context);
-}
 
 // ----------------------------------------------------------------------------
 //! Read NetworkMessage Objects from Socket objects.
@@ -46,16 +39,14 @@ void
 Message::read(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
 {
-#ifdef USE_HEADER_AND_BODY
 
     bool has_body = readHeader(socket);
-    if (has_body) readBody(socket);
 
-#else
-#error    
-    socket->receive((void *) this, sizeof(Message));
-#endif
+    if (has_body)
+      readBody(socket);
+
 }
+
 
 // ----------------------------------------------------------------------------
 //! Read a Message Body from a Socket, should be called after ReadHeader.
@@ -476,7 +467,7 @@ Message::readHeader(SocketUN *socket)
     // 1- Read Header from Socket
     socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
 
-    // 2- Parse Header(Static Part)
+    // 2- Parse Header
     type = header.type ;
     exception = header.exception ;
     setFederationTime(header.date);
@@ -487,233 +478,74 @@ Message::readHeader(SocketUN *socket)
     if (exception != e_NO_EXCEPTION)
         return true ;
 
-    // 2- Parse Header according to its type(Variable Part)
+    // 2- Determine if body exists or not
     // NULL, UAV and SendInteraction are the most common ones.
 
     switch(type) {
 
-        // --- No Variable Part, Body not empty ---
-      // header contains type, exception, size and no more useful
-      case CREATE_FEDERATION_EXECUTION:  // Body contains FederationName,FEDid
-      case DESTROY_FEDERATION_EXECUTION: // Body contains FederationName
-      case REGISTER_FEDERATION_SYNCHRONIZATION_POINT: // Body contains Label
-                                                      // tag,boolean and maybe
-                                                      // handleArraySize,
-                                                      // handleArray
-      case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED: // Body contains label
-      case ANNOUNCE_SYNCHRONIZATION_POINT:           // Body contains label,tag
-      case SYNCHRONIZATION_POINT_ACHIEVED:               // Body contains label
-      case FEDERATION_SYNCHRONIZED:                      // Body contains label
-      case INITIATE_FEDERATE_SAVE:                       // Body contains label
-      case IS_ATTRIBUTE_OWNED_BY_FEDERATE:// B.c. object, attribute and Tag.
-      case QUERY_ATTRIBUTE_OWNERSHIP: // B.c. object and attribute.
-      case ATTRIBUTE_IS_NOT_OWNED:    //Body contains object,attribute,federate
-      case INFORM_ATTRIBUTE_OWNERSHIP://Body contains object,attribute,federate
-      case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE: // Body contains object,
-                                                       // handleArraySize,
-                                                       // handleArray
+      // ------------------ BODY NOT EMPTY -----------------------------------
+
+
+      // ------- federationTime not useful
+      case CREATE_FEDERATION_EXECUTION:
+      case DESTROY_FEDERATION_EXECUTION:
+      case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+      case ANNOUNCE_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_ACHIEVED:
+      case FEDERATION_SYNCHRONIZED:
+      case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
+      case QUERY_ATTRIBUTE_OWNERSHIP:
+      case ATTRIBUTE_IS_NOT_OWNED:
+      case INFORM_ATTRIBUTE_OWNERSHIP:
+      case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
       case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-      case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:// Body contains object,
-                                                        // handleArraySize,
-                                                        // handleArray
-      case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:// Body contains object
-                                                        // handleArraySize,
-                                                        // handleArray
-      case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:// Body contains object
-                                                        // handleArraySize,
-                                                        // handleArray
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
+      case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+      case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
       case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
       case ATTRIBUTE_OWNERSHIP_ACQUISITION:
       case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-      case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:// Body contains object
-                                                        // handleArraySize,
-                                                        // handleArray
-      // Body contains object,handleArraySize,handleArray 
+      case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
       case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-      case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:// Body contains object
-                                                        // handleArraySize,
-                                                        // handleArray 
-      case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:// Body contains object
-                                                        // handleArraySize,
-                                                        // handleArray
-      // Body contains object,handleArraySize,handleArray 
+      case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
+      case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-      // Body contains objectClass,attribute,space
       case GET_ATTRIBUTE_SPACE_HANDLE:
-      case GET_INTERACTION_SPACE_HANDLE: //Body contains interactionClass,space
-      case DDM_CREATE_REGION:              // Body contains space,number,region
-      case REQUEST_FEDERATION_RESTORE:           // Body contains label.
-      case REQUEST_FEDERATION_RESTORE_SUCCEEDED: // Body contains label.
-      case REQUEST_FEDERATION_RESTORE_FAILED:    // Body contains label,tag
-      // Body contains object,region,boolean,handleArraySize,handleArray
+      case GET_INTERACTION_SPACE_HANDLE:
+      case INITIATE_FEDERATE_SAVE:
+      case DDM_CREATE_REGION:
       case DDM_ASSOCIATE_REGION:
-      case DDM_UNASSOCIATE_REGION:               // Body contains object,region
-      // Body contains objectClass,region,boolean,handleArraySize,handleArray
+      case DDM_UNASSOCIATE_REGION:
       case DDM_SUBSCRIBE_ATTRIBUTES:
-      case DDM_UNSUBSCRIBE_ATTRIBUTES:      // Body contains objectClass,region
-      // Body contains interactionClass,region,boolean
+      case DDM_UNSUBSCRIBE_ATTRIBUTES:
       case DDM_SUBSCRIBE_INTERACTION:
-      // Body contains interactionClass,region,boolean
       case DDM_UNSUBSCRIBE_INTERACTION:
-      // Body contains objectClass,object,tag,handleArraySize,handleArray,
-      // regions
       case DDM_REGISTER_OBJECT:
-        break ;
-
-        // --- MessageJ_R_Struct --
-
-      // header contains type, exception, size and no more useful
-      // Body contains resignAction
+      case REQUEST_FEDERATION_RESTORE:
+      case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+      case REQUEST_FEDERATION_RESTORE_FAILED:
+      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
       case RESIGN_FEDERATION_EXECUTION:
-        break ;
-
-      // header contains type, exception, size and no more useful
-      // Body contains federate,label
       case INITIATE_FEDERATE_RESTORE:
-        break ;
-
-      // header contains type, exception, size and no more useful
-      case JOIN_FEDERATION_EXECUTION: // Body contains federate,FederationName
-        break ;                       //               federateName
-
-        // --- MessageO_I_Struct, No body ---
-
-      // header contains type, exception, size and no more useful
-      // Body contains objectClass
+      case JOIN_FEDERATION_EXECUTION:
       case UNPUBLISH_OBJECT_CLASS:
       case UNSUBSCRIBE_OBJECT_CLASS:
       case START_REGISTRATION_FOR_OBJECT_CLASS:
       case STOP_REGISTRATION_FOR_OBJECT_CLASS:
-        break ;
-
-      // header contains type, exception, size and no more useful
-      // Body contains interactionClass
       case PUBLISH_INTERACTION_CLASS:
       case UNPUBLISH_INTERACTION_CLASS:
       case SUBSCRIBE_INTERACTION_CLASS:
       case UNSUBSCRIBE_INTERACTION_CLASS:
       case TURN_INTERACTIONS_ON:
       case TURN_INTERACTIONS_OFF:
-        break;
-
-        // --- MessageO_I_Struct, body not Empty ---
-
-      // RFS without time will receive date=0 in the header
-      case REQUEST_FEDERATION_SAVE:
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains objectClass,handleArraySize,HandleArray
-      case PUBLISH_OBJECT_CLASS:
-      case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains objectClass,object,name
-      case REGISTER_OBJECT_INSTANCE:
-        break ;
-
-      // FederationTime yet got from header 
-      // Body contains objectClass,object,tag,name,label,resignAction  
-      case DELETE_OBJECT_INSTANCE:
-      case REMOVE_OBJECT_INSTANCE:
-        break ;
-
-      // Body contains object  
       case LOCAL_DELETE_OBJECT_INSTANCE:
-        break;
-
-      // FederationTime yet got from header
-      // Body contains objectClass,object,tag,name,label,resignAction
-      case DISCOVER_OBJECT_INSTANCE:
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains objectClass,name,attribute
-      case GET_OBJECT_CLASS_HANDLE:
-      case GET_OBJECT_CLASS_NAME:
-      case GET_ATTRIBUTE_HANDLE:
-      case GET_ATTRIBUTE_NAME:
-        break ;
-
-      // FederationTime (maybe zero) yet got from header
-      // Body contains objectClass,handleArraySize,object,tag,HandleArray,
-      // ValueArray,ResignAction and 
-      // boolean (true with time, false without time)
-      case UPDATE_ATTRIBUTE_VALUES:
-      case REFLECT_ATTRIBUTE_VALUES:
-        break ;
-
-      // FederationTime yet got from header
-      case SEND_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[]
-      case RECEIVE_INTERACTION: // B.c. Tag, HandleArray[], ValueArray[], resignAction
-        // interactionClass = header.VP.O_I.handle ;
-        // handleArraySize = header.VP.O_I.size ;
-        // setFederationTime(header.VP.O_I.date );
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains interactionClass,name,parameter
-      case GET_INTERACTION_CLASS_HANDLE:
-      case GET_INTERACTION_CLASS_NAME:
-      case GET_PARAMETER_HANDLE:
-      case GET_PARAMETER_NAME:
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains name,space
-      case GET_SPACE_HANDLE:
-      case GET_SPACE_NAME:
-        break ;
-
-      // FederationTime yet got from header
-      // Body contains name,dimension,space
-      case GET_DIMENSION_NAME:
-      case GET_DIMENSION_HANDLE:
-        break ;
-
-      // Body contains interactionClass,transport,order
       case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
       case CHANGE_INTERACTION_ORDER_TYPE:
-        break ;
-
-      // Body contains region
       case DDM_DELETE_REGION:
-        //region = header.VP.ddm.region ;
-        break ;
-
-      // Body contains region,extents
       case DDM_MODIFY_REGION:
-	break ;	
-	
-        // --- MessageT_O_Struct, Body not empty ---
-      // Body contains handleArraySize,transport,order,object,HandleArray
       case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
       case CHANGE_ATTRIBUTE_ORDER_TYPE:
-        break ;
-
-        // --- TimeStruct, No Body ---
-        // case REQUEST_FEDERATION_TIME:
-
-      // FederationTime yet got from header
-      // Body is empty
-      case QUERY_LBTS:
-      case QUERY_FEDERATE_TIME:
-      case TIME_ADVANCE_REQUEST:
-      case NEXT_EVENT_REQUEST:
-      case TIME_ADVANCE_GRANT:
-        break ;
-
-      // lookahead got from header
-      // Body is empty
-      // Warning : FederationTime has been modified (needs validation)
-      case MODIFY_LOOKAHEAD:
-      case QUERY_LOOKAHEAD:
-        lookahead = header.date ;
-        fed_time.setZero();
-        break ;
-
-      // Body contains boolean
       case ENABLE_TIME_REGULATION:
       case DISABLE_TIME_REGULATION:
       case ENABLE_TIME_CONSTRAINED:
@@ -721,20 +553,42 @@ Message::readHeader(SocketUN *socket)
       case TICK_REQUEST:
         break ;
 
+      // ------- federationTime (relevant or zero) depending on boolean value
+      //         i.e. boolean false don't need date (zero received in header)
+      case REQUEST_FEDERATION_SAVE:
+      case UPDATE_ATTRIBUTE_VALUES:
+      case REFLECT_ATTRIBUTE_VALUES:
+      case SEND_INTERACTION:
+      case RECEIVE_INTERACTION:
+        break ;
 
-      // FederationTime yet got from header
-      // Body contains object,name
+      // ------- federationTime useful
+      case PUBLISH_OBJECT_CLASS:
+      case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
+      case REGISTER_OBJECT_INSTANCE:
+      case DELETE_OBJECT_INSTANCE:
+      case REMOVE_OBJECT_INSTANCE:
+      case DISCOVER_OBJECT_INSTANCE:
+      case GET_OBJECT_CLASS_HANDLE:
+      case GET_OBJECT_CLASS_NAME:
+      case GET_ATTRIBUTE_HANDLE:
+      case GET_ATTRIBUTE_NAME:
+      case GET_INTERACTION_CLASS_HANDLE:
+      case GET_INTERACTION_CLASS_NAME:
+      case GET_PARAMETER_HANDLE:
+      case GET_PARAMETER_NAME:
+      case GET_SPACE_HANDLE:
+      case GET_SPACE_NAME:
+      case GET_DIMENSION_NAME:
+      case GET_DIMENSION_HANDLE:
       case GET_OBJECT_INSTANCE_HANDLE:
       case GET_OBJECT_INSTANCE_NAME:
         break ;
 
-      // Body contains object,federationName,federate,handleArraySize,
-      // handleArray
-      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        break;        
+      // ------------------ BODY EMPTY -----------------------------------
+      // type,exception,size ans federationTime yet got from header
 
-
-      // Nothing more to do. Body is empty.
+      // ------- federationTime not useful
       case FEDERATE_SAVE_BEGUN:
       case FEDERATE_SAVE_COMPLETE:
       case FEDERATE_SAVE_NOT_COMPLETE:
@@ -747,7 +601,23 @@ Message::readHeader(SocketUN *socket)
       case FEDERATION_RESTORE_BEGUN:
       case ENABLE_ASYNCHRONOUS_DELIVERY:
       case DISABLE_ASYNCHRONOUS_DELIVERY:
-        break;
+        break ;
+
+      // ------- federationTime useful
+      case QUERY_LBTS:
+      case QUERY_FEDERATE_TIME:
+      case TIME_ADVANCE_REQUEST:
+      case NEXT_EVENT_REQUEST:
+      case TIME_ADVANCE_GRANT:
+        break ;
+
+      // lookahead got from header
+      // Warning : FederationTime has been modified (needs validation)
+      case MODIFY_LOOKAHEAD:
+      case QUERY_LOOKAHEAD:
+        lookahead = header.date ;
+        fed_time.setZero();
+        break ;
 
       default:
         D.Out(pdExcept, "Unknown type %d in ReadHeader.", header.type);
@@ -827,6 +697,12 @@ Message::readValueArray(MessageBody &body)
         }
 }
 
+// ----------------------------------------------------------------------------
+void Message::trace(const char* context)
+{
+D.Mes(pdMessage,'M',this->type,context);
+}
+
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.3 2007/10/30 09:25:55 rousse Exp $
+// $Id: Message_R.cc,v 3.4 2007/10/30 14:15:24 rousse Exp $

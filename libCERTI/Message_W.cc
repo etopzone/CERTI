@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.4 2007/10/30 13:11:46 rousse Exp $
+// $Id: Message_W.cc,v 3.5 2007/10/30 14:15:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,8 +32,6 @@ namespace certi {
 static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
 static PrettyDebug G("GENDOC",__FILE__);
 
-// You can comment this out if you don't want to optimize network messages.
-#define USE_HEADER_AND_BODY
 
 // ----------------------------------------------------------------------------
 //! Write NetworkMessage Objects to Socket objects.
@@ -41,17 +39,12 @@ void
 Message::write(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
 {
-#ifdef USE_HEADER_AND_BODY
 
     bool result ;
-
     result = writeHeader(socket);
     if (result)
         writeBody(socket);
 
-#else
-    socket->send((void *) this, sizeof(Message));
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -696,4 +689,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.4 2007/10/30 13:11:46 rousse Exp $
+// $Id: Message_W.cc,v 3.5 2007/10/30 14:15:24 rousse Exp $
