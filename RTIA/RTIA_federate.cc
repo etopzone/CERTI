@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.46 2007/10/25 08:07:16 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.47 2007/10/31 10:30:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 
 #include "fed.hh"
+#include "RoutingSpace.hh"
 #include "XmlParser.hh"
 
 using std::string ;
@@ -1209,4 +1210,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.46 2007/10/25 08:07:16 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.47 2007/10/31 10:30:23 erk Exp $

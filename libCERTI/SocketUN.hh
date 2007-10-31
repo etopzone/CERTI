@@ -45,16 +45,20 @@ typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
 // line is commented out, no buffer will be used at all.
 #define SOCKUN_BUFFER_LENGTH 4096
 
-/*! IMPORTANT NOTE: This UNIX socket implementation uses a Read Buffer to
-  improve global read performances(by reducing Read system calls). An
-  important drawback of this improvement is that a socket can be marked as
-  empty for the system, but in fact there is data waiting in the read
-  buffer. This is especially a problem for processes using the 'select'
-  system call: the socket won't be marked as ready for reading, because all
-  data has already been read, and is waiting in the internal buffer.
-  Therefore, before returning to a select loop, be sure to call the
-  IsDataReady method to check whether any data is waiting for processing.
-*/
+/**
+ * Socket Unix handling class.
+ * On windows platform this socket class is implemented using
+ * a TCP socket since Unix socket are not available.
+ * IMPORTANT NOTE: This UNIX socket implementation uses a Read Buffer to
+ * improve global read performances(by reducing Read system calls). An
+ * important drawback of this improvement is that a socket can be marked as
+ * empty for the system, but in fact there is data waiting in the read
+ * buffer. This is especially a problem for processes using the 'select'
+ * system call: the socket won't be marked as ready for reading, because all
+ * data has already been read, and is waiting in the internal buffer.
+ * Therefore, before returning to a select loop, be sure to call the
+ * IsDataReady method to check whether any data is waiting for processing.
+ */
 class CERTI_EXPORT SocketUN
 {
 public:

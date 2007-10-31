@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.33 2007/10/16 09:28:22 erk Exp $
+// $Id: Interaction.cc,v 3.34 2007/10/31 10:30:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 
 #include "Interaction.hh"
+#include "InteractionBroadcastList.hh"
 #include "PrettyDebug.hh"
 
 #include <iostream>
@@ -552,4 +553,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.33 2007/10/16 09:28:22 erk Exp $
+// $Id: Interaction.cc,v 3.34 2007/10/31 10:30:21 erk Exp $

@@ -19,14 +19,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.27 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.28 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
-
-
 // Project
+#include "Object.hh"
+#include "ObjectClass.hh"
 #include "ObjectClassSet.hh"
 #include "ObjectClassBroadcastList.hh"
+#include "SecurityServer.hh"
 #include "PrettyDebug.hh"
 #include "Named.hh"
 
@@ -73,10 +74,12 @@ ObjectClassSet::buildParentRelation(ObjectClass *subclass,
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer)    
+ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet)   
+
 {
     // It can be NULL on the RTIA.
-    server = theSecurityServer ;
+    this->server = theSecurityServer ;
+    this->isRootClassSet = isRootClassSet;
 }
 
 // ----------------------------------------------------------------------------
@@ -86,12 +89,25 @@ ObjectClassSet::~ObjectClassSet()
 	/* clear name map */
 	OCFromName.clear();    
 	/* 
-	 * FIXME EN.
-	 * Should we delete the content or only clear the map?
+	 * If we are Root ClassSet (the class set owned by RootObject)
+	 *    we delete the content
+	 * If not we only clear the map in order to avoid double deletion.
+	 * 	
+	 * FIXME EN: this is a trick in order because we do not
+	 *           really maintain a tree of ObjectClass in order
+	 *           to support flat object class name 
+	 *           ("Boule" instead of "Bille.Boule")
+	 *           We may get rid of this as soon as we want to support
+	 *           same name for object class in different branch of the tree.
 	 */
-	while (!OCFromHandle.empty()) {
-		delete (OCFromHandle.begin()->second);
-		OCFromHandle.erase(OCFromHandle.begin());
+	if (isRootClassSet) {
+		while (!OCFromHandle.empty()) {
+			delete (OCFromHandle.begin()->second);
+			OCFromHandle.erase(OCFromHandle.begin());
+		}
+	}
+	else {
+		OCFromHandle.clear();
 	}
 }
 
@@ -236,44 +252,56 @@ ObjectClassSet::getObject(ObjectHandle h) const
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getFlatObjectClassHandle(std::string class_name) const
-    throw (NameNotFound)
-{
-	namedOC_const_iterator iter;
-	
-	iter = OCFromName.find(class_name);
-	
-	if (iter != OCFromName.end()) {
-		return iter->second->getHandle();
-	} else {
-		throw NameNotFound(class_name.c_str());
-	}
-}
-
-ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(std::string class_name) const
     throw (NameNotFound)
 {    
     std::string currentName;
     std::string remainingName;
     ObjectClassHandle currentHandle;
-    ObjectClass* currentClass;    
+    ObjectClass*      currentClass;
+    ObjectClassSet const*   currentClassSet;
+	namedOC_const_iterator iter;
+	
+	currentClassSet = this;
+	remainingName = class_name;
+    /* 
+     * If the name is qualified (a.k.a. hierarchical name)
+     * like "Bille.Boule"
+     * then iterate through subClass in order to reach the leaf
+     * "unqualified name"
+     */
+    while (Named::isQualifiedClassName(remainingName)) {
+    	/* 
+    	 * The first current should be the name of
+    	 * of a subclass of the current ObjectClassSet 
+    	 */    	
+    	currentName = Named::getNextClassName(remainingName);
+		/* 
+		 * Get the handle of the subclass 
+		 * NOTE that we won't recurse more than once here
+		 * since the provided 'currentName' is not qualified
+		 * 'by design'
+		 * The recursive deepness is at most 2. 
+		 */
+		currentHandle = currentClassSet->getObjectClassHandle(currentName);
+		/* Get the corresponding class object */
+		currentClass = currentClassSet->getWithHandle(currentHandle);
+		/* now update currentClassSet */
+		currentClassSet = currentClass->getSubClasses();       	 
+    }
     
-    if (Named::isQualifiedClassName(class_name)) {
-    	remainingName = class_name;
-    	/* the first current should be the Root Object Class */
-    	while (remainingName.length()>0) {
-    		currentName = Named::getNextClassName(remainingName);
-    		currentHandle = getFlatObjectClassHandle(currentName);
-    		currentClass = getWithHandle(currentHandle);
-    		
-    		throw RTIinternalError("NotImplemented");	 
-    	}
-    	
-    } else {
-    	return getFlatObjectClassHandle(class_name);
-    }    
-}
+    /* 
+     * Now the current classClassSet should be a leaf 
+     * so that we can search in the 
+     */           
+    iter = currentClassSet->OCFromName.find(remainingName);
+
+	if (iter != currentClassSet->OCFromName.end()) {
+		return iter->second->getHandle();
+	} else {
+		throw NameNotFound(class_name.c_str());
+	}
+}  
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
@@ -732,4 +760,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.27 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.28 2007/10/31 10:30:20 erk Exp $

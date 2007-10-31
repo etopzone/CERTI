@@ -19,29 +19,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.23 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.24 2007/10/31 10:30:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
 #define _CERTI_OBJECT_CLASS_SET_HH
 
-#include "ObjectClass.hh"
-#include "SecurityServer.hh"
+// forward declaration 
+namespace certi {
+	class Object;
+	class ObjectClass;
+	class SecurityServer;
+}  // namespace certi
 
+// CERTI headers
+#include "certi.hh"
 #include <list>
 #include <string>
 #include <map>
 
 namespace certi {
 
-/*! Class ObjectClassSet, qui est la racine de l'arborescence des
-  classes d'objets.
-*/
+/**
+ * This class represents a set of object classes. 
+ */
 class CERTI_EXPORT ObjectClassSet 
 {
 
 public:
-    ObjectClassSet(SecurityServer *theSecurityServer);
+    ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet=false);
     ~ObjectClassSet();
 
     void addClass(ObjectClass *theClass);
@@ -163,19 +169,31 @@ public:
 
     Object *getObject(ObjectHandle) const throw (ObjectNotKnown);
 
-private:
+
 	typedef std::map<ObjectClassHandle,ObjectClass*,std::less<ObjectClassHandle> > Handle2ObjectClassMap_t;
 	typedef std::map<std::string,ObjectClass*,std::less<std::string> > Name2ObjectClassMap_t; 
 	typedef Handle2ObjectClassMap_t::const_iterator handledOC_const_iterator; 
 	typedef Name2ObjectClassMap_t::const_iterator namedOC_const_iterator;
-	Handle2ObjectClassMap_t OCFromHandle;	
-	Name2ObjectClassMap_t OCFromName;
 	
-	ObjectClassHandle
-	getFlatObjectClassHandle(std::string class_name) const throw (NameNotFound);
-    /*! This object will help to find the TCPLink associated with a Federate.
-      This reference is passed to all new ObjectClass.
-    */
+	namedOC_const_iterator NamedBegin() const {
+		return OCFromName.begin();
+	}
+	
+	namedOC_const_iterator NamedEnd() const {
+			return OCFromName.end();
+	}
+	
+	const size_t size() {return OCFromName.size();}
+	
+private:	
+	Handle2ObjectClassMap_t OCFromHandle;	
+	Name2ObjectClassMap_t   OCFromName;
+	bool                    isRootClassSet;
+	
+    /** 
+     * This object will help to find the TCPLink associated with a Federate.
+     * This reference is passed to all new ObjectClass.
+     */
     SecurityServer *server ;
 
     ObjectClass *getInstanceClass(ObjectHandle theObjectHandle) const
@@ -186,4 +204,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.23 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.24 2007/10/31 10:30:23 erk Exp $

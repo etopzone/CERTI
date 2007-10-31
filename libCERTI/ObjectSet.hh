@@ -25,8 +25,7 @@
 #define _CERTI_OBJECT_SET_HH
 
 // Project
-#include "Object.hh"
-#include "ObjectSet.hh"
+class Object;
 #include "SecurityServer.hh"
 #include "certi.hh"
 
@@ -162,6 +161,13 @@ protected:
                         FederateHandle the_federate) const ;
 
     SecurityServer *server ;
+    
+	typedef std::map<ObjectHandle,Object*,std::less<ObjectHandle> > Handle2ObjectMap_t;
+	typedef std::map<std::string,Object*,std::less<std::string> > Name2ObjectMap_t; 
+	typedef Handle2ObjectMap_t::const_iterator handledO_const_iterator; 
+	typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
+	Handle2ObjectMap_t OFromHandle;	
+	Name2ObjectMap_t   OFromName;
 };
 
 } // namespace certi

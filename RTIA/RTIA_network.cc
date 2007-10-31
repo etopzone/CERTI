@@ -18,12 +18,16 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.12 2007/06/22 08:51:34 erk Exp $
+// $Id: RTIA_network.cc,v 3.13 2007/10/31 10:30:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
 #include "ObjectClassAttribute.hh"
+#include "Interaction.hh"
+#include "InteractionSet.hh"
+#include "ObjectClass.hh"
+#include "ObjectClassSet.hh"
 
 namespace certi {
 namespace rtia {
@@ -316,4 +320,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.12 2007/06/22 08:51:34 erk Exp $
+// $Id: RTIA_network.cc,v 3.13 2007/10/31 10:30:23 erk Exp $

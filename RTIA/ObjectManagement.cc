@@ -18,12 +18,15 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.26 2007/08/09 09:22:44 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.27 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
-#include "ObjectManagement.hh"
 
+#include "InteractionSet.hh"
+#include "ObjectSet.hh"
+#include "ObjectClassSet.hh"
+#include "ObjectManagement.hh"
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
 
@@ -684,4 +687,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.26 2007/08/09 09:22:44 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.27 2007/10/31 10:30:24 erk Exp $

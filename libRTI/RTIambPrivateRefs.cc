@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.2 2007/10/22 14:24:53 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.3 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,6 +28,15 @@
 
 namespace {
 PrettyDebug D("LIBRTI", __FILE__);
+}
+
+RTIambPrivateRefs::RTIambPrivateRefs()
+{
+	fed_amb      = NULL;
+	pid_RTIA     = (pid_t)-1;
+	is_reentrant = false;
+	_theRootObj  = NULL;
+	socketUn     = NULL;
 }
 
 RTIambPrivateRefs::~RTIambPrivateRefs()
@@ -51,8 +60,9 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 	// FIXME EN: On SMP machine may we really 
 	//           guarantee that the following protection
 	//           against re-entrance is an efficient one?
-    if (is_reentrant)
-        throw ConcurrentAccessAttempted("");
+    if (is_reentrant) {
+        throw ConcurrentAccessAttempted("is_reentrant was true in RTIambPrivateRefs::executeService");
+    }
 
     D.Out(pdDebug, "sending request to RTIA.");
 
@@ -98,7 +108,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 void
 RTIambPrivateRefs::processException(Message *msg)
 {
-    D.Out(pdExcept, "n� de l'exception : %d .", msg->getExceptionType());
+    D.Out(pdExcept, "num de l'exception : %d .", msg->getExceptionType());
     switch(msg->getExceptionType()) {
       case e_NO_EXCEPTION: {
       } break ;
@@ -512,4 +522,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.2 2007/10/22 14:24:53 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.3 2007/10/31 10:30:24 erk Exp $

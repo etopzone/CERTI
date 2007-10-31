@@ -18,13 +18,20 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.21 2007/05/03 15:46:31 rousse Exp $
+// $Id: DataDistribution.cc,v 3.22 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "DataDistribution.hh"
 
+#include "Interaction.hh"
+#include "InteractionSet.hh"
+#include "Object.hh"
+#include "ObjectAttribute.hh"
+#include "ObjectClass.hh"
+#include "ObjectClassSet.hh"
 #include "ObjectClassAttribute.hh"
+#include "RoutingSpace.hh"
 #include "FedRegion.hh"
 
 #include <cassert>
@@ -413,4 +420,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.21 2007/05/03 15:46:31 rousse Exp $
+// $Id: DataDistribution.cc,v 3.22 2007/10/31 10:30:24 erk Exp $

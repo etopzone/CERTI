@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.66 2007/10/16 09:25:14 erk Exp $
+// $Id: Federation.cc,v 3.67 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,6 +31,12 @@
 
 #include "fed.hh"
 #include "XmlParser.hh"
+#include "Object.hh"
+#include "ObjectAttribute.hh"
+#include "ObjectSet.hh"
+#include "ObjectClassSet.hh"
+#include "InteractionSet.hh"
+
 #include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
@@ -2182,5 +2188,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.66 2007/10/16 09:25:14 erk Exp $
+// $Id: Federation.cc,v 3.67 2007/10/31 10:30:24 erk Exp $
 

@@ -19,17 +19,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.24 2007/10/16 09:28:21 erk Exp $
+// $Id: Interaction.hh,v 3.25 2007/10/31 10:30:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
 #define _CERTI_INTERACTION_HH
 
+// forward declaration
+namespace certi {
+	class InteractionBroadcastList;
+}  // namespace certi
+
+// CERTI headers
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "Parameter.hh"
 #include "Subscribable.hh"
-#include "InteractionBroadcastList.hh"
+
 
 #include <list>
 #include <set>
@@ -164,4 +170,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.24 2007/10/16 09:28:21 erk Exp $
+// $Id: Interaction.hh,v 3.25 2007/10/31 10:30:22 erk Exp $

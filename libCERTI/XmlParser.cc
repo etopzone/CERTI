@@ -22,6 +22,8 @@
 
 
 #include "XmlParser.hh"
+#include "ObjectClassSet.hh"
+#include "InteractionSet.hh"
 #include "ObjectClassAttribute.hh"
 #include "RoutingSpace.hh"
 #include "PrettyDebug.hh"

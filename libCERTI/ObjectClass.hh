@@ -19,16 +19,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.29 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClass.hh,v 3.30 2007/10/31 10:30:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
 #define _CERTI_OBJECT_CLASS_HH
 
-// Project
-#include "Object.hh"
-#include "ObjectAttribute.hh"
-#include "ObjectClassBroadcastList.hh"
+// forward declarations
+namespace certi {
+    class    Object;	
+	class    ObjectAttribute;
+	class    ObjectClass;
+	class    ObjectClassSet;
+	class    ObjectClassAttribute;
+	class    ObjectClassBroadcastList;
+}
+
+// CERTI headers
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "Named.hh"
@@ -73,6 +80,7 @@ public:
     ObjectClassHandle getSuperclass() const { return superClass ; };
     void addSubclass(ObjectClass *);
     ObjectClass* getSubClassByName(const std::string subClassName);
+    ObjectClassSet* getSubClasses() {return subClasses;};
 
     // Security Methods
     void checkFederateAccess(FederateHandle, const char *)
@@ -235,12 +243,13 @@ private:
     SecurityLevelID levelId ; //! default level for non inherited attributes
     std::list<ObjectClassAttribute *> attributeSet ;
     std::list<Object *> objectSet ;
-    ObjectClassHandle superClass ;
-    std::list<ObjectClass *> subClasses ;
+    ObjectClassHandle superClass;
+    // The set of sub classes of this object class 
+    ObjectClassSet*   subClasses;
 };
 
 } // namespace certi
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.29 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClass.hh,v 3.30 2007/10/31 10:30:22 erk Exp $

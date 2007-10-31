@@ -17,11 +17,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.5 2007/07/06 09:25:19 erk Exp $
+// $Id: Subscribable.cc,v 3.6 2007/10/31 10:30:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 
-
+#include "ObjectClassBroadcastList.hh"
+#include "InteractionBroadcastList.hh"
+#include "RTIRegion.hh"
 #include "Subscribable.hh"
 #include "helper.hh"
 #include "PrettyDebug.hh"
@@ -199,4 +201,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.5 2007/07/06 09:25:19 erk Exp $
+// $Id: Subscribable.cc,v 3.6 2007/10/31 10:30:23 erk Exp $

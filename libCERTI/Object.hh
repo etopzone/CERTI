@@ -19,15 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.16 2007/06/22 08:51:37 erk Exp $
+// $Id: Object.hh,v 3.17 2007/10/31 10:30:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
 #define _CERTI_OBJECT_HH
 
+// forward declaration 
+namespace certi {
+	class ObjectAttribute;
+	class RTIRegion;
+}
+
 #include "certi.hh"
-#include "ObjectAttribute.hh"
-#include "RTIRegion.hh"
 #include "Named.hh"
 #include "Handled.hh"
 
@@ -88,4 +92,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.16 2007/06/22 08:51:37 erk Exp $
+// $Id: Object.hh,v 3.17 2007/10/31 10:30:23 erk Exp $

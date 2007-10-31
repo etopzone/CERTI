@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.hh,v 3.8 2007/09/03 13:59:48 erk Exp $
+// $Id: Dimension.hh,v 3.9 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DIMENSION_HH
 #define _CERTI_DIMENSION_HH
 
+// CERTI headers
 #include "certi.hh"
 #include "Named.hh"
 #include "Handled.hh"
@@ -82,4 +83,4 @@ private:
 
 #endif
 
-// $Id: Dimension.hh,v 3.8 2007/09/03 13:59:48 erk Exp $
+// $Id: Dimension.hh,v 3.9 2007/10/31 10:30:20 erk Exp $

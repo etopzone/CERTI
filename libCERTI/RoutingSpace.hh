@@ -19,17 +19,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.9 2007/09/03 13:59:47 erk Exp $
+// $Id: RoutingSpace.hh,v 3.10 2007/10/31 10:30:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
 #define _CERTI_ROUTING_SPACE
 
+
+// CERTI headers
 #include "Dimension.hh"
 #include "Handled.hh"
 #include "Extent.hh"
 #include "Named.hh"
 
+// Standard headers
 #include <vector>
 #include <string>
 
@@ -91,5 +94,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.9 2007/09/03 13:59:47 erk Exp $
+// $Id: RoutingSpace.hh,v 3.10 2007/10/31 10:30:22 erk Exp $
 

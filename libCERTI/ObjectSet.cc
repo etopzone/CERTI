@@ -24,6 +24,8 @@
 
 
 // Project
+#include "Object.hh"
+#include "ObjectAttribute.hh"
 #include "ObjectSet.hh"
 #include "PrettyDebug.hh"
 
@@ -431,4 +433,4 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.15 2007/09/27 13:59:33 erk Exp $
+// $Id: ObjectSet.cc,v 3.16 2007/10/31 10:30:21 erk Exp $

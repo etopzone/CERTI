@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.2 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.3 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -28,8 +28,10 @@
 
 using namespace certi ;
 
-struct RTIambPrivateRefs
+class RTIambPrivateRefs
 {
+public:
+	RTIambPrivateRefs();
     ~RTIambPrivateRefs();
 
     void processException(Message *);
@@ -53,4 +55,4 @@ struct RTIambPrivateRefs
     SocketUN *socketUn ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.2 2007/07/06 09:25:20 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.3 2007/10/31 10:30:24 erk Exp $

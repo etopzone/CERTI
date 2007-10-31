@@ -19,13 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.38 2007/10/16 09:28:22 erk Exp $
+// $Id: ObjectClass.cc,v 3.39 2007/10/31 10:30:21 erk Exp $
 // ----------------------------------------------------------------------------
 
+#include  "Object.hh"
+#include  "ObjectAttribute.hh"
+#include  "ObjectClass.hh"
+#include  "ObjectClassAttribute.hh"
+#include  "ObjectClassSet.hh"
+#include  "ObjectClassBroadcastList.hh"
 
-
-#include "ObjectClass.hh"
-#include "ObjectClassAttribute.hh"
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
@@ -280,9 +283,10 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 ObjectClass::ObjectClass()
-    : server(0), handle(0), maxSubscriberHandle(0), levelId(PublicLevelID),
-      superClass(0)
+    : server(NULL), handle(0), maxSubscriberHandle(0), levelId(PublicLevelID),
+      superClass(0), subClasses(NULL)
 {
+	subClasses = new ObjectClassSet(NULL);
 }
 
 // ----------------------------------------------------------------------------
@@ -299,10 +303,9 @@ ObjectClass::~ObjectClass()
         delete attributeSet.front();
         attributeSet.pop_front();
     }
-
     // Deleting subclasses
-    while (!subClasses.empty()) {
-        subClasses.pop_front();
+    if (NULL!=subClasses) {
+    	delete subClasses;    
     }
 }
 
@@ -379,13 +382,13 @@ void ObjectClass::display() const
     // Display inheritance
     cout << " Parent Class Handle: " << superClass << endl ;
     cout << " Security Level: " << levelId << endl ;
-    cout << " " << subClasses.size() << " Child(s):" << endl ;
-
-    cout << " Subclasses handles:" ;
-    list<ObjectClass *>::const_iterator s = subClasses.begin();
-    for (s = subClasses.begin(); s != subClasses.end(); s++) {
-        cout << " " << (*s)->getHandle() << endl ;
+    cout << " " << subClasses->size() << " Child(s):" << endl ;
+    cout << " Subclasses handles:" ;    
+    ObjectClassSet::namedOC_const_iterator i ;
+    for (i = subClasses->NamedBegin(); i != subClasses->NamedEnd(); ++i) {
+    	cout << " " << i->second->getHandle() << endl;
     }
+                
 
     // Display Attributes
     cout << " " << attributeSet.size() << " Attribute(s):" << endl ;
@@ -1699,7 +1702,7 @@ ObjectClass::unsubscribe(FederateHandle fed)
 void
 ObjectClass::addSubclass(ObjectClass *c)
 {
-    subClasses.push_back(c);
+    subClasses->addClass(c);
 }
 
 // ----------------------------------------------------------------------------
@@ -1718,9 +1721,9 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
     bool go_deeper = sendDiscoverMessages(federate, subscription);
 
     if (go_deeper) {
-        list<ObjectClass *>::const_iterator i ;
-        for (i = subClasses.begin(); i != subClasses.end(); ++i) {
-            (*i)->recursiveDiscovering(federate, subscription);
+        ObjectClassSet::namedOC_const_iterator i ;
+        for (i = subClasses->NamedBegin(); i != subClasses->NamedEnd(); ++i) {
+            i->second->recursiveDiscovering(federate, subscription);
         }
     }
 }
@@ -1745,4 +1748,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.38 2007/10/16 09:28:22 erk Exp $
+// $Id: ObjectClass.cc,v 3.39 2007/10/31 10:30:21 erk Exp $

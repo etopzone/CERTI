@@ -19,13 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.14 2007/07/23 14:13:24 rousse Exp $
+// $Id: InteractionSet.hh,v 3.15 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
 #define _CERTI_INTERACTION_SET_HH
 
-#include "Interaction.hh"
+// forward declaration
+namespace certi {
+	class Interaction;
+}  // namespace certi
+
+// CERTI headers
+#include "certi.hh"
 #include "SecurityServer.hh"
 
 #include <list>
@@ -139,4 +145,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.14 2007/07/23 14:13:24 rousse Exp $
+// $Id: InteractionSet.hh,v 3.15 2007/10/31 10:30:20 erk Exp $

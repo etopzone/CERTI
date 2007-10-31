@@ -18,10 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.15 2007/07/06 09:25:20 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.16 2007/10/31 10:30:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
+
+#include "InteractionSet.hh"
+#include "ObjectClassSet.hh"
 #include "DeclarationManagement.hh"
 
 #ifdef _WIN32
@@ -455,4 +458,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.15 2007/07/06 09:25:20 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.16 2007/10/31 10:30:24 erk Exp $

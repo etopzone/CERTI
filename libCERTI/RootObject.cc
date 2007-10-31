@@ -19,10 +19,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.28 2007/07/06 09:25:17 erk Exp $
+// $Id: RootObject.cc,v 3.29 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
-
+#include "Object.hh"
+#include "ObjectSet.hh"
+#include "ObjectAttribute.hh"
+#include "ObjectClass.hh"
+#include "ObjectClassSet.hh"
+#include "ObjectClassAttribute.hh"
+#include "Interaction.hh"
+#include "InteractionSet.hh"
+#include "RTIRegion.hh"
+#include "RoutingSpace.hh"
 #include "RootObject.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
@@ -311,4 +320,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.28 2007/07/06 09:25:17 erk Exp $
+// $Id: RootObject.cc,v 3.29 2007/10/31 10:30:20 erk Exp $

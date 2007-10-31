@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.3 2007/10/16 09:28:21 erk Exp $
+// $Id: Named.cc,v 3.4 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -82,9 +82,9 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 	/* take the substring from start up to '.' (excluded) */
 	idx    = qualifiedClassName.find_first_of('.',0);	
 	if (idx!=std::string::npos) {
-		retval = qualifiedClassName.substr(0,idx-1);
+		retval = qualifiedClassName.substr(0,idx);
 		/* update the string with the remaining string */
-		qualifiedClassName = qualifiedClassName.substr(idx);
+		qualifiedClassName = qualifiedClassName.substr(idx+1);
 	} else {
 		retval = qualifiedClassName;
 	}
@@ -93,4 +93,4 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 
 } // certi
 
-// $Id: Named.cc,v 3.3 2007/10/16 09:28:21 erk Exp $
+// $Id: Named.cc,v 3.4 2007/10/31 10:30:20 erk Exp $

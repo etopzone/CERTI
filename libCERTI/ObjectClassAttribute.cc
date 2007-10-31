@@ -19,12 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.26 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.27 2007/10/31 10:30:19 erk Exp $
 // ----------------------------------------------------------------------------
 
-
-
 #include "ObjectClassAttribute.hh"
+#include "ObjectClassBroadcastList.hh"
+#include "SecurityServer.hh"
 #include "PrettyDebug.hh"
 #include "helper.hh"
 
@@ -209,4 +209,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.26 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.27 2007/10/31 10:30:19 erk Exp $

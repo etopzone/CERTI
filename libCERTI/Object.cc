@@ -19,12 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.20 2007/07/06 09:25:18 erk Exp $
+// $Id: Object.cc,v 3.21 2007/10/31 10:30:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 
 #include "Object.hh"
+#include "ObjectAttribute.hh"
+#include "RTIRegion.hh"
 
 #include <iostream>
 #include <cstring>
@@ -153,4 +155,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.20 2007/07/06 09:25:18 erk Exp $
+// $Id: Object.cc,v 3.21 2007/10/31 10:30:21 erk Exp $

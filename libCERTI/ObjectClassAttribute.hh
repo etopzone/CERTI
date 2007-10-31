@@ -19,17 +19,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.22 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.23 2007/10/31 10:30:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 #define CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
+// forward declarations
+namespace certi {
+	class ObjectClassBroadcastList;
+	class RTIRegion;
+	class SecurityServer;
+}  // namespace certi
+
+// CERTI headers
 #include "certi.hh"
 #include "SecurityLevel.hh"
-
 #include "Subscribable.hh"
-#include "ObjectClassBroadcastList.hh"
 
 #include <set>
 
@@ -87,4 +93,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.22 2007/10/16 09:28:21 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.23 2007/10/31 10:30:22 erk Exp $

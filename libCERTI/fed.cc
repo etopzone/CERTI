@@ -19,15 +19,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.11 2007/10/16 09:28:21 erk Exp $
+// $Id: fed.cc,v 3.12 2007/10/31 10:30:20 erk Exp $
 // ----------------------------------------------------------------------------
 
-
-#include "fed.hh"
+// CERTI header
+#include "Object.hh"
+#include "ObjectClass.hh"
 #include "ObjectClassAttribute.hh"
+#include "ObjectClassSet.hh"
+#include "Interaction.hh"
+#include "InteractionSet.hh"
 #include "Dimension.hh"
+#include "RoutingSpace.hh"
 #include "PrettyDebug.hh"
 
+#include "fed.hh"
+
+// Standard headers
 #include <iostream>
 #include <utility>
 #include <string>
@@ -385,4 +393,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.11 2007/10/16 09:28:21 erk Exp $
+// $Id: fed.cc,v 3.12 2007/10/31 10:30:20 erk Exp $
