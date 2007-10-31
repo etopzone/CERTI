@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.6 2007/10/30 15:24:47 rousse Exp $
+// $Id: Message_W.cc,v 3.7 2007/10/31 09:42:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -124,6 +124,7 @@ Message::writeBody(SocketUN *socket)
             break ;
 
           // Body contains label (i.e. String)
+          case SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
           case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
           case SYNCHRONIZATION_POINT_ACHIEVED:
           case FEDERATION_SYNCHRONIZED:
@@ -262,7 +263,7 @@ Message::writeBody(SocketUN *socket)
             body.writeLongInt(space);
             break ;
 
-          // Body contains federate,federatioName,federateName
+          // Body contains federate,federationName,federateName
           case JOIN_FEDERATION_EXECUTION:
             body.writeShortInt(federate);
             body.writeString(federationName);
@@ -509,6 +510,7 @@ Message::writeHeader(SocketUN *socket)
       case CREATE_FEDERATION_EXECUTION:
       case DESTROY_FEDERATION_EXECUTION:
       case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case ANNOUNCE_SYNCHRONIZATION_POINT:
       case SYNCHRONIZATION_POINT_ACHIEVED:
@@ -684,4 +686,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.6 2007/10/30 15:24:47 rousse Exp $
+// $Id: Message_W.cc,v 3.7 2007/10/31 09:42:27 rousse Exp $

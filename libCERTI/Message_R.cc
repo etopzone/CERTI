@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.5 2007/10/30 15:24:47 rousse Exp $
+// $Id: Message_R.cc,v 3.6 2007/10/31 09:42:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -108,6 +108,7 @@ Message::readBody(SocketUN *socket)
             break ;
 
           // Body contains label
+          case SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
           case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
           case SYNCHRONIZATION_POINT_ACHIEVED:
           case FEDERATION_SYNCHRONIZED:
@@ -484,6 +485,7 @@ Message::readHeader(SocketUN *socket)
       case CREATE_FEDERATION_EXECUTION:
       case DESTROY_FEDERATION_EXECUTION:
       case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
+      case SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case ANNOUNCE_SYNCHRONIZATION_POINT:
       case SYNCHRONIZATION_POINT_ACHIEVED:
@@ -699,4 +701,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.5 2007/10/30 15:24:47 rousse Exp $
+// $Id: Message_R.cc,v 3.6 2007/10/31 09:42:27 rousse Exp $

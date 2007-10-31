@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.30 2007/09/28 14:07:53 rousse Exp $
+// $Id: FederationManagement.cc,v 3.31 2007/10/31 09:42:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -578,6 +578,28 @@ FederationManagement::announceSynchronizationPoint(const char *label,
 
 // ----------------------------------------------------------------------------
 void FederationManagement::
+synchronizationPointRegistrationFailed(const char *label)
+{
+    D.Out(pdInit, "Synchronization Point Registration Failed \"%s\".",
+          label);
+
+    Message req, rep ;
+
+    G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationFailed");
+
+    assert(label != NULL);
+
+    req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED ;
+    req.setLabel(label);
+
+    comm->requestFederateService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  FederationManagement::synchronizationPointRegistrationFailed");
+
+}
+
+// ----------------------------------------------------------------------------
+void FederationManagement::
 synchronizationPointRegistrationSucceeded(const char *label)
 {
     D.Out(pdInit, "Synchronization Point Registration Succeeded \"%s\".",
@@ -872,4 +894,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.30 2007/09/28 14:07:53 rousse Exp $
+// $Id: FederationManagement.cc,v 3.31 2007/10/31 09:42:27 rousse Exp $

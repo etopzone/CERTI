@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.17 2007/09/28 14:07:53 rousse Exp $
+// $Id: FederationManagement.hh,v 3.18 2007/10/31 09:42:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -69,6 +69,7 @@ public:
                                  TypeException &e);
     void unregisterSynchronization(const char *label,
                                    TypeException &e);
+    void synchronizationPointRegistrationFailed(const char *label);
     void synchronizationPointRegistrationSucceeded(const char *label);
     void federationSynchronized(const char *label);
     void announceSynchronizationPoint(const char *label,
@@ -121,4 +122,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.17 2007/09/28 14:07:53 rousse Exp $
+// $Id: FederationManagement.hh,v 3.18 2007/10/31 09:42:27 rousse Exp $
