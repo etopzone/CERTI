@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.14 2007/07/23 14:13:23 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.15 2007/11/05 14:30:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -110,6 +110,13 @@ public:
                             EventRetractionHandle theHandle,
                             TypeException &e);
 
+    void receiveInteraction(InteractionClassHandle theInteraction,
+                            ParameterHandle *paramArray,
+                            ParameterLengthPair *valueArray,
+                            UShort paramArraySize,
+                            const char *theTag,
+                            TypeException &e);
+
     EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
                                        const char *theTag,
                                        TypeException &e);
@@ -199,4 +206,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.14 2007/07/23 14:13:23 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.15 2007/11/05 14:30:04 rousse Exp $

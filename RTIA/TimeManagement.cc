@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.18 2007/10/25 08:07:16 rousse Exp $
+// $Id: TimeManagement.cc,v 3.19 2007/11/05 14:30:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -192,14 +192,22 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       {
           ParameterLengthPair *ValueArray = msg.getParamValueArray();
 
-          om->receiveInteraction(msg.interactionClass,
-                                 msg.handleArray,
-                                 ValueArray,
-                                 msg.handleArraySize,
-                                 msg.date,
-                                 msg.label,
-                                 msg.eventRetraction,
-                                 msg.exception);
+          if (msg.getBoolean())
+              om->receiveInteraction(msg.interactionClass,
+                                     msg.handleArray,
+                                     ValueArray,
+                                     msg.handleArraySize,
+                                     msg.date,
+                                     msg.label,
+                                     msg.eventRetraction,
+                                     msg.exception);
+          else
+              om->receiveInteraction(msg.interactionClass,
+                                     msg.handleArray,
+                                     ValueArray,
+                                     msg.handleArraySize,
+                                     msg.label,
+                                     msg.exception);
           free(ValueArray);
 
           break ;
@@ -728,4 +736,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.18 2007/10/25 08:07:16 rousse Exp $
+// $Id: TimeManagement.cc,v 3.19 2007/11/05 14:30:04 rousse Exp $

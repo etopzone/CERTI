@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.7 2007/10/31 09:42:27 rousse Exp $
+// $Id: Message_W.cc,v 3.8 2007/11/05 14:30:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -264,6 +264,7 @@ Message::writeBody(SocketUN *socket)
             break ;
 
           // Body contains federate,federationName,federateName
+          // Note : federate relevant on RTIA answer only
           case JOIN_FEDERATION_EXECUTION:
             body.writeShortInt(federate);
             body.writeString(federationName);
@@ -686,4 +687,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.7 2007/10/31 09:42:27 rousse Exp $
+// $Id: Message_W.cc,v 3.8 2007/11/05 14:30:04 rousse Exp $

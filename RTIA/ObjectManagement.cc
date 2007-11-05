@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.27 2007/10/31 10:30:24 erk Exp $
+// $Id: ObjectManagement.cc,v 3.28 2007/11/05 14:30:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -327,7 +327,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 }
 
 // ----------------------------------------------------------------------------
-//! receiveInteraction
+//! receiveInteraction with time
 void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      ParameterHandle *the_parameters,
@@ -346,7 +346,28 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
     req.setParameters(the_parameters, the_values, the_size);
+    req.setBoolean(true);
+    // BUG: On fait quoi de la reponse ?
+    comm->requestFederateService(&req, &rep);
+}
 
+// ----------------------------------------------------------------------------
+//! receiveInteraction without time
+void
+ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
+                                     ParameterHandle *the_parameters,
+                                     ParameterLengthPair *the_values,
+                                     UShort the_size,
+                                     const char *the_tag,
+                                     TypeException &)
+{
+    Message req, rep ;
+
+    req.type = Message::RECEIVE_INTERACTION ;
+    req.setInteractionClass(the_interaction);
+    req.setTag(the_tag);
+    req.setParameters(the_parameters, the_values, the_size);
+    req.setBoolean(false);
     // BUG: On fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 }
@@ -687,4 +708,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.27 2007/10/31 10:30:24 erk Exp $
+// $Id: ObjectManagement.cc,v 3.28 2007/11/05 14:30:04 rousse Exp $

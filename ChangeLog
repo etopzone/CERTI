@@ -1,3 +1,76 @@
+2007-11-02 13:52  erk
+
+	* scripts/FindCERTI.cmake: FindCERTI now honors the QUIET arguments
+	  of FIND_PACKAGE.
+
+2007-10-31 11:30  erk
+
+	* libCERTI/ObjectClassAttribute.cc, libCERTI/Dimension.hh,
+	  libCERTI/InteractionSet.hh, libCERTI/Named.cc,
+	  libCERTI/ObjectClassSet.cc, libCERTI/RTIRegion.hh,
+	  libCERTI/RootObject.cc, libCERTI/fed.cc, libCERTI/Interaction.cc,
+	  libCERTI/Object.cc, libCERTI/ObjectClass.cc,
+	  libCERTI/ObjectSet.cc, libCERTI/ObjectSet.hh,
+	  libCERTI/PrettyDebug.cc, libCERTI/XmlParser.cc,
+	  libCERTI/Interaction.hh, libCERTI/ObjectClass.hh,
+	  libCERTI/ObjectClassAttribute.hh, libCERTI/RoutingSpace.hh,
+	  libCERTI/SocketUN.hh, libCERTI/Subscribable.hh,
+	  RTIA/RTIA_federate.cc, RTIA/RTIA_network.cc,
+	  libCERTI/InteractionSet.cc, libCERTI/Object.hh,
+	  libCERTI/ObjectClassSet.hh, libCERTI/RootObject.hh,
+	  libCERTI/Subscribable.cc, libCERTI/fed.hh,
+	  RTIA/DataDistribution.cc, RTIA/DeclarationManagement.cc,
+	  RTIA/ObjectManagement.cc, RTIG/Federation.cc,
+	  libRTI/RTIambPrivateRefs.cc, libRTI/RTIambPrivateRefs.hh: This
+	  set of patches should fix thse following bugs: bug #20935 :
+	  Qualified name not handled bug #21067 :
+	  ObjectClassSet::getObjectClassHandle doesn't handle class
+	  hierarchies This is not the ultimate solution since the patch
+	  does not resolve name clash problem.	I will continue to improve
+	  the behaviour in order to reach what is required by HLA 1.3 and
+	  1516.
+
+2007-10-31 10:42  rousse
+
+	* RTIA/FederationManagement.cc, RTIA/FederationManagement.hh,
+	  libCERTI/Message_R.cc, libCERTI/Message_W.cc:
+	  synchronizationPointRegistrationFailed added
+
+2007-10-30 16:24  rousse
+
+	* libCERTI/: Message.hh, Message_R.cc, Message_W.cc: Message_R and
+	  _W.cc restructuration
+
+2007-10-30 15:15  rousse
+
+	* libCERTI/: Message_R.cc, Message_W.cc: Little things...
+
+2007-10-30 14:11  rousse
+
+	* libCERTI/Message_W.cc: Message_W.cc restructuration (continued)
+
+2007-10-30 10:25  rousse
+
+	* libCERTI/: Message_R.cc, Message_W.cc: Message_R and W.cc
+	  restructuration (continued)
+
+2007-10-29 09:09  erk
+
+	* myCERTI_env.csh.in, myCERTI_env.sh.in: Now csh and sh should be
+	  'equivalent' I did suppress the NBITs thing which was only usable
+	  on Linux
+
+2007-10-29 00:27  erk
+
+	* myCERTI_env.csh.in, myCERTI_env.sh.in: First pass update of the
+	  Bourne Shell scripts from C-Shell one (correct some typo in
+	  C-shell too)
+
+2007-10-26 16:36  rousse
+
+	* ChangeLog, libCERTI/Message_R.cc, libCERTI/Message_W.cc: Little
+	  thing.
+
 2007-10-26 15:00  rousse
 
 	* libCERTI/: CMakeLists.txt, Makefile.am, Message.hh, Message_R.cc,

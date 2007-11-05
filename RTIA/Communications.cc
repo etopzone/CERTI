@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.17 2007/09/28 14:07:53 rousse Exp $
+// $Id: Communications.cc,v 3.18 2007/11/05 14:30:03 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -152,15 +152,15 @@ Communications::~Communications()
 void
 Communications::requestFederateService(Message *req, Message *rep)
 {
-    G.Out(pdGendoc,"enter Communications::requestFederateService for message "
-                   "type %d",req->type);
+    // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
+    //               "type %d",req->type);
     assert(req != NULL);
     D.Out(pdRequest, "Sending Request to Federate, Type %d.", req->type);
     sendUN(req);
     receiveUN(rep);
     D.Out(pdAnswer, "Received Answer from Federate.");
     assert(req->type == rep->type);
-    G.Out(pdGendoc,"exit  Communications::requestFederateService");
+    // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
 
 // ----------------------------------------------------------------------------
@@ -342,4 +342,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.17 2007/09/28 14:07:53 rousse Exp $
+// $Id: Communications.cc,v 3.18 2007/11/05 14:30:03 rousse Exp $

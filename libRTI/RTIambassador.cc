@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.54 2007/10/25 08:07:16 rousse Exp $
+// $Id: RTIambassador.cc,v 3.55 2007/11/05 14:30:05 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -357,17 +357,24 @@ RTI::RTIambassador::tick_kernel(bool locked)
                   delete attributes ;
               } break ;
 
-              case Message::RECEIVE_INTERACTION: {
+              case Message::RECEIVE_INTERACTION:
+                  {
                   ParameterHandleValuePairSet *parameters = vers_Fed.getPHVPS();
-
-                  privateRefs->fed_amb->receiveInteraction(vers_Fed.getInteractionClass(),
+                  if (vers_Fed.getBoolean())
+                      privateRefs->fed_amb->receiveInteraction(
+                                              vers_Fed.getInteractionClass(),
                                               *parameters,
                                               vers_Fed.getFedTime(),
                                               vers_Fed.getTag(),
                                               vers_Fed.getEventRetraction());
+                  else
+                      privateRefs->fed_amb->receiveInteraction(
+                                              vers_Fed.getInteractionClass(),
+                                              *parameters,
+                                              vers_Fed.getTag());
 
                   delete parameters ;
-              } break ;
+                  } break ;
 
               case Message::REMOVE_OBJECT_INSTANCE: {
                   privateRefs->fed_amb->removeObjectInstance(vers_Fed.getObject(),
@@ -540,7 +547,7 @@ req.setFEDid(FED);
 	if(!strcasecmp(FED,exeName)) {
 #endif
 }*/
-G.Out(pdGendoc,"                     ====>executeService CREATE_FEDERATION_EXECUTION");
+G.Out(pdGendoc,"             ====>executeService CREATE_FEDERATION_EXECUTION");
 
 privateRefs->executeService(&req, &rep);
 
@@ -561,6 +568,8 @@ RTI::RTIambassador::destroyFederationExecution(const char *executionName)
 
     req.type = Message::DESTROY_FEDERATION_EXECUTION ;
     req.setFederationName(executionName);
+
+    G.Out(pdGendoc,"        ====>executeService DESTROY_FEDERATION_EXECUTION");
 
     privateRefs->executeService(&req, &rep);
 
@@ -2848,4 +2857,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.54 2007/10/25 08:07:16 rousse Exp $
+// $Id: RTIambassador.cc,v 3.55 2007/11/05 14:30:05 rousse Exp $
