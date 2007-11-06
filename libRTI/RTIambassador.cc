@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.55 2007/11/05 14:30:05 rousse Exp $
+// $Id: RTIambassador.cc,v 3.56 2007/11/06 10:05:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -347,13 +347,18 @@ RTI::RTIambassador::tick_kernel(bool locked)
 
               case Message::REFLECT_ATTRIBUTE_VALUES: {
                   AttributeHandleValuePairSet *attributes = vers_Fed.getAHVPS();
-                  privateRefs->fed_amb->
-                      reflectAttributeValues(vers_Fed.getObject(),
-                                             *attributes,
-                                             vers_Fed.getFedTime(),
-                                             vers_Fed.getTag(),
-                                             vers_Fed.getEventRetraction());
-
+                  if (vers_Fed.getBoolean())
+                     privateRefs->fed_amb->
+                         reflectAttributeValues(vers_Fed.getObject(),
+                                                *attributes,
+                                                vers_Fed.getFedTime(),
+                                                vers_Fed.getTag(),
+                                                vers_Fed.getEventRetraction());
+                  else
+                     privateRefs->fed_amb->
+                         reflectAttributeValues(vers_Fed.getObject(),
+                                                *attributes,
+                                                vers_Fed.getTag());
                   delete attributes ;
               } break ;
 
@@ -2857,4 +2862,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.55 2007/11/05 14:30:05 rousse Exp $
+// $Id: RTIambassador.cc,v 3.56 2007/11/06 10:05:07 rousse Exp $

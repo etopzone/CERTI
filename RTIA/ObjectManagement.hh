@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.15 2007/11/05 14:30:04 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.16 2007/11/06 10:05:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -80,6 +80,13 @@ public:
                                 FederationTime theTime,
                                 const char *theTag,
                                 EventRetractionHandle theHandle,
+                                TypeException &e);
+
+   void reflectAttributeValues(ObjectHandle theObjectHandle,
+                                AttributeHandle *attribArray,
+                                ValueLengthPair *valueArray,
+                                UShort attribArraySize,
+                                const char *theTag,
                                 TypeException &e);
 
     EventRetractionHandle
@@ -206,4 +213,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.15 2007/11/05 14:30:04 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.16 2007/11/06 10:05:06 rousse Exp $

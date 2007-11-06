@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.15 2007/07/06 09:25:17 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.16 2007/11/06 10:05:07 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -66,6 +66,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     reducedMessage->federate = message->federate ;
     reducedMessage->object = message->object ;
     reducedMessage->date = message->date ;
+    reducedMessage->boolean = message->boolean ; // Useful ?
 
     strcpy(reducedMessage->label, message->label);
 
@@ -379,4 +380,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.15 2007/07/06 09:25:17 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.16 2007/11/06 10:05:07 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.28 2007/11/05 14:30:04 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.29 2007/11/06 10:05:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -210,7 +210,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 }
 
 // ----------------------------------------------------------------------------
-//! reflectAttributeValues.
+//! reflectAttributeValues with time
 void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          AttributeHandle *the_attributes,
@@ -229,6 +229,30 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
     req.setAttributes(the_attributes, the_values, the_size);
+    // true for RAV without time
+    req.setBoolean(true);
+
+    comm->requestFederateService(&req, &rep);
+}
+
+// ----------------------------------------------------------------------------
+//! reflectAttributeValues without time
+void
+ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
+                                         AttributeHandle *the_attributes,
+                                         ValueLengthPair *the_values,
+                                         UShort the_size,
+                                         const char *the_tag,
+                                         TypeException &)
+{
+    Message req, rep ;
+
+    req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
+    req.setObject(the_object);
+    req.setTag(the_tag);
+    req.setAttributes(the_attributes, the_values, the_size);
+    // false for RAV without time
+    req.setBoolean(false);
 
     comm->requestFederateService(&req, &rep);
 }
@@ -708,4 +732,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.28 2007/11/05 14:30:04 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.29 2007/11/06 10:05:06 rousse Exp $
