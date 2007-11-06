@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.31 2007/10/31 09:42:27 rousse Exp $
+// $Id: FederationManagement.cc,v 3.32 2007/11/06 08:57:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -186,6 +186,15 @@ destroyFederationExecution(const char *theName,
             _numero_federation = 0 ;
             _est_createur_federation = false ;
             _fin_execution = true ;
+            // Now, remove temporary file (if not yet done)
+            if ( _FEDid[0] != '\0' )
+                {
+                char removing[MAX_FEDFILE_NAME_LENGTH+3] ;
+                strcpy(removing,"rm ");
+                strcat(removing,_FEDid);
+                system(removing);
+                _FEDid[0] = '\0' ;
+                }
         }
         else
             e = reponse.exception ;
@@ -388,6 +397,16 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         _est_membre_federation = false ;
         _numero_federation = 0 ;
         federate = 0 ;
+        // Now, remove temporary file (if not yet done)
+            if ( _FEDid[0] != '\0' )
+                {
+                char removing[MAX_FEDFILE_NAME_LENGTH+3] ;
+                strcpy(removing,"rm ");
+                strcat(removing,_FEDid);
+                system(removing);
+                _FEDid[0] = '\0' ;
+                }
+
 
         // BUG: Voir DestroyFederation ou ~GF.
         if (!_est_createur_federation)
@@ -894,4 +913,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.31 2007/10/31 09:42:27 rousse Exp $
+// $Id: FederationManagement.cc,v 3.32 2007/11/06 08:57:24 rousse Exp $

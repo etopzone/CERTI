@@ -1,3 +1,10 @@
+2007-11-05 15:30  rousse
+
+	* ChangeLog, RTIA/Communications.cc, RTIA/ObjectManagement.cc,
+	  RTIA/ObjectManagement.hh, RTIA/TimeManagement.cc,
+	  libCERTI/Message_R.cc, libCERTI/Message_W.cc,
+	  libRTI/RTIambassador.cc: Bug #21515 correction
+
 2007-11-02 13:52  erk
 
 	* scripts/FindCERTI.cmake: FindCERTI now honors the QUIET arguments
