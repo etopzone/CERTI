@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.3 2007/10/31 10:30:24 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.4 2007/11/12 14:49:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,6 +116,16 @@ RTIambPrivateRefs::processException(Message *msg)
       case e_ArrayIndexOutOfBounds: {
           D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
           throw ArrayIndexOutOfBounds(msg->getExceptionReason());
+      } break ;
+
+      case e_AsynchronousDeliveryAlreadyEnabled: {
+          D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyEnabled exception.");
+          throw AsynchronousDeliveryAlreadyEnabled(msg->getExceptionReason());
+      } break ;
+
+      case e_AsynchronousDeliveryAlreadyDisabled: {
+          D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyDisabled exception.");
+          throw AsynchronousDeliveryAlreadyDisabled(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAlreadyOwned: {
@@ -522,4 +532,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.3 2007/10/31 10:30:24 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.4 2007/11/12 14:49:10 siron Exp $

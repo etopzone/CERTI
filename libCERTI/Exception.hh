@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.1 2007/04/20 08:27:07 rousse Exp $
+// $Id: Exception.hh,v 3.2 2007/11/12 14:49:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -33,6 +33,8 @@ namespace certi {
 typedef enum {
     e_NO_EXCEPTION = 0,
     e_ArrayIndexOutOfBounds,
+    e_AsynchronousDeliveryAlreadyEnabled,
+    e_AsynchronousDeliveryAlreadyDisabled,
     e_AttributeAlreadyOwned,
     e_AttributeAlreadyBeingAcquired,
     e_AttributeAlreadyBeingDivested,
@@ -118,4 +120,4 @@ typedef enum {
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.1 2007/04/20 08:27:07 rousse Exp $
+// $Id: Exception.hh,v 3.2 2007/11/12 14:49:10 siron Exp $

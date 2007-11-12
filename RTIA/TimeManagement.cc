@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.21 2007/11/06 13:46:08 rousse Exp $
+// $Id: TimeManagement.cc,v 3.22 2007/11/12 14:49:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -599,7 +599,7 @@ TimeManagement::tick(TypeException &e)
 
     // 2nd try, give a FIFO message. (discoverObject, etc.)
     if (!msg_donne)
-        if ( _asynchronous_delivery || _avancee_en_cours )
+        if ( _asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE))
           // to exclude the case not asynchronous_delivery and
           // not time advancing
           msg = queues->giveFifoMessage(msg_donne, msg_restant);
@@ -747,4 +747,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.21 2007/11/06 13:46:08 rousse Exp $
+// $Id: TimeManagement.cc,v 3.22 2007/11/12 14:49:10 siron Exp $
