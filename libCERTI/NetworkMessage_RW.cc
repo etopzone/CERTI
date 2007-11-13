@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.31 2007/09/28 14:07:54 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.32 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -61,6 +61,10 @@ NetworkMessage::readBody(Socket *socket)
 	//D.Mes(pdMessage, 'N',Header.type);
 	this->trace("NetworkMessage::readBody ");
 
+    if (Header.exception != e_NO_EXCEPTION) {
+        body.readString(exceptionReason, MAX_EXCEPTION_REASON_LENGTH);
+    }
+    else {
     switch(Header.type) {
       case GET_FED_FILE:
         number = body.readShortInt();
@@ -284,6 +288,7 @@ NetworkMessage::readBody(Socket *socket)
 	D.Out(pdExcept, "Unknown type %d in ReadBody.", Header.type);
 	throw RTIinternalError("Unknown/Unimplemented type for body.");
     }
+    }
 
 }
 
@@ -299,6 +304,11 @@ NetworkMessage::readHeader(Socket *socket)
     exception = Header.exception ;
     federate = Header.federate ;
     federation = Header.federation ;
+    // If the message carry an exception, the Body will only contain the
+    // exception reason.
+
+    if (exception != e_NO_EXCEPTION)
+        return true ;
 
     // 2- Parse Header according to its type(Variable Part)
     switch (Header.type) {
@@ -467,6 +477,14 @@ NetworkMessage::writeBody(Socket *socket)
     D.Out(pdTrace, "HeaderStruct size is : <%d> out of <%d> bytes MAX in body\n",
 	  sizeof(HeaderStruct),BUFFER_SIZE_DEFAULT);
 
+   // If the message carry an exception, the Body will only contain the
+   // exception reason.
+
+   if (Header.exception != e_NO_EXCEPTION) {
+        body.writeString(exceptionReason);
+   }
+   else
+    {
     // 1- Prepare body Structure according to Message type
     switch(Header.type) {
       case GET_FED_FILE:
@@ -696,6 +714,7 @@ NetworkMessage::writeBody(Socket *socket)
 	D.Out(pdExcept, "Unknown type %d in Writebody.", Header.type);
 	throw RTIinternalError("Unknown/Unimplemented type for Header.");
     }
+ }
 
     // body Size does not include the copy of the Header!
     Header.bodySize = body.size() - sizeof(HeaderStruct);
@@ -716,6 +735,13 @@ NetworkMessage::writeHeader(Socket *socket)
     Header.exception = exception ;
     Header.federate = federate ;
     Header.federation = federation ;
+    // If the message carry an exception, the Body will only contain the
+    // exception reason.
+
+    if (exception != e_NO_EXCEPTION) {
+        Header.bodySize = 1 ;
+        return true ;
+    }
 
     // 3- Fill Header(Variable Part)[Sorted by Variable part type]
     // Note: Header.bodySize is not set to the actual body size, but
@@ -937,4 +963,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.31 2007/09/28 14:07:54 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.32 2007/11/13 13:25:40 rousse Exp $

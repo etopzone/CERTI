@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.67 2007/10/31 10:30:24 erk Exp $
+// $Id: Federation.cc,v 3.68 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -218,6 +218,8 @@ Federation::Federation(const char *federation_name,
     if (!filefound) {
       cout << " --> cannot access." <<endl;
       cerr << "Next step will fail"<<endl;
+      G.Out(pdGendoc,"exit Federation::Federation on exception");
+      throw CouldNotOpenFED("RTIG cannot find FED file.");
     }
 
     // now really assign FEDid
@@ -229,7 +231,7 @@ Federation::Federation(const char *federation_name,
     if ( (fftry=fopen(FEDid,"r")) == NULL)
         {
         cout << "... failed : ";
-        throw CouldNotOpenFED("FED file unknown.");
+        throw CouldNotOpenFED("RTIG have found but cannot open FED file");
         }
     else
         {
@@ -242,8 +244,11 @@ Federation::Federation(const char *federation_name,
     bool is_an_xml      = false ;
     
     // hope there is a . before fed or xml
-    if ( filename.at(nbcar_filename-4) != '.' )
-        throw CouldNotOpenFED("FED file incorrect filename, cannot find extension (character '.' is missing [or not in reverse 4th place])");
+    if ( filename[nbcar_filename-4] != '.' )
+        {
+        throw CouldNotOpenFED("Incorrect FED file name, cannot find "
+         "extension (character '.' is missing [or not in reverse 4th place])");
+        }       
 
     string extension = filename.substr(nbcar_filename-3,3) ;
     D.Out(pdTrace,"filename is: %s (extension is <%s>",filename.c_str(),extension.c_str());
@@ -258,7 +263,7 @@ Federation::Federation(const char *federation_name,
         D.Out(pdTrace, "Trying to use .xml file");
         } 
     else {
-        throw CouldNotOpenFED("FED file incorrect filename : nor .fed nor .xml file");
+        throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
     }
        
     ifstream fdd(filename.c_str());
@@ -313,7 +318,7 @@ Federation::Federation(const char *federation_name,
             }
             else {
                 cout << "nor fed nor xml" << endl ;
-		throw CouldNotOpenFED("");
+		throw CouldNotOpenFED("Incorrect FED file name : nor fed nor xml");
 	    }
         }
     }
@@ -2188,5 +2193,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.67 2007/10/31 10:30:24 erk Exp $
+// $Id: Federation.cc,v 3.68 2007/11/13 13:25:40 rousse Exp $
 

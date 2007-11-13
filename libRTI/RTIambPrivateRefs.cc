@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.4 2007/11/12 14:49:10 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.5 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -190,6 +190,11 @@ RTIambPrivateRefs::processException(Message *msg)
       case e_CouldNotDiscover: {
           D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
           throw CouldNotDiscover(msg->getExceptionReason());
+      } break ;
+
+      case e_CouldNotOpenFED: {
+          D.Out(pdExcept, "Throwing e_CouldNotOpenFED exception.");
+          throw CouldNotOpenFED(msg->getExceptionReason());
       } break ;
 
       case e_CouldNotOpenRID: {
@@ -532,4 +537,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.4 2007/11/12 14:49:10 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.5 2007/11/13 13:25:40 rousse Exp $

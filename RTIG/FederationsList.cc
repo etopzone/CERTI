@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.42 2007/10/16 09:25:44 erk Exp $
+// $Id: FederationsList.cc,v 3.43 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -193,9 +193,9 @@ void FederationsList::createFederation(const char *name,
         D.Out(pdDebug,"new Federation created.");
         }
     catch (RTI::CouldNotOpenFED& e) {
-        cout << e._reason << endl;
         D.Out(pdInit, "Federation constructor : Could not open FED file.");
-        throw CouldNotOpenFED("Could not open FED file.");
+        G.Out(pdGendoc,"exit FederationsList::createFederation on exception");
+        throw CouldNotOpenFED(e._reason);
         }
 
     
@@ -1474,5 +1474,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.42 2007/10/16 09:25:44 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.43 2007/11/13 13:25:40 rousse Exp $
 

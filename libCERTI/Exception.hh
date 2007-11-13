@@ -20,13 +20,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.2 2007/11/12 14:49:10 siron Exp $
+// $Id: Exception.hh,v 3.3 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
 #define _CERTI_EXCEPTION_HH
 
-#define MAX_EXCEPTION_REASON_LENGTH 100
+#define MAX_EXCEPTION_REASON_LENGTH 130
 
 namespace certi {
 
@@ -120,4 +120,4 @@ typedef enum {
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.2 2007/11/12 14:49:10 siron Exp $
+// $Id: Exception.hh,v 3.3 2007/11/13 13:25:40 rousse Exp $

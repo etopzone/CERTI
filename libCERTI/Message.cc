@@ -637,6 +637,8 @@ Message::display(char *s)
     printf(" -- MESSAGE - %s -", s);
     if ( type == CREATE_FEDERATION_EXECUTION )
       printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",federationName,FEDid) ;
+    if ( type == DESTROY_FEDERATION_EXECUTION )
+      printf("DESTROY_FEDERATION_EXECUTION : federation %s : \n",federationName) ;
     else if ( type == JOIN_FEDERATION_EXECUTION )
       printf("JOIN_FEDERATION_EXECUTION\n") ;
     else

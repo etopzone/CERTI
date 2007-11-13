@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.32 2007/11/06 08:57:24 rousse Exp $
+// $Id: FederationManagement.cc,v 3.33 2007/11/13 13:25:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -137,9 +137,13 @@ createFederationExecution(const char *theName,
             D.Out(pdInit, "est createur");
         }
         else if (reponse.exception == e_CouldNotOpenFED)
+            // RTIG encounters a problem creating federation execution
             {
             e = reponse.exception;
             cout << "Could not open FED." << endl;
+            G.Out(pdGendoc,"exit FederationManagement::"
+                           "createFederationExecution on exception");
+            throw CouldNotOpenFED (reponse.exceptionReason) ;
             }           
         else {
             e = reponse.exception ;
@@ -913,4 +917,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.32 2007/11/06 08:57:24 rousse Exp $
+// $Id: FederationManagement.cc,v 3.33 2007/11/13 13:25:39 rousse Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.25 2007/06/22 08:51:37 erk Exp $
+// $Id: NetworkMessage.hh,v 3.26 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -39,8 +39,6 @@
 
 #define PORT_TCP_RTIG "60400"
 #define PORT_UDP_RTIG "60500"
-
-#define MAX_EXCEPTION_REASON_LENGTH 100
 
 namespace certi {
 
@@ -237,6 +235,7 @@ public :
 
     Type type ;
     TypeException exception ;
+    char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
 
     UShort number ;
 
@@ -323,4 +322,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.25 2007/06/22 08:51:37 erk Exp $
+// $Id: NetworkMessage.hh,v 3.26 2007/11/13 13:25:40 rousse Exp $

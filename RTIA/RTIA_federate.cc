@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.48 2007/11/12 14:49:10 siron Exp $
+// $Id: RTIA_federate.cc,v 3.49 2007/11/13 13:25:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,6 +91,8 @@ void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         throw (CouldNotOpenFED)
 {
+    G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing");
+
     // Verify not in saving or restoring state.
     saveAndRestoreStatus(req->type);
 
@@ -873,6 +875,8 @@ RTIA::processFederateRequest(Message *req)
 {
     Message rep ;
 
+    G.Out(pdGendoc,"enter RTIA::processFederateRequest");
+
     //rep.setException(e_NO_EXCEPTION);
     rep.type = req->type ;
 
@@ -939,7 +943,7 @@ RTIA::processFederateRequest(Message *req)
     }
     catch (CouldNotOpenFED &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_CouldNotOpenFED);
+        rep.setException(e_CouldNotOpenFED,e._reason);
     }
     catch (CouldNotRestore &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1217,4 +1221,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.48 2007/11/12 14:49:10 siron Exp $
+// $Id: RTIA_federate.cc,v 3.49 2007/11/13 13:25:39 rousse Exp $

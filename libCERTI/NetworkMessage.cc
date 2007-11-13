@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.20 2007/08/10 14:45:13 erk Exp $
+// $Id: NetworkMessage.cc,v 3.21 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -58,6 +58,8 @@ NetworkMessage::display(const char *s)
 NetworkMessage::NetworkMessage()
     : type(NOT_USED), exception(e_NO_EXCEPTION)
 {
+    exceptionReason[0] = '\0' ;
+
     number = 0 ;
 
     federation = 0 ;
@@ -317,4 +319,4 @@ NetworkMessage::readFEDid(MessageBody &body)
 }
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.20 2007/08/10 14:45:13 erk Exp $
+// $Id: NetworkMessage.cc,v 3.21 2007/11/13 13:25:40 rousse Exp $

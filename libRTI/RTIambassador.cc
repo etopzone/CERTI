@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.56 2007/11/06 10:05:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.57 2007/11/13 13:25:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -526,14 +526,18 @@ RTI::RTIambassador::tick(TickTime, TickTime)
 
 
 // ----------------------------------------------------------------------------
-//! Create Federation Execution.
-/*! Send a CREATE_FEDERATION_EXECUTION request type to inform rtia process a
-  new federation is being created.
+// Create Federation Execution.
+/** Realization of the Create Federation Execution federation management service
+    (HLA 1.3).
+    Send a CREATE_FEDERATION_EXECUTION request type to inform rtia process a
+    new federation is being created.
+    @param executionName execution name of the federation to be created
+    @param FED           FED file name (path seen by rtig)
 */
 void
 //RTI::
-RTI::RTIambassador::createFederationExecution(	const char *executionName,
-																const char *FED)
+RTI::RTIambassador::createFederationExecution(const char *executionName,
+					      const char *FED)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::ErrorReadingFED, RTI::CouldNotOpenFED, 
 	   RTI::FederationExecutionAlreadyExists)
@@ -561,7 +565,13 @@ G.Out(pdGendoc,"exit RTIambassador::createFederationExecution");
 }
 
 // ----------------------------------------------------------------------------
-//! Destroy Federation Execution.
+// Destroy Federation Execution.
+/** Realization of the Destroy Federation Execution federation management service
+    (HLA 1.3).
+    Send a DESTROY_FEDERATION_EXECUTION request type to remove a federation
+    execution from the RTI set of federation executions.
+    \param executionName execution name of the federation to be destroyed
+*/
 void
 RTI::RTIambassador::destroyFederationExecution(const char *executionName)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted,
@@ -2862,4 +2872,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.56 2007/11/06 10:05:07 rousse Exp $
+// $Id: RTIambassador.cc,v 3.57 2007/11/13 13:25:40 rousse Exp $
