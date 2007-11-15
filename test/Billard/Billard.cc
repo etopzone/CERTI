@@ -91,10 +91,13 @@ Billard::join(std::string federation_name, std::string fdd_name)
         creator = true ;
     }
     catch (RTI::FederationExecutionAlreadyExists& e) {
+        printf("BILLARD Note : %s Reason is : %s. OK I can join it\n",e._name,e._reason);
         D.Out(pdInit, "Federation execution already created.");
     }
     catch (RTI::CouldNotOpenFED& e) {
+        printf("BILLARD ERROR : %s Reason is : %s\n",e._name,e._reason);
         D.Out(pdExcept, "BILLARD : Could not use FED file.");
+        delete &rtiamb ; // Says RTIA to stop.
         exit(0);
     }
 
