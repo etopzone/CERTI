@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.8 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIA.hh,v 3.9 2007/11/15 14:37:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -65,11 +65,11 @@ private:
     void processNetworkMessage(NetworkMessage *);
     void processFederateRequest(Message *);
     void chooseFederateProcessing(Message *, Message &, TypeException &)
-        throw (CouldNotOpenFED);
+        throw (CouldNotOpenFED,FederationExecutionAlreadyExists);
 };
 
 }} // namespace certi
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.8 2007/03/22 14:18:00 rousse Exp $
+// $Id: RTIA.hh,v 3.9 2007/11/15 14:37:41 rousse Exp $

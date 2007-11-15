@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.42 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.43 2007/11/15 14:37:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,6 +80,11 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     catch (CouldNotOpenFED e)
         {
         rep.exception = e_CouldNotOpenFED ;
+        strcpy(rep.exceptionReason,e._reason) ;
+        }
+    catch (FederationExecutionAlreadyExists e)
+        {
+        rep.exception = e_FederationExecutionAlreadyExists ;
         strcpy(rep.exceptionReason,e._reason) ;
         }
 #endif
@@ -1285,4 +1290,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.42 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.43 2007/11/15 14:37:41 rousse Exp $

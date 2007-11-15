@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.49 2007/11/13 13:25:39 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.50 2007/11/15 14:37:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -89,7 +89,7 @@ RTIA::saveAndRestoreStatus(Message::Type type)
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
-        throw (CouldNotOpenFED)
+        throw (CouldNotOpenFED,FederationExecutionAlreadyExists)
 {
     G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing");
 
@@ -1015,7 +1015,7 @@ RTIA::processFederateRequest(Message *req)
     }
     catch (FederationExecutionAlreadyExists &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_FederationExecutionAlreadyExists);
+        rep.setException(e_FederationExecutionAlreadyExists,e._reason);
     }
     catch (FederationExecutionDoesNotExist &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1221,4 +1221,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.49 2007/11/13 13:25:39 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.50 2007/11/15 14:37:41 rousse Exp $

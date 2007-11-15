@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.33 2007/11/13 13:25:39 rousse Exp $
+// $Id: FederationManagement.cc,v 3.34 2007/11/15 14:37:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -118,7 +118,8 @@ createFederationExecution(const char *theName,
     if (_est_createur_federation || _est_membre_federation)
         e = e_RTIinternalError ;
 
-    if (e == e_NO_EXCEPTION) {
+    if (e == e_NO_EXCEPTION)
+        {
         requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
         strcpy(requete.federationName, theName);
         strcpy(requete.FEDid, _FEDid) ;
@@ -130,26 +131,34 @@ createFederationExecution(const char *theName,
         comm->waitMessage(&reponse, NetworkMessage::CREATE_FEDERATION_EXECUTION,
                           federate);
 
-        if (reponse.exception == e_NO_EXCEPTION) {
+        if (reponse.exception == e_NO_EXCEPTION)
+            {
             strcpy(_nom_federation, theName);
             _numero_federation = reponse.federation ;
             _est_createur_federation = true ;
             D.Out(pdInit, "est createur");
-        }
+            }
         else if (reponse.exception == e_CouldNotOpenFED)
             // RTIG encounters a problem creating federation execution
             {
             e = reponse.exception;
-            cout << "Could not open FED." << endl;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
             throw CouldNotOpenFED (reponse.exceptionReason) ;
             }           
-        else {
+        else if (reponse.exception == e_FederationExecutionAlreadyExists)
+            {
+            e = reponse.exception;
+            G.Out(pdGendoc,"exit FederationManagement::"
+                           "createFederationExecution on exception");
+            throw FederationExecutionAlreadyExists (reponse.exceptionReason) ;
+            }
+        else
+            {
             e = reponse.exception ;
             D.Out(pdInit, "deja cree");
+            }
         }
-    }
 
     G.Out(pdGendoc,"exit FederationManagement::createFederationExecution");
 
@@ -917,4 +926,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.33 2007/11/13 13:25:39 rousse Exp $
+// $Id: FederationManagement.cc,v 3.34 2007/11/15 14:37:41 rousse Exp $
