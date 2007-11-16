@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.29 2007/11/06 10:05:06 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.30 2007/11/16 15:45:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -600,10 +600,8 @@ void
 ObjectManagement::provideAttributeValueUpdate(ObjectHandle,
                                               ValueLengthPair &,
                                               TypeException &)
-{
-    printf("ObjectManagement.cc: "
-           "provideAttributeValueUpdate not implemented\n");
-    throw RTIinternalError("");
+{    
+    throw RTIinternalError("ObjectManagement::provideAttributeValueUpdate not implemented");
 }
 
 
@@ -613,9 +611,8 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle,
 
 void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
                                TypeException & /*e*/)
-{
-    printf("GO.cc: retract not implemented.\n");
-    throw RTIinternalError("");
+{    
+    throw RTIinternalError("ObjectManagement::retract not implemented.");
 }
 
 
@@ -626,9 +623,8 @@ void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
 void
 ObjectManagement::reflectRetraction(EventRetractionHandle,
                                     TypeException &)
-{
-    printf("GO.cc: reflectRetraction not implemented.\n");
-    throw RTIinternalError("");
+{    
+    throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
 }
 
 // ----------------------------------------------------------------------------
@@ -732,4 +728,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.29 2007/11/06 10:05:06 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.30 2007/11/16 15:45:01 erk Exp $
