@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.12 2007/10/31 10:30:20 erk Exp $
+// $Id: fed.cc,v 3.13 2007/11/16 15:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -49,6 +49,7 @@ using std::list ;
 
 extern FILE *yyin ;
 int yyparse();
+int yyrestart(FILE*);
 
 namespace certi {
 namespace fedparser {
@@ -102,7 +103,10 @@ build(const char *filename, RootObject *root, bool v)
     federate = "" ;
     attribute = 0 ;
     parameter = 0 ;
-    int result = yyparse();    
+   /* we may need to restart parsing after previous parse error */
+    rewind(yyin);
+    yyrestart(yyin);
+    int result = yyparse();   
     fclose(file);
     return result ;
 }
@@ -393,4 +397,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.12 2007/10/31 10:30:20 erk Exp $
+// $Id: fed.cc,v 3.13 2007/11/16 15:04:22 rousse Exp $

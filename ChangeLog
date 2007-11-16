@@ -1,3 +1,44 @@
+2007-11-15 15:37  rousse
+
+	* RTIA/FederationManagement.cc, RTIA/RTIA.hh,
+	  RTIA/RTIA_federate.cc, RTIG/FederationsList.cc,
+	  RTIG/RTIG_processing.cc: Better return of reason exception on
+	  failed create federation execution
+
+2007-11-15 11:09  rousse
+
+	* test/Billard/Billard.cc: Little things in order to better print
+	  error message on create federation in Billard
+
+2007-11-13 14:25  rousse
+
+	* RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc,
+	  RTIG/Federation.cc, RTIG/FederationsList.cc,
+	  RTIG/RTIG_processing.cc, libCERTI/Exception.hh,
+	  libCERTI/Message.cc, libCERTI/Message_R.cc,
+	  libCERTI/Message_W.cc, libCERTI/NetworkMessage.cc,
+	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
+	  libRTI/RTIambPrivateRefs.cc, libRTI/RTIambassador.cc: Exception
+	  raised in RTIG returns reason to RTIA
+
+2007-11-12 15:49  siron
+
+	* RTIA/RTIA_federate.cc, RTIA/TimeManagement.cc,
+	  libCERTI/Exception.hh, libRTI/RTIambPrivateRefs.cc: End of the
+	  enableAsynchronousDelivery implementation.
+
+2007-11-06 14:46  rousse
+
+	* RTIA/TimeManagement.cc: enable asynchronous delivery still in
+	  progress...
+
+2007-11-06 11:05  rousse
+
+	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
+	  RTIA/TimeManagement.cc, libCERTI/ObjectClassBroadcastList.cc,
+	  libRTI/RTIambassador.cc: reflectAttributeValues without timestamp
+	  corrected (I hope implemented)
+
 2007-11-06 09:57  rousse
 
 	* ChangeLog, RTIA/FederationManagement.cc: FR : Suppression du

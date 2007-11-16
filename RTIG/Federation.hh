@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.42 2007/09/28 14:07:53 rousse Exp $
+// $Id: Federation.hh,v 3.43 2007/11/16 15:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -90,7 +90,7 @@ public:
 #else
         Federation(const char *, Handle, SocketServer &, AuditFile &, const char *)
 #endif
-        throw (CouldNotOpenFED, ErrorReadingRID, MemoryExhausted, SecurityError,
+        throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
                RTIinternalError);
 
     ~Federation();
@@ -576,4 +576,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.42 2007/09/28 14:07:53 rousse Exp $
+// $Id: Federation.hh,v 3.43 2007/11/16 15:04:22 rousse Exp $

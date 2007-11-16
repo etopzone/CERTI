@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.44 2007/11/15 14:37:41 rousse Exp $
+// $Id: FederationsList.cc,v 3.45 2007/11/16 15:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -160,7 +160,7 @@ void FederationsList::createFederation(const char *name,
 #endif
     throw (FederationExecutionAlreadyExists,
            CouldNotOpenFED,
-           ErrorReadingRID,
+           ErrorReadingFED,
            MemoryExhausted,
            SecurityError,
            RTIinternalError)
@@ -195,8 +195,13 @@ void FederationsList::createFederation(const char *name,
         }
     catch (RTI::CouldNotOpenFED& e) {
         D.Out(pdInit, "Federation constructor : Could not open FED file.");
-        G.Out(pdGendoc,"exit FederationsList::createFederation on exception");
+        G.Out(pdGendoc,"exit FederationsList::createFederation on exception CouldNotOpenFED");
         throw CouldNotOpenFED(e._reason);
+        }
+    catch (RTI::ErrorReadingFED &e) {
+        D.Out(pdInit, "Federation constructor : Could not read FED file (maybe incorrect).");
+        G.Out(pdGendoc,"exit FederationsList::createFederation on exception ErrorReadingFED");
+        throw ErrorReadingFED(e._reason);
         }
 
     
@@ -1475,5 +1480,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.44 2007/11/15 14:37:41 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.45 2007/11/16 15:04:22 rousse Exp $
 

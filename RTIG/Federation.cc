@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.68 2007/11/13 13:25:40 rousse Exp $
+// $Id: Federation.cc,v 3.69 2007/11/16 15:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -116,7 +116,7 @@ Federation::Federation(const char *federation_name,
                            AuditFile &audit_server,
                            const char *FEDid_name)
 #endif
-    throw (CouldNotOpenFED, ErrorReadingRID, MemoryExhausted, SecurityError,
+    throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
            RTIinternalError)
     : federateHandles(1), objectHandles(1), saveInProgress(false),
       restoreInProgress(false), saveStatus(true), restoreStatus(true),
@@ -218,7 +218,7 @@ Federation::Federation(const char *federation_name,
     if (!filefound) {
       cout << " --> cannot access." <<endl;
       cerr << "Next step will fail"<<endl;
-      G.Out(pdGendoc,"exit Federation::Federation on exception");
+      G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
       throw CouldNotOpenFED("RTIG cannot find FED file.");
     }
 
@@ -231,6 +231,7 @@ Federation::Federation(const char *federation_name,
     if ( (fftry=fopen(FEDid,"r")) == NULL)
         {
         cout << "... failed : ";
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
         }
     else
@@ -246,6 +247,7 @@ Federation::Federation(const char *federation_name,
     // hope there is a . before fed or xml
     if ( filename[nbcar_filename-4] != '.' )
         {
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
         throw CouldNotOpenFED("Incorrect FED file name, cannot find "
          "extension (character '.' is missing [or not in reverse 4th place])");
         }       
@@ -263,6 +265,7 @@ Federation::Federation(const char *federation_name,
         D.Out(pdTrace, "Trying to use .xml file");
         } 
     else {
+        G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
         throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
     }
        
@@ -274,8 +277,12 @@ Federation::Federation(const char *federation_name,
         if ( is_a_fed )
             {
 	    int err = fedparser::build(filename.c_str(), root, verbose);
-	    if (err) throw ErrorReadingFED("");
-	    
+	    if (err != 0 ) 
+                {
+                G.Out(pdGendoc,"exit Federation::Federation on exception ErrorReadingFED");                
+                throw ErrorReadingFED("fed parser found error in FED file");
+	        }
+
             // Retrieve the FED file last modification time(for Audit)
             STAT_STRUCT StatBuffer ;
             #if defined(_WIN32) && not defined(__MINGW32__)
@@ -318,6 +325,7 @@ Federation::Federation(const char *federation_name,
             }
             else {
                 cout << "nor fed nor xml" << endl ;
+                G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
 		throw CouldNotOpenFED("Incorrect FED file name : nor fed nor xml");
 	    }
         }
@@ -2193,5 +2201,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.68 2007/11/13 13:25:40 rousse Exp $
+// $Id: Federation.cc,v 3.69 2007/11/16 15:04:22 rousse Exp $
 

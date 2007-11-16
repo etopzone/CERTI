@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.5 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.6 2007/11/16 15:04:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -215,6 +215,11 @@ RTIambPrivateRefs::processException(Message *msg)
       case e_ErrorReadingRID: {
           D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
           throw ErrorReadingRID(msg->getExceptionReason());
+      } break ;
+
+      case e_ErrorReadingFED: {
+          D.Out(pdExcept, "Throwing e_ErrorReadingFED exception.");
+          throw ErrorReadingFED(msg->getExceptionReason());
       } break ;
 
       case e_EventNotKnown: {
@@ -537,4 +542,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.5 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.6 2007/11/16 15:04:22 rousse Exp $

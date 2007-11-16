@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.50 2007/11/15 14:37:41 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.51 2007/11/16 15:04:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -89,7 +89,7 @@ RTIA::saveAndRestoreStatus(Message::Type type)
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
-        throw (CouldNotOpenFED,FederationExecutionAlreadyExists)
+       throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED)
 {
     G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing");
 
@@ -156,7 +156,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   {        
 	          int result = certi::fedparser::build(filename.c_str(),
 		    				   rootObject, true);
-	          if (result) throw ErrorReadingFED("invalid .fed");
+std::cout<<"RTIA::chooseFederateProcessing result= "<<result<<std::endl;
+	          if (result != 0 ) throw ErrorReadingFED("invalid .fed");
                   }
               else if ( is_an_xml )
                   {
@@ -955,7 +956,11 @@ RTIA::processFederateRequest(Message *req)
     }
     catch (ErrorReadingRID &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_ErrorReadingRID);
+        rep.setException(e_ErrorReadingRID,e._reason);
+    }
+    catch (ErrorReadingFED &e) {
+        D.Out(pdExcept, "Catched %s Exception.", e._name);
+        rep.setException(e_ErrorReadingFED,e._reason);
     }
     catch (EventNotKnown &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1221,4 +1226,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.50 2007/11/15 14:37:41 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.51 2007/11/16 15:04:21 rousse Exp $

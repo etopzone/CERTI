@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.34 2007/11/15 14:37:41 rousse Exp $
+// $Id: FederationManagement.cc,v 3.35 2007/11/16 15:04:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -104,7 +104,7 @@ FederationManagement::
 createFederationExecution(const char *theName,
                           TypeException &e)
          throw ( FederationExecutionAlreadyExists,
-                 CouldNotOpenFED,
+                 CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError)
 {
     NetworkMessage requete, reponse ;
@@ -130,7 +130,7 @@ createFederationExecution(const char *theName,
 
         comm->waitMessage(&reponse, NetworkMessage::CREATE_FEDERATION_EXECUTION,
                           federate);
-
+        // We have to see if C_F_E is OK.
         if (reponse.exception == e_NO_EXCEPTION)
             {
             strcpy(_nom_federation, theName);
@@ -153,9 +153,19 @@ createFederationExecution(const char *theName,
                            "createFederationExecution on exception");
             throw FederationExecutionAlreadyExists (reponse.exceptionReason) ;
             }
+        else if (reponse.exception == e_ErrorReadingFED)
+            {
+            e = reponse.exception;
+            G.Out(pdGendoc,"exit FederationManagement::"
+                           "createFederationExecution on exception ErrorReadingFED");
+            throw ErrorReadingFED (reponse.exceptionReason) ;
+            }
         else
             {
             e = reponse.exception ;
+            G.Out(pdGendoc,"exit FederationManagement::"
+                           "createFederationExecution on exception RTIinternalError");
+            throw RTIinternalError (reponse.exceptionReason) ;
             D.Out(pdInit, "deja cree");
             }
         }
@@ -926,4 +936,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.34 2007/11/15 14:37:41 rousse Exp $
+// $Id: FederationManagement.cc,v 3.35 2007/11/16 15:04:21 rousse Exp $
