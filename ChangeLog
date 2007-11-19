@@ -1,4 +1,15 @@
-2007-11-19 11:32  tag CERTI-3_2_5
+2007-11-19 15:07  tag CERTI-3_2_5
+
+2007-11-19 15:07  erk
+
+	* include/certi.hh (3.20), libCERTI/RootObject.hh (3.25),
+	  libCERTI/fed.cc (3.14), test/libgraphc/CMakeLists.txt (1.6)
+	  (utags: CERTI-3_2_5): late patch for CERTI 3.2.5 on windows +
+	  MSVC
+
+2007-11-19 11:42  erk
+
+	* ChangeLog (3.34, CERTI-3_2_5): Update Changelog before release
 
 2007-11-19 11:32  erk
 
@@ -7,10 +18,10 @@
 
 2007-11-19 11:28  erk
 
-	* include/certi.hh (3.19, CERTI-3_2_5): Make the default buffer
-	  size better suits the user's needs.  See bug #21423 : Size of
-	  Constants This should be seen as a _TEMPORARY_ measure before
-	  adpoting a more dynamic solution.
+	* include/certi.hh (3.19): Make the default buffer size better
+	  suits the user's needs.  See bug #21423 : Size of Constants This
+	  should be seen as a _TEMPORARY_ measure before adpoting a more
+	  dynamic solution.
 
 2007-11-19 11:20  erk
 
@@ -22,14 +33,13 @@
 	* CMakeLists.txt (1.26), include/certi.hh (3.18),
 	  libCERTI/Socket.hh (3.12, CERTI-3_2_5), libCERTI/SocketTCP.hh
 	  (3.16, CERTI-3_2_5), libRTI/CMakeLists.txt (1.7, CERTI-3_2_5),
-	  test/libgraphc/CMakeLists.txt (1.5, CERTI-3_2_5): Windows + MinGW
-	  update
+	  test/libgraphc/CMakeLists.txt (1.5): Windows + MinGW update
 
 2007-11-19 10:29  erk
 
-	* libCERTI/: ObjectClassSet.cc (3.29), ObjectClassSet.hh (3.25),
-	  RootObject.hh (3.24) (utags: CERTI-3_2_5): Add name collision
-	  detection (before full hierarchical support)
+	* libCERTI/: ObjectClassSet.cc (3.29, CERTI-3_2_5),
+	  ObjectClassSet.hh (3.25, CERTI-3_2_5), RootObject.hh (3.24): Add
+	  name collision detection (before full hierarchical support)
 
 2007-11-16 16:45  erk
 
@@ -38,16 +48,16 @@
 
 2007-11-16 16:04  rousse
 
-	* ChangeLog (3.33, CERTI-3_2_5), RTIA/FederationManagement.cc
-	  (3.35), RTIA/FederationManagement.hh (3.19, CERTI-3_2_5),
-	  RTIA/RTIA.hh (3.10, CERTI-3_2_5), RTIA/RTIA_federate.cc (3.51,
-	  CERTI-3_2_5), RTIG/Federation.cc (3.69, CERTI-3_2_5),
-	  RTIG/Federation.hh (3.43, CERTI-3_2_5), RTIG/FederationsList.cc
-	  (3.45, CERTI-3_2_5), RTIG/FederationsList.hh (3.35, CERTI-3_2_5),
+	* ChangeLog (3.33), RTIA/FederationManagement.cc (3.35),
+	  RTIA/FederationManagement.hh (3.19, CERTI-3_2_5), RTIA/RTIA.hh
+	  (3.10, CERTI-3_2_5), RTIA/RTIA_federate.cc (3.51, CERTI-3_2_5),
+	  RTIG/Federation.cc (3.69, CERTI-3_2_5), RTIG/Federation.hh (3.43,
+	  CERTI-3_2_5), RTIG/FederationsList.cc (3.45, CERTI-3_2_5),
+	  RTIG/FederationsList.hh (3.35, CERTI-3_2_5),
 	  RTIG/RTIG_processing.cc (3.44, CERTI-3_2_5),
-	  libCERTI/Exception.hh (3.4, CERTI-3_2_5), libCERTI/fed.cc (3.13,
-	  CERTI-3_2_5), libRTI/RTIambPrivateRefs.cc (3.6, CERTI-3_2_5):
-	  Better exception return on syntax error during FED file parsing
+	  libCERTI/Exception.hh (3.4, CERTI-3_2_5), libCERTI/fed.cc (3.13),
+	  libRTI/RTIambPrivateRefs.cc (3.6, CERTI-3_2_5): Better exception
+	  return on syntax error during FED file parsing
 
 2007-11-15 15:37  rousse
 
