@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.17 2007/09/25 13:25:31 erk Exp $
+// $Id: certi.hh,v 3.18 2007/11/19 10:04:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -31,7 +31,15 @@
 	typedef	int					pid_t;			      
 	#define  strcasecmp			strcmp
 	#define	STAT_FUNCTION		_stat
-	#define	STAT_STRUCT			struct _stat		
+	#define	STAT_STRUCT			struct _stat
+	/* TCP/IP related typedef and includes */
+    #ifndef _WINSOCK2API_
+		#ifndef _WINSOCKAPI_
+			#include <winsock2.h>             
+		#endif    
+	#endif	
+    typedef u_long             in_addr_t;
+    typedef unsigned short     in_port_t;
 #else
 	#define	STAT_FUNCTION		stat
 	#define	STAT_STRUCT			struct stat
@@ -312,4 +320,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.17 2007/09/25 13:25:31 erk Exp $
+// $Id: certi.hh,v 3.18 2007/11/19 10:04:33 erk Exp $

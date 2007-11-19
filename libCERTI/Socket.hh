@@ -21,13 +21,7 @@
 #define CERTI_SOCKET_HH
 
 #include "certi.hh"
-	#ifdef _WIN32
-	#ifndef _WINSOCK2API_
-		#ifndef _WINSOCKAPI_
-			#include <winsock2.h>
-		#endif
-	#endif
-#else
+#ifndef _WIN32
 	#include <sys/time.h>
 	#include <sys/types.h>
 	#include <netinet/in.h>

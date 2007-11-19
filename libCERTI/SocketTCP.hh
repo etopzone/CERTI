@@ -23,13 +23,7 @@
 #include "Socket.hh"
 #include "certi.hh"
 
-#ifdef _WIN32
-	#ifndef _WINSOCK2API_
-		#ifndef _WINSOCKAPI_
-			#include <winsock2.h>
-		#endif
-	#endif	
-#else
+#ifndef _WIN32
 	#include <sys/socket.h>
 	#include <netinet/in.h>
 #endif
