@@ -1,0 +1,84 @@
+This file tries to describe the current CERTI release process.
+Current version is written for a CERTI administrator 
+and may certainly be only readable for them.
+
+CERTI releases should be done with the following steps:
+
+1) Announce release freeze on certi-devel
+   and check for no-go message
+
+2) Review currently opened and fixed bug in the tracker
+   https://savannah.nongnu.org/bugs/?group=certi
+   - checked if fixed are really CVS
+
+3) Edit tsp/CMakeLists.txt
+   and bump the version to the right number with
+   [example for certi-3.2.5]
+
+   SET(PACKAGE_VERSION_MAJOR "3")
+   SET(PACKAGE_VERSION_MINOR "2")
+   SET(PACKAGE_VERSION_PATCH "5")
+
+4) commit the modified files
+   tsp/CMakeLists.txt
+   with a meaningfull comment saying you are preparing a CERTI version
+
+5) Do a fresh checkout somewhere
+   Build certi from your pristine source tree
+
+     Better is at least 2 built:
+         Linux ix86 wth gcc  (32bits)
+         Windows win32 with Visual Studio or Wascana
+
+6) Run autotests :))
+   Which means for today run as many tests as you can do
+      - billard
+      - HLA Tutorial
+
+7) Tag certi tree with appropriate version
+
+   cvs tag CERTI-3_2_5 certi
+
+   Generate the Changelog file using certi/scripts/cvs2cl.pl
+
+   For example updating Changelog for CERTI 3.2.4 to 3.2.5 will be done
+   using the following command:
+
+   cd /path/to/certi
+   scripts/cvs2cl.pl -t -r --delta CERTI-3_2_4:CERTI-3_2_5 --prune -T --accum 
+
+   commit the Changelog file
+   force the tag on it:
+   cvs tag -F CERTI-3_2_5 certi/Changelog
+
+8) Make certi packages using cpack
+     - tar.gz (sources)              [mandatory]
+     - RPM (sources and binaries)    [optional]
+     - Win32 NSIS binary installer   [recommended]
+
+9) Tests your packages or ask for help to test them
+   on certi-devel
+   Fix packaging trouble if any and move the previous tag 
+   if any commit occured.
+
+10) digitally sign the packages you made and put them
+   in the download area:
+   https://savannah.gnu.org/maintenance/DownloadArea
+
+   gpg -b certi-3.2.5.tar.gz
+
+11) Check is the download area has been properly updated
+     http://download.savannah.nongnu.org/releases/certi/
+
+12) post the appropriate news on Savannah CERTI pages
+   https://savannah.nongnu.org/news/submit.php?group=certi
+
+   DON'T MAIL to certi-devel since news are 
+   automagically forwarded to appropriate ML
+
+   Remember that once you have posted the news you should
+   approve it before it appears on first page.
+
+
+You are right this process IS painful and should be automated (a lot...)
+be sure we are working on it :))
