@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.28 2007/10/31 10:30:20 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.29 2007/11/19 09:29:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -47,12 +47,31 @@ static PrettyDebug D("OBJECTCLASSSET", __FILE__);
 // ----------------------------------------------------------------------------
 //! The class is not allocated, only the pointer is memorized.
 void
-ObjectClassSet::addClass(ObjectClass *newClass)
+ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
 {
+	Name2ObjectClassMap_t::iterator findit;
+	std::stringstream       msg;
+	
     D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 
     /* link to server */
     newClass->server = server ;
+    /* 
+     * Check whether addition of this object clas
+     * will generate a name collision or not.
+     * i.e. we may not add an object class of the SAME
+     * name to the object class set
+     */
+    findit = OCFromName.find(newClass->getName());
+    if (findit != OCFromName.end()) {
+    	msg << "Name collision another object class named <"
+    	    << newClass->getName()
+    	    << "> with handle <"
+    	    << findit->second->getHandle()
+    	    << "> was found when trying to add identically named object class with handle <"
+    	    << newClass->getHandle();
+    	throw RTIinternalError(msg.str().c_str());
+    }
     /* store ref to new class in ObjectClass from Handle Map */
     OCFromHandle[newClass->getHandle()] = newClass;
     /* store ref to new class in ObjectClass from Name Map */
@@ -760,4 +779,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.28 2007/10/31 10:30:20 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.29 2007/11/19 09:29:03 erk Exp $

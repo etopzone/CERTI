@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.23 2007/10/31 10:30:23 erk Exp $
+// $Id: RootObject.hh,v 3.24 2007/11/19 09:29:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -47,6 +47,11 @@ namespace certi {
 
 namespace certi {
 
+/**
+ * The RootObject is literally the "root" object
+ * of the HLA object class hierarchy.
+ * It contains 
+ */
 class CERTI_EXPORT RootObject
 {
 public:
@@ -113,4 +118,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.23 2007/10/31 10:30:23 erk Exp $
+// $Id: RootObject.hh,v 3.24 2007/11/19 09:29:04 erk Exp $

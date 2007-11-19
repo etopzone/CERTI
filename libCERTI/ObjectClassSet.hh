@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.24 2007/10/31 10:30:23 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.25 2007/11/19 09:29:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -50,7 +50,7 @@ public:
     ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet=false);
     ~ObjectClassSet();
 
-    void addClass(ObjectClass *theClass);
+    void addClass(ObjectClass *theClass) throw (RTIinternalError);
     void buildParentRelation(ObjectClass *Child, ObjectClass *Parent);
     void display() const ;
 
@@ -204,4 +204,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.24 2007/10/31 10:30:23 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.25 2007/11/19 09:29:03 erk Exp $
