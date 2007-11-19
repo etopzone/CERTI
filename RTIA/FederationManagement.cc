@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.35 2007/11/16 15:04:21 rousse Exp $
+// $Id: FederationManagement.cc,v 3.36 2007/11/19 10:20:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -212,10 +212,7 @@ destroyFederationExecution(const char *theName,
             // Now, remove temporary file (if not yet done)
             if ( _FEDid[0] != '\0' )
                 {
-                char removing[MAX_FEDFILE_NAME_LENGTH+3] ;
-                strcpy(removing,"rm ");
-                strcat(removing,_FEDid);
-                system(removing);
+                std::remove(_FEDid);
                 _FEDid[0] = '\0' ;
                 }
         }
@@ -423,10 +420,7 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         // Now, remove temporary file (if not yet done)
             if ( _FEDid[0] != '\0' )
                 {
-                char removing[MAX_FEDFILE_NAME_LENGTH+3] ;
-                strcpy(removing,"rm ");
-                strcat(removing,_FEDid);
-                system(removing);
+                std::remove(_FEDid);
                 _FEDid[0] = '\0' ;
                 }
 
@@ -936,4 +930,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.35 2007/11/16 15:04:21 rousse Exp $
+// $Id: FederationManagement.cc,v 3.36 2007/11/19 10:20:53 erk Exp $
