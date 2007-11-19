@@ -1,82 +1,150 @@
+2007-11-19 11:32  tag CERTI-3_2_5
+
+2007-11-19 11:32  erk
+
+	* CMakeLists.txt (1.27), configure.in (3.27) (utags: CERTI-3_2_5):
+	  Prepare CETI 3.2.5 release.
+
+2007-11-19 11:28  erk
+
+	* include/certi.hh (3.19, CERTI-3_2_5): Make the default buffer
+	  size better suits the user's needs.  See bug #21423 : Size of
+	  Constants This should be seen as a _TEMPORARY_ measure before
+	  adpoting a more dynamic solution.
+
+2007-11-19 11:20  erk
+
+	* RTIA/FederationManagement.cc (3.36, CERTI-3_2_5): Use cstdio
+	  'std::remove' API instead not portable system() API
+
+2007-11-19 11:04  erk
+
+	* CMakeLists.txt (1.26), include/certi.hh (3.18),
+	  libCERTI/Socket.hh (3.12, CERTI-3_2_5), libCERTI/SocketTCP.hh
+	  (3.16, CERTI-3_2_5), libRTI/CMakeLists.txt (1.7, CERTI-3_2_5),
+	  test/libgraphc/CMakeLists.txt (1.5, CERTI-3_2_5): Windows + MinGW
+	  update
+
+2007-11-19 10:29  erk
+
+	* libCERTI/: ObjectClassSet.cc (3.29), ObjectClassSet.hh (3.25),
+	  RootObject.hh (3.24) (utags: CERTI-3_2_5): Add name collision
+	  detection (before full hierarchical support)
+
+2007-11-16 16:45  erk
+
+	* RTIA/ObjectManagement.cc (3.30, CERTI-3_2_5): Add meaningfull
+	  reason in exception
+
+2007-11-16 16:04  rousse
+
+	* ChangeLog (3.33, CERTI-3_2_5), RTIA/FederationManagement.cc
+	  (3.35), RTIA/FederationManagement.hh (3.19, CERTI-3_2_5),
+	  RTIA/RTIA.hh (3.10, CERTI-3_2_5), RTIA/RTIA_federate.cc (3.51,
+	  CERTI-3_2_5), RTIG/Federation.cc (3.69, CERTI-3_2_5),
+	  RTIG/Federation.hh (3.43, CERTI-3_2_5), RTIG/FederationsList.cc
+	  (3.45, CERTI-3_2_5), RTIG/FederationsList.hh (3.35, CERTI-3_2_5),
+	  RTIG/RTIG_processing.cc (3.44, CERTI-3_2_5),
+	  libCERTI/Exception.hh (3.4, CERTI-3_2_5), libCERTI/fed.cc (3.13,
+	  CERTI-3_2_5), libRTI/RTIambPrivateRefs.cc (3.6, CERTI-3_2_5):
+	  Better exception return on syntax error during FED file parsing
+
 2007-11-15 15:37  rousse
 
-	* RTIA/FederationManagement.cc, RTIA/RTIA.hh,
-	  RTIA/RTIA_federate.cc, RTIG/FederationsList.cc,
-	  RTIG/RTIG_processing.cc: Better return of reason exception on
-	  failed create federation execution
+	* RTIA/FederationManagement.cc (3.34), RTIA/RTIA.hh (3.9),
+	  RTIA/RTIA_federate.cc (3.50), RTIG/FederationsList.cc (3.44),
+	  RTIG/RTIG_processing.cc (3.43): Better return of reason exception
+	  on failed create federation execution
 
 2007-11-15 11:09  rousse
 
-	* test/Billard/Billard.cc: Little things in order to better print
-	  error message on create federation in Billard
+	* test/Billard/Billard.cc (3.27, CERTI-3_2_5): Little things in
+	  order to better print error message on create federation in
+	  Billard
 
 2007-11-13 14:25  rousse
 
-	* RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc,
-	  RTIG/Federation.cc, RTIG/FederationsList.cc,
-	  RTIG/RTIG_processing.cc, libCERTI/Exception.hh,
-	  libCERTI/Message.cc, libCERTI/Message_R.cc,
-	  libCERTI/Message_W.cc, libCERTI/NetworkMessage.cc,
-	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
-	  libRTI/RTIambPrivateRefs.cc, libRTI/RTIambassador.cc: Exception
-	  raised in RTIG returns reason to RTIA
+	* RTIA/FederationManagement.cc (3.33), RTIA/RTIA_federate.cc
+	  (3.49), RTIG/Federation.cc (3.68), RTIG/FederationsList.cc
+	  (3.43), RTIG/RTIG_processing.cc (3.42), libCERTI/Exception.hh
+	  (3.3), libCERTI/Message.cc (3.40, CERTI-3_2_5),
+	  libCERTI/Message_R.cc (3.8, CERTI-3_2_5), libCERTI/Message_W.cc
+	  (3.9, CERTI-3_2_5), libCERTI/NetworkMessage.cc (3.21,
+	  CERTI-3_2_5), libCERTI/NetworkMessage.hh (3.26, CERTI-3_2_5),
+	  libCERTI/NetworkMessage_RW.cc (3.32, CERTI-3_2_5),
+	  libRTI/RTIambPrivateRefs.cc (3.5), libRTI/RTIambassador.cc (3.57,
+	  CERTI-3_2_5): Exception raised in RTIG returns reason to RTIA
 
 2007-11-12 15:49  siron
 
-	* RTIA/RTIA_federate.cc, RTIA/TimeManagement.cc,
-	  libCERTI/Exception.hh, libRTI/RTIambPrivateRefs.cc: End of the
+	* RTIA/RTIA_federate.cc (3.48), RTIA/TimeManagement.cc (3.22,
+	  CERTI-3_2_5), libCERTI/Exception.hh (3.2),
+	  libRTI/RTIambPrivateRefs.cc (3.4): End of the
 	  enableAsynchronousDelivery implementation.
 
 2007-11-06 14:46  rousse
 
-	* RTIA/TimeManagement.cc: enable asynchronous delivery still in
-	  progress...
+	* RTIA/TimeManagement.cc (3.21): enable asynchronous delivery still
+	  in progress...
 
 2007-11-06 11:05  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
-	  RTIA/TimeManagement.cc, libCERTI/ObjectClassBroadcastList.cc,
-	  libRTI/RTIambassador.cc: reflectAttributeValues without timestamp
-	  corrected (I hope implemented)
+	* ChangeLog (3.32), RTIA/ObjectManagement.cc (3.29),
+	  RTIA/ObjectManagement.hh (3.16, CERTI-3_2_5),
+	  RTIA/TimeManagement.cc (3.20),
+	  libCERTI/ObjectClassBroadcastList.cc (3.16, CERTI-3_2_5),
+	  libRTI/RTIambassador.cc (3.56): reflectAttributeValues without
+	  timestamp corrected (I hope implemented)
 
 2007-11-06 09:57  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc: FR : Suppression du
-	  fichier temporaire FED EN : Removing FED temporary file
+	* ChangeLog (3.31), RTIA/FederationManagement.cc (3.32): FR :
+	  Suppression du fichier temporaire FED EN : Removing FED temporary
+	  file
 
 2007-11-05 15:30  rousse
 
-	* ChangeLog, RTIA/Communications.cc, RTIA/ObjectManagement.cc,
-	  RTIA/ObjectManagement.hh, RTIA/TimeManagement.cc,
-	  libCERTI/Message_R.cc, libCERTI/Message_W.cc,
-	  libRTI/RTIambassador.cc: Bug #21515 correction
+	* ChangeLog (3.30), RTIA/Communications.cc (3.18, CERTI-3_2_5),
+	  RTIA/ObjectManagement.cc (3.28), RTIA/ObjectManagement.hh (3.15),
+	  RTIA/TimeManagement.cc (3.19), libCERTI/Message_R.cc (3.7),
+	  libCERTI/Message_W.cc (3.8), libRTI/RTIambassador.cc (3.55): Bug
+	  #21515 correction
 
 2007-11-02 13:52  erk
 
-	* scripts/FindCERTI.cmake: FindCERTI now honors the QUIET arguments
-	  of FIND_PACKAGE.
+	* scripts/FindCERTI.cmake (1.8, CERTI-3_2_5): FindCERTI now honors
+	  the QUIET arguments of FIND_PACKAGE.
 
 2007-10-31 11:30  erk
 
-	* libCERTI/ObjectClassAttribute.cc, libCERTI/Dimension.hh,
-	  libCERTI/InteractionSet.hh, libCERTI/Named.cc,
-	  libCERTI/ObjectClassSet.cc, libCERTI/RTIRegion.hh,
-	  libCERTI/RootObject.cc, libCERTI/fed.cc, libCERTI/Interaction.cc,
-	  libCERTI/Object.cc, libCERTI/ObjectClass.cc,
-	  libCERTI/ObjectSet.cc, libCERTI/ObjectSet.hh,
-	  libCERTI/PrettyDebug.cc, libCERTI/XmlParser.cc,
-	  libCERTI/Interaction.hh, libCERTI/ObjectClass.hh,
-	  libCERTI/ObjectClassAttribute.hh, libCERTI/RoutingSpace.hh,
-	  libCERTI/SocketUN.hh, libCERTI/Subscribable.hh,
-	  RTIA/RTIA_federate.cc, RTIA/RTIA_network.cc,
-	  libCERTI/InteractionSet.cc, libCERTI/Object.hh,
-	  libCERTI/ObjectClassSet.hh, libCERTI/RootObject.hh,
-	  libCERTI/Subscribable.cc, libCERTI/fed.hh,
-	  RTIA/DataDistribution.cc, RTIA/DeclarationManagement.cc,
-	  RTIA/ObjectManagement.cc, RTIG/Federation.cc,
-	  libRTI/RTIambPrivateRefs.cc, libRTI/RTIambPrivateRefs.hh: This
-	  set of patches should fix thse following bugs: bug #20935 :
-	  Qualified name not handled bug #21067 :
+	* libCERTI/ObjectClassAttribute.cc (3.27, CERTI-3_2_5),
+	  libCERTI/Dimension.hh (3.9, CERTI-3_2_5),
+	  libCERTI/InteractionSet.hh (3.15, CERTI-3_2_5), libCERTI/Named.cc
+	  (3.4, CERTI-3_2_5), libCERTI/ObjectClassSet.cc (3.28),
+	  libCERTI/RTIRegion.hh (3.2, CERTI-3_2_5), libCERTI/RootObject.cc
+	  (3.29, CERTI-3_2_5), libCERTI/fed.cc (3.12),
+	  libCERTI/Interaction.cc (3.34, CERTI-3_2_5), libCERTI/Object.cc
+	  (3.21, CERTI-3_2_5), libCERTI/ObjectClass.cc (3.39, CERTI-3_2_5),
+	  libCERTI/ObjectSet.cc (3.16, CERTI-3_2_5), libCERTI/ObjectSet.hh
+	  (3.9, CERTI-3_2_5), libCERTI/PrettyDebug.cc (4.4, CERTI-3_2_5),
+	  libCERTI/XmlParser.cc (3.24, CERTI-3_2_5),
+	  libCERTI/Interaction.hh (3.25, CERTI-3_2_5),
+	  libCERTI/ObjectClass.hh (3.30, CERTI-3_2_5),
+	  libCERTI/ObjectClassAttribute.hh (3.23, CERTI-3_2_5),
+	  libCERTI/RoutingSpace.hh (3.10, CERTI-3_2_5),
+	  libCERTI/SocketUN.hh (3.11, CERTI-3_2_5),
+	  libCERTI/Subscribable.hh (3.6, CERTI-3_2_5),
+	  RTIA/RTIA_federate.cc (3.47), RTIA/RTIA_network.cc (3.13,
+	  CERTI-3_2_5), libCERTI/InteractionSet.cc (3.20, CERTI-3_2_5),
+	  libCERTI/Object.hh (3.17, CERTI-3_2_5),
+	  libCERTI/ObjectClassSet.hh (3.24), libCERTI/RootObject.hh (3.23),
+	  libCERTI/Subscribable.cc (3.6, CERTI-3_2_5), libCERTI/fed.hh
+	  (3.5, CERTI-3_2_5), RTIA/DataDistribution.cc (3.22, CERTI-3_2_5),
+	  RTIA/DeclarationManagement.cc (3.16, CERTI-3_2_5),
+	  RTIA/ObjectManagement.cc (3.27), RTIG/Federation.cc (3.67),
+	  libRTI/RTIambPrivateRefs.cc (3.3), libRTI/RTIambPrivateRefs.hh
+	  (3.3, CERTI-3_2_5): This set of patches should fix thse following
+	  bugs: bug #20935 : Qualified name not handled bug #21067 :
 	  ObjectClassSet::getObjectClassHandle doesn't handle class
 	  hierarchies This is not the ultimate solution since the patch
 	  does not resolve name clash problem.	I will continue to improve
@@ -85,175 +153,189 @@
 
 2007-10-31 10:42  rousse
 
-	* RTIA/FederationManagement.cc, RTIA/FederationManagement.hh,
-	  libCERTI/Message_R.cc, libCERTI/Message_W.cc:
+	* RTIA/FederationManagement.cc (3.31), RTIA/FederationManagement.hh
+	  (3.18), libCERTI/Message_R.cc (3.6), libCERTI/Message_W.cc (3.7):
 	  synchronizationPointRegistrationFailed added
 
 2007-10-30 16:24  rousse
 
-	* libCERTI/: Message.hh, Message_R.cc, Message_W.cc: Message_R and
-	  _W.cc restructuration
+	* libCERTI/: Message.hh (3.37, CERTI-3_2_5), Message_R.cc (3.5),
+	  Message_W.cc (3.6): Message_R and _W.cc restructuration
 
 2007-10-30 15:15  rousse
 
-	* libCERTI/: Message_R.cc, Message_W.cc: Little things...
+	* libCERTI/: Message_R.cc (3.4), Message_W.cc (3.5): Little
+	  things...
 
 2007-10-30 14:11  rousse
 
-	* libCERTI/Message_W.cc: Message_W.cc restructuration (continued)
+	* libCERTI/Message_W.cc (3.4): Message_W.cc restructuration
+	  (continued)
 
 2007-10-30 10:25  rousse
 
-	* libCERTI/: Message_R.cc, Message_W.cc: Message_R and W.cc
-	  restructuration (continued)
+	* libCERTI/: Message_R.cc (3.3), Message_W.cc (3.3): Message_R and
+	  W.cc restructuration (continued)
 
 2007-10-29 09:09  erk
 
-	* myCERTI_env.csh.in, myCERTI_env.sh.in: Now csh and sh should be
-	  'equivalent' I did suppress the NBITs thing which was only usable
-	  on Linux
+	* myCERTI_env.csh.in (3.3), myCERTI_env.sh.in (1.5) (utags:
+	  CERTI-3_2_5): Now csh and sh should be 'equivalent' I did
+	  suppress the NBITs thing which was only usable on Linux
 
 2007-10-29 00:27  erk
 
-	* myCERTI_env.csh.in, myCERTI_env.sh.in: First pass update of the
-	  Bourne Shell scripts from C-Shell one (correct some typo in
-	  C-shell too)
+	* myCERTI_env.csh.in (3.2), myCERTI_env.sh.in (1.4): First pass
+	  update of the Bourne Shell scripts from C-Shell one (correct some
+	  typo in C-shell too)
 
 2007-10-26 16:36  rousse
 
-	* ChangeLog, libCERTI/Message_R.cc, libCERTI/Message_W.cc: Little
-	  thing.
+	* ChangeLog (3.29), libCERTI/Message_R.cc (3.2),
+	  libCERTI/Message_W.cc (3.2): Little thing.
 
 2007-10-26 15:00  rousse
 
-	* libCERTI/: CMakeLists.txt, Makefile.am, Message.hh, Message_R.cc,
-	  Message_RW.cc, Message_W.cc: FR : Debut restructuration
-	  Message_RW en 2 fichiers EN : Begin dividing Message_RW into 2
-	  files
+	* libCERTI/: CMakeLists.txt (1.9, CERTI-3_2_5), Makefile.am (3.33,
+	  CERTI-3_2_5), Message.hh (3.36), Message_R.cc (3.1),
+	  Message_RW.cc (3.39), Message_W.cc (3.1): FR : Debut
+	  restructuration Message_RW en 2 fichiers EN : Begin dividing
+	  Message_RW into 2 files
 
 2007-10-25 10:07  rousse
 
-	* ChangeLog, RTIA/RTIA_federate.cc, RTIA/TimeManagement.cc,
-	  RTIA/TimeManagement.hh, libCERTI/Message_RW.cc,
-	  libRTI/RTIambassador.cc: FR : Preparation realisation
+	* ChangeLog (3.28), RTIA/RTIA_federate.cc (3.46),
+	  RTIA/TimeManagement.cc (3.18), RTIA/TimeManagement.hh (3.11,
+	  CERTI-3_2_5), libCERTI/Message_RW.cc (3.38),
+	  libRTI/RTIambassador.cc (3.54): FR : Preparation realisation
 	  EnableAsynchronousDelivery et DisableAsynchronousDelivery EN :
 	  Beginning implementation of services EnableAsynchronousDelivery
 	  and DisableAsynchronousDelivery
 
 2007-10-24 09:36  rousse
 
-	* CMakeLists.txt, ChangeLog, Makefile.am, configure.in,
-	  myCERTI_env.csh.in: Ajout de myCERTI_env.csh genere pour
-	  utilisation avec csh myCERTI_env.csh generated added for easy use
-	  with csh
+	* CMakeLists.txt (1.25), ChangeLog (3.27), Makefile.am (3.10,
+	  CERTI-3_2_5), configure.in (3.26), myCERTI_env.csh.in (3.1):
+	  Ajout de myCERTI_env.csh genere pour utilisation avec csh
+	  myCERTI_env.csh generated added for easy use with csh
 
 2007-10-23 11:18  erk
 
-	* scripts/UseCERTI.cmake: Add libxml2 to CERTI_LIBRARIES if found
-	  this would ease user app link
+	* scripts/UseCERTI.cmake (1.2, CERTI-3_2_5): Add libxml2 to
+	  CERTI_LIBRARIES if found this would ease user app link
 
 2007-10-23 11:18  erk
 
-	* scripts/FindCERTI.cmake: FindCERTI.cmake is now more compliant
-	  with FindXXX.cmake standard
+	* scripts/FindCERTI.cmake (1.7): FindCERTI.cmake is now more
+	  compliant with FindXXX.cmake standard
 
 2007-10-22 16:37  erk
 
-	* Makefile.am: Add scripts UseCERTI.cmake in the distribution just
-	  like it has been done for CMakeLists.txt
+	* Makefile.am (3.9): Add scripts UseCERTI.cmake in the distribution
+	  just like it has been done for CMakeLists.txt
 
 2007-10-22 16:25  erk
 
-	* libCERTI/: Socket.hh, SocketTCP.cc, SocketTCP.hh, SocketUDP.cc:
-	  Add more valuable error message content At least @IP involved in
-	  network error.
+	* libCERTI/: Socket.hh (3.11), SocketTCP.cc (3.17, CERTI-3_2_5),
+	  SocketTCP.hh (3.15), SocketUDP.cc (3.15, CERTI-3_2_5): Add more
+	  valuable error message content At least @IP involved in network
+	  error.
 
 2007-10-22 16:24  erk
 
-	* RTIA/main.cc: Add context prefix to error message.  Add try/catch
-	  block aroung RTIA object construction since network error may
-	  occur there.
+	* RTIA/main.cc (3.17, CERTI-3_2_5): Add context prefix to error
+	  message.  Add try/catch block aroung RTIA object construction
+	  since network error may occur there.
 
 2007-10-22 16:23  erk
 
-	* test/Billard/main.cc, libRTI/RTIambPrivateRefs.cc,
-	  libRTI/RTIambassador.cc: Add context prefix to error message
+	* test/Billard/main.cc (3.21, CERTI-3_2_5),
+	  libRTI/RTIambPrivateRefs.cc (3.2), libRTI/RTIambassador.cc
+	  (3.53): Add context prefix to error message
 
 2007-10-20 00:16  erk
 
-	* CMakeLists.txt, scripts/FindCERTI.cmake: install UseCERTI.cmake
-	  just as FindCERTI.cmake
+	* CMakeLists.txt (1.24), scripts/FindCERTI.cmake (1.6): install
+	  UseCERTI.cmake just as FindCERTI.cmake
 
 	  this will ease the building of HLA application using CERTI and
 	  CMake
 
 2007-10-19 15:51  rousse
 
-	* ChangeLog, RTIA/main.cc, libCERTI/SocketTCP.cc,
-	  libCERTI/SocketTCP.hh: Amelioration du format des adresses et
-	  port pour socket TCP Improvement socketTCP adress and port
+	* ChangeLog (3.26), RTIA/main.cc (3.16), libCERTI/SocketTCP.cc
+	  (3.16), libCERTI/SocketTCP.hh (3.14): Amelioration du format des
+	  adresses et port pour socket TCP Improvement socketTCP adress and
+	  port
 
 2007-10-18 23:25  erk
 
-	* myCERTI_env.sh.in: arch command does not seem to be portable use
-	  uname -m instead
+	* myCERTI_env.sh.in (1.3): arch command does not seem to be
+	  portable use uname -m instead
 
 2007-10-18 23:24  erk
 
-	* CMakeLists.txt: Add "Generated by CMake" from @configure_input@
+	* CMakeLists.txt (1.23): Add "Generated by CMake" from
+	  @configure_input@
 
 2007-10-16 11:28  erk
 
-	* libCERTI/: Interaction.hh, InteractionSet.cc, Named.cc, Named.hh,
-	  ObjectClass.hh, ObjectClassAttribute.cc, ObjectClassAttribute.hh,
-	  ObjectClassSet.cc, ObjectClassSet.hh, Subscribable.hh, fed.cc,
-	  Interaction.cc, ObjectClass.cc: First set of modification for
-	  solution of bug #20935 Rationalize the use of C++ STL map.  Named
-	  object now has virtual methods and unfinished support method for
-	  HLA name validation
+	* libCERTI/: Interaction.hh (3.24), InteractionSet.cc (3.19),
+	  Named.cc (3.3), Named.hh (3.3, CERTI-3_2_5), ObjectClass.hh
+	  (3.29), ObjectClassAttribute.cc (3.26), ObjectClassAttribute.hh
+	  (3.22), ObjectClassSet.cc (3.27), ObjectClassSet.hh (3.23),
+	  Subscribable.hh (3.5), fed.cc (3.11), Interaction.cc (3.33),
+	  ObjectClass.cc (3.38): First set of modification for solution of
+	  bug #20935 Rationalize the use of C++ STL map.  Named object now
+	  has virtual methods and unfinished support method for HLA name
+	  validation
 
 2007-10-16 11:25  erk
 
-	* RTIG/: Federation.cc, FederationsList.cc: Send more valuable
-	  cause for Exception
+	* RTIG/: Federation.cc (3.66), FederationsList.cc (3.42): Send more
+	  valuable cause for Exception
 
 2007-10-04 14:47  rousse
 
-	* ChangeLog, libCERTI/MessageBody.hh: Petites choses sans
-	  importance No comment.
+	* ChangeLog (3.25), libCERTI/MessageBody.hh (3.14, CERTI-3_2_5):
+	  Petites choses sans importance No comment.
 
 2007-09-28 17:27  erk
 
-	* CMakeLists.txt: Help to find CPack even if CPack is not in
+	* CMakeLists.txt (1.22): Help to find CPack even if CPack is not in
 	  "default path"
 
 2007-09-28 17:26  erk
 
-	* libCERTI/Clock.hh: MSVC backport for missing <stdint.h> and
-	  uint64_t
+	* libCERTI/Clock.hh (4.4, CERTI-3_2_5): MSVC backport for missing
+	  <stdint.h> and uint64_t
 
 2007-09-28 17:22  erk
 
-	* include/baseTypes.hh: Change back default arg value since it
-	  worry MSVC with a link error (to be investigated later).
+	* include/baseTypes.hh (3.10, CERTI-3_2_5): Change back default arg
+	  value since it worry MSVC with a link error (to be investigated
+	  later).
 
 2007-09-28 16:07  rousse
 
-	* ChangeLog, RTIA/Communications.cc, RTIA/FederationManagement.cc,
-	  RTIA/FederationManagement.hh, RTIA/RTIA_federate.cc,
-	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
-	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
-	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage_RW.cc,
-	  libRTI/RTIambassador.cc, test/Billard/Billard.hh,
-	  test/Billard/main.cc: Debut realisation du
-	  REQUEST_FEDERATION_SAVE (pas encore operationnel) Beginning
-	  REQUEST_FEDERATION_SAVE implementation (not yet implemented)
+	* ChangeLog (3.24), RTIA/Communications.cc (3.17),
+	  RTIA/FederationManagement.cc (3.30), RTIA/FederationManagement.hh
+	  (3.17), RTIA/RTIA_federate.cc (3.45), RTIG/Federation.cc (3.65),
+	  RTIG/Federation.hh (3.42), RTIG/FederationsList.cc (3.41),
+	  RTIG/FederationsList.hh (3.34), RTIG/RTIG_processing.cc (3.41),
+	  libCERTI/Message_RW.cc (3.37), libCERTI/NetworkMessage_RW.cc
+	  (3.31), libRTI/RTIambassador.cc (3.52), test/Billard/Billard.hh
+	  (3.13, CERTI-3_2_5), test/Billard/main.cc (3.20): Debut
+	  realisation du REQUEST_FEDERATION_SAVE (pas encore operationnel)
+	  Beginning REQUEST_FEDERATION_SAVE implementation (not yet
+	  implemented)
 
 2007-09-27 15:59  erk
 
-	* include/RTI.hh, include/baseTypes.hh, libCERTI/Exception.cc,
-	  libCERTI/ObjectClass.cc, libCERTI/ObjectClassSet.cc,
-	  libCERTI/ObjectSet.cc, test/utility/.cvsignore: Add
+	* include/RTI.hh (3.10, CERTI-3_2_5), include/baseTypes.hh (3.9),
+	  libCERTI/Exception.cc (3.9, CERTI-3_2_5), libCERTI/ObjectClass.cc
+	  (3.37), libCERTI/ObjectClassSet.cc (3.26), libCERTI/ObjectSet.cc
+	  (3.15), test/utility/.cvsignore (1.1, CERTI-3_2_5): Add
 	  RTI::Exception tracability mechanism.  If you want to see
 	  Exception.  set env var
 
@@ -261,332 +343,373 @@
 
 2007-09-26 16:15  erk
 
-	* CMakeLists.txt, configure.in: Bump version in order to take into
-	  account several CERTI for Windows update
+	* CMakeLists.txt (1.21), configure.in (3.25): Bump version in order
+	  to take into account several CERTI for Windows update
 
 2007-09-26 16:15  erk
 
-	* libCERTI/CMakeLists.txt, libRTI/CMakeLists.txt: Add .def file
-	  generation (and installation) when compiling with MinGW
+	* libCERTI/CMakeLists.txt (1.8), libRTI/CMakeLists.txt (1.6): Add
+	  .def file generation (and installation) when compiling with MinGW
 
 2007-09-26 16:14  erk
 
-	* include/fedtime.hh: Move from RTI_EXPORT to CERTI_EXPORT because
-	  the operator is implemented in libCERTI (and not libRTI)
+	* include/fedtime.hh (3.8, CERTI-3_2_5): Move from RTI_EXPORT to
+	  CERTI_EXPORT because the operator is implemented in libCERTI (and
+	  not libRTI)
 
 2007-09-25 15:42  erk
 
-	* include/RTItypes.hh: Export more symbols.  This is a preliminary
-	  fix for bug #21124 : Fedtime Library problem
+	* include/RTItypes.hh (3.18, CERTI-3_2_5): Export more symbols.
+	  This is a preliminary fix for bug #21124 : Fedtime Library
+	  problem
 
 2007-09-25 15:25  erk
 
-	* include/certi.hh: Correct typo from Windows update
+	* include/certi.hh (3.17): Correct typo from Windows update
 
 2007-09-25 15:18  erk
 
-	* test/Billard/Billard.cc, RTIG/Federation.cc, include/RTI.hh,
-	  include/certi.hh, libCERTI/SocketMC.hh, test/Billard/Billard.hh:
-	  Update for compiling with mingw32 (should be OK both for DevC++
-	  and EclipseCDT/Wascana)
+	* test/Billard/Billard.cc (3.26), RTIG/Federation.cc (3.64),
+	  include/RTI.hh (3.9), include/certi.hh (3.16),
+	  libCERTI/SocketMC.hh (3.11, CERTI-3_2_5), test/Billard/Billard.hh
+	  (3.12): Update for compiling with mingw32 (should be OK both for
+	  DevC++ and EclipseCDT/Wascana)
 
 2007-09-25 11:21  erk
 
-	* CMakeLists.txt: Display message when X11 not found
+	* CMakeLists.txt (1.20): Display message when X11 not found
 
 2007-09-24 16:54  erk
 
-	* CMakeLists.txt: Updatenaming scheme on Windows platform
+	* CMakeLists.txt (1.19): Updatenaming scheme on Windows platform
 
 2007-09-20 16:19  erk
 
-	* libCERTI/CMakeLists.txt, libRTI/CMakeLists.txt: Update SOVERSION
-	  for shared lib in order to be consistent with the value used by
-	  our autotools build
+	* libCERTI/CMakeLists.txt (1.7), libRTI/CMakeLists.txt (1.5):
+	  Update SOVERSION for shared lib in order to be consistent with
+	  the value used by our autotools build
 
 2007-09-19 13:58  erk
 
-	* scripts/UseCERTI.cmake: Add a preliminary UseCERTI.cmake macro
-	  file.
+	* scripts/UseCERTI.cmake (1.1): Add a preliminary UseCERTI.cmake
+	  macro file.
 
 2007-09-19 13:58  erk
 
-	* scripts/FindCERTI.cmake: Added MESSAGE for lib search.  Implement
-	  cleaner way to use CERTI_HOME (if defined)
+	* scripts/FindCERTI.cmake (1.5): Added MESSAGE for lib search.
+	  Implement cleaner way to use CERTI_HOME (if defined)
 
 2007-09-12 09:46  erk
 
-	* configure.in, CMakeLists.txt: Bump version from 3.2.5pre4 to
-	  3.2.5pre5
+	* configure.in (3.24), CMakeLists.txt (1.18): Bump version from
+	  3.2.5pre4 to 3.2.5pre5
 
 2007-09-12 09:44  erk
 
-	* doc/Makefile.am: Update AutoXXX files
+	* doc/Makefile.am (3.5, CERTI-3_2_5): Update AutoXXX files
 
 2007-09-04 10:33  erk
 
-	* libRTI/RTIambPrivateRefs.cc, RTIG/RTIG_processing.cc: Added
-	  comment for possible bug.  In particular bug #19869
+	* libRTI/RTIambPrivateRefs.cc (3.1), RTIG/RTIG_processing.cc
+	  (3.40): Added comment for possible bug.  In particular bug #19869
 
 2007-09-03 15:59  erk
 
-	* libCERTI/RoutingSpace.hh, RTIG/RTIG.hh, libCERTI/Dimension.hh,
-	  libRTI/RTIambassador.cc: More doxygen doc clean-up and less
-	  unnecessary include
+	* libCERTI/RoutingSpace.hh (3.9), RTIG/RTIG.hh (3.22, CERTI-3_2_5),
+	  libCERTI/Dimension.hh (3.8), libRTI/RTIambassador.cc (3.51): More
+	  doxygen doc clean-up and less unnecessary include
 
 2007-09-03 15:26  erk
 
-	* libCERTI/: Dimension.cc, Dimension.hh, Extent.hh, Handled.hh,
-	  RoutingSpace.cc, RoutingSpace.hh: Improve Doxygen doc
+	* libCERTI/: Dimension.cc (3.7, CERTI-3_2_5), Dimension.hh (3.7),
+	  Extent.hh (3.9, CERTI-3_2_5), Handled.hh (3.2, CERTI-3_2_5),
+	  RoutingSpace.cc (3.14, CERTI-3_2_5), RoutingSpace.hh (3.8):
+	  Improve Doxygen doc
 
 2007-08-31 15:43  erk
 
-	* libCERTI/: XmlParser.cc, XmlParser.hh: More doxygen documentation
-	  for Xml Parser please.
+	* libCERTI/: XmlParser.cc (3.23), XmlParser.hh (3.12, CERTI-3_2_5):
+	  More doxygen documentation for Xml Parser please.
 
 2007-08-31 14:47  erk
 
-	* libCERTI/Named.cc, libCERTI/Named.hh, libCERTI/Parameter.cc,
-	  libCERTI/Parameter.hh, libCERTI/RoutingSpace.cc,
-	  libCERTI/RoutingSpace.hh, libCERTI/XmlParser.cc,
-	  libCERTI/XmlParser.hh, RTIG/Federation.cc,
-	  scripts/FindCERTI.cmake: Correct bug #19576 : XmlParser's memory
-	  leak bug Plus some cosmetic change in order to avoid
+	* libCERTI/Named.cc (3.2), libCERTI/Named.hh (3.2),
+	  libCERTI/Parameter.cc (3.10, CERTI-3_2_5), libCERTI/Parameter.hh
+	  (3.7, CERTI-3_2_5), libCERTI/RoutingSpace.cc (3.13),
+	  libCERTI/RoutingSpace.hh (3.7), libCERTI/XmlParser.cc (3.22),
+	  libCERTI/XmlParser.hh (3.11), RTIG/Federation.cc (3.63),
+	  scripts/FindCERTI.cmake (1.4): Correct bug #19576 : XmlParser's
+	  memory leak bug Plus some cosmetic change in order to avoid
 	  setName/getName duplication.	All class which needs this now
 	  inherits from Named.
 
 2007-08-29 15:09  erk
 
-	* libCERTI/: Interaction.cc, fed.cc: Correct bug #20727 : Syntax
-	  error on valid file? We should always set up the element BEFORE
-	  adding it to container.  This has been done for parameter (of an
-	  interaction class) and for attributes.
+	* libCERTI/: Interaction.cc (3.32), fed.cc (3.10): Correct bug
+	  #20727 : Syntax error on valid file? We should always set up the
+	  element BEFORE adding it to container.  This has been done for
+	  parameter (of an interaction class) and for attributes.
 
 2007-08-29 15:07  erk
 
-	* libCERTI/syntax.yy: Type declaration mismatch for extern var
+	* libCERTI/syntax.yy (3.5, CERTI-3_2_5): Type declaration mismatch
+	  for extern var
 
 2007-08-29 11:48  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, RTIG/Federate.cc,
-	  RTIG/Federation.cc, libRTI/RTIambassador.cc,
-	  test/Billard/Billard.cc, test/Billard/Billard.hh,
-	  test/Billard/main.cc: Correction (enlever UnimplementedService)
-	  sur la definition de registerFederatio nSynchronizationPoint et
-	  test rajoute dans le billard
-	  registerFederationSynchronizationPoint definition corection
-	  (UnimplementedServic e deleted) and add test on billard
+	* ChangeLog (3.23), RTIA/FederationManagement.cc (3.29),
+	  RTIG/Federate.cc (3.14, CERTI-3_2_5), RTIG/Federation.cc (3.62),
+	  libRTI/RTIambassador.cc (3.50), test/Billard/Billard.cc (3.25),
+	  test/Billard/Billard.hh (3.11), test/Billard/main.cc (3.19):
+	  Correction (enlever UnimplementedService) sur la definition de
+	  registerFederatio nSynchronizationPoint et test rajoute dans le
+	  billard registerFederationSynchronizationPoint definition
+	  corection (UnimplementedServic e deleted) and add test on billard
 
 2007-08-27 16:46  erk
 
-	* test/Billard/cmdline.h: Calm down compiler warning xxxx_given
-	  flags should be int however
+	* test/Billard/cmdline.h (3.5, CERTI-3_2_5): Calm down compiler
+	  warning xxxx_given flags should be int however
 
 2007-08-27 16:13  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc,
-	  RTIA/FederationManagement.hh, RTIA/RTIA_federate.cc,
-	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
-	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
-	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage_RW.cc,
-	  libRTI/RTIambassador.cc: Service Register Federation
-	  Synchronization Point conforme a HLA 1.3 : ajout du 3eme
-	  parametre optionnel (ensemble de federes a informer) HLA 1.3
-	  compliance Service Register Federation Synchronization Point :
-	  parameter 3 added (set of federates to inform)
+	* ChangeLog (3.22), RTIA/FederationManagement.cc (3.28),
+	  RTIA/FederationManagement.hh (3.16), RTIA/RTIA_federate.cc
+	  (3.44), RTIG/Federation.cc (3.61), RTIG/Federation.hh (3.41),
+	  RTIG/FederationsList.cc (3.40), RTIG/FederationsList.hh (3.33),
+	  RTIG/RTIG_processing.cc (3.39), libCERTI/Message_RW.cc (3.36),
+	  libCERTI/NetworkMessage_RW.cc (3.30), libRTI/RTIambassador.cc
+	  (3.49): Service Register Federation Synchronization Point
+	  conforme a HLA 1.3 : ajout du 3eme parametre optionnel (ensemble
+	  de federes a informer) HLA 1.3 compliance Service Register
+	  Federation Synchronization Point : parameter 3 added (set of
+	  federates to inform)
 
 2007-08-27 15:18  erk
 
-	* libCERTI/Exception.cc: Fix bug #20892 : patch for RTI::Exception
-	  operator<< Integrated the patch provided by Jeff with slight
-	  modification.
+	* libCERTI/Exception.cc (3.8): Fix bug #20892 : patch for
+	  RTI::Exception operator<< Integrated the patch provided by Jeff
+	  with slight modification.
 
 2007-08-25 14:30  erk
 
-	* scripts/FindCERTI.cmake: Typo due to [too]-fast copy/paste
+	* scripts/FindCERTI.cmake (1.3): Typo due to [too]-fast copy/paste
 
 2007-08-20 11:48  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc,
-	  RTIG/Federation.cc, RTIG/FederationsList.cc,
-	  RTIG/RTIG_processing.cc: Amelioration trace documentation
-	  Enhancement documentation trace
+	* ChangeLog (3.21), RTIA/FederationManagement.cc (3.27),
+	  RTIA/RTIA_federate.cc (3.43), RTIG/Federation.cc (3.60),
+	  RTIG/FederationsList.cc (3.39), RTIG/RTIG_processing.cc (3.38):
+	  Amelioration trace documentation Enhancement documentation trace
 
 2007-08-10 16:50  erk
 
-	* test/Billard/main.cc, doc/certi_doc_tree.dox: Should add Billard
-	  as CERTI app in doyxgen ?
+	* test/Billard/main.cc (3.18), doc/certi_doc_tree.dox (1.2,
+	  CERTI-3_2_5): Should add Billard as CERTI app in doyxgen ?
 
 2007-08-10 16:45  erk
 
-	* doc/certi_doc_tree.dox, doc/certi_doxygen.cnf.in,
-	  test/Billard/main.cc, doc/CMakeLists.txt, doc/reference.dox.in,
-	  include/RTI.hh, include/certi.hh, libRTI/RTIambassador.cc: Build
-	  more structured doxygen doc.
+	* doc/certi_doc_tree.dox (1.1), doc/certi_doxygen.cnf.in (1.1,
+	  CERTI-3_2_5), test/Billard/main.cc (3.17), doc/CMakeLists.txt
+	  (1.3, CERTI-3_2_5), doc/reference.dox.in (3.3), include/RTI.hh
+	  (3.8), include/certi.hh (3.15), libRTI/RTIambassador.cc (3.48):
+	  Build more structured doxygen doc.
 
 2007-08-10 16:45  erk
 
-	* libCERTI/: Clock.hh, Message.cc, Message.hh, NetworkMessage.cc:
-	  Small doxygen warning fix
+	* libCERTI/: Clock.hh (4.3), Message.cc (3.39), Message.hh (3.35),
+	  NetworkMessage.cc (3.20): Small doxygen warning fix
 
 2007-08-10 15:53  erk
 
-	* libCERTI/syntax.yy: Should fix bug #20727, Syntax error on valid
-	  file?
+	* libCERTI/syntax.yy (3.4): Should fix bug #20727, Syntax error on
+	  valid file?
 
 2007-08-10 13:32  erk
 
-	* libCERTI/: Clock.cc, PosixClock.cc, TSCClock.cc: Spurious } error
+	* libCERTI/: Clock.cc (4.3), PosixClock.cc (4.3), TSCClock.cc (4.3)
+	  (utags: CERTI-3_2_5): Spurious } error
 
 2007-08-10 13:31  erk
 
-	* scripts/FindCERTI.cmake: Small Update
+	* scripts/FindCERTI.cmake (1.2): Small Update
 
 2007-08-09 11:22  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/RTIA_federate.cc,
-	  RTIG/Federation.cc, RTIG/FederationsList.cc,
-	  RTIG/RTIG_processing.cc, libCERTI/Interaction.cc,
-	  libCERTI/InteractionBroadcastList.cc, libCERTI/InteractionSet.cc,
-	  libCERTI/PrettyDebug.hh: Ajout d'une option (GENDOC - G) pour
-	  ameliorer la generation de la documenntation Improvment of
-	  documentation generation by adding a new option ( GENDOC - G)
+	* ChangeLog (3.20), RTIA/ObjectManagement.cc (3.26),
+	  RTIA/RTIA_federate.cc (3.42), RTIG/Federation.cc (3.59),
+	  RTIG/FederationsList.cc (3.38), RTIG/RTIG_processing.cc (3.37),
+	  libCERTI/Interaction.cc (3.31),
+	  libCERTI/InteractionBroadcastList.cc (3.11, CERTI-3_2_5),
+	  libCERTI/InteractionSet.cc (3.18), libCERTI/PrettyDebug.hh (4.4,
+	  CERTI-3_2_5): Ajout d'une option (GENDOC - G) pour ameliorer la
+	  generation de la documenntation Improvment of documentation
+	  generation by adding a new option ( GENDOC - G)
 
 2007-08-01 08:51  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/RTIA_federate.cc,
-	  libRTI/RTIambassador.cc: Amelioration de la prise en compte du
-	  send interaction sans estampille Improvment of send interaction
-	  without timestamp
+	* ChangeLog (3.19), RTIA/ObjectManagement.cc (3.25),
+	  RTIA/RTIA_federate.cc (3.41), libRTI/RTIambassador.cc (3.47):
+	  Amelioration de la prise en compte du send interaction sans
+	  estampille Improvment of send interaction without timestamp
 
 2007-07-31 16:52  erk
 
-	* scripts/FindLexYacc.cmake: Find Flex first would be better if
-	  available
+	* scripts/FindLexYacc.cmake (1.2, CERTI-3_2_5): Find Flex first
+	  would be better if available
 
 2007-07-30 17:24  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIG/RTIG_processing.cc,
-	  libCERTI/Message.cc, libCERTI/Message_RW.cc,
-	  test/Billard/Billard.cc: Meilleure gestion du tag dans update
-	  attribute values et send interaction Better tag managing in
-	  update attribute values and send interaction
+	* ChangeLog (3.18), RTIA/ObjectManagement.cc (3.24),
+	  RTIG/RTIG_processing.cc (3.36), libCERTI/Message.cc (3.38),
+	  libCERTI/Message_RW.cc (3.35), test/Billard/Billard.cc (3.24):
+	  Meilleure gestion du tag dans update attribute values et send
+	  interaction Better tag managing in update attribute values and
+	  send interaction
 
 2007-07-30 17:17  rousse
 
-	* test/utility/Makefile.in: test/utimity/Makefile.in not in cvs
+	* test/utility/Makefile.in (1.2): test/utimity/Makefile.in not in
+	  cvs
 
 2007-07-30 09:30  erk
 
-	* configure.in, libCERTI/Clock.cc, libCERTI/Clock.hh,
-	  libCERTI/Makefile.am, libCERTI/PosixClock.cc,
-	  libCERTI/PosixClock.hh, libCERTI/TSCClock.cc,
-	  libCERTI/TSCClock.hh, test/utility/CertiUtilTests.cc: Solaris
-	  (and probably others) AutoXXXX build is now OK.  Argh!!! Automake
+	* configure.in (3.23), libCERTI/Clock.cc (4.2), libCERTI/Clock.hh
+	  (4.2), libCERTI/Makefile.am (3.32), libCERTI/PosixClock.cc (4.2),
+	  libCERTI/PosixClock.hh (4.2, CERTI-3_2_5), libCERTI/TSCClock.cc
+	  (4.2), libCERTI/TSCClock.hh (4.2, CERTI-3_2_5),
+	  test/utility/CertiUtilTests.cc (1.2, CERTI-3_2_5): Solaris (and
+	  probably others) AutoXXXX build is now OK.  Argh!!! Automake
 	  conditional handling sucks...
 
 2007-07-30 08:29  erk
 
-	* .cvsignore: Update .cvsignore with more autoconf generated files
+	* .cvsignore (1.2, CERTI-3_2_5): Update .cvsignore with more
+	  autoconf generated files
 
 2007-07-26 16:19  erk
 
-	* configure.in, libCERTI/Makefile.am: Fix Solaris compile at
-	  least...
+	* configure.in (3.22), libCERTI/Makefile.am (3.31): Fix Solaris
+	  compile at least...
 
 2007-07-26 14:23  erk
 
-	* configure.in, libCERTI/Makefile.am: Should fix Solaris compile
+	* configure.in (3.21), libCERTI/Makefile.am (3.30): Should fix
+	  Solaris compile
 
 2007-07-26 09:27  erk
 
-	* test/libgraphc/.cvsignore: Ignore autoXXX generated files
+	* test/libgraphc/.cvsignore (1.1, CERTI-3_2_5): Ignore autoXXX
+	  generated files
 
 2007-07-25 16:37  erk
 
-	* RTIA/.cvsignore, test/.cvsignore, .cvsignore, RTIG/.cvsignore,
-	  doc/.cvsignore, include/.cvsignore, libCERTI/.cvsignore,
-	  libRTI/.cvsignore, test/Billard/.cvsignore: Ignore autoXXX
+	* RTIA/.cvsignore (1.1, CERTI-3_2_5), test/.cvsignore (1.1,
+	  CERTI-3_2_5), .cvsignore (1.1), RTIG/.cvsignore (1.1,
+	  CERTI-3_2_5), doc/.cvsignore (1.1, CERTI-3_2_5),
+	  include/.cvsignore (1.1, CERTI-3_2_5), libCERTI/.cvsignore (1.1,
+	  CERTI-3_2_5), libRTI/.cvsignore (1.1, CERTI-3_2_5),
+	  test/Billard/.cvsignore (1.1, CERTI-3_2_5): Ignore autoXXX
 	  generated files
 
 2007-07-25 16:35  erk
 
-	* RTIA/Makefile.am, CMakeLists.txt, config.h.cmake, configure.in,
-	  test/Makefile.am, test/utility/CMakeLists.txt,
-	  test/utility/CertiUtilTests.cc, test/utility/Makefile.am,
-	  test/utility/Makefile.in, libCERTI/CMakeLists.txt,
-	  libCERTI/Clock.cc, libCERTI/Clock.hh, libCERTI/Makefile.am,
-	  libCERTI/PosixClock.cc, libCERTI/PosixClock.hh,
-	  libCERTI/PrettyDebug.hh, libCERTI/TSCClock.cc,
-	  libCERTI/TSCClock.hh, test/CMakeLists.txt, RTIG/Makefile.am,
-	  test/Billard/Makefile.am: Add Clock support in libCERTI in order
-	  to have handy tools for profiling
+	* RTIA/Makefile.am (3.8, CERTI-3_2_5), CMakeLists.txt (1.17),
+	  config.h.cmake (1.2, CERTI-3_2_5), configure.in (3.20),
+	  test/Makefile.am (3.3, CERTI-3_2_5), test/utility/CMakeLists.txt
+	  (1.1, CERTI-3_2_5), test/utility/CertiUtilTests.cc (1.1),
+	  test/utility/Makefile.am (1.1, CERTI-3_2_5),
+	  test/utility/Makefile.in (1.1), libCERTI/CMakeLists.txt (1.6),
+	  libCERTI/Clock.cc (4.1), libCERTI/Clock.hh (4.1),
+	  libCERTI/Makefile.am (3.29), libCERTI/PosixClock.cc (4.1),
+	  libCERTI/PosixClock.hh (4.1), libCERTI/PrettyDebug.hh (4.3),
+	  libCERTI/TSCClock.cc (4.1), libCERTI/TSCClock.hh (4.1),
+	  test/CMakeLists.txt (1.2, CERTI-3_2_5), RTIG/Makefile.am (3.8,
+	  CERTI-3_2_5), test/Billard/Makefile.am (3.17, CERTI-3_2_5): Add
+	  Clock support in libCERTI in order to have handy tools for
+	  profiling
 
 2007-07-24 11:41  rousse
 
-	* CMakeLists.txt, ChangeLog, configure.in: Numero de version beta
-	  mis a jour Update beta version number
+	* CMakeLists.txt (1.16), ChangeLog (3.17), configure.in (3.19):
+	  Numero de version beta mis a jour Update beta version number
 
 2007-07-23 16:13  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
-	  RTIA/RTIA_federate.cc, RTIG/Federation.cc, RTIG/Federation.hh,
-	  RTIG/FederationsList.cc, RTIG/FederationsList.hh,
-	  RTIG/RTIG_processing.cc, libCERTI/Interaction.cc,
-	  libCERTI/Interaction.hh, libCERTI/InteractionSet.cc,
-	  libCERTI/InteractionSet.hh, libCERTI/Message_RW.cc,
-	  libCERTI/NetworkMessage_RW.cc, libRTI/RTIambassador.cc,
-	  test/Billard/Billard.cc: Update et send sans estampille Update
-	  and send without timestamp
+	* ChangeLog (3.16), RTIA/ObjectManagement.cc (3.23),
+	  RTIA/ObjectManagement.hh (3.14), RTIA/RTIA_federate.cc (3.40),
+	  RTIG/Federation.cc (3.58), RTIG/Federation.hh (3.40),
+	  RTIG/FederationsList.cc (3.37), RTIG/FederationsList.hh (3.32),
+	  RTIG/RTIG_processing.cc (3.35), libCERTI/Interaction.cc (3.30),
+	  libCERTI/Interaction.hh (3.23), libCERTI/InteractionSet.cc
+	  (3.17), libCERTI/InteractionSet.hh (3.14), libCERTI/Message_RW.cc
+	  (3.34), libCERTI/NetworkMessage_RW.cc (3.29),
+	  libRTI/RTIambassador.cc (3.46), test/Billard/Billard.cc (3.23):
+	  Update et send sans estampille Update and send without timestamp
 
 2007-07-19 14:21  rousse
 
-	* ChangeLog, RTIA/RTIA_federate.cc: Jolie erreur dans
+	* ChangeLog (3.15), RTIA/RTIA_federate.cc (3.39): Jolie erreur dans
 	  RTIA_federate.cc pour l'appel de updateAttributeValues.  Nice bug
 	  in RTIA_federate.cc calling updateAttributeValues.
 
 2007-07-06 16:20  erk
 
-	* libCERTI/CMakeLists.txt, test/libgraphc/CMakeLists.txt,
-	  CMakeLists.txt, include/CMakeLists.txt, libRTI/CMakeLists.txt,
-	  test/Billard/Billard.cc: Clean-up CMakeLists.txt files and add
-	  static_cast in order to avoid compiler warning
+	* libCERTI/CMakeLists.txt (1.5), test/libgraphc/CMakeLists.txt
+	  (1.4), CMakeLists.txt (1.15), include/CMakeLists.txt (1.2,
+	  CERTI-3_2_5), libRTI/CMakeLists.txt (1.4),
+	  test/Billard/Billard.cc (3.22): Clean-up CMakeLists.txt files and
+	  add static_cast in order to avoid compiler warning
 
 2007-07-06 11:25  erk
 
-	* libCERTI/ObjectClassAttribute.cc, libCERTI/AuditLine.cc,
-	  libCERTI/BasicMessage.cc, libCERTI/FedRegion.cc,
-	  libCERTI/FedTime.cc, libCERTI/GAV.cc, libCERTI/GAV_aux.cc,
-	  libCERTI/GSSAPIHandler.cc, libCERTI/Interaction.cc,
-	  libCERTI/InteractionBroadcastList.cc, libCERTI/InteractionSet.cc,
-	  libCERTI/Message.hh, libCERTI/Message_RW.cc,
-	  libCERTI/ObjectClassBroadcastList.cc, libCERTI/ObjectClassSet.cc,
-	  libCERTI/ObjectSet.cc, libCERTI/Parameter.cc,
-	  libCERTI/PrettyDebEx.cc, libCERTI/PrettyDebug.cc,
-	  libCERTI/RootObject.cc, libCERTI/SocketMC.cc,
-	  libCERTI/XmlParser.cc, libCERTI/AuditFile.cc,
-	  libCERTI/BaseRegion.cc, libCERTI/Dimension.cc,
-	  libCERTI/Exception.cc, libCERTI/Extent.cc,
-	  libCERTI/FederateLevelList.cc, libCERTI/LBTS.cc,
-	  libCERTI/Message.cc, libCERTI/MessageBody.cc,
-	  libCERTI/NetworkMessage.cc, libCERTI/NetworkMessage_RW.cc,
-	  libCERTI/Object.cc, libCERTI/ObjectClass.cc,
-	  libCERTI/RTIRegion.cc, libCERTI/RoutingSpace.cc,
-	  libCERTI/SecurityLevel.hh, libCERTI/SecurityServer.cc,
-	  libCERTI/SocketServer.cc, libCERTI/SocketTCP.cc,
-	  libCERTI/SocketUN.cc, libCERTI/fed.cc, RTIG/Federate.cc,
-	  RTIG/Federation.cc, RTIG/RTIG.cc, RTIG/getopt.c, RTIG/main.cc,
-	  libCERTI/ObjectAttribute.cc, libCERTI/SecureTCPSocket.cc,
-	  libCERTI/SocketUDP.cc, libCERTI/Subscribable.cc,
-	  test/Billard/Ball.cc, test/Billard/Billard.cc,
-	  test/Billard/BillardDDM.cc, test/Billard/ColoredBall.cc,
-	  test/Billard/main.cc, RTIA/Communications.cc,
-	  RTIA/DeclarationManagement.cc, RTIA/FederationManagement.cc,
-	  RTIA/ObjectManagement.cc, RTIA/OwnershipManagement.cc,
-	  RTIA/RTIA_federate.cc, RTIA/TimeManagement.hh,
-	  include/Certi_Win.h, include/Makefile.am, include/certi.hh,
-	  include/fedtime.hh, libRTI/RTIambPrivateRefs.hh,
-	  libRTI/RTIambassador.cc, test/Billard/Display.cc: Suppress
+	* libCERTI/ObjectClassAttribute.cc (3.25), libCERTI/AuditLine.cc
+	  (3.11, CERTI-3_2_5), libCERTI/BasicMessage.cc (3.9, CERTI-3_2_5),
+	  libCERTI/FedRegion.cc (3.5, CERTI-3_2_5), libCERTI/FedTime.cc
+	  (3.11, CERTI-3_2_5), libCERTI/GAV.cc (3.17, CERTI-3_2_5),
+	  libCERTI/GAV_aux.cc (3.16, CERTI-3_2_5),
+	  libCERTI/GSSAPIHandler.cc (3.6, CERTI-3_2_5),
+	  libCERTI/Interaction.cc (3.29),
+	  libCERTI/InteractionBroadcastList.cc (3.10),
+	  libCERTI/InteractionSet.cc (3.16), libCERTI/Message.hh (3.34),
+	  libCERTI/Message_RW.cc (3.33),
+	  libCERTI/ObjectClassBroadcastList.cc (3.15),
+	  libCERTI/ObjectClassSet.cc (3.25), libCERTI/ObjectSet.cc (3.14),
+	  libCERTI/Parameter.cc (3.9), libCERTI/PrettyDebEx.cc (4.2,
+	  CERTI-3_2_5), libCERTI/PrettyDebug.cc (4.3),
+	  libCERTI/RootObject.cc (3.28), libCERTI/SocketMC.cc (3.13,
+	  CERTI-3_2_5), libCERTI/XmlParser.cc (3.21), libCERTI/AuditFile.cc
+	  (3.11, CERTI-3_2_5), libCERTI/BaseRegion.cc (3.5, CERTI-3_2_5),
+	  libCERTI/Dimension.cc (3.6), libCERTI/Exception.cc (3.7),
+	  libCERTI/Extent.cc (3.10, CERTI-3_2_5),
+	  libCERTI/FederateLevelList.cc (3.11, CERTI-3_2_5),
+	  libCERTI/LBTS.cc (3.8, CERTI-3_2_5), libCERTI/Message.cc (3.37),
+	  libCERTI/MessageBody.cc (3.13, CERTI-3_2_5),
+	  libCERTI/NetworkMessage.cc (3.19), libCERTI/NetworkMessage_RW.cc
+	  (3.28), libCERTI/Object.cc (3.20), libCERTI/ObjectClass.cc
+	  (3.36), libCERTI/RTIRegion.cc (3.4, CERTI-3_2_5),
+	  libCERTI/RoutingSpace.cc (3.12), libCERTI/SecurityLevel.hh (3.8,
+	  CERTI-3_2_5), libCERTI/SecurityServer.cc (3.11, CERTI-3_2_5),
+	  libCERTI/SocketServer.cc (3.12, CERTI-3_2_5),
+	  libCERTI/SocketTCP.cc (3.15), libCERTI/SocketUN.cc (3.16,
+	  CERTI-3_2_5), libCERTI/fed.cc (3.9), RTIG/Federate.cc (3.13),
+	  RTIG/Federation.cc (3.57), RTIG/RTIG.cc (3.31, CERTI-3_2_5),
+	  RTIG/getopt.c (3.3, CERTI-3_2_5), RTIG/main.cc (3.15,
+	  CERTI-3_2_5), libCERTI/ObjectAttribute.cc (3.17, CERTI-3_2_5),
+	  libCERTI/SecureTCPSocket.cc (3.9, CERTI-3_2_5),
+	  libCERTI/SocketUDP.cc (3.14), libCERTI/Subscribable.cc (3.5),
+	  test/Billard/Ball.cc (3.10, CERTI-3_2_5), test/Billard/Billard.cc
+	  (3.21), test/Billard/BillardDDM.cc (3.20, CERTI-3_2_5),
+	  test/Billard/ColoredBall.cc (3.6, CERTI-3_2_5),
+	  test/Billard/main.cc (3.16), RTIA/Communications.cc (3.16),
+	  RTIA/DeclarationManagement.cc (3.15),
+	  RTIA/FederationManagement.cc (3.26), RTIA/ObjectManagement.cc
+	  (3.22), RTIA/OwnershipManagement.cc (3.11, CERTI-3_2_5),
+	  RTIA/RTIA_federate.cc (3.38), RTIA/TimeManagement.hh (3.10),
+	  include/Certi_Win.h (3.2), include/Makefile.am (3.6,
+	  CERTI-3_2_5), include/certi.hh (3.14), include/fedtime.hh (3.7),
+	  libRTI/RTIambPrivateRefs.hh (3.2), libRTI/RTIambassador.cc
+	  (3.45), test/Billard/Display.cc (3.5, CERTI-3_2_5): Suppress
 	  Certi_Win.h file and put all this stuff in certi.hh Use _WIN32
 	  predefined Windows platform specific MACRO instead of WIN32 which
 	  is a CMake defined one see
@@ -594,417 +717,510 @@
 
 2007-07-06 11:23  erk
 
-	* CMakeLists.txt: Add comment about compiler options for Eclipse
-	  CDT
+	* CMakeLists.txt (1.14): Add comment about compiler options for
+	  Eclipse CDT
 
 2007-07-06 11:22  erk
 
-	* doc/reference.dox.in: Suppress Wrong src subdir
+	* doc/reference.dox.in (3.2): Suppress Wrong src subdir
 
 2007-07-05 13:51  erk
 
-	* CMakeLists.txt: Change pre-version to pre2
+	* CMakeLists.txt (1.13): Change pre-version to pre2
 
 2007-07-04 22:47  erk
 
-	* doc/Makefile.am, doc/billard.dox.in, doc/user.dox.in,
-	  CMakeLists.txt, doc/CMakeLists.txt, doc/reference.dox.in: Add
-	  doxygen documentation generation using CMake
+	* doc/Makefile.am (3.4), doc/billard.dox.in (3.1, CERTI-3_2_5),
+	  doc/user.dox.in (3.1, CERTI-3_2_5), CMakeLists.txt (1.12),
+	  doc/CMakeLists.txt (1.2), doc/reference.dox.in (3.1): Add doxygen
+	  documentation generation using CMake
 
 2007-07-04 18:58  erk
 
-	* AUTHORS: Update AUTHORs Added J.M. MathÃ© (Windows (re)port) and
-	  E. Noulard (CMake usage and bug fixes)
+	* AUTHORS (3.8, CERTI-3_2_5): Update AUTHORs Added J.M. MathÃ©
+	  (Windows (re)port) and E. Noulard (CMake usage and bug fixes)
 
 2007-07-04 15:19  erk
 
-	* CMakeLists.txt: Missing $ for LIBXML var usage
+	* CMakeLists.txt (1.11): Missing $ for LIBXML var usage
 
 2007-06-25 15:09  erk
 
-	* CMakeLists.txt, RTIA/CMakeLists.txt, RTIG/CMakeLists.txt,
-	  RTIG/Federation.cc, libCERTI/CMakeLists.txt,
-	  libRTI/CMakeLists.txt, test/Billard/CMakeLists.txt,
-	  test/libgraphc/CMakeLists.txt: Update NSIS installer Install lib
-	  and binary in the same bin dir in order to avoid to install DLL
-	  in system folder
+	* CMakeLists.txt (1.10), RTIA/CMakeLists.txt (1.3, CERTI-3_2_5),
+	  RTIG/CMakeLists.txt (1.2, CERTI-3_2_5), RTIG/Federation.cc
+	  (3.56), libCERTI/CMakeLists.txt (1.4), libRTI/CMakeLists.txt
+	  (1.3), test/Billard/CMakeLists.txt (1.4, CERTI-3_2_5),
+	  test/libgraphc/CMakeLists.txt (1.3): Update NSIS installer
+	  Install lib and binary in the same bin dir in order to avoid to
+	  install DLL in system folder
 
 2007-06-25 15:09  erk
 
-	* RTIG/main.cc: Detect where rtig is installed on Win32 in order to
-	  seek relative path correctly for Test.fed (we set up CERTI_HOME
-	  to be ../share/federations)
+	* RTIG/main.cc (3.14): Detect where rtig is installed on Win32 in
+	  order to seek relative path correctly for Test.fed (we set up
+	  CERTI_HOME to be ../share/federations)
 
 2007-06-25 15:07  erk
 
-	* test/Billard/main.cc: Wait Unix called in Unix AND windows case
+	* test/Billard/main.cc (3.15): Wait Unix called in Unix AND windows
+	  case
 
 2007-06-22 16:13  erk
 
-	* include/Makefile.am: typo in the included filename Certi_Win.hh
-	  instead of Certi_Win.h
+	* include/Makefile.am (3.5): typo in the included filename
+	  Certi_Win.hh instead of Certi_Win.h
 
 2007-06-22 11:18  erk
 
-	* CMakeLists.txt: Added ZIP format for generator on Unix
+	* CMakeLists.txt (1.9): Added ZIP format for generator on Unix
 
 2007-06-22 11:16  erk
 
-	* CMakeLists.txt: Added preliminary NSIS installer config to be
-	  tested on Win32 Box
+	* CMakeLists.txt (1.8): Added preliminary NSIS installer config to
+	  be tested on Win32 Box
 
 2007-06-22 11:05  erk
 
-	* CERTI_DESCRIPTION.txt, doc/certi.bmp, doc/certi.png: Add logos
-	  and CERTI description file for NSIS installer
+	* CERTI_DESCRIPTION.txt (1.1), doc/certi.bmp (1.1), doc/certi.png
+	  (1.1) (utags: CERTI-3_2_5): Add logos and CERTI description file
+	  for NSIS installer
 
 2007-06-22 10:51  erk
 
-	* CMakeLists.txt, RTIA/CMakeLists.txt, RTIA/Communications.cc,
-	  RTIA/DeclarationManagement.cc, RTIA/FederationManagement.cc,
-	  RTIA/ObjectManagement.cc, RTIA/OwnershipManagement.cc,
-	  RTIA/RTIA_federate.cc, RTIA/RTIA_network.cc,
-	  RTIA/TimeManagement.cc, RTIA/TimeManagement.hh, RTIA/main.cc,
-	  RTIG/Federate.cc, RTIG/Federation.cc, RTIG/Federation.hh,
-	  RTIG/FederationsList.cc, RTIG/RTIG.cc, RTIG/cmdline.c,
-	  RTIG/getopt.c, RTIG/main.cc, include/Certi_Win.h,
-	  include/Makefile.am, include/RTI.hh, include/RTItypes.hh,
-	  include/baseTypes.hh, include/certi.hh, include/fedtime.hh,
-	  libCERTI/AuditFile.cc, libCERTI/AuditFile.hh,
-	  libCERTI/AuditLine.cc, libCERTI/BaseRegion.cc,
-	  libCERTI/BaseRegion.hh, libCERTI/BasicMessage.cc,
-	  libCERTI/BasicMessage.hh, libCERTI/CMakeLists.txt,
-	  libCERTI/DebugOStream.hh, libCERTI/Dimension.cc,
-	  libCERTI/Exception.cc, libCERTI/Extent.cc, libCERTI/Extent.hh,
-	  libCERTI/FedRegion.cc, libCERTI/FedRegion.hh,
-	  libCERTI/FedTime.cc, libCERTI/FederateLevelList.cc,
-	  libCERTI/GAV.cc, libCERTI/GAV_aux.cc, libCERTI/GSSAPIHandler.cc,
-	  libCERTI/HandleManager.hh, libCERTI/Interaction.cc,
-	  libCERTI/Interaction.hh, libCERTI/InteractionBroadcastList.cc,
-	  libCERTI/InteractionSet.cc, libCERTI/InteractionSet.hh,
-	  libCERTI/LBTS.cc, libCERTI/LBTS.hh, libCERTI/Makefile.am,
-	  libCERTI/Message.cc, libCERTI/Message.hh,
-	  libCERTI/MessageBody.cc, libCERTI/MessageBody.hh,
-	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
-	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
-	  libCERTI/Object.cc, libCERTI/Object.hh,
-	  libCERTI/ObjectAttribute.cc, libCERTI/ObjectAttribute.hh,
-	  libCERTI/ObjectClass.cc, libCERTI/ObjectClass.hh,
-	  libCERTI/ObjectClassAttribute.cc,
-	  libCERTI/ObjectClassAttribute.hh,
-	  libCERTI/ObjectClassBroadcastList.cc, libCERTI/ObjectClassSet.cc,
-	  libCERTI/ObjectClassSet.hh, libCERTI/ObjectSet.cc,
-	  libCERTI/ObjectSet.hh, libCERTI/Parameter.cc,
-	  libCERTI/PrettyDebEx.cc, libCERTI/PrettyDebug.cc,
-	  libCERTI/PrettyDebug.hh, libCERTI/RTIRegion.cc,
-	  libCERTI/RTIRegion.hh, libCERTI/RootObject.cc,
-	  libCERTI/RootObject.hh, libCERTI/RoutingSpace.cc,
-	  libCERTI/RoutingSpace.hh, libCERTI/SecureTCPSocket.cc,
-	  libCERTI/SecureTCPSocket.hh, libCERTI/SecurityLevel.hh,
-	  libCERTI/SecurityServer.cc, libCERTI/SecurityServer.hh,
-	  libCERTI/Socket.hh, libCERTI/SocketMC.cc, libCERTI/SocketMC.hh,
-	  libCERTI/SocketServer.cc, libCERTI/SocketServer.hh,
-	  libCERTI/SocketTCP.cc, libCERTI/SocketTCP.hh,
-	  libCERTI/SocketUDP.cc, libCERTI/SocketUDP.hh,
-	  libCERTI/SocketUN.cc, libCERTI/SocketUN.hh,
-	  libCERTI/Subscribable.cc, libCERTI/Subscribable.hh,
-	  libCERTI/XmlParser.cc, libCERTI/XmlParser.hh, libCERTI/fed.cc,
-	  libCERTI/fed.hh, libRTI/CMakeLists.txt,
-	  libRTI/RTIambPrivateRefs.hh, libRTI/RTIambassador.cc,
-	  test/Billard/Ball.cc, test/Billard/Billard.cc,
-	  test/Billard/BillardDDM.cc, test/Billard/CMakeLists.txt,
-	  test/Billard/ColoredBall.cc, test/Billard/Display.cc,
-	  test/Billard/cmdline.c, test/Billard/main.cc,
-	  test/libgraphc/CMakeLists.txt: Beware relatively big WIN32 port
-	  merge Should be OK on WIN32 and Linux
+	* CMakeLists.txt (1.7), RTIA/CMakeLists.txt (1.2),
+	  RTIA/Communications.cc (3.15), RTIA/DeclarationManagement.cc
+	  (3.14), RTIA/FederationManagement.cc (3.25),
+	  RTIA/ObjectManagement.cc (3.21), RTIA/OwnershipManagement.cc
+	  (3.10), RTIA/RTIA_federate.cc (3.37), RTIA/RTIA_network.cc
+	  (3.12), RTIA/TimeManagement.cc (3.17), RTIA/TimeManagement.hh
+	  (3.9), RTIA/main.cc (3.15), RTIG/Federate.cc (3.12),
+	  RTIG/Federation.cc (3.55), RTIG/Federation.hh (3.39),
+	  RTIG/FederationsList.cc (3.36), RTIG/RTIG.cc (3.30),
+	  RTIG/cmdline.c (3.4, CERTI-3_2_5), RTIG/getopt.c (3.2),
+	  RTIG/main.cc (3.13), include/Certi_Win.h (3.1),
+	  include/Makefile.am (3.4), include/RTI.hh (3.7),
+	  include/RTItypes.hh (3.17), include/baseTypes.hh (3.8),
+	  include/certi.hh (3.13), include/fedtime.hh (3.6),
+	  libCERTI/AuditFile.cc (3.10), libCERTI/AuditFile.hh (3.10,
+	  CERTI-3_2_5), libCERTI/AuditLine.cc (3.10),
+	  libCERTI/BaseRegion.cc (3.4), libCERTI/BaseRegion.hh (3.2,
+	  CERTI-3_2_5), libCERTI/BasicMessage.cc (3.8),
+	  libCERTI/BasicMessage.hh (3.7, CERTI-3_2_5),
+	  libCERTI/CMakeLists.txt (1.3), libCERTI/DebugOStream.hh (4.1,
+	  CERTI-3_2_5), libCERTI/Dimension.cc (3.5), libCERTI/Exception.cc
+	  (3.6), libCERTI/Extent.cc (3.9), libCERTI/Extent.hh (3.8),
+	  libCERTI/FedRegion.cc (3.4), libCERTI/FedRegion.hh (3.2,
+	  CERTI-3_2_5), libCERTI/FedTime.cc (3.10),
+	  libCERTI/FederateLevelList.cc (3.10), libCERTI/GAV.cc (3.16),
+	  libCERTI/GAV_aux.cc (3.15), libCERTI/GSSAPIHandler.cc (3.5),
+	  libCERTI/HandleManager.hh (3.3, CERTI-3_2_5),
+	  libCERTI/Interaction.cc (3.28), libCERTI/Interaction.hh (3.22),
+	  libCERTI/InteractionBroadcastList.cc (3.9),
+	  libCERTI/InteractionSet.cc (3.15), libCERTI/InteractionSet.hh
+	  (3.13), libCERTI/LBTS.cc (3.7), libCERTI/LBTS.hh (3.7,
+	  CERTI-3_2_5), libCERTI/Makefile.am (3.28), libCERTI/Message.cc
+	  (3.36), libCERTI/Message.hh (3.33), libCERTI/MessageBody.cc
+	  (3.12), libCERTI/MessageBody.hh (3.13), libCERTI/Message_RW.cc
+	  (3.32), libCERTI/NetworkMessage.cc (3.18),
+	  libCERTI/NetworkMessage.hh (3.25), libCERTI/NetworkMessage_RW.cc
+	  (3.27), libCERTI/Object.cc (3.19), libCERTI/Object.hh (3.16),
+	  libCERTI/ObjectAttribute.cc (3.16), libCERTI/ObjectAttribute.hh
+	  (3.16, CERTI-3_2_5), libCERTI/ObjectClass.cc (3.35),
+	  libCERTI/ObjectClass.hh (3.28), libCERTI/ObjectClassAttribute.cc
+	  (3.24), libCERTI/ObjectClassAttribute.hh (3.21),
+	  libCERTI/ObjectClassBroadcastList.cc (3.14),
+	  libCERTI/ObjectClassSet.cc (3.24), libCERTI/ObjectClassSet.hh
+	  (3.22), libCERTI/ObjectSet.cc (3.13), libCERTI/ObjectSet.hh
+	  (3.8), libCERTI/Parameter.cc (3.8), libCERTI/PrettyDebEx.cc
+	  (4.1), libCERTI/PrettyDebug.cc (4.2), libCERTI/PrettyDebug.hh
+	  (4.2), libCERTI/RTIRegion.cc (3.3), libCERTI/RTIRegion.hh (3.1),
+	  libCERTI/RootObject.cc (3.27), libCERTI/RootObject.hh (3.22),
+	  libCERTI/RoutingSpace.cc (3.11), libCERTI/RoutingSpace.hh (3.6),
+	  libCERTI/SecureTCPSocket.cc (3.8), libCERTI/SecureTCPSocket.hh
+	  (3.8, CERTI-3_2_5), libCERTI/SecurityLevel.hh (3.7),
+	  libCERTI/SecurityServer.cc (3.10), libCERTI/SecurityServer.hh
+	  (3.11, CERTI-3_2_5), libCERTI/Socket.hh (3.10),
+	  libCERTI/SocketMC.cc (3.12), libCERTI/SocketMC.hh (3.10),
+	  libCERTI/SocketServer.cc (3.11), libCERTI/SocketServer.hh (3.10,
+	  CERTI-3_2_5), libCERTI/SocketTCP.cc (3.14), libCERTI/SocketTCP.hh
+	  (3.13), libCERTI/SocketUDP.cc (3.13), libCERTI/SocketUDP.hh (3.8,
+	  CERTI-3_2_5), libCERTI/SocketUN.cc (3.15), libCERTI/SocketUN.hh
+	  (3.10), libCERTI/Subscribable.cc (3.4), libCERTI/Subscribable.hh
+	  (3.4), libCERTI/XmlParser.cc (3.20), libCERTI/XmlParser.hh
+	  (3.10), libCERTI/fed.cc (3.8), libCERTI/fed.hh (3.4),
+	  libRTI/CMakeLists.txt (1.2), libRTI/RTIambPrivateRefs.hh (3.1),
+	  libRTI/RTIambassador.cc (3.44), test/Billard/Ball.cc (3.9),
+	  test/Billard/Billard.cc (3.20), test/Billard/BillardDDM.cc
+	  (3.19), test/Billard/CMakeLists.txt (1.3),
+	  test/Billard/ColoredBall.cc (3.5), test/Billard/Display.cc (3.4),
+	  test/Billard/cmdline.c (3.5, CERTI-3_2_5), test/Billard/main.cc
+	  (3.14), test/libgraphc/CMakeLists.txt (1.2): Beware relatively
+	  big WIN32 port merge Should be OK on WIN32 and Linux
+
+2007-06-19 15:07  tag BEFORE_MERGE_WIN32
 
 2007-06-19 15:07  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, RTIA/RTIA_federate.cc:
-	  Petites choses sans importance.  Little things.
+	* ChangeLog (3.14), RTIA/FederationManagement.cc (3.24),
+	  RTIA/RTIA_federate.cc (3.36) (utags: BEFORE_MERGE_WIN32): Petites
+	  choses sans importance.  Little things.
 
 2007-06-18 10:13  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, libCERTI/Message.cc,
-	  libCERTI/MessageBody.cc, libCERTI/NetworkMessage.cc,
-	  libCERTI/NetworkMessage_RW.cc, test/Billard/Billard.hh: FRENCH Le
-	  nom du fichier fed de travail contenait des : ce qui gene le
-	  passage sous Windows.  Ils ont ete remplaces par des _ Merci
-	  Jean-Michel et Eric.	ANGLAIS Workind fed file name contains :
-	  character. This don't work under Windows.  : character is now
-	  replaced by  _ character Thanx to Jean-Michel and Eric.
+	* ChangeLog (3.13), RTIA/FederationManagement.cc (3.23),
+	  libCERTI/Message.cc (3.35, BEFORE_MERGE_WIN32),
+	  libCERTI/MessageBody.cc (3.11, BEFORE_MERGE_WIN32),
+	  libCERTI/NetworkMessage.cc (3.17, BEFORE_MERGE_WIN32),
+	  libCERTI/NetworkMessage_RW.cc (3.26, BEFORE_MERGE_WIN32),
+	  test/Billard/Billard.hh (3.10, BEFORE_MERGE_WIN32): FRENCH Le nom
+	  du fichier fed de travail contenait des : ce qui gene le passage
+	  sous Windows.  Ils ont ete remplaces par des _ Merci Jean-Michel
+	  et Eric.  ANGLAIS Workind fed file name contains : character.
+	  This don't work under Windows.  : character is now replaced by  _
+	  character Thanx to Jean-Michel and Eric.
 
 2007-06-15 13:42  rousse
 
-	* libRTI/RTIambassador.cc, test/Billard/Billard.cc: Correction
-	  d'une petite erreur lors de la fusion cvs precedente.  Little bug
-	  correction coming from last cvs merge.
+	* libRTI/RTIambassador.cc (3.43), test/Billard/Billard.cc (3.19)
+	  (utags: BEFORE_MERGE_WIN32): Correction d'une petite erreur lors
+	  de la fusion cvs precedente.	Little bug correction coming from
+	  last cvs merge.
 
 2007-06-15 10:14  rousse
 
-	* ChangeLog, RTIA/ObjectManagement.cc, RTIA/ObjectManagement.hh,
-	  RTIA/RTIA_network.cc, RTIG/Federation.cc, RTIG/Federation.hh,
-	  RTIG/FederationsList.cc, RTIG/FederationsList.hh,
-	  RTIG/RTIG_processing.cc, libCERTI/Message.cc,
-	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage.cc,
-	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc,
-	  libCERTI/ObjectClass.cc, libCERTI/ObjectClass.hh,
-	  libCERTI/ObjectClassSet.cc, libCERTI/ObjectClassSet.hh,
-	  libCERTI/SocketUDP.cc, libCERTI/SocketUN.cc,
-	  test/Billard/Billard.cc, test/Billard/Billard.hh,
-	  test/Billard/CommandLine.ggo, test/Billard/cmdline.c,
-	  test/Billard/cmdline.h, test/Billard/main.cc: FRANCAIS :
-	  Realisation du service updateAttributeValues sans estampille.
-	  Rajout de l'option -e (signifie sans estampille) dans le billard.
-	  ENGLISH : Implemantation of updateAttributeValues without time
-	  stamp.  Option -e added (i.e. without time stamp) for Billard.
+	* ChangeLog (3.12), RTIA/ObjectManagement.cc (3.20,
+	  BEFORE_MERGE_WIN32), RTIA/ObjectManagement.hh (3.13,
+	  BEFORE_MERGE_WIN32), RTIA/RTIA_network.cc (3.11,
+	  BEFORE_MERGE_WIN32), RTIG/Federation.cc (3.54,
+	  BEFORE_MERGE_WIN32), RTIG/Federation.hh (3.38,
+	  BEFORE_MERGE_WIN32), RTIG/FederationsList.cc (3.35,
+	  BEFORE_MERGE_WIN32), RTIG/FederationsList.hh (3.31,
+	  BEFORE_MERGE_WIN32), RTIG/RTIG_processing.cc (3.34,
+	  BEFORE_MERGE_WIN32), libCERTI/Message.cc (3.34),
+	  libCERTI/Message_RW.cc (3.31, BEFORE_MERGE_WIN32),
+	  libCERTI/NetworkMessage.cc (3.16), libCERTI/NetworkMessage.hh
+	  (3.24, BEFORE_MERGE_WIN32), libCERTI/NetworkMessage_RW.cc (3.25),
+	  libCERTI/ObjectClass.cc (3.34, BEFORE_MERGE_WIN32),
+	  libCERTI/ObjectClass.hh (3.27, BEFORE_MERGE_WIN32),
+	  libCERTI/ObjectClassSet.cc (3.23, BEFORE_MERGE_WIN32),
+	  libCERTI/ObjectClassSet.hh (3.21, BEFORE_MERGE_WIN32),
+	  libCERTI/SocketUDP.cc (3.12, BEFORE_MERGE_WIN32),
+	  libCERTI/SocketUN.cc (3.14, BEFORE_MERGE_WIN32),
+	  test/Billard/Billard.cc (3.18), test/Billard/Billard.hh (3.9),
+	  test/Billard/CommandLine.ggo (3.4, CERTI-3_2_5,
+	  BEFORE_MERGE_WIN32), test/Billard/cmdline.c (3.4,
+	  BEFORE_MERGE_WIN32), test/Billard/cmdline.h (3.4,
+	  BEFORE_MERGE_WIN32), test/Billard/main.cc (3.13,
+	  BEFORE_MERGE_WIN32): FRANCAIS : Realisation du service
+	  updateAttributeValues sans estampille.  Rajout de l'option -e
+	  (signifie sans estampille) dans le billard.  ENGLISH :
+	  Implemantation of updateAttributeValues without time stamp.
+	  Option -e added (i.e. without time stamp) for Billard.
 
 2007-06-14 15:00  siron
 
-	* ChangeLog, myconf, RTIA/RTIA.cc, RTIA/RTIA_federate.cc,
-	  RTIA/TimeManagement.cc, RTIA/TimeManagement.hh,
-	  include/RTIambServices.hh, libRTI/RTIambassador.cc,
-	  test/Billard/Billard.cc, test/Billard/Billard.hh: Development of
-	  a blocking tick: tick2.  The first version of tick returns
-	  immediately with or without the delivery of one callback. This
-	  can imply an active polling in the federate code. This new
+	* ChangeLog (3.11), myconf (3.10, CERTI-3_2_5, BEFORE_MERGE_WIN32),
+	  RTIA/RTIA.cc (3.13, CERTI-3_2_5, BEFORE_MERGE_WIN32),
+	  RTIA/RTIA_federate.cc (3.35), RTIA/TimeManagement.cc (3.16,
+	  BEFORE_MERGE_WIN32), RTIA/TimeManagement.hh (3.8,
+	  BEFORE_MERGE_WIN32), include/RTIambServices.hh (3.3, CERTI-3_2_5,
+	  BEFORE_MERGE_WIN32), libRTI/RTIambassador.cc (3.42),
+	  test/Billard/Billard.cc (3.17), test/Billard/Billard.hh (3.8):
+	  Development of a blocking tick: tick2.  The first version of tick
+	  returns immediately with or without the delivery of one callback.
+	  This can imply an active polling in the federate code. This new
 	  version waits until that one callback can be delivered. We can
 	  observe a performance improvement because the OS scheduler is
 	  less sollicitated.
 
 2007-05-14 14:01  rousse
 
-	* ChangeLog, libCERTI/Message.cc, libRTI/RTIambassador.cc:
-	  Prévention contre un label null provoquant l'abort du RTIA
+	* ChangeLog (3.10), libCERTI/Message.cc (3.33),
+	  libRTI/RTIambassador.cc (3.41): Prévention contre un label null
+	  provoquant l'abort du RTIA
 
 	  avoid RTIA crash in case of NULL label
 
 2007-05-13 01:30  erk
 
-	* CMakeLists.txt: Add GCC compiler option in order to use Eclipse
-	  CDT cf: http://www.cmake.org/Wiki/CMake_Editors_Support
+	* CMakeLists.txt (1.6, BEFORE_MERGE_WIN32): Add GCC compiler option
+	  in order to use Eclipse CDT cf:
+	  http://www.cmake.org/Wiki/CMake_Editors_Support
 
 2007-05-13 01:29  erk
 
-	* RTIG/Federation.cc: Avoid std::string NULL exception	when
+	* RTIG/Federation.cc (3.53): Avoid std::string NULL exception  when
 	  CERTI_HOME is not set
-
-2007-05-04 16:08  erk
-
-	* ChangeLog: re-release 3.2.4
 
 2007-05-04 16:05  erk
 
-	* Makefile.am: Forgot to add scripts/*.cmake to DIST see
-	  https://savannah.nongnu.org/bugs/index.php?19796
+	* Makefile.am (3.8, CERTI-3_2_4): Forgot to add scripts/*.cmake to
+	  DIST see https://savannah.nongnu.org/bugs/index.php?19796
 
 2007-05-04 14:54  erk
 
-	* libCERTI/XmlParser.cc: Correct bug #19534
+	* libCERTI/XmlParser.cc (3.19, CERTI-3_2_4): Correct bug #19534
 	  https://savannah.nongnu.org/bugs/?19534
 
 2007-05-04 13:05  erk
 
-	* ChangeLog: Update ChangeLog for CERTI 3.2.4 cvs2cl -t -r --delta
-	  CERTI-3_2_3:CERTI-3_2_4 --prune -T --accum
+	* ChangeLog (3.8, CERTI-3_2_4): Update ChangeLog for CERTI 3.2.4
+	  cvs2cl -t -r --delta CERTI-3_2_3:CERTI-3_2_4 --prune -T --accum
 
 2007-05-04 12:59  erk
 
-	* CMakeLists.txt: Install FindCERTI.cmake
+	* CMakeLists.txt (1.5, CERTI-3_2_4): Install FindCERTI.cmake
+
+2007-05-04 12:59  erk
+
+	* CMakeLists.txt (1.5, CERTI-3_2_4): Install FindCERTI.cmake
 
 2007-05-04 10:41  erk
 
-	* Makefile.am, RTIA/Makefile.am, RTIG/Makefile.am, doc/Makefile.am,
-	  include/Makefile.am, libCERTI/Makefile.am, libRTI/Makefile.am,
-	  test/Makefile.am, test/Billard/Makefile.am,
-	  test/libgraphc/Makefile.am: Please put CMakeLists.txt's in the
-	  autotools generated dist
+	* Makefile.am (3.7), RTIA/Makefile.am (3.7), RTIG/Makefile.am
+	  (3.7), doc/Makefile.am (3.3), include/Makefile.am (3.3),
+	  libCERTI/Makefile.am (3.27), libRTI/Makefile.am (3.6),
+	  test/Makefile.am (3.2), test/Billard/Makefile.am (3.16),
+	  test/libgraphc/Makefile.am (3.2) (utags: CERTI-3_2_4): Please put
+	  CMakeLists.txt's in the autotools generated dist
 
 2007-05-04 10:40  erk
 
-	* CMakeLists.txt, configure.in: Bump to version 3.2.4
+	* CMakeLists.txt (1.4), configure.in (3.18, CERTI-3_2_4): Bump to
+	  version 3.2.4
 
 2007-05-04 10:40  erk
 
-	* myconf: Update for out-of-source build with autoconf
+	* myconf (3.9, CERTI-3_2_4): Update for out-of-source build with
+	  autoconf
 
 2007-05-03 17:46  rousse
 
-	* RTIA/DataDistribution.cc, RTIG/Federation.cc,
-	  libCERTI/AuditFile.cc, libCERTI/AuditLine.cc,
-	  libCERTI/BaseRegion.cc, libCERTI/BasicMessage.cc,
-	  libCERTI/Exception.cc, libCERTI/FedRegion.cc, libCERTI/LBTS.cc,
-	  libCERTI/ObjectClass.cc, libCERTI/ObjectClassSet.cc,
-	  libCERTI/ObjectSet.cc, libCERTI/RTIRegion.cc,
-	  libCERTI/RootObject.cc, libCERTI/RoutingSpace.cc,
-	  libCERTI/XmlParser.cc, libRTI/RTIambassador.cc,
-	  test/Billard/Billard.cc, test/Billard/BillardDDM.cc: --- FRANCAIS
-	  --- Modifications mineures sur des commentaires --- ENGLISH ---
-	  Minor corrections inside comments
+	* RTIA/DataDistribution.cc (3.21), RTIG/Federation.cc (3.52),
+	  libCERTI/AuditFile.cc (3.9), libCERTI/AuditLine.cc (3.9),
+	  libCERTI/BaseRegion.cc (3.3), libCERTI/BasicMessage.cc (3.7),
+	  libCERTI/Exception.cc (3.5), libCERTI/FedRegion.cc (3.3),
+	  libCERTI/LBTS.cc (3.6), libCERTI/ObjectClass.cc (3.33),
+	  libCERTI/ObjectClassSet.cc (3.22), libCERTI/ObjectSet.cc (3.12),
+	  libCERTI/RTIRegion.cc (3.2), libCERTI/RootObject.cc (3.26),
+	  libCERTI/RoutingSpace.cc (3.10), libCERTI/XmlParser.cc (3.18),
+	  libRTI/RTIambassador.cc (3.40), test/Billard/Billard.cc (3.16),
+	  test/Billard/BillardDDM.cc (3.18) (utags: CERTI-3_2_4): ---
+	  FRANCAIS --- Modifications mineures sur des commentaires ---
+	  ENGLISH --- Minor corrections inside comments
 
 2007-05-03 15:41  erk
 
-	* RTIG/Federation.cc: Elementary 'automatic' fed file search
+	* RTIG/Federation.cc (3.51): Elementary 'automatic' fed file search
 	  support
 
 2007-05-03 15:32  erk
 
-	* CMakeLists.txt: Handle libxml2 properly for XML fed file
+	* CMakeLists.txt (1.3): Handle libxml2 properly for XML fed file
 
 2007-05-03 10:41  erk
 
-	* CMakeLists.txt, scripts/FindMd5sum.cmake: ADD RPM generation
-	  support (needs testing)
+	* CMakeLists.txt (1.2), scripts/FindMd5sum.cmake (1.1,
+	  CERTI-3_2_4): ADD RPM generation support (needs testing)
 
 2007-05-03 10:24  erk
 
-	* libCERTI/CMakeLists.txt, scripts/UseDebian.cmake,
-	  scripts/UseRPMTools.cmake, test/Billard/CMakeLists.txt: First
-	  functional CMake build
+	* libCERTI/CMakeLists.txt (1.2), scripts/UseDebian.cmake (1.1),
+	  scripts/UseRPMTools.cmake (1.1), test/Billard/CMakeLists.txt
+	  (1.2) (utags: CERTI-3_2_4): First functional CMake build
 
 2007-05-02 16:50  erk
 
-	* config.h.cmake: Oups should have been committed with previous
-	  "first step CMake" commit
+	* config.h.cmake (1.1, CERTI-3_2_4): Oups should have been
+	  committed with previous "first step CMake" commit
 
 2007-05-02 16:50  erk
 
-	* CMakeLists.txt, RTIA/CMakeLists.txt, RTIG/CMakeLists.txt,
-	  doc/CMakeLists.txt, include/CMakeLists.txt,
-	  libCERTI/CMakeLists.txt, libRTI/CMakeLists.txt,
-	  scripts/FindCERTI.cmake, scripts/FindLexYacc.cmake,
-	  scripts/UsePackageBackup.cmake,
-	  scripts/package_source_dated.cmake, test/CMakeLists.txt,
-	  test/Billard/CMakeLists.txt, test/libgraphc/CMakeLists.txt: First
-	  step toward CMake build system usage (not functionnal for this
-	  shot)
+	* CMakeLists.txt (1.1), RTIA/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  RTIG/CMakeLists.txt (1.1, CERTI-3_2_4), doc/CMakeLists.txt (1.1,
+	  CERTI-3_2_4), include/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  libCERTI/CMakeLists.txt (1.1), libRTI/CMakeLists.txt (1.1,
+	  CERTI-3_2_4), scripts/FindCERTI.cmake (1.1, CERTI-3_2_4),
+	  scripts/FindLexYacc.cmake (1.1, CERTI-3_2_4),
+	  scripts/UsePackageBackup.cmake (1.1, CERTI-3_2_4),
+	  scripts/package_source_dated.cmake (1.1, CERTI-3_2_4),
+	  test/CMakeLists.txt (1.1, CERTI-3_2_4),
+	  test/Billard/CMakeLists.txt (1.1), test/libgraphc/CMakeLists.txt
+	  (1.1, CERTI-3_2_4): First step toward CMake build system usage
+	  (not functionnal for this shot)
 
 2007-05-02 13:55  erk
 
-	* autogen.sh, configure.in: Prepare CERTI release 3.2.4 Update
-	  autogen.sh since VERSION file disappeared
+	* autogen.sh (1.3, CERTI-3_2_4), configure.in (3.17): Prepare CERTI
+	  release 3.2.4 Update autogen.sh since VERSION file disappeared
+
+2007-04-27 18:39  tag CERTI_TESTS_V2_dev
 
 2007-04-27 18:39  erk
 
-	* configure.in: Update version
+	* configure.in (3.16, CERTI_TESTS_V2_dev): Update version
 
 2007-04-27 18:24  erk
 
-	* include/certi.hh, libCERTI/BasicMessage.hh,
-	  libCERTI/MessageBody.cc, libCERTI/MessageBody.hh,
-	  libCERTI/Message_RW.cc, libCERTI/NetworkMessage_RW.cc: Add more
-	  space in message body because we want to be sure that send will
-	  not resize() the MessageBody::buffer.  The MessageBody buffer
-	  should contains HeaderStruct (36) plus MAX_BYTES_PER_VALUE (150)
-	  at least.
+	* include/certi.hh (3.12), libCERTI/BasicMessage.hh (3.6),
+	  libCERTI/MessageBody.cc (3.10), libCERTI/MessageBody.hh (3.12),
+	  libCERTI/Message_RW.cc (3.30), libCERTI/NetworkMessage_RW.cc
+	  (3.24) (utags: CERTI-3_2_4, CERTI_TESTS_V2_dev): Add more space
+	  in message body because we want to be sure that send will not
+	  resize() the MessageBody::buffer.  The MessageBody buffer should
+	  contains HeaderStruct (36) plus MAX_BYTES_PER_VALUE (150) at
+	  least.
 
 2007-04-27 18:22  erk
 
-	* RTIA/main.cc: Suicide is not the way to go :)) You should NEVER
-	  send yourself SIGKILL In this case the process will terminate
-	  after receiving SIGALARM because the SIGALARM will break
-	  execute() statement and let the RTIA process terminate.
+	* RTIA/main.cc (3.14, CERTI-3_2_4, CERTI_TESTS_V2_dev): Suicide is
+	  not the way to go :)) You should NEVER send yourself SIGKILL In
+	  this case the process will terminate after receiving SIGALARM
+	  because the SIGALARM will break execute() statement and let the
+	  RTIA process terminate.
 
 2007-04-27 18:15  erk
 
-	* test/Billard/main.cc: Finally got the "real" core dump bug.  The
-	  core dump only occurs on xenomai-enabled kernel but the code is
-	  definitely buggy and "unitialized" memory access was catch by
-	  valgrind too.
+	* test/Billard/main.cc (3.12, CERTI-3_2_4, CERTI_TESTS_V2_dev):
+	  Finally got the "real" core dump bug.  The core dump only occurs
+	  on xenomai-enabled kernel but the code is definitely buggy and
+	  "unitialized" memory access was catch by valgrind too.
 
 2007-04-26 16:42  erk
 
-	* test/Billard/Display.cc, configure.in, test/libgraphc/graph_c.cc:
-	  Improve bug #18888 : configure script does not check for
-	  x11-bitmaps header correction.  Now CERTI will compile even if
-	  X11 headers are missing either totally or partially (missing
-	  xbitmaps) Billard will compile and run but produce no output.
+	* test/Billard/Display.cc (3.3, CERTI-3_2_4, CERTI_TESTS_V2_dev),
+	  configure.in (3.15), test/libgraphc/graph_c.cc (3.5, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev): Improve bug #18888 : configure script does
+	  not check for x11-bitmaps header correction.	Now CERTI will
+	  compile even if X11 headers are missing either totally or
+	  partially (missing xbitmaps) Billard will compile and run but
+	  produce no output.
+
+2007-04-25 11:20  tag CERTI_TESTS_V1_1_dev
 
 2007-04-25 11:20  erk
 
-	* Makefile.am: Oups forgot to suppress VERSION from EXTRA_DIST
+	* Makefile.am (3.6, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev): Oups
+	  forgot to suppress VERSION from EXTRA_DIST
 
 2007-04-25 11:17  erk
 
-	* VERSION, configure.in, myCERTI_env.sh.in: Update configure script
-	  in order to respect up to date autoconf/automake style As a
-	  consequence Suppress VERSION file Add CERTI_VERSION env var
-	  definition in myCERTI_env.sh
+	* VERSION (3.36), configure.in (3.14, CERTI_TESTS_V1_1_dev),
+	  myCERTI_env.sh.in (1.2, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev): Update configure script in order to
+	  respect up to date autoconf/automake style As a consequence
+	  Suppress VERSION file Add CERTI_VERSION env var definition in
+	  myCERTI_env.sh
 
 2007-04-24 17:10  erk
 
-	* RTIA/: FederationManagement.cc, FederationManagement.hh, RTIA.cc:
-	  Add GET_FED_FILE statistics
+	* RTIA/: FederationManagement.cc (3.22), FederationManagement.hh
+	  (3.15), RTIA.cc (3.12) (utags: CERTI-3_2_4, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V2_dev): Add GET_FED_FILE statistics
 
 2007-04-24 15:53  erk
 
-	* include/certi.hh: Temporary fix for bug #19685 :
-	  Message::setValue with length > MAX_BYTES_PER_VALUE fails
+	* include/certi.hh (3.11, CERTI_TESTS_V1_1_dev): Temporary fix for
+	  bug #19685 : Message::setValue with length > MAX_BYTES_PER_VALUE
+	  fails
 
 2007-04-24 15:30  erk
 
-	* Makefile.am, configure.in: Add myCERTI_env.sh.in configuration to
-	  $prefix/share/scripts/myCERTI_env.sh Correct bug #18888 :
-	  configure script does not check for x11-bitmaps header
+	* Makefile.am (3.5), configure.in (3.13): Add myCERTI_env.sh.in
+	  configuration to $prefix/share/scripts/myCERTI_env.sh Correct bug
+	  #18888 : configure script does not check for x11-bitmaps header
 
 2007-04-24 15:24  erk
 
-	* myCERTI_env.sh.in: Add an helper shell scripts for CERTI usage
-	  The script define some env var and alias This will be processed
-	  by configure
+	* myCERTI_env.sh.in (1.1): Add an helper shell scripts for CERTI
+	  usage The script define some env var and alias This will be
+	  processed by configure
 
 2007-04-23 09:59  erk
 
-	* VERSION: Update to identified test VERSION
+	* VERSION (3.35): Update to identified test VERSION
+
+2007-04-20 14:33  tag CERTI_TESTS_V1_dev
 
 2007-04-20 14:33  erk
 
-	* RTIA/FederationManagement.cc: Beware that malloc/free and
-	  new/delete should match
+	* RTIA/FederationManagement.cc (3.21, CERTI_TESTS_V1_dev): Beware
+	  that malloc/free and new/delete should match
 
 2007-04-20 14:32  erk
 
-	* RTIA/RTIA_network.cc: Do not use msg object after it has been
-	  delete
+	* RTIA/RTIA_network.cc (3.10, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev): Do not use msg object
+	  after it has been delete
+
+2007-04-20 10:27  tag CERTI-3_2_3devJYR1
 
 2007-04-20 10:27  rousse
 
-	* ChangeLog, RTIA/DeclarationManagement.cc,
-	  RTIA/FederationManagement.cc, RTIA/FederationManagement.hh,
-	  RTIA/RTIA_federate.cc, RTIG/Federation.cc,
-	  RTIG/FederationsList.cc, RTIG/RTIG.cc, RTIG/RTIG_processing.cc,
-	  libCERTI/Exception.hh, libCERTI/GAV.cc, libCERTI/GAV.hh,
-	  libCERTI/Message.cc, libCERTI/NetworkMessage.cc,
-	  test/Billard/Billard.cc: ----- FRANCAIS ----- Correction
-	  effectuee dans FederationManagement.cc pour eviter des plantages
-	  a cause de certaines parties du Network Message mal initialisees
-	  pendant le JOIN FEDERATION EXECUTION.  Amelioration de la
-	  remontee de certaines erreurs pendant le traitement du fichier
-	  FED.	Amelioration (suppression de classes de travail
-	  intermediaires) du fonctionnement.  ----- ENGLISH -----
-	  Corrections made in FederationManagement.cc to prevent crash due
-	  to bad initialization (sometimes) of Network Message	during JOIN
+	* ChangeLog (3.7, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIA/DeclarationManagement.cc (3.13, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIA/FederationManagement.cc (3.20), RTIA/FederationManagement.hh
+	  (3.14, CERTI_TESTS_V1_dev), RTIA/RTIA_federate.cc (3.34,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), RTIG/Federation.cc (3.50,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  RTIG/FederationsList.cc (3.34, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev), RTIG/RTIG.cc (3.29,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), RTIG/RTIG_processing.cc (3.33, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/Exception.hh (3.1, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev), libCERTI/GAV.cc (3.15,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev), libCERTI/GAV.hh (3.11, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/Message.cc (3.32, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  libCERTI/NetworkMessage.cc (3.15, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev),
+	  test/Billard/Billard.cc (3.15, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev) (utags:
+	  CERTI-3_2_3devJYR1): ----- FRANCAIS ----- Correction effectuee
+	  dans FederationManagement.cc pour eviter des plantages a cause de
+	  certaines parties du Network Message mal initialisees pendant le
+	  JOIN FEDERATION EXECUTION.  Amelioration de la remontee de
+	  certaines erreurs pendant le traitement du fichier FED.
+	  Amelioration (suppression de classes de travail intermediaires)
+	  du fonctionnement.  ----- ENGLISH ----- Corrections made in
+	  FederationManagement.cc to prevent crash due to bad
+	  initialization (sometimes) of Network Message  during JOIN
 	  FEDERATION EXECUTION.  Improvment of exceptions return during FED
 	  file process.  Processing improvment (some working classes
 	  deleted).
 
 2007-04-03 11:43  rousse
 
-	* ChangeLog, RTIA/FederationManagement.cc, RTIA/Statistics.cc,
-	  RTIG/Federation.cc, RTIG/Federation.hh, RTIG/FederationsList.cc,
-	  RTIG/FederationsList.hh, RTIG/RTIG_processing.cc,
-	  libCERTI/NetworkMessage.hh, libCERTI/NetworkMessage_RW.cc:
-	  Modification dans la prise en compte du fichier des federations
-	  (.fed ou .xml) : Ce fichier est maintenant uniquement lu par le
-	  RTIG.  Le RTIA, lors du Join fédération (JOIN_FEDERATE_EXECUTION)
-	  obtient le contenu de ce fichier (transmis par le RTIG) et cree
-	  une copie de travail de ce fichier en local.	Le nom de ce
-	  fichier est construit comme suit : :RTIA:pid du processus
-	  RTIA:nom de la fédération.fed ou .xml C'est ce fichier de travail
-	  qui est alors lu et analyse par le RTIA.  CONSEQUENCE : le federe
-	  doit indiquer le nom (et le path avec) du fichier de federation
-	  vu par le RTIG.  On peut ainsi fonctionner de maniere
-	  independante, sans NFS et sans recopie de ce fichier.
+	* ChangeLog (3.6), RTIA/FederationManagement.cc (3.19),
+	  RTIA/Statistics.cc (3.13, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  RTIG/Federation.cc (3.49), RTIG/Federation.hh (3.37, CERTI-3_2_4,
+	  CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev,
+	  CERTI-3_2_3devJYR1), RTIG/FederationsList.cc (3.33),
+	  RTIG/FederationsList.hh (3.30, CERTI-3_2_4, CERTI_TESTS_V2_dev,
+	  CERTI_TESTS_V1_1_dev, CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  RTIG/RTIG_processing.cc (3.32), libCERTI/NetworkMessage.hh (3.23,
+	  CERTI-3_2_4, CERTI_TESTS_V2_dev, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1),
+	  libCERTI/NetworkMessage_RW.cc (3.23, CERTI_TESTS_V1_1_dev,
+	  CERTI_TESTS_V1_dev, CERTI-3_2_3devJYR1): Modification dans la
+	  prise en compte du fichier des federations (.fed ou .xml) : Ce
+	  fichier est maintenant uniquement lu par le RTIG.  Le RTIA, lors
+	  du Join fédération (JOIN_FEDERATE_EXECUTION) obtient le contenu
+	  de ce fichier (transmis par le RTIG) et cree une copie de travail
+	  de ce fichier en local.  Le nom de ce fichier est construit comme
+	  suit : :RTIA:pid du processus RTIA:nom de la fédération.fed ou
+	  .xml C'est ce fichier de travail qui est alors lu et analyse par
+	  le RTIA.  CONSEQUENCE : le federe doit indiquer le nom (et le
+	  path avec) du fichier de federation vu par le RTIG.  On peut
+	  ainsi fonctionner de maniere independante, sans NFS et sans
+	  recopie de ce fichier.
 
 	  federation files (.fed or .xml) management has changed : This
 	  file is now read only by RTIG.  RTIA, during federation join
@@ -1182,3 +1398,12 @@
 2006-05-14 22:40  breholee
 
 	* ChangeLog: CERTI 3.2.1 release
+
+2006-05-14 22:27  breholee
+
+	* RTIG/RTIG_processing.cc: bugfix: use of label during object
+	  registration
+
+2006-05-14 22:09  breholee
+
+	* VERSION: version 3.2.1
