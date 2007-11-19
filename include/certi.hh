@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.19 2007/11/19 10:28:57 erk Exp $
+// $Id: certi.hh,v 3.20 2007/11/19 14:07:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -38,8 +38,14 @@
 			#include <winsock2.h>             
 		#endif    
 	#endif	
-    typedef u_long             in_addr_t;
-    typedef unsigned short     in_port_t;
+    typedef u_long				in_addr_t;
+    typedef unsigned short		in_port_t;
+    typedef unsigned __int32	uint32_t;
+    typedef __int32				int32_t;
+    typedef unsigned __int16	uint16_t;
+    typedef __int16				int16_t;
+    typedef unsigned __int8	uint8_t;
+    typedef __int8				int8_t;
 #else
 	#define	STAT_FUNCTION		stat
 	#define	STAT_STRUCT			struct stat
@@ -320,4 +326,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.19 2007/11/19 10:28:57 erk Exp $
+// $Id: certi.hh,v 3.20 2007/11/19 14:07:04 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.24 2007/11/19 09:29:04 erk Exp $
+// $Id: RootObject.hh,v 3.25 2007/11/19 14:07:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -42,6 +42,7 @@ namespace certi {
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
+#include "RoutingSpace.hh"
 
 #include <vector>
 
@@ -118,4 +119,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.24 2007/11/19 09:29:04 erk Exp $
+// $Id: RootObject.hh,v 3.25 2007/11/19 14:07:04 erk Exp $

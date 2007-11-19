@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.13 2007/11/16 15:04:22 rousse Exp $
+// $Id: fed.cc,v 3.14 2007/11/19 14:07:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -103,9 +103,11 @@ build(const char *filename, RootObject *root, bool v)
     federate = "" ;
     attribute = 0 ;
     parameter = 0 ;
+    #ifndef _WIN32 
    /* we may need to restart parsing after previous parse error */
     rewind(yyin);
     yyrestart(yyin);
+    #endif
     int result = yyparse();   
     fclose(file);
     return result ;
@@ -397,4 +399,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.13 2007/11/16 15:04:22 rousse Exp $
+// $Id: fed.cc,v 3.14 2007/11/19 14:07:04 erk Exp $
