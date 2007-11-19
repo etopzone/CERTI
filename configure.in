@@ -1,12 +1,12 @@
-## $Id: configure.in,v 3.26 2007/10/24 07:36:29 rousse Exp $ 
+## $Id: configure.in,v 3.27 2007/11/19 10:32:02 erk Exp $ 
 ## ---------------------------------------------------------------------------
 
 ## Process this file with autoconf to produce `configure'
 ## Init
-AC_INIT([certi],[3.2.5pre6], [certi-devel@nongnu.org], [certi])
+AC_INIT([certi],[3.2.5], [certi-devel@nongnu.org], [certi])
 AC_PREREQ(2.53)
 
-AC_REVISION($Revision: 3.26 $)
+AC_REVISION($Revision: 3.27 $)
 AC_CONFIG_SRCDIR(RTIG/RTIG.cc)
 AM_CONFIG_HEADER(config.h)
 AM_INIT_AUTOMAKE
