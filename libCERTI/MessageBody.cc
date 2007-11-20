@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.13 2007/07/06 09:25:18 erk Exp $
+// $Id: MessageBody.cc,v 3.14 2007/11/20 09:04:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -108,13 +108,14 @@ unsigned long MessageBody::readLongInt() const
 unsigned long  result; 		
 *(me()) >> result; 
 return result;
-};
+}
+
 unsigned short MessageBody::readShortInt() const 
 { 
 unsigned short result; 
 *(me()) >> result; 
 return result;
-};
+}
 
 // ----------------------------------------------------------------------------
 MessageBody &MessageBody::operator<<(unsigned long val)
@@ -137,7 +138,7 @@ return *this ;
 
 MessageBody &MessageBody::operator<<(unsigned short val)
 {
-assert(val <= 4294967295U);
+//assert(val <= 4294967295U);
 #ifdef BIG_INDIAN
 	buffer[wPtr++]= (char)0x000000FF & (val >>  8);
 	buffer[wPtr++]= (char)0x000000FF & val;
@@ -180,4 +181,4 @@ return *this ;
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.13 2007/07/06 09:25:18 erk Exp $
+// $Id: MessageBody.cc,v 3.14 2007/11/20 09:04:54 erk Exp $

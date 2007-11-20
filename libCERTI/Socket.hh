@@ -39,11 +39,10 @@
 
 namespace certi {
 
-typedef unsigned long ByteCount ;
-
 class Socket
 {
 public:
+	typedef unsigned long ByteCount_t;
 	virtual ~Socket() {};
 
 	virtual void send(const unsigned char *, size_t) = 0 ;

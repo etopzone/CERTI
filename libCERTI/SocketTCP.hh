@@ -87,17 +87,14 @@ private:
 	in_addr_t getAddr() const ;
 	int timeoutTCP(int, int);
 
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 	  SOCKET _socket_tcp;
-	  unsigned long SentBytesCount;
-	  unsigned long RcvdBytesCount;
 	  static int winsockInits;
 	#else
 	  long _socket_tcp;
-	  unsigned long long SentBytesCount;
-	  unsigned long long RcvdBytesCount;
 	#endif
-
+	ByteCount_t SentBytesCount;
+    ByteCount_t RcvdBytesCount;
 bool	_est_init_tcp;
 struct sockaddr_in _sockIn;
 

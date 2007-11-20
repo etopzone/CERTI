@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.18 2007/11/05 14:30:03 rousse Exp $
+// $Id: Communications.cc,v 3.19 2007/11/20 09:04:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -245,7 +245,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
         if (select(max_fd, &fdset, NULL, NULL, NULL) < 0) {
-			#ifdef _WIN32							//dotNet
+			#ifdef _WIN32
 				 if(WSAGetLastError() == WSAEINTR)
 			#else
 				 if(errno == EINTR)
@@ -342,4 +342,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.18 2007/11/05 14:30:03 rousse Exp $
+// $Id: Communications.cc,v 3.19 2007/11/20 09:04:54 erk Exp $

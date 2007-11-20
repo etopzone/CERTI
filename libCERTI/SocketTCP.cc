@@ -17,10 +17,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.17 2007/10/22 14:25:53 erk Exp $
+// $Id: SocketTCP.cc,v 3.18 2007/11/20 09:04:54 erk Exp $
 // ----------------------------------------------------------------------------
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	#define	EADDRINUSE		WSAEADDRINUSE
 	#include <winsock2.h>
 #else
@@ -29,8 +29,6 @@
 	#include <netinet/tcp.h>
 	#include <iostream>
 #endif
-
-
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
@@ -47,7 +45,7 @@ namespace certi {
 static pdCDebug D("SOCKTCP", "(SocketTCP) - ");
 
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 int SocketTCP::winsockInits = 0;
 
 bool SocketTCP::winsockStartup()
@@ -101,7 +99,7 @@ _est_init_tcp = false ;
 SentBytesCount = 0 ;
 RcvdBytesCount = 0 ;
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	winsockStartup();
 #endif
 
@@ -116,7 +114,7 @@ SocketTCP::~SocketTCP()
 if (_est_init_tcp)
 	close();
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	winsockShutdown();
 #endif
 
@@ -184,7 +182,7 @@ int SocketTCP::accept(SocketTCP *serveur)
 struct protoent *TCPent ;
 int optval = 1 ;
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	int			l;
 #else
 	socklen_t	l;
@@ -243,7 +241,7 @@ Length = sizeof(_sockIn);
 
 Result = ::bind(_socket_tcp, (sockaddr *)&_sockIn, Length);
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	if((Result <0) &&(WSAGetLastError() == WSAEADDRINUSE))
 #else
 	if((Result <0) &&(errno == EADDRINUSE))
@@ -386,7 +384,7 @@ D.Out(pdDebug, "Beginning to send TCP message...");
 
 while (total_sent < expected_size) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		int sent = ::send(_socket_tcp, (char*) buffer + total_sent, expected_size - total_sent, 0);
 	#else
 		int sent = ::send(_socket_tcp, buffer + total_sent, expected_size - total_sent, 0);
@@ -396,7 +394,7 @@ while (total_sent < expected_size)
 		{
 		D.Out(pdExcept, "Error while sending on TCP socket.");
 
-		#ifdef _WIN32							//dotNetv
+		#ifdef _WIN32
 			if(WSAGetLastError() == WSAEINTR)
 		#else
 			if(errno == EINTR)
@@ -428,7 +426,7 @@ SocketTCP::close()
 {
 if (_est_init_tcp) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		::closesocket(_socket_tcp);
 	#else
 		::close(_socket_tcp);
@@ -478,7 +476,7 @@ SocketTCP::isDataReady() const
 int
 SocketTCP::open()
 {
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	assert(winsockInits>0);
 #endif
 	return(((_socket_tcp=socket(AF_INET,SOCK_STREAM,0))<0)?0:1);
@@ -527,7 +525,7 @@ while (RBLength < size)
 	if (nReceived < 0) 
 		{
 		D.Out(pdExcept, "Error while receiving on TCP socket.");
-		#ifdef _WIN32							//dotNet
+		#ifdef _WIN32
 			if(WSAGetLastError() == WSAEINTR)
 		#else
 			if(errno == EINTR)
@@ -604,14 +602,14 @@ int nb = select(_socket_tcp+1, &fdset, NULL, NULL, &time_out);
 
 if (nb < 0) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		 if(WSAGetLastError() == WSAEINTR)
 	#else
 		 if(errno == EINTR)
 	#endif
-		throw NetworkSignal("TCP::TimeOut Interrompu par un signal.");
+		throw NetworkSignal("TCP::TimeOut signal interrupt.");
 	else
-		throw NetworkError("");
+		throw NetworkError("Select gave negative return value");
 	}
 else 
 	return nb > 0 ;
@@ -619,4 +617,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.17 2007/10/22 14:25:53 erk Exp $
+// $Id: SocketTCP.cc,v 3.18 2007/11/20 09:04:54 erk Exp $

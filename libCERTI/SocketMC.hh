@@ -23,7 +23,7 @@
 #include "Socket.hh"
 #include "NetworkMessage.hh"
 
-#ifdef _WIN32					//dotNet
+#ifdef _WIN32
 	#ifndef _WINSOCK2API_
 	#ifndef _WINSOCKAPI_
 	#include <winsock.h>
@@ -75,7 +75,7 @@ public:
 private:
 	struct sockaddr_in _sin ;
 	struct sockaddr_in _sin_e ;
-	#ifdef _WIN32					//dotNet
+	#ifdef _WIN32
 		int _sinlen;
 		SOCKET _socket_emetteur;
 	#else

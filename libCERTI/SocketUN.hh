@@ -20,7 +20,7 @@
 #ifndef CERTI_SOCKET_UN_HH
 #define CERTI_SOCKET_UN_HH
 
-#ifdef _WIN32						//dotNet
+#ifdef _WIN32
 	#include "SocketTCP.hh"
 #else
 	#include <netdb.h>
@@ -94,13 +94,9 @@ protected:
 	std::string name ;
 
 private:
-	#ifdef _WIN32
-		unsigned long SentBytesCount;
-		unsigned long RcvdBytesCount;
-	#else
-		ByteCount SentBytesCount ;
-		ByteCount RcvdBytesCount ;
-	#endif
+
+	Socket::ByteCount_t SentBytesCount ;
+	Socket::ByteCount_t RcvdBytesCount ;
 
 	// la socket du serveur RTIA qui a ete cree par le federe-client
 	int sock_connect ;

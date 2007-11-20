@@ -52,7 +52,7 @@ namespace certi {
 void
 SocketUN::acceptUN()
 {
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	struct sockaddr_in nom_client, nom_serveur;
 	int lg_nom;
 	int result;
@@ -173,7 +173,7 @@ while (Attempt < MAX_ATTEMPTS)
 	pD->Out(pdInit, "Opening Client UNIX Socket.");
 	
 // Socket--------------------------------------------------
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	if((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		error("socket");
 
@@ -239,7 +239,7 @@ SocketUN::SocketUN(SignalHandlerType theType)
     : _socket_un(0), _est_serveur(false), _est_init_un(false),
       HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)
 {
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
 	SocketTCP::winsockStartup();
 #endif
 
@@ -257,7 +257,7 @@ SocketUN::~SocketUN()
 {
 if (_est_init_un) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		closesocket(_socket_un);
 		if(_est_serveur == RTI_TRUE)
 			closesocket(sock_connect);
@@ -274,7 +274,7 @@ if (_est_init_un)
 		pD->Out(pdTerm, "Client: Closed all sockets.");
 	}
 
-#ifdef _WIN32							//dotNet
+#ifdef _WIN32
   SocketTCP::winsockShutdown();
 #endif
 
@@ -302,7 +302,7 @@ pD->Out(pdTrace, "Beginning to send UN message...");
 
 while (total_sent < size) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		sent = ::send(_socket_un, (char *) buffer + total_sent, size - total_sent, 0);
 	#else
 		sent = write(_socket_un, (char *) buffer + total_sent, size - total_sent);
@@ -319,7 +319,7 @@ while (total_sent < size)
 			{
 			pD->Out(pdExcept, "Error while sending on UN socket.");
 			
-			#ifdef _WIN32							//dotNet
+			#ifdef _WIN32
 				if(WSAGetLastError() == WSAEINTR)
 			#else
 				if(errno == EINTR)
@@ -388,7 +388,7 @@ pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)",Size);
 
 while (RBLength < Size) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		#ifdef SOCKTCP_BUFFER_LENGTH
 				nReceived = recv(_socket_un,
 						 ReadBuffer + RBLength,
@@ -412,7 +412,7 @@ while (RBLength < Size)
 		{
 		pD->Out(pdExcept, "Error while receiving on UN socket.");
 	
-		#ifdef _WIN32							//dotNet
+		#ifdef _WIN32
 			if(WSAGetLastError() == WSAEINTR)
 		#else
 			if(errno == EINTR)

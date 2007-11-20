@@ -113,30 +113,33 @@ if ((hp_local = (struct hostent *)gethostbyname(localhost)) == NULL)
 			<< "> with error <"
 			<< strerror(errno) 
 			<< ">";
-		//perror("SocketUDP: gethostbyname");
 	   throw NetworkError(msg.str().c_str());
 	}
 
-#ifdef _WIN32								//netDot
+#ifdef _WIN32
 	memcpy((char*)&sock_local.sin_addr,(char *)hp_local->h_addr,	hp_local->h_length);
 #else
 	bcopy((char*)hp_local->h_addr, (char *) &sock_local.sin_addr,hp_local->h_length);
 #endif
 
 // lors du BIND, le systeme alloue un port libre au socket _sock_udp
-sock_local.sin_family = AF_INET; //Look at dotNet
+sock_local.sin_family = AF_INET;
 sock_local.sin_port = 0 ;
 
 if (!open())
 	{
-	perror("SocketUDP: Open");
-	throw NetworkError("");
+	msg << "Cannot Open Socket open gave error < "
+	    << 	strerror(errno) 
+	    << ">";	
+	throw NetworkError(msg.str().c_str());
 	}
 	
 if (!bind())
 	{
-	perror("SocketUDP: Bind");
-	throw NetworkError("");
+	msg << "Cannot Bind Socket bind gave error < "
+		    << 	strerror(errno) 
+		    << ">";	
+	throw NetworkError(msg.str().c_str());
 	}
 
 // recuperation du port lie au socket _socket_udp

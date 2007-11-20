@@ -22,7 +22,7 @@
 #include "SocketMC.hh"
 #include "config.h"
 
-#ifdef _WIN32								//dotNet
+#ifdef _WIN32
 	#include "SocketTCP.hh"
 #else
 	#include <arpa/inet.h>
@@ -39,7 +39,7 @@ SocketMC::SocketMC()
 {
 _est_init_mc = false ;
 _num_msg = 1 ;
-#ifdef _WIN32								//dotNet
+#ifdef _WIN32
   SocketTCP::winsockStartup();
 #endif
 }
@@ -49,7 +49,7 @@ SocketMC::~SocketMC()
 {
 if (_est_init_mc) 
 	{
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		 closesocket(_socket_mc);
 		 closesocket(_socket_emetteur);
 	#else
@@ -59,7 +59,7 @@ if (_est_init_mc)
 	_est_init_mc = false ;
 	}
 	
-#ifdef _WIN32								//dotNet
+#ifdef _WIN32
 	SocketTCP::winsockShutdown();
 #endif
 
@@ -84,11 +84,11 @@ unsigned long _mreqlen ;
 assert(!_est_init_mc);
 assert(addr>0);
 
-#ifdef _WIN32								//dotNet
+#ifdef _WIN32
 	assert(SocketTCP::winsockInitialized());
 #endif
 
-// creation du socket recepteur
+// create receiving socket
 _socket_mc = socket(AF_INET, SOCK_DGRAM, 0);
 if (_socket_mc < 0) {
 	perror("socket1");
@@ -172,7 +172,7 @@ void
 SocketMC::close()
 {
 if (_est_init_mc) {
-	#ifdef _WIN32							//dotNet
+	#ifdef _WIN32
 		 closesocket(_socket_mc);
 		 closesocket(_socket_emetteur);
 	#else
@@ -247,7 +247,7 @@ do
 	{
 	nb = select(_socket_mc+1, SELECT_TYPE_ARG234 &fdset, NULL, NULL, &timeout);
 	
-	#ifdef _WIN32								//dotNet
+	#ifdef _WIN32
 			check= (WSAGetLastError() == WSAEINTR);
 	#else
 			check= (errno == EINTR);

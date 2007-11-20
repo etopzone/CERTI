@@ -22,7 +22,7 @@
 
 #include "Socket.hh"
 
-#ifdef _WIN32					//dotNet
+#ifdef _WIN32
 	#ifndef _WINSOCK2API_
 		#ifndef _WINSOCKAPI_
 			#include <winsock2.h>
@@ -53,7 +53,7 @@ public :
 	virtual bool isDataReady() const ;
 
 	virtual int getClass() const { return SOCKET_TYPE_UDP ; };
-	#ifdef _WIN32					//dotNet
+	#ifdef _WIN32
 		SOCKET returnSocket();
 	#else
 		int returnSocket();
@@ -83,7 +83,7 @@ private:
 
 	bool PhysicalLink ; ///< tak indicating physical or logical link
 
-	#ifdef _WIN32					//dotNet
+	#ifdef _WIN32
 		SOCKET _socket_udp;
 	#else
 		long _socket_udp;
@@ -99,13 +99,9 @@ private:
 	int _sock_local_length ;
 	bool _est_init_udp ;
 
-	#ifdef _WIN32					//dotNet
-		unsigned long SentBytesCount;
-		unsigned long RcvdBytesCount;
-	#else
-		ByteCount SentBytesCount ;
-		ByteCount RcvdBytesCount ;
-	#endif
+	ByteCount_t SentBytesCount ;
+	ByteCount_t RcvdBytesCount ;
+
 	unsigned long BufferSize ;
 	char Buffer[4096] ;
 

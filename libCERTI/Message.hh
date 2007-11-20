@@ -474,6 +474,6 @@ private:
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
-}; // namespace certi
+} // namespace certi
 
 #endif // CERTI_MESSAGE_HH
