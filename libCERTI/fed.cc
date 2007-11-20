@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.14 2007/11/19 14:07:04 erk Exp $
+// $Id: fed.cc,v 3.15 2007/11/20 09:14:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -49,7 +49,7 @@ using std::list ;
 
 extern FILE *yyin ;
 int yyparse();
-int yyrestart(FILE*);
+void yyrestart(FILE*);
 
 namespace certi {
 namespace fedparser {
@@ -399,4 +399,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.14 2007/11/19 14:07:04 erk Exp $
+// $Id: fed.cc,v 3.15 2007/11/20 09:14:07 erk Exp $
