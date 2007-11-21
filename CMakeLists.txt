@@ -27,10 +27,18 @@ SET(CMAKE_BUILD_TYPE "Debug")
 # Use this in order to make Eclipse CDT parser handle error message smoothly
 # see  http://www.cmake.org/Wiki/CMake:Eclipse
 IF(CMAKE_COMPILER_IS_GNUCC)
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0 -pedantic -ansi")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pedantic -ansi")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+
+# Enforce strict ANSI C/C++ compliance checking
+IF(CMAKE_COMPILER_IS_GNUCC)
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -ansi")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 IF (WIN32)
