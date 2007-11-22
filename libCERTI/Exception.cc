@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.9 2007/09/27 13:59:33 erk Exp $
+// $Id: Exception.cc,v 3.10 2007/11/22 16:04:08 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -145,28 +145,28 @@ RTI::Exception::~Exception()
 
 RTI::Exception::Exception(const char *reason)
 {
-    _reason = const_cast<char *>(reason);
+    _reason = (reason == NULL)?NULL:strdup(reason);
     _serial = 0 ;    
 }
 
 RTI::Exception::Exception(ULong serial, const char *reason)
 {
     _serial = serial ;
-    _reason = const_cast<char *>(reason);      
+    _reason = (reason == NULL)?NULL:strdup(reason);      
 }
 
 
 RTI::Exception::Exception(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
-    _reason = toCopy._reason ;
+    _reason = ( toCopy._reason== NULL)?NULL:strdup(toCopy._reason) ;
     _name = toCopy._name ;    
 }
 
 RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
-    _reason = toCopy._reason ;
+    _reason = (toCopy._reason == NULL)?NULL:strdup(toCopy._reason) ;
     _name = toCopy._name ;    
     return *this ;
 }
