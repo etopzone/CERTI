@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.51 2007/11/16 15:04:21 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.52 2007/11/22 08:26:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -156,7 +156,6 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   {        
 	          int result = certi::fedparser::build(filename.c_str(),
 		    				   rootObject, true);
-std::cout<<"RTIA::chooseFederateProcessing result= "<<result<<std::endl;
 	          if (result != 0 ) throw ErrorReadingFED("invalid .fed");
                   }
               else if ( is_an_xml )
@@ -1226,4 +1225,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.51 2007/11/16 15:04:21 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.52 2007/11/22 08:26:53 rousse Exp $
