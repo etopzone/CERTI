@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.57 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIambassador.cc,v 3.58 2007/11/26 20:16:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -132,7 +132,7 @@ RTI::RTIambassador::RTIambassador()
 		printf("Error code : %d\n", GetLastError());
 		errno = GetLastError();
 		perror("CreateProcess");
-		exit(-1);
+		 throw RTIinternalError( "CreateProcess Error: Cannot connect to RTIA.exe" );
 		}
     
    privateRefs->handle_RTIA = pi.hProcess;
@@ -150,7 +150,7 @@ RTI::RTIambassador::RTIambassador()
       case 0: // child process (RTIA).
         execlp(rtiacall, NULL);
         perror("execlp");
-
+        
         cerr << "Could not launch RTIA process." << endl
              << "Maybe RTIA is not in search PATH environment." << endl ;
 
@@ -2872,4 +2872,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.57 2007/11/13 13:25:40 rousse Exp $
+// $Id: RTIambassador.cc,v 3.58 2007/11/26 20:16:50 erk Exp $
