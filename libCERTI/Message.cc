@@ -305,6 +305,10 @@ Message::setParameter(ParameterHandle the_parameter)
 }
 
 // ----------------------------------------------------------------------------
+/** Store exception into message
+    @param the_exception : exception type (enum)
+    @param the_reason : exception reason
+*/
 void
 Message::setException(TypeException the_exception,
                       const char *the_reason)

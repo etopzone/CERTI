@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.52 2007/11/22 08:26:53 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.53 2007/11/27 08:42:53 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -877,13 +877,12 @@ RTIA::processFederateRequest(Message *req)
 
     G.Out(pdGendoc,"enter RTIA::processFederateRequest");
 
-    //rep.setException(e_NO_EXCEPTION);
     rep.type = req->type ;
 
     try {
-        TypeException e ;
-        chooseFederateProcessing(req, rep, e);
-        rep.setException(e);
+        TypeException exc ;
+        chooseFederateProcessing(req, rep, exc);
+        rep.setException(exc);
     }
     catch (ArrayIndexOutOfBounds &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1225,4 +1224,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.52 2007/11/22 08:26:53 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.53 2007/11/27 08:42:53 rousse Exp $
