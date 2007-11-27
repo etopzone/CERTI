@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.3 2007/10/31 10:30:24 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.4 2007/11/27 08:55:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -36,7 +36,7 @@ public:
 
     void processException(Message *);
     void executeService(Message *requete, Message *reponse);
-    void leave(const char *msg);
+    void leave(const char *msg) throw (RTIinternalError);
 
 	#ifdef _WIN32
 	  HANDLE	handle_RTIA;
@@ -55,4 +55,4 @@ public:
     SocketUN *socketUn ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.3 2007/10/31 10:30:24 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.4 2007/11/27 08:55:55 erk Exp $

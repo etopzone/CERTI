@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.18 2007/11/20 09:04:54 erk Exp $
+// $Id: SocketTCP.cc,v 3.19 2007/11/27 08:55:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -177,8 +177,9 @@ else
 }
 
 // ----------------------------------------------------------------------------
-int SocketTCP::accept(SocketTCP *serveur)
+int SocketTCP::accept(SocketTCP *serveur) throw (NetworkError)
 {
+	std::stringstream msg;
 struct protoent *TCPent ;
 int optval = 1 ;
 
@@ -196,8 +197,9 @@ l = sizeof(_sockIn);
 _socket_tcp = ::accept(serveur->_socket_tcp, (sockaddr*)&_sockIn, &l);
 if (_socket_tcp < 0) 
 	{
-	perror("SocketTCP: Accept");
-	exit(-1);
+	  msg << "SocketTCP: Accept Failed"
+	      << "<" << strerror(errno) <<">"; 
+	  throw NetworkError(msg.str().c_str());	
 	}
 
 // Set the TCP_NODELAY option(Server Side)
@@ -617,4 +619,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.18 2007/11/20 09:04:54 erk Exp $
+// $Id: SocketTCP.cc,v 3.19 2007/11/27 08:55:54 erk Exp $

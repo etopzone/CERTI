@@ -78,7 +78,7 @@ public:
 	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
 
 protected:
-	void error(const char *);
+	void error(const char *) throw (NetworkError);
 
 	#ifdef _WIN32
 		SOCKET _socket_un;

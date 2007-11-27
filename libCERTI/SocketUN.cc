@@ -346,15 +346,15 @@ SentBytesCount += total_sent ;
 
 // ----------------------------------------------------------------------------
 //! error.
-void SocketUN::error(const char *msg)
+void SocketUN::error(const char *msg) throw (NetworkError)
 {
-char m[100] ;
+ std::stringstream smsg;
 
-m[0] = 0 ;
-strcat(m, "SocketUN: ");
-strcat(m, msg);
-perror(m);
-exit(-1);
+ smsg << "SocketUN::error <"
+ 	  << strerror(errno)
+ 	  << "> msg = <" 	  
+ 	  << msg <<">";
+ throw NetworkError(smsg.str().c_str());
 }
 
 // ----------------------------------------------------------------------------

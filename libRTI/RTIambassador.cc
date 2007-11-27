@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.58 2007/11/26 20:16:50 erk Exp $
+// $Id: RTIambassador.cc,v 3.59 2007/11/27 08:55:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -41,6 +41,7 @@
 #include <iostream>
 #include <signal.h>
 #include <cassert>
+#include <cerrno>
 
 using std::cout ;
 using std::cerr ;
@@ -96,6 +97,7 @@ RTI::RTIambassador::RTIambassador()
     throw (MemoryExhausted, RTIinternalError)
 {
     PrettyDebug::setFederateName( "Federate-process" );
+    std::stringstream msg;
 
     privateRefs = new RTIambPrivateRefs();
 
@@ -129,10 +131,11 @@ RTI::RTIambassador::RTIambassador()
         &pi ))					// Pointer to PROCESS_INFORMATION structure.
 				 
 		{
-		printf("Error code : %d\n", GetLastError());
-		errno = GetLastError();
-		perror("CreateProcess");
-		 throw RTIinternalError( "CreateProcess Error: Cannot connect to RTIA.exe" );
+	     msg << "CreateProcess - GetLastError()=<"
+	         << GetLastError() <<"> "
+	         << "Cannot connect to RTIA.exe";		
+		//perror("CreateProcess");
+		 throw RTIinternalError( msg.c_str);
 		}
     
    privateRefs->handle_RTIA = pi.hProcess;
@@ -149,14 +152,18 @@ RTI::RTIambassador::RTIambassador()
 
       case 0: // child process (RTIA).
         execlp(rtiacall, NULL);
-        perror("execlp");
+        msg << "Could not launch RTIA process (execlp): "
+            << strerror(errno)
+            << endl
+            << "Maybe RTIA is not in search PATH environment.";        
+        throw RTIinternalError(msg.str().c_str());
         
-        cerr << "Could not launch RTIA process." << endl
-             << "Maybe RTIA is not in search PATH environment." << endl ;
-
-        exit(-1);
-
       default: // father process (Federe).
+    	// We sleep before trying to connect to the socket
+    	// our child RTIA process should have open
+    	// FIXME EN: this is poorly designed because
+    	//           we don't know if the child ever get a chance
+    	//           to be schedule by the Operating System
         sleep(1);
 
         if( privateRefs->socketUn->connectUN(privateRefs->pid_RTIA) )
@@ -2872,4 +2879,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.58 2007/11/26 20:16:50 erk Exp $
+// $Id: RTIambassador.cc,v 3.59 2007/11/27 08:55:54 erk Exp $

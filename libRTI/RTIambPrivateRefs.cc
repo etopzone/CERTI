@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.6 2007/11/16 15:04:22 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.7 2007/11/27 08:55:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIambPrivateRefs.hh"
 #include "PrettyDebug.hh"
+#include <sstream>
 
 namespace {
 PrettyDebug D("LIBRTI", __FILE__);
@@ -46,10 +47,11 @@ RTIambPrivateRefs::~RTIambPrivateRefs()
 
 // ----------------------------------------------------------------------------
 void
-RTIambPrivateRefs::leave(const char *msg)
+RTIambPrivateRefs::leave(const char *msg) throw (RTIinternalError)
 {
-    std::cout << "LibRTI:: " << msg << std::endl ;
-    exit(EXIT_FAILURE);
+	std::stringstream smsg;
+	smsg << "RTI called leave because <" <<msg<<">"; 
+	throw RTIinternalError(smsg.str().c_str());   
 }
 
 // ----------------------------------------------------------------------------
@@ -542,4 +544,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.6 2007/11/16 15:04:22 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.7 2007/11/27 08:55:54 erk Exp $

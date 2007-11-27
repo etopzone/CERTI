@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.4 2007/10/31 10:30:21 erk Exp $
+// $Id: PrettyDebug.cc,v 4.5 2007/11/27 08:55:54 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -145,7 +145,7 @@ if (NULL == Name)
 	{
 	PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
 	"Error in pgCDebug constructor, no Name specified.\n");
-	exit(EXIT_FAILURE);
+	 Name = "NoName";
 	}
 
 LEnvVar = strdup(Name);
@@ -274,4 +274,4 @@ return;
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.4 2007/10/31 10:30:21 erk Exp $
+// $Id: PrettyDebug.cc,v 4.5 2007/11/27 08:55:54 erk Exp $
