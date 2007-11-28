@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.13 2007/10/31 10:30:23 erk Exp $
+// $Id: RTIA_network.cc,v 3.14 2007/11/28 14:54:35 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -105,11 +105,6 @@ msg->trace("RTIA::processNetworkMessage ");
                 "Receving Message from RTIG, "
                 "type NetworkMessage::REFLECT_ATTRIBUTE_VALUES.");
 
-
-
-         // Here we assume all RO messages as asynchronous RO messages, which
-         // is contrary of HLA 1.3 default value.
-         //
          // It is important to note that several attributes may be updated at
          // the same time. Each attribute has its own order type, region, etc.
          // So attributes which are meeting similar criteria should be sent
@@ -163,12 +158,18 @@ msg->trace("RTIA::processNetworkMessage ");
          D.Out(pdTrace,
             "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION.");
 
-         // Here we assume all RO messages as asynchronous RO messages, which
-         // is contrary of HLA 1.3 default value
-
-         // Retrieve order type
-         interactionOrder = rootObject->Interactions->
-            getByHandle(msg->interactionClass)->order;
+         // Here we have to consider RAV without time
+         if ( !msg->getBoolean() )
+             {
+             // without time
+             interactionOrder = RECEIVE ;
+             }
+         else
+             {      
+             // Retrieve order type
+             interactionOrder = rootObject->Interactions->
+                getByHandle(msg->interactionClass)->order;
+             }
          
          // Decide which queue will be used
          if (interactionOrder == TIMESTAMP && tm->requestContraintState())
@@ -320,4 +321,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.13 2007/10/31 10:30:23 erk Exp $
+// $Id: RTIA_network.cc,v 3.14 2007/11/28 14:54:35 siron Exp $
