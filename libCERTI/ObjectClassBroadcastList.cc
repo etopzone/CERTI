@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.17 2007/11/29 16:51:15 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18 2007/11/29 20:36:08 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -56,6 +56,7 @@ NetworkMessage *
 ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 {
     G.Out(pdGendoc,"enter ObjectClassBroadcastList::adaptMessage");
+    G.Out(pdGendoc,"      message->objectClass=%d",message->objectClass);
 
     if ((message->type != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
         (message->type != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
@@ -70,6 +71,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     reducedMessage->object = message->object ;
     reducedMessage->date = message->date ;
     reducedMessage->boolean = message->boolean ; // Useful ?
+    reducedMessage->objectClass = message->objectClass ;
 
     strcpy(reducedMessage->label, message->label);
 
@@ -102,6 +104,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             }
         }
     }
+    G.Out(pdGendoc,"      reducedMessage->objectClass=%d",reducedMessage->objectClass);
     G.Out(pdGendoc,"exit  ObjectClassBroadcastList::adaptMessage");
     return reducedMessage ;
 }
@@ -388,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.17 2007/11/29 16:51:15 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18 2007/11/29 20:36:08 rousse Exp $
