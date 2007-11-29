@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.69 2007/11/16 15:04:22 rousse Exp $
+// $Id: Federation.cc,v 3.70 2007/11/29 16:51:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1317,6 +1317,7 @@ Federation::publishObject(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federation::publishObject");
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1326,6 +1327,7 @@ Federation::publishObject(FederateHandle federate,
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)publishes %d attrib. of ObjClass %d.",
           handle, federate, list_size, object);
+    G.Out(pdGendoc,"exit  Federation::publishObject");
 }
 
 // ----------------------------------------------------------------------------
@@ -1343,8 +1345,10 @@ Federation::registerObject(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+
     ObjectHandle new_id = objectHandles.provide();
 
+    G.Out(pdGendoc,"enter Federation::registerObject");
     D.Out(pdRegister,
           "Federation %d: Federate %d registering Object %d of Class %d.",
           handle, federate, new_id, class_handle);
@@ -1356,6 +1360,7 @@ Federation::registerObject(FederateHandle federate,
     // Register Object.
     root->registerObjectInstance(federate, class_handle, new_id, 
 				 strname.c_str());
+    G.Out(pdGendoc,"exit Federation::registerObject");
     return new_id ;
 }
 
@@ -1540,6 +1545,7 @@ Federation::subscribeObject(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federation::subscribeObject");
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1548,6 +1554,7 @@ Federation::subscribeObject(FederateHandle federate,
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
           handle, federate, list_size, object);
+    G.Out(pdGendoc,"exit  Federation::subscribeObject");
 }
 
 // ----------------------------------------------------------------------------
@@ -2054,6 +2061,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 	   SaveInProgress, RestoreInProgress,
 	   RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federation::registerObjectWithRegion");
     check(federate);
 
     // Register object
@@ -2080,6 +2088,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 
     D[pdDebug] << "- " << nb << " attribute(s) associated with region "
 	       << region_handle << std::endl ;
+    G.Out(pdGendoc,"exit  Federation::registerObjectWithRegion");
     return object ;
 }    
 
@@ -2201,5 +2210,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.69 2007/11/16 15:04:22 rousse Exp $
+// $Id: Federation.cc,v 3.70 2007/11/29 16:51:15 rousse Exp $
 

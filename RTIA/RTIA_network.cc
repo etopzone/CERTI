@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.14 2007/11/28 14:54:35 siron Exp $
+// $Id: RTIA_network.cc,v 3.15 2007/11/29 16:51:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,6 +28,7 @@
 #include "InteractionSet.hh"
 #include "ObjectClass.hh"
 #include "ObjectClassSet.hh"
+#include <assert.h>
 
 namespace certi {
 namespace rtia {
@@ -125,9 +126,10 @@ msg->trace("RTIA::processNetworkMessage ");
              {        
              // Retrieve order type
              updateOrder = TIMESTAMP;
+
              for (UShort i=0; i< msg->handleArraySize; ++i)
                {
-                if (rootObject->ObjectClasses->getWithHandle( msg->objectClass )
+                if (rootObject->ObjectClasses->getWithHandle( msg->objectClass)
                     ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
                 {
                    updateOrder = RECEIVE;
@@ -321,4 +323,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.14 2007/11/28 14:54:35 siron Exp $
+// $Id: RTIA_network.cc,v 3.15 2007/11/29 16:51:15 rousse Exp $

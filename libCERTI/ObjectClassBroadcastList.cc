@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.16 2007/11/06 10:05:07 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.17 2007/11/29 16:51:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,6 +32,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("BROADCAST", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 /** ObjectBroadcastLine  
@@ -54,6 +55,8 @@ ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
 NetworkMessage *
 ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 {
+    G.Out(pdGendoc,"enter ObjectClassBroadcastList::adaptMessage");
+
     if ((message->type != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
         (message->type != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
         throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
@@ -99,7 +102,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             }
         }
     }
-
+    G.Out(pdGendoc,"exit  ObjectClassBroadcastList::adaptMessage");
     return reducedMessage ;
 }
 
@@ -278,6 +281,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 */
 void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
+    G.Out(pdGendoc,"enter ObjectClassBroadcastList::sendPendingMessage");
     switch (message->type) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
@@ -292,6 +296,7 @@ void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 
       default:
         throw RTIinternalError("Unknown message type to broadcast.");
+    G.Out(pdGendoc,"exit  ObjectClassBroadcastList::sendPendingMessage");
     }
 }
 
@@ -305,6 +310,7 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
     Socket *socket = 0 ;
     NetworkMessage *currentMessage = 0 ;
 
+    G.Out(pdGendoc,"enter ObjectClassBroadcastList::sendPendingRAVMessage");
     // For each line :
     list<ObjectBroadcastLine *>::iterator i ;
     for (i = lines.begin(); i != lines.end(); i++) {
@@ -346,6 +352,7 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 #else
                 socket = server->getSocketLink((*i)->Federate);
 #endif
+                G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
                 currentMessage->write(socket);
             }
             catch (RTIinternalError &e) {
@@ -375,9 +382,10 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
         else
             D.Out(pdProtocol, "No message sent to Federate %d.",
                   (*i)->Federate);
+    G.Out(pdGendoc,"exit  ObjectClassBroadcastList::sendPendingRAVMessage");
     }
 }
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.16 2007/11/06 10:05:07 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.17 2007/11/29 16:51:15 rousse Exp $

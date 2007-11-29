@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.32 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.33 2007/11/29 16:51:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -96,6 +96,7 @@ NetworkMessage::readBody(Socket *socket)
             ValueArray[i].length = body.readLongInt();
             body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
 	}
+G.Out(pdGendoc,"readBody REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	break ;
 	
 	// -- O_I Variable Part With Date(Body Not Empty) --
@@ -321,10 +322,16 @@ NetworkMessage::readHeader(Socket *socket)
 	break ;
 
       case UPDATE_ATTRIBUTE_VALUES:
+	objectClass = Header.VP.O_I.handle ;
+	handleArraySize = Header.VP.O_I.size ;
+	date = Header.VP.O_I.date ;
+	break ;
+
       case REFLECT_ATTRIBUTE_VALUES:
 	objectClass = Header.VP.O_I.handle ;
 	handleArraySize = Header.VP.O_I.size ;
 	date = Header.VP.O_I.date ;
+G.Out(pdGendoc,"readHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	break ;
 
       case SEND_INTERACTION:
@@ -510,11 +517,11 @@ NetworkMessage::writeBody(Socket *socket)
 	break ;
 
       case REFLECT_ATTRIBUTE_VALUES:
+G.Out(pdGendoc,"writeBody REFLECT_ATTRIBUTE_VALUES %d",objectClass);
 	body.writeLongInt(object);
 	body.writeString(label);
         body.writeLongInt(boolean);
-	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
-	
+	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
 	for (i = 0 ; i < handleArraySize ; i ++) {
             body.writeLongInt(ValueArray[i].length) ;
             body.writeBlock(ValueArray[i].value, ValueArray[i].length);
@@ -760,6 +767,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	break ;
 
       case REFLECT_ATTRIBUTE_VALUES:
+G.Out(pdGendoc,"writeHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	Header.bodySize = 1 ;
         Header.VP.O_I.handle = objectClass ;
         Header.VP.O_I.size = handleArraySize ;
@@ -963,4 +971,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.32 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.33 2007/11/29 16:51:15 rousse Exp $

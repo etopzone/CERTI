@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.29 2007/11/19 09:29:03 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.30 2007/11/29 16:51:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -34,6 +34,7 @@
 // Standard
 #include <iostream>
 #include <sstream>
+#include <assert.h>
 
 using std::list ;
 using std::cout ;
@@ -340,7 +341,8 @@ ObjectClass *
 ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
     throw (ObjectClassNotDefined)
 {
-	
+	std::stringstream msg;
+
 	handledOC_const_iterator iter;
 	
 	iter = OCFromHandle.find(theHandle);
@@ -348,8 +350,9 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
 	if (iter != OCFromHandle.end()) {
 		return iter->second;
 	} else {
+                msg << "Unknown Object Class Handle <" << theHandle << ">"; 
 		D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
-		throw ObjectClassNotDefined("Unknow class handle.");
+		throw ObjectClassNotDefined(msg.str().c_str());
 	}		    
 }
 
@@ -779,4 +782,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.29 2007/11/19 09:29:03 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.30 2007/11/29 16:51:16 rousse Exp $

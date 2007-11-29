@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.39 2007/10/31 10:30:21 erk Exp $
+// $Id: ObjectClass.cc,v 3.40 2007/11/29 16:51:15 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -52,6 +52,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("OBJECTCLASS", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! To be used only by CRead, it returns the new Attribute's Handle.
@@ -114,9 +115,11 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 				   const Object *source)
 {
     int i, trouve;
-
+    G.Out(pdGendoc,"enter ObjectClass::broadcastClassMessage");
     // 1. Set ObjectHandle to local class Handle.
     ocbList->message->objectClass = handle ;
+
+    G.Out(pdGendoc,"      ObjectClass::broadcastClassMessage handle=%d",handle);
 
     // 2. Update message attribute list by removing child's attributes.
     if ((ocbList->message->type == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
@@ -152,7 +155,6 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
-	  assert(source != 0);
           list<ObjectClassAttribute *>::const_iterator a ;
           for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
               // Do not consider attributes that are not updated
@@ -187,6 +189,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 
     // 4. Send pending messages.
     ocbList->sendPendingMessage(server);
+    G.Out(pdGendoc,"exit  ObjectClass::broadcastClassMessage");
 }
 
 // ----------------------------------------------------------------------------
@@ -1748,4 +1751,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.39 2007/10/31 10:30:21 erk Exp $
+// $Id: ObjectClass.cc,v 3.40 2007/11/29 16:51:15 rousse Exp $
