@@ -165,10 +165,17 @@ XmlParser::parseClass(ObjectClass* parent)
     ObjectClass* current = new ObjectClass();
     current->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
     current->setHandle(freeObjectClassHandle++);
-    root->ObjectClasses->addClass(current);
+    
     if (parent != 0)
         root->ObjectClasses->buildParentRelation(current, parent);
 
+    /* FIXME EN we must add the class to object root
+     * after we did build the parent relation
+     * this is awkward but we need it for
+     * the "server" link to be OK
+     * We need to fix this.
+     */
+    root->ObjectClasses->addClass(current);
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         // Attributes

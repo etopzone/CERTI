@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.29 2007/10/31 10:30:20 erk Exp $
+// $Id: RootObject.cc,v 3.30 2007/12/04 11:00:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -56,7 +56,7 @@ static pdCDebug D("ROOTOBJECT", "(RootObject) ");
 RootObject::RootObject(SecurityServer *security_server)
     : server(security_server), regionHandles(1)
 {
-    ObjectClasses = new ObjectClassSet(server);
+    ObjectClasses = new ObjectClassSet(server,true);
     Interactions = new InteractionSet(server);
     objects = new ObjectSet(server);
 }
@@ -320,4 +320,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.29 2007/10/31 10:30:20 erk Exp $
+// $Id: RootObject.cc,v 3.30 2007/12/04 11:00:58 erk Exp $
