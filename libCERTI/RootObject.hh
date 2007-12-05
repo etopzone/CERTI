@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.25 2007/11/19 14:07:04 erk Exp $
+// $Id: RootObject.hh,v 3.26 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -88,6 +88,10 @@ public:
                ObjectAlreadyRegistered,
                RTIinternalError);
     
+    void deleteObjectInstance(FederateHandle, ObjectHandle, 
+    			      FederationTime theTime, const char *)
+        throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
+
     void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
@@ -119,4 +123,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.25 2007/11/19 14:07:04 erk Exp $
+// $Id: RootObject.hh,v 3.26 2007/12/05 12:29:40 approx Exp $

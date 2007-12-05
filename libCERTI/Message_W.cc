@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.9 2007/11/13 13:25:40 rousse Exp $
+// $Id: Message_W.cc,v 3.10 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -326,6 +326,7 @@ Message::writeBody(SocketUN *socket)
             body.writeString(name);
             body.writeString(label);
             writeResignAction(body);
+	    body.writeLongInt(boolean);
             break ;
 
           // Body contains object  
@@ -688,4 +689,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.9 2007/11/13 13:25:40 rousse Exp $
+// $Id: Message_W.cc,v 3.10 2007/12/05 12:29:40 approx Exp $

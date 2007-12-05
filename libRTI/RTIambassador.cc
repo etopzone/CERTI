@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.59 2007/11/27 08:55:54 erk Exp $
+// $Id: RTIambassador.cc,v 3.60 2007/12/05 12:29:41 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -389,10 +389,18 @@ RTI::RTIambassador::tick_kernel(bool locked)
                   } break ;
 
               case Message::REMOVE_OBJECT_INSTANCE: {
-                  privateRefs->fed_amb->removeObjectInstance(vers_Fed.getObject(),
+                  if (vers_Fed.getBoolean()) {
+                      privateRefs->fed_amb->removeObjectInstance(
+                                                vers_Fed.getObject(),
                                                 vers_Fed.getFedTime(),
                                                 vers_Fed.getTag(),
                                                 vers_Fed.getEventRetraction());
+		  }
+		  else {
+                      privateRefs->fed_amb->removeObjectInstance(
+                                                vers_Fed.getObject(),
+                                                vers_Fed.getTag());
+		  }
               } break ;
 
               case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
@@ -1227,7 +1235,13 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 }
 
 // ----------------------------------------------------------------------------
-// Delete Object
+/** Delete Object with time
+    This service (HLA 1.3) deletes an object instance.
+    As the federation time argument is supplied, an event retraction designator is returned.
+    @param theObject Object designator
+    @param theTime Federation time
+    @param theTag user supplied tag
+*/
 EventRetractionHandle
 RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
                                     const FedTime& theTime,
@@ -1248,11 +1262,18 @@ RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     req.setFedTime(theTime);
     req.setTag(theTag);
 
+    req.setBoolean(true);
+
     privateRefs->executeService(&req, &rep);
     return rep.getEventRetraction();
 }
 
 // ----------------------------------------------------------------------------
+/** Delete Object without time
+    This service (HLA 1.3) deletes an object instance.
+    @param theObject Object designator
+    @param theTag user supplied tag
+*/
 void
 RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
                                     const char *theTag)
@@ -1260,12 +1281,13 @@ RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::DeletePrivilegeNotHeld, RTI::ObjectNotKnown)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
     req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
     req.setTag(theTag);
+    
+    req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
 }
@@ -2879,4 +2901,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.59 2007/11/27 08:55:54 erk Exp $
+// $Id: RTIambassador.cc,v 3.60 2007/12/05 12:29:41 approx Exp $

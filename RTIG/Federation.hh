@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.43 2007/11/16 15:04:22 rousse Exp $
+// $Id: Federation.hh,v 3.44 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -219,6 +219,18 @@ public:
     // -----------------------
     // -- Object Management --
     // -----------------------
+
+    void deleteObject(FederateHandle theFederateHandle,
+                      ObjectHandle theObjectHandle,
+		      FederationTime theTime,
+                      const char *theUserTag)
+        throw (FederateNotExecutionMember,
+               DeletePrivilegeNotHeld,
+               ObjectNotKnown,
+               SaveInProgress,
+               RestoreInProgress,
+	       InvalidFederationTime,
+               RTIinternalError);
 
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
@@ -576,4 +588,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.43 2007/11/16 15:04:22 rousse Exp $
+// $Id: Federation.hh,v 3.44 2007/12/05 12:29:39 approx Exp $

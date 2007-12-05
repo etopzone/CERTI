@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.30 2007/10/31 10:30:22 erk Exp $
+// $Id: ObjectClass.hh,v 3.31 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -176,6 +176,14 @@ public:
     // Instance Management
     ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
                                              ObjectHandle theObjectHandle,
+					     FederationTime theTime,
+                                             const char *theUserTag)
+        throw (DeletePrivilegeNotHeld,
+               ObjectNotKnown,
+               RTIinternalError);
+
+    ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
+                                             ObjectHandle theObjectHandle,
                                              const char *theUserTag)
         throw (DeletePrivilegeNotHeld,
                ObjectNotKnown,
@@ -252,4 +260,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.30 2007/10/31 10:30:22 erk Exp $
+// $Id: ObjectClass.hh,v 3.31 2007/12/05 12:29:40 approx Exp $

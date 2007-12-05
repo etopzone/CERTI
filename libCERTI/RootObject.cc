@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.30 2007/12/04 11:00:58 erk Exp $
+// $Id: RootObject.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -258,6 +258,18 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
 void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
                                  ObjectHandle the_object,
+				 FederationTime theTime,
+                                 const char *the_tag)
+    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
+{
+    ObjectClasses->deleteObject(the_federate, the_object, theTime, the_tag);
+    objects->deleteObjectInstance(the_federate, the_object, the_tag);
+}
+
+// ----------------------------------------------------------------------------
+void
+RootObject::deleteObjectInstance(FederateHandle the_federate,
+                                 ObjectHandle the_object,
                                  const char *the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
@@ -320,4 +332,4 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.30 2007/12/04 11:00:58 erk Exp $
+// $Id: RootObject.cc,v 3.31 2007/12/05 12:29:40 approx Exp $

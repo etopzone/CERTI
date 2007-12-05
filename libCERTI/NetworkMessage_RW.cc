@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.33 2007/11/29 16:51:15 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.34 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -169,6 +169,7 @@ G.Out(pdGendoc,"readBody REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
       case DELETE_OBJECT:
       case REMOVE_OBJECT:
 	object = body.readLongInt();
+	boolean = body.readLongInt();   // true means with time
 	readLabel(body);
 	break ;
 
@@ -358,6 +359,8 @@ G.Out(pdGendoc,"readHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass)
       case ANNOUNCE_SYNCHRONIZATION_POINT:
       case DELETE_OBJECT:
       case REMOVE_OBJECT:
+        date = Header.VP.O_I.date;
+	break;
       case CLOSE_CONNEXION:
       case RESIGN_FEDERATION_EXECUTION:
       case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
@@ -601,6 +604,7 @@ G.Out(pdGendoc,"writeBody REFLECT_ATTRIBUTE_VALUES %d",objectClass);
       case DELETE_OBJECT:
       case REMOVE_OBJECT:
 	body.writeLongInt(object);
+	body.writeLongInt(boolean);    // true means with time (stored in header)
 	body.writeString(label);
 	break ;
 
@@ -868,9 +872,14 @@ G.Out(pdGendoc,"writeHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass
 	break ;
 
       case DELETE_OBJECT:
+        Header.bodySize = 1;
+	Header.VP.O_I.date = date;
+	break;
       case REMOVE_OBJECT:
 	// body Contains ObjectHandle, and label
 	Header.bodySize = 1 ;
+        if ( boolean)
+	    Header.VP.O_I.date = date ;
 	break ;
 
 	// -- time Variable Part(No body)[Continued] --
@@ -971,4 +980,4 @@ G.Out(pdGendoc,"writeHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.33 2007/11/29 16:51:15 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.34 2007/12/05 12:29:40 approx Exp $

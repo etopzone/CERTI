@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.7 2007/11/27 08:55:54 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.8 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,7 +67,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
 
     D.Out(pdDebug, "sending request to RTIA.");
-
+    
     is_reentrant = true ;
     try {
         req->write(socketUn);
@@ -544,4 +544,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.7 2007/11/27 08:55:54 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.8 2007/12/05 12:29:40 approx Exp $

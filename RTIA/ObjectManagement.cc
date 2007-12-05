@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.30 2007/11/16 15:45:01 erk Exp $
+// $Id: ObjectManagement.cc,v 3.31 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -397,9 +397,10 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 }
 
 // ----------------------------------------------------------------------------
-//! deleteObject
+//! deleteObject with time
 EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
+			       FederationTime theTime,	
                                const char *theTag,
                                TypeException &e)
 {
@@ -407,6 +408,8 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 
     req.type = NetworkMessage::DELETE_OBJECT ;
     req.object = theObjectHandle ;
+    req.setBoolean(true);
+    req.date = theTime;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -416,17 +419,45 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 
     e = rep.exception ;
 
-   if (e == e_NO_EXCEPTION)
+    if (e == e_NO_EXCEPTION) {
         rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+    }
 
     return rep.eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
-//! removeObject
+//! deleteObject without time
+void
+ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
+                               const char *theTag,
+                               TypeException &e)
+{
+    NetworkMessage req, rep ;
+
+    req.type = NetworkMessage::DELETE_OBJECT ;
+    req.object = theObjectHandle ;
+    req.setBoolean(false);
+    req.federation = fm->_numero_federation ;
+    req.federate = fm->federate ;
+
+    strcpy(req.label, theTag);
+    comm->sendMessage(&req);
+    comm->waitMessage(&rep, NetworkMessage::DELETE_OBJECT, req.federate);
+
+    e = rep.exception ;
+
+    if (e == e_NO_EXCEPTION) {
+        rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
+    }
+}
+
+// ----------------------------------------------------------------------------
+//! removeObject with time
 void
 ObjectManagement::removeObject(ObjectHandle the_object,
                                FederateHandle the_federate,
+			       FederationTime theTime,
                                const char *the_tag,
                                EventRetractionHandle the_event,
                                TypeException &)
@@ -437,22 +468,33 @@ ObjectManagement::removeObject(ObjectHandle the_object,
     req.setObject(the_object);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
+    req.setBoolean(true);
 
     // BUG: On fait quoi de la reponse ?
     comm->requestFederateService(&req, &rep);
 
-    rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
+    rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
 }
 
 // ----------------------------------------------------------------------------
-//! removeObject
+//! removeObject without time
 void
-ObjectManagement::removeObject(ObjectHandle,
-                               ObjectRemovalReason,
+ObjectManagement::removeObject(ObjectHandle the_object,
+                               FederateHandle the_federate,
+                               const char *the_tag,
                                TypeException &)
 {
-    printf("ObjectManagement.cc: RemoveObject(2) not implemented.\n");
-    throw RTIinternalError("");
+    Message req, rep ;
+
+    req.type = Message::REMOVE_OBJECT_INSTANCE ;
+    req.setObject(the_object);
+    req.setTag(the_tag);
+    req.setBoolean(false);
+    
+    // BUG: On fait quoi de la reponse ?
+    comm->requestFederateService(&req, &rep);
+
+    rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -728,4 +770,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.30 2007/11/16 15:45:01 erk Exp $
+// $Id: ObjectManagement.cc,v 3.31 2007/12/05 12:29:39 approx Exp $

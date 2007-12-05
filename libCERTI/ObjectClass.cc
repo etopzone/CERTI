@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.40 2007/11/29 16:51:15 rousse Exp $
+// $Id: ObjectClass.cc,v 3.41 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -313,11 +313,84 @@ ObjectClass::~ObjectClass()
 }
 
 // ----------------------------------------------------------------------------
-/*! Delete the object instance 'theObjectHandle', and starts to
-  broadcast the RemoveObject message. Return a BroadcastList of
-  Federates, in order to allow our ObjectClassSet to go on with
-  the message broadcasting, by giving the list to our parent
-  class.
+/* Delete Instance with time.
+   Delete the object instance 'theObjectHandle', and starts to
+   broadcast the RemoveObject message. Return a BroadcastList of
+   Federates, in order to allow our ObjectClassSet to go on with
+   the message broadcasting, by giving the list to our parent
+   class.
+*/
+ObjectClassBroadcastList *
+ObjectClass::deleteInstance(FederateHandle the_federate,
+                            ObjectHandle the_object,
+			    FederationTime theTime,
+                            const char *the_tag)
+    throw (DeletePrivilegeNotHeld,
+           ObjectNotKnown,
+           RTIinternalError)
+{
+
+    // 1. Pre-conditions checking(may throw ObjectNotKnown)
+    Object *object = getInstanceWithID(the_object);
+
+    // Is the Federate really the Object Owner?(Checked only on RTIG)
+    if ((server != 0) && (object->getOwner() != the_federate)) {
+        D.Out(pdExcept, "Delete Object %d: Federate %d not owner.",
+              the_object, the_federate);
+        throw DeletePrivilegeNotHeld("");
+    }
+
+    // 2. Remove Instance from list.
+    list<Object *>::iterator o ;
+    for (o = objectSet.begin(); o != objectSet.end(); o++) {
+        if ((*o)->getHandle() == the_object) {
+            objectSet.erase(o); // i is dereferenced.
+            break ;
+        }
+    }
+
+    // 3. Prepare and broadcast message.
+    ObjectClassBroadcastList *ocbList = NULL ;
+    if (server != NULL) {
+        D.Out(pdRegister,
+              "Object %u deleted in class %u, now broadcasting...",
+              the_object, handle);
+
+        NetworkMessage *answer = new NetworkMessage ;
+        answer->type = NetworkMessage::REMOVE_OBJECT ;
+        answer->federation = server->federation();
+        answer->federate = the_federate ;
+        answer->exception = e_NO_EXCEPTION ;
+        answer->objectClass = handle ; // Class Handle
+        answer->object = the_object ;
+        
+	// with time
+        answer->date = theTime ;
+        answer->boolean = true ;
+        
+	strcpy(answer->label, the_tag);
+
+        ocbList = new ObjectClassBroadcastList(answer, 0);
+        broadcastClassMessage(ocbList);
+    }
+    else {
+        D.Out(pdRegister,
+              "Object %u deleted in class %u, no broadcast to do.",
+              the_object, handle);
+    }
+
+    // Return the BroadcastList in case it had to be passed to the parent
+    // class.
+    return ocbList ;
+}
+
+// ----------------------------------------------------------------------------
+/* Delete Instance without time.
+   Delete the object instance 'theObjectHandle', and starts to
+   broadcast the RemoveObject message. Return a BroadcastList of
+   Federates, in order to allow our ObjectClassSet to go on with
+   the message broadcasting, by giving the list to our parent
+   class.
 */
 ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
@@ -360,7 +433,12 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         answer->exception = e_NO_EXCEPTION ;
         answer->objectClass = handle ; // Class Handle
         answer->object = the_object ;
-        strcpy(answer->label, the_tag);
+        
+	// without time
+        answer->date = 0 ;
+        answer->boolean = false ;
+        
+	strcpy(answer->label, the_tag);
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
         broadcastClassMessage(ocbList);
@@ -1751,4 +1829,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.40 2007/11/29 16:51:15 rousse Exp $
+// $Id: ObjectClass.cc,v 3.41 2007/12/05 12:29:40 approx Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.30 2007/11/29 16:51:16 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -132,7 +132,50 @@ ObjectClassSet::~ObjectClassSet()
 }
 
 // ----------------------------------------------------------------------------
-//! deleteObject.
+//! deleteObject with time.
+void
+ObjectClassSet::deleteObject(FederateHandle federate,
+                             ObjectHandle object,
+			     FederationTime theTime,
+                             const char *tag)
+    throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
+{
+    // It may throw ObjectNotKnown
+    ObjectClass *oclass = getInstanceClass(object);
+
+    D.Out(pdRegister,
+          "Federate %d attempts to delete instance %d in class %d.",
+          federate, object, oclass->getHandle());
+
+    // It may throw a bunch of exceptions.
+    ObjectClassBroadcastList *ocbList = oclass->deleteInstance(federate,
+                                                               object,
+							       theTime,
+                                                               tag);
+
+    // Broadcast RemoveObject message recursively
+    ObjectClassHandle current_class = 0 ;
+    if (ocbList != 0) {
+
+        current_class = oclass->getSuperclass();
+
+        while (current_class) {
+            D.Out(pdRegister,
+                  "Broadcasting Remove msg to parent class %d for instance %d.",
+                  current_class, object);
+
+            // It may throw ObjectClassNotDefined
+            oclass = getWithHandle(current_class);
+            oclass->broadcastClassMessage(ocbList);
+
+            current_class = oclass->getSuperclass();
+        }
+
+        delete ocbList ;
+    }
+}
+// ----------------------------------------------------------------------------
+//! deleteObject without time.
 void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              ObjectHandle object,
@@ -782,4 +825,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.30 2007/11/29 16:51:16 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.31 2007/12/05 12:29:40 approx Exp $

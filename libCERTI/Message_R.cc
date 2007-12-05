@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.8 2007/11/13 13:25:40 rousse Exp $
+// $Id: Message_R.cc,v 3.9 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -318,6 +318,7 @@ Message::readBody(SocketUN *socket)
             readName(body);
             readLabel(body);
             readResignAction(body);
+            boolean = body.readLongInt();
             break ;
 
           // Body contains object 
@@ -703,4 +704,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.8 2007/11/13 13:25:40 rousse Exp $
+// $Id: Message_R.cc,v 3.9 2007/12/05 12:29:40 approx Exp $

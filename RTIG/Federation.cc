@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.70 2007/11/29 16:51:15 rousse Exp $
+// $Id: Federation.cc,v 3.71 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -723,6 +723,35 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
 
 }
 
+// ----------------------------------------------------------------------------
+/** Removes an object instance from federation.
+    @param federate Federate requesting removal
+    @param id Object handle
+    @param theTime Federation Time
+    @param tag Label for this operation
+ */
+void
+Federation::deleteObject(FederateHandle federate,
+                         ObjectHandle id,
+			 FederationTime theTime,
+                         const char *tag)
+    throw (FederateNotExecutionMember,
+           DeletePrivilegeNotHeld,
+           ObjectNotKnown,
+           SaveInProgress,
+           RestoreInProgress,
+	   InvalidFederationTime,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember.
+    this->check(federate);
+
+    D.Out(pdRegister, "Federation %d: Federate %d destroys object %d.",
+          this->handle, federate, id);
+    
+    root->deleteObjectInstance(federate, id, theTime, tag);
+    objectHandles.free(id);
+}
 // ----------------------------------------------------------------------------
 /** Removes an object instance from federation.
     @param federate Federate requesting removal
@@ -2210,5 +2239,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.70 2007/11/29 16:51:15 rousse Exp $
+// $Id: Federation.cc,v 3.71 2007/12/05 12:29:39 approx Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.54 2007/11/29 16:51:15 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.55 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -408,10 +408,35 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       }
         break ;
 
-      case Message::DELETE_OBJECT_INSTANCE:
-        D.Out(pdTrace, "Receiving Message from Federate, type DeleteObject.");
-        rep.setEventRetraction(om->deleteObject(req->getObject(), req->getTag(),
-                                                e));
+      case Message::DELETE_OBJECT_INSTANCE: {
+          
+	G.Out(pdGendoc,"D_O_I into RTIA::chooseFederateProcessing") ;
+
+	try {
+	    if ( req->getBoolean() ) {
+        	D.Out(pdTrace, 
+	"Receiving Message from Federate, type DeleteObjectInstance with \
+	 TIMESTAMP.");
+                rep.setEventRetraction(
+			om->deleteObject(
+				req->getObject(), 
+				req->getFederationTime(),
+				req->getTag(), 
+				e));
+	    }
+	    else {
+        	D.Out(pdTrace, 
+	"Receiving Message from Federate, type DeleteObjectInstance without \
+	 TIMESTAMP.");
+		om->deleteObject(
+			req->getObject(), 
+			req->getTag(), 
+			e);
+	    }
+	} catch (Exception *e) {
+	    throw e;
+	}
+      }
         break ;
 
       case Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
@@ -1225,4 +1250,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.54 2007/11/29 16:51:15 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.55 2007/12/05 12:29:39 approx Exp $

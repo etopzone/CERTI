@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.15 2007/11/29 16:51:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.16 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -190,15 +190,18 @@ msg->trace("RTIA::processNetworkMessage ");
 
       case NetworkMessage::REMOVE_OBJECT:
       {
-          D.Out(pdTrace, "Receving Message from RTIG, type NetworkMessage::REMOVE_OBJECT.");
+          D.Out(pdTrace, "Receving Message from RTIG, \
+	  		  type NetworkMessage::REMOVE_OBJECT.");
 
-          if (tm->requestContraintState()) {
+          if (tm->requestContraintState() && msg->getBoolean()) {
               // Verify that received TSO timestamp is >= current
               // time + lookahead
               queues->insertTsoMessage(msg);
           }
-          else
+          else {
+	      msg->setBoolean(false);
               queues->insertFifoMessage(msg);
+	  }
 
           break ;
       }
@@ -323,4 +326,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.15 2007/11/29 16:51:15 rousse Exp $
+// $Id: RTIA_network.cc,v 3.16 2007/12/05 12:29:39 approx Exp $

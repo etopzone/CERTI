@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.44 2007/11/16 15:04:22 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.45 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -789,16 +789,27 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 }
 
 // ----------------------------------------------------------------------------
-// processdeleteObject
+// processDeleteObject
 void
 RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"BEGIN ** DELETE OBJECT INSTANCE service **");
+    G.Out(pdGendoc,"enter RTIG::processDeleteObject");
     auditServer << "ObjID = %u" << req->object ;
 
-    federations.destroyObject(req->federation,
-                               req->federate,
-                               req->object,
-                               req->label);
+    if ( req->getBoolean() ) {
+    	federations.destroyObject(req->federation,
+        	                  req->federate,
+                                  req->object,
+				  req->date,
+                                  req->label);
+    }
+    else {
+    	federations.destroyObject(req->federation,
+        	                  req->federate,
+                                  req->object,
+                                  req->label);
+    }
 
     D.Out(pdRegister, "Object # %u of Federation %u has been deleted.",
           req->object, req->federation);
@@ -810,6 +821,9 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
 
     rep.write(link); // send answer to RTIA
+    
+    G.Out(pdGendoc,"exit RTIG::processDeleteObject");
+    G.Out(pdGendoc,"END ** DELETE OBJECT INSTANCE **");
 }
 
 // ----------------------------------------------------------------------------
@@ -1304,4 +1318,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.44 2007/11/16 15:04:22 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.45 2007/12/05 12:29:40 approx Exp $

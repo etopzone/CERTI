@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.23 2007/11/27 14:39:49 siron Exp $
+// $Id: TimeManagement.cc,v 3.24 2007/12/05 12:29:39 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -222,11 +222,20 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       }
 
       case NetworkMessage::REMOVE_OBJECT:
-        om->removeObject(msg.object,
-                         msg.federate,
-                         msg.label,
-                         msg.eventRetraction,
-                         msg.exception);
+          if (msg.getBoolean()) {
+        	om->removeObject(msg.object,
+                		 msg.federate,
+				 msg.date,
+                         	 msg.label,
+                         	 msg.eventRetraction,
+                         	 msg.exception);
+	  }
+	  else {
+        	om->removeObject(msg.object,
+                		 msg.federate,
+                         	 msg.label,
+                         	 msg.exception);
+	  }
         break ;
 
       case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP:
@@ -747,4 +756,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.23 2007/11/27 14:39:49 siron Exp $
+// $Id: TimeManagement.cc,v 3.24 2007/12/05 12:29:39 approx Exp $

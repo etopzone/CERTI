@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.35 2007/11/16 15:04:22 rousse Exp $
+// $Id: FederationsList.hh,v 3.36 2007/12/05 12:29:40 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -259,7 +259,21 @@ public:
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
-
+    
+    void destroyObject(Handle theHandle,
+    		       FederateHandle theFederateHandle,
+		       ObjectHandle theObjectHandle,
+		       FederationTime theTime,
+		       const char *theUserTag)
+        throw (FederateNotExecutionMember,
+               FederationExecutionDoesNotExist,
+               DeletePrivilegeNotHeld,
+               ObjectNotKnown,
+               SaveInProgress,
+               RestoreInProgress,
+	       InvalidFederationTime,
+               RTIinternalError);
+ 
     void destroyObject(Handle theHandle,
                        FederateHandle theFederateHandle,
                        ObjectHandle theObjectHandle,
@@ -562,4 +576,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.35 2007/11/16 15:04:22 rousse Exp $
+// $Id: FederationsList.hh,v 3.36 2007/12/05 12:29:40 approx Exp $
