@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.10 2007/09/27 13:59:33 erk Exp $
+// $Id: RTI.hh,v 3.11 2007/12/06 17:11:19 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -35,7 +35,7 @@
 #define RTI_STD
 #endif
 
-struct RTIambPrivateRefs ;
+class RTIambPrivateRefs ;
 struct RTIambPrivateData ;
 
 /**

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.60 2007/12/05 12:29:41 approx Exp $
+// $Id: RTIambassador.cc,v 3.61 2007/12/06 17:11:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -135,7 +135,7 @@ RTI::RTIambassador::RTIambassador()
 	         << GetLastError() <<"> "
 	         << "Cannot connect to RTIA.exe";		
 		//perror("CreateProcess");
-		 throw RTIinternalError( msg.c_str);
+		 throw RTIinternalError( msg.str().c_str());
 		}
     
    privateRefs->handle_RTIA = pi.hProcess;
@@ -2901,4 +2901,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.60 2007/12/05 12:29:41 approx Exp $
+// $Id: RTIambassador.cc,v 3.61 2007/12/06 17:11:19 erk Exp $
