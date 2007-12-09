@@ -24,21 +24,38 @@ OPTION(BUILD_API_DOC
 
 SET(CMAKE_BUILD_TYPE "Debug")
 
+# Force CMAKE_COMPILER_IS_GNUCC even if gcc used with ccache
+IF("${CMAKE_C_COMPILER}" MATCHES "ccache")
+  IF("${CMAKE_C_COMPILER_ARG1}" MATCHES "gcc")
+      MESSAGE(STATUS "Ok ccache with gcc forcing CMAKE_COMPILER_IS_GNUCC")
+      SET(CMAKE_COMPILER_IS_GNUCC 1)
+  ENDIF("${CMAKE_C_COMPILER_ARG1}" MATCHES "gcc")
+ENDIF("${CMAKE_C_COMPILER}" MATCHES "ccache")
+
+# Force CMAKE_COMPILER_IS_GNUCXX even if g++ used with ccache
+IF("${CMAKE_CXX_COMPILER}" MATCHES "ccache")
+  IF("${CMAKE_CXX_COMPILER_ARG1}" MATCHES "g\\+\\+")
+      MESSAGE(STATUS "Ok ccache with gcc forcing CMAKE_COMPILER_IS_GNUCXX")
+      SET(CMAKE_COMPILER_IS_GNUCXX 1)
+  ENDIF("${CMAKE_CXX_COMPILER_ARG1}" MATCHES "g\\+\\+")
+ENDIF("${CMAKE_CXX_COMPILER}" MATCHES "ccache")
+
 # Use this in order to make Eclipse CDT parser handle error message smoothly
 # see  http://www.cmake.org/Wiki/CMake:Eclipse
 IF(CMAKE_COMPILER_IS_GNUCC)
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
+
 IF(CMAKE_COMPILER_IS_GNUCXX)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 # Enforce strict ANSI C/C++ compliance checking
 IF(CMAKE_COMPILER_IS_GNUCC)
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -W -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -ansi")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -ansi -W -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 IF (WIN32)
