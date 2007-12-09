@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.4 2007/10/31 10:30:20 erk Exp $
+// $Id: Named.cc,v 3.5 2007/12/09 16:26:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -30,6 +30,8 @@ Named::Named() { }
 
 Named::Named(std::string name)
     : name(name) { }
+
+Named::~Named() {}
 
 void
 Named::setName(std::string name)
@@ -93,4 +95,4 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 
 } // certi
 
-// $Id: Named.cc,v 3.4 2007/10/31 10:30:20 erk Exp $
+// $Id: Named.cc,v 3.5 2007/12/09 16:26:49 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.3 2007/10/16 09:28:21 erk Exp $
+// $Id: Named.hh,v 3.4 2007/12/09 16:26:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -52,6 +52,12 @@ public:
      * @param[in] name Initial name
      */	
     Named(const std::string name);
+    
+    /**
+     * Virtual destructor.
+     * Necessary for a class having virtual methods. 
+     */
+    virtual ~Named();
 
     /**
      *  Set name.     
@@ -129,4 +135,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.3 2007/10/16 09:28:21 erk Exp $
+// $Id: Named.hh,v 3.4 2007/12/09 16:26:49 erk Exp $

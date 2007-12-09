@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.17 2007/10/31 10:30:23 erk Exp $
+// $Id: Object.hh,v 3.18 2007/12/09 16:26:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -47,7 +47,8 @@ public:
         : Owner(the_owner), name(NULL) { handle = 0 ; };
 
     Object(FederateHandle the_owner, const char *the_name);
-    ~Object();
+    
+    virtual ~Object();
 
     void display() const ;
 
@@ -92,4 +93,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.17 2007/10/31 10:30:23 erk Exp $
+// $Id: Object.hh,v 3.18 2007/12/09 16:26:49 erk Exp $
