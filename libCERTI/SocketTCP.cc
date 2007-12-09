@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.19 2007/11/27 08:55:54 erk Exp $
+// $Id: SocketTCP.cc,v 3.20 2007/12/09 16:46:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -286,7 +286,7 @@ if (setsockopt(_socket_tcp,
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPClient(in_port_t port, char *nom_serveur)
+SocketTCP::createTCPClient(in_port_t port, const char *nom_serveur)
 throw (NetworkError)
 {
 	std::stringstream msg;
@@ -619,4 +619,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.19 2007/11/27 08:55:54 erk Exp $
+// $Id: SocketTCP.cc,v 3.20 2007/12/09 16:46:50 erk Exp $

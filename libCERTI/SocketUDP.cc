@@ -84,7 +84,7 @@ SocketUDP::bind()
 //! Create an UDP client.
 void
 SocketUDP::createUDPClient(unsigned int, // port
-                           char *) // nom serveur
+                           const char *) // nom serveur
     throw (NetworkError, NetworkSignal)
 {
 // unsigned long addr = 0 ;

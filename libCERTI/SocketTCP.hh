@@ -52,7 +52,7 @@ public :
 	virtual ~SocketTCP();
 	virtual void close();
 
-	void createTCPClient(in_port_t port, char *nom_serveur) throw (NetworkError);
+	void createTCPClient(in_port_t port, const char *nom_serveur) throw (NetworkError);
 	void createTCPClient(in_port_t port, in_addr_t addr) throw (NetworkError);
 	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
 

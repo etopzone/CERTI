@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.19 2007/11/20 09:04:54 erk Exp $
+// $Id: Communications.cc,v 3.20 2007/12/09 16:46:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -103,18 +103,18 @@ Communications::Communications()
     : SocketUN(), SecureTCPSocket(), SocketUDP()
 {
     char nom_serveur_RTIG[200] ;
-    char *default_host = "localhost" ;
+    const char *default_host = "localhost" ;
 
     // Federate/RTIA link creation.
     acceptUN();
 
     // RTIG TCP link creation.
-    char *certihost = 0 ;
+    const char *certihost = NULL ;
     ifstream* file = new ifstream("RTIA.dat", ios::in);
 
     if (!file->is_open()) {
 	certihost = getenv("CERTI_HOST");
-	if (certihost == NULL) {
+	if (NULL == certihost) {
 	    certihost = default_host ;
 	}
     }
@@ -342,4 +342,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.19 2007/11/20 09:04:54 erk Exp $
+// $Id: Communications.cc,v 3.20 2007/12/09 16:46:50 erk Exp $
