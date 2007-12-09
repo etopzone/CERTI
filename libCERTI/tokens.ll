@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.3 2006/03/09 19:54:28 breholee Exp $
+// $Id: tokens.ll,v 3.4 2007/12/09 17:02:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"
@@ -38,6 +38,7 @@ std::string arg ;
 OrderType order ;
 TransportType transport ;
 int line_number ;
+std::string timestamp_arg;
 
 }}
 
@@ -67,8 +68,9 @@ ident   [A-Za-z_][A-Za-z0-9_\.]*
 	return ORDER ;
 }
 [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp] {
+        certi::fedparser::timestamp_arg = std::string(yytext) ;	
 	certi::fedparser::order = certi::TIMESTAMP ;
-	return ORDER ;
+	return TIMESTAMP_TOKEN ;
 }
 "("[Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]	return PARAMETER ;
 "("[Ss][Ee][Cc]_[Ll][Ee][Vv][Ee][Ll]	return SEC_LEVEL ;

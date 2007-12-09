@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.5 2007/08/29 13:07:58 erk Exp $
+// $Id: syntax.yy,v 3.6 2007/12/09 17:02:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -35,6 +35,7 @@ namespace fedparser {
 extern std::string arg ;
 extern const char *fed_filename ;
 extern int line_number ;
+extern std::string timestamp_arg;
 }}
 
 int yylex();
@@ -62,6 +63,7 @@ int yyerror(char *);
 %token SPACE
 %token SPACES
 %token TRANSPORT
+%token TIMESTAMP_TOKEN
 
 %start fed
 
@@ -160,6 +162,15 @@ attribute_list:
 	| attribute_list attribute ;
 
 attribute:
+	ATTRIBUTE TIMESTAMP_TOKEN TRANSPORT ORDER { certi::fedparser::arg = certi::fedparser::timestamp_arg; 
+	                                            certi::fedparser::addAttribute(); }
+	R_PAR ;
+
+attribute:
+	ATTRIBUTE STRING TRANSPORT TIMESTAMP_TOKEN { certi::fedparser::addAttribute(); }
+	R_PAR ;
+
+attribute:
 	ATTRIBUTE STRING TRANSPORT ORDER { certi::fedparser::addAttribute(); }
 	R_PAR ;
 
@@ -175,6 +186,11 @@ opt_interaction_class_list:
 interaction_class_list:
 	interaction_class
 	| interaction_class_list interaction_class ;
+
+interaction_class:
+	CLASS STRING TRANSPORT TIMESTAMP_TOKEN { certi::fedparser::startInteraction(); }
+	interaction_class_items { certi::fedparser::endInteraction(); }
+	R_PAR ;
 
 interaction_class:
 	CLASS STRING TRANSPORT ORDER { certi::fedparser::startInteraction(); }
@@ -193,6 +209,10 @@ interaction_class_items:
 parameter_list:
 	parameter
 	| parameter_list parameter ;
+
+parameter:
+	PARAMETER TIMESTAMP_TOKEN { certi::fedparser::addParameter(); }
+	R_PAR ;
 
 parameter:
 	PARAMETER STRING { certi::fedparser::addParameter(); }
