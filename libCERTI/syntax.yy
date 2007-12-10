@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.6 2007/12/09 17:02:22 erk Exp $
+// $Id: syntax.yy,v 3.7 2007/12/10 21:38:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -39,7 +39,7 @@ extern std::string timestamp_arg;
 }}
 
 int yylex();
-int yyerror(char *);
+int yyerror(const char *);
 
 %}
 
@@ -228,7 +228,7 @@ object_security_level:
 
 %%
 
-int yyerror(char *s) {
+int yyerror(const char *s) {
     cout << endl << certi::fedparser::fed_filename << ":" 
 	 << certi::fedparser::line_number << ": " << s << endl ;
     return 0 ;
