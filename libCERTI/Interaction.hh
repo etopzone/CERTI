@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.25 2007/10/31 10:30:22 erk Exp $
+// $Id: Interaction.hh,v 3.26 2007/12/11 19:46:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -47,10 +47,7 @@ class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
     Interaction();
-    ~Interaction()
-    ;    
-    void setName(const char *new_name)
-        throw (ValueLengthExceeded, RTIinternalError);
+    ~Interaction();        
 
     void setSpace(SpaceHandle);
     SpaceHandle getSpace();
@@ -170,4 +167,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.25 2007/10/31 10:30:22 erk Exp $
+// $Id: Interaction.hh,v 3.26 2007/12/11 19:46:53 erk Exp $
