@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.9 2007/12/05 12:29:40 approx Exp $
+// $Id: Message_R.cc,v 3.10 2007/12/11 16:44:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -39,12 +39,12 @@ void
 Message::read(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
 {
-
+    G.Out(pdGendoc,"enter Message::read");
     bool has_body = readHeader(socket);
 
     if (has_body)
       readBody(socket);
-
+    G.Out(pdGendoc,"exit  Message::read");
 }
 
 // ----------------------------------------------------------------------------
@@ -52,6 +52,8 @@ Message::read(SocketUN *socket)
 void
 Message::readBody(SocketUN *socket)
 {
+    G.Out(pdGendoc,"enter Message::readBody body size=%d,",header.bodySize);
+ 
     assert(header.bodySize > 0);
 
     MessageBody body(header.bodySize);
@@ -453,6 +455,7 @@ Message::readBody(SocketUN *socket)
             throw RTIinternalError("Message: Unknown Type for Body(Read).");
         }
     }
+    G.Out(pdGendoc,"exit  Message::readBody");
 }
 
 // ----------------------------------------------------------------------------
@@ -462,6 +465,8 @@ Message::readBody(SocketUN *socket)
 bool
 Message::readHeader(SocketUN *socket)
 {
+    G.Out(pdGendoc,"enter Message::readHeader header size=%d",sizeof(MessageHeader));
+
     // 1- Read Header from Socket
     socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
 
@@ -469,12 +474,14 @@ Message::readHeader(SocketUN *socket)
     type = header.type ;
     exception = header.exception ;
     setFederationTime(header.date);
-
     // If the message carry an exception, the Body will only contain the
     // exception reason.
 
     if (exception != e_NO_EXCEPTION)
+        {
+        G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
         return true ;
+        }
 
     // 2- Determine if body exists or not
     // NULL, UAV and SendInteraction are the most common ones.
@@ -620,10 +627,14 @@ Message::readHeader(SocketUN *socket)
 
       default:
         D.Out(pdExcept, "Unknown type %d in ReadHeader.", header.type);
+        G.Out(pdGendoc,"exit  Message::readHeader on RTIinternalError unknown type");
         throw RTIinternalError("Message: Received unknown Header type.");
     }
 
     // 4- Return depends on body
+    G.Out(pdGendoc,"      Message::readHeader header.bodySize=%d",header.bodySize);
+    G.Out(pdGendoc,"exit  Message::readHeader");
+
     return header.bodySize != 0 ;
 }
 
@@ -680,8 +691,18 @@ Message::readTag(MessageBody &body)
 void
 Message::readFEDid(MessageBody &body)
 {
-    body.readString(FEDid, MAX_FEDFILE_NAME_LENGTH);
+    G.Out(pdGendoc,"enter Message::readFEDid");
+    short FEDidSize ;
+    FEDidSize = body.readShortInt() ;
+    FEDid = new char[FEDidSize+1] ;
+    if ( FEDidSize == 0 )
+        FEDid[0] = '\0' ;
+    else
+        body.readString(FEDid,FEDidSize);
+    G.Out(pdGendoc,"               readFEDid FEDid=%s",FEDid);
+    G.Out(pdGendoc,"exit  Message::readFEDid");
 }
+
 // ----------------------------------------------------------------------------
 //! readValueArray.
 void
@@ -704,4 +725,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.9 2007/12/05 12:29:40 approx Exp $
+// $Id: Message_R.cc,v 3.10 2007/12/11 16:44:20 rousse Exp $

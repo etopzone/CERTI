@@ -64,7 +64,7 @@ Message::Message()
     dimension = 0 ;
     number = 0 ;
     region = 0 ;
-    FEDid[0] = '\0' ;
+    FEDid = NULL ;
     for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
         {
         valueArray[i].length = 0 ;
@@ -566,10 +566,12 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
 void
 Message::setFEDid(const char *NewFEDid)
 {
-    if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
-        throw ValueLengthExceeded("FEDFILE name too long to fit in Message.");
+    //if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
+    //    throw ValueLengthExceeded("FEDFILE name too long to fit in Message.");
 
+    FEDid = new char [strlen(NewFEDid)+1] ;
     strcpy(FEDid, NewFEDid);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -627,6 +629,7 @@ Message::operator=(const Message& msg)
         memcpy(valueArray[i].value, msg.valueArray[i].value, msg.valueArray[i].length );
         }
 
+    FEDid = new char [strlen(msg.FEDid)+1] ;
     strcpy(FEDid, msg.FEDid) ;
 
     return *this ;

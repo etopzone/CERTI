@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.36 2007/11/19 10:20:53 erk Exp $
+// $Id: FederationManagement.cc,v 3.37 2007/12/11 16:44:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,7 +67,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
     _nom_federation[0] = 0 ;
     _nom_federe[0] = 0 ;
-    _FEDid[0] = 0 ;
+    _FEDid = NULL ;
 }
 
 // ----------------------------------------------------------------------------
@@ -122,15 +122,20 @@ createFederationExecution(const char *theName,
         {
         requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
         strcpy(requete.federationName, theName);
+        requete.FEDid = new char[strlen(_FEDid)+1] ;
         strcpy(requete.FEDid, _FEDid) ;
 
-        G.Out(pdGendoc,"createFederationExecution====>send Message to RTIG");
+        G.Out(pdGendoc,"createFederationExecution====>   send Message to RTIG");
 
         comm->sendMessage(&requete);
 
         comm->waitMessage(&reponse, NetworkMessage::CREATE_FEDERATION_EXECUTION,
                           federate);
+
+        G.Out(pdGendoc,"createFederationExecution<== receive Message from RTIG");
+
         // We have to see if C_F_E is OK.
+
         if (reponse.exception == e_NO_EXCEPTION)
             {
             strcpy(_nom_federation, theName);
@@ -231,7 +236,7 @@ joinFederationExecution(const char *Federate,
 {
     NetworkMessage requete, reponse, requeteFED ;
     int i, nb ;
-    char filename[MAX_FEDFILE_NAME_LENGTH] ; // Needed for working file name
+    char *filename ; // Needed for working file name
 
     G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
@@ -268,16 +273,19 @@ joinFederationExecution(const char *Federate,
             {
 	    stat->rtiService(NetworkMessage::GET_FED_FILE);
             // RTIA have to open a new file for working
-            // We have to build a name for working file, name begins by _RTIA_
-            strcpy(filename,"_RTIA_");
-
+            // We have to build a name for working file, name begins by _RTIA_ (6 char)
             // First pid converted in char and added
-            // Then federation name added also
-            // Last file type : fed or xml ?
+            // Then federation name
+            // File type (4)
             char pid_name[10];
             sprintf(pid_name,"%d_",getpid());
+
+            filename = new char[6+strlen(pid_name)+strlen(Federation)+4+1] ;
+            strcpy(filename,"_RTIA_");
             strcat(filename,pid_name); 
-            strcat(filename,Federation);     
+            strcat(filename,Federation);
+            // Last file type : fed or xml ?
+   
             string filename_RTIG = reponse.FEDid ;
             int nbcar_filename_RTIG=filename_RTIG.length();        
             string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
@@ -292,6 +300,7 @@ joinFederationExecution(const char *Federate,
               else 
                   throw CouldNotOpenFED("nor .fed nor .xml"); 
             // FED filename for working must be stored
+            _FEDid =  new char[strlen(filename)+1] ;
             strcpy(_FEDid,filename) ;              
             // RTIA opens working file
             FILE *fdd;
@@ -302,13 +311,15 @@ joinFederationExecution(const char *Federate,
             requeteFED.type = NetworkMessage::GET_FED_FILE ;
             strcpy(requeteFED.federationName, Federation);
             strcpy(requeteFED.federateName, Federate);
+            requeteFED.FEDid = new char[strlen(filename)+1] ;
+            strcpy(requeteFED.FEDid,filename) ;
             if ( e == e_NO_EXCEPTION)
                 requeteFED.number = 0 ;  // OK for open
             else
                 requeteFED.number = 1 ; 
 
             G.Out(pdGendoc,"joinFederationExecution====> begin FED file get from RTIG");
- 
+
             comm->sendMessage(&requeteFED);
     
             // Now read loop from RTIG to get line contents and then write it into file
@@ -339,7 +350,9 @@ joinFederationExecution(const char *Federate,
                 requeteFED.type = NetworkMessage::GET_FED_FILE ;
                 strcpy(requeteFED.federationName, Federation);
                 strcpy(requeteFED.federateName, Federate);
-                requeteFED.number = num_line ;  
+                requeteFED.number = num_line ; 
+                requeteFED.FEDid = new char[strlen(filename)+1] ;
+                strcpy(requeteFED.FEDid,filename) ; 
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file
@@ -930,4 +943,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.36 2007/11/19 10:20:53 erk Exp $
+// $Id: FederationManagement.cc,v 3.37 2007/12/11 16:44:19 rousse Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.21 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.22 2007/12/11 16:44:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -30,7 +30,7 @@
 using std::vector ;
 
 namespace certi {
-
+static PrettyDebug G("GENDOC",__FILE__);
 // ----------------------------------------------------------------------------
 void
 NetworkMessage::display(const char *s)
@@ -68,7 +68,7 @@ NetworkMessage::NetworkMessage()
     federationName[0] = '\0' ;
     federateName[0] = '\0' ;
     label[0] = '\0' ;
-    FEDid[0] = '\0' ;
+    FEDid = NULL ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
@@ -232,10 +232,12 @@ void
 NetworkMessage::read(Socket *socket)
     throw (NetworkError, NetworkSignal)
 {
+    G.Out(pdGendoc,"enter NetworkMessage::read");
     bool has_body = readHeader(socket);
 
     if (has_body)
         readBody(socket);
+    G.Out(pdGendoc,"exit  NetworkMessage::read");
 }
 
 // ----------------------------------------------------------------------------
@@ -305,9 +307,8 @@ NetworkMessage::readFederateName(MessageBody &body)
 void
 NetworkMessage::setFEDid(const char *NewFEDid)
 {
-    if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
-        throw ValueLengthExceeded("FEDFILE name too long to fit in Network Message.");
-
+    assert ( NewFEDid != NULL) ;
+    FEDid = new char[strlen(NewFEDid)+1] ;
     strcpy(FEDid, NewFEDid);
 }
 
@@ -315,8 +316,18 @@ NetworkMessage::setFEDid(const char *NewFEDid)
 void
 NetworkMessage::readFEDid(MessageBody &body)
 {
-    body.readString(FEDid, MAX_FEDFILE_NAME_LENGTH);
+    G.Out(pdGendoc,"enter NetworkMessage::readFEDid");
+    short FEDidSize ;
+    FEDidSize = body.readShortInt() ;
+    FEDid = new char[FEDidSize+1] ;
+    if ( FEDidSize == 0 )
+        FEDid[0] = '\0' ;
+    else
+        body.readString(FEDid,FEDidSize);
+    G.Out(pdGendoc,"                      readFEDid FEDid=%s",FEDid);
+    G.Out(pdGendoc,"exit  NetworkMessage::readFEDid");
 }
+
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.21 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.22 2007/12/11 16:44:20 rousse Exp $

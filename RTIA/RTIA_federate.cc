@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.55 2007/12/05 12:29:39 approx Exp $
+// $Id: RTIA_federate.cc,v 3.56 2007/12/11 16:44:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -104,10 +104,13 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type CreateFederation.");
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
+        fm->_FEDid = new char[strlen(req->getFEDid())+1] ;
         strcpy(fm->_FEDid, req->getFEDid()) ;
         fm->createFederationExecution(req->getFederationName(), e);
         D.Out(pdTrace, "Receiving Message from Federate, "
               "type CreateFederation done.");
+        // RTIA needs FEDid into the answer (rep Message) to federate
+        rep.setFEDid(fm->_FEDid) ;
         break ;
 
       case Message::DESTROY_FEDERATION_EXECUTION:
@@ -678,7 +681,6 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         try {
             rep.setName(om->getObjectClassName(req->getObjectClass()).c_str());
-std::cout<<"rep.setName"<<std::endl;
         }
         catch (ObjectClassNotDefined) {
             rep.setException(e_ObjectClassNotDefined);
@@ -892,6 +894,7 @@ std::cout<<"rep.setName"<<std::endl;
         throw RTIinternalError("");
     }
     stat.federateService(req->type);
+    G.Out(pdGendoc,"exit  chooseFederateProcessing");
 }
 
 // ----------------------------------------------------------------------------
@@ -1250,4 +1253,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.55 2007/12/05 12:29:39 approx Exp $
+// $Id: RTIA_federate.cc,v 3.56 2007/12/11 16:44:19 rousse Exp $

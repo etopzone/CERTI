@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.45 2007/12/05 12:29:40 approx Exp $
+// $Id: RTIG_processing.cc,v 3.46 2007/12/11 16:44:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -105,7 +105,9 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     if ( rep.exception == e_NO_EXCEPTION )
         {
         rep.federation = h ;
+        rep.FEDid = new char [strlen(FEDid)+1] ;
         strcpy(rep.FEDid,FEDid) ;
+        strcpy(rep.federationName,federation);
         }
 
     G.Out(pdGendoc,"processCreateFederation===>write");
@@ -126,7 +128,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 {
     char *federation = req->federationName ;
     char *federate = req->federateName ;
-    char filename[MAX_FEDFILE_NAME_LENGTH + 1] ;
+    char *filename = NULL ;
     
     unsigned int peer = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
@@ -160,7 +162,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
                       pause, com_mc);
     assert(com_mc != NULL);
 #else
-    federations.info(num_federation, nb_federes, nb_regulateurs, pause, filename);
+    filename = federations.info(num_federation, nb_federes, nb_regulateurs, pause);
 #endif
 
     // Store Federate <->Socket reference.
@@ -202,6 +204,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     repFED.federate = num_federe ;
     repFED.federation = num_federation ;
     repFED.number = 0 ;
+    repFED.FEDid = new char[strlen(filename)+1] ;
     strcpy(repFED.FEDid,filename) ;
     repFED.exception = e ;
     // Send answer
@@ -232,7 +235,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             repFED.federate = num_federe ;
             repFED.federation = num_federation ;
             repFED.number = num_line ;
-            assert ( strlen(filename) <= MAX_FEDFILE_NAME_LENGTH ) ;
+            repFED.FEDid = new char[strlen(filename)+1] ;
             strcpy(repFED.FEDid,filename) ;
             // line transfered
             repFED.handleArraySize = 1 ;
@@ -254,6 +257,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         repFED.federate = num_federe ;
         repFED.federation = num_federation ;
         repFED.number = 0 ;
+        repFED.FEDid = new char[strlen(filename)+1] ;
         strcpy(repFED.FEDid,filename) ;   
 
         // Send answer
@@ -1318,4 +1322,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.45 2007/12/05 12:29:40 approx Exp $
+// $Id: RTIG_processing.cc,v 3.46 2007/12/11 16:44:20 rousse Exp $

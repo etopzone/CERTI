@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.26 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.27 2007/12/11 16:44:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -243,7 +243,7 @@ public :
     FederateHandle federate ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
-    char FEDid[MAX_FEDFILE_NAME_LENGTH + 1] ;
+    char *FEDid ;
 
     int bestEffortPeer ;
     unsigned long bestEffortAddress ;
@@ -322,4 +322,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.26 2007/11/13 13:25:40 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.27 2007/12/11 16:44:20 rousse Exp $

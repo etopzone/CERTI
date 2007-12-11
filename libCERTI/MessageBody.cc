@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.14 2007/11/20 09:04:54 erk Exp $
+// $Id: MessageBody.cc,v 3.15 2007/12/11 16:44:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -78,6 +78,7 @@ pData[bufSize]= 0;
 // ----------------------------------------------------------------------------
 void MessageBody::sPutS(char *pData)
 {//Write a string into Buffer
+assert(pData != NULL);
 unsigned short	dataSize= strlen(pData); 
 
 if ((dataSize + sizeof(unsigned short)) < bSize)
@@ -181,4 +182,4 @@ return *this ;
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.14 2007/11/20 09:04:54 erk Exp $
+// $Id: MessageBody.cc,v 3.15 2007/12/11 16:44:20 rousse Exp $

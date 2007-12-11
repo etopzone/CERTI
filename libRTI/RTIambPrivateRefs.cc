@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.8 2007/12/05 12:29:40 approx Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.9 2007/12/11 16:44:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,7 @@
 
 namespace {
 PrettyDebug D("LIBRTI", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 }
 
 RTIambPrivateRefs::RTIambPrivateRefs()
@@ -58,6 +59,7 @@ RTIambPrivateRefs::leave(const char *msg) throw (RTIinternalError)
 void
 RTIambPrivateRefs::executeService(Message *req, Message *rep)
 {
+    G.Out(pdGendoc,"enter RTIambPrivateRefs::executeService");
     // raise exception if reentrant call.
 	// FIXME EN: On SMP machine may we really 
 	//           guarantee that the following protection
@@ -85,7 +87,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
-        throw RTIinternalError("libRTI: Network Read Error");
+        throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
     }
 
     D.Out(pdDebug, "RTIA reply received.");
@@ -100,6 +102,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     D.Out(pdDebug, "processing returned exception (from reply).");
     processException(rep);
     D.Out(pdDebug, "exception processed.");
+    G.Out(pdGendoc,"exit RTIambPrivateRefs::executeService");
 }
 
 // ----------------------------------------------------------------------------
@@ -544,4 +547,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.8 2007/12/05 12:29:40 approx Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.9 2007/12/11 16:44:21 rousse Exp $

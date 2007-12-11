@@ -469,7 +469,8 @@ private:
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
     char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
-    char FEDid[MAX_FEDFILE_NAME_LENGTH + 1] ;
+    // char FEDid[MAX_FEDFILE_NAME_LENGTH + 1] ;
+    char *FEDid ;
     // valueArray is now a ValueLengthPair
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };

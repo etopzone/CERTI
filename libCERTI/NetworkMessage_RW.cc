@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.34 2007/12/05 12:29:40 approx Exp $
+// $Id: NetworkMessage_RW.cc,v 3.35 2007/12/11 16:44:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -46,7 +46,7 @@ NetworkMessage::readBody(Socket *socket)
 {
     MessageBody body ;
     unsigned short i ;
-
+    G.Out(pdGendoc,"enter NetworkMessage::readBody body size=%d",Header.bodySize);
     if (Header.bodySize == 0)
         throw RTIinternalError("ReadBody should not have been called.");
 
@@ -68,7 +68,7 @@ NetworkMessage::readBody(Socket *socket)
     switch(Header.type) {
       case GET_FED_FILE:
         number = body.readShortInt();
-        body.readString(FEDid,MAX_FEDFILE_NAME_LENGTH);
+        readFEDid(body);
         if ( number >= 1 )  // open (0) and close (0) no more information
             {
             ValueArray[0].length = body.readLongInt();
@@ -96,7 +96,6 @@ NetworkMessage::readBody(Socket *socket)
             ValueArray[i].length = body.readLongInt();
             body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
 	}
-G.Out(pdGendoc,"readBody REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	break ;
 	
 	// -- O_I Variable Part With Date(Body Not Empty) --
@@ -291,16 +290,16 @@ G.Out(pdGendoc,"readBody REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	throw RTIinternalError("Unknown/Unimplemented type for body.");
     }
     }
-
+    G.Out(pdGendoc,"exit NetworkMessage::readBody");
 }
 
 // ----------------------------------------------------------------------------
 bool
 NetworkMessage::readHeader(Socket *socket)
 {
+    G.Out(pdGendoc,"enter NetworkMessage::readHeader header size=%d",sizeof(HeaderStruct));
     // 1- Read Header from Socket
     socket->receive((void *) &Header, sizeof(HeaderStruct));
-
     // 2- Parse Header(Static Part)
     type = Header.type ;
     exception = Header.exception ;
@@ -310,7 +309,10 @@ NetworkMessage::readHeader(Socket *socket)
     // exception reason.
 
     if (exception != e_NO_EXCEPTION)
+        {
+        G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
         return true ;
+        }
 
     // 2- Parse Header according to its type(Variable Part)
     switch (Header.type) {
@@ -468,6 +470,7 @@ G.Out(pdGendoc,"readHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass)
     }
 
     // 4- If Header.bodySize is not 0, return RTI_TRUE, else RTI_FALSE
+    G.Out(pdGendoc,"exit  NetworkMessage::readHeader");
     return Header.bodySize ;
 }
 
@@ -499,6 +502,7 @@ NetworkMessage::writeBody(Socket *socket)
     switch(Header.type) {
       case GET_FED_FILE:
         body.writeShortInt(number);
+        body.writeShortInt(strlen(FEDid));
         body.writeString(FEDid);
         if ( number >= 1 )  // open (0) and close (0) no more information
             {
@@ -520,7 +524,6 @@ NetworkMessage::writeBody(Socket *socket)
 	break ;
 
       case REFLECT_ATTRIBUTE_VALUES:
-G.Out(pdGendoc,"writeBody REFLECT_ATTRIBUTE_VALUES %d",objectClass);
 	body.writeLongInt(object);
 	body.writeString(label);
         body.writeLongInt(boolean);
@@ -550,6 +553,7 @@ G.Out(pdGendoc,"writeBody REFLECT_ATTRIBUTE_VALUES %d",objectClass);
 
       case CREATE_FEDERATION_EXECUTION:
 	body.writeString(federationName);
+        body.writeShortInt(strlen(FEDid));
 	body.writeString(FEDid);
 	break ;
 
@@ -771,7 +775,6 @@ NetworkMessage::writeHeader(Socket *socket)
 	break ;
 
       case REFLECT_ATTRIBUTE_VALUES:
-G.Out(pdGendoc,"writeHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	Header.bodySize = 1 ;
         Header.VP.O_I.handle = objectClass ;
         Header.VP.O_I.size = handleArraySize ;
@@ -980,4 +983,4 @@ G.Out(pdGendoc,"writeHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.34 2007/12/05 12:29:40 approx Exp $
+// $Id: NetworkMessage_RW.cc,v 3.35 2007/12/11 16:44:21 rousse Exp $

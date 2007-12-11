@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.71 2007/12/05 12:29:39 approx Exp $
+// $Id: Federation.cc,v 3.72 2007/12/11 16:44:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -151,7 +151,8 @@ Federation::Federation(const char *federation_name,
     // Default Attribute values
     handle = federation_handle ;
 
-    FEDid = strdup(FEDid_name) ;
+    FEDid = new char[strlen(FEDid_name)+1] ;
+    strcpy(FEDid,FEDid_name);
 
     D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
           handle);
@@ -406,6 +407,7 @@ Federation::getNbRegulators() const
 const char *
 Federation::getFEDid() const
 {
+    assert(FEDid != NULL );
     return FEDid ;
 }
 
@@ -2239,5 +2241,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.71 2007/12/05 12:29:39 approx Exp $
+// $Id: Federation.cc,v 3.72 2007/12/11 16:44:19 rousse Exp $
 

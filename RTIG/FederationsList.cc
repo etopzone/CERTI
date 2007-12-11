@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.46 2007/12/05 12:29:39 approx Exp $
+// $Id: FederationsList.cc,v 3.47 2007/12/11 16:44:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -328,16 +328,16 @@ void FederationsList::info(Handle handle,
                            bool &is_syncing,
                            SocketMC* &comm_mc)
 #else
-    void FederationsList::info(Handle handle,
+    char * FederationsList::info(Handle handle,
                                int &nb_federates,
                                int &nb_regulators,
-                               bool &is_syncing,
-                               char *FED_Filename)
+                               bool &is_syncing)
 #endif
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
+    char * FED_Filename = NULL ;
     Federation *federation ;
-
+    G.Out(pdGendoc,"enter FederationsList::info");
     // It may raise RTIinternalError
     checkHandle(handle);
 
@@ -347,11 +347,16 @@ void FederationsList::info(Handle handle,
     nb_federates = federation->getNbFederates();
     nb_regulators = federation->getNbRegulators();
     is_syncing = federation->isSynchronizing();
+    // We need federation FEDid
+    FED_Filename = new char[strlen(federation->getFEDid()+1)];
     strcpy(FED_Filename,federation->getFEDid());
 
 #ifdef FEDERATION_USES_MULTICAST
     comm_mc = federation->MCLink ;
 #endif
+    G.Out(pdGendoc,"exit  FederationsList::info");
+    // Return FEDid
+    return FED_Filename ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1510,5 +1515,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.46 2007/12/05 12:29:39 approx Exp $
+// EOF $Id: FederationsList.cc,v 3.47 2007/12/11 16:44:19 rousse Exp $
 

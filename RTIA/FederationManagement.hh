@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.19 2007/11/16 15:04:21 rousse Exp $
+// $Id: FederationManagement.hh,v 3.20 2007/12/11 16:44:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -100,7 +100,7 @@ public:
     Handle _numero_federation ;
     FederateHandle federate ;
     bool _fin_execution ;
-    char _FEDid[MAX_FEDFILE_NAME_LENGTH + 1 ] ;
+    char *_FEDid ;
 
 private:
     Communications *comm ;
@@ -122,4 +122,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.19 2007/11/16 15:04:21 rousse Exp $
+// $Id: FederationManagement.hh,v 3.20 2007/12/11 16:44:19 rousse Exp $
