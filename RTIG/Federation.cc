@@ -18,12 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.72 2007/12/11 16:44:19 rousse Exp $
+// $Id: Federation.cc,v 3.73 2007/12/11 17:27:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 #include <sstream>
+#include <cassert>
 
 #ifdef _WIN32
 
@@ -2241,5 +2242,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.72 2007/12/11 16:44:19 rousse Exp $
+// $Id: Federation.cc,v 3.73 2007/12/11 17:27:42 rousse Exp $
 

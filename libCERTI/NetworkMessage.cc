@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.22 2007/12/11 16:44:20 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.23 2007/12/11 17:27:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -26,6 +26,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cassert>
 
 using std::vector ;
 
@@ -330,4 +331,4 @@ NetworkMessage::readFEDid(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.22 2007/12/11 16:44:20 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.23 2007/12/11 17:27:42 rousse Exp $
