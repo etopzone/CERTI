@@ -155,6 +155,18 @@ ADD_CUSTOM_COMMAND(
    COMMAND ${CMAKE_COMMAND} -E copy ${YACC_OUT_PREFIX}.c  ${YACC_WANTED_OUT_PREFIX}.cc
    DEPENDS ${YACC_SRC}
    )
+   
+# Inhibit compiler warning for LEX/YACC generated files
+# Note that the inhibition is COMPILER dependent ...
+# GNU CC specific warning stop
+IF (CMAKE_COMPILER_IS_GNUCC) 
+   MESSAGE(STATUS "INHIBIT Compiler warning for LEX/YACC generated files")
+   SET_SOURCE_FILES_PROPERTIES(${YACC_WANTED_OUT_PREFIX}.cc ${YACC_WANTED_OUT_PREFIX}.h
+	                           PROPERTIES COMPILE_FLAGS "-w")
+	                            
+   SET_SOURCE_FILES_PROPERTIES(${LEX_WANTED_OUT_PREFIX}.cc
+	                           PROPERTIES COMPILE_FLAGS "-w") 
+ENDIF(CMAKE_COMPILER_IS_GNUCC) 	     
 SET(CERTI_GENERATED_SRCS ${CERTI_GENERATED_SRCS} ${YACC_WANTED_OUT_PREFIX}.cc)
 SET(CERTI_GENERATED_SRCS ${CERTI_GENERATED_SRCS} ${PROJECT_BINARY_DIR}/config.h)
 SOURCE_GROUP("Source Files\\Generated" FILES ${CERTI_GENERATED_SRCS})
