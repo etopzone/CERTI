@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.11 2007/12/11 16:44:20 rousse Exp $
+// $Id: Message_W.cc,v 3.12 2007/12/13 14:43:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -75,11 +75,9 @@ Message::writeBody(SocketUN *socket)
         switch(header.type) {
 
           // Body contains federationName,FEDid
-          // Note : relevant only on federate request
           case CREATE_FEDERATION_EXECUTION:
             body.writeString(federationName);
-            body.writeShortInt(strlen(FEDid));
-            body.writeString(FEDid);
+            writeFEDid(body);
             break ;
 
           // Body contains federationName
@@ -680,6 +678,14 @@ Message::writeResignAction(MessageBody &)
     //assert(false);
 }
 
+// ---------------------------------------------------------------
+void
+Message::writeFEDid(MessageBody &body)
+{
+    body.writeShortInt(strlen(FEDid));
+    body.writeString(FEDid);
+}
+
 // ---------------------------------------------------------------------------
 void
 Message::writeValueArray(MessageBody &body)
@@ -695,4 +701,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.11 2007/12/11 16:44:20 rousse Exp $
+// $Id: Message_W.cc,v 3.12 2007/12/13 14:43:04 rousse Exp $

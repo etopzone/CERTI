@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.35 2007/12/11 16:44:21 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.36 2007/12/13 14:43:05 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -502,8 +502,7 @@ NetworkMessage::writeBody(Socket *socket)
     switch(Header.type) {
       case GET_FED_FILE:
         body.writeShortInt(number);
-        body.writeShortInt(strlen(FEDid));
-        body.writeString(FEDid);
+        writeFEDid(body);
         if ( number >= 1 )  // open (0) and close (0) no more information
             {
             body.writeLongInt(ValueArray[0].length);
@@ -553,8 +552,7 @@ NetworkMessage::writeBody(Socket *socket)
 
       case CREATE_FEDERATION_EXECUTION:
 	body.writeString(federationName);
-        body.writeShortInt(strlen(FEDid));
-	body.writeString(FEDid);
+        writeFEDid(body);
 	break ;
 
       case DESTROY_FEDERATION_EXECUTION:
@@ -983,4 +981,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.35 2007/12/11 16:44:21 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.36 2007/12/13 14:43:05 rousse Exp $

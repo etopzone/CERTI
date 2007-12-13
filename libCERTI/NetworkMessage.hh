@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.27 2007/12/11 16:44:20 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.28 2007/12/13 14:43:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -304,6 +304,9 @@ private:
     // if the WriteBody method has to be called.
     bool writeHeader(Socket *Socket);
 
+    // -- Others Private Write Methods --
+    void writeFEDid(MessageBody &body);
+
     // -- Others Private Read Methods --
     void readLabel(MessageBody &);
     void readTag(MessageBody &);
@@ -322,4 +325,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.27 2007/12/11 16:44:20 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.28 2007/12/13 14:43:04 rousse Exp $

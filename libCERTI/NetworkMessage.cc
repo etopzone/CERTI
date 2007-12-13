@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.23 2007/12/11 17:27:42 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.24 2007/12/13 14:43:04 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -329,6 +329,14 @@ NetworkMessage::readFEDid(MessageBody &body)
     G.Out(pdGendoc,"exit  NetworkMessage::readFEDid");
 }
 
+// ---------------------------------------------------------------
+void
+NetworkMessage::writeFEDid(MessageBody &body)
+{
+    body.writeShortInt(strlen(FEDid));
+    body.writeString(FEDid);
+}
+
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.23 2007/12/11 17:27:42 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.24 2007/12/13 14:43:04 rousse Exp $
