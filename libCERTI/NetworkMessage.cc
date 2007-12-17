@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.24 2007/12/13 14:43:04 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.25 2007/12/17 16:01:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -66,7 +66,7 @@ NetworkMessage::NetworkMessage()
     federation = 0 ;
     federate = 0 ;
 
-    federationName[0] = '\0' ;
+    federationName = NULL ;
     federateName[0] = '\0' ;
     label[0] = '\0' ;
     FEDid = NULL ;
@@ -233,12 +233,12 @@ void
 NetworkMessage::read(Socket *socket)
     throw (NetworkError, NetworkSignal)
 {
-    G.Out(pdGendoc,"enter NetworkMessage::read");
+    // G.Out(pdGendoc,"enter NetworkMessage::read");
     bool has_body = readHeader(socket);
 
     if (has_body)
         readBody(socket);
-    G.Out(pdGendoc,"exit  NetworkMessage::read");
+    // G.Out(pdGendoc,"exit  NetworkMessage::read");
 }
 
 // ----------------------------------------------------------------------------
@@ -292,7 +292,16 @@ void NetworkMessage::readTag(MessageBody &body)
 void
 NetworkMessage::readFederationName(MessageBody &body)
 {
-    body.readString(federationName, MAX_FEDERATION_NAME_LENGTH);
+    short federationNameSize ;
+
+    federationNameSize = body.readShortInt() ;
+    federationName = new char[federationNameSize+1] ;
+    if ( federationNameSize == 0 )
+        {
+        federationName[0] = '\0' ;
+        }
+    else
+        body.readString(federationName,federationNameSize);    
 }
 
 // ----------------------------------------------------------------------------
@@ -317,7 +326,6 @@ NetworkMessage::setFEDid(const char *NewFEDid)
 void
 NetworkMessage::readFEDid(MessageBody &body)
 {
-    G.Out(pdGendoc,"enter NetworkMessage::readFEDid");
     short FEDidSize ;
     FEDidSize = body.readShortInt() ;
     FEDid = new char[FEDidSize+1] ;
@@ -325,8 +333,6 @@ NetworkMessage::readFEDid(MessageBody &body)
         FEDid[0] = '\0' ;
     else
         body.readString(FEDid,FEDidSize);
-    G.Out(pdGendoc,"                      readFEDid FEDid=%s",FEDid);
-    G.Out(pdGendoc,"exit  NetworkMessage::readFEDid");
 }
 
 // ---------------------------------------------------------------
@@ -337,6 +343,15 @@ NetworkMessage::writeFEDid(MessageBody &body)
     body.writeString(FEDid);
 }
 
+// ---------------------------------------------------------------
+void
+NetworkMessage::writeFederationName(MessageBody &body)
+{ 
+    assert(federationName != NULL) ;  
+    body.writeShortInt(strlen(federationName));
+    body.writeString(federationName);
+}
+
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.24 2007/12/13 14:43:04 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.25 2007/12/17 16:01:25 rousse Exp $

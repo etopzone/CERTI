@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.56 2007/12/11 16:44:19 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.57 2007/12/17 16:01:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -111,6 +111,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "type CreateFederation done.");
         // RTIA needs FEDid into the answer (rep Message) to federate
         rep.setFEDid(fm->_FEDid) ;
+        // RTIA needs federation name into the answer (rep Message) to federate
+        rep.setFederationName(req->getFederationName());
         break ;
 
       case Message::DESTROY_FEDERATION_EXECUTION:
@@ -118,6 +120,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type DestroyFederation.");
 
         fm->destroyFederationExecution(req->getFederationName(), e);
+        // RTIA needs federation name into the answer (rep Message) to federate
+        rep.setFederationName(req->getFederationName());
         break ;
 
       case Message::JOIN_FEDERATION_EXECUTION: {
@@ -128,6 +132,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                                       e));
           /// Set RTIA PrettyDebug federate name
           PrettyDebug::setFederateName(req->getFederateName());
+          // Set federation name for the answer message (rep)
+          rep.setFederationName(req->getFederationName());
 
           string filename = fm->_FEDid ;
           int nbcar_filename=filename.length();
@@ -1253,4 +1259,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.56 2007/12/11 16:44:19 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.57 2007/12/17 16:01:24 rousse Exp $

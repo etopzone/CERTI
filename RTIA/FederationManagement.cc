@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.37 2007/12/11 16:44:19 rousse Exp $
+// $Id: FederationManagement.cc,v 3.38 2007/12/17 16:01:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -65,7 +65,7 @@ static PrettyDebug G("GENDOC",__FILE__);
     _est_createur_federation = false ;
     _est_membre_federation = false ;
 
-    _nom_federation[0] = 0 ;
+    _nom_federation = NULL ;
     _nom_federe[0] = 0 ;
     _FEDid = NULL ;
 }
@@ -95,6 +95,8 @@ FederationManagement::~FederationManagement()
         }
         cout << "RTIA: Federation destroyed" << endl ;
     }
+    delete _nom_federation ;
+    delete _FEDid ;
 }
 
 // ----------------------------------------------------------------------------
@@ -121,6 +123,7 @@ createFederationExecution(const char *theName,
     if (e == e_NO_EXCEPTION)
         {
         requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
+        requete.federationName = new char[strlen(theName)+1] ;
         strcpy(requete.federationName, theName);
         requete.FEDid = new char[strlen(_FEDid)+1] ;
         strcpy(requete.FEDid, _FEDid) ;
@@ -138,6 +141,7 @@ createFederationExecution(const char *theName,
 
         if (reponse.exception == e_NO_EXCEPTION)
             {
+            _nom_federation = new char[strlen(theName)] ;
             strcpy(_nom_federation, theName);
             _numero_federation = reponse.federation ;
             _est_createur_federation = true ;
@@ -202,6 +206,7 @@ destroyFederationExecution(const char *theName,
         requete.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
         requete.federation = _numero_federation ;
         requete.federate = federate ;
+        requete.federationName = new char[strlen(theName)+1] ;
         strcpy(requete.federationName, theName);
 
         comm->sendMessage(&requete);
@@ -210,7 +215,7 @@ destroyFederationExecution(const char *theName,
                           federate);
 
         if (reponse.exception == e_NO_EXCEPTION) {
-            _nom_federation[0] = 0 ;
+            _nom_federation = NULL ;
             _numero_federation = 0 ;
             _est_createur_federation = false ;
             _fin_execution = true ;
@@ -251,6 +256,7 @@ joinFederationExecution(const char *Federate,
 
     if (e == e_NO_EXCEPTION) {
         requete.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
+        requete.federationName = new char[strlen(Federation)+1] ;
         strcpy(requete.federationName, Federation);
         strcpy(requete.federateName, Federate);
 
@@ -309,7 +315,6 @@ joinFederationExecution(const char *Federate,
               
             // RTIA says RTIG OK for file transfer
             requeteFED.type = NetworkMessage::GET_FED_FILE ;
-            strcpy(requeteFED.federationName, Federation);
             strcpy(requeteFED.federateName, Federate);
             requeteFED.FEDid = new char[strlen(filename)+1] ;
             strcpy(requeteFED.FEDid,filename) ;
@@ -348,11 +353,11 @@ joinFederationExecution(const char *Federate,
                 file_line = NULL ;
                 // RTIA says OK to RTIG
                 requeteFED.type = NetworkMessage::GET_FED_FILE ;
-                strcpy(requeteFED.federationName, Federation);
                 strcpy(requeteFED.federateName, Federate);
                 requeteFED.number = num_line ; 
                 requeteFED.FEDid = new char[strlen(filename)+1] ;
                 strcpy(requeteFED.FEDid,filename) ; 
+
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file
@@ -367,9 +372,9 @@ joinFederationExecution(const char *Federate,
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
         if (reponse.exception == e_NO_EXCEPTION) {
+            _nom_federation = new char[strlen(Federation)+1] ;
             strcpy(_nom_federation, Federation);
             strcpy(_nom_federe, Federate);
-
             _numero_federation = reponse.federation ;
             federate = reponse.federate ;
             tm->setFederate(reponse.federate);
@@ -943,4 +948,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.37 2007/12/11 16:44:19 rousse Exp $
+// $Id: FederationManagement.cc,v 3.38 2007/12/17 16:01:24 rousse Exp $

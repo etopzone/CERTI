@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.46 2007/12/11 16:44:20 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.47 2007/12/17 16:01:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -107,6 +107,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         rep.federation = h ;
         rep.FEDid = new char [strlen(FEDid)+1] ;
         strcpy(rep.FEDid,FEDid) ;
+        rep.federationName = new char [strlen(federation)+1] ;
         strcpy(rep.federationName,federation);
         }
 
@@ -180,6 +181,8 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     NetworkMessage rep ;
     rep.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
+    rep.federationName = new char[strlen(federation)+1];
+    strcpy(rep.federationName,federation);
     rep.federate = num_federe ;
     rep.federation = num_federation ;
     rep.numberOfRegulators = nb_regulateurs ;
@@ -210,8 +213,8 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     // Send answer
     D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
           repFED.type,repFED.FEDid);
-
     G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
+
     repFED.write(link);
 
     if ( e ==  e_NO_EXCEPTION )  
@@ -258,7 +261,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         repFED.federation = num_federation ;
         repFED.number = 0 ;
         repFED.FEDid = new char[strlen(filename)+1] ;
-        strcpy(repFED.FEDid,filename) ;   
+        strcpy(repFED.FEDid,filename) ;
 
         // Send answer
 
@@ -278,8 +281,6 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
           federate, num_federation, num_federe);
 
     // Send answer
-
-    G.Out(pdGendoc,"processJoinFederation====>write");
 
     rep.write(link);
 
@@ -330,6 +331,8 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     rep.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
     rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
+    rep.federationName = new char[strlen(req->federationName)+1];
+    strcpy(rep.federationName,req->federationName);
 
     G.Out(pdGendoc,"processDestroyFederation===>write");
 
@@ -1322,4 +1325,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.46 2007/12/11 16:44:20 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.47 2007/12/17 16:01:24 rousse Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.36 2007/12/13 14:43:05 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.37 2007/12/17 16:01:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -46,7 +46,7 @@ NetworkMessage::readBody(Socket *socket)
 {
     MessageBody body ;
     unsigned short i ;
-    G.Out(pdGendoc,"enter NetworkMessage::readBody body size=%d",Header.bodySize);
+    G.Out(pdGendoc,"enter NetworkMessage::readBody");
     if (Header.bodySize == 0)
         throw RTIinternalError("ReadBody should not have been called.");
 
@@ -66,6 +66,7 @@ NetworkMessage::readBody(Socket *socket)
     }
     else {
     switch(Header.type) {
+      // line number, FEDid, Value Array size and Value array (line contents)
       case GET_FED_FILE:
         number = body.readShortInt();
         readFEDid(body);
@@ -297,7 +298,7 @@ NetworkMessage::readBody(Socket *socket)
 bool
 NetworkMessage::readHeader(Socket *socket)
 {
-    G.Out(pdGendoc,"enter NetworkMessage::readHeader header size=%d",sizeof(HeaderStruct));
+    G.Out(pdGendoc,"enter NetworkMessage::readHeader");
     // 1- Read Header from Socket
     socket->receive((void *) &Header, sizeof(HeaderStruct));
     // 2- Parse Header(Static Part)
@@ -334,7 +335,6 @@ NetworkMessage::readHeader(Socket *socket)
 	objectClass = Header.VP.O_I.handle ;
 	handleArraySize = Header.VP.O_I.size ;
 	date = Header.VP.O_I.date ;
-G.Out(pdGendoc,"readHeader REFLECT_ATTRIBUTE_VALUES objectClass=%d",objectClass);
 	break ;
 
       case SEND_INTERACTION:
@@ -551,12 +551,12 @@ NetworkMessage::writeBody(Socket *socket)
 	// -- No Variable Part --
 
       case CREATE_FEDERATION_EXECUTION:
-	body.writeString(federationName);
+	writeFederationName(body);
         writeFEDid(body);
 	break ;
 
       case DESTROY_FEDERATION_EXECUTION:
-	body.writeString(federationName);
+	writeFederationName(body);
 	break ;
 
       case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
@@ -655,7 +655,7 @@ NetworkMessage::writeBody(Socket *socket)
 	// -- Join Variable Part --
 
       case JOIN_FEDERATION_EXECUTION:
-	body.writeString(federationName);
+	writeFederationName(body);
 	body.writeString(federateName);
 	break ;
 
@@ -981,4 +981,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.36 2007/12/13 14:43:05 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.37 2007/12/17 16:01:25 rousse Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.10 2007/12/11 16:44:20 rousse Exp $
+// $Id: Message_R.cc,v 3.11 2007/12/17 16:01:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -39,12 +39,12 @@ void
 Message::read(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
 {
-    G.Out(pdGendoc,"enter Message::read");
+    // G.Out(pdGendoc,"enter Message::read");
     bool has_body = readHeader(socket);
 
     if (has_body)
       readBody(socket);
-    G.Out(pdGendoc,"exit  Message::read");
+    // G.Out(pdGendoc,"exit  Message::read");
 }
 
 // ----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ Message::read(SocketUN *socket)
 void
 Message::readBody(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::readBody body size=%d,",header.bodySize);
+    G.Out(pdGendoc,"enter Message::readBody");
  
     assert(header.bodySize > 0);
 
@@ -465,7 +465,7 @@ Message::readBody(SocketUN *socket)
 bool
 Message::readHeader(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::readHeader header size=%d",sizeof(MessageHeader));
+    G.Out(pdGendoc,"enter Message::readHeader");
 
     // 1- Read Header from Socket
     socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
@@ -632,7 +632,6 @@ Message::readHeader(SocketUN *socket)
     }
 
     // 4- Return depends on body
-    G.Out(pdGendoc,"      Message::readHeader header.bodySize=%d",header.bodySize);
     G.Out(pdGendoc,"exit  Message::readHeader");
 
     return header.bodySize != 0 ;
@@ -663,7 +662,15 @@ Message::readName(MessageBody &body)
 void
 Message::readFederationName(MessageBody &body)
 {
-    body.readString(federationName, MAX_FEDERATION_NAME_LENGTH);
+    short federationNameSize ;
+
+    federationNameSize = body.readShortInt() ;
+    federationName = new char[federationNameSize+1] ;
+    if ( federationNameSize == 0 )
+        federationName[0] = '\0' ;
+    else
+        body.readString(federationName,federationNameSize);    
+
 }
 
 // ----------------------------------------------------------------------------
@@ -691,16 +698,14 @@ Message::readTag(MessageBody &body)
 void
 Message::readFEDid(MessageBody &body)
 {
-    G.Out(pdGendoc,"enter Message::readFEDid");
     short FEDidSize ;
+
     FEDidSize = body.readShortInt() ;
     FEDid = new char[FEDidSize+1] ;
     if ( FEDidSize == 0 )
         FEDid[0] = '\0' ;
     else
         body.readString(FEDid,FEDidSize);
-    G.Out(pdGendoc,"               readFEDid FEDid=%s",FEDid);
-    G.Out(pdGendoc,"exit  Message::readFEDid");
 }
 
 // ----------------------------------------------------------------------------
@@ -725,4 +730,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.10 2007/12/11 16:44:20 rousse Exp $
+// $Id: Message_R.cc,v 3.11 2007/12/17 16:01:25 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.73 2007/12/11 17:27:42 rousse Exp $
+// $Id: Federation.cc,v 3.74 2007/12/17 16:01:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -141,9 +141,6 @@ Federation::Federation(const char *federation_name,
     // Allocates Name
     if ((federation_name == 0) || (federation_handle == 0))
         throw RTIinternalError("Null init parameter in Federation creation.");
-
-    if (strlen(federation_name) > MAX_FEDERATION_NAME_LENGTH)
-        throw RTIinternalError("Federation name too long.");
 
     G.Out(pdGendoc,"enter Federation::Federation");
 
@@ -2242,5 +2239,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.73 2007/12/11 17:27:42 rousse Exp $
+// $Id: Federation.cc,v 3.74 2007/12/17 16:01:24 rousse Exp $
 

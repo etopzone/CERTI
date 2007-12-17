@@ -463,12 +463,13 @@ private:
     void writeResignAction(MessageBody &);
     void writeValueArray(MessageBody &);
     void writeFEDid(MessageBody &);
+    void writeFederationName(MessageBody &);
 
     MessageHeader header ;
     char label[MAX_USER_TAG_LENGTH + 1] ;
     char name[MAX_USER_TAG_LENGTH + 1] ;
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
-    char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
+    char *federationName ;
     char tag[MAX_USER_TAG_LENGTH + 1] ;
     char *FEDid ;
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;

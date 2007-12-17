@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.12 2007/12/13 14:43:04 rousse Exp $
+// $Id: Message_W.cc,v 3.13 2007/12/17 16:01:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -39,12 +39,12 @@ void
 Message::write(SocketUN *socket)
     throw (NetworkError, NetworkSignal)
 {
-    G.Out(pdGendoc,"enter Message::write");
+    // G.Out(pdGendoc,"enter Message::write");
     bool result ;
     result = writeHeader(socket);
     if (result)
         writeBody(socket);
-    G.Out(pdGendoc,"exit  Message::write");
+    // G.Out(pdGendoc,"exit  Message::write");
 }
 
 // ----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ void
 Message::writeBody(SocketUN *socket)
 {
     MessageBody body ;
-    G.Out(pdGendoc,"enter Message::writeBody body size=%d",header.bodySize);    
+    G.Out(pdGendoc,"enter Message::writeBody");    
     // 0- Copy the Header at the beginning of the Body, in order to
     // make a single Socket->Emettre call while sending both.
     // WARNING: As the Body size is not known yet, we will have to
@@ -76,13 +76,13 @@ Message::writeBody(SocketUN *socket)
 
           // Body contains federationName,FEDid
           case CREATE_FEDERATION_EXECUTION:
-            body.writeString(federationName);
+            writeFederationName(body);
             writeFEDid(body);
             break ;
 
           // Body contains federationName
           case DESTROY_FEDERATION_EXECUTION:
-            body.writeString(federationName);
+            writeFederationName(body);
             break ;
 
           // Body contains label,tag,boolean and maybe
@@ -187,7 +187,7 @@ Message::writeBody(SocketUN *socket)
           // handleArray
           case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
 	    body.writeLongInt(object);
-            body.writeString(federationName);
+            writeFederationName(body);
             body.writeShortInt(federate);
             body.writeShortInt(handleArraySize);
             writeHandleArray(body);
@@ -267,7 +267,7 @@ Message::writeBody(SocketUN *socket)
           // Note : federate relevant on RTIA answer only
           case JOIN_FEDERATION_EXECUTION:
             body.writeShortInt(federate);
-            body.writeString(federationName);
+            writeFederationName(body);
             body.writeString(federateName);
             break ;
 
@@ -463,7 +463,6 @@ Message::writeBody(SocketUN *socket)
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
-    G.Out(pdGendoc,"Message::writeBody type= %d body.size=%d",header.type,body.size());
     socket->send(body.getBuffer(), body.size());
     G.Out(pdGendoc,"exit  Message::writeBody");
 }
@@ -484,7 +483,7 @@ Message::writeHandleArray(MessageBody &body)
 bool
 Message::writeHeader(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::writeHeader header size=%d",sizeof(MessageHeader));
+    G.Out(pdGendoc,"enter Message::writeHeader");
     // 1- Clear Header
     memset((void *) &header, '\0', sizeof(MessageHeader));
 
@@ -686,6 +685,17 @@ Message::writeFEDid(MessageBody &body)
     body.writeString(FEDid);
 }
 
+// ---------------------------------------------------------------
+void
+Message::writeFederationName(MessageBody &body)
+{
+    body.writeShortInt(strlen(federationName));
+    if ( strlen(federationName) != 0 )
+        {
+        body.writeString(federationName);
+        }
+}
+
 // ---------------------------------------------------------------------------
 void
 Message::writeValueArray(MessageBody &body)
@@ -701,4 +711,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.12 2007/12/13 14:43:04 rousse Exp $
+// $Id: Message_W.cc,v 3.13 2007/12/17 16:01:25 rousse Exp $

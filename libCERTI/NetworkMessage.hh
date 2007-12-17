@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.28 2007/12/13 14:43:04 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.29 2007/12/17 16:01:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -241,7 +241,8 @@ public :
 
     Handle federation ;
     FederateHandle federate ;
-    char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
+    //char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
+    char *federationName ;
     char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
     char *FEDid ;
 
@@ -306,6 +307,7 @@ private:
 
     // -- Others Private Write Methods --
     void writeFEDid(MessageBody &body);
+    void writeFederationName(MessageBody &body);
 
     // -- Others Private Read Methods --
     void readLabel(MessageBody &);
@@ -325,4 +327,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.28 2007/12/13 14:43:04 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.29 2007/12/17 16:01:25 rousse Exp $

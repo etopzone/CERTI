@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.22 2007/12/11 16:44:20 rousse Exp $
+// $Id: certi.hh,v 3.23 2007/12/17 16:01:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -63,7 +63,6 @@
 // Deprecated HLA macros still in use
 #define MAX_BYTES_PER_VALUE 500
 #define MAX_FEDERATE_NAME_LENGTH 64
-#define MAX_FEDERATION_NAME_LENGTH 64
 #undef MAX_USER_TAG_LENGTH
 #define MAX_USER_TAG_LENGTH 64
 #undef MAX_ATTRIBUTES_PER_CLASS
@@ -325,4 +324,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.22 2007/12/11 16:44:20 rousse Exp $
+// $Id: certi.hh,v 3.23 2007/12/17 16:01:24 rousse Exp $

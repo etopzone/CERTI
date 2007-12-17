@@ -32,6 +32,8 @@ using std::vector ;
 
 namespace certi {
 
+static PrettyDebug G("GENDOC",__FILE__) ;
+
 #define NONE -1
 
 Message::Message()
@@ -40,7 +42,7 @@ Message::Message()
     exception = e_NO_EXCEPTION ;
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
-    federationName[0] = '\0' ;
+    federationName = NULL ;
     tag[0] = '\0' ;
     name[0] = '\0' ;
     label[0] = '\0' ;
@@ -497,9 +499,7 @@ Message::setParameters(ParameterHandle * the_parameters,
 //! Sets the federation name.
 void Message::setFederationName(const char *NewNomFederation)
 {
-    if (strlen(NewNomFederation) > MAX_FEDERATION_NAME_LENGTH)
-        throw ValueLengthExceeded("NomFederation too long to fit in Message.");
-
+    federationName = new char [strlen(NewNomFederation)+1] ;
     strcpy(federationName, NewNomFederation);
 }
 
@@ -566,12 +566,8 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
 void
 Message::setFEDid(const char *NewFEDid)
 {
-    //if (strlen(NewFEDid) > MAX_FEDFILE_NAME_LENGTH)
-    //    throw ValueLengthExceeded("FEDFILE name too long to fit in Message.");
-
     FEDid = new char [strlen(NewFEDid)+1] ;
     strcpy(FEDid, NewFEDid);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -588,6 +584,8 @@ Message::operator=(const Message& msg)
 
     strcpy(exceptionReason, msg.exceptionReason);
     strcpy(federateName, msg.federateName);
+
+    federationName = new char[strlen(msg.federationName+1)] ;
     strcpy(federationName, msg.federationName);
 
     federate = msg.federate ;
@@ -643,11 +641,14 @@ Message::display(char *s)
 {
     printf(" -- MESSAGE - %s -", s);
     if ( type == CREATE_FEDERATION_EXECUTION )
-      printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",federationName,FEDid) ;
+      printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",
+             ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid)) ;
     if ( type == DESTROY_FEDERATION_EXECUTION )
-      printf("DESTROY_FEDERATION_EXECUTION : federation %s : \n",federationName) ;
+      printf("DESTROY_FEDERATION_EXECUTION : federation %s : \n",
+             ((federationName==NULL)?"empty":federationName)) ;
     else if ( type == JOIN_FEDERATION_EXECUTION )
-      printf("JOIN_FEDERATION_EXECUTION\n") ;
+      printf("JOIN_FEDERATION_EXECUTION : federate number %d federation name %s federate name %s\n",
+             federate,((federationName==NULL)?"empty":federationName),federateName) ;
     else
         printf(" type=%d :", type);
     printf(" date=%f: ", fed_time.getTime());
