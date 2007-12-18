@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.37 2007/12/17 16:01:25 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.38 2007/12/18 15:04:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -383,6 +383,7 @@ NetworkMessage::readHeader(Socket *socket)
       case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
       case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
       case DDM_CREATE_REGION:
+      case FEDERATE_SAVE_BEGUN:
       case FEDERATE_RESTORE_COMPLETE:
       case FEDERATE_RESTORE_NOT_COMPLETE:
       case FEDERATION_RESTORE_BEGUN:
@@ -466,6 +467,7 @@ NetworkMessage::readHeader(Socket *socket)
 
       default:
 	D.Out(pdExcept, "Unknown type %d in ReadHeader.", Header.type);
+        G.Out(pdGendoc,"exit  NetworkMessage::readHeader with unknown type=%d",Header.type);
 	throw RTIinternalError("Received unknown Header type.");
     }
 
@@ -981,4 +983,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.37 2007/12/17 16:01:25 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.38 2007/12/18 15:04:27 rousse Exp $
