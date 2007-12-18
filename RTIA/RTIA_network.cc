@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.16 2007/12/05 12:29:39 approx Exp $
+// $Id: RTIA_network.cc,v 3.17 2007/12/18 16:23:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -279,6 +279,18 @@ msg->trace("RTIA::processNetworkMessage ");
         queues->insertBeginCommand(msg);
         break ;
 
+      case NetworkMessage::FEDERATE_SAVE_BEGUN:
+        D.Out(pdTrace, "Receiving Message from RTIG, "
+              " type FederateSaveBegun.");
+        queues->insertBeginCommand(msg);
+        break ;
+
+      case NetworkMessage::FEDERATE_SAVE_COMPLETE:
+        D.Out(pdTrace, "Receiving Message from RTIG, "
+              " type FederateSaveComplete.");
+        queues->insertBeginCommand(msg);
+        break ;
+
       case NetworkMessage::FEDERATION_SAVED:
       case NetworkMessage::FEDERATION_NOT_SAVED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
@@ -326,4 +338,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.16 2007/12/05 12:29:39 approx Exp $
+// $Id: RTIA_network.cc,v 3.17 2007/12/18 16:23:58 rousse Exp $

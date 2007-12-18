@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.61 2007/12/06 17:11:19 erk Exp $
+// $Id: RTIambassador.cc,v 3.62 2007/12/18 16:23:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -843,7 +843,6 @@ RTI::RTIambassador::federateSaveComplete()
            RestoreInProgress,
            RTIinternalError)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateSaveComplete");
@@ -2901,4 +2900,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.61 2007/12/06 17:11:19 erk Exp $
+// $Id: RTIambassador.cc,v 3.62 2007/12/18 16:23:58 rousse Exp $
