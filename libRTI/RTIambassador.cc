@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.62 2007/12/18 16:23:58 rousse Exp $
+// $Id: RTIambassador.cc,v 3.63 2007/12/19 10:38:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -626,7 +626,7 @@ RTI::RTIambassador::joinFederationExecution(const char *yourName,
     req.type = Message::JOIN_FEDERATION_EXECUTION ;
     req.setFederateName(yourName);
     req.setFederationName(executionName);
-
+    G.Out(pdGendoc,"        ====>executeService JOIN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::joinFederationExecution");
     return rep.getFederate();
@@ -648,6 +648,8 @@ RTI::RTIambassador::resignFederationExecution(ResignAction theAction)
 
     req.type = Message::RESIGN_FEDERATION_EXECUTION ;
     req.setResignAction(theAction);
+
+    G.Out(pdGendoc,"        ====>executeService RESIGN_FEDERATION_EXECUTION");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit RTIambassador::resignFederationExecution");
@@ -679,7 +681,7 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
     req.setTag(the_tag);
     // boolean false because without set of federates
     req.setBoolean(false);
-
+    G.Out(pdGendoc,"        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for all federates");
@@ -725,7 +727,7 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
             req.handleArray[i] = set_of_fed.getHandle(i) ;
             }
         }
-
+    G.Out(pdGendoc,"        ====>executeService REGISTER_FEDERATION_SYNCHRONIZATION_POINT");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit RTIambassador::registerFederationSynchronizationPoint for some federates");
@@ -749,7 +751,7 @@ RTI::RTIambassador::synchronizationPointAchieved(const char *label)
 
     req.type = Message::SYNCHRONIZATION_POINT_ACHIEVED ;
     req.setLabel(label);
-
+    G.Out(pdGendoc,"        ====>executeService SYNCHRONIZATION_POINT_ACHIEVED");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit  RTIambassador::synchronizationPointAchieved");
@@ -778,9 +780,7 @@ RTI::RTIambassador::requestFederationSave(const char *label,
     // boolean true means time constrained
     req.setBoolean(true);
 
-    G.Out(pdGendoc,"      requestFederationSave===>executeService "
-                   "REQUEST_FEDERATION_SAVE");
-
+    G.Out(pdGendoc,"        ====>executeService REQUEST_FEDERATION_SAVE");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit RTIambassador::requestFederationSave with time");
@@ -805,7 +805,7 @@ RTI::RTIambassador::requestFederationSave(const char *label)
     // boolean false means without time
     req.setBoolean(false);
 
-    G.Out(pdGendoc,"      ====>executeService for REQUEST_FEDERATION_SAVE");
+    G.Out(pdGendoc,"      ====>executeService REQUEST_FEDERATION_SAVE");
 
     privateRefs->executeService(&req, &rep);
 
@@ -827,7 +827,7 @@ RTI::RTIambassador::federateSaveBegun()
     G.Out(pdGendoc,"enter RTIambassador::federateSaveBegun");
 
     req.type = Message::FEDERATE_SAVE_BEGUN ;
-
+    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_BEGUN");
     privateRefs->executeService(&req, &rep);
 
     G.Out(pdGendoc,"exit  RTIambassador::federateSaveBegun");
@@ -848,7 +848,7 @@ RTI::RTIambassador::federateSaveComplete()
     G.Out(pdGendoc,"enter RTIambassador::federateSaveComplete");
 
     req.type = Message::FEDERATE_SAVE_COMPLETE ;
-
+    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_COMPLETE");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::federateSaveComplete");
 }
@@ -867,7 +867,7 @@ RTI::RTIambassador::federateSaveNotComplete()
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateSaveNotComplete");
-
+    G.Out(pdGendoc,"      ====>executeService FEDERATE_SAVE_NOT_COMPLETE");
     req.type = Message::FEDERATE_SAVE_NOT_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
@@ -889,7 +889,7 @@ RTI::RTIambassador::requestFederationRestore(const char *label)
 
     req.type = Message::REQUEST_FEDERATION_RESTORE ;
     req.setLabel(label);
-
+    G.Out(pdGendoc,"      ====>executeService REQUEST_FEDERATION_RESTORE");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::requestFederationRestore");
 }
@@ -908,7 +908,7 @@ RTI::RTIambassador::federateRestoreComplete()
     G.Out(pdGendoc,"enter RTIambassador::federateRestoreComplete");
 
     req.type = Message::FEDERATE_RESTORE_COMPLETE ;
-
+    G.Out(pdGendoc,"      ====>executeService FEDERATE_RESTORE_COMPLETE");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::federateRestoreComplete");
 }
@@ -925,7 +925,7 @@ RTI::RTIambassador::federateRestoreNotComplete()
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateRestoreNotComplete");
-
+    G.Out(pdGendoc,"      ====>executeService FEDERATE_RESTORE_NOT_COMPLETE");
     req.type = Message::FEDERATE_RESTORE_NOT_COMPLETE ;
 
     privateRefs->executeService(&req, &rep);
@@ -949,7 +949,7 @@ RTI::RTIambassador::publishObjectClass(ObjectClassHandle theClass,
     req.type = Message::PUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
     req.setAHS(attributeList);
-
+    G.Out(pdGendoc,"      ====>executeService PUBLISH_OBJECT_CLASS");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::publishObjectClass");
 }
@@ -969,6 +969,7 @@ RTI::RTIambassador::unpublishObjectClass(ObjectClassHandle theClass)
 
     req.type = Message::UNPUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
+    G.Out(pdGendoc,"      ====>executeService UNPUBLISH_OBJECT_CLASS");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::unpublishObjectClass");
 }
@@ -986,6 +987,7 @@ RTI::RTIambassador::publishInteractionClass(InteractionClassHandle theInteractio
 
     req.type = Message::PUBLISH_INTERACTION_CLASS ;
     req.setInteractionClass(theInteraction);
+    G.Out(pdGendoc,"      ====>executeService PUBLISH_INTERACTION_CLASS");
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2900,4 +2902,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.62 2007/12/18 16:23:58 rousse Exp $
+// $Id: RTIambassador.cc,v 3.63 2007/12/19 10:38:06 rousse Exp $

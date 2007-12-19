@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.74 2007/12/17 16:01:24 rousse Exp $
+// $Id: Federation.cc,v 3.75 2007/12/19 10:38:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1051,6 +1051,8 @@ void
 Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     throw (FederateNotExecutionMember)
 {
+    G.Out(pdGendoc,"enter Federation::federateSaveStatus");
+
     Federate &federate = getFederate(the_federate);
     federate.setSaving(false);
 
@@ -1060,7 +1062,10 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     // Verify that all federates save ended (complete or not).
     for (FederateList::iterator j = federates.begin(); j != federates.end(); ++j) {
         if (j->isSaving())
+            {
+            G.Out(pdGendoc,"exit  Federation::federateSaveStatus one federate has not save ended");
             return ;
+            }
     }
 
     // Save RTIG Data for future restoration.
@@ -1081,6 +1086,8 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     // Reinitialize state.
     saveStatus = true ;
     saveInProgress = false ;
+
+    G.Out(pdGendoc,"exit  Federation::federateSaveStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -2239,5 +2246,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.74 2007/12/17 16:01:24 rousse Exp $
+// $Id: Federation.cc,v 3.75 2007/12/19 10:38:06 rousse Exp $
 
