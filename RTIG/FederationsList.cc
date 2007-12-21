@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.47 2007/12/11 16:44:19 rousse Exp $
+// $Id: FederationsList.cc,v 3.48 2007/12/21 14:29:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -348,9 +348,8 @@ void FederationsList::info(Handle handle,
     nb_regulators = federation->getNbRegulators();
     is_syncing = federation->isSynchronizing();
     // We need federation FEDid
-    FED_Filename = new char[strlen(federation->getFEDid()+1)];
+    FED_Filename = new char[strlen(federation->getFEDid())+1];
     strcpy(FED_Filename,federation->getFEDid());
-
 #ifdef FEDERATION_USES_MULTICAST
     comm_mc = federation->MCLink ;
 #endif
@@ -1515,5 +1514,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.47 2007/12/11 16:44:19 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.48 2007/12/21 14:29:41 rousse Exp $
 

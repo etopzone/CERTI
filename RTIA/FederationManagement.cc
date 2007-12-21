@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.38 2007/12/17 16:01:24 rousse Exp $
+// $Id: FederationManagement.cc,v 3.39 2007/12/21 14:29:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -141,7 +141,7 @@ createFederationExecution(const char *theName,
 
         if (reponse.exception == e_NO_EXCEPTION)
             {
-            _nom_federation = new char[strlen(theName)] ;
+            _nom_federation = new char[strlen(theName)+1] ;
             strcpy(_nom_federation, theName);
             _numero_federation = reponse.federation ;
             _est_createur_federation = true ;
@@ -948,4 +948,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.38 2007/12/17 16:01:24 rousse Exp $
+// $Id: FederationManagement.cc,v 3.39 2007/12/21 14:29:41 rousse Exp $

@@ -585,7 +585,7 @@ Message::operator=(const Message& msg)
     strcpy(exceptionReason, msg.exceptionReason);
     strcpy(federateName, msg.federateName);
 
-    federationName = new char[strlen(msg.federationName+1)] ;
+    federationName = new char[strlen(msg.federationName)+1] ;
     strcpy(federationName, msg.federationName);
 
     federate = msg.federate ;
