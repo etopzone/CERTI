@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.23 2007/12/17 16:01:24 rousse Exp $
+// $Id: certi.hh,v 3.24 2008/01/24 16:15:56 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -40,12 +40,14 @@
 	#endif	
     typedef u_long				in_addr_t;
     typedef unsigned short		in_port_t;
-    typedef unsigned __int32	uint32_t;
-    typedef __int32				int32_t;
-    typedef unsigned __int16	uint16_t;
-    typedef __int16				int16_t;
-    typedef unsigned __int8	uint8_t;
-    typedef __int8				int8_t;
+    #ifdef _MSC_VER
+        typedef unsigned __int32	uint32_t;
+        typedef __int32				int32_t;
+        typedef unsigned __int16	uint16_t;
+        typedef __int16				int16_t;
+        typedef unsigned __int8	uint8_t;
+        typedef __int8				int8_t;
+    #endif
 #else
 	#define	STAT_FUNCTION		stat
 	#define	STAT_STRUCT			struct stat
@@ -324,4 +326,4 @@ typedef  struct vlp
 
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.23 2007/12/17 16:01:24 rousse Exp $
+// $Id: certi.hh,v 3.24 2008/01/24 16:15:56 rousse Exp $
