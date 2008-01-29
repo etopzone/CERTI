@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.39 2007/12/21 14:29:41 rousse Exp $
+// $Id: FederationManagement.cc,v 3.40 2008/01/29 14:30:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -754,6 +754,7 @@ FederationManagement::requestFederationSave(const char *label,
 void
 FederationManagement::federateSaveBegun(TypeException &)
 {
+    G.Out(pdGendoc,"enter FederationManagement::federateSaveBegun");
     D.Out(pdInit, "Beginning federate save.");
 
     if (!savingState)
@@ -762,14 +763,21 @@ FederationManagement::federateSaveBegun(TypeException &)
     NetworkMessage req ;
 
     req.type = NetworkMessage::FEDERATE_SAVE_BEGUN ;
+    req.federate = federate ;
+    req.federation = _numero_federation ;
+
+    G.Out(pdGendoc,"      federateSaveBegun ====>send Message F_S_B to RTIG");
 
     comm->sendMessage(&req);
+
+    G.Out(pdGendoc,"exit  FederationManagement::federateSaveBegun");
 }
 
 // ----------------------------------------------------------------------------
 void
 FederationManagement::federateSaveStatus(bool status, TypeException &)
 {
+    G.Out(pdGendoc,"enter FederationManagement::federateSaveStatus");
     D.Out(pdInit, "Federate %ssaved.", status ? "" : "not ");
 
     if (!savingState)
@@ -778,8 +786,21 @@ FederationManagement::federateSaveStatus(bool status, TypeException &)
     NetworkMessage req ;
 
     req.type = status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE ;
+    req.federate = federate ;
+    req.federation = _numero_federation ;
+
+    if (status)
+       {    
+       G.Out(pdGendoc,"      federateSaveStatus ====>send Message F_S_C to RTIG");
+       }
+    else
+       {    
+       G.Out(pdGendoc,"      federateSaveStatus ====>send Message F_S_N_C to RTIG");
+       }
 
     comm->sendMessage(&req);
+
+    G.Out(pdGendoc,"exit  FederationManagement::federateSaveStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -807,6 +828,7 @@ FederationManagement::initiateFederateSave(const char *label)
 void
 FederationManagement::federationSavedStatus(bool status)
 {
+    G.Out(pdGendoc,"enter FederationManagement::federationSavedStatus");
     D.Out(pdInit, "Federation %ssaved.", status ? "" : "not ");
 
     savingState = false ;
@@ -816,6 +838,8 @@ FederationManagement::federationSavedStatus(bool status)
     req.type = status ? Message::FEDERATION_SAVED : Message::FEDERATION_NOT_SAVED ;
 
     comm->requestFederateService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  FederationManagement::federationSavedStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -948,4 +972,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.39 2007/12/21 14:29:41 rousse Exp $
+// $Id: FederationManagement.cc,v 3.40 2008/01/29 14:30:50 rousse Exp $

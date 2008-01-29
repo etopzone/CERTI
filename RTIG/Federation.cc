@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.75 2007/12/19 10:38:06 rousse Exp $
+// $Id: Federation.cc,v 3.76 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1042,7 +1042,9 @@ void
 Federation::federateSaveBegun(FederateHandle the_federate)
     throw (FederateNotExecutionMember)
 {
+    G.Out(pdGendoc,"enter Federation::federateSaveBegun");
     check(the_federate);
+    G.Out(pdGendoc,"exit  Federation::federateSaveBegun");
 }
 
 // ----------------------------------------------------------------------------
@@ -1082,6 +1084,8 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     msg.federation = handle ;
 
     broadcastAnyMessage(&msg, 0);
+
+    G.Out(pdGendoc,"            =======> broadcast F_S or F_N_S");
 
     // Reinitialize state.
     saveStatus = true ;
@@ -2246,5 +2250,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.75 2007/12/19 10:38:06 rousse Exp $
+// $Id: Federation.cc,v 3.76 2008/01/29 14:30:51 rousse Exp $
 

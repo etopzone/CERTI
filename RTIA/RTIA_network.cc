@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.17 2007/12/18 16:23:58 rousse Exp $
+// $Id: RTIA_network.cc,v 3.18 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,6 +34,7 @@ namespace certi {
 namespace rtia {
 
 static pdCDebug D("RTIA", "(RTIA net) ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! RTIA processes a message coming from network.
@@ -41,6 +42,8 @@ void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
 NetworkMessage::Type msgType = msg->type;
+
+G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
 //D.Mes(pdMessage, 'N', msgType);
 msg->trace("RTIA::processNetworkMessage ");
@@ -334,8 +337,9 @@ msg->trace("RTIA::processNetworkMessage ");
     }
 
     stat.rtiService(msgType);
+    G.Out(pdGendoc,"exit  RTIA::processNetworkMessage");
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.17 2007/12/18 16:23:58 rousse Exp $
+// $Id: RTIA_network.cc,v 3.18 2008/01/29 14:30:51 rousse Exp $

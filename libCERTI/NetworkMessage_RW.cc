@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.39 2007/12/18 16:23:58 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.40 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -385,6 +385,9 @@ NetworkMessage::readHeader(Socket *socket)
       case DDM_CREATE_REGION:
       case FEDERATE_SAVE_BEGUN:
       case FEDERATE_SAVE_COMPLETE:
+      case FEDERATE_SAVE_NOT_COMPLETE:
+      case FEDERATION_SAVED:
+      case FEDERATION_NOT_SAVED:
       case FEDERATE_RESTORE_COMPLETE:
       case FEDERATE_RESTORE_NOT_COMPLETE:
       case FEDERATION_RESTORE_BEGUN:
@@ -483,6 +486,8 @@ NetworkMessage::writeBody(Socket *socket)
 {
     MessageBody body ;
     unsigned short i ;
+
+    G.Out(pdGendoc,"enter NetworkMessage::writeBody");
 
     // 0- Copy the Header at the beginning of the body, in order to
     // make a single Socket->Emettre call while sending both.
@@ -740,12 +745,15 @@ NetworkMessage::writeBody(Socket *socket)
     (reinterpret_cast<HeaderStruct *>(body.getBufferModeRW()))->bodySize = Header.bodySize ;
     D.Out(pdTrace,"Sending MessageBody of size <%d>",body.size());
     socket->send(body.getBuffer(), body.size());
+
+    G.Out(pdGendoc,"exit  NetworkMessage::writeBody");
 }
 
 // ----------------------------------------------------------------------------
 bool
 NetworkMessage::writeHeader(Socket *socket)
 {
+    G.Out(pdGendoc,"enter NetworkMessage::writeHeader");
     // 2- Fill Header(Static Part)
     Header.type = type ;
     Header.exception = exception ;
@@ -756,6 +764,7 @@ NetworkMessage::writeHeader(Socket *socket)
 
     if (exception != e_NO_EXCEPTION) {
         Header.bodySize = 1 ;
+        G.Out(pdGendoc,"exit  NetworkMessage::writeHeader carrying an exception");
         return true ;
     }
 
@@ -979,9 +988,10 @@ NetworkMessage::writeHeader(Socket *socket)
     if (Header.bodySize == 0)
         socket->send(reinterpret_cast<unsigned char *>(&Header), sizeof(HeaderStruct));
 
+    G.Out(pdGendoc,"exit  NetworkMessage::writeHeader");
     return Header.bodySize != 0 ;
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.39 2007/12/18 16:23:58 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.40 2008/01/29 14:30:51 rousse Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.13 2007/12/17 16:01:25 rousse Exp $
+// $Id: Message_W.cc,v 3.14 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -463,6 +463,7 @@ Message::writeBody(SocketUN *socket)
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
+    G.Out(pdGendoc,"      Message::writeBody ======> send Message");
     socket->send(body.getBuffer(), body.size());
     G.Out(pdGendoc,"exit  Message::writeBody");
 }
@@ -711,4 +712,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.13 2007/12/17 16:01:25 rousse Exp $
+// $Id: Message_W.cc,v 3.14 2008/01/29 14:30:51 rousse Exp $

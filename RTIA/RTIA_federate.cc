@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.57 2007/12/17 16:01:24 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.58 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -232,7 +232,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::FEDERATE_SAVE_BEGUN:
         D.Out(pdTrace, "Receiving Message from Federate, type"
               " FederateSaveBegun.");
-
+        G.Out(pdGendoc,"chooseFederateProcessing FEDERATE_SAVE_BEGUN");
         fm->federateSaveBegun(e);
         break ;
 
@@ -240,8 +240,15 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::FEDERATE_SAVE_NOT_COMPLETE: {
           D.Out(pdTrace, "Receiving Message from Federate, type"
                 " FederateSave(Not)Complete.");
-
           bool result = req->type == Message::FEDERATE_SAVE_COMPLETE ;
+          if (result)
+              {
+              G.Out(pdGendoc,"chooseFederateProcessing FEDERATE_SAVE_COMPLETE");
+              }
+          else
+              {
+              G.Out(pdGendoc,"chooseFederateProcessing FEDERATE_SAVE_NOT_COMPLETE");
+              }
           fm->federateSaveStatus(result, e);
       }
         break ;
@@ -1259,4 +1266,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.57 2007/12/17 16:01:24 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.58 2008/01/29 14:30:51 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.47 2007/12/17 16:01:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.48 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -504,19 +504,31 @@ RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 void
 RTIG::processFederateSaveBegun(Socket *, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE BEGUN SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processFederateSaveBegun");
+
+    G.Out(pdGendoc,"processFederateSaveBegun federation = %d",req->federation);
+
     auditServer << "Federate " << req->federate << " save begun." ;
 
     federations.federateSaveBegun(req->federation, req->federate);
+
+    G.Out(pdGendoc,"exit  RTIG::processFederateSaveBegun");
+    G.Out(pdGendoc,"END   ** FEDERATE SAVE BEGUN SERVICE **");
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"enter RTIG::processFederateSaveStatus");
+
     auditServer << "Federate " << req->federate << " save ended." ;
 
     bool status = req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
     federations.federateSaveStatus(req->federation, req->federate, status);
+
+    G.Out(pdGendoc,"exit  RTIG::processFederateSaveStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -1325,4 +1337,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.47 2007/12/17 16:01:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.48 2008/01/29 14:30:51 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.31 2007/07/06 09:25:19 erk Exp $
+// $Id: RTIG.cc,v 3.32 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -46,7 +46,7 @@ static pdCDebug D("RTIG", __FILE__);
 
 // ----------------------------------------------------------------------------
 // Constructor
-
+// Note (JYR) : udpPort modified AFTER used in socketServer(.) call, strange...
 RTIG::RTIG()
     : terminate(false), federationHandles(1),
       socketServer(&tcpSocketServer, &udpSocketServer, udpPort),
@@ -397,6 +397,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
 
 // ----------------------------------------------------------------------------
 // execute
+// Called only by RTIG main
 void
 RTIG::execute()
 {
@@ -977,4 +978,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.31 2007/07/06 09:25:19 erk Exp $
+// $Id: RTIG.cc,v 3.32 2008/01/29 14:30:51 rousse Exp $

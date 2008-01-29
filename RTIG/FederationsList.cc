@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.48 2007/12/21 14:29:41 rousse Exp $
+// $Id: FederationsList.cc,v 3.49 2008/01/29 14:30:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1458,6 +1458,8 @@ void
 FederationsList::federateSaveBegun(Handle the_federation,
                                    FederateHandle the_federate)
 {
+    G.Out(pdGendoc,"enter FederationsList::federateSaveBegun");
+
     checkHandle(the_federation);
 
     // It may throw FederationExecutionDoesNotExist
@@ -1465,6 +1467,8 @@ FederationsList::federateSaveBegun(Handle the_federation,
     searchFederation(the_federation, federation);
 
     federation->federateSaveBegun(the_federate);
+
+    G.Out(pdGendoc,"exit  FederationsList::federateSaveBegun");
 }
 
 // ----------------------------------------------------------------------------
@@ -1473,6 +1477,8 @@ FederationsList::federateSaveStatus(Handle the_federation,
                                     FederateHandle the_federate,
                                     bool the_status)
 {
+    G.Out(pdGendoc,"enter FederationsList::federateSaveStatus");
+
     checkHandle(the_federation);
 
     // It may throw FederationExecutionDoesNotExist
@@ -1480,6 +1486,8 @@ FederationsList::federateSaveStatus(Handle the_federation,
     searchFederation(the_federation, federation);
 
     federation->federateSaveStatus(the_federate, the_status);
+
+    G.Out(pdGendoc,"exit  FederationsList::federateSaveStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -1514,5 +1522,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.48 2007/12/21 14:29:41 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.49 2008/01/29 14:30:51 rousse Exp $
 
