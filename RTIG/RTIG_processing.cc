@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.48 2008/01/29 14:30:51 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.49 2008/02/01 14:12:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -535,20 +535,28 @@ RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 void
 RTIG::processRequestFederationRestore(Socket *, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"BEGIN ** REQUEST FEDERATION RESTORE SERVICE **");
+    G.Out(pdGendoc,"enter RTIG::processRequestFederationRestore");
     auditServer << "Federate " << req->federate << " request restore." ;
 
     federations.requestFederationRestore(req->federation, req->federate,
                                           req->label);
+    G.Out(pdGendoc,"exit  RTIG::processRequestFederationRestore");
+    G.Out(pdGendoc,"END   ** REQUEST FEDERATION RESTORE SERVICE **");
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"BEGIN ** FEDERATE RESTORE (NOT)COMPLETE **");
+    G.Out(pdGendoc,"enter RTIG::processRequestFederateRestoreStatus");
     auditServer << "Federate " << req->federate << " restore ended." ;
 
     bool status = req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
     federations.federateRestoreStatus(req->federation, req->federate, status);
+    G.Out(pdGendoc,"exit  RTIG::processRequestFederateRestoreStatus");
+    G.Out(pdGendoc,"END   ** FEDERATE RESTORE (NOT)COMPLETE **");
 }
 
 // ----------------------------------------------------------------------------
@@ -1337,4 +1345,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.48 2008/01/29 14:30:51 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.49 2008/02/01 14:12:22 rousse Exp $

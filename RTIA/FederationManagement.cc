@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.40 2008/01/29 14:30:50 rousse Exp $
+// $Id: FederationManagement.cc,v 3.41 2008/02/01 14:12:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -785,7 +785,7 @@ FederationManagement::federateSaveStatus(bool status, TypeException &)
 
     NetworkMessage req ;
 
-    req.type = status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE ;
+    req.type= status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE ;
     req.federate = federate ;
     req.federation = _numero_federation ;
 
@@ -847,6 +847,7 @@ void
 FederationManagement::requestFederationRestore(const char *label,
                                                TypeException &)
 {
+    G.Out(pdGendoc,"enter FederationManagement::requestFederationRestore");
     D.Out(pdInit, "Request for federation restore \"%s\".", label);
 
     assert(label != NULL);
@@ -854,10 +855,16 @@ FederationManagement::requestFederationRestore(const char *label,
     NetworkMessage req ;
     req.type = NetworkMessage::REQUEST_FEDERATION_RESTORE ;
     req.setLabel(label);
+    req.federate = federate ;
+    req.federation = _numero_federation ;
+
+    G.Out(pdGendoc,"     requestFederationRestore  ====>send Message R_F_R to RTIG");
+
     comm->sendMessage(&req);
 
     // Should make sure that RTIG don't have any save or restore recently set.
     // ...
+    G.Out(pdGendoc,"exit  FederationManagement::requestFederationRestore");
 }
 
 // ----------------------------------------------------------------------------
@@ -885,6 +892,7 @@ FederationManagement::requestFederationRestoreStatus(bool status,
                                                      const char *label,
                                                      const char *reason)
 {
+    G.Out(pdGendoc,"enter FederationManagement::requestFederationRestoreStatus");
     D.Out(pdInit, "Federation restore request %saccepted",
           status ? "" : "not ");
 
@@ -900,18 +908,22 @@ FederationManagement::requestFederationRestoreStatus(bool status,
     }
 
     comm->requestFederateService(&req, &rep);
+    G.Out(pdGendoc,"exit  FederationManagement::requestFederationRestoreStatus");
 }
 
 // ----------------------------------------------------------------------------
 void
 FederationManagement::federationRestoreBegun()
 {
+    G.Out(pdGendoc,"enter FederationManagement::federationRestoreBegun");
     D.Out(pdInit, "Federation restore begun");
 
     Message req, rep ;
     req.type = Message::FEDERATION_RESTORE_BEGUN ;
 
     comm->requestFederateService(&req, &rep);
+
+    G.Out(pdGendoc,"exit  FederationManagement::federationRestoreBegun");
 }
 
 // ----------------------------------------------------------------------------
@@ -919,6 +931,7 @@ void
 FederationManagement::initiateFederateRestore(const char *label,
                                               FederateHandle handle)
 {
+    G.Out(pdGendoc,"enter FederationManagement::initiateFederateRestore");
     D.Out(pdInit, "Initiate federate restore \"%s\" with federate handle %d.",
           label, handle);
 
@@ -930,6 +943,7 @@ FederationManagement::initiateFederateRestore(const char *label,
     req.setLabel(label);
 
     comm->requestFederateService(&req, &rep);
+    G.Out(pdGendoc,"exit  FederationManagement::initiateFederateRestore");
 }
 
 // ----------------------------------------------------------------------------
@@ -972,4 +986,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.40 2008/01/29 14:30:50 rousse Exp $
+// $Id: FederationManagement.cc,v 3.41 2008/02/01 14:12:21 rousse Exp $

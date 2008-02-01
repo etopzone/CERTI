@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.40 2008/01/29 14:30:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.41 2008/02/01 14:12:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -144,7 +144,14 @@ NetworkMessage::readBody(Socket *socket)
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case FEDERATION_SYNCHRONIZED:
       case REQUEST_FEDERATION_RESTORE:
+	readLabel(body);
+	break ;
+
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+	readLabel(body);
+G.Out(pdGendoc,"NetworkMessage::readBody type R_F_R_S label= %s",label);
+	break ;
+
       case INITIATE_FEDERATE_RESTORE:
 	readLabel(body);
 	break ;
@@ -589,7 +596,15 @@ NetworkMessage::writeBody(Socket *socket)
       case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
       case FEDERATION_SYNCHRONIZED:
       case REQUEST_FEDERATION_RESTORE:
+	body.writeString(label);
+	break ;
+
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+	body.writeString(label);
+G.Out(pdGendoc,"NetworkMessage::writeBody type R_F_R_S label=%s",label);
+	break ;
+
+
       case INITIATE_FEDERATE_RESTORE:
 	body.writeString(label);
 	break ;
@@ -994,4 +1009,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.40 2008/01/29 14:30:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.41 2008/02/01 14:12:22 rousse Exp $

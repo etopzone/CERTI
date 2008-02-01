@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.63 2007/12/19 10:38:06 rousse Exp $
+// $Id: RTIambassador.cc,v 3.64 2008/02/01 14:12:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -863,7 +863,7 @@ RTI::RTIambassador::federateSaveNotComplete()
            RestoreInProgress,
            RTIinternalError)
 {
-    throw UnimplementedService("");
+
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateSaveNotComplete");
@@ -882,7 +882,6 @@ RTI::RTIambassador::requestFederationRestore(const char *label)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::requestFederationRestore");
@@ -902,7 +901,6 @@ RTI::RTIambassador::federateRestoreComplete()
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember,
 	   RTI::RestoreNotRequested)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateRestoreComplete");
@@ -921,7 +919,6 @@ RTI::RTIambassador::federateRestoreNotComplete()
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember,
 	   RTI::RestoreNotRequested)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::federateRestoreNotComplete");
@@ -2902,4 +2899,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.63 2007/12/19 10:38:06 rousse Exp $
+// $Id: RTIambassador.cc,v 3.64 2008/02/01 14:12:23 rousse Exp $

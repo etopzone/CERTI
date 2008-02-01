@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.76 2008/01/29 14:30:51 rousse Exp $
+// $Id: Federation.cc,v 3.77 2008/02/01 14:12:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1101,6 +1101,8 @@ Federation::requestFederationRestore(FederateHandle the_federate,
                                      const char *the_label)
     throw (FederateNotExecutionMember)
 {
+    G.Out(pdGendoc,"enter Federation::requestFederationRestore");
+
     check(the_federate);
 
     if (restoreInProgress)
@@ -1133,17 +1135,29 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     success = false ;
 #endif // HAVE_XML
 
+// JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
+    success = true ;
+
     msg->type = success ?
         NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
         : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED ;
 
     socket = server->getSocketLink(msg->federate);
+
+    if (success)
+       G.Out(pdGendoc,"             =====> send message R_F_R_S to RTIA");
+    else
+       G.Out(pdGendoc,"             =====> send message R_F_R_F to RTIA");
+
     msg->write(socket);
     delete msg ;
 
     // Reading file failed: not restoring !
     if (!success)
+        {
+        G.Out(pdGendoc,"exit  Federation::requestFederationRestore on success false");
         return ;
+        }
 
     // Otherwise...
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
@@ -1157,6 +1171,8 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     msg->federate = the_federate ;
     msg->federation = handle ;
     msg->type = NetworkMessage::FEDERATION_RESTORE_BEGUN ;
+
+    G.Out(pdGendoc,"             =====> broadcast message F_R_B");
 
     broadcastAnyMessage(msg, 0);
     delete msg ;
@@ -1172,8 +1188,10 @@ Federation::requestFederationRestore(FederateHandle the_federate,
 
         // send message.
         socket = server->getSocketLink(msg->federate);
+        G.Out(pdGendoc,"             =====> send message I_F_R to federate %d",msg->federate);
         msg->write(socket);
     }
+    G.Out(pdGendoc,"exit  Federation::requestFederationRestore");
 }
 
 // ----------------------------------------------------------------------------
@@ -1186,6 +1204,7 @@ Federation::federateRestoreStatus(FederateHandle the_federate,
                                   bool the_status)
     throw (FederateNotExecutionMember)
 {
+    G.Out(pdGendoc,"enter Federation::federateRestoreStatus");
     Federate &federate = getFederate(the_federate);
     federate.setRestoring(false);
 
@@ -1214,6 +1233,7 @@ Federation::federateRestoreStatus(FederateHandle the_federate,
     // Reinitialize state.
     restoreStatus = true ;
     restoreInProgress = false ;
+    G.Out(pdGendoc,"exit  Federation::federateRestoreStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -2250,5 +2270,5 @@ Federation::saveXmlData()
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.76 2008/01/29 14:30:51 rousse Exp $
+// $Id: Federation.cc,v 3.77 2008/02/01 14:12:22 rousse Exp $
 
