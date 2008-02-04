@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.2 2007/07/06 09:25:17 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.3 2008/02/04 14:41:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -305,4 +305,4 @@ PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, theMessage);
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.2 2007/07/06 09:25:17 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.3 2008/02/04 14:41:30 erk Exp $
