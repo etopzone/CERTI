@@ -44,7 +44,7 @@ using std::cout ;
 using std::endl ;
 
 namespace certi {
-
+static PrettyDebug G("GENDOC",__FILE__);
 #define MAX_ATTEMPTS 3
 
 // ----------------------------------------------------------------------------
@@ -296,6 +296,7 @@ SocketUN::send(const unsigned char *buffer, size_t size)
 long sent = 0 ;
 unsigned long total_sent = 0 ;
 
+G.Out(pdGendoc,"enter SocketUN::send");
 assert(_est_init_un);
 
 pD->Out(pdTrace, "Beginning to send UN message...");
@@ -342,6 +343,7 @@ while (total_sent < size)
 		}
 	}
 SentBytesCount += total_sent ;
+G.Out(pdGendoc,"exit  SocketUN::send");
 }
 
 // ----------------------------------------------------------------------------
@@ -376,6 +378,8 @@ void
 SocketUN::receive(const unsigned char *buffer, size_t Size)
     throw (NetworkError, NetworkSignal)
 {
+G.Out(pdGendoc,"enter SocketUN::receive");
+
 assert(_est_init_un);
 
 long nReceived = 0 ;
@@ -450,6 +454,7 @@ memmove((void *) ReadBuffer,
 RBLength - Size);
 RBLength -= Size ;
 #endif
+G.Out(pdGendoc,"exit  SocketUN::receive");
 }
 
 } // namespace certi

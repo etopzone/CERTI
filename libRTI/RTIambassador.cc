@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.64 2008/02/01 14:12:23 rousse Exp $
+// $Id: RTIambassador.cc,v 3.65 2008/02/10 18:19:13 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -96,7 +96,7 @@ get_handle(const RTI::Region &region)
 RTI::RTIambassador::RTIambassador()
     throw (MemoryExhausted, RTIinternalError)
 {
-    PrettyDebug::setFederateName( "Federate-process" );
+    PrettyDebug::setFederateName( "Federate" );
     std::stringstream msg;
 
     privateRefs = new RTIambPrivateRefs();
@@ -2899,4 +2899,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.64 2008/02/01 14:12:23 rousse Exp $
+// $Id: RTIambassador.cc,v 3.65 2008/02/10 18:19:13 rousse Exp $

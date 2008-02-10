@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.59 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.60 2008/02/10 18:19:12 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,6 +44,7 @@ void
 RTIA::saveAndRestoreStatus(Message::Type type)
     throw (SaveInProgress, RestoreInProgress)
 {
+G.Out(pdGendoc,"enter RTIA::saveAndRestoreStatus");
 //D.Mes(pdMessage, 'N', type);
 
     switch (type) {
@@ -83,6 +84,7 @@ RTIA::saveAndRestoreStatus(Message::Type type)
         fm->checkFederationSaving();
         fm->checkFederationRestoring();
     }
+G.Out(pdGendoc,"exit  RTIA::saveAndRestoreStatus");
 }
 
 // ----------------------------------------------------------------------------
@@ -107,6 +109,10 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         fm->_FEDid = new char[strlen(req->getFEDid())+1] ;
         strcpy(fm->_FEDid, req->getFEDid()) ;
         fm->createFederationExecution(req->getFederationName(), e);
+        if ( e == e_RTIinternalError )
+            {
+            rep.setException(e,"Federate is yet a creator or a member !");
+            }
         D.Out(pdTrace, "Receiving Message from Federate, "
               "type CreateFederation done.");
         // RTIA needs FEDid into the answer (rep Message) to federate
@@ -933,7 +939,8 @@ RTIA::processFederateRequest(Message *req)
     try {
         TypeException exc ;
         chooseFederateProcessing(req, rep, exc);
-        rep.setException(exc);
+        if ( exc != e_RTIinternalError )
+            rep.setException(exc);
     }
     catch (ArrayIndexOutOfBounds &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1275,4 +1282,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.59 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.60 2008/02/10 18:19:12 rousse Exp $

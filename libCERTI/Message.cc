@@ -653,6 +653,7 @@ Message::display(char *s)
         printf(" type=%d :", type);
     printf(" date=%f: ", fed_time.getTime());
     printf(" exception=%d: ", exception);
+    printf(" reason=%s: ",exceptionReason);
     printf(" objectClass=%ld: ", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);

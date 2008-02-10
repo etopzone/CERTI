@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.14 2008/01/29 14:30:51 rousse Exp $
+// $Id: Message_W.cc,v 3.15 2008/02/10 18:19:13 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -56,7 +56,7 @@ void
 Message::writeBody(SocketUN *socket)
 {
     MessageBody body ;
-    G.Out(pdGendoc,"enter Message::writeBody");    
+    G.Out(pdGendoc,"enter Message::writeBody type %d",header.type);    
     // 0- Copy the Header at the beginning of the Body, in order to
     // make a single Socket->Emettre call while sending both.
     // WARNING: As the Body size is not known yet, we will have to
@@ -712,4 +712,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.14 2008/01/29 14:30:51 rousse Exp $
+// $Id: Message_W.cc,v 3.15 2008/02/10 18:19:13 rousse Exp $

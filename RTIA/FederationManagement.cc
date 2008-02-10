@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.41 2008/02/01 14:12:21 rousse Exp $
+// $Id: FederationManagement.cc,v 3.42 2008/02/10 18:19:11 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -117,8 +117,16 @@ createFederationExecution(const char *theName,
     e = e_NO_EXCEPTION ;
 
     // BUG: pour l'instant, le federe ne peut creer q'une federation
-    if (_est_createur_federation || _est_membre_federation)
+    if (_est_createur_federation)
+        {
+        std::cout<<"Federate "<<_nom_federe<<" is yet a federation creator"<<std::endl;
         e = e_RTIinternalError ;
+        }
+    else if (_est_membre_federation)
+       {
+        std::cout<<"Federate "<<_nom_federe<<" is yet a federation member"<<std::endl;
+        e = e_RTIinternalError ;
+        }
 
     if (e == e_NO_EXCEPTION)
         {
@@ -197,7 +205,7 @@ destroyFederationExecution(const char *theName,
 
     e = e_NO_EXCEPTION ;
 
-    // BUG: On devrait pouvoir detruire une federation meme si on est
+    // BUG: On devrait pouvoir detruire une federation meme si on n'est
     // pas le createur.
     if (!_est_createur_federation || strcmp(theName, _nom_federation))
         e = e_FederationExecutionDoesNotExist ;
@@ -986,4 +994,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.41 2008/02/01 14:12:21 rousse Exp $
+// $Id: FederationManagement.cc,v 3.42 2008/02/10 18:19:11 rousse Exp $
