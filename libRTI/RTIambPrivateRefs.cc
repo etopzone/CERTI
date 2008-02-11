@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.9 2007/12/11 16:44:21 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.10 2008/02/11 14:33:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -76,6 +76,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
+        is_reentrant = false;
         throw RTIinternalError("libRTI: Network Write Error");
     }
 
@@ -87,6 +88,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
+        is_reentrant = false;
         throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
     }
 
@@ -94,6 +96,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 
     if (rep->type != req->type) {
         std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
+        is_reentrant = false;
         throw RTIinternalError("RTIambPrivateRefs::executeService: "
                                "rep->type != req->type");
     }
@@ -547,4 +550,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.9 2007/12/11 16:44:21 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.10 2008/02/11 14:33:27 erk Exp $

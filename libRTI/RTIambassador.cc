@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.65 2008/02/10 18:19:13 rousse Exp $
+// $Id: RTIambassador.cc,v 3.66 2008/02/11 14:33:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -228,7 +228,7 @@ RTI::RTIambassador::tick_kernel(bool locked)
 
     // Throw exception if reentrant call.
     if (privateRefs->is_reentrant)
-        throw ConcurrentAccessAttempted("");
+        throw ConcurrentAccessAttempted("is_reentrant was true in RTI::RTIambassador::tick_kernel");
 
     privateRefs->is_reentrant = true ;
 
@@ -259,6 +259,7 @@ RTI::RTIambassador::tick_kernel(bool locked)
             cout << "tick 2." << endl ;
             cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
                  << endl ;
+            privateRefs->is_reentrant = false;
             throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick2) : NetworkError-->RTIinternalError");
         }
 
@@ -496,21 +497,26 @@ RTI::RTIambassador::tick_kernel(bool locked)
             }
         }
         catch (InvalidFederationTime &e) {
+        	privateRefs->is_reentrant = false;
             vers_RTI.setException(e_InvalidFederationTime, e._reason);
             throw ;
         }
         catch (TimeAdvanceWasNotInProgress &e) {
+        	privateRefs->is_reentrant = false;
             vers_RTI.setException(e_TimeAdvanceWasNotInProgress, e._reason);
             throw ;
         }
         catch (FederationTimeAlreadyPassed &e) {
+        	privateRefs->is_reentrant = false;
             vers_RTI.setException(e_FederationTimeAlreadyPassed, e._reason);
         }
         catch (FederateInternalError &e) {
+        	privateRefs->is_reentrant = false;
             vers_RTI.setException(e_FederateInternalError, e._reason);
             throw ;
         }
         catch (Exception &e) {
+        	privateRefs->is_reentrant = false;
             vers_RTI.setException(e_RTIinternalError, e._reason);
             throw ;
         }
@@ -525,6 +531,7 @@ RTI::RTIambassador::tick_kernel(bool locked)
             cout << "tick 3." << endl ;
             cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
                  << endl ;
+            privateRefs->is_reentrant = false;
             throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick 3) : NetworkError-->RTIinternalError");
         }
     }
@@ -2899,4 +2906,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.65 2008/02/10 18:19:13 rousse Exp $
+// $Id: RTIambassador.cc,v 3.66 2008/02/11 14:33:26 erk Exp $
