@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.20 2007/12/09 16:46:50 erk Exp $
+// $Id: SocketTCP.cc,v 3.21 2008/02/12 14:26:43 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -43,7 +43,7 @@ using std::endl ;
 namespace certi {
 
 static pdCDebug D("SOCKTCP", "(SocketTCP) - ");
-
+static PrettyDebug G("GENDOC",__FILE__);
 
 #ifdef _WIN32
 int SocketTCP::winsockInits = 0;
@@ -500,6 +500,7 @@ void
 SocketTCP::receive(void *buffer, unsigned long size)
 						throw (NetworkError, NetworkSignal)
 {
+G.Out(pdGendoc,"enter SocketTCP::receive");
 assert(_est_init_tcp);
 
 long nReceived = 0 ;
@@ -556,6 +557,7 @@ D.Out(pdTrace, "Received %ld bytes out of %ld.", RBLength, size);
 	memmove((void *) ReadBuffer, (void *)(ReadBuffer + size), RBLength - size);
 	RBLength -= size ;
 #endif
+G.Out(pdGendoc,"exit  SocketTCP::receive");
 }
 
 // ----------------------------------------------------------------------------
@@ -619,4 +621,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.20 2007/12/09 16:46:50 erk Exp $
+// $Id: SocketTCP.cc,v 3.21 2008/02/12 14:26:43 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.19 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIA_network.cc,v 3.20 2008/02/12 14:26:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -305,34 +305,34 @@ msg->trace("RTIA::processNetworkMessage ");
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type RequestFederationRestoreSucceeded.");
         G.Out(pdGendoc,"processNetworkMessage for REQUEST_FEDERATION_RESTORE_SUCCEEDED");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type RequestFederationRestoreFailed.");
         G.Out(pdGendoc,"processNetworkMessage for REQUEST_FEDERATION_RESTORE_FAILED");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       case NetworkMessage::FEDERATION_RESTORE_BEGUN:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type FederationRestoreBegun.");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       case NetworkMessage::INITIATE_FEDERATE_RESTORE:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type InitiateFederateRestore.");
         G.Out(pdGendoc,"processNetworkMessage for INITIATE_FEDERATE_RESTORE");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       case NetworkMessage::FEDERATION_RESTORED:
       case NetworkMessage::FEDERATION_NOT_RESTORED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
               " type Federation(Not)Restored.");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       default:
@@ -350,4 +350,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.19 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIA_network.cc,v 3.20 2008/02/12 14:26:42 rousse Exp $

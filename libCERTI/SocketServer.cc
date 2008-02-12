@@ -19,16 +19,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.12 2007/07/06 09:25:18 erk Exp $
+// $Id: SocketServer.cc,v 3.13 2008/02/12 14:26:43 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
 #include "SocketServer.hh"
+#include "PrettyDebug.hh"
 
 using std::list ;
 
 namespace certi {
-
+static PrettyDebug G("GENDOC",__FILE__);
 // ----------------------------------------------------------------------------
 /** This method is called when the RTIG wants to initialize its
     FD_SET before doing a select. It will add all open socket to the set.
@@ -60,8 +61,12 @@ void
 SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
     throw (SecurityError)
 {
+    G.Out(pdGendoc,"enter SocketServer::checkMessage");
     if ((message->federation == 0) && (message->federate == 0))
+        {
+        G.Out(pdGendoc,"exit  SocketServer::checkMessage on return");
         return ;
+        }
 
     Socket *socket ;
     try {
@@ -77,6 +82,7 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
         // BUG: Should put a line in the Audit.
         throw SecurityError("Message has a forged origin.");
     }
+    G.Out(pdGendoc,"exit  SocketServer::checkMessage");
 }
 
 // ----------------------------------------------------------------------------
@@ -320,4 +326,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.12 2007/07/06 09:25:18 erk Exp $
+// $Id: SocketServer.cc,v 3.13 2008/02/12 14:26:43 rousse Exp $

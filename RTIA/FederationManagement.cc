@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.42 2008/02/10 18:19:11 rousse Exp $
+// $Id: FederationManagement.cc,v 3.43 2008/02/12 14:26:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,6 +53,7 @@ static PrettyDebug G("GENDOC",__FILE__);
   FederationManagement::FederationManagement(Communications *GC, Statistics* stat)
     : savingState(false), restoringState(false)
 {
+    G.Out(pdGendoc,"enter FederationManagement::FederationManagement");
     comm = GC ;
     this->stat = stat ;
     tm = NULL ;
@@ -68,6 +69,7 @@ static PrettyDebug G("GENDOC",__FILE__);
     _nom_federation = NULL ;
     _nom_federe[0] = 0 ;
     _FEDid = NULL ;
+    G.Out(pdGendoc,"exit  FederationManagement::FederationManagement");
 }
 
 // ----------------------------------------------------------------------------
@@ -994,4 +996,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.42 2008/02/10 18:19:11 rousse Exp $
+// $Id: FederationManagement.cc,v 3.43 2008/02/12 14:26:42 rousse Exp $

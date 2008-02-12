@@ -641,8 +641,8 @@ Message::display(char *s)
 {
     printf(" -- MESSAGE - %s -", s);
     if ( type == CREATE_FEDERATION_EXECUTION )
-      printf("CREATE_FEDERATION_EXECUTION : federation %s : filename %s\n",
-             ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid)) ;
+      printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s federateHandle %d \n",
+             ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid),federate) ;
     if ( type == DESTROY_FEDERATION_EXECUTION )
       printf("DESTROY_FEDERATION_EXECUTION : federation %s : \n",
              ((federationName==NULL)?"empty":federationName)) ;

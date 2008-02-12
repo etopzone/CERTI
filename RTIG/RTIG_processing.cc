@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.49 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.50 2008/02/12 14:26:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,8 +44,8 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     char *FEDid = req->FEDid ;
     NetworkMessage rep ;               // rep for answer to RTIA
 
-    G.Out(pdGendoc,"BEGIN ** CREATE FEDERATION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processCreateFederation");
+    G.Out(pdGendoc,"BEGIN ** CREATE FEDERATION SERVICE **");
 
     if (federation == NULL) 
         {
@@ -111,15 +111,15 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         strcpy(rep.federationName,federation);
         }
 
-    G.Out(pdGendoc,"processCreateFederation===>write");
+    G.Out(pdGendoc,"processCreateFederation===>write answer to RTIA");
 
     rep.write(link); // Send answer to RTIA
 
     D.Out(pdInit, "Federation \"%s\" created with Handle %d.",
           federation, rep.federation);
 
-    G.Out(pdGendoc,"exit RTIG::processCreateFederation");
     G.Out(pdGendoc,"END ** CREATE FEDERATION SERVICE **");
+    G.Out(pdGendoc,"exit RTIG::processCreateFederation");
 }
 
 // ----------------------------------------------------------------------------
@@ -1345,4 +1345,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.49 2008/02/01 14:12:22 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.50 2008/02/12 14:26:42 rousse Exp $

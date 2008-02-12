@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.60 2008/02/10 18:19:12 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.61 2008/02/12 14:26:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -80,6 +80,7 @@ G.Out(pdGendoc,"enter RTIA::saveAndRestoreStatus");
       case Message::FEDERATE_RESTORE_COMPLETE:
       case Message::FEDERATE_RESTORE_NOT_COMPLETE:
         fm->checkFederationSaving();
+        break ;
       default:
         fm->checkFederationSaving();
         fm->checkFederationRestoring();
@@ -272,7 +273,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           D.Out(pdTrace, "Receiving Message from Federate, type"
                 " FederateRestore(Not)Complete.");
 
-          bool result = req->type == Message::FEDERATE_SAVE_COMPLETE ;
+          bool result = req->type == Message::FEDERATE_RESTORE_COMPLETE ;
           if (result)
               {
               G.Out(pdGendoc,"chooseFederateProcessing FEDERATE_RETORE_COMPLETE");
@@ -1282,4 +1283,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.60 2008/02/10 18:19:12 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.61 2008/02/12 14:26:42 rousse Exp $

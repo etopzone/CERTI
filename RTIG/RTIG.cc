@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.32 2008/01/29 14:30:51 rousse Exp $
+// $Id: RTIG.cc,v 3.33 2008/02/12 14:26:42 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,6 +43,7 @@ namespace certi {
 namespace rtig {
 
 static pdCDebug D("RTIG", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 // Constructor
@@ -83,7 +84,7 @@ RTIG::~RTIG()
 Socket*
 RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
-
+    G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod");
     // This may throw a security error.
     socketServer.checkMessage(link->returnSocket(), msg);
 
@@ -366,7 +367,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdError, "processMessageRecu: unknown type %u.", msg->type);
         throw RTIinternalError("Unknown Message Type");
     }
-
+    G.Out(pdGendoc,"exit  RTIG::chooseProcessingMethod");
     return link ; // It may have been set to NULL by closeConnection.
 }
 
@@ -503,6 +504,7 @@ RTIG::processIncomingMessage(Socket *link)
     NetworkMessage rep ; // Server Answer(only if an exception is raised)
 
     char buffer[BUFFER_EXCEPTION_REASON_SIZE] ; // To store the exception reason
+    G.Out(pdGendoc,"enter RTIG::processIncomingMessage");
     if (link == NULL) {
         D.Out(pdError, "NULL socket in processMessageRecu.");
         return NULL ;
@@ -959,7 +961,7 @@ RTIG::processIncomingMessage(Socket *link)
               "RTIG catched exception %d and sent it back to federate %d.",
               rep.exception, rep.federate);
     }
-
+    G.Out(pdGendoc,"exit  RTIG::processIncomingMessage");
     return link ;
 }
 
@@ -978,4 +980,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.32 2008/01/29 14:30:51 rousse Exp $
+// $Id: RTIG.cc,v 3.33 2008/02/12 14:26:42 rousse Exp $
