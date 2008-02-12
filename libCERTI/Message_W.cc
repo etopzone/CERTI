@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.15 2008/02/10 18:19:13 rousse Exp $
+// $Id: Message_W.cc,v 3.16 2008/02/12 16:51:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -344,6 +344,13 @@ Message::writeBody(SocketUN *socket)
             body.writeShortInt(attribute);
             break ;
 
+         // FederationTime yet put in header
+          // Body contains object,objectClass
+          case GET_OBJECT_CLASS:
+            body.writeLongInt(object);
+            body.writeLongInt(objectClass);
+            break;
+
           // Body contains name,space
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
@@ -604,6 +611,7 @@ Message::writeHeader(SocketUN *socket)
       case DISCOVER_OBJECT_INSTANCE:
       case GET_OBJECT_CLASS_HANDLE:
       case GET_OBJECT_CLASS_NAME:
+      case GET_OBJECT_CLASS:
       case GET_ATTRIBUTE_HANDLE:
       case GET_ATTRIBUTE_NAME:
       case GET_INTERACTION_CLASS_HANDLE:
@@ -712,4 +720,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.15 2008/02/10 18:19:13 rousse Exp $
+// $Id: Message_W.cc,v 3.16 2008/02/12 16:51:31 rousse Exp $

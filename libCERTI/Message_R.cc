@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.12 2008/02/12 09:35:33 jmm Exp $
+// $Id: Message_R.cc,v 3.13 2008/02/12 16:51:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -338,6 +338,13 @@ Message::readBody(SocketUN *socket)
             attribute = body.readShortInt();
             break ;
 
+         // FederationTime yet got from header
+          // Body contains object,objectClass
+          case GET_OBJECT_CLASS:
+            object = body.readLongInt();
+            objectClass = body.readLongInt();
+            break ;
+
           // Body contains name,space
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
@@ -577,6 +584,7 @@ Message::readHeader(SocketUN *socket)
       case DISCOVER_OBJECT_INSTANCE:
       case GET_OBJECT_CLASS_HANDLE:
       case GET_OBJECT_CLASS_NAME:
+      case GET_OBJECT_CLASS:
       case GET_ATTRIBUTE_HANDLE:
       case GET_ATTRIBUTE_NAME:
       case GET_INTERACTION_CLASS_HANDLE:
@@ -732,4 +740,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.12 2008/02/12 09:35:33 jmm Exp $
+// $Id: Message_R.cc,v 3.13 2008/02/12 16:51:30 rousse Exp $
