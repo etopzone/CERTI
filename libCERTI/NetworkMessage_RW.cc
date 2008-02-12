@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.41 2008/02/01 14:12:22 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.42 2008/02/12 09:35:33 jmm Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -36,7 +36,9 @@ static PrettyDebug G("GENDOC",__FILE__);
 // ----------------------------------------------------------------------------
 void NetworkMessage::trace(const char* context)
 {
+#ifndef NDEBUG
 D.Mes(pdMessage,'N',this->type,context);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -1009,4 +1011,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.41 2008/02/01 14:12:22 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.42 2008/02/12 09:35:33 jmm Exp $

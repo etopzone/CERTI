@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.11 2007/12/17 16:01:25 rousse Exp $
+// $Id: Message_R.cc,v 3.12 2008/02/12 09:35:33 jmm Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -725,9 +725,11 @@ Message::readValueArray(MessageBody &body)
 // ----------------------------------------------------------------------------
 void Message::trace(const char* context)
 {
+#ifndef NDEBUG
 D.Mes(pdMessage,'M',this->type,context);
+#endif
 }
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.11 2007/12/17 16:01:25 rousse Exp $
+// $Id: Message_R.cc,v 3.12 2008/02/12 09:35:33 jmm Exp $
