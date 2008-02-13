@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.13 2008/02/12 14:26:43 rousse Exp $
+// $Id: SocketServer.cc,v 3.14 2008/02/13 16:28:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -62,6 +62,7 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
     throw (SecurityError)
 {
     G.Out(pdGendoc,"enter SocketServer::checkMessage");
+
     if ((message->federation == 0) && (message->federate == 0))
         {
         G.Out(pdGendoc,"exit  SocketServer::checkMessage on return");
@@ -221,6 +222,7 @@ SocketServer::getSocketLink(Handle the_federation,
                             TransportType the_type) const
     throw (FederateNotExecutionMember, RTIinternalError)
 {
+    G.Out(pdGendoc,"enter SocketServer::getSocketLink");
     // It may throw FederateNotExecutionMember
     SocketTuple *tuple = getWithReferences(the_federation, the_federate);
 
@@ -234,6 +236,7 @@ SocketServer::getSocketLink(Handle the_federation,
             throw RTIinternalError("Reference to a killed Federate.");
         return tuple->BestEffortLink ;
     }
+    G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
 }
 
 // ----------------------------------------------------------------------------
@@ -326,4 +329,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.13 2008/02/12 14:26:43 rousse Exp $
+// $Id: SocketServer.cc,v 3.14 2008/02/13 16:28:30 rousse Exp $

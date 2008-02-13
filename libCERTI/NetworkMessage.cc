@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.26 2008/02/12 14:26:43 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.27 2008/02/13 16:28:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -40,6 +40,9 @@ NetworkMessage::display(const char *s)
     if ( type == CREATE_FEDERATION_EXECUTION )
         printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s :"
                " federateHandle %d : federationHandle %d\n",federationName,FEDid,federate,federation);
+    if ( type == DESTROY_FEDERATION_EXECUTION )
+      printf("DESTROY_FEDERATION_EXECUTION : federationName %s : federate %d : federationHandle %d\n",
+             ((federationName==NULL)?"empty":federationName),federate,federation) ;
     else if (type == JOIN_FEDERATION_EXECUTION )
         printf("JOIN_FEDERATION_EXECUTION : federation %s : federate %s \n",federationName,federateName);
     else if (type == GET_FED_FILE ) 
@@ -49,7 +52,10 @@ NetworkMessage::display(const char *s)
         
     printf(" number = %ld-%d", federate, number);
     printf(" date = %f ", date);
-    printf(" exception = %d ", exception);
+    if (exception == 0 )
+        printf("NO_EXCEPTION ");
+    else
+        printf(" exception=%d: ",exception);
     printf(" ObjectHandle = %ld\n", objectClass);
     printf(" interactionClass= %ld\n", interactionClass);
     printf(" object = %ld\n", object);
@@ -355,4 +361,4 @@ NetworkMessage::writeFederationName(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.26 2008/02/12 14:26:43 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.27 2008/02/13 16:28:30 rousse Exp $

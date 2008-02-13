@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.43 2008/02/12 14:26:42 rousse Exp $
+// $Id: FederationManagement.cc,v 3.44 2008/02/13 16:28:29 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -77,6 +77,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 FederationManagement::~FederationManagement()
 {
     TypeException e ;
+    G.Out(pdGendoc,"enter ~FederationManagement");
 
     if (_est_membre_federation) {
         resignFederationExecution(RTI::DELETE_OBJECTS, e);
@@ -87,18 +88,20 @@ FederationManagement::~FederationManagement()
     // a-t-on avertit les autres federes de notre depart et donc
     // de la destruction de notre objet par RemoveObject(HARZI)
     // car le Remove Object ne diffuse pas le message
-    if (_est_createur_federation) {
-        cout << "RTIA: Staying active to destroy federation..." << endl ;
+    //if (_est_createur_federation) {
+    //    cout << "RTIA: Staying active to destroy federation..." << endl ;
 
-        destroyFederationExecution(_nom_federation, e);
-        while (e != e_NO_EXCEPTION) {
-				sleep(1);
-            destroyFederationExecution(_nom_federation, e);
-        }
+     //  destroyFederationExecution(_nom_federation, e);
+      // while (e != e_NO_EXCEPTION) {
+	//			sleep(1);
+          //  destroyFederationExecution(_nom_federation, e);
+       // }
         cout << "RTIA: Federation destroyed" << endl ;
-    }
+    //}
+
     delete _nom_federation ;
     delete _FEDid ;
+    G.Out(pdGendoc,"exit  ~FederationManagement");
 }
 
 // ----------------------------------------------------------------------------
@@ -204,13 +207,13 @@ destroyFederationExecution(const char *theName,
     NetworkMessage requete, reponse ;
 
     D.Out(pdInit, "Destroy Federation %s.", theName);
-
+    G.Out(pdGendoc,"enter FederationManagement::destroyFederationExecution");
     e = e_NO_EXCEPTION ;
 
     // BUG: On devrait pouvoir detruire une federation meme si on n'est
     // pas le createur.
-    if (!_est_createur_federation || strcmp(theName, _nom_federation))
-        e = e_FederationExecutionDoesNotExist ;
+    //if (strcmp(theName, _nom_federation))
+    //    e = e_FederationExecutionDoesNotExist ;
 
     if (e == e_NO_EXCEPTION) {
         requete.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
@@ -219,7 +222,9 @@ destroyFederationExecution(const char *theName,
         requete.federationName = new char[strlen(theName)+1] ;
         strcpy(requete.federationName, theName);
 
+        G.Out(pdGendoc,"destroyFederationExecution====>send Message to RTIG");
         comm->sendMessage(&requete);
+
         comm->waitMessage(&reponse,
                           NetworkMessage::DESTROY_FEDERATION_EXECUTION,
                           federate);
@@ -239,6 +244,7 @@ destroyFederationExecution(const char *theName,
         else
             e = reponse.exception ;
     }
+G.Out(pdGendoc,"exit  FederationManagement::destroyFederationExecution");
 }
 
 // ----------------------------------------------------------------------------
@@ -996,4 +1002,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.43 2008/02/12 14:26:42 rousse Exp $
+// $Id: FederationManagement.cc,v 3.44 2008/02/13 16:28:29 rousse Exp $

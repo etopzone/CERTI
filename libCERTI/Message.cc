@@ -644,16 +644,19 @@ Message::display(char *s)
       printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s federateHandle %d \n",
              ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid),federate) ;
     if ( type == DESTROY_FEDERATION_EXECUTION )
-      printf("DESTROY_FEDERATION_EXECUTION : federation %s : \n",
-             ((federationName==NULL)?"empty":federationName)) ;
+      printf("DESTROY_FEDERATION_EXECUTION : federation %s : federate %d\n",
+             ((federationName==NULL)?"empty":federationName),federate) ;
     else if ( type == JOIN_FEDERATION_EXECUTION )
       printf("JOIN_FEDERATION_EXECUTION : federate number %d federation name %s federate name %s\n",
              federate,((federationName==NULL)?"empty":federationName),federateName) ;
     else
         printf(" type=%d :", type);
     printf(" date=%f: ", fed_time.getTime());
-    printf(" exception=%d: ", exception);
-    printf(" reason=%s: ",exceptionReason);
+    if (exception == 0 )
+        printf("NO_EXCEPTION ");
+    else
+        printf(" exception=%d: ",exception);
+    printf(" reason=%s: ",((exceptionReason==NULL)?"empty":exceptionReason));
     printf(" objectClass=%ld: ", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);

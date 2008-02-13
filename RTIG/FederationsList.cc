@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.50 2008/02/01 14:12:22 rousse Exp $
+// $Id: FederationsList.cc,v 3.51 2008/02/13 16:28:29 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -306,14 +306,18 @@ FederationsList::exists(const char *name,
                         Handle &handle)
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
+    G.Out(pdGendoc,"enter FederationsList::exists");
+
     if (name == NULL) throw RTIinternalError("Null Federation Name.");
 
     for (list<Federation *>::iterator i = begin(); i != end(); i++) {
         if (!strcmp((*i)->getName(), name)) {
             handle = (*i)->getHandle();
+            G.Out(pdGendoc,"exit  FederationsList::exists");
             return ;
         }
     }
+    G.Out(pdGendoc,"exit  FederationsList::exists on exception");
 
     D.Out(pdDebug, "exists throws FederationExecutionDoesNotExist.");
     throw FederationExecutionDoesNotExist(name);
@@ -1526,5 +1530,5 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.50 2008/02/01 14:12:22 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.51 2008/02/13 16:28:29 rousse Exp $
 

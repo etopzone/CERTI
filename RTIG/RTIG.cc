@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.33 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIG.cc,v 3.34 2008/02/13 16:28:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -86,7 +86,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
     G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod");
     // This may throw a security error.
-    socketServer.checkMessage(link->returnSocket(), msg);
+    if ( msg->type != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
+       socketServer.checkMessage(link->returnSocket(), msg);
 
 	//D.Mes(pdMessage, 'N', msg->type);
 	msg->trace("RTIG::chooseProcessingMethod ");
@@ -980,4 +981,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.33 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIG.cc,v 3.34 2008/02/13 16:28:30 rousse Exp $

@@ -407,6 +407,9 @@ void
 Billard::declare()
 {
     local.ID = registerBallInstance(federateName.c_str());
+   // test, quelle est la classe de l'objet cree
+   cout << "the class of the new created object is" <<
+rtiamb.getObjectClass (local.ID) << endl ;
 }
 
 // ----------------------------------------------------------------------------

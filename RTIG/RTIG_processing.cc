@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.50 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.51 2008/02/13 16:28:30 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -316,8 +316,8 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     Handle num_federation ;
     char *federation = req->federationName ;
 
-    G.Out(pdGendoc,"BEGIN ** DESTROY FEDERATION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processDestroyFederation");
+    G.Out(pdGendoc,"BEGIN ** DESTROY FEDERATION SERVICE **");
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
@@ -334,13 +334,12 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     rep.federationName = new char[strlen(req->federationName)+1];
     strcpy(rep.federationName,req->federationName);
 
-    G.Out(pdGendoc,"processDestroyFederation===>write");
+    G.Out(pdGendoc,"processDestroyFederation===>write to RTIA");
 
     rep.write(link);
 
-    G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
     G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
-
+    G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
 }
 
 // ----------------------------------------------------------------------------
@@ -1345,4 +1344,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.50 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.51 2008/02/13 16:28:30 rousse Exp $
