@@ -16,45 +16,68 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.24 2008/01/24 16:15:56 rousse Exp $
+// $Id: certi.hh,v 3.25 2008/02/14 15:29:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
 #if defined(_WIN32)	
-	#include <windows.h>
+    #include <windows.h>
     #include <algorithm>	
-	#include <process.h>
-	#define	sleep(a)			Sleep(a * 1000)
-	#define	usleep(a)			Sleep(a / 1000)
-    typedef unsigned short		ushort;
-	typedef	int					pid_t;			      
-	#define  strcasecmp			strcmp
-	#define	STAT_FUNCTION		_stat
-	#define	STAT_STRUCT			struct _stat
-	/* TCP/IP related typedef and includes */
+    #include <process.h>
+    #define	sleep(a)	      Sleep(a * 1000)
+    #define	usleep(a)	      Sleep(a / 1000)
+    typedef unsigned short        ushort;
+    typedef	int	              pid_t;			      
+    #define  strcasecmp           strcmp
+    #define	STAT_FUNCTION         _stat
+    #define	STAT_STRUCT           struct _stat
+    /* TCP/IP related typedef and includes */
     #ifndef _WINSOCK2API_
-		#ifndef _WINSOCKAPI_
-			#include <winsock2.h>             
-		#endif    
-	#endif	
-    typedef u_long				in_addr_t;
+        #ifndef _WINSOCKAPI_
+	   #include <winsock2.h>             
+	#endif    
+    #endif	
+    typedef u_long			in_addr_t;
     typedef unsigned short		in_port_t;
     #ifdef _MSC_VER
+        typedef unsigned __int64        uint64_t;
+        typedef __int64			 int64_t;
         typedef unsigned __int32	uint32_t;
-        typedef __int32				int32_t;
+        typedef __int32			 int32_t;
         typedef unsigned __int16	uint16_t;
-        typedef __int16				int16_t;
-        typedef unsigned __int8	uint8_t;
-        typedef __int8				int8_t;
+        typedef __int16			 int16_t;
+        typedef unsigned __int8	         uint8_t;
+        typedef __int8			  int8_t;
+        #ifdef _M_X64 
+           #define  CERTI_INT64_CONSTANT(val)  (val##L)
+           #define  CERTI_INT64_FORMAT         "l"
+        #else
+           #define  CERTI_INT64_CONSTANT(val)  (val##LL)
+           #define  CERTI_INT64_FORMAT         "ll"
+        #endif
+    #else
+       #ifdef __x86_64__
+          #define  CERTI_INT64_CONSTANT(val)  (val##L)
+          #define  CERTI_INT64_FORMAT         "l"
+       #else
+          #define  CERTI_INT64_CONSTANT(val)  (val##LL)
+          #define  CERTI_INT64_FORMAT         "ll"
+       #endif
     #endif
 #else
-	#define	STAT_FUNCTION		stat
-	#define	STAT_STRUCT			struct stat
+    #define  STAT_FUNCTION		stat
+    #define  STAT_STRUCT		struct stat
+    #ifdef __x86_64__
+       #define  CERTI_INT64_CONSTANT(val)  (val##L)
+       #define  CERTI_INT64_FORMAT         "l"
+    #else
+       #define  CERTI_INT64_CONSTANT(val)  (val##LL)
+       #define  CERTI_INT64_FORMAT         "ll"
+    #endif
 #endif
 
 #include "RTI.hh"
-//#include <vector>
 	
 /**
  * @defgroup libCERTI The CERTI library.
@@ -324,6 +347,37 @@ typedef  struct vlp
 // Note: Currently, no option is suppported by our default GSSAPI mechanism.
 #define HLA_GSS_FLAGS 0
 
+
+/* 
+ * Basic bit swapping functions
+ */
+#define CERTI_UINT16_SWAP_BYTES(val)	((uint16_t) ( \
+    (((uint16_t) (val) & (uint16_t) 0x00ffU) << 8) |  \
+    (((uint16_t) (val) & (uint16_t) 0xff00U) >> 8)))
+
+#define CERTI_UINT32_SWAP_BYTES(val)	((uint32_t) (     \
+    (((uint32_t) (val) & (uint32_t) 0x000000ffU) << 24) | \
+    (((uint32_t) (val) & (uint32_t) 0x0000ff00U) <<  8) | \
+    (((uint32_t) (val) & (uint32_t) 0x00ff0000U) >>  8) | \
+    (((uint32_t) (val) & (uint32_t) 0xff000000U) >> 24)))
+
+#define CERTI_UINT64_SWAP_BYTES(val)	((uint64_t) (                   \
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00000000000000ffU)) << 56) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x000000000000ff00U)) << 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x0000000000ff0000U)) << 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00000000ff000000U)) <<  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x000000ff00000000U)) >>  8) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x0000ff0000000000U)) >> 24) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0x00ff000000000000U)) >> 40) |	\
+      (((uint64_t) (val) &						\
+	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.24 2008/01/24 16:15:56 rousse Exp $
+// $Id: certi.hh,v 3.25 2008/02/14 15:29:58 erk Exp $

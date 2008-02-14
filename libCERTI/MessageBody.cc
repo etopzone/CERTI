@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.15 2007/12/11 16:44:20 rousse Exp $
+// $Id: MessageBody.cc,v 3.16 2008/02/14 15:29:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -122,7 +122,7 @@ return result;
 MessageBody &MessageBody::operator<<(unsigned long val)
 {
 assert(val <= 4294967295U);
-#ifdef BIG_INDIAN
+#ifdef HOST_IS_BIG_ENDIAN
 	buffer[wPtr++]= (char)(0x000000FF & (val >> 24));
 	buffer[wPtr++]= (char)(0x000000FF & (val >> 16));
 	buffer[wPtr++]= (char)(0x000000FF & (val >>  8));
@@ -140,7 +140,7 @@ return *this ;
 MessageBody &MessageBody::operator<<(unsigned short val)
 {
 //assert(val <= 4294967295U);
-#ifdef BIG_INDIAN
+#ifdef HOST_IS_BIG_ENDIAN
 	buffer[wPtr++]= (char)0x000000FF & (val >>  8);
 	buffer[wPtr++]= (char)0x000000FF & val;
 #else
@@ -154,7 +154,7 @@ return *this ;
 // ----------------------------------------------------------------------------
 const MessageBody &MessageBody::operator>>(unsigned long &val)
 {
-#ifdef BIG_INDIAN
+#ifdef HOST_IS_BIG_ENDIAN
 	val = (unsigned long) (buffer[rPtr++] << 24);
 	val|= (unsigned long) (buffer[rPtr++] << 16);
 	val|= (unsigned long) (buffer[rPtr++] <<  8);
@@ -170,7 +170,7 @@ return *this ;
 
 const MessageBody &MessageBody::operator>>(unsigned short &val)
 {
-#ifdef BIG_INDIAN
+#ifdef HOST_IS_BIG_ENDIAN
 	val = (unsigned short) (buffer[rPtr++] <<  8);
 	val|= (unsigned short) buffer[rPtr++];
 #else
@@ -182,4 +182,4 @@ return *this ;
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.15 2007/12/11 16:44:20 rousse Exp $
+// $Id: MessageBody.cc,v 3.16 2008/02/14 15:29:58 erk Exp $

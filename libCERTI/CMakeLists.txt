@@ -65,29 +65,17 @@ LBTS.hh
 )
 
 SET(CERTI_SUPPORT_SRCS
-AuditFile.cc
-AuditLine.cc
-BasicMessage.cc
+AuditFile.cc AuditFile.hh
+AuditLine.cc AuditLine.hh
+BasicMessage.cc BasicMessage.hh
 Clock.cc Clock.hh
-MessageBody.cc
-Message.cc
-Message_R.cc
-Message_W.cc
-NetworkMessage.cc
-NetworkMessage_RW.cc
-Exception.cc
-XmlParser.cc
-PrettyDebug.cc
-PrettyDebEx.cc
-AuditFile.hh
-AuditLine.hh
-BasicMessage.hh
-MessageBody.hh
-Message.hh
-NetworkMessage.hh
-Exception.hh
-XmlParser.hh
-PrettyDebug.hh
+MessageBody.cc MessageBody.hh
+MessageBuffer.cc MessageBuffer.hh
+Message.cc Message_R.cc Message_W.cc Message.hh
+NetworkMessage.cc NetworkMessage_RW.cc NetworkMessage.hh
+Exception.cc Exception.hh
+XmlParser.cc XmlParser.hh
+PrettyDebug.cc PrettyDebEx.cc PrettyDebug.hh
 )
 
 IF (HAVE_POSIX_CLOCK)
