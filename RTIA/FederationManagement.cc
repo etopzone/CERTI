@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.44 2008/02/13 16:28:29 rousse Exp $
+// $Id: FederationManagement.cc,v 3.45 2008/02/14 09:43:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -122,12 +122,13 @@ createFederationExecution(const char *theName,
     e = e_NO_EXCEPTION ;
 
     // BUG: pour l'instant, le federe ne peut creer q'une federation
-    if (_est_createur_federation)
-        {
-        std::cout<<"Federate "<<_nom_federe<<" is yet a federation creator"<<std::endl;
-        e = e_RTIinternalError ;
-        }
-    else if (_est_membre_federation)
+    //if (_est_createur_federation)
+    //    {
+    //    std::cout<<"Federate "<<_nom_federe<<" is yet a federation creator"<<std::endl;
+    //    e = e_RTIinternalError ;
+    //    }
+    //else if (_est_membre_federation)
+    if (_est_membre_federation)
        {
         std::cout<<"Federate "<<_nom_federe<<" is yet a federation member"<<std::endl;
         e = e_RTIinternalError ;
@@ -1002,4 +1003,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.44 2008/02/13 16:28:29 rousse Exp $
+// $Id: FederationManagement.cc,v 3.45 2008/02/14 09:43:23 rousse Exp $
