@@ -20,7 +20,10 @@ OPTION(BUILD_SHARED
              "Build libraries as shared library" ON)
   
 OPTION(BUILD_API_DOC
-             "Build doxygen documentation" OFF)
+             "Build doxygen documentation" OFF)         
+             
+OPTION(FORCE_NO_X11 
+              "Force not to use X11 (i.e. no Billard GUI)" OFF)    
 
 SET(CMAKE_BUILD_TYPE "Debug")
 
@@ -169,9 +172,13 @@ ELSE (LIBXML2_FOUND)
 ENDIF (LIBXML2_FOUND)
 
 ################ X11 install Check ####################
-FIND_PACKAGE(X11)
+IF (NOT FORCE_NO_X11)
+    FIND_PACKAGE(X11)
+ELSE(NOT FORCE_NO_X11)
+    MESSAGE(STATUS "FORCE_NO_X11 OPTION has been  set: Billard Test Application will not have GUI.")
+    SET(X11_FOUND 0)
+ENDIF(NOT FORCE_NO_X11)
 IF (X11_FOUND)
-
   FIND_FILE(HAVE_X11_BITMAPS_CNTR_PTR
     NAMES cntr_ptr
     PATH_SUFFIXES X11/bitmaps
