@@ -39,7 +39,7 @@ namespace certi {
  * One must read from the buffer in the exact order the write was done.
  * MessageBuffer is dynamically sized.
  */
-class MessageBuffer
+class CERTI_EXPORT MessageBuffer
 {
 public:
   /**
@@ -98,12 +98,12 @@ public:
 #define DECLARE_SIGNED(type)				\
   int32_t						\
   write_##type##s(const type##_t* data, uint32_t n) {		\
-    write_u##type##s(reinterpret_cast<const u##type##_t*>(data),n);	\
+    return write_u##type##s(reinterpret_cast<const u##type##_t*>(data),n);	\
   }							\
     							\
   int32_t						\
   read_##type##s(type##_t* data, uint32_t n) {		\
-    read_u##type##s(reinterpret_cast<u##type##_t*>(data),n);	\
+    return read_u##type##s(reinterpret_cast<u##type##_t*>(data),n);	\
   }   							\
     
 #define DECLARE_SINGLE_READ_WRITE(type,suffix)     \
@@ -114,7 +114,7 @@ public:
     							\
   int32_t						\
   read_##type(type##suffix* data) {		\
-    read_##type##s(data,1);	\
+    return read_##type##s(data,1);	\
   }   	    
       
   int32_t 

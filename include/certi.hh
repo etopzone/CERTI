@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.25 2008/02/14 15:29:58 erk Exp $
+// $Id: certi.hh,v 3.26 2008/02/14 15:49:40 jmm Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -55,6 +55,9 @@
         #else
            #define  CERTI_INT64_CONSTANT(val)  (val##LL)
            #define  CERTI_INT64_FORMAT         "ll"
+        #endif
+        #ifndef __func__
+        #define __func__ "<unknown>"
         #endif
     #else
        #ifdef __x86_64__
@@ -380,4 +383,4 @@ typedef  struct vlp
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.25 2008/02/14 15:29:58 erk Exp $
+// $Id: certi.hh,v 3.26 2008/02/14 15:49:40 jmm Exp $
