@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.27 2008/02/13 16:28:30 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.28 2008/02/15 14:16:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -45,6 +45,10 @@ NetworkMessage::display(const char *s)
              ((federationName==NULL)?"empty":federationName),federate,federation) ;
     else if (type == JOIN_FEDERATION_EXECUTION )
         printf("JOIN_FEDERATION_EXECUTION : federation %s : federate %s \n",federationName,federateName);
+    else if (type == FEDERATE_RESTORE_COMPLETE )
+        printf("FEDERATE_RESTORE_COMPLETE : federationHandle %d : federatehandle %d \n",federation,federate);
+    else if (type == FEDERATE_SAVE_COMPLETE )
+        printf("FEDERATE_SAVE_COMPLETE : federationHandle %d : federatehandle %d \n",federation,federate);
     else if (type == GET_FED_FILE ) 
         printf("GET_FED_FILE : number %ld\n",number) ;
     else
@@ -361,4 +365,4 @@ NetworkMessage::writeFederationName(MessageBody &body)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.27 2008/02/13 16:28:30 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.28 2008/02/15 14:16:20 rousse Exp $

@@ -649,6 +649,10 @@ Message::display(char *s)
     else if ( type == JOIN_FEDERATION_EXECUTION )
       printf("JOIN_FEDERATION_EXECUTION : federate number %d federation name %s federate name %s\n",
              federate,((federationName==NULL)?"empty":federationName),federateName) ;
+    else if (type == FEDERATE_RESTORE_COMPLETE )
+        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
+    else if (type == FEDERATE_SAVE_COMPLETE )
+        printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
     else
         printf(" type=%d :", type);
     printf(" date=%f: ", fed_time.getTime());

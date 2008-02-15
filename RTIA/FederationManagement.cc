@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.45 2008/02/14 09:43:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.46 2008/02/15 14:16:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -894,7 +894,8 @@ FederationManagement::federateRestoreStatus(bool status, TypeException &)
         throw RestoreNotRequested("Federation did not initiate restoring.");
 
     NetworkMessage req ;
-
+    req.federate = federate ;
+    req.federation = _numero_federation ;
     if (status)
         req.type = NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
     else
@@ -1003,4 +1004,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.45 2008/02/14 09:43:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.46 2008/02/15 14:16:19 rousse Exp $

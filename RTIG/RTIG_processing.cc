@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.51 2008/02/13 16:28:30 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.52 2008/02/15 14:16:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -503,17 +503,16 @@ RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 void
 RTIG::processFederateSaveBegun(Socket *, NetworkMessage *req)
 {
-    G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE BEGUN SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processFederateSaveBegun");
-
+    G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE BEGUN SERVICE **");
     G.Out(pdGendoc,"processFederateSaveBegun federation = %d",req->federation);
 
     auditServer << "Federate " << req->federate << " save begun." ;
 
     federations.federateSaveBegun(req->federation, req->federate);
 
-    G.Out(pdGendoc,"exit  RTIG::processFederateSaveBegun");
     G.Out(pdGendoc,"END   ** FEDERATE SAVE BEGUN SERVICE **");
+    G.Out(pdGendoc,"exit  RTIG::processFederateSaveBegun");
 }
 
 // ----------------------------------------------------------------------------
@@ -521,12 +520,17 @@ void
 RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
     G.Out(pdGendoc,"enter RTIG::processFederateSaveStatus");
+    if (req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE)
+        G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE COMPLETE SERVICE **");
+    else
+        G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **");
 
     auditServer << "Federate " << req->federate << " save ended." ;
 
     bool status = req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
     federations.federateSaveStatus(req->federation, req->federate, status);
 
+    G.Out(pdGendoc,"exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **");
     G.Out(pdGendoc,"exit  RTIG::processFederateSaveStatus");
 }
 
@@ -553,7 +557,9 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
     auditServer << "Federate " << req->federate << " restore ended." ;
 
     bool status = req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
+
     federations.federateRestoreStatus(req->federation, req->federate, status);
+
     G.Out(pdGendoc,"exit  RTIG::processRequestFederateRestoreStatus");
     G.Out(pdGendoc,"END   ** FEDERATE RESTORE (NOT)COMPLETE **");
 }
@@ -1344,4 +1350,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.51 2008/02/13 16:28:30 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.52 2008/02/15 14:16:19 rousse Exp $
