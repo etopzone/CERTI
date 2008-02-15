@@ -19,8 +19,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
 // ----------------------------------------------------------------------------
-
-
 #include <iostream>
 using std::cout;
 using std::cerr;
@@ -54,7 +52,7 @@ void clockTests(certi::Clock& aClock) {
 
 void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	std::string    stdstr = "a std:string";
-	const char*   str = "bouhlala";
+	const char*   str = "a char* string";
 	uint8_t  u8   =  232;
 	int8_t   i8   = -125;
 	uint16_t u16  = 0xFFAA;
@@ -78,12 +76,12 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	float    vf32  = 0.0;
 	double   vd64  = 0.0;	
 	cout << "Testing MessageBuffer class BEGIN..."<<endl;
-	cout << "    Default MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
+	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
 	cout << "    Current (initially void) MessageBuffer size = "<< MsgBuf.size()<<endl;
 	cout << "    Encoding to buffer..." <<endl;
 	cout << "    bytes string = " << str << endl;
-	MsgBuf.write_uint32(strlen(str)+1);
-	MsgBuf.write_bytes(str,strlen(str)+1);
+	MsgBuf.write_uint32(strlen(str));
+	MsgBuf.write_bytes(str,strlen(str));
 	MsgBuf.write_uint8(u8);
 	MsgBuf.write_uint16(u16);
 	MsgBuf.write_uint32(u32);
@@ -99,8 +97,8 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	cout << "    Current MessageBuffer size                  = "<< MsgBuf.size()<<endl;
 	cout << "    Decoding from buffer..." <<endl;
 	MsgBuf.read_uint32(&vu32);
-	vstr = new char[vu32];
-	memset(vstr,'\0',vu32);
+	vstr = new char[vu32+1];
+	memset(vstr,'\0',vu32+1);
 	MsgBuf.read_bytes(vstr,vu32);
 	cout << "    bytes string = " << vstr << endl; assert(0==strcmp(str,vstr));
 	MsgBuf.read_uint8(&vu8); assert(vu8==u8);
@@ -141,17 +139,31 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 		MsgBuf.assumeBufferIsBigEndian();
 		cout << " whereas the host was little" << endl;
 	}
-	MsgBuf.read_uint8(&vu8);  cout << "        Read  <"; certi::MessageBuffer::show(&vu8,1); cout << ">" << endl;
-	MsgBuf.read_uint16(&vu16);cout << "        Read <"; certi::MessageBuffer::show(&vu16,2); cout << ">" << endl;
-	MsgBuf.read_uint32(&vu32);cout << "        Read <"; certi::MessageBuffer::show(&vu32,4); cout << ">" << endl;
-	MsgBuf.read_uint64(&vu64);cout << "        Read <"; certi::MessageBuffer::show(&vu64,8); cout << ">" << endl;
-	MsgBuf.read_int8(&vi8);cout << "        Read <"; certi::MessageBuffer::show(&vi8,1); cout << ">" << endl;
-	MsgBuf.read_int16(&vi16);cout << "        Read <"; certi::MessageBuffer::show(&vi16,2); cout << ">" << endl;
-	MsgBuf.read_int32(&vi32);cout << "        Read <"; certi::MessageBuffer::show(&vi32,4); cout << ">" << endl;
-	MsgBuf.read_int64(&vi64);cout << "        Read <"; certi::MessageBuffer::show(&vi64,8); cout << ">" << endl;
-	MsgBuf.read_float(&vf32);cout << "        Read <"; certi::MessageBuffer::show(&vf32,4); cout << ">" << endl;
-	MsgBuf.read_double(&vd64);cout << "        Read <"; certi::MessageBuffer::show(&vd64,8); cout << ">" << endl;
-
+	MsgBuf.read_uint8(&vu8);   cout << "        Read  <"; certi::MessageBuffer::show(&vu8,1); cout << ">" << endl;
+	MsgBuf.read_uint16(&vu16); cout << "        Read <"; certi::MessageBuffer::show(&vu16,2); cout << ">" << endl;
+	MsgBuf.read_uint32(&vu32); cout << "        Read <"; certi::MessageBuffer::show(&vu32,4); cout << ">" << endl;
+	MsgBuf.read_uint64(&vu64); cout << "        Read <"; certi::MessageBuffer::show(&vu64,8); cout << ">" << endl;
+	MsgBuf.read_int8(&vi8);    cout << "        Read <"; certi::MessageBuffer::show(&vi8,1); cout << ">" << endl;
+	MsgBuf.read_int16(&vi16);  cout << "        Read <"; certi::MessageBuffer::show(&vi16,2); cout << ">" << endl;
+	MsgBuf.read_int32(&vi32);  cout << "        Read <"; certi::MessageBuffer::show(&vi32,4); cout << ">" << endl;
+	MsgBuf.read_int64(&vi64);  cout << "        Read <"; certi::MessageBuffer::show(&vi64,8); cout << ">" << endl;
+	MsgBuf.read_float(&vf32);  cout << "        Read <"; certi::MessageBuffer::show(&vf32,4); cout << ">" << endl;
+	MsgBuf.read_double(&vd64); cout << "        Read <"; certi::MessageBuffer::show(&vd64,8); cout << ">" << endl;
+	delete[] vstr;
+	
+	cout << "    Trying to overload the buffer..." <<endl;
+	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
+	u32 = MsgBuf.maxSize()*2;
+	vstr = new char[u32+1];
+	vstr[u32]='\0';
+	memset(vstr,'A',u32);	
+	MsgBuf.write_uint32(u32);
+	MsgBuf.write_chars(vstr,u32);	
+	cout << "    Written char* is " << vstr << endl;
+	delete[] vstr;
+	cout << "    Current           MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
+	vstdstr = MsgBuf.read_string();
+	cout << "    Read String is   " << vstdstr << endl;
 	cout << "Testing MessageBuffer class END."<<endl;
 } /* end of messageBufferTests */
 
