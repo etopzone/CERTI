@@ -163,7 +163,7 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
-	uint16_t* buffer_uint16;
+	uint16_t an_uint16;
 
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -176,9 +176,9 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 		memcpy(buffer+writeOffset, data, 2*n);
 		writeOffset += 2*n;
 	} else {
-		buffer_uint16 = reinterpret_cast<uint16_t*>(buffer+writeOffset);
 		for (i=0; i<n; ++i) {
-			buffer_uint16[i] = CERTI_UINT16_SWAP_BYTES(data[i]);
+			an_uint16 = CERTI_UINT16_SWAP_BYTES(data[i]);
+			memcpy(buffer+writeOffset, &an_uint16, 2);
 			writeOffset += 2;
 		}
 	}
@@ -187,7 +187,7 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	uint32_t i;
-	uint16_t* buffer_uint16;
+	uint16_t an_uint16;
 
 	if (2*n + readOffset > writeOffset) {
 		std::stringstream smsg;
@@ -202,10 +202,10 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 2*n);
 		readOffset += 2*n;
-	} else {
-		buffer_uint16 = reinterpret_cast<uint16_t*>(buffer+readOffset);
+	} else {		
 		for (i=0; i<n; ++i) {
-			data[i] = CERTI_UINT16_SWAP_BYTES(buffer_uint16[i]);
+			memcpy(&an_uint16, buffer+readOffset,2);
+			data[i] = CERTI_UINT16_SWAP_BYTES(an_uint16);
 			readOffset += 2;
 		}
 	}
@@ -214,7 +214,7 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t* buffer_uint32;
+	uint32_t an_uint32;
 
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -226,10 +226,10 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(buffer+writeOffset, data, 4*n);
 		writeOffset += 4*n;
-	} else {
-		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+writeOffset);
+	} else {		
 		for (i=0; i<n; ++i) {
-			buffer_uint32[i] = CERTI_UINT32_SWAP_BYTES(data[i]);
+			an_uint32 = CERTI_UINT32_SWAP_BYTES(data[i]);
+			memcpy(buffer+writeOffset,&an_uint32,4);
 			writeOffset += 4;
 		}
 	}
@@ -238,7 +238,7 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t* buffer_uint32;
+	uint32_t an_uint32;
 
 	if (4*n + readOffset > writeOffset) {
 		std::stringstream smsg;
@@ -254,9 +254,10 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 		memcpy(data, buffer+readOffset, 4*n);
 		readOffset += 4*n;
 	} else {
-		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+readOffset);
+		
 		for (i=0; i<n; ++i) {
-			data[i] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i]);
+			memcpy(&an_uint32,buffer+readOffset,4);
+			data[i] = CERTI_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
 		}
 	}
@@ -265,8 +266,11 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t* buffer_uint32;
-	const uint32_t* data32;
+	union deux32 {
+		uint32_t    ui32[2];
+		uint64_t    ui64;
+	} a_deux32;
+	uint32_t an_uint32;
 
 	if ((8*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -278,13 +282,15 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(buffer+writeOffset, data, 8*n);
 		writeOffset += 8*n;
-	} else {
-		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+writeOffset);
-		data32 = reinterpret_cast<const uint32_t*>(data);
+	} else {				
 		for (i=0; i<n; ++i) {
-			buffer_uint32[i] = CERTI_UINT32_SWAP_BYTES(data32[i+1]);
-			buffer_uint32[i+1] = CERTI_UINT32_SWAP_BYTES(data32[i]);
-			writeOffset += 8;
+			a_deux32.ui64 = data[i];
+			an_uint32 = CERTI_UINT32_SWAP_BYTES(a_deux32.ui32[1]);
+			memcpy(buffer+writeOffset,&an_uint32,4);
+			writeOffset += 4;
+			an_uint32 = CERTI_UINT32_SWAP_BYTES(a_deux32.ui32[0]);
+			memcpy(buffer+writeOffset,&an_uint32,4);
+			writeOffset += 4;
 		}
 	}
 	return (writeOffset-8*n);
@@ -292,8 +298,11 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t* buffer_uint32;
-	uint32_t* data32;
+	union deux32 {
+			uint32_t    ui32[2];
+			uint64_t    ui64;
+	} a_deux32;
+	uint32_t an_uint32;	
 
 	if (8*n + readOffset > writeOffset) {
 		std::stringstream smsg;
@@ -308,13 +317,17 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 8*n);
 		readOffset += 8*n;
-	} else {
-		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+readOffset);
-		data32 = reinterpret_cast<uint32_t*>(data);
-		for (i=0; i<n; ++i) {
-			data32[i+1] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i]);
-			data32[i] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i+1]);
-			readOffset += 8;
+	} else {		
+		for (i=0; i<n; ++i) {			
+			memcpy(&an_uint32,buffer+readOffset,4);			
+			a_deux32.ui32[1] = CERTI_UINT32_SWAP_BYTES(an_uint32);
+			readOffset += 4;
+			
+			memcpy(&an_uint32,buffer+readOffset,4);
+			a_deux32.ui32[0] = CERTI_UINT32_SWAP_BYTES(an_uint32);
+			readOffset += 4;
+			
+			data[i] = a_deux32.ui64;			
 		}
 	}
 	return (readOffset-8*n);
