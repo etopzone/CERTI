@@ -42,6 +42,21 @@ namespace certi {
 class CERTI_EXPORT MessageBuffer
 {
 public:
+
+  /**
+   * Return true if the host is BidEndian
+   */
+  static const bool HostIsBigEndian();
+  /**
+  	 * Return true if the host is LittleEndian
+  	 */
+  static const bool HostIsLittleEndian();
+  
+  /**
+   * Show n bytes of data content in hexa on ostream. 
+   */
+  static void show(const void* data, uint32_t n);
+  
   /**
    * Default message buffer constructor.
    * The default message buffer size is DEFAULT_MESSAGE_BUFFER_SIZE.
@@ -185,28 +200,47 @@ public:
   
   DECLARE_SINGLE_READ_WRITE(double,)    
   
-  MessageBuffer& operator<<(uint8_t data) {
+  int32_t
+  write_string(const std::string& str);
+  
+  std::string 
+  read_string();
+  
+  MessageBuffer& operator<<(const uint8_t data) {
 	  this->write_uint8(data);
 	  return *this;
   }
+  
+  /**
+   * Cast operator to const void*
+   * to be used (for example) in send system call.
+   */
+  
+  operator const void *();
+  
+  /**
+   * Cast operator to void*
+   * To be used (for example) in recv system call.
+   */
+  operator void *();
 
 private: 
   /** The buffer itself */
   uint8_t*         buffer;  
   /** The provisioned buffer size */
-  uint32_t	   bufferMaxSize;
+  uint32_t	       bufferMaxSize;
   /** Endianness toggle */
   bool             bufferHasMyEndianness;
   /** 
    * The write offset is the offset of the buffer
    * where the next write operation will write to.
    */
-  uint32_t	   writeOffset;
+  uint32_t	       writeOffset;
   /** 
    * The read offset is the offset of the buffer
    * where the next read operation will read from.
    */
-  uint32_t	   readOffset;
+  uint32_t	       readOffset;
 
   void initialize();
   void reallocate(uint32_t n);

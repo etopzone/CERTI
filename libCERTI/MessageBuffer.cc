@@ -22,8 +22,39 @@
 #include "MessageBuffer.hh"
 #include <cassert>
 #include <sstream>
+#include <iomanip>
 
 namespace certi {
+
+const bool 
+MessageBuffer::HostIsBigEndian() {
+#ifdef HOST_IS_BIG_ENDIAN
+	return true;
+#else    
+	return false;
+#endif
+}
+
+const bool 
+MessageBuffer::HostIsLittleEndian() {
+#ifdef HOST_IS_BIG_ENDIAN
+	return false;
+#else    
+	return true;
+#endif
+}
+
+void
+MessageBuffer::show(const void* data, uint32_t n) {
+   uint32_t i;
+   const uint8_t* u8data = reinterpret_cast<const uint8_t*>(data);
+   for (i=0;i<n;++i) {
+	   if ((0==(i%2))&&(i>0)) {
+	   		   printf(" ");
+	   }
+	   printf("%02X",u8data[i]);	  
+   }   
+}
 
 void MessageBuffer::initialize() {
 	buffer = NULL;
@@ -87,25 +118,17 @@ uint32_t MessageBuffer::maxSize() const {
 }
 
 void MessageBuffer::assumeBufferIsBigEndian() {
-#ifdef HOST_IS_BIG_ENDIAN
-	this->bufferHasMyEndianness = true;
-#else    
-	this->bufferHasMyEndianness = false;
-#endif
+	this->bufferHasMyEndianness = HostIsBigEndian();
 } /* end of MessageBuffer::assumeBufferIsBigEndian() */
 
 void MessageBuffer::assumeBufferIsLittleEndian() {
-#ifdef HOST_IS_BIG_ENDIAN
-	this->bufferHasMyEndianness = false;
-#else    
-	this->bufferHasMyEndianness = true;
-#endif    
+	this->bufferHasMyEndianness = HostIsLittleEndian();    
 } /* end of MessageBuffer::assumeBufferIsLittleEndian() */
 
 void MessageBuffer::resetBuffer() {
 	bufferHasMyEndianness = true;
-	writeOffset = 0;
-	readOffset = 0;
+	writeOffset           = 0;
+	readOffset            = 0;
 } /* MessageBuffer::resetBuffer() */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
@@ -258,9 +281,10 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	} else {
 		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+writeOffset);
 		data32 = reinterpret_cast<const uint32_t*>(data);
-		for (i=0; i<2*n; ++i) {
-			buffer_uint32[i] = CERTI_UINT32_SWAP_BYTES(data32[i]);
-			writeOffset += 4;
+		for (i=0; i<n; ++i) {
+			buffer_uint32[i] = CERTI_UINT32_SWAP_BYTES(data32[i+1]);
+			buffer_uint32[i+1] = CERTI_UINT32_SWAP_BYTES(data32[i]);
+			writeOffset += 8;
 		}
 	}
 	return (writeOffset-8*n);
@@ -287,9 +311,10 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	} else {
 		buffer_uint32 = reinterpret_cast<uint32_t*>(buffer+readOffset);
 		data32 = reinterpret_cast<uint32_t*>(data);
-		for (i=0; i<2*n; ++i) {
-			data32[i] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i]);
-			readOffset += 4;
+		for (i=0; i<n; ++i) {
+			data32[i+1] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i]);
+			data32[i] = CERTI_UINT32_SWAP_BYTES(buffer_uint32[i+1]);
+			readOffset += 8;
 		}
 	}
 	return (readOffset-8*n);
@@ -318,6 +343,38 @@ int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 	data64 = reinterpret_cast<uint64_t*>(data);	
 	return read_uint64s(data64,n);
 }
+
+int32_t
+MessageBuffer::write_string(const std::string& str) {
+   write_int32(str.length());
+   write_chars(str.c_str(),str.length());
+}
+  
+std::string 
+MessageBuffer::read_string() {
+ std::string retval;
+ int32_t len;
+ char* buf;
+ 
+ read_int32(&len);
+ buf = new char[len+1];
+ read_chars(buf,len);
+ /* terminate the string */
+ buf[len] = '\0';
+ /* build an std::string and retrun it */
+ retval = std::string(buf);
+ delete[] buf;
+ return retval;
+}
+
+MessageBuffer::operator const void*(){
+	return buffer;
+}
+
+MessageBuffer::operator void*() {
+	return buffer;
+}
+
 
 } // certi
 
