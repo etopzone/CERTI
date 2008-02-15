@@ -360,7 +360,7 @@ int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 int32_t
 MessageBuffer::write_string(const std::string& str) {
    write_int32(str.length());
-   write_chars(str.c_str(),str.length());
+   return write_chars(str.c_str(),str.length());
 }
   
 std::string 
