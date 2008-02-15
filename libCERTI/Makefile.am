@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.33 2007/10/26 13:00:07 rousse Exp $
+## $Id: Makefile.am,v 3.34 2008/02/15 13:22:04 erk Exp $
 
 if HAVE_POSIX_CLOCK
 POSIX_CLK_HEADER = PosixClock.hh
@@ -35,7 +35,8 @@ ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
 SecureTCPSocket.hh SecurityLevel.hh SecurityServer.hh Socket.hh		\
 SocketMC.hh SocketServer.hh SocketTCP.hh SocketUDP.hh SocketUN.hh	\
 XmlParser.hh Subscribable.hh DebugOStream.hh PrettyDebug.hh Socket.hh	\
-SocketUN.hh Clock.hh $(POSIX_CLK_HEADER) $(TSC_CLK_HEADER)
+SocketUN.hh Clock.hh $(POSIX_CLK_HEADER) $(TSC_CLK_HEADER) \
+MessageBuffer.hh
 
 
 libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
@@ -51,7 +52,8 @@ RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
 SecurityServer.cc SocketMC.cc SocketServer.cc SocketTCP.cc		\
 SocketUDP.cc SocketUN.cc syntax.yy tokens.ll XmlParser.cc		\
 Subscribable.cc PrettyDebug.cc PrettyDebEx.cc \
-Clock.cc $(POSIX_CLK_SOURCE) $(TSC_CLK_SOURCE)
+Clock.cc $(POSIX_CLK_SOURCE) $(TSC_CLK_SOURCE) \
+MessageBuffer.cc
 
 libCERTI_la_LDFLAGS = -version-info 1:0:0
 
