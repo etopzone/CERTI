@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.24 2007/12/05 12:29:39 approx Exp $
+// $Id: TimeManagement.cc,v 3.25 2008/02/18 13:37:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "TimeManagement.hh"
+#include <float.h>
 
 namespace certi {
 namespace rtia {
@@ -122,6 +123,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
   msg.trace("TimeManagement::executeFederateService ");
 
   _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
+  _tick_request_ack = false ;  // the callback message serves as the ack
 
     switch (msg.type) {
 
@@ -659,15 +661,22 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
 
     if (_est_contraint) {
         // give a TSO message.
-        D.Out(pdDebug, "Logical time : %f, LBTS : %f.", date_avancee, _LBTS);
+        if (_LBTS == DBL_MAX)
+           D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee);
+        else
+           D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee, _LBTS);
         min = (_LBTS<date_avancee)?(_LBTS):(date_avancee);
         msg = queues->giveTsoMessage(min, msg_donne, msg_restant);
 
         // otherwise
         if (!msg_donne) {
             // if LBTS allows to give a timeAdvanceGrant.
-            D.Out(pdDebug, "Logical time : %f, LBTS : %f, lookahead : %f.",
-                  date_avancee, _LBTS, _lookahead_courant);
+            if (_LBTS == DBL_MAX)
+               D.Out(pdDebug, "Logical time : %f, LBTS : infini, lookahead : %f.",
+                     date_avancee, _lookahead_courant);
+            else
+               D.Out(pdDebug, "Logical time : %f, LBTS : %lf, lookahead : %f.",
+                     date_avancee, _LBTS, _lookahead_courant);
             if (date_avancee < _LBTS) {
                 // send a timeAdvanceGrant to federate.
                 timeAdvanceGrant(date_avancee, e);
@@ -710,6 +719,7 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
           req.getFederationTime());
 
     _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
+    _tick_request_ack = false ;
 
     comm->requestFederateService(&req, &rep);
 
@@ -756,4 +766,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.24 2007/12/05 12:29:39 approx Exp $
+// $Id: TimeManagement.cc,v 3.25 2008/02/18 13:37:30 siron Exp $

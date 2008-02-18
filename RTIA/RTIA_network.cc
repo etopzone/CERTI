@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.20 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIA_network.cc,v 3.21 2008/02/18 13:37:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -79,18 +79,18 @@ msg->trace("RTIA::processNetworkMessage ");
         D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::SYNCHRONIZATION_"
               "POINT_REGISTRATION_SUCCEEDED.");
 
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
       case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
         D.Out(pdTrace, "Receiving Message from RTIG, type NetworkMessage::ANNOUCE_"
               "SYNCHRONIZATION_POINT.");
 
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
       case NetworkMessage::FEDERATION_SYNCHRONIZED:
         D.Out(pdTrace,
               "Receiving Message from RTIG, type NetworkMessage::FEDERATION_SYNCHRONIZED.");
-        queues->insertBeginCommand(msg);
+        queues->insertLastCommand(msg);
         break ;
 
       case NetworkMessage::DISCOVER_OBJECT:
@@ -282,18 +282,6 @@ msg->trace("RTIA::processNetworkMessage ");
         queues->insertBeginCommand(msg);
         break ;
 
-      case NetworkMessage::FEDERATE_SAVE_BEGUN:
-        D.Out(pdTrace, "Receiving Message from RTIG, "
-              " type FederateSaveBegun.");
-        queues->insertBeginCommand(msg);
-        break ;
-
-      case NetworkMessage::FEDERATE_SAVE_COMPLETE:
-        D.Out(pdTrace, "Receiving Message from RTIG, "
-              " type FederateSaveComplete.");
-        queues->insertBeginCommand(msg);
-        break ;
-
       case NetworkMessage::FEDERATION_SAVED:
       case NetworkMessage::FEDERATION_NOT_SAVED:
         D.Out(pdTrace, "Receiving Message from RTIG, "
@@ -350,4 +338,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.20 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIA_network.cc,v 3.21 2008/02/18 13:37:30 siron Exp $

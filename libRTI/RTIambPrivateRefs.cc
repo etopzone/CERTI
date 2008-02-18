@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.10 2008/02/11 14:33:27 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.11 2008/02/18 13:37:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,23 +60,14 @@ void
 RTIambPrivateRefs::executeService(Message *req, Message *rep)
 {
     G.Out(pdGendoc,"enter RTIambPrivateRefs::executeService");
-    // raise exception if reentrant call.
-	// FIXME EN: On SMP machine may we really 
-	//           guarantee that the following protection
-	//           against re-entrance is an efficient one?
-    if (is_reentrant) {
-        throw ConcurrentAccessAttempted("is_reentrant was true in RTIambPrivateRefs::executeService");
-    }
 
     D.Out(pdDebug, "sending request to RTIA.");
     
-    is_reentrant = true ;
     try {
         req->write(socketUn);
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
-        is_reentrant = false;
         throw RTIinternalError("libRTI: Network Write Error");
     }
 
@@ -88,20 +79,19 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
-        is_reentrant = false;
         throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
     }
 
     D.Out(pdDebug, "RTIA reply received.");
 
-    if (rep->type != req->type) {
-        std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
-        is_reentrant = false;
-        throw RTIinternalError("RTIambPrivateRefs::executeService: "
-                               "rep->type != req->type");
+    if (req->type != Message::TICK_REQUEST) {
+       if (rep->type != req->type) {
+           std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
+           throw RTIinternalError("RTIambPrivateRefs::executeService: "
+                                  "rep->type != req->type");
+       }
     }
 
-    is_reentrant = false ;
     D.Out(pdDebug, "processing returned exception (from reply).");
     processException(rep);
     D.Out(pdDebug, "exception processed.");
@@ -550,4 +540,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.10 2008/02/11 14:33:27 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.11 2008/02/18 13:37:30 siron Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.61 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.62 2008/02/18 13:37:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -199,7 +199,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-        D.Out(pdTrace, "Receiving Message from Federate, type RequestPause.");
+        D.Out(pdTrace, "Receiving Message from Federate, type RegisterFederationSynchronizationPoint.");
 
         // boolean true means with federates set
         if ( req->getBoolean() )
@@ -212,7 +212,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::SYNCHRONIZATION_POINT_ACHIEVED:
-        D.Out(pdTrace, "Receiving Message from Federate, type PauseAchieved.");
+        D.Out(pdTrace, "Receiving Message from Federate, type SynchronizationPointAchieved.");
 
         fm->unregisterSynchronization(req->getLabel(), e);
         break ;
@@ -904,6 +904,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST:
+        tm->_tick_request_ack = true ;
         if (req->getBoolean()) {
            tm->_ongoing_tick = true ;
            D.Out(pdDebug, "Receiving Message from Federate, type TickRequest2.");
@@ -1271,16 +1272,26 @@ RTIA::processFederateRequest(Message *req)
         rep.setException(e_RTIinternalError);
     }
 
-    delete req ;
+    delete req ;;
 
-    if (!tm->_ongoing_tick) {
-        comm->sendUN(&rep);
-        D.Out(pdDebug, "Reply send to Unix socket.");
+     
+    if (rep.type == Message::TICK_REQUEST)
+       if ((!tm->_ongoing_tick) && tm->_tick_request_ack) {
+           // acknowledgment of an empty tick
+           comm->sendUN(&rep);
+           D.Out(pdDebug, "Reply send to Unix socket.");
+        }
+        else {
+           // no answer in the case of a successful tick
+        }
+    else {
+       // generic federate service acknowledgment
+       comm->sendUN(&rep);
+       D.Out(pdDebug, "Reply send to Unix socket.");
     }
-    // else, this answer is differed until a no empty tick
 
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.61 2008/02/12 14:26:42 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.62 2008/02/18 13:37:30 siron Exp $
