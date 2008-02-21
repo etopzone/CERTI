@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.52 2008/02/15 14:16:19 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.53 2008/02/21 10:15:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -599,6 +599,9 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"enter RTIG::processSubscribeObjectClass");
+    G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
+
     bool sub = (req->type == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
     auditServer << "Class = " << req->objectClass
@@ -622,6 +625,9 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     rep.handleArraySize = 0 ;
 
     rep.write(link); // send answer to RTIA
+
+    G.Out(pdGendoc,"END   **  SUBSCRIBE OBJECT CLASS SERVICE **");
+    G.Out(pdGendoc,"exit  RTIG::processSubscribeObjectClass");
 }
 
 // ----------------------------------------------------------------------------
@@ -1350,4 +1356,4 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.52 2008/02/15 14:16:19 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.53 2008/02/21 10:15:24 rousse Exp $

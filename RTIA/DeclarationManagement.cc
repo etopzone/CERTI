@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.16 2007/10/31 10:30:24 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17 2008/02/21 10:15:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,6 +40,7 @@ namespace certi {
 namespace rtia {
 
 static pdCDebug D("RTIA_DM", "(RTIA DM) ");
+static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
 //! DeclarationManagement
@@ -226,6 +227,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 {
     NetworkMessage req, rep ;
 
+    G.Out(pdGendoc,"enter DeclarationManagement::subscribeObjectClassAttribute");
     // Pas de partie locale pour les abonnements
 
     // Partie RTIG
@@ -240,14 +242,17 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
         req.handleArray[i] = attribArray[i] ;
 
     // Emission
+    G.Out(pdGendoc,"                              =====> send S_O_C to RTIG");
     comm->sendMessage(&req);
 
     // Reception
     comm->waitMessage(&rep,
                       NetworkMessage::SUBSCRIBE_OBJECT_CLASS,
                       req.federate);
+    G.Out(pdGendoc,"                              =====> received S_O_C from RTIG");
 
     e = rep.exception ;
+    G.Out(pdGendoc,"exit  DeclarationManagement::subscribeObjectClassAttribute");
 }
 
 // ----------------------------------------------------------------------------
@@ -458,4 +463,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.16 2007/10/31 10:30:24 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17 2008/02/21 10:15:24 rousse Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.13 2008/02/12 16:51:30 rousse Exp $
+// $Id: Message_R.cc,v 3.14 2008/02/21 10:15:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -445,6 +445,14 @@ Message::readBody(SocketUN *socket)
             boolean = body.readLongInt();
             break ;
 
+          // Body contains objectClass, handleArray
+          case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+std::cout<<"readBody RCAVU"<<std::endl;
+            objectClass = body.readLongInt();
+            handleArraySize = body.readShortInt();
+            readHandleArray(body);
+            break;    
+
           // Body contains object,federationName,federate,handleArraySize,
           // handleArray
           case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
@@ -563,6 +571,7 @@ Message::readHeader(SocketUN *socket)
       case DISABLE_TIME_REGULATION:
       case ENABLE_TIME_CONSTRAINED:
       case DISABLE_TIME_CONSTRAINED:
+      case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
       case TICK_REQUEST:
         break ;
 
@@ -740,4 +749,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.13 2008/02/12 16:51:30 rousse Exp $
+// $Id: Message_R.cc,v 3.14 2008/02/21 10:15:25 rousse Exp $

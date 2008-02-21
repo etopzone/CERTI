@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.68 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIambassador.cc,v 3.69 2008/02/21 10:15:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -999,13 +999,14 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
 	   RTI::ObjectClassNotDefined)
 {
     Message req, rep ;
-
+    G.Out(pdGendoc,"enter RTIambassador::subscribeObjectClassAttributes");
     req.type = Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
     req.setObjectClass(theClass);
     req.setAHS(attributeList);
     req.setBoolean(active);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::subscribeObjectClassAttributes");
 }
 
 // ----------------------------------------------------------------------------
@@ -1095,7 +1096,17 @@ RTI::RTIambassador::registerObjectInstance(ObjectClassHandle theClass)
 }
 
 // ----------------------------------------------------------------------------
-// Update Attribute Values
+// Update Attribute Values with time
+/** Realization of the Create Federation Execution federation management service
+    with time (HLA 1.3).
+    Provide current values to the federation for instance attributes owned by
+    the federate.
+    Un event retraction designator is returned.
+    @param theObject     Object instance designator
+    @param theAttributes Set of attribute designator and value pairs
+    @param theTime       Federation time
+    @param theTag        User supplied tag
+*/
 EventRetractionHandle
 RTI::RTIambassador::
 updateAttributeValues(ObjectHandle theObject,
@@ -1127,10 +1138,19 @@ updateAttributeValues(ObjectHandle theObject,
 }
 
 // ----------------------------------------------------------------------------
+// Update Attribute Values without time
+/** Realization of the Create Federation Execution federation management service
+    without time (HLA 1.3).
+    Provide current values to the federation for instance attributes owned by
+    the federate.
+    @param theObject     Object instance designator
+    @param theAttributes Set of attribute designator and value pairs
+    @param theTag        User supplied tag
+*/
 void
 RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
-                                     const AttributeHandleValuePairSet& attrs,
-                                     const char *the_tag)
+                                     const AttributeHandleValuePairSet& theAttributes,
+                                     const char *theTag)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AttributeNotOwned, RTI::AttributeNotDefined, RTI::ObjectNotKnown)
@@ -1139,8 +1159,8 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
-    req.setTag(the_tag);
-    req.setAHVPS(attrs);
+    req.setTag(theTag);
+    req.setAHVPS(theAttributes);
     req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
@@ -1343,14 +1363,15 @@ RTI::RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
 	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
 	   RTI::ObjectNotKnown)
 {
-    throw UnimplementedService("");
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::requestObjectAttributeValueUpdate");
     req.type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.setObject(theObject);
     req.setAHS(ahs);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::requestObjectAttributeValueUpdate");
 }
 
 // ----------------------------------------------------------------------------
@@ -1362,14 +1383,16 @@ RTI::RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
 	   RTI::FederateNotExecutionMember, RTI::AttributeNotDefined, 
 	   RTI::ObjectClassNotDefined)
 {
-    throw UnimplementedService("");
+
     Message req, rep ;
 
+    G.Out(pdGendoc,"enter RTIambassador::requestClassAttributeValueUpdate");
     req.type = Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
     req.setObjectClass(theClass);
     req.setAHS(attrs);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::requestClassAttributeValueUpdate");
 }
 
 // ----------------------------------------------------------------------------
@@ -2882,4 +2905,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.68 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIambassador.cc,v 3.69 2008/02/21 10:15:25 rousse Exp $

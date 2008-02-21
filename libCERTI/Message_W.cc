@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.16 2008/02/12 16:51:31 rousse Exp $
+// $Id: Message_W.cc,v 3.17 2008/02/21 10:15:25 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -450,6 +450,12 @@ Message::writeBody(SocketUN *socket)
           case TICK_REQUEST:
             body.writeLongInt(boolean);
             break ;
+
+          // Body contains objectClass, handleArray
+          case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+            body.writeLongInt(objectClass);
+            writeHandleArray(body);
+            break;             
 	    
             // -- Default Handler --
 
@@ -584,6 +590,7 @@ Message::writeHeader(SocketUN *socket)
       case DISABLE_TIME_REGULATION:
       case ENABLE_TIME_CONSTRAINED:
       case DISABLE_TIME_CONSTRAINED:
+      case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
       case TICK_REQUEST:
         header.bodySize = 1 ;
         break ;
@@ -720,4 +727,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.16 2008/02/12 16:51:31 rousse Exp $
+// $Id: Message_W.cc,v 3.17 2008/02/21 10:15:25 rousse Exp $
