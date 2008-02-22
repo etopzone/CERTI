@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.62 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIA_federate.cc,v 3.63 2008/02/22 07:12:28 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -511,10 +511,15 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+        std::cout<<"request object attribute value update not yet implemented in chooseFederateProcessing"
+        <<std::endl;
+        std::cout<<"object is "<<req->getObject()<<std::endl;
         e = e_UnimplementedService ;
         break ;
 
       case Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
+        std::cout<<"request class attribute value update not yet implemented in chooseFederateProcessing"
+        <<std::endl;
         e = e_UnimplementedService ;
         break ;
 
@@ -1294,4 +1299,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.62 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIA_federate.cc,v 3.63 2008/02/22 07:12:28 rousse Exp $
