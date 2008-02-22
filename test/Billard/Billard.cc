@@ -419,7 +419,14 @@ void
 Billard::step()
 {
     granted = false ;
-    rtiamb.queryFederateTime(localTime);
+
+    try {
+        rtiamb.queryFederateTime(localTime);
+    }
+    catch (RTI::Exception& e) {
+        D.Out(pdExcept,
+              "**** Exception asking for federate local time : ", &e);
+    }
 
     try {
         RTIfedTime time_aux(localTime.getTime()+TIME_STEP.getTime());
@@ -448,16 +455,6 @@ Billard::step()
             throw ;
         }
     }
-    try {
-        rtiamb.queryFederateTime(localTime);
-    }
-    catch (RTI::Exception& e) {
-        D.Out(pdExcept,
-              "**** Exception asking for federate local time : ", &e);
-    }
-
-    D.Out(pdTrace, "Time advanced, local time is now %.2f.",
-          localTime.getTime());
 
     RTIfedTime next_step(localTime + TIME_STEP);
 
@@ -1081,9 +1078,12 @@ Billard::removeObjectInstance(RTI::ObjectHandle theObject,
 /** Callback : time advance granted
  */
 void
-Billard::timeAdvanceGrant(const RTI::FedTime& /*theTime*/)
+Billard::timeAdvanceGrant(const RTI::FedTime& theTime)
     throw (RTI::InvalidFederationTime, RTI::TimeAdvanceWasNotInProgress, 
 	   RTI::FederateInternalError)
 {    
     granted = true ;
+    localTime = theTime ;
+    D.Out(pdTrace, "Time advanced, local time is now %.2f.",
+          localTime.getTime());
 }
