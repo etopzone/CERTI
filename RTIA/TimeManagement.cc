@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.25 2008/02/18 13:37:30 siron Exp $
+// $Id: TimeManagement.cc,v 3.26 2008/02/22 11:34:31 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -710,7 +710,7 @@ void
 TimeManagement::timeAdvanceGrant(FederationTime logical_time,
                                  TypeException &e)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::TIME_ADVANCE_GRANT ;
     req.setFederationTime(logical_time);
@@ -721,12 +721,9 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
     _tick_request_ack = false ;
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
-    e = rep.getExceptionType();
-
-    if (e == e_NO_EXCEPTION)
-        _heure_courante = logical_time ;
+    _heure_courante = logical_time ;
 }
 
 // ----------------------------------------------------------------------------
@@ -766,4 +763,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.25 2008/02/18 13:37:30 siron Exp $
+// $Id: TimeManagement.cc,v 3.26 2008/02/22 11:34:31 siron Exp $

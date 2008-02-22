@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.21 2008/02/18 13:37:29 siron Exp $
+// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -150,7 +150,7 @@ Communications::~Communications()
 // ----------------------------------------------------------------------------
 //! Request a service to federate.
 void
-Communications::requestFederateService(Message *req, Message *rep)
+Communications::requestFederateService(Message *req)
 {
     // G.Out(pdGendoc,"enter Communications::requestFederateService for message "
     //               "type %d",req->type);
@@ -339,4 +339,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.21 2008/02/18 13:37:29 siron Exp $
+// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $

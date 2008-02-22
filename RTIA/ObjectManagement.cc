@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.31 2007/12/05 12:29:39 approx Exp $
+// $Id: ObjectManagement.cc,v 3.32 2008/02/22 11:34:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -193,7 +193,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
                                  EventRetractionHandle the_event,
                                  TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::DISCOVER_OBJECT_INSTANCE ;
     req.setObject(the_object);
@@ -202,7 +202,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
     req.setEventRetraction(the_event);
     req.setName(the_name);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     // Adding discovered object in federate internal object list.
     rootObject->registerObjectInstance(fm->federate, the_class, the_object,
@@ -221,7 +221,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          EventRetractionHandle the_event,
                                          TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
@@ -232,7 +232,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     // true for RAV without time
     req.setBoolean(true);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -245,7 +245,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          const char *the_tag,
                                          TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
@@ -254,7 +254,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     // false for RAV without time
     req.setBoolean(false);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -362,7 +362,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      EventRetractionHandle the_event,
                                      TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::RECEIVE_INTERACTION ;
     req.setInteractionClass(the_interaction);
@@ -371,8 +371,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
     req.setTag(the_tag);
     req.setParameters(the_parameters, the_values, the_size);
     req.setBoolean(true);
-    // BUG: On fait quoi de la reponse ?
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -385,15 +384,14 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      const char *the_tag,
                                      TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::RECEIVE_INTERACTION ;
     req.setInteractionClass(the_interaction);
     req.setTag(the_tag);
     req.setParameters(the_parameters, the_values, the_size);
     req.setBoolean(false);
-    // BUG: On fait quoi de la reponse ?
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -462,7 +460,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
                                EventRetractionHandle the_event,
                                TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REMOVE_OBJECT_INSTANCE ;
     req.setObject(the_object);
@@ -470,8 +468,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
     req.setTag(the_tag);
     req.setBoolean(true);
 
-    // BUG: On fait quoi de la reponse ?
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     rootObject->deleteObjectInstance(the_federate, the_object, theTime, the_tag);
 }
@@ -484,15 +481,14 @@ ObjectManagement::removeObject(ObjectHandle the_object,
                                const char *the_tag,
                                TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REMOVE_OBJECT_INSTANCE ;
     req.setObject(the_object);
     req.setTag(the_tag);
     req.setBoolean(false);
     
-    // BUG: On fait quoi de la reponse ?
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
 }
@@ -770,4 +766,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.31 2007/12/05 12:29:39 approx Exp $
+// $Id: ObjectManagement.cc,v 3.32 2008/02/22 11:34:30 siron Exp $

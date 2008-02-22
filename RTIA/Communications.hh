@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.9 2005/04/30 16:38:39 breholee Exp $
+// $Id: Communications.hh,v 3.10 2008/02/22 11:34:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -55,7 +55,7 @@ public:
     void sendUN(Message *Msg);
     void receiveUN(Message *Msg);
     void readMessage(int&, NetworkMessage *, Message *);
-    void requestFederateService(Message *req, Message *rep);
+    void requestFederateService(Message *req);
     unsigned long getAddress();
     unsigned int getPort();
     void waitMessage(NetworkMessage *msg,
@@ -74,4 +74,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.9 2005/04/30 16:38:39 breholee Exp $
+// $Id: Communications.hh,v 3.10 2008/02/22 11:34:30 siron Exp $

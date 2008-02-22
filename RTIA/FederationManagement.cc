@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.46 2008/02/15 14:16:19 rousse Exp $
+// $Id: FederationManagement.cc,v 3.47 2008/02/22 11:34:30 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -623,7 +623,7 @@ FederationManagement::announceSynchronizationPoint(const char *label,
 {
     D.Out(pdInit, "Announce Synchronization Point \"%s\"(%s).", label, tag);
 
-    Message req, rep ;
+    Message req;
 
     assert(label != NULL);
 
@@ -644,7 +644,7 @@ FederationManagement::announceSynchronizationPoint(const char *label,
     if (!exists)
         synchronizationLabels.push_back(strdup(label));
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -654,7 +654,7 @@ synchronizationPointRegistrationFailed(const char *label)
     D.Out(pdInit, "Synchronization Point Registration Failed \"%s\".",
           label);
 
-    Message req, rep ;
+    Message req;
 
     G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationFailed");
 
@@ -663,7 +663,7 @@ synchronizationPointRegistrationFailed(const char *label)
     req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_FAILED ;
     req.setLabel(label);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     G.Out(pdGendoc,"exit  FederationManagement::synchronizationPointRegistrationFailed");
 
@@ -676,7 +676,7 @@ synchronizationPointRegistrationSucceeded(const char *label)
     D.Out(pdInit, "Synchronization Point Registration Succeeded \"%s\".",
           label);
 
-    Message req, rep ;
+    Message req;
 
     G.Out(pdGendoc,"enter FederationManagement::synchronizationPointRegistrationSucceeded");
 
@@ -685,7 +685,7 @@ synchronizationPointRegistrationSucceeded(const char *label)
     req.type = Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
     req.setLabel(label);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     G.Out(pdGendoc,"exit  FederationManagement::synchronizationPointRegistrationSucceeded");
 
@@ -697,14 +697,14 @@ FederationManagement::federationSynchronized(const char *label)
 {
     D.Out(pdInit, "Federation Synchronized \"%s\".", label);
 
-    Message req, rep ;
+    Message req;
 
     assert(label != NULL);
 
     req.type = Message::FEDERATION_SYNCHRONIZED ;
     req.setLabel(label);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -829,14 +829,14 @@ FederationManagement::initiateFederateSave(const char *label)
 
     savingState = true ;
 
-    Message req, rep ;
+    Message req;
 
     assert(label != 0);
 
     req.type = Message::INITIATE_FEDERATE_SAVE ;
     req.setLabel(label);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     G.Out(pdGendoc,"exit  FederationManagement::initiateFederateSave");
 }
@@ -850,11 +850,11 @@ FederationManagement::federationSavedStatus(bool status)
 
     savingState = false ;
 
-    Message req, rep ;
+    Message req;
 
     req.type = status ? Message::FEDERATION_SAVED : Message::FEDERATION_NOT_SAVED ;
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     G.Out(pdGendoc,"exit  FederationManagement::federationSavedStatus");
 }
@@ -914,7 +914,7 @@ FederationManagement::requestFederationRestoreStatus(bool status,
     D.Out(pdInit, "Federation restore request %saccepted",
           status ? "" : "not ");
 
-    Message req, rep ;
+    Message req;
 
     req.setLabel(label);
 
@@ -925,7 +925,7 @@ FederationManagement::requestFederationRestoreStatus(bool status,
         req.setTag(reason);
     }
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
     G.Out(pdGendoc,"exit  FederationManagement::requestFederationRestoreStatus");
 }
 
@@ -936,10 +936,10 @@ FederationManagement::federationRestoreBegun()
     G.Out(pdGendoc,"enter FederationManagement::federationRestoreBegun");
     D.Out(pdInit, "Federation restore begun");
 
-    Message req, rep ;
+    Message req;
     req.type = Message::FEDERATION_RESTORE_BEGUN ;
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 
     G.Out(pdGendoc,"exit  FederationManagement::federationRestoreBegun");
 }
@@ -955,12 +955,12 @@ FederationManagement::initiateFederateRestore(const char *label,
 
     restoringState = true ;
 
-    Message req, rep ;
+    Message req;
     req.type = Message::INITIATE_FEDERATE_RESTORE ;
     req.setFederate(handle);
     req.setLabel(label);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
     G.Out(pdGendoc,"exit  FederationManagement::initiateFederateRestore");
 }
 
@@ -972,14 +972,14 @@ FederationManagement::federationRestoredStatus(bool status)
 
     restoringState = false ;
 
-    Message req, rep ;
+    Message req;
 
     if (status)
         req.type = Message::FEDERATION_RESTORED ;
     else
         req.type = Message::FEDERATION_NOT_RESTORED ;
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -1004,4 +1004,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.46 2008/02/15 14:16:19 rousse Exp $
+// $Id: FederationManagement.cc,v 3.47 2008/02/22 11:34:30 siron Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.11 2007/07/06 09:25:20 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.12 2008/02/22 11:34:31 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -367,14 +367,14 @@ OwnershipManagement::informAttributeOwnership(ObjectHandle the_object,
                                               FederateHandle the_owner,
                                               TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::INFORM_ATTRIBUTE_OWNERSHIP ;
     req.setObject(the_object);
     req.setAttribute(the_attribute);
     req.setFederate(the_owner);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -385,14 +385,14 @@ OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
                                          FederateHandle,
                                          TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::ATTRIBUTE_IS_NOT_OWNED ;
     req.setObject(the_object);
     req.setAttribute(the_attribute);
     // req.setFederate(the_owner);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -405,13 +405,13 @@ attributeOwnershipUnavailable(ObjectHandle the_object,
                               FederateHandle,
                               TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -424,13 +424,13 @@ attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
                                           FederateHandle,
                                           TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -444,14 +444,14 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
                                     char *the_tag,
                                     TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
     req.setTag(the_tag);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -464,14 +464,14 @@ requestAttributeOwnershipRelease(ObjectHandle the_object,
                                  char *the_tag,
                                  TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
     req.setTag(the_tag);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -483,13 +483,13 @@ attributeOwnershipDivestitureNotification(ObjectHandle the_object,
                                           UShort the_size,
                                           TypeException &)
 {
-    Message req, rep ;
+    Message req;
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 // ----------------------------------------------------------------------------
@@ -501,16 +501,15 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
                                                  UShort the_size,
                                                  TypeException &)
 {
-    Message req ;
+    Message req;
 
     req.type = Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION ;
     req.setObject(the_object);
     req.setAttributes(the_attributes, the_size);
 
-    Message rep ;
-    comm->requestFederateService(&req, &rep);
+    comm->requestFederateService(&req);
 }
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.11 2007/07/06 09:25:20 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.12 2008/02/22 11:34:31 siron Exp $
