@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.63 2008/02/22 07:12:28 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.64 2008/02/25 10:28:13 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -94,7 +94,7 @@ void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
        throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED)
 {
-    G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing");
+    G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->type);
 
     // Verify not in saving or restoring state.
     saveAndRestoreStatus(req->type);
@@ -511,10 +511,14 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        std::cout<<"request object attribute value update not yet implemented in chooseFederateProcessing"
-        <<std::endl;
-        std::cout<<"object is "<<req->getObject()<<std::endl;
-        e = e_UnimplementedService ;
+        try {
+            D.Out(pdTrace,"Receiving Message from Federate, type "
+                                "RequestAttributeValueUpadate.");
+            rep.setEventRetraction(om->requestObjectAttributeValueUpdate(req->getObject(),
+                                            req->handleArray,
+                                            req->handleArraySize,
+                                            e));
+          } catch (Exception *e) { throw e ;}
         break ;
 
       case Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
@@ -1299,4 +1303,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.63 2008/02/22 07:12:28 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.64 2008/02/25 10:28:13 rousse Exp $

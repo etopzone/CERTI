@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.26 2008/02/22 11:34:31 siron Exp $
+// $Id: TimeManagement.cc,v 3.27 2008/02/25 10:28:13 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,6 +31,7 @@ namespace rtia {
 namespace {
 
 PrettyDebug D("RTIA_TM", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__) ;
 const double epsilon = 1.0e-9 ;
 
 }
@@ -118,6 +119,7 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
+  G.Out(pdGendoc,"enter TimeManagement::executeFederateService");
   D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
 
   msg.trace("TimeManagement::executeFederateService ");
@@ -343,7 +345,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         msg.display("ERROR");
         throw RTIinternalError("Unknown message in executeFederateService.");
     }
-
+    G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
 }
 
@@ -383,6 +385,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
     bool msg_donne ;
     NetworkMessage *msg ;
 
+    G.Out(pdGendoc," enter TimeManagement::nextEventAdvance");
     msg_restant = false ;
 
     if (_est_contraint) {
@@ -442,6 +445,7 @@ TimeManagement::nextEventAdvance(bool &msg_restant, TypeException &e)
 
         _avancee_en_cours = PAS_D_AVANCEE ;
     }
+G.Out(pdGendoc," exit  TimeManagement::nextEventAdvance");
 }
 
 // ----------------------------------------------------------------------------
@@ -602,6 +606,7 @@ TimeManagement::tick(TypeException &e)
     bool msg_restant = false ;
     NetworkMessage *msg = NULL ;
 
+    G.Out(pdGendoc," enter TimeManagement::tick");
     // Note: While msg_donne = RTI::RTI_FALSE, msg_restant doesn't matter.
 
     // 1st try, give a command message. (requestPause, etc.)
@@ -642,6 +647,7 @@ TimeManagement::tick(TypeException &e)
 
     delete msg ;
 
+    G.Out(pdGendoc," exit  TimeManagement::tick");
     return msg_restant ;
 }
 
@@ -656,7 +662,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
     bool msg_donne ;
     FederationTime min ;
     NetworkMessage *msg ;
-
+    G.Out(pdGendoc," enter TimeManagement::timeAdvance");
     msg_restant = false ;
 
     if (_est_contraint) {
@@ -700,6 +706,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
             return ;
         _avancee_en_cours = PAS_D_AVANCEE ;
     }
+G.Out(pdGendoc," exit  TimeManagement::timeAdvance");
 }
 
 // ----------------------------------------------------------------------------
@@ -763,4 +770,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.26 2008/02/22 11:34:31 siron Exp $
+// $Id: TimeManagement.cc,v 3.27 2008/02/25 10:28:13 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.32 2008/02/22 11:34:30 siron Exp $
+// $Id: ObjectManagement.cc,v 3.33 2008/02/25 10:28:13 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -223,6 +223,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 {
     Message req;
 
+    G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues with time");
     req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setFederationTime(the_time);
@@ -233,6 +234,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     req.setBoolean(true);
 
     comm->requestFederateService(&req);
+    G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues with time");
 }
 
 // ----------------------------------------------------------------------------
@@ -247,6 +249,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 {
     Message req;
 
+    G.Out(pdGendoc,"enter ObjectManagement::reflectAttributeValues without time");
     req.type = Message::REFLECT_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
     req.setTag(the_tag);
@@ -255,6 +258,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
     req.setBoolean(false);
 
     comm->requestFederateService(&req);
+    G.Out(pdGendoc,"exit  ObjectManagement::reflectAttributeValues without time");
 }
 
 // ----------------------------------------------------------------------------
@@ -611,6 +615,9 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                     TypeException &e)
 {
     NetworkMessage req, rep ;
+
+    G.Out(pdGendoc,"enter ObjectManagement::requestObjectAttributeValueUpdate");
+
     req.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.object = handle ;
     req.federation = fm->_numero_federation ;
@@ -625,7 +632,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     comm->waitMessage(&rep, NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
                       req.federate);
     e = rep.exception ;
-
+    G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
     return rep.eventRetraction ;
 }
 
@@ -766,4 +773,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.32 2008/02/22 11:34:30 siron Exp $
+// $Id: ObjectManagement.cc,v 3.33 2008/02/25 10:28:13 rousse Exp $

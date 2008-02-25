@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.42 2008/02/12 09:35:33 jmm Exp $
+// $Id: NetworkMessage_RW.cc,v 3.43 2008/02/25 10:28:14 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -114,7 +114,17 @@ NetworkMessage::readBody(Socket *socket)
 	}
 	region = body.readLongInt();
 	break ;
-	
+
+
+      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+	object = body.readLongInt();
+	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+	for (i = 0 ; i < handleArraySize ; i ++) {
+            ValueArray[i].length = body.readLongInt();
+            body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
+	}
+	break ;
+        	
       case CREATE_FEDERATION_EXECUTION:
 	readFederationName(body);
 	readFEDid(body);
@@ -357,6 +367,10 @@ NetworkMessage::readHeader(Socket *socket)
 	date = Header.VP.O_I.date ;
 	break ;
 
+      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+ 	handleArraySize = Header.VP.O_I.size ;
+        break;
+       
       case REQUEST_FEDERATION_RESTORE:
       case INITIATE_FEDERATE_RESTORE:
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
@@ -565,6 +579,15 @@ NetworkMessage::writeBody(Socket *socket)
 	body.writeLongInt(region);
 	break ;
 
+      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+	body.writeLongInt(object);
+	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
+	for (i = 0 ; i < handleArraySize ; i ++) {
+            body.writeLongInt(ValueArray[i].length) ;
+            body.writeBlock(ValueArray[i].value, ValueArray[i].length);
+	} 
+        break;
+       
 	// -- No Variable Part --
 
       case CREATE_FEDERATION_EXECUTION:
@@ -837,6 +860,12 @@ NetworkMessage::writeHeader(Socket *socket)
 	Header.bodySize = 1 ;
 	break ;
 
+      // Body contains Object handle,handleArray
+      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
+        Header.bodySize = 1 ;
+	Header.VP.O_I.size = handleArraySize ;
+        break;
+
 	// -- No Variable Part, No body --
 
       case CLOSE_CONNEXION:
@@ -1011,4 +1040,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.42 2008/02/12 09:35:33 jmm Exp $
+// $Id: NetworkMessage_RW.cc,v 3.43 2008/02/25 10:28:14 rousse Exp $
