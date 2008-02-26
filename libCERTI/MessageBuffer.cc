@@ -131,6 +131,22 @@ void MessageBuffer::resetBuffer() {
 	readOffset            = 0;
 } /* MessageBuffer::resetBuffer() */
 
+uint32_t MessageBuffer::resize(uint32_t newSize) {
+	reallocate(newSize);
+}
+void MessageBuffer::assumeSize(uint32_t size) {
+	/* this is done in order to overflow 
+	 * buffer max size but this may well be
+	 * an error (FIXME should throw an exception ?) 
+	 */
+	if (size <= bufferMaxSize) {
+		writeOffset       = size;
+	} else {
+	    writeOffset       = bufferMaxSize;
+	}
+	readOffset            = 0;
+}
+
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 
 	if (n >= (bufferMaxSize - writeOffset)) {

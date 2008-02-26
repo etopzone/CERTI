@@ -153,6 +153,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	
 	cout << "    Trying to overload the buffer..." <<endl;
 	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
+	MsgBuf.resetBuffer();
 	u32 = MsgBuf.maxSize()*2;
 	vstr = new char[u32+1];
 	vstr[u32]='\0';
@@ -160,10 +161,20 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.write_uint32(u32);
 	MsgBuf.write_chars(vstr,u32);	
 	cout << "    Written char* is " << vstr << endl;
+	u32 = MsgBuf.size();
 	delete[] vstr;
 	cout << "    Current           MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
 	vstdstr = MsgBuf.read_string();
 	cout << "    Read String is   " << vstdstr << endl;
+	cout << "    Forcibly resize the buffer to "<< MsgBuf.maxSize()*2 << endl;
+	MsgBuf.resize(MsgBuf.maxSize()*2);
+	cout << "    Current           MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
+    cout << "    Now reset buffer and assume size is                   = "<< u32 << endl; 	
+	MsgBuf.resetBuffer();
+	MsgBuf.assumeSize(u32);
+	vstdstr = "";
+	vstdstr = MsgBuf.read_string();
+	cout << "    (re)Read String is   " << vstdstr << endl;
 	cout << "Testing MessageBuffer class END."<<endl;
 } /* end of messageBufferTests */
 
