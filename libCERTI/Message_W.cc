@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.18 2008/02/22 07:12:28 rousse Exp $
+// $Id: Message_W.cc,v 3.19 2008/02/26 08:56:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -654,6 +654,7 @@ Message::writeHeader(SocketUN *socket)
 
       // ------- federationTime useful
       case QUERY_LBTS:
+      case QUERY_MIN_NEXT_EVENT_TIME:
       case QUERY_FEDERATE_TIME:
       case TIME_ADVANCE_REQUEST:
       case NEXT_EVENT_REQUEST:
@@ -726,4 +727,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.18 2008/02/22 07:12:28 rousse Exp $
+// $Id: Message_W.cc,v 3.19 2008/02/26 08:56:10 siron Exp $

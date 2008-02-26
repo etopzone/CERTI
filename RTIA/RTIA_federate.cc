@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.64 2008/02/25 10:28:13 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.65 2008/02/26 08:56:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -672,7 +672,10 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::QUERY_MIN_NEXT_EVENT_TIME:
-        e = e_UnimplementedService ;
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type QueryMinNextEventTime."); 
+
+        rep.setFederationTime(tm->requestMinNextEventTime());    
         break ;
 
       case Message::MODIFY_LOOKAHEAD:
@@ -1303,4 +1306,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.64 2008/02/25 10:28:13 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.65 2008/02/26 08:56:10 siron Exp $

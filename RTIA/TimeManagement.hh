@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.12 2008/02/18 13:37:30 siron Exp $
+// $Id: TimeManagement.hh,v 3.13 2008/02/26 08:56:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -88,6 +88,7 @@ public:
     FederationTime requestFederationTime();
     FederationTime requestFederateTime() { return(_heure_courante); };
     FederationTimeDelta requestLookahead();
+    FederationTime requestMinNextEventTime();
     FederationTime requestLBTS() { return _LBTS ; };
     bool requestContraintState() { return _est_contraint ; };
     bool requestRegulateurState() { return _est_regulateur ; };
@@ -132,4 +133,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.12 2008/02/18 13:37:30 siron Exp $
+// $Id: TimeManagement.hh,v 3.13 2008/02/26 08:56:10 siron Exp $

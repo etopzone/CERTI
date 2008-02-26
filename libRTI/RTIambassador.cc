@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.70 2008/02/25 10:28:14 rousse Exp $
+// $Id: RTIambassador.cc,v 3.71 2008/02/26 08:56:11 siron Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1881,7 +1881,13 @@ RTI::RTIambassador::queryMinNextEventTime(FedTime& theTime)
            RestoreInProgress,
            RTIinternalError)
 {
-    theTime = RTIfedTime(0.0);
+    Message req, rep ;
+
+    req.type = Message::QUERY_MIN_NEXT_EVENT_TIME ;
+    privateRefs->executeService(&req, &rep);
+
+    theTime = rep.getFedTime();
+
 }
 
 // ----------------------------------------------------------------------------
@@ -2906,4 +2912,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.70 2008/02/25 10:28:14 rousse Exp $
+// $Id: RTIambassador.cc,v 3.71 2008/02/26 08:56:11 siron Exp $

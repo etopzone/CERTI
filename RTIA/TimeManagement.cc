@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.27 2008/02/25 10:28:13 rousse Exp $
+// $Id: TimeManagement.cc,v 3.28 2008/02/26 08:56:10 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -496,6 +496,27 @@ FederationTimeDelta TimeManagement::requestLookahead()
 }
 
 // ----------------------------------------------------------------------------
+//!Return the min of LBTS and the time stamp of the next TSO message
+FederationTime
+TimeManagement::requestMinNextEventTime()
+{
+    FederationTime dateTSO ;
+    FederationTime dateMNET ;
+    bool found ;
+ 
+    queues->nextTsoDate(found, dateTSO) ;
+
+    if (!found)
+        dateMNET = _LBTS ;
+    else
+        dateMNET = (_LBTS <= dateTSO ? _LBTS : dateTSO) ;
+
+   D.Out(pdRegister, "Minimum Next Event Time : %f.", dateMNET);
+
+   return dateMNET ;
+}
+
+// ----------------------------------------------------------------------------
 void
 TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 {
@@ -770,4 +791,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.27 2008/02/25 10:28:13 rousse Exp $
+// $Id: TimeManagement.cc,v 3.28 2008/02/26 08:56:10 siron Exp $
