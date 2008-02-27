@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.33 2008/02/25 10:28:13 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.34 2008/02/27 16:38:26 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -608,7 +608,7 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 
 // ----------------------------------------------------------------------------
 //! requestObjectAttributeValueUpdate
-EventRetractionHandle
+void
 ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                     AttributeHandle *attribs,
                                                     UShort attribArraySize,
@@ -633,7 +633,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                       req.federate);
     e = rep.exception ;
     G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
-    return rep.eventRetraction ;
+
 }
 
 
@@ -773,4 +773,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.33 2008/02/25 10:28:13 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.34 2008/02/27 16:38:26 rousse Exp $

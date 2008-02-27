@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.51 2008/02/13 16:28:29 rousse Exp $
+// $Id: FederationsList.cc,v 3.52 2008/02/27 16:38:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1528,7 +1528,39 @@ FederationsList::federateRestoreStatus(Handle the_federation,
     G.Out(pdGendoc,"exit  FederationsList::federateRestoreStatus");
 }
 
+// ----------------------------------------------------------------------------
+// requestAttribute
+void
+FederationsList::requestAttribute(Handle handle,
+                                 FederateHandle federate,
+                                 ObjectHandle id,
+                                 AttributeHandle *attributes,
+                                 UShort list_size)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               ObjectAlreadyRegistered,
+               ObjectClassNotDefined,
+               ObjectClassNotPublished,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError)
+{
+    G.Out(pdGendoc,"enter FederationsList::requestAttribute");
+
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    //federation->requestAttribute(federate, id, list_size));
+    G.Out(pdGendoc,"exit FederationsList::requestAttribute");
+}
+
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.51 2008/02/13 16:28:29 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.52 2008/02/27 16:38:27 rousse Exp $
 

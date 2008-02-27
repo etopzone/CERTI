@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.17 2007/12/05 12:29:39 approx Exp $
+// $Id: ObjectManagement.hh,v 3.18 2008/02/27 16:38:26 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -173,7 +173,7 @@ public:
                                OrderType theType,
                                TypeException &e);
 
-    EventRetractionHandle
+    void
     requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
                                       AttributeHandle *attribArray,
                                       UShort attribArraySize,
@@ -224,4 +224,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.17 2007/12/05 12:29:39 approx Exp $
+// $Id: ObjectManagement.hh,v 3.18 2008/02/27 16:38:26 rousse Exp $

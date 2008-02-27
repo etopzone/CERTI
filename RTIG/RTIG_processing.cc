@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.53 2008/02/21 10:15:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.54 2008/02/27 16:38:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1354,6 +1354,37 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
     rep.write(link); // Send answer to RTIA
 }
 
+// ----------------------------------------------------------------------------
+// processRequestObjectAttributeValueUpdate
+void
+RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *request)
+{
+    NetworkMessage answer ;
+
+    G.Out(pdGendoc,"enter RTIG::processRequestObjectAttributeValueUpdate");
+    G.Out(pdGendoc,"BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
+
+    auditServer << "ObjID = " << request->object ;
+
+    // We have to do verifications about this object
+    federations.requestAttribute(request->federation,
+                                 request->federate,
+                                 request->object,
+                                 request->handleArray,
+                                 request->handleArraySize);
+
+
+    answer.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
+    answer.type = request->type ;
+    answer.exception = e_NO_EXCEPTION ;
+    answer.federate = request->federate ;
+    answer.object = request->object ;
+
+    answer.write(link); // Send answer to RTIA
+    G.Out(pdGendoc,"exit  RTIG::processRequestObjectAttributeValueUpdate");
+    G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
+}
+
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.53 2008/02/21 10:15:24 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.54 2008/02/27 16:38:27 rousse Exp $

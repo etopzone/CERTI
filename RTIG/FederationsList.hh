@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.38 2007/12/11 17:27:42 rousse Exp $
+// $Id: FederationsList.hh,v 3.39 2008/02/27 16:38:27 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -258,7 +258,21 @@ public:
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
-    
+ 
+    void requestAttribute(Handle handle,
+                                FederateHandle federate,
+                                ObjectHandle id,
+                                AttributeHandle *attributes,
+                                 UShort list_size)
+        throw (FederateNotExecutionMember,
+               FederateNotPublishing,
+               ObjectAlreadyRegistered,
+               ObjectClassNotDefined,
+               ObjectClassNotPublished,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+   
     void destroyObject(Handle theHandle,
     		       FederateHandle theFederateHandle,
 		       ObjectHandle theObjectHandle,
@@ -576,4 +590,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.38 2007/12/11 17:27:42 rousse Exp $
+// $Id: FederationsList.hh,v 3.39 2008/02/27 16:38:27 rousse Exp $

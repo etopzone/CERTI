@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.65 2008/02/26 08:56:10 siron Exp $
+// $Id: RTIA_federate.cc,v 3.66 2008/02/27 16:38:26 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -514,10 +514,10 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         try {
             D.Out(pdTrace,"Receiving Message from Federate, type "
                                 "RequestAttributeValueUpadate.");
-            rep.setEventRetraction(om->requestObjectAttributeValueUpdate(req->getObject(),
+            om->requestObjectAttributeValueUpdate(req->getObject(),
                                             req->handleArray,
                                             req->handleArraySize,
-                                            e));
+                                            e);
           } catch (Exception *e) { throw e ;}
         break ;
 
@@ -1306,4 +1306,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.65 2008/02/26 08:56:10 siron Exp $
+// $Id: RTIA_federate.cc,v 3.66 2008/02/27 16:38:26 rousse Exp $

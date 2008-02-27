@@ -649,10 +649,12 @@ Message::display(char *s)
     else if ( type == JOIN_FEDERATION_EXECUTION )
       printf("JOIN_FEDERATION_EXECUTION : federate number %d federation name %s federate name %s\n",
              federate,((federationName==NULL)?"empty":federationName),federateName) ;
-    else if (type == FEDERATE_RESTORE_COMPLETE )
-        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
     else if (type == FEDERATE_SAVE_COMPLETE )
         printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
+    else if (type == FEDERATE_RESTORE_COMPLETE )
+        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
+    else if (type == REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE )
+        printf("REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE : \n");
     else
         printf(" type=%d :", type);
     printf(" date=%f: ", fed_time.getTime());
@@ -665,9 +667,9 @@ Message::display(char *s)
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);
     printf(" parameter=%ld:\n", parameter);
-    printf(" object=%ld:\n", object);
-    printf(" handleArraySize=%d:\n", handleArraySize);
-    printf(" space %ld:\n", space);
+    printf(" object=%ld:", object);
+    printf(" handleArraySize=%d:", handleArraySize);
+    printf(" space %ld:", space);
     printf(" dimension %ld:\n", dimension);
     // printf(" transportation %d:\n", transportation);
     // printf(" ordering %d:\n", ordering);
