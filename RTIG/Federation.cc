@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.78 2008/02/12 14:26:42 rousse Exp $
+// $Id: Federation.cc,v 3.79 2008/02/28 14:47:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2266,8 +2266,23 @@ Federation::saveXmlData()
     return true ;
 #endif // HAVE_XML
 }
+// ----------------------------------------------------------------------------
+FederateHandle
+Federation::requestObjectOwner(FederateHandle theFederateHandle,
+                             ObjectHandle theObject,
+                             AttributeHandle *theAttributeList,
+                             UShort theListSize)
+        throw (ObjectNotKnown)
+{
+
+    G.Out(pdGendoc,"into Federation::requestObjectOwner");
+
+    // Request Object.
+    return(root->requestObjectOwner(theFederateHandle,theObject));
+
+}
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.78 2008/02/12 14:26:42 rousse Exp $
+// $Id: Federation.cc,v 3.79 2008/02/28 14:47:58 rousse Exp $
 

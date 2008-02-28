@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.44 2007/12/05 12:29:39 approx Exp $
+// $Id: Federation.hh,v 3.45 2008/02/28 14:47:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -266,6 +266,12 @@ public:
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
+
+    FederateHandle requestObjectOwner(FederateHandle theFederateHandle,
+                                ObjectHandle theObject,
+                                AttributeHandle *theAttributeList,
+                                UShort theListSize)
+        throw (ObjectNotKnown);
 
     void subscribeObject(FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
@@ -588,4 +594,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.44 2007/12/05 12:29:39 approx Exp $
+// $Id: Federation.hh,v 3.45 2008/02/28 14:47:58 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.52 2008/02/27 16:38:27 rousse Exp $
+// $Id: FederationsList.cc,v 3.53 2008/02/28 14:47:58 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1530,22 +1530,17 @@ FederationsList::federateRestoreStatus(Handle the_federation,
 
 // ----------------------------------------------------------------------------
 // requestAttribute
-void
-FederationsList::requestAttribute(Handle handle,
+FederateHandle
+FederationsList::requestObjectOwner(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
                                  AttributeHandle *attributes,
                                  UShort list_size)
-        throw (FederateNotExecutionMember,
-               FederateNotPublishing,
-               ObjectAlreadyRegistered,
-               ObjectClassNotDefined,
-               ObjectClassNotPublished,
-               SaveInProgress,
-               RestoreInProgress,
+        throw (ObjectNotKnown,
+               FederationExecutionDoesNotExist,
                RTIinternalError)
 {
-    G.Out(pdGendoc,"enter FederationsList::requestAttribute");
+    G.Out(pdGendoc,"into FederationsList::requestObjectOwner");
 
     Federation *federation = NULL ;
 
@@ -1556,11 +1551,11 @@ FederationsList::requestAttribute(Handle handle,
     // It may throw FederationExecutionDoesNotExist.
     searchFederation(handle, federation);
 
-    //federation->requestAttribute(federate, id, list_size));
-    G.Out(pdGendoc,"exit FederationsList::requestAttribute");
+    // It may throw ObjectNotKnown
+    return(federation->requestObjectOwner(federate, id, attributes, list_size));
 }
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.52 2008/02/27 16:38:27 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.53 2008/02/28 14:47:58 rousse Exp $
 

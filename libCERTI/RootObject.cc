@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: RootObject.cc,v 3.32 2008/02/28 14:47:59 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -50,6 +50,7 @@ using std::list ;
 namespace certi {
 
 static pdCDebug D("ROOTOBJECT", "(RootObject) ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! The SocketServer can be NULL on the RTIA.
@@ -329,7 +330,18 @@ RootObject::getInteractionClass(InteractionClassHandle the_class)
 {
     return Interactions->getByHandle(the_class);
 }
+// ----------------------------------------------------------------------------
+// requestObjectInstance
+FederateHandle
+RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject)
+        throw (ObjectNotKnown)
+{
+    G.Out(pdGendoc,"into RootObject::requestObjectOwner");
+
+    return(objects->requestObjectOwner(theFederateHandle, theObject));
+
+}
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: RootObject.cc,v 3.32 2008/02/28 14:47:59 rousse Exp $

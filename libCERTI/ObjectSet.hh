@@ -79,6 +79,10 @@ public:
                FederateNotExecutionMember, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
+     FederateHandle requestObjectOwner(FederateHandle the_federate,
+                                  ObjectHandle the_object)
+    throw (ObjectNotKnown);
+
     void killFederate(FederateHandle) throw (RTIinternalError);
 
     // Ownership Management.

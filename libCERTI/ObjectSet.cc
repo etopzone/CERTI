@@ -135,10 +135,11 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
     throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
            SaveInProgress, RestoreInProgress, RTIinternalError)
 {
-    std::map<ObjectHandle, Object *>::const_iterator i ;
-    i = std::map<ObjectHandle, Object *>::find(the_object);
+    const_iterator i ;
 
-    if (i != std::map<ObjectHandle, Object *>::end()) {
+    i = find(the_object);
+
+    if (i != end()) {
         throw ObjectAlreadyRegistered("Object already in ObjectSet map.");
     }
 
@@ -163,7 +164,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
     }
 
     pair<ObjectHandle, Object *> tmp(the_object, object);
-    std::map<ObjectHandle, Object *>::insert(tmp);
+    insert(tmp);
 
     return object ;
 }
@@ -430,7 +431,24 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
     }
     // BUG: If except = 0, could use Multicast.
 }
+// ----------------------------------------------------------------------------
+FederateHandle
+ObjectSet::requestObjectOwner(FederateHandle the_federate,
+                                  ObjectHandle the_object)
+    throw (ObjectNotKnown)
+{
+    const_iterator i ;
+    i = find(the_object);
 
+    if (i == end())
+       {
+       // Object not found !
+       throw ObjectNotKnown("Object not found in ObjectSet map.");
+       }
+
+    // Object found, return the owner
+    return ( i->second->getOwner()) ;
+}
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.16 2007/10/31 10:30:21 erk Exp $
+// $Id: ObjectSet.cc,v 3.17 2008/02/28 14:47:59 rousse Exp $

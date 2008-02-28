@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.54 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.55 2008/02/28 14:47:59 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1360,23 +1360,42 @@ void
 RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *request)
 {
     NetworkMessage answer ;
-
+    Handle federateOwner ;  // federate owner of the object
     G.Out(pdGendoc,"enter RTIG::processRequestObjectAttributeValueUpdate");
     G.Out(pdGendoc,"BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 
     auditServer << "ObjID = " << request->object ;
 
     // We have to do verifications about this object
-    federations.requestAttribute(request->federation,
+    answer.exception = e_NO_EXCEPTION ;
+    try 
+      {
+      federateOwner = federations.requestObjectOwner(request->federation,
                                  request->federate,
                                  request->object,
                                  request->handleArray,
                                  request->handleArraySize);
-
+      std::cout<<"processRequestObjectAttributeValueUpdate : Owner of object "
+               <<request->object<<" is federate "<<federateOwner<<std::endl;
+      }
+     catch (ObjectNotKnown e)
+        {
+        answer.exception = e_ObjectNotKnown ;
+        strcpy(answer.exceptionReason,e._reason) ;
+        }
+     catch (FederationExecutionDoesNotExist e)
+        {
+        answer.exception = e_FederationExecutionDoesNotExist ;
+        strcpy(answer.exceptionReason,e._reason) ;
+        }
+     catch (RTIinternalError e)
+        {
+        answer.exception = e_RTIinternalError ;
+        strcpy(answer.exceptionReason,e._reason) ;
+        }
 
     answer.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
     answer.type = request->type ;
-    answer.exception = e_NO_EXCEPTION ;
     answer.federate = request->federate ;
     answer.object = request->object ;
 
@@ -1387,4 +1406,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.54 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.55 2008/02/28 14:47:59 rousse Exp $
