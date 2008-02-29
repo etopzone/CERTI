@@ -47,15 +47,25 @@ public:
 	 * Return true if the host is BidEndian
 	 */
 	static const bool HostIsBigEndian();
+
 	/**
 	 * Return true if the host is LittleEndian
 	 */
 	static const bool HostIsLittleEndian();
 
 	/**
-	 * Show n bytes of data content in hexa on ostream. 
+	 * Show n bytes of data content in hexa on stdout. 
 	 */
 	static void show(const void* data, uint32_t n);
+	
+	/* 
+	 * We reserve 5 bytes at the beginning of the buffer
+	 * The first byte is a bitset which is used to 
+	 * to tell if the buffer is big or little endian
+	 * The 4 following bytes is for an uint32_t which
+	 * may be used to store the buffer size
+	 */ 
+	static const uint8_t reservedBytes = 5;
 
 	/**
 	 * Default message buffer constructor.
@@ -108,8 +118,14 @@ public:
 	 * to re-use a buffer in order to avoid reallocation.
 	 */
 	void
-	resetBuffer();
-	
+	reset();
+
+	/**
+	 * Seek buffer in order to write at specified place
+	 * Will set the write pointer to the seeked offset.
+	 */
+	void seek_write(uint32_t offset);
+
 	/**
 	 * Resize the current maximum buffer size (in bytes).
 	 * This is the size of the allocated buffer.
@@ -127,28 +143,37 @@ public:
 	 * @param[in] size the assumed size
 	 */
 	void assumeSize(uint32_t size);
+	
+	void assumeSizeFromReservedBytes();
 
 #define DECLARE_SIGNED(type)				\
-  int32_t						\
-  write_##type##s(const type##_t* data, uint32_t n) {		\
-    return write_u##type##s(reinterpret_cast<const u##type##_t*>(data),n);	\
-  }							\
-    							\
-  int32_t						\
-  read_##type##s(type##_t* data, uint32_t n) {		\
-    return read_u##type##s(reinterpret_cast<u##type##_t*>(data),n);	\
-  }   							\
-    
+	int32_t						\
+	write_##type##s(const type##_t* data, uint32_t n) {		\
+	return write_u##type##s(reinterpret_cast<const u##type##_t*>(data),n);	\
+}							\
+\
+int32_t						\
+read_##type##s(type##_t* data, uint32_t n) {		\
+	return read_u##type##s(reinterpret_cast<u##type##_t*>(data),n);	\
+}   							\
+
 #define DECLARE_SINGLE_READ_WRITE(type,suffix)     \
-  int32_t						\
-  write_##type(const type##suffix data) {		\
-    return write_##type##s(&data,1);	\
-  }							\
-    							\
-  int32_t						\
-  read_##type(type##suffix* data) {		\
-    return read_##type##s(data,1);	\
-  }   	    
+	int32_t						\
+	write_##type(const type##suffix data) {		\
+	return write_##type##s(&data,1);	\
+}							\
+\
+int32_t						\
+read_##type(type##suffix* data) {		\
+	return read_##type##s(data,1);	\
+}                                    \
+\
+type##suffix read_##type() {\
+	type##suffix retval;     \
+	read_##type##s(&retval,1);\
+	return retval; \
+} 
+
 
 	int32_t
 	write_uint8s(const uint8_t* data, uint32_t n);
@@ -228,37 +253,33 @@ public:
 		this->write_uint8(data);
 		return *this;
 	}
-
-	/**
-	 * Cast operator to const void*
-	 * to be used (for example) in send system call.
+	
+	/*
+	 * Pseudo index operator.
+	 * This will be used in send/receive socket call.
+	 * @return address of the underlying buffer + offset.
 	 */
-
-	operator const void *();
-
-	/**
-	 * Cast operator to void*
-	 * To be used (for example) in recv system call.
-	 */
-	operator void *();
+	void* operator ()(uint32_t offset);
 
 private:
+
 	/** The buffer itself */
 	uint8_t* buffer;
 	/** The provisioned buffer size */
 	uint32_t bufferMaxSize;
 	/** Endianness toggle */
-	bool bufferHasMyEndianness;
+	bool bufferHasMyEndianness;	
 	/** 
 	 * The write offset is the offset of the buffer
 	 * where the next write operation will write to.
 	 */
-	uint32_t writeOffset;
+	uint32_t writeOffset;	
+
 	/** 
 	 * The read offset is the offset of the buffer
 	 * where the next read operation will read from.
 	 */
-	uint32_t readOffset;
+	uint32_t readOffset;	
 
 	void initialize();
 	void reallocate(uint32_t n);

@@ -59,9 +59,9 @@ MessageBuffer::show(const void* data, uint32_t n) {
 void MessageBuffer::initialize() {
 	buffer = NULL;
 	bufferMaxSize = DEFAULT_MESSAGE_BUFFER_SIZE;
-	bufferHasMyEndianness = true;
-	writeOffset = 0;
-	readOffset = 0;
+	bufferHasMyEndianness = true;	
+	writeOffset  = reservedBytes;
+	readOffset   = reservedBytes;
 } /* end of MessageBuffer::initialize() */
 
 MessageBuffer::MessageBuffer() {
@@ -101,6 +101,14 @@ void MessageBuffer::reallocate(uint32_t n) {
 			oldbuf = NULL;
 		}
 	}
+	
+	/* set up buffer endianess */
+	if ((HostIsBigEndian() && bufferHasMyEndianness) ||
+	    (HostIsLittleEndian())) {
+	   buffer[0] = 0x01;	   
+	} else {
+	   buffer[0] = 0x00;
+	}
 } /* end of MessageBuffer::MessageBuffer(uint32_t) */
 
 MessageBuffer::~MessageBuffer() {
@@ -119,23 +127,26 @@ uint32_t MessageBuffer::maxSize() const {
 
 void MessageBuffer::assumeBufferIsBigEndian() {
 	this->bufferHasMyEndianness = HostIsBigEndian();
+	buffer[0] = 0x01;
 } /* end of MessageBuffer::assumeBufferIsBigEndian() */
 
 void MessageBuffer::assumeBufferIsLittleEndian() {
-	this->bufferHasMyEndianness = HostIsLittleEndian();    
+	this->bufferHasMyEndianness = HostIsLittleEndian();
+	buffer[0] = 0x00;
 } /* end of MessageBuffer::assumeBufferIsLittleEndian() */
 
-void MessageBuffer::resetBuffer() {
+void MessageBuffer::reset() {
 	bufferHasMyEndianness = true;
-	writeOffset           = 0;
-	readOffset            = 0;
+	writeOffset           = reservedBytes;
+	readOffset            = reservedBytes;
 } /* MessageBuffer::resetBuffer() */
 
 uint32_t MessageBuffer::resize(uint32_t newSize) {
 	reallocate(newSize);
 }
-void MessageBuffer::assumeSize(uint32_t size) {
-	/* this is done in order to overflow 
+
+void MessageBuffer::assumeSize(uint32_t size) {	
+	/* This is done in order to overflow 
 	 * buffer max size but this may well be
 	 * an error (FIXME should throw an exception ?) 
 	 */
@@ -143,9 +154,21 @@ void MessageBuffer::assumeSize(uint32_t size) {
 		writeOffset       = size;
 	} else {
 	    writeOffset       = bufferMaxSize;
-	}
-	readOffset            = 0;
+	}	
 }
+
+void MessageBuffer::assumeSizeFromReservedBytes() {
+	/* verify endianity from reserved byte 0 */
+	if (buffer[0]==0x01) {
+		assumeBufferIsBigEndian();
+	} else {
+		assumeBufferIsLittleEndian();	
+	}
+	/* read size from reserved bytes 1..4 */
+	readOffset = 1;
+	assumeSize(this->read_uint32());
+}
+
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 
@@ -396,13 +419,18 @@ MessageBuffer::read_string() {
  return retval;
 }
 
-MessageBuffer::operator const void*(){
-	return buffer;
+void*
+MessageBuffer::operator ()(uint32_t offset) {	
+	return buffer+offset;
 }
 
-MessageBuffer::operator void*() {
-	return buffer;
-}
+//MessageBuffer::operator const void*(){
+//	return buffer;
+//}
+//
+//MessageBuffer::operator void*() {
+//	return buffer;
+//}
 
 
 } // certi
