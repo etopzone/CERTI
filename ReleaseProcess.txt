@@ -7,9 +7,19 @@ CERTI releases should be done with the following steps:
 1) Announce release freeze on certi-devel
    and check for no-go message
 
-2) Review currently opened and fixed bug in the tracker
-   https://savannah.nongnu.org/bugs/?group=certi
-   - checked if fixed are really CVS
+2) Review currently opened and fixed bug/task in the tracker
+
+    Bugs:
+    https://savannah.nongnu.org/bugs/?group=certi
+    - checked if fixed are really CVS and switches
+       status from ReadyToTest to Done
+                   from Open to Closed
+                   check the Release 
+
+    Tasks:
+    https://savannah.nongnu.org/task/?group=certi
+    - checked Done or ReadyToTest tasks
+      close them and fix the Release.
 
 3) Edit tsp/CMakeLists.txt
    and bump the version to the right number with
