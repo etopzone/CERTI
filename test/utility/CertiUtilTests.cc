@@ -51,6 +51,7 @@ void clockTests(certi::Clock& aClock) {
 #endif
 
 void messageBufferTests(certi::MessageBuffer& MsgBuf) {
+	certi::MessageBuffer MsgBuf2;
 	std::string    stdstr = "a std:string";
 	const char*   str = "a char* string";
 	uint8_t  u8   =  232;
@@ -200,6 +201,27 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	vstdstr = "";
 	vstdstr = MsgBuf.read_string();
 	cout << "    (re)Read String is   " << vstdstr << endl;
+	
+	cout << "    preparing a buffer for network send..." <<endl;
+	MsgBuf.reset();
+	MsgBuf.write_uint32(u32);
+	MsgBuf.write_uint8(u8);
+	MsgBuf.write_uint16(u16);
+	MsgBuf.updateReservedBytes();
+	cout << "    now (pseudo) sending a buffer of size " << MsgBuf.size() << " bytes ..." << endl;
+	memcpy(MsgBuf2(0),MsgBuf(0),MsgBuf.reservedBytes);	
+	printf("MsgBuf = ");MsgBuf.show(MsgBuf(0),MsgBuf.reservedBytes);printf("\n");
+	printf("MsgBuf = ");MsgBuf2.show(MsgBuf(0),MsgBuf2.reservedBytes);printf("\n");
+	cout << "    now (pseudo) receiving buffer header of " << (uint32_t) MsgBuf.reservedBytes << " bytes ..." << endl;
+	cout << "    reconstruct receive buffer size from buffer header ..." <<endl;
+	MsgBuf2.assumeSizeFromReservedBytes();
+	cout << "    seems to contain " << MsgBuf2.size() << " bytes..."<<endl;
+	cout << "    now (pseudo) receiving buffer content ..." <<endl;
+	memcpy(MsgBuf2(MsgBuf.reservedBytes),MsgBuf(MsgBuf.reservedBytes),MsgBuf2.size());
+	cout << "    reading buffer content..." <<endl;
+	vu32 = MsgBuf.read_uint32(); assert(vu32==u32);
+	vu8  = MsgBuf.read_uint8(); assert(vu8==u8);
+	vu16 = MsgBuf.read_uint16(); assert(vu16==u16);
 	cout << "Testing MessageBuffer class END."<<endl;
 } /* end of messageBufferTests */
 

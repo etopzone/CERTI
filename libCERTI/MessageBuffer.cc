@@ -20,11 +20,14 @@
 // ----------------------------------------------------------------------------
 
 #include "MessageBuffer.hh"
+#include "PrettyDebug.hh"
 #include <cassert>
 #include <sstream>
 #include <iomanip>
 
 namespace certi {
+
+static PrettyDebug D("MB","MB::");
 
 const bool 
 MessageBuffer::HostIsBigEndian() {
@@ -55,6 +58,8 @@ MessageBuffer::show(const void* data, uint32_t n) {
 	   printf("%02X",u8data[i]);	  
    }   
 }
+
+const uint8_t MessageBuffer::reservedBytes = 5;
 
 void MessageBuffer::initialize() {
 	buffer = NULL;
@@ -99,15 +104,9 @@ void MessageBuffer::reallocate(uint32_t n) {
 			memcpy(buffer, oldbuf, writeOffset);
 			delete[] oldbuf;
 			oldbuf = NULL;
+		} else {
+			updateReservedBytes();
 		}
-	}
-	
-	/* set up buffer endianess */
-	if ((HostIsBigEndian() && bufferHasMyEndianness) ||
-	    (HostIsLittleEndian())) {
-	   buffer[0] = 0x01;	   
-	} else {
-	   buffer[0] = 0x00;
 	}
 } /* end of MessageBuffer::MessageBuffer(uint32_t) */
 
@@ -117,7 +116,7 @@ MessageBuffer::~MessageBuffer() {
 	}
 } /* end of MessageBuffer::~MessageBuffer() */
 
-uint32_t MessageBuffer::size() const {
+uint32_t MessageBuffer::size() const {	
 	return writeOffset;
 }
 
@@ -139,6 +138,7 @@ void MessageBuffer::reset() {
 	bufferHasMyEndianness = true;
 	writeOffset           = reservedBytes;
 	readOffset            = reservedBytes;
+	updateReservedBytes();
 } /* MessageBuffer::resetBuffer() */
 
 uint32_t MessageBuffer::resize(uint32_t newSize) {
@@ -158,6 +158,7 @@ void MessageBuffer::assumeSize(uint32_t size) {
 }
 
 void MessageBuffer::assumeSizeFromReservedBytes() {
+	uint32_t toBeAssumedSize;
 	/* verify endianity from reserved byte 0 */
 	if (buffer[0]==0x01) {
 		assumeBufferIsBigEndian();
@@ -166,12 +167,27 @@ void MessageBuffer::assumeSizeFromReservedBytes() {
 	}
 	/* read size from reserved bytes 1..4 */
 	readOffset = 1;
-	assumeSize(this->read_uint32());
-}
+	toBeAssumedSize = this->read_uint32();
+	/* reallocation may be needed */
+	reallocate(toBeAssumedSize);
+	assumeSize(toBeAssumedSize);
+} /* end of assumeSizeFromReservedBytes */
 
+void MessageBuffer::setSizeInReservedBytes(uint32_t n) {
+	uint32_t oldWR_Offset;
+	/* backup write Offset */
+	oldWR_Offset = writeOffset;
+	/* update size in reserved bytes */
+	writeOffset  = 1;
+	D.Out(pdTrace,"setSizeInReservedBytes(%u)",n);
+	write_uint32(n);
+	/* restore writeOffset */
+	writeOffset  = oldWR_Offset;	
+} /* end of setSizeInReservedBytes */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
-
+    D.Out(pdTrace,"write_uint8s(%p = [%u ...] , %d)",data,data[0],n);
+    
 	if (n >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (n-(bufferMaxSize-writeOffset))
@@ -184,11 +200,10 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 	return (writeOffset-n);
 } /* end of MessageBuffer::write_uint8s(uint8_t*, uint32_t) */
 
-int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
-
+int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {	
 	if (n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "invalid read of siwritePtrze <" << n
+		smsg << __func__ << "::invalid read of siwritePtrze <" << n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -197,13 +212,15 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 
 	memcpy(data, buffer+readOffset, n);
 	readOffset += n;
+	D.Out(pdTrace,"read_uint8s(%p = [%u ...], %d)",data,data[0],n);
 	return (readOffset-n);
 } /* end of MessageBuffer::read_uint8s(uint8_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
 	uint16_t an_uint16;
-
+	D.Out(pdTrace,"write_uint16s(%p = [%u ...], %d)",data,data[0],n);
+	
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (2*n)-(bufferMaxSize - writeOffset)
@@ -226,11 +243,11 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	uint32_t i;
-	uint16_t an_uint16;
-
+	uint16_t an_uint16;	
+	
 	if (2*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "invalid read of size <" << 2*n
+		smsg << __func__ << "::invalid read of size <" << 2*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -248,13 +265,16 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 			readOffset += 2;
 		}
 	}
+	
+	D.Out(pdTrace,"read_uint16s(%p = [%u ...], %d)",data,data[0],n);
 	return (readOffset-2*n);
 } /* end of MessageBuffer::read_uint16s(uint16_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
 	uint32_t an_uint32;
-
+	D.Out(pdTrace,"write_uint32s(%p = [%u ...] , %d)",data,data[0],n);
+	
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (4*n)-(bufferMaxSize - writeOffset)
@@ -277,11 +297,11 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t an_uint32;
-
+	uint32_t an_uint32;	
+	
 	if (4*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "invalid read of size <" << 4*n
+		smsg << __func__ << "::invalid read of size <" << 4*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -292,16 +312,16 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 4*n);
 		readOffset += 4*n;
-	} else {
-		
+	} else {		
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint32,buffer+readOffset,4);
 			data[i] = CERTI_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
 		}
 	}
+	D.Out(pdTrace,"read_uint32s(%p = [%u ...], %d)",data,data[0],n);
 	return (readOffset-4*n);
-}
+} /* end of read_uint32s */
 
 int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	uint32_t i;
@@ -310,7 +330,9 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 		uint64_t    ui64;
 	} a_deux32;
 	uint32_t an_uint32;
-
+	
+	D.Out(pdTrace,"write_uint64s(%p , %d)",data,n);
+	
 	if ((8*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (8*n)-(bufferMaxSize - writeOffset)
@@ -333,7 +355,7 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 		}
 	}
 	return (writeOffset-8*n);
-}
+} /* end of write_uint64s */
 
 int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	uint32_t i;
@@ -342,10 +364,11 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 			uint64_t    ui64;
 	} a_deux32;
 	uint32_t an_uint32;	
-
+	D.Out(pdTrace,"read_uint64s(%p , %d)",data,n);
+	
 	if (8*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "invalid read of size <" << 4*n
+		smsg << __func__ << "::invalid read of size <" << 4*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -374,24 +397,28 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_floats(const float* data, uint32_t n) {
 	const uint32_t* data32;
+	D.Out(pdTrace,"write_floats(%p = [%f ...], %d)",data,data[0],n);
 	data32 = reinterpret_cast<const uint32_t*>(data);	
 	return write_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::read_floats(float* data, uint32_t n) {
 	uint32_t* data32;
+	D.Out(pdTrace,"read_floats(%p , %d)",data,n);
 	data32 = reinterpret_cast<uint32_t*>(data);	
 	return read_uint32s(data32,n);	
 }
 
 int32_t MessageBuffer::write_doubles(const double* data, uint32_t n) {
 	const uint64_t* data64;
+	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,data[0],n);	
 	data64 = reinterpret_cast<const uint64_t*>(data);	
 	return write_uint64s(data64,n);	
 }
 
 int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 	uint64_t* data64;
+	D.Out(pdTrace,"read_doubles(%p , %d)",data,n);
 	data64 = reinterpret_cast<uint64_t*>(data);	
 	return read_uint64s(data64,n);
 }
@@ -400,7 +427,7 @@ int32_t
 MessageBuffer::write_string(const std::string& str) {
    write_int32(str.length());
    return write_chars(str.c_str(),str.length());
-}
+} /* end of write_string */
   
 std::string 
 MessageBuffer::read_string() {
@@ -417,7 +444,19 @@ MessageBuffer::read_string() {
  retval = std::string(buf);
  delete[] buf;
  return retval;
-}
+} /* end of read_string */
+
+void MessageBuffer::updateReservedBytes() {
+	/* set up buffer endianess */
+	if ((HostIsBigEndian() && bufferHasMyEndianness) ||
+	    (HostIsLittleEndian() && !bufferHasMyEndianness)) {
+	   buffer[0] = 0x01;	   
+	} else {
+	   buffer[0] = 0x00;
+	}
+    /* set up size */	
+	setSizeInReservedBytes(size());	
+} /* end of updateReservedBytes */
 
 void*
 MessageBuffer::operator ()(uint32_t offset) {	

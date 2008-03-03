@@ -65,7 +65,7 @@ public:
 	 * The 4 following bytes is for an uint32_t which
 	 * may be used to store the buffer size
 	 */ 
-	static const uint8_t reservedBytes = 5;
+	static const uint8_t reservedBytes;
 
 	/**
 	 * Default message buffer constructor.
@@ -254,13 +254,15 @@ type##suffix read_##type() {\
 		return *this;
 	}
 	
+	void updateReservedBytes();
+	
 	/*
 	 * Pseudo index operator.
 	 * This will be used in send/receive socket call.
 	 * @return address of the underlying buffer + offset.
 	 */
 	void* operator ()(uint32_t offset);
-
+	
 private:
 
 	/** The buffer itself */
@@ -283,6 +285,7 @@ private:
 
 	void initialize();
 	void reallocate(uint32_t n);
+	void setSizeInReservedBytes(uint32_t n);
 };
 
 } // certi
