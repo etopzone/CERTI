@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.21 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -323,6 +323,12 @@ msg->trace("RTIA::processNetworkMessage ");
         queues->insertLastCommand(msg);
         break ;
 
+      case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+        D.Out(pdTrace, "Receiving Message from RTIG, "
+              " type ProvideAttributeValueUpdate.");
+        queues->insertFifoMessage(msg);
+        break ;
+
       default:
       {
           D.Out(pdTrace,
@@ -338,4 +344,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.21 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $

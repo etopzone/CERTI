@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.34 2008/02/27 16:38:26 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.35 2008/03/05 15:33:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -642,11 +642,23 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 // --------------------------------------
 
 void
-ObjectManagement::provideAttributeValueUpdate(ObjectHandle,
-                                              ValueLengthPair &,
+ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
+                                              AttributeHandle *the_attributes,
+                                              UShort attribArraySize,
                                               TypeException &)
 {    
-    throw RTIinternalError("ObjectManagement::provideAttributeValueUpdate not implemented");
+     Message req;
+
+    G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
+    req.type = Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE ;
+    req.setObject(the_object);
+    req.handleArraySize = attribArraySize ;
+    for (int i = 0 ; i < attribArraySize ; i++) {
+        req.handleArray[i] = the_attributes[i] ;
+    }
+
+    comm->requestFederateService(&req);
+    G.Out(pdGendoc,"exit  ObjectManagement::provideAttributeValueUpdate");   
 }
 
 
@@ -773,4 +785,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.34 2008/02/27 16:38:26 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.35 2008/03/05 15:33:50 rousse Exp $

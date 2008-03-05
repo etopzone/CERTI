@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.43 2008/02/25 10:28:14 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.44 2008/03/05 15:33:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -100,6 +100,15 @@ NetworkMessage::readBody(Socket *socket)
             body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
 	}
 	break ;
+
+      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+	object = body.readLongInt();
+	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+	for (i = 0 ; i < handleArraySize ; i ++) {
+	        handleArray[i] = body.readShortInt();
+	}
+	break ;
+
 	
 	// -- O_I Variable Part With Date(Body Not Empty) --
       case SEND_INTERACTION:
@@ -161,7 +170,6 @@ NetworkMessage::readBody(Socket *socket)
 
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
 	readLabel(body);
-G.Out(pdGendoc,"NetworkMessage::readBody type R_F_R_S label= %s",label);
 	break ;
 
       case INITIATE_FEDERATE_RESTORE:
@@ -351,6 +359,12 @@ NetworkMessage::readHeader(Socket *socket)
 	break ;
 
       case REFLECT_ATTRIBUTE_VALUES:
+	objectClass = Header.VP.O_I.handle ;
+	handleArraySize = Header.VP.O_I.size ;
+	date = Header.VP.O_I.date ;
+	break ;
+
+      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 	objectClass = Header.VP.O_I.handle ;
 	handleArraySize = Header.VP.O_I.size ;
 	date = Header.VP.O_I.date ;
@@ -563,6 +577,14 @@ NetworkMessage::writeBody(Socket *socket)
             body.writeBlock(ValueArray[i].value, ValueArray[i].length);
 	}
 	break ;
+
+      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+	body.writeLongInt(object);
+	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
+	for (i = 0 ; i < handleArraySize ; i ++) {
+	    body.writeShortInt(handleArray[i]);
+	}
+	break ;
 	
 	// -- O_I Variable Part With date(body Not Empty) --
 	    
@@ -576,16 +598,16 @@ NetworkMessage::writeBody(Socket *socket)
             body.writeLongInt(ValueArray[i].length);
             body.writeBlock(ValueArray[i].value, ValueArray[i].length);
 	}
-	body.writeLongInt(region);
+        body.writeLongInt(region);
 	break ;
 
       case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
 	body.writeLongInt(object);
 	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
-	for (i = 0 ; i < handleArraySize ; i ++) {
-            body.writeLongInt(ValueArray[i].length) ;
-            body.writeBlock(ValueArray[i].value, ValueArray[i].length);
-	} 
+	for (i = 0 ; i < handleArraySize ; i ++)
+            {
+	    body.writeShortInt(handleArray[i]);
+	    } 
         break;
        
 	// -- No Variable Part --
@@ -626,7 +648,6 @@ NetworkMessage::writeBody(Socket *socket)
 
       case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
 	body.writeString(label);
-G.Out(pdGendoc,"NetworkMessage::writeBody type R_F_R_S label=%s",label);
 	break ;
 
 
@@ -829,6 +850,12 @@ NetworkMessage::writeHeader(Socket *socket)
         Header.VP.O_I.handle = objectClass ;
         Header.VP.O_I.size = handleArraySize ;
         Header.VP.O_I.date = date ;
+	break ;
+
+      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+	Header.bodySize = 1 ;
+        Header.VP.O_I.handle = objectClass ;
+        Header.VP.O_I.size = handleArraySize ;
 	break ;
 	
       case SEND_INTERACTION:
@@ -1040,4 +1067,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.43 2008/02/25 10:28:14 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.44 2008/03/05 15:33:51 rousse Exp $

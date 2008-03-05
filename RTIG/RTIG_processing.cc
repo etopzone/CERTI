@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.55 2008/02/28 14:47:59 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.56 2008/03/05 15:33:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1366,7 +1366,7 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
     auditServer << "ObjID = " << request->object ;
 
-    // We have to do verifications about this object
+    // We have to do verifications about this object and we need owner
     answer.exception = e_NO_EXCEPTION ;
     try 
       {
@@ -1375,8 +1375,6 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
                                  request->object,
                                  request->handleArray,
                                  request->handleArraySize);
-      std::cout<<"processRequestObjectAttributeValueUpdate : Owner of object "
-               <<request->object<<" is federate "<<federateOwner<<std::endl;
       }
      catch (ObjectNotKnown e)
         {
@@ -1406,4 +1404,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.55 2008/02/28 14:47:59 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.56 2008/03/05 15:33:50 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.79 2008/02/28 14:47:58 rousse Exp $
+// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2274,15 +2274,33 @@ Federation::requestObjectOwner(FederateHandle theFederateHandle,
                              UShort theListSize)
         throw (ObjectNotKnown)
 {
+FederateHandle theOwnerHandle ;
+NetworkMessage mess ;
 
-    G.Out(pdGendoc,"into Federation::requestObjectOwner");
+    G.Out(pdGendoc,"enter Federation::requestObjectOwner");
 
     // Request Object.
-    return(root->requestObjectOwner(theFederateHandle,theObject));
+    theOwnerHandle = root->requestObjectOwner(theFederateHandle,theObject) ;
+
+    // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
+    mess.type = NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE ;
+    mess.federate = theFederateHandle ;
+    mess.object = theObject ;
+    mess.handleArraySize = theListSize ;
+    for (int i = 0 ; i < theListSize ; i++)
+        {
+        mess.handleArray[i] = theAttributeList[i] ;
+        }
+
+     mess.write(server->getSocketLink(theOwnerHandle));
+ 
+   
+    G.Out(pdGendoc,"exit  Federation::requestObjectOwner");
+    return(theOwnerHandle);
 
 }
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.79 2008/02/28 14:47:58 rousse Exp $
+// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
 

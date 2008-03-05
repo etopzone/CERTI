@@ -42,6 +42,7 @@ using std::string ;
 namespace certi {
 
 static pdCDebug D("OBJECTSET", "(ObjectSet) - ");
+static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 ObjectSet::ObjectSet(SecurityServer *the_server)
@@ -437,6 +438,7 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
                                   ObjectHandle the_object)
     throw (ObjectNotKnown)
 {
+    G.Out(pdGendoc,"enter ObjectSet::requestObjectOwner");
     const_iterator i ;
     i = find(the_object);
 
@@ -447,8 +449,9 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
        }
 
     // Object found, return the owner
+    G.Out(pdGendoc,"exit  ObjectSet::requestObjectOwner");
     return ( i->second->getOwner()) ;
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.17 2008/02/28 14:47:59 rousse Exp $
+// $Id: ObjectSet.cc,v 3.18 2008/03/05 15:33:51 rousse Exp $

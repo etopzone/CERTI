@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.28 2008/02/26 08:56:10 siron Exp $
+// $Id: TimeManagement.cc,v 3.29 2008/03/05 15:33:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -119,7 +119,7 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
-  G.Out(pdGendoc,"enter TimeManagement::executeFederateService");
+  G.Out(pdGendoc,"enter TimeManagement::executeFederateService for type %d",msg.type);
   D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
 
   msg.trace("TimeManagement::executeFederateService ");
@@ -199,6 +199,16 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           free(ValueArray);
           break ;
       }
+
+      case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+      { 
+      om->provideAttributeValueUpdate(msg.object,
+                                      msg.handleArray,
+                                      msg.handleArraySize,
+                                      msg.exception);
+      break;
+      }
+
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
@@ -791,4 +801,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.28 2008/02/26 08:56:10 siron Exp $
+// $Id: TimeManagement.cc,v 3.29 2008/03/05 15:33:50 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.71 2008/02/26 08:56:11 siron Exp $
+// $Id: RTIambassador.cc,v 3.72 2008/03/05 15:33:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -399,10 +399,10 @@ RTI::RTIambassador::tick_kernel(bool locked)
           } break ;
 
           case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-
-
-              // privateRefs->fed_amb->provideAttributeValueUpdate();
+              privateRefs->fed_amb->provideAttributeValueUpdate(vers_Fed.getObject(),*attributeSet);
+              delete attributeSet ;
           } break ;
 
           case Message::REQUEST_RETRACTION: {
@@ -2912,4 +2912,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.71 2008/02/26 08:56:11 siron Exp $
+// $Id: RTIambassador.cc,v 3.72 2008/03/05 15:33:51 rousse Exp $
