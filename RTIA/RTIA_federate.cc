@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.66 2008/02/27 16:38:26 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.67 2008/03/06 16:33:09 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -511,14 +511,12 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-        try {
             D.Out(pdTrace,"Receiving Message from Federate, type "
                                 "RequestAttributeValueUpadate.");
             om->requestObjectAttributeValueUpdate(req->getObject(),
                                             req->handleArray,
                                             req->handleArraySize,
                                             e);
-          } catch (Exception *e) { throw e ;}
         break ;
 
       case Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
@@ -1306,4 +1304,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.66 2008/02/27 16:38:26 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.67 2008/03/06 16:33:09 rousse Exp $

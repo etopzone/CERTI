@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.44 2008/03/05 15:33:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45 2008/03/06 16:33:10 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -103,10 +103,8 @@ NetworkMessage::readBody(Socket *socket)
 
       case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 	object = body.readLongInt();
-	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
-	for (i = 0 ; i < handleArraySize ; i ++) {
-	        handleArray[i] = body.readShortInt();
-	}
+	for (i = 0 ; i < handleArraySize ; i ++)
+	    handleArray[i] = body.readShortInt();
 	break ;
 
 	
@@ -127,11 +125,8 @@ NetworkMessage::readBody(Socket *socket)
 
       case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
 	object = body.readLongInt();
-	body.readBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
-	for (i = 0 ; i < handleArraySize ; i ++) {
-            ValueArray[i].length = body.readLongInt();
-            body.readBlock(ValueArray[i].value, ValueArray[i].length) ;
-	}
+	for (i = 0 ; i < handleArraySize ; i ++)
+	    handleArray[i] = body.readShortInt();
 	break ;
         	
       case CREATE_FEDERATION_EXECUTION:
@@ -580,10 +575,10 @@ NetworkMessage::writeBody(Socket *socket)
 
       case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 	body.writeLongInt(object);
-	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
-	for (i = 0 ; i < handleArraySize ; i ++) {
+	for (i = 0 ; i < handleArraySize ; i ++)
+            {
 	    body.writeShortInt(handleArray[i]);
-	}
+	    } 
 	break ;
 	
 	// -- O_I Variable Part With date(body Not Empty) --
@@ -602,8 +597,7 @@ NetworkMessage::writeBody(Socket *socket)
 	break ;
 
       case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-	body.writeLongInt(object);
-	body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));	
+	body.writeLongInt(object);	
 	for (i = 0 ; i < handleArraySize ; i ++)
             {
 	    body.writeShortInt(handleArray[i]);
@@ -1067,4 +1061,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.44 2008/03/05 15:33:51 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45 2008/03/06 16:33:10 rousse Exp $
