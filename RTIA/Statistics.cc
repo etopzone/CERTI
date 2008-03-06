@@ -289,6 +289,7 @@ Statistics::Statistics()
 	RTI_MSG_NAME(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES);
 	RTI_MSG_NAME(NetworkMessage::DDM_SUBSCRIBE_INTERACTION);
 	RTI_MSG_NAME(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION);
+        RTI_MSG_NAME(NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE);
         RTI_MSG_NAME(NetworkMessage::GET_FED_FILE);
 
         initialized = true ;
@@ -360,4 +361,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.13 2007/04/03 09:43:39 rousse Exp $
+// $Id: Statistics.cc,v 3.14 2008/03/06 08:56:27 rousse Exp $
