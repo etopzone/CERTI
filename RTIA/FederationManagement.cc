@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.47 2008/02/22 11:34:30 siron Exp $
+// $Id: FederationManagement.cc,v 3.48 2008/03/07 16:10:06 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -224,6 +224,7 @@ destroyFederationExecution(const char *theName,
         strcpy(requete.federationName, theName);
 
         G.Out(pdGendoc,"destroyFederationExecution====>send Message to RTIG");
+
         comm->sendMessage(&requete);
 
         comm->waitMessage(&reponse,
@@ -236,15 +237,19 @@ destroyFederationExecution(const char *theName,
             _est_createur_federation = false ;
             _fin_execution = true ;
             // Now, remove temporary file (if not yet done)
-            if ( _FEDid[0] != '\0' )
-                {
-                std::remove(_FEDid);
-                _FEDid[0] = '\0' ;
-                }
+            if ( _FEDid != NULL )
+               {
+               if ( _FEDid[0] != '\0' )
+                   {
+                   std::remove(_FEDid);
+                   _FEDid[0] = '\0' ;
+                   }
+               }
         }
         else
             e = reponse.exception ;
     }
+
 G.Out(pdGendoc,"exit  FederationManagement::destroyFederationExecution");
 }
 
@@ -1004,4 +1009,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.47 2008/02/22 11:34:30 siron Exp $
+// $Id: FederationManagement.cc,v 3.48 2008/03/07 16:10:06 rousse Exp $
