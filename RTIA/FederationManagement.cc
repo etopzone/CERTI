@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.48 2008/03/07 16:10:06 rousse Exp $
+// $Id: FederationManagement.cc,v 3.49 2008/03/10 10:55:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -458,12 +458,14 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         _numero_federation = 0 ;
         federate = 0 ;
         // Now, remove temporary file (if not yet done)
+        if ( _FEDid != NULL)
+            {
             if ( _FEDid[0] != '\0' )
                 {
                 std::remove(_FEDid);
                 _FEDid[0] = '\0' ;
                 }
-
+            }
 
         // BUG: Voir DestroyFederation ou ~GF.
         if (!_est_createur_federation)
@@ -1009,4 +1011,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.48 2008/03/07 16:10:06 rousse Exp $
+// $Id: FederationManagement.cc,v 3.49 2008/03/10 10:55:54 rousse Exp $
