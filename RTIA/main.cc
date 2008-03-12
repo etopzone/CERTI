@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.17 2007/10/22 14:24:23 erk Exp $
+// $Id: main.cc,v 3.18 2008/03/12 15:00:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,6 +60,7 @@ int main() {
 			cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
 			if (e._reason) {
 				cerr << "RTIA:: Reason: " << e._reason << endl;
+                        rtia.displayStatistics();
 			}
 
 			return (EXIT_FAILURE);
@@ -79,12 +80,9 @@ int main() {
 
 // ----------------------------------------------------------------------------
 void SignalHandler(int Signal) {
-	int pid = getpid();
 
 	printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
-	//exit(0);
-	//If you want to KILL yourself exit is enough :))
-	//kill(SIGKILL, pid);
+        //exit(0);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,4 +90,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.17 2007/10/22 14:24:23 erk Exp $
+// EOF $Id: main.cc,v 3.18 2008/03/12 15:00:46 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.49 2008/03/10 10:55:54 rousse Exp $
+// $Id: FederationManagement.cc,v 3.50 2008/03/12 15:00:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -63,7 +63,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
     _fin_execution = false ;
 
-    _est_createur_federation = false ;
+    //_est_createur_federation = false ;
     _est_membre_federation = false ;
 
     _nom_federation = NULL ;
@@ -158,7 +158,7 @@ createFederationExecution(const char *theName,
             _nom_federation = new char[strlen(theName)+1] ;
             strcpy(_nom_federation, theName);
             _numero_federation = reponse.federation ;
-            _est_createur_federation = true ;
+            //_est_createur_federation = true ;
             D.Out(pdInit, "est createur");
             }
         else if (reponse.exception == e_CouldNotOpenFED)
@@ -234,7 +234,7 @@ destroyFederationExecution(const char *theName,
         if (reponse.exception == e_NO_EXCEPTION) {
             _nom_federation = NULL ;
             _numero_federation = 0 ;
-            _est_createur_federation = false ;
+            //_est_createur_federation = false ;
             _fin_execution = true ;
             // Now, remove temporary file (if not yet done)
             if ( _FEDid != NULL )
@@ -269,9 +269,6 @@ joinFederationExecution(const char *Federate,
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
 
     e = e_NO_EXCEPTION ;
-
-    if (_est_createur_federation && strcmp(Federation, _nom_federation))
-        e = e_RTIinternalError ;
 
     if (_est_membre_federation)
         e = e_FederateAlreadyExecutionMember ;
@@ -435,6 +432,8 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
     NetworkMessage msg ;
     TypeException exception = e_NO_EXCEPTION ;
 
+    G.Out(pdGendoc,"enter FederationManagement::resignFederationExecution");
+
     e = e_NO_EXCEPTION ;
 
     D.Out(pdInit, "Resign Federation.");
@@ -452,6 +451,7 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         msg.federation = _numero_federation ;
         msg.federate = federate ;
 
+        G.Out(pdGendoc,"      resignFederationExecution ===> send NMessage RFE to RTIG");
         comm->sendMessage(&msg);
 
         _est_membre_federation = false ;
@@ -468,9 +468,10 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
             }
 
         // BUG: Voir DestroyFederation ou ~GF.
-        if (!_est_createur_federation)
-            _fin_execution = true ;
+       // if (!_est_createur_federation)
+          //_fin_execution = true ;
     }
+    G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
 }
 
 // ----------------------------------------------------------------------------
@@ -1011,4 +1012,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.49 2008/03/10 10:55:54 rousse Exp $
+// $Id: FederationManagement.cc,v 3.50 2008/03/12 15:00:45 rousse Exp $
