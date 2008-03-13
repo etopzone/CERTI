@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.19 2008/03/05 15:33:50 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.20 2008/03/13 14:39:19 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -35,8 +35,9 @@ namespace rtia {
 class Communications ;
 class Queues ;
 class FederationManagement ;
+class TimeManagement ;
 
-class ObjectManagement
+class ObjectManagement 
 {
 
 public:
@@ -214,15 +215,18 @@ public:
 
     ObjectClassHandle getObjectClass(ObjectHandle);
 
+    TimeManagement *tm ;
+
 protected:
     Communications *comm ;
     Queues *queues ;
     FederationManagement *fm ;
     RootObject *rootObject ;
+
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.19 2008/03/05 15:33:50 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.20 2008/03/13 14:39:19 siron Exp $

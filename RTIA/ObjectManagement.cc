@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.35 2008/03/05 15:33:50 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.36 2008/03/13 14:39:18 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,7 @@
 #include "ObjectManagement.hh"
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
+#include "TimeManagement.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -57,6 +58,7 @@ ObjectManagement::ObjectManagement(Communications *GC,
       rootObject(theRootObj) { }
 
 ObjectManagement::~ObjectManagement() { }
+
 
 // ----------------------------------------------------------------------------
 //! registerObject
@@ -112,29 +114,36 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 {
     NetworkMessage req, rep ;
     int i ;
+    bool validCall ;
 
-    // Building request (req NetworkMessage)
-    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
-    req.object = theObjectHandle ;
-    req.date = theTime ;
-    // true for UAV with time
-    req.setBoolean(true);
+    validCall = tm->testValidTime(theTime) ;
+    if (validCall) {
 
-    req.handleArraySize = attribArraySize ;
+       // Building request (req NetworkMessage)
+       req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
+       req.federation = fm->_numero_federation ;
+       req.federate = fm->federate ;
+       req.object = theObjectHandle ;
+       req.date = theTime ;
+       // true for UAV with time
+       req.setBoolean(true);
 
-    for (i = 0 ; i < attribArraySize ; i++) {
-        req.handleArray[i] = attribArray[i] ;
-        req.setValue(i, valueArray[i].value, valueArray[i].length);
+       req.handleArraySize = attribArraySize ;
+
+       for (i = 0 ; i < attribArraySize ; i++) {
+           req.handleArray[i] = attribArray[i] ;
+           req.setValue(i, valueArray[i].value, valueArray[i].length);
+       }
+
+       strcpy(req.label, theTag);
+
+       comm->sendMessage(&req);
+       comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
+
+       e = rep.exception ;
     }
-
-    strcpy(req.label, theTag);
-
-    comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
-
-    e = rep.exception ;
+    else
+       e = e_InvalidFederationTime ;
 
     return rep.eventRetraction ;
 }
@@ -274,37 +283,46 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   TypeException &e)
 {
     NetworkMessage req, rep ;
-    G.Out(pdGendoc,"ObjectManagement::sendInteraction with time") ;
-    // Local test to know if interaction is correct.
-    rootObject->Interactions->isReady(fm->federate,
-                                      theInteraction,
-                                      paramArray,
-                                      paramArraySize);
+    bool validCall ;
 
-    // Building network message (req) to RTIG.
-    req.type = NetworkMessage::SEND_INTERACTION ;
-    req.interactionClass = theInteraction ;
-    // true for UAV with time
-    req.setBoolean(true);
-    req.date = theTime ;
-    req.region = region ;
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    validCall = tm->testValidTime(theTime) ;
+    if (validCall) {
 
-    req.handleArraySize = paramArraySize ;
+       G.Out(pdGendoc,"ObjectManagement::sendInteraction with time") ;
+       // Local test to know if interaction is correct.
+       rootObject->Interactions->isReady(fm->federate,
+                                         theInteraction,
+                                         paramArray,
+                                         paramArraySize);
 
-    for (int i=0 ; i<paramArraySize ; i++) {
-	req.handleArray[i] = paramArray[i] ;
-	req.setValue(i, valueArray[i].value, valueArray[i].length);
+       // Building network message (req) to RTIG.
+       req.type = NetworkMessage::SEND_INTERACTION ;
+       req.interactionClass = theInteraction ;
+       // true for UAV with time
+       req.setBoolean(true);
+       req.date = theTime ;
+       req.region = region ;
+       req.federation = fm->_numero_federation ;
+       req.federate = fm->federate ;
+
+       req.handleArraySize = paramArraySize ;
+
+       for (int i=0 ; i<paramArraySize ; i++) {
+	   req.handleArray[i] = paramArray[i] ;
+	   req.setValue(i, valueArray[i].value, valueArray[i].length);
+       }
+
+       strcpy(req.label, theTag);
+
+       // Send network message and then wait for answer.
+       comm->sendMessage(&req);
+       comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
+
+       e = rep.exception ;
+
     }
-
-    strcpy(req.label, theTag);
-
-    // Send network message and then wait for answer.
-    comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
-
-    e = rep.exception ;
+    else
+       e = e_InvalidFederationTime ;
 
     return rep.eventRetraction ;
 }
@@ -785,4 +803,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.35 2008/03/05 15:33:50 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.36 2008/03/13 14:39:18 siron Exp $

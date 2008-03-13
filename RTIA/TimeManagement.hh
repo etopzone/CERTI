@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.13 2008/02/26 08:56:10 siron Exp $
+// $Id: TimeManagement.hh,v 3.14 2008/03/13 14:39:19 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -58,8 +58,16 @@ class OwnershipManagement ;
 typedef enum {
     PAS_D_AVANCEE=1,
     TAR, // TimeAdvanceRequest
-    NER // NextEventRequest
+    NER, // NextEventRequest
+    TARA, // TimeAdvanceRequestAvailable
+    NERA // NextEventRequestAvailable
 } TypeAvancee ;
+
+typedef enum {
+    AFTER_TAR_OR_NER=1,
+    AFTER_TAR_OR_NER_WITH_ZERO_LK,
+    AFTER_TARA_OR_NERA
+} TypeGrantedState ;
 
 class TimeManagement : public LBTS
 {
@@ -73,8 +81,11 @@ public:
 
     // Advance Time Methods
     void nextEventRequest(FederationTime heure_logique, TypeException &e);
+    void nextEventRequestAvailable(FederationTime heure_logique, TypeException &e);
     bool tick(TypeException &e);
     void timeAdvanceRequest(FederationTime heure_logique, TypeException &e);
+    void timeAdvanceRequestAvailable(FederationTime heure_logique, TypeException &e);
+    bool testValidTime(FederationTime theTime);
 
     // Change Federate Time State
     void setLookahead(FederationTimeDelta lookahead, TypeException &e);
@@ -121,16 +132,18 @@ private:
     /// Type/date from last request (timeAdvance, nextEvent, flushQueue)
     TypeAvancee _avancee_en_cours ;
     FederationTime date_avancee ;
+    TypeGrantedState _type_granted_state ; 
 
     // Federate Data
     FederationTime _heure_courante ;
     FederationTimeDelta _lookahead_courant ;
     bool _est_regulateur ;
     bool _est_contraint ;
+
 };
 
 }} // namespace certi/rtia
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.13 2008/02/26 08:56:10 siron Exp $
+// $Id: TimeManagement.hh,v 3.14 2008/03/13 14:39:19 siron Exp $

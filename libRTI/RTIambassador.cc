@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.72 2008/03/05 15:33:51 rousse Exp $
+// $Id: RTIambassador.cc,v 3.73 2008/03/13 14:39:19 siron Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1729,8 +1729,6 @@ RTI::RTIambassador::timeAdvanceRequestAvailable(const FedTime& theTime)
 	   RTI::TimeAdvanceAlreadyInProgress, RTI::FederationTimeAlreadyPassed, 
 	   RTI::InvalidFederationTime)
 {
-    throw RTIinternalError("Unimplemented Service");
-
     Message req, rep ;
 
     req.type = Message::TIME_ADVANCE_REQUEST_AVAILABLE ;
@@ -1771,10 +1769,9 @@ RTI::RTIambassador::nextEventRequestAvailable(const FedTime& theTime)
 	   RTI::TimeAdvanceAlreadyInProgress, RTI::FederationTimeAlreadyPassed, 
 	   RTI::InvalidFederationTime)
 {
-    throw RTI::RTIinternalError("Unimplemented Service");
     Message req, rep ;
 
-    req.type = Message::NEXT_EVENT_REQUEST ;
+    req.type = Message::NEXT_EVENT_REQUEST_AVAILABLE ;
     req.setFedTime(theTime);
     privateRefs->executeService(&req, &rep);
 }
@@ -2912,4 +2909,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.72 2008/03/05 15:33:51 rousse Exp $
+// $Id: RTIambassador.cc,v 3.73 2008/03/13 14:39:19 siron Exp $

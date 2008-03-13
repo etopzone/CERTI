@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.13 2007/06/14 13:00:20 siron Exp $
+// $Id: RTIA.cc,v 3.14 2008/03/13 14:39:19 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,6 +53,7 @@ RTIA::RTIA()
 
     fm->tm = tm ;
     queues->fm = fm ;
+    om->tm = tm ;
 }
 
 // ----------------------------------------------------------------------------
@@ -160,4 +161,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.13 2007/06/14 13:00:20 siron Exp $
+// $Id: RTIA.cc,v 3.14 2008/03/13 14:39:19 siron Exp $

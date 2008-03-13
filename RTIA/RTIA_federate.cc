@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.67 2008/03/06 16:33:09 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.68 2008/03/13 14:39:19 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -696,11 +696,25 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         tm->timeAdvanceRequest(req->getFederationTime(), e);
         break ;
 
+      case Message::TIME_ADVANCE_REQUEST_AVAILABLE:
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type TimeAdvanceRequestAvailable.");
+
+        tm->timeAdvanceRequestAvailable(req->getFederationTime(), e);
+        break ;
+
       case Message::NEXT_EVENT_REQUEST:
         D.Out(pdTrace,
               "Receiving Message from Federate, type NestEventRequest.");
 
         tm->nextEventRequest(req->getFederationTime(), e);
+        break ;
+
+      case Message::NEXT_EVENT_REQUEST_AVAILABLE:
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type NestEventRequestAvailable.");
+
+        tm->nextEventRequestAvailable(req->getFederationTime(), e);
         break ;
 
       case Message::FLUSH_QUEUE_REQUEST:
@@ -1304,4 +1318,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.67 2008/03/06 16:33:09 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.68 2008/03/13 14:39:19 siron Exp $
