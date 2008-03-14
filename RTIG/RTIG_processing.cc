@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.57 2008/03/14 14:52:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -152,18 +152,49 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     federations.exists(federation, num_federation);
 
-    num_federe = federations.addFederate(num_federation,
+    try
+       {
+        num_federe = federations.addFederate(num_federation,
                                           federate,
                                           (SecureTCPSocket *) link);
+        }
+    catch (RTI::FederateAlreadyExecutionMember &e)
+        {
+        // Federate yet has joined this federation(same or another with same name)
+        // RTIG has to return something to RTIA
+        // RTIA waits a GET_FED_FILE message
+        // RTIG says not OK to RTIA in a GET_FED_FILE message
+        NetworkMessage repFED ;
+       repFED.type = NetworkMessage::GET_FED_FILE ;
+       repFED.exception = e_FederateAlreadyExecutionMember ;
+       strcpy(repFED.exceptionReason,"Federate with same name has yet joined the federation");
+
+       G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA GFF ERROR %s",repFED.exceptionReason);
+
+       repFED.write(link);
+
+       G.Out(pdGendoc,"exit RTIG::processJoinFederation on Error");
+       G.Out(pdGendoc,"END ** JOIN FEDERATION (BAD) SERVICE **");
+       // Prepare answer about JoinFederationExecution
+       NetworkMessage rep ;
+      rep.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
+      rep.exception = e_FederateAlreadyExecutionMember ;
+      strcpy(rep.exceptionReason,"Federate with same name has yet joined the federation");
+
+      G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason);
+
+      rep.write(link);
+      return ;
+       }               
 
 #ifdef FEDERATION_USES_MULTICAST
-    SocketMC *com_mc = NULL ;
+     SocketMC *com_mc = NULL ;
 
-    federations.info(num_federation, nb_federes, nb_regulateurs,
+     federations.info(num_federation, nb_federes, nb_regulateurs,
                       pause, com_mc);
-    assert(com_mc != NULL);
+     assert(com_mc != NULL);
 #else
-    filename = federations.info(num_federation, nb_federes, nb_regulateurs, pause);
+     filename = federations.info(num_federation, nb_federes, nb_regulateurs, pause);
 #endif
 
     // Store Federate <->Socket reference.
@@ -1404,4 +1435,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.57 2008/03/14 14:52:24 rousse Exp $

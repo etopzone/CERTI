@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.53 2008/02/28 14:47:58 rousse Exp $
+// $Id: FederationsList.cc,v 3.54 2008/03/14 14:52:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -100,13 +100,16 @@ FederationsList::addFederate(Handle handle,
     G.Out(pdGendoc,"enter FederationsList::addFederate");
 
     // It may throw RTIinternalError
+    // Verify integrity of the handle of the federation
     checkHandle(handle);
 
     // It may throw FederationExecutionDoesNotExist
+    // Return  federation address giving its handle
     Federation *federation = NULL ;
     searchFederation(handle, federation);
 
     // It may raise a bunch of exceptions
+    // adding the federate and return its handle
     FederateHandle federate = federation->add(name, tcp_link);
 
     G.Out(pdGendoc,"exit FederationsList::addFederate");
@@ -1557,5 +1560,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.53 2008/02/28 14:47:58 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.54 2008/03/14 14:52:24 rousse Exp $
 

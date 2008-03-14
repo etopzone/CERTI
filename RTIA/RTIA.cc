@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.14 2008/03/13 14:39:19 siron Exp $
+// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -62,6 +62,15 @@ RTIA::~RTIA()
 {
     // BUG: TCP link destroyed ?
 
+     // Remove temporary file (if not yet done)
+     if ( fm->_FEDid != NULL)
+        {
+        if ( fm->_FEDid[0] != '\0' )
+           {
+           std::remove(fm->_FEDid);
+           fm->_FEDid[0] = '\0' ;
+           }
+        }
     delete tm ;
     delete dm ;
     delete om ;
@@ -161,4 +170,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.14 2008/03/13 14:39:19 siron Exp $
+// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
