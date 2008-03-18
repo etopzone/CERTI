@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.51 2008/03/14 14:52:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.50.2.1 2008/03/18 15:55:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -114,7 +114,7 @@ createFederationExecution(const char *theName,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError)
 {
-    NetworkMessage requete, reponse ;
+    NetworkMessage requete;
 
     G.Out(pdGendoc,"enter FederationManagement::createFederationExecution");
     D.Out(pdInit, "Creating Federation %s.", theName);
@@ -136,59 +136,57 @@ createFederationExecution(const char *theName,
 
     if (e == e_NO_EXCEPTION)
         {
-        requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
-        requete.federationName = new char[strlen(theName)+1] ;
-        strcpy(requete.federationName, theName);
-        requete.FEDid = new char[strlen(_FEDid)+1] ;
-        strcpy(requete.FEDid, _FEDid) ;
+        requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;        
+        requete.federationName = theName;
+        requete.FEDid = _FEDid;        
 
         G.Out(pdGendoc,"createFederationExecution====>   send Message to RTIG");
 
         comm->sendMessage(&requete);
 
-        comm->waitMessage(&reponse, NetworkMessage::CREATE_FEDERATION_EXECUTION,
-                          federate);
+        std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::CREATE_FEDERATION_EXECUTION,
+                          federate));
 
         G.Out(pdGendoc,"createFederationExecution<== receive Message from RTIG");
 
         // We have to see if C_F_E is OK.
 
-        if (reponse.exception == e_NO_EXCEPTION)
+        if (reponse->exception == e_NO_EXCEPTION)
             {
             _nom_federation = new char[strlen(theName)+1] ;
             strcpy(_nom_federation, theName);
-            _numero_federation = reponse.federation ;
+            _numero_federation = reponse->federation ;
             //_est_createur_federation = true ;
             D.Out(pdInit, "est createur");
             }
-        else if (reponse.exception == e_CouldNotOpenFED)
+        else if (reponse->exception == e_CouldNotOpenFED)
             // RTIG encounters a problem creating federation execution
             {
-            e = reponse.exception;
+            e = reponse->exception;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
-            throw CouldNotOpenFED (reponse.exceptionReason) ;
+            throw CouldNotOpenFED (reponse->exceptionReason.c_str()) ;
             }           
-        else if (reponse.exception == e_FederationExecutionAlreadyExists)
+        else if (reponse->exception == e_FederationExecutionAlreadyExists)
             {
-            e = reponse.exception;
+            e = reponse->exception;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
-            throw FederationExecutionAlreadyExists (reponse.exceptionReason) ;
+            throw FederationExecutionAlreadyExists (reponse->exceptionReason.c_str()) ;
             }
-        else if (reponse.exception == e_ErrorReadingFED)
+        else if (reponse->exception == e_ErrorReadingFED)
             {
-            e = reponse.exception;
+            e = reponse->exception;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception ErrorReadingFED");
-            throw ErrorReadingFED (reponse.exceptionReason) ;
+            throw ErrorReadingFED (reponse->exceptionReason.c_str()) ;
             }
         else
             {
-            e = reponse.exception ;
+            e = reponse->exception ;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception RTIinternalError");
-            throw RTIinternalError (reponse.exceptionReason) ;
+            throw RTIinternalError (reponse->exceptionReason.c_str()) ;
             D.Out(pdInit, "deja cree");
             }
         }
@@ -205,7 +203,7 @@ FederationManagement::
 destroyFederationExecution(const char *theName,
                            TypeException &e)
 {
-    NetworkMessage requete, reponse ;
+    NetworkMessage requete;
 
     D.Out(pdInit, "Destroy Federation %s.", theName);
     G.Out(pdGendoc,"enter FederationManagement::destroyFederationExecution");
@@ -216,27 +214,23 @@ destroyFederationExecution(const char *theName,
     //if (strcmp(theName, _nom_federation))
     //    e = e_FederationExecutionDoesNotExist ;
 
-    if (e == e_NO_EXCEPTION)
-        {
+    if (e == e_NO_EXCEPTION) {
         requete.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
         requete.federation = _numero_federation ;
         requete.federate = federate ;
-        requete.federationName = new char[strlen(theName)+1] ;
-        strcpy(requete.federationName, theName);
+        requete.federationName = theName;        
 
         G.Out(pdGendoc,"destroyFederationExecution====>send Message to RTIG");
-
         comm->sendMessage(&requete);
 
-        comm->waitMessage(&reponse,
+        std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(
                           NetworkMessage::DESTROY_FEDERATION_EXECUTION,
-                          federate);
+                          federate));
 
-        if (reponse.exception == e_NO_EXCEPTION)
-            {
+        if (reponse->exception == e_NO_EXCEPTION) {
             _nom_federation = NULL ;
             _numero_federation = 0 ;
-            //_est_createur_federation = false ;
+            _est_createur_federation = false ;
             _fin_execution = true ;
             // Now, remove temporary file (if not yet done)
             if ( _FEDid != NULL )
@@ -247,11 +241,10 @@ destroyFederationExecution(const char *theName,
                    _FEDid[0] = '\0' ;
                    }
                }
-            }
+        }
         else
-            e = reponse.exception ;
+            e = reponse->exception ;
     }
-
 G.Out(pdGendoc,"exit  FederationManagement::destroyFederationExecution");
 }
 
@@ -263,7 +256,7 @@ joinFederationExecution(const char *Federate,
                         const char *Federation,
                         TypeException &e)
 {
-    NetworkMessage requete, reponse, requeteFED ;
+    NetworkMessage requete, requeteFED ;
     int i, nb ;
     char *filename ; // Needed for working file name
 
@@ -272,19 +265,16 @@ joinFederationExecution(const char *Federate,
 
     e = e_NO_EXCEPTION ;
 
-    // this federate, may be, has yet joined federation so don't disturb RTIG
-    if (_est_membre_federation)
-        {
-        e = e_FederateAlreadyExecutionMember ;
-        return(0);
-        }
+    if (_est_createur_federation && strcmp(Federation, _nom_federation))
+        e = e_RTIinternalError ;
 
-    if (e == e_NO_EXCEPTION)
-        {
+    if (_est_membre_federation)
+        e = e_FederateAlreadyExecutionMember ;
+
+    if (e == e_NO_EXCEPTION) {
         requete.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
-        requete.federationName = new char[strlen(Federation)+1] ;
-        strcpy(requete.federationName, Federation);
-        strcpy(requete.federateName, Federate);
+        requete.federationName = Federation;        
+        requete.federateName = Federate;
 
         requete.bestEffortAddress = comm->getAddress();
         requete.bestEffortPeer = comm->getPort();
@@ -294,17 +284,15 @@ joinFederationExecution(const char *Federate,
         comm->sendMessage(&requete);
 
         // Waiting RTIG answer for FED file opened
-        comm->waitMessage(&reponse, NetworkMessage::GET_FED_FILE, 0);
+        std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
 
-        if ( reponse.exception != e_NO_EXCEPTION)
+        if ( reponse->exception != e_NO_EXCEPTION)
             {
-            // Bad answer from RTIG, join has failed
-            // We will receive a JFE message with exception
-            e = reponse.exception ;
+            // Bad answer from RTIG
+            e = reponse->exception ;
             }
         else
             {
-            // Good answer from RTIG, we will get FED file
 	    stat->rtiService(NetworkMessage::GET_FED_FILE);
             // RTIA have to open a new file for working
             // We have to build a name for working file, name begins by _RTIA_ (6 char)
@@ -320,7 +308,7 @@ joinFederationExecution(const char *Federate,
             strcat(filename,Federation);
             // Last file type : fed or xml ?
    
-            string filename_RTIG = reponse.FEDid ;
+            string filename_RTIG = reponse->FEDid ;
             int nbcar_filename_RTIG=filename_RTIG.length();        
             string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
               if ( !strcasecmp(extension.c_str(),"fed") )
@@ -332,9 +320,7 @@ joinFederationExecution(const char *Federate,
                   strcat(filename,".xml");
                   } 
               else 
-                  {
                   throw CouldNotOpenFED("nor .fed nor .xml"); 
-                  }
             // FED filename for working must be stored
             _FEDid =  new char[strlen(filename)+1] ;
             strcpy(_FEDid,filename) ;              
@@ -345,9 +331,8 @@ joinFederationExecution(const char *Federate,
               
             // RTIA says RTIG OK for file transfer
             requeteFED.type = NetworkMessage::GET_FED_FILE ;
-            strcpy(requeteFED.federateName, Federate);
-            requeteFED.FEDid = new char[strlen(filename)+1] ;
-            strcpy(requeteFED.FEDid,filename) ;
+            requeteFED.federateName = Federate;
+            requeteFED.FEDid = filename;            
             if ( e == e_NO_EXCEPTION)
                 requeteFED.number = 0 ;  // OK for open
             else
@@ -360,11 +345,11 @@ joinFederationExecution(const char *Federate,
             // Now read loop from RTIG to get line contents and then write it into file
             char *file_line = NULL ;
             unsigned long length=0 ;
-            int num_line = 0 ; // no line read
+            int num_line = 0 ; // no line read            
             for (;;)
-                {
-                comm->waitMessage(&reponse, NetworkMessage::GET_FED_FILE, 0);
-                if ( reponse.exception != e_NO_EXCEPTION)
+                {            	
+                reponse.reset(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
+                if ( reponse->exception != e_NO_EXCEPTION)
                     {
                     cout << "Bad answer from RTIG" << endl ;
                     e = e_RTIinternalError ;
@@ -374,62 +359,59 @@ joinFederationExecution(const char *Federate,
                 // Line read
                 num_line++ ;
                 // Check for EOF
-                if ( reponse.number == 0 )
+                if ( reponse->number == 0 )
                     break;
-                assert ( num_line == reponse.number ) ;
-                reponse.handleArraySize = 1 ;
-                file_line = reponse.getValue(0,&length) ;
+                assert ( num_line == reponse->number ) ;
+                reponse->handleArraySize = 1 ;
+                file_line = reponse->getValue(0,&length) ;
                 int nbw = fputs(file_line,fdd);
                 file_line = NULL ;
                 // RTIA says OK to RTIG
                 requeteFED.type = NetworkMessage::GET_FED_FILE ;
-                strcpy(requeteFED.federateName, Federate);
+                requeteFED.federateName =Federate;
                 requeteFED.number = num_line ; 
-                requeteFED.FEDid = new char[strlen(filename)+1] ;
-                strcpy(requeteFED.FEDid,filename) ; 
+                requeteFED.FEDid = filename;
 
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file
             fclose(fdd); 
-            G.Out(pdGendoc,"joinFederationExecution====> end FED file get from RTIG");
-            }
-       
-            // Waiting RTIG answer (from any federate)
-            // We always receive an answer JFE message from RTIG
-            comm->waitMessage(&reponse, NetworkMessage::JOIN_FEDERATION_EXECUTION, 0);
+            }                          
+ 
+        G.Out(pdGendoc,"joinFederationExecution====> end FED file get from RTIG"); 
+          
+         // Waiting RTIG answer (from any federate)
+        reponse.reset(comm->waitMessage(NetworkMessage::JOIN_FEDERATION_EXECUTION, 0));
 
-            // If OK, regulators number is inside the answer.
-            // Then we except a NULL message from each.
-            if (reponse.exception == e_NO_EXCEPTION)
-                {
-                _nom_federation = new char[strlen(Federation)+1] ;
-                strcpy(_nom_federation, Federation);
-                strcpy(_nom_federe, Federate);
-                _numero_federation = reponse.federation ;
-                federate = reponse.federate ;
-                tm->setFederate(reponse.federate);
+        // If OK, regulators number is inside the answer.
+        // Then we except a NULL message from each.
+        if (reponse->exception == e_NO_EXCEPTION) {
+            _nom_federation = new char[strlen(Federation)+1] ;
+            strcpy(_nom_federation, Federation);
+            strcpy(_nom_federe, Federate);
+            _numero_federation = reponse->federation ;
+            federate = reponse->federate ;
+            tm->setFederate(reponse->federate);
 
 #ifdef FEDERATION_USES_MULTICAST
-                // creation du socket pour la communication best-effort
-                comm->CreerSocketMC(reponse.AdresseMulticast, MC_PORT);
+            // creation du socket pour la communication best-effort
+            comm->CreerSocketMC(reponse->AdresseMulticast, MC_PORT);
 #endif
 
-                nb = reponse.numberOfRegulators ;
-                for (i=0 ; i<nb ; i++)
-                    {
-                    comm->waitMessage(&reponse, NetworkMessage::MESSAGE_NULL, 0);
-                    assert(tm != NULL);
-                    tm->insert(reponse.federate, reponse.date);
-                    }
-                _est_membre_federation = true ;
-                G.Out(pdGendoc,"exit(%d) FederationManagement::joinFederationExecution",federate);
-                return(federate);
-                }
-            else
-                 {e = reponse.exception ;}
+            nb = reponse->numberOfRegulators ;
+            for (i=0 ; i<nb ; i++) {
+                reponse.reset(comm->waitMessage(NetworkMessage::MESSAGE_NULL, 0));
+                assert(tm != NULL);
+                tm->insert(reponse->federate, reponse->date);
             }
- 
+
+            _est_membre_federation = true ;
+            G.Out(pdGendoc,"exit(%d) FederationManagement::joinFederationExecution",federate);
+            return(federate);
+        }
+        else
+            e = reponse->exception ;
+    }
     G.Out(pdGendoc,"exit(0) FederationManagement::joinFederationExecution");
     return(0);
 }
@@ -444,8 +426,6 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
 {
     NetworkMessage msg ;
     TypeException exception = e_NO_EXCEPTION ;
-
-    G.Out(pdGendoc,"enter FederationManagement::resignFederationExecution");
 
     e = e_NO_EXCEPTION ;
 
@@ -464,7 +444,6 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         msg.federation = _numero_federation ;
         msg.federate = federate ;
 
-        G.Out(pdGendoc,"      resignFederationExecution ===> send NMessage RFE to RTIG");
         comm->sendMessage(&msg);
 
         _est_membre_federation = false ;
@@ -481,10 +460,9 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
             }
 
         // BUG: Voir DestroyFederation ou ~GF.
-       // if (!_est_createur_federation)
-          //_fin_execution = true ;
+        if (!_est_createur_federation)
+            _fin_execution = true ;
     }
-    G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
 }
 
 // ----------------------------------------------------------------------------
@@ -1025,4 +1003,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.51 2008/03/14 14:52:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.50.2.1 2008/03/18 15:55:57 erk Exp $

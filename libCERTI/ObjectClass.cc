@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.41 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClass.cc,v 3.41.2.1 2008/03/18 15:55:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -28,6 +28,7 @@
 #include  "ObjectClassAttribute.hh"
 #include  "ObjectClassSet.hh"
 #include  "ObjectClassBroadcastList.hh"
+#include  "NM_Classes.hh"
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
@@ -238,7 +239,7 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
             answer.federate = theFederate ;
             answer.exception = e_NO_EXCEPTION ;
             answer.object = theObjectHandle ;
-            strcpy(answer.label, theTag);
+            answer.label = theTag;
 
             int index = 0 ;
             for (int j = i ; j < nbAttributes ; j++) {
@@ -356,8 +357,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
               "Object %u deleted in class %u, now broadcasting...",
               the_object, handle);
 
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::REMOVE_OBJECT ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);        
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
@@ -368,7 +368,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         answer->date = theTime ;
         answer->boolean = true ;
         
-	strcpy(answer->label, the_tag);
+	answer->label = the_tag;
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
         broadcastClassMessage(ocbList);
@@ -438,7 +438,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         answer->date = 0 ;
         answer->boolean = false ;
         
-	strcpy(answer->label, the_tag);
+	answer->label = the_tag;
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
         broadcastClassMessage(ocbList);
@@ -798,7 +798,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    NetworkMessage message ;
 	    D.Out(pdInit,
 		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-		  federate, (*o)->getHandle(), handle, message.label);
+		  federate, (*o)->getHandle(), handle, message.label.c_str());
 	    
 	    message.type = NetworkMessage::DISCOVER_OBJECT ;
 	    message.federation = server->federation();
@@ -915,7 +915,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         answer->date = the_time ;
         answer->boolean = true ;
 
-        strcpy(answer->label, the_tag);
+        answer->label = the_tag;
 
         answer->handleArraySize = the_size ;
 
@@ -980,7 +980,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         answer->date = 0 ;
         answer->boolean = false ;
 
-        strcpy(answer->label, the_tag);
+        answer->label = the_tag;
 
         answer->handleArraySize = the_size ;
 
@@ -1120,7 +1120,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerDivestiture.federate = theFederateHandle ;
             AnswerDivestiture.exception = e_NO_EXCEPTION ;
             AnswerDivestiture.object = theObjectHandle ;
-            strcpy(AnswerDivestiture.label, "\0");
+            AnswerDivestiture.label =  std::string("");
             AnswerDivestiture.handleArraySize = compteur_divestiture ;
 
             sendToFederate(&AnswerDivestiture, theFederateHandle);
@@ -1132,7 +1132,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
             AnswerAssumption->object = theObjectHandle ;
-            strcpy(AnswerAssumption->label, theTag);
+            AnswerAssumption->label  = theTag;
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
@@ -1389,7 +1389,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
             AnswerAssumption->object = theObjectHandle ;
-            strcpy(AnswerAssumption->label, "\0");
+            AnswerAssumption->label = std::string("");
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
@@ -1829,4 +1829,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.41 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClass.cc,v 3.41.2.1 2008/03/18 15:55:55 erk Exp $

@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.7 2007/06/22 08:51:36 erk Exp $
+// $Id: BasicMessage.hh,v 3.7.2.1 2008/03/18 15:55:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
 #define LIBCERTI_BASIC_MESSAGE
 
 #include "Extent.hh"
-#include "MessageBody.hh"
+#include "MessageBuffer.hh"
 #include "BaseRegion.hh"
 #include <vector>
 
@@ -47,22 +47,21 @@ public:
     void setRegions(const BaseRegion **, int);
     void setRegions(const std::vector<RegionHandle> &);
     const std::vector<RegionHandle> &getRegions() const ;
-
-	 virtual void trace(const char* context)=0;
 	 
 protected:
-    void readExtents(const MessageBody &);
-    void writeExtents(MessageBody &) const ;
+    void readExtents();
+    void writeExtents() ;
 
-    void readRegions(const MessageBody &body);
-    void writeRegions(MessageBody &body);
+    void readRegions();
+    void writeRegions();
 
     std::vector<Extent> extents ;
     std::vector<RegionHandle> regions ;
+    MessageBuffer msgBuf;
 };
 
 } // namespace certi
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.7 2007/06/22 08:51:36 erk Exp $
+// $Id: BasicMessage.hh,v 3.7.2.1 2008/03/18 15:55:56 erk Exp $

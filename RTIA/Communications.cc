@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.cc,v 3.22.2.1 2008/03/18 15:55:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -54,48 +54,39 @@ static pdCDebug D("RTIA_COMM", "(RTIA Comm) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
-/*! Wait a message coming from RTIG. Parameters are :
-  1- Returned message,
-  2- Message type expected,
-  3- Federate which sent the message, 0 if indifferent.
-*/
-void Communications::waitMessage(NetworkMessage *msg,
+
+NetworkMessage* Communications::waitMessage(
                                  NetworkMessage::Type type_msg,
                                  FederateHandle numeroFedere)
-{
-    NetworkMessage *tampon ;
-
-    assert(type_msg > 0 && type_msg < 100);
-
+{    
+    assert(type_msg > 0 && type_msg < NetworkMessage::LAST);
+    NetworkMessage *msg = NULL;
+    
     D.Out(pdProtocol, "Waiting for Message of Type %d.", type_msg);
 
-    // Does a new message has arrived ?
-    if (searchMessage(type_msg, numeroFedere, msg))
-        return ;
+    // Does a new message of the expected type has arrived ?
+    if (searchMessage(type_msg, numeroFedere, &msg))
+        return msg;
 
     // Otherwise, wait for a message with same type than expected and with
     // same federate number.
-    tampon = new NetworkMessage ;
-    tampon->read((SecureTCPSocket *)this);
+    msg = new NetworkMessage();
+    msg->read((SecureTCPSocket *)this);
 
     D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
 
-    while ((tampon->type != type_msg) ||
-           ((numeroFedere != 0) && (tampon->federate != numeroFedere))) {
-        waitingList.push_back(tampon);
-        tampon = new NetworkMessage ;
-        tampon->read((SecureTCPSocket *) this);
-
+    while ((msg->type != type_msg) ||
+           ((numeroFedere != 0) && (msg->federate != numeroFedere))) {
+        waitingList.push_back(msg);
+        msg = new NetworkMessage();
+        msg->read((SecureTCPSocket *) this);
         D.Out(pdProtocol, "Message of Type %d has arrived.", type_msg);
     }
-
-    // BUG: Should use copy operator.
-    memcpy((void *) msg, (void *) tampon, sizeof(NetworkMessage));
-    delete tampon ;
-
+    
     assert(msg != NULL);
     assert(msg->type == type_msg);
-}
+    return msg;
+} /* end of waitMessage */
 
 // ----------------------------------------------------------------------------
 //! Communications.
@@ -180,7 +171,7 @@ Communications::getPort()
   Returns the actual source in the 1st parameter (RTIG=>1 federate=>2)
 */
 void
-Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
+Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg)
 {
     const int tcp_fd(SecureTCPSocket::returnSocket());
     const int udp_fd(SocketUDP::returnSocket());
@@ -212,30 +203,30 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 #endif
 
     if (!waitingList.empty()) {
-        // One message is in waiting buffer.
-        NetworkMessage *msg2 ;
-        msg2 = waitingList.front();
-        waitingList.pop_front();
-        memcpy(msg_reseau, msg2, TAILLE_MSG_RESEAU);
-        delete msg2 ;
+        // One message is in waiting buffer.        
+        *msg_reseau = waitingList.front();
+        waitingList.pop_front();                
         n = 1 ;
     }
     else if (SecureTCPSocket::isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
-        msg_reseau->read((SecureTCPSocket *) this);
+    	*msg_reseau = new NetworkMessage();
+        (*msg_reseau)->read((SecureTCPSocket *) this);
         n = 1 ;
     }
     else if (SocketUDP::isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
-        msg_reseau->read((SocketUDP *) this);
+    	*msg_reseau = new NetworkMessage();
+        (*msg_reseau)->read((SocketUDP *) this);
         n = 1 ;
     }
     else if (SocketUN::isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
-        msg->read((SocketUN *) this);
+    	(*msg) = new Message();
+        (*msg)->read((SocketUN *) this);
         n = 2 ;
     }
     else {
@@ -246,10 +237,13 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 				 if(WSAGetLastError() == WSAEINTR)
 			#else
 				 if(errno == EINTR)
-			#endif
-                throw NetworkSignal("");
-				else
-                throw NetworkError("");
+			#endif 
+			    {
+                throw NetworkSignal("EINTR on select");
+                }
+				else {
+                 throw NetworkError("Unexpected errno on select");
+				}
         }
 
         // At least one message has been received, read this message.
@@ -260,25 +254,28 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 
         if (_est_init_mc && FD_ISSET(_socket_mc, &fdset)) {
             // Read a message coming from the multicast link.
-            receiveMC(msg_reseau);
+            receiveMC(*msg_reseau);
             n = 1 ;
         }
 #endif
 
         if (FD_ISSET(SecureTCPSocket::returnSocket(), &fdset)) {
             // Read a message coming from the TCP link with RTIG.
-            msg_reseau->read((SecureTCPSocket *) this);
+        	(*msg_reseau) = new NetworkMessage();
+            (*msg_reseau)->read((SecureTCPSocket *) this);
             n = 1 ;
         }
         else if (FD_ISSET(SocketUDP::returnSocket(), &fdset)) {
             // Read a message coming from the UDP link with RTIG.
-            msg_reseau->read((SocketUDP *) this);
+        	(*msg_reseau) = new NetworkMessage();
+        	(*msg_reseau)->read((SocketUDP *) this);
             n = 1 ;
         }
         else {
             // Read a message coming from the federate.
             assert(FD_ISSET(_socket_un, &fdset));
-            receiveUN(msg);
+            (*msg) = new Message();
+            receiveUN(*msg);
             n = 2 ;
         }
     }
@@ -293,7 +290,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
 bool
 Communications::searchMessage(NetworkMessage::Type type_msg,
                               FederateHandle numeroFedere,
-                              NetworkMessage *msg)
+                              NetworkMessage **msg)
 {
     list<NetworkMessage *>::iterator i ;
     for (i = waitingList.begin(); i != waitingList.end(); i++) {
@@ -303,8 +300,7 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
         if ((*i)->type == type_msg) {
             // if numeroFedere != 0, verify that federateNumbers are similar
             if (((*i)->federate == numeroFedere) || (numeroFedere == 0)) {
-                memcpy(msg, (*i), TAILLE_MSG_RESEAU);
-                delete (*i);
+            	*msg = *i;                                
                 waitingList.erase(i);
                 D.Out(pdProtocol,
                       "Message of Type %d was already here.",
@@ -339,4 +335,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.cc,v 3.22.2.1 2008/03/18 15:55:57 erk Exp $

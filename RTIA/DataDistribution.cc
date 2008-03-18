@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.23 2007/11/29 16:51:15 rousse Exp $
+// $Id: DataDistribution.cc,v 3.23.2.1 2008/03/18 15:55:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -35,6 +35,7 @@
 #include "FedRegion.hh"
 
 #include <cassert>
+#include <memory>
 
 using std::string ;
 using std::endl ;
@@ -122,8 +123,7 @@ DataDistribution::createRegion(SpaceHandle space,
     throw (SpaceNotDefined)
 {
     D[pdDebug] << "Start creating region in space " << space << "..." << endl ;
-
-    NetworkMessage req, rep ;
+    NetworkMessage req;    
 
     req.type = NetworkMessage::DDM_CREATE_REGION ;
     req.federation = fm->_numero_federation ;
@@ -132,23 +132,23 @@ DataDistribution::createRegion(SpaceHandle space,
     req.nbExtents = nb_extents ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_CREATE_REGION, req.federate);
-    e = rep.exception ;
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.federate));
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
-	D[pdDebug] << "Create region " << rep.region << endl ;
-        RTIRegion *region = new RTIRegion(rep.region,
+	D[pdDebug] << "Create region " << rep->region << endl ;
+        RTIRegion *region = new RTIRegion(rep->region,
 					  rootObject->getRoutingSpace(space),
 					  nb_extents);
 
 	assert(region->getNumberOfExtents() == nb_extents);
         rootObject->addRegion(region);
-
-        return rep.region ;
+        return rep->region;
     }
-    else
+    else {
         return 0 ;
-}
+    }
+} /* end of createRegion */
 
 // ----------------------------------------------------------------------------
 // modifyRegion
@@ -164,7 +164,8 @@ DataDistribution::modifyRegion(RegionHandle handle,
     RTIRegion *region = rootObject->getRegion(handle);
 
     // Request to RTIG
-    NetworkMessage req, rep ;
+    NetworkMessage req;
+    
     req.type = NetworkMessage::DDM_MODIFY_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -172,14 +173,14 @@ DataDistribution::modifyRegion(RegionHandle handle,
     req.setExtents(extents);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_MODIFY_REGION, req.federate);
-    e = rep.exception ;
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.federate));    
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
 	region->replaceExtents(extents);	
 	D[pdDebug] << "Modified region " << handle << endl ;
-    }
-}
+    }        
+} /* end of modifyRegion */
 
 // ----------------------------------------------------------------------------
 // deleteRegion
@@ -194,7 +195,7 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     rootObject->getRegion(handle);
 
     // Request to RTIG
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_DELETE_REGION ;
     req.federation = fm->_numero_federation ;
@@ -202,14 +203,14 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     req.region = handle ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_DELETE_REGION, req.federate);
-    e = rep.exception ;
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.federate));
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteRegion(handle);
         D[pdDebug] << "Deleted region " << handle << endl ;
     }
-}
+} /* end of deleteRegion */
 
 // ----------------------------------------------------------------------------
 void
@@ -231,7 +232,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 	rootObject->getObjectAttribute(object, attr[i])->associate(r);	
     }
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
     req.federation = fm->_numero_federation ;
@@ -241,11 +242,11 @@ DataDistribution::associateRegion(ObjectHandle object,
     req.setAHS(attr, nb);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_ASSOCIATE_REGION,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.federate));
 
-    e = rep.exception ;
-}
+    e = rep->exception ;
+    
+} /* end of associateRegion */
 
 // ----------------------------------------------------------------------------
 ObjectHandle
@@ -259,7 +260,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     D[pdDebug] << "Register object of class " << class_handle << " with "
 	       << regions.size() << " region(s)." << std::endl ;
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;    
 
     req.type = NetworkMessage::DDM_REGISTER_OBJECT ;
     req.federation = fm->_numero_federation ;
@@ -270,26 +271,25 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     req.setRegions(regions);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_REGISTER_OBJECT,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_REGISTER_OBJECT,req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
-        rootObject->registerObjectInstance(fm->federate, class_handle, rep.object,
-                                           rep.label);
+        rootObject->registerObjectInstance(fm->federate, class_handle, rep->object,
+                                           rep->label.c_str());
 	for (int i = 0 ; i < nb ; ++i) {
 	    D[pdDebug] << "Register attribute [" << i << "] Attr: " << attrs[i]
 		       << " Region: " << regions[i] << std::endl ;
 		
-	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep.object, attrs[i]);
+	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep->object, attrs[i]);
 	    RTIRegion *region = rootObject->getRegion(regions[i]);
 	    attribute->associate(region);
 	}
-        return rep.object ;
+	    return rep->object;	    
     }
     else return 0 ;
-}
+} /* end of registerObject */
 
 // ----------------------------------------------------------------------------
 void
@@ -304,7 +304,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 
     rootObject->getObject(object)->unassociate(r);
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_UNASSOCIATE_REGION ;
     req.federation = fm->_numero_federation ;
@@ -313,11 +313,11 @@ DataDistribution::unassociateRegion(ObjectHandle object,
     req.region = region ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_UNASSOCIATE_REGION,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNASSOCIATE_REGION,
+		      req.federate));
 
-   e = rep.exception ;
-}
+   e = rep->exception ;
+} /* end of unassociateRegion */
 
 // ----------------------------------------------------------------------------
 void
@@ -331,7 +331,7 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
     D[pdDebug] << "Subscribe attributes with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
     req.federation = fm->_numero_federation ;
@@ -341,11 +341,11 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
     req.setAHS(attr, nb);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
+		      req.federate));
 
-    e = rep.exception ;
-}
+    e = rep->exception ;
+} /* end of subscribe */
 
 // ----------------------------------------------------------------------------
 void
@@ -358,7 +358,7 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 	       << " with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
     req.federation = fm->_numero_federation ;
@@ -367,11 +367,11 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
     req.region = region ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
+		      req.federate));
 
-    e = rep.exception ;
-}
+    e = rep->exception ;
+} /* end of unsubscribeAttributes */
 
 // ----------------------------------------------------------------------------
 void
@@ -383,18 +383,18 @@ DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
     D[pdDebug] << "Subscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION ;
     req.interactionClass = int_class ;
     req.region = region ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
-		      req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
+		      req.federate));
 
-    e = rep.exception ;
-}
+    e = rep->exception ;
+} /* end of subscribeInteraction */
 
 // ----------------------------------------------------------------------------
 void
@@ -406,19 +406,19 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
     D[pdDebug] << "Unsubscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req, rep ;
+    NetworkMessage req;
 
     req.type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION ;
     req.interactionClass = int_class ;
     req.region = region ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
-		      req.federate);
+    std::auto_ptr<NetworkMessage>  rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
+		      req.federate));
 
-    e = rep.exception ;
-}
+    e = rep->exception ;
+} /* end of unsubscribeInteraction */
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.23 2007/11/29 16:51:15 rousse Exp $
+// $Id: DataDistribution.cc,v 3.23.2.1 2008/03/18 15:55:57 erk Exp $

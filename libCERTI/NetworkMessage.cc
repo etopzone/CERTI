@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28 2008/02/15 14:16:20 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.1 2008/03/18 15:55:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,39 +32,6 @@ using std::vector ;
 
 namespace certi {
 static PrettyDebug G("GENDOC",__FILE__);
-// ----------------------------------------------------------------------------
-void
-NetworkMessage::display(const char *s)
-{
-    printf(" -- NETWORK MESSAGE - %s -", s);
-    if ( type == CREATE_FEDERATION_EXECUTION )
-        printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s :"
-               " federateHandle %d : federationHandle %d\n",federationName,FEDid,federate,federation);
-    if ( type == DESTROY_FEDERATION_EXECUTION )
-      printf("DESTROY_FEDERATION_EXECUTION : federationName %s : federate %d : federationHandle %d\n",
-             ((federationName==NULL)?"empty":federationName),federate,federation) ;
-    else if (type == JOIN_FEDERATION_EXECUTION )
-        printf("JOIN_FEDERATION_EXECUTION : federation %s : federate %s \n",federationName,federateName);
-    else if (type == FEDERATE_RESTORE_COMPLETE )
-        printf("FEDERATE_RESTORE_COMPLETE : federationHandle %d : federatehandle %d \n",federation,federate);
-    else if (type == FEDERATE_SAVE_COMPLETE )
-        printf("FEDERATE_SAVE_COMPLETE : federationHandle %d : federatehandle %d \n",federation,federate);
-    else if (type == GET_FED_FILE ) 
-        printf("GET_FED_FILE : number %ld\n",number) ;
-    else
-        printf(" type = %d\n", type);
-        
-    printf(" number = %ld-%d", federate, number);
-    printf(" date = %f ", date);
-    if (exception == 0 )
-        printf("NO_EXCEPTION ");
-    else
-        printf(" exception=%d: ",exception);
-    printf(" ObjectHandle = %ld\n", objectClass);
-    printf(" interactionClass= %ld\n", interactionClass);
-    printf(" object = %ld\n", object);
-    printf(" handleArraySize = %d\n", handleArraySize);
-}
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
@@ -77,10 +44,10 @@ NetworkMessage::NetworkMessage()
     federation = 0 ;
     federate = 0 ;
 
-    federationName = NULL ;
+    federationName = std::string("") ;
     federateName[0] = '\0' ;
     label[0] = '\0' ;
-    FEDid = NULL ;
+    FEDid = std::string("") ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
@@ -101,7 +68,10 @@ NetworkMessage::NetworkMessage()
         ValueArray[i].length = 0 ;
         ValueArray[i].value[0]  = '\0' ;
         }
+}
 
+NetworkMessage::~NetworkMessage() {
+	
 }
 
 // ----------------------------------------------------------------------------
@@ -286,40 +256,31 @@ NetworkMessage::setBoolean(bool the_bool)
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::readLabel(MessageBody &body)
+NetworkMessage::readLabel()
 {
-    body.readString(label, MAX_USER_TAG_LENGTH);
+    label = msgBuf.read_string();
 }
 
 // ----------------------------------------------------------------------------
 //! Read the tag contained into the message.
-void NetworkMessage::readTag(MessageBody &body)
+void NetworkMessage::readTag()
 {
-    body.readString(tag, MAX_USER_TAG_LENGTH);
+    tag = msgBuf.read_string();
 }
 
 // ----------------------------------------------------------------------------
 //! Read the federation name.
 void
-NetworkMessage::readFederationName(MessageBody &body)
-{
-    short federationNameSize ;
-
-    federationNameSize = body.readShortInt() ;
-    federationName = new char[federationNameSize+1] ;
-    if ( federationNameSize == 0 )
-        {
-        federationName[0] = '\0' ;
-        }
-    else
-        body.readString(federationName,federationNameSize);    
+NetworkMessage::readFederationName()
+{ 
+    federationName = msgBuf.read_string();
 }
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::readFederateName(MessageBody &body)
+NetworkMessage::readFederateName()
 {
-    body.readString(federateName, MAX_FEDERATE_NAME_LENGTH);
+    federateName = msgBuf.read_string();
 }
 
 // ----------------------------------------------------------------------------
@@ -329,40 +290,31 @@ void
 NetworkMessage::setFEDid(const char *NewFEDid)
 {
     assert ( NewFEDid != NULL) ;
-    FEDid = new char[strlen(NewFEDid)+1] ;
-    strcpy(FEDid, NewFEDid);
+    FEDid = std::string(NewFEDid);  
 }
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::readFEDid(MessageBody &body)
-{
-    short FEDidSize ;
-    FEDidSize = body.readShortInt() ;
-    FEDid = new char[FEDidSize+1] ;
-    if ( FEDidSize == 0 )
-        FEDid[0] = '\0' ;
-    else
-        body.readString(FEDid,FEDidSize);
-}
-
-// ---------------------------------------------------------------
-void
-NetworkMessage::writeFEDid(MessageBody &body)
-{
-    body.writeShortInt(strlen(FEDid));
-    body.writeString(FEDid);
-}
-
-// ---------------------------------------------------------------
-void
-NetworkMessage::writeFederationName(MessageBody &body)
+NetworkMessage::readFEDid()
 { 
-    assert(federationName != NULL) ;  
-    body.writeShortInt(strlen(federationName));
-    body.writeString(federationName);
+    FEDid = msgBuf.read_string();    
+}
+
+// ---------------------------------------------------------------
+void
+NetworkMessage::writeFEDid()
+{    
+    msgBuf.write_string(FEDid);
+}
+
+// ---------------------------------------------------------------
+void
+NetworkMessage::writeFederationName()
+{ 
+    assert(federationName.length() > 0) ;      
+    msgBuf.write_string(federationName);
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28 2008/02/15 14:16:20 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.1 2008/03/18 15:55:56 erk Exp $

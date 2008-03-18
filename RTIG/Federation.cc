@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
+// $Id: Federation.cc,v 3.80.2.1 2008/03/18 15:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,6 +41,7 @@
 #include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -1108,11 +1109,8 @@ Federation::requestFederationRestore(FederateHandle the_federate,
         throw RestoreInProgress("Already in restoring state.");
 
     Socket * socket ;
-
-    NetworkMessage * msg = new NetworkMessage ;
-    msg->federate = the_federate ;
-    msg->federation = handle ;
-    msg->setLabel(the_label);
+    NetworkMessage *msg;
+    
 
     // Informs sending federate of success/failure in restoring.
     // At this point, only verify that file is present.
@@ -1137,9 +1135,15 @@ Federation::requestFederationRestore(FederateHandle the_federate,
 // JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
     success = true ;
 
-    msg->type = success ?
-        NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
-        : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED ;
+    if (success) {
+    	msg = NM_Factory::create(NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED);
+    } else {
+    	msg = NM_Factory::create(NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
+    }
+    
+    msg->federate = the_federate ;
+    msg->federation = handle ;
+    msg->setLabel(the_label);
 
     socket = server->getSocketLink(msg->federate);
 
@@ -1166,10 +1170,9 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     restoreInProgress = true ;
 
     // Informs federates a new restore is being done.
-    msg = new NetworkMessage ;
+    msg = NM_Factory::create(NetworkMessage::FEDERATION_RESTORE_BEGUN);
     msg->federate = the_federate ;
-    msg->federation = handle ;
-    msg->type = NetworkMessage::FEDERATION_RESTORE_BEGUN ;
+    msg->federation = handle ;    
 
     G.Out(pdGendoc,"             =====> broadcast message F_R_B");
 
@@ -1177,10 +1180,9 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     delete msg ;
 
     // For each federate, send an initiateFederateRestore with correct handle.
-    msg = new NetworkMessage ;
+    msg = NM_Factory::create(NetworkMessage::INITIATE_FEDERATE_RESTORE);
     msg->federation = handle ;
-    msg->setLabel(the_label);
-    msg->type = NetworkMessage::INITIATE_FEDERATE_RESTORE ;
+    msg->setLabel(the_label);   
 
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
         msg->federate = i->getHandle();
@@ -2302,5 +2304,5 @@ NetworkMessage mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
+// $Id: Federation.cc,v 3.80.2.1 2008/03/18 15:55:58 erk Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.69 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.67.2.1 2008/03/18 15:55:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -92,8 +92,7 @@ G.Out(pdGendoc,"exit  RTIA::saveAndRestoreStatus");
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
-       throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED,
-              FederateAlreadyExecutionMember)
+       throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED)
 {
     G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->type);
 
@@ -138,68 +137,59 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           rep.setFederate(fm->joinFederationExecution(req->getFederateName(),
                                                       req->getFederationName(),
                                                       e));
-          if ( e == e_NO_EXCEPTION )              
+          /// Set RTIA PrettyDebug federate name
+          PrettyDebug::setFederateName(req->getFederateName());
+          // Set federation name for the answer message (rep)
+          rep.setFederationName(req->getFederationName());
+
+          string filename = fm->_FEDid ;
+          int nbcar_filename=filename.length();
+          bool is_a_fed = false ;
+          bool is_an_xml = false ;
+
+          // Hope there is a . before fed or xml
+          if ( filename.at(nbcar_filename-4) != '.' )
+              throw CouldNotOpenFED(". missing or not in place");
+
+          string extension = filename.substr(nbcar_filename-3,3) ;
+          if ( !strcasecmp(extension.c_str(),"fed") )
               {
-              /// Set RTIA PrettyDebug federate name
-              PrettyDebug::setFederateName(req->getFederateName());
-              // Set federation name for the answer message (rep)
-              rep.setFederationName(req->getFederationName());
-
-              string filename = fm->_FEDid ;
-              int nbcar_filename=filename.length();
-              bool is_a_fed = false ;
-              bool is_an_xml = false ;
-
-              // Hope there is a . before fed or xml
-              if ( filename.at(nbcar_filename-4) != '.' )
-                  throw CouldNotOpenFED(". missing or not in place");
-
-              string extension = filename.substr(nbcar_filename-3,3) ;
-              if ( !strcasecmp(extension.c_str(),"fed") )
-                  {
-                  is_a_fed = true ;
-                  D.Out(pdTrace, "Trying to use .fed file");
-                  }
-              else if  ( !strcasecmp(extension.c_str(),"xml") )
-                  {
-                  is_an_xml = true ;
-                  D.Out(pdTrace, "Trying to use .xml file");
-                  } 
-              else 
-                  throw CouldNotOpenFED("nor .fed nor .xml");
+              is_a_fed = true ;
+              D.Out(pdTrace, "Trying to use .fed file");
+              }
+          else if  ( !strcasecmp(extension.c_str(),"xml") )
+              {
+              is_an_xml = true ;
+              D.Out(pdTrace, "Trying to use .xml file");
+              } 
+          else 
+              throw CouldNotOpenFED("nor .fed nor .xml");
     
-              ifstream *fdd = new ifstream(filename.c_str());
-              if (fdd->is_open())
-                  {
-                  if ( is_a_fed )
-                      {        
-	              int result = certi::fedparser::build(filename.c_str(),
-		        				   rootObject, true);  
-                      if (result != 0 ) throw ErrorReadingFED("invalid .fed");
-                      }
-                  else if ( is_an_xml )
-                      {
-                      if (XmlParser::exists())
-                          {
-                          XmlParser *parser = new XmlParser(rootObject);
-                          parser->parse(filename);
-                          delete fdd ;
-                          delete parser ;
-                          }
-		       else 
-                          throw CouldNotOpenFED("no XmlParser");
-                      }
+          ifstream *fdd = new ifstream(filename.c_str());
+          if (fdd->is_open())
+              {
+              if ( is_a_fed )
+                  {        
+	          int result = certi::fedparser::build(filename.c_str(),
+		    				   rootObject, true);
+	          if (result != 0 ) throw ErrorReadingFED("invalid .fed");
                   }
-              else
-                  throw CouldNotOpenFED("File not found");
-              break ;
+              else if ( is_an_xml )
+                  {
+                  if (XmlParser::exists())
+                      {
+                      XmlParser *parser = new XmlParser(rootObject);
+                      parser->parse(filename);
+                      delete fdd ;
+                      delete parser ;
+                      }
+		   else 
+                       throw CouldNotOpenFED("no XmlParser");
+                  }
               }
           else
-              {
-              // JOIN FAILED
-              throw FederateAlreadyExecutionMember("Federate yet joined or same name");
-              break;
-              }
+              throw CouldNotOpenFED("File not found");
+          break ;
       }
       case Message::RESIGN_FEDERATION_EXECUTION:
         D.Out(pdTrace,
@@ -706,25 +696,11 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         tm->timeAdvanceRequest(req->getFederationTime(), e);
         break ;
 
-      case Message::TIME_ADVANCE_REQUEST_AVAILABLE:
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type TimeAdvanceRequestAvailable.");
-
-        tm->timeAdvanceRequestAvailable(req->getFederationTime(), e);
-        break ;
-
       case Message::NEXT_EVENT_REQUEST:
         D.Out(pdTrace,
               "Receiving Message from Federate, type NestEventRequest.");
 
         tm->nextEventRequest(req->getFederationTime(), e);
-        break ;
-
-      case Message::NEXT_EVENT_REQUEST_AVAILABLE:
-        D.Out(pdTrace,
-              "Receiving Message from Federate, type NestEventRequestAvailable.");
-
-        tm->nextEventRequestAvailable(req->getFederationTime(), e);
         break ;
 
       case Message::FLUSH_QUEUE_REQUEST:
@@ -1064,7 +1040,7 @@ RTIA::processFederateRequest(Message *req)
     }
     catch (FederateAlreadyExecutionMember &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_FederateAlreadyExecutionMember,e._reason);
+        rep.setException(e_FederateAlreadyExecutionMember);
     }
     catch (FederateDoesNotExist &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1306,8 +1282,8 @@ RTIA::processFederateRequest(Message *req)
         rep.setException(e_RTIinternalError);
     }
 
-    delete req ;;
-
+    /* now we can delete the message which has been processed */
+    delete req;
      
     if (rep.type == Message::TICK_REQUEST)
        if ((!tm->_ongoing_tick) && tm->_tick_request_ack) {
@@ -1328,4 +1304,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.69 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.67.2.1 2008/03/18 15:55:57 erk Exp $

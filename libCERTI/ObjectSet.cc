@@ -28,6 +28,7 @@
 #include "ObjectAttribute.hh"
 #include "ObjectSet.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 // Standard
 #include <iostream>
@@ -239,16 +240,19 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         ObjectAttribute * oa ;
         oa = object->getAttribute(the_attribute);
 
-        NetworkMessage *answer = new NetworkMessage ;
+        NetworkMessage *answer;
+        if (oa->getOwner()) {
+        	answer = NM_Factory::create(NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP);
+        } else {
+        	answer = NM_Factory::create(NetworkMessage::ATTRIBUTE_IS_NOT_OWNED);
+        }
+        
         answer->federation = server->federation();
         answer->exception = e_NO_EXCEPTION ;
         answer->object = the_object ;
         answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
-        answer->type = answer->federate
-            ? NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP
-            : NetworkMessage::ATTRIBUTE_IS_NOT_OWNED ;
-
+        
         sendToFederate(answer, the_federate);
     }
     else {
@@ -454,4 +458,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.18 2008/03/05 15:33:51 rousse Exp $
+// $Id: ObjectSet.cc,v 3.18.2.1 2008/03/18 15:55:56 erk Exp $

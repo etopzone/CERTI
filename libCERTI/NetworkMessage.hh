@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30 2008/03/05 15:33:50 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.1 2008/03/18 15:55:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -26,11 +26,11 @@
 #include "fedtime.hh"
 #include "Exception.hh"
 #include "Socket.hh"
-#include "MessageBody.hh"
 #include "RTIRegion.hh"
 #include "BasicMessage.hh"
 
 #include <vector>
+#include <string>
 
 #ifdef FEDERATION_USES_MULTICAST
 #define MC_PORT 60123
@@ -45,287 +45,293 @@ namespace certi {
 class CERTI_EXPORT NetworkMessage : public BasicMessage
 {
 public:
-    struct TimeStruct {
-        FederationTime date ; // Date, Logical Time
-        bool R_or_C ; // IsRegulator or IsConstrained
-    };
+	struct TimeStruct {
+		FederationTime date ; // Date, Logical Time
+		bool R_or_C ; // IsRegulator or IsConstrained
+	};
 
-    struct T_O_Struct {
-        ObjectClassHandle handle ;
-        UShort handleArraySize ;
-        TransportType transport ;
-        OrderType order ;
-    };
+	struct T_O_Struct {
+		ObjectClassHandle handle ;
+		UShort handleArraySize ;
+		TransportType transport ;
+		OrderType order ;
+	};
 
-    struct JoinStruct {
-        int NbReg ;
-        unsigned long AdrMC ;
-        unsigned long Addr ;
-        unsigned int peer ;
-    };
+	struct JoinStruct {
+		int NbReg ;
+		unsigned long AdrMC ;
+		unsigned long Addr ;
+		unsigned int peer ;
+	};
 
-    struct O_I_Struct {
-        ObjectClassHandle handle ;
-        UShort size ;
-        FederationTime date ;
-    };
+	struct O_I_Struct {
+		ObjectClassHandle handle ;
+		UShort size ;
+		FederationTime date ;
+	};
 
-    struct DDM_Struct {
-        SpaceHandle space ;
-        DimensionHandle dimension ;
-        RegionHandle region ;
-    };
+	struct DDM_Struct {
+		SpaceHandle space ;
+		DimensionHandle dimension ;
+		RegionHandle region ;
+	};
 
-    union HeaderUnion {
-        TimeStruct time ;
-        T_O_Struct T_O ;
-        JoinStruct Join ;
-        O_I_Struct O_I ;
-        DDM_Struct ddm ;
-    };
+	union HeaderUnion {
+		TimeStruct time ;
+		T_O_Struct T_O ;
+		JoinStruct Join ;
+		O_I_Struct O_I ;
+		DDM_Struct ddm ;
+	};
 
-    enum Type {
-        NOT_USED = 0, // Not used.
-        CLOSE_CONNEXION,
-        MESSAGE_NULL,
-        CREATE_FEDERATION_EXECUTION,
-        DESTROY_FEDERATION_EXECUTION,
-        JOIN_FEDERATION_EXECUTION,
-        RESIGN_FEDERATION_EXECUTION,
-        SET_TIME_REGULATING,
-        SET_TIME_CONSTRAINED,
-        REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
-        SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
-        ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
-        SYNCHRONIZATION_POINT_ACHIEVED,
-        FEDERATION_SYNCHRONIZED, // RTIG to RTIA
-        REQUEST_FEDERATION_SAVE,
-        FEDERATE_SAVE_BEGUN,
-        FEDERATE_SAVE_COMPLETE,
-        FEDERATE_SAVE_NOT_COMPLETE,
-        INITIATE_FEDERATE_SAVE, // RTIG to RTIA
-        FEDERATION_SAVED, // RTIG to RTIA
-        FEDERATION_NOT_SAVED, // RTIG to RTIA
-        REQUEST_FEDERATION_RESTORE,
-        FEDERATE_RESTORE_COMPLETE,
-        FEDERATE_RESTORE_NOT_COMPLETE,
-        REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
-        REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
-        FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
-        INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
-        FEDERATION_RESTORED, // RTIG to RTIA
-        FEDERATION_NOT_RESTORED, // RTIG to RTIA
-        PUBLISH_OBJECT_CLASS,
-        UNPUBLISH_OBJECT_CLASS,
-        PUBLISH_INTERACTION_CLASS,
-        UNPUBLISH_INTERACTION_CLASS,
-        SUBSCRIBE_OBJECT_CLASS,
-        UNSUBSCRIBE_OBJECT_CLASS,
-        SUBSCRIBE_INTERACTION_CLASS,
-        UNSUBSCRIBE_INTERACTION_CLASS,
-        TURN_INTERACTIONS_ON, // only RTIG->RTIA
-        TURN_INTERACTIONS_OFF, // only RTIG->RTIA
-        REGISTER_OBJECT,
-        DISCOVER_OBJECT, // only RTIG->RTIA
-        UPDATE_ATTRIBUTE_VALUES,
-        REFLECT_ATTRIBUTE_VALUES, // only RTIG->RTIA
-        SEND_INTERACTION,
-        RECEIVE_INTERACTION, // only RTIG->RTIA
-        DELETE_OBJECT,
-        REMOVE_OBJECT, // only RTIG->RTIA
-        CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
-        CHANGE_ATTRIBUTE_ORDER_TYPE,
-        CHANGE_INTERACTION_TRANSPORT_TYPE,
-        CHANGE_INTERACTION_ORDER_TYPE,
-        REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
-        REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
-        IS_ATTRIBUTE_OWNED_BY_FEDERATE,
-        QUERY_ATTRIBUTE_OWNERSHIP,
-        ATTRIBUTE_IS_NOT_OWNED,
-        INFORM_ATTRIBUTE_OWNERSHIP,
-        NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-        ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
-        ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
-        REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION,
-        ATTRIBUTE_OWNERSHIP_UNAVAILABLE,
-        ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
-        UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-        ATTRIBUTE_OWNERSHIP_ACQUISITION,
-        REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE,
-        CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-        ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
-        CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
-        CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
-        DDM_CREATE_REGION,
-        DDM_MODIFY_REGION,
-        DDM_DELETE_REGION,
-        DDM_ASSOCIATE_REGION,
-	DDM_REGISTER_OBJECT,
-	DDM_UNASSOCIATE_REGION,
-	DDM_SUBSCRIBE_ATTRIBUTES,
-	DDM_UNSUBSCRIBE_ATTRIBUTES,
-	DDM_SUBSCRIBE_INTERACTION,
-	DDM_UNSUBSCRIBE_INTERACTION,
-        PROVIDE_ATTRIBUTE_VALUE_UPDATE,
-        GET_FED_FILE,
+	typedef enum Type {
+		NOT_USED = 0, // Not used.
+		CLOSE_CONNEXION,
+		MESSAGE_NULL,
+		CREATE_FEDERATION_EXECUTION,
+		DESTROY_FEDERATION_EXECUTION,
+		JOIN_FEDERATION_EXECUTION,
+		RESIGN_FEDERATION_EXECUTION,
+		SET_TIME_REGULATING,
+		SET_TIME_CONSTRAINED,
+		REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
+		SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
+		ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
+		SYNCHRONIZATION_POINT_ACHIEVED,
+		FEDERATION_SYNCHRONIZED, // RTIG to RTIA
+		REQUEST_FEDERATION_SAVE,
+		FEDERATE_SAVE_BEGUN,
+		FEDERATE_SAVE_COMPLETE,
+		FEDERATE_SAVE_NOT_COMPLETE,
+		INITIATE_FEDERATE_SAVE, // RTIG to RTIA
+		FEDERATION_SAVED, // RTIG to RTIA
+		FEDERATION_NOT_SAVED, // RTIG to RTIA
+		REQUEST_FEDERATION_RESTORE,
+		FEDERATE_RESTORE_COMPLETE,
+		FEDERATE_RESTORE_NOT_COMPLETE,
+		REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
+		REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
+		FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
+		INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
+		FEDERATION_RESTORED, // RTIG to RTIA
+		FEDERATION_NOT_RESTORED, // RTIG to RTIA
+		PUBLISH_OBJECT_CLASS,
+		UNPUBLISH_OBJECT_CLASS,
+		PUBLISH_INTERACTION_CLASS,
+		UNPUBLISH_INTERACTION_CLASS,
+		SUBSCRIBE_OBJECT_CLASS,
+		UNSUBSCRIBE_OBJECT_CLASS,
+		SUBSCRIBE_INTERACTION_CLASS,
+		UNSUBSCRIBE_INTERACTION_CLASS,
+		TURN_INTERACTIONS_ON, // only RTIG->RTIA
+		TURN_INTERACTIONS_OFF, // only RTIG->RTIA
+		REGISTER_OBJECT,
+		DISCOVER_OBJECT, // only RTIG->RTIA
+		UPDATE_ATTRIBUTE_VALUES,
+		REFLECT_ATTRIBUTE_VALUES, // only RTIG->RTIA
+		SEND_INTERACTION,
+		RECEIVE_INTERACTION, // only RTIG->RTIA
+		DELETE_OBJECT,
+		REMOVE_OBJECT, // only RTIG->RTIA
+		CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
+		CHANGE_ATTRIBUTE_ORDER_TYPE,
+		CHANGE_INTERACTION_TRANSPORT_TYPE,
+		CHANGE_INTERACTION_ORDER_TYPE,
+		REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
+		REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
+		IS_ATTRIBUTE_OWNED_BY_FEDERATE,
+		QUERY_ATTRIBUTE_OWNERSHIP,
+		ATTRIBUTE_IS_NOT_OWNED,
+		INFORM_ATTRIBUTE_OWNERSHIP,
+		NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+		ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
+		ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
+		REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION,
+		ATTRIBUTE_OWNERSHIP_UNAVAILABLE,
+		ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
+		UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+		ATTRIBUTE_OWNERSHIP_ACQUISITION,
+		REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE,
+		CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
+		ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
+		CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
+		CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
+		DDM_CREATE_REGION,
+		DDM_MODIFY_REGION,
+		DDM_DELETE_REGION,
+		DDM_ASSOCIATE_REGION,
+		DDM_REGISTER_OBJECT,
+		DDM_UNASSOCIATE_REGION,
+		DDM_SUBSCRIBE_ATTRIBUTES,
+		DDM_UNSUBSCRIBE_ATTRIBUTES,
+		DDM_SUBSCRIBE_INTERACTION,
+		DDM_UNSUBSCRIBE_INTERACTION,
+		PROVIDE_ATTRIBUTE_VALUE_UPDATE,
+		GET_FED_FILE,
+		LAST
+	} Message_T;
 
-	LAST
-    };
-
-    struct HeaderStruct {
-        Type type ;
-        TypeException exception ;
-        Handle federation ;
-        FederateHandle federate ;
-        UShort bodySize ;
-        HeaderUnion VP ; // Variable Part
-    };
+	struct HeaderStruct {
+		Type type ;
+		TypeException exception ;
+		Handle federation ;
+		FederateHandle federate ;
+		UShort bodySize ;
+		HeaderUnion VP ; // Variable Part
+	};
 
 public :
-    NetworkMessage();
+	NetworkMessage();
+    virtual ~NetworkMessage();
+	
+    const NetworkMessage::Message_T getType() const {return type;};
+	virtual void serialize(){};
+	virtual void deserialize(){};
+	
+	// Parameter and Attribute Management
+	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
+	// ValueArray. If there are other parameter in the list, they are shifted
+	// one rank back.
+	// Ex: ParamArraySize = 3,
+	// ParamArray =[1, 2, 3], ValueArray =["Val1", "Val2", "Val3"]
+	//->removeParameter(1)
+	// ParamArraySize = 2,
+	// ParamArray =[1, 3], ValueArray =["Val1", "Val3"]
+	void removeParameter(UShort Rank);
 
-    // Display method
-    void display(const char *);
-	 void trace(const char* context);
+	// See RemoveParameter for explanations.
+	void removeAttribute(UShort Rank);
 
-    // Parameter and Attribute Management
-    // Remove the Parameter of rank 'Rank' in the ParamArray and its value in
-    // ValueArray. If there are other parameter in the list, they are shifted
-    // one rank back.
-    // Ex: ParamArraySize = 3,
-    // ParamArray =[1, 2, 3], ValueArray =["Val1", "Val2", "Val3"]
-    //->removeParameter(1)
-    // ParamArraySize = 2,
-    // ParamArray =[1, 3], ValueArray =["Val1", "Val3"]
-    void removeParameter(UShort Rank);
+	// Read and Write NetworkMessage Objects to and from Socket objects.
+	void write(Socket *Socket)
+	throw (NetworkError, NetworkSignal);
 
-    // See RemoveParameter for explanations.
-    void removeAttribute(UShort Rank);
+	void read(Socket *Socket)
+	throw (NetworkError, NetworkSignal);
 
-    // Read and Write NetworkMessage Objects to and from Socket objects.
-    void write(Socket *Socket)
-        throw (NetworkError, NetworkSignal);
+	// Value Array Management
 
-    void read(Socket *Socket)
-        throw (NetworkError, NetworkSignal);
+	// setValue : Value and its length are stored into ValueArray[Rank]
+	void setValue(int Rank, const char *Value, unsigned long length)
+	throw (RTIinternalError); // Bad Rank, Bad Value
 
-    // Value Array Management
+	// getValue : Value and its length are tooken from ValueArray[Rank]
+	// If Value == NULL return a newly allocated copy of Value, else copy it
+	// in Value.
+	char *getValue(int Rank, unsigned long *length, char *Value = NULL)
+	throw (RTIinternalError); // Bad Rank
 
-    // setValue : Value and its length are stored into ValueArray[Rank]
-    void setValue(int Rank, const char *Value, unsigned long length)
-          throw (RTIinternalError); // Bad Rank, Bad Value
+	// Return a newly allocated ValueArray, exactly of size AttribArraySize.
+	// containing the actual Attribute values. You must FREE this structure.
+	ValueLengthPair *getAttribValueArray();
 
-    // getValue : Value and its length are tooken from ValueArray[Rank]
-    // If Value == NULL return a newly allocated copy of Value, else copy it
-    // in Value.
-    char *getValue(int Rank, unsigned long *length, char *Value = NULL)
-        throw (RTIinternalError); // Bad Rank
+	// Return a newly allocated ValueArray, exactly of size ParamArraySize,
+	// containing the actual Parameter values. You must FREE this structure.
+	ParameterLengthPair *getParamValueArray();
 
-    // Return a newly allocated ValueArray, exactly of size AttribArraySize.
-    // containing the actual Attribute values. You must FREE this structure.
-    ValueLengthPair *getAttribValueArray();
+	void setAHS(const AttributeHandle *, int);
 
-    // Return a newly allocated ValueArray, exactly of size ParamArraySize,
-    // containing the actual Parameter values. You must FREE this structure.
-    ParameterLengthPair *getParamValueArray();
+	void setBoolean(bool);
+	bool getBoolean() const { return boolean ; };
 
-    void setAHS(const AttributeHandle *, int);
+	Message_T type;
+	TypeException exception ;
+	std::string exceptionReason;
 
-    void setBoolean(bool);
-    bool getBoolean() const { return boolean ; };
+	UShort number ;
 
-    Type type ;
-    TypeException exception ;
-    char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
+	Handle federation ;
+	FederateHandle federate ;
 
-    UShort number ;
+	std::string federationName ;
+	std::string federateName;
+	std::string FEDid ;
 
-    Handle federation ;
-    FederateHandle federate ;
-    //char federationName[MAX_FEDERATION_NAME_LENGTH + 1] ;
-    char *federationName ;
-    char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
-    char *FEDid ;
+	int bestEffortPeer ;
+	unsigned long bestEffortAddress ;
 
-    int bestEffortPeer ;
-    unsigned long bestEffortAddress ;
+	bool regulator ;
+	bool constrained ;
 
-    bool regulator ;
-    bool constrained ;
+	bool boolean ;
 
-    bool boolean ;
-    
-    FederationTime date ;
+	FederationTime date ;
 
-    int numberOfRegulators ;
-    unsigned long multicastAddress ;
+	int numberOfRegulators ;
+	unsigned long multicastAddress ;
 
-    char label[MAX_USER_TAG_LENGTH + 1] ;
-    char tag[MAX_USER_TAG_LENGTH + 1] ;
+	std::string label;
+	std::string tag;
 
-    ObjectHandlecount idCount ;
-    ObjectHandle firstId ;
-    ObjectHandle lastId ;
+	ObjectHandlecount idCount ;
+	ObjectHandle firstId ;
+	ObjectHandle lastId ;
 
-    ObjectHandle object ;
-    ObjectClassHandle objectClass ;
-    InteractionClassHandle interactionClass ;
+	ObjectHandle object ;
+	ObjectClassHandle objectClass ;
+	InteractionClassHandle interactionClass ;
 
-    EventRetractionHandle eventRetraction ;
+	EventRetractionHandle eventRetraction ;
 
-    UShort handleArraySize ;
-    AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
+	UShort handleArraySize ;
+	AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
 
-    TransportType transport ;
-    OrderType order ;
+	TransportType transport ;
+	OrderType order ;
 
-    SpaceHandle space ;
-    long nbExtents ;
-    long region ;
+	SpaceHandle space ;
+	long nbExtents ;
+	long region ;
 
-    void setLabel(const char *new_label) { strcpy(label, new_label); }
-    void setTag(const char *new_tag) { strcpy(tag, new_tag); }
-    void setFEDid(const char *NewFEDid);
+	void setLabel(const char *new_label) { label = std::string(new_label); }
+	void setTag(const char *new_tag) { tag = std::string(new_tag); }
+	void setFEDid(const char *NewFEDid);
 
+protected:
+	std::string name;
 private:
-    // Read a Message Body from a Socket. Should be called after ReadHeader.
-    void readBody(Socket *Socket);
+	
+	
+	// Read a Message Body from a Socket. Should be called after ReadHeader.
+	void readBody(Socket *Socket);
 
-    // Read a Header from a socket, and process it to read its content.
-    // Return RTI_TRUE if the ReadBody Method has to be called.
-    bool readHeader(Socket *Socket);
+	// Read a Header from a socket, and process it to read its content.
+	// Return RTI_TRUE if the ReadBody Method has to be called.
+	bool readHeader(Socket *Socket);
 
-    // The message is written onto the socket by WriteHeader if no body
-    // is required, or by WriteBody is a body has been required by WriteHeader.
+	// The message is written onto the socket by WriteHeader if no body
+	// is required, or by WriteBody is a body has been required by WriteHeader.
 
-    // Prepare and write a Body to a socket. Should be called after
-    // WriteHeader.
-    void writeBody(Socket *Socket);
+	// Prepare and write a Body to a socket. Should be called after
+	// WriteHeader.
+	void writeBody(Socket *Socket);
 
-    // Prepare and Write a Header to a Socket, and return RTI_TRUE
-    // if the WriteBody method has to be called.
-    bool writeHeader(Socket *Socket);
+	// Prepare and Write a Header to a Socket, and return RTI_TRUE
+	// if the WriteBody method has to be called.
+	bool writeHeader(Socket *Socket);
 
-    // -- Others Private Write Methods --
-    void writeFEDid(MessageBody &body);
-    void writeFederationName(MessageBody &body);
+	// -- Others Private Write Methods --
+	void writeFEDid();
+	void writeFederationName();
 
-    // -- Others Private Read Methods --
-    void readLabel(MessageBody &);
-    void readTag(MessageBody &);
-    void readFederationName(MessageBody &);
-    void readFederateName(MessageBody &);
-    void readFEDid(MessageBody &body);
+	// -- Others Private Read Methods --
+	void readLabel();
+	void readTag();
+	void readFederationName();
+	void readFederateName();
+	void readFEDid();
 
-    HeaderStruct Header ;
-    // ValueArray is now a ValueLengthPair
-    ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+	HeaderStruct  Header;    
+	// ValueArray is now a ValueLengthPair
+	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 
+// BUG: FIXME this is used by SocketMC and should
+//      be thrown away as soon as possible.
 #define TAILLE_MSG_RESEAU sizeof(NetworkMessage)
 
 } // namespace certi
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30 2008/03/05 15:33:50 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.1 2008/03/18 15:55:56 erk Exp $

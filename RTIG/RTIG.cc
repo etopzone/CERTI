@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36 2008/03/07 16:10:06 rousse Exp $
+// $Id: RTIG.cc,v 3.36.2.1 2008/03/18 15:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -87,10 +87,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
     G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type %d",msg->type);
     // This may throw a security error.
     if ( msg->type != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
-       socketServer.checkMessage(link->returnSocket(), msg);
-
-	//D.Mes(pdMessage, 'N', msg->type);
-	msg->trace("RTIG::chooseProcessingMethod ");
+       socketServer.checkMessage(link->returnSocket(), msg);	
 	
     switch(msg->type) {
       case NetworkMessage::MESSAGE_NULL:
@@ -120,20 +117,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::CREATE_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Create federation \"%s\".", msg->federationName);
+        D.Out(pdTrace, "Create federation \"%s\".", msg->federationName.c_str());
         auditServer.setLevel(9);
         processCreateFederation(link, msg);
         break ;
 
       case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Destroy federation \"%s\".", msg->federationName);
+        D.Out(pdTrace, "Destroy federation \"%s\".", msg->federationName.c_str());
         auditServer.setLevel(9);
         processDestroyFederation(link, msg);
         break ;
 
       case NetworkMessage::JOIN_FEDERATION_EXECUTION:
         D.Out(pdTrace, "federate \"%s\" joins federation \"%s\".",
-              msg->federateName, msg->federationName);
+              msg->federateName.c_str(), msg->federationName.c_str());
         auditServer.setLevel(9);
         processJoinFederation(link, msg);
         break ;
@@ -987,4 +984,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36 2008/03/07 16:10:06 rousse Exp $
+// $Id: RTIG.cc,v 3.36.2.1 2008/03/18 15:55:58 erk Exp $

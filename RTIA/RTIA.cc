@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA.cc,v 3.13.2.1 2008/03/18 15:55:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -53,7 +53,6 @@ RTIA::RTIA()
 
     fm->tm = tm ;
     queues->fm = fm ;
-    om->tm = tm ;
 }
 
 // ----------------------------------------------------------------------------
@@ -62,15 +61,6 @@ RTIA::~RTIA()
 {
     // BUG: TCP link destroyed ?
 
-     // Remove temporary file (if not yet done)
-     if ( fm->_FEDid != NULL)
-        {
-        if ( fm->_FEDid[0] != '\0' )
-           {
-           std::remove(fm->_FEDid);
-           fm->_FEDid[0] = '\0' ;
-           }
-        }
     delete tm ;
     delete dm ;
     delete om ;
@@ -99,17 +89,20 @@ RTIA::displayStatistics()
 void
 RTIA::execute()
 {
-    Message *msg_un ;
-    NetworkMessage *msg_tcp_udp ;
+    Message        *msg_un;
+    NetworkMessage *msg_tcp_udp;
     int n ;
 
     while (!fm->_fin_execution) {
-
-        msg_tcp_udp = new NetworkMessage ;
-        msg_un = new Message ;
-
+       
+        /* Message will be allocated by the readMessage call */
+    	msg_un      = NULL;
+    	msg_tcp_udp = NULL;
         try {
-            comm->readMessage(n, msg_tcp_udp, msg_un);
+        	msg_un      = NULL;
+        	msg_tcp_udp = NULL;
+            comm->readMessage(n, &msg_tcp_udp, &msg_un);
+            assert((msg_un!=NULL) || (msg_tcp_udp!=NULL));
         }
         catch (NetworkSignal) {
             fm->_fin_execution = true ;
@@ -135,14 +128,15 @@ RTIA::execute()
 
         // special case, blocking tick (tick2)
         while (!fm->_fin_execution && tm->_ongoing_tick) {
-	    // read a message from the rtig
+	        // read a message from the rtig
             // same code is reused, but only the case 1 should match
 
-            msg_tcp_udp = new NetworkMessage ;
-            msg_un = new Message ;
-
+        	/* Message or NetworkMessage will be allocated by the readMessage call */
+            msg_un      = NULL;
+            msg_tcp_udp = NULL;
+            
             try {
-                comm->readMessage(n, msg_tcp_udp, msg_un);
+                comm->readMessage(n, &msg_tcp_udp, &msg_un);
             }
             catch (NetworkSignal) {
                 fm->_fin_execution = true ;
@@ -170,4 +164,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA.cc,v 3.13.2.1 2008/03/18 15:55:57 erk Exp $

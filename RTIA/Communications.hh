@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.10 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.hh,v 3.10.2.1 2008/03/18 15:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -54,24 +54,35 @@ public:
     void sendMessage(NetworkMessage *Msg);
     void sendUN(Message *Msg);
     void receiveUN(Message *Msg);
-    void readMessage(int&, NetworkMessage *, Message *);
+    void readMessage(int&, NetworkMessage**, Message**);
     void requestFederateService(Message *req);
     unsigned long getAddress();
     unsigned int getPort();
-    void waitMessage(NetworkMessage *msg,
-                     NetworkMessage::Type type_msg,
-                     FederateHandle numeroFedere);
+    /**
+     * Wait for a message coming from RTIG and return
+     * when received.
+     * @param[in] type_msg, expected message type,
+     * @param[in] numeroFedere, federate which sent the message, 0 if indifferent.
+     * @return the pointer to new awaited message
+     */
+    NetworkMessage* waitMessage(NetworkMessage::Type type_msg,
+                                FederateHandle numeroFedere);
 
 private:
+	/**
+	 * this is the wait list of message 
+	 * already received from RTIG
+	 * but not dispatched message.
+	 */
     std::list<NetworkMessage *> waitingList ;
 
     bool searchMessage(NetworkMessage::Type type_msg,
 		       FederateHandle numeroFedere,
-		       NetworkMessage *msg);
+		       NetworkMessage **msg);
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.10 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.hh,v 3.10.2.1 2008/03/18 15:55:58 erk Exp $

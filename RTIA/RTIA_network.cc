@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIA_network.cc,v 3.22.2.1 2008/03/18 15:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,9 +44,6 @@ RTIA::processNetworkMessage(NetworkMessage *msg)
 NetworkMessage::Type msgType = msg->type;
 
 G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
-
-//D.Mes(pdMessage, 'N', msgType);
-msg->trace("RTIA::processNetworkMessage ");
 
     switch(msgType) {
 
@@ -339,9 +336,11 @@ msg->trace("RTIA::processNetworkMessage ");
     }
 
     stat.rtiService(msgType);
+    /* now we can delete the message which has been processed */
+    delete msg;
     G.Out(pdGendoc,"exit  RTIA::processNetworkMessage");
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIA_network.cc,v 3.22.2.1 2008/03/18 15:55:58 erk Exp $
