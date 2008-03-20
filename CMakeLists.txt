@@ -81,7 +81,7 @@ ENDIF (BUILD_SHARED)
 SET(PACKAGE_NAME      "CERTI")
 SET(PACKAGE_VERSION_MAJOR "3")
 SET(PACKAGE_VERSION_MINOR "2")
-SET(PACKAGE_VERSION_PATCH "6pre2")
+SET(PACKAGE_VERSION_PATCH "6")
 SET(PACKAGE_VERSION   "${PACKAGE_VERSION_MAJOR}.${PACKAGE_VERSION_MINOR}.${PACKAGE_VERSION_PATCH}")
 # Autotools compatibility var
 SET(VERSION ${PACKAGE_VERSION})
@@ -345,6 +345,14 @@ INSTALL(FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindCERTI.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/UseCERTI.cmake
   DESTINATION share/scripts)
+  
+ ## Patch generating target
+# The custom target is using a cmake script which in turn
+# use execute_process, 
+# this way we may find a flexible way to build the patch
+ADD_CUSTOM_TARGET(patch 
+                  COMMAND ${CMAKE_COMMAND} -DWDIR:PATH=${CMAKE_SOURCE_DIR} -DODIR:PATH=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/scripts/CreatePatchCVS.cmake                                                      
+                  COMMENT "Generating patch file ready for review at certi-devel@nongnu.org")
 
 IF (WIN32)
   MESSAGE(STATUS "*** CERTI for WIN32 has been successfully configured ********")

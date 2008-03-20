@@ -19,5 +19,7 @@ EXTRA_DIST = myconf gpl.txt lesser.txt certi-small.xpm myCERTI_env.sh  \
 	scripts/UseRPMTools.cmake \
 	scripts/FindMd5sum.cmake \
 	scripts/UseDebian.cmake \
-	scripts/UseCERTI.cmake 
+	scripts/UseCERTI.cmake  \
+	GenMessageClass.py \
+	NW_MessageType.txt
 
