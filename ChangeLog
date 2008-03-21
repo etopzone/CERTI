@@ -1,4 +1,628 @@
-2007-11-19 15:07  tag CERTI-3_2_5
+2008-03-21 16:48  tag CERTI-3_2_6
+
+2008-03-21 16:48  erk
+
+	* Makefile.am (3.13, CERTI-3_2_6): Missing scripts prefix
+
+2008-03-20 17:09  erk
+
+	* CMakeLists.txt (1.36, CERTI-3_2_6), Makefile.am (3.12),
+	  configure.in (3.29, CERTI-3_2_6), scripts/CreatePatchCVS.cmake
+	  (1.1, CERTI-3_2_6): Prepare CERTI 3.2.6
+
+2008-03-20 16:57  erk
+
+	* CMakeLists.txt (1.34.2.1): Merge from HEAD
+
+2008-03-20 16:53  erk
+
+	* CMakeLists.txt (1.35): Avoid to embbed build dir in source
+	  package
+
+2008-03-18 16:55  erk
+
+	* libCERTI/Message_W.cc (3.20.2.1), libCERTI/NM_Classes.hh
+	  (1.1.2.1), libCERTI/NetworkMessage_RW.cc (3.45.2.1),
+	  libCERTI/ObjectClass.cc (3.41.2.1),
+	  libCERTI/ObjectClassBroadcastList.cc (3.18.2.1),
+	  libCERTI/BasicMessage.cc (3.9.2.1), libCERTI/BasicMessage.hh
+	  (3.7.2.1), libCERTI/CMakeLists.txt (1.11.2.1),
+	  libCERTI/Interaction.cc (3.35.2.1), libCERTI/Message_R.cc
+	  (3.17.2.1), libCERTI/NM_Classes.cc (1.1.2.1),
+	  libCERTI/NetworkMessage.cc (3.28.2.1), libCERTI/NetworkMessage.hh
+	  (3.30.2.1), libCERTI/ObjectSet.cc (3.18.2.1),
+	  RTIA/Communications.cc (3.22.2.1), RTIA/DataDistribution.cc
+	  (3.23.2.1), RTIA/DeclarationManagement.cc (3.17.2.1),
+	  RTIA/FederationManagement.cc (3.50.2.1),
+	  RTIA/OwnershipManagement.cc (3.12.2.1), RTIA/RTIA.cc (3.13.2.1),
+	  RTIA/RTIA_federate.cc (3.67.2.1), RTIA/TimeManagement.cc
+	  (3.29.2.1), RTIA/Communications.hh (3.10.2.1),
+	  RTIA/ObjectManagement.cc (3.35.2.1), RTIA/RTIA_network.cc
+	  (3.22.2.1), RTIG/Federation.cc (3.80.2.1), RTIG/RTIG.cc
+	  (3.36.2.1), RTIG/RTIG_processing.cc (3.56.2.1),
+	  doc/certi_doxygen.cnf.in (1.1.2.1): Heterogeneous udpate.
+
+2008-03-18 16:53  erk
+
+	* libCERTI/MessageBuffer.cc (3.8, CERTI-3_2_6): Fix bug noted by
+	  Chris Rule.  resize did not return a value.  see
+	  https://savannah.nongnu.org/task/?6910
+
+2008-03-14 15:52  rousse
+
+	* RTIA/FederationManagement.cc (3.51), RTIA/RTIA.cc (3.15),
+	  RTIA/RTIA.hh (3.11), RTIA/RTIA_federate.cc (3.69),
+	  RTIG/FederationsList.cc (3.54), RTIG/RTIG_processing.cc (3.57)
+	  (utags: CERTI-3_2_6): Bug #22578, #22509, #22591 corrections
+
+2008-03-13 15:39  siron
+
+	* RTIA/ObjectManagement.cc (3.36, CERTI-3_2_6),
+	  RTIA/ObjectManagement.hh (3.20, CERTI-3_2_6), RTIA/RTIA.cc
+	  (3.14), RTIA/RTIA_federate.cc (3.68), RTIA/TimeManagement.cc
+	  (3.30, CERTI-3_2_6), RTIA/TimeManagement.hh (3.14, CERTI-3_2_6),
+	  libCERTI/Message_R.cc (3.18, CERTI-3_2_6), libCERTI/Message_W.cc
+	  (3.21, CERTI-3_2_6), libRTI/RTIambassador.cc (3.73, CERTI-3_2_6):
+	  First implementation of zero lookahead time management services
+	  (NERA & TARA addition, NER & TAR update). See task #6898.  Be
+	  careful, the Object Management services generate more exceptions
+	  (invalid time for a UAV or SI with bad timestamps).
+
+2008-03-12 16:04  erk
+
+	* scripts/GenMessageClass.py (1.2, CERTI-3_2_6): Update gen messgae
+	  scripts
+
+2008-03-12 16:00  rousse
+
+	* RTIA/: FederationManagement.cc (3.50), main.cc (3.18,
+	  CERTI-3_2_6): #22509 bug correction (I hope) Please test it !!
+
+2008-03-10 17:34  erk
+
+	* scripts/: GenMessageClass.py (1.1), NW_MessageType.txt (1.1,
+	  CERTI-3_2_6): Add a rudimentary NetworkMessage class generator
+
+2008-03-10 11:55  rousse
+
+	* RTIA/FederationManagement.cc (3.49): Littre correction about
+	  removing temporary file in resign federation
+
+2008-03-07 17:10  rousse
+
+	* RTIA/FederationManagement.cc (3.48), RTIG/RTIG.cc (3.36,
+	  CERTI-3_2_6): Bug #22509 about destroy federation execution
+	  corrected
+
+2008-03-06 17:33  rousse
+
+	* RTIA/RTIA_federate.cc (3.67), libCERTI/NetworkMessage_RW.cc
+	  (3.45, CERTI-3_2_6): little corrections about request object
+	  attribute value update processing
+
+2008-03-06 09:56  rousse
+
+	* RTIA/Statistics.cc (3.14, CERTI-3_2_6): New NetworkMessage type
+	  (PROVIDE_ATTRIBUTE_VALUE_UPDATE) added for statistics
+
+2008-03-05 16:33  rousse
+
+	* RTIA/ObjectManagement.cc (3.35), RTIA/ObjectManagement.hh (3.19),
+	  RTIA/RTIA_network.cc (3.22, CERTI-3_2_6), RTIA/TimeManagement.cc
+	  (3.29), RTIG/Federation.cc (3.80, CERTI-3_2_6),
+	  RTIG/RTIG_processing.cc (3.56), libCERTI/Message_R.cc (3.17),
+	  libCERTI/Message_W.cc (3.20), libCERTI/NetworkMessage.hh (3.30,
+	  CERTI-3_2_6), libCERTI/NetworkMessage_RW.cc (3.44),
+	  libCERTI/ObjectSet.cc (3.18, CERTI-3_2_6),
+	  libRTI/RTIambassador.cc (3.72): Request Attribute Value Update
+	  implementation Restricted implementation has been made :
+	  requestObjectAttributeValueUpdate
+
+2008-03-03 16:15  erk
+
+	* libCERTI/MessageBuffer.cc (3.7), libCERTI/MessageBuffer.hh (3.6,
+	  CERTI-3_2_6), test/utility/CertiUtilTests.cc (1.8, CERTI-3_2_6):
+	  Update MessageBuffer
+
+2008-02-29 12:54  erk
+
+	* libCERTI/MessageBuffer.cc (3.6), libCERTI/MessageBuffer.hh (3.5),
+	  test/utility/CertiUtilTests.cc (1.7): Add one value retval API
+	  MessageBuffer Update CertiUtilTest accordingly
+
+2008-02-29 09:02  erk
+
+	* ReleaseProcess.txt (1.2, CERTI-3_2_6): Update process for closing
+	  tasks
+
+2008-02-28 15:47  rousse
+
+	* RTIG/Federation.cc (3.79), RTIG/Federation.hh (3.45,
+	  CERTI-3_2_6), RTIG/FederationsList.cc (3.53),
+	  RTIG/FederationsList.hh (3.40, CERTI-3_2_6),
+	  RTIG/RTIG_processing.cc (3.55), libCERTI/ObjectSet.cc (3.17),
+	  libCERTI/ObjectSet.hh (3.10, CERTI-3_2_6), libCERTI/RootObject.cc
+	  (3.32, CERTI-3_2_6), libCERTI/RootObject.hh (3.27, CERTI-3_2_6):
+	  Request Object Attribute Value Update continued and to be
+	  continued....
+
+2008-02-27 17:38  rousse
+
+	* RTIA/ObjectManagement.cc (3.34), RTIA/ObjectManagement.hh (3.18),
+	  RTIA/RTIA_federate.cc (3.66), RTIG/FederationsList.cc (3.52),
+	  RTIG/FederationsList.hh (3.39), RTIG/RTIG.cc (3.35), RTIG/RTIG.hh
+	  (3.23, CERTI-3_2_6), RTIG/RTIG_processing.cc (3.54),
+	  libCERTI/Message.cc (3.49, CERTI-3_2_6): Request Object attribute
+	  value update continued and to be continued
+
+2008-02-26 10:58  tag DEV_ERK_BEFORE_HETEROGENEOUS
+
+2008-02-26 10:58  erk
+
+	* libCERTI/MessageBuffer.cc (3.5), libCERTI/MessageBuffer.hh (3.4),
+	  test/utility/CertiUtilTests.cc (1.6) (utags:
+	  DEV_ERK_BEFORE_HETEROGENEOUS): MessageBuffer should be ready to
+	  use for NetworkMessage
+
+2008-02-26 09:56  siron
+
+	* RTIA/RTIA_federate.cc (3.65), RTIA/TimeManagement.cc (3.28),
+	  RTIA/TimeManagement.hh (3.13), libCERTI/Message_R.cc (3.16),
+	  libCERTI/Message_W.cc (3.19), libRTI/RTIambassador.cc (3.71)
+	  (utags: DEV_ERK_BEFORE_HETEROGENEOUS): Implementation of some
+	  time query services (cf. task #6901).
+
+2008-02-25 11:28  rousse
+
+	* RTIA/ObjectManagement.cc (3.33, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  RTIA/RTIA_federate.cc (3.64), RTIA/TimeManagement.cc (3.27),
+	  libCERTI/NetworkMessage_RW.cc (3.43,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambassador.cc (3.70):
+	  request attribute value update continued and to be continued
+
+2008-02-22 12:34  siron
+
+	* RTIA/: Communications.cc (3.22, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), Communications.hh (3.10,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  FederationManagement.cc (3.47, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  ObjectManagement.cc (3.32), OwnershipManagement.cc (3.12,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), TimeManagement.cc
+	  (3.26): Simplification of the dialogue between the RTIA and the
+	  federate during the execution of a callback.	A single message is
+	  sent from the RTIA to the federate (the federate is ticking), the
+	  federate does not answer with a message anymore.  So the second
+	  message in parameter of the requestFederateService function is
+	  removed (the first message in parameter is the encoded callback).
+	  This simplification concerns the performance issue, it has
+	  allowed also the reentrance implementation.
+
+2008-02-22 10:56  siron
+
+	* test/Billard/Billard.cc (3.29, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): This new version of Billard uses
+	  the time parameter of the timeAdvanceGrant service.  Therefore a
+	  queryFederateTime call is removed.
+
+2008-02-22 08:12  rousse
+
+	* RTIA/RTIA_federate.cc (3.63), libCERTI/Message_R.cc (3.15),
+	  libCERTI/Message_W.cc (3.18): request object attribute value
+	  update continuation and to be continued...
+
+2008-02-21 11:15  rousse
+
+	* RTIA/DeclarationManagement.cc (3.17, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIG/RTIG_processing.cc (3.53,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/Message_R.cc (3.14),
+	  libCERTI/Message_W.cc (3.17), libRTI/RTIambassador.cc (3.69):
+	  Preparing beginning of request class attribute value update
+
+2008-02-18 14:37  siron
+
+	* myconf (3.11, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  RTIA/Communications.cc (3.21), RTIA/RTIA_federate.cc (3.62),
+	  RTIA/RTIA_network.cc (3.21, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  RTIA/TimeManagement.cc (3.25), RTIA/TimeManagement.hh (3.12),
+	  libRTI/RTIambPrivateRefs.cc (3.11, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambassador.cc (3.68):
+	  bug #22292: reentrance management issue
+
+2008-02-15 16:24  jmm
+
+	* libCERTI/MessageBuffer.cc (3.4): Forgot to return a value
+
+2008-02-15 15:34  erk
+
+	* test/utility/CertiUtilTests.cc (1.5): Add test for buffer
+	  reallocation
+
+2008-02-15 15:16  rousse
+
+	* RTIA/FederationManagement.cc (3.46), RTIG/RTIG_processing.cc
+	  (3.52), libCERTI/Message.cc (3.48, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  libCERTI/NetworkMessage.cc (3.28, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Request Federation Restore
+	  implemented.
+
+2008-02-15 15:08  erk
+
+	* libCERTI/MessageBuffer.cc (3.3): Avoid unaligned access due to
+	  reinterpret cast on Sun
+
+2008-02-15 14:24  erk
+
+	* libCERTI/MessageBuffer.cc (3.2), libCERTI/MessageBuffer.hh (3.3),
+	  test/utility/CertiUtilTests.cc (1.4): MessageBuffer update
+
+2008-02-15 14:22  erk
+
+	* libCERTI/Makefile.am (3.34, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Update Autoconf Makefile.am
+
+2008-02-14 16:49  jmm
+
+	* CMakeLists.txt (1.34, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  include/certi.hh (3.26, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/MessageBuffer.hh (3.2):
+	  Update for Win32 compilation after first set of heterogeneity
+	  patch
+
+2008-02-14 16:29  erk
+
+	* include/certi.hh (3.25), libCERTI/CMakeLists.txt (1.11,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  libCERTI/MessageBody.cc (3.16, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/MessageBuffer.cc (3.1),
+	  libCERTI/MessageBuffer.hh (3.1), test/utility/CertiUtilTests.cc
+	  (1.3): First set of functions for heterogeneity handling
+
+2008-02-14 13:32  erk
+
+	* CMakeLists.txt (1.33): Add a switch in order to be able to FORCE
+	  billard compilation with NO X11 usage
+
+2008-02-14 10:43  rousse
+
+	* RTIA/FederationManagement.cc (3.45): HLA Compliant : application
+	  allowed to create many federation execution
+
+2008-02-13 17:28  rousse
+
+	* RTIA/FederationManagement.cc (3.44), RTIG/FederationsList.cc
+	  (3.51, DEV_ERK_BEFORE_HETEROGENEOUS), RTIG/RTIG.cc (3.34,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIG/RTIG_processing.cc (3.51),
+	  libCERTI/Message.cc (3.47), libCERTI/NetworkMessage.cc (3.27),
+	  libCERTI/SocketServer.cc (3.14, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), test/Billard/Billard.cc (3.28):
+	  Bug #21335 correction. Destroy federation Execution allowed by
+	  non creator nor member.
+
+2008-02-12 17:51  rousse
+
+	* libCERTI/: Message_R.cc (3.13), Message_W.cc (3.16): Bug #22291
+	  correction (needs validation.)
+
+2008-02-12 15:26  rousse
+
+	* RTIA/FederationManagement.cc (3.43), RTIA/RTIA_federate.cc
+	  (3.61), RTIA/RTIA_network.cc (3.20), RTIG/Federation.cc (3.78,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIG/RTIG.cc (3.33),
+	  RTIG/RTIG_processing.cc (3.50), libCERTI/Message.cc (3.46),
+	  libCERTI/NetworkMessage.cc (3.26), libCERTI/SocketServer.cc
+	  (3.13), libCERTI/SocketTCP.cc (3.21, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambassador.cc (3.67):
+	  Some corrections about restore federation.A few debug traces
+	  added..
+
+2008-02-12 10:35  jmm
+
+	* libCERTI/: Message_R.cc (3.12), NetworkMessage_RW.cc (3.42): fix
+	  bug #22286 : Compilation error in release mode only (VS2005)
+
+2008-02-11 15:46  jmm
+
+	* CMakeLists.txt (1.32): Update from cvs to pre1 version
+
+2008-02-11 15:33  erk
+
+	* libRTI/: RTIambassador.cc (3.66), RTIambPrivateRefs.cc (3.10):
+	  Add more check about ConcurrentAccessAttempt and is_reentrant
+
+2008-02-10 19:19  rousse
+
+	* RTIA/FederationManagement.cc (3.42), RTIA/RTIA_federate.cc
+	  (3.60), libCERTI/Message.cc (3.45), libCERTI/Message_W.cc (3.15),
+	  libCERTI/SocketUN.cc (3.19, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambassador.cc (3.65):
+	  Enhancement of reason exception on create federation execution
+
+2008-02-04 15:41  erk
+
+	* libCERTI/: PrettyDebEx.cc (4.3), PrettyDebug.cc (4.6) (utags:
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Suppress spurious DOS
+	  LF
+
+2008-02-01 15:12  rousse
+
+	* RTIA/FederationManagement.cc (3.41), RTIA/RTIA_federate.cc
+	  (3.59), RTIA/RTIA_network.cc (3.19), RTIG/Federation.cc (3.77),
+	  RTIG/FederationsList.cc (3.50), RTIG/RTIG_processing.cc (3.49),
+	  libCERTI/NetworkMessage_RW.cc (3.41), libRTI/RTIambassador.cc
+	  (3.64): Restore Federation implementation (to be continued)...
+
+2008-01-29 15:30  rousse
+
+	* RTIA/FederationManagement.cc (3.40), RTIA/RTIA_federate.cc
+	  (3.58), RTIA/RTIA_network.cc (3.18), RTIG/Federation.cc (3.76),
+	  RTIG/FederationsList.cc (3.49), RTIG/RTIG.cc (3.32),
+	  RTIG/RTIG_processing.cc (3.48), libCERTI/Message_W.cc (3.14),
+	  libCERTI/NetworkMessage_RW.cc (3.40): Request Federation Save
+	  implemented. Ready for tests
+
+2008-01-24 17:15  rousse
+
+	* CMakeLists.txt (1.31), include/certi.hh (3.24),
+	  libRTI/CMakeLists.txt (1.8, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Bug #22090 correction (about
+	  DevC++ compilation correction)
+
+2008-01-24 09:45  erk
+
+	* AUTHORS (3.9, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Add
+	  Christian Stenzel as an contributor
+
+2007-12-21 15:29  rousse
+
+	* RTIA/FederationManagement.cc (3.39), RTIG/FederationsList.cc
+	  (3.48), libCERTI/Message.cc (3.44): bug #21851 correction. Bad
+	  strlen in Message,FederationsList and federationManagement
+
+2007-12-19 11:38  rousse
+
+	* RTIG/Federation.cc (3.75), libRTI/RTIambassador.cc (3.63): Added
+	  a few debugging traces
+
+2007-12-18 17:23  rousse
+
+	* RTIA/RTIA_network.cc (3.17), libCERTI/NetworkMessage_RW.cc
+	  (3.39), libRTI/RTIambassador.cc (3.62): Request federation save
+	  continued and to be continued
+
+2007-12-18 16:04  rousse
+
+	* libCERTI/NetworkMessage_RW.cc (3.38): case FEDERATE_SAVE_BEGUN
+	  missing in readHeader of network messages
+
+2007-12-17 17:01  rousse
+
+	* RTIA/FederationManagement.cc (3.38), RTIA/FederationManagement.hh
+	  (3.21, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  RTIA/RTIA_federate.cc (3.57), RTIG/Federation.cc (3.74),
+	  RTIG/RTIG_processing.cc (3.47), include/certi.hh (3.23),
+	  libCERTI/Message.cc (3.43), libCERTI/Message.hh (3.41,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/Message_R.cc
+	  (3.11), libCERTI/Message_W.cc (3.13), libCERTI/NetworkMessage.cc
+	  (3.25), libCERTI/NetworkMessage.hh (3.29,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/NetworkMessage_RW.cc
+	  (3.37): Constant MAX_FEDERATION_NAME_LENGTH has been deleted, so
+	  any federation name is allowed
+
+2007-12-13 15:43  rousse
+
+	* libCERTI/: Message.hh (3.40), Message_W.cc (3.12),
+	  NetworkMessage.cc (3.24), NetworkMessage.hh (3.28),
+	  NetworkMessage_RW.cc (3.36): Little things after suppress of
+	  MAX_FED_FILENAME
+
+2007-12-12 09:20  erk
+
+	* libCERTI/CMakeLists.txt (1.10): Suppress Warnings for lex/yacc
+	  generated files.
+
+2007-12-11 20:46  erk
+
+	* libCERTI/: Interaction.cc (3.35), Interaction.hh (3.26) (utags:
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Remove
+	  miss-overloaded method setName
+
+2007-12-11 18:27  rousse
+
+	* RTIG/Federation.cc (3.73), RTIG/FederationsList.hh (3.38,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/NetworkMessage.cc (3.23):
+	  2 bugs corrected2 bugs corrected
+
+2007-12-11 17:44  rousse
+
+	* RTIA/FederationManagement.cc (3.37), RTIA/FederationManagement.hh
+	  (3.20), RTIA/RTIA_federate.cc (3.56), RTIG/Federation.cc (3.72),
+	  RTIG/FederationsList.cc (3.47), RTIG/FederationsList.hh (3.37),
+	  RTIG/RTIG_processing.cc (3.46), include/certi.hh (3.22),
+	  libCERTI/Message.cc (3.42), libCERTI/Message.hh (3.39),
+	  libCERTI/MessageBody.cc (3.15), libCERTI/MessageBody.hh (3.15,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/Message_R.cc
+	  (3.10), libCERTI/Message_W.cc (3.11), libCERTI/NetworkMessage.cc
+	  (3.22), libCERTI/NetworkMessage.hh (3.27),
+	  libCERTI/NetworkMessage_RW.cc (3.35), libRTI/RTIambPrivateRefs.cc
+	  (3.9): constant MAX_FEDFILE_NAME_LENGTH deleted FED file name of
+	  any name authorized
+
+2007-12-10 22:38  erk
+
+	* libCERTI/: syntax.yy (3.7), tokens.ll (3.5) (utags: CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Fix compiler warning about
+	  "deprecated conversion from string constant to char*"
+
+2007-12-09 18:02  erk
+
+	* libCERTI/: syntax.yy (3.6), tokens.ll (3.4): Fix bug #21610 :
+	  Timestamp should be allowed as attribute/parameter name The
+	  applied patch is from Chris Rule.
+
+2007-12-09 17:46  erk
+
+	* RTIA/Communications.cc (3.20), libCERTI/SocketTCP.cc (3.20),
+	  libCERTI/SocketTCP.hh (3.19, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/SocketUDP.cc (3.17,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/SocketUDP.hh
+	  (3.10, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Suppress
+	  "deprecated conversion from const char* to char*" compiler
+	  warning.
+
+2007-12-09 17:26  erk
+
+	* libCERTI/: Named.cc (3.5), Named.hh (3.4), Object.hh (3.18)
+	  (utags: CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Fix bug
+	  #21761 :  class certi::XXXX has virtual functions but non-virtual
+	  destructor
+
+2007-12-09 17:25  erk
+
+	* CMakeLists.txt (1.30): Enable gcc full warning level even if used
+	  with ccache.	This may be a cmake bug?
+
+2007-12-06 18:11  erk
+
+	* include/RTI.hh (3.11, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  libRTI/RTIambassador.cc (3.61): Fixed windows compilation
+	  trouble.
+
+2007-12-05 13:29  approx
+
+	* RTIA/ObjectManagement.cc (3.31), RTIA/ObjectManagement.hh (3.17,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIA/RTIA_federate.cc (3.55),
+	  RTIA/RTIA_network.cc (3.16), RTIA/TimeManagement.cc (3.24),
+	  RTIG/Federation.cc (3.71), RTIG/Federation.hh (3.44,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIG/FederationsList.cc (3.46),
+	  RTIG/FederationsList.hh (3.36), RTIG/RTIG_processing.cc (3.45),
+	  libCERTI/Message_R.cc (3.9), libCERTI/Message_W.cc (3.10),
+	  libCERTI/NetworkMessage_RW.cc (3.34), libCERTI/ObjectClass.cc
+	  (3.41, CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  libCERTI/ObjectClass.hh (3.31, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/ObjectClassSet.cc (3.31,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS),
+	  libCERTI/ObjectClassSet.hh (3.26, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/RootObject.cc (3.31,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/RootObject.hh (3.26,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambPrivateRefs.cc (3.8),
+	  libRTI/RTIambassador.cc (3.60):
+	  deleteObjectInstance with and without additional time argument
+	  correct calling of federate service removeObjectInstance
+
+2007-12-04 12:00  erk
+
+	* libCERTI/: RootObject.cc (3.30), XmlParser.cc (3.25, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): bug #20935 : Qualified name not
+	  handled Additionnal fix for the XML parser.  FED file
+	  hierarchical parsing was OK XML was not.
+
+2007-11-29 21:36  rousse
+
+	* libCERTI/ObjectClassBroadcastList.cc (3.18, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Bug correction on reflect
+	  attribute values (objectClass not correctly recopied in
+	  reducedMessage during broadcast (known as Carle's problem !)
+
+2007-11-29 17:51  rousse
+
+	* RTIA/DataDistribution.cc (3.23, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), RTIA/RTIA_federate.cc (3.54),
+	  RTIA/RTIA_network.cc (3.15), RTIG/Federation.cc (3.70),
+	  libCERTI/NetworkMessage_RW.cc (3.33), libCERTI/ObjectClass.cc
+	  (3.40), libCERTI/ObjectClassBroadcastList.cc (3.17),
+	  libCERTI/ObjectClassSet.cc (3.30): Adding some traces for
+	  debugging
+
+2007-11-28 15:54  siron
+
+	* RTIA/RTIA_network.cc (3.14): Improvement of the sendInteraction
+	  without timestamp (the timestamp attribute in the fed file does
+	  not matter)
+
+2007-11-27 15:39  siron
+
+	* RTIA/TimeManagement.cc (3.23): The asynchronous delivery should
+	  affect only the behavior of constrained federates.
+
+2007-11-27 14:25  erk
+
+	* include/certi.hh (3.21): Update constants in order to fits
+	  everyone's needs (as of today).
+
+2007-11-27 09:55  erk
+
+	* libCERTI/PrettyDebug.cc (4.5), libCERTI/SocketTCP.cc (3.19),
+	  libCERTI/SocketTCP.hh (3.18), libCERTI/SocketUN.cc (3.18),
+	  libCERTI/SocketUN.hh (3.13, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libRTI/RTIambPrivateRefs.cc (3.7),
+	  libRTI/RTIambassador.cc (3.59), libRTI/RTIambPrivateRefs.hh (3.4,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Remove some more
+	  exit() calls.  See bug #21648 : Win32 port contains exit() when
+	  error starting rtia.exe
+
+2007-11-27 09:42  rousse
+
+	* RTIA/RTIA_federate.cc (3.53), libCERTI/Message.cc (3.41): Very
+	  little things...
+
+2007-11-26 21:16  erk
+
+	* libRTI/RTIambassador.cc (3.58): Fix bug #21648 : Win32 port
+	  contains exit() when error starting rtia.exe Replace exit calls
+	  with throw RIInternalError
+
+2007-11-22 17:04  rousse
+
+	* libCERTI/: Exception.cc (3.10), Exception.hh (3.5) (utags:
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS): Bug correction on
+	  reason copy during exception
+
+2007-11-22 09:26  rousse
+
+	* RTIA/RTIA_federate.cc (3.52): Sorry, I have let a little trace
+
+2007-11-21 10:49  erk
+
+	* CMakeLists.txt (1.29): better separate the purpose of the flags
+	  we will be prepared for non GCC compiler use
+
+2007-11-21 10:48  erk
+
+	* Makefile.am (3.11, DEV_ERK_BEFORE_HETEROGENEOUS): Forget to
+	  update extra_DIST autotools crap
+
+2007-11-20 10:14  erk
+
+	* libCERTI/fed.cc (3.15, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): fix yyrestart prototype as
+	  suggested by bug #21611 : Windows won't compile in current
+	  version in CVS
+
+2007-11-20 10:04  erk
+
+	* libCERTI/SocketMC.cc (3.14, CERTI-3_2_6,
+	  DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/SocketMC.hh (3.12,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/SocketUN.hh
+	  (3.12), RTIA/Communications.cc (3.19), libCERTI/LBTS.hh (3.8,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/Message.hh
+	  (3.38), libCERTI/MessageBody.cc (3.14), libCERTI/Socket.hh (3.13,
+	  CERTI-3_2_6, DEV_ERK_BEFORE_HETEROGENEOUS), libCERTI/SocketTCP.cc
+	  (3.18), libCERTI/SocketTCP.hh (3.17), libCERTI/SocketUDP.cc
+	  (3.16), libCERTI/SocketUDP.hh (3.9), libCERTI/SocketUN.cc (3.17):
+	  Correct bug #21616 : Compilation problem: ISO C++ does not
+	  support 'long long' and suppress spurious dotNet comment
+
+2007-11-20 08:36  erk
+
+	* CMakeLists.txt (1.28), configure.in (3.28,
+	  DEV_ERK_BEFORE_HETEROGENEOUS): Bump version to 3.2.6cvs since
+	  3.2.5 has been released
+
+2007-11-19 16:44  erk
+
+	* ReleaseProcess.txt (1.1), scripts/cvs2cl.pl (1.1, CERTI-3_2_6)
+	  (utags: DEV_ERK_BEFORE_HETEROGENEOUS): Add informations about
+	  CERTI release process (borrowed from tsp)
 
 2007-11-19 15:07  erk
 
