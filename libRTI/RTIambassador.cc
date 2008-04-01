@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.73 2008/03/13 14:39:19 siron Exp $
+// $Id: RTIambassador.cc,v 3.74 2008/04/01 13:00:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2420,9 +2420,15 @@ RTI::RTIambassador::getObjectClassHandle(const char *theName)
            RTIinternalError)
 {
     Message req, rep ;
+
+    G.Out(pdGendoc,"enter RTIambassador::getObjectClassHandle");
+
     req.type = Message::GET_OBJECT_CLASS_HANDLE ;
     req.setName(theName);
     privateRefs->executeService(&req, &rep);
+
+    G.Out(pdGendoc,"exit RTIambassador::getObjectClassHandle");
+
     return rep.getObjectClass();
 }
 
@@ -2909,4 +2915,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.73 2008/03/13 14:39:19 siron Exp $
+// $Id: RTIambassador.cc,v 3.74 2008/04/01 13:00:47 rousse Exp $

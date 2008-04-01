@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA.cc,v 3.16 2008/04/01 13:00:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,7 +67,17 @@ RTIA::~RTIA()
         {
         if ( fm->_FEDid[0] != '\0' )
            {
-           std::remove(fm->_FEDid);
+           // If RTIA end (abort ?) before join don't remove file if not temporary
+           // temporary file name begins with _RT ( yes, but...)
+           if ( fm->_FEDid[0] != '_' || fm->_FEDid[1] != 'R' || fm->_FEDid[2] != 'T')
+              {
+               std::cout<<"** W ** I don't remove file "<<fm->_FEDid<<std::endl;
+              }
+           else
+              {
+              std::cout<<"*** W ** Removing temporary file "<<fm->_FEDid<<" on RTIA stop."<<std::endl;
+              std::remove(fm->_FEDid);
+              }
            fm->_FEDid[0] = '\0' ;
            }
         }
@@ -170,4 +180,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.15 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA.cc,v 3.16 2008/04/01 13:00:46 rousse Exp $

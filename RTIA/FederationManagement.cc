@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.51 2008/03/14 14:52:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.52 2008/04/01 13:00:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -243,13 +243,17 @@ destroyFederationExecution(const char *theName,
                {
                if ( _FEDid[0] != '\0' )
                    {
+                   std::cout<<"Removing temporary file "<<_FEDid<<" on destroy federation."<<std::endl;
                    std::remove(_FEDid);
                    _FEDid[0] = '\0' ;
                    }
                }
             }
         else
+            {
+            // There is an exception so destroy may be not done on RTIG
             e = reponse.exception ;
+            }
     }
 
 G.Out(pdGendoc,"exit  FederationManagement::destroyFederationExecution");
@@ -475,6 +479,7 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
             {
             if ( _FEDid[0] != '\0' )
                 {
+                std::cout<<"Removing temporary file "<<_FEDid<<" on resign federation."<<std::endl;
                 std::remove(_FEDid);
                 _FEDid[0] = '\0' ;
                 }
@@ -1025,4 +1030,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.51 2008/03/14 14:52:23 rousse Exp $
+// $Id: FederationManagement.cc,v 3.52 2008/04/01 13:00:46 rousse Exp $

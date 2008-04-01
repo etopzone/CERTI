@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.54 2008/03/14 14:52:24 rousse Exp $
+// $Id: FederationsList.cc,v 3.55 2008/04/01 13:00:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -846,27 +846,26 @@ FederationsList::destroyFederation(Handle handle)
            RTIinternalError)
 {
     Federation *federation ;
+    list<Federation *>::iterator i ;
 
     G.Out(pdGendoc,"enter FederationsList::destroyFederation");
 
-    // It may throw RTIinternalError
-    checkHandle(handle);
+    // It may throw :
+    // RTIinternalError during checkHandle
+    // FederationExecutionDoesNotExist during search federation
+    searchFederation(handle, federation);
 
-    // It may throw FederationExecutionDoesNotExist
-    int rank = searchFederation(handle, federation);
-    // It may throw FederatesCurrentlyJoined
+    // It may throw FederatesCurrentlyJoined if federation not empty (in empty)
     if (federation->empty()) {
-        list<Federation *>::iterator i = begin();
-        for (int j = 1 ; i != end() && j <= rank ; j++, i++) {
-            if (j == rank) {
-					// FIXME EN:comment utiliser erase(iterator) dans une boucle.
+        for (i = begin() ; i != end() ; i++) {
+            if ((*i)->getHandle() == handle ) {
+				// FIXME EN:comment utiliser erase(iterator) dans une boucle.
                 i=erase(i);
                 break;
             }
         }
         delete federation ;
     }
-
     G.Out(pdGendoc,"exit FederationsList::destroyFederation");
 }
 
@@ -1560,5 +1559,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.54 2008/03/14 14:52:24 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.55 2008/04/01 13:00:47 rousse Exp $
 

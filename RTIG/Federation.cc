@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
+// $Id: Federation.cc,v 3.81 2008/04/01 13:00:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2292,6 +2292,9 @@ NetworkMessage mess ;
         mess.handleArray[i] = theAttributeList[i] ;
         }
 
+     G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
+                   ,theOwnerHandle);
+
      mess.write(server->getSocketLink(theOwnerHandle));
  
    
@@ -2302,5 +2305,5 @@ NetworkMessage mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.80 2008/03/05 15:33:50 rousse Exp $
+// $Id: Federation.cc,v 3.81 2008/04/01 13:00:46 rousse Exp $
 

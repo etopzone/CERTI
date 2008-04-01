@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36 2008/03/07 16:10:06 rousse Exp $
+// $Id: RTIG.cc,v 3.37 2008/04/01 13:00:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -963,6 +963,7 @@ RTIG::processIncomingMessage(Socket *link)
     if (link == NULL) return link ;
 
     if (rep.exception != e_NO_EXCEPTION) {
+        G.Out(pdGendoc,"            processIncomingMessage ===> write on exception to RTIA");
         rep.write(link);
         D.Out(pdExcept,
               "RTIG catched exception %d and sent it back to federate %d.",
@@ -987,4 +988,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36 2008/03/07 16:10:06 rousse Exp $
+// $Id: RTIG.cc,v 3.37 2008/04/01 13:00:47 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.69 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.70 2008/04/01 13:00:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -128,6 +128,10 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type DestroyFederation.");
 
         fm->destroyFederationExecution(req->getFederationName(), e);
+        if ( e == e_RTIinternalError )
+            {
+            rep.setException(e,"Illegal federation handle");
+            }
         // RTIA needs federation name into the answer (rep Message) to federate
         rep.setFederationName(req->getFederationName());
         break ;
@@ -1328,4 +1332,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.69 2008/03/14 14:52:23 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.70 2008/04/01 13:00:46 rousse Exp $
