@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.58 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.59 2008/04/03 15:21:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -364,6 +364,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     try
       {
       federations.destroyFederation(num_federation);
+      // Here delete federation (num_federation) has been done
       federationHandles.free(num_federation);
       D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation);
       }
@@ -1461,4 +1462,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.58 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.59 2008/04/03 15:21:51 rousse Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.14 2008/02/13 16:28:30 rousse Exp $
+// $Id: SocketServer.cc,v 3.15 2008/04/03 15:21:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -61,11 +61,11 @@ void
 SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
     throw (SecurityError)
 {
-    G.Out(pdGendoc,"enter SocketServer::checkMessage");
+    // G.Out(pdGendoc,"enter SocketServer::checkMessage");
 
     if ((message->federation == 0) && (message->federate == 0))
         {
-        G.Out(pdGendoc,"exit  SocketServer::checkMessage on return");
+        // G.Out(pdGendoc,"exit  SocketServer::checkMessage on return");
         return ;
         }
 
@@ -83,7 +83,7 @@ SocketServer::checkMessage(long socket_number, NetworkMessage *message) const
         // BUG: Should put a line in the Audit.
         throw SecurityError("Message has a forged origin.");
     }
-    G.Out(pdGendoc,"exit  SocketServer::checkMessage");
+    // G.Out(pdGendoc,"exit  SocketServer::checkMessage");
 }
 
 // ----------------------------------------------------------------------------
@@ -222,7 +222,7 @@ SocketServer::getSocketLink(Handle the_federation,
                             TransportType the_type) const
     throw (FederateNotExecutionMember, RTIinternalError)
 {
-    G.Out(pdGendoc,"enter SocketServer::getSocketLink");
+    // G.Out(pdGendoc,"enter SocketServer::getSocketLink");
     // It may throw FederateNotExecutionMember
     SocketTuple *tuple = getWithReferences(the_federation, the_federate);
 
@@ -236,7 +236,7 @@ SocketServer::getSocketLink(Handle the_federation,
             throw RTIinternalError("Reference to a killed Federate.");
         return tuple->BestEffortLink ;
     }
-    G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
+    // G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
 }
 
 // ----------------------------------------------------------------------------
@@ -329,4 +329,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.14 2008/02/13 16:28:30 rousse Exp $
+// $Id: SocketServer.cc,v 3.15 2008/04/03 15:21:51 rousse Exp $

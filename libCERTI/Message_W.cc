@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.21 2008/03/13 14:39:19 siron Exp $
+// $Id: Message_W.cc,v 3.22 2008/04/03 15:21:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -56,7 +56,7 @@ void
 Message::writeBody(SocketUN *socket)
 {
     MessageBody body ;
-    G.Out(pdGendoc,"enter Message::writeBody type %d",header.type);    
+    // G.Out(pdGendoc,"enter Message::writeBody type %d",header.type);    
     // 0- Copy the Header at the beginning of the Body, in order to
     // make a single Socket->Emettre call while sending both.
     // WARNING: As the Body size is not known yet, we will have to
@@ -484,9 +484,9 @@ Message::writeBody(SocketUN *socket)
 
     // 3- Write Header to socket, then write Body to socket.
     // socket->send((void *) &Header, sizeof(MessageHeader));
-    G.Out(pdGendoc,"      Message::writeBody ======> send Message");
+    // G.Out(pdGendoc,"      Message::writeBody ======> send Message");
     socket->send(body.getBuffer(), body.size());
-    G.Out(pdGendoc,"exit  Message::writeBody");
+    // G.Out(pdGendoc,"exit  Message::writeBody");
 }
 
 // ----------------------------------------------------------------------------
@@ -505,7 +505,7 @@ Message::writeHandleArray(MessageBody &body)
 bool
 Message::writeHeader(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::writeHeader");
+    // G.Out(pdGendoc,"enter Message::writeHeader");
     // 1- Clear Header
     memset((void *) &header, '\0', sizeof(MessageHeader));
 
@@ -521,7 +521,7 @@ Message::writeHeader(SocketUN *socket)
 
     if (exception != e_NO_EXCEPTION) {
         header.bodySize = 1 ;
-        G.Out(pdGendoc,"exit  Message::writeHeader carrying exception");
+        // G.Out(pdGendoc,"exit  Message::writeHeader carrying exception");
         return true ;
     }
 
@@ -694,7 +694,7 @@ Message::writeHeader(SocketUN *socket)
     if (header.bodySize == 0)
         socket->send((const unsigned char *) &header, sizeof(MessageHeader));
 
-    G.Out(pdGendoc,"exit  Message::writeHeader");
+    // G.Out(pdGendoc,"exit  Message::writeHeader");
     return header.bodySize != 0 ;
 }
 
@@ -739,4 +739,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.21 2008/03/13 14:39:19 siron Exp $
+// $Id: Message_W.cc,v 3.22 2008/04/03 15:21:51 rousse Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45 2008/03/06 16:33:10 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.46 2008/04/03 15:21:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -48,7 +48,7 @@ NetworkMessage::readBody(Socket *socket)
 {
     MessageBody body ;
     unsigned short i ;
-    G.Out(pdGendoc,"enter NetworkMessage::readBody");
+    // G.Out(pdGendoc,"enter NetworkMessage::readBody");
     if (Header.bodySize == 0)
         throw RTIinternalError("ReadBody should not have been called.");
 
@@ -313,14 +313,14 @@ NetworkMessage::readBody(Socket *socket)
 	throw RTIinternalError("Unknown/Unimplemented type for body.");
     }
     }
-    G.Out(pdGendoc,"exit NetworkMessage::readBody");
+    // G.Out(pdGendoc,"exit NetworkMessage::readBody");
 }
 
 // ----------------------------------------------------------------------------
 bool
 NetworkMessage::readHeader(Socket *socket)
 {
-    G.Out(pdGendoc,"enter NetworkMessage::readHeader");
+    // G.Out(pdGendoc,"enter NetworkMessage::readHeader");
     // 1- Read Header from Socket
     socket->receive((void *) &Header, sizeof(HeaderStruct));
     // 2- Parse Header(Static Part)
@@ -333,7 +333,7 @@ NetworkMessage::readHeader(Socket *socket)
 
     if (exception != e_NO_EXCEPTION)
         {
-        G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
+        // G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
         return true ;
         }
 
@@ -503,12 +503,12 @@ NetworkMessage::readHeader(Socket *socket)
 
       default:
 	D.Out(pdExcept, "Unknown type %d in ReadHeader.", Header.type);
-        G.Out(pdGendoc,"exit  NetworkMessage::readHeader with unknown type=%d",Header.type);
+        // G.Out(pdGendoc,"exit  NetworkMessage::readHeader with unknown type=%d",Header.type);
 	throw RTIinternalError("Received unknown Header type.");
     }
 
     // 4- If Header.bodySize is not 0, return RTI_TRUE, else RTI_FALSE
-    G.Out(pdGendoc,"exit  NetworkMessage::readHeader");
+    // G.Out(pdGendoc,"exit  NetworkMessage::readHeader");
     return Header.bodySize ;
 }
 
@@ -519,7 +519,7 @@ NetworkMessage::writeBody(Socket *socket)
     MessageBody body ;
     unsigned short i ;
 
-    G.Out(pdGendoc,"enter NetworkMessage::writeBody");
+    // G.Out(pdGendoc,"enter NetworkMessage::writeBody");
 
     // 0- Copy the Header at the beginning of the body, in order to
     // make a single Socket->Emettre call while sending both.
@@ -801,14 +801,14 @@ NetworkMessage::writeBody(Socket *socket)
     D.Out(pdTrace,"Sending MessageBody of size <%d>",body.size());
     socket->send(body.getBuffer(), body.size());
 
-    G.Out(pdGendoc,"exit  NetworkMessage::writeBody");
+    // G.Out(pdGendoc,"exit  NetworkMessage::writeBody");
 }
 
 // ----------------------------------------------------------------------------
 bool
 NetworkMessage::writeHeader(Socket *socket)
 {
-    G.Out(pdGendoc,"enter NetworkMessage::writeHeader");
+    // G.Out(pdGendoc,"enter NetworkMessage::writeHeader");
     // 2- Fill Header(Static Part)
     Header.type = type ;
     Header.exception = exception ;
@@ -819,7 +819,7 @@ NetworkMessage::writeHeader(Socket *socket)
 
     if (exception != e_NO_EXCEPTION) {
         Header.bodySize = 1 ;
-        G.Out(pdGendoc,"exit  NetworkMessage::writeHeader carrying an exception");
+        // G.Out(pdGendoc,"exit  NetworkMessage::writeHeader carrying an exception");
         return true ;
     }
 
@@ -1055,10 +1055,10 @@ NetworkMessage::writeHeader(Socket *socket)
     if (Header.bodySize == 0)
         socket->send(reinterpret_cast<unsigned char *>(&Header), sizeof(HeaderStruct));
 
-    G.Out(pdGendoc,"exit  NetworkMessage::writeHeader");
+    // G.Out(pdGendoc,"exit  NetworkMessage::writeHeader");
     return Header.bodySize != 0 ;
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45 2008/03/06 16:33:10 rousse Exp $
+// $Id: NetworkMessage_RW.cc,v 3.46 2008/04/03 15:21:51 rousse Exp $

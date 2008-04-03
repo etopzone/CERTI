@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.74 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIambassador.cc,v 3.75 2008/04/03 15:21:52 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -84,7 +84,7 @@ get_handle(const RTI::Region &region)
     throw RTI::RTIinternalError("");
 }
 
-} // anonymous namesapce
+} // anonymous namespace
 
 // ----------------------------------------------------------------------------
 //! Start RTIambassador processes for communication with RTIG.
@@ -2915,4 +2915,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.74 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIambassador.cc,v 3.75 2008/04/03 15:21:52 rousse Exp $

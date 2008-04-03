@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.18 2008/03/13 14:39:19 siron Exp $
+// $Id: Message_R.cc,v 3.19 2008/04/03 15:21:51 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -52,7 +52,7 @@ Message::read(SocketUN *socket)
 void
 Message::readBody(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::readBody");
+    // G.Out(pdGendoc,"enter Message::readBody");
  
     assert(header.bodySize > 0);
 
@@ -475,7 +475,7 @@ Message::readBody(SocketUN *socket)
             throw RTIinternalError("Message: Unknown Type for Body(Read).");
         }
     }
-    G.Out(pdGendoc,"exit  Message::readBody");
+    // G.Out(pdGendoc,"exit  Message::readBody");
 }
 
 // ----------------------------------------------------------------------------
@@ -485,7 +485,7 @@ Message::readBody(SocketUN *socket)
 bool
 Message::readHeader(SocketUN *socket)
 {
-    G.Out(pdGendoc,"enter Message::readHeader");
+    // G.Out(pdGendoc,"enter Message::readHeader");
 
     // 1- Read Header from Socket
     socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
@@ -499,7 +499,7 @@ Message::readHeader(SocketUN *socket)
 
     if (exception != e_NO_EXCEPTION)
         {
-        G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
+        // G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
         return true ;
         }
 
@@ -653,12 +653,12 @@ Message::readHeader(SocketUN *socket)
 
       default:
         D.Out(pdExcept, "Unknown type %d in ReadHeader.", header.type);
-        G.Out(pdGendoc,"exit  Message::readHeader on RTIinternalError unknown type");
+        // G.Out(pdGendoc,"exit  Message::readHeader on RTIinternalError unknown type");
         throw RTIinternalError("Message: Received unknown Header type.");
     }
 
     // 4- Return depends on body
-    G.Out(pdGendoc,"exit  Message::readHeader");
+    // G.Out(pdGendoc,"exit  Message::readHeader");
 
     return header.bodySize != 0 ;
 }
@@ -758,4 +758,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.18 2008/03/13 14:39:19 siron Exp $
+// $Id: Message_R.cc,v 3.19 2008/04/03 15:21:51 rousse Exp $
