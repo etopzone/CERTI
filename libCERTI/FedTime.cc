@@ -63,8 +63,6 @@ is_infinity(const FedTime &time)
     return const_cast<FedTime &>(time).isPositiveInfinity() == RTI::RTI_TRUE ;
 }
 
-const double epsilon = 1.0e-9 ;
-const double infinity = std::numeric_limits<double>::max();
 const char *infinity_str = "+inf" ;
 
 } // anonymous namespace
@@ -94,16 +92,22 @@ RTI::FedTimeFactory::decode(const char *)
 // ----------------------------------------------------------------------------
 // RTIfedTime
 RTIfedTime::RTIfedTime()
-    : _fedTime(0), _zero(0), _epsilon(0), _positiveInfinity(0) { }
+    : _fedTime(0),
+      _zero(0),
+      _epsilon(std::numeric_limits<double>::epsilon()),
+      _positiveInfinity(std::numeric_limits<double>::infinity()) { }
 
 RTIfedTime::RTIfedTime(const RTI::Double &time)
-    : _fedTime(time), _zero(0), _epsilon(0), _positiveInfinity(0) { }
+    : _fedTime(time),
+      _zero(0),
+      _epsilon(std::numeric_limits<double>::epsilon()),
+      _positiveInfinity(std::numeric_limits<double>::infinity()) { }
 
 RTIfedTime::RTIfedTime(const FedTime &time)
     : _fedTime(rft(time).getTime()),
       _zero(0),
-      _epsilon(0),
-      _positiveInfinity(const_cast<FedTime &>(time).isPositiveInfinity()) { }
+      _epsilon(std::numeric_limits<double>::epsilon()),
+      _positiveInfinity(std::numeric_limits<double>::infinity()) { }
 
 // ----------------------------------------------------------------------------
 RTIfedTime::RTIfedTime(const RTIfedTime &time)
@@ -122,38 +126,35 @@ RTIfedTime::~RTIfedTime()
 void
 RTIfedTime::setZero()
 {
-    _fedTime = 0 ;
-    _zero = 0 ;
-    _epsilon = 0 ;
-    _positiveInfinity = 0 ;
+    _fedTime = _zero;
 }
 
 // ----------------------------------------------------------------------------
 RTI::Boolean
 RTIfedTime::isZero()
 {
-    return RTI::Boolean(_fedTime == 0.0);
+    return RTI::Boolean(_fedTime == _zero);
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIfedTime::setEpsilon()
 {
-    _fedTime = epsilon ;
+    _fedTime = _epsilon;
 }
 
 // ----------------------------------------------------------------------------
 void
 RTIfedTime::setPositiveInfinity()
 {
-    _positiveInfinity = 1.0 ;
+    _fedTime = _positiveInfinity;
 }
 
 // ----------------------------------------------------------------------------
 inline RTI::Boolean
 RTIfedTime::isPositiveInfinity()
 {
-    return RTI::Boolean(_positiveInfinity != 0.0);
+    return RTI::Boolean(_fedTime == _positiveInfinity);
 }
 
 // ----------------------------------------------------------------------------
@@ -284,7 +285,6 @@ RTIfedTime::operator=(const FedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = rft(time)._fedTime ;
-    _positiveInfinity = rft(time)._positiveInfinity ;
     return *this ;
 }
 
@@ -325,7 +325,6 @@ RTIfedTime::operator=(const RTIfedTime &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = time._fedTime ;
-    _positiveInfinity = time._positiveInfinity ;
     return *this ;
 }
 
@@ -335,7 +334,6 @@ RTIfedTime::operator=(const Double &time)
     throw (RTI::InvalidFederationTime)
 {
     _fedTime = time ;
-    _positiveInfinity = 0.0 ;
     return *this ;
 }
 

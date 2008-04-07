@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.30 2008/03/13 14:39:19 siron Exp $
+// $Id: TimeManagement.cc,v 3.31 2008/04/07 15:08:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -759,7 +759,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
 
     if (_est_contraint) {
         // give a TSO message.
-        if (_LBTS == DBL_MAX)
+        if (_LBTS == std::numeric_limits<double>::infinity())
            D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee);
         else
            D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee, _LBTS);
@@ -769,7 +769,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
         // otherwise
         if (!msg_donne) {
             // if LBTS allows to give a timeAdvanceGrant.
-            if (_LBTS == DBL_MAX)
+            if (_LBTS == std::numeric_limits<double>::infinity())
                D.Out(pdDebug, "Logical time : %f, LBTS : infini, lookahead : %f.",
                      date_avancee, _lookahead_courant);
             else
@@ -914,4 +914,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.30 2008/03/13 14:39:19 siron Exp $
+// $Id: TimeManagement.cc,v 3.31 2008/04/07 15:08:27 erk Exp $
