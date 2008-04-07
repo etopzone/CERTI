@@ -68,7 +68,7 @@ def createAnotherOneBillardSequence(billardTester):
     billardTester.addRunStep("barrier","All Billard(s) ended")
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "r:b:c:t:P", ["rtig=", "billard=","certi_home=","trace","pseudoexec"])
+    opts, args = getopt.getopt(sys.argv[1:], "r:b:c:t:p:d:", ["rtig=", "billard=","certi_home=","trace","pseudoexec","display="])
 except getopt.GetoptError, err:
     print >> sys.stderr, "opt = %s, msg = %s" % (err.opt,err.msg)
     usage()
