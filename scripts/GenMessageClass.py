@@ -5,7 +5,7 @@ import getopt, sys
 import shutil
 
 def usage():
-    print "Usage:\n %s --file=<message> [--verbose] [--help]" % os.path.basename(sys.argv[0])
+    print "Usage:\n %s --file=<message> [--type=header|body|factory] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
     opts, args = getopt.getopt(sys.argv[1:], "f:t:vh", ["file=","type=","verbose","help"])
@@ -46,7 +46,9 @@ for l in msgFile:
         print "       virtual ~NM_%s();"  % cname.title()
         print "       virtual void serialize();"
         print "       virtual void deserialize();"
+        print "       /* specific Getter/Setter */"
         print "  protected:"
+        print "       /* specific field */"
         print "  private:"       
         print "};\n"
         print "/*<END>---------- %s ------------<END>*/\n" % cname.title()
@@ -55,15 +57,22 @@ for l in msgFile:
     if (gentype.lower()=="body"):
         print "/*<BEGIN>---------- %s ------------<BEGIN>*/" % cname.title()
         print "NM_%s::NM_%s() {"  % (cname.title(),cname.title())
-        print "    this->type = NetworkMessage::%s;" % cname
         print "    this->name = \"%s\";" % cname
+        print "    this->type = NetworkMessage::%s;" % cname
+        print "    /* specific field init */"
         print "}"
         print "NM_%s::~NM_%s() {"  % (cname.title(), cname.title())
         print "}"       
         print "void NM_%s::serialize() {"  % cname.title()
-        print "}"
+        print "  /* call mother class */      "
+        print "  NetworkMessage::serialize(); "
+        print "  /* specific code (if any) goes here */"
+        print "} /* end of serialize */ "
         print "void NM_%s::deserialize() {" % cname.title()
-        print "}"
+        print "  /* call mother class */      "
+        print "  NetworkMessage::deserialize(); "
+        print "  /* specific code (if any) goes here */"
+        print "} /* end of deserialize */"
         print "/*<END>---------- %s ------------<END>*/\n" % cname.title()
 
 
