@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.60 2008/04/08 08:50:23 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.61 2008/04/08 14:18:18 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -324,9 +324,10 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Removes a federate from federation.
 void
-RTIG::processResignFederation(Handle federation,
+RTIG::processResignFederation(Socket *link,Handle federation,
                               FederateHandle federe)
 {
+    NetworkMessage reponse ;
 
     G.Out(pdGendoc,"BEGIN ** RESIGN FEDERATION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processResignFederation");
@@ -336,6 +337,14 @@ RTIG::processResignFederation(Handle federation,
           federe, federation);
 
     auditServer << "Federate " << federe << " resign federation("<<federation<<")" ;
+
+    // Send answer to RTIA
+    reponse.exception = e_NO_EXCEPTION ;
+    reponse.type = NetworkMessage::RESIGN_FEDERATION_EXECUTION ;
+    reponse.federate = federe ;
+    reponse.federation = federation ;
+    reponse.write(link);
+
     G.Out(pdGendoc,"exit RTIG::processResignFederation");
     G.Out(pdGendoc,"END ** RESIGN FEDERATION SERVICE **");
 
@@ -1468,4 +1477,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.60 2008/04/08 08:50:23 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.61 2008/04/08 14:18:18 rousse Exp $

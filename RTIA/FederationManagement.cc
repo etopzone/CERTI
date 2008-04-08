@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.52 2008/04/01 13:00:46 rousse Exp $
+// $Id: FederationManagement.cc,v 3.53 2008/04/08 14:18:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -446,7 +446,7 @@ void
 FederationManagement::resignFederationExecution(RTI::ResignAction,
                                                 TypeException &e)
 {
-    NetworkMessage msg ;
+    NetworkMessage msg, reponse ;
     TypeException exception = e_NO_EXCEPTION ;
 
     G.Out(pdGendoc,"enter FederationManagement::resignFederationExecution");
@@ -471,6 +471,10 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         G.Out(pdGendoc,"      resignFederationExecution ===> send NMessage RFE to RTIG");
         comm->sendMessage(&msg);
 
+        comm->waitMessage(&reponse,
+                          NetworkMessage::RESIGN_FEDERATION_EXECUTION,
+                          federate);
+
         _est_membre_federation = false ;
         _numero_federation = 0 ;
         federate = 0 ;
@@ -484,12 +488,12 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
                 _FEDid[0] = '\0' ;
                 }
             }
-
-        // BUG: Voir DestroyFederation ou ~GF.
-       // if (!_est_createur_federation)
-          //_fin_execution = true ;
-    }
-    G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
+        G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
+        }
+    else
+        {    
+        G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution on exception");
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -1030,4 +1034,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.52 2008/04/01 13:00:46 rousse Exp $
+// $Id: FederationManagement.cc,v 3.53 2008/04/08 14:18:17 rousse Exp $

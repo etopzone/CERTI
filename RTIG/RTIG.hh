@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.23 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG.hh,v 3.24 2008/04/08 14:18:18 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -69,7 +69,7 @@ private:
     // Event handlers
     void processCreateFederation(Socket*, NetworkMessage*);
     void processJoinFederation(Socket*, NetworkMessage*);
-    void processResignFederation(Handle, FederateHandle);
+    void processResignFederation(Socket*,Handle, FederateHandle);
     void processDestroyFederation(Socket*, NetworkMessage*);
     void processSetTimeRegulating(NetworkMessage *msg);
     void processSetTimeConstrained(NetworkMessage *msg);
@@ -131,4 +131,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.23 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG.hh,v 3.24 2008/04/08 14:18:18 rousse Exp $

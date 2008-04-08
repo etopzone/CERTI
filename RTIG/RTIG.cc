@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.38 2008/04/08 08:50:23 rousse Exp $
+// $Id: RTIG.cc,v 3.39 2008/04/08 14:18:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -142,7 +142,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace, "Federate no %u leaves federation no %u .",
               msg->federate, msg->federation);
         auditServer.setLevel(9);
-        processResignFederation(msg->federation, msg->federate);
+        processResignFederation(link,msg->federation, msg->federate);
         break ;
 
       case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
@@ -991,4 +991,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.38 2008/04/08 08:50:23 rousse Exp $
+// $Id: RTIG.cc,v 3.39 2008/04/08 14:18:17 rousse Exp $
