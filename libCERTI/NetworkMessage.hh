@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.2 2008/04/08 14:05:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -180,13 +180,17 @@ public:
 		HeaderUnion VP ; // Variable Part
 	};
 
-public :
 	NetworkMessage();
     virtual ~NetworkMessage();
 	
     const NetworkMessage::Message_T getType() const {return type;};
-	virtual void serialize(){};
-	virtual void deserialize(){};
+    const TypeException getException() const {return exception;};
+    
+	virtual void serialize();
+	virtual void deserialize();
+	
+	void send(Socket* socket);
+	void receive(Socket* socket);
 	
 	// Parameter and Attribute Management
 	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
@@ -234,14 +238,10 @@ public :
 	void setBoolean(bool);
 	bool getBoolean() const { return boolean ; };
 
-	Message_T type;
-	TypeException exception ;
-	std::string exceptionReason;
-
+		
 	UShort number ;
 
-	Handle federation ;
-	FederateHandle federate ;
+	
 
 	std::string federationName ;
 	std::string federateName;
@@ -255,12 +255,25 @@ public :
 
 	bool boolean ;
 
+	/**
+	 * Indicate if the message is dated or not
+	 */
+	bool isDated;
+	/** 
+	 * The date of message if it is dated.
+	 */
 	FederationTime date ;
+	void setDate(FederationTime date) {this->date = date;};
+	FederationTime getDate() const {return this->date;};
 
 	int numberOfRegulators ;
 	unsigned long multicastAddress ;
 
+	bool isLabelled;	
 	std::string label;
+	void setLabel(const std::string label) {this->label = label;};
+	const std::string getLabel() const {return this->label;};
+	
 	std::string tag;
 
 	ObjectHandlecount idCount ;
@@ -286,9 +299,42 @@ public :
 	void setLabel(const char *new_label) { label = std::string(new_label); }
 	void setTag(const char *new_tag) { tag = std::string(new_tag); }
 	void setFEDid(const char *NewFEDid);
+	const std::string getName() const {return name;}
+	
+	/** The network message type */
+	Message_T type;
+	
+	/** 
+	 * The exception type 
+	 * if the message is carrying an exception
+	 */
+	TypeException exception ;
+	/**
+	 * The federation handle 
+	 * the message is part of this federation activity
+	 */
+	Handle federation ;
+	/** 
+	 * The federate handle
+	 * the message is for this particular federate
+	 */
+	FederateHandle federate ;
+	
+	/**
+	 * The exception reason (if the message carry one)
+	 */
+	std::string exceptionReason;	
 
 protected:
+	/** 
+	 * The message name.
+	 * should be initialized by the specialized
+	 * network message constructor
+	 */
 	std::string name;
+	
+
+
 private:
 	
 	
@@ -334,4 +380,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.2 2008/04/08 14:05:26 erk Exp $

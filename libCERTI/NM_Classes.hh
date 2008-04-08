@@ -39,7 +39,9 @@ class CERTI_EXPORT NM_Not_Used : public NetworkMessage {
        virtual ~NM_Not_Used();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -52,7 +54,9 @@ class CERTI_EXPORT NM_Close_Connexion : public NetworkMessage {
        virtual ~NM_Close_Connexion();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -65,7 +69,9 @@ class CERTI_EXPORT NM_Message_Null : public NetworkMessage {
        virtual ~NM_Message_Null();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -78,7 +84,11 @@ class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
        virtual ~NM_Create_Federation_Execution();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */	  
+	  std::string federationName ;
+	  std::string FEDid ;
   private:
 };
 
@@ -91,7 +101,10 @@ class CERTI_EXPORT NM_Destroy_Federation_Execution : public NetworkMessage {
        virtual ~NM_Destroy_Federation_Execution();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+      /* specific field */	 
+	  std::string federationName;
   private:
 };
 
@@ -104,7 +117,15 @@ class CERTI_EXPORT NM_Join_Federation_Execution : public NetworkMessage {
        virtual ~NM_Join_Federation_Execution();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t  numberOfRegulators;
+	  uint32_t multicastAddress;
+	  uint32_t bestEffortAddress;
+	  uint32_t bestEffortPeer;
+	  std::string federationName;
+	  std::string federateName;
   private:
 };
 
@@ -117,7 +138,9 @@ class CERTI_EXPORT NM_Resign_Federation_Execution : public NetworkMessage {
        virtual ~NM_Resign_Federation_Execution();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -130,7 +153,10 @@ class CERTI_EXPORT NM_Set_Time_Regulating : public NetworkMessage {
        virtual ~NM_Set_Time_Regulating();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  bool   regulating;
   private:
 };
 
@@ -143,7 +169,10 @@ class CERTI_EXPORT NM_Set_Time_Constrained : public NetworkMessage {
        virtual ~NM_Set_Time_Constrained();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */	
+	  bool   constrained;
   private:
 };
 
@@ -156,7 +185,15 @@ class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public Network
        virtual ~NM_Register_Federation_Synchronization_Point();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+      /* specific field */	  
+	  	
+	  std::string tag;
+	  bool hasHandleArray;
+	  UShort handleArraySize ;
+	  AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];	  
+	  
   private:
 };
 
@@ -169,7 +206,10 @@ class CERTI_EXPORT NM_Synchronization_Point_Registration_Succeeded : public Netw
        virtual ~NM_Synchronization_Point_Registration_Succeeded();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+      /* specific field */	 
+	  
   private:
 };
 
@@ -182,7 +222,11 @@ class CERTI_EXPORT NM_Announce_Synchronization_Point : public NetworkMessage {
        virtual ~NM_Announce_Synchronization_Point();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+      /* specific field */	  
+	  	
+	  std::string tag;
   private:
 };
 
@@ -195,7 +239,10 @@ class CERTI_EXPORT NM_Synchronization_Point_Achieved : public NetworkMessage {
        virtual ~NM_Synchronization_Point_Achieved();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */	  
+	  
   private:
 };
 
@@ -208,7 +255,10 @@ class CERTI_EXPORT NM_Federation_Synchronized : public NetworkMessage {
        virtual ~NM_Federation_Synchronized();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */	 
+	  
   private:
 };
 
@@ -221,7 +271,10 @@ class CERTI_EXPORT NM_Request_Federation_Save : public NetworkMessage {
        virtual ~NM_Request_Federation_Save();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	   
   private:
 };
 
@@ -234,7 +287,10 @@ class CERTI_EXPORT NM_Federate_Save_Begun : public NetworkMessage {
        virtual ~NM_Federate_Save_Begun();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  
   private:
 };
 
@@ -247,7 +303,9 @@ class CERTI_EXPORT NM_Federate_Save_Complete : public NetworkMessage {
        virtual ~NM_Federate_Save_Complete();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -260,7 +318,9 @@ class CERTI_EXPORT NM_Federate_Save_Not_Complete : public NetworkMessage {
        virtual ~NM_Federate_Save_Not_Complete();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -273,7 +333,10 @@ class CERTI_EXPORT NM_Initiate_Federate_Save : public NetworkMessage {
        virtual ~NM_Initiate_Federate_Save();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  
   private:
 };
 
@@ -286,7 +349,9 @@ class CERTI_EXPORT NM_Federation_Saved : public NetworkMessage {
        virtual ~NM_Federation_Saved();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -299,7 +364,9 @@ class CERTI_EXPORT NM_Federation_Not_Saved : public NetworkMessage {
        virtual ~NM_Federation_Not_Saved();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -312,7 +379,10 @@ class CERTI_EXPORT NM_Request_Federation_Restore : public NetworkMessage {
        virtual ~NM_Request_Federation_Restore();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  
   private:
 };
 
@@ -325,7 +395,9 @@ class CERTI_EXPORT NM_Federate_Restore_Complete : public NetworkMessage {
        virtual ~NM_Federate_Restore_Complete();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -338,7 +410,9 @@ class CERTI_EXPORT NM_Federate_Restore_Not_Complete : public NetworkMessage {
        virtual ~NM_Federate_Restore_Not_Complete();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -351,7 +425,9 @@ class CERTI_EXPORT NM_Request_Federation_Restore_Succeeded : public NetworkMessa
        virtual ~NM_Request_Federation_Restore_Succeeded();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -364,7 +440,10 @@ class CERTI_EXPORT NM_Request_Federation_Restore_Failed : public NetworkMessage 
        virtual ~NM_Request_Federation_Restore_Failed();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  std::string tag;
   private:
 };
 
@@ -377,7 +456,9 @@ class CERTI_EXPORT NM_Federation_Restore_Begun : public NetworkMessage {
        virtual ~NM_Federation_Restore_Begun();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -390,7 +471,9 @@ class CERTI_EXPORT NM_Initiate_Federate_Restore : public NetworkMessage {
        virtual ~NM_Initiate_Federate_Restore();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -403,7 +486,9 @@ class CERTI_EXPORT NM_Federation_Restored : public NetworkMessage {
        virtual ~NM_Federation_Restored();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -416,7 +501,9 @@ class CERTI_EXPORT NM_Federation_Not_Restored : public NetworkMessage {
        virtual ~NM_Federation_Not_Restored();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -429,7 +516,12 @@ class CERTI_EXPORT NM_Publish_Object_Class : public NetworkMessage {
        virtual ~NM_Publish_Object_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  bool hasHandleArray;
+	  UShort handleArraySize ;
+	  AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];	
   private:
 };
 
@@ -442,7 +534,10 @@ class CERTI_EXPORT NM_Unpublish_Object_Class : public NetworkMessage {
        virtual ~NM_Unpublish_Object_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t objectClass;
   private:
 };
 
@@ -455,7 +550,10 @@ class CERTI_EXPORT NM_Publish_Interaction_Class : public NetworkMessage {
        virtual ~NM_Publish_Interaction_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -468,7 +566,10 @@ class CERTI_EXPORT NM_Unpublish_Interaction_Class : public NetworkMessage {
        virtual ~NM_Unpublish_Interaction_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -481,7 +582,12 @@ class CERTI_EXPORT NM_Subscribe_Object_Class : public NetworkMessage {
        virtual ~NM_Subscribe_Object_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+      /* specific field */
+	  bool hasHandleArray;
+	  UShort handleArraySize ;
+	  AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];
   private:
 };
 
@@ -494,7 +600,10 @@ class CERTI_EXPORT NM_Unsubscribe_Object_Class : public NetworkMessage {
        virtual ~NM_Unsubscribe_Object_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t objectClass;
   private:
 };
 
@@ -507,7 +616,10 @@ class CERTI_EXPORT NM_Subscribe_Interaction_Class : public NetworkMessage {
        virtual ~NM_Subscribe_Interaction_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -520,7 +632,10 @@ class CERTI_EXPORT NM_Unsubscribe_Interaction_Class : public NetworkMessage {
        virtual ~NM_Unsubscribe_Interaction_Class();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -533,7 +648,10 @@ class CERTI_EXPORT NM_Turn_Interactions_On : public NetworkMessage {
        virtual ~NM_Turn_Interactions_On();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -546,7 +664,10 @@ class CERTI_EXPORT NM_Turn_Interactions_Off : public NetworkMessage {
        virtual ~NM_Turn_Interactions_Off();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
+	  int32_t interactionClass;
   private:
 };
 
@@ -559,7 +680,9 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
        virtual ~NM_Register_Object();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -572,7 +695,9 @@ class CERTI_EXPORT NM_Discover_Object : public NetworkMessage {
        virtual ~NM_Discover_Object();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -585,7 +710,9 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
        virtual ~NM_Update_Attribute_Values();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -598,7 +725,9 @@ class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
        virtual ~NM_Reflect_Attribute_Values();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -611,7 +740,9 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
        virtual ~NM_Send_Interaction();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -624,7 +755,9 @@ class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
        virtual ~NM_Receive_Interaction();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -637,7 +770,9 @@ class CERTI_EXPORT NM_Delete_Object : public NetworkMessage {
        virtual ~NM_Delete_Object();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -650,7 +785,9 @@ class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
        virtual ~NM_Remove_Object();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -663,7 +800,9 @@ class CERTI_EXPORT NM_Change_Attribute_Transport_Type : public NetworkMessage {
        virtual ~NM_Change_Attribute_Transport_Type();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -676,7 +815,9 @@ class CERTI_EXPORT NM_Change_Attribute_Order_Type : public NetworkMessage {
        virtual ~NM_Change_Attribute_Order_Type();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -689,7 +830,9 @@ class CERTI_EXPORT NM_Change_Interaction_Transport_Type : public NetworkMessage 
        virtual ~NM_Change_Interaction_Transport_Type();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -702,7 +845,9 @@ class CERTI_EXPORT NM_Change_Interaction_Order_Type : public NetworkMessage {
        virtual ~NM_Change_Interaction_Order_Type();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -715,7 +860,9 @@ class CERTI_EXPORT NM_Request_Class_Attribute_Value_Update : public NetworkMessa
        virtual ~NM_Request_Class_Attribute_Value_Update();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -728,7 +875,9 @@ class CERTI_EXPORT NM_Request_Object_Attribute_Value_Update : public NetworkMess
        virtual ~NM_Request_Object_Attribute_Value_Update();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -741,7 +890,9 @@ class CERTI_EXPORT NM_Is_Attribute_Owned_By_Federate : public NetworkMessage {
        virtual ~NM_Is_Attribute_Owned_By_Federate();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -754,7 +905,9 @@ class CERTI_EXPORT NM_Query_Attribute_Ownership : public NetworkMessage {
        virtual ~NM_Query_Attribute_Ownership();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -767,7 +920,9 @@ class CERTI_EXPORT NM_Attribute_Is_Not_Owned : public NetworkMessage {
        virtual ~NM_Attribute_Is_Not_Owned();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -780,7 +935,9 @@ class CERTI_EXPORT NM_Inform_Attribute_Ownership : public NetworkMessage {
        virtual ~NM_Inform_Attribute_Ownership();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -793,7 +950,9 @@ class CERTI_EXPORT NM_Negotiated_Attribute_Ownership_Divestiture : public Networ
        virtual ~NM_Negotiated_Attribute_Ownership_Divestiture();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -806,7 +965,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_Notification : public Netw
        virtual ~NM_Attribute_Ownership_Acquisition_Notification();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -819,7 +980,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Divestiture_Notification : public Netw
        virtual ~NM_Attribute_Ownership_Divestiture_Notification();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -832,7 +995,9 @@ class CERTI_EXPORT NM_Request_Attribute_Ownership_Assumption : public NetworkMes
        virtual ~NM_Request_Attribute_Ownership_Assumption();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -845,7 +1010,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Unavailable : public NetworkMessage {
        virtual ~NM_Attribute_Ownership_Unavailable();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -858,7 +1025,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_If_Available : public Netw
        virtual ~NM_Attribute_Ownership_Acquisition_If_Available();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -871,7 +1040,9 @@ class CERTI_EXPORT NM_Unconditional_Attribute_Ownership_Divestiture : public Net
        virtual ~NM_Unconditional_Attribute_Ownership_Divestiture();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -884,7 +1055,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Acquisition : public NetworkMessage {
        virtual ~NM_Attribute_Ownership_Acquisition();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -897,7 +1070,9 @@ class CERTI_EXPORT NM_Request_Attribute_Ownership_Release : public NetworkMessag
        virtual ~NM_Request_Attribute_Ownership_Release();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -910,7 +1085,9 @@ class CERTI_EXPORT NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : public
        virtual ~NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -923,7 +1100,9 @@ class CERTI_EXPORT NM_Attribute_Ownership_Release_Response : public NetworkMessa
        virtual ~NM_Attribute_Ownership_Release_Response();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -936,7 +1115,9 @@ class CERTI_EXPORT NM_Cancel_Attribute_Ownership_Acquisition : public NetworkMes
        virtual ~NM_Cancel_Attribute_Ownership_Acquisition();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -949,7 +1130,9 @@ class CERTI_EXPORT NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : pub
        virtual ~NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -962,7 +1145,9 @@ class CERTI_EXPORT NM_Ddm_Create_Region : public NetworkMessage {
        virtual ~NM_Ddm_Create_Region();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -975,7 +1160,9 @@ class CERTI_EXPORT NM_Ddm_Modify_Region : public NetworkMessage {
        virtual ~NM_Ddm_Modify_Region();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -988,7 +1175,9 @@ class CERTI_EXPORT NM_Ddm_Delete_Region : public NetworkMessage {
        virtual ~NM_Ddm_Delete_Region();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1001,7 +1190,9 @@ class CERTI_EXPORT NM_Ddm_Associate_Region : public NetworkMessage {
        virtual ~NM_Ddm_Associate_Region();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1014,7 +1205,9 @@ class CERTI_EXPORT NM_Ddm_Register_Object : public NetworkMessage {
        virtual ~NM_Ddm_Register_Object();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1027,7 +1220,9 @@ class CERTI_EXPORT NM_Ddm_Unassociate_Region : public NetworkMessage {
        virtual ~NM_Ddm_Unassociate_Region();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1040,7 +1235,9 @@ class CERTI_EXPORT NM_Ddm_Subscribe_Attributes : public NetworkMessage {
        virtual ~NM_Ddm_Subscribe_Attributes();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1053,7 +1250,9 @@ class CERTI_EXPORT NM_Ddm_Unsubscribe_Attributes : public NetworkMessage {
        virtual ~NM_Ddm_Unsubscribe_Attributes();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1066,7 +1265,9 @@ class CERTI_EXPORT NM_Ddm_Subscribe_Interaction : public NetworkMessage {
        virtual ~NM_Ddm_Subscribe_Interaction();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1079,7 +1280,9 @@ class CERTI_EXPORT NM_Ddm_Unsubscribe_Interaction : public NetworkMessage {
        virtual ~NM_Ddm_Unsubscribe_Interaction();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1092,7 +1295,9 @@ class CERTI_EXPORT NM_Provide_Attribute_Value_Update : public NetworkMessage {
        virtual ~NM_Provide_Attribute_Value_Update();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1105,7 +1310,9 @@ class CERTI_EXPORT NM_Get_Fed_File : public NetworkMessage {
        virtual ~NM_Get_Fed_File();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
@@ -1118,14 +1325,14 @@ class CERTI_EXPORT NM_Last : public NetworkMessage {
        virtual ~NM_Last();
        virtual void serialize();
        virtual void deserialize();
+       /* specific Getter/Setter */
   protected:
+       /* specific field */
   private:
 };
 
 /*<END>---------- Last ------------<END>*/
 
-
-
-}
+} /* end of namespace certi */
 
 #endif

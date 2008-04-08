@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.2 2008/04/08 14:05:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -29,7 +29,7 @@ using std::cout;
 
 namespace certi {
 
-static pdCDebug D("RTIG_MSG", "(NetWorkMS) - ");
+static PrettyDebug D("RTIG_MSG", "(NetWorkMS) - ");
 static PrettyDebug G("GENDOC",__FILE__ );
 
 // ----------------------------------------------------------------------------
@@ -811,6 +811,77 @@ NetworkMessage::writeBody(Socket *socket)
 	G.Out(pdGendoc,"exit  NetworkMessage::writeBody");
 }
 
+void NetworkMessage::serialize() {
+	G.Out(pdGendoc,"enter NetworkMessage::serialize");
+	/* We serialize the common Network messages part 
+	 * ALL Network Message will contain the following
+	 */	
+	D.Out(pdDebug,("serialize"+getName()).c_str());
+	/* type of message */
+	msgBuf.write_int32(type);
+	msgBuf.write_int32(exception);
+	msgBuf.write_int32(federate);
+	msgBuf.write_int32(federation);
+	if (isDated) {
+		msgBuf.write_double(date);
+	}
+	G.Out(pdGendoc,"exit NetworkMessage::serialize");
+} /* end of serialize */
+
+void NetworkMessage::deserialize() {
+	G.Out(pdGendoc,"enter NetworkMessage::deserialize");
+	/* We serialize the common Network message part 
+	 * ALL Network Message will contain the following
+	 */	
+	D.Out(pdDebug,("deserialize"+getName()).c_str());	
+	/* deserialize common part */
+	type        = static_cast<certi::NetworkMessage::Type>(msgBuf.read_int32());
+	exception   = static_cast<certi::TypeException>(msgBuf.read_int32());
+	federate    = msgBuf.read_int32();
+	federation  = msgBuf.read_int32();
+	if (isDated) {
+		date = msgBuf.read_double();
+	}
+	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
+} /* end of deserialize */
+
+void
+NetworkMessage::send(Socket *socket) {
+	G.Out(pdGendoc,"enter NetworkMessage::send");
+	/* 1- serialize the message
+	 * This is a polymorphic call 
+	 * which may specialized in a daughter class  
+	 */
+	serialize();
+	/* 2- update message buffer 'reserved bytes' header */
+	msgBuf.updateReservedBytes();
+	D.Out(pdDebug,"[Header] Sending a buffer of <%u> bytes",msgBuf.size());
+	msgBuf.show(msgBuf(0),5);
+	/* 3- effectively send the raw message to socket */
+	socket->send(static_cast<unsigned char*>(msgBuf(0)), msgBuf.size());
+    G.Out(pdGendoc,"exit  NetworkMessage::send");
+} /* end of send */
+
+void
+NetworkMessage::receive(Socket* socket) {
+	G.Out(pdGendoc,"enter NetworkMessage::receive");
+	/* 1- Read 'reserved bytes' header from socket */
+	D.Out(pdDebug,"reading %d bytes for header",msgBuf.reservedBytes);
+	socket->receive(msgBuf(0), msgBuf.reservedBytes);	
+	msgBuf.show(msgBuf(0),5);
+	fflush(stdout);
+	/* 2- update (assume) complete message size from reserved bytes */
+	msgBuf.assumeSizeFromReservedBytes();
+	D.Out(pdDebug,"Got a MsgBuf of size %d bytes (including %d reserved)",msgBuf.size(),msgBuf.reservedBytes);
+	/* 3- receive the rest of the message */
+	socket->receive(msgBuf(msgBuf.reservedBytes),msgBuf.size()-msgBuf.reservedBytes);
+	/* 4- deserialize the message 
+	 * This is a polymorphic call 
+	 * which may specialized in a daughter class  
+	 */ 
+	deserialize();
+	G.Out(pdGendoc,"exit  NetworkMessage::receive");	
+} /* end of receive */
 // ----------------------------------------------------------------------------
 bool
 NetworkMessage::writeHeader(Socket *socket)
@@ -1130,4 +1201,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.2 2008/04/08 14:05:26 erk Exp $
