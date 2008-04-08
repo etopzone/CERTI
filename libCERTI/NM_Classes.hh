@@ -29,7 +29,7 @@ namespace certi {
  */
 class NM_Factory {
 public:
-	static NetworkMessage* create(NetworkMessage::Message_T type);
+	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
 };
 
 /*<BEGIN>---------- Not_Used ------------<BEGIN>*/
@@ -537,7 +537,7 @@ class CERTI_EXPORT NM_Unpublish_Object_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t objectClass;
+	  ObjectClassHandle objectClass;
   private:
 };
 
@@ -553,7 +553,7 @@ class CERTI_EXPORT NM_Publish_Interaction_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -569,7 +569,7 @@ class CERTI_EXPORT NM_Unpublish_Interaction_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -603,7 +603,7 @@ class CERTI_EXPORT NM_Unsubscribe_Object_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t objectClass;
+	  ObjectClassHandle objectClass;
   private:
 };
 
@@ -619,7 +619,7 @@ class CERTI_EXPORT NM_Subscribe_Interaction_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -635,7 +635,7 @@ class CERTI_EXPORT NM_Unsubscribe_Interaction_Class : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -651,7 +651,7 @@ class CERTI_EXPORT NM_Turn_Interactions_On : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -667,7 +667,7 @@ class CERTI_EXPORT NM_Turn_Interactions_Off : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
-	  int32_t interactionClass;
+	  InteractionClassHandle interactionClass;
   private:
 };
 
@@ -683,6 +683,7 @@ class CERTI_EXPORT NM_Register_Object : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
+	  ObjectHandle object;
   private:
 };
 
@@ -698,6 +699,7 @@ class CERTI_EXPORT NM_Discover_Object : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
+	  ObjectHandle object;
   private:
 };
 
@@ -712,19 +714,23 @@ class CERTI_EXPORT NM_Update_Attribute_Values : public NetworkMessage {
        virtual void deserialize();
        /* specific Getter/Setter */
   protected:
-       /* specific field */
+      /* specific field */
+	  ObjectClassHandle objectClass;
+	  bool hasHandleArray;
+	  UShort handleArraySize ;
+	  AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];
+	  ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
+	  
   private:
 };
 
 /*<END>---------- Update_Attribute_Values ------------<END>*/
 
 /*<BEGIN>---------- Reflect_Attribute_Values ------------<BEGIN>*/
-class CERTI_EXPORT NM_Reflect_Attribute_Values : public NetworkMessage {
+class CERTI_EXPORT NM_Reflect_Attribute_Values : public NM_Update_Attribute_Values {
   public:
        NM_Reflect_Attribute_Values();
-       virtual ~NM_Reflect_Attribute_Values();
-       virtual void serialize();
-       virtual void deserialize();
+       virtual ~NM_Reflect_Attribute_Values();       
        /* specific Getter/Setter */
   protected:
        /* specific field */
@@ -743,18 +749,21 @@ class CERTI_EXPORT NM_Send_Interaction : public NetworkMessage {
        /* specific Getter/Setter */
   protected:
        /* specific field */
+	  InteractionClassHandle interactionClass;
+	  bool hasHandleArray;
+	  UShort handleArraySize ;
+	  AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];
+	  ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
   private:
 };
 
 /*<END>---------- Send_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Receive_Interaction ------------<BEGIN>*/
-class CERTI_EXPORT NM_Receive_Interaction : public NetworkMessage {
+class CERTI_EXPORT NM_Receive_Interaction : public NM_Send_Interaction {
   public:
        NM_Receive_Interaction();
        virtual ~NM_Receive_Interaction();
-       virtual void serialize();
-       virtual void deserialize();
        /* specific Getter/Setter */
   protected:
        /* specific field */
@@ -779,12 +788,10 @@ class CERTI_EXPORT NM_Delete_Object : public NetworkMessage {
 /*<END>---------- Delete_Object ------------<END>*/
 
 /*<BEGIN>---------- Remove_Object ------------<BEGIN>*/
-class CERTI_EXPORT NM_Remove_Object : public NetworkMessage {
+class CERTI_EXPORT NM_Remove_Object : public NM_Delete_Object {
   public:
        NM_Remove_Object();
        virtual ~NM_Remove_Object();
-       virtual void serialize();
-       virtual void deserialize();
        /* specific Getter/Setter */
   protected:
        /* specific field */

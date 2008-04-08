@@ -22,7 +22,7 @@
 
 namespace certi {
 
-NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) {
+NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIinternalError) {
 	NetworkMessage* msg;
 	
 	switch (type) {
@@ -171,15 +171,19 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) {
 	   msg = new NM_Remove_Object(); 
 	   break;
 	case NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
+	   throw RTIinternalError("CHANGE_ATTRIBUTE_TRANSPORT_TYPE: Unimplemented");
 	   msg = new NM_Change_Attribute_Transport_Type(); 
 	   break;
 	case NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE:
+	   throw RTIinternalError("CHANGE_ATTRIBUTE_ORDER_TYPE: Unimplemented");
 	   msg = new NM_Change_Attribute_Order_Type(); 
-	   break;
+	   break;	   
 	case NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE:
+	   throw RTIinternalError("CHANGE_INTERACTION_TRANSPORT_TYPE: Unimplemented");
 	   msg = new NM_Change_Interaction_Transport_Type(); 
-	   break;
+	   break;	   
 	case NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE:
+	   throw RTIinternalError("CHANGE_INTERACTION_ORDER_TYPE: Unimplemented");
 	   msg = new NM_Change_Interaction_Order_Type(); 
 	   break;
 	case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
@@ -1207,6 +1211,7 @@ NM_Register_Object::NM_Register_Object() {
     this->name = "REGISTER_OBJECT";
     this->type = NetworkMessage::REGISTER_OBJECT;
     /* specific field init */
+    isLabelled = true;
 }
 NM_Register_Object::~NM_Register_Object() {
 }
@@ -1214,11 +1219,13 @@ void NM_Register_Object::serialize() {
   /* call mother class */      
   NetworkMessage::serialize(); 
   /* specific code (if any) goes here */
+  msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Register_Object::deserialize() {
   /* call mother class */      
   NetworkMessage::deserialize(); 
   /* specific code (if any) goes here */
+  object = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Register_Object ------------<END>*/
 
@@ -1227,6 +1234,7 @@ NM_Discover_Object::NM_Discover_Object() {
     this->name = "DISCOVER_OBJECT";
     this->type = NetworkMessage::DISCOVER_OBJECT;
     /* specific field init */
+    isLabelled = true;
 }
 NM_Discover_Object::~NM_Discover_Object() {
 }
@@ -1234,11 +1242,13 @@ void NM_Discover_Object::serialize() {
   /* call mother class */      
   NetworkMessage::serialize(); 
   /* specific code (if any) goes here */
+  msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Discover_Object::deserialize() {
   /* call mother class */      
   NetworkMessage::deserialize(); 
   /* specific code (if any) goes here */
+  object = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Discover_Object ------------<END>*/
 
@@ -1247,18 +1257,47 @@ NM_Update_Attribute_Values::NM_Update_Attribute_Values() {
     this->name = "UPDATE_ATTRIBUTE_VALUES";
     this->type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES;
     /* specific field init */
+    isDated    = true;
+    isLabelled = true;
 }
 NM_Update_Attribute_Values::~NM_Update_Attribute_Values() {
 }
 void NM_Update_Attribute_Values::serialize() {
+  int i;
   /* call mother class */      
   NetworkMessage::serialize(); 
   /* specific code (if any) goes here */
+  msgBuf.write_int32(objectClass);
+  msgBuf.write_bool(hasHandleArray);
+  if (hasHandleArray) {
+  	  msgBuf.write_uint16(handleArraySize);
+  	  for (i = 0 ; i < handleArraySize ; i ++) {
+  	  	  msgBuf.write_uint16(handleArray[i]);
+  	  }
+  }
+  /* the value pre-encoded by the user (HLA 1.3) */
+  for (i = 0 ; i < handleArraySize ; i++) {
+	  msgBuf.write_int32(ValueArray[i].length) ;
+	  msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+  }    
 } /* end of serialize */ 
 void NM_Update_Attribute_Values::deserialize() {
+  int i;
   /* call mother class */      
   NetworkMessage::deserialize(); 
   /* specific code (if any) goes here */
+  objectClass = msgBuf.read_int32();
+  hasHandleArray = msgBuf.read_bool();
+  if (hasHandleArray) {
+  	  handleArraySize = msgBuf.read_int16();
+  	  for (i = 0 ; i < handleArraySize ; i ++) {
+  	  		handleArray[i] = msgBuf.read_int16();
+  	  }
+  }  
+  for (i = 0 ; i < handleArraySize ; i ++) {
+  	  ValueArray[i].length = msgBuf.read_int32();
+  	  msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+  }
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
 
@@ -1270,16 +1309,7 @@ NM_Reflect_Attribute_Values::NM_Reflect_Attribute_Values() {
 }
 NM_Reflect_Attribute_Values::~NM_Reflect_Attribute_Values() {
 }
-void NM_Reflect_Attribute_Values::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Reflect_Attribute_Values::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
+
 /*<END>---------- Reflect_Attribute_Values ------------<END>*/
 
 /*<BEGIN>---------- Send_Interaction ------------<BEGIN>*/
@@ -1287,18 +1317,47 @@ NM_Send_Interaction::NM_Send_Interaction() {
     this->name = "SEND_INTERACTION";
     this->type = NetworkMessage::SEND_INTERACTION;
     /* specific field init */
+    isDated    = true;
+    isLabelled = true;
 }
 NM_Send_Interaction::~NM_Send_Interaction() {
 }
 void NM_Send_Interaction::serialize() {
+	int i;
   /* call mother class */      
   NetworkMessage::serialize(); 
   /* specific code (if any) goes here */
+  msgBuf.write_int32(interactionClass);
+    msgBuf.write_bool(hasHandleArray);
+    if (hasHandleArray) {
+    	  msgBuf.write_uint16(handleArraySize);
+    	  for (i = 0 ; i < handleArraySize ; i ++) {
+    	  	  msgBuf.write_uint16(handleArray[i]);
+    	  }
+    }
+    /* the value pre-encoded by the user (HLA 1.3) */
+    for (i = 0 ; i < handleArraySize ; i++) {
+  	  msgBuf.write_int32(ValueArray[i].length) ;
+  	  msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+    }    
 } /* end of serialize */ 
 void NM_Send_Interaction::deserialize() {
+	int i;
   /* call mother class */      
   NetworkMessage::deserialize(); 
   /* specific code (if any) goes here */
+  interactionClass = msgBuf.read_int32();
+    hasHandleArray = msgBuf.read_bool();
+    if (hasHandleArray) {
+    	  handleArraySize = msgBuf.read_int16();
+    	  for (i = 0 ; i < handleArraySize ; i ++) {
+    	  		handleArray[i] = msgBuf.read_int16();
+    	  }
+    }  
+    for (i = 0 ; i < handleArraySize ; i ++) {
+    	  ValueArray[i].length = msgBuf.read_int32();
+    	  msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+    }
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/
 
@@ -1310,16 +1369,6 @@ NM_Receive_Interaction::NM_Receive_Interaction() {
 }
 NM_Receive_Interaction::~NM_Receive_Interaction() {
 }
-void NM_Receive_Interaction::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Receive_Interaction::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Receive_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Delete_Object ------------<BEGIN>*/
@@ -1327,6 +1376,8 @@ NM_Delete_Object::NM_Delete_Object() {
     this->name = "DELETE_OBJECT";
     this->type = NetworkMessage::DELETE_OBJECT;
     /* specific field init */
+    isDated    = true;
+    isLabelled = true;
 }
 NM_Delete_Object::~NM_Delete_Object() {
 }
@@ -1334,11 +1385,13 @@ void NM_Delete_Object::serialize() {
   /* call mother class */      
   NetworkMessage::serialize(); 
   /* specific code (if any) goes here */
+  msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Delete_Object::deserialize() {
   /* call mother class */      
   NetworkMessage::deserialize(); 
   /* specific code (if any) goes here */
+  object = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Delete_Object ------------<END>*/
 
@@ -1350,16 +1403,7 @@ NM_Remove_Object::NM_Remove_Object() {
 }
 NM_Remove_Object::~NM_Remove_Object() {
 }
-void NM_Remove_Object::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Remove_Object::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
+
 /*<END>---------- Remove_Object ------------<END>*/
 
 /*<BEGIN>---------- Change_Attribute_Transport_Type ------------<BEGIN>*/
