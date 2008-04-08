@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.37 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIG.cc,v 3.38 2008/04/08 08:50:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -389,6 +389,7 @@ RTIG::closeConnection(Socket *link, bool emergency)
     Handle federation ;
     FederateHandle federate ;
 
+    G.Out(pdGendoc,"enter RTIG::closeConnection");
     try {
         socketServer.close(link->returnSocket(), federation, federate);
     }
@@ -401,6 +402,8 @@ RTIG::closeConnection(Socket *link, bool emergency)
         federations.killFederate(federation, federate);
         D.Out(pdExcept, "Federate(%u, %u)Killed... ", federation, federate);
     }
+
+    G.Out(pdGendoc,"exit  RTIG::closeConnection");
 }
 
 // ----------------------------------------------------------------------------
@@ -988,4 +991,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.37 2008/04/01 13:00:47 rousse Exp $
+// $Id: RTIG.cc,v 3.38 2008/04/08 08:50:23 rousse Exp $

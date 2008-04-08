@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.cc,v 3.23 2008/04/08 08:50:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -139,12 +139,15 @@ Communications::Communications()
 Communications::~Communications()
 {
     // Advertise RTIG that TCP link is being closed.
+    G.Out(pdGendoc,"enter Communications::~Communications");
 
     NetworkMessage msg ;
     msg.type = NetworkMessage::CLOSE_CONNEXION ;
     msg.write((SecureTCPSocket *) this);
 
     SecureTCPSocket::close();
+
+    G.Out(pdGendoc,"exit  Communications::~Communications");
 }
 
 // ----------------------------------------------------------------------------
@@ -339,4 +342,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.22 2008/02/22 11:34:30 siron Exp $
+// $Id: Communications.cc,v 3.23 2008/04/08 08:50:22 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.59 2008/04/03 15:21:51 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.60 2008/04/08 08:50:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -109,6 +109,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         strcpy(rep.FEDid,FEDid) ;
         rep.federationName = new char [strlen(federation)+1] ;
         strcpy(rep.federationName,federation);
+        auditServer <<" created." ;
         }
 
     G.Out(pdGendoc,"processCreateFederation===>write answer to RTIA");
@@ -334,6 +335,7 @@ RTIG::processResignFederation(Handle federation,
     D.Out(pdInit, "Federate %u is resigning from federation %u.",
           federe, federation);
 
+    auditServer << "Federate " << federe << " resign federation("<<federation<<")" ;
     G.Out(pdGendoc,"exit RTIG::processResignFederation");
     G.Out(pdGendoc,"END ** RESIGN FEDERATION SERVICE **");
 
@@ -356,7 +358,6 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 
     if (federation == NULL) throw RTIinternalError("Invalid Federation Name.");
 
-    auditServer << "Name \"" << federation << "\"" ;
     federations.exists(federation, num_federation);
     // May throw RTIinternalError
     //           FederatesCurrentlyJoined
@@ -383,7 +384,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
         else if (strcmp(e._name,"FederatesCurrentlyJoined")==0 )
           {
           rep.exception = e_FederatesCurrentlyJoined;
-          strcpy(rep.exceptionReason,e._reason);
+          strcpy(rep.exceptionReason,"at least one federate joined");
           }       
       }
 
@@ -391,10 +392,15 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.federationName = new char[strlen(req->federationName)+1];
     strcpy(rep.federationName,req->federationName);
-
+    if ( rep.exception == e_NO_EXCEPTION )
+       {
+       auditServer << "Federation Name \"" << federation << "\"("<<num_federation<<") destroyed." ;
+       }
     G.Out(pdGendoc,"processDestroyFederation===>write DFE to RTIA");
 
     rep.write(link);
+
+
 
     G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
     G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
@@ -1462,4 +1468,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.59 2008/04/03 15:21:51 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.60 2008/04/08 08:50:23 rousse Exp $
