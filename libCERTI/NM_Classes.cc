@@ -24,1348 +24,957 @@ namespace certi {
 
 NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIinternalError) {
 	NetworkMessage* msg;
-	
+
 	switch (type) {
 	case NetworkMessage::NOT_USED:
-	   msg = new NM_Not_Used(); 
-	   break;
+		throw RTIinternalError("NOT_USED message type should not be used!!");
+		msg = new NM_Not_Used(); 
+		break;
 	case NetworkMessage::CLOSE_CONNEXION:
-	   msg = new NM_Close_Connexion(); 
-	   break;
+		msg = new NM_Close_Connexion(); 
+		break;
 	case NetworkMessage::MESSAGE_NULL:
-	   msg = new NM_Message_Null(); 
-	   break;
+		msg = new NM_Message_Null(); 
+		break;
 	case NetworkMessage::CREATE_FEDERATION_EXECUTION:
-	   msg = new NM_Create_Federation_Execution(); 
-	   break;
+		msg = new NM_Create_Federation_Execution(); 
+		break;
 	case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
-	   msg = new NM_Destroy_Federation_Execution(); 
-	   break;
+		msg = new NM_Destroy_Federation_Execution(); 
+		break;
 	case NetworkMessage::JOIN_FEDERATION_EXECUTION:
-	   msg = new NM_Join_Federation_Execution(); 
-	   break;
+		msg = new NM_Join_Federation_Execution(); 
+		break;
 	case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
-	   msg = new NM_Resign_Federation_Execution(); 
-	   break;
+		msg = new NM_Resign_Federation_Execution(); 
+		break;
 	case NetworkMessage::SET_TIME_REGULATING:
-	   msg = new NM_Set_Time_Regulating(); 
-	   break;
+		msg = new NM_Set_Time_Regulating(); 
+		break;
 	case NetworkMessage::SET_TIME_CONSTRAINED:
-	   msg = new NM_Set_Time_Constrained(); 
-	   break;
+		msg = new NM_Set_Time_Constrained(); 
+		break;
 	case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-	   msg = new NM_Register_Federation_Synchronization_Point(); 
-	   break;
+		msg = new NM_Register_Federation_Synchronization_Point(); 
+		break;
 	case NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-	   msg = new NM_Synchronization_Point_Registration_Succeeded(); 
-	   break;
+		msg = new NM_Synchronization_Point_Registration_Succeeded(); 
+		break;
 	case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
-	   msg = new NM_Announce_Synchronization_Point(); 
-	   break;
+		msg = new NM_Announce_Synchronization_Point(); 
+		break;
 	case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
-	   msg = new NM_Synchronization_Point_Achieved(); 
-	   break;
+		msg = new NM_Synchronization_Point_Achieved(); 
+		break;
 	case NetworkMessage::FEDERATION_SYNCHRONIZED:
-	   msg = new NM_Federation_Synchronized(); 
-	   break;
+		msg = new NM_Federation_Synchronized(); 
+		break;
 	case NetworkMessage::REQUEST_FEDERATION_SAVE:
-	   msg = new NM_Request_Federation_Save(); 
-	   break;
+		msg = new NM_Request_Federation_Save(); 
+		break;
 	case NetworkMessage::FEDERATE_SAVE_BEGUN:
-	   msg = new NM_Federate_Save_Begun(); 
-	   break;
+		msg = new NM_Federate_Save_Begun(); 
+		break;
 	case NetworkMessage::FEDERATE_SAVE_COMPLETE:
-	   msg = new NM_Federate_Save_Complete(); 
-	   break;
+		msg = new NM_Federate_Save_Complete(); 
+		break;
 	case NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE:
-	   msg = new NM_Federate_Save_Not_Complete(); 
-	   break;
+		msg = new NM_Federate_Save_Not_Complete(); 
+		break;
 	case NetworkMessage::INITIATE_FEDERATE_SAVE:
-	   msg = new NM_Initiate_Federate_Save(); 
-	   break;
+		msg = new NM_Initiate_Federate_Save(); 
+		break;
 	case NetworkMessage::FEDERATION_SAVED:
-	   msg = new NM_Federation_Saved(); 
-	   break;
+		msg = new NM_Federation_Saved(); 
+		break;
 	case NetworkMessage::FEDERATION_NOT_SAVED:
-	   msg = new NM_Federation_Not_Saved(); 
-	   break;
+		msg = new NM_Federation_Not_Saved(); 
+		break;
 	case NetworkMessage::REQUEST_FEDERATION_RESTORE:
-	   msg = new NM_Request_Federation_Restore(); 
-	   break;
+		msg = new NM_Request_Federation_Restore(); 
+		break;
 	case NetworkMessage::FEDERATE_RESTORE_COMPLETE:
-	   msg = new NM_Federate_Restore_Complete(); 
-	   break;
+		msg = new NM_Federate_Restore_Complete(); 
+		break;
 	case NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE:
-	   msg = new NM_Federate_Restore_Not_Complete(); 
-	   break;
+		msg = new NM_Federate_Restore_Not_Complete(); 
+		break;
 	case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-	   msg = new NM_Request_Federation_Restore_Succeeded(); 
-	   break;
+		msg = new NM_Request_Federation_Restore_Succeeded(); 
+		break;
 	case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED:
-	   msg = new NM_Request_Federation_Restore_Failed(); 
-	   break;
+		msg = new NM_Request_Federation_Restore_Failed(); 
+		break;
 	case NetworkMessage::FEDERATION_RESTORE_BEGUN:
-	   msg = new NM_Federation_Restore_Begun(); 
-	   break;
+		msg = new NM_Federation_Restore_Begun(); 
+		break;
 	case NetworkMessage::INITIATE_FEDERATE_RESTORE:
-	   msg = new NM_Initiate_Federate_Restore(); 
-	   break;
+		msg = new NM_Initiate_Federate_Restore(); 
+		break;
 	case NetworkMessage::FEDERATION_RESTORED:
-	   msg = new NM_Federation_Restored(); 
-	   break;
+		msg = new NM_Federation_Restored(); 
+		break;
 	case NetworkMessage::FEDERATION_NOT_RESTORED:
-	   msg = new NM_Federation_Not_Restored(); 
-	   break;
+		msg = new NM_Federation_Not_Restored(); 
+		break;
 	case NetworkMessage::PUBLISH_OBJECT_CLASS:
-	   msg = new NM_Publish_Object_Class(); 
-	   break;
+		msg = new NM_Publish_Object_Class(); 
+		break;
 	case NetworkMessage::UNPUBLISH_OBJECT_CLASS:
-	   msg = new NM_Unpublish_Object_Class(); 
-	   break;
+		msg = new NM_Unpublish_Object_Class(); 
+		break;
 	case NetworkMessage::PUBLISH_INTERACTION_CLASS:
-	   msg = new NM_Publish_Interaction_Class(); 
-	   break;
+		msg = new NM_Publish_Interaction_Class(); 
+		break;
 	case NetworkMessage::UNPUBLISH_INTERACTION_CLASS:
-	   msg = new NM_Unpublish_Interaction_Class(); 
-	   break;
+		msg = new NM_Unpublish_Interaction_Class(); 
+		break;
 	case NetworkMessage::SUBSCRIBE_OBJECT_CLASS:
-	   msg = new NM_Subscribe_Object_Class(); 
-	   break;
+		msg = new NM_Subscribe_Object_Class(); 
+		break;
 	case NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS:
-	   msg = new NM_Unsubscribe_Object_Class(); 
-	   break;
+		msg = new NM_Unsubscribe_Object_Class(); 
+		break;
 	case NetworkMessage::SUBSCRIBE_INTERACTION_CLASS:
-	   msg = new NM_Subscribe_Interaction_Class(); 
-	   break;
+		msg = new NM_Subscribe_Interaction_Class(); 
+		break;
 	case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
-	   msg = new NM_Unsubscribe_Interaction_Class(); 
-	   break;
+		msg = new NM_Unsubscribe_Interaction_Class(); 
+		break;
 	case NetworkMessage::TURN_INTERACTIONS_ON:
-	   msg = new NM_Turn_Interactions_On(); 
-	   break;
+		msg = new NM_Turn_Interactions_On(); 
+		break;
 	case NetworkMessage::TURN_INTERACTIONS_OFF:
-	   msg = new NM_Turn_Interactions_Off(); 
-	   break;
+		msg = new NM_Turn_Interactions_Off(); 
+		break;
 	case NetworkMessage::REGISTER_OBJECT:
-	   msg = new NM_Register_Object(); 
-	   break;
+		msg = new NM_Register_Object(); 
+		break;
 	case NetworkMessage::DISCOVER_OBJECT:
-	   msg = new NM_Discover_Object(); 
-	   break;
+		msg = new NM_Discover_Object(); 
+		break;
 	case NetworkMessage::UPDATE_ATTRIBUTE_VALUES:
-	   msg = new NM_Update_Attribute_Values(); 
-	   break;
+		msg = new NM_Update_Attribute_Values(); 
+		break;
 	case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
-	   msg = new NM_Reflect_Attribute_Values(); 
-	   break;
+		msg = new NM_Reflect_Attribute_Values(); 
+		break;
 	case NetworkMessage::SEND_INTERACTION:
-	   msg = new NM_Send_Interaction(); 
-	   break;
+		msg = new NM_Send_Interaction(); 
+		break;
 	case NetworkMessage::RECEIVE_INTERACTION:
-	   msg = new NM_Receive_Interaction(); 
-	   break;
+		msg = new NM_Receive_Interaction(); 
+		break;
 	case NetworkMessage::DELETE_OBJECT:
-	   msg = new NM_Delete_Object(); 
-	   break;
+		msg = new NM_Delete_Object(); 
+		break;
 	case NetworkMessage::REMOVE_OBJECT:
-	   msg = new NM_Remove_Object(); 
-	   break;
+		msg = new NM_Remove_Object(); 
+		break;
 	case NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE:
-	   throw RTIinternalError("CHANGE_ATTRIBUTE_TRANSPORT_TYPE: Unimplemented");
-	   msg = new NM_Change_Attribute_Transport_Type(); 
-	   break;
+		throw RTIinternalError("CHANGE_ATTRIBUTE_TRANSPORT_TYPE: Unimplemented");
+		msg = new NM_Change_Attribute_Transport_Type(); 
+		break;
 	case NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE:
-	   throw RTIinternalError("CHANGE_ATTRIBUTE_ORDER_TYPE: Unimplemented");
-	   msg = new NM_Change_Attribute_Order_Type(); 
-	   break;	   
+		throw RTIinternalError("CHANGE_ATTRIBUTE_ORDER_TYPE: Unimplemented");
+		msg = new NM_Change_Attribute_Order_Type(); 
+		break;	   
 	case NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE:
-	   throw RTIinternalError("CHANGE_INTERACTION_TRANSPORT_TYPE: Unimplemented");
-	   msg = new NM_Change_Interaction_Transport_Type(); 
-	   break;	   
+		throw RTIinternalError("CHANGE_INTERACTION_TRANSPORT_TYPE: Unimplemented");
+		msg = new NM_Change_Interaction_Transport_Type(); 
+		break;	   
 	case NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE:
-	   throw RTIinternalError("CHANGE_INTERACTION_ORDER_TYPE: Unimplemented");
-	   msg = new NM_Change_Interaction_Order_Type(); 
-	   break;
+		throw RTIinternalError("CHANGE_INTERACTION_ORDER_TYPE: Unimplemented");
+		msg = new NM_Change_Interaction_Order_Type(); 
+		break;
 	case NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-	   msg = new NM_Request_Class_Attribute_Value_Update(); 
-	   break;
+		msg = new NM_Request_Class_Attribute_Value_Update(); 
+		break;
 	case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-	   msg = new NM_Request_Object_Attribute_Value_Update(); 
-	   break;
+		msg = new NM_Request_Object_Attribute_Value_Update(); 
+		break;
 	case NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-	   msg = new NM_Is_Attribute_Owned_By_Federate(); 
-	   break;
+		msg = new NM_Is_Attribute_Owned_By_Federate(); 
+		break;
 	case NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP:
-	   msg = new NM_Query_Attribute_Ownership(); 
-	   break;
+		msg = new NM_Query_Attribute_Ownership(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED:
-	   msg = new NM_Attribute_Is_Not_Owned(); 
-	   break;
+		msg = new NM_Attribute_Is_Not_Owned(); 
+		break;
 	case NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP:
-	   msg = new NM_Inform_Attribute_Ownership(); 
-	   break;
+		msg = new NM_Inform_Attribute_Ownership(); 
+		break;
 	case NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-	   msg = new NM_Negotiated_Attribute_Ownership_Divestiture(); 
-	   break;
+		msg = new NM_Negotiated_Attribute_Ownership_Divestiture(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-	   msg = new NM_Attribute_Ownership_Acquisition_Notification(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Acquisition_Notification(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-	   msg = new NM_Attribute_Ownership_Divestiture_Notification(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Divestiture_Notification(); 
+		break;
 	case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-	   msg = new NM_Request_Attribute_Ownership_Assumption(); 
-	   break;
+		msg = new NM_Request_Attribute_Ownership_Assumption(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-	   msg = new NM_Attribute_Ownership_Unavailable(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Unavailable(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-	   msg = new NM_Attribute_Ownership_Acquisition_If_Available(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Acquisition_If_Available(); 
+		break;
 	case NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-	   msg = new NM_Unconditional_Attribute_Ownership_Divestiture(); 
-	   break;
+		msg = new NM_Unconditional_Attribute_Ownership_Divestiture(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION:
-	   msg = new NM_Attribute_Ownership_Acquisition(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Acquisition(); 
+		break;
 	case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-	   msg = new NM_Request_Attribute_Ownership_Release(); 
-	   break;
+		msg = new NM_Request_Attribute_Ownership_Release(); 
+		break;
 	case NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-	   msg = new NM_Cancel_Negotiated_Attribute_Ownership_Divestiture(); 
-	   break;
+		msg = new NM_Cancel_Negotiated_Attribute_Ownership_Divestiture(); 
+		break;
 	case NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-	   msg = new NM_Attribute_Ownership_Release_Response(); 
-	   break;
+		msg = new NM_Attribute_Ownership_Release_Response(); 
+		break;
 	case NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-	   msg = new NM_Cancel_Attribute_Ownership_Acquisition(); 
-	   break;
+		msg = new NM_Cancel_Attribute_Ownership_Acquisition(); 
+		break;
 	case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-	   msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation(); 
-	   break;
+		msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation(); 
+		break;
 	case NetworkMessage::DDM_CREATE_REGION:
-	   msg = new NM_Ddm_Create_Region(); 
-	   break;
+		msg = new NM_Ddm_Create_Region(); 
+		break;
 	case NetworkMessage::DDM_MODIFY_REGION:
-	   msg = new NM_Ddm_Modify_Region(); 
-	   break;
+		msg = new NM_Ddm_Modify_Region(); 
+		break;
 	case NetworkMessage::DDM_DELETE_REGION:
-	   msg = new NM_Ddm_Delete_Region(); 
-	   break;
+		msg = new NM_Ddm_Delete_Region(); 
+		break;
 	case NetworkMessage::DDM_ASSOCIATE_REGION:
-	   msg = new NM_Ddm_Associate_Region(); 
-	   break;
+		msg = new NM_Ddm_Associate_Region(); 
+		break;
 	case NetworkMessage::DDM_REGISTER_OBJECT:
-	   msg = new NM_Ddm_Register_Object(); 
-	   break;
+		msg = new NM_Ddm_Register_Object(); 
+		break;
 	case NetworkMessage::DDM_UNASSOCIATE_REGION:
-	   msg = new NM_Ddm_Unassociate_Region(); 
-	   break;
+		msg = new NM_Ddm_Unassociate_Region(); 
+		break;
 	case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
-	   msg = new NM_Ddm_Subscribe_Attributes(); 
-	   break;
+		msg = new NM_Ddm_Subscribe_Attributes(); 
+		break;
 	case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
-	   msg = new NM_Ddm_Unsubscribe_Attributes(); 
-	   break;
+		msg = new NM_Ddm_Unsubscribe_Attributes(); 
+		break;
 	case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
-	   msg = new NM_Ddm_Subscribe_Interaction(); 
-	   break;
+		msg = new NM_Ddm_Subscribe_Interaction(); 
+		break;
 	case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
-	   msg = new NM_Ddm_Unsubscribe_Interaction(); 
-	   break;
+		msg = new NM_Ddm_Unsubscribe_Interaction(); 
+		break;
 	case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-	   msg = new NM_Provide_Attribute_Value_Update(); 
-	   break;
+		msg = new NM_Provide_Attribute_Value_Update(); 
+		break;
 	case NetworkMessage::GET_FED_FILE:
-	   msg = new NM_Get_Fed_File(); 
-	   break;
+		msg = new NM_Get_Fed_File(); 
+		break;
 	case NetworkMessage::LAST:
-	   msg = new NM_Last(); 
-	   break;
-
+		throw RTIinternalError("LAST message type should not be used!!");
+		msg = new NM_Last(); 
+		break;
 	default:
 		throw RTIinternalError("Unknown/Unimplemented message Type");
 	}
 } /* end of NM_Factory::create */
 
+NM_WithHandleArray::NM_WithHandleArray() {
+	this->name = "NM_WithHandleArray";
+	this->type = NetworkMessage::NOT_USED;
+	/* specific field init */
+	this->handleArraySize = 0;
+}
+
+NM_WithHandleArray::~NM_WithHandleArray() {
+}
+
+void NM_WithHandleArray::serialize() {
+	int i;
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */	
+	msgBuf.write_uint16(handleArraySize);
+	/* 
+	 * Note that if handleArraySize is 0 
+	 * the loop is void which is done on purpose.
+	 * (this is a feature not a bug :-) 
+	 */		
+	for (i = 0 ; i < handleArraySize ; i ++) {
+		msgBuf.write_uint16(handleArray[i]);
+	}
+
+} /* end of serialize */ 
+void NM_WithHandleArray::deserialize() {
+	int i;
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */	
+	handleArraySize = msgBuf.read_int16();
+	/* 
+	 * Note that if handleArraySize is 0 
+	 * the loop is void which is done on purpose.
+	 * (this is a feature not a bug :-) 
+	 */	
+	for (i = 0 ; i < handleArraySize ; i ++) {
+		handleArray[i] = msgBuf.read_int16();
+	}
+} /* end of deserialize */
+
 /*<BEGIN>---------- Not_Used ------------<BEGIN>*/
 NM_Not_Used::NM_Not_Used() {
-    this->name = "NOT_USED";
-    this->type = NetworkMessage::NOT_USED;
-    /* specific field init */
+	this->name = "NOT_USED";
+	this->type = NetworkMessage::NOT_USED;
+	/* specific field init */
 }
 NM_Not_Used::~NM_Not_Used() {
 }
-void NM_Not_Used::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Not_Used::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Not_Used ------------<END>*/
 
 /*<BEGIN>---------- Close_Connexion ------------<BEGIN>*/
 NM_Close_Connexion::NM_Close_Connexion() {
-    this->name = "CLOSE_CONNEXION";
-    this->type = NetworkMessage::CLOSE_CONNEXION;
-    /* specific field init */
+	this->name = "CLOSE_CONNEXION";
+	this->type = NetworkMessage::CLOSE_CONNEXION;
+	/* specific field init */
 }
 NM_Close_Connexion::~NM_Close_Connexion() {
 }
-void NM_Close_Connexion::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Close_Connexion::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Close_Connexion ------------<END>*/
 
 /*<BEGIN>---------- Message_Null ------------<BEGIN>*/
 NM_Message_Null::NM_Message_Null() {
-    this->name = "MESSAGE_NULL";
-    this->type = NetworkMessage::MESSAGE_NULL;
-    /* specific field init */
-    isDated = true;
+	this->name = "MESSAGE_NULL";
+	this->type = NetworkMessage::MESSAGE_NULL;
+	/* specific field init */
+	isDated = true;
 }
 NM_Message_Null::~NM_Message_Null() {	
 }
-void NM_Message_Null::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */  
-} /* end of serialize */ 
-void NM_Message_Null::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Message_Null ------------<END>*/
 
 /*<BEGIN>---------- Create_Federation_Execution ------------<BEGIN>*/
 NM_Create_Federation_Execution::NM_Create_Federation_Execution() {
-    this->name = "CREATE_FEDERATION_EXECUTION";
-    this->type = NetworkMessage::CREATE_FEDERATION_EXECUTION;
-    /* specific field init */
-    isDated = true;
+	this->name = "CREATE_FEDERATION_EXECUTION";
+	this->type = NetworkMessage::CREATE_FEDERATION_EXECUTION;
+	/* specific field init */
+	isDated = true;
 }
 NM_Create_Federation_Execution::~NM_Create_Federation_Execution() {	
 }
 void NM_Create_Federation_Execution::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_string(federationName);
-  msgBuf.write_string(FEDid);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_string(federationName);
+	msgBuf.write_string(FEDid);
 } /* end of serialize */ 
 void NM_Create_Federation_Execution::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  federationName = msgBuf.read_string();
-  FEDid          = msgBuf.read_string();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	federationName = msgBuf.read_string();
+	FEDid          = msgBuf.read_string();
 } /* end of deserialize */
 /*<END>---------- Create_Federation_Execution ------------<END>*/
 
 /*<BEGIN>---------- Destroy_Federation_Execution ------------<BEGIN>*/
 NM_Destroy_Federation_Execution::NM_Destroy_Federation_Execution() {
-    this->name = "DESTROY_FEDERATION_EXECUTION";
-    this->type = NetworkMessage::DESTROY_FEDERATION_EXECUTION;    
-    /* specific field init */    
-    isDated = true;
+	this->name = "DESTROY_FEDERATION_EXECUTION";
+	this->type = NetworkMessage::DESTROY_FEDERATION_EXECUTION;    
+	/* specific field init */    
+	isDated = true;
 }
 NM_Destroy_Federation_Execution::~NM_Destroy_Federation_Execution() {
 }
 void NM_Destroy_Federation_Execution::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_string(federationName);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_string(federationName);
 } /* end of serialize */ 
 void NM_Destroy_Federation_Execution::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  date           = msgBuf.read_double();
-  federationName = msgBuf.read_string();    
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	date           = msgBuf.read_double();
+	federationName = msgBuf.read_string();    
 } /* end of deserialize */
 /*<END>---------- Destroy_Federation_Execution ------------<END>*/
 
 /*<BEGIN>---------- Join_Federation_Execution ------------<BEGIN>*/
 NM_Join_Federation_Execution::NM_Join_Federation_Execution() {
-    this->name = "JOIN_FEDERATION_EXECUTION";
-    this->type = NetworkMessage::JOIN_FEDERATION_EXECUTION;
-    /* specific field init */
+	this->name = "JOIN_FEDERATION_EXECUTION";
+	this->type = NetworkMessage::JOIN_FEDERATION_EXECUTION;
+	/* specific field init */
 }
 NM_Join_Federation_Execution::~NM_Join_Federation_Execution() {
 }
 void NM_Join_Federation_Execution::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(numberOfRegulators);
-  msgBuf.write_uint32(multicastAddress);
-  msgBuf.write_uint32(bestEffortAddress);
-  msgBuf.write_uint32(bestEffortPeer);
-  msgBuf.write_string(federationName);
-  msgBuf.write_string(federateName);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(numberOfRegulators);
+	msgBuf.write_uint32(multicastAddress);
+	msgBuf.write_uint32(bestEffortAddress);
+	msgBuf.write_uint32(bestEffortPeer);
+	msgBuf.write_string(federationName);
+	msgBuf.write_string(federateName);
 } /* end of serialize */ 
 void NM_Join_Federation_Execution::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  numberOfRegulators = msgBuf.read_int32();
-  multicastAddress   = msgBuf.read_uint32();
-  bestEffortAddress  = msgBuf.read_uint32();
-  bestEffortPeer     = msgBuf.read_uint32();
-  federationName     = msgBuf.read_string();
-  federateName       = msgBuf.read_string();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	numberOfRegulators = msgBuf.read_int32();
+	multicastAddress   = msgBuf.read_uint32();
+	bestEffortAddress  = msgBuf.read_uint32();
+	bestEffortPeer     = msgBuf.read_uint32();
+	federationName     = msgBuf.read_string();
+	federateName       = msgBuf.read_string();
 } /* end of deserialize */
 /*<END>---------- Join_Federation_Execution ------------<END>*/
 
 /*<BEGIN>---------- Resign_Federation_Execution ------------<BEGIN>*/
 NM_Resign_Federation_Execution::NM_Resign_Federation_Execution() {
-    this->name = "RESIGN_FEDERATION_EXECUTION";
-    this->type = NetworkMessage::RESIGN_FEDERATION_EXECUTION;
-    /* specific field init */
+	this->name = "RESIGN_FEDERATION_EXECUTION";
+	this->type = NetworkMessage::RESIGN_FEDERATION_EXECUTION;
+	/* specific field init */
 }
 NM_Resign_Federation_Execution::~NM_Resign_Federation_Execution() {
 }
-void NM_Resign_Federation_Execution::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Resign_Federation_Execution::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Resign_Federation_Execution ------------<END>*/
 
 /*<BEGIN>---------- Set_Time_Regulating ------------<BEGIN>*/
 NM_Set_Time_Regulating::NM_Set_Time_Regulating() {
-    this->name = "SET_TIME_REGULATING";
-    this->type = NetworkMessage::SET_TIME_REGULATING;
-    /* specific field init */
-    isDated = true;
+	this->name = "SET_TIME_REGULATING";
+	this->type = NetworkMessage::SET_TIME_REGULATING;
+	/* specific field init */
+	isDated = true;
 }
 NM_Set_Time_Regulating::~NM_Set_Time_Regulating() {
 }
 void NM_Set_Time_Regulating::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_bool(regulating);  	  
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_bool(regulating);  	  
 } /* end of serialize */ 
 void NM_Set_Time_Regulating::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  regulating = msgBuf.read_bool();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	regulating = msgBuf.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Regulating ------------<END>*/
 
 /*<BEGIN>---------- Set_Time_Constrained ------------<BEGIN>*/
 NM_Set_Time_Constrained::NM_Set_Time_Constrained() {
-    this->name = "SET_TIME_CONSTRAINED";
-    this->type = NetworkMessage::SET_TIME_CONSTRAINED;
-    /* specific field init */
-    isDated = true;
+	this->name = "SET_TIME_CONSTRAINED";
+	this->type = NetworkMessage::SET_TIME_CONSTRAINED;
+	/* specific field init */
+	isDated = true;
 }
 NM_Set_Time_Constrained::~NM_Set_Time_Constrained() {
 }
 void NM_Set_Time_Constrained::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_bool(constrained);  
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_bool(constrained);  
 } /* end of serialize */ 
 void NM_Set_Time_Constrained::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  constrained = msgBuf.read_bool();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	constrained = msgBuf.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Constrained ------------<END>*/
 
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchronization_Point() {
-    this->name = "REGISTER_FEDERATION_SYNCHRONIZATION_POINT";
-    this->type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "REGISTER_FEDERATION_SYNCHRONIZATION_POINT";
+	this->type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
+	isTagged   = true;
 }
 NM_Register_Federation_Synchronization_Point::~NM_Register_Federation_Synchronization_Point() {
 }
-void NM_Register_Federation_Synchronization_Point::serialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */   
-  msgBuf.write_string(tag);
-  msgBuf.write_bool(hasHandleArray);
-  if (hasHandleArray) {
-	  msgBuf.write_uint16(handleArraySize);
-	  for (i = 0 ; i < handleArraySize ; i ++) {
-	  	  msgBuf.write_uint16(handleArray[i]);
-	  }
-  }
-} /* end of serialize */ 
-void NM_Register_Federation_Synchronization_Point::deserialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */  
-  tag            = msgBuf.read_string();
-  hasHandleArray = msgBuf.read_bool();
-  if (hasHandleArray) {
-	  handleArraySize = msgBuf.read_int16();
-	  for (i = 0 ; i < handleArraySize ; i ++) {
-	  		handleArray[i] = msgBuf.read_int16();
-	  }
-  }
-} /* end of deserialize */
 /*<END>---------- Register_Federation_Synchronization_Point ------------<END>*/
 
 /*<BEGIN>---------- Synchronization_Point_Registration_Succeeded ------------<BEGIN>*/
 NM_Synchronization_Point_Registration_Succeeded::NM_Synchronization_Point_Registration_Succeeded() {
-    this->name = "SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED";
-    this->type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED";
+	this->type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Synchronization_Point_Registration_Succeeded::~NM_Synchronization_Point_Registration_Succeeded() {
 }
-void NM_Synchronization_Point_Registration_Succeeded::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Synchronization_Point_Registration_Succeeded::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Synchronization_Point_Registration_Succeeded ------------<END>*/
 
 /*<BEGIN>---------- Announce_Synchronization_Point ------------<BEGIN>*/
 NM_Announce_Synchronization_Point::NM_Announce_Synchronization_Point() {
-    this->name = "ANNOUNCE_SYNCHRONIZATION_POINT";
-    this->type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "ANNOUNCE_SYNCHRONIZATION_POINT";
+	this->type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
+	isTagged   = true;
 }
 NM_Announce_Synchronization_Point::~NM_Announce_Synchronization_Point() {
 }
-void NM_Announce_Synchronization_Point::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_string(tag);
-} /* end of serialize */ 
-void NM_Announce_Synchronization_Point::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  tag            = msgBuf.read_string();
-} /* end of deserialize */
 /*<END>---------- Announce_Synchronization_Point ------------<END>*/
 
 /*<BEGIN>---------- Synchronization_Point_Achieved ------------<BEGIN>*/
 NM_Synchronization_Point_Achieved::NM_Synchronization_Point_Achieved() {
-    this->name = "SYNCHRONIZATION_POINT_ACHIEVED";
-    this->type = NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "SYNCHRONIZATION_POINT_ACHIEVED";
+	this->type = NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Synchronization_Point_Achieved::~NM_Synchronization_Point_Achieved() {
 }
-void NM_Synchronization_Point_Achieved::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Synchronization_Point_Achieved::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Synchronization_Point_Achieved ------------<END>*/
 
 /*<BEGIN>---------- Federation_Synchronized ------------<BEGIN>*/
 NM_Federation_Synchronized::NM_Federation_Synchronized() {
-    this->name = "FEDERATION_SYNCHRONIZED";
-    this->type = NetworkMessage::FEDERATION_SYNCHRONIZED;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "FEDERATION_SYNCHRONIZED";
+	this->type = NetworkMessage::FEDERATION_SYNCHRONIZED;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Federation_Synchronized::~NM_Federation_Synchronized() {
 }
-void NM_Federation_Synchronized::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Synchronized::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Synchronized ------------<END>*/
 
 /*<BEGIN>---------- Request_Federation_Save ------------<BEGIN>*/
 NM_Request_Federation_Save::NM_Request_Federation_Save() {
-    this->name = "REQUEST_FEDERATION_SAVE";
-    this->type = NetworkMessage::REQUEST_FEDERATION_SAVE;
-    /* specific field init */
-    isLabelled = true;
+	this->name = "REQUEST_FEDERATION_SAVE";
+	this->type = NetworkMessage::REQUEST_FEDERATION_SAVE;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Request_Federation_Save::~NM_Request_Federation_Save() {
 }
-void NM_Request_Federation_Save::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Request_Federation_Save::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Request_Federation_Save ------------<END>*/
 
 /*<BEGIN>---------- Federate_Save_Begun ------------<BEGIN>*/
 NM_Federate_Save_Begun::NM_Federate_Save_Begun() {
-    this->name = "FEDERATE_SAVE_BEGUN";
-    this->type = NetworkMessage::FEDERATE_SAVE_BEGUN;
-    /* specific field init */
+	this->name = "FEDERATE_SAVE_BEGUN";
+	this->type = NetworkMessage::FEDERATE_SAVE_BEGUN;
+	/* specific field init */
 }
 NM_Federate_Save_Begun::~NM_Federate_Save_Begun() {
 }
-void NM_Federate_Save_Begun::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federate_Save_Begun::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federate_Save_Begun ------------<END>*/
 
 /*<BEGIN>---------- Federate_Save_Complete ------------<BEGIN>*/
 NM_Federate_Save_Complete::NM_Federate_Save_Complete() {
-    this->name = "FEDERATE_SAVE_COMPLETE";
-    this->type = NetworkMessage::FEDERATE_SAVE_COMPLETE;
-    /* specific field init */
+	this->name = "FEDERATE_SAVE_COMPLETE";
+	this->type = NetworkMessage::FEDERATE_SAVE_COMPLETE;
+	/* specific field init */
 }
 NM_Federate_Save_Complete::~NM_Federate_Save_Complete() {
 }
-void NM_Federate_Save_Complete::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federate_Save_Complete::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federate_Save_Complete ------------<END>*/
 
 /*<BEGIN>---------- Federate_Save_Not_Complete ------------<BEGIN>*/
 NM_Federate_Save_Not_Complete::NM_Federate_Save_Not_Complete() {
-    this->name = "FEDERATE_SAVE_NOT_COMPLETE";
-    this->type = NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE;
-    /* specific field init */
+	this->name = "FEDERATE_SAVE_NOT_COMPLETE";
+	this->type = NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE;
+	/* specific field init */
 }
 NM_Federate_Save_Not_Complete::~NM_Federate_Save_Not_Complete() {
 }
-void NM_Federate_Save_Not_Complete::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federate_Save_Not_Complete::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federate_Save_Not_Complete ------------<END>*/
 
 /*<BEGIN>---------- Initiate_Federate_Save ------------<BEGIN>*/
 NM_Initiate_Federate_Save::NM_Initiate_Federate_Save() {
-    this->name = "INITIATE_FEDERATE_SAVE";
-    this->type = NetworkMessage::INITIATE_FEDERATE_SAVE;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "INITIATE_FEDERATE_SAVE";
+	this->type = NetworkMessage::INITIATE_FEDERATE_SAVE;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Initiate_Federate_Save::~NM_Initiate_Federate_Save() {
 }
-void NM_Initiate_Federate_Save::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Initiate_Federate_Save::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Initiate_Federate_Save ------------<END>*/
 
 /*<BEGIN>---------- Federation_Saved ------------<BEGIN>*/
 NM_Federation_Saved::NM_Federation_Saved() {
-    this->name = "FEDERATION_SAVED";
-    this->type = NetworkMessage::FEDERATION_SAVED;
-    /* specific field init */
+	this->name = "FEDERATION_SAVED";
+	this->type = NetworkMessage::FEDERATION_SAVED;
+	/* specific field init */
 }
 NM_Federation_Saved::~NM_Federation_Saved() {
 }
-void NM_Federation_Saved::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Saved::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Saved ------------<END>*/
 
 /*<BEGIN>---------- Federation_Not_Saved ------------<BEGIN>*/
 NM_Federation_Not_Saved::NM_Federation_Not_Saved() {
-    this->name = "FEDERATION_NOT_SAVED";
-    this->type = NetworkMessage::FEDERATION_NOT_SAVED;
-    /* specific field init */
+	this->name = "FEDERATION_NOT_SAVED";
+	this->type = NetworkMessage::FEDERATION_NOT_SAVED;
+	/* specific field init */
 }
 NM_Federation_Not_Saved::~NM_Federation_Not_Saved() {
 }
-void NM_Federation_Not_Saved::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Not_Saved::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Not_Saved ------------<END>*/
 
 /*<BEGIN>---------- Request_Federation_Restore ------------<BEGIN>*/
 NM_Request_Federation_Restore::NM_Request_Federation_Restore() {
-    this->name = "REQUEST_FEDERATION_RESTORE";
-    this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "REQUEST_FEDERATION_RESTORE";
+	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Request_Federation_Restore::~NM_Request_Federation_Restore() {
 }
-void NM_Request_Federation_Restore::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */  
-} /* end of serialize */ 
-void NM_Request_Federation_Restore::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Request_Federation_Restore ------------<END>*/
 
 /*<BEGIN>---------- Federate_Restore_Complete ------------<BEGIN>*/
 NM_Federate_Restore_Complete::NM_Federate_Restore_Complete() {
-    this->name = "FEDERATE_RESTORE_COMPLETE";
-    this->type = NetworkMessage::FEDERATE_RESTORE_COMPLETE;
-    /* specific field init */
+	this->name = "FEDERATE_RESTORE_COMPLETE";
+	this->type = NetworkMessage::FEDERATE_RESTORE_COMPLETE;
+	/* specific field init */
 }
 NM_Federate_Restore_Complete::~NM_Federate_Restore_Complete() {
 }
-void NM_Federate_Restore_Complete::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federate_Restore_Complete::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federate_Restore_Complete ------------<END>*/
 
 /*<BEGIN>---------- Federate_Restore_Not_Complete ------------<BEGIN>*/
 NM_Federate_Restore_Not_Complete::NM_Federate_Restore_Not_Complete() {
-    this->name = "FEDERATE_RESTORE_NOT_COMPLETE";
-    this->type = NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE;
-    /* specific field init */
+	this->name = "FEDERATE_RESTORE_NOT_COMPLETE";
+	this->type = NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE;
+	/* specific field init */
 }
 NM_Federate_Restore_Not_Complete::~NM_Federate_Restore_Not_Complete() {
 }
-void NM_Federate_Restore_Not_Complete::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federate_Restore_Not_Complete::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federate_Restore_Not_Complete ------------<END>*/
 
 /*<BEGIN>---------- Request_Federation_Restore_Succeeded ------------<BEGIN>*/
 NM_Request_Federation_Restore_Succeeded::NM_Request_Federation_Restore_Succeeded() {
-    this->name = "REQUEST_FEDERATION_RESTORE_SUCCEEDED";
-    this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "REQUEST_FEDERATION_RESTORE_SUCCEEDED";
+	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Request_Federation_Restore_Succeeded::~NM_Request_Federation_Restore_Succeeded() {
 }
-void NM_Request_Federation_Restore_Succeeded::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Request_Federation_Restore_Succeeded::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Request_Federation_Restore_Succeeded ------------<END>*/
 
 /*<BEGIN>---------- Request_Federation_Restore_Failed ------------<BEGIN>*/
 NM_Request_Federation_Restore_Failed::NM_Request_Federation_Restore_Failed() {
-    this->name = "REQUEST_FEDERATION_RESTORE_FAILED";
-    this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "REQUEST_FEDERATION_RESTORE_FAILED";
+	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
+	isTagged   = true;
 }
 NM_Request_Federation_Restore_Failed::~NM_Request_Federation_Restore_Failed() {
 }
-void NM_Request_Federation_Restore_Failed::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_string(tag);
-} /* end of serialize */ 
-void NM_Request_Federation_Restore_Failed::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  tag = msgBuf.read_string();
-} /* end of deserialize */
 /*<END>---------- Request_Federation_Restore_Failed ------------<END>*/
 
 /*<BEGIN>---------- Federation_Restore_Begun ------------<BEGIN>*/
 NM_Federation_Restore_Begun::NM_Federation_Restore_Begun() {
-    this->name = "FEDERATION_RESTORE_BEGUN";
-    this->type = NetworkMessage::FEDERATION_RESTORE_BEGUN;
-    /* specific field init */
-    isLabelled = true;
+	this->name = "FEDERATION_RESTORE_BEGUN";
+	this->type = NetworkMessage::FEDERATION_RESTORE_BEGUN;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Federation_Restore_Begun::~NM_Federation_Restore_Begun() {
 }
-void NM_Federation_Restore_Begun::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Restore_Begun::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Restore_Begun ------------<END>*/
 
 /*<BEGIN>---------- Initiate_Federate_Restore ------------<BEGIN>*/
 NM_Initiate_Federate_Restore::NM_Initiate_Federate_Restore() {
-    this->name = "INITIATE_FEDERATE_RESTORE";
-    this->type = NetworkMessage::INITIATE_FEDERATE_RESTORE;
-    /* specific field init */
+	this->name = "INITIATE_FEDERATE_RESTORE";
+	this->type = NetworkMessage::INITIATE_FEDERATE_RESTORE;
+	/* specific field init */
 }
 NM_Initiate_Federate_Restore::~NM_Initiate_Federate_Restore() {
 }
-void NM_Initiate_Federate_Restore::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Initiate_Federate_Restore::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Initiate_Federate_Restore ------------<END>*/
 
 /*<BEGIN>---------- Federation_Restored ------------<BEGIN>*/
 NM_Federation_Restored::NM_Federation_Restored() {
-    this->name = "FEDERATION_RESTORED";
-    this->type = NetworkMessage::FEDERATION_RESTORED;
-    /* specific field init */
+	this->name = "FEDERATION_RESTORED";
+	this->type = NetworkMessage::FEDERATION_RESTORED;
+	/* specific field init */
 }
 NM_Federation_Restored::~NM_Federation_Restored() {
 }
-void NM_Federation_Restored::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Restored::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Restored ------------<END>*/
 
 /*<BEGIN>---------- Federation_Not_Restored ------------<BEGIN>*/
 NM_Federation_Not_Restored::NM_Federation_Not_Restored() {
-    this->name = "FEDERATION_NOT_RESTORED";
-    this->type = NetworkMessage::FEDERATION_NOT_RESTORED;
-    /* specific field init */
+	this->name = "FEDERATION_NOT_RESTORED";
+	this->type = NetworkMessage::FEDERATION_NOT_RESTORED;
+	/* specific field init */
 }
 NM_Federation_Not_Restored::~NM_Federation_Not_Restored() {
 }
-void NM_Federation_Not_Restored::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Federation_Not_Restored::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Federation_Not_Restored ------------<END>*/
 
 /*<BEGIN>---------- Publish_Object_Class ------------<BEGIN>*/
 NM_Publish_Object_Class::NM_Publish_Object_Class() {
-    this->name = "PUBLISH_OBJECT_CLASS";
-    this->type = NetworkMessage::PUBLISH_OBJECT_CLASS;
-    /* specific field init */
+	this->name = "PUBLISH_OBJECT_CLASS";
+	this->type = NetworkMessage::PUBLISH_OBJECT_CLASS;
+	/* specific field init */
 }
 NM_Publish_Object_Class::~NM_Publish_Object_Class() {
 }
-void NM_Publish_Object_Class::serialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_bool(hasHandleArray);
-    if (hasHandleArray) {
-  	  msgBuf.write_uint16(handleArraySize);
-  	  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  	  msgBuf.write_uint16(handleArray[i]);
-  	  }
-  }
-} /* end of serialize */ 
-void NM_Publish_Object_Class::deserialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  hasHandleArray = msgBuf.read_bool();
-  if (hasHandleArray) {
-  	  handleArraySize = msgBuf.read_int16();
-  	  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  		handleArray[i] = msgBuf.read_int16();
-  	  }
-  }
-} /* end of deserialize */
 /*<END>---------- Publish_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Unpublish_Object_Class ------------<BEGIN>*/
 NM_Unpublish_Object_Class::NM_Unpublish_Object_Class() {
-    this->name = "UNPUBLISH_OBJECT_CLASS";
-    this->type = NetworkMessage::UNPUBLISH_OBJECT_CLASS;
-    /* specific field init */
+	this->name = "UNPUBLISH_OBJECT_CLASS";
+	this->type = NetworkMessage::UNPUBLISH_OBJECT_CLASS;
+	/* specific field init */
 }
 NM_Unpublish_Object_Class::~NM_Unpublish_Object_Class() {
 }
 void NM_Unpublish_Object_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(objectClass);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(objectClass);
 } /* end of serialize */ 
 void NM_Unpublish_Object_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  objectClass = msgBuf.read_int32();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	objectClass = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Unpublish_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Publish_Interaction_Class ------------<BEGIN>*/
 NM_Publish_Interaction_Class::NM_Publish_Interaction_Class() {
-    this->name = "PUBLISH_INTERACTION_CLASS";
-    this->type = NetworkMessage::PUBLISH_INTERACTION_CLASS;
-    /* specific field init */
+	this->name = "PUBLISH_INTERACTION_CLASS";
+	this->type = NetworkMessage::PUBLISH_INTERACTION_CLASS;
+	/* specific field init */
 }
 NM_Publish_Interaction_Class::~NM_Publish_Interaction_Class() {
 }
 void NM_Publish_Interaction_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(interactionClass);
 } /* end of serialize */ 
 void NM_Publish_Interaction_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	interactionClass = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Publish_Interaction_Class ------------<END>*/
 
 /*<BEGIN>---------- Unpublish_Interaction_Class ------------<BEGIN>*/
 NM_Unpublish_Interaction_Class::NM_Unpublish_Interaction_Class() {
-    this->name = "UNPUBLISH_INTERACTION_CLASS";
-    this->type = NetworkMessage::UNPUBLISH_INTERACTION_CLASS;
-    /* specific field init */
+	this->name = "UNPUBLISH_INTERACTION_CLASS";
+	this->type = NetworkMessage::UNPUBLISH_INTERACTION_CLASS;
+	/* specific field init */
 }
 NM_Unpublish_Interaction_Class::~NM_Unpublish_Interaction_Class() {
 }
-void NM_Unpublish_Interaction_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-} /* end of serialize */ 
-void NM_Unpublish_Interaction_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Unpublish_Interaction_Class ------------<END>*/
 
 /*<BEGIN>---------- Subscribe_Object_Class ------------<BEGIN>*/
 NM_Subscribe_Object_Class::NM_Subscribe_Object_Class() {
-    this->name = "SUBSCRIBE_OBJECT_CLASS";
-    this->type = NetworkMessage::SUBSCRIBE_OBJECT_CLASS;
-    /* specific field init */
+	this->name = "SUBSCRIBE_OBJECT_CLASS";
+	this->type = NetworkMessage::SUBSCRIBE_OBJECT_CLASS;
+	/* specific field init */
 }
 NM_Subscribe_Object_Class::~NM_Subscribe_Object_Class() {
 }
-void NM_Subscribe_Object_Class::serialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_bool(hasHandleArray);
-  if (hasHandleArray) {
-    	  msgBuf.write_uint16(handleArraySize);
-    	  for (i = 0 ; i < handleArraySize ; i ++) {
-    	  	  msgBuf.write_uint16(handleArray[i]);
-    	  }
-  }
-} /* end of serialize */ 
-void NM_Subscribe_Object_Class::deserialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  hasHandleArray = msgBuf.read_bool();
-    if (hasHandleArray) {
-  	  handleArraySize = msgBuf.read_int16();
-  	  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  		handleArray[i] = msgBuf.read_int16();
-  	  }
-  }
-} /* end of deserialize */
 /*<END>---------- Subscribe_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Unsubscribe_Object_Class ------------<BEGIN>*/
 NM_Unsubscribe_Object_Class::NM_Unsubscribe_Object_Class() {
-    this->name = "UNSUBSCRIBE_OBJECT_CLASS";
-    this->type = NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS;
-    /* specific field init */
+	this->name = "UNSUBSCRIBE_OBJECT_CLASS";
+	this->type = NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS;
+	/* specific field init */
 }
 NM_Unsubscribe_Object_Class::~NM_Unsubscribe_Object_Class() {
 }
-void NM_Unsubscribe_Object_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(objectClass);
-} /* end of serialize */ 
-void NM_Unsubscribe_Object_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  objectClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Unsubscribe_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Subscribe_Interaction_Class ------------<BEGIN>*/
 NM_Subscribe_Interaction_Class::NM_Subscribe_Interaction_Class() {
-    this->name = "SUBSCRIBE_INTERACTION_CLASS";
-    this->type = NetworkMessage::SUBSCRIBE_INTERACTION_CLASS;
-    /* specific field init */
+	this->name = "SUBSCRIBE_INTERACTION_CLASS";
+	this->type = NetworkMessage::SUBSCRIBE_INTERACTION_CLASS;
+	/* specific field init */
 }
 NM_Subscribe_Interaction_Class::~NM_Subscribe_Interaction_Class() {
 }
-void NM_Subscribe_Interaction_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-} /* end of serialize */ 
-void NM_Subscribe_Interaction_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Subscribe_Interaction_Class ------------<END>*/
 
 /*<BEGIN>---------- Unsubscribe_Interaction_Class ------------<BEGIN>*/
 NM_Unsubscribe_Interaction_Class::NM_Unsubscribe_Interaction_Class() {
-    this->name = "UNSUBSCRIBE_INTERACTION_CLASS";
-    this->type = NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS;
-    /* specific field init */
+	this->name = "UNSUBSCRIBE_INTERACTION_CLASS";
+	this->type = NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS;
+	/* specific field init */
 }
 NM_Unsubscribe_Interaction_Class::~NM_Unsubscribe_Interaction_Class() {
 }
-void NM_Unsubscribe_Interaction_Class::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-} /* end of serialize */ 
-void NM_Unsubscribe_Interaction_Class::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Unsubscribe_Interaction_Class ------------<END>*/
 
 /*<BEGIN>---------- Turn_Interactions_On ------------<BEGIN>*/
 NM_Turn_Interactions_On::NM_Turn_Interactions_On() {
-    this->name = "TURN_INTERACTIONS_ON";
-    this->type = NetworkMessage::TURN_INTERACTIONS_ON;
-    /* specific field init */
+	this->name = "TURN_INTERACTIONS_ON";
+	this->type = NetworkMessage::TURN_INTERACTIONS_ON;
+	/* specific field init */
 }
 NM_Turn_Interactions_On::~NM_Turn_Interactions_On() {
 }
-void NM_Turn_Interactions_On::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-} /* end of serialize */ 
-void NM_Turn_Interactions_On::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Turn_Interactions_On ------------<END>*/
 
 /*<BEGIN>---------- Turn_Interactions_Off ------------<BEGIN>*/
 NM_Turn_Interactions_Off::NM_Turn_Interactions_Off() {
-    this->name = "TURN_INTERACTIONS_OFF";
-    this->type = NetworkMessage::TURN_INTERACTIONS_OFF;
-    /* specific field init */
+	this->name = "TURN_INTERACTIONS_OFF";
+	this->type = NetworkMessage::TURN_INTERACTIONS_OFF;
+	/* specific field init */
 }
 NM_Turn_Interactions_Off::~NM_Turn_Interactions_Off() {
 }
-void NM_Turn_Interactions_Off::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-} /* end of serialize */
-void NM_Turn_Interactions_Off::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Turn_Interactions_Off ------------<END>*/
 
 /*<BEGIN>---------- Register_Object ------------<BEGIN>*/
 NM_Register_Object::NM_Register_Object() {
-    this->name = "REGISTER_OBJECT";
-    this->type = NetworkMessage::REGISTER_OBJECT;
-    /* specific field init */
-    isLabelled = true;
+	this->name = "REGISTER_OBJECT";
+	this->type = NetworkMessage::REGISTER_OBJECT;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Register_Object::~NM_Register_Object() {
 }
 void NM_Register_Object::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(object);
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Register_Object::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  object = msgBuf.read_int32();
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	object = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Register_Object ------------<END>*/
 
 /*<BEGIN>---------- Discover_Object ------------<BEGIN>*/
 NM_Discover_Object::NM_Discover_Object() {
-    this->name = "DISCOVER_OBJECT";
-    this->type = NetworkMessage::DISCOVER_OBJECT;
-    /* specific field init */
-    isLabelled = true;
+	this->name = "DISCOVER_OBJECT";
+	this->type = NetworkMessage::DISCOVER_OBJECT;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Discover_Object::~NM_Discover_Object() {
 }
-void NM_Discover_Object::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(object);
-} /* end of serialize */ 
-void NM_Discover_Object::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  object = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Discover_Object ------------<END>*/
 
 /*<BEGIN>---------- Update_Attribute_Values ------------<BEGIN>*/
 NM_Update_Attribute_Values::NM_Update_Attribute_Values() {
-    this->name = "UPDATE_ATTRIBUTE_VALUES";
-    this->type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "UPDATE_ATTRIBUTE_VALUES";
+	this->type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Update_Attribute_Values::~NM_Update_Attribute_Values() {
 }
 void NM_Update_Attribute_Values::serialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(objectClass);
-  msgBuf.write_bool(hasHandleArray);
-  if (hasHandleArray) {
-  	  msgBuf.write_uint16(handleArraySize);
-  	  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  	  msgBuf.write_uint16(handleArray[i]);
-  	  }
-  }
-  /* the value pre-encoded by the user (HLA 1.3) */
-  for (i = 0 ; i < handleArraySize ; i++) {
-	  msgBuf.write_int32(ValueArray[i].length) ;
-	  msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
-  }    
+	int i;
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(objectClass);	
+	/* the value pre-encoded by the user (HLA 1.3) */
+	for (i = 0 ; i < handleArraySize ; i++) {
+		msgBuf.write_int32(ValueArray[i].length) ;
+		msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+	}    
 } /* end of serialize */ 
 void NM_Update_Attribute_Values::deserialize() {
-  int i;
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  objectClass = msgBuf.read_int32();
-  hasHandleArray = msgBuf.read_bool();
-  if (hasHandleArray) {
-  	  handleArraySize = msgBuf.read_int16();
-  	  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  		handleArray[i] = msgBuf.read_int16();
-  	  }
-  }  
-  for (i = 0 ; i < handleArraySize ; i ++) {
-  	  ValueArray[i].length = msgBuf.read_int32();
-  	  msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
-  }
+	int i;
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	objectClass = msgBuf.read_int32();	
+	for (i = 0 ; i < handleArraySize ; i ++) {
+		ValueArray[i].length = msgBuf.read_int32();
+		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+	}
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
 
 /*<BEGIN>---------- Reflect_Attribute_Values ------------<BEGIN>*/
 NM_Reflect_Attribute_Values::NM_Reflect_Attribute_Values() {
-    this->name = "REFLECT_ATTRIBUTE_VALUES";
-    this->type = NetworkMessage::REFLECT_ATTRIBUTE_VALUES;
-    /* specific field init */
+	this->name = "REFLECT_ATTRIBUTE_VALUES";
+	this->type = NetworkMessage::REFLECT_ATTRIBUTE_VALUES;
+	/* specific field init */
 }
 NM_Reflect_Attribute_Values::~NM_Reflect_Attribute_Values() {
 }
-
 /*<END>---------- Reflect_Attribute_Values ------------<END>*/
 
 /*<BEGIN>---------- Send_Interaction ------------<BEGIN>*/
 NM_Send_Interaction::NM_Send_Interaction() {
-    this->name = "SEND_INTERACTION";
-    this->type = NetworkMessage::SEND_INTERACTION;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "SEND_INTERACTION";
+	this->type = NetworkMessage::SEND_INTERACTION;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Send_Interaction::~NM_Send_Interaction() {
 }
 void NM_Send_Interaction::serialize() {
 	int i;
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(interactionClass);
-    msgBuf.write_bool(hasHandleArray);
-    if (hasHandleArray) {
-    	  msgBuf.write_uint16(handleArraySize);
-    	  for (i = 0 ; i < handleArraySize ; i ++) {
-    	  	  msgBuf.write_uint16(handleArray[i]);
-    	  }
-    }
-    /* the value pre-encoded by the user (HLA 1.3) */
-    for (i = 0 ; i < handleArraySize ; i++) {
-  	  msgBuf.write_int32(ValueArray[i].length) ;
-  	  msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
-    }    
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(interactionClass);	
+	/* the value pre-encoded by the user (HLA 1.3) */
+	for (i = 0 ; i < handleArraySize ; i++) {
+		msgBuf.write_int32(ValueArray[i].length) ;
+		msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+	}    
 } /* end of serialize */ 
 void NM_Send_Interaction::deserialize() {
 	int i;
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  interactionClass = msgBuf.read_int32();
-    hasHandleArray = msgBuf.read_bool();
-    if (hasHandleArray) {
-    	  handleArraySize = msgBuf.read_int16();
-    	  for (i = 0 ; i < handleArraySize ; i ++) {
-    	  		handleArray[i] = msgBuf.read_int16();
-    	  }
-    }  
-    for (i = 0 ; i < handleArraySize ; i ++) {
-    	  ValueArray[i].length = msgBuf.read_int32();
-    	  msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
-    }
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	interactionClass = msgBuf.read_int32();
+	for (i = 0 ; i < handleArraySize ; i ++) {
+		ValueArray[i].length = msgBuf.read_int32();
+		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+	}
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Receive_Interaction ------------<BEGIN>*/
 NM_Receive_Interaction::NM_Receive_Interaction() {
-    this->name = "RECEIVE_INTERACTION";
-    this->type = NetworkMessage::RECEIVE_INTERACTION;
-    /* specific field init */
+	this->name = "RECEIVE_INTERACTION";
+	this->type = NetworkMessage::RECEIVE_INTERACTION;
+	/* specific field init */
 }
 NM_Receive_Interaction::~NM_Receive_Interaction() {
 }
@@ -1373,33 +982,21 @@ NM_Receive_Interaction::~NM_Receive_Interaction() {
 
 /*<BEGIN>---------- Delete_Object ------------<BEGIN>*/
 NM_Delete_Object::NM_Delete_Object() {
-    this->name = "DELETE_OBJECT";
-    this->type = NetworkMessage::DELETE_OBJECT;
-    /* specific field init */
-    isDated    = true;
-    isLabelled = true;
+	this->name = "DELETE_OBJECT";
+	this->type = NetworkMessage::DELETE_OBJECT;
+	/* specific field init */
+	isDated    = true;
+	isLabelled = true;
 }
 NM_Delete_Object::~NM_Delete_Object() {
 }
-void NM_Delete_Object::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-  msgBuf.write_int32(object);
-} /* end of serialize */ 
-void NM_Delete_Object::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-  object = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Delete_Object ------------<END>*/
 
 /*<BEGIN>---------- Remove_Object ------------<BEGIN>*/
 NM_Remove_Object::NM_Remove_Object() {
-    this->name = "REMOVE_OBJECT";
-    this->type = NetworkMessage::REMOVE_OBJECT;
-    /* specific field init */
+	this->name = "REMOVE_OBJECT";
+	this->type = NetworkMessage::REMOVE_OBJECT;
+	/* specific field init */
 }
 NM_Remove_Object::~NM_Remove_Object() {
 }
@@ -1408,722 +1005,664 @@ NM_Remove_Object::~NM_Remove_Object() {
 
 /*<BEGIN>---------- Change_Attribute_Transport_Type ------------<BEGIN>*/
 NM_Change_Attribute_Transport_Type::NM_Change_Attribute_Transport_Type() {
-    this->name = "CHANGE_ATTRIBUTE_TRANSPORT_TYPE";
-    this->type = NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE;
-    /* specific field init */
+	this->name = "CHANGE_ATTRIBUTE_TRANSPORT_TYPE";
+	this->type = NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE;
+	/* specific field init */
 }
 NM_Change_Attribute_Transport_Type::~NM_Change_Attribute_Transport_Type() {
 }
 void NM_Change_Attribute_Transport_Type::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Change_Attribute_Transport_Type::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Attribute_Transport_Type ------------<END>*/
 
 /*<BEGIN>---------- Change_Attribute_Order_Type ------------<BEGIN>*/
 NM_Change_Attribute_Order_Type::NM_Change_Attribute_Order_Type() {
-    this->name = "CHANGE_ATTRIBUTE_ORDER_TYPE";
-    this->type = NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE;
-    /* specific field init */
+	this->name = "CHANGE_ATTRIBUTE_ORDER_TYPE";
+	this->type = NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE;
+	/* specific field init */
 }
 NM_Change_Attribute_Order_Type::~NM_Change_Attribute_Order_Type() {
 }
 void NM_Change_Attribute_Order_Type::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Change_Attribute_Order_Type::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Attribute_Order_Type ------------<END>*/
 
 /*<BEGIN>---------- Change_Interaction_Transport_Type ------------<BEGIN>*/
 NM_Change_Interaction_Transport_Type::NM_Change_Interaction_Transport_Type() {
-    this->name = "CHANGE_INTERACTION_TRANSPORT_TYPE";
-    this->type = NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE;
-    /* specific field init */
+	this->name = "CHANGE_INTERACTION_TRANSPORT_TYPE";
+	this->type = NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE;
+	/* specific field init */
 }
 NM_Change_Interaction_Transport_Type::~NM_Change_Interaction_Transport_Type() {
 }
 void NM_Change_Interaction_Transport_Type::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Change_Interaction_Transport_Type::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Interaction_Transport_Type ------------<END>*/
 
 /*<BEGIN>---------- Change_Interaction_Order_Type ------------<BEGIN>*/
 NM_Change_Interaction_Order_Type::NM_Change_Interaction_Order_Type() {
-    this->name = "CHANGE_INTERACTION_ORDER_TYPE";
-    this->type = NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE;
-    /* specific field init */
+	this->name = "CHANGE_INTERACTION_ORDER_TYPE";
+	this->type = NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE;
+	/* specific field init */
 }
 NM_Change_Interaction_Order_Type::~NM_Change_Interaction_Order_Type() {
 }
 void NM_Change_Interaction_Order_Type::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Change_Interaction_Order_Type::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Interaction_Order_Type ------------<END>*/
 
 /*<BEGIN>---------- Request_Class_Attribute_Value_Update ------------<BEGIN>*/
 NM_Request_Class_Attribute_Value_Update::NM_Request_Class_Attribute_Value_Update() {
-    this->name = "REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE";
-    this->type = NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE;
-    /* specific field init */
+	this->name = "REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE";
+	this->type = NetworkMessage::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE;
+	/* specific field init */
 }
 NM_Request_Class_Attribute_Value_Update::~NM_Request_Class_Attribute_Value_Update() {
 }
 void NM_Request_Class_Attribute_Value_Update::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Request_Class_Attribute_Value_Update::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Request_Class_Attribute_Value_Update ------------<END>*/
 
 /*<BEGIN>---------- Request_Object_Attribute_Value_Update ------------<BEGIN>*/
 NM_Request_Object_Attribute_Value_Update::NM_Request_Object_Attribute_Value_Update() {
-    this->name = "REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE";
-    this->type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
-    /* specific field init */
+	this->name = "REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE";
+	this->type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
+	/* specific field init */
 }
 NM_Request_Object_Attribute_Value_Update::~NM_Request_Object_Attribute_Value_Update() {
 }
 void NM_Request_Object_Attribute_Value_Update::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Request_Object_Attribute_Value_Update::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	object  = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Request_Object_Attribute_Value_Update ------------<END>*/
 
 /*<BEGIN>---------- Is_Attribute_Owned_By_Federate ------------<BEGIN>*/
 NM_Is_Attribute_Owned_By_Federate::NM_Is_Attribute_Owned_By_Federate() {
-    this->name = "IS_ATTRIBUTE_OWNED_BY_FEDERATE";
-    this->type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE;
-    /* specific field init */
+	this->name = "IS_ATTRIBUTE_OWNED_BY_FEDERATE";
+	this->type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Is_Attribute_Owned_By_Federate::~NM_Is_Attribute_Owned_By_Federate() {
 }
 void NM_Is_Attribute_Owned_By_Federate::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
+	msgBuf.write_int32(attribute);
 } /* end of serialize */ 
 void NM_Is_Attribute_Owned_By_Federate::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	object    = msgBuf.read_int32();
+	attribute = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Is_Attribute_Owned_By_Federate ------------<END>*/
 
 /*<BEGIN>---------- Query_Attribute_Ownership ------------<BEGIN>*/
 NM_Query_Attribute_Ownership::NM_Query_Attribute_Ownership() {
-    this->name = "QUERY_ATTRIBUTE_OWNERSHIP";
-    this->type = NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP;
-    /* specific field init */
+	this->name = "QUERY_ATTRIBUTE_OWNERSHIP";
+	this->type = NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP;
+	/* specific field init */
 }
 NM_Query_Attribute_Ownership::~NM_Query_Attribute_Ownership() {
 }
-void NM_Query_Attribute_Ownership::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Query_Attribute_Ownership::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Query_Attribute_Ownership ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Is_Not_Owned ------------<BEGIN>*/
 NM_Attribute_Is_Not_Owned::NM_Attribute_Is_Not_Owned() {
-    this->name = "ATTRIBUTE_IS_NOT_OWNED";
-    this->type = NetworkMessage::ATTRIBUTE_IS_NOT_OWNED;
-    /* specific field init */
+	this->name = "ATTRIBUTE_IS_NOT_OWNED";
+	this->type = NetworkMessage::ATTRIBUTE_IS_NOT_OWNED;
+	/* specific field init */
 }
 NM_Attribute_Is_Not_Owned::~NM_Attribute_Is_Not_Owned() {
 }
-void NM_Attribute_Is_Not_Owned::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Is_Not_Owned::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Is_Not_Owned ------------<END>*/
 
 /*<BEGIN>---------- Inform_Attribute_Ownership ------------<BEGIN>*/
 NM_Inform_Attribute_Ownership::NM_Inform_Attribute_Ownership() {
-    this->name = "INFORM_ATTRIBUTE_OWNERSHIP";
-    this->type = NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP;
-    /* specific field init */
+	this->name = "INFORM_ATTRIBUTE_OWNERSHIP";
+	this->type = NetworkMessage::INFORM_ATTRIBUTE_OWNERSHIP;
+	/* specific field init */
 }
 NM_Inform_Attribute_Ownership::~NM_Inform_Attribute_Ownership() {
 }
-void NM_Inform_Attribute_Ownership::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Inform_Attribute_Ownership::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Inform_Attribute_Ownership ------------<END>*/
 
 /*<BEGIN>---------- Negotiated_Attribute_Ownership_Divestiture ------------<BEGIN>*/
 NM_Negotiated_Attribute_Ownership_Divestiture::NM_Negotiated_Attribute_Ownership_Divestiture() {
-    this->name = "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
-    this->type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
-    /* specific field init */
+	this->name = "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
+	this->type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+	/* specific field init */
+	isLabelled = true;
 }
 NM_Negotiated_Attribute_Ownership_Divestiture::~NM_Negotiated_Attribute_Ownership_Divestiture() {
 }
 void NM_Negotiated_Attribute_Ownership_Divestiture::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	int i;
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Negotiated_Attribute_Ownership_Divestiture::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	int i;
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
+	object = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_Notification ------------<BEGIN>*/
 NM_Attribute_Ownership_Acquisition_Notification::NM_Attribute_Ownership_Acquisition_Notification() {
-    this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Acquisition_Notification::~NM_Attribute_Ownership_Acquisition_Notification() {
 }
 void NM_Attribute_Ownership_Acquisition_Notification::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Attribute_Ownership_Acquisition_Notification::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Acquisition_Notification ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Divestiture_Notification ------------<BEGIN>*/
 NM_Attribute_Ownership_Divestiture_Notification::NM_Attribute_Ownership_Divestiture_Notification() {
-    this->name = "ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Divestiture_Notification::~NM_Attribute_Ownership_Divestiture_Notification() {
 }
 void NM_Attribute_Ownership_Divestiture_Notification::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Attribute_Ownership_Divestiture_Notification::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Divestiture_Notification ------------<END>*/
 
 /*<BEGIN>---------- Request_Attribute_Ownership_Assumption ------------<BEGIN>*/
 NM_Request_Attribute_Ownership_Assumption::NM_Request_Attribute_Ownership_Assumption() {
-    this->name = "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION";
-    this->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION;
-    /* specific field init */
+	this->name = "REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION";
+	this->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION;
+	/* specific field init */
 }
 NM_Request_Attribute_Ownership_Assumption::~NM_Request_Attribute_Ownership_Assumption() {
 }
-void NM_Request_Attribute_Ownership_Assumption::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Request_Attribute_Ownership_Assumption::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Request_Attribute_Ownership_Assumption ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Unavailable ------------<BEGIN>*/
 NM_Attribute_Ownership_Unavailable::NM_Attribute_Ownership_Unavailable() {
-    this->name = "ATTRIBUTE_OWNERSHIP_UNAVAILABLE";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_UNAVAILABLE";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Unavailable::~NM_Attribute_Ownership_Unavailable() {
 }
 void NM_Attribute_Ownership_Unavailable::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Attribute_Ownership_Unavailable::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Unavailable ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_If_Available ------------<BEGIN>*/
 NM_Attribute_Ownership_Acquisition_If_Available::NM_Attribute_Ownership_Acquisition_If_Available() {
-    this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Acquisition_If_Available::~NM_Attribute_Ownership_Acquisition_If_Available() {
 }
 void NM_Attribute_Ownership_Acquisition_If_Available::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Attribute_Ownership_Acquisition_If_Available::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Acquisition_If_Available ------------<END>*/
 
 /*<BEGIN>---------- Unconditional_Attribute_Ownership_Divestiture ------------<BEGIN>*/
 NM_Unconditional_Attribute_Ownership_Divestiture::NM_Unconditional_Attribute_Ownership_Divestiture() {
-    this->name = "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
-    this->type = NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
-    /* specific field init */
+	this->name = "UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
+	this->type = NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+	/* specific field init */
 }
 NM_Unconditional_Attribute_Ownership_Divestiture::~NM_Unconditional_Attribute_Ownership_Divestiture() {
 }
 void NM_Unconditional_Attribute_Ownership_Divestiture::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Unconditional_Attribute_Ownership_Divestiture::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Unconditional_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition ------------<BEGIN>*/
 NM_Attribute_Ownership_Acquisition::NM_Attribute_Ownership_Acquisition() {
-    this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_ACQUISITION";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Acquisition::~NM_Attribute_Ownership_Acquisition() {
 }
-void NM_Attribute_Ownership_Acquisition::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Acquisition::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Acquisition ------------<END>*/
 
 /*<BEGIN>---------- Request_Attribute_Ownership_Release ------------<BEGIN>*/
 NM_Request_Attribute_Ownership_Release::NM_Request_Attribute_Ownership_Release() {
-    this->name = "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE";
-    this->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE;
-    /* specific field init */
+	this->name = "REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE";
+	this->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE;
+	/* specific field init */
 }
 NM_Request_Attribute_Ownership_Release::~NM_Request_Attribute_Ownership_Release() {
 }
-void NM_Request_Attribute_Ownership_Release::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Request_Attribute_Ownership_Release::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Request_Attribute_Ownership_Release ------------<END>*/
 
 /*<BEGIN>---------- Cancel_Negotiated_Attribute_Ownership_Divestiture ------------<BEGIN>*/
 NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::NM_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
-    this->name = "CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
-    this->type = NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
-    /* specific field init */
+	this->name = "CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
+	this->type = NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
+	/* specific field init */
 }
 NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::~NM_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
 }
 void NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Cancel_Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Release_Response ------------<BEGIN>*/
 NM_Attribute_Ownership_Release_Response::NM_Attribute_Ownership_Release_Response() {
-    this->name = "ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE";
-    this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE;
-    /* specific field init */
+	this->name = "ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE";
+	this->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE;
+	/* specific field init */
 }
 NM_Attribute_Ownership_Release_Response::~NM_Attribute_Ownership_Release_Response() {
 }
 void NM_Attribute_Ownership_Release_Response::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Attribute_Ownership_Release_Response::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Release_Response ------------<END>*/
 
 /*<BEGIN>---------- Cancel_Attribute_Ownership_Acquisition ------------<BEGIN>*/
 NM_Cancel_Attribute_Ownership_Acquisition::NM_Cancel_Attribute_Ownership_Acquisition() {
-    this->name = "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION";
-    this->type = NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION;
-    /* specific field init */
+	this->name = "CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION";
+	this->type = NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION;
+	/* specific field init */
 }
 NM_Cancel_Attribute_Ownership_Acquisition::~NM_Cancel_Attribute_Ownership_Acquisition() {
 }
 void NM_Cancel_Attribute_Ownership_Acquisition::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Cancel_Attribute_Ownership_Acquisition::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Cancel_Attribute_Ownership_Acquisition ------------<END>*/
 
 /*<BEGIN>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<BEGIN>*/
 NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::NM_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
-    this->name = "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION";
-    this->type = NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION;
-    /* specific field init */
+	this->name = "CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION";
+	this->type = NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION;
+	/* specific field init */
 }
 NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::~NM_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
 }
 void NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Create_Region ------------<BEGIN>*/
 NM_Ddm_Create_Region::NM_Ddm_Create_Region() {
-    this->name = "DDM_CREATE_REGION";
-    this->type = NetworkMessage::DDM_CREATE_REGION;
-    /* specific field init */
+	this->name = "DDM_CREATE_REGION";
+	this->type = NetworkMessage::DDM_CREATE_REGION;
+	/* specific field init */
 }
 NM_Ddm_Create_Region::~NM_Ddm_Create_Region() {
 }
 void NM_Ddm_Create_Region::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Create_Region::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Create_Region ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Modify_Region ------------<BEGIN>*/
 NM_Ddm_Modify_Region::NM_Ddm_Modify_Region() {
-    this->name = "DDM_MODIFY_REGION";
-    this->type = NetworkMessage::DDM_MODIFY_REGION;
-    /* specific field init */
+	this->name = "DDM_MODIFY_REGION";
+	this->type = NetworkMessage::DDM_MODIFY_REGION;
+	/* specific field init */
 }
 NM_Ddm_Modify_Region::~NM_Ddm_Modify_Region() {
 }
 void NM_Ddm_Modify_Region::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Modify_Region::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Modify_Region ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Delete_Region ------------<BEGIN>*/
 NM_Ddm_Delete_Region::NM_Ddm_Delete_Region() {
-    this->name = "DDM_DELETE_REGION";
-    this->type = NetworkMessage::DDM_DELETE_REGION;
-    /* specific field init */
+	this->name = "DDM_DELETE_REGION";
+	this->type = NetworkMessage::DDM_DELETE_REGION;
+	/* specific field init */
 }
 NM_Ddm_Delete_Region::~NM_Ddm_Delete_Region() {
 }
 void NM_Ddm_Delete_Region::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Delete_Region::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Delete_Region ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Associate_Region ------------<BEGIN>*/
 NM_Ddm_Associate_Region::NM_Ddm_Associate_Region() {
-    this->name = "DDM_ASSOCIATE_REGION";
-    this->type = NetworkMessage::DDM_ASSOCIATE_REGION;
-    /* specific field init */
+	this->name = "DDM_ASSOCIATE_REGION";
+	this->type = NetworkMessage::DDM_ASSOCIATE_REGION;
+	/* specific field init */
 }
 NM_Ddm_Associate_Region::~NM_Ddm_Associate_Region() {
 }
 void NM_Ddm_Associate_Region::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Associate_Region::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Associate_Region ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Register_Object ------------<BEGIN>*/
 NM_Ddm_Register_Object::NM_Ddm_Register_Object() {
-    this->name = "DDM_REGISTER_OBJECT";
-    this->type = NetworkMessage::DDM_REGISTER_OBJECT;
-    /* specific field init */
+	this->name = "DDM_REGISTER_OBJECT";
+	this->type = NetworkMessage::DDM_REGISTER_OBJECT;
+	/* specific field init */
 }
 NM_Ddm_Register_Object::~NM_Ddm_Register_Object() {
 }
 void NM_Ddm_Register_Object::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Register_Object::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Register_Object ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Unassociate_Region ------------<BEGIN>*/
 NM_Ddm_Unassociate_Region::NM_Ddm_Unassociate_Region() {
-    this->name = "DDM_UNASSOCIATE_REGION";
-    this->type = NetworkMessage::DDM_UNASSOCIATE_REGION;
-    /* specific field init */
+	this->name = "DDM_UNASSOCIATE_REGION";
+	this->type = NetworkMessage::DDM_UNASSOCIATE_REGION;
+	/* specific field init */
 }
 NM_Ddm_Unassociate_Region::~NM_Ddm_Unassociate_Region() {
 }
 void NM_Ddm_Unassociate_Region::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Unassociate_Region::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Unassociate_Region ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Subscribe_Attributes ------------<BEGIN>*/
 NM_Ddm_Subscribe_Attributes::NM_Ddm_Subscribe_Attributes() {
-    this->name = "DDM_SUBSCRIBE_ATTRIBUTES";
-    this->type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES;
-    /* specific field init */
+	this->name = "DDM_SUBSCRIBE_ATTRIBUTES";
+	this->type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES;
+	/* specific field init */
 }
 NM_Ddm_Subscribe_Attributes::~NM_Ddm_Subscribe_Attributes() {
 }
 void NM_Ddm_Subscribe_Attributes::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Subscribe_Attributes::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Subscribe_Attributes ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Unsubscribe_Attributes ------------<BEGIN>*/
 NM_Ddm_Unsubscribe_Attributes::NM_Ddm_Unsubscribe_Attributes() {
-    this->name = "DDM_UNSUBSCRIBE_ATTRIBUTES";
-    this->type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES;
-    /* specific field init */
+	this->name = "DDM_UNSUBSCRIBE_ATTRIBUTES";
+	this->type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES;
+	/* specific field init */
 }
 NM_Ddm_Unsubscribe_Attributes::~NM_Ddm_Unsubscribe_Attributes() {
 }
 void NM_Ddm_Unsubscribe_Attributes::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Unsubscribe_Attributes::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Unsubscribe_Attributes ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Subscribe_Interaction ------------<BEGIN>*/
 NM_Ddm_Subscribe_Interaction::NM_Ddm_Subscribe_Interaction() {
-    this->name = "DDM_SUBSCRIBE_INTERACTION";
-    this->type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION;
-    /* specific field init */
+	this->name = "DDM_SUBSCRIBE_INTERACTION";
+	this->type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION;
+	/* specific field init */
 }
 NM_Ddm_Subscribe_Interaction::~NM_Ddm_Subscribe_Interaction() {
 }
 void NM_Ddm_Subscribe_Interaction::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Subscribe_Interaction::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Subscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Ddm_Unsubscribe_Interaction ------------<BEGIN>*/
 NM_Ddm_Unsubscribe_Interaction::NM_Ddm_Unsubscribe_Interaction() {
-    this->name = "DDM_UNSUBSCRIBE_INTERACTION";
-    this->type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION;
-    /* specific field init */
+	this->name = "DDM_UNSUBSCRIBE_INTERACTION";
+	this->type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION;
+	/* specific field init */
 }
 NM_Ddm_Unsubscribe_Interaction::~NM_Ddm_Unsubscribe_Interaction() {
 }
 void NM_Ddm_Unsubscribe_Interaction::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Ddm_Unsubscribe_Interaction::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Ddm_Unsubscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Provide_Attribute_Value_Update ------------<BEGIN>*/
 NM_Provide_Attribute_Value_Update::NM_Provide_Attribute_Value_Update() {
-    this->name = "PROVIDE_ATTRIBUTE_VALUE_UPDATE";
-    this->type = NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE;
-    /* specific field init */
+	this->name = "PROVIDE_ATTRIBUTE_VALUE_UPDATE";
+	this->type = NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE;
+	/* specific field init */
 }
 NM_Provide_Attribute_Value_Update::~NM_Provide_Attribute_Value_Update() {
 }
 void NM_Provide_Attribute_Value_Update::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Provide_Attribute_Value_Update::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
 
 /*<BEGIN>---------- Get_Fed_File ------------<BEGIN>*/
 NM_Get_Fed_File::NM_Get_Fed_File() {
-    this->name = "GET_FED_FILE";
-    this->type = NetworkMessage::GET_FED_FILE;
-    /* specific field init */
+	this->name = "GET_FED_FILE";
+	this->type = NetworkMessage::GET_FED_FILE;
+	/* specific field init */
 }
 NM_Get_Fed_File::~NM_Get_Fed_File() {
 }
 void NM_Get_Fed_File::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::serialize(); 
+	/* specific code (if any) goes here */
 } /* end of serialize */ 
 void NM_Get_Fed_File::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
+	/* call mother class */      
+	Super::deserialize(); 
+	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Get_Fed_File ------------<END>*/
 
 /*<BEGIN>---------- Last ------------<BEGIN>*/
 NM_Last::NM_Last() {
-    this->name = "LAST";
-    this->type = NetworkMessage::LAST;
-    /* specific field init */
+	this->name = "LAST";
+	this->type = NetworkMessage::LAST;
+	/* specific field init */
 }
 NM_Last::~NM_Last() {
 }
-void NM_Last::serialize() {
-  /* call mother class */      
-  NetworkMessage::serialize(); 
-  /* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Last::deserialize() {
-  /* call mother class */      
-  NetworkMessage::deserialize(); 
-  /* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Last ------------<END>*/
 
 } /* end of certi namespace */

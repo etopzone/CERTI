@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.2 2008/04/08 14:05:26 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.3 2008/04/09 08:43:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -42,6 +42,13 @@
 
 namespace certi {
 
+/**
+ * NetworkMessage is the base class used
+ * for modelling message exchanged between RTIG and RTIA.
+ * NetworkMessage is the base class of a class hierarchy.
+ * Each specific message is a (direct of indirect)
+ * daughter class of NetworkMessage.    
+ */ 
 class CERTI_EXPORT NetworkMessage : public BasicMessage
 {
 public:
@@ -264,18 +271,29 @@ public:
 	 */
 	FederationTime date ;
 	void setDate(FederationTime date) {this->date = date;};
-	FederationTime getDate() const {return this->date;};
+	const FederationTime getDate() const {return this->date;};
 
 	int numberOfRegulators ;
 	unsigned long multicastAddress ;
 
+	/**
+     * Indicate if the message is Labelled or not
+     */
 	bool isLabelled;	
 	std::string label;
 	void setLabel(const std::string label) {this->label = label;};
+	void setLabel(const char *new_label) { label = std::string(new_label); }
 	const std::string getLabel() const {return this->label;};
 	
+	/**
+	 * Indicate if the message is Tagged or not
+	 */
+	bool isTagged;
 	std::string tag;
-
+	void setTag(const std::string tag) {this->tag = tag;};
+	void setTag(const char *new_tag) { tag = std::string(new_tag); }
+	const std::string getTag() const {return this->tag;};
+	
 	ObjectHandlecount idCount ;
 	ObjectHandle firstId ;
 	ObjectHandle lastId ;
@@ -296,8 +314,8 @@ public:
 	long nbExtents ;
 	long region ;
 
-	void setLabel(const char *new_label) { label = std::string(new_label); }
-	void setTag(const char *new_tag) { tag = std::string(new_tag); }
+	
+	
 	void setFEDid(const char *NewFEDid);
 	const std::string getName() const {return name;}
 	
@@ -380,4 +398,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.2 2008/04/08 14:05:26 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.3 2008/04/09 08:43:45 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.2 2008/04/08 14:05:26 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.3 2008/04/09 08:43:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,9 +42,9 @@ NetworkMessage::readBody(Socket *socket)
 	if (Header.bodySize == 0) {
 		throw RTIinternalError("ReadBody should not have been called.");
 	}
-	
+
 	// 1. Read Body from socket.
-    // NOTHING TO DO all buffer read in readHeader
+	// NOTHING TO DO all buffer read in readHeader
 	// FIXME need to get rid of Header/Body distinction.
 
 	// 3. Read informations from Message Body according to message type.
@@ -88,13 +88,13 @@ NetworkMessage::readBody(Socket *socket)
 				msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length) ;
 			}
 			break ;
-			
-			      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-	object = msgBuf.read_int32();
-	for (i = 0 ; i < handleArraySize ; i ++) {
-	        handleArray[i] = msgBuf.read_int16();
-	}
-	break ;
+
+		case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+			object = msgBuf.read_int32();
+			for (i = 0 ; i < handleArraySize ; i ++) {
+				handleArray[i] = msgBuf.read_int16();
+			}
+			break ;
 
 			// -- O_I Variable Part With Date(Body Not Empty) --
 		case SEND_INTERACTION:
@@ -319,21 +319,21 @@ NetworkMessage::readHeader(Socket *socket)
 	msgBuf.assumeSizeFromReservedBytes();
 	D.Out(pdDebug,"Got a MsgBuf of size %d bytes (including %d reserved)",msgBuf.size(),msgBuf.reservedBytes);
 	socket->receive(msgBuf(msgBuf.reservedBytes),msgBuf.size()-msgBuf.reservedBytes);
-	
+
 	// 3- Unmarshall Header
 	Header.type        = static_cast<certi::NetworkMessage::Type>(msgBuf.read_int32());
 	Header.exception   = static_cast<certi::TypeException>(msgBuf.read_int32());
 	Header.federate    = msgBuf.read_int32();
 	Header.federation  = msgBuf.read_int32();
 	Header.bodySize    = msgBuf.read_int32();
-	
+
 	D.Mes(pdDebug,'N',Header.type,"readHeader::");
 	// 2- (Pseudo) Parse Header(Static Part)
 	type       = Header.type       ;
 	exception  = Header.exception  ;
 	federate   = Header.federate   ;
 	federation = Header.federation ;
-	
+
 	// If the message carry an exception, the Body will only contain the
 	// exception reason.
 	if (exception != e_NO_EXCEPTION)
@@ -539,7 +539,7 @@ NetworkMessage::writeBody(Socket *socket)
 	unsigned short i ;
 
 	G.Out(pdGendoc,"enter NetworkMessage::writeBody");
-	
+
 	// If the message carry an exception, the Body will only contain the
 	// exception reason.
 	if (Header.exception != e_NO_EXCEPTION) {
@@ -582,13 +582,13 @@ NetworkMessage::writeBody(Socket *socket)
 				msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
 			}
 			break ;
-			
-			  case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-	msgBuf.write_int32(object);
-	for (i = 0 ; i < handleArraySize ; i ++) {
-	    msgBuf.write_int16(handleArray[i]);
-	}
-	break ;
+
+		case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+			msgBuf.write_int32(object);
+			for (i = 0 ; i < handleArraySize ; i ++) {
+				msgBuf.write_int16(handleArray[i]);
+			}
+			break ;
 
 			// -- O_I Variable Part With date(body Not Empty) --
 
@@ -632,7 +632,7 @@ NetworkMessage::writeBody(Socket *socket)
 			{
 				msgBuf.write_uint16(handleArraySize);
 				for (i = 0 ; i < handleArraySize ; i ++) {
-			        msgBuf.write_uint16(handleArray[i]);
+					msgBuf.write_uint16(handleArray[i]);
 				}
 			}        
 			break ;
@@ -822,8 +822,19 @@ void NetworkMessage::serialize() {
 	msgBuf.write_int32(exception);
 	msgBuf.write_int32(federate);
 	msgBuf.write_int32(federation);
+	/*
+	 * "builtin" Optional part
+	 * The subclass may chose in the constructor
+	 * the variable part.
+	 */
 	if (isDated) {
 		msgBuf.write_double(date);
+	}
+	if (isLabelled) {
+		msgBuf.write_string(label);
+	}
+	if (isTagged) {
+		msgBuf.write_string(tag);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::serialize");
 } /* end of serialize */
@@ -831,7 +842,7 @@ void NetworkMessage::serialize() {
 void NetworkMessage::deserialize() {
 	G.Out(pdGendoc,"enter NetworkMessage::deserialize");
 	/* We serialize the common Network message part 
-	 * ALL Network Message will contain the following
+	 * ALL Network Messages will contain the following
 	 */	
 	D.Out(pdDebug,("deserialize"+getName()).c_str());	
 	/* deserialize common part */
@@ -839,8 +850,19 @@ void NetworkMessage::deserialize() {
 	exception   = static_cast<certi::TypeException>(msgBuf.read_int32());
 	federate    = msgBuf.read_int32();
 	federation  = msgBuf.read_int32();
+	/*
+	 * "builtin" Optional part
+	 * The subclass may chose in the constructor
+	 * the variable part.
+	 */
 	if (isDated) {
 		date = msgBuf.read_double();
+	}
+	if (isLabelled) {
+		label = msgBuf.read_string();
+	}
+	if (isTagged) {
+		tag = msgBuf.read_string();
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
 } /* end of deserialize */
@@ -859,7 +881,7 @@ NetworkMessage::send(Socket *socket) {
 	msgBuf.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 	socket->send(static_cast<unsigned char*>(msgBuf(0)), msgBuf.size());
-    G.Out(pdGendoc,"exit  NetworkMessage::send");
+	G.Out(pdGendoc,"exit  NetworkMessage::send");
 } /* end of send */
 
 void
@@ -917,7 +939,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	case MESSAGE_NULL:
 		Header.bodySize = 0 ;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.time.date = date ;
 		msgBuf.write_double(date);
 		break ;
@@ -926,7 +948,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	case REFLECT_ATTRIBUTE_VALUES:
 		Header.bodySize = 1 ;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.O_I.handle = objectClass ;
 		msgBuf.write_int32(objectClass);
 		Header.VP.O_I.size = handleArraySize ;
@@ -934,13 +956,13 @@ NetworkMessage::writeHeader(Socket *socket)
 		Header.VP.O_I.date = date ;
 		msgBuf.write_double(date);
 		break ;
-		
+
 	case SEND_INTERACTION:
 	case RECEIVE_INTERACTION:
 		// body contains handleArray, ValueArray, label.
 		Header.bodySize = 1 ;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.O_I.handle = interactionClass ;
 		msgBuf.write_int32(interactionClass);
 		Header.VP.O_I.size = handleArraySize ;
@@ -971,7 +993,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
 		Header.bodySize = 1 ;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.O_I.size = handleArraySize ;
 		msgBuf.write_int32(handleArraySize);
 		break;
@@ -998,14 +1020,14 @@ NetworkMessage::writeHeader(Socket *socket)
 
 	case CREATE_FEDERATION_EXECUTION:
 	case DESTROY_FEDERATION_EXECUTION:
-		
+
 		// body Contains federationName.
 		Header.bodySize = 1 ;
-	    msgBuf.write_int32(Header.bodySize);
-	    Header.VP.O_I.date = date ;
-	    msgBuf.write_double(date);	    
+		msgBuf.write_int32(Header.bodySize);
+		Header.VP.O_I.date = date ;
+		msgBuf.write_double(date);	    
 		break;
-		
+
 	case INFORM_ATTRIBUTE_OWNERSHIP:
 	case ATTRIBUTE_IS_NOT_OWNED:
 	case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
@@ -1037,7 +1059,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	case GET_FED_FILE:
 		Header.bodySize = 1 ;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		break ;
 
 	case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
@@ -1054,7 +1076,7 @@ NetworkMessage::writeHeader(Socket *socket)
 	case DELETE_OBJECT:
 		Header.bodySize = 1;
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.O_I.date = date;
 		msgBuf.write_double(date);
 		break;
@@ -1155,7 +1177,7 @@ NetworkMessage::writeHeader(Socket *socket)
 			Header.bodySize = 0 ;
 		}
 		msgBuf.write_int32(Header.bodySize);
-		
+
 		Header.VP.O_I.handle = objectClass ;
 		msgBuf.write_int32(objectClass);
 		Header.VP.O_I.size = handleArraySize ;
@@ -1201,4 +1223,4 @@ NetworkMessage::writeHeader(Socket *socket)
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.2 2008/04/08 14:05:26 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.3 2008/04/09 08:43:46 erk Exp $
