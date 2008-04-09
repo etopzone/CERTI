@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.9.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: BasicMessage.cc,v 3.9.2.2 2008/04/09 14:16:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,7 +31,7 @@
 using std::vector;
 using std::endl;
 
-static pdCDebug D("MESSAGE",__FILE__ );
+static pdCDebug D("BM","BasicMessage:");
 
 namespace certi {
 
@@ -146,6 +146,11 @@ const std::vector<RegionHandle> & BasicMessage::getRegions() const {
 	return regions;
 }
 
+void BasicMessage::copyMsgBufFrom(BasicMessage& msg) {
+	this->msgBuf.resize(msg.msgBuf.size());
+	memcpy(this->msgBuf(0),msg.msgBuf(0),msg.msgBuf.size());
+	msgBuf.assumeSizeFromReservedBytes();
+}
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.9.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: BasicMessage.cc,v 3.9.2.2 2008/04/09 14:16:32 erk Exp $

@@ -31,6 +31,7 @@ namespace certi {
 class NM_Factory {
 public:
 	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
+	static NetworkMessage* receive(Socket* socket) throw (RTIinternalError);
 };
 
 class CERTI_EXPORT NM_WithHandleArray : public NetworkMessage {
@@ -45,11 +46,39 @@ public:
 	void setHandle(AttributeHandle h, int i) {handleArray[i]=h;};
 protected:
 	/* specific field */
-	UShort handleArraySize ;
-	/* FIXME will make this a vector<AttributeHandle> */
-	AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
+
+class CERTI_EXPORT NM_DDM_Base : public NM_WithHandleArray {
+public:
+	typedef NM_WithHandleArray Super;
+	NM_DDM_Base();
+	virtual ~NM_DDM_Base();
+	virtual void serialize()   = 0;
+	virtual void deserialize() = 0;	
+	/* specific Getter/Setter */	
+	const SpaceHandle getSpace() const {return space;};
+	void setSpace(SpaceHandle space) {this->space=space;};
+
+	const int32_t geNbExtents() const {return nbExtents;};
+	void setNbExtents(int32_t nbExtents) {this->nbExtents=nbExtents;};
+
+	const int32_t getRegion() const {return region;};
+	void setRegion(int32_t region) {this->region=region;};	
+
+	const ObjectHandle getObject() const {return object;};
+	void setObject(ObjectHandle object) {this->object=object;};
+
+	const ObjectClassHandle getObjectClass() const {return objectClass;};
+	void setObjectClass(ObjectClassHandle objectClass) {this->objectClass=objectClass;};
+
+	const InteractionClassHandle getInteractionClass() const {return interactionClass;};
+	void setInteractionClass(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
+protected:
+	/* specific field */
+private:
+};
+
 
 /*<BEGIN>---------- Not_Used ------------<BEGIN>*/
 class CERTI_EXPORT NM_Not_Used : public NetworkMessage {
@@ -747,7 +776,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	
+
 private:
 };
 
@@ -1109,14 +1138,18 @@ private:
 /*<END>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<END>*/
 
 /*<BEGIN>---------- DDM_Create_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Create_Region : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Create_Region();
 	virtual ~NM_DDM_Create_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	const SpaceHandle getSpace() const {return space;};
+	void setSpace(SpaceHandle space) {this->space=space;};	
+	const int32_t getRegion() const {return region;};
+	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
 	SpaceHandle space;
@@ -1128,57 +1161,69 @@ private:
 /*<END>---------- DDM_Create_Region ------------<END>*/
 
 /*<BEGIN>---------- DDM_Modify_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Modify_Region : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Modify_Region();
 	virtual ~NM_DDM_Modify_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	const int32_t getRegion() const {return region;};
+	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
+	int32_t region;
 private:
 };
 
 /*<END>---------- DDM_Modify_Region ------------<END>*/
 
 /*<BEGIN>---------- DDM_Delete_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Delete_Region : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Delete_Region : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Delete_Region();
 	virtual ~NM_DDM_Delete_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	const int32_t getRegion() const {return region;};
+	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
+	int32_t region;	
 private:
 };
 
 /*<END>---------- DDM_Delete_Region ------------<END>*/
 
 /*<BEGIN>---------- DDM_Associate_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Associate_Region : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Associate_Region();
 	virtual ~NM_DDM_Associate_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	const int32_t getRegion() const {return region;};
+	void setRegion(SpaceHandle region) {this->region=region;};
+	const ObjectHandle getObject() const {return object;};
+	void setObject(ObjectHandle object) {this->object=object;};		
 protected:
 	/* specific field */
+	int32_t      region;
+	ObjectHandle object;
 private:
 };
 
 /*<END>---------- DDM_Associate_Region ------------<END>*/
 
 /*<BEGIN>---------- DDM_Register_Object ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Register_Object : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Register_Object();
 	virtual ~NM_DDM_Register_Object();
 	virtual void serialize();
@@ -1192,9 +1237,9 @@ private:
 /*<END>---------- DDM_Register_Object ------------<END>*/
 
 /*<BEGIN>---------- DDM_Unassociate_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Unassociate_Region : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Unassociate_Region();
 	virtual ~NM_DDM_Unassociate_Region();
 	virtual void serialize();
@@ -1208,9 +1253,9 @@ private:
 /*<END>---------- DDM_Unassociate_Region ------------<END>*/
 
 /*<BEGIN>---------- DDM_Subscribe_Attributes ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Subscribe_Attributes();
 	virtual ~NM_DDM_Subscribe_Attributes();
 	virtual void serialize();
@@ -1224,9 +1269,9 @@ private:
 /*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
 /*<BEGIN>---------- DDM_Unsubscribe_Attributes ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Unsubscribe_Attributes();
 	virtual ~NM_DDM_Unsubscribe_Attributes();
 	virtual void serialize();
@@ -1240,9 +1285,9 @@ private:
 /*<END>---------- DDM_Unsubscribe_Attributes ------------<END>*/
 
 /*<BEGIN>---------- DDM_Subscribe_Interaction ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NM_DDM_Base {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Base Super;
 	NM_DDM_Subscribe_Interaction();
 	virtual ~NM_DDM_Subscribe_Interaction();
 	virtual void serialize();
@@ -1256,13 +1301,11 @@ private:
 /*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- DDM_Unsubscribe_Interaction ------------<BEGIN>*/
-class CERTI_EXPORT NM_DDM_Unsubscribe_Interaction : public NetworkMessage {
+class CERTI_EXPORT NM_DDM_Unsubscribe_Interaction : public NM_DDM_Subscribe_Interaction {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_DDM_Subscribe_Interaction Super;
 	NM_DDM_Unsubscribe_Interaction();
-	virtual ~NM_DDM_Unsubscribe_Interaction();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual ~NM_DDM_Unsubscribe_Interaction();	
 	/* specific Getter/Setter */
 protected:
 	/* specific field */

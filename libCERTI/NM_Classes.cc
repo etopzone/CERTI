@@ -287,7 +287,22 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	default:
 		throw RTIinternalError("Unknown/Unimplemented message Type");
 	}
+	
+	return msg;
 } /* end of NM_Factory::create */
+
+NetworkMessage* NM_Factory::receive(Socket* socket) throw (RTIinternalError) {
+	NetworkMessage  msgGen;
+	NetworkMessage* msg;
+	
+	/* receive generic message */
+	msgGen.receive(socket);
+	/* create specific message from type */
+	msg = NM_Factory::create(msgGen.getType());
+	msg->copyMsgBufFrom(msgGen);	
+	msg->deserialize();
+	return msg;	
+} /* end of NM_Factory::receive */
 
 NM_WithHandleArray::NM_WithHandleArray() {
 	this->name = "NM_WithHandleArray";
@@ -330,6 +345,21 @@ void NM_WithHandleArray::deserialize() {
 		handleArray[i] = msgBuf.read_int16();
 	}
 } /* end of deserialize */
+
+NM_DDM_Base::NM_DDM_Base() {
+	this->name = "NM_DDM_Base";
+	this->type = NetworkMessage::NOT_USED;
+	/* specific field init */
+	this->space       = 0;
+	this->nbExtents   = 0;
+	this->region      = 0;
+	this->object      = 0;
+	this->objectClass = 0;
+	this->boolean     = false;
+}
+
+NM_DDM_Base::~NM_DDM_Base() {
+}
 
 /*<BEGIN>---------- Not_Used ------------<BEGIN>*/
 NM_Not_Used::NM_Not_Used() {
@@ -1321,13 +1351,19 @@ NM_DDM_Create_Region::~NM_DDM_Create_Region() {
 }
 void NM_DDM_Create_Region::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize(); 
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(space);
+	msgBuf.write_int32(nbExtents);
+	msgBuf.write_int32(region);
 } /* end of serialize */ 
 void NM_DDM_Create_Region::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize(); 
 	/* specific code (if any) goes here */
+	space     = msgBuf.read_int32();
+	nbExtents = msgBuf.read_int32();
+	region    = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Create_Region ------------<END>*/
 
@@ -1341,13 +1377,17 @@ NM_DDM_Modify_Region::~NM_DDM_Modify_Region() {
 }
 void NM_DDM_Modify_Region::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize(); 
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(region);
+	writeExtents();
 } /* end of serialize */ 
 void NM_DDM_Modify_Region::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize(); 
 	/* specific code (if any) goes here */
+	region = msgBuf.read_int32();
+	readExtents();
 } /* end of deserialize */
 /*<END>---------- DDM_Modify_Region ------------<END>*/
 
@@ -1361,13 +1401,15 @@ NM_DDM_Delete_Region::~NM_DDM_Delete_Region() {
 }
 void NM_DDM_Delete_Region::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize(); 
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(region);
 } /* end of serialize */ 
 void NM_DDM_Delete_Region::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize(); 
 	/* specific code (if any) goes here */
+	region = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Delete_Region ------------<END>*/
 
@@ -1381,13 +1423,21 @@ NM_DDM_Associate_Region::~NM_DDM_Associate_Region() {
 }
 void NM_DDM_Associate_Region::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
+	msgBuf.write_int32(region);
+	msgBuf.write_int32(boolean);
 } /* end of serialize */ 
 void NM_DDM_Associate_Region::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	object  = msgBuf.read_int32();
+	region  = msgBuf.read_int32();
+	boolean = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Associate_Region ------------<END>*/
 
@@ -1396,18 +1446,29 @@ NM_DDM_Register_Object::NM_DDM_Register_Object() {
 	this->name = "DDM_REGISTER_OBJECT";
 	this->type = NetworkMessage::DDM_REGISTER_OBJECT;
 	/* specific field init */
+	isTagged = true;
 }
 NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }
 void NM_DDM_Register_Object::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
+	msgBuf.write_int32(objectClass);
+	msgBuf.write_int32(region);
+	msgBuf.write_int32(boolean);
 } /* end of serialize */ 
 void NM_DDM_Register_Object::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	object      = msgBuf.read_int32();
+	objectClass = msgBuf.read_int32();
+	region = msgBuf.read_int32();
+	boolean = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Register_Object ------------<END>*/
 
@@ -1421,13 +1482,17 @@ NM_DDM_Unassociate_Region::~NM_DDM_Unassociate_Region() {
 }
 void NM_DDM_Unassociate_Region::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(object);
+	msgBuf.write_int32(region);
 } /* end of serialize */ 
 void NM_DDM_Unassociate_Region::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
+	/* call mother class */      	
+	NetworkMessage::deserialize();
 	/* specific code (if any) goes here */
+	object = msgBuf.read_int32();
+	region = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Unassociate_Region ------------<END>*/
 
@@ -1441,13 +1506,21 @@ NM_DDM_Subscribe_Attributes::~NM_DDM_Subscribe_Attributes() {
 }
 void NM_DDM_Subscribe_Attributes::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(objectClass);
+	msgBuf.write_int32(region);
+	msgBuf.write_int32(boolean);
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Attributes::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize();
+	NM_WithHandleArray::deserialize();
 	/* specific code (if any) goes here */
+	objectClass = msgBuf.read_int32();
+	region      = msgBuf.read_int32();
+	boolean     = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
@@ -1461,13 +1534,17 @@ NM_DDM_Unsubscribe_Attributes::~NM_DDM_Unsubscribe_Attributes() {
 }
 void NM_DDM_Unsubscribe_Attributes::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(objectClass);
+	msgBuf.write_int32(region);
 } /* end of serialize */ 
 void NM_DDM_Unsubscribe_Attributes::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize();
 	/* specific code (if any) goes here */
+	objectClass = msgBuf.read_int32();
+	region = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Unsubscribe_Attributes ------------<END>*/
 
@@ -1481,13 +1558,19 @@ NM_DDM_Subscribe_Interaction::~NM_DDM_Subscribe_Interaction() {
 }
 void NM_DDM_Subscribe_Interaction::serialize() {
 	/* call mother class */      
-	Super::serialize(); 
+	NetworkMessage::serialize();
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(interactionClass);
+	msgBuf.write_int32(region);
+	msgBuf.write_bool(boolean);
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Interaction::deserialize() {
 	/* call mother class */      
-	Super::deserialize(); 
+	NetworkMessage::deserialize();
 	/* specific code (if any) goes here */
+	interactionClass = msgBuf.read_int32();
+	region           = msgBuf.read_int32();
+	boolean           = msgBuf.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 
@@ -1499,16 +1582,6 @@ NM_DDM_Unsubscribe_Interaction::NM_DDM_Unsubscribe_Interaction() {
 }
 NM_DDM_Unsubscribe_Interaction::~NM_DDM_Unsubscribe_Interaction() {
 }
-void NM_DDM_Unsubscribe_Interaction::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_DDM_Unsubscribe_Interaction::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- DDM_Unsubscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Provide_Attribute_Value_Update ------------<BEGIN>*/

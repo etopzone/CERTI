@@ -18,13 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.2 2008/04/09 14:16:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIG.hh"
 
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <signal.h>
@@ -504,7 +505,7 @@ on the link. This message only holds the exception.
 Socket*
 RTIG::processIncomingMessage(Socket *link)
 {
-    NetworkMessage msg ;
+    NetworkMessage* msg ;
     NetworkMessage rep ; // Server Answer(only if an exception is raised)
 
     char buffer[BUFFER_EXCEPTION_REASON_SIZE] ; // To store the exception reason
@@ -514,13 +515,14 @@ RTIG::processIncomingMessage(Socket *link)
         return NULL ;
     }
 
-    msg.read(link);
-
-    rep.type = msg.type ;
+    /* virtual constructor call */
+    msg = NM_Factory::receive(link);
+    
+    rep.type = msg->type ;
     rep.exception = e_NO_EXCEPTION ;
-    rep.federate = msg.federate ;
+    rep.federate = msg->federate ;
 
-    auditServer.startLine(msg.federation, msg.federate, msg.type);
+    auditServer.startLine(msg->federation, msg->federate, msg->type);
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -530,7 +532,7 @@ RTIG::processIncomingMessage(Socket *link)
     buffer[0] = 0 ;
 
     try {
-        link = chooseProcessingMethod(link, &msg);
+        link = chooseProcessingMethod(link, msg);
     }
     catch (ArrayIndexOutOfBounds &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
@@ -984,4 +986,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.2 2008/04/09 14:16:33 erk Exp $

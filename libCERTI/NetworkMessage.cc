@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28.2.3 2008/04/09 10:34:03 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.4 2008/04/09 14:16:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -37,8 +37,8 @@ static PrettyDebug G("GENDOC",__FILE__);
 NetworkMessage::NetworkMessage()
     : type(NOT_USED), exception(e_NO_EXCEPTION), isDated(false), isLabelled(false), isTagged(false)
 {
+	name = "NetworkMessage";
     exceptionReason[0] = '\0' ;
-
     number = 0 ;
 
     federation = 0 ;
@@ -51,9 +51,6 @@ NetworkMessage::NetworkMessage()
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
-
-    // Clear Header
-    memset((void *) &Header, '\0', sizeof(Header));
 
     date = 0.0 ;
 
@@ -214,12 +211,7 @@ void
 NetworkMessage::read(Socket *socket)
     throw (NetworkError, NetworkSignal)
 {
-    // G.Out(pdGendoc,"enter NetworkMessage::read");
-    bool has_body = readHeader(socket);
-
-    if (has_body)
-        readBody(socket);
-    // G.Out(pdGendoc,"exit  NetworkMessage::read");
+    receive(socket);
 }
 
 // ----------------------------------------------------------------------------
@@ -227,10 +219,7 @@ void
 NetworkMessage::write(Socket *socket)
     throw (NetworkError, NetworkSignal)
 {
-    bool needs_body = writeHeader(socket);
-
-    if (needs_body)
-        writeBody(socket);
+    send(socket);
 }
 
 // ----------------------------------------------------------------------------
@@ -254,67 +243,7 @@ NetworkMessage::setBoolean(bool the_bool)
     boolean = the_bool ;
 }
 
-// ----------------------------------------------------------------------------
-void
-NetworkMessage::readLabel()
-{
-    label = msgBuf.read_string();
-}
-
-// ----------------------------------------------------------------------------
-//! Read the tag contained into the message.
-void NetworkMessage::readTag()
-{
-    tag = msgBuf.read_string();
-}
-
-// ----------------------------------------------------------------------------
-//! Read the federation name.
-void
-NetworkMessage::readFederationName()
-{ 
-    federationName = msgBuf.read_string();
-}
-
-// ----------------------------------------------------------------------------
-void
-NetworkMessage::readFederateName()
-{
-    federateName = msgBuf.read_string();
-}
-
-// ----------------------------------------------------------------------------
-// setFEDid
-//
-void
-NetworkMessage::setFEDid(const char *NewFEDid)
-{
-    assert ( NewFEDid != NULL) ;
-    FEDid = std::string(NewFEDid);  
-}
-
-// ----------------------------------------------------------------------------
-void
-NetworkMessage::readFEDid()
-{ 
-    FEDid = msgBuf.read_string();    
-}
-
-// ---------------------------------------------------------------
-void
-NetworkMessage::writeFEDid()
-{    
-    msgBuf.write_string(FEDid);
-}
-
-// ---------------------------------------------------------------
-void
-NetworkMessage::writeFederationName()
-{ 
-    assert(federationName.length() > 0) ;      
-    msgBuf.write_string(federationName);
-}
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28.2.3 2008/04/09 10:34:03 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.4 2008/04/09 14:16:32 erk Exp $

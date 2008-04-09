@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.4 2008/04/09 10:34:03 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.5 2008/04/09 14:16:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -52,44 +52,6 @@ namespace certi {
 class CERTI_EXPORT NetworkMessage : public BasicMessage
 {
 public:
-	struct TimeStruct {
-		FederationTime date ; // Date, Logical Time
-		bool R_or_C ; // IsRegulator or IsConstrained
-	};
-
-	struct T_O_Struct {
-		ObjectClassHandle handle ;
-		UShort handleArraySize ;
-		TransportType transport ;
-		OrderType order ;
-	};
-
-	struct JoinStruct {
-		int NbReg ;
-		unsigned long AdrMC ;
-		unsigned long Addr ;
-		unsigned int peer ;
-	};
-
-	struct O_I_Struct {
-		ObjectClassHandle handle ;
-		UShort size ;
-		FederationTime date ;
-	};
-
-	struct DDM_Struct {
-		SpaceHandle space ;
-		DimensionHandle dimension ;
-		RegionHandle region ;
-	};
-
-	union HeaderUnion {
-		TimeStruct time ;
-		T_O_Struct T_O ;
-		JoinStruct Join ;
-		O_I_Struct O_I ;
-		DDM_Struct ddm ;
-	};
 
 	typedef enum Type {
 		NOT_USED = 0, // Not used.
@@ -176,16 +138,7 @@ public:
 		PROVIDE_ATTRIBUTE_VALUE_UPDATE,
 		GET_FED_FILE,
 		LAST
-	} Message_T;
-
-	struct HeaderStruct {
-		Type type ;
-		TypeException exception ;
-		Handle federation ;
-		FederateHandle federate ;
-		UShort bodySize ;
-		HeaderUnion VP ; // Variable Part
-	};
+	} Message_T;	
 
 	NetworkMessage();
     virtual ~NetworkMessage();
@@ -242,13 +195,12 @@ public:
 
 	void setAHS(const AttributeHandle *, int);
 
+	
 	void setBoolean(bool);
 	bool getBoolean() const { return boolean ; };
 
 		
 	UShort number ;
-
-	
 
 	std::string federationName ;
 	std::string federateName;
@@ -260,6 +212,13 @@ public:
 	bool regulator ;
 	bool constrained ;
 
+	/* NM_DDM_Basr class fields */
+	SpaceHandle            space;
+	int32_t                nbExtents;
+	int32_t                region;
+	ObjectHandle           object;
+	ObjectClassHandle      objectClass;
+	InteractionClassHandle interactionClass;
 	bool boolean ;
 
 	/**
@@ -298,25 +257,15 @@ public:
 	ObjectHandle firstId ;
 	ObjectHandle lastId ;
 
-	ObjectHandle object ;
-	ObjectClassHandle objectClass ;
-	InteractionClassHandle interactionClass ;
-
 	EventRetractionHandle eventRetraction ;
 
+	/* NM_WithHandleArray class specific fields */
 	UShort handleArraySize ;
+	/* FIXME will make this a vector<AttributeHandle> */
 	AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
 
 	TransportType transport ;
 	OrderType order ;
-
-	SpaceHandle space ;
-	long nbExtents ;
-	long region ;
-
-	
-	
-	void setFEDid(const char *NewFEDid);
 	
 	/** The name corresponding to message type */
 	const std::string getName() const {return name;}
@@ -353,41 +302,7 @@ protected:
 	 */
 	std::string name;
 	
-
-
-private:
-	
-	
-	// Read a Message Body from a Socket. Should be called after ReadHeader.
-	void readBody(Socket *Socket);
-
-	// Read a Header from a socket, and process it to read its content.
-	// Return RTI_TRUE if the ReadBody Method has to be called.
-	bool readHeader(Socket *Socket);
-
-	// The message is written onto the socket by WriteHeader if no body
-	// is required, or by WriteBody is a body has been required by WriteHeader.
-
-	// Prepare and write a Body to a socket. Should be called after
-	// WriteHeader.
-	void writeBody(Socket *Socket);
-
-	// Prepare and Write a Header to a Socket, and return RTI_TRUE
-	// if the WriteBody method has to be called.
-	bool writeHeader(Socket *Socket);
-
-	// -- Others Private Write Methods --
-	void writeFEDid();
-	void writeFederationName();
-
-	// -- Others Private Read Methods --
-	void readLabel();
-	void readTag();
-	void readFederationName();
-	void readFederateName();
-	void readFEDid();
-
-	HeaderStruct  Header;    
+private:	
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
@@ -400,4 +315,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.4 2008/04/09 10:34:03 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.5 2008/04/09 14:16:30 erk Exp $
