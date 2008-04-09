@@ -245,34 +245,34 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 		msg = new NM_Confirm_Attribute_Ownership_Acquisition_Cancellation(); 
 		break;
 	case NetworkMessage::DDM_CREATE_REGION:
-		msg = new NM_Ddm_Create_Region(); 
+		msg = new NM_DDM_Create_Region(); 
 		break;
 	case NetworkMessage::DDM_MODIFY_REGION:
-		msg = new NM_Ddm_Modify_Region(); 
+		msg = new NM_DDM_Modify_Region(); 
 		break;
 	case NetworkMessage::DDM_DELETE_REGION:
-		msg = new NM_Ddm_Delete_Region(); 
+		msg = new NM_DDM_Delete_Region(); 
 		break;
 	case NetworkMessage::DDM_ASSOCIATE_REGION:
-		msg = new NM_Ddm_Associate_Region(); 
+		msg = new NM_DDM_Associate_Region(); 
 		break;
 	case NetworkMessage::DDM_REGISTER_OBJECT:
-		msg = new NM_Ddm_Register_Object(); 
+		msg = new NM_DDM_Register_Object(); 
 		break;
 	case NetworkMessage::DDM_UNASSOCIATE_REGION:
-		msg = new NM_Ddm_Unassociate_Region(); 
+		msg = new NM_DDM_Unassociate_Region(); 
 		break;
 	case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
-		msg = new NM_Ddm_Subscribe_Attributes(); 
+		msg = new NM_DDM_Subscribe_Attributes(); 
 		break;
 	case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
-		msg = new NM_Ddm_Unsubscribe_Attributes(); 
+		msg = new NM_DDM_Unsubscribe_Attributes(); 
 		break;
 	case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
-		msg = new NM_Ddm_Subscribe_Interaction(); 
+		msg = new NM_DDM_Subscribe_Interaction(); 
 		break;
 	case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
-		msg = new NM_Ddm_Unsubscribe_Interaction(); 
+		msg = new NM_DDM_Unsubscribe_Interaction(); 
 		break;
 	case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 		msg = new NM_Provide_Attribute_Value_Update(); 
@@ -1189,20 +1189,6 @@ NM_Negotiated_Attribute_Ownership_Divestiture::NM_Negotiated_Attribute_Ownership
 }
 NM_Negotiated_Attribute_Ownership_Divestiture::~NM_Negotiated_Attribute_Ownership_Divestiture() {
 }
-void NM_Negotiated_Attribute_Ownership_Divestiture::serialize() {
-	int i;
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
-} /* end of serialize */ 
-void NM_Negotiated_Attribute_Ownership_Divestiture::deserialize() {
-	int i;
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-	object = msgBuf.read_int32();
-} /* end of deserialize */
 /*<END>---------- Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_Notification ------------<BEGIN>*/
@@ -1213,16 +1199,6 @@ NM_Attribute_Ownership_Acquisition_Notification::NM_Attribute_Ownership_Acquisit
 }
 NM_Attribute_Ownership_Acquisition_Notification::~NM_Attribute_Ownership_Acquisition_Notification() {
 }
-void NM_Attribute_Ownership_Acquisition_Notification::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Acquisition_Notification::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Acquisition_Notification ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Divestiture_Notification ------------<BEGIN>*/
@@ -1233,16 +1209,6 @@ NM_Attribute_Ownership_Divestiture_Notification::NM_Attribute_Ownership_Divestit
 }
 NM_Attribute_Ownership_Divestiture_Notification::~NM_Attribute_Ownership_Divestiture_Notification() {
 }
-void NM_Attribute_Ownership_Divestiture_Notification::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Divestiture_Notification::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Divestiture_Notification ------------<END>*/
 
 /*<BEGIN>---------- Request_Attribute_Ownership_Assumption ------------<BEGIN>*/
@@ -1263,16 +1229,6 @@ NM_Attribute_Ownership_Unavailable::NM_Attribute_Ownership_Unavailable() {
 }
 NM_Attribute_Ownership_Unavailable::~NM_Attribute_Ownership_Unavailable() {
 }
-void NM_Attribute_Ownership_Unavailable::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Unavailable::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Unavailable ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_If_Available ------------<BEGIN>*/
@@ -1283,16 +1239,6 @@ NM_Attribute_Ownership_Acquisition_If_Available::NM_Attribute_Ownership_Acquisit
 }
 NM_Attribute_Ownership_Acquisition_If_Available::~NM_Attribute_Ownership_Acquisition_If_Available() {
 }
-void NM_Attribute_Ownership_Acquisition_If_Available::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Acquisition_If_Available::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Acquisition_If_Available ------------<END>*/
 
 /*<BEGIN>---------- Unconditional_Attribute_Ownership_Divestiture ------------<BEGIN>*/
@@ -1303,16 +1249,6 @@ NM_Unconditional_Attribute_Ownership_Divestiture::NM_Unconditional_Attribute_Own
 }
 NM_Unconditional_Attribute_Ownership_Divestiture::~NM_Unconditional_Attribute_Ownership_Divestiture() {
 }
-void NM_Unconditional_Attribute_Ownership_Divestiture::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Unconditional_Attribute_Ownership_Divestiture::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Unconditional_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition ------------<BEGIN>*/
@@ -1343,16 +1279,6 @@ NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::NM_Cancel_Negotiated_Attri
 }
 NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::~NM_Cancel_Negotiated_Attribute_Ownership_Divestiture() {
 }
-void NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Cancel_Negotiated_Attribute_Ownership_Divestiture::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Cancel_Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Release_Response ------------<BEGIN>*/
@@ -1363,16 +1289,6 @@ NM_Attribute_Ownership_Release_Response::NM_Attribute_Ownership_Release_Response
 }
 NM_Attribute_Ownership_Release_Response::~NM_Attribute_Ownership_Release_Response() {
 }
-void NM_Attribute_Ownership_Release_Response::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Attribute_Ownership_Release_Response::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Attribute_Ownership_Release_Response ------------<END>*/
 
 /*<BEGIN>---------- Cancel_Attribute_Ownership_Acquisition ------------<BEGIN>*/
@@ -1383,16 +1299,6 @@ NM_Cancel_Attribute_Ownership_Acquisition::NM_Cancel_Attribute_Ownership_Acquisi
 }
 NM_Cancel_Attribute_Ownership_Acquisition::~NM_Cancel_Attribute_Ownership_Acquisition() {
 }
-void NM_Cancel_Attribute_Ownership_Acquisition::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Cancel_Attribute_Ownership_Acquisition::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Cancel_Attribute_Ownership_Acquisition ------------<END>*/
 
 /*<BEGIN>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<BEGIN>*/
@@ -1403,217 +1309,207 @@ NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::NM_Confirm_Attribute_Ow
 }
 NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::~NM_Confirm_Attribute_Ownership_Acquisition_Cancellation() {
 }
-void NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Confirm_Attribute_Ownership_Acquisition_Cancellation::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Create_Region ------------<BEGIN>*/
-NM_Ddm_Create_Region::NM_Ddm_Create_Region() {
+/*<BEGIN>---------- DDM_Create_Region ------------<BEGIN>*/
+NM_DDM_Create_Region::NM_DDM_Create_Region() {
 	this->name = "DDM_CREATE_REGION";
 	this->type = NetworkMessage::DDM_CREATE_REGION;
 	/* specific field init */
 }
-NM_Ddm_Create_Region::~NM_Ddm_Create_Region() {
+NM_DDM_Create_Region::~NM_DDM_Create_Region() {
 }
-void NM_Ddm_Create_Region::serialize() {
+void NM_DDM_Create_Region::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Create_Region::deserialize() {
+void NM_DDM_Create_Region::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Create_Region ------------<END>*/
+/*<END>---------- DDM_Create_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Modify_Region ------------<BEGIN>*/
-NM_Ddm_Modify_Region::NM_Ddm_Modify_Region() {
+/*<BEGIN>---------- DDM_Modify_Region ------------<BEGIN>*/
+NM_DDM_Modify_Region::NM_DDM_Modify_Region() {
 	this->name = "DDM_MODIFY_REGION";
 	this->type = NetworkMessage::DDM_MODIFY_REGION;
 	/* specific field init */
 }
-NM_Ddm_Modify_Region::~NM_Ddm_Modify_Region() {
+NM_DDM_Modify_Region::~NM_DDM_Modify_Region() {
 }
-void NM_Ddm_Modify_Region::serialize() {
+void NM_DDM_Modify_Region::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Modify_Region::deserialize() {
+void NM_DDM_Modify_Region::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Modify_Region ------------<END>*/
+/*<END>---------- DDM_Modify_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Delete_Region ------------<BEGIN>*/
-NM_Ddm_Delete_Region::NM_Ddm_Delete_Region() {
+/*<BEGIN>---------- DDM_Delete_Region ------------<BEGIN>*/
+NM_DDM_Delete_Region::NM_DDM_Delete_Region() {
 	this->name = "DDM_DELETE_REGION";
 	this->type = NetworkMessage::DDM_DELETE_REGION;
 	/* specific field init */
 }
-NM_Ddm_Delete_Region::~NM_Ddm_Delete_Region() {
+NM_DDM_Delete_Region::~NM_DDM_Delete_Region() {
 }
-void NM_Ddm_Delete_Region::serialize() {
+void NM_DDM_Delete_Region::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Delete_Region::deserialize() {
+void NM_DDM_Delete_Region::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Delete_Region ------------<END>*/
+/*<END>---------- DDM_Delete_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Associate_Region ------------<BEGIN>*/
-NM_Ddm_Associate_Region::NM_Ddm_Associate_Region() {
+/*<BEGIN>---------- DDM_Associate_Region ------------<BEGIN>*/
+NM_DDM_Associate_Region::NM_DDM_Associate_Region() {
 	this->name = "DDM_ASSOCIATE_REGION";
 	this->type = NetworkMessage::DDM_ASSOCIATE_REGION;
 	/* specific field init */
 }
-NM_Ddm_Associate_Region::~NM_Ddm_Associate_Region() {
+NM_DDM_Associate_Region::~NM_DDM_Associate_Region() {
 }
-void NM_Ddm_Associate_Region::serialize() {
+void NM_DDM_Associate_Region::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Associate_Region::deserialize() {
+void NM_DDM_Associate_Region::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Associate_Region ------------<END>*/
+/*<END>---------- DDM_Associate_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Register_Object ------------<BEGIN>*/
-NM_Ddm_Register_Object::NM_Ddm_Register_Object() {
+/*<BEGIN>---------- DDM_Register_Object ------------<BEGIN>*/
+NM_DDM_Register_Object::NM_DDM_Register_Object() {
 	this->name = "DDM_REGISTER_OBJECT";
 	this->type = NetworkMessage::DDM_REGISTER_OBJECT;
 	/* specific field init */
 }
-NM_Ddm_Register_Object::~NM_Ddm_Register_Object() {
+NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }
-void NM_Ddm_Register_Object::serialize() {
+void NM_DDM_Register_Object::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Register_Object::deserialize() {
+void NM_DDM_Register_Object::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Register_Object ------------<END>*/
+/*<END>---------- DDM_Register_Object ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Unassociate_Region ------------<BEGIN>*/
-NM_Ddm_Unassociate_Region::NM_Ddm_Unassociate_Region() {
+/*<BEGIN>---------- DDM_Unassociate_Region ------------<BEGIN>*/
+NM_DDM_Unassociate_Region::NM_DDM_Unassociate_Region() {
 	this->name = "DDM_UNASSOCIATE_REGION";
 	this->type = NetworkMessage::DDM_UNASSOCIATE_REGION;
 	/* specific field init */
 }
-NM_Ddm_Unassociate_Region::~NM_Ddm_Unassociate_Region() {
+NM_DDM_Unassociate_Region::~NM_DDM_Unassociate_Region() {
 }
-void NM_Ddm_Unassociate_Region::serialize() {
+void NM_DDM_Unassociate_Region::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Unassociate_Region::deserialize() {
+void NM_DDM_Unassociate_Region::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Unassociate_Region ------------<END>*/
+/*<END>---------- DDM_Unassociate_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Subscribe_Attributes ------------<BEGIN>*/
-NM_Ddm_Subscribe_Attributes::NM_Ddm_Subscribe_Attributes() {
+/*<BEGIN>---------- DDM_Subscribe_Attributes ------------<BEGIN>*/
+NM_DDM_Subscribe_Attributes::NM_DDM_Subscribe_Attributes() {
 	this->name = "DDM_SUBSCRIBE_ATTRIBUTES";
 	this->type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES;
 	/* specific field init */
 }
-NM_Ddm_Subscribe_Attributes::~NM_Ddm_Subscribe_Attributes() {
+NM_DDM_Subscribe_Attributes::~NM_DDM_Subscribe_Attributes() {
 }
-void NM_Ddm_Subscribe_Attributes::serialize() {
+void NM_DDM_Subscribe_Attributes::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Subscribe_Attributes::deserialize() {
+void NM_DDM_Subscribe_Attributes::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Subscribe_Attributes ------------<END>*/
+/*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Unsubscribe_Attributes ------------<BEGIN>*/
-NM_Ddm_Unsubscribe_Attributes::NM_Ddm_Unsubscribe_Attributes() {
+/*<BEGIN>---------- DDM_Unsubscribe_Attributes ------------<BEGIN>*/
+NM_DDM_Unsubscribe_Attributes::NM_DDM_Unsubscribe_Attributes() {
 	this->name = "DDM_UNSUBSCRIBE_ATTRIBUTES";
 	this->type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES;
 	/* specific field init */
 }
-NM_Ddm_Unsubscribe_Attributes::~NM_Ddm_Unsubscribe_Attributes() {
+NM_DDM_Unsubscribe_Attributes::~NM_DDM_Unsubscribe_Attributes() {
 }
-void NM_Ddm_Unsubscribe_Attributes::serialize() {
+void NM_DDM_Unsubscribe_Attributes::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Unsubscribe_Attributes::deserialize() {
+void NM_DDM_Unsubscribe_Attributes::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Unsubscribe_Attributes ------------<END>*/
+/*<END>---------- DDM_Unsubscribe_Attributes ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Subscribe_Interaction ------------<BEGIN>*/
-NM_Ddm_Subscribe_Interaction::NM_Ddm_Subscribe_Interaction() {
+/*<BEGIN>---------- DDM_Subscribe_Interaction ------------<BEGIN>*/
+NM_DDM_Subscribe_Interaction::NM_DDM_Subscribe_Interaction() {
 	this->name = "DDM_SUBSCRIBE_INTERACTION";
 	this->type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION;
 	/* specific field init */
 }
-NM_Ddm_Subscribe_Interaction::~NM_Ddm_Subscribe_Interaction() {
+NM_DDM_Subscribe_Interaction::~NM_DDM_Subscribe_Interaction() {
 }
-void NM_Ddm_Subscribe_Interaction::serialize() {
+void NM_DDM_Subscribe_Interaction::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Subscribe_Interaction::deserialize() {
+void NM_DDM_Subscribe_Interaction::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Subscribe_Interaction ------------<END>*/
+/*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Unsubscribe_Interaction ------------<BEGIN>*/
-NM_Ddm_Unsubscribe_Interaction::NM_Ddm_Unsubscribe_Interaction() {
+/*<BEGIN>---------- DDM_Unsubscribe_Interaction ------------<BEGIN>*/
+NM_DDM_Unsubscribe_Interaction::NM_DDM_Unsubscribe_Interaction() {
 	this->name = "DDM_UNSUBSCRIBE_INTERACTION";
 	this->type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION;
 	/* specific field init */
 }
-NM_Ddm_Unsubscribe_Interaction::~NM_Ddm_Unsubscribe_Interaction() {
+NM_DDM_Unsubscribe_Interaction::~NM_DDM_Unsubscribe_Interaction() {
 }
-void NM_Ddm_Unsubscribe_Interaction::serialize() {
+void NM_DDM_Unsubscribe_Interaction::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Ddm_Unsubscribe_Interaction::deserialize() {
+void NM_DDM_Unsubscribe_Interaction::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
-/*<END>---------- Ddm_Unsubscribe_Interaction ------------<END>*/
+/*<END>---------- DDM_Unsubscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Provide_Attribute_Value_Update ------------<BEGIN>*/
 NM_Provide_Attribute_Value_Update::NM_Provide_Attribute_Value_Update() {
@@ -1623,16 +1519,6 @@ NM_Provide_Attribute_Value_Update::NM_Provide_Attribute_Value_Update() {
 }
 NM_Provide_Attribute_Value_Update::~NM_Provide_Attribute_Value_Update() {
 }
-void NM_Provide_Attribute_Value_Update::serialize() {
-	/* call mother class */      
-	Super::serialize(); 
-	/* specific code (if any) goes here */
-} /* end of serialize */ 
-void NM_Provide_Attribute_Value_Update::deserialize() {
-	/* call mother class */      
-	Super::deserialize(); 
-	/* specific code (if any) goes here */
-} /* end of deserialize */
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
 
 /*<BEGIN>---------- Get_Fed_File ------------<BEGIN>*/
@@ -1647,11 +1533,21 @@ void NM_Get_Fed_File::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
+	msgBuf.write_string(FEDid);
+	msgBuf.write_bool(lineFollows);
+	if (lineFollows) {
+		msgBuf.write_string(line);
+	}
 } /* end of serialize */ 
 void NM_Get_Fed_File::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
+	FEDid       = msgBuf.read_string();
+	lineFollows = msgBuf.read_bool();
+	if (lineFollows) {
+		line = msgBuf.read_string();
+	}
 } /* end of deserialize */
 /*<END>---------- Get_Fed_File ------------<END>*/
 

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28.2.2 2008/04/08 14:05:27 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.3 2008/04/09 10:34:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -35,7 +35,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-    : type(NOT_USED), exception(e_NO_EXCEPTION), isDated(false), isLabelled(false)
+    : type(NOT_USED), exception(e_NO_EXCEPTION), isDated(false), isLabelled(false), isTagged(false)
 {
     exceptionReason[0] = '\0' ;
 
@@ -317,4 +317,4 @@ NetworkMessage::writeFederationName()
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28.2.2 2008/04/08 14:05:27 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.3 2008/04/09 10:34:03 erk Exp $

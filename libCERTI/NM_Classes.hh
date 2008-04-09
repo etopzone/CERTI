@@ -856,6 +856,8 @@ public:
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	const ObjectHandle getObject() const {return object;};
+	void setObject(ObjectHandle object) {this->object=object;};
 protected:
 	/* specific field */
 	ObjectHandle object;
@@ -925,32 +927,25 @@ private:
 /*<END>---------- Inform_Attribute_Ownership ------------<END>*/
 
 /*<BEGIN>---------- Negotiated_Attribute_Ownership_Divestiture ------------<BEGIN>*/
-class CERTI_EXPORT NM_Negotiated_Attribute_Ownership_Divestiture : public NM_WithHandleArray {
+class CERTI_EXPORT NM_Negotiated_Attribute_Ownership_Divestiture : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Negotiated_Attribute_Ownership_Divestiture();
 	virtual ~NM_Negotiated_Attribute_Ownership_Divestiture();
-	virtual void serialize();
-	virtual void deserialize();
-	/* specific Getter/Setter */
-	const ObjectHandle getObject() const {return object;};
-	void setObject(ObjectHandle object) {this->object=object;};
+	/* specific Getter/Setter */	
 protected:
 	/* specific field */
-	ObjectHandle object;
 private:
 };
 
 /*<END>---------- Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_Notification ------------<BEGIN>*/
-class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_Notification : public NetworkMessage {
+class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_Notification : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Attribute_Ownership_Acquisition_Notification();
 	virtual ~NM_Attribute_Ownership_Acquisition_Notification();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -960,13 +955,11 @@ private:
 /*<END>---------- Attribute_Ownership_Acquisition_Notification ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Divestiture_Notification ------------<BEGIN>*/
-class CERTI_EXPORT NM_Attribute_Ownership_Divestiture_Notification : public NetworkMessage {
+class CERTI_EXPORT NM_Attribute_Ownership_Divestiture_Notification : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Attribute_Ownership_Divestiture_Notification();
 	virtual ~NM_Attribute_Ownership_Divestiture_Notification();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -990,13 +983,11 @@ private:
 /*<END>---------- Request_Attribute_Ownership_Assumption ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Unavailable ------------<BEGIN>*/
-class CERTI_EXPORT NM_Attribute_Ownership_Unavailable : public NetworkMessage {
+class CERTI_EXPORT NM_Attribute_Ownership_Unavailable : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Attribute_Ownership_Unavailable();
 	virtual ~NM_Attribute_Ownership_Unavailable();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1006,13 +997,11 @@ private:
 /*<END>---------- Attribute_Ownership_Unavailable ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Acquisition_If_Available ------------<BEGIN>*/
-class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_If_Available : public NetworkMessage {
+class CERTI_EXPORT NM_Attribute_Ownership_Acquisition_If_Available : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Attribute_Ownership_Acquisition_If_Available();
 	virtual ~NM_Attribute_Ownership_Acquisition_If_Available();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1022,13 +1011,11 @@ private:
 /*<END>---------- Attribute_Ownership_Acquisition_If_Available ------------<END>*/
 
 /*<BEGIN>---------- Unconditional_Attribute_Ownership_Divestiture ------------<BEGIN>*/
-class CERTI_EXPORT NM_Unconditional_Attribute_Ownership_Divestiture : public NetworkMessage {
+class CERTI_EXPORT NM_Unconditional_Attribute_Ownership_Divestiture : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Unconditional_Attribute_Ownership_Divestiture();
 	virtual ~NM_Unconditional_Attribute_Ownership_Divestiture();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1066,13 +1053,11 @@ private:
 /*<END>---------- Request_Attribute_Ownership_Release ------------<END>*/
 
 /*<BEGIN>---------- Cancel_Negotiated_Attribute_Ownership_Divestiture ------------<BEGIN>*/
-class CERTI_EXPORT NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : public NetworkMessage {
+class CERTI_EXPORT NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
 	virtual ~NM_Cancel_Negotiated_Attribute_Ownership_Divestiture();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1082,13 +1067,11 @@ private:
 /*<END>---------- Cancel_Negotiated_Attribute_Ownership_Divestiture ------------<END>*/
 
 /*<BEGIN>---------- Attribute_Ownership_Release_Response ------------<BEGIN>*/
-class CERTI_EXPORT NM_Attribute_Ownership_Release_Response : public NetworkMessage {
+class CERTI_EXPORT NM_Attribute_Ownership_Release_Response : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Attribute_Ownership_Release_Response();
 	virtual ~NM_Attribute_Ownership_Release_Response();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1098,13 +1081,11 @@ private:
 /*<END>---------- Attribute_Ownership_Release_Response ------------<END>*/
 
 /*<BEGIN>---------- Cancel_Attribute_Ownership_Acquisition ------------<BEGIN>*/
-class CERTI_EXPORT NM_Cancel_Attribute_Ownership_Acquisition : public NetworkMessage {
+class CERTI_EXPORT NM_Cancel_Attribute_Ownership_Acquisition : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Cancel_Attribute_Ownership_Acquisition();
 	virtual ~NM_Cancel_Attribute_Ownership_Acquisition();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1114,13 +1095,11 @@ private:
 /*<END>---------- Cancel_Attribute_Ownership_Acquisition ------------<END>*/
 
 /*<BEGIN>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<BEGIN>*/
-class CERTI_EXPORT NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : public NetworkMessage {
+class CERTI_EXPORT NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
 	virtual ~NM_Confirm_Attribute_Ownership_Acquisition_Cancellation();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1129,12 +1108,31 @@ private:
 
 /*<END>---------- Confirm_Attribute_Ownership_Acquisition_Cancellation ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Create_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Create_Region : public NetworkMessage {
+/*<BEGIN>---------- DDM_Create_Region ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Create_Region : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Create_Region();
-	virtual ~NM_Ddm_Create_Region();
+	NM_DDM_Create_Region();
+	virtual ~NM_DDM_Create_Region();
+	virtual void serialize();
+	virtual void deserialize();
+	/* specific Getter/Setter */
+protected:
+	/* specific field */
+	SpaceHandle space;
+	int32_t nbExtents;
+	int32_t region;
+private:
+};
+
+/*<END>---------- DDM_Create_Region ------------<END>*/
+
+/*<BEGIN>---------- DDM_Modify_Region ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Modify_Region : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_DDM_Modify_Region();
+	virtual ~NM_DDM_Modify_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1143,14 +1141,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Create_Region ------------<END>*/
+/*<END>---------- DDM_Modify_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Modify_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Modify_Region : public NetworkMessage {
+/*<BEGIN>---------- DDM_Delete_Region ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Delete_Region : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Modify_Region();
-	virtual ~NM_Ddm_Modify_Region();
+	NM_DDM_Delete_Region();
+	virtual ~NM_DDM_Delete_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1159,14 +1157,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Modify_Region ------------<END>*/
+/*<END>---------- DDM_Delete_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Delete_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Delete_Region : public NetworkMessage {
+/*<BEGIN>---------- DDM_Associate_Region ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Associate_Region : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Delete_Region();
-	virtual ~NM_Ddm_Delete_Region();
+	NM_DDM_Associate_Region();
+	virtual ~NM_DDM_Associate_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1175,14 +1173,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Delete_Region ------------<END>*/
+/*<END>---------- DDM_Associate_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Associate_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Associate_Region : public NetworkMessage {
+/*<BEGIN>---------- DDM_Register_Object ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Register_Object : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Associate_Region();
-	virtual ~NM_Ddm_Associate_Region();
+	NM_DDM_Register_Object();
+	virtual ~NM_DDM_Register_Object();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1191,14 +1189,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Associate_Region ------------<END>*/
+/*<END>---------- DDM_Register_Object ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Register_Object ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Register_Object : public NetworkMessage {
+/*<BEGIN>---------- DDM_Unassociate_Region ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Unassociate_Region : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Register_Object();
-	virtual ~NM_Ddm_Register_Object();
+	NM_DDM_Unassociate_Region();
+	virtual ~NM_DDM_Unassociate_Region();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1207,14 +1205,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Register_Object ------------<END>*/
+/*<END>---------- DDM_Unassociate_Region ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Unassociate_Region ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Unassociate_Region : public NetworkMessage {
+/*<BEGIN>---------- DDM_Subscribe_Attributes ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Subscribe_Attributes : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Unassociate_Region();
-	virtual ~NM_Ddm_Unassociate_Region();
+	NM_DDM_Subscribe_Attributes();
+	virtual ~NM_DDM_Subscribe_Attributes();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1223,14 +1221,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Unassociate_Region ------------<END>*/
+/*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Subscribe_Attributes ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Subscribe_Attributes : public NetworkMessage {
+/*<BEGIN>---------- DDM_Unsubscribe_Attributes ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Unsubscribe_Attributes : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Subscribe_Attributes();
-	virtual ~NM_Ddm_Subscribe_Attributes();
+	NM_DDM_Unsubscribe_Attributes();
+	virtual ~NM_DDM_Unsubscribe_Attributes();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1239,14 +1237,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Subscribe_Attributes ------------<END>*/
+/*<END>---------- DDM_Unsubscribe_Attributes ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Unsubscribe_Attributes ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Unsubscribe_Attributes : public NetworkMessage {
+/*<BEGIN>---------- DDM_Subscribe_Interaction ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Subscribe_Interaction : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Unsubscribe_Attributes();
-	virtual ~NM_Ddm_Unsubscribe_Attributes();
+	NM_DDM_Subscribe_Interaction();
+	virtual ~NM_DDM_Subscribe_Interaction();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1255,14 +1253,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Unsubscribe_Attributes ------------<END>*/
+/*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 
-/*<BEGIN>---------- Ddm_Subscribe_Interaction ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Subscribe_Interaction : public NetworkMessage {
+/*<BEGIN>---------- DDM_Unsubscribe_Interaction ------------<BEGIN>*/
+class CERTI_EXPORT NM_DDM_Unsubscribe_Interaction : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Ddm_Subscribe_Interaction();
-	virtual ~NM_Ddm_Subscribe_Interaction();
+	NM_DDM_Unsubscribe_Interaction();
+	virtual ~NM_DDM_Unsubscribe_Interaction();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1271,32 +1269,14 @@ protected:
 private:
 };
 
-/*<END>---------- Ddm_Subscribe_Interaction ------------<END>*/
-
-/*<BEGIN>---------- Ddm_Unsubscribe_Interaction ------------<BEGIN>*/
-class CERTI_EXPORT NM_Ddm_Unsubscribe_Interaction : public NetworkMessage {
-public:
-	typedef NetworkMessage Super;
-	NM_Ddm_Unsubscribe_Interaction();
-	virtual ~NM_Ddm_Unsubscribe_Interaction();
-	virtual void serialize();
-	virtual void deserialize();
-	/* specific Getter/Setter */
-protected:
-	/* specific field */
-private:
-};
-
-/*<END>---------- Ddm_Unsubscribe_Interaction ------------<END>*/
+/*<END>---------- DDM_Unsubscribe_Interaction ------------<END>*/
 
 /*<BEGIN>---------- Provide_Attribute_Value_Update ------------<BEGIN>*/
-class CERTI_EXPORT NM_Provide_Attribute_Value_Update : public NetworkMessage {
+class CERTI_EXPORT NM_Provide_Attribute_Value_Update : public NM_Request_Object_Attribute_Value_Update {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Request_Object_Attribute_Value_Update Super;
 	NM_Provide_Attribute_Value_Update();
 	virtual ~NM_Provide_Attribute_Value_Update();
-	virtual void serialize();
-	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1314,8 +1294,18 @@ public:
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
+	void setFEDid(std::string FEDid) {this->FEDid=FEDid;};
+	const std::string getFEDid() const {return FEDid;};
+	void setLineFollows() {lineFollows=true;};
+	void unsetLineFollows() {lineFollows=true;};
+	const bool getLineFollows() {return lineFollows;};
+	void setFEDLine(std::string line) {setLineFollows(); this->line=line;};
+	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
+	std::string FEDid;
+	bool lineFollows;
+	std::string line;
 private:
 };
 

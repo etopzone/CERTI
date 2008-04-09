@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.3 2008/04/09 08:43:45 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.4 2008/04/09 10:34:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -317,6 +317,8 @@ public:
 	
 	
 	void setFEDid(const char *NewFEDid);
+	
+	/** The name corresponding to message type */
 	const std::string getName() const {return name;}
 	
 	/** The network message type */
@@ -398,4 +400,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.3 2008/04/09 08:43:45 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.4 2008/04/09 10:34:03 erk Exp $
