@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.3 2008/04/10 14:57:49 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.4 2008/04/10 15:12:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -397,31 +397,31 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"BEGIN ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
     G.Out(pdGendoc,"enter RTIG::processRegisterSynchronization");
 
-    auditServer << "Label \"" << req->label.c_str() << "\" registered. Tag is \""
-		<< req->tag.c_str() << "\"" ;
+    auditServer << "Label \"" << req->getLabel().c_str() << "\" registered. Tag is \""
+		<< req->getTag().c_str() << "\"" ;
 
     // boolean true means a federates set exists
     if ( req->boolean )
         federations.manageSynchronization(req->federation,
                                           req->federate,
                                           true,
-                                          req->label.c_str(),
-                                          req->tag.c_str(),
+                                          req->getLabel().c_str(),
+                                          req->getTag().c_str(),
                                           req->handleArraySize,
                                           req->handleArray);
     else
         federations.manageSynchronization(req->federation,
                                           req->federate,
                                           true,
-                                          req->label.c_str(),
-                                          req->tag.c_str());
+                                          req->getLabel().c_str(),
+                                          req->getTag().c_str());
     D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
     // send synchronizationPointRegistrationSucceeded() to federate.
     NM_Synchronization_Point_Registration_Succeeded rep ;    
     rep.federate = req->federate ;
     rep.federation = req->federation ;
-    rep.setLabel(req->label.c_str());
+    rep.setLabel(req->getLabel().c_str());
 
     G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
 
@@ -431,15 +431,15 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     if ( req->boolean )
         federations.broadcastSynchronization(req->federation,
                                           req->federate,
-                                          req->label.c_str(),
-                                          req->tag.c_str(),
+                                          req->getLabel().c_str(),
+                                          req->getTag().c_str(),
                                           req->handleArraySize,
                                           req->handleArray);
     else
         federations.broadcastSynchronization(req->federation,
                                           req->federate,
-                                          req->label.c_str(),
-                                          req->tag.c_str());
+                                          req->getLabel().c_str(),
+                                          req->getTag().c_str());
 
     G.Out(pdGendoc,"exit  RTIG::processRegisterSynchronization");
     G.Out(pdGendoc,"END   ** REGISTER FEDERATION SYNCHRONIZATION POINT Service **");
@@ -451,12 +451,12 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
 void
 RTIG::processSynchronizationAchieved(Socket *, NetworkMessage *req)
 {
-    auditServer << "Label \"" << req->label.c_str() << "\" ended." ;
+    auditServer << "Label \"" << req->getLabel().c_str() << "\" ended." ;
 
     federations.manageSynchronization(req->federation,
                                        req->federate,
                                        false,
-                                       req->label.c_str(),
+                                       req->getLabel().c_str(),
                                        "");
     D.Out(pdTerm, "Federate %u has synchronized.", req->federate);
 }
@@ -473,11 +473,11 @@ RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
     if ( req->boolean )
         // With time
         federations.requestFederationSave(req->federation, req->federate,
-                                          req->label.c_str(), req->getDate());
+                                          req->getLabel().c_str(), req->getDate());
     else
         // Without time
         federations.requestFederationSave(req->federation, req->federate,
-                                          req->label.c_str());
+                                          req->getLabel().c_str());
 
     G.Out(pdGendoc,"exit  RTIG::processRequestFederationSave");
     G.Out(pdGendoc,"END   ** REQUEST FEDERATION SAVE SERVICE **");
@@ -526,7 +526,7 @@ RTIG::processRequestFederationRestore(Socket *, NetworkMessage *req)
     auditServer << "Federate " << req->federate << " request restore." ;
 
     federations.requestFederationRestore(req->federation, req->federate,
-                                          req->label.c_str());
+                                          req->getLabel().c_str());
     G.Out(pdGendoc,"exit  RTIG::processRequestFederationRestore");
     G.Out(pdGendoc,"END   ** REQUEST FEDERATION RESTORE SERVICE **");
 }
@@ -671,15 +671,15 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
     rep->object = federations.registerObject(req->federation,
                                              req->federate,
                                              req->objectClass,
-                                             const_cast<char*>(req->label.c_str()));
+                                             const_cast<char*>(req->getLabel().c_str()));
     auditServer << ", Handle = " << rep->object ;
 
     D.Out(pdRegister,
           "Object \"%s\" of Federate %u has been registered under ID %u.",
-          req->label.c_str(), req->federate, rep->object);
+          req->getLabel().c_str(), req->federate, rep->object);
 
     rep->federate = req->federate ;
-    rep->setLabel(req->label);
+    rep->setLabel(req->getLabel());
     // rep.object is set by the call of registerObject
 
     rep->send(link); // Send answer to RTIA
@@ -709,7 +709,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  ValueArray,
                                  req->handleArraySize,
                                  req->getDate(),
-                                 req->label.c_str());
+                                 req->getLabel().c_str());
         }
     else
         {
@@ -720,7 +720,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->handleArray,
                                  ValueArray,
                                  req->handleArraySize,
-                                 req->label.c_str());
+                                 req->getLabel().c_str());
         }
     free(ValueArray);
 
@@ -731,8 +731,8 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     rep.setDate(req->getDate());
     rep.handleArraySize = 0 ;
     // Don't forget label and tag
-    rep.label=req->label ;
-    rep.tag=req->tag;
+    rep.setLabel(req->getLabel());
+    rep.setTag(req->getTag());
 
     rep.send(link); // send answer to RTIA
 }
@@ -762,7 +762,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				req->handleArraySize,
 				req->getDate(),
 				req->region,
-				req->label.c_str());
+				req->getLabel().c_str());
         }
     else
         {
@@ -773,7 +773,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				values,
 				req->handleArraySize,
 				req->region,
-				req->label.c_str());
+				req->getLabel().c_str());
         }
     free(values);
 
@@ -785,8 +785,8 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     rep.interactionClass = req->interactionClass ;
     rep.handleArraySize = 0 ;
     // Don't forget label and tag
-    rep.label=req->label;
-    rep.tag=req->tag;
+    rep.setLabel(req->getLabel());
+    rep.setTag(req->getTag());
     G.Out(pdGendoc,"processSendInteraction===>write");
     rep.send(link); // send answer to RTIA
 
@@ -809,13 +809,13 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
         	                  req->federate,
                                   req->object,
 				  req->getDate(),
-                                  const_cast<char*>(req->label.c_str()));
+                                  const_cast<char*>(req->getLabel().c_str()));
     }
     else {
     	federations.destroyObject(req->federation,
         	                  req->federate,
                                   req->object,
-                                  const_cast<char*>(req->label.c_str()));
+                                  const_cast<char*>(req->getLabel().c_str()));
     }
 
     D.Out(pdRegister, "Object # %u of Federation %u has been deleted.",
@@ -872,9 +872,9 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
                              req->federate,
                              req->object,
                              req->handleArray[0]))
-        rep.label = "RTI_TRUE";
+        rep.setLabel("RTI_TRUE");
     else
-        rep.label = "RTI_FALSE";
+        rep.setLabel("RTI_FALSE");
 
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
@@ -897,7 +897,7 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
                                       req->object,
                                       req->handleArray,
                                       req->handleArraySize,
-                                      req->label.c_str());
+                                      req->getLabel().c_str());
 
     D.Out(pdDebug, "Federate %u of Federation %u negotiate "
           "divestiture of object %u.",
@@ -978,7 +978,7 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
                          req->object,
                          req->handleArray,
                          req->handleArraySize,
-                         req->label.c_str());
+                         req->getLabel().c_str());
 
     D.Out(pdDebug,
           "Federate %u of Federation %u ownership acquisition of object %u.",
@@ -1267,14 +1267,14 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
     rep->object = federations.registerObjectWithRegion(req->federation,
 						      req->federate,
 						      req->objectClass,
-						      const_cast<char*>(req->label.c_str()),
+						      const_cast<char*>(req->getLabel().c_str()),
 						      req->region,
 						      req->handleArraySize,
 						      req->handleArray);
 	
     D.Out(pdRegister,
           "Object \"%s\" of Federate %u has been registered under ID %u.",
-          req->label.c_str(), req->federate, rep->object);
+          req->getLabel().c_str(), req->federate, rep->object);
 
     rep->federate = req->federate ;
     rep->send(link); // Send answer to RTIA
@@ -1328,4 +1328,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.3 2008/04/10 14:57:49 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.4 2008/04/10 15:12:26 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.4 2008/04/10 15:12:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -73,7 +73,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     reducedMessage->boolean = message->boolean ; // FIXME Useful ?
     reducedMessage->objectClass = message->objectClass ;
 
-    reducedMessage->label = message->label;
+    reducedMessage->setLabel(message->getLabel());
 
     // Copy attributes that are in the bsWaiting state in Line.
     UShort currentSize ;
@@ -391,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.4 2008/04/10 15:12:26 erk Exp $

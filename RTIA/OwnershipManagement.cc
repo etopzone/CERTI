@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.12.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.12.2.3 2008/04/10 15:12:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -88,7 +88,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
     e = rep->exception ;
 
     if (e == e_NO_EXCEPTION)
-        return(rep->label.c_str());
+        return(rep->getLabel().c_str());
     else
         return("\0");
 }
@@ -143,7 +143,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     for (int i = 0 ; i < attribArraySize ; i++)
         req.handleArray[i] = attribArray[i] ;
 
-    req.label = theTag;
+    req.setLabel(theTag);
 
     D.Out(pdDebug, "NEGOTIATED_DIVESTITURE Federate %u ", fm->federate);
 
@@ -265,7 +265,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
     for (int i = 0 ; i < attribArraySize ; i++)
         req.handleArray[i] = attribArray[i] ;
 
-    req.label = theTag;
+    req.setLabel(theTag);
 
     D.Out(pdDebug, "OWNERSHIP_ACQUISITION Federate %u ", fm->federate);
 
@@ -504,4 +504,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.12.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.12.2.3 2008/04/10 15:12:26 erk Exp $

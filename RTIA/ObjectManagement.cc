@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.35.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.3 2008/04/10 15:12:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -73,7 +73,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
     req.federate = fm->federate ;
     req.federation = fm->_numero_federation ;
     req.objectClass = the_class ;
-    req.label = theObjectName;
+    req.setLabel(theObjectName);
 
     comm->sendMessage(&req);
 
@@ -83,7 +83,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, the_class, rep->object,
-                                           rep->label.c_str());
+                                           rep->getLabel().c_str());
         return rep->object ;
     }
     else
@@ -127,7 +127,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
         req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    req.label= theTag;
+    req.setLabel(theTag);
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate));
@@ -172,7 +172,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
         req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    req.label = theTag;
+    req.setLabel(theTag);
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate));
@@ -293,7 +293,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 	req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    req.label = theTag;
+    req.setLabel(theTag);
 
     // Send network message and then wait for answer.
     comm->sendMessage(&req);
@@ -338,7 +338,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 	req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    req.label = theTag;
+    req.setLabel(theTag);
 
     // Send network message and then wait for answer.
     comm->sendMessage(&req);
@@ -407,7 +407,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
-    req.label = theTag;
+    req.setLabel(theTag);
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
@@ -433,7 +433,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     req.federation = fm->_numero_federation ;
     req.federate   = fm->federate ;
 
-    req.label =theTag;
+    req.setLabel(theTag);
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
@@ -770,4 +770,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.35.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.3 2008/04/10 15:12:27 erk Exp $

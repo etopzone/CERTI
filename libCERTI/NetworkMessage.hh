@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.7 2008/04/10 14:57:49 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.8 2008/04/10 15:12:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -141,17 +141,17 @@ public:
 	} Message_T;	
 
 	NetworkMessage();
-    virtual ~NetworkMessage();
-	
-    const NetworkMessage::Message_T getType() const {return type;};
-    const TypeException getException() const {return exception;};
-        
+	virtual ~NetworkMessage();
+
+	const NetworkMessage::Message_T getType() const {return type;};
+	const TypeException getException() const {return exception;};
+
 	virtual void serialize();
 	virtual void deserialize();
-	
+
 	void send(Socket* socket) throw (NetworkError, NetworkSignal);
 	void receive(Socket* socket) throw (NetworkError, NetworkSignal);
-	
+
 	// Parameter and Attribute Management
 	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
 	// ValueArray. If there are other parameter in the list, they are shifted
@@ -165,7 +165,7 @@ public:
 
 	// See RemoveParameter for explanations.
 	void removeAttribute(UShort Rank);
-	
+
 	// Value Array Management
 
 	// setValue : Value and its length are stored into ValueArray[Rank]
@@ -188,11 +188,11 @@ public:
 
 	void setAHS(const AttributeHandle *, int);
 
-	
+
 	void setBoolean(bool);
 	bool getBoolean() const { return boolean ; };
 
-		
+
 	UShort number ;
 
 	std::string federationName ;
@@ -229,23 +229,22 @@ public:
 	unsigned long multicastAddress ;
 
 	/**
-     * Indicate if the message is Labelled or not
-     */
+	 * Indicate if the message is Labelled or not
+	 */
 	bool isLabelled;	
-	std::string label;
+
 	void setLabel(const std::string label) {isLabelled = true; this->label = label;};
 	void setLabel(const char *new_label) {isLabelled = true; label = std::string(new_label); }
 	const std::string getLabel() const {return this->label;};
-	
+
 	/**
 	 * Indicate if the message is Tagged or not
 	 */
 	bool isTagged;
-	std::string tag;
 	void setTag(const std::string tag) {isTagged = true; this->tag = tag;};
 	void setTag(const char *new_tag) {isTagged = true; tag = std::string(new_tag); }
 	const std::string getTag() const {return this->tag;};
-	
+
 	ObjectHandlecount idCount ;
 	ObjectHandle firstId ;
 	ObjectHandle lastId ;
@@ -259,10 +258,10 @@ public:
 
 	TransportType transport ;
 	OrderType order ;
-	
+
 	/** The name corresponding to message type */
 	const std::string getName() const {return name;}
-	
+
 	/** 
 	 * The exception type 
 	 * if the message is carrying an exception
@@ -278,12 +277,12 @@ public:
 	 * the message is for this particular federate
 	 */
 	FederateHandle federate ;
-	
+
 	/**
 	 * The exception reason (if the message carry one)
 	 */
 	std::string exceptionReason;	
-	
+
 	/* used by some sub-classes */
 	int32_t attribute;
 
@@ -294,7 +293,7 @@ protected:
 	 * network message constructor
 	 */
 	std::string name;	
-	
+
 	/** 
 	 * The network message type
 	 * type field cannot be accessed directly 
@@ -302,17 +301,30 @@ protected:
 	 *   - getter should be used to get it. 
 	 */
 	Message_T type;
-	
+
 	/** 
 	 * The date of message if it is dated.
 	 * date field cannot be accessed directly but only using
 	 * getter/setter.
 	 */
 	FederationTime date ;
-	
+
+	/** 
+	 * The label of message if it is labelled.
+	 * date field cannot be accessed directly but only using
+	 * getter/setter.
+	 */
+	std::string label;
+	/** 
+	 * The tag of message if it is tagged.
+	 * date field cannot be accessed directly but only using
+	 * getter/setter.
+	 */
+	std::string tag;
+
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
-	
+
 private:
 };
 
@@ -324,4 +336,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.7 2008/04/10 14:57:49 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.8 2008/04/10 15:12:25 erk Exp $

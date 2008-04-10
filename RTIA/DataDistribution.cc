@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.23.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: DataDistribution.cc,v 3.23.2.3 2008/04/10 15:12:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -273,7 +273,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, class_handle, rep->object,
-                                           rep->label.c_str());
+                                           rep->getLabel().c_str());
 	for (int i = 0 ; i < nb ; ++i) {
 	    D[pdDebug] << "Register attribute [" << i << "] Attr: " << attrs[i]
 		       << " Region: " << regions[i] << std::endl ;
@@ -412,4 +412,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.23.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: DataDistribution.cc,v 3.23.2.3 2008/04/10 15:12:27 erk Exp $

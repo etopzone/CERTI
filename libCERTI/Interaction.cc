@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.35.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: Interaction.cc,v 3.35.2.4 2008/04/10 15:12:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -415,7 +415,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->interactionClass = handle ; // Interaction Class Handle        
 	    answer->setDate(time);
 
-        answer->label = the_tag;
+        answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
         for (int i = 0 ; i < list_size ; i++) {
@@ -473,7 +473,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->interactionClass = handle ; // Interaction Class Handle
 	answer->setBoolean(false) ; // without time
 
-        answer->label = the_tag;
+        answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
         for (int i = 0 ; i < list_size ; i++) {
@@ -551,4 +551,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.35.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: Interaction.cc,v 3.35.2.4 2008/04/10 15:12:25 erk Exp $

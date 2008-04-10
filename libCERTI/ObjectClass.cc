@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.41.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.4 2008/04/10 15:12:26 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -235,10 +235,9 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
         if (toFederate != 0) {
             std::auto_ptr<NetworkMessage> answer(NM_Factory::create(type));         
             answer->federation = server->federation();
-            answer->federate = theFederate ;
-            answer->exception = e_NO_EXCEPTION ;
+            answer->federate = theFederate ;            
             answer->object = theObjectHandle ;
-            answer->label = theTag;
+            answer->setLabel(theTag);
 
             int index = 0 ;
             for (int j = i ; j < nbAttributes ; j++) {
@@ -790,7 +789,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    NM_Discover_Object message ;
 	    D.Out(pdInit,
 		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-		  federate, (*o)->getHandle(), handle, message.label.c_str());
+		  federate, (*o)->getHandle(), handle, message.getLabel().c_str());
 	    	    
 	    message.federation = server->federation();
 	    message.federate = federate ;
@@ -1102,7 +1101,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerDivestiture.federation = server->federation();
             AnswerDivestiture.federate = theFederateHandle ;            
             AnswerDivestiture.object = theObjectHandle ;
-            AnswerDivestiture.label =  std::string("");
+            AnswerDivestiture.setLabel(std::string(""));
             AnswerDivestiture.handleArraySize = compteur_divestiture ;
 
             sendToFederate(&AnswerDivestiture, theFederateHandle);
@@ -1113,7 +1112,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
             AnswerAssumption->object = theObjectHandle ;
-            AnswerAssumption->label  = theTag;
+            AnswerAssumption->setLabel(theTag);
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
@@ -1366,7 +1365,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
             AnswerAssumption->object = theObjectHandle ;
-            AnswerAssumption->label = std::string("");
+            AnswerAssumption->setLabel(std::string(""));
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
@@ -1803,4 +1802,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.41.2.3 2008/04/10 14:57:50 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.4 2008/04/10 15:12:26 erk Exp $
