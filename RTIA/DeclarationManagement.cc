@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.17.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17.2.2 2008/04/10 14:57:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 #include "InteractionSet.hh"
 #include "ObjectClassSet.hh"
 #include "DeclarationManagement.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -86,8 +87,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     }
 
     // Partie RTIG
-    NetworkMessage req ;
-    req.type = NetworkMessage::PUBLISH_OBJECT_CLASS ;
+    NM_Publish_Object_Class req ;    
     req.objectClass = theClassHandle ;
     req.handleArraySize = attribArraySize ;
     req.federation = fm->_numero_federation ;
@@ -131,8 +131,8 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
     }
 
     // Partie RTIG
-    NetworkMessage req ;
-    req.type = NetworkMessage::UNPUBLISH_OBJECT_CLASS ;
+    NM_Unpublish_Object_Class req ;
+   
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = theClassHandle ;
@@ -166,8 +166,8 @@ publishInteractionClass(InteractionClassHandle theInteractionHandle,
     }
 
     // RTIG (may be non-local) request
-    NetworkMessage req ;
-    req.type = NetworkMessage::PUBLISH_INTERACTION_CLASS ;
+    NM_Publish_Interaction_Class req ;
+    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.interactionClass = theInteractionHandle ;
@@ -199,8 +199,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
     }
 
     // Partie RTIG
-    NetworkMessage req;
-    req.type = NetworkMessage::UNPUBLISH_INTERACTION_CLASS ;
+    NM_Unpublish_Interaction_Class req;   
     req.interactionClass = theInteractionHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -221,14 +220,13 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                               UShort attribArraySize,
                               TypeException &e)
 {
-    NetworkMessage req;
+    NM_Subscribe_Object_Class req;
 
     G.Out(pdGendoc,"enter DeclarationManagement::subscribeObjectClassAttribute");
     // Pas de partie locale pour les abonnements
 
     // Partie RTIG
 
-    req.type = NetworkMessage::SUBSCRIBE_OBJECT_CLASS ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = theClassHandle ;
@@ -258,14 +256,13 @@ DeclarationManagement::
 unsubscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
                                 TypeException &e)
 {
-    NetworkMessage req;
+    NM_Unsubscribe_Object_Class req;
 
     e = e_NO_EXCEPTION ;
 
     // Pas de Partie Locale pour les abonnements
 
-    // Partie RTIG
-    req.type = NetworkMessage::UNSUBSCRIBE_OBJECT_CLASS ;
+    // Partie RTIG    
     req.objectClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -286,7 +283,7 @@ DeclarationManagement::
 subscribeInteractionClass(InteractionClassHandle theClassHandle,
                           TypeException &e)
 {
-    NetworkMessage req;
+    NM_Subscribe_Interaction_Class req;
 
     e = e_NO_EXCEPTION ;
 
@@ -302,9 +299,7 @@ subscribeInteractionClass(InteractionClassHandle theClassHandle,
         throw e ;
     }
 
-    // Partie RTIG
-
-    req.type = NetworkMessage::SUBSCRIBE_INTERACTION_CLASS ;
+    // Partie RTIG    
     req.interactionClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -324,7 +319,7 @@ DeclarationManagement::
 unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                             TypeException &e)
 {
-    NetworkMessage req;
+    NM_Unsubscribe_Object_Class req;
 
     e = e_NO_EXCEPTION ;
 
@@ -340,9 +335,7 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
         throw e ;
     }
 
-    // Partie RTIG
-
-    req.type = NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS ;
+    // Partie RTIG    
     req.interactionClass = theClassHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -459,4 +452,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.17.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17.2.2 2008/04/10 14:57:47 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.5 2008/04/10 11:35:56 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.6 2008/04/10 14:57:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -38,6 +38,10 @@ void NetworkMessage::serialize() {
 	/* We serialize the common Network messages part 
 	 * ALL Network Message will contain the following
 	 */	
+	if ((type==NOT_USED) ||
+	   (type==LAST)) {
+		throw RTIinternalError("Invalid network type (not a valid type);");
+	}
 	D.Out(pdDebug, "serialize <%s>", getName().c_str());
 	/* type of message */
 	msgBuf.write_int32(type);
@@ -46,12 +50,14 @@ void NetworkMessage::serialize() {
 	msgBuf.write_int32(federation);
 	/*
 	 * "builtin" Optional part
-	 * The subclass may chose in the constructor
-	 * the variable part.
+	 * The subclass may chose in the constructor the variable part.
+	 * isDated may be chosen on Message instance basis
+	 * (same message may Dated or Not Dated) 
 	 */
+	msgBuf.write_bool(isDated);
 	if (isDated) {
 		msgBuf.write_double(date);
-	}
+	}	
 	if (isLabelled) {
 		msgBuf.write_string(label);
 	}
@@ -74,9 +80,11 @@ void NetworkMessage::deserialize() {
 	federation  = msgBuf.read_int32();
 	/*
 	 * "builtin" Optional part
-	 * The subclass may chose in the constructor
-	 * the variable part.
+	 * The subclass may chose in the constructor the variable part.
+	 * isDated may be chosen on Message instance basis
+	 * (same message may Dated or Not Dated) 
 	 */
+	isDated = msgBuf.read_bool();
 	if (isDated) {
 		date = msgBuf.read_double();
 	}
@@ -136,4 +144,4 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.5 2008/04/10 11:35:56 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.6 2008/04/10 14:57:49 erk Exp $

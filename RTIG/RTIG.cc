@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36.2.3 2008/04/10 11:35:55 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.4 2008/04/10 14:57:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -85,12 +85,12 @@ RTIG::~RTIG()
 Socket*
 RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 {
-    G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type %d",msg->type);
+    G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type %d",msg->getType());
     // This may throw a security error.
-    if ( msg->type != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
+    if ( msg->getType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
        socketServer.checkMessage(link->returnSocket(), msg);	
 	
-    switch(msg->type) {
+    switch(msg->getType()) {
       case NetworkMessage::MESSAGE_NULL:
         D.Out(pdDebug, "Message Null.");
         auditServer.setLevel(0);
@@ -202,7 +202,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 
       case NetworkMessage::SET_TIME_REGULATING:
         D.Out(pdTrace, "SetTimeRegulating du federe %u(date=%f).",
-              msg->federate, msg->date);
+              msg->federate, msg->getDate());
         auditServer.setLevel(8);
         processSetTimeRegulating(msg);
         break ;
@@ -369,7 +369,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 	
       default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
-        D.Out(pdError, "processMessageRecu: unknown type %u.", msg->type);
+        D.Out(pdError, "processMessageRecu: unknown type %u.", msg->getType());
         throw RTIinternalError("Unknown Message Type");
     }
     G.Out(pdGendoc,"exit  RTIG::chooseProcessingMethod");
@@ -506,7 +506,7 @@ Socket*
 RTIG::processIncomingMessage(Socket *link)
 {
     NetworkMessage* msg ;
-    NetworkMessage rep ; // Server Answer(only if an exception is raised)
+    
 
     char buffer[BUFFER_EXCEPTION_REASON_SIZE] ; // To store the exception reason
     G.Out(pdGendoc,"enter RTIG::processIncomingMessage");
@@ -518,11 +518,11 @@ RTIG::processIncomingMessage(Socket *link)
     /* virtual constructor call */
     msg = NM_Factory::receive(link);
     
-    rep.type = msg->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = msg->federate ;
+    // Server Answer(only if an exception is raised)
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getType()));    
+    rep->federate = msg->federate ;
 
-    auditServer.startLine(msg->federation, msg->federate, msg->type);
+    auditServer.startLine(msg->federation, msg->federate, msg->getType());
 
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
@@ -537,327 +537,327 @@ RTIG::processIncomingMessage(Socket *link)
     catch (ArrayIndexOutOfBounds &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ArrayIndexOutOfBounds ;
+        rep->exception = e_ArrayIndexOutOfBounds ;
     }
     catch (AttributeAlreadyOwned &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeAlreadyOwned ;
+        rep->exception = e_AttributeAlreadyOwned ;
     }
     catch (AttributeAlreadyBeingAcquired &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeAlreadyBeingAcquired ;
+        rep->exception = e_AttributeAlreadyBeingAcquired ;
     }
     catch (AttributeAlreadyBeingDivested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeAlreadyBeingDivested ;
+        rep->exception = e_AttributeAlreadyBeingDivested ;
     }
     catch (AttributeDivestitureWasNotRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeDivestitureWasNotRequested ;
+        rep->exception = e_AttributeDivestitureWasNotRequested ;
     }
     catch (AttributeAcquisitionWasNotRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeAcquisitionWasNotRequested ;
+        rep->exception = e_AttributeAcquisitionWasNotRequested ;
     }
     catch (AttributeNotDefined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeNotDefined ;
+        rep->exception = e_AttributeNotDefined ;
     }
     catch (AttributeNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeNotKnown ;
+        rep->exception = e_AttributeNotKnown ;
     }
     catch (AttributeNotOwned &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeNotOwned ;
+        rep->exception = e_AttributeNotOwned ;
     }
     catch (AttributeNotPublished &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeNotPublished ;
+        rep->exception = e_AttributeNotPublished ;
     }
     catch (AttributeNotSubscribed &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_AttributeNotSubscribed ;
+        rep->exception = e_AttributeNotSubscribed ;
     }
     catch (ConcurrentAccessAttempted &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ConcurrentAccessAttempted ;
+        rep->exception = e_ConcurrentAccessAttempted ;
     }
     catch (CouldNotDiscover &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_CouldNotDiscover ;
+        rep->exception = e_CouldNotDiscover ;
     }
     catch (CouldNotOpenRID &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_CouldNotOpenRID ;
+        rep->exception = e_CouldNotOpenRID ;
     }
     catch (CouldNotOpenFED &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_CouldNotOpenFED ;
+        rep->exception = e_CouldNotOpenFED ;
     }
     catch (CouldNotRestore &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_CouldNotRestore ;
+        rep->exception = e_CouldNotRestore ;
     }
     catch (DeletePrivilegeNotHeld &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_DeletePrivilegeNotHeld ;
+        rep->exception = e_DeletePrivilegeNotHeld ;
     }
     catch (ErrorReadingRID &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ErrorReadingRID ;
+        rep->exception = e_ErrorReadingRID ;
     }
     catch (EventNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_EventNotKnown ;
+        rep->exception = e_EventNotKnown ;
     }
     catch (FederateAlreadyPaused &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateAlreadyPaused ;
+        rep->exception = e_FederateAlreadyPaused ;
     }
     catch (FederateAlreadyExecutionMember &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateAlreadyExecutionMember ;
+        rep->exception = e_FederateAlreadyExecutionMember ;
     }
     catch (FederateDoesNotExist &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateDoesNotExist ;
+        rep->exception = e_FederateDoesNotExist ;
     }
     catch (FederateInternalError &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateInternalError ;
+        rep->exception = e_FederateInternalError ;
     }
     catch (FederateNameAlreadyInUse &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateNameAlreadyInUse ;
+        rep->exception = e_FederateNameAlreadyInUse ;
     }
     catch (FederateNotExecutionMember &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateNotExecutionMember ;
+        rep->exception = e_FederateNotExecutionMember ;
     }
     catch (FederateNotPaused &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateNotPaused ;
+        rep->exception = e_FederateNotPaused ;
     }
     catch (FederateNotPublishing &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateNotPublishing ;
+        rep->exception = e_FederateNotPublishing ;
     }
     catch (FederateNotSubscribing &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateNotSubscribing ;
+        rep->exception = e_FederateNotSubscribing ;
     }
     catch (FederateOwnsAttributes &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateOwnsAttributes ;
+        rep->exception = e_FederateOwnsAttributes ;
     }
     catch (FederatesCurrentlyJoined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederatesCurrentlyJoined ;
+        rep->exception = e_FederatesCurrentlyJoined ;
     }
     catch (FederateWasNotAskedToReleaseAttribute &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederateWasNotAskedToReleaseAttribute ;
+        rep->exception = e_FederateWasNotAskedToReleaseAttribute ;
     }
     catch (FederationAlreadyPaused &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederationAlreadyPaused ;
+        rep->exception = e_FederationAlreadyPaused ;
     }
     catch (FederationExecutionAlreadyExists &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederationExecutionAlreadyExists ;
+        rep->exception = e_FederationExecutionAlreadyExists ;
     }
     catch (FederationExecutionDoesNotExist &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederationExecutionDoesNotExist ;
+        rep->exception = e_FederationExecutionDoesNotExist ;
     }
     catch (FederationNotPaused &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederationNotPaused ;
+        rep->exception = e_FederationNotPaused ;
     }
     catch (FederationTimeAlreadyPassed &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_FederationTimeAlreadyPassed ;
+        rep->exception = e_FederationTimeAlreadyPassed ;
     }
     catch (IDsupplyExhausted &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_IDsupplyExhausted ;
+        rep->exception = e_IDsupplyExhausted ;
     }
     catch (InteractionClassNotDefined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InteractionClassNotDefined ;
+        rep->exception = e_InteractionClassNotDefined ;
     }
     catch (InteractionClassNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InteractionClassNotKnown ;
+        rep->exception = e_InteractionClassNotKnown ;
     }
     catch (InteractionClassNotPublished &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InteractionClassNotPublished ;
+        rep->exception = e_InteractionClassNotPublished ;
     }
     catch (InteractionParameterNotDefined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InteractionParameterNotDefined ;
+        rep->exception = e_InteractionParameterNotDefined ;
     }
     catch (InteractionParameterNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InteractionParameterNotKnown ;
+        rep->exception = e_InteractionParameterNotKnown ;
     }
     catch (InvalidDivestitureCondition &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidDivestitureCondition ;
+        rep->exception = e_InvalidDivestitureCondition ;
     }
     catch (InvalidExtents &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidExtents ;
+        rep->exception = e_InvalidExtents ;
     }
     catch (InvalidFederationTime &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidFederationTime ;
+        rep->exception = e_InvalidFederationTime ;
     }
     catch (InvalidFederationTimeDelta &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidFederationTimeDelta ;
+        rep->exception = e_InvalidFederationTimeDelta ;
     }
     catch (InvalidObjectHandle &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidObjectHandle ;
+        rep->exception = e_InvalidObjectHandle ;
     }
     catch (InvalidOrderType &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidOrderType ;
+        rep->exception = e_InvalidOrderType ;
     }
     catch (InvalidResignAction &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidResignAction ;
+        rep->exception = e_InvalidResignAction ;
     }
     catch (InvalidRetractionHandle &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidRetractionHandle ;
+        rep->exception = e_InvalidRetractionHandle ;
     }
     catch (InvalidRoutingSpace &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidRoutingSpace ;
+        rep->exception = e_InvalidRoutingSpace ;
     }
     catch (InvalidTransportType &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_InvalidTransportType ;
+        rep->exception = e_InvalidTransportType ;
     }
     catch (MemoryExhausted &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_MemoryExhausted ;
+        rep->exception = e_MemoryExhausted ;
     }
     catch (NameNotFound &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_NameNotFound ;
+        rep->exception = e_NameNotFound ;
     }
     catch (NoPauseRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_NoPauseRequested ;
+        rep->exception = e_NoPauseRequested ;
     }
     catch (NoResumeRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_NoResumeRequested ;
+        rep->exception = e_NoResumeRequested ;
     }
     catch (ObjectClassNotDefined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectClassNotDefined ;
+        rep->exception = e_ObjectClassNotDefined ;
     }
     catch (ObjectClassNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectClassNotKnown ;
+        rep->exception = e_ObjectClassNotKnown ;
     }
     catch (ObjectClassNotPublished &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectClassNotPublished ;
+        rep->exception = e_ObjectClassNotPublished ;
     }
     catch (ObjectClassNotSubscribed &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectClassNotSubscribed ;
+        rep->exception = e_ObjectClassNotSubscribed ;
     }
     catch (ObjectNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectNotKnown ;
+        rep->exception = e_ObjectNotKnown ;
     }
     catch (ObjectAlreadyRegistered &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ObjectAlreadyRegistered ;
+        rep->exception = e_ObjectAlreadyRegistered ;
     }
     catch (RegionNotKnown &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_RegionNotKnown ;
+        rep->exception = e_RegionNotKnown ;
     }
     catch (RestoreInProgress &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_RestoreInProgress ;
+        rep->exception = e_RestoreInProgress ;
     }
     catch (RestoreNotRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_RestoreNotRequested ;
+        rep->exception = e_RestoreNotRequested ;
     }
     catch (RTIinternalError &e) {
         if (e._reason == NULL)
@@ -865,78 +865,78 @@ RTIG::processIncomingMessage(Socket *link)
         else
             D.Out(pdExcept, "Catching \"%s\" exception: %s.", e._name, e._reason);
         CPY_NOT_NULL(e);
-        rep.exception = e_RTIinternalError ;
+        rep->exception = e_RTIinternalError ;
     }
     catch (SaveInProgress &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_SaveInProgress ;
+        rep->exception = e_SaveInProgress ;
     }
     catch (SaveNotInitiated &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_SaveNotInitiated ;
+        rep->exception = e_SaveNotInitiated ;
     }
     catch (SecurityError &e) {
         cout << endl << "Security Error : " << e._reason << endl ;
         CPY_NOT_NULL(e);
-        rep.exception = e_SecurityError ;
+        rep->exception = e_SecurityError ;
     }
     catch (SpaceNotDefined &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_SpaceNotDefined ;
+        rep->exception = e_SpaceNotDefined ;
     }
     catch (SpecifiedSaveLabelDoesNotExist &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_SpecifiedSaveLabelDoesNotExist ;
+        rep->exception = e_SpecifiedSaveLabelDoesNotExist ;
     }
     catch (TimeAdvanceAlreadyInProgress &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_TimeAdvanceAlreadyInProgress ;
+        rep->exception = e_TimeAdvanceAlreadyInProgress ;
     }
     catch (TimeAdvanceWasNotInProgress &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_TimeAdvanceWasNotInProgress ;
+        rep->exception = e_TimeAdvanceWasNotInProgress ;
     }
     catch (TooManyIDsRequested &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_TooManyIDsRequested ;
+        rep->exception = e_TooManyIDsRequested ;
     }
     catch (UnableToPerformSave &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_UnableToPerformSave ;
+        rep->exception = e_UnableToPerformSave ;
     }
     catch (UnimplementedService &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_UnimplementedService ;
+        rep->exception = e_UnimplementedService ;
     }
     catch (UnknownLabel &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_UnknownLabel ;
+        rep->exception = e_UnknownLabel ;
     }
     catch (ValueCountExceeded &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ValueCountExceeded ;
+        rep->exception = e_ValueCountExceeded ;
     }
     catch (ValueLengthExceeded &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_ValueLengthExceeded ;
+        rep->exception = e_ValueLengthExceeded ;
     }
 
     // Non RTI specific exception, Client connection problem(internal)
     catch (NetworkError &e) {
         strcpy(buffer, " - NetworkError");
-        auditServer.endLine(rep.exception, buffer);
+        auditServer.endLine(rep->exception, buffer);
 
         throw e ;
     }
@@ -945,28 +945,28 @@ RTIG::processIncomingMessage(Socket *link)
     catch (Exception &e) {
         D.Out(pdExcept, "Unknown Exception : %s.", e._name);
         CPY_NOT_NULL(e);
-        rep.exception = e_RTIinternalError ;
+        rep->exception = e_RTIinternalError ;
     }
 
     // buffer may contain an exception reason. If not, set it to OK
     // or Exception
     if (strlen(buffer)== 0) {
-        if (rep.exception == e_NO_EXCEPTION)
+        if (rep->exception == e_NO_EXCEPTION)
             strcpy(buffer, " - OK");
         else
             strcpy(buffer, " - Exception");
     }
 
-    auditServer.endLine(rep.exception, buffer);
+    auditServer.endLine(rep->exception, buffer);
 
     if (link == NULL) return link ;
 
     /* FIXME ***/
-    if (rep.exception != e_NO_EXCEPTION) {
-        rep.send(link);
+    if (rep->exception != e_NO_EXCEPTION) {
+        rep->send(link);
         D.Out(pdExcept,
               "RTIG catched exception %d and sent it back to federate %d.",
-              rep.exception, rep.federate);
+              rep->exception, rep->federate);
     }
     G.Out(pdGendoc,"exit  RTIG::processIncomingMessage");
     return link ;
@@ -987,4 +987,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36.2.3 2008/04/10 11:35:55 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.4 2008/04/10 14:57:49 erk Exp $

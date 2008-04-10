@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.6 2008/04/10 11:35:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.7 2008/04/10 14:57:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -219,10 +219,10 @@ public:
 	 */
 	bool isDated;
 	/** 
-	 * The date of message if it is dated.
+	 * If ones set Date then this is a Dated message
+	 * Message builder which setDate will generate a Dated message 
 	 */
-	FederationTime date ;
-	void setDate(FederationTime date) {this->date = date;};
+	void setDate(FederationTime date) {isDated=true; this->date = date;};
 	const FederationTime getDate() const {return this->date;};
 
 	int numberOfRegulators ;
@@ -233,8 +233,8 @@ public:
      */
 	bool isLabelled;	
 	std::string label;
-	void setLabel(const std::string label) {this->label = label;};
-	void setLabel(const char *new_label) { label = std::string(new_label); }
+	void setLabel(const std::string label) {isLabelled = true; this->label = label;};
+	void setLabel(const char *new_label) {isLabelled = true; label = std::string(new_label); }
 	const std::string getLabel() const {return this->label;};
 	
 	/**
@@ -242,8 +242,8 @@ public:
 	 */
 	bool isTagged;
 	std::string tag;
-	void setTag(const std::string tag) {this->tag = tag;};
-	void setTag(const char *new_tag) { tag = std::string(new_tag); }
+	void setTag(const std::string tag) {isTagged = true; this->tag = tag;};
+	void setTag(const char *new_tag) {isTagged = true; tag = std::string(new_tag); }
 	const std::string getTag() const {return this->tag;};
 	
 	ObjectHandlecount idCount ;
@@ -262,9 +262,6 @@ public:
 	
 	/** The name corresponding to message type */
 	const std::string getName() const {return name;}
-	
-	/** The network message type */
-	Message_T type;
 	
 	/** 
 	 * The exception type 
@@ -297,6 +294,22 @@ protected:
 	 * network message constructor
 	 */
 	std::string name;	
+	
+	/** 
+	 * The network message type
+	 * type field cannot be accessed directly 
+	 *   - only NM constructor may set it.
+	 *   - getter should be used to get it. 
+	 */
+	Message_T type;
+	
+	/** 
+	 * The date of message if it is dated.
+	 * date field cannot be accessed directly but only using
+	 * getter/setter.
+	 */
+	FederationTime date ;
+	
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 	
@@ -311,4 +324,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.6 2008/04/10 11:35:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.7 2008/04/10 14:57:49 erk Exp $

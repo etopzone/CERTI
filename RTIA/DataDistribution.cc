@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.23.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: DataDistribution.cc,v 3.23.2.2 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,6 +33,7 @@
 #include "ObjectClassAttribute.hh"
 #include "RoutingSpace.hh"
 #include "FedRegion.hh"
+#include "NM_Classes.hh"
 
 #include <cassert>
 #include <memory>
@@ -123,9 +124,8 @@ DataDistribution::createRegion(SpaceHandle space,
     throw (SpaceNotDefined)
 {
     D[pdDebug] << "Start creating region in space " << space << "..." << endl ;
-    NetworkMessage req;    
-
-    req.type = NetworkMessage::DDM_CREATE_REGION ;
+    NM_DDM_Create_Region req;    
+    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.space = space ;
@@ -164,9 +164,8 @@ DataDistribution::modifyRegion(RegionHandle handle,
     RTIRegion *region = rootObject->getRegion(handle);
 
     // Request to RTIG
-    NetworkMessage req;
-    
-    req.type = NetworkMessage::DDM_MODIFY_REGION ;
+    NM_DDM_Modify_Region req;
+        
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.region = handle ;
@@ -195,9 +194,8 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
     rootObject->getRegion(handle);
 
     // Request to RTIG
-    NetworkMessage req;
+    NM_DDM_Delete_Region req;
 
-    req.type = NetworkMessage::DDM_DELETE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.region = handle ;
@@ -232,9 +230,8 @@ DataDistribution::associateRegion(ObjectHandle object,
 	rootObject->getObjectAttribute(object, attr[i])->associate(r);	
     }
 
-    NetworkMessage req;
+    NM_DDM_Associate_Region req;
 
-    req.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = object ;
@@ -260,9 +257,8 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     D[pdDebug] << "Register object of class " << class_handle << " with "
 	       << regions.size() << " region(s)." << std::endl ;
 
-    NetworkMessage req;    
-
-    req.type = NetworkMessage::DDM_REGISTER_OBJECT ;
+    NM_DDM_Register_Object req;    
+    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = class_handle ;
@@ -304,9 +300,8 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 
     rootObject->getObject(object)->unassociate(r);
 
-    NetworkMessage req;
-
-    req.type = NetworkMessage::DDM_UNASSOCIATE_REGION ;
+    NM_DDM_Unassociate_Region req;
+    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = object ;
@@ -331,9 +326,8 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
     D[pdDebug] << "Subscribe attributes with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req;
+    NM_DDM_Subscribe_Attributes req;
 
-    req.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = obj_class ;
@@ -358,9 +352,8 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 	       << " with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req;
+    NM_DDM_Unsubscribe_Attributes req;
 
-    req.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = obj_class ;
@@ -383,9 +376,8 @@ DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
     D[pdDebug] << "Subscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req;
+    NM_DDM_Subscribe_Interaction req;
 
-    req.type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION ;
     req.interactionClass = int_class ;
     req.region = region ;
 
@@ -406,9 +398,8 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
     D[pdDebug] << "Unsubscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
-    NetworkMessage req;
-
-    req.type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION ;
+    NM_DDM_Unsubscribe_Interaction req;
+    
     req.interactionClass = int_class ;
     req.region = region ;
 
@@ -421,4 +412,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.23.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: DataDistribution.cc,v 3.23.2.2 2008/04/10 14:57:48 erk Exp $

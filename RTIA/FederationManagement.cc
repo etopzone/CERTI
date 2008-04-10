@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.50.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.2 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 #include "TimeManagement.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -114,7 +115,7 @@ createFederationExecution(const char *theName,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError)
 {
-    NetworkMessage requete;
+    NM_Create_Federation_Execution requete;
 
     G.Out(pdGendoc,"enter FederationManagement::createFederationExecution");
     D.Out(pdInit, "Creating Federation %s.", theName);
@@ -135,8 +136,7 @@ createFederationExecution(const char *theName,
         }
 
     if (e == e_NO_EXCEPTION)
-        {
-        requete.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;        
+        {               
         requete.federationName = theName;
         requete.FEDid = _FEDid;        
 
@@ -203,7 +203,7 @@ FederationManagement::
 destroyFederationExecution(const char *theName,
                            TypeException &e)
 {
-    NetworkMessage requete;
+    NM_Destroy_Federation_Execution requete;
 
     D.Out(pdInit, "Destroy Federation %s.", theName);
     G.Out(pdGendoc,"enter FederationManagement::destroyFederationExecution");
@@ -214,8 +214,7 @@ destroyFederationExecution(const char *theName,
     //if (strcmp(theName, _nom_federation))
     //    e = e_FederationExecutionDoesNotExist ;
 
-    if (e == e_NO_EXCEPTION) {
-        requete.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
+    if (e == e_NO_EXCEPTION) {        
         requete.federation = _numero_federation ;
         requete.federate = federate ;
         requete.federationName = theName;        
@@ -256,7 +255,9 @@ joinFederationExecution(const char *Federate,
                         const char *Federation,
                         TypeException &e)
 {
-    NetworkMessage requete, requeteFED ;
+    NM_Join_Federation_Execution requete;
+    NM_Get_FED_File requeteFED;
+    
     int i, nb ;
     char *filename ; // Needed for working file name
 
@@ -271,8 +272,7 @@ joinFederationExecution(const char *Federate,
     if (_est_membre_federation)
         e = e_FederateAlreadyExecutionMember ;
 
-    if (e == e_NO_EXCEPTION) {
-        requete.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
+    if (e == e_NO_EXCEPTION) {        
         requete.federationName = Federation;        
         requete.federateName = Federate;
 
@@ -329,8 +329,7 @@ joinFederationExecution(const char *Federate,
             if ( (fdd=fopen(filename,"w")) == NULL )
                 throw RTIinternalError("FED file has vanished.") ;
               
-            // RTIA says RTIG OK for file transfer
-            requeteFED.type = NetworkMessage::GET_FED_FILE ;
+            // RTIA says RTIG OK for file transfer            
             requeteFED.federateName = Federate;
             requeteFED.FEDid = filename;            
             if ( e == e_NO_EXCEPTION)
@@ -366,8 +365,7 @@ joinFederationExecution(const char *Federate,
                 file_line = reponse->getValue(0,&length) ;
                 int nbw = fputs(file_line,fdd);
                 file_line = NULL ;
-                // RTIA says OK to RTIG
-                requeteFED.type = NetworkMessage::GET_FED_FILE ;
+                // RTIA says OK to RTIG                
                 requeteFED.federateName =Federate;
                 requeteFED.number = num_line ; 
                 requeteFED.FEDid = filename;
@@ -402,7 +400,7 @@ joinFederationExecution(const char *Federate,
             for (i=0 ; i<nb ; i++) {
                 reponse.reset(comm->waitMessage(NetworkMessage::MESSAGE_NULL, 0));
                 assert(tm != NULL);
-                tm->insert(reponse->federate, reponse->date);
+                tm->insert(reponse->federate, reponse->getDate());
             }
 
             _est_membre_federation = true ;
@@ -424,7 +422,7 @@ void
 FederationManagement::resignFederationExecution(RTI::ResignAction,
                                                 TypeException &e)
 {
-    NetworkMessage msg ;
+    NM_Resign_Federation_Execution msg ;
     TypeException exception = e_NO_EXCEPTION ;
 
     e = e_NO_EXCEPTION ;
@@ -439,8 +437,7 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
 
         if (tm->requestRegulateurState())
             tm->setTimeRegulating(false, exception);
-
-        msg.type = NetworkMessage::RESIGN_FEDERATION_EXECUTION ;
+        
         msg.federation = _numero_federation ;
         msg.federate = federate ;
 
@@ -496,8 +493,7 @@ FederationManagement::registerSynchronization(const char *label,
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        NetworkMessage req ;
-        req.type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+        NM_Register_Federation_Synchronization_Point req ;        
         req.federation = _numero_federation ;
         req.federate = federate ;
         req.setLabel(label);
@@ -547,8 +543,7 @@ FederationManagement::registerSynchronization(const char *label,
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        NetworkMessage req ;
-        req.type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
+        NM_Register_Federation_Synchronization_Point req;        
         req.federation = _numero_federation ;
         req.federate = federate ;
         req.setLabel(label);
@@ -604,9 +599,8 @@ FederationManagement::unregisterSynchronization(const char *label,
         e = e_FederateNotExecutionMember ;
 
     if (e == e_NO_EXCEPTION) {
-        NetworkMessage req ;
-
-        req.type = NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED ;
+        NM_Synchronization_Point_Achieved req ;
+        
         req.federation = _numero_federation ;
         req.federate = federate ;
         req.setLabel(label);
@@ -719,9 +713,9 @@ FederationManagement::requestFederationSave(const char *label,
 
     assert(label != 0);
 
-    NetworkMessage req ;
-    req.type = NetworkMessage::REQUEST_FEDERATION_SAVE ;
-    req.date = the_time ;
+    NM_Request_Federation_Save req ;
+    
+    req.setDate(the_time);
     req.setLabel(label);
     req.federation = _numero_federation ;
     req.federate = federate ;
@@ -750,8 +744,8 @@ FederationManagement::requestFederationSave(const char *label,
 
     assert(label != 0);
 
-    NetworkMessage req ;
-    req.type = NetworkMessage::REQUEST_FEDERATION_SAVE ;
+    NM_Request_Federation_Save req ;
+    
     req.setLabel(label);
     req.federation = _numero_federation ;
     req.federate = federate ;
@@ -776,9 +770,8 @@ FederationManagement::federateSaveBegun(TypeException &)
     if (!savingState)
         throw SaveNotInitiated("Federation did not initiate saving.");
 
-    NetworkMessage req ;
-
-    req.type = NetworkMessage::FEDERATE_SAVE_BEGUN ;
+    NM_Federate_Save_Begun req ;
+    
     req.federate = federate ;
     req.federation = _numero_federation ;
 
@@ -799,11 +792,10 @@ FederationManagement::federateSaveStatus(bool status, TypeException &)
     if (!savingState)
         throw SaveNotInitiated("Federation did not initiate saving.");
 
-    NetworkMessage req ;
-
-    req.type= status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE ;
-    req.federate = federate ;
-    req.federation = _numero_federation ;
+    std::auto_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::FEDERATE_SAVE_COMPLETE : NetworkMessage::FEDERATE_SAVE_NOT_COMPLETE));
+   
+    req->federate = federate ;
+    req->federation = _numero_federation ;
 
     if (status)
        {    
@@ -814,7 +806,7 @@ FederationManagement::federateSaveStatus(bool status, TypeException &)
        G.Out(pdGendoc,"      federateSaveStatus ====>send Message F_S_N_C to RTIG");
        }
 
-    comm->sendMessage(&req);
+    comm->sendMessage(req.get());
 
     G.Out(pdGendoc,"exit  FederationManagement::federateSaveStatus");
 }
@@ -868,8 +860,8 @@ FederationManagement::requestFederationRestore(const char *label,
 
     assert(label != NULL);
 
-    NetworkMessage req ;
-    req.type = NetworkMessage::REQUEST_FEDERATION_RESTORE ;
+    NM_Request_Federation_Restore req ;
+    
     req.setLabel(label);
     req.federate = federate ;
     req.federation = _numero_federation ;
@@ -892,15 +884,10 @@ FederationManagement::federateRestoreStatus(bool status, TypeException &)
     if (!restoringState)
         throw RestoreNotRequested("Federation did not initiate restoring.");
 
-    NetworkMessage req ;
-    req.federate = federate ;
-    req.federation = _numero_federation ;
-    if (status)
-        req.type = NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
-    else
-        req.type = NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE ;
-
-    comm->sendMessage(&req);
+    std::auto_ptr<NetworkMessage> req(NM_Factory::create(status ? NetworkMessage::FEDERATE_RESTORE_COMPLETE : NetworkMessage::FEDERATE_RESTORE_NOT_COMPLETE));
+    req->federate = federate ;
+    req->federation = _numero_federation ;
+    comm->sendMessage(req.get());
 }
 
 // ----------------------------------------------------------------------------
@@ -1003,4 +990,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.50.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.2 2008/04/10 14:57:48 erk Exp $

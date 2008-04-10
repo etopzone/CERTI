@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.35.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.2 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,6 +29,7 @@
 #include "ObjectManagement.hh"
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -67,9 +68,8 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  FederationTime,
                                  TypeException & e)
 {
-    NetworkMessage req;
+    NM_Register_Object req;
 
-    req.type = NetworkMessage::REGISTER_OBJECT ;
     req.federate = fm->federate ;
     req.federation = fm->_numero_federation ;
     req.objectClass = the_class ;
@@ -110,18 +110,16 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         const char *theTag,
                                         TypeException &e)
 {
-    NetworkMessage req;
+    NM_Update_Attribute_Values req;
     int i ;
 
-    // Building request (req NetworkMessage)
-    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
+    // Building request (req NetworkMessage)    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
-    req.date = theTime ;
-    // true for UAV with time
-    req.setBoolean(true);
-
+    // set Datefor UAV with time
+    req.setDate(theTime);
+    
     req.handleArraySize = attribArraySize ;
 
     for (i = 0 ; i < attribArraySize ; i++) {
@@ -157,11 +155,10 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         const char *theTag,
                                         TypeException &e)
 {
-    NetworkMessage req;
+    NM_Update_Attribute_Values req;
     int i ;
 
-    // Building request (req NetworkMessage)
-    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
+    // Building request (req NetworkMessage)    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
@@ -273,7 +270,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  RegionHandle region,
                                   TypeException &e)
 {
-    NetworkMessage req;
+    NM_Send_Interaction req;
     G.Out(pdGendoc,"ObjectManagement::sendInteraction with time") ;
     // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
@@ -282,11 +279,9 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArraySize);
 
     // Building network message (req) to RTIG.
-    req.type = NetworkMessage::SEND_INTERACTION ;
     req.interactionClass = theInteraction ;
-    // true for UAV with time
-    req.setBoolean(true);
-    req.date = theTime ;
+    // true for UAV with time    
+    req.setDate(theTime);
     req.region = region ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -320,7 +315,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  RegionHandle region,
                                   TypeException &e)
 {
-    NetworkMessage req;
+    NM_Send_Interaction req;
     G.Out(pdGendoc,"ObjectManagement::sendInteraction without time");
     // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
@@ -328,14 +323,13 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArray,
                                       paramArraySize);
 
-    // Building network message (req) to RTIG.
-    req.type = NetworkMessage::SEND_INTERACTION ;
+    // Building network message (req) to RTIG.   
     req.interactionClass = theInteraction ;
     // false for UAV without time
-    req.setBoolean(false);
-    req.region = region ;
+    req.isDated    = false;
+    req.region     = region ;
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
     req.handleArraySize = paramArraySize ;
 
@@ -406,12 +400,10 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                const char *theTag,
                                TypeException &e)
 {
-    NetworkMessage req;
+    NM_Delete_Object req;
 
-    req.type = NetworkMessage::DELETE_OBJECT ;
     req.object = theObjectHandle ;
-    req.setBoolean(true);
-    req.date = theTime;
+    req.setDate(theTime);
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
 
@@ -435,13 +427,11 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                const char *theTag,
                                TypeException &e)
 {
-    NetworkMessage req;
-
-    req.type = NetworkMessage::DELETE_OBJECT ;
-    req.object = theObjectHandle ;
-    req.setBoolean(false);
+    NM_Delete_Object req;
+    
+    req.object     = theObjectHandle ;   
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
     req.label =theTag;
     comm->sendMessage(&req);
@@ -506,10 +496,9 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
                                                TransportType theType,
                                                TypeException &e)
 {
-    NetworkMessage req;
+    NM_Change_Attribute_Transport_Type req;
     int i ;
 
-    req.type = NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -538,10 +527,9 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
                                            OrderType theType,
                                            TypeException &e)
 {
-    NetworkMessage req ;
+    NM_Change_Attribute_Order_Type req ;
     int i ;
 
-    req.type = NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -567,9 +555,8 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
                                                  TransportType theType,
                                                  TypeException &e)
 {
-    NetworkMessage req;
+    NM_Change_Interaction_Transport_Type req;
 
-    req.type = NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -589,9 +576,8 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
                                              OrderType theType,
                                              TypeException &e)
 {
-    NetworkMessage req;
+    NM_Change_Interaction_Order_Type req;
 
-    req.type = NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -614,11 +600,10 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                     UShort attribArraySize,
                                                     TypeException &e)
 {
-    NetworkMessage req;
+    NM_Request_Object_Attribute_Value_Update req;
 
     G.Out(pdGendoc,"enter ObjectManagement::requestObjectAttributeValueUpdate");
-
-    req.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
+    
     req.object = handle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -785,4 +770,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.35.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.2 2008/04/10 14:57:48 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.27 2007/10/31 10:30:19 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.27.2.1 2008/04/10 14:57:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -191,7 +191,7 @@ void
 ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 					  const RTIRegion *region)
 {
-    switch(ocblist->message->type) {
+    switch(ocblist->message->getType()) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
 	  addFederatesIfOverlap(*ocblist, region, handle);
@@ -209,4 +209,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.27 2007/10/31 10:30:19 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.27.2.1 2008/04/10 14:57:49 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.2 2008/04/10 11:35:56 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.3 2008/04/10 14:57:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -59,18 +59,18 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     G.Out(pdGendoc,"enter ObjectClassBroadcastList::adaptMessage");
     G.Out(pdGendoc,"      message->objectClass=%d",message->objectClass);
 
-    if ((message->type != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
-        (message->type != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
+    if ((message->getType() != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
+        (message->getType() != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
         throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
 
     // Copy static informations.
-    NetworkMessage *reducedMessage = NM_Factory::create(message->type);    
+    NetworkMessage *reducedMessage = NM_Factory::create(message->getType());    
     reducedMessage->exception = message->exception ;
     reducedMessage->federation = message->federation ;
     reducedMessage->federate = message->federate ;
     reducedMessage->object = message->object ;
-    reducedMessage->date = message->date ;
-    reducedMessage->boolean = message->boolean ; // Useful ?
+    reducedMessage->setDate(message->getDate());
+    reducedMessage->boolean = message->boolean ; // FIXME Useful ?
     reducedMessage->objectClass = message->objectClass ;
 
     reducedMessage->label = message->label;
@@ -96,7 +96,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             // Copy Attribute Handle.
             reducedMessage->handleArray[currentSize] = currentAttrib ;
 
-            if (message->type == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
+            if (message->getType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
                 // Copy Attribute Value.
                 message->getValue(i, &length, buffer);
                 reducedMessage->setValue(currentSize, buffer, length);
@@ -285,7 +285,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
     G.Out(pdGendoc,"enter ObjectClassBroadcastList::sendPendingMessage");
-    switch (message->type) {
+    switch (message->getType()) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
@@ -391,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.2 2008/04/10 11:35:56 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.3 2008/04/10 14:57:50 erk Exp $

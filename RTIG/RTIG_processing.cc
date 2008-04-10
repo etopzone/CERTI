@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.2 2008/04/10 11:35:56 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.3 2008/04/10 14:57:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -204,7 +204,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     repFED.exception = e ;
     // Send answer
     D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
-          repFED.type,repFED.FEDid.c_str());
+          repFED.getType(),repFED.FEDid.c_str());
     G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
 
     repFED.send(link);
@@ -213,7 +213,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         {
         // Wait for OK from RTIA
     	NM_Get_FED_File msg ;        
-        D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.type);
+        D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.getType());
         msg.receive(link);
         assert ( msg.number == 0 );
         // RTIA has opened working file then RTIG has to transfer file contents
@@ -332,11 +332,11 @@ void
 RTIG::processSetTimeRegulating(NetworkMessage *msg)
 {
     if (msg->regulator) {
-        auditServer << "ON at time " << msg->date ;
+        auditServer << "ON at time " << msg->getDate();
 
         federations.createRegulator(msg->federation,
                                      msg->federate,
-                                     msg->date);
+                                     msg->getDate());
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation ON.",
               msg->federate, msg->federation);
     }
@@ -356,7 +356,7 @@ void
 RTIG::processSetTimeConstrained(NetworkMessage *msg)
 {
     if (msg->constrained) {
-        auditServer << "ON at time " << msg->date ;
+        auditServer << "ON at time " << msg->getDate();
 
         federations.addConstrained(msg->federation,
                                     msg->federate);
@@ -378,13 +378,13 @@ RTIG::processSetTimeConstrained(NetworkMessage *msg)
 void
 RTIG::processMessageNull(NetworkMessage *msg)
 {
-    auditServer << "Date " << msg->date ;
+    auditServer << "Date " << msg->getDate() ;
 
     // Catch all exceptions because RTIA does not expect an answer anyway.
     try {
         federations.updateRegulator(msg->federation,
                                      msg->federate,
-                                     msg->date);
+                                     msg->getDate());
     } catch (Exception &e) {}
 }
 
@@ -473,7 +473,7 @@ RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
     if ( req->boolean )
         // With time
         federations.requestFederationSave(req->federation, req->federate,
-                                          req->label.c_str(), req->date);
+                                          req->label.c_str(), req->getDate());
     else
         // Without time
         federations.requestFederationSave(req->federation, req->federate,
@@ -503,14 +503,14 @@ void
 RTIG::processFederateSaveStatus(Socket *, NetworkMessage *req)
 {
     G.Out(pdGendoc,"enter RTIG::processFederateSaveStatus");
-    if (req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE)
+    if (req->getType() == NetworkMessage::FEDERATE_SAVE_COMPLETE)
         G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE COMPLETE SERVICE **");
     else
         G.Out(pdGendoc,"BEGIN ** FEDERATE SAVE NOT COMPLETE SERVICE **");
 
     auditServer << "Federate " << req->federate << " save ended." ;
 
-    bool status = req->type == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
+    bool status = req->getType() == NetworkMessage::FEDERATE_SAVE_COMPLETE ;
     federations.federateSaveStatus(req->federation, req->federate, status);
 
     G.Out(pdGendoc,"exit  END   ** FEDERATE SAVE (NOT) COMPLETE SERVICE **");
@@ -539,7 +539,7 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
     G.Out(pdGendoc,"enter RTIG::processRequestFederateRestoreStatus");
     auditServer << "Federate " << req->federate << " restore ended." ;
 
-    bool status = req->type == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
+    bool status = req->getType() == NetworkMessage::FEDERATE_RESTORE_COMPLETE ;
 
     federations.federateRestoreStatus(req->federation, req->federate, status);
 
@@ -552,7 +552,7 @@ RTIG::processFederateRestoreStatus(Socket *, NetworkMessage *req)
 void
 RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 {
-    bool pub = (req->type == NetworkMessage::PUBLISH_OBJECT_CLASS);
+    bool pub = (req->getType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
     auditServer << "Class = " << req->objectClass << ", # of att. = " 
 		<< req->handleArraySize ;
@@ -567,7 +567,7 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
     D.Out(pdRegister, "Federate %u of Federation %u published object class %d.",
           req->federate, req->federation, req->objectClass);
 
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));    
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));    
     rep->federate = req->federate ;
     rep->objectClass = req->objectClass ;
     rep->handleArraySize = 0 ;
@@ -583,7 +583,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"enter RTIG::processSubscribeObjectClass");
     G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
 
-    bool sub = (req->type == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
+    bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
     auditServer << "Class = " << req->objectClass
 		<< ", # of att. = " << req->handleArraySize ;
@@ -598,7 +598,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
           "Federate %u of Federation %u subscribed to object class %d.",
           req->federate, req->federation, req->objectClass);
 
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));
     rep->federate = req->federate ;
     rep->objectClass = req->objectClass ;
     rep->handleArraySize = 0 ;
@@ -616,7 +616,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 {
     assert(link != NULL && req != NULL);
 
-    bool pub = (req->type == NetworkMessage::PUBLISH_INTERACTION_CLASS);
+    bool pub = (req->getType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
 
     auditServer << "Class = " << req->interactionClass ;
     federations.publishInteraction(req->federation,
@@ -628,7 +628,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
           req->federation,
           req->interactionClass);
 
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type)); ;   
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType())); ;   
     rep->federate = req->federate ;
     rep->interactionClass = req->interactionClass ;
 
@@ -640,7 +640,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 {
-    bool sub = (req->type == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
+    bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
 
     auditServer << "Class = %u" << req->interactionClass ;
     federations.subscribeInteraction(req->federation,
@@ -653,7 +653,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
           req->federation,
           req->interactionClass);
 
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));;    
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));;    
     rep->federate = req->federate ;
     rep->interactionClass = req->interactionClass ;
 
@@ -665,7 +665,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
-	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));;
+	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));;
 
     auditServer << "Class = %u" << req->objectClass ;
     rep->object = federations.registerObject(req->federation,
@@ -693,7 +693,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     ValueLengthPair *ValueArray = NULL ;
 
     auditServer << "ObjID = " << req->object
-		<< ", Date = " << req->date ;
+		<< ", Date = " << req->getDate() ;
 
     // Get Value Array
     ValueArray = req->getAttribValueArray();
@@ -708,7 +708,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->handleArray,
                                  ValueArray,
                                  req->handleArraySize,
-                                 req->date,
+                                 req->getDate(),
                                  req->label.c_str());
         }
     else
@@ -728,7 +728,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     NM_Update_Attribute_Values rep ;
     rep.federate = req->federate ;
     rep.object = req->object ;
-    rep.date = req->date ;
+    rep.setDate(req->getDate());
     rep.handleArraySize = 0 ;
     // Don't forget label and tag
     rep.label=req->label ;
@@ -749,7 +749,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 
     // Building Value Array
     auditServer << "IntID = " << req->interactionClass
-		<< ", date = " << req->date ;
+		<< ", date = " << req->getDate() ;
     values = req->getParamValueArray();
 
     if ( req->getBoolean() )
@@ -760,7 +760,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				req->handleArray,
 				values,
 				req->handleArraySize,
-				req->date,
+				req->getDate(),
 				req->region,
 				req->label.c_str());
         }
@@ -808,7 +808,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     	federations.destroyObject(req->federation,
         	                  req->federate,
                                   req->object,
-				  req->date,
+				  req->getDate(),
                                   const_cast<char*>(req->label.c_str()));
     }
     else {
@@ -1255,7 +1255,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 void
 RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 {
-	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));
+	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));
     // FIXME bug #9869
     // When we were passed a set of region
     // we should register object for each region  
@@ -1318,8 +1318,6 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
         answer.exceptionReason = e._reason ;
         }
 
-    answer.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE;
-    answer.type = request->type ;
     answer.federate = request->federate ;
     answer.object = request->object ;
 
@@ -1330,4 +1328,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.2 2008/04/10 11:35:56 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.3 2008/04/10 14:57:49 erk Exp $

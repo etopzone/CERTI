@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.22.2.2 2008/04/10 11:35:57 erk Exp $
+// $Id: Communications.cc,v 3.22.2.3 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -75,7 +75,7 @@ NetworkMessage* Communications::waitMessage(
 
     D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
 
-    while ((msg->type != type_msg) ||
+    while ((msg->getType() != type_msg) ||
            ((numeroFedere != 0) && (msg->federate != numeroFedere))) {
         waitingList.push_back(msg);
         msg = NM_Factory::receive((SecureTCPSocket *) this);        
@@ -83,7 +83,7 @@ NetworkMessage* Communications::waitMessage(
     }
     
     assert(msg != NULL);
-    assert(msg->type == type_msg);
+    assert(msg->getType() == type_msg);
     return msg;
 } /* end of waitMessage */
 
@@ -290,7 +290,7 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
 
         D.Out(pdProtocol, "Rechercher message de type %d .", type_msg);
 
-        if ((*i)->type == type_msg) {
+        if ((*i)->getType() == type_msg) {
             // if numeroFedere != 0, verify that federateNumbers are similar
             if (((*i)->federate == numeroFedere) || (numeroFedere == 0)) {
             	*msg = *i;                                
@@ -328,4 +328,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.22.2.2 2008/04/10 11:35:57 erk Exp $
+// $Id: Communications.cc,v 3.22.2.3 2008/04/10 14:57:48 erk Exp $

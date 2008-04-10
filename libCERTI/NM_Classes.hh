@@ -221,7 +221,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	
-	bool   constrained;
+	//bool   constrained;
 private:
 };
 
@@ -549,7 +549,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	ObjectClassHandle objectClass;
+//	ObjectClassHandle objectClass;
 private:
 };
 
@@ -568,7 +568,7 @@ public:
 	void setInteractionClassHandle(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
 protected:
 	/* specific field */
-	InteractionClassHandle interactionClass;
+//	InteractionClassHandle interactionClass;
 private:
 };
 
@@ -1172,7 +1172,7 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-	int32_t region;
+//	int32_t region;
 private:
 };
 
@@ -1212,8 +1212,8 @@ public:
 	void setObject(ObjectHandle object) {this->object=object;};		
 protected:
 	/* specific field */
-	int32_t      region;
-	ObjectHandle object;
+//	int32_t      region;
+//	ObjectHandle object;
 private:
 };
 

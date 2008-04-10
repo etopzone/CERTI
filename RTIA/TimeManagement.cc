@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.29.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.2 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "TimeManagement.hh"
+#include "NM_Classes.hh"
 #include <float.h>
 
 namespace certi {
@@ -93,16 +94,15 @@ TimeManagement::TimeManagement(Communications *GC,
 //! Send a null message to RTIG containing Local Time + Lookahead.
 void TimeManagement::sendNullMessage(FederationTime heure_logique)
 {
-    NetworkMessage msg ;
+    NM_Message_Null msg ;
 
-    msg.date = heure_logique ;
+    msg.setDate(heure_logique);
     heure_logique += _lookahead_courant ;
 
-    if (heure_logique > lastNullMessageDate) {
-        msg.type = NetworkMessage::MESSAGE_NULL ;
+    if (heure_logique > lastNullMessageDate) {        
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
-        msg.date = heure_logique ; // ? See 6 lines upper !
+        msg.setDate(heure_logique) ; // ? See 6 lines upper !
 
         comm->sendMessage(&msg);
         lastNullMessageDate = heure_logique ;
@@ -120,12 +120,12 @@ bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
   G.Out(pdGendoc,"enter TimeManagement::executeFederateService");
-  D.Out(pdRequest, "Execute federate service: Type %d.", msg.type);
+  D.Out(pdRequest, "Execute federate service: Type %d.", msg.getType());
 
   _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
   _tick_request_ack = false ;  // the callback message serves as the ack
 
-    switch (msg.type) {
+    switch (msg.getType()) {
 
       case NetworkMessage::FEDERATION_SYNCHRONIZED:
         try {
@@ -163,7 +163,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
             om->discoverObject(msg.object,
                                msg.objectClass,
                                msg.label.c_str(),
-                               msg.date,
+                               msg.getDate(),
                                msg.eventRetraction,
                                msg.exception);
 
@@ -183,7 +183,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                         msg.handleArray,
                                         ValueArray,
                                         msg.handleArraySize,
-                                        msg.date,
+                                        msg.getDate(),
                                         msg.label.c_str(),
                                         msg.eventRetraction,
                                         msg.exception);
@@ -217,7 +217,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                      msg.handleArray,
                                      ValueArray,
                                      msg.handleArraySize,
-                                     msg.date,
+                                     msg.getDate(),
                                      msg.label.c_str(),
                                      msg.eventRetraction,
                                      msg.exception);
@@ -237,7 +237,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           if (msg.getBoolean()) {
         	om->removeObject(msg.object,
                 		 msg.federate,
-				 msg.date,
+				 msg.getDate(),
                          	 msg.label.c_str(),
                          	 msg.eventRetraction,
                          	 msg.exception);
@@ -320,14 +320,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::FEDERATION_SAVED:
       case NetworkMessage::FEDERATION_NOT_SAVED: {
-          bool status = (msg.type == NetworkMessage::FEDERATION_SAVED) ? true : false ;
+          bool status = (msg.getType() == NetworkMessage::FEDERATION_SAVED) ? true : false ;
           fm->federationSavedStatus(status);
       }
         break ;
 
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED: {
-          bool status = (msg.type == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
+          bool status = (msg.getType() == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
               ? true : false ;
           fm->requestFederationRestoreStatus(status, msg.label.c_str(), msg.tag.c_str());
       }
@@ -343,7 +343,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::FEDERATION_RESTORED:
       case NetworkMessage::FEDERATION_NOT_RESTORED: {
-          bool status = (msg.type == NetworkMessage::FEDERATION_RESTORED) ? true : false ;
+          bool status = (msg.getType() == NetworkMessage::FEDERATION_RESTORED) ? true : false ;
           fm->federationRestoredStatus(status);
       }
         break ;
@@ -551,7 +551,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
 void
 TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 {
-    NetworkMessage msg ;
+    NM_Set_Time_Constrained msg ;
 
     e = e_NO_EXCEPTION ;
 
@@ -566,7 +566,6 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
     if (e == e_NO_EXCEPTION) {
         _est_contraint = etat ;
 
-        msg.type = NetworkMessage::SET_TIME_CONSTRAINED ;
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
         msg.constrained = etat ;
@@ -585,7 +584,7 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 void
 TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 {
-    NetworkMessage msg ;
+    NM_Set_Time_Regulating msg ;
 
     e = e_NO_EXCEPTION ;
 
@@ -606,11 +605,10 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
     if (e == e_NO_EXCEPTION) {
         _est_regulateur = etat ;
 
-        msg.type = NetworkMessage::SET_TIME_REGULATING ;
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
         msg.regulator = etat ;
-        msg.date = _heure_courante + _lookahead_courant ;
+        msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
 
@@ -798,4 +796,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.29.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.2 2008/04/10 14:57:48 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28.2.5 2008/04/10 11:35:57 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.6 2008/04/10 14:57:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -50,12 +50,13 @@ NetworkMessage::NetworkMessage()
 
     federationName = std::string("") ;
     federateName[0] = '\0' ;
+        
     label[0] = '\0' ;
     FEDid = std::string("") ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
-
+    
     date = 0.0 ;
 
     object = 0 ;
@@ -230,4 +231,4 @@ NetworkMessage::setBoolean(bool the_bool)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28.2.5 2008/04/10 11:35:57 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.6 2008/04/10 14:57:50 erk Exp $

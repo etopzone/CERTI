@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.22.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.2 2008/04/10 14:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
-NetworkMessage::Type msgType = msg->type;
+NetworkMessage::Type msgType = msg->getType();
 
 G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
@@ -51,9 +51,9 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
       {
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
-                msg->date);
+                msg->getDate());
 
-          tm->update(msg->federate, msg->date);
+          tm->update(msg->federate, msg->getDate());
           delete msg ;
           break ;
       }
@@ -65,7 +65,7 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
           if (msg->regulator)
-              tm->insert(msg->federate, msg->date);
+              tm->insert(msg->federate, msg->getDate());
           else
               tm->remove(msg->federate);
           delete msg ;
@@ -343,4 +343,4 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.22.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.2 2008/04/10 14:57:48 erk Exp $
