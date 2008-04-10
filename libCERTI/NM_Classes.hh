@@ -530,9 +530,12 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Publish_Object_Class();
 	virtual ~NM_Publish_Object_Class();
+	virtual void serialize();
+	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
+	//ObjectClassHandle objectClass;
 private:
 };
 
@@ -594,9 +597,12 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Subscribe_Object_Class();
 	virtual ~NM_Subscribe_Object_Class();
+	virtual void serialize();
+	virtual void deserialize();
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
+	//ObjectClassHandle objectClass;
 private:
 };
 
@@ -610,7 +616,7 @@ public:
 	virtual ~NM_Unsubscribe_Object_Class();
 	/* specific Getter/Setter */
 protected:
-	/* specific field */
+	/* specific field */	
 private:
 };
 

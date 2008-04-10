@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.6 2008/04/10 14:57:49 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.7 2008/04/10 20:43:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,7 +42,7 @@ void NetworkMessage::serialize() {
 	   (type==LAST)) {
 		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
-	D.Out(pdDebug, "serialize <%s>", getName().c_str());
+	D.Out(pdDebug, "Serialize <%s>", getName().c_str());
 	/* type of message */
 	msgBuf.write_int32(type);
 	msgBuf.write_int32(exception);
@@ -72,7 +72,7 @@ void NetworkMessage::deserialize() {
 	/* We serialize the common Network message part 
 	 * ALL Network Messages will contain the following
 	 */	
-	D[pdDebug] << "deserialize <" << getName().c_str()<<">"<<endl;	
+	D[pdDebug] << "Deserialize <" << getName().c_str()<<">"<<endl;	
 	/* deserialize common part */
 	type        = static_cast<certi::NetworkMessage::Type>(msgBuf.read_int32());
 	exception   = static_cast<certi::TypeException>(msgBuf.read_int32());
@@ -109,7 +109,7 @@ NetworkMessage::send(Socket *socket) throw (NetworkError, NetworkSignal) {
 	serialize();
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuf.updateReservedBytes();
-	D.Out(pdDebug,"[Header] Sending a buffer of <%u> bytes",msgBuf.size());
+	D.Out(pdDebug,"Sending an msg buffer of <%u> bytes",msgBuf.size());
 	//msgBuf.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 	socket->send(static_cast<unsigned char*>(msgBuf(0)), msgBuf.size());
@@ -125,7 +125,7 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 	 */
 	msgBuf.reset();
 	/* 1- Read 'reserved bytes' header from socket */
-	D.Out(pdDebug,"reading %d bytes for header",msgBuf.reservedBytes);
+	D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuf.reservedBytes);
 	socket->receive(msgBuf(0), msgBuf.reservedBytes);	
 	//msgBuf.show(msgBuf(0),5);
 	fflush(stdout);
@@ -144,4 +144,4 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.6 2008/04/10 14:57:49 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.7 2008/04/10 20:43:01 erk Exp $

@@ -770,6 +770,16 @@ NM_Publish_Object_Class::NM_Publish_Object_Class() {
 }
 NM_Publish_Object_Class::~NM_Publish_Object_Class() {
 }
+void
+NM_Publish_Object_Class::serialize() {
+	Super::serialize();
+	msgBuf.write_int32(objectClass);
+}
+void
+NM_Publish_Object_Class::deserialize() {
+	Super::serialize();
+	objectClass = msgBuf.read_int32();
+}
 /*<END>---------- Publish_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Unpublish_Object_Class ------------<BEGIN>*/
@@ -833,6 +843,14 @@ NM_Subscribe_Object_Class::NM_Subscribe_Object_Class() {
 	/* specific field init */
 }
 NM_Subscribe_Object_Class::~NM_Subscribe_Object_Class() {
+}
+void NM_Subscribe_Object_Class::serialize() {
+	Super::serialize();
+	msgBuf.write_int32(objectClass);
+}
+void NM_Subscribe_Object_Class::deserialize() {
+	Super::deserialize();
+	objectClass=msgBuf.read_int32();
 }
 /*<END>---------- Subscribe_Object_Class ------------<END>*/
 

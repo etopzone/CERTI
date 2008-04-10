@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.5 2008/04/10 19:55:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.6 2008/04/10 20:43:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -565,9 +565,8 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
           req->federate, req->federation, req->objectClass);
 
     std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));    
-    rep->federate = req->federate ;
+    rep->federate    = req->federate ;
     rep->objectClass = req->objectClass ;
-    rep->handleArraySize = 0 ;
 
     rep->send(link); // send answer to RTIA
 }
@@ -1325,4 +1324,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.5 2008/04/10 19:55:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.6 2008/04/10 20:43:00 erk Exp $

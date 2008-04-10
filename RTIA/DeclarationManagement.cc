@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.17.2.2 2008/04/10 14:57:47 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17.2.3 2008/04/10 20:43:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -88,10 +88,10 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
     NM_Publish_Object_Class req ;    
-    req.objectClass = theClassHandle ;
+    req.objectClass     = theClassHandle ;
     req.handleArraySize = attribArraySize ;
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federation      = fm->_numero_federation ;
+    req.federate        = fm->federate ;
 
     for (int i=0 ; i<attribArraySize ; i++)
         req.handleArray[i] = attribArray[i] ;
@@ -227,9 +227,9 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
 
     // Partie RTIG
 
-    req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
-    req.objectClass = theClassHandle ;
+    req.federation      = fm->_numero_federation ;
+    req.federate        = fm->federate ;
+    req.objectClass     = theClassHandle ;
     req.handleArraySize = attribArraySize ;
 
     for (int i=0 ; i<attribArraySize ; i++)
@@ -452,4 +452,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.17.2.2 2008/04/10 14:57:47 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.17.2.3 2008/04/10 20:43:00 erk Exp $
