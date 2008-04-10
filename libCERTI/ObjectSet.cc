@@ -425,7 +425,7 @@ ObjectSet::sendToFederate(NetworkMessage *msg,
 #else
         socket = server->getSocketLink(the_federate);
 #endif
-        msg->write(socket);
+        msg->send(socket);
     }
     catch (RTIinternalError &e) {
         D.Out(pdExcept,
@@ -458,4 +458,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.18.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: ObjectSet.cc,v 3.18.2.2 2008/04/10 11:35:57 erk Exp $

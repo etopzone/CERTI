@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.35.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: Interaction.cc,v 3.35.2.2 2008/04/10 11:35:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -27,6 +27,7 @@
 #include "Interaction.hh"
 #include "InteractionBroadcastList.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #include <iostream>
 #include <sstream>
@@ -407,8 +408,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;       
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
@@ -467,8 +467,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;        
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
@@ -553,4 +552,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.35.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: Interaction.cc,v 3.35.2.2 2008/04/10 11:35:57 erk Exp $

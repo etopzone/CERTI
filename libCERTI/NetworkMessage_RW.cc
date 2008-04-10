@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.4 2008/04/09 14:16:32 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.5 2008/04/10 11:35:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -66,8 +66,7 @@ void NetworkMessage::deserialize() {
 	/* We serialize the common Network message part 
 	 * ALL Network Messages will contain the following
 	 */	
-	D[pdDebug] << "deserialize <" << getName().c_str()<<">"<<endl;
-	D.Out(pdDebug, "deserialize <%s>", getName().c_str());
+	D[pdDebug] << "deserialize <" << getName().c_str()<<">"<<endl;	
 	/* deserialize common part */
 	type        = static_cast<certi::NetworkMessage::Type>(msgBuf.read_int32());
 	exception   = static_cast<certi::TypeException>(msgBuf.read_int32());
@@ -91,8 +90,10 @@ void NetworkMessage::deserialize() {
 } /* end of deserialize */
 
 void
-NetworkMessage::send(Socket *socket) {
+NetworkMessage::send(Socket *socket) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter NetworkMessage::send");
+	/* 0- reset send buffer */
+	msgBuf.reset();
 	/* 1- serialize the message
 	 * This is a polymorphic call 
 	 * which may specialized in a daughter class  
@@ -108,8 +109,13 @@ NetworkMessage::send(Socket *socket) {
 } /* end of send */
 
 void
-NetworkMessage::receive(Socket* socket) {
+NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter NetworkMessage::receive");
+	/* 0- Reset receive buffer */
+	/* FIXME this reset may not be necessary since we 
+	 * do raw-receive + assume-size
+	 */
+	msgBuf.reset();
 	/* 1- Read 'reserved bytes' header from socket */
 	D.Out(pdDebug,"reading %d bytes for header",msgBuf.reservedBytes);
 	socket->receive(msgBuf(0), msgBuf.reservedBytes);	
@@ -130,4 +136,4 @@ NetworkMessage::receive(Socket* socket) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.4 2008/04/09 14:16:32 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.5 2008/04/10 11:35:56 erk Exp $

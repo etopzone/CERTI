@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.5 2008/04/09 14:16:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.6 2008/04/10 11:35:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -145,12 +145,12 @@ public:
 	
     const NetworkMessage::Message_T getType() const {return type;};
     const TypeException getException() const {return exception;};
-    
+        
 	virtual void serialize();
 	virtual void deserialize();
 	
-	void send(Socket* socket);
-	void receive(Socket* socket);
+	void send(Socket* socket) throw (NetworkError, NetworkSignal);
+	void receive(Socket* socket) throw (NetworkError, NetworkSignal);
 	
 	// Parameter and Attribute Management
 	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
@@ -165,14 +165,7 @@ public:
 
 	// See RemoveParameter for explanations.
 	void removeAttribute(UShort Rank);
-
-	// Read and Write NetworkMessage Objects to and from Socket objects.
-	void write(Socket *Socket)
-	throw (NetworkError, NetworkSignal);
-
-	void read(Socket *Socket)
-	throw (NetworkError, NetworkSignal);
-
+	
 	// Value Array Management
 
 	// setValue : Value and its length are stored into ValueArray[Rank]
@@ -293,6 +286,9 @@ public:
 	 * The exception reason (if the message carry one)
 	 */
 	std::string exceptionReason;	
+	
+	/* used by some sub-classes */
+	int32_t attribute;
 
 protected:
 	/** 
@@ -300,11 +296,11 @@ protected:
 	 * should be initialized by the specialized
 	 * network message constructor
 	 */
-	std::string name;
-	
-private:	
+	std::string name;	
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+	
+private:
 };
 
 // BUG: FIXME this is used by SocketMC and should
@@ -315,4 +311,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.5 2008/04/09 14:16:30 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.6 2008/04/10 11:35:56 erk Exp $

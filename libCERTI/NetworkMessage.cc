@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28.2.4 2008/04/09 14:16:32 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.5 2008/04/10 11:35:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -35,14 +35,18 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-    : type(NOT_USED), exception(e_NO_EXCEPTION), isDated(false), isLabelled(false), isTagged(false)
+    : type(NOT_USED), 
+      exception(e_NO_EXCEPTION), 
+      isDated(false), 
+      isLabelled(false), 
+      isTagged(false)
 {
-	name = "NetworkMessage";
+	name               = "NetworkMessage (generic)";
     exceptionReason[0] = '\0' ;
-    number = 0 ;
+    number             = 0 ;
 
-    federation = 0 ;
-    federate = 0 ;
+    federation         = 0 ;
+    federate           = 0 ;
 
     federationName = std::string("") ;
     federateName[0] = '\0' ;
@@ -203,26 +207,6 @@ NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
 }
 
 // ----------------------------------------------------------------------------
-/** read a NetworkMessage
-    First read Header and upon readHeader result read or not the Body with readBody
-    @param socket 
-*/
-void
-NetworkMessage::read(Socket *socket)
-    throw (NetworkError, NetworkSignal)
-{
-    receive(socket);
-}
-
-// ----------------------------------------------------------------------------
-void
-NetworkMessage::write(Socket *socket)
-    throw (NetworkError, NetworkSignal)
-{
-    send(socket);
-}
-
-// ----------------------------------------------------------------------------
 void
 NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 {
@@ -246,4 +230,4 @@ NetworkMessage::setBoolean(bool the_bool)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28.2.4 2008/04/09 14:16:32 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.5 2008/04/10 11:35:57 erk Exp $

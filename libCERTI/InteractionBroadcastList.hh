@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.7 2005/04/04 14:51:24 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.7.4.1 2008/04/10 11:35:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_INTERACTION_BROADCAST_LIST_HH
@@ -55,9 +55,10 @@ public:
     void addFederate(FederateHandle theFederate);
     void sendPendingMessage(SecurityServer *Server);
 
-    /*! The Message to be broadcast. This message must be allocated before
-      calling the constructor of the class, be is deleted by the destructor.
-    */
+    /** 
+     * The Message to be broadcasted. This message must be allocated before
+     * calling the constructor of the class, be is deleted by the destructor.
+     */
     NetworkMessage *message ;
 
 private:
@@ -70,4 +71,4 @@ private:
 
 #endif // CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.7 2005/04/04 14:51:24 breholee Exp $
+// $Id: InteractionBroadcastList.hh,v 3.7.4.1 2008/04/10 11:35:57 erk Exp $

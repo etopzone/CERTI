@@ -18,13 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.22.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: Communications.cc,v 3.22.2.2 2008/04/10 11:35:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Communications.hh"
 #include <assert.h>
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -70,16 +71,14 @@ NetworkMessage* Communications::waitMessage(
 
     // Otherwise, wait for a message with same type than expected and with
     // same federate number.
-    msg = new NetworkMessage();
-    msg->read((SecureTCPSocket *)this);
+    msg = NM_Factory::receive((SecureTCPSocket *) this);    
 
     D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
 
     while ((msg->type != type_msg) ||
            ((numeroFedere != 0) && (msg->federate != numeroFedere))) {
         waitingList.push_back(msg);
-        msg = new NetworkMessage();
-        msg->read((SecureTCPSocket *) this);
+        msg = NM_Factory::receive((SecureTCPSocket *) this);        
         D.Out(pdProtocol, "Message of Type %d has arrived.", type_msg);
     }
     
@@ -131,10 +130,8 @@ Communications::~Communications()
 {
     // Advertise RTIG that TCP link is being closed.
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::CLOSE_CONNEXION ;
-    msg.write((SecureTCPSocket *) this);
-
+    NM_Close_Connexion closeMsg ;    
+    closeMsg.send((SecureTCPSocket *) this);
     SecureTCPSocket::close();
 }
 
@@ -211,15 +208,13 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg)
     else if (SecureTCPSocket::isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
-    	*msg_reseau = new NetworkMessage();
-        (*msg_reseau)->read((SecureTCPSocket *) this);
+    	*msg_reseau = NM_Factory::receive((SecureTCPSocket *) this);        
         n = 1 ;
     }
     else if (SocketUDP::isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
-    	*msg_reseau = new NetworkMessage();
-        (*msg_reseau)->read((SocketUDP *) this);
+    	*msg_reseau = NM_Factory::receive((SocketUDP *) this);       
         n = 1 ;
     }
     else if (SocketUN::isDataReady()) {
@@ -261,14 +256,12 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg)
 
         if (FD_ISSET(SecureTCPSocket::returnSocket(), &fdset)) {
             // Read a message coming from the TCP link with RTIG.
-        	(*msg_reseau) = new NetworkMessage();
-            (*msg_reseau)->read((SecureTCPSocket *) this);
+        	(*msg_reseau) = NM_Factory::receive((SecureTCPSocket *) this);            
             n = 1 ;
         }
         else if (FD_ISSET(SocketUDP::returnSocket(), &fdset)) {
             // Read a message coming from the UDP link with RTIG.
-        	(*msg_reseau) = new NetworkMessage();
-        	(*msg_reseau)->read((SocketUDP *) this);
+        	(*msg_reseau) = NM_Factory::receive((SocketUDP *) this);        	
             n = 1 ;
         }
         else {
@@ -316,7 +309,7 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
 void
 Communications::sendMessage(NetworkMessage *Msg)
 {
-    Msg->write((SecureTCPSocket *) this);
+    Msg->send((SecureTCPSocket *) this);
 }
 
 // ----------------------------------------------------------------------------
@@ -335,4 +328,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.22.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: Communications.cc,v 3.22.2.2 2008/04/10 11:35:57 erk Exp $

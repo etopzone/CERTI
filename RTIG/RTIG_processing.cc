@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.2 2008/04/10 11:35:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIG.hh"
+#include "NM_Classes.hh"
 
 #include <assert.h>
 
@@ -41,8 +42,8 @@ void
 RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 {
     std::string federation = req->federationName;
-    std::string FEDid      = req->FEDid;
-    NetworkMessage rep ;               // rep for answer to RTIA
+    std::string FEDid      = req->FEDid;    
+    NM_Create_Federation_Execution  rep;   // rep for answer to RTIA
 
     G.Out(pdGendoc,"enter RTIG::processCreateFederation");
     G.Out(pdGendoc,"BEGIN ** CREATE FEDERATION SERVICE **");
@@ -77,8 +78,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     // inserer descripteur fichier pour le prochain appel a un select
     ClientSockets.push_front(com_mc);
 
-#else
-    rep.exception = e_NO_EXCEPTION ;
+#else    
     // We catch createFederation because it is useful to send
     // exception reason to RTIA 
     try {
@@ -100,8 +100,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         rep.exceptionReason =e._reason ;
         }
 #endif
-    // Prepare answer for RTIA : store NetworkMessage rep
-    rep.type = NetworkMessage::CREATE_FEDERATION_EXECUTION ;
+    // Prepare answer for RTIA : store NetworkMessage rep    
     if ( rep.exception == e_NO_EXCEPTION )
         {
         rep.federation = h ;
@@ -111,7 +110,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 
     G.Out(pdGendoc,"processCreateFederation===>write answer to RTIA");
 
-    rep.write(link); // Send answer to RTIA
+    rep.send(link); // Send answer to RTIA
 
     D.Out(pdInit, "Federation \"%s\" created with Handle %d.",
           federation.c_str(), rep.federation);
@@ -176,9 +175,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     // Prepare answer about JoinFederationExecution
     // This answer wille be made AFTER FED file processing
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::JOIN_FEDERATION_EXECUTION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Join_Federation_Execution rep ;        
     rep.federationName = federation;    
     rep.federate = num_federe ;
     rep.federation = num_federation ;
@@ -199,8 +196,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         }
 
     // RTIG says OK or not to RTIA
-    NetworkMessage repFED ;
-    repFED.type = NetworkMessage::GET_FED_FILE ;
+    NM_Get_FED_File repFED ;    
     repFED.federate = num_federe ;
     repFED.federation = num_federation ;
     repFED.number = 0 ;
@@ -211,15 +207,14 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
           repFED.type,repFED.FEDid.c_str());
     G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
 
-    repFED.write(link);
+    repFED.send(link);
 
     if ( e ==  e_NO_EXCEPTION )  
         {
         // Wait for OK from RTIA
-        NetworkMessage msg ;
-        msg.type = NetworkMessage::GET_FED_FILE ;
+    	NM_Get_FED_File msg ;        
         D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.type);
-        msg.read(link);
+        msg.receive(link);
         assert ( msg.number == 0 );
         // RTIA has opened working file then RTIG has to transfer file contents
         // line by line
@@ -228,8 +223,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         while ( fgets(file_line,MAX_BYTES_PER_VALUE,fdd) != NULL )
             {
             num_line++;
-            // RTIG sends line to RTIA and number gives line number
-            repFED.type = NetworkMessage::GET_FED_FILE ;
+            // RTIG sends line to RTIA and number gives line number            
             repFED.exception = e_NO_EXCEPTION ;
             repFED.federate = num_federe ;
             repFED.federation = num_federation ;
@@ -241,16 +235,15 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             repFED.setValue(0,file_line,strlen(file_line)+1);  
 
             // Send answer
-            repFED.write(link);
+            repFED.send(link);
 
             // Wait for OK from RTIA
-            msg.read(link);
+            msg.receive(link);
             assert ( msg.number == num_line );
             }
     
 	// close
-	fclose(fdd) ;
-        repFED.type = NetworkMessage::GET_FED_FILE ;
+	fclose(fdd) ;        
         repFED.exception = e_NO_EXCEPTION ;
         repFED.federate = num_federe ;
         repFED.federation = num_federation ;
@@ -261,7 +254,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
         G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
 
-        repFED.write(link);
+        repFED.send(link);
         }
     // END of FED file processing
 
@@ -276,7 +269,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     // Send answer
 
-    rep.write(link);
+    rep.send(link);
 
     G.Out(pdGendoc,"exit RTIG::processJoinFederation");
     G.Out(pdGendoc,"END ** JOIN FEDERATION SERVICE **");
@@ -321,15 +314,13 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
     federationHandles.free(num_federation);
     D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation.c_str());
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DESTROY_FEDERATION_EXECUTION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Destroy_Federation_Execution rep ;    
     rep.federate = req->federate ;
     rep.federationName = req->federationName;    
 
     G.Out(pdGendoc,"processDestroyFederation===>write to RTIA");
 
-    rep.write(link);
+    rep.send(link);
 
     G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
     G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
@@ -427,15 +418,14 @@ RTIG::processRegisterSynchronization(Socket *link, NetworkMessage *req)
     D.Out(pdTerm, "Federation %u is now synchronizing.", req->federation);
 
     // send synchronizationPointRegistrationSucceeded() to federate.
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED ;
+    NM_Synchronization_Point_Registration_Succeeded rep ;    
     rep.federate = req->federate ;
     rep.federation = req->federation ;
     rep.setLabel(req->label.c_str());
 
     G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
 
-    rep.write(link);
+    rep.send(link);
 
     // boolean true means a federates set exists
     if ( req->boolean )
@@ -577,14 +567,12 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
     D.Out(pdRegister, "Federate %u of Federation %u published object class %d.",
           req->federate, req->federation, req->objectClass);
 
-    NetworkMessage rep ;
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-    rep.objectClass = req->objectClass ;
-    rep.handleArraySize = 0 ;
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));    
+    rep->federate = req->federate ;
+    rep->objectClass = req->objectClass ;
+    rep->handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep->send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -610,14 +598,12 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
           "Federate %u of Federation %u subscribed to object class %d.",
           req->federate, req->federation, req->objectClass);
 
-    NetworkMessage rep ;
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-    rep.objectClass = req->objectClass ;
-    rep.handleArraySize = 0 ;
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));
+    rep->federate = req->federate ;
+    rep->objectClass = req->objectClass ;
+    rep->handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep->send(link); // send answer to RTIA
 
     G.Out(pdGendoc,"END   **  SUBSCRIBE OBJECT CLASS SERVICE **");
     G.Out(pdGendoc,"exit  RTIG::processSubscribeObjectClass");
@@ -642,13 +628,11 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
           req->federation,
           req->interactionClass);
 
-    NetworkMessage rep ;
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-    rep.interactionClass = req->interactionClass ;
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type)); ;   
+    rep->federate = req->federate ;
+    rep->interactionClass = req->interactionClass ;
 
-    rep.write(link); // send answer to RTIA
+    rep->send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -669,13 +653,11 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
           req->federation,
           req->interactionClass);
 
-    NetworkMessage rep ;
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-    rep.interactionClass = req->interactionClass ;
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));;    
+    rep->federate = req->federate ;
+    rep->interactionClass = req->interactionClass ;
 
-    rep.write(link); // send answer to RTIA
+    rep->send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -683,26 +665,24 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
-    NetworkMessage rep ;
+	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));;
 
     auditServer << "Class = %u" << req->objectClass ;
-    rep.object = federations.registerObject(req->federation,
+    rep->object = federations.registerObject(req->federation,
                                              req->federate,
                                              req->objectClass,
                                              const_cast<char*>(req->label.c_str()));
-    auditServer << ", Handle = " << rep.object ;
+    auditServer << ", Handle = " << rep->object ;
 
     D.Out(pdRegister,
           "Object \"%s\" of Federate %u has been registered under ID %u.",
-          req->label.c_str(), req->federate, rep.object);
+          req->label.c_str(), req->federate, rep->object);
 
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-    rep.setLabel(req->label.c_str());
+    rep->federate = req->federate ;
+    rep->setLabel(req->label);
     // rep.object is set by the call of registerObject
 
-    rep.write(link); // Send answer to RTIA
+    rep->send(link); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -745,9 +725,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     free(ValueArray);
 
     // Building answer (Network Message re)
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Update_Attribute_Values rep ;
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.date = req->date ;
@@ -756,7 +734,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     rep.label=req->label ;
     rep.tag=req->tag;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -802,9 +780,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     D.Out(pdDebug, "Interaction %d parameters update completed",
           req->interactionClass);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::SEND_INTERACTION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Send_Interaction rep ;    
     rep.federate = req->federate ;
     rep.interactionClass = req->interactionClass ;
     rep.handleArraySize = 0 ;
@@ -812,7 +788,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     rep.label=req->label;
     rep.tag=req->tag;
     G.Out(pdGendoc,"processSendInteraction===>write");
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 
     G.Out(pdGendoc,"exit RTIG::processSendInteraction");
     G.Out(pdGendoc,"END ** SEND INTERACTION SERVICE **");
@@ -845,13 +821,11 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     D.Out(pdRegister, "Object # %u of Federation %u has been deleted.",
           req->object, req->federation);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DELETE_OBJECT ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Delete_Object rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
     
     G.Out(pdGendoc,"exit RTIG::processDeleteObject");
     G.Out(pdGendoc,"END ** DELETE OBJECT INSTANCE **");
@@ -875,13 +849,11 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Query_Attribute_Ownership rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -889,7 +861,7 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
 void
 RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
 {
-    NetworkMessage rep ;
+    NM_Is_Attribute_Owned_By_Federate rep ;
 
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
@@ -906,13 +878,11 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
 
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
           req->handleArray[0], req->object);
-
-    rep.type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE ;
-    rep.exception = e_NO_EXCEPTION ;
+    
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -933,14 +903,12 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
           "divestiture of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Negotiated_Attribute_Ownership_Divestiture rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -962,14 +930,12 @@ RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
           "of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Attribute_Ownership_Acquisition_If_Available rep ;   
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -991,14 +957,12 @@ RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
           "of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Unconditional_Attribute_Ownership_Divestiture rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1020,14 +984,12 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
           "Federate %u of Federation %u ownership acquisition of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Attribute_Ownership_Acquisition rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1048,14 +1010,12 @@ RTIG::processCancelNegotiatedDivestiture(Socket *link, NetworkMessage *req)
           "divestiture of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Cancel_Negotiated_Attribute_Ownership_Divestiture rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1077,19 +1037,17 @@ RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
           "of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
+    NM_Attribute_Ownership_Release_Response rep ;
     rep.handleArraySize = attributes->size();
 
     for (unsigned int i = 0 ; i < attributes->size(); i++) {
         rep.handleArray[i] = attributes->getHandle(i);
     }
-
-    rep.type = NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
-    rep.exception = e_NO_EXCEPTION ;
+    
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.write(link); // Send answer to RTIA
+    rep.send(link); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1110,14 +1068,12 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
           "Federate %u of Federation %u release response of object %u.",
           req->federate, req->federation, req->object);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_Cancel_Attribute_Ownership_Acquisition rep ;    
     rep.federate = req->federate ;
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.write(link); // send answer to RTIA
+    rep.send(link); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1127,7 +1083,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    NetworkMessage rep ;
+    NM_DDM_Create_Region rep ;
 
     rep.region = federations.createRegion(req->federation,
                                            req->federate,
@@ -1138,10 +1094,8 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
                << req->federation << " creates region " << rep.region
                << endl ;
 
-    rep.type = NetworkMessage::DDM_CREATE_REGION ;
-    rep.exception = e_NO_EXCEPTION ;
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1156,12 +1110,9 @@ RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
                << req->federation << " modifies region " << req->region
                << endl ;
 
-    NetworkMessage rep ;
-
-    rep.type = NetworkMessage::DDM_MODIFY_REGION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Modify_Region rep ;
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1177,12 +1128,10 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
                << req->federation << " deletes region " << req->region
                << endl ;
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_DELETE_REGION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Delete_Region rep ;    
     rep.federate = req->federate ;
     rep.region = req->region ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1200,11 +1149,9 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 				 req->region, req->handleArraySize,
 				 req->handleArray);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_ASSOCIATE_REGION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Associate_Region rep ;    
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1221,11 +1168,9 @@ RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
                << req->federation << " associates region " << req->region
                << " from object " << req->object << endl ;
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_UNASSOCIATE_REGION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Unassociate_Region rep ;
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1242,13 +1187,11 @@ RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
 				       req->objectClass, req->region,
 				       req->handleArraySize, req->handleArray);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Subscribe_Attributes rep ;    
     rep.federate = req->federate ;
     rep.objectClass = req->objectClass ;
     rep.handleArraySize = 0 ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1264,11 +1207,9 @@ RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
     federations.unsubscribeAttributesWR(req->federation, req->federate,
 					 req->objectClass, req->region);
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Unsubscribe_Attributes rep ;
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1285,11 +1226,9 @@ RTIG::processSubscribeInteractionWR(Socket *link, NetworkMessage *req)
                << req->federation << " subscribes with region " << req->region
                << " to interaction class " << req->interactionClass << endl ;
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_SUBSCRIBE_INTERACTION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Subscribe_Interaction rep ;    
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1306,11 +1245,9 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
                << req->federation << " unsubscribes with region " << req->region
                << " from interaction class " << req->interactionClass << endl ;
 
-    NetworkMessage rep ;
-    rep.type = NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION ;
-    rep.exception = e_NO_EXCEPTION ;
+    NM_DDM_Unsubscribe_Interaction rep ;
     rep.federate = req->federate ;
-    rep.write(link);
+    rep.send(link);
 }
 
 // ----------------------------------------------------------------------------
@@ -1318,7 +1255,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 void
 RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 {
-    NetworkMessage rep ;
+	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->type));
     // FIXME bug #9869
     // When we were passed a set of region
     // we should register object for each region  
@@ -1327,7 +1264,7 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
     //     - req->region  (coming from NetworkMessage::region)
     //     - req->regions (coming from BasicMessage::regions)
     // would be nice to sort those thing out.
-    rep.object = federations.registerObjectWithRegion(req->federation,
+    rep->object = federations.registerObjectWithRegion(req->federation,
 						      req->federate,
 						      req->objectClass,
 						      const_cast<char*>(req->label.c_str()),
@@ -1337,14 +1274,10 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 	
     D.Out(pdRegister,
           "Object \"%s\" of Federate %u has been registered under ID %u.",
-          req->label.c_str(), req->federate, rep.object);
+          req->label.c_str(), req->federate, rep->object);
 
-    rep.type = NetworkMessage::DDM_REGISTER_OBJECT ;
-    rep.type = req->type ;
-    rep.exception = e_NO_EXCEPTION ;
-    rep.federate = req->federate ;
-
-    rep.write(link); // Send answer to RTIA
+    rep->federate = req->federate ;
+    rep->send(link); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1352,7 +1285,7 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
 void
 RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *request)
 {
-    NetworkMessage answer ;
+    NM_Request_Object_Attribute_Value_Update answer ;
     Handle federateOwner ;  // federate owner of the object
     G.Out(pdGendoc,"enter RTIG::processRequestObjectAttributeValueUpdate");
     G.Out(pdGendoc,"BEGIN ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
@@ -1390,11 +1323,11 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
     answer.federate = request->federate ;
     answer.object = request->object ;
 
-    answer.write(link); // Send answer to RTIA
+    answer.send(link); // Send answer to RTIA
     G.Out(pdGendoc,"exit  RTIG::processRequestObjectAttributeValueUpdate");
     G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 }
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.1 2008/03/18 15:55:58 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.2 2008/04/10 11:35:56 erk Exp $

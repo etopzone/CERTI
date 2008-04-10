@@ -278,7 +278,7 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 		msg = new NM_Provide_Attribute_Value_Update(); 
 		break;
 	case NetworkMessage::GET_FED_FILE:
-		msg = new NM_Get_Fed_File(); 
+		msg = new NM_Get_FED_File(); 
 		break;
 	case NetworkMessage::LAST:
 		throw RTIinternalError("LAST message type should not be used!!");
@@ -1594,15 +1594,15 @@ NM_Provide_Attribute_Value_Update::~NM_Provide_Attribute_Value_Update() {
 }
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
 
-/*<BEGIN>---------- Get_Fed_File ------------<BEGIN>*/
-NM_Get_Fed_File::NM_Get_Fed_File() {
+/*<BEGIN>---------- Get_FED_File ------------<BEGIN>*/
+NM_Get_FED_File::NM_Get_FED_File() {
 	this->name = "GET_FED_FILE";
 	this->type = NetworkMessage::GET_FED_FILE;
 	/* specific field init */
 }
-NM_Get_Fed_File::~NM_Get_Fed_File() {
+NM_Get_FED_File::~NM_Get_FED_File() {
 }
-void NM_Get_Fed_File::serialize() {
+void NM_Get_FED_File::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
@@ -1612,7 +1612,7 @@ void NM_Get_Fed_File::serialize() {
 		msgBuf.write_string(line);
 	}
 } /* end of serialize */ 
-void NM_Get_Fed_File::deserialize() {
+void NM_Get_FED_File::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
@@ -1622,7 +1622,7 @@ void NM_Get_Fed_File::deserialize() {
 		line = msgBuf.read_string();
 	}
 } /* end of deserialize */
-/*<END>---------- Get_Fed_File ------------<END>*/
+/*<END>---------- Get_FED_File ------------<END>*/
 
 /*<BEGIN>---------- Last ------------<BEGIN>*/
 NM_Last::NM_Last() {

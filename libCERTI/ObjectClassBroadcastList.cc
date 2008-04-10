@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.2 2008/04/10 11:35:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 using std::list ;
 
@@ -63,8 +64,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
         throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
 
     // Copy static informations.
-    NetworkMessage *reducedMessage = new NetworkMessage ;
-    reducedMessage->type = message->type ;
+    NetworkMessage *reducedMessage = NM_Factory::create(message->type);    
     reducedMessage->exception = message->exception ;
     reducedMessage->federation = message->federation ;
     reducedMessage->federate = message->federate ;
@@ -250,7 +250,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
                   "Broadcasting message to Federate %d.", (*i)->Federate);
             try {
                 socket = server->getSocketLink((*i)->Federate);
-                message->write(socket);
+                message->send(socket);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -356,7 +356,7 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
                 socket = server->getSocketLink((*i)->Federate);
 #endif
                 G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
-                currentMessage->write(socket);
+                currentMessage->send(socket);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -391,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.2 2008/04/10 11:35:56 erk Exp $

@@ -133,8 +133,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	  
-	std::string federationName ;
-	std::string FEDid ;
+//	std::string federationName ;
+//	std::string FEDid ;
 private:
 };
 
@@ -151,7 +151,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	 
-	std::string federationName;
+//	std::string federationName;
 private:
 };
 
@@ -168,12 +168,12 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	int32_t  numberOfRegulators;
-	uint32_t multicastAddress;
-	uint32_t bestEffortAddress;
-	uint32_t bestEffortPeer;
-	std::string federationName;
-	std::string federateName;
+//	int32_t  numberOfRegulators;
+//	uint32_t multicastAddress;
+//	uint32_t bestEffortAddress;
+//	uint32_t bestEffortPeer;
+//	std::string federationName;
+//	std::string federateName;
 private:
 };
 
@@ -683,7 +683,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	ObjectHandle object;
+//	ObjectHandle object;
 private:
 };
 
@@ -746,8 +746,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	InteractionClassHandle interactionClass;	
-	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
+//	InteractionClassHandle interactionClass;	
+//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 
@@ -889,7 +889,6 @@ public:
 	void setObject(ObjectHandle object) {this->object=object;};
 protected:
 	/* specific field */
-	ObjectHandle object;
 private:
 };
 
@@ -906,8 +905,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	ObjectHandle    object;
-	AttributeHandle attribute;
+//	ObjectHandle    object;
+//	AttributeHandle attribute;
 private:
 };
 
@@ -1152,9 +1151,9 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-	SpaceHandle space;
-	int32_t nbExtents;
-	int32_t region;
+//	SpaceHandle space;
+//	int32_t nbExtents;
+//	int32_t region;
 private:
 };
 
@@ -1192,7 +1191,7 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-	int32_t region;	
+//	int32_t region;	
 private:
 };
 
@@ -1329,11 +1328,11 @@ private:
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
 
 /*<BEGIN>---------- Get_Fed_File ------------<BEGIN>*/
-class CERTI_EXPORT NM_Get_Fed_File : public NetworkMessage {
+class CERTI_EXPORT NM_Get_FED_File : public NetworkMessage {
 public:
 	typedef NetworkMessage Super;
-	NM_Get_Fed_File();
-	virtual ~NM_Get_Fed_File();
+	NM_Get_FED_File();
+	virtual ~NM_Get_FED_File();
 	virtual void serialize();
 	virtual void deserialize();
 	/* specific Getter/Setter */
@@ -1346,7 +1345,7 @@ public:
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
-	std::string FEDid;
+//	std::string FEDid;
 	bool lineFollows;
 	std::string line;
 private:

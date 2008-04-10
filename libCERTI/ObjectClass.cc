@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.41.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.2 2008/04/10 11:35:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -206,7 +206,7 @@ ObjectClass::sendToFederate(NetworkMessage *msg, FederateHandle theFederate)
 #else
         socket = server->getSocketLink(theFederate);
 #endif
-        msg->write(socket);
+        msg->send(socket);
     }
     catch (RTIinternalError &e) {
         D.Out(pdExcept,
@@ -426,8 +426,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
               "Object %u deleted in class %u, now broadcasting...",
               the_object, handle);
 
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::REMOVE_OBJECT ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);        
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
@@ -750,8 +749,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
               "Object %u registered in class %u, now broadcasting...",
               the_object->getHandle(), handle);
 
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::DISCOVER_OBJECT ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::DISCOVER_OBJECT);       
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
@@ -811,7 +809,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    Socket *socket = NULL ;
 	    try {
 		socket = server->getSocketLink(federate);
-		message.write(socket);
+		message.send(socket);
 	    }
 	    catch (RTIinternalError &e) {
 		D.Out(pdExcept,
@@ -905,8 +903,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::REFLECT_ATTRIBUTE_VALUES ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES);        
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
@@ -970,8 +967,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::REFLECT_ATTRIBUTE_VALUES ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ;      
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
@@ -1057,7 +1053,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
     FederateHandle NewOwner ;
 
     if (server != NULL) {
-        NetworkMessage *AnswerAssumption = new NetworkMessage ;
+        NetworkMessage *AnswerAssumption = NM_Factory::create(NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION) ;
         NetworkMessage AnswerDivestiture;
 
         AnswerAssumption->handleArraySize = theListSize ;
@@ -1126,8 +1122,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             sendToFederate(&AnswerDivestiture, theFederateHandle);
         }
 
-        if (compteur_assumption !=0) {
-            AnswerAssumption->type = NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION ;
+        if (compteur_assumption !=0) {            
             AnswerAssumption->federation = server->federation();
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
@@ -1209,16 +1204,13 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                 throw AttributeAlreadyBeingAcquired("");
         }
 
-        NetworkMessage *Answer_notification = new NetworkMessage ;
-        Answer_notification->type =
-            NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
+        NetworkMessage *Answer_notification = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);        
         Answer_notification->federation = server->federation();
         Answer_notification->federate = the_federate ;
         Answer_notification->exception = e_NO_EXCEPTION ;
         Answer_notification->object = the_object ;
 
-        NetworkMessage *Answer_unavailable = new NetworkMessage ;
-        Answer_unavailable->type = NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE ;
+        NetworkMessage *Answer_unavailable = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE) ;        
         Answer_unavailable->federation = server->federation();
         Answer_unavailable->federate = the_federate ;
         Answer_unavailable->exception = e_NO_EXCEPTION ;
@@ -1335,11 +1327,11 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
     int compteur_assumption = 0 ;
     int compteur_acquisition = 0 ;
-    NetworkMessage *AnswerAssumption = NULL ;
+    NM_Request_Attribute_Ownership_Assumption *AnswerAssumption = NULL ;
     ObjectClassBroadcastList *List = NULL ;
     FederateHandle NewOwner ;
     if (server != NULL) {
-        AnswerAssumption = new NetworkMessage ;
+        AnswerAssumption = new NM_Request_Attribute_Ownership_Assumption();
         AnswerAssumption->handleArraySize = theListSize ;
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
@@ -1474,9 +1466,8 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
             throw ObjectClassNotPublished("");
         }
 
-        NetworkMessage *AnswerNotification = new NetworkMessage ;
-        AnswerNotification->type =
-            NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION ;
+        NetworkMessage *AnswerNotification = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
+
         AnswerNotification->federation = server->federation();
         AnswerNotification->federate = theFederateHandle ;
         AnswerNotification->exception = e_NO_EXCEPTION ;
@@ -1698,9 +1689,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
                 throw AttributeAcquisitionWasNotRequested("");
         }
 
-        NetworkMessage *answer_confirmation = new NetworkMessage ;
-        answer_confirmation->type =
-            NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION ;
+        NetworkMessage *answer_confirmation = NM_Factory::create(NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION);                 
         answer_confirmation->federation = server->federation();
         answer_confirmation->federate = federate_handle ;
         answer_confirmation->exception = e_NO_EXCEPTION ;
@@ -1829,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.41.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.2 2008/04/10 11:35:57 erk Exp $

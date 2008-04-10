@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36.2.2 2008/04/09 14:16:33 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.3 2008/04/10 11:35:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,7 +43,7 @@ using std::cerr ;
 namespace certi {
 namespace rtig {
 
-static pdCDebug D("RTIG", __FILE__);
+static PrettyDebug D("RTIG", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -961,8 +961,9 @@ RTIG::processIncomingMessage(Socket *link)
 
     if (link == NULL) return link ;
 
+    /* FIXME ***/
     if (rep.exception != e_NO_EXCEPTION) {
-        rep.write(link);
+        rep.send(link);
         D.Out(pdExcept,
               "RTIG catched exception %d and sent it back to federate %d.",
               rep.exception, rep.federate);
@@ -986,4 +987,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36.2.2 2008/04/09 14:16:33 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.3 2008/04/10 11:35:55 erk Exp $
