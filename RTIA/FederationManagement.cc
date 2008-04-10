@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.50.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.3 2008/04/10 19:55:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -256,7 +256,7 @@ joinFederationExecution(const char *Federate,
                         TypeException &e)
 {
     NM_Join_Federation_Execution requete;
-    NM_Get_FED_File requeteFED;
+    NM_Get_FED_File              requeteFED;
     
     int i, nb ;
     char *filename ; // Needed for working file name
@@ -274,10 +274,10 @@ joinFederationExecution(const char *Federate,
 
     if (e == e_NO_EXCEPTION) {        
         requete.federationName = Federation;        
-        requete.federateName = Federate;
+        requete.federateName   = Federate;
 
         requete.bestEffortAddress = comm->getAddress();
-        requete.bestEffortPeer = comm->getPort();
+        requete.bestEffortPeer    = comm->getPort();
 
         G.Out(pdGendoc,"joinFederationExecution====>send Message to RTIG");
 
@@ -285,6 +285,7 @@ joinFederationExecution(const char *Federate,
 
         // Waiting RTIG answer for FED file opened
         std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
+        NM_Get_FED_File*  getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
 
         if ( reponse->exception != e_NO_EXCEPTION)
             {
@@ -341,13 +342,13 @@ joinFederationExecution(const char *Federate,
 
             comm->sendMessage(&requeteFED);
     
-            // Now read loop from RTIG to get line contents and then write it into file
-            char *file_line = NULL ;
+            // Now read loop from RTIG to get line contents and then write it into file            
             unsigned long length=0 ;
             int num_line = 0 ; // no line read            
             for (;;)
                 {            	
                 reponse.reset(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
+                getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
                 if ( reponse->exception != e_NO_EXCEPTION)
                     {
                     cout << "Bad answer from RTIG" << endl ;
@@ -362,14 +363,13 @@ joinFederationExecution(const char *Federate,
                     break;
                 assert ( num_line == reponse->number ) ;
                 reponse->handleArraySize = 1 ;
-                file_line = reponse->getValue(0,&length) ;
-                int nbw = fputs(file_line,fdd);
-                file_line = NULL ;
+                //file_line = reponse->getValue(0,&length) ;
+                int nbw = fputs(getFedMsg->getFEDLine().c_str(),fdd);
+                //file_line = NULL ;
                 // RTIA says OK to RTIG                
                 requeteFED.federateName =Federate;
                 requeteFED.number = num_line ; 
                 requeteFED.FEDid = filename;
-
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file
@@ -990,4 +990,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.50.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.3 2008/04/10 19:55:48 erk Exp $

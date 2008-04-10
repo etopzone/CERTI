@@ -1338,15 +1338,15 @@ public:
 	/* specific Getter/Setter */
 	void setFEDid(std::string FEDid) {this->FEDid=FEDid;};
 	const std::string getFEDid() const {return FEDid;};
-	void setLineFollows() {lineFollows=true;};
-	void unsetLineFollows() {lineFollows=true;};
-	const bool getLineFollows() {return lineFollows;};
-	void setFEDLine(std::string line) {setLineFollows(); this->line=line;};
+//	void setLineFollows() {lineFollows=true;};
+//	void unsetLineFollows() {lineFollows=true;};
+	//const bool getLineFollows() {return lineFollows;};
+	void setFEDLine(std::string line) {this->line=line;};
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
 //	std::string FEDid;
-	bool lineFollows;
+//	bool lineFollows;
 	std::string line;
 private:
 };

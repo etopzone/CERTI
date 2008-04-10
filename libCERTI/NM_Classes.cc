@@ -1607,8 +1607,8 @@ void NM_Get_FED_File::serialize() {
 	Super::serialize(); 
 	/* specific code (if any) goes here */
 	msgBuf.write_string(FEDid);
-	msgBuf.write_bool(lineFollows);
-	if (lineFollows) {
+	msgBuf.write_int16(number);	
+	if (number) {
 		msgBuf.write_string(line);
 	}
 } /* end of serialize */ 
@@ -1617,8 +1617,8 @@ void NM_Get_FED_File::deserialize() {
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
 	FEDid       = msgBuf.read_string();
-	lineFollows = msgBuf.read_bool();
-	if (lineFollows) {
+	number      = msgBuf.read_int16();
+	if (number) {
 		line = msgBuf.read_string();
 	}
 } /* end of deserialize */
