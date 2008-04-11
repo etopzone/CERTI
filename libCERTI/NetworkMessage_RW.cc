@@ -16,10 +16,8 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.45.2.7 2008/04/10 20:43:01 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.8 2008/04/11 14:08:18 erk Exp $
 // ----------------------------------------------------------------------------
-
-
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 
@@ -38,8 +36,7 @@ void NetworkMessage::serialize() {
 	/* We serialize the common Network messages part 
 	 * ALL Network Message will contain the following
 	 */	
-	if ((type==NOT_USED) ||
-	   (type==LAST)) {
+	if ((type==NOT_USED) || (type==LAST)) {
 		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
 	D.Out(pdDebug, "Serialize <%s>", getName().c_str());
@@ -109,7 +106,7 @@ NetworkMessage::send(Socket *socket) throw (NetworkError, NetworkSignal) {
 	serialize();
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuf.updateReservedBytes();
-	D.Out(pdDebug,"Sending an msg buffer of <%u> bytes",msgBuf.size());
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuf.size());
 	//msgBuf.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 	socket->send(static_cast<unsigned char*>(msgBuf(0)), msgBuf.size());
@@ -120,15 +117,14 @@ void
 NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter NetworkMessage::receive");
 	/* 0- Reset receive buffer */
-	/* FIXME this reset may not be necessary since we 
-	 * do raw-receive + assume-size
+	/* FIXME this reset may not be necessary since we do 
+	 * raw-receive + assume-size
 	 */
 	msgBuf.reset();
 	/* 1- Read 'reserved bytes' header from socket */
-	D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuf.reservedBytes);
+	//D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuf.reservedBytes);
 	socket->receive(msgBuf(0), msgBuf.reservedBytes);	
-	//msgBuf.show(msgBuf(0),5);
-	fflush(stdout);
+	//msgBuf.show(msgBuf(0),5);fflush(stdout);
 	/* 2- update (assume) complete message size from reserved bytes */
 	msgBuf.assumeSizeFromReservedBytes();
 	D.Out(pdDebug,"Got a MsgBuf of size %d bytes (including %d reserved)",msgBuf.size(),msgBuf.reservedBytes);
@@ -144,4 +140,4 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.45.2.7 2008/04/10 20:43:01 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.45.2.8 2008/04/11 14:08:18 erk Exp $

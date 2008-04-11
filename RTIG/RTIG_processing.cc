@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.6 2008/04/10 20:43:00 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.7 2008/04/11 14:08:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -555,11 +555,11 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 		<< req->handleArraySize ;
 
     federations.publishObject(req->federation,
-                               req->federate,
-                               req->objectClass,
-                               req->handleArray,
-                               req->handleArraySize,
-                               pub);
+                              req->federate,
+                              req->objectClass,
+                              req->handleArray,
+                              req->handleArraySize,
+                              pub);
 
     D.Out(pdRegister, "Federate %u of Federation %u published object class %d.",
           req->federate, req->federation, req->objectClass);
@@ -1324,4 +1324,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.6 2008/04/10 20:43:00 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.7 2008/04/11 14:08:19 erk Exp $

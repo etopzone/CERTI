@@ -325,7 +325,7 @@ void NM_WithHandleArray::serialize() {
 	 * the loop is void which is done on purpose.
 	 * (this is a feature not a bug :-) 
 	 */		
-	for (i = 0 ; i < handleArraySize ; i ++) {
+	for (i = 0 ; i < handleArraySize ; ++i) {
 		msgBuf.write_uint16(handleArray[i]);
 	}
 
@@ -777,7 +777,7 @@ NM_Publish_Object_Class::serialize() {
 }
 void
 NM_Publish_Object_Class::deserialize() {
-	Super::serialize();
+	Super::deserialize();
 	objectClass = msgBuf.read_int32();
 }
 /*<END>---------- Publish_Object_Class ------------<END>*/
