@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.29.2.3 2008/04/10 15:12:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.4 2008/04/20 12:52:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -120,7 +120,7 @@ bool
 TimeManagement::executeFederateService(NetworkMessage &msg)
 {
   G.Out(pdGendoc,"enter TimeManagement::executeFederateService");
-  D.Out(pdRequest, "Execute federate service: Type %d.", msg.getType());
+  D.Out(pdRequest, "Execute federate service: Type %d (%s).", msg.getType(),msg.getName().c_str());
 
   _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
   _tick_request_ack = false ;  // the callback message serves as the ack
@@ -178,7 +178,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       {
           ValueLengthPair *ValueArray = msg.getAttribValueArray();
 
-          if (msg.getBoolean())
+          if (msg.isDated)
              om->reflectAttributeValues(msg.object,
                                         msg.handleArray,
                                         ValueArray,
@@ -212,7 +212,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       {
           ParameterLengthPair *ValueArray = msg.getParamValueArray();
 
-          if (msg.getBoolean())
+          if (msg.isDated)
               om->receiveInteraction(msg.interactionClass,
                                      msg.handleArray,
                                      ValueArray,
@@ -234,7 +234,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       }
 
       case NetworkMessage::REMOVE_OBJECT:
-          if (msg.getBoolean()) {
+          if (msg.isDated) {
         	om->removeObject(msg.object,
                 		 msg.federate,
 				 msg.getDate(),
@@ -349,8 +349,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break ;
 
       default:
+	std::stringstream errorMsg;
         D.Out(pdExcept, "Unknown message type in executeFederateService.");        
-        throw RTIinternalError("Unknown message in executeFederateService.");
+	errorMsg << "Unknown message <" <<  msg.getName() << " in executeFederateService.";
+        throw RTIinternalError(errorMsg.str().c_str());
     }
     G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
@@ -568,7 +570,7 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
-        msg.constrained = etat ;
+        msg.setConstrained(etat);
 
         comm->sendMessage(&msg);
 
@@ -607,7 +609,7 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
-        msg.regulator = etat ;
+        msg.setRegulator(etat);
         msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
@@ -796,4 +798,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.29.2.3 2008/04/10 15:12:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.4 2008/04/20 12:52:21 erk Exp $

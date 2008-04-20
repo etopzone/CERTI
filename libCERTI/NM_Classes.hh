@@ -31,7 +31,7 @@ namespace certi {
 class NM_Factory {
 public:
 	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
-	static NetworkMessage* receive(Socket* socket) throw (RTIinternalError);
+  static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
 };
 
 class CERTI_EXPORT NM_WithHandleArray : public NetworkMessage {
@@ -204,7 +204,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	bool   regulating;
+	//bool   regulating;
 private:
 };
 

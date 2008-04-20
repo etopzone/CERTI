@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.28.2.6 2008/04/10 14:57:50 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.7 2008/04/20 12:52:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -41,36 +41,34 @@ NetworkMessage::NetworkMessage()
       isLabelled(false), 
       isTagged(false)
 {
-	name               = "NetworkMessage (generic)";
-    exceptionReason[0] = '\0' ;
+    name               = std::string("NetworkMessage (generic)");
+    exceptionReason    = std::string("") ;
     number             = 0 ;
 
     federation         = 0 ;
     federate           = 0 ;
 
     federationName = std::string("") ;
-    federateName[0] = '\0' ;
+    federateName   = std::string("") ;
         
-    label[0] = '\0' ;
-    FEDid = std::string("") ;
+    label          = std::string("") ;
+    FEDid          = std::string("") ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
     
-    date = 0.0 ;
+    date             = 0.0;
 
-    object = 0 ;
-    objectClass = 0 ;
+    object           = 0 ;
+    objectClass      = 0 ;
     interactionClass = 0 ;
 
-    handleArraySize = 0 ;
-
-    for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
-        {
-        ValueArray[i].length = 0 ;
-        ValueArray[i].value[0]  = '\0' ;
-        }
-}
+    handleArraySize  = 0 ;
+    for (int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; ++i) {
+        ValueArray[i].length   = 0 ;
+        ValueArray[i].value[0] = '\0' ;
+    }
+} /* end of NetworkMessage() */
 
 NetworkMessage::~NetworkMessage() {
 	
@@ -231,4 +229,4 @@ NetworkMessage::setBoolean(bool the_bool)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.28.2.6 2008/04/10 14:57:50 erk Exp $
+// $Id: NetworkMessage.cc,v 3.28.2.7 2008/04/20 12:52:19 erk Exp $

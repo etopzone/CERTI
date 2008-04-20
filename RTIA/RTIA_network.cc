@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.22.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.3 2008/04/20 12:52:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -64,7 +64,7 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
-          if (msg->regulator)
+          if (msg->isRegulator())
               tm->insert(msg->federate, msg->getDate());
           else
               tm->remove(msg->federate);
@@ -94,9 +94,9 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::DISCOVER_OBJECT.");
-          queues->insertFifoMessage(msg);
-          break ;
+          queues->insertFifoMessage(msg);          
       }
+      break;
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
@@ -337,10 +337,11 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
     stat.rtiService(msgType);
     /* now we can delete the message which has been processed */
-    delete msg;
+    // BIG BUG the following line may "double delete" messages??
+    // delete msg;
     G.Out(pdGendoc,"exit  RTIA::processNetworkMessage");
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.22.2.2 2008/04/10 14:57:48 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.3 2008/04/20 12:52:20 erk Exp $

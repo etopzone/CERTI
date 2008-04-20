@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.23 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG.hh,v 3.23.2.1 2008/04/20 12:52:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -60,7 +60,7 @@ public:
 private:
     // Both methods return the socket, because it may have been closed
     // & deleted.
-    Socket* processIncomingMessage(Socket*);
+  Socket* processIncomingMessage(Socket*) throw (NetworkError) ;
     Socket* chooseProcessingMethod(Socket*, NetworkMessage *);
 
     void openConnection();
@@ -131,4 +131,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.23 2008/02/27 16:38:27 rousse Exp $
+// $Id: RTIG.hh,v 3.23.2.1 2008/04/20 12:52:21 erk Exp $

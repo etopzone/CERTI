@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.35.2.3 2008/04/10 15:12:27 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.4 2008/04/20 12:52:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -69,9 +69,9 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  TypeException & e)
 {
     NM_Register_Object req;
-
-    req.federate = fm->federate ;
-    req.federation = fm->_numero_federation ;
+    
+    req.federate    = fm->federate ;
+    req.federation  = fm->_numero_federation ;
     req.objectClass = the_class ;
     req.setLabel(theObjectName);
 
@@ -86,8 +86,9 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
                                            rep->getLabel().c_str());
         return rep->object ;
     }
-    else
-        return 0 ;
+    else {
+        return 0;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -402,10 +403,10 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 {
     NM_Delete_Object req;
 
-    req.object = theObjectHandle ;
+    req.object     = theObjectHandle ;
     req.setDate(theTime);
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
     req.setLabel(theTag);
     comm->sendMessage(&req);
@@ -770,4 +771,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.35.2.3 2008/04/10 15:12:27 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.4 2008/04/20 12:52:20 erk Exp $

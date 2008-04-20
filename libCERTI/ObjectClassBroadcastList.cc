@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.4 2008/04/10 15:12:26 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.5 2008/04/20 12:52:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -241,7 +241,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 
     // Pour chaque ligne de la liste
     list<ObjectBroadcastLine *>::iterator i ;
-    for (i = lines.begin(); i != lines.end(); i++) {
+    for (i = lines.begin(); i != lines.end(); ++i) {
         // Si le federe attend un message(attribute 0 en attente)
         if ((*i)->state[0] == ObjectBroadcastLine::waiting) {
 
@@ -391,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.18.2.4 2008/04/10 15:12:26 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.18.2.5 2008/04/20 12:52:20 erk Exp $

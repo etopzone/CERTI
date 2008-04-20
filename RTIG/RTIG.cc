@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.36.2.5 2008/04/11 14:08:19 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.6 2008/04/20 12:52:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -428,7 +428,7 @@ while (!terminate) {
 
 	#if WIN32
 		 int highest_fd = socketServer.addToFDSet(&fd);
-		 int server_socket = tcpSocketServer.returnSocket();   
+		 int server_socket = tcpSocketServer.returnSocket();
 		 highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
 		 
 		 result = 0;	// Wait for an incoming message.
@@ -503,7 +503,7 @@ caught by this module. Then a message, similar to the received one is sent
 on the link. This message only holds the exception.
 */
 Socket*
-RTIG::processIncomingMessage(Socket *link)
+RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
 {
     NetworkMessage* msg ;
     
@@ -986,4 +986,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.36.2.5 2008/04/11 14:08:19 erk Exp $
+// $Id: RTIG.cc,v 3.36.2.6 2008/04/20 12:52:21 erk Exp $

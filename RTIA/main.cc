@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.18 2008/03/12 15:00:46 rousse Exp $
+// $Id: main.cc,v 3.18.2.1 2008/04/20 12:52:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -58,9 +58,11 @@ int main() {
 		}
 		catch (Exception &e) {
 			cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
+			cerr.flush();
 			if (e._reason) {
 				cerr << "RTIA:: Reason: " << e._reason << endl;
-                        rtia.displayStatistics();
+				cerr.flush();
+				rtia.displayStatistics();
 			}
 
 			return (EXIT_FAILURE);
@@ -90,4 +92,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.18 2008/03/12 15:00:46 rousse Exp $
+// EOF $Id: main.cc,v 3.18.2.1 2008/04/20 12:52:21 erk Exp $

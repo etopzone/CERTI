@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.7 2008/04/11 14:08:19 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.8 2008/04/20 12:52:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -328,7 +328,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 void
 RTIG::processSetTimeRegulating(NetworkMessage *msg)
 {
-    if (msg->regulator) {
+  if (msg->isRegulator()) {
         auditServer << "ON at time " << msg->getDate();
 
         federations.createRegulator(msg->federation,
@@ -341,7 +341,7 @@ RTIG::processSetTimeRegulating(NetworkMessage *msg)
         auditServer << "OFF" ;
 
         federations.removeRegulator(msg->federation,
-                                     msg->federate);
+				    msg->federate);
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation OFF.",
               msg->federate, msg->federation);
     }
@@ -352,7 +352,7 @@ RTIG::processSetTimeRegulating(NetworkMessage *msg)
 void
 RTIG::processSetTimeConstrained(NetworkMessage *msg)
 {
-    if (msg->constrained) {
+  if (msg->isConstrained()) {
         auditServer << "ON at time " << msg->getDate();
 
         federations.addConstrained(msg->federation,
@@ -661,7 +661,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 void
 RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
-	std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));;
+  std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));;
 
     auditServer << "Class = %u" << req->objectClass ;
     rep->object = federations.registerObject(req->federation,
@@ -674,9 +674,11 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
           "Object \"%s\" of Federate %u has been registered under ID %u.",
           req->getLabel().c_str(), req->federate, rep->object);
 
-    rep->federate = req->federate ;
-    rep->setLabel(req->getLabel());
+    rep->federate    = req->federate ;
+    rep->federation  = req->federation;
+    rep->objectClass = req->objectClass;
     // rep.object is set by the call of registerObject
+    rep->setLabel(req->getLabel());
 
     rep->send(link); // Send answer to RTIA
 }
@@ -695,7 +697,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     ValueArray = req->getAttribValueArray();
 
     // Forward the call
-    if ( req->getBoolean() )
+    if ( req->isDated )
         {
         // UAV with time
         federations.updateAttribute(req->federation,
@@ -748,7 +750,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 		<< ", date = " << req->getDate() ;
     values = req->getParamValueArray();
 
-    if ( req->getBoolean() )
+    if ( req->isDated )
         {
         federations.updateParameter(req->federation,
 				req->federate,
@@ -800,7 +802,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"enter RTIG::processDeleteObject");
     auditServer << "ObjID = %u" << req->object ;
 
-    if ( req->getBoolean() ) {
+    if ( req->isDated ) {
     	federations.destroyObject(req->federation,
         	                  req->federate,
                                   req->object,
@@ -819,7 +821,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
 
     NM_Delete_Object rep ;    
     rep.federate = req->federate ;
-    rep.object = req->object ;
+    rep.object   = req->object ;
 
     rep.send(link); // send answer to RTIA
     
@@ -1324,4 +1326,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.7 2008/04/11 14:08:19 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.8 2008/04/20 12:52:21 erk Exp $

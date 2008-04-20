@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.8 2008/04/10 15:12:25 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.9 2008/04/20 12:52:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -202,10 +202,17 @@ public:
 	int bestEffortPeer ;
 	unsigned long bestEffortAddress ;
 
-	bool regulator ;
-	bool constrained ;
+  void setRegulator(bool newState) {this->regulator=newState;};
+  bool isRegulator() {return regulator;};
 
-	/* NM_DDM_Basr class fields */
+
+	int numberOfRegulators ;
+
+  void setConstrained(bool newState) {this->constrained=newState;};
+  bool isConstrained() {return constrained;};
+
+
+	/* NM_DDM_Base class fields */
 	SpaceHandle            space;
 	int32_t                nbExtents;
 	int32_t                region;
@@ -225,7 +232,6 @@ public:
 	void setDate(FederationTime date) {isDated=true; this->date = date;};
 	const FederationTime getDate() const {return this->date;};
 
-	int numberOfRegulators ;
 	unsigned long multicastAddress ;
 
 	/**
@@ -322,6 +328,20 @@ protected:
 	 */
 	std::string tag;
 
+  /**
+   * Toggle which indicates if federate
+   * wants to become regulator or leave
+   * its regulator state
+   */
+	bool regulator ;
+
+  /**
+   * Toggle which indicates if federate
+   * wants to become constrained or leave
+   * its constrained state
+   */
+	bool constrained ;
+
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 
@@ -336,4 +356,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.8 2008/04/10 15:12:25 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.9 2008/04/20 12:52:19 erk Exp $

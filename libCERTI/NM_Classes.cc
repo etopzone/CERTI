@@ -291,7 +291,7 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	return msg;
 } /* end of NM_Factory::create */
 
-NetworkMessage* NM_Factory::receive(Socket* socket) throw (RTIinternalError) {
+  NetworkMessage* NM_Factory::receive(Socket* socket) throw (NetworkError, RTIinternalError) {
 	NetworkMessage  msgGen;
 	NetworkMessage* msg;
 	
@@ -386,7 +386,7 @@ NM_Message_Null::NM_Message_Null() {
 	this->name = "MESSAGE_NULL";
 	this->type = NetworkMessage::MESSAGE_NULL;
 	/* specific field init */
-	////isDated =true;
+	//isDated =true;
 }
 NM_Message_Null::~NM_Message_Null() {	
 }
@@ -397,7 +397,7 @@ NM_Create_Federation_Execution::NM_Create_Federation_Execution() {
 	this->name = "CREATE_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::CREATE_FEDERATION_EXECUTION;
 	/* specific field init */
-	////isDated =true;
+	//isDated =true;
 }
 NM_Create_Federation_Execution::~NM_Create_Federation_Execution() {	
 }
@@ -422,7 +422,7 @@ NM_Destroy_Federation_Execution::NM_Destroy_Federation_Execution() {
 	this->name = "DESTROY_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::DESTROY_FEDERATION_EXECUTION;    
 	/* specific field init */    
-	////isDated =true;
+	//isDated =true;
 }
 NM_Destroy_Federation_Execution::~NM_Destroy_Federation_Execution() {
 }
@@ -436,7 +436,6 @@ void NM_Destroy_Federation_Execution::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
-	date           = msgBuf.read_double();
 	federationName = msgBuf.read_string();    
 } /* end of deserialize */
 /*<END>---------- Destroy_Federation_Execution ------------<END>*/
@@ -488,7 +487,7 @@ NM_Set_Time_Regulating::NM_Set_Time_Regulating() {
 	this->name = "SET_TIME_REGULATING";
 	this->type = NetworkMessage::SET_TIME_REGULATING;
 	/* specific field init */
-	////isDated =true;
+	//isDated =true;
 }
 NM_Set_Time_Regulating::~NM_Set_Time_Regulating() {
 }
@@ -496,13 +495,13 @@ void NM_Set_Time_Regulating::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
-	msgBuf.write_bool(regulating);  	  
+	msgBuf.write_bool(regulator);  	  
 } /* end of serialize */ 
 void NM_Set_Time_Regulating::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
-	regulating = msgBuf.read_bool();
+	regulator = msgBuf.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Regulating ------------<END>*/
 
@@ -511,7 +510,7 @@ NM_Set_Time_Constrained::NM_Set_Time_Constrained() {
 	this->name = "SET_TIME_CONSTRAINED";
 	this->type = NetworkMessage::SET_TIME_CONSTRAINED;
 	/* specific field init */
-	////isDated =true;
+	//isDated =true;
 }
 NM_Set_Time_Constrained::~NM_Set_Time_Constrained() {
 }
@@ -535,8 +534,8 @@ NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchroniza
 	this->type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
-	isTagged   = true;
+	//isLabelled = true;
+	//isTagged   = true;
 }
 NM_Register_Federation_Synchronization_Point::~NM_Register_Federation_Synchronization_Point() {
 }
@@ -548,7 +547,7 @@ NM_Synchronization_Point_Registration_Succeeded::NM_Synchronization_Point_Regist
 	this->type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Synchronization_Point_Registration_Succeeded::~NM_Synchronization_Point_Registration_Succeeded() {
 }
@@ -560,8 +559,8 @@ NM_Announce_Synchronization_Point::NM_Announce_Synchronization_Point() {
 	this->type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
-	isTagged   = true;
+	//isLabelled = true;
+	//isTagged   = true;
 }
 NM_Announce_Synchronization_Point::~NM_Announce_Synchronization_Point() {
 }
@@ -573,7 +572,7 @@ NM_Synchronization_Point_Achieved::NM_Synchronization_Point_Achieved() {
 	this->type = NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Synchronization_Point_Achieved::~NM_Synchronization_Point_Achieved() {
 }
@@ -585,7 +584,7 @@ NM_Federation_Synchronized::NM_Federation_Synchronized() {
 	this->type = NetworkMessage::FEDERATION_SYNCHRONIZED;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Federation_Synchronized::~NM_Federation_Synchronized() {
 }
@@ -596,7 +595,7 @@ NM_Request_Federation_Save::NM_Request_Federation_Save() {
 	this->name = "REQUEST_FEDERATION_SAVE";
 	this->type = NetworkMessage::REQUEST_FEDERATION_SAVE;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Request_Federation_Save::~NM_Request_Federation_Save() {
 }
@@ -638,7 +637,7 @@ NM_Initiate_Federate_Save::NM_Initiate_Federate_Save() {
 	this->type = NetworkMessage::INITIATE_FEDERATE_SAVE;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Initiate_Federate_Save::~NM_Initiate_Federate_Save() {
 }
@@ -670,7 +669,7 @@ NM_Request_Federation_Restore::NM_Request_Federation_Restore() {
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Request_Federation_Restore::~NM_Request_Federation_Restore() {
 }
@@ -702,7 +701,7 @@ NM_Request_Federation_Restore_Succeeded::NM_Request_Federation_Restore_Succeeded
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Request_Federation_Restore_Succeeded::~NM_Request_Federation_Restore_Succeeded() {
 }
@@ -714,8 +713,8 @@ NM_Request_Federation_Restore_Failed::NM_Request_Federation_Restore_Failed() {
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
-	isTagged   = true;
+	//isLabelled = true;
+	//isTagged   = true;
 }
 NM_Request_Federation_Restore_Failed::~NM_Request_Federation_Restore_Failed() {
 }
@@ -726,7 +725,7 @@ NM_Federation_Restore_Begun::NM_Federation_Restore_Begun() {
 	this->name = "FEDERATION_RESTORE_BEGUN";
 	this->type = NetworkMessage::FEDERATION_RESTORE_BEGUN;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Federation_Restore_Begun::~NM_Federation_Restore_Begun() {
 }
@@ -909,7 +908,7 @@ NM_Register_Object::NM_Register_Object() {
 	this->name = "REGISTER_OBJECT";
 	this->type = NetworkMessage::REGISTER_OBJECT;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Register_Object::~NM_Register_Object() {
 }
@@ -917,13 +916,15 @@ void NM_Register_Object::serialize() {
 	/* call mother class */      
 	Super::serialize(); 
 	/* specific code (if any) goes here */
+	msgBuf.write_int32(objectClass);
 	msgBuf.write_int32(object);
 } /* end of serialize */ 
 void NM_Register_Object::deserialize() {
 	/* call mother class */      
 	Super::deserialize(); 
 	/* specific code (if any) goes here */
-	object = msgBuf.read_int32();
+	objectClass = msgBuf.read_int32();
+	object      = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- Register_Object ------------<END>*/
 
@@ -932,7 +933,7 @@ NM_Discover_Object::NM_Discover_Object() {
 	this->name = "DISCOVER_OBJECT";
 	this->type = NetworkMessage::DISCOVER_OBJECT;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Discover_Object::~NM_Discover_Object() {
 }
@@ -944,7 +945,7 @@ NM_Update_Attribute_Values::NM_Update_Attribute_Values() {
 	this->type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Update_Attribute_Values::~NM_Update_Attribute_Values() {
 }
@@ -968,7 +969,7 @@ void NM_Update_Attribute_Values::deserialize() {
 	objectClass = msgBuf.read_int32();	
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuf.read_int32();
-		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);		
 	}
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
@@ -989,7 +990,7 @@ NM_Send_Interaction::NM_Send_Interaction() {
 	this->type = NetworkMessage::SEND_INTERACTION;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Send_Interaction::~NM_Send_Interaction() {
 }
@@ -1034,7 +1035,7 @@ NM_Delete_Object::NM_Delete_Object() {
 	this->type = NetworkMessage::DELETE_OBJECT;
 	/* specific field init */
 	//isDated =true;
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Delete_Object::~NM_Delete_Object() {
 }
@@ -1178,7 +1179,7 @@ NM_Is_Attribute_Owned_By_Federate::NM_Is_Attribute_Owned_By_Federate() {
 	this->name = "IS_ATTRIBUTE_OWNED_BY_FEDERATE";
 	this->type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Is_Attribute_Owned_By_Federate::~NM_Is_Attribute_Owned_By_Federate() {
 }
@@ -1233,7 +1234,7 @@ NM_Negotiated_Attribute_Ownership_Divestiture::NM_Negotiated_Attribute_Ownership
 	this->name = "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
 	this->type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
 	/* specific field init */
-	isLabelled = true;
+	//isLabelled = true;
 }
 NM_Negotiated_Attribute_Ownership_Divestiture::~NM_Negotiated_Attribute_Ownership_Divestiture() {
 }
@@ -1464,7 +1465,7 @@ NM_DDM_Register_Object::NM_DDM_Register_Object() {
 	this->name = "DDM_REGISTER_OBJECT";
 	this->type = NetworkMessage::DDM_REGISTER_OBJECT;
 	/* specific field init */
-	isTagged = true;
+	//isTagged = true;
 }
 NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }
@@ -1485,8 +1486,8 @@ void NM_DDM_Register_Object::deserialize() {
 	/* specific code (if any) goes here */
 	object      = msgBuf.read_int32();
 	objectClass = msgBuf.read_int32();
-	region = msgBuf.read_int32();
-	boolean = msgBuf.read_int32();
+	region      = msgBuf.read_int32();
+	boolean     = msgBuf.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Register_Object ------------<END>*/
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.41.2.4 2008/04/10 15:12:26 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.5 2008/04/20 12:52:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -742,13 +742,15 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
               "Object %u registered in class %u, now broadcasting...",
               the_object->getHandle(), handle);
 
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::DISCOVER_OBJECT);       
-        answer->federation = server->federation();
-        answer->federate = the_federate ;
-        answer->exception = e_NO_EXCEPTION ;
+        NM_Discover_Object *answer = new NM_Discover_Object();       
+        answer->federation  = server->federation();
+        answer->federate    = the_federate ;
+        answer->exception   = e_NO_EXCEPTION ;
         answer->objectClass = handle ; // Class Handle
-        answer->object = the_object->getHandle();
+        answer->object      = the_object->getHandle();
         answer->setLabel(the_object->getName().c_str());
+	// BUG FIXME strange!!
+	//answer->setDate(0.0);
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
         broadcastClassMessage(ocbList);
@@ -784,19 +786,21 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 
     // Else, send message for each object
     list<Object *>::const_iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
+    for (o = objectSet.begin(); o != objectSet.end(); ++o) {
 	if ((*o)->getOwner() != federate) {
-	    NM_Discover_Object message ;
+	    NM_Discover_Object message;
 	    D.Out(pdInit,
 		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
 		  federate, (*o)->getHandle(), handle, message.getLabel().c_str());
 	    	    
-	    message.federation = server->federation();
-	    message.federate = federate ;
-	    message.exception = e_NO_EXCEPTION ;
+	    message.federation  = server->federation();
+	    message.federate    = federate ;
+	    message.exception   = e_NO_EXCEPTION ;
 	    message.objectClass = super_handle ;
-	    message.object = (*o)->getHandle();
+	    message.object      = (*o)->getHandle();
 	    message.setLabel((*o)->getName().c_str());
+	    //BUG FIXME strange!!
+	    //message.setDate(0.0);
 	    
 	    Socket *socket = NULL ;
 	    try {
@@ -1802,4 +1806,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.41.2.4 2008/04/10 15:12:26 erk Exp $
+// $Id: ObjectClass.cc,v 3.41.2.5 2008/04/20 12:52:19 erk Exp $
