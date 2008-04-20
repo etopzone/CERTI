@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.50.2.4 2008/04/20 12:52:20 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.5 2008/04/20 21:22:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -62,7 +62,8 @@ static PrettyDebug G("GENDOC",__FILE__);
     _numero_federation = 0 ;
     federate = 0 ;
 
-    _fin_execution = false ;
+    _fin_execution           = false ;
+    _est_createur_federation = false ;
 
     //_est_createur_federation = false ;
     _est_membre_federation = false ;
@@ -266,8 +267,8 @@ joinFederationExecution(const char *Federate,
 
     e = e_NO_EXCEPTION ;
 
-    if (_est_createur_federation && strcmp(Federation, _nom_federation))
-        e = e_RTIinternalError ;
+//    if (_est_createur_federation && strcmp(Federation, _nom_federation))
+//        e = e_RTIinternalError ;
 
     if (_est_membre_federation)
         e = e_FederateAlreadyExecutionMember ;
@@ -990,4 +991,4 @@ FederationManagement::checkFederationRestoring()
 
 }} // namespace certi/rtia
 
-// $Id: FederationManagement.cc,v 3.50.2.4 2008/04/20 12:52:20 erk Exp $
+// $Id: FederationManagement.cc,v 3.50.2.5 2008/04/20 21:22:03 erk Exp $
