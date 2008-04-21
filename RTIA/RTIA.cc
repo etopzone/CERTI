@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.13.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: RTIA.cc,v 3.13.2.2 2008/04/21 11:29:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,12 +95,14 @@ RTIA::execute()
 
     while (!fm->_fin_execution) {
        
-        /* Message will be allocated by the readMessage call */
+        /* 
+         * readMessage call will allocate EITHER a Network Message or a Message 
+         *   Network Message will come from a virtual constructor call
+         *   Message will come from a "simple" constructor call
+         */
     	msg_un      = NULL;
     	msg_tcp_udp = NULL;
-        try {
-        	msg_un      = NULL;
-        	msg_tcp_udp = NULL;
+        try {        	
             comm->readMessage(n, &msg_tcp_udp, &msg_un);
             assert((msg_un!=NULL) || (msg_tcp_udp!=NULL));
         }
@@ -116,11 +118,9 @@ RTIA::execute()
             break ;
           case 1:
             processNetworkMessage(msg_tcp_udp);
-            delete msg_un ;
             break ;
           case 2:
-            processFederateRequest(msg_un);
-            delete msg_tcp_udp ;
+            processFederateRequest(msg_un);            
             break ;
           default:
             assert(false);
@@ -131,17 +131,18 @@ RTIA::execute()
 	        // read a message from the rtig
             // same code is reused, but only the case 1 should match
 
-        	/* Message or NetworkMessage will be allocated by the readMessage call */
+        	/* NetworkMessage will be allocated by the readMessage call
+        	 * We may not get a Message in this call see previous comment
+        	 */
             msg_un      = NULL;
             msg_tcp_udp = NULL;
-            
+                        
             try {
                 comm->readMessage(n, &msg_tcp_udp, &msg_un);
             }
             catch (NetworkSignal) {
                 fm->_fin_execution = true ;
-                n = 0 ;
-                delete msg_un ;
+                n = 0 ;                
                 delete msg_tcp_udp ;
             }
 
@@ -149,7 +150,8 @@ RTIA::execute()
               case 0:
                 break ;
               case 1:
-                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callbak
+                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callback
+                msg_un = new Message();
                 msg_un->type = Message::TICK_REQUEST ;
                 msg_un->setBoolean(true) ;
                 processFederateRequest(msg_un);  //could reset _ongoing_tick                
@@ -164,4 +166,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.13.2.1 2008/03/18 15:55:57 erk Exp $
+// $Id: RTIA.cc,v 3.13.2.2 2008/04/21 11:29:34 erk Exp $

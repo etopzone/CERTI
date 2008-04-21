@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.22.2.3 2008/04/10 14:57:48 erk Exp $
+// $Id: Communications.cc,v 3.22.2.4 2008/04/21 11:29:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -272,7 +272,7 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg)
             n = 2 ;
         }
     }
-}
+} /* end of readMessage */
 
 // ----------------------------------------------------------------------------
 /*! Returns true if a 'type_msg' message coming from federate
@@ -328,4 +328,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.22.2.3 2008/04/10 14:57:48 erk Exp $
+// $Id: Communications.cc,v 3.22.2.4 2008/04/21 11:29:34 erk Exp $
