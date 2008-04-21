@@ -291,7 +291,8 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	return msg;
 } /* end of NM_Factory::create */
 
-  NetworkMessage* NM_Factory::receive(Socket* socket) throw (NetworkError, RTIinternalError) {
+NetworkMessage* 
+NM_Factory::receive(Socket* socket) throw (NetworkError, RTIinternalError) {
 	NetworkMessage  msgGen;
 	NetworkMessage* msg;
 	
@@ -299,8 +300,8 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	msgGen.receive(socket);
 	/* create specific message from type */
 	msg = NM_Factory::create(msgGen.getType());
-	msg->copyMsgBufFrom(msgGen);	
-	msg->deserialize();
+	/* msg->copyMsgBufFrom(msgGen); */	
+	msg->deserialize(msgGen);
 	return msg;	
 } /* end of NM_Factory::receive */
 
@@ -314,35 +315,35 @@ NM_WithHandleArray::NM_WithHandleArray() {
 NM_WithHandleArray::~NM_WithHandleArray() {
 }
 
-void NM_WithHandleArray::serialize() {
+void NM_WithHandleArray::serialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */	
-	msgBuf.write_uint16(handleArraySize);
+	msgBuffer.write_uint16(handleArraySize);
 	/* 
 	 * Note that if handleArraySize is 0 
 	 * the loop is void which is done on purpose.
 	 * (this is a feature not a bug :-) 
 	 */		
 	for (i = 0 ; i < handleArraySize ; ++i) {
-		msgBuf.write_uint16(handleArray[i]);
+		msgBuffer.write_uint16(handleArray[i]);
 	}
 
 } /* end of serialize */ 
-void NM_WithHandleArray::deserialize() {
+void NM_WithHandleArray::deserialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */	
-	handleArraySize = msgBuf.read_int16();
+	handleArraySize = msgBuffer.read_int16();
 	/* 
 	 * Note that if handleArraySize is 0 
 	 * the loop is void which is done on purpose.
 	 * (this is a feature not a bug :-) 
 	 */	
 	for (i = 0 ; i < handleArraySize ; i ++) {
-		handleArray[i] = msgBuf.read_int16();
+		handleArray[i] = msgBuffer.read_int16();
 	}
 } /* end of deserialize */
 
@@ -401,19 +402,19 @@ NM_Create_Federation_Execution::NM_Create_Federation_Execution() {
 }
 NM_Create_Federation_Execution::~NM_Create_Federation_Execution() {	
 }
-void NM_Create_Federation_Execution::serialize() {
+void NM_Create_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_string(federationName);
-	msgBuf.write_string(FEDid);
+	msgBuffer.write_string(federationName);
+	msgBuffer.write_string(FEDid);
 } /* end of serialize */ 
-void NM_Create_Federation_Execution::deserialize() {
+void NM_Create_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	federationName = msgBuf.read_string();
-	FEDid          = msgBuf.read_string();
+	federationName = msgBuffer.read_string();
+	FEDid          = msgBuffer.read_string();
 } /* end of deserialize */
 /*<END>---------- Create_Federation_Execution ------------<END>*/
 
@@ -426,17 +427,17 @@ NM_Destroy_Federation_Execution::NM_Destroy_Federation_Execution() {
 }
 NM_Destroy_Federation_Execution::~NM_Destroy_Federation_Execution() {
 }
-void NM_Destroy_Federation_Execution::serialize() {
+void NM_Destroy_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_string(federationName);
+	msgBuffer.write_string(federationName);
 } /* end of serialize */ 
-void NM_Destroy_Federation_Execution::deserialize() {
+void NM_Destroy_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	federationName = msgBuf.read_string();    
+	federationName = msgBuffer.read_string();    
 } /* end of deserialize */
 /*<END>---------- Destroy_Federation_Execution ------------<END>*/
 
@@ -448,27 +449,27 @@ NM_Join_Federation_Execution::NM_Join_Federation_Execution() {
 }
 NM_Join_Federation_Execution::~NM_Join_Federation_Execution() {
 }
-void NM_Join_Federation_Execution::serialize() {
+void NM_Join_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(numberOfRegulators);
-	msgBuf.write_uint32(multicastAddress);
-	msgBuf.write_uint32(bestEffortAddress);
-	msgBuf.write_uint32(bestEffortPeer);
-	msgBuf.write_string(federationName);
-	msgBuf.write_string(federateName);
+	msgBuffer.write_int32(numberOfRegulators);
+	msgBuffer.write_uint32(multicastAddress);
+	msgBuffer.write_uint32(bestEffortAddress);
+	msgBuffer.write_uint32(bestEffortPeer);
+	msgBuffer.write_string(federationName);
+	msgBuffer.write_string(federateName);
 } /* end of serialize */ 
-void NM_Join_Federation_Execution::deserialize() {
+void NM_Join_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	numberOfRegulators = msgBuf.read_int32();
-	multicastAddress   = msgBuf.read_uint32();
-	bestEffortAddress  = msgBuf.read_uint32();
-	bestEffortPeer     = msgBuf.read_uint32();
-	federationName     = msgBuf.read_string();
-	federateName       = msgBuf.read_string();
+	numberOfRegulators = msgBuffer.read_int32();
+	multicastAddress   = msgBuffer.read_uint32();
+	bestEffortAddress  = msgBuffer.read_uint32();
+	bestEffortPeer     = msgBuffer.read_uint32();
+	federationName     = msgBuffer.read_string();
+	federateName       = msgBuffer.read_string();
 } /* end of deserialize */
 /*<END>---------- Join_Federation_Execution ------------<END>*/
 
@@ -491,17 +492,17 @@ NM_Set_Time_Regulating::NM_Set_Time_Regulating() {
 }
 NM_Set_Time_Regulating::~NM_Set_Time_Regulating() {
 }
-void NM_Set_Time_Regulating::serialize() {
+void NM_Set_Time_Regulating::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_bool(regulator);  	  
+	msgBuffer.write_bool(regulator);  	  
 } /* end of serialize */ 
-void NM_Set_Time_Regulating::deserialize() {
+void NM_Set_Time_Regulating::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	regulator = msgBuf.read_bool();
+	regulator = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Regulating ------------<END>*/
 
@@ -514,17 +515,17 @@ NM_Set_Time_Constrained::NM_Set_Time_Constrained() {
 }
 NM_Set_Time_Constrained::~NM_Set_Time_Constrained() {
 }
-void NM_Set_Time_Constrained::serialize() {
+void NM_Set_Time_Constrained::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_bool(constrained);  
+	msgBuffer.write_bool(constrained);  
 } /* end of serialize */ 
-void NM_Set_Time_Constrained::deserialize() {
+void NM_Set_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	constrained = msgBuf.read_bool();
+	constrained = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Constrained ------------<END>*/
 
@@ -770,14 +771,14 @@ NM_Publish_Object_Class::NM_Publish_Object_Class() {
 NM_Publish_Object_Class::~NM_Publish_Object_Class() {
 }
 void
-NM_Publish_Object_Class::serialize() {
-	Super::serialize();
-	msgBuf.write_int32(objectClass);
+NM_Publish_Object_Class::serialize(MessageBuffer& msgBuffer) {
+	Super::serialize(msgBuffer);
+	msgBuffer.write_int32(objectClass);
 }
 void
-NM_Publish_Object_Class::deserialize() {
-	Super::deserialize();
-	objectClass = msgBuf.read_int32();
+NM_Publish_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+	Super::deserialize(msgBuffer);
+	objectClass = msgBuffer.read_int32();
 }
 /*<END>---------- Publish_Object_Class ------------<END>*/
 
@@ -789,17 +790,17 @@ NM_Unpublish_Object_Class::NM_Unpublish_Object_Class() {
 }
 NM_Unpublish_Object_Class::~NM_Unpublish_Object_Class() {
 }
-void NM_Unpublish_Object_Class::serialize() {
+void NM_Unpublish_Object_Class::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(objectClass);
+	msgBuffer.write_int32(objectClass);
 } /* end of serialize */ 
-void NM_Unpublish_Object_Class::deserialize() {
+void NM_Unpublish_Object_Class::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	objectClass = msgBuf.read_int32();
+	objectClass = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- Unpublish_Object_Class ------------<END>*/
 
@@ -811,17 +812,17 @@ NM_Publish_Interaction_Class::NM_Publish_Interaction_Class() {
 }
 NM_Publish_Interaction_Class::~NM_Publish_Interaction_Class() {
 }
-void NM_Publish_Interaction_Class::serialize() {
+void NM_Publish_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(interactionClass);
+	msgBuffer.write_int32(interactionClass);
 } /* end of serialize */ 
-void NM_Publish_Interaction_Class::deserialize() {
+void NM_Publish_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	interactionClass = msgBuf.read_int32();
+	interactionClass = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- Publish_Interaction_Class ------------<END>*/
 
@@ -843,13 +844,13 @@ NM_Subscribe_Object_Class::NM_Subscribe_Object_Class() {
 }
 NM_Subscribe_Object_Class::~NM_Subscribe_Object_Class() {
 }
-void NM_Subscribe_Object_Class::serialize() {
-	Super::serialize();
-	msgBuf.write_int32(objectClass);
+void NM_Subscribe_Object_Class::serialize(MessageBuffer& msgBuffer) {
+	Super::serialize(msgBuffer);
+	msgBuffer.write_int32(objectClass);
 }
-void NM_Subscribe_Object_Class::deserialize() {
-	Super::deserialize();
-	objectClass=msgBuf.read_int32();
+void NM_Subscribe_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+	Super::deserialize(msgBuffer);
+	objectClass=msgBuffer.read_int32();
 }
 /*<END>---------- Subscribe_Object_Class ------------<END>*/
 
@@ -912,19 +913,19 @@ NM_Register_Object::NM_Register_Object() {
 }
 NM_Register_Object::~NM_Register_Object() {
 }
-void NM_Register_Object::serialize() {
+void NM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(objectClass);
-	msgBuf.write_int32(object);
+	msgBuffer.write_int32(objectClass);
+	msgBuffer.write_int32(object);
 } /* end of serialize */ 
-void NM_Register_Object::deserialize() {
+void NM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	objectClass = msgBuf.read_int32();
-	object      = msgBuf.read_int32();
+	objectClass = msgBuffer.read_int32();
+	object      = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- Register_Object ------------<END>*/
 
@@ -949,27 +950,27 @@ NM_Update_Attribute_Values::NM_Update_Attribute_Values() {
 }
 NM_Update_Attribute_Values::~NM_Update_Attribute_Values() {
 }
-void NM_Update_Attribute_Values::serialize() {
+void NM_Update_Attribute_Values::serialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(objectClass);	
+	msgBuffer.write_int32(objectClass);	
 	/* the value pre-encoded by the user (HLA 1.3) */
 	for (i = 0 ; i < handleArraySize ; i++) {
-		msgBuf.write_int32(ValueArray[i].length) ;
-		msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+		msgBuffer.write_int32(ValueArray[i].length) ;
+		msgBuffer.write_bytes(ValueArray[i].value, ValueArray[i].length);
 	}    
 } /* end of serialize */ 
-void NM_Update_Attribute_Values::deserialize() {
+void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	objectClass = msgBuf.read_int32();	
+	objectClass = msgBuffer.read_int32();	
 	for (i = 0 ; i < handleArraySize ; i ++) {
-		ValueArray[i].length = msgBuf.read_int32();
-		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);		
+		ValueArray[i].length = msgBuffer.read_int32();
+		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);		
 	}
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
@@ -994,27 +995,27 @@ NM_Send_Interaction::NM_Send_Interaction() {
 }
 NM_Send_Interaction::~NM_Send_Interaction() {
 }
-void NM_Send_Interaction::serialize() {
+void NM_Send_Interaction::serialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(interactionClass);	
+	msgBuffer.write_int32(interactionClass);	
 	/* the value pre-encoded by the user (HLA 1.3) */
 	for (i = 0 ; i < handleArraySize ; i++) {
-		msgBuf.write_int32(ValueArray[i].length) ;
-		msgBuf.write_bytes(ValueArray[i].value, ValueArray[i].length);
+		msgBuffer.write_int32(ValueArray[i].length) ;
+		msgBuffer.write_bytes(ValueArray[i].value, ValueArray[i].length);
 	}    
 } /* end of serialize */ 
-void NM_Send_Interaction::deserialize() {
+void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	interactionClass = msgBuf.read_int32();
+	interactionClass = msgBuffer.read_int32();
 	for (i = 0 ; i < handleArraySize ; i ++) {
-		ValueArray[i].length = msgBuf.read_int32();
-		msgBuf.read_bytes(ValueArray[i].value, ValueArray[i].length);
+		ValueArray[i].length = msgBuffer.read_int32();
+		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);
 	}
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/
@@ -1060,14 +1061,14 @@ NM_Change_Attribute_Transport_Type::NM_Change_Attribute_Transport_Type() {
 }
 NM_Change_Attribute_Transport_Type::~NM_Change_Attribute_Transport_Type() {
 }
-void NM_Change_Attribute_Transport_Type::serialize() {
+void NM_Change_Attribute_Transport_Type::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Change_Attribute_Transport_Type::deserialize() {
+void NM_Change_Attribute_Transport_Type::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Attribute_Transport_Type ------------<END>*/
@@ -1080,14 +1081,14 @@ NM_Change_Attribute_Order_Type::NM_Change_Attribute_Order_Type() {
 }
 NM_Change_Attribute_Order_Type::~NM_Change_Attribute_Order_Type() {
 }
-void NM_Change_Attribute_Order_Type::serialize() {
+void NM_Change_Attribute_Order_Type::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Change_Attribute_Order_Type::deserialize() {
+void NM_Change_Attribute_Order_Type::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Attribute_Order_Type ------------<END>*/
@@ -1100,14 +1101,14 @@ NM_Change_Interaction_Transport_Type::NM_Change_Interaction_Transport_Type() {
 }
 NM_Change_Interaction_Transport_Type::~NM_Change_Interaction_Transport_Type() {
 }
-void NM_Change_Interaction_Transport_Type::serialize() {
+void NM_Change_Interaction_Transport_Type::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Change_Interaction_Transport_Type::deserialize() {
+void NM_Change_Interaction_Transport_Type::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Interaction_Transport_Type ------------<END>*/
@@ -1120,14 +1121,14 @@ NM_Change_Interaction_Order_Type::NM_Change_Interaction_Order_Type() {
 }
 NM_Change_Interaction_Order_Type::~NM_Change_Interaction_Order_Type() {
 }
-void NM_Change_Interaction_Order_Type::serialize() {
+void NM_Change_Interaction_Order_Type::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Change_Interaction_Order_Type::deserialize() {
+void NM_Change_Interaction_Order_Type::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Change_Interaction_Order_Type ------------<END>*/
@@ -1140,14 +1141,14 @@ NM_Request_Class_Attribute_Value_Update::NM_Request_Class_Attribute_Value_Update
 }
 NM_Request_Class_Attribute_Value_Update::~NM_Request_Class_Attribute_Value_Update() {
 }
-void NM_Request_Class_Attribute_Value_Update::serialize() {
+void NM_Request_Class_Attribute_Value_Update::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of serialize */ 
-void NM_Request_Class_Attribute_Value_Update::deserialize() {
+void NM_Request_Class_Attribute_Value_Update::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
 } /* end of deserialize */
 /*<END>---------- Request_Class_Attribute_Value_Update ------------<END>*/
@@ -1160,17 +1161,17 @@ NM_Request_Object_Attribute_Value_Update::NM_Request_Object_Attribute_Value_Upda
 }
 NM_Request_Object_Attribute_Value_Update::~NM_Request_Object_Attribute_Value_Update() {
 }
-void NM_Request_Object_Attribute_Value_Update::serialize() {
+void NM_Request_Object_Attribute_Value_Update::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
+	msgBuffer.write_int32(object);
 } /* end of serialize */ 
-void NM_Request_Object_Attribute_Value_Update::deserialize() {
+void NM_Request_Object_Attribute_Value_Update::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	object  = msgBuf.read_int32();
+	object  = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- Request_Object_Attribute_Value_Update ------------<END>*/
 
@@ -1183,19 +1184,19 @@ NM_Is_Attribute_Owned_By_Federate::NM_Is_Attribute_Owned_By_Federate() {
 }
 NM_Is_Attribute_Owned_By_Federate::~NM_Is_Attribute_Owned_By_Federate() {
 }
-void NM_Is_Attribute_Owned_By_Federate::serialize() {
+void NM_Is_Attribute_Owned_By_Federate::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
-	msgBuf.write_int32(attribute);
+	msgBuffer.write_int32(object);
+	msgBuffer.write_int32(attribute);
 } /* end of serialize */ 
-void NM_Is_Attribute_Owned_By_Federate::deserialize() {
+void NM_Is_Attribute_Owned_By_Federate::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	object    = msgBuf.read_int32();
-	attribute = msgBuf.read_int32();
+	object    = msgBuffer.read_int32();
+	attribute = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- Is_Attribute_Owned_By_Federate ------------<END>*/
 
@@ -1368,21 +1369,21 @@ NM_DDM_Create_Region::NM_DDM_Create_Region() {
 }
 NM_DDM_Create_Region::~NM_DDM_Create_Region() {
 }
-void NM_DDM_Create_Region::serialize() {
+void NM_DDM_Create_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(); 
+	NetworkMessage::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(space);
-	msgBuf.write_int32(nbExtents);
-	msgBuf.write_int32(region);
+	msgBuffer.write_int32(space);
+	msgBuffer.write_int32(nbExtents);
+	msgBuffer.write_int32(region);
 } /* end of serialize */ 
-void NM_DDM_Create_Region::deserialize() {
+void NM_DDM_Create_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(); 
+	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	space     = msgBuf.read_int32();
-	nbExtents = msgBuf.read_int32();
-	region    = msgBuf.read_int32();
+	space     = msgBuffer.read_int32();
+	nbExtents = msgBuffer.read_int32();
+	region    = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Create_Region ------------<END>*/
 
@@ -1394,18 +1395,18 @@ NM_DDM_Modify_Region::NM_DDM_Modify_Region() {
 }
 NM_DDM_Modify_Region::~NM_DDM_Modify_Region() {
 }
-void NM_DDM_Modify_Region::serialize() {
+void NM_DDM_Modify_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(); 
+	NetworkMessage::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(region);
+	msgBuffer.write_int32(region);
 	writeExtents();
 } /* end of serialize */ 
-void NM_DDM_Modify_Region::deserialize() {
+void NM_DDM_Modify_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(); 
+	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	region = msgBuf.read_int32();
+	region = msgBuffer.read_int32();
 	readExtents();
 } /* end of deserialize */
 /*<END>---------- DDM_Modify_Region ------------<END>*/
@@ -1418,17 +1419,17 @@ NM_DDM_Delete_Region::NM_DDM_Delete_Region() {
 }
 NM_DDM_Delete_Region::~NM_DDM_Delete_Region() {
 }
-void NM_DDM_Delete_Region::serialize() {
+void NM_DDM_Delete_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(); 
+	NetworkMessage::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(region);
+	msgBuffer.write_int32(region);
 } /* end of serialize */ 
-void NM_DDM_Delete_Region::deserialize() {
+void NM_DDM_Delete_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(); 
+	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	region = msgBuf.read_int32();
+	region = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Delete_Region ------------<END>*/
 
@@ -1440,23 +1441,23 @@ NM_DDM_Associate_Region::NM_DDM_Associate_Region() {
 }
 NM_DDM_Associate_Region::~NM_DDM_Associate_Region() {
 }
-void NM_DDM_Associate_Region::serialize() {
+void NM_DDM_Associate_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::serialize(msgBuffer);
+	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
-	msgBuf.write_int32(region);
-	msgBuf.write_int32(boolean);
+	msgBuffer.write_int32(object);
+	msgBuffer.write_int32(region);
+	msgBuffer.write_int32(boolean);
 } /* end of serialize */ 
-void NM_DDM_Associate_Region::deserialize() {
+void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
+	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	object  = msgBuf.read_int32();
-	region  = msgBuf.read_int32();
-	boolean = msgBuf.read_int32();
+	object  = msgBuffer.read_int32();
+	region  = msgBuffer.read_int32();
+	boolean = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Associate_Region ------------<END>*/
 
@@ -1469,25 +1470,25 @@ NM_DDM_Register_Object::NM_DDM_Register_Object() {
 }
 NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }
-void NM_DDM_Register_Object::serialize() {
+void NM_DDM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::serialize(msgBuffer);
+	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
-	msgBuf.write_int32(objectClass);
-	msgBuf.write_int32(region);
-	msgBuf.write_int32(boolean);
+	msgBuffer.write_int32(object);
+	msgBuffer.write_int32(objectClass);
+	msgBuffer.write_int32(region);
+	msgBuffer.write_int32(boolean);
 } /* end of serialize */ 
-void NM_DDM_Register_Object::deserialize() {
+void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
+	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	object      = msgBuf.read_int32();
-	objectClass = msgBuf.read_int32();
-	region      = msgBuf.read_int32();
-	boolean     = msgBuf.read_int32();
+	object      = msgBuffer.read_int32();
+	objectClass = msgBuffer.read_int32();
+	region      = msgBuffer.read_int32();
+	boolean     = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Register_Object ------------<END>*/
 
@@ -1499,19 +1500,19 @@ NM_DDM_Unassociate_Region::NM_DDM_Unassociate_Region() {
 }
 NM_DDM_Unassociate_Region::~NM_DDM_Unassociate_Region() {
 }
-void NM_DDM_Unassociate_Region::serialize() {
+void NM_DDM_Unassociate_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize();
+	NetworkMessage::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(object);
-	msgBuf.write_int32(region);
+	msgBuffer.write_int32(object);
+	msgBuffer.write_int32(region);
 } /* end of serialize */ 
-void NM_DDM_Unassociate_Region::deserialize() {
+void NM_DDM_Unassociate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      	
-	NetworkMessage::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	object = msgBuf.read_int32();
-	region = msgBuf.read_int32();
+	object = msgBuffer.read_int32();
+	region = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Unassociate_Region ------------<END>*/
 
@@ -1523,23 +1524,23 @@ NM_DDM_Subscribe_Attributes::NM_DDM_Subscribe_Attributes() {
 }
 NM_DDM_Subscribe_Attributes::~NM_DDM_Subscribe_Attributes() {
 }
-void NM_DDM_Subscribe_Attributes::serialize() {
+void NM_DDM_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::serialize(msgBuffer);
+	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(objectClass);
-	msgBuf.write_int32(region);
-	msgBuf.write_int32(boolean);
+	msgBuffer.write_int32(objectClass);
+	msgBuffer.write_int32(region);
+	msgBuffer.write_int32(boolean);
 } /* end of serialize */ 
-void NM_DDM_Subscribe_Attributes::deserialize() {
+void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
-	NM_WithHandleArray::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
+	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	objectClass = msgBuf.read_int32();
-	region      = msgBuf.read_int32();
-	boolean     = msgBuf.read_int32();
+	objectClass = msgBuffer.read_int32();
+	region      = msgBuffer.read_int32();
+	boolean     = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
@@ -1551,19 +1552,19 @@ NM_DDM_Unsubscribe_Attributes::NM_DDM_Unsubscribe_Attributes() {
 }
 NM_DDM_Unsubscribe_Attributes::~NM_DDM_Unsubscribe_Attributes() {
 }
-void NM_DDM_Unsubscribe_Attributes::serialize() {
+void NM_DDM_Unsubscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize();
+	NetworkMessage::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(objectClass);
-	msgBuf.write_int32(region);
+	msgBuffer.write_int32(objectClass);
+	msgBuffer.write_int32(region);
 } /* end of serialize */ 
-void NM_DDM_Unsubscribe_Attributes::deserialize() {
+void NM_DDM_Unsubscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	objectClass = msgBuf.read_int32();
-	region = msgBuf.read_int32();
+	objectClass = msgBuffer.read_int32();
+	region = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Unsubscribe_Attributes ------------<END>*/
 
@@ -1575,21 +1576,21 @@ NM_DDM_Subscribe_Interaction::NM_DDM_Subscribe_Interaction() {
 }
 NM_DDM_Subscribe_Interaction::~NM_DDM_Subscribe_Interaction() {
 }
-void NM_DDM_Subscribe_Interaction::serialize() {
+void NM_DDM_Subscribe_Interaction::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize();
+	NetworkMessage::serialize(msgBuffer);
 	/* specific code (if any) goes here */
-	msgBuf.write_int32(interactionClass);
-	msgBuf.write_int32(region);
-	msgBuf.write_bool(boolean);
+	msgBuffer.write_int32(interactionClass);
+	msgBuffer.write_int32(region);
+	msgBuffer.write_bool(boolean);
 } /* end of serialize */ 
-void NM_DDM_Subscribe_Interaction::deserialize() {
+void NM_DDM_Subscribe_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize();
+	NetworkMessage::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
-	interactionClass = msgBuf.read_int32();
-	region           = msgBuf.read_int32();
-	boolean           = msgBuf.read_bool();
+	interactionClass = msgBuffer.read_int32();
+	region           = msgBuffer.read_int32();
+	boolean           = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 
@@ -1621,24 +1622,24 @@ NM_Get_FED_File::NM_Get_FED_File() {
 }
 NM_Get_FED_File::~NM_Get_FED_File() {
 }
-void NM_Get_FED_File::serialize() {
+void NM_Get_FED_File::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::serialize(); 
+	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuf.write_string(FEDid);
-	msgBuf.write_int16(number);	
+	msgBuffer.write_string(FEDid);
+	msgBuffer.write_int16(number);	
 	if (number) {
-		msgBuf.write_string(line);
+		msgBuffer.write_string(line);
 	}
 } /* end of serialize */ 
-void NM_Get_FED_File::deserialize() {
+void NM_Get_FED_File::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	Super::deserialize(); 
+	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	FEDid       = msgBuf.read_string();
-	number      = msgBuf.read_int16();
+	FEDid       = msgBuffer.read_string();
+	number      = msgBuffer.read_int16();
 	if (number) {
-		line = msgBuf.read_string();
+		line = msgBuffer.read_string();
 	}
 } /* end of deserialize */
 /*<END>---------- Get_FED_File ------------<END>*/

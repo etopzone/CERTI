@@ -1,7 +1,7 @@
 Erk1) Replace serialize()/deserialize()
       with serialize(MessageBuffer& msgBuf) ...
       in order to minimize copy when possible
-      (for example on virtual constructor)
+      (for example on virtual constructor) --> This part is DONE
 
       We may even setup a msgBuf pool in order to 
       minimize realloc when creating NetworkMessage sub-classes instance
@@ -10,8 +10,6 @@ Erk2) Use visitor pattern for RTIG processing
 
 Erk3) Use proper constructor and getter/setter for NetworkMessage
       and avoid public shared field between different kind of message
-
-Erk4) May implicity isLabelled/Tagged/Dated using Setter.
 
 Erk5) Remove all kind of:
       AnswerAssumption->exception = e_NO_EXCEPTION 

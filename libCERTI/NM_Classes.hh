@@ -39,8 +39,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_WithHandleArray();
 	virtual ~NM_WithHandleArray();
-	virtual void serialize();
-	virtual void deserialize();	
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);	
 	/* specific Getter/Setter */	
 	AttributeHandle getHandle(int i) {return handleArray[i];};
 	void setHandle(AttributeHandle h, int i) {handleArray[i]=h;};
@@ -54,8 +54,8 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_DDM_Base();
 	virtual ~NM_DDM_Base();
-	virtual void serialize()   = 0;
-	virtual void deserialize() = 0;	
+	virtual void serialize(MessageBuffer& msgBuffer)   = 0;
+	virtual void deserialize(MessageBuffer& msgBuffer) = 0;	
 	/* specific Getter/Setter */	
 	const SpaceHandle getSpace() const {return space;};
 	void setSpace(SpaceHandle space) {this->space=space;};
@@ -128,8 +128,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Create_Federation_Execution();
 	virtual ~NM_Create_Federation_Execution();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	  
@@ -146,8 +146,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Destroy_Federation_Execution();
 	virtual ~NM_Destroy_Federation_Execution();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	 
@@ -163,8 +163,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Join_Federation_Execution();
 	virtual ~NM_Join_Federation_Execution();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -199,8 +199,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Set_Time_Regulating();
 	virtual ~NM_Set_Time_Regulating();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -216,8 +216,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Set_Time_Constrained();
 	virtual ~NM_Set_Time_Constrained();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	
@@ -530,8 +530,8 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Publish_Object_Class();
 	virtual ~NM_Publish_Object_Class();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -547,8 +547,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Unpublish_Object_Class();
 	virtual ~NM_Unpublish_Object_Class();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -564,8 +564,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Publish_Interaction_Class();
 	virtual ~NM_Publish_Interaction_Class();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const InteractionClassHandle getInteractionClassHandle() const {return interactionClass;};
 	void setInteractionClassHandle(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
@@ -597,8 +597,8 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Subscribe_Object_Class();
 	virtual ~NM_Subscribe_Object_Class();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -684,8 +684,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Register_Object();
 	virtual ~NM_Register_Object();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -715,8 +715,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Update_Attribute_Values();
 	virtual ~NM_Update_Attribute_Values();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -747,8 +747,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Send_Interaction();
 	virtual ~NM_Send_Interaction();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -808,8 +808,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Change_Attribute_Transport_Type();
 	virtual ~NM_Change_Attribute_Transport_Type();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -824,8 +824,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Change_Attribute_Order_Type();
 	virtual ~NM_Change_Attribute_Order_Type();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -840,8 +840,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Change_Interaction_Transport_Type();
 	virtual ~NM_Change_Interaction_Transport_Type();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -856,8 +856,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Change_Interaction_Order_Type();
 	virtual ~NM_Change_Interaction_Order_Type();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -872,8 +872,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Request_Class_Attribute_Value_Update();
 	virtual ~NM_Request_Class_Attribute_Value_Update();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -888,8 +888,8 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Request_Object_Attribute_Value_Update();
 	virtual ~NM_Request_Object_Attribute_Value_Update();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const ObjectHandle getObject() const {return object;};
 	void setObject(ObjectHandle object) {this->object=object;};
@@ -906,8 +906,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Is_Attribute_Owned_By_Federate();
 	virtual ~NM_Is_Attribute_Owned_By_Federate();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1148,8 +1148,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Create_Region();
 	virtual ~NM_DDM_Create_Region();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const SpaceHandle getSpace() const {return space;};
 	void setSpace(SpaceHandle space) {this->space=space;};	
@@ -1171,8 +1171,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Modify_Region();
 	virtual ~NM_DDM_Modify_Region();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
 	void setRegion(SpaceHandle region) {this->region=region;};
@@ -1190,8 +1190,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Delete_Region();
 	virtual ~NM_DDM_Delete_Region();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
 	void setRegion(SpaceHandle region) {this->region=region;};
@@ -1209,8 +1209,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Associate_Region();
 	virtual ~NM_DDM_Associate_Region();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
 	void setRegion(SpaceHandle region) {this->region=region;};
@@ -1231,8 +1231,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Register_Object();
 	virtual ~NM_DDM_Register_Object();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1247,8 +1247,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Unassociate_Region();
 	virtual ~NM_DDM_Unassociate_Region();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1263,8 +1263,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Subscribe_Attributes();
 	virtual ~NM_DDM_Subscribe_Attributes();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1279,8 +1279,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Unsubscribe_Attributes();
 	virtual ~NM_DDM_Unsubscribe_Attributes();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1295,8 +1295,8 @@ public:
 	typedef NM_DDM_Base Super;
 	NM_DDM_Subscribe_Interaction();
 	virtual ~NM_DDM_Subscribe_Interaction();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -1339,8 +1339,8 @@ public:
 	typedef NetworkMessage Super;
 	NM_Get_FED_File();
 	virtual ~NM_Get_FED_File();
-	virtual void serialize();
-	virtual void deserialize();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	void setFEDid(std::string FEDid) {this->FEDid=FEDid;};
 	const std::string getFEDid() const {return FEDid;};

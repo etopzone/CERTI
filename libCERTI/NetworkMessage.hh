@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.9 2008/04/20 12:52:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.10 2008/04/21 11:29:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -146,9 +146,25 @@ public:
 	const NetworkMessage::Message_T getType() const {return type;};
 	const TypeException getException() const {return exception;};
 
-	virtual void serialize();
-	virtual void deserialize();
+	/**
+	 * Serialize the message into a buffer
+	 */
+	virtual void serialize(MessageBuffer& msgBuffer);
+	/**
+	 * DeSerialize the message from a buffer
+	 */
+	virtual void deserialize(MessageBuffer& msgBuffer);
 
+	/**
+	 * Deserialize a message using the message buffer
+	 * from another message.
+	 * This is used to avoid copy in a virtual constructor
+	 * for network Message.
+	 */ 
+	void deserialize(NetworkMessage& anotherMsg) 
+		{anotherMsg.msgBuf.assumeSizeFromReservedBytes();
+		 deserialize(anotherMsg.msgBuf);};
+	
 	void send(Socket* socket) throw (NetworkError, NetworkSignal);
 	void receive(Socket* socket) throw (NetworkError, NetworkSignal);
 
@@ -356,4 +372,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.9 2008/04/20 12:52:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.10 2008/04/21 11:29:09 erk Exp $
