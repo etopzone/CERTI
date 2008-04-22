@@ -14,6 +14,9 @@ INCLUDE(CheckLibraryExists)
 
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
+IF(BIG_ENDIAN) 
+   ADD_DEFINITIONS(-DHOST_IS_BIG_ENDIAN)
+ENDIF(BIG_ENDIAN)
 
 # default behaviour is to build library as shared on all platform
 OPTION(BUILD_SHARED
