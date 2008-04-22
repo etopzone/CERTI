@@ -143,6 +143,7 @@ void MessageBuffer::reset() {
 
 uint32_t MessageBuffer::resize(uint32_t newSize) {
 	reallocate(newSize);
+	return bufferMaxSize;
 }
 
 void MessageBuffer::assumeSize(uint32_t size) {	

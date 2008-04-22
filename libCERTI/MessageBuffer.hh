@@ -252,9 +252,9 @@ type##suffix read_##type() {\
 	int32_t
 	write_bool(const bool toggle) {
 		if(toggle) {
-			write_uint8(1);
+			return write_uint8(1);
 		} else {
-			write_uint8(0);
+			return write_uint8(0);
 		}
 	};
 	

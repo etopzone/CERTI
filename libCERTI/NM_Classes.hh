@@ -28,10 +28,10 @@ namespace certi {
 /**
  * Network Message factory
  */
-class NM_Factory {
+class CERTI_EXPORT NM_Factory {
 public:
 	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
-  static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
+   static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
 };
 
 class CERTI_EXPORT NM_WithHandleArray : public NetworkMessage {
