@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.35.2.4 2008/04/20 12:52:20 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.5 2008/04/22 08:41:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -118,7 +118,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
-    // set Datefor UAV with time
+    // set Date for UAV with time
     req.setDate(theTime);
     
     req.handleArraySize = attribArraySize ;
@@ -131,7 +131,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.setLabel(theTag);
 
     comm->sendMessage(&req);
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
 
     e = rep->exception ;
 
@@ -163,8 +163,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
-    // false for UAV without time
-    req.setBoolean(false);
+    // Do no set Date if without time
 
     req.handleArraySize = attribArraySize ;
 
@@ -176,7 +175,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     req.setLabel(theTag);
 
     comm->sendMessage(&req);
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate));
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
 
     e = rep->exception ;
 
@@ -771,4 +770,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.35.2.4 2008/04/20 12:52:20 erk Exp $
+// $Id: ObjectManagement.cc,v 3.35.2.5 2008/04/22 08:41:09 erk Exp $

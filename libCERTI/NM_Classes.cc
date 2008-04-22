@@ -954,8 +954,9 @@ void NM_Update_Attribute_Values::serialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
 	Super::serialize(msgBuffer); 
+	/* handleArraySize was done by superclass */
 	/* specific code (if any) goes here */
-	msgBuffer.write_int32(objectClass);	
+	msgBuffer.write_int32(object);	
 	/* the value pre-encoded by the user (HLA 1.3) */
 	for (i = 0 ; i < handleArraySize ; i++) {
 		msgBuffer.write_int32(ValueArray[i].length) ;
@@ -966,8 +967,9 @@ void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	int i;
 	/* call mother class */      
 	Super::deserialize(msgBuffer); 
-	/* specific code (if any) goes here */
-	objectClass = msgBuffer.read_int32();	
+	/* handleArraySize was done by superclass */
+	/* specific code (if any) goes here */		
+	object          = msgBuffer.read_int32();	
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
 		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);		
@@ -1000,6 +1002,7 @@ void NM_Send_Interaction::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
+	msgBuffer.write_int32(region);
 	msgBuffer.write_int32(interactionClass);	
 	/* the value pre-encoded by the user (HLA 1.3) */
 	for (i = 0 ; i < handleArraySize ; i++) {
@@ -1012,6 +1015,7 @@ void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
+	region           = msgBuffer.read_int32();
 	interactionClass = msgBuffer.read_int32();
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
@@ -1397,17 +1401,15 @@ NM_DDM_Modify_Region::~NM_DDM_Modify_Region() {
 }
 void NM_DDM_Modify_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(msgBuffer); 
+	NetworkMessage::serialize(msgBuffer);	
 	/* specific code (if any) goes here */
-	msgBuffer.write_int32(region);
-	writeExtents();
+	BasicMessage::serialize(msgBuffer);
 } /* end of serialize */ 
 void NM_DDM_Modify_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	region = msgBuffer.read_int32();
-	readExtents();
+	BasicMessage::deserialize(msgBuffer);	
 } /* end of deserialize */
 /*<END>---------- DDM_Modify_Region ------------<END>*/
 
@@ -1423,13 +1425,13 @@ void NM_DDM_Delete_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	msgBuffer.write_int32(region);
+	BasicMessage::serialize(msgBuffer);	
 } /* end of serialize */ 
 void NM_DDM_Delete_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	region = msgBuffer.read_int32();
+	BasicMessage::deserialize(msgBuffer);
 } /* end of deserialize */
 /*<END>---------- DDM_Delete_Region ------------<END>*/
 
@@ -1443,7 +1445,6 @@ NM_DDM_Associate_Region::~NM_DDM_Associate_Region() {
 }
 void NM_DDM_Associate_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(msgBuffer);
 	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(object);
@@ -1452,7 +1453,6 @@ void NM_DDM_Associate_Region::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(msgBuffer);
 	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
 	object  = msgBuffer.read_int32();
@@ -1472,7 +1472,6 @@ NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }
 void NM_DDM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(msgBuffer);
 	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(object);
@@ -1482,7 +1481,6 @@ void NM_DDM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(msgBuffer);
 	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
 	object      = msgBuffer.read_int32();
@@ -1526,7 +1524,6 @@ NM_DDM_Subscribe_Attributes::~NM_DDM_Subscribe_Attributes() {
 }
 void NM_DDM_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::serialize(msgBuffer);
 	NM_WithHandleArray::serialize(msgBuffer);
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(objectClass);
@@ -1535,7 +1532,6 @@ void NM_DDM_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
-	NetworkMessage::deserialize(msgBuffer);
 	NM_WithHandleArray::deserialize(msgBuffer);
 	/* specific code (if any) goes here */
 	objectClass = msgBuffer.read_int32();

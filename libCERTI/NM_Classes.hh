@@ -712,7 +712,7 @@ private:
 /*<BEGIN>---------- Update_Attribute_Values ------------<BEGIN>*/
 class CERTI_EXPORT NM_Update_Attribute_Values : public NM_WithHandleArray {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_WithHandleArray Super;
 	NM_Update_Attribute_Values();
 	virtual ~NM_Update_Attribute_Values();
 	virtual void serialize(MessageBuffer& msgBuffer);
@@ -720,8 +720,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-	ObjectClassHandle objectClass;	
-	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
+//	ObjectClassHandle objectClass;	
+//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 
@@ -730,7 +730,7 @@ private:
 /*<BEGIN>---------- Reflect_Attribute_Values ------------<BEGIN>*/
 class CERTI_EXPORT NM_Reflect_Attribute_Values : public NM_Update_Attribute_Values {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Update_Attribute_Values Super;
 	NM_Reflect_Attribute_Values();
 	virtual ~NM_Reflect_Attribute_Values();       
 	/* specific Getter/Setter */
@@ -744,7 +744,7 @@ private:
 /*<BEGIN>---------- Send_Interaction ------------<BEGIN>*/
 class CERTI_EXPORT NM_Send_Interaction : public NM_WithHandleArray {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_WithHandleArray Super;
 	NM_Send_Interaction();
 	virtual ~NM_Send_Interaction();
 	virtual void serialize(MessageBuffer& msgBuffer);
@@ -762,7 +762,7 @@ private:
 /*<BEGIN>---------- Receive_Interaction ------------<BEGIN>*/
 class CERTI_EXPORT NM_Receive_Interaction : public NM_Send_Interaction {
 public:
-	typedef NetworkMessage Super;
+	typedef NM_Send_Interaction Super;
 	NM_Receive_Interaction();
 	virtual ~NM_Receive_Interaction();
 	/* specific Getter/Setter */

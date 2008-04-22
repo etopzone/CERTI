@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.8 2008/04/20 12:52:21 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.9 2008/04/22 08:41:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -725,7 +725,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     // Building answer (Network Message re)
     NM_Update_Attribute_Values rep ;
     rep.federate = req->federate ;
-    rep.object = req->object ;
+    rep.object   = req->object ;
     rep.setDate(req->getDate());
     rep.handleArraySize = 0 ;
     // Don't forget label and tag
@@ -1326,4 +1326,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.8 2008/04/20 12:52:21 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.9 2008/04/22 08:41:08 erk Exp $

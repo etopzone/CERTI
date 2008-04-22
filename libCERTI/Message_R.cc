@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.17.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: Message_R.cc,v 3.17.2.2 2008/04/22 08:41:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -205,7 +205,7 @@ Message::readBody(SocketUN *socket)
 	    readTag(body);
 	    handleArraySize = body.readShortInt();
             readHandleArray(body);
-	    readRegions();
+	    readRegions(body);
 	    break ;
 
           // Body contains objectClass,region,boolean,handleArraySize,
@@ -406,7 +406,7 @@ Message::readBody(SocketUN *socket)
           // Body contains region,extents
 	  case DDM_MODIFY_REGION:
             region = body.readLongInt();
-	    readExtents();
+	    readExtents(body);
 	    break ;
 
           // Body contains region
@@ -756,4 +756,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.17.2.1 2008/03/18 15:55:56 erk Exp $
+// $Id: Message_R.cc,v 3.17.2.2 2008/04/22 08:41:08 erk Exp $

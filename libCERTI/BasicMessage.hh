@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.7.2.2 2008/04/09 14:16:31 erk Exp $
+// $Id: BasicMessage.hh,v 3.7.2.3 2008/04/22 08:41:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
 #define LIBCERTI_BASIC_MESSAGE
 
 #include "Extent.hh"
+#include "MessageBody.hh"
 #include "MessageBuffer.hh"
 #include "BaseRegion.hh"
 #include <vector>
@@ -47,28 +48,30 @@ public:
     void setRegions(const BaseRegion **, int);
     void setRegions(const std::vector<RegionHandle> &);
     const std::vector<RegionHandle> &getRegions() const ;
-    void copyMsgBufFrom(BasicMessage& msg);
-    
+	 
 protected:
-    void readExtents();
-    void writeExtents() ;
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	
+    void readExtents(const MessageBody &);
+    void writeExtents(MessageBody &) const ;
 
-    void readRegions();
-    void writeRegions();
+    void readRegions(const MessageBody &body);
+    void writeRegions(MessageBody &body);
 
     std::vector<Extent> extents ;
     std::vector<RegionHandle> regions ;
     /**
      * The buffer used to easilly serialize/deserialize a message
      * in order to easilly send/receive message content using socket
-     * like API.    
+     * like API.
      */
     MessageBuffer msgBuf;
-    
+
 };
 
 } // namespace certi
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.7.2.2 2008/04/09 14:16:31 erk Exp $
+// $Id: BasicMessage.hh,v 3.7.2.3 2008/04/22 08:41:07 erk Exp $

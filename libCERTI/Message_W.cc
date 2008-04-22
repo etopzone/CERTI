@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.20.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: Message_W.cc,v 3.20.2.2 2008/04/22 08:41:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -217,7 +217,7 @@ Message::writeBody(SocketUN *socket)
 	    body.writeString(tag);
             body.writeShortInt(handleArraySize);
             writeHandleArray(body);
-	    writeRegions();
+	    writeRegions(body);
 	    break ;
 
           // Body contains objectClass,region,boolean,handleArraySize,
@@ -419,7 +419,7 @@ Message::writeBody(SocketUN *socket)
           // Body contains region,extents            
 	  case DDM_MODIFY_REGION:
             body.writeLongInt(region);
-	    writeExtents();
+	    writeExtents(body);
 	    break ;
 
           // Body contains region            
@@ -737,4 +737,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.20.2.1 2008/03/18 15:55:55 erk Exp $
+// $Id: Message_W.cc,v 3.20.2.2 2008/04/22 08:41:07 erk Exp $

@@ -19,6 +19,8 @@ ERk6) Should be possible to avoid code duplication
 
 Erk7) Clean-up PrettyDebug mess
 
+Erk8) Suppress copy in ValueArray = req->getAttribValueArray();
+
 Warning: this is an old file, many file/class names have changed, some
 problems are probably solved or handled differently.
 -------------------------------------------------------------------------------
