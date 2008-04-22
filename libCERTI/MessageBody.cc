@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: MessageBody.cc,v 3.16 2008/02/14 15:29:58 erk Exp $
+// $Id: MessageBody.cc,v 3.16.2.1 2008/04/22 13:35:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -126,7 +126,7 @@ assert(val <= 4294967295U);
 	buffer[wPtr++]= (char)(0x000000FF & (val >> 24));
 	buffer[wPtr++]= (char)(0x000000FF & (val >> 16));
 	buffer[wPtr++]= (char)(0x000000FF & (val >>  8));
-	buffer[wPtr++]= (char)(0x000000FF & val;
+	buffer[wPtr++]= (char)(0x000000FF & val);
 #else
 	buffer[wPtr++]= (char)(0x000000FF & val);
 	buffer[wPtr++]= (char)(0x000000FF & (val >>  8));
@@ -182,4 +182,4 @@ return *this ;
 
 } // certi
 
-// $Id: MessageBody.cc,v 3.16 2008/02/14 15:29:58 erk Exp $
+// $Id: MessageBody.cc,v 3.16.2.1 2008/04/22 13:35:07 erk Exp $
