@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.23.2.1 2008/04/20 12:52:21 erk Exp $
+// $Id: RTIG.hh,v 3.23.2.2 2008/04/23 06:23:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -26,6 +26,7 @@
 
 #include "certi.hh"
 #include "NetworkMessage.hh"
+#include "NM_Classes.hh"
 #include "SecureTCPSocket.hh"
 #include "SocketServer.hh"
 #include "FederationsList.hh"
@@ -71,8 +72,8 @@ private:
     void processJoinFederation(Socket*, NetworkMessage*);
     void processResignFederation(Handle, FederateHandle);
     void processDestroyFederation(Socket*, NetworkMessage*);
-    void processSetTimeRegulating(NetworkMessage *msg);
-    void processSetTimeConstrained(NetworkMessage *msg);
+    void processSetTimeRegulating(NM_Set_Time_Regulating *msg);
+    void processSetTimeConstrained(NM_Set_Time_Constrained *msg);
     void processMessageNull(NetworkMessage*);
     void processRegisterSynchronization(Socket*, NetworkMessage*);
     void processSynchronizationAchieved(Socket*, NetworkMessage*);
@@ -131,4 +132,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.23.2.1 2008/04/20 12:52:21 erk Exp $
+// $Id: RTIG.hh,v 3.23.2.2 2008/04/23 06:23:23 erk Exp $

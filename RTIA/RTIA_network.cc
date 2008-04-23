@@ -18,10 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.22.2.3 2008/04/20 12:52:20 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.4 2008/04/23 06:23:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
+#include "NM_Classes.hh"
 #include "RTIA.hh"
 #include "ObjectClassAttribute.hh"
 #include "Interaction.hh"
@@ -64,7 +65,7 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
-          if (msg->isRegulator())
+          if (static_cast<NM_Set_Time_Regulating*>(msg)->isRegulator())
               tm->insert(msg->federate, msg->getDate());
           else
               tm->remove(msg->federate);
@@ -344,4 +345,4 @@ G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.22.2.3 2008/04/20 12:52:20 erk Exp $
+// $Id: RTIA_network.cc,v 3.22.2.4 2008/04/23 06:23:24 erk Exp $

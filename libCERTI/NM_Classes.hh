@@ -31,7 +31,7 @@ namespace certi {
 class CERTI_EXPORT NM_Factory {
 public:
 	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
-   static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
+	static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
 };
 
 class CERTI_EXPORT NM_WithHandleArray : public NetworkMessage {
@@ -133,8 +133,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	  
-//	std::string federationName ;
-//	std::string FEDid ;
+	//	std::string federationName ;
+	//	std::string FEDid ;
 private:
 };
 
@@ -151,7 +151,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */	 
-//	std::string federationName;
+	//	std::string federationName;
 private:
 };
 
@@ -168,12 +168,12 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	int32_t  numberOfRegulators;
-//	uint32_t multicastAddress;
-//	uint32_t bestEffortAddress;
-//	uint32_t bestEffortPeer;
-//	std::string federationName;
-//	std::string federateName;
+	//	int32_t  numberOfRegulators;
+	//	uint32_t multicastAddress;
+	//	uint32_t bestEffortAddress;
+	//	uint32_t bestEffortPeer;
+	//	std::string federationName;
+	//	std::string federateName;
 private:
 };
 
@@ -202,9 +202,17 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	void regulatorOn() {regulator=true;};
+	void regulatorOff() {regulator=false;};	
+	bool isRegulator() {return regulator;};
 protected:
 	/* specific field */
-	//bool   regulating;
+	/**
+	 * Toggle which indicates if federate
+	 * wants to become regulator or leave
+	 * its regulator state
+	 */
+	bool regulator ;
 private:
 };
 
@@ -219,9 +227,17 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	void constrainedOn() {constrained=true;};
+	void constrainedOff() {constrained=false;};		
+	bool isConstrained() {return constrained;};
 protected:
 	/* specific field */	
-	//bool   constrained;
+	/**
+	 * Toggle which indicates if federate
+	 * wants to become constrained or leave
+	 * its constrained state
+	 */
+	bool constrained;
 private:
 };
 
@@ -552,7 +568,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	ObjectClassHandle objectClass;
+	//	ObjectClassHandle objectClass;
 private:
 };
 
@@ -571,7 +587,7 @@ public:
 	void setInteractionClassHandle(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
 protected:
 	/* specific field */
-//	InteractionClassHandle interactionClass;
+	//	InteractionClassHandle interactionClass;
 private:
 };
 
@@ -689,7 +705,7 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	ObjectHandle object;
+	//	ObjectHandle object;
 private:
 };
 
@@ -720,8 +736,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	ObjectClassHandle objectClass;	
-//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
+	//	ObjectClassHandle objectClass;	
+	//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 
@@ -752,8 +768,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	InteractionClassHandle interactionClass;	
-//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
+	//	InteractionClassHandle interactionClass;	
+	//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 
@@ -911,8 +927,8 @@ public:
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
-//	ObjectHandle    object;
-//	AttributeHandle attribute;
+	//	ObjectHandle    object;
+	//	AttributeHandle attribute;
 private:
 };
 
@@ -1157,9 +1173,9 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-//	SpaceHandle space;
-//	int32_t nbExtents;
-//	int32_t region;
+	//	SpaceHandle space;
+	//	int32_t nbExtents;
+	//	int32_t region;
 private:
 };
 
@@ -1178,7 +1194,7 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-//	int32_t region;
+	//	int32_t region;
 private:
 };
 
@@ -1197,7 +1213,7 @@ public:
 	void setRegion(SpaceHandle region) {this->region=region;};
 protected:
 	/* specific field */
-//	int32_t region;	
+	//	int32_t region;	
 private:
 };
 
@@ -1218,8 +1234,8 @@ public:
 	void setObject(ObjectHandle object) {this->object=object;};		
 protected:
 	/* specific field */
-//	int32_t      region;
-//	ObjectHandle object;
+	//	int32_t      region;
+	//	ObjectHandle object;
 private:
 };
 
@@ -1344,15 +1360,15 @@ public:
 	/* specific Getter/Setter */
 	void setFEDid(std::string FEDid) {this->FEDid=FEDid;};
 	const std::string getFEDid() const {return FEDid;};
-//	void setLineFollows() {lineFollows=true;};
-//	void unsetLineFollows() {lineFollows=true;};
+	//	void setLineFollows() {lineFollows=true;};
+	//	void unsetLineFollows() {lineFollows=true;};
 	//const bool getLineFollows() {return lineFollows;};
 	void setFEDLine(std::string line) {this->line=line;};
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
-//	std::string FEDid;
-//	bool lineFollows;
+	//	std::string FEDid;
+	//	bool lineFollows;
 	std::string line;
 private:
 };

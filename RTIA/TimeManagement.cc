@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.29.2.4 2008/04/20 12:52:21 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.5 2008/04/23 06:23:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -570,7 +570,11 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
-        msg.setConstrained(etat);
+        if (etat) {
+        	msg.constrainedOn();
+        } else {
+        	msg.constrainedOff();
+        }        
 
         comm->sendMessage(&msg);
 
@@ -609,7 +613,11 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
-        msg.setRegulator(etat);
+        if (etat) {
+        	msg.regulatorOn();
+        } else {
+        	msg.regulatorOff();
+        }        
         msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
@@ -798,4 +806,4 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.29.2.4 2008/04/20 12:52:21 erk Exp $
+// $Id: TimeManagement.cc,v 3.29.2.5 2008/04/23 06:23:23 erk Exp $

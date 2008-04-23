@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.56.2.9 2008/04/22 08:41:08 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.10 2008/04/23 06:23:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -326,7 +326,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Put federate as time regulating.
 void
-RTIG::processSetTimeRegulating(NetworkMessage *msg)
+RTIG::processSetTimeRegulating(NM_Set_Time_Regulating *msg)
 {
   if (msg->isRegulator()) {
         auditServer << "ON at time " << msg->getDate();
@@ -350,8 +350,9 @@ RTIG::processSetTimeRegulating(NetworkMessage *msg)
 // ----------------------------------------------------------------------------
 //! Put federate as time constrained
 void
-RTIG::processSetTimeConstrained(NetworkMessage *msg)
+RTIG::processSetTimeConstrained(NM_Set_Time_Constrained *msg)
 {
+  
   if (msg->isConstrained()) {
         auditServer << "ON at time " << msg->getDate();
 
@@ -1326,4 +1327,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.56.2.9 2008/04/22 08:41:08 erk Exp $
+// $Id: RTIG_processing.cc,v 3.56.2.10 2008/04/23 06:23:22 erk Exp $

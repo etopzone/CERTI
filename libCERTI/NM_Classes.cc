@@ -487,8 +487,8 @@ NM_Resign_Federation_Execution::~NM_Resign_Federation_Execution() {
 NM_Set_Time_Regulating::NM_Set_Time_Regulating() {
 	this->name = "SET_TIME_REGULATING";
 	this->type = NetworkMessage::SET_TIME_REGULATING;
-	/* specific field init */
-	//isDated =true;
+	/* specific field init */	
+	regulator = false;
 }
 NM_Set_Time_Regulating::~NM_Set_Time_Regulating() {
 }
@@ -511,7 +511,7 @@ NM_Set_Time_Constrained::NM_Set_Time_Constrained() {
 	this->name = "SET_TIME_CONSTRAINED";
 	this->type = NetworkMessage::SET_TIME_CONSTRAINED;
 	/* specific field init */
-	//isDated =true;
+	constrained=false;
 }
 NM_Set_Time_Constrained::~NM_Set_Time_Constrained() {
 }

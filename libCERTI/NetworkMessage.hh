@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.30.2.10 2008/04/21 11:29:09 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.11 2008/04/23 06:23:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -218,15 +218,7 @@ public:
 	int bestEffortPeer ;
 	unsigned long bestEffortAddress ;
 
-  void setRegulator(bool newState) {this->regulator=newState;};
-  bool isRegulator() {return regulator;};
-
-
 	int numberOfRegulators ;
-
-  void setConstrained(bool newState) {this->constrained=newState;};
-  bool isConstrained() {return constrained;};
-
 
 	/* NM_DDM_Base class fields */
 	SpaceHandle            space;
@@ -344,20 +336,6 @@ protected:
 	 */
 	std::string tag;
 
-  /**
-   * Toggle which indicates if federate
-   * wants to become regulator or leave
-   * its regulator state
-   */
-	bool regulator ;
-
-  /**
-   * Toggle which indicates if federate
-   * wants to become constrained or leave
-   * its constrained state
-   */
-	bool constrained ;
-
 	// ValueArray is now a ValueLengthPair
 	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 
@@ -372,4 +350,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.30.2.10 2008/04/21 11:29:09 erk Exp $
+// $Id: NetworkMessage.hh,v 3.30.2.11 2008/04/23 06:23:21 erk Exp $
