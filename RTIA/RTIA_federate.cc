@@ -18,16 +18,19 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.72 2008/04/23 12:55:06 erk Exp $
+// $Id: RTIA_federate.cc,v 3.73 2008/04/23 13:03:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
 
-
 #include "fed.hh"
 #include "RoutingSpace.hh"
 #include "XmlParser.hh"
+#ifdef _WIN32
+#include <time.h>
+#include <sys/timeb.h>
+#endif
 
 using std::string ;
 using std::ifstream ;
@@ -1377,4 +1380,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.72 2008/04/23 12:55:06 erk Exp $
+// $Id: RTIA_federate.cc,v 3.73 2008/04/23 13:03:48 erk Exp $
