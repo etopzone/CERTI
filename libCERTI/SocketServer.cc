@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.15 2008/04/03 15:21:51 rousse Exp $
+// $Id: SocketServer.cc,v 3.16 2008/04/23 11:54:41 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -111,7 +111,8 @@ SocketServer::close(long socket,
     federate_referenced = tuple->Federate ;
 
     // If the Tuple had no references, remove it, else just delete the socket.
-    if (tuple->Federation == 0) {
+    // Also, if no federate (no Join)
+    if (tuple->Federation == 0 && tuple->Federate != 0) {
         list<SocketTuple *>::iterator i ;
         list<SocketTuple *>::iterator tmp ;
         for (i = begin(); i != end(); i++) {
@@ -329,4 +330,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.15 2008/04/03 15:21:51 rousse Exp $
+// $Id: SocketServer.cc,v 3.16 2008/04/23 11:54:41 rousse Exp $
