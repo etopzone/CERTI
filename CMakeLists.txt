@@ -178,41 +178,75 @@ ELSE(NOT FORCE_NO_X11)
     MESSAGE(STATUS "FORCE_NO_X11 OPTION has been  set: Billard Test Application will not have GUI.")
     SET(X11_FOUND 0)
 ENDIF(NOT FORCE_NO_X11)
+
 IF (X11_FOUND)
   FIND_FILE(HAVE_X11_BITMAPS_CNTR_PTR
     NAMES cntr_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
+    
+  IF(NOT HAVE_X11_BITMAPS_CNTR_PTR) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/cntr_ptr not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_CNTR_PTR)
 
   FIND_FILE(HAVE_X11_BITMAPS_DOT
     NAMES dot
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
+    
+  IF(NOT HAVE_X11_BITMAPS_DOT) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/dot not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_DOT)
       
   FIND_FILE(HAVE_X11_BITMAPS_DROPBAR8
     NAMES dropbar8
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
+    
+  IF(NOT HAVE_X11_BITMAPS_DROPBAR8) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/dropbar8 not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_DROPBAR8)
 
   FIND_FILE(HAVE_X11_BITMAPS_LEFT_PTR
     NAMES left_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
+    
+  IF(NOT HAVE_X11_BITMAPS_LEFT_PTR) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/left_ptr not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_LEFT_PTR)
 
   FIND_FILE(HAVE_X11_BITMAPS_MENU16
     NAMES menu16
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
+    
+  IF(NOT HAVE_X11_BITMAPS_MENU16) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/menu16 not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_MENU16)
 
   FIND_FILE(HAVE_X11_BITMAPS_RIGHT_PTR
     NAMES right_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-      
-ELSE (X11_FOUND)
-  MESSAGE(STATUS "X11 header not found: Billard Test Application will not have GUI.")
+    
+  IF(NOT HAVE_X11_BITMAPS_RIGHT_PTR) 
+    SET(X_DISPLAY_MISSING 1)
+    MESSAGE(STATUS "X11 header: X11/bitmaps/right_ptr not found.")
+  ENDIF(NOT HAVE_X11_BITMAPS_RIGHT_PTR)
+   
+ELSE (X11_FOUND)  
   SET(X_DISPLAY_MISSING 1)
 ENDIF (X11_FOUND)
+
+IF(X_DISPLAY_MISSING)
+  MESSAGE(STATUS "Some X11 header were not found: Billard Test Application will not have GUI.")
+ENDIF(X_DISPLAY_MISSING)
 
 ################ LEX YACC Check ####################
 FIND_PACKAGE(LexYacc)
