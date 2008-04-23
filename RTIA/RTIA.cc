@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.17 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA.cc,v 3.18 2008/04/23 12:55:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -131,6 +131,8 @@ RTIA::execute()
 
         switch (n) {
           case 0:
+            delete msg_un ;
+            delete msg_tcp_udp ;
             break ;
           case 1:
             processNetworkMessage(msg_tcp_udp);
@@ -141,6 +143,8 @@ RTIA::execute()
             delete msg_tcp_udp ;
             break ;
           case 3: // timeout
+            delete msg_un ;
+            delete msg_tcp_udp ;
             break ;
           default:
             assert(false);
@@ -154,7 +158,8 @@ RTIA::execute()
             msg_un = new Message ;
 
             try {
-                if (isfinite(tm->_tick_timeout) && tm->_tick_timeout < LONG_MAX)
+                if (tm->_tick_timeout != std::numeric_limits<double>::infinity() &&
+                   tm->_tick_timeout < LONG_MAX)
                 {
                     struct timeval timev;
                     timev.tv_sec = int(tm->_tick_timeout);
@@ -176,15 +181,21 @@ RTIA::execute()
 
             switch (n) {
               case 0:
+                delete msg_un;
+                delete msg_tcp_udp;
                 break ;
               case 1:
                 processNetworkMessage(msg_tcp_udp) ;  // could authorize a callbak
+                delete msg_un ;
                 // may have reset tm->_blocking_tick
                 processOngoingTick();
                 break ;
               case 2:
                 assert(false);
               case 3: // timeout
+                delete msg_un;
+                delete msg_tcp_udp;
+                // stop the ongoing tick() operation
                 tm->_blocking_tick = false;
                 processOngoingTick();
                 break ;
@@ -197,4 +208,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.17 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA.cc,v 3.18 2008/04/23 12:55:05 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.71 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA_federate.cc,v 3.72 2008/04/23 12:55:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1009,13 +1009,13 @@ RTIA::processOngoingTick()
 
     if (!tm->_blocking_tick)
     {
-        Message *msg_un = new Message;
+        Message msg_ack;
         if ( exc != e_RTIinternalError )
-    	    msg_un->setException(exc);
+    	    msg_ack.setException(exc);
         // terminate __tick() call in the federate
-        msg_un->type = Message::TICK_REQUEST;
-        msg_un->setBoolean(pending);
-        comm->requestFederateService(msg_un);
+        msg_ack.type = Message::TICK_REQUEST;
+        msg_ack.setBoolean(pending);
+        comm->requestFederateService(&msg_ack);
     }
 }
 
@@ -1377,4 +1377,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.71 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA_federate.cc,v 3.72 2008/04/23 12:55:06 erk Exp $
