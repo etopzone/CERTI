@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.9 2008/04/07 15:08:26 erk Exp $
+// $Id: LBTS.cc,v 3.10 2008/04/23 13:03:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -34,6 +34,7 @@
 	#include <stdlib.h>
 #endif
 #include <float.h>
+#include <limits>
 
 using std::vector ;  
 
@@ -154,4 +155,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.9 2008/04/07 15:08:26 erk Exp $
+// $Id: LBTS.cc,v 3.10 2008/04/23 13:03:28 erk Exp $
