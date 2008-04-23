@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTIambServices.hh"
-// $Id: RTIambServices.hh,v 3.3 2007/06/14 13:00:21 siron Exp $
+// $Id: RTIambServices.hh,v 3.4 2008/04/23 07:36:01 siron Exp $
 
 typedef FederateAmbassador *FederateAmbassadorPtr ;
 
@@ -475,7 +475,7 @@ Boolean tick()
 Boolean tick2()
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
-Boolean tick_kernel(bool)
+Boolean __tick_kernel(Boolean, TickTime, TickTime)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted, RTIinternalError);
 
 Boolean tick(TickTime, TickTime)
@@ -493,4 +493,4 @@ RegionToken getRegionToken(Region *)
 Region *getRegion(RegionToken)
     throw (FederateNotExecutionMember, ConcurrentAccessAttempted, RegionNotKnown, RTIinternalError);
 
-// $Id: RTIambServices.hh,v 3.3 2007/06/14 13:00:21 siron Exp $
+// $Id: RTIambServices.hh,v 3.4 2008/04/23 07:36:01 siron Exp $

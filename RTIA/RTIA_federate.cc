@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.70 2008/04/01 13:00:46 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.71 2008/04/23 07:36:01 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,6 +37,22 @@ namespace rtia {
 
 static pdCDebug D("RTIA", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
+
+// ----------------------------------------------------------------------------
+static RTI::TickTime currentTickTime()
+{
+    RTI::TickTime result;
+#ifdef _WIN32 
+    _timeb timev;
+    _ftime(&timev);
+    result = timev.time + timev.millitm/1000;
+#else 
+    struct timeval timev;
+    gettimeofday(&timev, NULL);
+    result = timev.tv_sec + timev.tv_usec/1000000;
+#endif 
+    return result;
+}
 
 // ----------------------------------------------------------------------------
 //! Verify that federate is not in saving or restoring state.
@@ -942,18 +958,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST:
-        tm->_tick_request_ack = true ;
-        if (req->getBoolean()) {
-           tm->_ongoing_tick = true ;
-           D.Out(pdDebug, "Receiving Message from Federate, type TickRequest2.");
-           
-        }
-        else {
-           D.Out(pdDebug, "Receiving Message from Federate, type TickRequest.");
-           
-        }
-        rep.setBoolean(tm->tick(e));
+        tm->_tick_multiple = req->getBoolean();
 
+	if (req->getMinTickTime() > 0.0)
+	{
+            tm->_tick_timeout = req->getMinTickTime();
+            tm->_tick_stop_time = currentTickTime() + req->getMaxTickTime();
+
+            tm->_blocking_tick = true ;
+        }
+        else
+            tm->_blocking_tick = false ;
+
+        processOngoingTick();
         break ;
 
       default:
@@ -963,6 +980,43 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
     }
     stat.federateService(req->type);
     G.Out(pdGendoc,"exit  chooseFederateProcessing");
+}
+
+// ----------------------------------------------------------------------------
+//! RTIA processes the TICK_REQUEST
+void
+RTIA::processOngoingTick()
+{
+    TypeException exc = e_NO_EXCEPTION;
+    bool pending;
+
+    do {
+        // send a single callback to federate (if any)
+	pending = tm->tick(exc);
+
+	// processing a callback may have reset tm->_blocking_tick
+
+        if (!tm->_tick_multiple)
+    	    break;
+
+	if (currentTickTime() > tm->_tick_stop_time)
+	{
+            tm->_blocking_tick = false;
+            break;
+	}
+    }
+    while (pending);
+
+    if (!tm->_blocking_tick)
+    {
+        Message *msg_un = new Message;
+        if ( exc != e_RTIinternalError )
+    	    msg_un->setException(exc);
+        // terminate __tick() call in the federate
+        msg_un->type = Message::TICK_REQUEST;
+        msg_un->setBoolean(pending);
+        comm->requestFederateService(msg_un);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -1312,18 +1366,9 @@ RTIA::processFederateRequest(Message *req)
 
     delete req ;;
 
-     
-    if (rep.type == Message::TICK_REQUEST)
-       if ((!tm->_ongoing_tick) && tm->_tick_request_ack) {
-           // acknowledgment of an empty tick
-           comm->sendUN(&rep);
-           D.Out(pdDebug, "Reply send to Unix socket.");
-        }
-        else {
-           // no answer in the case of a successful tick
-        }
-    else {
+    if (rep.type != Message::TICK_REQUEST) {
        // generic federate service acknowledgment
+       // the TICK_REQUEST confirmation is generated in processOngoingTick()
        comm->sendUN(&rep);
        D.Out(pdDebug, "Reply send to Unix socket.");
     }
@@ -1332,4 +1377,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.70 2008/04/01 13:00:46 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.71 2008/04/23 07:36:01 siron Exp $

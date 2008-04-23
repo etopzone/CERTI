@@ -18,13 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.16 2008/04/01 13:00:46 rousse Exp $
+// $Id: RTIA.cc,v 3.17 2008/04/23 07:36:01 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
 
 #include <assert.h>
+#include <math.h>
 
 namespace certi {
 namespace rtia {
@@ -119,7 +120,7 @@ RTIA::execute()
         msg_un = new Message ;
 
         try {
-            comm->readMessage(n, msg_tcp_udp, msg_un);
+            comm->readMessage(n, msg_tcp_udp, msg_un, NULL);
         }
         catch (NetworkSignal) {
             fm->_fin_execution = true ;
@@ -139,20 +140,32 @@ RTIA::execute()
             processFederateRequest(msg_un);
             delete msg_tcp_udp ;
             break ;
+          case 3: // timeout
+            break ;
           default:
             assert(false);
         }
 
-        // special case, blocking tick (tick2)
-        while (!fm->_fin_execution && tm->_ongoing_tick) {
+        // special case, blocking tick
+        while (!fm->_fin_execution && tm->_blocking_tick) {
 	    // read a message from the rtig
             // same code is reused, but only the case 1 should match
-
             msg_tcp_udp = new NetworkMessage ;
             msg_un = new Message ;
 
             try {
-                comm->readMessage(n, msg_tcp_udp, msg_un);
+                if (isfinite(tm->_tick_timeout) && tm->_tick_timeout < LONG_MAX)
+                {
+                    struct timeval timev;
+                    timev.tv_sec = int(tm->_tick_timeout);
+                    timev.tv_usec = int((tm->_tick_timeout-timev.tv_sec)*1000000.0);
+
+                    comm->readMessage(n, msg_tcp_udp, msg_un, &timev);
+                }
+                else
+                    comm->readMessage(n, msg_tcp_udp, msg_un, NULL);
+
+                /* timev is undefined after select() */
             }
             catch (NetworkSignal) {
                 fm->_fin_execution = true ;
@@ -166,11 +179,15 @@ RTIA::execute()
                 break ;
               case 1:
                 processNetworkMessage(msg_tcp_udp) ;  // could authorize a callbak
-                msg_un->type = Message::TICK_REQUEST ;
-                msg_un->setBoolean(true) ;
-                processFederateRequest(msg_un);  //could reset _ongoing_tick                
+                // may have reset tm->_blocking_tick
+                processOngoingTick();
                 break ;
               case 2:
+                assert(false);
+              case 3: // timeout
+                tm->_blocking_tick = false;
+                processOngoingTick();
+                break ;
               default:
                 assert(false);
             }
@@ -180,4 +197,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.16 2008/04/01 13:00:46 rousse Exp $
+// $Id: RTIA.cc,v 3.17 2008/04/23 07:36:01 siron Exp $

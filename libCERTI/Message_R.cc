@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.19 2008/04/03 15:21:51 rousse Exp $
+// $Id: Message_R.cc,v 3.20 2008/04/23 07:36:01 siron Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -441,8 +441,14 @@ Message::readBody(SocketUN *socket)
           case DISABLE_TIME_REGULATION:
           case ENABLE_TIME_CONSTRAINED:
           case DISABLE_TIME_CONSTRAINED:
+            boolean = body.readLongInt();
+            break ;
+
+          // Body contains boolean, TickTime, TickTime
           case TICK_REQUEST:
             boolean = body.readLongInt();
+            body.readBlock((char *)&minTickTime, sizeof(minTickTime));
+            body.readBlock((char *)&maxTickTime, sizeof(maxTickTime));
             break ;
 
           // Body contains objectClass, handleArraySize,
@@ -758,4 +764,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.19 2008/04/03 15:21:51 rousse Exp $
+// $Id: Message_R.cc,v 3.20 2008/04/23 07:36:01 siron Exp $

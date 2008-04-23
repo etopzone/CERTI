@@ -194,6 +194,20 @@ Message::setRegion(long handle)
 
 // ----------------------------------------------------------------------------
 void
+Message::setMinTickTime(RTI::TickTime time)
+{
+    minTickTime = time;
+}
+
+// ----------------------------------------------------------------------------
+void
+Message::setMaxTickTime(RTI::TickTime time)
+{
+    maxTickTime = time;
+}
+
+// ----------------------------------------------------------------------------
+void
 Message::setDimension(DimensionHandle handle)
 {
     dimension = handle ;
@@ -603,6 +617,8 @@ Message::operator=(const Message& msg)
     dimension = msg.dimension ;
     // transportation = msg.transportation ;
     // ordering = msg.ordering ;
+    minTickTime = msg.minTickTime ;
+    maxTickTime = msg.maxTickTime ;
 
     strcpy(tag, msg.tag);
     strcpy(name, msg.name);

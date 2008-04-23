@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.11 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.12 2008/04/23 07:36:02 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -84,12 +84,11 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 
     D.Out(pdDebug, "RTIA reply received.");
 
-    if (req->type != Message::TICK_REQUEST) {
-       if (rep->type != req->type) {
-           std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
-           throw RTIinternalError("RTIambPrivateRefs::executeService: "
-                                  "rep->type != req->type");
-       }
+
+    if (rep->type != req->type) {
+        std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
+        throw RTIinternalError("RTIambPrivateRefs::executeService: "
+                               "rep->type != req->type");
     }
 
     D.Out(pdDebug, "processing returned exception (from reply).");
@@ -540,4 +539,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.11 2008/02/18 13:37:30 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.12 2008/04/23 07:36:02 siron Exp $

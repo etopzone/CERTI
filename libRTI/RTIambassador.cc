@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.75 2008/04/03 15:21:52 rousse Exp $
+// $Id: RTIambassador.cc,v 3.76 2008/04/23 07:36:02 siron Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -195,33 +195,46 @@ delete privateRefs ;
 }
 
 // ----------------------------------------------------------------------------
-// Tick
+//! Evoke callback (HLA1.3).
+/*! Non-blocking callback evocation, returns immediately with or without 1 callback.
+ *  @return Always returns false.
+ */
 RTI::Boolean
 RTI::RTIambassador::tick()
     throw (SpecifiedSaveLabelDoesNotExist,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-   // non-blocking tick, returns immediately with or without 1 callback
-   return tick_kernel (false);
+   __tick_kernel(RTI_FALSE, 0.0, 0.0);
+   return RTI_FALSE;
 }
 
 // ----------------------------------------------------------------------------
-// Tick
+//! Evoke callback (CERTI extension).
+/*! Blocks until a callback delivery and then evokes a single callback.
+ *  Waits until a callback delivery, be careful.
+ *  @return true if additional callbacks pending, false otherwise
+ *  @warning This is a non-standard extension of the HLA 1.3 API.
+ */
 RTI::Boolean
 RTI::RTIambassador::tick2()
     throw (SpecifiedSaveLabelDoesNotExist,
            ConcurrentAccessAttempted,
            RTIinternalError)
 {
-   // blocking tick, waits until a callback delivery, be careful
-   return tick_kernel (true);
+   __tick_kernel(RTI_FALSE, std::numeric_limits<double>::infinity(), 0.0);
+   return RTI_FALSE;
 }
 
 // ----------------------------------------------------------------------------
-// Tick_kernel
+//! Generic callback evocation (CERTI extension).
+/*! Blocks up to "minimum" seconds until a callback delivery and then evokes a
+ *  single callback.
+ *  @return true if additional callbacks pending, false otherwise
+ *  @warning This is a non-standard extension of the HLA 1.3 API.
+ */
 RTI::Boolean
-RTI::RTIambassador::tick_kernel(bool locked)
+RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickTime maximum)
     throw (SpecifiedSaveLabelDoesNotExist,
            ConcurrentAccessAttempted,
            RTIinternalError)
@@ -230,10 +243,9 @@ RTI::RTIambassador::tick_kernel(bool locked)
 
     // Prevenir le RTI
     vers_RTI.type = Message::TICK_REQUEST ;
-    if (locked)
-       vers_RTI.setBoolean(true);
-    else
-       vers_RTI.setBoolean(false);
+    vers_RTI.setBoolean(multiple);
+    vers_RTI.setMinTickTime(minimum);
+    vers_RTI.setMaxTickTime(maximum);
 
     try {
         vers_RTI.write(privateRefs->socketUn);
@@ -245,284 +257,287 @@ RTI::RTIambassador::tick_kernel(bool locked)
         throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick1) : NetworkError-->RTIinternalError");
     }
 
-    // Lire la reponse du RTIA local
-    try {
-        vers_Fed.read(privateRefs->socketUn);
-    }
-    catch (NetworkError) {
-        cout << "tick 2." << endl ;
-        cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
-             << endl ;
-        throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick2) : NetworkError-->RTIinternalError");
-    }
+    // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
+    while (1) {
+        try {
+            vers_Fed.read(privateRefs->socketUn);
+        }
+        catch (NetworkError) {
+            cout << "tick 2." << endl ;
+            cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
+                 << endl ;
+            throw RTIinternalError("RTI::RTIambassador::tick_kernel (tick2) : NetworkError-->RTIinternalError");
+        }
 
-    // Si c'est de type TICK_REQUEST, il n'y a qu'a traiter l'exception.
-    if (vers_Fed.type == Message::TICK_REQUEST) {
-        privateRefs->processException(&vers_Fed);
-        return RTI::Boolean(vers_Fed.getBoolean());
-    }
+        vers_RTI.setException(e_NO_EXCEPTION);
 
-    // Sinon, le RTI nous demande un service, donc on appele une methode
-    // du FederateAmbassador.
+        try {		
+            //D.Mes( pdMessage, 'M', vers_Fed.type);
+            vers_Fed.trace("RTI::RTIambassador::tick ");
+                
+            switch (vers_Fed.type) {
 
-    vers_RTI.setException(e_NO_EXCEPTION);
+              // If the type is TICK_REQUEST, the __tick_kernel() has terminated.
 
+              case Message::TICK_REQUEST:
+                if (vers_Fed.getExceptionType() != e_NO_EXCEPTION)
+                    privateRefs->processException(&vers_Fed);
+                return RTI::Boolean(vers_Fed.getBoolean());
 
-    try {		
-        //D.Mes( pdMessage, 'M', vers_Fed.type);
-        vers_Fed.trace("RTI::RTIambassador::tick ");
-				
-        switch (vers_Fed.type) {
+              // Otherwise, the RTI calls a FederateAmbassador service.
 
-          case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-            privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
-            break ;
+              case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
+                break ;
 
-          case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
-            privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),vers_Fed.getTag());
-            break ;
+              case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
+                privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),vers_Fed.getTag());
+                break ;
 
-          case Message::FEDERATION_SYNCHRONIZED:
-            privateRefs->fed_amb->federationSynchronized(vers_Fed.getLabel());
-            break ;
+              case Message::FEDERATION_SYNCHRONIZED:
+                privateRefs->fed_amb->federationSynchronized(vers_Fed.getLabel());
+                break ;
 
-          case Message::INITIATE_FEDERATE_SAVE:
-            privateRefs->fed_amb->initiateFederateSave(vers_Fed.getLabel());
-            break ;
+              case Message::INITIATE_FEDERATE_SAVE:
+                privateRefs->fed_amb->initiateFederateSave(vers_Fed.getLabel());
+                break ;
 
-          case Message::FEDERATION_SAVED:
-            privateRefs->fed_amb->federationSaved();
-            break ;
+              case Message::FEDERATION_SAVED:
+                privateRefs->fed_amb->federationSaved();
+                break ;
 
-          case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-            privateRefs->fed_amb->requestFederationRestoreSucceeded(
-                vers_Fed.getLabel());
-            break ;
+              case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+                privateRefs->fed_amb->requestFederationRestoreSucceeded(
+                    vers_Fed.getLabel());
+                break ;
 
-          case Message::REQUEST_FEDERATION_RESTORE_FAILED:
-            privateRefs->fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
-                                                    vers_Fed.getTag());
-            break ;
+              case Message::REQUEST_FEDERATION_RESTORE_FAILED:
+                privateRefs->fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
+                                                        vers_Fed.getTag());
+                break ;
 
-          case Message::FEDERATION_RESTORE_BEGUN:
-            privateRefs->fed_amb->federationRestoreBegun();
-            break ;
+              case Message::FEDERATION_RESTORE_BEGUN:
+                privateRefs->fed_amb->federationRestoreBegun();
+                break ;
 
-          case Message::INITIATE_FEDERATE_RESTORE:
-            privateRefs->fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
-                                             vers_Fed.getFederate());
-            break ;
+              case Message::INITIATE_FEDERATE_RESTORE:
+                privateRefs->fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
+                                                 vers_Fed.getFederate());
+                break ;
 
-          case Message::FEDERATION_RESTORED:
-            privateRefs->fed_amb->federationRestored();
-            break ;
+              case Message::FEDERATION_RESTORED:
+                privateRefs->fed_amb->federationRestored();
+                break ;
 
-          case Message::FEDERATION_NOT_RESTORED:
-            privateRefs->fed_amb->federationNotRestored();
-            break ;
+              case Message::FEDERATION_NOT_RESTORED:
+                privateRefs->fed_amb->federationNotRestored();
+                break ;
 
-          case Message::START_REGISTRATION_FOR_OBJECT_CLASS: {
-              privateRefs->fed_amb->startRegistrationForObjectClass(
-	              vers_Fed.getObjectClass());
-          } break ;
-
-          case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS: {
-              privateRefs->fed_amb->
-                  stopRegistrationForObjectClass(vers_Fed.getObjectClass());
-          } break ;
-
-          case Message::TURN_INTERACTIONS_ON: {
-              privateRefs->fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
-          } break ;
-
-          case Message::TURN_INTERACTIONS_OFF: {
-              privateRefs->fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
-          } break ;
-
-          case Message::DISCOVER_OBJECT_INSTANCE: {
-              privateRefs->fed_amb->
-                  discoverObjectInstance(vers_Fed.getObject(),
-                                         vers_Fed.getObjectClass(),
-                                         vers_Fed.getName());
-          } break ;
-
-          case Message::REFLECT_ATTRIBUTE_VALUES: {
-              G.Out(pdGendoc,"          tick_kernel call to reflectAttributeValues");
-              AttributeHandleValuePairSet *attributes = vers_Fed.getAHVPS();
-              if (vers_Fed.getBoolean())
-                 privateRefs->fed_amb->
-                     reflectAttributeValues(vers_Fed.getObject(),
-                                            *attributes,
-                                            vers_Fed.getFedTime(),
-                                            vers_Fed.getTag(),
-                                            vers_Fed.getEventRetraction());
-              else
-                 privateRefs->fed_amb->
-                     reflectAttributeValues(vers_Fed.getObject(),
-                                            *attributes,
-                                            vers_Fed.getTag());
-              delete attributes ;
-          } break ;
-
-          case Message::RECEIVE_INTERACTION:
-              {
-              ParameterHandleValuePairSet *parameters = vers_Fed.getPHVPS();
-              if (vers_Fed.getBoolean())
-                  privateRefs->fed_amb->receiveInteraction(
-                                          vers_Fed.getInteractionClass(),
-                                          *parameters,
-                                          vers_Fed.getFedTime(),
-                                          vers_Fed.getTag(),
-                                          vers_Fed.getEventRetraction());
-              else
-                  privateRefs->fed_amb->receiveInteraction(
-                                          vers_Fed.getInteractionClass(),
-                                          *parameters,
-                                          vers_Fed.getTag());
-
-              delete parameters ;
+              case Message::START_REGISTRATION_FOR_OBJECT_CLASS: {
+                  privateRefs->fed_amb->startRegistrationForObjectClass(
+                     vers_Fed.getObjectClass());
               } break ;
 
-          case Message::REMOVE_OBJECT_INSTANCE: {
-              if (vers_Fed.getBoolean()) {
-                  privateRefs->fed_amb->removeObjectInstance(
-                                            vers_Fed.getObject(),
-                                            vers_Fed.getFedTime(),
-                                            vers_Fed.getTag(),
-                                            vers_Fed.getEventRetraction());
-               }
-	       else {
-                  privateRefs->fed_amb->removeObjectInstance(
-                                            vers_Fed.getObject(),
-                                            vers_Fed.getTag());
-               }
-          } break ;
+              case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS: {
+                  privateRefs->fed_amb->
+                      stopRegistrationForObjectClass(vers_Fed.getObjectClass());
+              } break ;
 
-          case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+              case Message::TURN_INTERACTIONS_ON: {
+                  privateRefs->fed_amb->turnInteractionsOn(vers_Fed.getInteractionClass());
+              } break ;
 
-              privateRefs->fed_amb->provideAttributeValueUpdate(vers_Fed.getObject(),*attributeSet);
-              delete attributeSet ;
-          } break ;
+              case Message::TURN_INTERACTIONS_OFF: {
+                  privateRefs->fed_amb->turnInteractionsOff(vers_Fed.getInteractionClass());
+              } break ;
 
-          case Message::REQUEST_RETRACTION: {
+              case Message::DISCOVER_OBJECT_INSTANCE: {
+                  privateRefs->fed_amb->
+                      discoverObjectInstance(vers_Fed.getObject(),
+                                             vers_Fed.getObjectClass(),
+                                             vers_Fed.getName());
+              } break ;
 
-          } break ;
+              case Message::REFLECT_ATTRIBUTE_VALUES: {
+                  G.Out(pdGendoc,"          tick_kernel call to reflectAttributeValues");
+                  AttributeHandleValuePairSet *attributes = vers_Fed.getAHVPS();
+                  if (vers_Fed.getBoolean())
+                     privateRefs->fed_amb->
+                         reflectAttributeValues(vers_Fed.getObject(),
+                                                *attributes,
+                                                vers_Fed.getFedTime(),
+                                                vers_Fed.getTag(),
+                                                vers_Fed.getEventRetraction());
+                  else
+                     privateRefs->fed_amb->
+                         reflectAttributeValues(vers_Fed.getObject(),
+                                                *attributes,
+                                                vers_Fed.getTag());
+                  delete attributes ;
+              } break ;
 
-          case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+              case Message::RECEIVE_INTERACTION:
+                  {
+                  ParameterHandleValuePairSet *parameters = vers_Fed.getPHVPS();
+                  if (vers_Fed.getBoolean())
+                      privateRefs->fed_amb->receiveInteraction(
+                                              vers_Fed.getInteractionClass(),
+                                              *parameters,
+                                              vers_Fed.getFedTime(),
+                                              vers_Fed.getTag(),
+                                              vers_Fed.getEventRetraction());
+                  else
+                      privateRefs->fed_amb->receiveInteraction(
+                                              vers_Fed.getInteractionClass(),
+                                              *parameters,
+                                              vers_Fed.getTag());
 
-              privateRefs->fed_amb->
-                  requestAttributeOwnershipAssumption(vers_Fed.getObject(),
-                                                      *attributeSet,
-                                                      vers_Fed.getTag());
-              delete attributeSet ;
-          } break ;
+                  delete parameters ;
+                  } break ;
 
-          case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+              case Message::REMOVE_OBJECT_INSTANCE: {
+                  if (vers_Fed.getBoolean()) {
+                      privateRefs->fed_amb->removeObjectInstance(
+                                                vers_Fed.getObject(),
+                                                vers_Fed.getFedTime(),
+                                                vers_Fed.getTag(),
+                                                vers_Fed.getEventRetraction());
+                   }
+              else {
+                      privateRefs->fed_amb->removeObjectInstance(
+                                                vers_Fed.getObject(),
+                                                vers_Fed.getTag());
+                   }
+              } break ;
 
-              privateRefs->fed_amb->requestAttributeOwnershipRelease(
-		      vers_Fed.getObject(),
-		      *attributeSet,
-		      vers_Fed.getTag());
+              case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-              delete attributeSet ;
-          } break ;
+                  privateRefs->fed_amb->provideAttributeValueUpdate(vers_Fed.getObject(),*attributeSet);
+                  delete attributeSet ;
+              } break ;
 
-          case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+              case Message::REQUEST_RETRACTION: {
 
-              privateRefs->fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
-                                                         *attributeSet);
+              } break ;
 
-              delete attributeSet ;
-          } break ;
+              case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-          case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+                  privateRefs->fed_amb->
+                      requestAttributeOwnershipAssumption(vers_Fed.getObject(),
+                                                          *attributeSet,
+                                                          vers_Fed.getTag());
+                  delete attributeSet ;
+              } break ;
 
-              privateRefs->fed_amb->attributeOwnershipAcquisitionNotification(
-		      vers_Fed.getObject(),
-		      *attributeSet);
+              case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-              delete attributeSet ;
-          } break ;
+                  privateRefs->fed_amb->requestAttributeOwnershipRelease(
+                vers_Fed.getObject(),
+                *attributeSet,
+                vers_Fed.getTag());
 
-          case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+                  delete attributeSet ;
+              } break ;
 
-              privateRefs->fed_amb->attributeOwnershipDivestitureNotification(
-		      vers_Fed.getObject(),
-		      *attributeSet);
+              case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-              delete attributeSet ;
-          } break ;
+                  privateRefs->fed_amb->attributeOwnershipUnavailable(vers_Fed.getObject(),
+                                                             *attributeSet);
 
-          case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
-              AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+                  delete attributeSet ;
+              } break ;
 
-              privateRefs->fed_amb->
-                      confirmAttributeOwnershipAcquisitionCancellation
-                      (vers_Fed.getObject(), *attributeSet);
+              case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-              delete attributeSet ;
-          } break ;
+                  privateRefs->fed_amb->attributeOwnershipAcquisitionNotification(
+                vers_Fed.getObject(),
+                *attributeSet);
 
-           case Message::INFORM_ATTRIBUTE_OWNERSHIP: {
-              privateRefs->fed_amb->
-                  informAttributeOwnership(vers_Fed.getObject(),
-                                               vers_Fed.getAttribute(),
-                                               vers_Fed.getFederate());
-          } break ;
+                  delete attributeSet ;
+              } break ;
 
-          case Message::ATTRIBUTE_IS_NOT_OWNED: {
-              privateRefs->fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
-                                               vers_Fed.getAttribute());
-          } break ;
+              case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
 
-          case Message::TIME_ADVANCE_GRANT: {
-              privateRefs->fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
-          } break ;
+                  privateRefs->fed_amb->attributeOwnershipDivestitureNotification(
+                vers_Fed.getObject(),
+                *attributeSet);
 
-          default: {
-              privateRefs->leave("RTI service requested by RTI is unknown.");
-          }
+                  delete attributeSet ;
+              } break ;
+
+              case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION: {
+                  AttributeHandleSet *attributeSet = vers_Fed.getAHS();
+
+                  privateRefs->fed_amb->
+                          confirmAttributeOwnershipAcquisitionCancellation
+                          (vers_Fed.getObject(), *attributeSet);
+
+                  delete attributeSet ;
+              } break ;
+
+               case Message::INFORM_ATTRIBUTE_OWNERSHIP: {
+                  privateRefs->fed_amb->
+                      informAttributeOwnership(vers_Fed.getObject(),
+                                                   vers_Fed.getAttribute(),
+                                                   vers_Fed.getFederate());
+              } break ;
+
+              case Message::ATTRIBUTE_IS_NOT_OWNED: {
+                  privateRefs->fed_amb->attributeIsNotOwned(vers_Fed.getObject(),
+                                                   vers_Fed.getAttribute());
+              } break ;
+
+              case Message::TIME_ADVANCE_GRANT: {
+                  privateRefs->fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
+              } break ;
+
+              default: {
+                  privateRefs->leave("RTI service requested by RTI is unknown.");
+              }
+            }
+        }
+        catch (InvalidFederationTime &e) {
+            vers_RTI.setException(e_InvalidFederationTime, e._reason);
+            throw ;
+        }
+        catch (TimeAdvanceWasNotInProgress &e) {
+            vers_RTI.setException(e_TimeAdvanceWasNotInProgress, e._reason);
+            throw ;
+        }
+        catch (FederationTimeAlreadyPassed &e) {
+            vers_RTI.setException(e_FederationTimeAlreadyPassed, e._reason);
+        }
+        catch (FederateInternalError &e) {
+            vers_RTI.setException(e_FederateInternalError, e._reason);
+            throw ;
+        }
+        catch (Exception &e) {
+            vers_RTI.setException(e_RTIinternalError, e._reason);
+            throw ;
         }
     }
-    catch (InvalidFederationTime &e) {
-        vers_RTI.setException(e_InvalidFederationTime, e._reason);
-        throw ;
-    }
-    catch (TimeAdvanceWasNotInProgress &e) {
-        vers_RTI.setException(e_TimeAdvanceWasNotInProgress, e._reason);
-        throw ;
-    }
-    catch (FederationTimeAlreadyPassed &e) {
-        vers_RTI.setException(e_FederationTimeAlreadyPassed, e._reason);
-    }
-    catch (FederateInternalError &e) {
-        vers_RTI.setException(e_FederateInternalError, e._reason);
-        throw ;
-    }
-    catch (Exception &e) {
-        vers_RTI.setException(e_RTIinternalError, e._reason);
-        throw ;
-    }
-    
-    return RTI::Boolean(true);
-          
 }
 
 // ----------------------------------------------------------------------------
+//! Evoke multiple callbacks (HLA1.3).
+/*! Blocks up to "minimum" seconds until a callback delivery, then envokes
+ *  multiple callbacks until no callback is pending, or until "maximum"
+ *  duration is reached.
+ *  @return true if additional callbacks pending, false otherwise
+ */
 RTI::Boolean
-RTI::RTIambassador::tick(TickTime, TickTime)
+RTI::RTIambassador::tick(TickTime minimum, TickTime maximum)
     throw (SpecifiedSaveLabelDoesNotExist, ConcurrentAccessAttempted,
            RTIinternalError)
 {
-    return tick();
+    return __tick_kernel(RTI_TRUE, minimum, maximum);
 }
-
 
 // ----------------------------------------------------------------------------
 // Create Federation Execution.
@@ -2915,4 +2930,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.75 2008/04/03 15:21:52 rousse Exp $
+// $Id: RTIambassador.cc,v 3.76 2008/04/23 07:36:02 siron Exp $

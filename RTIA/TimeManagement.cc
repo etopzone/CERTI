@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.31 2008/04/07 15:08:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.32 2008/04/23 07:36:01 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -82,7 +82,7 @@ TimeManagement::TimeManagement(Communications *GC,
     lastNullMessageDate = 0.0 ;
 
     _avancee_en_cours = PAS_D_AVANCEE ;
-    _ongoing_tick          = false ;
+    _blocking_tick         = false ;
     _asynchronous_delivery = false ;
 
     _heure_courante = 0.0 ;
@@ -125,8 +125,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
   msg.trace("TimeManagement::executeFederateService ");
 
-  _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
-  _tick_request_ack = false ;  // the callback message serves as the ack
+    _blocking_tick = false;  // indicate a callback was processed
 
     switch (msg.type) {
 
@@ -822,8 +821,7 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     if (_lookahead_courant == epsilon)
        _lookahead_courant = 0.0 ;
 
-    _ongoing_tick = false ;  // end of the blocking tick, a message is delivered
-    _tick_request_ack = false ;
+    _blocking_tick = false;  // indicate a callback was processed
 
     comm->requestFederateService(&req);
 
@@ -914,4 +912,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.31 2008/04/07 15:08:27 erk Exp $
+// $Id: TimeManagement.cc,v 3.32 2008/04/23 07:36:01 siron Exp $

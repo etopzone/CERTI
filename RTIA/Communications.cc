@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.23 2008/04/08 08:50:22 rousse Exp $
+// $Id: Communications.cc,v 3.24 2008/04/23 07:36:00 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -183,7 +183,8 @@ Communications::getPort()
   Returns the actual source in the 1st parameter (RTIG=>1 federate=>2)
 */
 void
-Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
+Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg,
+                            struct timeval *timeout)
 {
     const int tcp_fd(SecureTCPSocket::returnSocket());
     const int udp_fd(SocketUDP::returnSocket());
@@ -244,7 +245,7 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
     else {
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
-        if (select(max_fd, &fdset, NULL, NULL, NULL) < 0) {
+        if (select(max_fd, &fdset, NULL, NULL, timeout) < 0) {
 			#ifdef _WIN32
 				 if(WSAGetLastError() == WSAEINTR)
 			#else
@@ -278,11 +279,15 @@ Communications::readMessage(int &n, NetworkMessage *msg_reseau, Message *msg)
             msg_reseau->read((SocketUDP *) this);
             n = 1 ;
         }
-        else {
+        else if (FD_ISSET(_socket_un, &fdset)) {
             // Read a message coming from the federate.
-            assert(FD_ISSET(_socket_un, &fdset));
             receiveUN(msg);
             n = 2 ;
+        }
+        else
+        {
+            // select() timeout occured
+            n = 3;
         }
     }
 }
@@ -342,4 +347,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.23 2008/04/08 08:50:22 rousse Exp $
+// $Id: Communications.cc,v 3.24 2008/04/23 07:36:00 siron Exp $

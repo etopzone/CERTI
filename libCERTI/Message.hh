@@ -310,6 +310,12 @@ public:
     long getRegion() const { return region ; };
     void setRegion(long);
 
+    RTI::TickTime getMinTickTime() const { return minTickTime ; };
+    void setMinTickTime(RTI::TickTime);
+
+    RTI::TickTime getMaxTickTime() const { return maxTickTime ; };
+    void setMaxTickTime(RTI::TickTime);
+
     void setFederationTimeDelta(FederationTimeDelta);
     FederationTimeDelta getFederationTimeDelta() const
     { return lookahead ; };
@@ -415,6 +421,8 @@ protected:
     // OrderingHandle ordering ;
     unsigned long number ;
     long region ;
+    RTI::TickTime minTickTime;
+    RTI::TickTime maxTickTime;
 
 public:
     // used for both Attributes and Parameters arrays.

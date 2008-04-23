@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.14 2008/03/13 14:39:19 siron Exp $
+// $Id: TimeManagement.hh,v 3.15 2008/04/23 07:36:01 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -105,8 +105,10 @@ public:
     bool requestRegulateurState() { return _est_regulateur ; };
 
     // Attribute
-    bool _ongoing_tick;  // tick2 processing
-    bool _tick_request_ack;  // do we have to acknowledge the tick request
+    bool _blocking_tick;  // processing the tick
+    bool _tick_multiple;  // process multiple callbacks
+    RTI::TickTime _tick_timeout;
+    RTI::TickTime _tick_stop_time;
     bool _asynchronous_delivery ;
 
 private:
@@ -146,4 +148,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.14 2008/03/13 14:39:19 siron Exp $
+// $Id: TimeManagement.hh,v 3.15 2008/04/23 07:36:01 siron Exp $
