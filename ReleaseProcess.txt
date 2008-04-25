@@ -57,9 +57,9 @@ CERTI releases should be done with the following steps:
    cd /path/to/certi
    scripts/cvs2cl.pl -t -r --delta CERTI-3_2_4:CERTI-3_2_5 --prune -T --accum 
 
-   commit the Changelog file
+   commit the ChangeLog file
    force the tag on it:
-   cvs tag -F CERTI-3_2_5 certi/Changelog
+   cvs tag -F CERTI-3_2_5 certi/ChangeLog
 
 8) Make certi packages using cpack
      - tar.gz (sources)              [mandatory]
