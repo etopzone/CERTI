@@ -1,4 +1,341 @@
-2008-03-21 16:48  tag CERTI-3_2_6
+2008-04-25 16:39  tag CERTI-3_2_7
+
+2008-04-25 16:39  erk
+
+	* CMakeLists.txt (1.40), configure.in (3.31) (utags: CERTI-3_2_7):
+	  Prepare CERTI 3.2.7
+
+2008-04-24 17:41  erk
+
+	* libCERTI/MessageBody.cc (3.17, CERTI-3_2_7): Missing parenthesis
+
+2008-04-23 23:39  erk
+
+	* test/Billard/CMakeLists.txt (1.5, CERTI-3_2_7): Add missing
+	  target dependency which should make CMake to always link to the
+	  appropriate inside-project lib.  See: bug #22890 : cmake does not
+	  correctly set X_DISPLAY_MISSING
+
+2008-04-23 18:39  erk
+
+	* libCERTI/Message.cc (3.49.2.1): Apply Matteo patch for stopping
+	  warning about int size mismatch in printf see
+	  https://savannah.nongnu.org/task/?6910
+
+2008-04-23 18:32  erk
+
+	* libCERTI/XmlParser.cc (3.25.2.1): Switch off warning for unused
+	  var
+
+2008-04-23 15:03  erk
+
+	* RTIA/RTIA_federate.cc (3.73, CERTI-3_2_7): Add missing include on
+	  WIN32
+
+2008-04-23 15:03  erk
+
+	* libCERTI/LBTS.cc (3.10, CERTI-3_2_7): add missing include
+	  <limits>
+
+2008-04-23 14:55  erk
+
+	* RTIA/: RTIA.cc (3.18, CERTI-3_2_7), RTIA_federate.cc (3.72):
+	  Applied Petr Patch RTIA.patch from
+	  https://savannah.nongnu.org/bugs/?22798
+
+2008-04-23 13:54  rousse
+
+	* libCERTI/SocketServer.cc (3.16, CERTI-3_2_7): BUG #23016
+	  correction : create and then destroy crash RTIG on Windows XP
+
+2008-04-23 13:16  erk
+
+	* CMakeLists.txt (1.39): Should fix: bug #22890 : cmake does not
+	  correctly set X_DISPLAY_MISSING
+
+2008-04-23 09:36  siron
+
+	* AUTHORS (3.10, CERTI-3_2_7), myconf (3.12, CERTI-3_2_7),
+	  RTIA/Communications.cc (3.24, CERTI-3_2_7),
+	  RTIA/Communications.hh (3.11, CERTI-3_2_7), RTIA/RTIA.cc (3.17),
+	  RTIA/RTIA.hh (3.12, CERTI-3_2_7), RTIA/RTIA_federate.cc (3.71),
+	  RTIA/TimeManagement.cc (3.32, CERTI-3_2_7),
+	  RTIA/TimeManagement.hh (3.15, CERTI-3_2_7),
+	  include/RTIambServices.hh (3.4, CERTI-3_2_7), libCERTI/Message.cc
+	  (3.50, CERTI-3_2_7), libCERTI/Message.hh (3.42, CERTI-3_2_7),
+	  libCERTI/Message_R.cc (3.20, CERTI-3_2_7), libCERTI/Message_W.cc
+	  (3.23, CERTI-3_2_7), libRTI/RTIambPrivateRefs.cc (3.12,
+	  CERTI-3_2_7), libRTI/RTIambassador.cc (3.76, CERTI-3_2_7):
+	  Correction of the #22798 bug by Petr Gotthard.  tick(time,time)
+	  is now operational.  A very important contribution, thank you
+	  very much.
+
+2008-04-23 08:23  erk
+
+	* libCERTI/NetworkMessage.hh (3.30.2.11), RTIG/RTIG_processing.cc
+	  (3.56.2.10), libCERTI/NM_Classes.cc (1.1.2.15),
+	  libCERTI/NM_Classes.hh (1.1.2.15), RTIA/TimeManagement.cc
+	  (3.29.2.5), RTIG/Federation.cc (3.80.2.5), RTIG/RTIG.cc
+	  (3.36.2.7), RTIG/RTIG.hh (3.23.2.2), RTIA/RTIA_network.cc
+	  (3.22.2.4): Use getter/setter for Time_Regulating and
+	  Time_Constrained NM
+
+2008-04-22 15:35  erk
+
+	* libCERTI/MessageBody.cc (3.16.2.1): parenthesis missing in the
+	  BIG ENDIAN case
+
+2008-04-22 15:11  erk
+
+	* CMakeLists.txt (1.34.2.3): Define HOST_IS_BIG_ENDIAN properly
+
+2008-04-22 14:07  jmm
+
+	* libCERTI/: MessageBuffer.cc (3.7.2.2), MessageBuffer.hh
+	  (3.6.2.2), NM_Classes.hh (1.1.2.14): Win32 update.  Fix
+	  compilation errror for return value Add missing CERTI_EXPORT
+
+2008-04-22 14:03  jmm
+
+	* scripts/FindLexYacc.cmake (1.2.2.1): Update FindLexYacc for find
+	  GnuWin32 flex and bison
+
+2008-04-22 10:41  erk
+
+	* libCERTI/BasicMessage.cc (3.9.2.3), libCERTI/BasicMessage.hh
+	  (3.7.2.3), libCERTI/Message_W.cc (3.20.2.2),
+	  libCERTI/NM_Classes.hh (1.1.2.13), TODO (3.1.6.3),
+	  RTIG/RTIG_processing.cc (3.56.2.9), libCERTI/Message_R.cc
+	  (3.17.2.2), libCERTI/NM_Classes.cc (1.1.2.14),
+	  libCERTI/ObjectClassSet.cc (3.31.2.1), RTIA/ObjectManagement.cc
+	  (3.35.2.5): Heteregenous CERTI seems to work fine with CERTI
+	  Billard
+
+2008-04-21 13:29  erk
+
+	* RTIA/: Communications.cc (3.22.2.4), RTIA.cc (3.13.2.2): Should
+	  allocate Message in the on-going case
+
+2008-04-21 13:29  erk
+
+	* libCERTI/NM_Classes.hh (1.1.2.12), libCERTI/NetworkMessage.hh
+	  (3.30.2.10), TODO (3.1.6.2), libCERTI/NM_Classes.cc (1.1.2.13),
+	  libCERTI/NetworkMessage_RW.cc (3.45.2.10): Avoid serialize buffer
+	  copy
+
+2008-04-20 23:24  erk
+
+	* libCERTI/MessageBuffer.cc (3.7.2.1): Small typo
+
+2008-04-20 23:22  erk
+
+	* RTIA/FederationManagement.cc (3.50.2.5): Testing
+	  "_est_createur_federation" which was not initialized
+
+2008-04-20 14:52  erk
+
+	* libCERTI/NM_Classes.cc (1.1.2.12), libCERTI/NM_Classes.hh
+	  (1.1.2.11), libCERTI/NetworkMessage.cc (3.28.2.7),
+	  libCERTI/NetworkMessage.hh (3.30.2.9),
+	  libCERTI/NetworkMessage_RW.cc (3.45.2.9), libCERTI/ObjectClass.cc
+	  (3.41.2.5), RTIA/FederationManagement.cc (3.50.2.4),
+	  RTIA/ObjectManagement.cc (3.35.2.4), RTIA/RTIA_network.cc
+	  (3.22.2.3), libCERTI/ObjectClass.hh (3.31.2.1),
+	  libCERTI/ObjectClassBroadcastList.cc (3.18.2.5),
+	  RTIA/TimeManagement.cc (3.29.2.4), RTIA/main.cc (3.18.2.1),
+	  RTIG/Federation.cc (3.80.2.4), RTIG/RTIG.cc (3.36.2.6),
+	  RTIG/RTIG.hh (3.23.2.1), RTIG/RTIG_processing.cc (3.56.2.8):
+	  Heterogeneous update Single Billard is OK.  Still have trouble
+	  with DISCOVER_OBJECT
+
+2008-04-11 16:08  erk
+
+	* libCERTI/NetworkMessage_RW.cc (3.45.2.8), RTIG/RTIG.cc
+	  (3.36.2.5), RTIG/RTIG_processing.cc (3.56.2.7),
+	  libCERTI/NM_Classes.cc (1.1.2.11): Fix stupid typo: serialize
+	  instead of DEserialize in PUBLISH_OBJECT
+
+2008-04-10 22:43  erk
+
+	* RTIA/DeclarationManagement.cc (3.17.2.3), RTIG/RTIG_processing.cc
+	  (3.56.2.6), libCERTI/NM_Classes.cc (1.1.2.10),
+	  libCERTI/NM_Classes.hh (1.1.2.10), libCERTI/NetworkMessage_RW.cc
+	  (3.45.2.7), scripts/NW_MessageType.ods (1.1.2.6): Some more
+	  fixes.  Not enough to make billard run through the end...
+
+2008-04-10 21:58  erk
+
+	* TODO (3.1.6.1): Add Erk TODO list
+
+2008-04-10 21:55  erk
+
+	* RTIG/RTIG_processing.cc (3.56.2.5), RTIA/FederationManagement.cc
+	  (3.50.2.3), libCERTI/NM_Classes.cc (1.1.2.9),
+	  libCERTI/NM_Classes.hh (1.1.2.9): First steps billard seems OK.
+	  Now I should check more in-depth tests
+
+2008-04-10 17:12  erk
+
+	* libCERTI/Interaction.cc (3.35.2.4), libCERTI/NetworkMessage.hh
+	  (3.30.2.8), RTIA/OwnershipManagement.cc (3.12.2.3),
+	  RTIG/RTIG_processing.cc (3.56.2.4), libCERTI/ObjectClass.cc
+	  (3.41.2.4), libCERTI/ObjectClassBroadcastList.cc (3.18.2.4),
+	  RTIA/DataDistribution.cc (3.23.2.3), RTIA/ObjectManagement.cc
+	  (3.35.2.3), RTIA/TimeManagement.cc (3.29.2.3): Now date, label
+	  and tag are protected and accessed through getter/setter
+
+2008-04-10 16:57  erk
+
+	* RTIA/DeclarationManagement.cc (3.17.2.2), RTIA/Communications.cc
+	  (3.22.2.3), RTIA/DataDistribution.cc (3.23.2.2),
+	  RTIA/FederationManagement.cc (3.50.2.2), RTIA/Files.cc (3.8.4.1),
+	  RTIA/ObjectManagement.cc (3.35.2.2), RTIA/OwnershipManagement.cc
+	  (3.12.2.2), RTIA/RTIA_network.cc (3.22.2.2),
+	  RTIA/TimeManagement.cc (3.29.2.2), RTIG/Federation.cc (3.80.2.3),
+	  RTIG/RTIG.cc (3.36.2.4), RTIG/RTIG_processing.cc (3.56.2.3),
+	  libCERTI/NM_Classes.hh (1.1.2.8), libCERTI/NetworkMessage.hh
+	  (3.30.2.7), libCERTI/NetworkMessage_RW.cc (3.45.2.6),
+	  libCERTI/ObjectClassAttribute.cc (3.27.2.1),
+	  libCERTI/Interaction.cc (3.35.2.3), libCERTI/NM_Classes.cc
+	  (1.1.2.8), libCERTI/NetworkMessage.cc (3.28.2.6),
+	  libCERTI/ObjectClass.cc (3.41.2.3),
+	  libCERTI/ObjectClassBroadcastList.cc (3.18.2.3): One big step
+	  forward (not [yet] functional)
+
+2008-04-10 13:35  erk
+
+	* RTIG/RTIG.cc (3.36.2.3), RTIG/Federation.cc (3.80.2.2),
+	  RTIG/RTIG_processing.cc (3.56.2.2),
+	  libCERTI/InteractionBroadcastList.cc (3.11.2.1),
+	  libCERTI/NM_Classes.hh (1.1.2.7), libCERTI/NetworkMessage.hh
+	  (3.30.2.6), libCERTI/NetworkMessage_RW.cc (3.45.2.5),
+	  libCERTI/ObjectClassBroadcastList.cc (3.18.2.2),
+	  RTIA/Communications.cc (3.22.2.2), libCERTI/Interaction.cc
+	  (3.35.2.2), libCERTI/InteractionBroadcastList.hh (3.7.4.1),
+	  libCERTI/NM_Classes.cc (1.1.2.7), libCERTI/NetworkMessage.cc
+	  (3.28.2.5), libCERTI/ObjectClass.cc (3.41.2.2),
+	  libCERTI/ObjectSet.cc (3.18.2.2): Update with NM_Factory usage
+
+2008-04-09 16:16  erk
+
+	* libCERTI/NetworkMessage.hh (3.30.2.5), scripts/NW_MessageType.ods
+	  (1.1.2.5), libCERTI/BasicMessage.hh (3.7.2.2),
+	  libCERTI/NM_Classes.hh (1.1.2.6), libCERTI/BasicMessage.cc
+	  (3.9.2.2), libCERTI/NetworkMessage.cc (3.28.2.4),
+	  libCERTI/NetworkMessage_RW.cc (3.45.2.4), RTIG/RTIG.cc
+	  (3.36.2.2), libCERTI/NM_Classes.cc (1.1.2.6): Added needed
+	  virtual constructor for NetworkMessage
+
+2008-04-09 12:34  erk
+
+	* scripts/NW_MessageType.ods (1.1.2.4), libCERTI/NM_Classes.cc
+	  (1.1.2.5), libCERTI/NM_Classes.hh (1.1.2.5),
+	  libCERTI/NetworkMessage.cc (3.28.2.3), libCERTI/NetworkMessage.hh
+	  (3.30.2.4): Avant d'aller manger :-=)
+
+2008-04-09 10:43  erk
+
+	* libCERTI/NM_Classes.hh (1.1.2.4), libCERTI/NetworkMessage.hh
+	  (3.30.2.3), scripts/NW_MessageType.ods (1.1.2.3),
+	  libCERTI/NM_Classes.cc (1.1.2.4), libCERTI/NetworkMessage_RW.cc
+	  (3.45.2.3): Intermediate commit in order to save work.
+
+2008-04-08 23:42  erk
+
+	* libCERTI/NM_Classes.cc (1.1.2.3), libCERTI/NM_Classes.hh
+	  (1.1.2.3), scripts/NW_MessageType.ods (1.1.2.2): Update for
+	  tomorrow
+
+2008-04-08 16:18  rousse
+
+	* RTIA/FederationManagement.cc (3.53), RTIG/RTIG.cc (3.39),
+	  RTIG/RTIG.hh (3.24), RTIG/RTIG_processing.cc (3.61) (utags:
+	  CERTI-3_2_7): Maybe bug #22491 correction. Need validation (by
+	  Carle) RTIG don't answer to RTIA on Resign Federation
+
+2008-04-08 16:05  erk
+
+	* libCERTI/NM_Classes.hh (1.1.2.2), libCERTI/NetworkMessage.hh
+	  (3.30.2.2), libCERTI/NetworkMessage_RW.cc (3.45.2.2),
+	  libCERTI/NM_Classes.cc (1.1.2.2), libCERTI/NetworkMessage.cc
+	  (3.28.2.2), scripts/NW_MessageType.ods (1.1.2.1): Intermediate
+	  update
+
+2008-04-08 16:03  erk
+
+	* CMakeLists.txt (1.34.2.2), configure.in (3.28.2.1): update dev
+	  version
+
+2008-04-08 12:44  erk
+
+	* libCERTI/MessageBuffer.hh (3.6.2.1),
+	  test/utility/CertiUtilTests.cc (1.8.2.1): Add write/read_bool
+	  API.
+
+2008-04-08 11:44  erk
+
+	* scripts/GenMessageClass.py (1.2.2.1): Update Generate Message
+	  script
+
+2008-04-08 10:50  rousse
+
+	* RTIA/Communications.cc (3.23), RTIG/RTIG.cc (3.38),
+	  RTIG/RTIG_processing.cc (3.60): Some improvment in auditServer
+
+2008-04-07 22:40  erk
+
+	* test/Billard/dtest_billard.py (1.2, CERTI-3_2_7): Forgot to add
+	  --display opt arg handling
+
+2008-04-07 17:32  erk
+
+	* test/Billard/dtest_billard.py (1.1.2.2): Merge from HEAD
+
+2008-04-07 17:08  erk
+
+	* libCERTI/LBTS.cc (3.9), RTIA/TimeManagement.cc (3.31),
+	  libCERTI/FedTime.cc (3.12, CERTI-3_2_7): Fix bug #22821 :
+	  Infinite LBTS <--> infinite RTIfedTime conversion error Patch
+	  from Petr Gotthard.
+
+2008-04-07 17:01  erk
+
+	* test/Billard/dtest_billard.py (1.1): Add DTest script for testing
+	  billard
+
+2008-04-07 17:01  erk
+
+	* test/Billard/dtest_billard.py (1.1.2.1): file dtest_billard.py
+	  was added on branch br_DEV_HETEROGENEOUS on 2008-04-07 15:32:09
+	  +0000
+
+2008-04-03 17:21  rousse
+
+	* RTIG/RTIG_processing.cc (3.59), libCERTI/Message_R.cc (3.19),
+	  libCERTI/Message_W.cc (3.22), libCERTI/NetworkMessage_RW.cc
+	  (3.46, CERTI-3_2_7), libCERTI/SocketServer.cc (3.15),
+	  libCERTI/SocketTCP.cc (3.22, CERTI-3_2_7), libCERTI/SocketUN.cc
+	  (3.20, CERTI-3_2_7), libRTI/RTIambassador.cc (3.75): Many
+	  debugging trace suppressed
+
+2008-04-01 15:00  rousse
+
+	* RTIA/FederationManagement.cc (3.52), RTIA/RTIA.cc (3.16),
+	  RTIA/RTIA_federate.cc (3.70), RTIG/Federation.cc (3.81,
+	  CERTI-3_2_7), RTIG/FederationsList.cc (3.55, CERTI-3_2_7),
+	  RTIG/RTIG.cc (3.37), RTIG/RTIG_processing.cc (3.58),
+	  libRTI/RTIambassador.cc (3.74): Improvment of exceptions return
+	  to application along destroy federation
+
+2008-03-31 16:39  erk
+
+	* scripts/FindCERTI.cmake (1.9, CERTI-3_2_7): Should fix bug #22787
+	  : Bad file path handling in CMake scripts
+
+2008-03-22 16:22  erk
+
+	* CMakeLists.txt (1.38), configure.in (3.30): Bump version to
+	  3.2.7cvs now that 3.2.6 is out
 
 2008-03-21 16:48  erk
 
