@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.cc,v 3.8 2005/04/30 16:38:39 breholee Exp $
+// $Id: Files.cc,v 3.9 2008/04/26 14:59:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,7 +43,7 @@ Queues::nextTsoDate(bool &found, FederationTime &time)
     else {
         msg_buffer = tsos.front();
         found = true ;
-        time = msg_buffer->date ;
+        time = msg_buffer->getDate();
     }
 }
 
@@ -113,7 +113,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
 
     if (!tsos.empty()) {
         buffer_msg = tsos.front();
-        if (buffer_msg->date <= heure_logique) {
+        if (buffer_msg->getDate() <= heure_logique) {
             // remove from list but keep pointer to execute
             // ExecuterServiceFedere.
             tsos.pop_front();
@@ -124,7 +124,7 @@ Queues::giveTsoMessage(FederationTime heure_logique,
                 NetworkMessage *buffer_msg2 ;
                 buffer_msg2 = tsos.front();
 
-                if (buffer_msg2->date <= heure_logique)
+                if (buffer_msg2->getDate() <= heure_logique)
                     msg_restant = true ;
             }
             return buffer_msg ;
@@ -175,7 +175,7 @@ Queues::insertTsoMessage(NetworkMessage *msg)
             // stricly greater because we want to place new message behind
             // older ones with same logical time and thus keep receive order
             // in list.
-            if ((*i)->date > msg->date) {
+            if ((*i)->getDate() > msg->getDate()) {
                 tsos.insert(i, msg);
                 return ;
             }
@@ -186,4 +186,4 @@ Queues::insertTsoMessage(NetworkMessage *msg)
 
 }} // namespaces
 
-// $Id: Files.cc,v 3.8 2005/04/30 16:38:39 breholee Exp $
+// $Id: Files.cc,v 3.9 2008/04/26 14:59:41 erk Exp $

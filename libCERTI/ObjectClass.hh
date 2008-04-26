@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClass.hh,v 3.32 2008/04/26 14:59:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -197,7 +197,7 @@ public:
                RTIinternalError);
 
     void broadcastClassMessage(ObjectClassBroadcastList *ocb_list,
-			       const Object * = 0);
+			       const Object * = NULL);
 
     ObjectClassBroadcastList *
     updateAttributeValues(FederateHandle, Object *, AttributeHandle *,
@@ -260,4 +260,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClass.hh,v 3.32 2008/04/26 14:59:40 erk Exp $

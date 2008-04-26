@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.73 2008/04/23 13:03:48 erk Exp $
+// $Id: RTIA_federate.cc,v 3.74 2008/04/26 14:59:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1367,7 +1367,7 @@ RTIA::processFederateRequest(Message *req)
         rep.setException(e_RTIinternalError);
     }
 
-    delete req ;;
+    delete req;
 
     if (rep.type != Message::TICK_REQUEST) {
        // generic federate service acknowledgment
@@ -1380,4 +1380,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.73 2008/04/23 13:03:48 erk Exp $
+// $Id: RTIA_federate.cc,v 3.74 2008/04/26 14:59:42 erk Exp $

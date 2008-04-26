@@ -18,10 +18,11 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIA_network.cc,v 3.23 2008/04/26 14:59:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
+#include "NM_Classes.hh"
 #include "RTIA.hh"
 #include "ObjectClassAttribute.hh"
 #include "Interaction.hh"
@@ -41,12 +42,9 @@ static PrettyDebug G("GENDOC",__FILE__);
 void
 RTIA::processNetworkMessage(NetworkMessage *msg)
 {
-NetworkMessage::Type msgType = msg->type;
+NetworkMessage::Type msgType = msg->getType();
 
-G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
-
-//D.Mes(pdMessage, 'N', msgType);
-msg->trace("RTIA::processNetworkMessage ");
+	G.Out(pdGendoc,"enter RTIA::processNetworkMessage");
 
     switch(msgType) {
 
@@ -54,9 +52,9 @@ msg->trace("RTIA::processNetworkMessage ");
       {
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::MESSAGE_NULL(%f).",
-                msg->date);
+                msg->getDate());
 
-          tm->update(msg->federate, msg->date);
+          tm->update(msg->federate, msg->getDate());
           delete msg ;
           break ;
       }
@@ -67,8 +65,8 @@ msg->trace("RTIA::processNetworkMessage ");
           D.Out(pdTrace,
                 "Receving Message from RTIG, type NetworkMessage::SET_TIME_REGULATING.");
 
-          if (msg->regulator)
-              tm->insert(msg->federate, msg->date);
+          if (static_cast<NM_Set_Time_Regulating*>(msg)->isRegulator())
+              tm->insert(msg->federate, msg->getDate());
           else
               tm->remove(msg->federate);
           delete msg ;
@@ -97,9 +95,9 @@ msg->trace("RTIA::processNetworkMessage ");
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::DISCOVER_OBJECT.");
-          queues->insertFifoMessage(msg);
-          break ;
+          queues->insertFifoMessage(msg);          
       }
+      break;
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
@@ -344,4 +342,4 @@ msg->trace("RTIA::processNetworkMessage ");
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.22 2008/03/05 15:33:50 rousse Exp $
+// $Id: RTIA_network.cc,v 3.23 2008/04/26 14:59:42 erk Exp $

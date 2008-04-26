@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.18 2008/04/23 12:55:05 erk Exp $
+// $Id: RTIA.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -110,17 +110,22 @@ RTIA::displayStatistics()
 void
 RTIA::execute()
 {
-    Message *msg_un ;
-    NetworkMessage *msg_tcp_udp ;
+    Message        *msg_un;
+    NetworkMessage *msg_tcp_udp;
     int n ;
 
     while (!fm->_fin_execution) {
-
-        msg_tcp_udp = new NetworkMessage ;
-        msg_un = new Message ;
-
-        try {
-            comm->readMessage(n, msg_tcp_udp, msg_un, NULL);
+       
+        /* 
+         * readMessage call will allocate EITHER a Network Message or a Message 
+         *   Network Message will come from a virtual constructor call
+         *   Message will come from a "simple" constructor call
+         */
+    	msg_un      = NULL;
+    	msg_tcp_udp = NULL;
+        try {        	
+            comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+            assert((msg_un!=NULL) || (msg_tcp_udp!=NULL));
         }
         catch (NetworkSignal) {
             fm->_fin_execution = true ;
@@ -131,20 +136,14 @@ RTIA::execute()
 
         switch (n) {
           case 0:
-            delete msg_un ;
-            delete msg_tcp_udp ;
             break ;
           case 1:
             processNetworkMessage(msg_tcp_udp);
-            delete msg_un ;
             break ;
           case 2:
             processFederateRequest(msg_un);
-            delete msg_tcp_udp ;
             break ;
           case 3: // timeout
-            delete msg_un ;
-            delete msg_tcp_udp ;
             break ;
           default:
             assert(false);
@@ -152,10 +151,13 @@ RTIA::execute()
 
         // special case, blocking tick
         while (!fm->_fin_execution && tm->_blocking_tick) {
-	    // read a message from the rtig
+	        // read a message from the rtig
             // same code is reused, but only the case 1 should match
-            msg_tcp_udp = new NetworkMessage ;
-            msg_un = new Message ;
+        	/* NetworkMessage will be allocated by the readMessage call
+        	 * We may not get a Message in this call see previous comment
+        	 */
+            msg_un      = NULL;
+            msg_tcp_udp = NULL;
 
             try {
                 if (tm->_tick_timeout != std::numeric_limits<double>::infinity() &&
@@ -165,36 +167,31 @@ RTIA::execute()
                     timev.tv_sec = int(tm->_tick_timeout);
                     timev.tv_usec = int((tm->_tick_timeout-timev.tv_sec)*1000000.0);
 
-                    comm->readMessage(n, msg_tcp_udp, msg_un, &timev);
+                    comm->readMessage(n, &msg_tcp_udp, &msg_un, &timev);
                 }
-                else
-                    comm->readMessage(n, msg_tcp_udp, msg_un, NULL);
+                else {
+                    comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+                }
 
                 /* timev is undefined after select() */
             }
             catch (NetworkSignal) {
                 fm->_fin_execution = true ;
                 n = 0 ;
-                delete msg_un ;
                 delete msg_tcp_udp ;
             }
 
             switch (n) {
               case 0:
-                delete msg_un;
-                delete msg_tcp_udp;
                 break ;
               case 1:
-                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callbak
-                delete msg_un ;
+                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callback
                 // may have reset tm->_blocking_tick
                 processOngoingTick();
                 break ;
               case 2:
                 assert(false);
               case 3: // timeout
-                delete msg_un;
-                delete msg_tcp_udp;
                 // stop the ongoing tick() operation
                 tm->_blocking_tick = false;
                 processOngoingTick();
@@ -208,4 +205,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.18 2008/04/23 12:55:05 erk Exp $
+// $Id: RTIA.cc,v 3.19 2008/04/26 14:59:41 erk Exp $

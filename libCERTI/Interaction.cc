@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.35 2007/12/11 19:46:53 erk Exp $
+// $Id: Interaction.cc,v 3.36 2008/04/26 14:59:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -27,6 +27,7 @@
 #include "Interaction.hh"
 #include "InteractionBroadcastList.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 #include <iostream>
 #include <sstream>
@@ -407,16 +408,14 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;       
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
-        answer->interactionClass = handle ; // Interaction Class Handle
-        answer->setBoolean(true) ; // with time
-	answer->date = time ;
+        answer->interactionClass = handle ; // Interaction Class Handle        
+	    answer->setDate(time);
 
-        strcpy(answer->label, the_tag);
+        answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
         for (int i = 0 ; i < list_size ; i++) {
@@ -467,15 +466,14 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = new NetworkMessage ;
-        answer->type = NetworkMessage::RECEIVE_INTERACTION ;
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;        
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
         answer->interactionClass = handle ; // Interaction Class Handle
 	answer->setBoolean(false) ; // without time
 
-        strcpy(answer->label, the_tag);
+        answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
         for (int i = 0 ; i < list_size ; i++) {
@@ -553,4 +551,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.35 2007/12/11 19:46:53 erk Exp $
+// $Id: Interaction.cc,v 3.36 2008/04/26 14:59:40 erk Exp $

@@ -1,3 +1,26 @@
+Erk1) Replace serialize()/deserialize()
+      with serialize(MessageBuffer& msgBuf) ...
+      in order to minimize copy when possible
+      (for example on virtual constructor) --> This part is DONE
+
+      We may even setup a msgBuf pool in order to 
+      minimize realloc when creating NetworkMessage sub-classes instance
+
+Erk2) Use visitor pattern for RTIG processing
+
+Erk3) Use proper constructor and getter/setter for NetworkMessage
+      and avoid public shared field between different kind of message
+
+Erk5) Remove all kind of:
+      AnswerAssumption->exception = e_NO_EXCEPTION 
+
+ERk6) Should be possible to avoid code duplication
+      for timed/not timed message using NetworkMessage::setDate properly
+
+Erk7) Clean-up PrettyDebug mess
+
+Erk8) Suppress copy in ValueArray = req->getAttribValueArray();
+
 Warning: this is an old file, many file/class names have changed, some
 problems are probably solved or handled differently.
 -------------------------------------------------------------------------------

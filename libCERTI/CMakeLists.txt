@@ -73,6 +73,7 @@ MessageBody.cc MessageBody.hh
 MessageBuffer.cc MessageBuffer.hh
 Message.cc Message_R.cc Message_W.cc Message.hh
 NetworkMessage.cc NetworkMessage_RW.cc NetworkMessage.hh
+NM_Classes.hh NM_Classes.cc
 Exception.cc Exception.hh
 XmlParser.cc XmlParser.hh
 PrettyDebug.cc PrettyDebEx.cc PrettyDebug.hh

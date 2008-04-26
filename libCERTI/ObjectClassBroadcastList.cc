@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.18 2007/11/29 20:36:08 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
+#include "NM_Classes.hh"
 
 using std::list ;
 
@@ -58,22 +59,21 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     G.Out(pdGendoc,"enter ObjectClassBroadcastList::adaptMessage");
     G.Out(pdGendoc,"      message->objectClass=%d",message->objectClass);
 
-    if ((message->type != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
-        (message->type != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
+    if ((message->getType() != NetworkMessage::REFLECT_ATTRIBUTE_VALUES) &&
+        (message->getType() != NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION))
         throw RTIinternalError("Bad Message type in Broadcast's AdaptMsg.");
 
     // Copy static informations.
-    NetworkMessage *reducedMessage = new NetworkMessage ;
-    reducedMessage->type = message->type ;
+    NetworkMessage *reducedMessage = NM_Factory::create(message->getType());    
     reducedMessage->exception = message->exception ;
     reducedMessage->federation = message->federation ;
     reducedMessage->federate = message->federate ;
     reducedMessage->object = message->object ;
-    reducedMessage->date = message->date ;
-    reducedMessage->boolean = message->boolean ; // Useful ?
+    reducedMessage->setDate(message->getDate());
+    reducedMessage->boolean = message->boolean ; // FIXME Useful ?
     reducedMessage->objectClass = message->objectClass ;
 
-    strcpy(reducedMessage->label, message->label);
+    reducedMessage->setLabel(message->getLabel());
 
     // Copy attributes that are in the bsWaiting state in Line.
     UShort currentSize ;
@@ -96,7 +96,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             // Copy Attribute Handle.
             reducedMessage->handleArray[currentSize] = currentAttrib ;
 
-            if (message->type == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
+            if (message->getType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
                 // Copy Attribute Value.
                 message->getValue(i, &length, buffer);
                 reducedMessage->setValue(currentSize, buffer, length);
@@ -241,7 +241,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 
     // Pour chaque ligne de la liste
     list<ObjectBroadcastLine *>::iterator i ;
-    for (i = lines.begin(); i != lines.end(); i++) {
+    for (i = lines.begin(); i != lines.end(); ++i) {
         // Si le federe attend un message(attribute 0 en attente)
         if ((*i)->state[0] == ObjectBroadcastLine::waiting) {
 
@@ -250,7 +250,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
                   "Broadcasting message to Federate %d.", (*i)->Federate);
             try {
                 socket = server->getSocketLink((*i)->Federate);
-                message->write(socket);
+                message->send(socket);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -285,7 +285,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
 void ObjectClassBroadcastList::sendPendingMessage(SecurityServer *server)
 {
     G.Out(pdGendoc,"enter ObjectClassBroadcastList::sendPendingMessage");
-    switch (message->type) {
+    switch (message->getType()) {
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
@@ -356,7 +356,7 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
                 socket = server->getSocketLink((*i)->Federate);
 #endif
                 G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
-                currentMessage->write(socket);
+                currentMessage->send(socket);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -391,4 +391,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.18 2007/11/29 20:36:08 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.19 2008/04/26 14:59:41 erk Exp $

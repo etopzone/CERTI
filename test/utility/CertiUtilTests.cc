@@ -64,6 +64,8 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	int64_t  i64  = -1000000000;
 	float    f32  = 3.1415927;
 	double   d64  = 2.7182818;
+	bool     trueBool  = true;
+	bool     falseBool = false;
 	char*    vstr = NULL;
 	std::string  vstdstr;
 	uint8_t  vu8   = 0;
@@ -75,7 +77,9 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	uint64_t vu64  = 0;
 	int64_t  vi64  = 0;
 	float    vf32  = 0.0;
-	double   vd64  = 0.0;	
+	double   vd64  = 0.0;
+	bool     vtrueBool  = false;
+	bool     vfalseBool = true;		
 	cout << "Testing MessageBuffer class BEGIN..."<<endl;
 	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
 	cout << "    Current (initially void) MessageBuffer size = "<< MsgBuf.size()<<endl;
@@ -93,6 +97,8 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.write_int64(i64);
 	MsgBuf.write_float(f32);
 	MsgBuf.write_double(d64);
+	MsgBuf.write_bool(trueBool);
+	MsgBuf.write_bool(falseBool);
 	cout << "    std::string = " << stdstr << endl;
 	MsgBuf.write_string(stdstr);
 	cout << "    Current MessageBuffer size                  = "<< MsgBuf.size()<<endl;
@@ -111,7 +117,9 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.read_int32(&vi32); assert(vi32==i32);
 	MsgBuf.read_int64(&vi64); assert(vi64==i64);
 	MsgBuf.read_float(&vf32); assert(vf32==f32);
-	MsgBuf.read_double(&vd64); assert(vd64==d64);	
+	MsgBuf.read_double(&vd64); assert(vd64==d64);
+	vtrueBool = MsgBuf.read_bool(); assert(trueBool==vtrueBool);
+	vfalseBool = MsgBuf.read_bool(); assert(falseBool==vfalseBool);
 	vstdstr  = MsgBuf.read_string(); assert(vstdstr==stdstr);
 	cout << "    std::string = " << vstdstr << endl;
 	cout << "    All encoded/decoded values are equal." << endl;

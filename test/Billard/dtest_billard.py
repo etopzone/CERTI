@@ -163,9 +163,7 @@ dtest.DTester.logger.setLevel(level=logging.WARNING)
 dtest.SSHSessionHandler.logger.setLevel(level=logging.WARNING)
 
 def goTest():
-    myDTestMaster = dtest.DTestMaster()
-    if (traceActive):
-        myDTestMaster.setTrace(1)
+    myDTestMaster = dtest.DTestMaster("CERTI Billard autotest","Launch RTIG + several billards")
     if (pseudoExecActive):
         myDTestMaster.setPseudoExec(1)
     myDTestMaster.timeout = 40

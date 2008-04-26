@@ -18,11 +18,12 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.81 2008/04/01 13:00:46 rousse Exp $
+// $Id: Federation.cc,v 3.82 2008/04/26 14:59:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
+#include "NM_Classes.hh"
 #include <sstream>
 #include <cassert>
 
@@ -41,6 +42,7 @@
 #include "ObjectClassAttribute.hh"
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -438,39 +440,37 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
     // Send, to the newly added federate, a Null message from each regulating
     // federate (i) with their logical time h(i). This permits to calculate
     // its LBTS.
-    NetworkMessage message ;
+    NM_Message_Null nullMessage;
+    NM_Announce_Synchronization_Point ASPMessage; 
     try {
 	std::vector<LBTS::FederateClock> v ;
 	regulators.get(v);
 
-        for (unsigned int i = 0 ; i < v.size(); ++i) {
-            message.type = NetworkMessage::MESSAGE_NULL ;
-            message.federation = handle ;
-	    message.federate = v[i].first ;
-	    message.date = v[i].second ;
-
+        for (unsigned int i = 0 ; i < v.size(); ++i) {        	
+            nullMessage.federation = handle ;
+	        nullMessage.federate = v[i].first ;
+	        nullMessage.setDate(v[i].second);
             D.Out(pdTerm,
 		  "Sending NULL message(type %d) from %d to new federate.",
-                  message.type, message.federate);
+                  nullMessage.getType(), nullMessage.federate);
 
-            message.write(tcp_link);
+            nullMessage.send(tcp_link);
         }
 
         // If federation is synchronizing, put federate in same state.
-        if (isSynchronizing()) {
-            message.type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT ;
-            message.federate = federate_handle ;
-            message.federation = handle ;
+        if (isSynchronizing()) {           
+            ASPMessage.federate = federate_handle ;
+            ASPMessage.federation = handle ;
 
             std::map<const char *, const char *>::const_iterator i ;
             i = synchronizationLabels.begin();
             for (; i != synchronizationLabels.end(); i++) {
-                message.setLabel((*i).first);
-                message.setTag((*i).second);
+                ASPMessage.setLabel((*i).first);
+                ASPMessage.setTag((*i).second);
                 D.Out(pdTerm, "Sending synchronization message %s (type %d)"
-                      " to the new Federate.", (*i).first, message.type);
+                      " to the new Federate.", (*i).first, ASPMessage.getType());
 
-                message.write(tcp_link);
+                ASPMessage.send(tcp_link);
                 federates.back().addSynchronizationLabel((*i).first);
             }
         }
@@ -528,13 +528,12 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
     D.Out(pdTerm, "Federation %d: Federate %d is now a regulator(Time=%f).",
           handle, federate_handle, time);
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::SET_TIME_REGULATING ;
+    NM_Set_Time_Regulating msg ;
     msg.exception = e_NO_EXCEPTION ;
     msg.federation = handle ;
     msg.federate = federate_handle ;
-    msg.regulator = true ;
-    msg.date = time ;
+    msg.regulatorOn();
+    msg.setDate(time);
 
     this->broadcastAnyMessage(&msg, 0);
 }
@@ -557,7 +556,7 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
 #else
                 socket = server->getSocketLink(i->getHandle());
 #endif
-                msg->write(socket);
+                msg->send(socket);
             }
             catch (RTIinternalError &e) {
                 D[pdExcept] << "Reference to a killed Federate while "
@@ -605,7 +604,7 @@ Federation::broadcastSomeMessage(NetworkMessage *msg,
 #else
                             socket = server->getSocketLink(i->getHandle());
 #endif
-                            msg->write(socket);
+                            msg->send(socket);
                             }
                         catch (RTIinternalError &e)
                             {
@@ -898,8 +897,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
         throw RTIinternalError("Bad pause label(null or too long).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT ;
+    NM_Announce_Synchronization_Point msg ;    
     msg.federate = federate ;
     msg.federation = handle ;
     msg.setLabel(label);
@@ -934,8 +932,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
         throw RTIinternalError("Bad pause label(null or too long).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT ;
+    NM_Announce_Synchronization_Point msg ;    
     msg.federate = federate ;
     msg.federation = handle ;
     msg.setLabel(label);
@@ -976,14 +973,12 @@ Federation::requestFederationSave(FederateHandle the_federate,
     saveInProgress = true ;
     saveLabel = the_label ;
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::INITIATE_FEDERATE_SAVE ;
+    NM_Initiate_Federate_Save msg ;    
     msg.federate = the_federate ;
     msg.federation = handle ;
     msg.setLabel(the_label);
-    // boolean true means with time and needs time
-    msg.setBoolean(true);
-    msg.date = time;
+    // timed message
+    msg.setDate(time);
 
     G.Out(pdGendoc,"      requestFederationSave====>broadcast I_F_S to all");
 
@@ -1017,13 +1012,10 @@ Federation::requestFederationSave(FederateHandle the_federate,
     saveInProgress = true ;
     saveLabel = the_label ;
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::INITIATE_FEDERATE_SAVE ;
+    NM_Initiate_Federate_Save msg ;    
     msg.federate = the_federate ;
     msg.federation = handle ;
-    msg.setLabel(the_label);
-    // boolean false means without time
-    msg.setBoolean(false);
+    msg.setLabel(the_label);    
 
     G.Out(pdGendoc,"                  requestFederationSave====>broadcast I_F_S"
                    " to all");
@@ -1075,14 +1067,12 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
     }
 
     // Send end save message.
-    NetworkMessage msg ;
+    std::auto_ptr<NetworkMessage> msg(NM_Factory::create(saveStatus ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED )) ;
 
-    msg.type = saveStatus ? NetworkMessage::FEDERATION_SAVED : NetworkMessage::FEDERATION_NOT_SAVED ;
+    msg->federate = the_federate ;
+    msg->federation = handle ;
 
-    msg.federate = the_federate ;
-    msg.federation = handle ;
-
-    broadcastAnyMessage(&msg, 0);
+    broadcastAnyMessage(msg.get(), 0);
 
     G.Out(pdGendoc,"            =======> broadcast F_S or F_N_S");
 
@@ -1108,11 +1098,8 @@ Federation::requestFederationRestore(FederateHandle the_federate,
         throw RestoreInProgress("Already in restoring state.");
 
     Socket * socket ;
-
-    NetworkMessage * msg = new NetworkMessage ;
-    msg->federate = the_federate ;
-    msg->federation = handle ;
-    msg->setLabel(the_label);
+    NetworkMessage *msg;
+    
 
     // Informs sending federate of success/failure in restoring.
     // At this point, only verify that file is present.
@@ -1137,9 +1124,15 @@ Federation::requestFederationRestore(FederateHandle the_federate,
 // JYR Note : forcing success to true to skip xmlParseFile (not compliant ?)
     success = true ;
 
-    msg->type = success ?
-        NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED
-        : NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED ;
+    if (success) {
+    	msg = NM_Factory::create(NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED);
+    } else {
+    	msg = NM_Factory::create(NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED);
+    }
+    
+    msg->federate = the_federate ;
+    msg->federation = handle ;
+    msg->setLabel(the_label);
 
     socket = server->getSocketLink(msg->federate);
 
@@ -1148,7 +1141,7 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     else
        G.Out(pdGendoc,"             =====> send message R_F_R_F to RTIA");
 
-    msg->write(socket);
+    msg->send(socket);
     delete msg ;
 
     // Reading file failed: not restoring !
@@ -1166,10 +1159,9 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     restoreInProgress = true ;
 
     // Informs federates a new restore is being done.
-    msg = new NetworkMessage ;
+    msg = NM_Factory::create(NetworkMessage::FEDERATION_RESTORE_BEGUN);
     msg->federate = the_federate ;
-    msg->federation = handle ;
-    msg->type = NetworkMessage::FEDERATION_RESTORE_BEGUN ;
+    msg->federation = handle ;    
 
     G.Out(pdGendoc,"             =====> broadcast message F_R_B");
 
@@ -1177,10 +1169,9 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     delete msg ;
 
     // For each federate, send an initiateFederateRestore with correct handle.
-    msg = new NetworkMessage ;
+    msg = NM_Factory::create(NetworkMessage::INITIATE_FEDERATE_RESTORE);
     msg->federation = handle ;
-    msg->setLabel(the_label);
-    msg->type = NetworkMessage::INITIATE_FEDERATE_RESTORE ;
+    msg->setLabel(the_label);   
 
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
         msg->federate = i->getHandle();
@@ -1188,8 +1179,9 @@ Federation::requestFederationRestore(FederateHandle the_federate,
         // send message.
         socket = server->getSocketLink(msg->federate);
         G.Out(pdGendoc,"             =====> send message I_F_R to federate %d",msg->federate);
-        msg->write(socket);
+        msg->send(socket);
     }
+    delete msg;
     G.Out(pdGendoc,"exit  Federation::requestFederationRestore");
 }
 
@@ -1217,17 +1209,12 @@ Federation::federateRestoreStatus(FederateHandle the_federate,
     }
 
     // Send end restore message.
-    NetworkMessage msg ;
+    std::auto_ptr<NetworkMessage> msg(NM_Factory::create(restoreStatus ? NetworkMessage::FEDERATION_RESTORED : NetworkMessage::FEDERATION_NOT_RESTORED)) ;
+        
+    msg->federate = the_federate ;
+    msg->federation = handle ;
 
-    if (restoreStatus)
-        msg.type = NetworkMessage::FEDERATION_RESTORED ;
-    else
-        msg.type = NetworkMessage::FEDERATION_NOT_RESTORED ;
-
-    msg.federate = the_federate ;
-    msg.federation = handle ;
-
-    broadcastAnyMessage(&msg, 0);
+    broadcastAnyMessage(msg.get(), 0);
 
     // Reinitialize state.
     restoreStatus = true ;
@@ -1492,13 +1479,10 @@ Federation::removeRegulator(FederateHandle federate_handle)
     D.Out(pdTerm, "Federation %d: Federate %d is not a regulator anymore.",
           handle, federate_handle);
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::SET_TIME_REGULATING ;
-    msg.exception = e_NO_EXCEPTION ;
+    NM_Set_Time_Regulating msg ;    
     msg.federation = handle ;
     msg.federate = federate_handle ;
-    msg.regulator = false ;
-    msg.date = 0 ;
+    msg.regulatorOff();    
 
     broadcastAnyMessage(&msg, 0);
 }
@@ -1549,9 +1533,7 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
     }
 
     // send a federationSynchronized().
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::FEDERATION_SYNCHRONIZED ;
-    msg.exception = e_NO_EXCEPTION ;
+    NM_Federation_Synchronized msg ;    
     msg.federation = handle ;
     msg.federate = federate_handle ;
     msg.setLabel(label);
@@ -1697,12 +1679,10 @@ Federation::updateRegulator(FederateHandle federate_handle,
 
     regulators.update(federate_handle, time);
 
-    NetworkMessage msg ;
-    msg.type = NetworkMessage::MESSAGE_NULL ;
-    msg.exception = e_NO_EXCEPTION ;
+    NM_Message_Null msg ;   
     msg.federation = handle ;
     msg.federate = federate_handle ;
-    msg.date = time ;
+    msg.setDate(time);
 
     broadcastAnyMessage(&msg, federate_handle);
 }
@@ -2275,15 +2255,14 @@ Federation::requestObjectOwner(FederateHandle theFederateHandle,
         throw (ObjectNotKnown)
 {
 FederateHandle theOwnerHandle ;
-NetworkMessage mess ;
+NM_Provide_Attribute_Value_Update mess ;
 
     G.Out(pdGendoc,"enter Federation::requestObjectOwner");
 
     // Request Object.
     theOwnerHandle = root->requestObjectOwner(theFederateHandle,theObject) ;
 
-    // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner
-    mess.type = NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE ;
+    // Send a PROVIDE_ATTRIBUTE_VALUE_UPDATE to the owner    
     mess.federate = theFederateHandle ;
     mess.object = theObject ;
     mess.handleArraySize = theListSize ;
@@ -2292,12 +2271,10 @@ NetworkMessage mess ;
         mess.handleArray[i] = theAttributeList[i] ;
         }
 
-     G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
-                   ,theOwnerHandle);
-
-     mess.write(server->getSocketLink(theOwnerHandle));
+     mess.send(server->getSocketLink(theOwnerHandle));
  
-   
+   G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
+                   ,theOwnerHandle);
     G.Out(pdGendoc,"exit  Federation::requestObjectOwner");
     return(theOwnerHandle);
 
@@ -2305,5 +2282,5 @@ NetworkMessage mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.81 2008/04/01 13:00:46 rousse Exp $
+// $Id: Federation.cc,v 3.82 2008/04/26 14:59:42 erk Exp $
 

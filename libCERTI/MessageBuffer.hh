@@ -248,6 +248,20 @@ type##suffix read_##type() {\
 
 	std::string
 	read_string();
+	
+	int32_t
+	write_bool(const bool toggle) {
+		if(toggle) {
+			return write_uint8(1);
+		} else {
+			return write_uint8(0);
+		}
+	};
+	
+	bool
+	read_bool() {	
+		return (1==read_uint8());
+	};
 
 	MessageBuffer& operator<<(const uint8_t data) {
 		this->write_uint8(data);

@@ -157,8 +157,7 @@ XmlParser::parse(string pathToXmlFile)
 // ----------------------------------------------------------------------------
 void
 XmlParser::parseClass(ObjectClass* parent)
-{
-	xmlChar* tmpXmlChar = NULL;
+{	
     D[pdTrace] << "New Object Class" << endl ;    
 
     xmlNodePtr prev = cur ;

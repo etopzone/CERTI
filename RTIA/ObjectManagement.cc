@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.36 2008/03/13 14:39:18 siron Exp $
+// $Id: ObjectManagement.cc,v 3.37 2008/04/26 14:59:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,6 +30,7 @@
 #include "FederationManagement.hh"
 #include "PrettyDebug.hh"
 #include "TimeManagement.hh"
+#include "NM_Classes.hh"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -69,27 +70,27 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  FederationTime,
                                  TypeException & e)
 {
-    NetworkMessage req, rep ;
-
-    req.type = NetworkMessage::REGISTER_OBJECT ;
-    req.federate = fm->federate ;
-    req.federation = fm->_numero_federation ;
+    NM_Register_Object req;
+    
+    req.federate    = fm->federate ;
+    req.federation  = fm->_numero_federation ;
     req.objectClass = the_class ;
-    strcpy(req.label, (char *) theObjectName);
+    req.setLabel(theObjectName);
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, NetworkMessage::REGISTER_OBJECT, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REGISTER_OBJECT, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
-        rootObject->registerObjectInstance(fm->federate, the_class, rep.object,
-                                           rep.label);
-        return rep.object ;
+        rootObject->registerObjectInstance(fm->federate, the_class, rep->object,
+                                           rep->getLabel().c_str());
+        return rep->object ;
     }
-    else
-        return 0 ;
+    else {
+        return 0;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -112,40 +113,41 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         const char *theTag,
                                         TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Update_Attribute_Values req;
     int i ;
     bool validCall ;
+    EventRetractionHandle evtrHandle;
 
     validCall = tm->testValidTime(theTime) ;
     if (validCall) {
 
-       // Building request (req NetworkMessage)
-       req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
-       req.federation = fm->_numero_federation ;
-       req.federate = fm->federate ;
-       req.object = theObjectHandle ;
-       req.date = theTime ;
-       // true for UAV with time
-       req.setBoolean(true);
+		// Building request (req NetworkMessage)    
+    	req.federation = fm->_numero_federation ;
+    	req.federate = fm->federate ;
+    	req.object = theObjectHandle ;
+    	// set Date for UAV with time
+    	req.setDate(theTime);
+    
+    	req.handleArraySize = attribArraySize ;
 
-       req.handleArraySize = attribArraySize ;
+    	for (i = 0 ; i < attribArraySize ; i++) {
+    	    req.handleArray[i] = attribArray[i] ;
+        	req.setValue(i, valueArray[i].value, valueArray[i].length);
+    	} 
 
-       for (i = 0 ; i < attribArraySize ; i++) {
-           req.handleArray[i] = attribArray[i] ;
-           req.setValue(i, valueArray[i].value, valueArray[i].length);
-       }
+    	req.setLabel(theTag);
 
-       strcpy(req.label, theTag);
-
-       comm->sendMessage(&req);
-       comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
-
-       e = rep.exception ;
+       	comm->sendMessage(&req);
+    	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
+    	e = rep->exception ;
+    	evtrHandle = rep->eventRetraction;    	
     }
-    else
-       e = e_InvalidFederationTime ;
-
-    return rep.eventRetraction ;
+    else {
+       e = e_InvalidFederationTime;
+    }
+    
+    // FIXME returned evtrHandle carry uninitialized value
+    return evtrHandle ;
 }
 
 // ----------------------------------------------------------------------------
@@ -166,16 +168,14 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         const char *theTag,
                                         TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Update_Attribute_Values req;
     int i ;
 
-    // Building request (req NetworkMessage)
-    req.type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES ;
+    // Building request (req NetworkMessage)    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
-    // false for UAV without time
-    req.setBoolean(false);
+    // Do no set Date if without time
 
     req.handleArraySize = attribArraySize ;
 
@@ -184,14 +184,15 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
         req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    strcpy(req.label, theTag);
+    req.setLabel(theTag);
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::UPDATE_ATTRIBUTE_VALUES, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
 }
+
 // ----------------------------------------------------------------------------
 //! discoverObject.
 void
@@ -282,8 +283,9 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  RegionHandle region,
                                   TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Send_Interaction req;
     bool validCall ;
+    EventRetractionHandle evtrHandle;
 
     validCall = tm->testValidTime(theTime) ;
     if (validCall) {
@@ -296,35 +298,33 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                          paramArraySize);
 
        // Building network message (req) to RTIG.
-       req.type = NetworkMessage::SEND_INTERACTION ;
        req.interactionClass = theInteraction ;
-       // true for UAV with time
-       req.setBoolean(true);
-       req.date = theTime ;
+       // true for UAV with time    
+       req.setDate(theTime);
        req.region = region ;
        req.federation = fm->_numero_federation ;
        req.federate = fm->federate ;
-
        req.handleArraySize = paramArraySize ;
 
        for (int i=0 ; i<paramArraySize ; i++) {
-	   req.handleArray[i] = paramArray[i] ;
-	   req.setValue(i, valueArray[i].value, valueArray[i].length);
+        	req.handleArray[i] = paramArray[i] ;
+	        req.setValue(i, valueArray[i].value, valueArray[i].length);
        }
 
-       strcpy(req.label, theTag);
+       req.setLabel(theTag);
 
        // Send network message and then wait for answer.
        comm->sendMessage(&req);
-       comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
-
-       e = rep.exception ;
-
+       std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.federate));
+       e = rep->exception ;
+       evtrHandle = rep->eventRetraction;
     }
-    else
+    else {
        e = e_InvalidFederationTime ;
-
-    return rep.eventRetraction ;
+    }
+    
+    // FIXME returned evtrHandle carry uninitialized value
+    return evtrHandle ;
 }
 
 // ----------------------------------------------------------------------------
@@ -338,7 +338,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 				  RegionHandle region,
                                   TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Send_Interaction req;
     G.Out(pdGendoc,"ObjectManagement::sendInteraction without time");
     // Local test to know if interaction is correct.
     rootObject->Interactions->isReady(fm->federate,
@@ -346,14 +346,13 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArray,
                                       paramArraySize);
 
-    // Building network message (req) to RTIG.
-    req.type = NetworkMessage::SEND_INTERACTION ;
+    // Building network message (req) to RTIG.   
     req.interactionClass = theInteraction ;
     // false for UAV without time
-    req.setBoolean(false);
-    req.region = region ;
+    req.isDated    = false;
+    req.region     = region ;
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
     req.handleArraySize = paramArraySize ;
 
@@ -362,15 +361,15 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 	req.setValue(i, valueArray[i].value, valueArray[i].length);
     }
 
-    strcpy(req.label, theTag);
+    req.setLabel(theTag);
 
     // Send network message and then wait for answer.
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::SEND_INTERACTION, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
-}
+} /* end of sendInteraction */
 
 // ----------------------------------------------------------------------------
 //! receiveInteraction with time
@@ -424,27 +423,25 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                const char *theTag,
                                TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Delete_Object req;
 
-    req.type = NetworkMessage::DELETE_OBJECT ;
-    req.object = theObjectHandle ;
-    req.setBoolean(true);
-    req.date = theTime;
+    req.object     = theObjectHandle ;
+    req.setDate(theTime);
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
-    strcpy(req.label, theTag);
+    req.setLabel(theTag);
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DELETE_OBJECT, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
     }
 
-    return rep.eventRetraction ;
-}
+    return rep->eventRetraction ;
+} /* end deleteObject */
 
 // ----------------------------------------------------------------------------
 //! deleteObject without time
@@ -453,24 +450,22 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                const char *theTag,
                                TypeException &e)
 {
-    NetworkMessage req, rep ;
-
-    req.type = NetworkMessage::DELETE_OBJECT ;
-    req.object = theObjectHandle ;
-    req.setBoolean(false);
+    NM_Delete_Object req;
+    
+    req.object     = theObjectHandle ;   
     req.federation = fm->_numero_federation ;
-    req.federate = fm->federate ;
+    req.federate   = fm->federate ;
 
-    strcpy(req.label, theTag);
+    req.setLabel(theTag);
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::DELETE_OBJECT, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
     }
-}
+} /* end of deleteObject */
 
 // ----------------------------------------------------------------------------
 //! removeObject with time
@@ -481,6 +476,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
                                const char *the_tag,
                                EventRetractionHandle the_event,
                                TypeException &)
+
 {
     Message req;
 
@@ -524,10 +520,9 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
                                                TransportType theType,
                                                TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Change_Attribute_Transport_Type req;
     int i ;
 
-    req.type = NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -538,13 +533,13 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep,
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(
                       NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
-                      req.federate);
+                      req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
-    return rep.eventRetraction ;
+    return rep->eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
@@ -556,10 +551,9 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
                                            OrderType theType,
                                            TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Change_Attribute_Order_Type req ;
     int i ;
 
-    req.type = NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE ;
     req.object = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -571,11 +565,11 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
-    return rep.eventRetraction ;
+    return rep->eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
@@ -585,19 +579,18 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
                                                  TransportType theType,
                                                  TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Change_Interaction_Transport_Type req;
 
-    req.type = NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.transport = theType ;
 
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate);
-    e = rep.exception ;
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate));
+    e = rep->exception ;
 
-    return rep.eventRetraction ;
+    return rep->eventRetraction ;
 }
 
 // ----------------------------------------------------------------------------
@@ -607,9 +600,8 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
                                              OrderType theType,
                                              TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Change_Interaction_Order_Type req;
 
-    req.type = NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE ;
     req.interactionClass = id ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -617,12 +609,12 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 
     comm->sendMessage(&req);
 
-    comm->waitMessage(&rep, NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.federate);
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.federate));
 
-    e = rep.exception ;
+    e = rep->exception ;
 
-    return rep.eventRetraction ;
-}
+    return rep->eventRetraction ;
+} /* end of changeInteractionOrderType */
 
 // ----------------------------------------------------------------------------
 //! requestObjectAttributeValueUpdate
@@ -632,11 +624,10 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                                                     UShort attribArraySize,
                                                     TypeException &e)
 {
-    NetworkMessage req, rep ;
+    NM_Request_Object_Attribute_Value_Update req;
 
     G.Out(pdGendoc,"enter ObjectManagement::requestObjectAttributeValueUpdate");
-
-    req.type = NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
+    
     req.object = handle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -647,12 +638,12 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
 
     req.handleArraySize = attribArraySize ;
     comm->sendMessage(&req);
-    comm->waitMessage(&rep, NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
-                      req.federate);
-    e = rep.exception ;
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
+                      req.federate));
+    e = rep->exception ;
     G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
-
-}
+    
+} /* end of requestObjectAttributeValueUpdate */
 
 
 // --------------------------------------
@@ -803,4 +794,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.36 2008/03/13 14:39:18 siron Exp $
+// $Id: ObjectManagement.cc,v 3.37 2008/04/26 14:59:42 erk Exp $

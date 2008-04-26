@@ -143,7 +143,7 @@ void MessageBuffer::reset() {
 
 uint32_t MessageBuffer::resize(uint32_t newSize) {
 	reallocate(newSize);
-	return newSize;
+	return bufferMaxSize;
 }
 
 void MessageBuffer::assumeSize(uint32_t size) {	
@@ -204,7 +204,7 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {	
 	if (n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "::invalid read of siwritePtrze <" << n
+		smsg << __func__ << "::invalid read of size <" << n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";

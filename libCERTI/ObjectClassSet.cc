@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClassSet.cc,v 3.32 2008/04/26 14:59:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -301,15 +301,15 @@ ObjectClassSet::getObject(ObjectHandle h) const
 	
 	handledOC_const_iterator i ;
 	
-    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
-	try {
-	    Object *object = i->second->getInstanceWithID(h);
-	    return object ;
+	for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+		try {
+			Object *object = i->second->getInstanceWithID(h);
+			return object ;
+		}
+		catch (ObjectNotKnown &e) {
+		}
 	}
-	catch (ObjectNotKnown &e) {
-	}
-    }
-    throw ObjectNotKnown("");
+	throw ObjectNotKnown("");
 }
 
 // ----------------------------------------------------------------------------
@@ -825,4 +825,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.31 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClassSet.cc,v 3.32 2008/04/26 14:59:41 erk Exp $
