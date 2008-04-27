@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.63 2008/04/27 08:37:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.64 2008/04/27 12:37:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -263,8 +263,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             repFED.number = num_line ;
             repFED.FEDid = filename;            
             // line transfered
-            repFED.setFEDLine(fileLine);   
-            cout << fileLine;
+            repFED.setFEDLine(fileLine);               
             // Send answer
             repFED.send(link);
 
@@ -1395,4 +1394,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.63 2008/04/27 08:37:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.64 2008/04/27 12:37:40 erk Exp $
