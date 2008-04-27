@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.54 2008/04/26 14:59:41 erk Exp $
+// $Id: FederationManagement.cc,v 3.55 2008/04/27 08:37:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -264,7 +264,7 @@ joinFederationExecution(const char *Federate,
     NM_Get_FED_File              requeteFED;
     
     int i, nb ;
-    char *filename ; // Needed for working file name
+    char* filename ; // Needed for working file name
 
     G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
     D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
@@ -332,9 +332,10 @@ joinFederationExecution(const char *Federate,
             _FEDid =  new char[strlen(filename)+1] ;
             strcpy(_FEDid,filename) ;              
             // RTIA opens working file
-            FILE *fdd;
-            if ( (fdd=fopen(filename,"w")) == NULL )
+            std::ofstream fedWorkFile(filename);
+            if ( !fedWorkFile.is_open()) {
                 throw RTIinternalError("FED file has vanished.") ;
+            }
               
             // RTIA says RTIG OK for file transfer            
             requeteFED.federateName = Federate;
@@ -361,17 +362,15 @@ joinFederationExecution(const char *Federate,
                     e = e_RTIinternalError ;
                     break ;
                     }
-		stat->rtiService(NetworkMessage::GET_FED_FILE);
+                stat->rtiService(NetworkMessage::GET_FED_FILE);
                 // Line read
                 num_line++ ;
                 // Check for EOF
-                if ( reponse->number == 0 )
-                    break;
+                if ( reponse->number == 0 ) break;
+                 
                 assert ( num_line == reponse->number ) ;
-                reponse->handleArraySize = 1 ;
-                //file_line = reponse->getValue(0,&length) ;
-                int nbw = fputs(getFedMsg->getFEDLine().c_str(),fdd);
-                //file_line = NULL ;
+                reponse->handleArraySize = 1 ;                
+                fedWorkFile << getFedMsg->getFEDLine();
                 // RTIA says OK to RTIG                
                 requeteFED.federateName =Federate;
                 requeteFED.number = num_line ; 
@@ -379,7 +378,7 @@ joinFederationExecution(const char *Federate,
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file
-            fclose(fdd); 
+            fedWorkFile.close(); 
             }                          
  
         G.Out(pdGendoc,"joinFederationExecution====> end FED file get from RTIG"); 

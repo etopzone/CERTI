@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.82 2008/04/26 14:59:42 erk Exp $
+// $Id: Federation.cc,v 3.83 2008/04/27 08:37:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -226,19 +226,18 @@ Federation::Federation(const char *federation_name,
     free(FEDid);
     FEDid = strdup(filename.c_str());
 
-    // Try to open to verify if file exists
-    FILE *fftry ;
-    if ( (fftry=fopen(FEDid,"r")) == NULL)
+    // Try to open to verify if file exists    
+    std::ifstream fedTry(FEDid);
+    if (!fedTry.is_open())
         {
         cout << "... failed : ";
         G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
         }
-    else
-        {
+    else {
         cout << "... opened." << endl ;
-        fclose(fftry) ;
-        }
+        fedTry.close();
+    }
 
     int  nbcar_filename = filename.length() ;
     bool is_a_fed       = false ;
@@ -269,11 +268,11 @@ Federation::Federation(const char *federation_name,
         throw CouldNotOpenFED("Incorrect FED file name : nor .fed nor .xml file");
     }
        
-    ifstream fdd(filename.c_str());
+    std::ifstream fedFile(filename.c_str());
 
-    if (fdd.is_open())
+    if (fedFile.is_open())
         {
-    	fdd.close();
+    	fedFile.close();
         if ( is_a_fed )
             {
 	    int err = fedparser::build(filename.c_str(), root, verbose);
@@ -2282,5 +2281,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.82 2008/04/26 14:59:42 erk Exp $
+// $Id: Federation.cc,v 3.83 2008/04/27 08:37:47 erk Exp $
 

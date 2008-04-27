@@ -18,13 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.62 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIG_processing.cc,v 3.63 2008/04/27 08:37:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIG.hh"
 #include "NM_Classes.hh"
 
+#include <iostream>
 #include <assert.h>
 
 using std::endl ;
@@ -215,15 +216,14 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     // Here begin FED file processing i.e. RTIG gives FED file contents to RTIA
     TypeException e = e_NO_EXCEPTION ;
-    // Open FED file and says to RTIA if success
-    FILE *fdd ;
-    if ( (fdd=fopen(filename.c_str(),"r")) == NULL )
-        {
+    // Open FED file and says to RTIA if success    
+    std::ifstream fedFile(filename.c_str());    
+    if ( !fedFile.is_open()) {
         // Problem : file has been opened during create federation and now we can't
         // May be file has been deleted       
         cout << "processJoinFederation : FED file " << filename << " has vanished." << endl;
         e = e_RTIinternalError ;
-        }
+    }
 
     // RTIG says OK or not to RTIA
     NM_Get_FED_File repFED ;    
@@ -248,11 +248,14 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         assert ( msg.number == 0 );
         // RTIA has opened working file then RTIG has to transfer file contents
         // line by line
-        char file_line[MAX_BYTES_PER_VALUE+1];  
+        std::string fileLine;  
         int num_line = 0 ;
-        while ( fgets(file_line,MAX_BYTES_PER_VALUE,fdd) != NULL )
+        while (!fedFile.eof())
             {
             num_line++;
+            // Read a line
+            std::getline(fedFile,fileLine);     
+            fileLine = fileLine+"\n";
             // RTIG sends line to RTIA and number gives line number            
             repFED.exception = e_NO_EXCEPTION ;
             repFED.federate = num_federe ;
@@ -260,7 +263,8 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             repFED.number = num_line ;
             repFED.FEDid = filename;            
             // line transfered
-            repFED.setFEDLine(std::string(file_line));            
+            repFED.setFEDLine(fileLine);   
+            cout << fileLine;
             // Send answer
             repFED.send(link);
 
@@ -269,14 +273,13 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             assert ( msg.number == num_line );
             }
     
-	// close
-	fclose(fdd) ;        
+	    // close
+	    fedFile.close();        
         repFED.exception = e_NO_EXCEPTION ;
         repFED.federate = num_federe ;
         repFED.federation = num_federation ;
         repFED.number = 0 ;
         repFED.FEDid = filename;        
-
         // Send answer
 
         G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
@@ -1392,4 +1395,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.62 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIG_processing.cc,v 3.63 2008/04/27 08:37:47 erk Exp $
