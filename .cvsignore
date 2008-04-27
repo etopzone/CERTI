@@ -8,3 +8,4 @@ config.sub
 ltmain.sh
 missing
 aclocal.m4
+build
