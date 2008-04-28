@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.55 2008/04/27 08:37:46 erk Exp $
+// $Id: FederationManagement.cc,v 3.56 2008/04/28 14:51:32 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -236,9 +236,18 @@ destroyFederationExecution(const char *theName,
                {
                if ( _FEDid[0] != '\0' )
                    {
-                   std::cout<<"Removing temporary file "<<_FEDid<<" on destroy federation."<<std::endl;
-                   std::remove(_FEDid);
-                   _FEDid[0] = '\0' ;
+                   // If RTIA end (abort ?) before join don't remove file if not temporary
+                   // temporary file name begins with _RT ( yes, but...)
+                   if ( _FEDid[0] == '_' || _FEDid[1] == 'R' || _FEDid[2] == 'T')
+                      {
+                      std::cout<<"Removing temporary file "<<_FEDid<<" on destroy federation."<<std::endl;
+                      std::remove(_FEDid);
+                      _FEDid[0] = '\0' ;
+                      }
+                   else
+                      {
+                      std::cout<<"** W ** I don't remove file "<<_FEDid<<std::endl;
+                      }                   
                    }
                }
             }
