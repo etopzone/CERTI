@@ -365,8 +365,10 @@ INCLUDE(UseRPMTools)
 IF(RPMTools_FOUND)
   RPMTools_ADD_RPM_TARGETS(certi)
 ENDIF(RPMTools_FOUND)
-#INCLUDE(UseDebian)
-#ADD_DEBIAN_TARGETS(certi)
+INCLUDE(UseDebian)
+IF (DEBIAN_FOUND)
+  ADD_DEBIAN_TARGETS(certi)
+ENDIF(DEBIAN_FOUND)
 
 ########### install files ###############
 SET(prefix ${CMAKE_INSTALL_PREFIX})
