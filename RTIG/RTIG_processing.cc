@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.64 2008/04/27 12:37:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.65 2008/04/28 15:35:57 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,7 +55,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
         throw RTIinternalError("Invalid Federation Name.");
         }
 
-    //auditServer << "Federation Name : " << federation ;
+    auditServer << "Federation Name : " << federation.c_str() ;
     Handle h = federationHandles.provide();
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -1394,4 +1394,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.64 2008/04/27 12:37:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.65 2008/04/28 15:35:57 rousse Exp $
