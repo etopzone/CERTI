@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.26 2008/02/14 15:49:40 jmm Exp $
+// $Id: certi.hh,v 3.27 2008/04/28 17:14:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -60,6 +60,7 @@
         #define __func__ "<unknown>"
         #endif
     #else
+       #include <stdint.h>
        #ifdef __x86_64__
           #define  CERTI_INT64_CONSTANT(val)  (val##L)
           #define  CERTI_INT64_FORMAT         "l"
@@ -69,6 +70,7 @@
        #endif
     #endif
 #else
+    #include <stdint.h>
     #define  STAT_FUNCTION		stat
     #define  STAT_STRUCT		struct stat
     #ifdef __x86_64__
@@ -383,4 +385,4 @@ typedef  struct vlp
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.26 2008/02/14 15:49:40 jmm Exp $
+// $Id: certi.hh,v 3.27 2008/04/28 17:14:53 erk Exp $
