@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.34 2008/02/15 13:22:04 erk Exp $
+## $Id: Makefile.am,v 3.35 2008/04/28 12:25:58 erk Exp $
 
 if HAVE_POSIX_CLOCK
 POSIX_CLK_HEADER = PosixClock.hh
@@ -46,6 +46,7 @@ GSSAPIHandler.cc InteractionBroadcastList.cc Interaction.cc		\
 InteractionSet.cc LBTS.cc MessageBody.cc Message.cc Message_R.cc	\
 Message_W.cc \
 Named.cc NetworkMessage.cc NetworkMessage_RW.cc ObjectAttribute.cc	\
+NM_Classes.hh NM_Classes.cc \
 Object.cc ObjectClassAttribute.cc ObjectClassBroadcastList.cc		\
 ObjectClass.cc ObjectClassSet.cc ObjectSet.cc Parameter.cc		\
 RootObject.cc RoutingSpace.cc RTIRegion.cc SecureTCPSocket.cc		\
