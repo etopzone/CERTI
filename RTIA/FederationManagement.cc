@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.57 2008/04/28 15:35:57 rousse Exp $
+// $Id: FederationManagement.cc,v 3.58 2008/04/28 17:20:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -352,7 +352,6 @@ joinFederationExecution(const char *Federate,
             comm->sendMessage(&requeteFED);
     
             // Now read loop from RTIG to get line contents and then write it into file            
-            unsigned long length=0 ;
             int num_line = 0 ; // no line read            
             for (;;)
                 {            	

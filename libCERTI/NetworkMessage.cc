@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.29 2008/04/26 14:59:41 erk Exp $
+// $Id: NetworkMessage.cc,v 3.30 2008/04/28 17:20:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -35,11 +35,11 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 NetworkMessage::NetworkMessage()
-    : type(NOT_USED), 
-      exception(e_NO_EXCEPTION), 
-      isDated(false), 
+    : isDated(false), 
       isLabelled(false), 
-      isTagged(false)
+      isTagged(false),     
+      exception(e_NO_EXCEPTION),
+      type(NOT_USED)
 {
     name               = std::string("NetworkMessage (generic)");
     exceptionReason    = std::string("") ;
@@ -229,4 +229,4 @@ NetworkMessage::setBoolean(bool the_bool)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.29 2008/04/26 14:59:41 erk Exp $
+// $Id: NetworkMessage.cc,v 3.30 2008/04/28 17:20:19 erk Exp $
