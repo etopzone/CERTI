@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.76 2008/04/23 07:36:02 siron Exp $
+// $Id: RTIambassador.cc,v 3.77 2008/04/29 13:21:37 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -619,6 +619,11 @@ RTI::RTIambassador::joinFederationExecution(const char *yourName,
     Message req, rep ;
 
     G.Out(pdGendoc,"enter RTIambassador::joinFederationExecution");
+
+    if ( yourName == NULL || strlen(yourName) == 0 )
+        throw RTIinternalError("Incorrect or empty federate name");
+    if ( executionName == NULL || strlen(executionName) == 0 )
+        throw RTIinternalError("Incorrect or empty federation name");
 
     privateRefs->fed_amb = (FederateAmbassador *) fedamb ;
 
@@ -2930,4 +2935,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.76 2008/04/23 07:36:02 siron Exp $
+// $Id: RTIambassador.cc,v 3.77 2008/04/29 13:21:37 rousse Exp $
