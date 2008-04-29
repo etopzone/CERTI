@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.65 2008/04/28 15:35:57 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.66 2008/04/29 09:38:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -128,10 +128,10 @@ void
 RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 {
     std::string federation = req->federationName ;
-    std::string federate = req->federateName ;
+    std::string federate   = req->federateName ;
     std::string filename ;
     
-    unsigned int peer = req->bestEffortPeer ;
+    unsigned int peer     = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
 
     Handle num_federation ;
@@ -175,13 +175,13 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
        // FIXME strange to send 2 messages?
        // Prepare answer about JoinFederationExecution
        NM_Join_Federation_Execution rep ;
-      rep.exception = e_FederateAlreadyExecutionMember ;
-      rep.exceptionReason = "Federate with same name has yet joined the federation";
+       rep.exception = e_FederateAlreadyExecutionMember ;
+       rep.exceptionReason = "Federate with same name has yet joined the federation";
 
-      G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason.c_str());
+       G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason.c_str());
 
-      rep.send(link);
-      return ;
+       rep.send(link);
+       return ;
        }               
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -1394,4 +1394,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.65 2008/04/28 15:35:57 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.66 2008/04/29 09:38:33 erk Exp $

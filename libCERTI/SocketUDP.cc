@@ -91,6 +91,7 @@ SocketUDP::createUDPClient(unsigned int, // port
 struct sockaddr_in sock_temp ;
 char localhost[4096] ;
 std::stringstream msg;
+struct hostent * hp_local;
 
 #ifdef _WIN32								//netDot
 	int taille = sizeof(struct sockaddr_in);
@@ -159,15 +160,15 @@ SocketUDP::createUDPServer(unsigned int port)
   
   char localhost[MAXHOSTNAMELEN+1] ;
   std::stringstream msg;
+  struct hostent * hp_local=NULL;
 
- // Building Local Address
- memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
- hp_local = (struct hostent *) malloc(sizeof(struct hostent));
+  // Building Local Address
+  memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
 
- gethostname(localhost, MAXHOSTNAMELEN);
+  gethostname(localhost, MAXHOSTNAMELEN);
 
- hp_local = (struct hostent *) gethostbyname(localhost);
- if (hp_local == 0) 
+  hp_local = (struct hostent *) gethostbyname(localhost);
+  if (NULL == hp_local) 
 	{
 	 msg << "gethostbyname gave NULL answer for hostname <"
 	 			<< localhost 
@@ -175,19 +176,12 @@ SocketUDP::createUDPServer(unsigned int port)
 	 			<< strerror(errno) 
 	 			<< ">";
 	 		//perror("SocketUDP: gethostbyname");
-	 	   throw NetworkError(msg.str().c_str());
-		
+	 	   throw NetworkError(msg.str().c_str());		
 	}
 
-
-#ifdef _WIN32
    memcpy((char *) &sock_local.sin_addr,(char *)hp_local->h_addr, hp_local->h_length);
-#else
-   bcopy((char *)hp_local->h_addr, (char *) &sock_local.sin_addr, hp_local->h_length);
-#endif
-
    sock_local.sin_family = hp_local->h_addrtype ;
-   sock_local.sin_port = htons((u_short)port);
+   sock_local.sin_port   = htons((u_short)port);
 
 if (!open()) 
 	{
@@ -210,7 +204,6 @@ SocketUDP::SocketUDP()
 _est_init_udp = false ;
 
 hp_distant = NULL ;
-hp_local = NULL ;
 PhysicalLink = true ;
 
 BufferSize = 0 ;

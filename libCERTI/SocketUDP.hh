@@ -104,8 +104,6 @@ private:
 
 	unsigned long BufferSize ;
 	char Buffer[4096] ;
-
-	struct hostent * hp_local ;
 };
 
 } // namespace certi
