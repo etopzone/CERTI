@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.83 2008/04/27 08:37:47 erk Exp $
+// $Id: Federation.cc,v 3.84 2008/04/29 08:33:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -348,7 +348,7 @@ Federation::~Federation()
 
     // Free local allocations
     free(name);
-    free(FEDid);
+    delete[] FEDid;
     delete root ;
 
     delete server ;
@@ -2281,5 +2281,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.83 2008/04/27 08:37:47 erk Exp $
+// $Id: Federation.cc,v 3.84 2008/04/29 08:33:04 erk Exp $
 

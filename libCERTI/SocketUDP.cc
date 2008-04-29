@@ -192,13 +192,13 @@ SocketUDP::createUDPServer(unsigned int port)
 if (!open()) 
 	{
 	perror("SocketUDP: Open");
-	throw NetworkError("");
+	throw NetworkError("Cannot open UDP Socket");
 	}
 
 if (!bind()) 
 	{
 	perror("SocketUDP: Bind");
-	throw NetworkError("");
+	throw NetworkError("Cannot bind UDP Socket");
 	}
 
 _est_init_udp = true ;

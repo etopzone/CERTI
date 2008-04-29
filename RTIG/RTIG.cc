@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.40 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIG.cc,v 3.41 2008/04/29 08:33:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -940,10 +940,9 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
     catch (NetworkError &e) {
         strcpy(buffer, " - NetworkError");
         auditServer.endLine(rep->exception, buffer);
-
+        delete msg;
         throw e ;
     }
-
     // Default Handler
     catch (Exception &e) {
         D.Out(pdExcept, "Unknown Exception : %s.", e._name);
@@ -961,7 +960,7 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
     }
 
     auditServer.endLine(rep->exception, buffer);
-
+    delete msg;
     if (link == NULL) return link ;
 
     /* FIXME ***/
@@ -991,4 +990,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.40 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIG.cc,v 3.41 2008/04/29 08:33:04 erk Exp $

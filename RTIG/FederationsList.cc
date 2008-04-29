@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.55 2008/04/01 13:00:47 rousse Exp $
+// $Id: FederationsList.cc,v 3.56 2008/04/29 08:33:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -335,15 +335,15 @@ void FederationsList::info(Handle handle,
                            bool &is_syncing,
                            SocketMC* &comm_mc)
 #else
-    char * FederationsList::info(Handle handle,
+    std::string FederationsList::info(Handle handle,
                                int &nb_federates,
                                int &nb_regulators,
                                bool &is_syncing)
 #endif
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
-    char * FED_Filename = NULL ;
-    Federation *federation ;
+    std::string FED_Filename;
+    Federation *federation = NULL;
     G.Out(pdGendoc,"enter FederationsList::info");
     // It may raise RTIinternalError
     checkHandle(handle);
@@ -351,12 +351,11 @@ void FederationsList::info(Handle handle,
     // It may throw FederationExecutionNotFound
     searchFederation(handle, federation);
 
-    nb_federates = federation->getNbFederates();
+    nb_federates  = federation->getNbFederates();
     nb_regulators = federation->getNbRegulators();
-    is_syncing = federation->isSynchronizing();
+    is_syncing    = federation->isSynchronizing();
     // We need federation FEDid
-    FED_Filename = new char[strlen(federation->getFEDid())+1];
-    strcpy(FED_Filename,federation->getFEDid());
+    FED_Filename = std::string(federation->getFEDid());
 #ifdef FEDERATION_USES_MULTICAST
     comm_mc = federation->MCLink ;
 #endif
@@ -1559,5 +1558,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.55 2008/04/01 13:00:47 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.56 2008/04/29 08:33:04 erk Exp $
 

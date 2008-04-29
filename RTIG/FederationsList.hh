@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.40 2008/02/28 14:47:59 rousse Exp $
+// $Id: FederationsList.hh,v 3.41 2008/04/29 08:33:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -79,7 +79,7 @@ public:
               bool &is_syncing,
               SocketMC* &comm_mc)
 #else
-        char * info(Handle theHandle,
+        std::string info(Handle theHandle,
                   int &nb_federes,
                   int &nb_regulateurs,
                   bool &is_syncing)
@@ -585,4 +585,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.40 2008/02/28 14:47:59 rousse Exp $
+// $Id: FederationsList.hh,v 3.41 2008/04/29 08:33:04 erk Exp $

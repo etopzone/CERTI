@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.8 2008/04/26 14:59:41 erk Exp $
+// $Id: BasicMessage.hh,v 3.9 2008/04/29 08:33:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -50,6 +50,7 @@ public:
     const std::vector<RegionHandle> &getRegions() const ;
 	 
 protected:
+	virtual ~BasicMessage();
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	
@@ -74,4 +75,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.8 2008/04/26 14:59:41 erk Exp $
+// $Id: BasicMessage.hh,v 3.9 2008/04/29 08:33:05 erk Exp $
