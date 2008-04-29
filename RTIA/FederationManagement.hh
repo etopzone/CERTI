@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.21 2007/12/17 16:01:24 rousse Exp $
+// $Id: FederationManagement.hh,v 3.22 2008/04/29 13:11:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -100,7 +100,7 @@ public:
     Handle _numero_federation ;
     FederateHandle federate ;
     bool _fin_execution ;
-    char *_FEDid ;
+    char*  _FEDid ;
 
 private:
     Communications *comm ;
@@ -114,12 +114,13 @@ private:
 
     std::list<char *> synchronizationLabels ; //!< Labels being synchronized.
 
-    char *_nom_federation ;
-    char _nom_federe[MAX_FEDERATE_NAME_LENGTH] ;
+    std::string _nom_federation ;
+    std::string _nom_federe;
+    
 };
 
 }} // namespace certi/rtia
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.21 2007/12/17 16:01:24 rousse Exp $
+// $Id: FederationManagement.hh,v 3.22 2008/04/29 13:11:14 erk Exp $

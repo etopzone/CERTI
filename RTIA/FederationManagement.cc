@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.58 2008/04/28 17:20:19 erk Exp $
+// $Id: FederationManagement.cc,v 3.59 2008/04/29 13:11:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -67,9 +67,9 @@ static PrettyDebug G("GENDOC",__FILE__);
     //_est_createur_federation = false ;
     _est_membre_federation = false ;
 
-    _nom_federation = NULL ;
-    _nom_federe[0] = 0 ;
-    _FEDid = NULL ;
+    _nom_federation = "";
+    _nom_federe     = "";
+    _FEDid          = NULL;
     G.Out(pdGendoc,"exit  FederationManagement::FederationManagement");
 }
 
@@ -99,8 +99,7 @@ FederationManagement::~FederationManagement()
        // }
         cout << "RTIA: Federation destroyed" << endl ;
     //}
-
-    delete _nom_federation ;
+    
     delete _FEDid ;
     G.Out(pdGendoc,"exit  ~FederationManagement");
 }
@@ -146,8 +145,7 @@ createFederationExecution(const char *theName,
 
         if (reponse->exception == e_NO_EXCEPTION)
             {
-            _nom_federation = new char[strlen(theName)+1] ;
-            strcpy(_nom_federation, theName);
+            _nom_federation = std::string(theName);            
             _numero_federation = reponse->federation ;
             D.Out(pdInit, "est createur");
             }
@@ -221,7 +219,7 @@ destroyFederationExecution(const char *theName,
                           federate));
 
         if (reponse->exception == e_NO_EXCEPTION) {
-            _nom_federation    = NULL ;
+            _nom_federation    = "" ;
             _numero_federation = 0 ;
             _fin_execution     = true ;
             // Now, remove temporary file (if not yet done)
@@ -390,9 +388,8 @@ joinFederationExecution(const char *Federate,
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
         if (reponse->exception == e_NO_EXCEPTION) {
-            _nom_federation = new char[strlen(Federation)+1] ;
-            strcpy(_nom_federation, Federation);
-            strcpy(_nom_federe, Federate);
+            _nom_federation = std::string(Federation);            
+            _nom_federe =  std::string(Federate);
             _numero_federation = reponse->federation ;
             federate = reponse->federate ;
             tm->setFederate(reponse->federate);
