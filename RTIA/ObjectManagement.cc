@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.37 2008/04/26 14:59:42 erk Exp $
+// $Id: ObjectManagement.cc,v 3.38 2008/04/29 12:23:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -48,7 +48,7 @@ using std::string ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_OM", __FILE__);
+static PrettyDebug D("RTIA_OM", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
 ObjectManagement::ObjectManagement(Communications *GC,
@@ -143,6 +143,13 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     	evtrHandle = rep->eventRetraction;    	
     }
     else {
+       std::stringstream errorMsg;
+       errorMsg << "UAV InvalidFederationTime: ";
+       errorMsg << "providedTime =" << theTime;
+       errorMsg << "currentTime  =" <<  tm->requestFederateTime();
+       errorMsg << "lookahead    = " << tm->requestLookahead();
+       
+       D.Out(pdDebug,errorMsg.str().c_str());
        e = e_InvalidFederationTime;
     }
     
@@ -794,4 +801,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.37 2008/04/26 14:59:42 erk Exp $
+// $Id: ObjectManagement.cc,v 3.38 2008/04/29 12:23:00 erk Exp $
