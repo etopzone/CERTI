@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.5 2007/11/22 16:04:08 rousse Exp $
+// $Id: Exception.hh,v 3.6 2008/04/29 07:50:23 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -114,11 +114,34 @@ typedef enum {
     e_UnimplementedService,
     e_UnknownLabel,
     e_ValueCountExceeded,
-    e_ValueLengthExceeded
+    e_ValueLengthExceeded,
+    e_AttributeAcquisitionWasNotCanceled,
+    e_DimensionNotDefined,
+    e_EnableTimeConstrainedPending,
+    e_EnableTimeConstrainedWasNotPending,
+    e_EnableTimeRegulationPending,
+    e_EnableTimeRegulationWasNotPending,
+    e_FederateLoggingServiceCalls,
+    e_HandleValuePairMaximumExceeded,
+    e_InteractionClassNotSubscribed,
+    e_InvalidHandleValuePairSetContext,
+    e_InvalidLookahead,
+    e_InvalidOrderingHandle,
+    e_InvalidRegionContext,
+    e_InvalidTransportationHandle,
+    e_OwnershipAcquisitionPending,
+    e_RegionInUse,
+    e_SynchronizationPointLabelWasNotAnnounced,
+    e_TimeConstrainedAlreadyEnabled,
+    e_TimeConstrainedWasNotEnabled,
+    e_TimeRegulationAlreadyEnabled,
+    e_TimeRegulationWasNotEnabled,
+    e_NetworkError,
+    e_NetworkSignal
 } TypeException ;
 
 } // namespace certi
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.5 2007/11/22 16:04:08 rousse Exp $
+// $Id: Exception.hh,v 3.6 2008/04/29 07:50:23 rousse Exp $

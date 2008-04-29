@@ -30,17 +30,20 @@ public:
     Exception &operator=(const Exception &);
     virtual Exception *cloneSelf() const throw() = 0 ;
     virtual void throwSelf() const = 0 ;	
-	const char* displayMe() const;
+    const char* displayMe() const;
+    virtual long getType() = 0;
 };
 
 #define RTI_EXCEPT(A) \
 class CERTI_EXPORT A : public Exception { \
 public: \
     static const char *_ex ; \
+    static long type ; \
     A (const char *reason) : Exception(reason) { _name = #A ; this->displayMe();} \
     A (ULong serial, const char *reason = 0) \
         : Exception(serial, reason) { _name = #A ; this->displayMe(); } \
     A (A const &toCopy) : Exception(toCopy) { _name = #A ; this->displayMe();} \
     Exception *cloneSelf() const throw() { return (new A(_reason)); } \
     void throwSelf() const { throw *this ; } \
+    long getType() {return type;}; \
 };

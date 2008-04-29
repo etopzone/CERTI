@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.10 2007/11/22 16:04:08 rousse Exp $
+// $Id: Exception.cc,v 3.11 2008/04/29 07:50:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -136,6 +136,115 @@ const char *certi::UnimplementedService::_ex = "UnimplementedService" ;
 const char *certi::UnknownLabel::_ex = "UnknownLabel" ;
 const char *certi::NetworkError::_ex = "NetworkError" ;
 const char *certi::NetworkSignal::_ex = "NetworkSignal" ;
+
+//  TypeException managing (how to obtain TypeException from Exception name ?)
+long RTI::ArrayIndexOutOfBounds::type = certi::e_ArrayIndexOutOfBounds ;
+long RTI::AsynchronousDeliveryAlreadyDisabled::type = certi::e_AsynchronousDeliveryAlreadyDisabled ;
+long RTI::AsynchronousDeliveryAlreadyEnabled::type = certi::e_AsynchronousDeliveryAlreadyEnabled ;
+long RTI::AttributeAcquisitionWasNotRequested::type = certi::e_AttributeAcquisitionWasNotRequested ;
+long RTI::AttributeAcquisitionWasNotCanceled::type = certi::e_AttributeAcquisitionWasNotCanceled ;
+long RTI::AttributeAlreadyBeingAcquired::type = certi::e_AttributeAlreadyBeingAcquired ;
+long RTI::AttributeAlreadyBeingDivested::type = certi::e_AttributeAlreadyBeingDivested ;
+long RTI::AttributeAlreadyOwned::type = certi::e_AttributeAlreadyOwned ;
+long RTI::AttributeDivestitureWasNotRequested::type = certi::e_AttributeDivestitureWasNotRequested ;
+long RTI::AttributeNotDefined::type = certi::e_AttributeNotDefined ;
+long RTI::AttributeNotKnown::type = certi::e_AttributeNotKnown ;
+long RTI::AttributeNotOwned::type = certi::e_AttributeNotOwned ;
+long RTI::AttributeNotPublished::type = certi::e_AttributeNotPublished ;
+long RTI::ConcurrentAccessAttempted::type = certi::e_ConcurrentAccessAttempted ;
+long RTI::CouldNotDiscover::type = certi::e_CouldNotDiscover ;
+long RTI::CouldNotOpenFED::type = certi::e_CouldNotOpenFED ;
+long RTI::CouldNotRestore::type = certi::e_CouldNotRestore ;
+long RTI::DeletePrivilegeNotHeld::type = certi::e_DeletePrivilegeNotHeld ;
+long RTI::DimensionNotDefined::type = certi::e_DimensionNotDefined ;
+long RTI::EnableTimeConstrainedPending::type = certi::e_EnableTimeConstrainedPending ;
+long RTI::EnableTimeConstrainedWasNotPending::type = certi::e_EnableTimeConstrainedWasNotPending ;
+long RTI::EnableTimeRegulationPending::type = certi::e_EnableTimeRegulationPending ;
+long RTI::EnableTimeRegulationWasNotPending::type = certi::e_EnableTimeRegulationWasNotPending ;
+long RTI::ErrorReadingFED::type = certi::e_ErrorReadingFED ;
+long RTI::EventNotKnown::type = certi::e_EventNotKnown ;
+long RTI::FederateAlreadyExecutionMember::type = certi::e_FederateAlreadyExecutionMember ;
+long RTI::FederateInternalError::type = certi::e_FederateInternalError ;
+long RTI::FederateLoggingServiceCalls::type = certi::e_FederateLoggingServiceCalls ;
+long RTI::FederateNotExecutionMember::type = certi::e_FederateNotExecutionMember ;
+long RTI::FederateOwnsAttributes::type = certi::e_FederateOwnsAttributes ;
+long RTI::FederateWasNotAskedToReleaseAttribute::type = certi::e_FederateWasNotAskedToReleaseAttribute ;
+long RTI::FederatesCurrentlyJoined::type = certi::e_FederatesCurrentlyJoined ;
+long RTI::FederationExecutionAlreadyExists::type = certi::e_FederationExecutionAlreadyExists ;
+long RTI::FederationExecutionDoesNotExist::type = certi::e_FederationExecutionDoesNotExist ;
+long RTI::FederationTimeAlreadyPassed::type = certi::e_FederationTimeAlreadyPassed ;
+long RTI::HandleValuePairMaximumExceeded::type = certi::e_HandleValuePairMaximumExceeded ;
+long RTI::InteractionClassNotDefined::type = certi::e_InteractionClassNotDefined ;
+long RTI::InteractionClassNotKnown::type = certi::e_InteractionClassNotKnown ;
+long RTI::InteractionClassNotPublished::type = certi::e_InteractionClassNotPublished ;
+long RTI::InteractionClassNotSubscribed::type = certi::e_InteractionClassNotSubscribed ;
+long RTI::InteractionParameterNotDefined::type = certi::e_InteractionParameterNotDefined ;
+long RTI::InteractionParameterNotKnown::type = certi::e_InteractionParameterNotKnown ;
+long RTI::InvalidExtents::type = certi::e_InvalidExtents ;
+long RTI::InvalidFederationTime::type = certi::e_InvalidFederationTime ;
+long RTI::InvalidHandleValuePairSetContext::type = certi::e_InvalidHandleValuePairSetContext ;
+long RTI::InvalidLookahead::type = certi::e_InvalidLookahead ;
+long RTI::InvalidOrderingHandle::type = certi::e_InvalidOrderingHandle ;
+long RTI::InvalidRegionContext::type = certi::e_InvalidRegionContext ;
+long RTI::InvalidResignAction::type = certi::e_InvalidResignAction ;
+long RTI::InvalidRetractionHandle::type = certi::e_InvalidRetractionHandle ;
+long RTI::InvalidTransportationHandle::type = certi::e_InvalidTransportationHandle ;
+long RTI::MemoryExhausted::type = certi::e_MemoryExhausted ;
+long RTI::NameNotFound::type = certi::e_NameNotFound ;
+long RTI::ObjectClassNotDefined::type = certi::e_ObjectClassNotDefined ;
+long RTI::ObjectClassNotKnown::type = certi::e_ObjectClassNotKnown ;
+long RTI::ObjectClassNotPublished::type = certi::e_ObjectClassNotPublished ;
+long RTI::ObjectClassNotSubscribed::type = certi::e_ObjectClassNotSubscribed ;
+long RTI::ObjectNotKnown::type = certi::e_ObjectNotKnown ;
+long RTI::ObjectAlreadyRegistered::type = certi::e_ObjectAlreadyRegistered ;
+long RTI::OwnershipAcquisitionPending::type = certi::e_OwnershipAcquisitionPending ;
+long RTI::RegionInUse::type = certi::e_RegionInUse ;
+long RTI::RegionNotKnown::type = certi::e_RegionNotKnown ;
+long RTI::RestoreInProgress::type = certi::e_RestoreInProgress ;
+long RTI::RestoreNotRequested::type = certi::e_RestoreNotRequested ;
+long RTI::RTIinternalError::type = certi::e_RTIinternalError ;
+long RTI::SpaceNotDefined::type = certi::e_SpaceNotDefined ;
+long RTI::SaveInProgress::type = certi::e_SaveInProgress ;
+long RTI::SaveNotInitiated::type = certi::e_SaveNotInitiated ;
+long RTI::SpecifiedSaveLabelDoesNotExist::type = certi::e_SpecifiedSaveLabelDoesNotExist ;
+long RTI::SynchronizationPointLabelWasNotAnnounced::type = certi::e_SynchronizationPointLabelWasNotAnnounced ;
+long RTI::TimeAdvanceAlreadyInProgress::type = certi::e_TimeAdvanceAlreadyInProgress ;
+long RTI::TimeAdvanceWasNotInProgress::type = certi::e_TimeAdvanceWasNotInProgress ;
+long RTI::TimeConstrainedAlreadyEnabled::type = certi::e_TimeConstrainedAlreadyEnabled ;
+long RTI::TimeConstrainedWasNotEnabled::type = certi::e_TimeConstrainedWasNotEnabled ;
+long RTI::TimeRegulationAlreadyEnabled::type = certi::e_TimeRegulationAlreadyEnabled ;
+long RTI::TimeRegulationWasNotEnabled::type = certi::e_TimeRegulationWasNotEnabled ;
+long RTI::UnableToPerformSave::type = certi::e_UnableToPerformSave ;
+long RTI::ValueCountExceeded::type = certi::e_ValueCountExceeded ;
+long RTI::ValueLengthExceeded::type = certi::e_ValueLengthExceeded ;
+
+// From certi.hh
+long certi::FederateNotPublishing::type = certi::e_FederateNotPublishing ;
+long certi::FederateNotSubscribing::type = certi::e_FederateNotSubscribing ;
+long certi::InvalidObjectHandle::type = certi::e_InvalidObjectHandle ;
+long certi::InvalidOrderType::type = certi::e_InvalidOrderType ;
+long certi::InvalidTransportType::type = certi::e_InvalidTransportType ;
+long certi::SecurityError::type = certi::e_SecurityError ;
+long certi::CouldNotOpenRID::type = certi::e_CouldNotOpenRID ;
+long certi::ErrorReadingRID::type = certi::e_ErrorReadingRID ;
+long certi::FederationAlreadyPaused::type = certi::e_FederationAlreadyPaused ;
+long certi::FederationNotPaused::type = certi::e_FederationNotPaused ;
+long certi::AttributeNotSubscribed::type = certi::e_AttributeNotSubscribed ;
+long certi::FederateAlreadyPaused::type = certi::e_FederateAlreadyPaused ;
+long certi::FederateDoesNotExist::type = certi::e_FederateDoesNotExist ;
+long certi::FederateNameAlreadyInUse::type = certi::e_FederateNameAlreadyInUse ;
+long certi::FederateNotPaused::type = certi::e_FederateNotPaused ;
+long certi::IDsupplyExhausted::type = certi::e_IDsupplyExhausted ;
+long certi::InvalidDivestitureCondition::type = certi::e_InvalidDivestitureCondition ;
+long certi::InvalidFederationTimeDelta::type = certi::e_InvalidFederationTimeDelta ;
+long certi::InvalidRoutingSpace::type = certi::e_InvalidRoutingSpace ;
+long certi::NoPauseRequested::type = certi::e_NoPauseRequested ;
+long certi::NoResumeRequested::type = certi::e_NoResumeRequested ;
+long certi::TooManyIDsRequested::type = certi::e_TooManyIDsRequested ;
+long certi::UnimplementedService::type = certi::e_UnimplementedService ;
+long certi::UnknownLabel::type = certi::e_UnknownLabel ;
+long certi::NetworkError::type = certi::e_NetworkError ;
+long certi::NetworkSignal::type = certi::e_NetworkSignal ;
 
 static PrettyDebug PD_Exception("RTI_EXCEPTION",__FILE__);
 
