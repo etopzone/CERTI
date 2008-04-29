@@ -168,8 +168,7 @@ Billard::pause_friend()
              cout << "Now we test Register Federation Synchronisation Point on some federates" << endl ;
              cout << "Please enter a federate handle (zero means none)" << endl ;
              cout << "This federate will be synchronized with the creator and not the others" << endl;
-             std::cin >> numfed;
-             if ( numfed != 0 )
+             scanf("%d",&numfed);
                  {
                  // We store numfed into the federate set
                  federateSet->add(numfed) ;
