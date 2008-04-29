@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.84 2008/04/29 08:33:04 erk Exp $
+// $Id: Federation.cc,v 3.85 2008/04/29 08:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -145,13 +145,11 @@ Federation::Federation(const char *federation_name,
     if ((federation_name == NULL) || (federation_handle == 0))
         throw RTIinternalError("Null init parameter in Federation creation.");
 
-    name = strdup(federation_name);
+    name = std::string(federation_name);
 
     // Default Attribute values
-    handle = federation_handle ;
-
-    FEDid = new char[strlen(FEDid_name)+1] ;
-    strcpy(FEDid,FEDid_name);
+    handle = federation_handle;
+    FEDid  = std::string(FEDid_name);    
 
     D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
           handle);
@@ -164,7 +162,6 @@ Federation::Federation(const char *federation_name,
 
     cout << "New federation: " << name << endl ;
 
-
     // We should try to open FOM file from different
     // predefined places:
     //
@@ -175,7 +172,7 @@ Federation::Federation(const char *federation_name,
     // 3 - default (unix) installation place plus FEDid_name 
     //     "/usr/local/share/federation/" + FEDid_name
     //
-    string filename   = string(FEDid) ;
+    string filename   = FEDid;
     bool   filefound  = false;
     cout << "Looking for FOM file... " << endl ; 
 
@@ -222,12 +219,11 @@ Federation::Federation(const char *federation_name,
       throw CouldNotOpenFED("RTIG cannot find FED file.");
     }
 
-    // now really assign FEDid
-    free(FEDid);
-    FEDid = strdup(filename.c_str());
+    // now really assign FEDid   
+    FEDid = filename;
 
     // Try to open to verify if file exists    
-    std::ifstream fedTry(FEDid);
+    std::ifstream fedTry(FEDid.c_str());
     if (!fedTry.is_open())
         {
         cout << "... failed : ";
@@ -346,11 +342,8 @@ Federation::~Federation()
 //     }
 //     clear();
 
-    // Free local allocations
-    free(name);
-    delete[] FEDid;
+    // Free local allocations    
     delete root ;
-
     delete server ;
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -389,7 +382,7 @@ Federation::getHandle() const
 const char *
 Federation::getName() const
 {
-    return name ;
+    return name.c_str() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -404,9 +397,8 @@ Federation::getNbRegulators() const
 //! Returns the FEDid name given in 'Create Federation Execution'.
 const char *
 Federation::getFEDid() const
-{
-    assert(FEDid != NULL );
-    return FEDid ;
+{    
+    return FEDid.c_str() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2158,7 +2150,7 @@ Federation::restoreXmlData()
         return false ;
     }
 
-    if (strcmp(name, XmlParser::CleanXmlGetProp(cur,(const xmlChar*)"name")) != 0) {
+    if (strcmp(name.c_str(), XmlParser::CleanXmlGetProp(cur,(const xmlChar*)"name")) != 0) {
         cerr << "Wrong federation name" << endl ;
     }
     
@@ -2210,7 +2202,7 @@ Federation::saveXmlData()
     xmlNodePtr federation ;
     federation = xmlNewChild(doc->children, NULL, NODE_FEDERATION, NULL);
 
-    xmlSetProp(federation, (const xmlChar *) "name", (const xmlChar *) name);
+    xmlSetProp(federation, (const xmlChar *) "name", (const xmlChar *) name.c_str());
 
     char t[10] ;
     sprintf(t, "%ld", handle);
@@ -2281,5 +2273,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.84 2008/04/29 08:33:04 erk Exp $
+// $Id: Federation.cc,v 3.85 2008/04/29 08:57:48 erk Exp $
 

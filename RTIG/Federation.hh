@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.45 2008/02/28 14:47:58 rousse Exp $
+// $Id: Federation.hh,v 3.46 2008/04/29 08:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -55,8 +55,8 @@ class Federation
     // ATTRIBUTES --------------------------------------------------------------
 private:
     Handle handle ;
-    char *name ;
-    char *FEDid ;
+    std::string name ;
+    std::string FEDid ;
 
     //! Labels and Tags not on synchronization.
     std::map<const char *, const char *> synchronizationLabels ;
@@ -594,4 +594,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.45 2008/02/28 14:47:58 rousse Exp $
+// $Id: Federation.hh,v 3.46 2008/04/29 08:57:48 erk Exp $

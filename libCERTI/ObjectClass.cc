@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.42 2008/04/26 14:59:40 erk Exp $
+// $Id: ObjectClass.cc,v 3.43 2008/04/29 08:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -696,7 +696,7 @@ ObjectClass::publish(FederateHandle theFederateHandle,
 ObjectClassBroadcastList *
 ObjectClass::registerObjectInstance(FederateHandle the_federate,
                                     Object *the_object,
-                                    ObjectClassHandle)
+                                    ObjectClassHandle classHandle)
     throw (ObjectClassNotPublished,
            ObjectAlreadyRegistered,
            RTIinternalError)
@@ -704,7 +704,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
         D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
-        throw ObjectAlreadyRegistered("");
+        throw ObjectAlreadyRegistered(the_object->getName().c_str());
     }
 
     // This condition is only to be checked on the RTIG
@@ -1806,4 +1806,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.42 2008/04/26 14:59:40 erk Exp $
+// $Id: ObjectClass.cc,v 3.43 2008/04/29 08:57:48 erk Exp $

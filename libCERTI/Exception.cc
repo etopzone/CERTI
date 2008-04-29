@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.11 2008/04/29 07:50:22 rousse Exp $
+// $Id: Exception.cc,v 3.12 2008/04/29 08:57:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -250,6 +250,9 @@ static PrettyDebug PD_Exception("RTI_EXCEPTION",__FILE__);
 
 RTI::Exception::~Exception()
 {
+	if (NULL!=_reason) {
+		free(_reason);
+	}
 }
 
 RTI::Exception::Exception(const char *reason)
