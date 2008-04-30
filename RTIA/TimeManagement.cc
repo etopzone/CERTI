@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.33 2008/04/26 14:59:41 erk Exp $
+// $Id: TimeManagement.cc,v 3.34 2008/04/30 17:01:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -668,27 +668,30 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 bool
 TimeManagement::testValidTime(FederationTime theTime)
 {
+	RTIfedTime epsilon;
+	
+   epsilon.setEpsilon();
    if (_avancee_en_cours == PAS_D_AVANCEE) {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
          if (theTime <= _heure_courante)
-            return 0;
+            return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-         if (theTime < _heure_courante + _lookahead_courant)
-            return 0;
+         if (theTime + epsilon.getTime() < _heure_courante + _lookahead_courant)
+            return false;
       }
    }
    else {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
          if (theTime <= date_avancee)
-            return 0;
+            return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-         if (theTime < date_avancee + _lookahead_courant)
-            return 0;
+         if (theTime + epsilon.getTime() < date_avancee + _lookahead_courant)
+            return false;
       }
    }
-   return 1;
+   return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -918,4 +921,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.33 2008/04/26 14:59:41 erk Exp $
+// $Id: TimeManagement.cc,v 3.34 2008/04/30 17:01:09 erk Exp $
