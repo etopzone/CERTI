@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.38 2008/04/29 12:23:00 erk Exp $
+// $Id: ObjectManagement.cc,v 3.39 2008/05/02 10:48:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -144,10 +144,10 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     }
     else {
        std::stringstream errorMsg;
-       errorMsg << "UAV InvalidFederationTime: ";
-       errorMsg << "providedTime =" << theTime;
-       errorMsg << "currentTime  =" <<  tm->requestFederateTime();
-       errorMsg << "lookahead    = " << tm->requestLookahead();
+       errorMsg << "UAV InvalidFederationTime: "<<std::endl;
+       errorMsg << " providedTime =" << theTime<<std::endl;
+       errorMsg << " currentTime  =" << tm->requestFederateTime()<<std::endl;
+       errorMsg << " lookahead    =" << tm->requestLookahead()<<std::endl;       
        
        D.Out(pdDebug,errorMsg.str().c_str());
        e = e_InvalidFederationTime;
@@ -801,4 +801,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.38 2008/04/29 12:23:00 erk Exp $
+// $Id: ObjectManagement.cc,v 3.39 2008/05/02 10:48:32 erk Exp $
