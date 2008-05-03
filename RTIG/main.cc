@@ -38,14 +38,13 @@ using std::cout ;
 using std::endl ;
 using std::string ;
 
-static RTIG *rti ;
+static RTIG myRTIG;
 
 // ----------------------------------------------------------------------------
 //! SignalHandler.
 extern "C" void SignalHandler(int sig)
 {
-    rti->signalHandler(sig);
-
+    myRTIG.signalHandler(sig);
     // Catch signal again.
     std::signal(sig, SignalHandler);
 }
@@ -93,20 +92,12 @@ int main(int argc, char *argv[])
 	#endif
 
     std::set_new_handler(NewHandler);
-
-    try {
-        rti = new RTIG();
-	rti->setVerbose(args.verbose_flag);
-        rti->execute();
-        delete rti ;
-    }
-    catch (Exception &e) {
-        cerr << "RTIG: exception: " << e._name << " -- Exiting." << endl ;
-        exit(EXIT_FAILURE);
-    }
+    
+    myRTIG.setVerbose(args.verbose_flag);
+    myRTIG.execute();    
 
     if (verbose) {
-	cout << "CERTI RTIG exiting." << endl ;
+	  cout << "CERTI RTIG exiting." << endl ;
     }
     exit(EXIT_SUCCESS);
-}
+} /* end of main */
