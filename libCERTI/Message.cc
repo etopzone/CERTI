@@ -394,6 +394,7 @@ Message::getAHVPS() const
         {
         value = getValue(i, &length);
         ahvps->add(handleArray[i], value, length);
+        delete[] value;
         }
 
     return ahvps ;
