@@ -1451,7 +1451,7 @@ void NM_DDM_Associate_Region::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(object);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_int32(boolean);
+	msgBuffer.write_bool(boolean);
 } /* end of serialize */ 
 void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1459,7 +1459,7 @@ void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	object  = msgBuffer.read_int32();
 	region  = msgBuffer.read_int32();
-	boolean = msgBuffer.read_int32();
+	boolean = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Associate_Region ------------<END>*/
 
@@ -1479,7 +1479,7 @@ void NM_DDM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_int32(object);
 	msgBuffer.write_int32(objectClass);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_int32(boolean);
+	msgBuffer.write_bool(boolean);
 } /* end of serialize */ 
 void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1488,7 +1488,7 @@ void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	object      = msgBuffer.read_int32();
 	objectClass = msgBuffer.read_int32();
 	region      = msgBuffer.read_int32();
-	boolean     = msgBuffer.read_int32();
+	boolean     = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Register_Object ------------<END>*/
 
@@ -1530,7 +1530,7 @@ void NM_DDM_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(objectClass);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_int32(boolean);
+	msgBuffer.write_bool(boolean);
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1538,7 +1538,7 @@ void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	objectClass = msgBuffer.read_int32();
 	region      = msgBuffer.read_int32();
-	boolean     = msgBuffer.read_int32();
+	boolean     = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
