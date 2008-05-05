@@ -29,11 +29,10 @@ import threading
 import getopt, sys
 import dtest
 
-traceActive=0
 pseudoExecActive=0
 
 def usage():
-    print "Usage:\n %s [--trace] [--pseudoexec] [--certi_home=<path>] [--display=<display>] --rtig=<user>@[<host>]:<rtig_path> --billard=<user>@[<host>]:<billard_path>" % sys.argv[0]
+    print "Usage:\n %s [--help] [--pseudoexec] [--certi_home=<path>] [--display=<display>] --rtig=<user>@[<host>]:<rtig_path> --billard=<user>@[<host>]:<billard_path>" % sys.argv[0]
 
 def getUserHostPath(argument):
     if argument.find("@") != -1:
@@ -68,24 +67,24 @@ def createAnotherOneBillardSequence(billardTester):
     billardTester.addRunStep("barrier","All Billard(s) ended")
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "r:b:c:t:p:d:", ["rtig=", "billard=","certi_home=","trace","pseudoexec","display="])
+    opts, args = getopt.getopt(sys.argv[1:], "hr:b:c:p:d:", ["help","rtig=", "billard=","certi_home=","pseudoexec","display="])
 except getopt.GetoptError, err:
     print >> sys.stderr, "opt = %s, msg = %s" % (err.opt,err.msg)
     usage()
     sys.exit(2)
 
-if len(opts) < 2:
-    usage()
-    sys.exit(2)
-
+## default values
 certi_home_defined=False
 display=":0.0"
+rtig_param = getUserHostPath("rtig")
+billard_param = getUserHostPath("billard")
     
 for o, a in opts:
+    if o in ("--help"):
+            usage()
+            sys.exit(2)
     if o in ("--pseudoexec"):
         pseudoExecActive=1
-    if o in ("--trace"):
-        traceActive=1
     if o in ("-r", "--rtig"):
         rtig_param   = getUserHostPath(a)
     if o in ("-b", "--billard"):
