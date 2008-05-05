@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.18 2008/04/26 14:59:41 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.19 2008/05/05 14:28:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -319,7 +319,7 @@ DeclarationManagement::
 unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                             TypeException &e)
 {
-    NM_Unsubscribe_Object_Class req;
+    NM_Unsubscribe_Interaction_Class req;
 
     e = e_NO_EXCEPTION ;
 
@@ -452,4 +452,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.18 2008/04/26 14:59:41 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.19 2008/05/05 14:28:55 erk Exp $
