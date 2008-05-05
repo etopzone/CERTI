@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.25 2008/04/26 14:59:41 erk Exp $
+// $Id: Communications.cc,v 3.26 2008/05/05 09:47:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -177,51 +177,53 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
     const int tcp_fd(SecureTCPSocket::returnSocket());
     const int udp_fd(SocketUDP::returnSocket());
 
+    int max_fd = 0; // not used for _WIN32
     fd_set fdset ;
     FD_ZERO(&fdset);
 
-    FD_SET(_socket_un, &fdset);
-    FD_SET(tcp_fd, &fdset);
-    FD_SET(udp_fd, &fdset);
-
-	#ifdef _WIN32	//For Windows, First "Select" argument isn't used
-		int	max_fd= 0;
-	#else
-		int max_fd = std::max(_socket_un, std::max(tcp_fd, udp_fd));
-	#endif
+    if (msg_reseau) {
+        FD_SET(tcp_fd, &fdset);
+        FD_SET(udp_fd, &fdset);
+#ifndef _WIN32
+	max_fd = std::max(max_fd, std::max(tcp_fd, udp_fd));
+#endif
+    }
+    if (msg) {
+        FD_SET(_socket_un, &fdset);
+#ifndef _WIN32
+	max_fd = std::max(max_fd, _socket_un);
+#endif
+    }
 
 #ifdef FEDERATION_USES_MULTICAST
     // if multicast link is initialized (during join federation).
     if (_est_init_mc) {
         FD_SET(_socket_mc, &fdset);
-
- 		#ifdef _WIN32	//For Windows, First "Select" argument isn't used
-			max_fd= 0;
-		#else
-			max_fd = std::max(max_fd, _socket_mc);
-		#endif
+#ifndef _WIN32
+        max_fd = std::max(max_fd, _socket_mc);
+#endif
    }
 #endif
 
-    if (!waitingList.empty()) {
+    if (msg_reseau && !waitingList.empty()) {
         // One message is in waiting buffer.        
         *msg_reseau = waitingList.front();
         waitingList.pop_front();                
         n = 1 ;
     }
-    else if (SecureTCPSocket::isDataReady()) {
+    else if (msg_reseau && SecureTCPSocket::isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
     	*msg_reseau = NM_Factory::receive((SecureTCPSocket *) this);        
         n = 1 ;
     }
-    else if (SocketUDP::isDataReady()) {
+    else if (msg_reseau && SocketUDP::isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
     	*msg_reseau = NM_Factory::receive((SocketUDP *) this);       
         n = 1 ;
     }
-    else if (SocketUN::isDataReady()) {
+    else if (msg && SocketUN::isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
     	(*msg) = new Message();
@@ -231,13 +233,14 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
     else {
         // waitingList is empty and no data in TCP buffer.
         // Wait a message (coming from federate or network).
+#ifdef _WIN32
         if (select(max_fd, &fdset, NULL, NULL, timeout) < 0) {
-			#ifdef _WIN32
-				 if(WSAGetLastError() == WSAEINTR)
-			#else
-				 if(errno == EINTR)
-			#endif 
-			    {
+            if (WSAGetLastError() == WSAEINTR)
+#else
+        if (select(max_fd+1, &fdset, NULL, NULL, timeout) < 0) {
+            if (errno == EINTR)
+#endif 
+            {
                 throw NetworkSignal("EINTR on select");
                 }
 				else {
@@ -336,4 +339,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.25 2008/04/26 14:59:41 erk Exp $
+// $Id: Communications.cc,v 3.26 2008/05/05 09:47:21 erk Exp $

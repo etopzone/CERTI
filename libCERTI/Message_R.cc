@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.20 2008/04/23 07:36:01 siron Exp $
+// $Id: Message_R.cc,v 3.21 2008/05/05 09:47:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -636,6 +636,7 @@ Message::readHeader(SocketUN *socket)
       case FEDERATION_RESTORE_BEGUN:
       case ENABLE_ASYNCHRONOUS_DELIVERY:
       case DISABLE_ASYNCHRONOUS_DELIVERY:
+      case TICK_REQUEST_NEXT:
         break ;
 
       // ------- federationTime useful
@@ -764,4 +765,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.20 2008/04/23 07:36:01 siron Exp $
+// $Id: Message_R.cc,v 3.21 2008/05/05 09:47:19 erk Exp $

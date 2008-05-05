@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.23 2008/04/23 07:36:02 siron Exp $
+// $Id: Message_W.cc,v 3.24 2008/05/05 09:47:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -665,6 +665,7 @@ Message::writeHeader(SocketUN *socket)
       case FEDERATION_RESTORE_BEGUN:
       case ENABLE_ASYNCHRONOUS_DELIVERY:
       case DISABLE_ASYNCHRONOUS_DELIVERY:
+      case TICK_REQUEST_NEXT:
         header.bodySize = 0 ;
         break ;
 
@@ -745,4 +746,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.23 2008/04/23 07:36:02 siron Exp $
+// $Id: Message_W.cc,v 3.24 2008/05/05 09:47:19 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
+// $Id: RTIA.cc,v 3.20 2008/05/05 09:47:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -123,9 +123,46 @@ RTIA::execute()
          */
     	msg_un      = NULL;
     	msg_tcp_udp = NULL;
-        try {        	
-            comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
-            assert((msg_un!=NULL) || (msg_tcp_udp!=NULL));
+        try {
+            switch (tm->_tick_state) {
+              case TimeManagement::NO_TICK:
+                /* tick() is not active:
+                 *   block until RTIA or federate message comes
+                 */
+                comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+                break;
+
+              case TimeManagement::TICK_BLOCKING:
+                /* blocking tick() waits for an event to come:
+                 *   block until RTIA or federate message comes, or timeout expires
+                 */
+                if (tm->_tick_timeout != std::numeric_limits<double>::infinity() &&
+                    tm->_tick_timeout < LONG_MAX) {
+
+                    struct timeval timev;
+                    timev.tv_sec = int(tm->_tick_timeout);
+                    timev.tv_usec = int((tm->_tick_timeout-timev.tv_sec)*1000000.0);
+
+                    comm->readMessage(n, &msg_tcp_udp, &msg_un, &timev);
+                }
+                else
+                    comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
+                break;
+
+              case TimeManagement::TICK_CALLBACK:
+              case TimeManagement::TICK_RETURN:
+                /* tick() waits until a federate callback finishes:
+                 *   block until federate message comes
+                 *   RTIA messages are queued in a system queue
+                 */
+                comm->readMessage(n, NULL, &msg_un, NULL);
+                break;
+
+              default:
+                assert(false);
+            }
+
+            /* timev is undefined after select() */
         }
         catch (NetworkSignal) {
             fm->_fin_execution = true ;
@@ -139,70 +176,25 @@ RTIA::execute()
             break ;
           case 1:
             processNetworkMessage(msg_tcp_udp);
+            if (tm->_tick_state == TimeManagement::TICK_BLOCKING)
+                processOngoingTick();
             break ;
           case 2:
             processFederateRequest(msg_un);
             break ;
           case 3: // timeout
+            if (tm->_tick_state == TimeManagement::TICK_BLOCKING) {
+                // stop the ongoing tick() operation
+                tm->_tick_state = TimeManagement::TICK_RETURN;
+                processOngoingTick();
+            }
             break ;
           default:
             assert(false);
         }
-
-        // special case, blocking tick
-        while (!fm->_fin_execution && tm->_blocking_tick) {
-	        // read a message from the rtig
-            // same code is reused, but only the case 1 should match
-        	/* NetworkMessage will be allocated by the readMessage call
-        	 * We may not get a Message in this call see previous comment
-        	 */
-            msg_un      = NULL;
-            msg_tcp_udp = NULL;
-
-            try {
-                if (tm->_tick_timeout != std::numeric_limits<double>::infinity() &&
-                   tm->_tick_timeout < LONG_MAX)
-                {
-                    struct timeval timev;
-                    timev.tv_sec = int(tm->_tick_timeout);
-                    timev.tv_usec = int((tm->_tick_timeout-timev.tv_sec)*1000000.0);
-
-                    comm->readMessage(n, &msg_tcp_udp, &msg_un, &timev);
-                }
-                else {
-                    comm->readMessage(n, &msg_tcp_udp, &msg_un, NULL);
-                }
-
-                /* timev is undefined after select() */
-            }
-            catch (NetworkSignal) {
-                fm->_fin_execution = true ;
-                n = 0 ;
-                delete msg_tcp_udp ;
-            }
-
-            switch (n) {
-              case 0:
-                break ;
-              case 1:
-                processNetworkMessage(msg_tcp_udp) ;  // could authorize a callback
-                // may have reset tm->_blocking_tick
-                processOngoingTick();
-                break ;
-              case 2:
-                assert(false);
-              case 3: // timeout
-                // stop the ongoing tick() operation
-                tm->_blocking_tick = false;
-                processOngoingTick();
-                break ;
-              default:
-                assert(false);
-            }
-        }   
     }   
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
+// $Id: RTIA.cc,v 3.20 2008/05/05 09:47:20 erk Exp $

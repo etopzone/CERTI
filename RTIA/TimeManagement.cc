@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.34 2008/04/30 17:01:09 erk Exp $
+// $Id: TimeManagement.cc,v 3.35 2008/05/05 09:47:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -83,7 +83,7 @@ TimeManagement::TimeManagement(Communications *GC,
     lastNullMessageDate = 0.0 ;
 
     _avancee_en_cours = PAS_D_AVANCEE ;
-    _blocking_tick         = false ;
+    _tick_state = NO_TICK;
     _asynchronous_delivery = false ;
 
     _heure_courante = 0.0 ;
@@ -124,7 +124,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
   G.Out(pdGendoc,"enter TimeManagement::executeFederateService for type %d",msg.getType());
   D.Out(pdRequest, "Execute federate service: Type %d.", msg.getType());
 
-    _blocking_tick = false;  // indicate a callback was processed
+    _tick_state = TICK_NEXT;  // indicate the callback was processed
 
     switch (msg.getType()) {
 
@@ -830,7 +830,7 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     if (_lookahead_courant == epsilon)
        _lookahead_courant = 0.0 ;
 
-    _blocking_tick = false;  // indicate a callback was processed
+    _tick_state = TICK_NEXT;  // indicate the callback was processed
 
     comm->requestFederateService(&req);
 
@@ -921,4 +921,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.34 2008/04/30 17:01:09 erk Exp $
+// $Id: TimeManagement.cc,v 3.35 2008/05/05 09:47:20 erk Exp $

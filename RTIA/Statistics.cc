@@ -208,6 +208,7 @@ Statistics::Statistics()
 	FED_MSG_NAME(Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH);
 	FED_MSG_NAME(Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH);
 	FED_MSG_NAME(Message::TICK_REQUEST);
+	FED_MSG_NAME(Message::TICK_REQUEST_NEXT);
 
 	// RTI messages
 	RTI_MSG_NAME(NetworkMessage::CLOSE_CONNEXION);
@@ -361,4 +362,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.14 2008/03/06 08:56:27 rousse Exp $
+// $Id: Statistics.cc,v 3.15 2008/05/05 09:47:21 erk Exp $

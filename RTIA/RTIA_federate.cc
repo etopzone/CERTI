@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.74 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIA_federate.cc,v 3.75 2008/05/05 09:47:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,6 +27,7 @@
 #include "fed.hh"
 #include "RoutingSpace.hh"
 #include "XmlParser.hh"
+#include <assert.h>
 #ifdef _WIN32
 #include <time.h>
 #include <sys/timeb.h>
@@ -69,6 +70,7 @@ G.Out(pdGendoc,"enter RTIA::saveAndRestoreStatus");
     switch (type) {
       case Message::RESIGN_FEDERATION_EXECUTION:
       case Message::TICK_REQUEST:
+      case Message::TICK_REQUEST_NEXT:
       case Message::GET_OBJECT_CLASS_HANDLE:
       case Message::GET_OBJECT_CLASS_NAME:
       case Message::GET_ATTRIBUTE_HANDLE:
@@ -961,17 +963,28 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST:
-        tm->_tick_multiple = req->getBoolean();
+        if (tm->_tick_state != TimeManagement::NO_TICK)
+            throw RTIinternalError("TICK_REQUEST cannot be called recursively");
 
-	if (req->getMinTickTime() > 0.0)
-	{
+        tm->_tick_multiple = req->getBoolean();
+        tm->_tick_result = false; // default return value
+
+        if (req->getMinTickTime() > 0.0)
+        {
             tm->_tick_timeout = req->getMinTickTime();
             tm->_tick_stop_time = currentTickTime() + req->getMaxTickTime();
-
-            tm->_blocking_tick = true ;
+            tm->_tick_state = TimeManagement::TICK_BLOCKING;
         }
         else
-            tm->_blocking_tick = false ;
+            tm->_tick_state = TimeManagement::TICK_CALLBACK;
+
+        processOngoingTick();
+        break ;
+
+      case Message::TICK_REQUEST_NEXT:
+        if (tm->_tick_state != TimeManagement::TICK_CALLBACK &&
+            tm->_tick_state != TimeManagement::TICK_RETURN)
+            throw RTIinternalError("unexpected TICK_REQUEST_NEXT");
 
         processOngoingTick();
         break ;
@@ -990,35 +1003,62 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 void
 RTIA::processOngoingTick()
 {
+    Message msg_ack;
     TypeException exc = e_NO_EXCEPTION;
-    bool pending;
 
-    do {
-        // send a single callback to federate (if any)
-	pending = tm->tick(exc);
+    while (1) {
+        switch (tm->_tick_state) {
+          case TimeManagement::TICK_BLOCKING:
+            /* blocking tick() waits for an event to come:
+             *   try to evoke a single callback
+             */
+            tm->_tick_result = tm->tick(exc);
+            // if a callback has not been evoked
+            if (tm->_tick_state != TimeManagement::TICK_NEXT)
+                return; // keep waiting
+            // else goto TICK_NEXT
 
-	// processing a callback may have reset tm->_blocking_tick
+          case TimeManagement::TICK_NEXT:
+            /* a callback was evoked
+             *   decide how to continue
+             */
+            if (tm->_tick_result &&
+                tm->_tick_multiple && currentTickTime() < tm->_tick_stop_time)
+                tm->_tick_state = TimeManagement::TICK_CALLBACK;
+            else
+                tm->_tick_state = TimeManagement::TICK_RETURN;
 
-        if (!tm->_tick_multiple)
-    	    break;
+            return;
 
-	if (currentTickTime() > tm->_tick_stop_time)
-	{
-            tm->_blocking_tick = false;
-            break;
-	}
-    }
-    while (pending);
+          case TimeManagement::TICK_CALLBACK:
+            /* tick() waits until a federate callback finishes
+             *   try to evoke a single callback
+             */
+            tm->_tick_result = tm->tick(exc);
+            // if a callback has been evoked
+            if (tm->_tick_state == TimeManagement::TICK_NEXT)
+                break; // goto TICK_NEXT
+            // else goto TICK_RETURN
 
-    if (!tm->_blocking_tick)
-    {
-        Message msg_ack;
-        if ( exc != e_RTIinternalError )
-    	    msg_ack.setException(exc);
-        // terminate __tick() call in the federate
-        msg_ack.type = Message::TICK_REQUEST;
-        msg_ack.setBoolean(pending);
-        comm->requestFederateService(&msg_ack);
+          case TimeManagement::TICK_RETURN:
+            /* send TICK_REQUEST response
+             */
+            if ( exc != e_RTIinternalError )
+                msg_ack.setException(exc);
+            // terminate __tick() call in the federate
+            msg_ack.type = Message::TICK_REQUEST;
+            msg_ack.setBoolean(tm->_tick_result);
+            msg_ack.setMinTickTime(0); // unused
+            msg_ack.setMaxTickTime(0); // unused
+            comm->requestFederateService(&msg_ack);
+
+            tm->_tick_state = TimeManagement::NO_TICK;
+            return;
+
+          default:
+            std::cerr << "Unknown state: " << tm->_tick_state << std::endl;
+            assert(false);
+        }
     }
 }
 
@@ -1369,7 +1409,8 @@ RTIA::processFederateRequest(Message *req)
 
     delete req;
 
-    if (rep.type != Message::TICK_REQUEST) {
+    if (rep.type != Message::TICK_REQUEST &&
+        rep.type != Message::TICK_REQUEST_NEXT) {
        // generic federate service acknowledgment
        // the TICK_REQUEST confirmation is generated in processOngoingTick()
        comm->sendUN(&rep);
@@ -1380,4 +1421,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.74 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIA_federate.cc,v 3.75 2008/05/05 09:47:20 erk Exp $

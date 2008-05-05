@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.77 2008/04/29 13:21:37 rousse Exp $
+// $Id: RTIambassador.cc,v 3.78 2008/05/05 09:47:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -241,7 +241,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
 {
     Message vers_RTI, vers_Fed ;
 
-    // Prevenir le RTI
+    // Request callback(s) from the local RTIA
     vers_RTI.type = Message::TICK_REQUEST ;
     vers_RTI.setBoolean(multiple);
     vers_RTI.setMinTickTime(minimum);
@@ -500,6 +500,20 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
               default: {
                   privateRefs->leave("RTI service requested by RTI is unknown.");
               }
+            }
+
+            // Request next callback from the RTIA
+            Message tick_next;
+            tick_next.type = Message::TICK_REQUEST_NEXT;
+
+            try {
+                tick_next.write(privateRefs->socketUn);
+            }
+            catch (NetworkError) {
+                cout << "tick 3." << endl ;
+                cout << "LibRTI:: Catched NetworkError, throw RTIinternalError."
+                     << endl ;
+                throw RTIinternalError("RTI::RTIambassador::__tick_kernel (tick3) : NetworkError-->RTIinternalError");
             }
         }
         catch (InvalidFederationTime &e) {
@@ -2935,4 +2949,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.77 2008/04/29 13:21:37 rousse Exp $
+// $Id: RTIambassador.cc,v 3.78 2008/05/05 09:47:20 erk Exp $
