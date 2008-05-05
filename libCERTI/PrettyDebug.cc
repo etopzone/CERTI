@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.6 2008/02/04 14:41:30 erk Exp $
+// $Id: PrettyDebug.cc,v 4.7 2008/05/05 08:27:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -84,7 +84,7 @@ char buffer[256] ;
 #else
 	struct timeval tv;
 	gettimeofday( &tv, NULL );
-	sprintf( buffer, "HLALOG - %d.%06d - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
+	sprintf( buffer, "HLALOG - %ld.%06ld - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
 
 	if (Message != NULL)
 		theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
@@ -274,4 +274,4 @@ return;
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.6 2008/02/04 14:41:30 erk Exp $
+// $Id: PrettyDebug.cc,v 4.7 2008/05/05 08:27:11 erk Exp $
