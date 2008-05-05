@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.22 2008/04/03 15:21:52 rousse Exp $
+// $Id: SocketTCP.cc,v 3.23 2008/05/05 09:06:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -241,47 +241,21 @@ _sockIn.sin_port = htons(port);
 
 Length = sizeof(_sockIn);
 
-Result = ::bind(_socket_tcp, (sockaddr *)&_sockIn, Length);
+    int on = 1 ;
+    /* Bind even if the port is in the TIME_WAIT. If the port is busy,
+     * An error will be reported if the port is busy with another state. */
+    if (setsockopt(_socket_tcp,
+        SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on)))
+	perror("setsockopt");
 
-#ifdef _WIN32
-	if((Result <0) &&(WSAGetLastError() == WSAEADDRINUSE))
-#else
-	if((Result <0) &&(errno == EADDRINUSE))
-#endif
-	{// Error on Bind. If the error is "Address already in use", allow
-	// the user to choose to "reuse address" and then try again.
-	changeReuseOption();
-	Result = ::bind(_socket_tcp, (sockaddr *)&_sockIn, Length);
-	}
+    Result = ::bind(_socket_tcp, (sockaddr *)&_sockIn, Length);
 
-if (Result == 0)
-	return 1 ;
-else
-	return 0 ;
-}
-
-// ----------------------------------------------------------------------------
-void
-SocketTCP::changeReuseOption()
-{
-int on = 1 ;
-
-cout << endl << "TCP Server, Bind : Address already in use." << endl ;
-cout << "If you are sure no other RTIG is running, we can try to set" << endl ;
-cout << "the \"Reuse Address\" option and try again." << endl ;
-cout << "\tPress ENTER to try again or CTRL-C to abort." << endl ;
-
-fflush(stdin); getchar();
-
-// Set the SO_REUSEADDR option(Server Side)
-if (setsockopt(_socket_tcp,
-					SOL_SOCKET,
-					SO_REUSEADDR,
-					(char *)&on,
-					sizeof(on))) 
-	{
-	perror("Setsockopt");
-	}
+    if (Result != 0) {
+        perror("bind");
+	return 0;
+    }
+    else
+        return 1;
 }
 
 // ----------------------------------------------------------------------------
@@ -621,4 +595,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.22 2008/04/03 15:21:52 rousse Exp $
+// $Id: SocketTCP.cc,v 3.23 2008/05/05 09:06:52 erk Exp $

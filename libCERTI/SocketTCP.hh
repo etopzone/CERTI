@@ -81,7 +81,6 @@ private:
 	int connect(in_port_t port, in_addr_t addr);
 	int listen(unsigned long howMuch=5);
 	int bind(in_port_t port=0, in_addr_t addr=INADDR_ANY);
-	void changeReuseOption();
 	void setPort(in_port_t port);
 	in_port_t getPort() const ;
 	in_addr_t getAddr() const ;
