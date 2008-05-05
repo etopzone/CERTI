@@ -163,12 +163,19 @@ Billard::pause_friend()
         D.Out(pdInit, "Pause requested for friend");
         try {
             // For testing purpose
-             RTI::FederateHandle numfed ;
+             RTI::FederateHandle numfed(0) ;
              RTI::FederateHandleSet *federateSet = RTI::FederateHandleSetFactory::create(1) ;
              cout << "Now we test Register Federation Synchronisation Point on some federates" << endl ;
              cout << "Please enter a federate handle (zero means none)" << endl ;
              cout << "This federate will be synchronized with the creator and not the others" << endl;
-             scanf("%d",&numfed);
+            /* FIXME we should use C++ I/O and not mix C I/O with  C++ I/O  
+             while ( not (std::cin >> numfed) || numfed < 0) {
+	         std::cout << "That's not a number; ";
+		     std::cin.clear();
+		     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		     }
+		     */
+             scanf("%lu",&numfed);
              if (numfed != 0)
                  {
                  // We store numfed into the federate set
