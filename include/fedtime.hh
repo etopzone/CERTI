@@ -1,5 +1,5 @@
 // HLA 1.3 Header "fedtime.hh"
-// $Id: fedtime.hh,v 3.8 2007/09/26 14:14:46 erk Exp $
+// $Id: fedtime.hh,v 3.9 2008/05/06 13:36:19 erk Exp $
 
 #ifndef HLA_FEDTIME_HH
 #define HLA_FEDTIME_HH
@@ -15,6 +15,10 @@
 class CERTI_EXPORT RTIfedTime : public RTI::FedTime
 {
 public:
+	
+	static const double epsilon; 
+	static int fcmp(const double x1, const double x2);
+	
     RTIfedTime();
     RTIfedTime(const RTI::Double &);
     RTIfedTime(const RTI::FedTime &);
@@ -131,4 +135,4 @@ RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
 
 #endif // HLA_FEDTIME_HH
 
-// $Id: fedtime.hh,v 3.8 2007/09/26 14:14:46 erk Exp $
+// $Id: fedtime.hh,v 3.9 2008/05/06 13:36:19 erk Exp $

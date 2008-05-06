@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.35 2008/05/05 09:47:20 erk Exp $
+// $Id: TimeManagement.cc,v 3.36 2008/05/06 13:36:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,6 @@ namespace {
 
 PrettyDebug D("RTIA_TM", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
-const double epsilon = 1.0e-6 ;
 
 }
 
@@ -480,8 +479,11 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
-        if (_lookahead_courant == 0.0) {
-           _lookahead_courant = epsilon ;
+        // FIXME Erk-->Pierre 
+        // We were changing lookahead value to epsilon
+        // when doing zero lookahead I'd rather handle
+        // _any_ near-to-zero lookahead as ZERO_LK
+        if (0==RTIfedTime::fcmp(_lookahead_courant,0.0)) {           
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -668,26 +670,35 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 bool
 TimeManagement::testValidTime(FederationTime theTime)
 {
-	RTIfedTime epsilon;
-	
-   epsilon.setEpsilon();
+   int compareResult;
+   // FIXME Erk-->Pierre
+   // We should use RTIfedTime object and not _plain_ double
+   // value
    if (_avancee_en_cours == PAS_D_AVANCEE) {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-         if (theTime <= _heure_courante)
+    	 compareResult = RTIfedTime::fcmp(theTime,_heure_courante);
+    	 // if theTime <= _heure_courante
+         if (compareResult==-1 || compareResult==0)
             return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-         if (theTime + epsilon.getTime() < _heure_courante + _lookahead_courant)
+    	 compareResult = RTIfedTime::fcmp(theTime,_heure_courante + _lookahead_courant);
+    	 // if theTime  < _heure_courante + _lookahead_courant
+         if (compareResult == -1)
             return false;
       }
    }
    else {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-         if (theTime <= date_avancee)
+    	 compareResult = RTIfedTime::fcmp(theTime,date_avancee);
+    	 // if theTime <= date_avancee
+         if (compareResult==-1 || compareResult==0)
             return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-         if (theTime + epsilon.getTime() < date_avancee + _lookahead_courant)
+    	 compareResult = RTIfedTime::fcmp(theTime,date_avancee + _lookahead_courant);
+    	 // if (theTime  < date_avancee + _lookahead_courant)
+         if (compareResult == -1)
             return false;
       }
    }
@@ -827,9 +838,6 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
           req.getFederationTime());
 
-    if (_lookahead_courant == epsilon)
-       _lookahead_courant = 0.0 ;
-
     _tick_state = TICK_NEXT;  // indicate the callback was processed
 
     comm->requestFederateService(&req);
@@ -863,8 +871,11 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
-        if (_lookahead_courant == 0.0) {
-           _lookahead_courant = epsilon ;
+        // FIXME Erk-->Pierre 
+        // We were changing lookahead value to epsilon
+        // when doing zero lookahead I'd rather handle
+        // _any_ near-to-zero lookahead as ZERO_LK
+        if (0==RTIfedTime::fcmp(_lookahead_courant,0.0)) {         
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -921,4 +932,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.35 2008/05/05 09:47:20 erk Exp $
+// $Id: TimeManagement.cc,v 3.36 2008/05/06 13:36:19 erk Exp $
