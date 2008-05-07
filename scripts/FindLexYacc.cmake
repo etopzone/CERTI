@@ -2,8 +2,8 @@ IF(UNIX)
    FILE(TO_CMAKE_PATH "/usr/local/bin" PATH_DIR)
 ENDIF(UNIX)
 
-IF(WIN32)
-    FILE(TO_CMAKE_PATH "C:/Program Files/GnuWin32/bin" PATH_DIR)     
+IF(WIN32)   
+    SET(PATH_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\GnuWin32;InstallPath]/bin")       
 ENDIF(WIN32)
 
 MESSAGE(STATUS "Looking for lex...")
@@ -11,7 +11,7 @@ MESSAGE(STATUS "Looking for lex...")
 FIND_PROGRAM(LEX_PROGRAM 
   NAMES flex lex
   PATHS ${PATH_DIR}
-   NO_DEFAULT_PATH 
+  NO_DEFAULT_PATH 
   DOC "A lex-compatible lexer generator")
 FIND_PROGRAM(LEX_PROGRAM 
   NAMES flex lex
