@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.12 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA.hh,v 3.13 2008/05/07 09:55:01 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -66,7 +66,7 @@ private:
     void processFederateRequest(Message *);
     void chooseFederateProcessing(Message *, Message &, TypeException &)
        throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED,
-              FederateAlreadyExecutionMember);
+              FederateAlreadyExecutionMember,SaveInProgress,RestoreInProgress);
     void processOngoingTick();
 };
 
@@ -74,4 +74,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.12 2008/04/23 07:36:01 siron Exp $
+// $Id: RTIA.hh,v 3.13 2008/05/07 09:55:01 rousse Exp $

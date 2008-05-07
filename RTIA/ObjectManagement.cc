@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.39 2008/05/02 10:48:32 erk Exp $
+// $Id: ObjectManagement.cc,v 3.40 2008/05/07 09:55:01 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -705,7 +705,19 @@ ObjectManagement::reflectRetraction(EventRetractionHandle,
 ObjectClassHandle
 ObjectManagement::getObjectClassHandle(const char *theName)
 {
-    return rootObject->ObjectClasses->getObjectClassHandle(theName);
+    ObjectClassHandle handle ;
+    G.Out(pdGendoc,"enter ObjectManagement::getObjectClassHandle");
+    try {
+         handle = rootObject->ObjectClasses->getObjectClassHandle(theName);
+         G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle");
+         return handle;
+         }
+    catch (NameNotFound &e) {
+         G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
+         throw NameNotFound(theName);
+         }
+    
+    //return rootObject->ObjectClasses->getObjectClassHandle(theName);
 }
 
 
@@ -801,4 +813,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.39 2008/05/02 10:48:32 erk Exp $
+// $Id: ObjectManagement.cc,v 3.40 2008/05/07 09:55:01 rousse Exp $

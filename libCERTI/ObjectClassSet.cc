@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.32 2008/04/26 14:59:41 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.33 2008/05/07 09:55:02 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -44,7 +44,7 @@ using std::string ;
 namespace certi {
 
 static PrettyDebug D("OBJECTCLASSSET", __FILE__);
-
+static PrettyDebug G("GENDOC",__FILE__) ;
 // ----------------------------------------------------------------------------
 //! The class is not allocated, only the pointer is memorized.
 void
@@ -317,7 +317,9 @@ ObjectClassSet::getObject(ObjectHandle h) const
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(std::string class_name) const
     throw (NameNotFound)
-{    
+{ 
+    G.Out(pdGendoc,"enter ObjectClassSet::getObjectClassHandle");
+   
     std::string currentName;
     std::string remainingName;
     ObjectClassHandle currentHandle;
@@ -352,7 +354,7 @@ ObjectClassSet::getObjectClassHandle(std::string class_name) const
 		/* now update currentClassSet */
 		currentClassSet = currentClass->getSubClasses();       	 
     }
-    
+
     /* 
      * Now the current classClassSet should be a leaf 
      * so that we can search in the 
@@ -360,8 +362,10 @@ ObjectClassSet::getObjectClassHandle(std::string class_name) const
     iter = currentClassSet->OCFromName.find(remainingName);
 
 	if (iter != currentClassSet->OCFromName.end()) {
+                G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle");
 		return iter->second->getHandle();
 	} else {
+                G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle on NameNotFound");
 		throw NameNotFound(class_name.c_str());
 	}
 }  
@@ -825,4 +829,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.32 2008/04/26 14:59:41 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.33 2008/05/07 09:55:02 rousse Exp $

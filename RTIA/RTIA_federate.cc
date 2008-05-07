@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.75 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIA_federate.cc,v 3.76 2008/05/07 09:55:01 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -114,11 +114,12 @@ G.Out(pdGendoc,"exit  RTIA::saveAndRestoreStatus");
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
        throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED,
-              FederateAlreadyExecutionMember)
+              FederateAlreadyExecutionMember,SaveInProgress,RestoreInProgress)
 {
     G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->type);
 
     // Verify not in saving or restoring state.
+    // May throw SaveInProgress or RestoreInProgress
     saveAndRestoreStatus(req->type);
 
     e = e_NO_EXCEPTION ;
@@ -756,11 +757,18 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         e = e_UnimplementedService ;
         break ;
 
+      // May throw NameNotFound
+      // Exception catched and stored in rep Message for answer
       case Message::GET_OBJECT_CLASS_HANDLE:
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetObjectClassHandle.");
-
-        rep.setObjectClass(om->getObjectClassHandle(req->getName()));
+        try {
+            rep.setObjectClass(om->getObjectClassHandle(req->getName()));
+            }
+        catch (RTI::Exception &egoch)
+            {
+            rep.setException(static_cast<TypeException>(egoch.getType()),egoch._reason);  
+            }
         break ;
 
       case Message::GET_OBJECT_CLASS_NAME:
@@ -1076,8 +1084,8 @@ RTIA::processFederateRequest(Message *req)
     try {
         TypeException exc ;
         chooseFederateProcessing(req, rep, exc);
-        if ( exc != e_RTIinternalError )
-            rep.setException(exc);
+        if ( exc != e_RTIinternalError && exc != e_NO_EXCEPTION)
+           rep.setException(exc);
     }
     catch (ArrayIndexOutOfBounds &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1416,9 +1424,9 @@ RTIA::processFederateRequest(Message *req)
        comm->sendUN(&rep);
        D.Out(pdDebug, "Reply send to Unix socket.");
     }
-
+    G.Out(pdGendoc,"exit  RTIA::processFederateRequest");
 }
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.75 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIA_federate.cc,v 3.76 2008/05/07 09:55:01 rousse Exp $
