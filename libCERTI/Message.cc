@@ -658,18 +658,18 @@ Message::display(char *s)
 {
     printf(" -- MESSAGE - %s -", s);
     if ( type == CREATE_FEDERATION_EXECUTION )
-      printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s federateHandle %d \n",
+      printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s federateHandle %ld \n",
              ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid),federate) ;
     if ( type == DESTROY_FEDERATION_EXECUTION )
-      printf("DESTROY_FEDERATION_EXECUTION : federation %s : federate %d\n",
+      printf("DESTROY_FEDERATION_EXECUTION : federation %s : federate %ld\n",
              ((federationName==NULL)?"empty":federationName),federate) ;
     else if ( type == JOIN_FEDERATION_EXECUTION )
-      printf("JOIN_FEDERATION_EXECUTION : federate number %d federation name %s federate name %s\n",
+      printf("JOIN_FEDERATION_EXECUTION : federate number %ld federation name %s federate name %s\n",
              federate,((federationName==NULL)?"empty":federationName),federateName) ;
     else if (type == FEDERATE_SAVE_COMPLETE )
-        printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
+        printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %ld \n",federationName,federate);
     else if (type == FEDERATE_RESTORE_COMPLETE )
-        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %d \n",federationName,federate);
+        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %ld \n",federationName,federate);
     else if (type == REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE )
         printf("REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE : \n");
     else
