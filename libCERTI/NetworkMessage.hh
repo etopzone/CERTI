@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.31 2008/04/26 14:59:40 erk Exp $
+// $Id: NetworkMessage.hh,v 3.32 2008/05/07 15:37:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -204,11 +204,6 @@ public:
 
 	void setAHS(const AttributeHandle *, int);
 
-
-	void setBoolean(bool);
-	bool getBoolean() const { return boolean ; };
-
-
 	UShort number ;
 
 	std::string federationName ;
@@ -350,4 +345,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.31 2008/04/26 14:59:40 erk Exp $
+// $Id: NetworkMessage.hh,v 3.32 2008/05/07 15:37:37 erk Exp $

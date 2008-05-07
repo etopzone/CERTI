@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.cc,v 3.9 2008/04/26 14:59:41 erk Exp $
+// $Id: Files.cc,v 3.10 2008/05/07 15:37:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -129,9 +129,9 @@ Queues::giveTsoMessage(FederationTime heure_logique,
             }
             return buffer_msg ;
         }
-        else return 0 ;
+        else return NULL;
     }
-    else return 0 ;
+    else return NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -186,4 +186,4 @@ Queues::insertTsoMessage(NetworkMessage *msg)
 
 }} // namespaces
 
-// $Id: Files.cc,v 3.9 2008/04/26 14:59:41 erk Exp $
+// $Id: Files.cc,v 3.10 2008/05/07 15:37:38 erk Exp $

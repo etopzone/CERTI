@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.30 2008/04/28 17:20:19 erk Exp $
+// $Id: NetworkMessage.cc,v 3.31 2008/05/07 15:37:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -216,17 +216,6 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
     }
 }
 
-// ----------------------------------------------------------------------------
-/** Store a boolean into a NetworkMessage
-    @param[in] the_bool boolean
-*/
-void
-NetworkMessage::setBoolean(bool the_bool)
-{
-    boolean = the_bool ;
-}
-
-
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.30 2008/04/28 17:20:19 erk Exp $
+// $Id: NetworkMessage.cc,v 3.31 2008/05/07 15:37:37 erk Exp $

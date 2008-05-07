@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.23 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIA_network.cc,v 3.24 2008/05/07 15:37:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -118,7 +118,7 @@ NetworkMessage::Type msgType = msg->getType();
          // criteria. Otherwise, a single message will be enqueue in FIFO.
  
          // Here we have to consider RAV without time
-         if ( !msg->getBoolean() )
+         if ( !msg->isDated)
              {
              // without time
              updateOrder = RECEIVE ;
@@ -162,7 +162,7 @@ NetworkMessage::Type msgType = msg->getType();
             "Receving Message from RTIG, type NetworkMessage::RECEIVE_INTERACTION.");
 
          // Here we have to consider RAV without time
-         if ( !msg->getBoolean() )
+         if ( !msg->isDated)
              {
              // without time
              interactionOrder = RECEIVE ;
@@ -194,13 +194,12 @@ NetworkMessage::Type msgType = msg->getType();
           D.Out(pdTrace, "Receving Message from RTIG, \
 	  		  type NetworkMessage::REMOVE_OBJECT.");
 
-          if (tm->requestContraintState() && msg->getBoolean()) {
+          if (tm->requestContraintState() && msg->isDated) {
               // Verify that received TSO timestamp is >= current
               // time + lookahead
               queues->insertTsoMessage(msg);
           }
-          else {
-	      msg->setBoolean(false);
+          else {	      
               queues->insertFifoMessage(msg);
 	  }
 
@@ -342,4 +341,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.23 2008/04/26 14:59:42 erk Exp $
+// $Id: RTIA_network.cc,v 3.24 2008/05/07 15:37:38 erk Exp $

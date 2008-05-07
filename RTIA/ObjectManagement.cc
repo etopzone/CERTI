@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.40 2008/05/07 09:55:01 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.41 2008/05/07 15:37:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -479,7 +479,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 void
 ObjectManagement::removeObject(ObjectHandle the_object,
                                FederateHandle the_federate,
-			       FederationTime theTime,
+			                   FederationTime theTime,
                                const char *the_tag,
                                EventRetractionHandle the_event,
                                TypeException &)
@@ -491,6 +491,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
     req.setObject(the_object);
     req.setEventRetraction(the_event);
     req.setTag(the_tag);
+    req.setFederationTime(theTime);
     req.setBoolean(true);
 
     comm->requestFederateService(&req);
@@ -813,4 +814,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.40 2008/05/07 09:55:01 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.41 2008/05/07 15:37:38 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.36 2008/05/06 13:36:19 erk Exp $
+// $Id: TimeManagement.cc,v 3.37 2008/05/07 15:37:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -236,15 +236,15 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       case NetworkMessage::REMOVE_OBJECT:
           if (msg.isDated) {
         	om->removeObject(msg.object,
-                		 msg.federate,
-				 msg.getDate(),
+                		     msg.federate,
+				             msg.getDate(),
                          	 msg.getLabel().c_str(),
                          	 msg.eventRetraction,
                          	 msg.exception);
 	  }
 	  else {
         	om->removeObject(msg.object,
-                		 msg.federate,
+                		     msg.federate,
                          	 msg.getLabel().c_str(),
                          	 msg.exception);
 	  }
@@ -932,4 +932,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.36 2008/05/06 13:36:19 erk Exp $
+// $Id: TimeManagement.cc,v 3.37 2008/05/07 15:37:38 erk Exp $

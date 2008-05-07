@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.47 2008/04/26 14:59:41 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.48 2008/05/07 15:37:37 erk Exp $
 // ----------------------------------------------------------------------------
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
@@ -54,6 +54,7 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_bool(isDated);
 	if (isDated) {
 		msgBuffer.write_double(date);
+		D.Out(pdDebug, "Sent Message date is  <%f>", date);
 	}	
 	msgBuffer.write_bool(isLabelled);
 	if (isLabelled) {
@@ -86,6 +87,7 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	isDated = msgBuffer.read_bool();
 	if (isDated) {
 		date = msgBuffer.read_double();
+		D.Out(pdDebug, "Received Message date is  <%f>", date);
 	}
 	isLabelled = msgBuffer.read_bool();
 	if (isLabelled) {
@@ -144,4 +146,4 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.47 2008/04/26 14:59:41 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.48 2008/05/07 15:37:37 erk Exp $
