@@ -386,8 +386,7 @@ NM_Close_Connexion::~NM_Close_Connexion() {
 NM_Message_Null::NM_Message_Null() {
 	this->name = "MESSAGE_NULL";
 	this->type = NetworkMessage::MESSAGE_NULL;
-	/* specific field init */
-	//isDated =true;
+	/* specific field init */	
 }
 NM_Message_Null::~NM_Message_Null() {	
 }
@@ -398,7 +397,6 @@ NM_Create_Federation_Execution::NM_Create_Federation_Execution() {
 	this->name = "CREATE_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::CREATE_FEDERATION_EXECUTION;
 	/* specific field init */
-	//isDated =true;
 }
 NM_Create_Federation_Execution::~NM_Create_Federation_Execution() {	
 }
@@ -423,7 +421,6 @@ NM_Destroy_Federation_Execution::NM_Destroy_Federation_Execution() {
 	this->name = "DESTROY_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::DESTROY_FEDERATION_EXECUTION;    
 	/* specific field init */    
-	//isDated =true;
 }
 NM_Destroy_Federation_Execution::~NM_Destroy_Federation_Execution() {
 }
@@ -534,9 +531,6 @@ NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchroniza
 	this->name = "REGISTER_FEDERATION_SYNCHRONIZATION_POINT";
 	this->type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
-	//isTagged   = true;
 }
 NM_Register_Federation_Synchronization_Point::~NM_Register_Federation_Synchronization_Point() {
 }
@@ -547,8 +541,6 @@ NM_Synchronization_Point_Registration_Succeeded::NM_Synchronization_Point_Regist
 	this->name = "SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED";
 	this->type = NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Synchronization_Point_Registration_Succeeded::~NM_Synchronization_Point_Registration_Succeeded() {
 }
@@ -559,9 +551,6 @@ NM_Announce_Synchronization_Point::NM_Announce_Synchronization_Point() {
 	this->name = "ANNOUNCE_SYNCHRONIZATION_POINT";
 	this->type = NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
-	//isTagged   = true;
 }
 NM_Announce_Synchronization_Point::~NM_Announce_Synchronization_Point() {
 }
@@ -572,8 +561,6 @@ NM_Synchronization_Point_Achieved::NM_Synchronization_Point_Achieved() {
 	this->name = "SYNCHRONIZATION_POINT_ACHIEVED";
 	this->type = NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Synchronization_Point_Achieved::~NM_Synchronization_Point_Achieved() {
 }
@@ -584,8 +571,6 @@ NM_Federation_Synchronized::NM_Federation_Synchronized() {
 	this->name = "FEDERATION_SYNCHRONIZED";
 	this->type = NetworkMessage::FEDERATION_SYNCHRONIZED;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Federation_Synchronized::~NM_Federation_Synchronized() {
 }
@@ -596,7 +581,6 @@ NM_Request_Federation_Save::NM_Request_Federation_Save() {
 	this->name = "REQUEST_FEDERATION_SAVE";
 	this->type = NetworkMessage::REQUEST_FEDERATION_SAVE;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Request_Federation_Save::~NM_Request_Federation_Save() {
 }
@@ -637,8 +621,6 @@ NM_Initiate_Federate_Save::NM_Initiate_Federate_Save() {
 	this->name = "INITIATE_FEDERATE_SAVE";
 	this->type = NetworkMessage::INITIATE_FEDERATE_SAVE;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Initiate_Federate_Save::~NM_Initiate_Federate_Save() {
 }
@@ -669,8 +651,6 @@ NM_Request_Federation_Restore::NM_Request_Federation_Restore() {
 	this->name = "REQUEST_FEDERATION_RESTORE";
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Request_Federation_Restore::~NM_Request_Federation_Restore() {
 }
@@ -701,8 +681,6 @@ NM_Request_Federation_Restore_Succeeded::NM_Request_Federation_Restore_Succeeded
 	this->name = "REQUEST_FEDERATION_RESTORE_SUCCEEDED";
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Request_Federation_Restore_Succeeded::~NM_Request_Federation_Restore_Succeeded() {
 }
@@ -713,9 +691,6 @@ NM_Request_Federation_Restore_Failed::NM_Request_Federation_Restore_Failed() {
 	this->name = "REQUEST_FEDERATION_RESTORE_FAILED";
 	this->type = NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
-	//isTagged   = true;
 }
 NM_Request_Federation_Restore_Failed::~NM_Request_Federation_Restore_Failed() {
 }
@@ -726,7 +701,6 @@ NM_Federation_Restore_Begun::NM_Federation_Restore_Begun() {
 	this->name = "FEDERATION_RESTORE_BEGUN";
 	this->type = NetworkMessage::FEDERATION_RESTORE_BEGUN;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Federation_Restore_Begun::~NM_Federation_Restore_Begun() {
 }
@@ -909,7 +883,6 @@ NM_Register_Object::NM_Register_Object() {
 	this->name = "REGISTER_OBJECT";
 	this->type = NetworkMessage::REGISTER_OBJECT;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Register_Object::~NM_Register_Object() {
 }
@@ -934,7 +907,6 @@ NM_Discover_Object::NM_Discover_Object() {
 	this->name = "DISCOVER_OBJECT";
 	this->type = NetworkMessage::DISCOVER_OBJECT;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Discover_Object::~NM_Discover_Object() {
 }
@@ -945,8 +917,6 @@ NM_Update_Attribute_Values::NM_Update_Attribute_Values() {
 	this->name = "UPDATE_ATTRIBUTE_VALUES";
 	this->type = NetworkMessage::UPDATE_ATTRIBUTE_VALUES;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Update_Attribute_Values::~NM_Update_Attribute_Values() {
 }
@@ -994,8 +964,6 @@ NM_Send_Interaction::NM_Send_Interaction() {
 	this->name = "SEND_INTERACTION";
 	this->type = NetworkMessage::SEND_INTERACTION;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Send_Interaction::~NM_Send_Interaction() {
 }
@@ -1041,8 +1009,6 @@ NM_Delete_Object::NM_Delete_Object() {
 	this->name = "DELETE_OBJECT";
 	this->type = NetworkMessage::DELETE_OBJECT;
 	/* specific field init */
-	//isDated =true;
-	//isLabelled = true;
 }
 NM_Delete_Object::~NM_Delete_Object() {
 }
@@ -1186,7 +1152,6 @@ NM_Is_Attribute_Owned_By_Federate::NM_Is_Attribute_Owned_By_Federate() {
 	this->name = "IS_ATTRIBUTE_OWNED_BY_FEDERATE";
 	this->type = NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Is_Attribute_Owned_By_Federate::~NM_Is_Attribute_Owned_By_Federate() {
 }
@@ -1241,7 +1206,6 @@ NM_Negotiated_Attribute_Ownership_Divestiture::NM_Negotiated_Attribute_Ownership
 	this->name = "NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE";
 	this->type = NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE;
 	/* specific field init */
-	//isLabelled = true;
 }
 NM_Negotiated_Attribute_Ownership_Divestiture::~NM_Negotiated_Attribute_Ownership_Divestiture() {
 }
@@ -1468,7 +1432,6 @@ NM_DDM_Register_Object::NM_DDM_Register_Object() {
 	this->name = "DDM_REGISTER_OBJECT";
 	this->type = NetworkMessage::DDM_REGISTER_OBJECT;
 	/* specific field init */
-	//isTagged = true;
 }
 NM_DDM_Register_Object::~NM_DDM_Register_Object() {
 }

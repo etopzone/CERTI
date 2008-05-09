@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.41 2008/05/07 15:37:38 erk Exp $
+// $Id: ObjectManagement.cc,v 3.42 2008/05/09 20:21:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -355,8 +355,6 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
     // Building network message (req) to RTIG.   
     req.interactionClass = theInteraction ;
-    // false for UAV without time
-    req.isDated    = false;
     req.region     = region ;
     req.federation = fm->_numero_federation ;
     req.federate   = fm->federate ;
@@ -814,4 +812,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.41 2008/05/07 15:37:38 erk Exp $
+// $Id: ObjectManagement.cc,v 3.42 2008/05/09 20:21:40 erk Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.48 2008/05/07 15:37:37 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.49 2008/05/09 20:21:39 erk Exp $
 // ----------------------------------------------------------------------------
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
@@ -51,17 +51,17 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	 * isDated may be chosen on Message instance basis
 	 * (same message may Dated or Not Dated) 
 	 */
-	msgBuffer.write_bool(isDated);
-	if (isDated) {
+	msgBuffer.write_bool(_isDated);
+	if (_isDated) {
 		msgBuffer.write_double(date);
 		D.Out(pdDebug, "Sent Message date is  <%f>", date);
 	}	
-	msgBuffer.write_bool(isLabelled);
-	if (isLabelled) {
+	msgBuffer.write_bool(_isLabelled);
+	if (_isLabelled) {
 		msgBuffer.write_string(label);
 	}
-	msgBuffer.write_bool(isTagged);
-	if (isTagged) {
+	msgBuffer.write_bool(_isTagged);
+	if (_isTagged) {
 		msgBuffer.write_string(tag);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::serialize");
@@ -84,17 +84,17 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	 * isDated may be chosen on Message instance basis
 	 * (same message may Dated or Not Dated) 
 	 */
-	isDated = msgBuffer.read_bool();
-	if (isDated) {
+	_isDated = msgBuffer.read_bool();
+	if (_isDated) {
 		date = msgBuffer.read_double();
 		D.Out(pdDebug, "Received Message date is  <%f>", date);
 	}
-	isLabelled = msgBuffer.read_bool();
-	if (isLabelled) {
+	_isLabelled = msgBuffer.read_bool();
+	if (_isLabelled) {
 		label = msgBuffer.read_string();
 	}
-	isTagged = msgBuffer.read_bool();
-	if (isTagged) {
+	_isTagged = msgBuffer.read_bool();
+	if (_isTagged) {
 		tag = msgBuffer.read_string();
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
@@ -146,4 +146,4 @@ NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.48 2008/05/07 15:37:37 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.49 2008/05/09 20:21:39 erk Exp $

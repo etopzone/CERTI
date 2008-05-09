@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.32 2008/05/07 15:37:37 erk Exp $
+// $Id: NetworkMessage.hh,v 3.33 2008/05/09 20:21:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -225,14 +225,14 @@ public:
 	bool boolean ;
 
 	/**
-	 * Indicate if the message is dated or not
+	 * Indicate if the message is dated/timestamped or not
 	 */
-	bool isDated;
+	bool isDated() {return _isDated;};
 	/** 
 	 * If ones set Date then this is a Dated message
 	 * Message builder which setDate will generate a Dated message 
 	 */
-	void setDate(FederationTime date) {isDated=true; this->date = date;};
+	void setDate(FederationTime date) {_isDated=true; this->date = date;};
 	const FederationTime getDate() const {return this->date;};
 
 	unsigned long multicastAddress ;
@@ -240,18 +240,17 @@ public:
 	/**
 	 * Indicate if the message is Labelled or not
 	 */
-	bool isLabelled;	
-
-	void setLabel(const std::string label) {isLabelled = true; this->label = label;};
-	void setLabel(const char *new_label) {isLabelled = true; label = std::string(new_label); }
+	bool isLabelled() {return _isLabelled;};	
+	void setLabel(const std::string label) {_isLabelled = true; this->label = label;};
+	void setLabel(const char *new_label) {_isLabelled = true; label = std::string(new_label); }
 	const std::string getLabel() const {return this->label;};
 
 	/**
 	 * Indicate if the message is Tagged or not
 	 */
-	bool isTagged;
-	void setTag(const std::string tag) {isTagged = true; this->tag = tag;};
-	void setTag(const char *new_tag) {isTagged = true; tag = std::string(new_tag); }
+	bool isTagged() {return _isTagged;};
+	void setTag(const std::string tag) {_isTagged = true; this->tag = tag;};
+	void setTag(const char *new_tag) {_isTagged = true; tag = std::string(new_tag); }
 	const std::string getTag() const {return this->tag;};
 
 	ObjectHandlecount idCount ;
@@ -311,12 +310,22 @@ protected:
 	 */
 	Message_T type;
 
+	// ValueArray is now a ValueLengthPair
+	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+
+private:
 	/** 
 	 * The date of message if it is dated.
 	 * date field cannot be accessed directly but only using
 	 * getter/setter.
 	 */
-	FederationTime date ;
+	FederationTime date;
+	/**
+	 * True is the message is dated
+	 * When a message is dated the date is transmitted
+	 * over the network, when not dated the date is not sent.
+	 */
+	bool _isDated;
 
 	/** 
 	 * The label of message if it is labelled.
@@ -324,17 +333,25 @@ protected:
 	 * getter/setter.
 	 */
 	std::string label;
+	/**
+	 * True is the message contains a label
+	 * When a message is labelled the label is transmitted
+	 * over the network, when not labelled the label is not sent.
+	 */
+	bool _isLabelled;
+	
 	/** 
 	 * The tag of message if it is tagged.
 	 * date field cannot be accessed directly but only using
 	 * getter/setter.
 	 */
 	std::string tag;
-
-	// ValueArray is now a ValueLengthPair
-	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
-
-private:
+	/**
+	 * True is the message contains a tag
+	 * When a message is tagged the tag is transmitted
+	 * over the network, when not tagged the tag is not sent.
+	 */
+	bool _isTagged;
 };
 
 // BUG: FIXME this is used by SocketMC and should
@@ -345,4 +362,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.32 2008/05/07 15:37:37 erk Exp $
+// $Id: NetworkMessage.hh,v 3.33 2008/05/09 20:21:39 erk Exp $

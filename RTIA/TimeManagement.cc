@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.37 2008/05/07 15:37:38 erk Exp $
+// $Id: TimeManagement.cc,v 3.38 2008/05/09 20:21:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -178,7 +178,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       {
           ValueLengthPair *ValueArray = msg.getAttribValueArray();
 
-          if (msg.isDated)
+          if (msg.isDated())
              om->reflectAttributeValues(msg.object,
                                         msg.handleArray,
                                         ValueArray,
@@ -212,7 +212,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       {
           ParameterLengthPair *ValueArray = msg.getParamValueArray();
 
-          if (msg.isDated)
+          if (msg.isDated())
               om->receiveInteraction(msg.interactionClass,
                                      msg.handleArray,
                                      ValueArray,
@@ -234,7 +234,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       }
 
       case NetworkMessage::REMOVE_OBJECT:
-          if (msg.isDated) {
+          if (msg.isDated()) {
         	om->removeObject(msg.object,
                 		     msg.federate,
 				             msg.getDate(),
@@ -932,4 +932,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.37 2008/05/07 15:37:38 erk Exp $
+// $Id: TimeManagement.cc,v 3.38 2008/05/09 20:21:40 erk Exp $

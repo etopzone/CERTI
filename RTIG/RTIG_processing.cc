@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.66 2008/04/29 09:38:33 erk Exp $
+// $Id: RTIG_processing.cc,v 3.67 2008/05/09 20:21:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -765,7 +765,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     ValueArray = req->getAttribValueArray();
 
     // Forward the call
-    if ( req->isDated )
+    if ( req->isDated() )
         {
         // UAV with time
         federations.updateAttribute(req->federation,
@@ -818,7 +818,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 		<< ", date = " << req->getDate() ;
     values = req->getParamValueArray();
 
-    if ( req->isDated )
+    if ( req->isDated() )
         {
         federations.updateParameter(req->federation,
 				req->federate,
@@ -870,7 +870,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"enter RTIG::processDeleteObject");
     auditServer << "ObjID = %u" << req->object ;
 
-    if ( req->isDated ) {
+    if ( req->isDated() ) {
     	federations.destroyObject(req->federation,
         	                  req->federate,
                                   req->object,
@@ -1394,4 +1394,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.66 2008/04/29 09:38:33 erk Exp $
+// $Id: RTIG_processing.cc,v 3.67 2008/05/09 20:21:40 erk Exp $
