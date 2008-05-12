@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.85 2008/04/29 08:57:48 erk Exp $
+// $Id: Federation.cc,v 3.86 2008/05/12 12:17:02 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2273,5 +2273,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.85 2008/04/29 08:57:48 erk Exp $
+// $Id: Federation.cc,v 3.86 2008/05/12 12:17:02 erk Exp $
 

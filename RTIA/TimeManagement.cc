@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.38 2008/05/09 20:21:40 erk Exp $
+// $Id: TimeManagement.cc,v 3.39 2008/05/12 12:17:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -347,6 +347,12 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           fm->federationRestoredStatus(status);
       }
         break ;
+      case NetworkMessage::TIME_REGULATION_ENABLED:
+        this->timeRegulationEnabled(msg.getDate(), msg.exception);
+        break;
+      case NetworkMessage::TIME_CONSTRAINED_ENABLED:
+        this->timeConstrainedEnabled(msg.getDate(), msg.exception);
+        break;
 
       default:
 	std::stringstream errorMsg;
@@ -665,6 +671,26 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
 }
 
 // ----------------------------------------------------------------------------
+void
+TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) {
+    Message req;
+    
+    req.type = Message::TIME_REGULATION_ENABLED;
+    req.setFederationTime(theTime);
+    comm->requestFederateService(&req);
+}
+
+// ----------------------------------------------------------------------------
+void
+TimeManagement::timeConstrainedEnabled(FederationTime theTime, TypeException &e) {
+    Message req;
+
+    req.type = Message::TIME_CONSTRAINED_ENABLED;
+    req.setFederationTime(theTime);
+    comm->requestFederateService(&req);
+}
+
+// ----------------------------------------------------------------------------
 /*! Is the time stamp of a time advance request correct ?
 */
 bool
@@ -932,4 +958,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.38 2008/05/09 20:21:40 erk Exp $
+// $Id: TimeManagement.cc,v 3.39 2008/05/12 12:17:00 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.78 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIambassador.cc,v 3.79 2008/05/12 12:16:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -496,6 +496,13 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
               case Message::TIME_ADVANCE_GRANT: {
                   privateRefs->fed_amb->timeAdvanceGrant(vers_Fed.getFedTime());
               } break ;
+
+              case Message::TIME_REGULATION_ENABLED:
+                privateRefs->fed_amb->timeRegulationEnabled(vers_Fed.getFedTime());
+	        break;
+	      case Message::TIME_CONSTRAINED_ENABLED:
+                privateRefs->fed_amb->timeConstrainedEnabled(vers_Fed.getFedTime());
+                break;
 
               default: {
                   privateRefs->leave("RTI service requested by RTI is unknown.");
@@ -2949,4 +2956,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.78 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIambassador.cc,v 3.79 2008/05/12 12:16:58 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.16 2008/05/05 09:47:21 erk Exp $
+// $Id: TimeManagement.hh,v 3.17 2008/05/12 12:17:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -127,6 +127,8 @@ private:
     void flushQueueRequest(FederationTime, TypeException &);
     bool executeFederateService(NetworkMessage &msg);
     void sendNullMessage(FederationTime heure_logique);
+    void timeRegulationEnabled(FederationTime, TypeException &e);
+    void timeConstrainedEnabled(FederationTime, TypeException &e);
 
     // Other RTIA Objects
     Communications *comm ;
@@ -155,4 +157,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.16 2008/05/05 09:47:21 erk Exp $
+// $Id: TimeManagement.hh,v 3.17 2008/05/12 12:17:01 erk Exp $

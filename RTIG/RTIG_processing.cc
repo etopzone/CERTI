@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.67 2008/05/09 20:21:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.68 2008/05/12 12:17:02 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -393,14 +393,28 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Put federate as time regulating.
 void
-RTIG::processSetTimeRegulating(NM_Set_Time_Regulating *msg)
+RTIG::processSetTimeRegulating(Socket *link, NM_Set_Time_Regulating *msg)
 {
+  G.Out(pdGendoc,"enter RTIG::processSetTimeRegulating");
+  G.Out(pdGendoc,"BEGIN ** SET TIME REGULATING **");
+
   if (msg->isRegulator()) {
         auditServer << "ON at time " << msg->getDate();
 
         federations.createRegulator(msg->federation,
                                      msg->federate,
                                      msg->getDate());
+    
+        // send timeRegulationEnabled() to federate.
+        NM_Time_Regulation_Enabled rep ;    
+        rep.federate = msg->federate ;
+        rep.federation = msg->federation ;
+	rep.setDate(msg->getDate());
+
+        G.Out(pdGendoc,"      processSetTimeRegulating====> write TRE to RTIA");
+
+        rep.send(link);
+
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation ON.",
               msg->federate, msg->federation);
     }
@@ -412,19 +426,35 @@ RTIG::processSetTimeRegulating(NM_Set_Time_Regulating *msg)
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation OFF.",
               msg->federate, msg->federation);
     }
+
+    G.Out(pdGendoc,"END ** SET TIME REGULATING **");
+    G.Out(pdGendoc,"exit RTIG::processSetTimeRegulating");
 }
 
 // ----------------------------------------------------------------------------
 //! Put federate as time constrained
 void
-RTIG::processSetTimeConstrained(NM_Set_Time_Constrained *msg)
+RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
 {
-  
+  G.Out(pdGendoc,"enter RTIG::processSetTimeConstrained");
+  G.Out(pdGendoc,"BEGIN ** SET TIME CONSTRAINED **");
+
   if (msg->isConstrained()) {
         auditServer << "ON at time " << msg->getDate();
 
         federations.addConstrained(msg->federation,
                                     msg->federate);
+
+        // send timeConstrainedEnabled() to federate.
+        NM_Time_Constrained_Enabled rep ;    
+        rep.federate = msg->federate ;
+        rep.federation = msg->federation ;
+	rep.setDate(msg->getDate());
+
+        G.Out(pdGendoc,"      processSetTimeConstrained====> write TCE to RTIA");
+
+        rep.send(link);
+
         D.Out(pdTerm, "Federate %u of Federation %u is now constrained.",
               msg->federate, msg->federation);
     }
@@ -436,6 +466,9 @@ RTIG::processSetTimeConstrained(NM_Set_Time_Constrained *msg)
         D.Out(pdTerm, "Federate %u of Federation %u is no more constrained.",
               msg->federate, msg->federation);
     }
+
+    G.Out(pdGendoc,"END ** SET TIME CONSTRAINED **");
+    G.Out(pdGendoc,"exit RTIG::processSetTimeConstrained");
 }
 
 // ----------------------------------------------------------------------------
@@ -1394,4 +1427,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.67 2008/05/09 20:21:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.68 2008/05/12 12:17:02 erk Exp $

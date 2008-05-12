@@ -243,6 +243,37 @@ private:
 
 /*<END>---------- Set_Time_Constrained ------------<END>*/
 
+/*<BEGIN>---------- Time_Regulation_Enabled ------------<BEGIN>*/
+class CERTI_EXPORT NM_Time_Regulation_Enabled : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Time_Regulation_Enabled();
+	virtual ~NM_Time_Regulation_Enabled();
+	/* specific Getter/Setter */
+protected:
+	/* specific field */	 
+
+private:
+};
+
+/*<END>---------- Time_Regulation_Enabled ------------<END>*/
+
+/*<BEGIN>---------- Time_Constrained_Enabled ------------<BEGIN>*/
+class CERTI_EXPORT NM_Time_Constrained_Enabled : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Time_Constrained_Enabled();
+	virtual ~NM_Time_Constrained_Enabled();
+	/* specific Getter/Setter */
+protected:
+	/* specific field */	 
+
+private:
+};
+
+/*<END>---------- Time_Constrained_Enabled ------------<END>*/
+
+
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public NM_WithHandleArray {
 public:

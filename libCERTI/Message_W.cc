@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.24 2008/05/05 09:47:19 erk Exp $
+// $Id: Message_W.cc,v 3.25 2008/05/12 12:16:59 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -678,6 +678,8 @@ Message::writeHeader(SocketUN *socket)
       case NEXT_EVENT_REQUEST:
       case NEXT_EVENT_REQUEST_AVAILABLE:
       case TIME_ADVANCE_GRANT:
+      case TIME_REGULATION_ENABLED:
+      case TIME_CONSTRAINED_ENABLED:
         header.bodySize = 0 ;
         break ;
 
@@ -746,4 +748,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.24 2008/05/05 09:47:19 erk Exp $
+// $Id: Message_W.cc,v 3.25 2008/05/12 12:16:59 erk Exp $

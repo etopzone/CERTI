@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.3 2008/02/04 14:41:30 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.4 2008/05/12 12:17:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -223,7 +223,9 @@ else if (type == 'N')
 		case certi::NetworkMessage::JOIN_FEDERATION_EXECUTION : 							strcat(theMessage,"JOIN_FEDERATION_EXECUTION"); break;
 		case certi::NetworkMessage::RESIGN_FEDERATION_EXECUTION : 						strcat(theMessage,"RESIGN_FEDERATION_EXECUTION"); break;
 		case certi::NetworkMessage::SET_TIME_REGULATING : 									strcat(theMessage,"SET_TIME_REGULATING"); break;
+		case certi::NetworkMessage::TIME_REGULATION_ENABLED : 									strcat(theMessage,"TIME_REGULATION_ENABLED"); break;
 		case certi::NetworkMessage::SET_TIME_CONSTRAINED : 			 					strcat(theMessage,"SET_TIME_CONSTRAINED"); break;
+		case certi::NetworkMessage::TIME_CONSTRAINED_ENABLED : 									strcat(theMessage,"TIME_CONSTRAINED_ENABLED"); break;
 		case certi::NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT : 	strcat(theMessage,"REGISTER_FEDERATION_SYNCHRONIZATION_POINT"); break;
 		case certi::NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED : strcat(theMessage,"SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED"); break;
 		case certi::NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT : 			 		strcat(theMessage,"ANNOUNCE_SYNCHRONIZATION_POINT"); break;
@@ -305,4 +307,4 @@ PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, theMessage);
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.3 2008/02/04 14:41:30 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.4 2008/05/12 12:17:00 erk Exp $

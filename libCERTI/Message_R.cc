@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.21 2008/05/05 09:47:19 erk Exp $
+// $Id: Message_R.cc,v 3.22 2008/05/12 12:17:00 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -648,6 +648,8 @@ Message::readHeader(SocketUN *socket)
       case NEXT_EVENT_REQUEST:
       case NEXT_EVENT_REQUEST_AVAILABLE:
       case TIME_ADVANCE_GRANT:
+      case TIME_REGULATION_ENABLED:
+      case TIME_CONSTRAINED_ENABLED:
         break ;
 
       // lookahead got from header
@@ -765,4 +767,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.21 2008/05/05 09:47:19 erk Exp $
+// $Id: Message_R.cc,v 3.22 2008/05/12 12:17:00 erk Exp $

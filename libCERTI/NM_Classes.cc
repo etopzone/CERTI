@@ -54,6 +54,12 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	case NetworkMessage::SET_TIME_CONSTRAINED:
 		msg = new NM_Set_Time_Constrained(); 
 		break;
+	case NetworkMessage::TIME_REGULATION_ENABLED:
+		msg = new NM_Time_Regulation_Enabled(); 
+		break;
+	case NetworkMessage::TIME_CONSTRAINED_ENABLED:
+		msg = new NM_Time_Constrained_Enabled(); 
+		break;
 	case NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
 		msg = new NM_Register_Federation_Synchronization_Point(); 
 		break;
@@ -525,6 +531,25 @@ void NM_Set_Time_Constrained::deserialize(MessageBuffer& msgBuffer) {
 	constrained = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- Set_Time_Constrained ------------<END>*/
+
+/*<BEGIN>---------- Time_Regulation_Enabled  ------------<BEGIN>*/
+NM_Time_Regulation_Enabled::NM_Time_Regulation_Enabled() {
+       this->name = "TIME_REGULATION_ENABLED";
+       this->type = NetworkMessage::TIME_REGULATION_ENABLED;
+}
+
+NM_Time_Regulation_Enabled::~NM_Time_Regulation_Enabled() {
+}
+/*<END>---------- Time_Regulation_Enabled ------------<END>*/
+
+/*<BEGIN>---------- Time_Constrained_Enabled  ------------<BEGIN>*/
+NM_Time_Constrained_Enabled::NM_Time_Constrained_Enabled() {
+       this->name = "TIME_CONSTRAINED_ENABLED";
+       this->type = NetworkMessage::TIME_CONSTRAINED_ENABLED;
+}
+NM_Time_Constrained_Enabled::~NM_Time_Constrained_Enabled() {
+}
+/*<END>---------- Time_Constrained_Enabled ------------<END>*/
 
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchronization_Point() {

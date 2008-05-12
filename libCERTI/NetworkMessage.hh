@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.33 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage.hh,v 3.34 2008/05/12 12:16:59 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -63,6 +63,8 @@ public:
 		RESIGN_FEDERATION_EXECUTION,
 		SET_TIME_REGULATING,
 		SET_TIME_CONSTRAINED,
+		TIME_REGULATION_ENABLED, // RTIG to RTIA
+		TIME_CONSTRAINED_ENABLED, // RTIG to RTIA
 		REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
 		SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
 		ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
@@ -362,4 +364,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.33 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage.hh,v 3.34 2008/05/12 12:16:59 erk Exp $
