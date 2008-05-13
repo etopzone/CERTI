@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.33 2008/05/07 09:55:02 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.34 2008/05/13 13:03:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -238,10 +238,13 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
                                    ObjectClassHandle the_class) const
     throw (NameNotFound, ObjectClassNotDefined, RTIinternalError)
 {
+    G.Out(pdGendoc,"enter ObjectClassSet::getAttributeHandle");
+
     ObjectClass *objectClass = 0 ;
+    AttributeHandle handle ;
 
     if (the_name == 0)
-        throw RTIinternalError("");
+        throw RTIinternalError("name is null");
 
     D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
           the_name, the_class);
@@ -249,7 +252,18 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
     // It may throw ObjectClassNotDefined.
     objectClass = getWithHandle(the_class);
 
-    return objectClass->getAttributeHandle(the_name);
+
+    try
+        {
+         handle = objectClass->getAttributeHandle(the_name);
+         G.Out(pdGendoc,"exit ObjectClassSet::getAttributeHandle");
+         return handle ;
+         }
+    catch ( NameNotFound )
+         {
+         G.Out(pdGendoc,"exit  ObjectClassset::getAttributeHandle on NameNotFound");
+         throw NameNotFound (the_name) ;
+         }
 }
 
 // ----------------------------------------------------------------------------
@@ -829,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.33 2008/05/07 09:55:02 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.34 2008/05/13 13:03:50 rousse Exp $

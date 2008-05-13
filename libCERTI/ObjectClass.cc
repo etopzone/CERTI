@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.43 2008/04/29 08:57:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.44 2008/05/13 13:03:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -484,16 +484,20 @@ AttributeHandle
 ObjectClass::getAttributeHandle(const char *the_name) const
     throw (NameNotFound, RTIinternalError)
 {
+    G.Out(pdGendoc,"enter ObjectClass::getAttributeHandle");
+
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if (strcmp((*a)->getCName(), the_name) == 0)
+        if (strcmp((*a)->getCName(), the_name) == 0) {
+            G.Out(pdGendoc,"exit  ObjectClass::getAttributeHandle");
             return (*a)->getHandle();
+        }
     }
 
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
           handle, the_name);
-
-    throw NameNotFound("");
+    G.Out(pdGendoc,"exit  ObjectClass::getAttributeHandle on NameNotFound");
+    throw NameNotFound(the_name);
 }
 
 // ----------------------------------------------------------------------------
@@ -1806,4 +1810,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.43 2008/04/29 08:57:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.44 2008/05/13 13:03:49 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.76 2008/05/07 09:55:01 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.77 2008/05/13 13:03:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -799,12 +799,19 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         rep.setName(om->getObjectInstanceName(req->getObject()));
         break ;
 
+      // May throw NameNotFound
+      // Exception catched and stored in rep Message for answer
       case Message::GET_ATTRIBUTE_HANDLE:
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetAttributeHandle.");
-
-        rep.setAttribute(om->getAttributeHandle(req->getName(),
+        try {
+            rep.setAttribute(om->getAttributeHandle(req->getName(),
                                                 req->getObjectClass()));
+            }
+        catch (RTI::Exception &egah)
+            {
+            rep.setException(static_cast<TypeException>(egah.getType()),egah._reason);  
+            }
         break ;
 
       case Message::GET_ATTRIBUTE_NAME:
@@ -1429,4 +1436,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.76 2008/05/07 09:55:01 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.77 2008/05/13 13:03:49 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.42 2008/05/09 20:21:40 erk Exp $
+// $Id: ObjectManagement.cc,v 3.43 2008/05/13 13:03:48 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -715,8 +715,6 @@ ObjectManagement::getObjectClassHandle(const char *theName)
          G.Out(pdGendoc,"exit  ObjectManagement::getObjectClassHandle on NameNotFound");
          throw NameNotFound(theName);
          }
-    
-    //return rootObject->ObjectClasses->getObjectClassHandle(theName);
 }
 
 
@@ -750,8 +748,18 @@ AttributeHandle
 ObjectManagement::getAttributeHandle(const char *theName,
                                      ObjectClassHandle theClassHandle)
 {
-    return rootObject->ObjectClasses->getAttributeHandle(theName,
+    AttributeHandle handle ;
+    G.Out(pdGendoc,"enter ObjectManagement::getAttributeHandle");
+    try {
+        handle = rootObject->ObjectClasses->getAttributeHandle(theName,
                                                          theClassHandle);
+        G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle");
+        return handle;
+        }
+     catch (NameNotFound &e) {
+         G.Out(pdGendoc,"exit  ObjectManagement::getAttributeHandle on NameNotFound");
+         throw NameNotFound(theName);
+        }
 }
 
 // ----------------------------------------------------------------------------
@@ -812,4 +820,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.42 2008/05/09 20:21:40 erk Exp $
+// $Id: ObjectManagement.cc,v 3.43 2008/05/13 13:03:48 rousse Exp $
