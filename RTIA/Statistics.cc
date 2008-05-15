@@ -219,6 +219,8 @@ Statistics::Statistics()
 	RTI_MSG_NAME(NetworkMessage::RESIGN_FEDERATION_EXECUTION);
 	RTI_MSG_NAME(NetworkMessage::SET_TIME_REGULATING);
 	RTI_MSG_NAME(NetworkMessage::SET_TIME_CONSTRAINED);
+	RTI_MSG_NAME(NetworkMessage::TIME_REGULATION_ENABLED);
+	RTI_MSG_NAME(NetworkMessage::TIME_CONSTRAINED_ENABLED);
 	RTI_MSG_NAME(NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT);
 	RTI_MSG_NAME(NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED);
 	RTI_MSG_NAME(NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT);
@@ -362,4 +364,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.15 2008/05/05 09:47:21 erk Exp $
+// $Id: Statistics.cc,v 3.16 2008/05/15 12:41:44 erk Exp $
