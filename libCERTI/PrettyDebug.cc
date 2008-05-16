@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.7 2008/05/05 08:27:11 erk Exp $
+// $Id: PrettyDebug.cc,v 4.8 2008/05/16 08:54:16 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -40,6 +40,7 @@
 	#include <unistd.h>
 	#include <string>
 #endif
+#include <libgen.h>
 
 using std::cout ;
 using std::cerr ;
@@ -87,9 +88,9 @@ char buffer[256] ;
 	sprintf( buffer, "HLALOG - %ld.%06ld - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
 
 	if (Message != NULL)
-		theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
+		theOutputStream << buffer << " - " << basename((char *)theHeaderMessage) << "> " << Message;
 	else
-		theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
+		theOutputStream << buffer << " - " << basename((char *)theHeaderMessage) << pdSEmptyMessage;
 	theOutputStream.flush();	
 #endif
 }
@@ -274,4 +275,4 @@ return;
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.7 2008/05/05 08:27:11 erk Exp $
+// $Id: PrettyDebug.cc,v 4.8 2008/05/16 08:54:16 rousse Exp $
