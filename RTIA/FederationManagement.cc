@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.61 2008/05/07 15:37:38 erk Exp $
+// $Id: FederationManagement.cc,v 3.62 2008/05/22 12:20:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -509,6 +509,8 @@ FederationManagement::registerSynchronization(const char *label,
         req.federate = federate ;
         req.setLabel(label);
         req.setTag(tag);
+        // no federates set so boolean must be false
+        req.setDoesNotExist();
 
         G.Out(pdGendoc,"      registerSynchronization====> send Message to RTIG");
 
@@ -557,6 +559,8 @@ FederationManagement::registerSynchronization(const char *label,
         req.federate = federate ;
         req.setLabel(label);
         req.setTag(tag);
+        /* the synchronization point concerns a set of federate */
+        req.setExist();
         req.handleArraySize = array_size ;
         for ( int j=0 ; j < array_size ; j++)
             req.handleArray[j] = fed_array[j] ;

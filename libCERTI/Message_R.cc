@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.22 2008/05/12 12:17:00 erk Exp $
+// $Id: Message_R.cc,v 3.23 2008/05/22 12:20:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -29,9 +29,8 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
+static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
-
 
 // ----------------------------------------------------------------------------
 //! Read NetworkMessage Objects from Socket objects.
@@ -497,12 +496,15 @@ Message::readHeader(SocketUN *socket)
     socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
 
     // 2- Parse Header
+    
     type = header.type ;
     exception = header.exception ;
     setFederationTime(header.date);
     // If the message carry an exception, the Body will only contain the
     // exception reason.
-
+    
+    D.Out(pdDebug,"Received message type <%d> ",type);
+    		
     if (exception != e_NO_EXCEPTION)
         {
         // G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
@@ -767,4 +769,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.22 2008/05/12 12:17:00 erk Exp $
+// $Id: Message_R.cc,v 3.23 2008/05/22 12:20:20 erk Exp $

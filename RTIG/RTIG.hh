@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.26 2008/05/12 12:17:04 erk Exp $
+// $Id: RTIG.hh,v 3.27 2008/05/22 12:20:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -75,7 +75,7 @@ private:
     void processSetTimeRegulating(Socket*, NM_Set_Time_Regulating *msg);
     void processSetTimeConstrained(Socket*, NM_Set_Time_Constrained *msg);
     void processMessageNull(NetworkMessage*);
-    void processRegisterSynchronization(Socket*, NetworkMessage*);
+    void processRegisterSynchronization(Socket*, NM_Register_Federation_Synchronization_Point*);
     void processSynchronizationAchieved(Socket*, NetworkMessage*);
     void processRequestFederationSave(Socket*, NetworkMessage*);
     void processFederateSaveBegun(Socket*, NetworkMessage*);
@@ -132,4 +132,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.26 2008/05/12 12:17:04 erk Exp $
+// $Id: RTIG.hh,v 3.27 2008/05/22 12:20:21 erk Exp $

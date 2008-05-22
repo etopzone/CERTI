@@ -556,6 +556,7 @@ NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchroniza
 	this->name = "REGISTER_FEDERATION_SYNCHRONIZATION_POINT";
 	this->type = NetworkMessage::REGISTER_FEDERATION_SYNCHRONIZATION_POINT;
 	/* specific field init */
+	this->_setExist = false;
 }
 NM_Register_Federation_Synchronization_Point::~NM_Register_Federation_Synchronization_Point() {
 }

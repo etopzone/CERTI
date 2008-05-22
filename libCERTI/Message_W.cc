@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.25 2008/05/12 12:16:59 erk Exp $
+// $Id: Message_W.cc,v 3.26 2008/05/22 12:20:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -29,7 +29,7 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("RTIA_MSG","(LocalMESS) - ");
+static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
 
 
@@ -524,7 +524,7 @@ Message::writeHeader(SocketUN *socket)
 
     // If the message carry an exception, the Body will only contain the
     // exception reason.
-
+    D.Out(pdDebug,"Sent message type <%d> ",type);
     if (exception != e_NO_EXCEPTION) {
         header.bodySize = 1 ;
         // G.Out(pdGendoc,"exit  Message::writeHeader carrying exception");
@@ -748,4 +748,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.25 2008/05/12 12:16:59 erk Exp $
+// $Id: Message_W.cc,v 3.26 2008/05/22 12:20:19 erk Exp $

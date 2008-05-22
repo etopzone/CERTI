@@ -281,8 +281,13 @@ public:
 	NM_Register_Federation_Synchronization_Point();
 	virtual ~NM_Register_Federation_Synchronization_Point();	
 	/* specific Getter/Setter */
+	void setExist() {_setExist=true;};
+	void setDoesNotExist() {_setExist=false;};		
+	bool doesSetExist() {return _setExist;};
 protected:
-	/* specific field */	  
+	/* specific field */
+	/* tell whether if the synchronization set is specified or not */
+	bool _setExist;
 private:
 };
 

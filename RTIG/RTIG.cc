@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.42 2008/05/12 12:17:04 erk Exp $
+// $Id: RTIG.cc,v 3.43 2008/05/22 12:20:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -147,8 +147,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace,
               "Federation %u: registerFedSyncPoint from federate %u.",
               msg->federation, msg->federate);
-        auditServer.setLevel(8);
-        processRegisterSynchronization(link, msg);
+        auditServer.setLevel(8);        
+        processRegisterSynchronization(link, static_cast<NM_Register_Federation_Synchronization_Point*>(msg));
         break ;
 
       case NetworkMessage::SYNCHRONIZATION_POINT_ACHIEVED:
@@ -990,4 +990,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.42 2008/05/12 12:17:04 erk Exp $
+// $Id: RTIG.cc,v 3.43 2008/05/22 12:20:21 erk Exp $
