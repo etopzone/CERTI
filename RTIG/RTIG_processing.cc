@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.69 2008/05/22 12:20:21 erk Exp $
+// $Id: RTIG_processing.cc,v 3.70 2008/05/23 12:37:22 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -568,7 +568,7 @@ RTIG::processRequestFederationSave(Socket *, NetworkMessage *req)
 
     auditServer << "Federation save request." ;
 
-    if ( req->boolean )
+    if ( req->isDated() )
         // With time
         federations.requestFederationSave(req->federation, req->federate,
                                           req->getLabel().c_str(), req->getDate());
@@ -1427,4 +1427,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.69 2008/05/22 12:20:21 erk Exp $
+// $Id: RTIG_processing.cc,v 3.70 2008/05/23 12:37:22 erk Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.34 2008/05/12 12:16:59 erk Exp $
+// $Id: NetworkMessage.hh,v 3.35 2008/05/23 12:37:21 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -224,7 +224,6 @@ public:
 	ObjectHandle           object;
 	ObjectClassHandle      objectClass;
 	InteractionClassHandle interactionClass;
-	bool boolean ;
 
 	/**
 	 * Indicate if the message is dated/timestamped or not
@@ -364,4 +363,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.34 2008/05/12 12:16:59 erk Exp $
+// $Id: NetworkMessage.hh,v 3.35 2008/05/23 12:37:21 erk Exp $

@@ -362,7 +362,7 @@ NM_DDM_Base::NM_DDM_Base() {
 	this->region      = 0;
 	this->object      = 0;
 	this->objectClass = 0;
-	this->boolean     = false;
+	this->DDM_bool    = false; /* FIXME don't know the purpose of this */
 }
 
 NM_DDM_Base::~NM_DDM_Base() {
@@ -560,6 +560,20 @@ NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchroniza
 }
 NM_Register_Federation_Synchronization_Point::~NM_Register_Federation_Synchronization_Point() {
 }
+void 
+NM_Register_Federation_Synchronization_Point::serialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::serialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	msgBuffer.write_bool(_setExist);  
+} /* end of serialize */ 
+void 
+NM_Register_Federation_Synchronization_Point::deserialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::deserialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	_setExist = msgBuffer.read_bool();
+} /* end of deserialize */
 /*<END>---------- Register_Federation_Synchronization_Point ------------<END>*/
 
 /*<BEGIN>---------- Synchronization_Point_Registration_Succeeded ------------<BEGIN>*/
@@ -1441,7 +1455,7 @@ void NM_DDM_Associate_Region::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(object);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_bool(boolean);
+	msgBuffer.write_bool(DDM_bool);
 } /* end of serialize */ 
 void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1449,7 +1463,7 @@ void NM_DDM_Associate_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	object  = msgBuffer.read_int32();
 	region  = msgBuffer.read_int32();
-	boolean = msgBuffer.read_bool();
+	DDM_bool = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Associate_Region ------------<END>*/
 
@@ -1468,7 +1482,7 @@ void NM_DDM_Register_Object::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_int32(object);
 	msgBuffer.write_int32(objectClass);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_bool(boolean);
+	msgBuffer.write_bool(DDM_bool);
 } /* end of serialize */ 
 void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1477,7 +1491,7 @@ void NM_DDM_Register_Object::deserialize(MessageBuffer& msgBuffer) {
 	object      = msgBuffer.read_int32();
 	objectClass = msgBuffer.read_int32();
 	region      = msgBuffer.read_int32();
-	boolean     = msgBuffer.read_bool();
+	DDM_bool     = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Register_Object ------------<END>*/
 
@@ -1519,7 +1533,7 @@ void NM_DDM_Subscribe_Attributes::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(objectClass);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_bool(boolean);
+	msgBuffer.write_bool(DDM_bool);
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1527,7 +1541,7 @@ void NM_DDM_Subscribe_Attributes::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	objectClass = msgBuffer.read_int32();
 	region      = msgBuffer.read_int32();
-	boolean     = msgBuffer.read_bool();
+	DDM_bool     = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Attributes ------------<END>*/
 
@@ -1569,7 +1583,7 @@ void NM_DDM_Subscribe_Interaction::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_int32(interactionClass);
 	msgBuffer.write_int32(region);
-	msgBuffer.write_bool(boolean);
+	msgBuffer.write_bool(DDM_bool);
 } /* end of serialize */ 
 void NM_DDM_Subscribe_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -1577,7 +1591,7 @@ void NM_DDM_Subscribe_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	interactionClass = msgBuffer.read_int32();
 	region           = msgBuffer.read_int32();
-	boolean           = msgBuffer.read_bool();
+	DDM_bool           = msgBuffer.read_bool();
 } /* end of deserialize */
 /*<END>---------- DDM_Subscribe_Interaction ------------<END>*/
 

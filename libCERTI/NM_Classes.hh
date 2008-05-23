@@ -76,6 +76,7 @@ public:
 	void setInteractionClass(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
 protected:
 	/* specific field */
+	bool DDM_bool;
 private:
 };
 
@@ -280,6 +281,8 @@ public:
 	typedef NM_WithHandleArray Super;
 	NM_Register_Federation_Synchronization_Point();
 	virtual ~NM_Register_Federation_Synchronization_Point();	
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);	
 	/* specific Getter/Setter */
 	void setExist() {_setExist=true;};
 	void setDoesNotExist() {_setExist=false;};		
@@ -1211,7 +1214,7 @@ protected:
 	/* specific field */
 	//	SpaceHandle space;
 	//	int32_t nbExtents;
-	//	int32_t region;
+	//	int32_t region;	
 private:
 };
 
