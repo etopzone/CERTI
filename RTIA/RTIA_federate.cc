@@ -18,7 +18,6 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.78 2008/05/27 07:51:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,7 +48,7 @@ static RTI::TickTime currentTickTime()
 #ifdef _WIN32 
     _timeb timev;
     _ftime(&timev);
-    result = timev.time + timev.millitm/1000;
+    result = static_cast<RTI::TickTime>(timev.time + timev.millitm/1000);
 #else 
     struct timeval timev;
     gettimeofday(&timev, NULL);
@@ -1435,5 +1434,3 @@ RTIA::processFederateRequest(Message *req)
 }
 
 }} // namespace certi/rtia
-
-// $Id: RTIA_federate.cc,v 3.78 2008/05/27 07:51:55 rousse Exp $

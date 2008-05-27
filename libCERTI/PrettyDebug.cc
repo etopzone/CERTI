@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.8 2008/05/16 08:54:16 rousse Exp $
+// $Id: PrettyDebug.cc,v 4.9 2008/05/27 12:26:54 jmm Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -39,8 +39,8 @@
 	#include <sys/time.h>
 	#include <unistd.h>
 	#include <string>
+	#include <libgen.h>
 #endif
-#include <libgen.h>
 
 using std::cout ;
 using std::cerr ;
@@ -275,4 +275,4 @@ return;
 
 #endif // NDEBUG
 
-// $Id: PrettyDebug.cc,v 4.8 2008/05/16 08:54:16 rousse Exp $
+// $Id: PrettyDebug.cc,v 4.9 2008/05/27 12:26:54 jmm Exp $
