@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.26 2008/05/22 12:20:19 erk Exp $
+// $Id: Message_W.cc,v 3.27 2008/05/27 07:51:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,6 +31,42 @@ namespace certi {
 
 static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
+
+// ----------------------------------------------------------------------------
+void Message::serialize(MessageBuffer& msgBuffer) {
+	G.Out(pdGendoc,"enter Message::serialize");
+	/* We serialize the common Network messages part 
+	 * ALL Network Message will contain the following
+	 */	
+	if ((type==NOT_USED) || (type==LAST)) {
+		throw RTIinternalError("Invalid message type (not a valid type);");
+	}
+	D.Out(pdDebug, "Serialize <%s>", getName().c_str());
+	/* type of message */
+	msgBuffer.write_int32(type);
+	msgBuffer.write_int32(exception);
+	/*
+	 * "builtin" Optional part
+	 * The subclass may chose in the constructor the variable part.
+	 * isDated may be chosen on Message instance basis
+	 * (same message may Dated or Not Dated) 
+	 */
+	msgBuffer.write_bool(_isDated);
+	if (_isDated) {
+		msgBuffer.write_double(getFederationTime());
+		D.Out(pdDebug, "Sent Message date is  <%f>",getFederationTime() );
+	}	
+	msgBuffer.write_bool(_isLabelled);
+	if (_isLabelled) {
+		msgBuffer.write_string(label);
+	}
+	msgBuffer.write_bool(_isTagged);
+	if (_isTagged) {
+		msgBuffer.write_string(tag);
+	}
+	G.Out(pdGendoc,"exit Message::serialize");
+} /* end of serialize */
+
 
 
 // ----------------------------------------------------------------------------
@@ -748,4 +784,4 @@ Message::writeValueArray(MessageBody &body)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.26 2008/05/22 12:20:19 erk Exp $
+// $Id: Message_W.cc,v 3.27 2008/05/27 07:51:55 rousse Exp $

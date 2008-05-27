@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_federate.cc,v 3.77 2008/05/13 13:03:49 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.78 2008/05/27 07:51:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -393,7 +393,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 		"Receiving Message from Federate, type RegisterObject.");
 
           rep.setObject(om->registerObject(req->getObjectClass(),
-                                           req->getName(),
+                                           req->getName().c_str(),
                                            date, heure, e));
           break ;
       }
@@ -763,7 +763,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetObjectClassHandle.");
         try {
-            rep.setObjectClass(om->getObjectClassHandle(req->getName()));
+            rep.setObjectClass(om->getObjectClassHandle(req->getName().c_str()));
             }
         catch (RTI::Exception &egoch)
             {
@@ -789,7 +789,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::GET_OBJECT_INSTANCE_HANDLE:
         D.Out(pdTrace,
               "Receiving Message from Federate, type getObjectInstanceHandle.");
-        rep.setObject(om->getObjectInstanceHandle(req->getName()));
+        rep.setObject(om->getObjectInstanceHandle(req->getName().c_str()));
         break ;
 
       case Message::GET_OBJECT_INSTANCE_NAME:
@@ -805,7 +805,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetAttributeHandle.");
         try {
-            rep.setAttribute(om->getAttributeHandle(req->getName(),
+            rep.setAttribute(om->getAttributeHandle(req->getName().c_str(),
                                                 req->getObjectClass()));
             }
         catch (RTI::Exception &egah)
@@ -826,7 +826,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetInteractionHandle.");
 
-        rep.setInteractionClass(om->getInteractionClassHandle(req->getName()));
+        rep.setInteractionClass(om->getInteractionClassHandle(req->getName().c_str()));
         break ;
 
       case Message::GET_INTERACTION_CLASS_NAME:
@@ -840,7 +840,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetParameterHandle.");
 
-        rep.setParameter(om->getParameterHandle(req->getName(),
+        rep.setParameter(om->getParameterHandle(req->getName().c_str(),
                                                 req->getInteractionClass()));
         break ;
 
@@ -1436,4 +1436,4 @@ RTIA::processFederateRequest(Message *req)
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_federate.cc,v 3.77 2008/05/13 13:03:49 rousse Exp $
+// $Id: RTIA_federate.cc,v 3.78 2008/05/27 07:51:55 rousse Exp $

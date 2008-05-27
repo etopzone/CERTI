@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.cc,v 3.43 2008/05/13 13:03:48 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.44 2008/05/27 07:51:54 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -223,7 +223,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 
     // Adding discovered object in federate internal object list.
     rootObject->registerObjectInstance(fm->federate, the_class, the_object,
-                                       req.getName());
+                                       req.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -820,4 +820,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 
 }} // namespace certi/rtia
 
-// $Id: ObjectManagement.cc,v 3.43 2008/05/13 13:03:48 rousse Exp $
+// $Id: ObjectManagement.cc,v 3.44 2008/05/27 07:51:54 rousse Exp $

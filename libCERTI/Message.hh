@@ -28,6 +28,9 @@
 #include "BasicMessage.hh"
 #include "fedtime.hh"
 
+#include <vector>
+#include <string>
+
 namespace certi {
 
 /**
@@ -248,6 +251,13 @@ public:
 
 public:
     Message();
+
+	/**
+	 * Serialize the message into a buffer
+	 */
+	virtual void serialize(MessageBuffer& msgBuffer);
+
+
 	 void trace(const char* context);
 
     // Read and Write NetworkMessage Objects to and from Socket objects.
@@ -284,7 +294,8 @@ public:
     const char *getLabel() const { return label ; };
     void setLabel(const char *new_label);
 
-    const char *getName() const { return name ; };
+    //const char *getName() const { return name ; };
+    const std::string getName() const {return name;}
     void setName(const char *new_name);
 
     DimensionHandle getDimension() const { return dimension ; };
@@ -435,6 +446,26 @@ public:
     void display(char *);
 
 private:
+
+	/**
+	 * True is the message is dated
+	 * When a message is dated the date is transmitted
+	 * over the network, when not dated the date is not sent.
+	 */
+	bool _isDated;
+	/**
+	 * True is the message contains a label
+	 * When a message is labelled the label is transmitted
+	 * over the network, when not labelled the label is not sent.
+	 */
+	bool _isLabelled;
+	/**
+	 * True is the message contains a tag
+	 * When a message is tagged the tag is transmitted
+	 * over the network, when not tagged the tag is not sent.
+	 */
+	bool _isTagged;
+
     // Read a Message Body from a Socket. Should be called after
     // ReadHeader.
     void readBody(SocketUN *Socket);

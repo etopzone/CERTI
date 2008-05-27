@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.80 2008/05/13 13:03:50 rousse Exp $
+// $Id: RTIambassador.cc,v 3.81 2008/05/27 07:51:55 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -355,7 +355,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                   privateRefs->fed_amb->
                       discoverObjectInstance(vers_Fed.getObject(),
                                              vers_Fed.getObjectClass(),
-                                             vers_Fed.getName());
+                                             vers_Fed.getName().c_str());
               } break ;
 
               case Message::REFLECT_ATTRIBUTE_VALUES: {
@@ -2490,7 +2490,7 @@ RTI::RTIambassador::getObjectClassName(ObjectClassHandle handle)
     req.type = Message::GET_OBJECT_CLASS_NAME ;
     req.setObjectClass(handle);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2538,7 +2538,7 @@ RTI::RTIambassador::getAttributeName(AttributeHandle theHandle,
     req.setAttribute(theHandle);
     req.setObjectClass(whichClass);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2576,7 +2576,7 @@ RTI::RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2620,7 +2620,7 @@ RTI::RTIambassador::getParameterName(ParameterHandle theHandle,
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2654,7 +2654,7 @@ RTI::RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2691,7 +2691,7 @@ RTI::RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     req.type = Message::GET_SPACE_NAME ;
     req.setSpace(handle);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2735,7 +2735,7 @@ RTI::RTIambassador::getDimensionName(DimensionHandle dimension,
     req.setDimension(dimension);
     req.setSpace(space);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName());
+    return strdup(rep.getName().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2821,7 +2821,7 @@ RTI::RTIambassador::getTransportationName(TransportationHandle theHandle)
     req.type = Message::GET_TRANSPORTATION_NAME ;
     req.setTransportation(theHandle);
     privateRefs->executeService(&req, &rep);
-    return(strdup(rep.getName()));
+    return(strdup(rep.getName().c_str()));
 }
 
 // ----------------------------------------------------------------------------
@@ -2852,7 +2852,7 @@ RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
     req.type = Message::GET_ORDERING_NAME ;
     req.setOrdering(theHandle);
     privateRefs->executeService(&req, &rep);
-    return(strdup(rep.getName()));
+    return(strdup(rep.getName().c_str()));
 }
 
 // ----------------------------------------------------------------------------
@@ -2958,4 +2958,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.80 2008/05/13 13:03:50 rousse Exp $
+// $Id: RTIambassador.cc,v 3.81 2008/05/27 07:51:55 rousse Exp $
