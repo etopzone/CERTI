@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.62 2008/05/22 12:20:22 erk Exp $
+// $Id: FederationManagement.cc,v 3.63 2008/05/29 12:20:33 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -69,7 +69,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 
     _nom_federation = "";
     _nom_federe     = "";
-    _FEDid          = NULL;
+    //_FEDid          = NULL;is now a string then...
     G.Out(pdGendoc,"exit  FederationManagement::FederationManagement");
 }
 
@@ -100,7 +100,7 @@ FederationManagement::~FederationManagement()
         cout << "RTIA: Federation destroyed" << endl ;
     //}
     
-    delete[] _FEDid ;
+    //delete[] _FEDid ;
     G.Out(pdGendoc,"exit  ~FederationManagement");
 }
 
@@ -108,7 +108,7 @@ FederationManagement::~FederationManagement()
 //! createFederationExecution.
 void
 FederationManagement::
-createFederationExecution(const char *theName,
+createFederationExecution(std::string theName,
                           TypeException &e)
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
@@ -117,7 +117,7 @@ createFederationExecution(const char *theName,
     NM_Create_Federation_Execution requete;
 
     G.Out(pdGendoc,"enter FederationManagement::createFederationExecution");
-    D.Out(pdInit, "Creating Federation %s.", theName);
+    D.Out(pdInit, "Creating Federation %s.", theName.c_str());
 
     e = e_NO_EXCEPTION ;
 
@@ -190,12 +190,12 @@ createFederationExecution(const char *theName,
 //! destroyFederationExecution.
 void
 FederationManagement::
-destroyFederationExecution(const char *theName,
+destroyFederationExecution(std::string theName,
                            TypeException &e)
 {
     NM_Destroy_Federation_Execution requete ;
 
-    D.Out(pdInit, "Destroy Federation %s.", theName);
+    D.Out(pdInit, "Destroy Federation %s.", theName.c_str());
     G.Out(pdGendoc,"enter FederationManagement::destroyFederationExecution");
     e = e_NO_EXCEPTION ;
 
@@ -223,7 +223,7 @@ destroyFederationExecution(const char *theName,
             _numero_federation = 0 ;
             _fin_execution     = true ;
             // Now, remove temporary file (if not yet done)
-            if ( _FEDid != NULL )
+            if ( _FEDid.c_str() != NULL )
                {
                if ( _FEDid[0] != '\0' )
                    {
@@ -232,7 +232,7 @@ destroyFederationExecution(const char *theName,
                    if ( _FEDid[0] == '_' || _FEDid[1] == 'R' || _FEDid[2] == 'T')
                       {
                       std::cout<<"Removing temporary file "<<_FEDid<<" on destroy federation."<<std::endl;
-                      std::remove(_FEDid);
+                      std::remove(_FEDid.c_str());
                       _FEDid[0] = '\0' ;
                       }
                    else
@@ -256,18 +256,18 @@ G.Out(pdGendoc,"exit  FederationManagement::destroyFederationExecution");
 //! joinFederationExecution.
 FederateHandle
 FederationManagement::
-joinFederationExecution(const char *Federate,
-                        const char *Federation,
+joinFederationExecution(std::string Federate,
+                        std::string Federation,
                         TypeException &e)
 {
     NM_Join_Federation_Execution requete;
     NM_Get_FED_File              requeteFED;
     
     int i, nb ;
-    char* filename ; // Needed for working file name
+    string filename ; // Needed for working file name
 
     G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
-    D.Out(pdInit, "Join Federation %s as %s.", Federation, Federate);
+    D.Out(pdInit, "Join Federation %s as %s.", Federation.c_str(), Federate.c_str());
 
     e = e_NO_EXCEPTION ;
 
@@ -309,10 +309,10 @@ joinFederationExecution(const char *Federate,
             char pid_name[10];
             sprintf(pid_name,"%d_",getpid());
 
-            filename = new char[6+strlen(pid_name)+strlen(Federation)+4+1] ;
-            strcpy(filename,"_RTIA_");
-            strcat(filename,pid_name); 
-            strcat(filename,Federation);
+            //filename = new char[6+strlen(pid_name)+strlen(Federation)+4+1] ;
+            filename += "_RTIA_";
+            filename += pid_name ;
+             filename += Federation ;
             // Last file type : fed or xml ?
    
             string filename_RTIG = reponse->FEDid ;
@@ -320,19 +320,18 @@ joinFederationExecution(const char *Federate,
             string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
               if ( !strcasecmp(extension.c_str(),"fed") )
                   {
-                  strcat(filename,".fed");
+                  filename += ".fed";
                   }
               else if  ( !strcasecmp(extension.c_str(),"xml") )
                   {
-                  strcat(filename,".xml");
+                  filename += ".xml";
                   } 
               else 
                   throw CouldNotOpenFED("nor .fed nor .xml"); 
             // FED filename for working must be stored
-            _FEDid =  new char[strlen(filename)+1] ;
-            strcpy(_FEDid,filename) ;              
+            _FEDid = filename ;              
             // RTIA opens working file
-            std::ofstream fedWorkFile(filename);
+            std::ofstream fedWorkFile(filename.c_str());
             if ( !fedWorkFile.is_open()) {
                 throw RTIinternalError("FED file has vanished.") ;
             }
@@ -456,12 +455,12 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         _numero_federation = 0 ;
         federate = 0 ;
         // Now, remove temporary file (if not yet done)
-        if ( _FEDid != NULL)
+        if ( _FEDid.c_str() != NULL)
             {
             if ( _FEDid[0] != '\0' )
                 {
                 std::cout<<"Removing temporary file "<<_FEDid<<" on resign federation."<<std::endl;
-                std::remove(_FEDid);
+                std::remove(_FEDid.c_str());
                 _FEDid[0] = '\0' ;
                 }
             }
@@ -476,21 +475,21 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
 // ----------------------------------------------------------------------------
 //! Register synchronization.
 void
-FederationManagement::registerSynchronization(const char *label,
-                                              const char *tag,
+FederationManagement::registerSynchronization(std::string label,
+                                              std::string tag,
                                               TypeException &e)
 {
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization");
 
-    assert(label != NULL);
+    //assert(label != NULL);
 
     e = e_NO_EXCEPTION ;
 
     list<char *>::const_iterator i = synchronizationLabels.begin();
     bool exists = false ;
     for (; i != synchronizationLabels.end(); i++) {
-        if (!strcmp((*i), label)) {
+        if (!strcmp((*i), label.c_str())) {
             e = e_FederationAlreadyPaused ; // Label already pending.
             exists = true ;
             break ;
@@ -498,7 +497,7 @@ FederationManagement::registerSynchronization(const char *label,
     }
 
     if (!exists)
-        synchronizationLabels.push_back(strdup(label));
+        synchronizationLabels.push_back(strdup(label.c_str()));
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
@@ -524,8 +523,8 @@ FederationManagement::registerSynchronization(const char *label,
 // ----------------------------------------------------------------------------
 //! Register synchronization with set of federates
 void
-FederationManagement::registerSynchronization(const char *label,
-                                              const char *tag,
+FederationManagement::registerSynchronization(std::string label,
+                                              std::string tag,
                                               unsigned short array_size,
                                               FederateHandle *fed_array,
                                               TypeException &e)
@@ -533,14 +532,14 @@ FederationManagement::registerSynchronization(const char *label,
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization with federate set");
 
-    assert(label != NULL);
+    //assert(label != NULL);
 
     e = e_NO_EXCEPTION ;
 
     list<char *>::const_iterator i = synchronizationLabels.begin();
     bool exists = false ;
     for (; i != synchronizationLabels.end(); i++) {
-        if (!strcmp((*i), label)) {
+        if (!strcmp((*i), label.c_str())) {
             e = e_FederationAlreadyPaused ; // Label already pending.
             exists = true ;
             break ;
@@ -548,7 +547,7 @@ FederationManagement::registerSynchronization(const char *label,
     }
 
     if (!exists)
-        synchronizationLabels.push_back(strdup(label));
+        synchronizationLabels.push_back(strdup(label.c_str()));
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
@@ -576,12 +575,12 @@ FederationManagement::registerSynchronization(const char *label,
 // ----------------------------------------------------------------------------
 //! Unregister synchronization.
 void
-FederationManagement::unregisterSynchronization(const char *label,
+FederationManagement::unregisterSynchronization(std::string label,
                                                 TypeException &e)
 {
     D.Out(pdProtocol, "unregisterSynchronization.");
 
-    assert(label != NULL);
+    //assert(label != NULL);
 
     e = e_NO_EXCEPTION ;
 
@@ -589,7 +588,7 @@ FederationManagement::unregisterSynchronization(const char *label,
     list<char *>::iterator i = synchronizationLabels.begin();
     bool exists = false ;
     for (; i != synchronizationLabels.end(); ++i) {
-        if (!strcmp((*i), label)) {
+        if (!strcmp((*i), label.c_str())) {
             // Label already pending.
             exists = true ;
             break ;
@@ -714,15 +713,15 @@ FederationManagement::federationSynchronized(const char *label)
 // ----------------------------------------------------------------------------
 // requestFederationSave with time
 void
-FederationManagement::requestFederationSave(const char *label,
+FederationManagement::requestFederationSave(std::string label,
                                             FederationTime the_time,
                                             TypeException &e)
 {
-    D.Out(pdInit, "Request for federation save \"%s\".", label);
+    D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
                    "with time");
 
-    assert(label != 0);
+    //assert(label != 0);
 
     NM_Request_Federation_Save req ;
     
@@ -744,14 +743,14 @@ FederationManagement::requestFederationSave(const char *label,
 // ----------------------------------------------------------------------------
 // requestFederationSave without time
 void
-FederationManagement::requestFederationSave(const char *label,
+FederationManagement::requestFederationSave(std::string label,
                                             TypeException &e)
 {
-    D.Out(pdInit, "Request for federation save \"%s\".", label);
+    D.Out(pdInit, "Request for federation save \"%s\".", label.c_str());
     G.Out(pdGendoc,"enter FederationManagement::requestFederationSave "
                    "without time");
 
-    assert(label != 0);
+    //assert(label != 0);
 
     NM_Request_Federation_Save req ;
     
@@ -858,13 +857,13 @@ FederationManagement::federationSavedStatus(bool status)
 
 // ----------------------------------------------------------------------------
 void
-FederationManagement::requestFederationRestore(const char *label,
+FederationManagement::requestFederationRestore(std::string label,
                                                TypeException &)
 {
     G.Out(pdGendoc,"enter FederationManagement::requestFederationRestore");
-    D.Out(pdInit, "Request for federation restore \"%s\".", label);
+    D.Out(pdInit, "Request for federation restore \"%s\".", label.c_str());
 
-    assert(label != NULL);
+    //assert(label != NULL);
 
     NM_Request_Federation_Restore req ;
     

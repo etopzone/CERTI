@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.27 2008/04/28 17:14:53 erk Exp $
+// $Id: certi.hh,v 3.28 2008/05/29 12:20:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -92,19 +92,15 @@
    
 // Deprecated HLA macros still in use
 #define MAX_BYTES_PER_VALUE 500
-#define MAX_FEDERATE_NAME_LENGTH 64
+//#define MAX_FEDERATE_NAME_LENGTH 64
 #undef MAX_USER_TAG_LENGTH
 #define MAX_USER_TAG_LENGTH 64
 #undef MAX_ATTRIBUTES_PER_CLASS
 #define MAX_ATTRIBUTES_PER_CLASS 50
 #define MAX_BYTES_PER_VALUETYPE 128
-#undef MAX_PARAMETERS_PER_CLASS
-#define MAX_PARAMETERS_PER_CLASS 50
+//#undef MAX_PARAMETERS_PER_CLASS
+//#define MAX_PARAMETERS_PER_CLASS 50
 
-// next used in MessageBody constructor with no size
-// EN. change from 500-->536 because HeaderStruct is 36
-//     see MessageBody code for reason
-#define BUFFER_SIZE_DEFAULT 536
 // next used in RTIG::processIncomingMessage method
 #define BUFFER_EXCEPTION_REASON_SIZE 256
 
@@ -385,4 +381,4 @@ typedef  struct vlp
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.27 2008/04/28 17:14:53 erk Exp $
+// $Id: certi.hh,v 3.28 2008/05/29 12:20:35 rousse Exp $

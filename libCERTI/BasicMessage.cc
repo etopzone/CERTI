@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.11 2008/04/29 08:33:05 erk Exp $
+// $Id: BasicMessage.cc,v 3.12 2008/05/29 12:20:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -128,22 +128,22 @@ BasicMessage::deserialize(MessageBuffer& msgBuffer) {
     format: list of ranges. Range format: lower bound, upper bound.
  */
 void
-BasicMessage::writeExtents(MessageBody &body) const
+BasicMessage::writeExtents(MessageBuffer& msgBuffer) const
 {
     D[pdDebug] << "Write " << extents.size() << " extent(s)" << endl ;
 
-    body.writeLongInt(extents.size());
+    msgBuffer.write_int64(extents.size());
     if (extents.size() > 0) {
 	int n = extents[0].size();
-	body.writeLongInt(n);
+	msgBuffer.write_int64(n);
 	D[pdDebug] << "Extent with " << n << " range(s)" << endl ;
 
 	for (unsigned int i = 0 ; i < extents.size(); ++i) {
 	    const Extent &e = extents[i] ;
 
 	    for (int h = 1 ; h <= n ; ++h) {
-		body.writeLongInt(e.getRangeLowerBound(h));
-		body.writeLongInt(e.getRangeUpperBound(h));
+		msgBuffer.write_int64(e.getRangeLowerBound(h));
+		msgBuffer.write_int64(e.getRangeUpperBound(h));
 	    }
 	}
     }
@@ -155,21 +155,21 @@ BasicMessage::writeExtents(MessageBody &body) const
     \sa BasicMessage::writeExtents, Extent
  */
 void
-BasicMessage::readExtents(const MessageBody &body)
+BasicMessage::readExtents(MessageBuffer& msgBuffer)
 {
-    long nb_extents = body.readLongInt();
+    long nb_extents = msgBuffer.read_int64();
     D[pdDebug] << "Read " << nb_extents << " extent(s)" << endl ;
 
     extents.clear();    
     if (nb_extents > 0) {
 	extents.reserve(nb_extents);
-	long nb_dimensions = body.readLongInt();
+	long nb_dimensions = msgBuffer.read_int64();
 	D[pdDebug] << "Extent with " << nb_dimensions << " range(s)" << endl ;
 	for (long i = 0 ; i < nb_extents ; ++i) {
 	    Extent e(nb_dimensions);
 	    for (long h = 1 ; h <= nb_dimensions ; ++h) {
-		e.setRangeLowerBound(h, body.readLongInt());
-		e.setRangeUpperBound(h, body.readLongInt());
+		e.setRangeLowerBound(h, msgBuffer.read_int64());
+		e.setRangeUpperBound(h, msgBuffer.read_int64());
 	    }
 	    extents.push_back(e);
 	}
@@ -178,24 +178,24 @@ BasicMessage::readExtents(const MessageBody &body)
 
 // ----------------------------------------------------------------------------
 void
-BasicMessage::writeRegions(MessageBody &body)
+BasicMessage::writeRegions(MessageBuffer& msgBuffer)
 {
     long n = regions.size();
-    body.writeLongInt(n);
+    msgBuffer.write_int64(n);
     for (int i = 0 ; i < n ; ++i) {
-	body.writeLongInt(regions[i]);
+	msgBuffer.write_int64(regions[i]);
     }
 }
 
 // ----------------------------------------------------------------------------
 void
-BasicMessage::readRegions(const MessageBody &body)
+BasicMessage::readRegions(MessageBuffer& msgBuffer)
 {
-    long n = body.readLongInt();
+    long n = msgBuffer.read_int64();
     regions.clear();
     regions.reserve(n);
     for (int i = 0; i < n; ++i) {
-	regions.push_back(body.readLongInt());
+	regions.push_back(msgBuffer.read_int64());
     }
 }
 
@@ -225,4 +225,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.11 2008/04/29 08:33:05 erk Exp $
+// $Id: BasicMessage.cc,v 3.12 2008/05/29 12:20:35 rousse Exp $

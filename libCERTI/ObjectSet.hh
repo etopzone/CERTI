@@ -74,7 +74,7 @@ public:
         throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
+    void deleteObjectInstance(FederateHandle, ObjectHandle, std::string tag)
         throw (ObjectNotKnown, DeletePrivilegeNotHeld,
                FederateNotExecutionMember, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);

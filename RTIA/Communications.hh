@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.12 2008/04/26 14:59:41 erk Exp $
+// $Id: Communications.hh,v 3.13 2008/05/29 12:20:32 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -67,6 +67,7 @@ public:
      */
     NetworkMessage* waitMessage(NetworkMessage::Type type_msg,
                                 FederateHandle numeroFedere);
+    MessageBuffer msgBufSend, msgBufReceive ;
 
 private:
 	/**
@@ -85,4 +86,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.12 2008/04/26 14:59:41 erk Exp $
+// $Id: Communications.hh,v 3.13 2008/05/29 12:20:32 rousse Exp $

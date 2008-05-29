@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.27 2008/02/28 14:47:59 rousse Exp $
+// $Id: RootObject.hh,v 3.28 2008/05/29 12:20:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -92,10 +92,10 @@ public:
         throw (ObjectNotKnown);
   
     void deleteObjectInstance(FederateHandle, ObjectHandle, 
-    			      FederationTime theTime, const char *)
+    			      FederationTime theTime, std::string theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, const char *)
+    void deleteObjectInstance(FederateHandle, ObjectHandle, std::string theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void killFederate(FederateHandle) throw (RTIinternalError);
@@ -126,4 +126,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.27 2008/02/28 14:47:59 rousse Exp $
+// $Id: RootObject.hh,v 3.28 2008/05/29 12:20:39 rousse Exp $

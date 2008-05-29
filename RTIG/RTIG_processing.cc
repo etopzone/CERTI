@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.70 2008/05/23 12:37:22 erk Exp $
+// $Id: RTIG_processing.cc,v 3.71 2008/05/29 12:20:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -789,6 +789,7 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 void
 RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
+    G.Out(pdGendoc,"enter RTIG::processUpdateAttributeValues");
     ValueLengthPair *ValueArray = NULL ;
 
     auditServer << "ObjID = " << req->object
@@ -834,6 +835,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     rep.setTag(req->getTag());
 
     rep.send(link); // send answer to RTIA
+    G.Out(pdGendoc,"exit  RTIG::processUpdateAttributeValues");
 }
 
 // ----------------------------------------------------------------------------
@@ -1427,4 +1429,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.70 2008/05/23 12:37:22 erk Exp $
+// $Id: RTIG_processing.cc,v 3.71 2008/05/29 12:20:35 rousse Exp $

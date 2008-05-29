@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.13 2008/04/26 14:59:41 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.14 2008/05/29 12:20:33 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -129,7 +129,7 @@ OwnershipManagement::
 negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                         AttributeHandle *attribArray,
                                         UShort attribArraySize,
-                                        const char *theTag,
+                                        std::string theTag,
                                         TypeException &e)
 
 {
@@ -252,7 +252,7 @@ OwnershipManagement::
 attributeOwnershipAcquisition(ObjectHandle theObject,
                               AttributeHandle *attribArray,
                               UShort attribArraySize,
-                              const char *theTag,
+                              std::string theTag,
                               TypeException &e)
 {
     NM_Attribute_Ownership_Acquisition req;
@@ -433,7 +433,7 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
                                     AttributeHandle *the_attributes,
                                     UShort the_size,
                                     FederateHandle,
-                                    char *the_tag,
+                                    std::string the_tag,
                                     TypeException &)
 {
     Message req;
@@ -453,7 +453,7 @@ OwnershipManagement::
 requestAttributeOwnershipRelease(ObjectHandle the_object,
                                  AttributeHandle *the_attributes,
                                  UShort the_size,
-                                 char *the_tag,
+                                 std::string the_tag,
                                  TypeException &)
 {
     Message req;
@@ -504,4 +504,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.13 2008/04/26 14:59:41 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.14 2008/05/29 12:20:33 rousse Exp $

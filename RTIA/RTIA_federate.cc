@@ -129,8 +129,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type CreateFederation.");
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
-        fm->_FEDid = new char[strlen(req->getFEDid())+1] ;
-        strcpy(fm->_FEDid, req->getFEDid()) ;
+        fm->_FEDid = req->getFEDid() ;
         fm->createFederationExecution(req->getFederationName(), e);
         if ( e == e_RTIinternalError )
             {
@@ -1434,3 +1433,4 @@ RTIA::processFederateRequest(Message *req)
 }
 
 }} // namespace certi/rtia
+

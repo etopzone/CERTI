@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.7 2008/05/29 12:20:33 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
@@ -74,7 +74,7 @@ public:
     negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                             AttributeHandle *attribArray,
                                             UShort attribArraySize,
-                                            const char *theTag,
+                                            std::string theTag,
                                             TypeException &e);
     void
     cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
@@ -112,7 +112,7 @@ public:
                                         AttributeHandle *attribArray,
                                         UShort attribArraySize,
                                         FederateHandle theOwner,
-                                        char *theTag,
+                                        std::string theTag,
                                         TypeException &e);
 
     void
@@ -125,14 +125,14 @@ public:
     attributeOwnershipAcquisition(ObjectHandle theObject,
                                   AttributeHandle *attribArray,
                                   UShort attribArraySize,
-                                  const char *theTag,
+                                  std::string theTag,
                                   TypeException &e);
 
     void
     requestAttributeOwnershipRelease(ObjectHandle theObject,
                                      AttributeHandle *attribArray,
                                      UShort attribArraySize,
-                                     char *theTag,
+                                     std::string theTag,
                                      TypeException &e);
 
     void
@@ -162,4 +162,4 @@ protected:
 
 #endif // _CERTI_RTIA_OWM
 
-// $Id: OwnershipManagement.hh,v 3.6 2004/05/18 13:18:52 breholee Exp $
+// $Id: OwnershipManagement.hh,v 3.7 2008/05/29 12:20:33 rousse Exp $

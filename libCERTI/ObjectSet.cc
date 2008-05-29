@@ -175,7 +175,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 void
 ObjectSet::deleteObjectInstance(FederateHandle,
                                 ObjectHandle the_object,
-                                const char *)
+                                std::string the_tag)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
@@ -458,4 +458,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.19 2008/04/26 14:59:40 erk Exp $
+// $Id: ObjectSet.cc,v 3.20 2008/05/29 12:20:39 rousse Exp $

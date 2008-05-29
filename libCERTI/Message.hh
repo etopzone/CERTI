@@ -256,12 +256,18 @@ public:
 	 * Serialize the message into a buffer
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
+	/**
+	 * DeSerialize the message from a buffer
+	 */
+	virtual void deserialize(MessageBuffer& msgBuffer);
 
+	void send(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
 	 void trace(const char* context);
 
     // Read and Write NetworkMessage Objects to and from Socket objects.
-    void write(SocketUN *Socket) throw (NetworkError, NetworkSignal);
+    void write(SocketUN *Socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
     void read(SocketUN *Socket) throw (NetworkError, NetworkSignal);
 
     // -- Attribute Access Methods
@@ -291,8 +297,8 @@ public:
     // containing the actual Attrib/Param values. You must FREE this structure.
     ValueLengthPair *getValueArray();
 
-    const char *getLabel() const { return label ; };
-    void setLabel(const char *new_label);
+    std::string getLabel() const { return label ; };
+    void setLabel(std::string new_label);
 
     //const char *getName() const { return name ; };
     const std::string getName() const {return name;}
@@ -301,14 +307,14 @@ public:
     DimensionHandle getDimension() const { return dimension ; };
     void setDimension(DimensionHandle);
 
-    const char *getFederationName() const { return federationName ; };
-    void setFederationName(const char *federation_name);
+    std::string getFederationName() const { return federationName ; };
+    void setFederationName(std::string federation_name);
 
-    const char *getFederateName() const { return federateName ; };
-    void setFederateName(const char *federate_name);
+    std::string getFederateName() const { return federateName ; };
+    void setFederateName(std::string federate_name);
 
-    const char *getTag() const { return tag ; };
-    void setTag(const char *new_tag);
+    std::string getTag() const { return tag ; };
+    void setTag(std::string new_tag);
 
     SpaceHandle getSpace() const { return space ; };
     void setSpace(SpaceHandle);
@@ -400,16 +406,17 @@ public:
 
     void setException(TypeException, const char *the_reason = "\0");
     TypeException getExceptionType() const { return exception ; };
-    const char *getExceptionReason() const { return exceptionReason ; };
+    const char *getExceptionReason() const { return exceptionReason.c_str() ; };
 
-    const char *getFEDid() const { return FEDid ; };
-    void setFEDid(const char *FEDid);
+    std::string getFEDid() const { return FEDid ; };
+    void setFEDid(std::string FEDid);
     // Public attributes
     Type type ;
 
 protected:
     TypeException exception ;
-    char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
+    //char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
+    std::string exceptionReason;
 
     RTIfedTime fed_time;
     bool boolean ;
@@ -437,6 +444,7 @@ protected:
     RTI::TickTime maxTickTime;
 
 public:
+
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
     AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
@@ -447,33 +455,14 @@ public:
 
 private:
 
-	/**
-	 * True is the message is dated
-	 * When a message is dated the date is transmitted
-	 * over the network, when not dated the date is not sent.
-	 */
-	bool _isDated;
-	/**
-	 * True is the message contains a label
-	 * When a message is labelled the label is transmitted
-	 * over the network, when not labelled the label is not sent.
-	 */
-	bool _isLabelled;
-	/**
-	 * True is the message contains a tag
-	 * When a message is tagged the tag is transmitted
-	 * over the network, when not tagged the tag is not sent.
-	 */
-	bool _isTagged;
-
     // Read a Message Body from a Socket. Should be called after
     // ReadHeader.
-    void readBody(SocketUN *Socket);
+    void readBody(MessageBuffer &msgBuffer);
 
     // Read a Header from a socket, and process it to read its
     // content. Return RTI_TRUE if the ReadBody Method has to be
     // called.
-    bool readHeader(SocketUN *Socket);
+    bool readHeader(MessageBuffer &msgBuffer);
 
     // The message is written onto the socket by WriteHeader if no
     // body is required, or by WriteBody is a body has been required
@@ -481,37 +470,38 @@ private:
 
     // Prepare and write a Body to a socket. Should be called after
     // WriteHeader.
-    void writeBody(SocketUN *Socket);
+    void writeBody(MessageBuffer &msgBuffer);
 
     // Prepare and Write a Header to a Socket, and return RTI_TRUE if
     // the WriteBody method has to be called.
-    bool writeHeader(SocketUN *Socket);
+    bool writeHeader(MessageBuffer &msgBuffer);
 
     // -- Other Private Read Methods --
-    void readHandleArray(MessageBody &);
-    void readLabel(MessageBody &);
-    void readName(MessageBody &);
-    void readFederationName(MessageBody &);
-    void readFederateName(MessageBody &);
-    void readResignAction(MessageBody &);
-    void readTag(MessageBody &);
-    void readValueArray(MessageBody &);
-    void readFEDid(MessageBody &);
+    void readHandleArray(MessageBuffer &msgBuffer);
+    void readLabel(MessageBuffer &msgBuffer);
+    void readName(MessageBuffer &msgBuffer);
+    void readFederationName(MessageBuffer &msgBuffer);
+    void readFederateName(MessageBuffer &msgBuffer);
+    void readResignAction(MessageBuffer &msgBuffer);
+    void readTag(MessageBuffer &msgBuffer);
+    void readValueArray(MessageBuffer &msgBuffer);
+    void readFEDid(MessageBuffer &msgBuffer);
 
     // -- Other Private Write Methods --
-    void writeHandleArray(MessageBody &);
-    void writeResignAction(MessageBody &);
-    void writeValueArray(MessageBody &);
-    void writeFEDid(MessageBody &);
-    void writeFederationName(MessageBody &);
+    void writeHandleArray(MessageBuffer &msgBuffer);
+    void writeResignAction(MessageBuffer &msgBuffer);
+    void writeValueArray(MessageBuffer &msgBuffer);
+    void writeFEDid(MessageBuffer &msgBuffer);
+    void writeFederationName(MessageBuffer &msgBuffer);
 
     MessageHeader header ;
-    char label[MAX_USER_TAG_LENGTH + 1] ;
-    char name[MAX_USER_TAG_LENGTH + 1] ;
-    char federateName[MAX_FEDERATE_NAME_LENGTH + 1] ;
-    char *federationName ;
-    char tag[MAX_USER_TAG_LENGTH + 1] ;
-    char *FEDid ;
+    std::string label ;
+    std::string name ;
+    std::string  federateName ;
+    std::string federationName ;
+
+    std::string tag ;
+    std::string FEDid ;
     ValueLengthPair valueArray[MAX_ATTRIBUTES_PER_CLASS] ;
 };
 

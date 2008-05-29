@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.20 2008/03/13 14:39:19 siron Exp $
+// $Id: ObjectManagement.hh,v 3.21 2008/05/29 12:20:33 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -57,14 +57,14 @@ public:
                           ValueLengthPair *valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
-                          const char *theTag,
+                          std::string theTag,
                           TypeException &e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
                           AttributeHandle *attribArray,
                           ValueLengthPair *valueArray,
                           UShort attribArraySize,
-                          const char *theTag,
+                          std::string theTag,
                           TypeException &e);
 
     void discoverObject(ObjectHandle theObjectHandle,
@@ -96,7 +96,7 @@ public:
                     ParameterLengthPair *valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
-                    const char *theTag,
+                    std::string theTag,
 		    RegionHandle,
                     TypeException &e);
 
@@ -105,7 +105,7 @@ public:
                     ParameterHandle *paramArray,
                     ParameterLengthPair *valueArray,
                     UShort paramArraySize,
-                    const char *theTag,
+                    std::string theTag,
 		    RegionHandle,
                     TypeException &e);
 
@@ -127,11 +127,11 @@ public:
 
     EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
     				       FederationTime theTime,	
-                                       const char *theTag,
+                                       std::string theTag,
                                        TypeException &e);
 
     void deleteObject(ObjectHandle theObjectHandle,
-    		      const char *theTag,
+    		      std::string theTag,
 		      TypeException &e);
 
     void removeObject(ObjectHandle theObjectHandle,
@@ -229,4 +229,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.20 2008/03/13 14:39:19 siron Exp $
+// $Id: ObjectManagement.hh,v 3.21 2008/05/29 12:20:33 rousse Exp $

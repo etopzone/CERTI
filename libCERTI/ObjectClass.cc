@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.44 2008/05/13 13:03:49 rousse Exp $
+// $Id: ObjectClass.cc,v 3.45 2008/05/29 12:20:38 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -323,7 +323,7 @@ ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
                             ObjectHandle the_object,
 			    FederationTime theTime,
-                            const char *the_tag)
+                            std::string the_tag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -391,7 +391,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
 ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
                             ObjectHandle the_object,
-                            const char *the_tag)
+                            std::string the_tag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -1810,4 +1810,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.44 2008/05/13 13:03:49 rousse Exp $
+// $Id: ObjectClass.cc,v 3.45 2008/05/29 12:20:38 rousse Exp $

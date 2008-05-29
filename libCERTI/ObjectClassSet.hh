@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.26 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClassSet.hh,v 3.27 2008/05/29 12:20:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -93,12 +93,12 @@ public:
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
 		      FederationTime theTime,
-                      const char *theTag)
+                      std::string theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
-                      const char *theTag)
+                      std::string theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
@@ -210,4 +210,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.26 2007/12/05 12:29:40 approx Exp $
+// $Id: ObjectClassSet.hh,v 3.27 2008/05/29 12:20:39 rousse Exp $

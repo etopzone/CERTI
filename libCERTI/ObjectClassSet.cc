@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.34 2008/05/13 13:03:50 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.35 2008/05/29 12:20:38 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -137,7 +137,7 @@ void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              ObjectHandle object,
 			     FederationTime theTime,
-                             const char *tag)
+                             std::string tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
@@ -179,7 +179,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
 void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              ObjectHandle object,
-                             const char *tag)
+                             std::string tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
@@ -843,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.34 2008/05/13 13:03:50 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.35 2008/05/29 12:20:38 rousse Exp $

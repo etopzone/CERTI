@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.32 2008/02/28 14:47:59 rousse Exp $
+// $Id: RootObject.cc,v 3.33 2008/05/29 12:20:39 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -260,7 +260,7 @@ void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
                                  ObjectHandle the_object,
 				 FederationTime theTime,
-                                 const char *the_tag)
+                                 std::string the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     ObjectClasses->deleteObject(the_federate, the_object, theTime, the_tag);
@@ -271,7 +271,7 @@ RootObject::deleteObjectInstance(FederateHandle the_federate,
 void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
                                  ObjectHandle the_object,
-                                 const char *the_tag)
+                                 std::string the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     ObjectClasses->deleteObject(the_federate, the_object, the_tag);
@@ -344,4 +344,4 @@ RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle th
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.32 2008/02/28 14:47:59 rousse Exp $
+// $Id: RootObject.cc,v 3.33 2008/05/29 12:20:39 rousse Exp $

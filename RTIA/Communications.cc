@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.26 2008/05/05 09:47:21 erk Exp $
+// $Id: Communications.cc,v 3.27 2008/05/29 12:20:32 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -227,7 +227,7 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
     	(*msg) = new Message();
-        (*msg)->read((SocketUN *) this);
+        (*msg)->receive((SocketUN *) this,msgBufReceive);
         n = 2 ;
     }
     else {
@@ -327,16 +327,16 @@ Communications::sendMessage(NetworkMessage *Msg)
 void
 Communications::sendUN(Message *Msg)
 {
-    Msg->write((SocketUN *) this);
+    Msg->send((SocketUN *) this,msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
 void
 Communications::receiveUN(Message *Msg)
 {
-    Msg->read((SocketUN *) this);
+    Msg->receive((SocketUN *) this,msgBufReceive);
 }
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.26 2008/05/05 09:47:21 erk Exp $
+// $Id: Communications.cc,v 3.27 2008/05/29 12:20:32 rousse Exp $

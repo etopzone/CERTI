@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.4 2007/11/27 08:55:55 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.5 2008/05/29 12:20:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
 #include "Message.hh"
 #include "RootObject.hh"
+#include "MessageBuffer.hh"
 
 using namespace certi ;
 
@@ -53,6 +54,7 @@ public:
     RootObject *_theRootObj ;
 
     SocketUN *socketUn ;
+    MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.4 2007/11/27 08:55:55 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.5 2008/05/29 12:20:40 rousse Exp $

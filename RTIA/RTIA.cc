@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.20 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIA.cc,v 3.21 2008/05/29 12:20:34 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -64,7 +64,7 @@ RTIA::~RTIA()
     // BUG: TCP link destroyed ?
 
      // Remove temporary file (if not yet done)
-     if ( fm->_FEDid != NULL)
+     if ( fm->_FEDid.c_str() != NULL)
         {
         if ( fm->_FEDid[0] != '\0' )
            {
@@ -77,7 +77,7 @@ RTIA::~RTIA()
            else
               {
               std::cout<<"*** W ** Removing temporary file "<<fm->_FEDid<<" on RTIA stop."<<std::endl;
-              std::remove(fm->_FEDid);
+              std::remove(fm->_FEDid.c_str());
               }
            fm->_FEDid[0] = '\0' ;
            }
@@ -197,4 +197,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.20 2008/05/05 09:47:20 erk Exp $
+// $Id: RTIA.cc,v 3.21 2008/05/29 12:20:34 rousse Exp $

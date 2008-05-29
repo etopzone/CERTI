@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.12 2008/04/23 07:36:02 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.13 2008/05/29 12:20:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -64,7 +64,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     D.Out(pdDebug, "sending request to RTIA.");
     
     try {
-        req->write(socketUn);
+        req->send(socketUn,msgBufSend);
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
@@ -75,7 +75,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 
     // waiting RTI reply.
     try {
-        rep->read(socketUn);
+        rep->receive(socketUn,msgBufReceive);
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
@@ -539,4 +539,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.12 2008/04/23 07:36:02 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.13 2008/05/29 12:20:40 rousse Exp $

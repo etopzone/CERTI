@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.86 2008/05/12 12:17:02 erk Exp $
+// $Id: Federation.cc,v 3.87 2008/05/29 12:20:34 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1608,6 +1608,7 @@ Federation::updateAttributeValues(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federation::updateAttributeValues with time");
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1618,6 +1619,7 @@ Federation::updateAttributeValues(FederateHandle federate,
     D.Out(pdRegister,
           "Federation %d: Federate %d updated attributes of Object %d.",
           handle, federate, id);
+    G.Out(pdGendoc,"exit  Federation::updateAttributeValues with time");
 }
 
 // ----------------------------------------------------------------------------
@@ -1638,6 +1640,7 @@ Federation::updateAttributeValues(FederateHandle federate,
            RestoreInProgress,
            RTIinternalError)
 {
+    G.Out(pdGendoc,"enter Federation::updateAttributeValues without time");
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
@@ -1648,6 +1651,7 @@ Federation::updateAttributeValues(FederateHandle federate,
     D.Out(pdRegister,
           "Federation %d: Federate %d updated attributes of Object %d.",
           handle, federate, id);
+    G.Out(pdGendoc,"exit  Federation::updateAttributeValues without time");
 }
 // ----------------------------------------------------------------------------
 //! Update the current time of a regulator federate.
@@ -2273,5 +2277,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.86 2008/05/12 12:17:02 erk Exp $
+// $Id: Federation.cc,v 3.87 2008/05/29 12:20:34 rousse Exp $
 

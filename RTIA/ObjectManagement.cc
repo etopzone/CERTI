@@ -109,7 +109,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         ValueLengthPair *valueArray,
                                         UShort attribArraySize,
                                         FederationTime theTime,
-                                        const char *theTag,
+                                        std::string theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
@@ -171,7 +171,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         AttributeHandle *attribArray,
                                         ValueLengthPair *valueArray,
                                         UShort attribArraySize,
-                                        const char *theTag,
+                                        std::string theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
@@ -285,7 +285,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   ParameterLengthPair *valueArray,
                                   UShort paramArraySize,
                                   FederationTime theTime,
-                                  const char *theTag,
+                                  std::string theTag,
 				  RegionHandle region,
                                   TypeException &e)
 {
@@ -340,7 +340,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   ParameterHandle *paramArray,
                                   ParameterLengthPair *valueArray,
                                   UShort paramArraySize,
-                                  const char *theTag,
+                                  std::string theTag,
 				  RegionHandle region,
                                   TypeException &e)
 {
@@ -424,7 +424,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 			       FederationTime theTime,	
-                               const char *theTag,
+                               std::string theTag,
                                TypeException &e)
 {
     NM_Delete_Object req;
@@ -451,7 +451,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 //! deleteObject without time
 void
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-                               const char *theTag,
+                               std::string theTag,
                                TypeException &e)
 {
     NM_Delete_Object req;
@@ -818,3 +818,4 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 }
 
 }} // namespace certi/rtia
+

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.27 2008/05/27 07:51:55 rousse Exp $
+// $Id: Message_W.cc,v 3.28 2008/05/29 12:20:38 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,56 +32,47 @@ namespace certi {
 static PrettyDebug D("RTIA_MSG","Message::");
 static PrettyDebug G("GENDOC",__FILE__);
 
+//-----------------------------------------------------------------------------
+void
+Message::send(SocketUN *socket, MessageBuffer &msgBuffer) throw (NetworkError, NetworkSignal) {
+	G.Out(pdGendoc,"enter Message::send");
+	/* 0- reset send buffer */
+	msgBuffer.reset();
+	/* 1- serialize the message
+	 * This is a polymorphic call 
+	 * which may specialized in a daughter class  
+	 */
+	serialize(msgBuffer);
+	/* 2- update message buffer 'reserved bytes' header */
+	msgBuffer.updateReservedBytes();
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuffer.size());
+	//msgBuf.show(msgBuffer(0),5);
+	/* 3- effectively send the raw message to socket */
+	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
+	G.Out(pdGendoc,"exit  Message::send");
+} /* end of send */
+
 // ----------------------------------------------------------------------------
 void Message::serialize(MessageBuffer& msgBuffer) {
 	G.Out(pdGendoc,"enter Message::serialize");
-	/* We serialize the common Network messages part 
-	 * ALL Network Message will contain the following
+	/* We serialize the common messages part 
+	 * ALL Message will contain the following
 	 */	
 	if ((type==NOT_USED) || (type==LAST)) {
 		throw RTIinternalError("Invalid message type (not a valid type);");
 	}
 	D.Out(pdDebug, "Serialize <%s>", getName().c_str());
-	/* type of message */
-	msgBuffer.write_int32(type);
-	msgBuffer.write_int32(exception);
+        writeHeader(msgBuffer);
+        writeBody(msgBuffer);
 	/*
 	 * "builtin" Optional part
 	 * The subclass may chose in the constructor the variable part.
 	 * isDated may be chosen on Message instance basis
 	 * (same message may Dated or Not Dated) 
 	 */
-	msgBuffer.write_bool(_isDated);
-	if (_isDated) {
-		msgBuffer.write_double(getFederationTime());
-		D.Out(pdDebug, "Sent Message date is  <%f>",getFederationTime() );
-	}	
-	msgBuffer.write_bool(_isLabelled);
-	if (_isLabelled) {
-		msgBuffer.write_string(label);
-	}
-	msgBuffer.write_bool(_isTagged);
-	if (_isTagged) {
-		msgBuffer.write_string(tag);
-	}
 	G.Out(pdGendoc,"exit Message::serialize");
 } /* end of serialize */
 
-
-
-// ----------------------------------------------------------------------------
-//! Write NetworkMessage Objects to Socket objects.
-void
-Message::write(SocketUN *socket)
-    throw (NetworkError, NetworkSignal)
-{
-    // G.Out(pdGendoc,"enter Message::write");
-    bool result ;
-    result = writeHeader(socket);
-    if (result)
-        writeBody(socket);
-    // G.Out(pdGendoc,"exit  Message::write");
-}
 
 // ----------------------------------------------------------------------------
 /*! Prepare and write a Body to a socket, should be called after WriteHeader.
@@ -89,74 +80,68 @@ Message::write(SocketUN *socket)
   required, or by WriteBody is a body has been required by WriteHeader.
 */
 void
-Message::writeBody(SocketUN *socket)
+Message::writeBody(MessageBuffer &msgBuffer)
 {
-    MessageBody body ;
-    // G.Out(pdGendoc,"enter Message::writeBody type %d",header.type);    
-    // 0- Copy the Header at the beginning of the Body, in order to
-    // make a single Socket->Emettre call while sending both.
-    // WARNING: As the Body size is not known yet, we will have to
-    // change it in the copy also!
-    body.writeBlock((char *) &header, sizeof(MessageHeader));
+    G.Out(pdGendoc,"enter Message::writeBody type %d",type);    
 
     // If the message carry an exception, the Body will only contain the
     // exception reason.
 
-    if (header.exception != e_NO_EXCEPTION) {
-        body.writeString(exceptionReason);
+    if (exception != e_NO_EXCEPTION) {
+        msgBuffer.write_string(exceptionReason);
     }
     else {
 
         // 1- Prepare Body Structure according to Message type
-        switch(header.type) {
+        switch(type) {
 
           // Body contains federationName,FEDid
           case CREATE_FEDERATION_EXECUTION:
-            writeFederationName(body);
-            writeFEDid(body);
+            writeFederationName(msgBuffer);
+            writeFEDid(msgBuffer); 
             break ;
 
           // Body contains federationName
           case DESTROY_FEDERATION_EXECUTION:
-            writeFederationName(body);
+            writeFederationName(msgBuffer);
             break ;
 
           // Body contains label,tag,boolean and maybe
           // handleArraySize,handleArray
           case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-            body.writeString(label);
-            body.writeString(tag);
-            body.writeLongInt(boolean);
+            msgBuffer.write_string(label);
+            msgBuffer.write_string(tag);
+            msgBuffer.write_bool(boolean);
             // boolean true means federates set exists
             if ( boolean )
                 {
-                body.writeShortInt(handleArraySize);
-                writeHandleArray(body);
+                msgBuffer.write_int16(handleArraySize);
+                writeHandleArray(msgBuffer);
                 }
             break ;
 
           // RFS needs label and boolean in the body and time in the header
           case REQUEST_FEDERATION_SAVE:
-            body.writeString(label);
-            body.writeLongInt(boolean);
+            msgBuffer.write_string(label);
+            msgBuffer.write_bool(boolean);
             break;
 
           // Body contains label
           case INITIATE_FEDERATE_SAVE:           
-            body.writeString(label);
+            msgBuffer.write_string(label);
             break;
 
           // Body contains federate,label
           case INITIATE_FEDERATE_RESTORE:
-            body.writeShortInt(federate);            
-            body.writeString(label);
+            msgBuffer.write_int16(federate);            
+            msgBuffer.write_string(label);
             break;
 
           // Body contains label,tag
           case ANNOUNCE_SYNCHRONIZATION_POINT:
           case REQUEST_FEDERATION_RESTORE_FAILED:
-            body.writeString(label);
-            body.writeString(tag);
+            msgBuffer.write_string(label);
+            msgBuffer.write_string(tag);
             break ;
 
           // Body contains label (i.e. String)
@@ -166,7 +151,7 @@ Message::writeBody(SocketUN *socket)
           case FEDERATION_SYNCHRONIZED:
           case REQUEST_FEDERATION_RESTORE:
           case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-            body.writeString(label);
+            msgBuffer.write_string(label);
             break ;
 
           // Body contains objectClass
@@ -174,23 +159,23 @@ Message::writeBody(SocketUN *socket)
           case UNSUBSCRIBE_OBJECT_CLASS:
           case START_REGISTRATION_FOR_OBJECT_CLASS:
           case STOP_REGISTRATION_FOR_OBJECT_CLASS:
-            body.writeLongInt(objectClass);
+            msgBuffer.write_int64(objectClass);
             break;
 
           // Body contains object,attribute,tag
           case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
           case QUERY_ATTRIBUTE_OWNERSHIP:
-            body.writeLongInt(object);
-            body.writeShortInt(attribute);
-            body.writeString(tag);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_int16(attribute);
+            msgBuffer.write_string(tag);
             break ;
 
           // Body contains object,attribute,federate
           case ATTRIBUTE_IS_NOT_OWNED:
           case INFORM_ATTRIBUTE_OWNERSHIP:
-            body.writeLongInt(object);
-            body.writeShortInt(attribute);
-            body.writeShortInt(federate);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_int16(attribute);
+            msgBuffer.write_int16(federate);
             break ;
 
           // Body contains object,handleArraySize,HandleArray,tag
@@ -198,10 +183,10 @@ Message::writeBody(SocketUN *socket)
           case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
           case ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-            body.writeLongInt(object);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
-            body.writeString(tag);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
+            msgBuffer.write_string(tag);
             break ;
 
           // Body contains object,handleArraySize,HandleArray
@@ -214,121 +199,121 @@ Message::writeBody(SocketUN *socket)
           case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
           case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
           case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-            body.writeLongInt(object);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
             break ;
 
           // Body contains object,handleArraySize,
           // handleArray
           case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-	    body.writeLongInt(object);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+	    msgBuffer.write_int64(object);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
 	    break ;
 
           // Body contains object,handleArraySize,
           // handleArray
           case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-	    body.writeLongInt(object);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+	    msgBuffer.write_int64(object);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
 	    break ;
 
 
           // Body contains object,region,boolean,handleArraySize,handleArray           
 	  case DDM_ASSOCIATE_REGION:
-	    body.writeLongInt(object);
-	    body.writeLongInt(region);
-	    body.writeLongInt(boolean);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+	    msgBuffer.write_int64(object);
+	    msgBuffer.write_int64(region);
+	    msgBuffer.write_bool(boolean);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
 	    break ;
 
           // Body contains objectClass,object,tag,handleArraySize,handleArray,
           // regions
 	  case DDM_REGISTER_OBJECT:
-	    body.writeLongInt(objectClass);
-	    body.writeLongInt(object);
-	    body.writeString(tag);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
-	    writeRegions(body);
+	    msgBuffer.write_int64(objectClass);
+	    msgBuffer.write_int64(object);
+	    msgBuffer.write_string(tag);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
+	    writeRegions(msgBuffer);
 	    break ;
 
           // Body contains objectClass,region,boolean,handleArraySize,
           // handleArray
 	  case DDM_SUBSCRIBE_ATTRIBUTES:
-	    body.writeLongInt(objectClass);
-	    body.writeLongInt(region);
-	    body.writeLongInt(boolean);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+	    msgBuffer.write_int64(objectClass);
+	    msgBuffer.write_int64(region);
+	    msgBuffer.write_bool(boolean);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
 	    break ;
 
           // Body contains object,region
 	  case DDM_UNASSOCIATE_REGION:
-	    body.writeLongInt(object);
-	    body.writeLongInt(region);
+	    msgBuffer.write_int64(object);
+	    msgBuffer.write_int64(region);
 	    break ;
 
           // Body contains objectClass,region
 	  case DDM_UNSUBSCRIBE_ATTRIBUTES:
-	    body.writeLongInt(objectClass);
-	    body.writeLongInt(region);
+	    msgBuffer.write_int64(objectClass);
+	    msgBuffer.write_int64(region);
 	    break ;
 
           // Body contains interactionClass,region,boolean	    
 	  case DDM_SUBSCRIBE_INTERACTION:
 	  case DDM_UNSUBSCRIBE_INTERACTION:
-	    body.writeLongInt(interactionClass);
-	    body.writeLongInt(region);
-	    body.writeLongInt(boolean);
+	    msgBuffer.write_int64(interactionClass);
+	    msgBuffer.write_int64(region);
+	    msgBuffer.write_bool(boolean);
 	    break ;
 
           // Body contains objectClass,attribute,space  
           case GET_ATTRIBUTE_SPACE_HANDLE:
-            body.writeLongInt(objectClass);
-            body.writeLongInt(attribute);
-            body.writeLongInt(space);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int64(attribute);
+            msgBuffer.write_int64(space);
             break ;
 
           // Body contains space,number,region
           case DDM_CREATE_REGION:
-            body.writeLongInt(space) ;
-            body.writeLongInt(number);
-            body.writeLongInt(region);
+            msgBuffer.write_int64(space) ;
+            msgBuffer.write_int64(number);
+            msgBuffer.write_int64(region);
             break ;
 
           // Body contains interactionClass,space
           case GET_INTERACTION_SPACE_HANDLE:
-            body.writeLongInt(interactionClass);
-            body.writeLongInt(space);
+            msgBuffer.write_int64(interactionClass);
+            msgBuffer.write_int64(space);
             break ;
 
           // Body contains federate,federationName,federateName
           // Note : federate relevant on RTIA answer only
           case JOIN_FEDERATION_EXECUTION:
-            body.writeShortInt(federate);
-            writeFederationName(body);
-            body.writeString(federateName);
+            msgBuffer.write_int16(federate);
+            writeFederationName(msgBuffer);
+            msgBuffer.write_string(federateName);
             break ;
 
           // FederationTime yet put in header
           // Body contains objectClass,handleArraySize,HandleArray
           case PUBLISH_OBJECT_CLASS:
           case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
-            body.writeLongInt(objectClass);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
             break ;
 
           // FederationTime yet put in header
           // Body contains objectClass,object,name
           case REGISTER_OBJECT_INSTANCE:
-            body.writeLongInt(objectClass);
-            body.writeLongInt(object);
-            body.writeString(name);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_string(name);
             break ;
 
           // FederationTime (or zero) yet put in header
@@ -337,43 +322,43 @@ Message::writeBody(SocketUN *socket)
           // boolean (true with time, false without time)
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
-            body.writeLongInt(objectClass);
-            body.writeShortInt(handleArraySize);
-            body.writeLongInt(object);
-            body.writeString(tag);
-            writeHandleArray(body);
-            writeValueArray(body);
-            writeResignAction(body);
-            body.writeLongInt(boolean);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int16(handleArraySize);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_string(tag);
+            writeHandleArray(msgBuffer);
+            writeValueArray(msgBuffer);
+            writeResignAction(msgBuffer);
+            msgBuffer.write_bool(boolean);
             break ;
 
           // FederationTime yet put in header
           // Body contains objectClass,object,tag,name,label,resignAction
           case DISCOVER_OBJECT_INSTANCE:
-            body.writeLongInt(objectClass);
-            body.writeLongInt(object);
-            body.writeString(tag);
-            body.writeString(name);
-            body.writeString(label);
-            writeResignAction(body);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_string(tag);
+            msgBuffer.write_string(name);
+            msgBuffer.write_string(label);
+            writeResignAction(msgBuffer);
             break ;
 
           // FederationTime yet put in header 
           // Body contains objectClass,object,tag,name,label,resignAction  
           case DELETE_OBJECT_INSTANCE:
           case REMOVE_OBJECT_INSTANCE:
-            body.writeLongInt(objectClass);
-            body.writeLongInt(object);
-            body.writeString(tag);
-            body.writeString(name);
-            body.writeString(label);
-            writeResignAction(body);
-	    body.writeLongInt(boolean);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_string(tag);
+            msgBuffer.write_string(name);
+            msgBuffer.write_string(label);
+            writeResignAction(msgBuffer);
+	    msgBuffer.write_bool(boolean);
             break ;
 
           // Body contains object  
           case LOCAL_DELETE_OBJECT_INSTANCE:
-            body.writeLongInt(object);
+            msgBuffer.write_int64(object);
             break;
 
           // FederationTime yet put in header
@@ -382,31 +367,31 @@ Message::writeBody(SocketUN *socket)
           case GET_OBJECT_CLASS_NAME:
           case GET_ATTRIBUTE_HANDLE:
           case GET_ATTRIBUTE_NAME:
-            body.writeLongInt(objectClass);
-            body.writeString(name);
-            body.writeShortInt(attribute);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_string(name);
+            msgBuffer.write_int16(attribute);
             break ;
 
          // FederationTime yet put in header
           // Body contains object,objectClass
           case GET_OBJECT_CLASS:
-            body.writeLongInt(object);
-            body.writeLongInt(objectClass);
+            msgBuffer.write_int64(object);
+            msgBuffer.write_int64(objectClass);
             break;
 
           // Body contains name,space
           case GET_SPACE_HANDLE:
           case GET_SPACE_NAME:
-            body.writeString(name);
-            body.writeLongInt(space);
+            msgBuffer.write_string(name);
+            msgBuffer.write_int64(space);
             break ;
 
           // Body contains name,dimension,space
           case GET_DIMENSION_HANDLE:
           case GET_DIMENSION_NAME:
-            body.writeString(name);
-            body.writeLongInt(dimension);
-            body.writeLongInt(space);
+            msgBuffer.write_string(name);
+            msgBuffer.write_int64(dimension);
+            msgBuffer.write_int64(space);
             break ;
 
           // Body contains interactionClass,handleArraySize,tag,handleArray,
@@ -414,14 +399,14 @@ Message::writeBody(SocketUN *socket)
           // and boolean (true with time, false without time)
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
-            body.writeLongInt(interactionClass);
-            body.writeShortInt(handleArraySize);
-            body.writeString(tag);
-            writeHandleArray(body);
-            writeValueArray(body);
-	    body.writeLongInt(region);
-            writeResignAction(body);
-            body.writeLongInt(boolean);
+            msgBuffer.write_int64(interactionClass);
+            msgBuffer.write_int16(handleArraySize);
+            msgBuffer.write_string(tag);
+            writeHandleArray(msgBuffer);
+            writeValueArray(msgBuffer);
+	    msgBuffer.write_int64(region);
+            writeResignAction(msgBuffer);
+            msgBuffer.write_bool(boolean);
             break ;
 
           // Body contains interactionClass,name,parameter
@@ -429,50 +414,50 @@ Message::writeBody(SocketUN *socket)
           case GET_INTERACTION_CLASS_NAME:
           case GET_PARAMETER_HANDLE:
           case GET_PARAMETER_NAME:
-            body.writeLongInt(interactionClass);
-            body.writeString(name);
-            body.writeShortInt(parameter);
+            msgBuffer.write_int64(interactionClass);
+            msgBuffer.write_string(name);
+            msgBuffer.write_int16(parameter);
             break ;
 
           // Body contains handleArraySize,transport,order,object,HandleArray
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
-            body.writeShortInt(handleArraySize);
-            body.writeLongInt(transport);
-            body.writeLongInt(order);           
-            body.writeLongInt(object);
-            writeHandleArray(body);
+            msgBuffer.write_int16(handleArraySize);
+            msgBuffer.write_int64(transport);
+            msgBuffer.write_int64(order);           
+            msgBuffer.write_int64(object);
+            writeHandleArray(msgBuffer);
             break ;
 
           // Body contains interactionClass,transport,order
           case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
           case CHANGE_INTERACTION_ORDER_TYPE:
-            body.writeLongInt(interactionClass);
-            body.writeLongInt(transport);
-            body.writeLongInt(order);  
+            msgBuffer.write_int64(interactionClass);
+            msgBuffer.write_int64(transport);
+            msgBuffer.write_int64(order);  
             break ;
 
           // Body contains region,extents            
 	  case DDM_MODIFY_REGION:
-            body.writeLongInt(region);
-	    writeExtents(body);
+            msgBuffer.write_int64(region);
+	    writeExtents(msgBuffer);
 	    break ;
 
           // Body contains region            
 	  case DDM_DELETE_REGION:
-            body.writeLongInt(region);
+            msgBuffer.write_int64(region);
 	    break ;
 
           // Body contains object,name	    
 	  case GET_OBJECT_INSTANCE_HANDLE:
 	  case GET_OBJECT_INSTANCE_NAME :
-	    body.writeLongInt(object);
-	    body.writeString(name);
+	    msgBuffer.write_int64(object);
+	    msgBuffer.write_string(name);
 	    break;
 
           // Body contains ResignAction
           case RESIGN_FEDERATION_EXECUTION:
-            writeResignAction(body);
+            writeResignAction(msgBuffer);
             break;
 
           // Body contains interactionClass
@@ -482,7 +467,7 @@ Message::writeBody(SocketUN *socket)
           case UNSUBSCRIBE_INTERACTION_CLASS:
           case TURN_INTERACTIONS_ON:
           case TURN_INTERACTIONS_OFF:
-            body.writeLongInt(interactionClass);
+            msgBuffer.write_int64(interactionClass);
             break ;
 
           // Body contains boolean
@@ -490,52 +475,39 @@ Message::writeBody(SocketUN *socket)
           case DISABLE_TIME_REGULATION:
           case ENABLE_TIME_CONSTRAINED:
           case DISABLE_TIME_CONSTRAINED:
-            body.writeLongInt(boolean);
+            msgBuffer.write_bool(boolean);
             break ;
 
           // Body contains boolean, TickTime, TickTime
           case TICK_REQUEST:
-            body.writeLongInt(boolean);
-            body.writeBlock((char *)&minTickTime, sizeof(minTickTime));
-            body.writeBlock((char *)&maxTickTime, sizeof(maxTickTime));
+            msgBuffer.write_bool(boolean);
+            msgBuffer.write_bytes((char *)&minTickTime, sizeof(minTickTime));
+            msgBuffer.write_bytes((char *)&maxTickTime, sizeof(maxTickTime));
             break ;
 
           // Body contains objectClass, handleArray
           case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-            body.writeLongInt(objectClass);
-            body.writeShortInt(handleArraySize);
-            writeHandleArray(body);
+            msgBuffer.write_int64(objectClass);
+            msgBuffer.write_int16(handleArraySize);
+            writeHandleArray(msgBuffer);
             break;             
-	    
+
             // -- Default Handler --
 
           default:
-            D.Out(pdExcept, "Unknown type %d in Writebody.", header.type);
-            throw RTIinternalError("Message: Unknown type for body.");
+          // Nothing to do
+          G.Out(pdGendoc,"exit  Message::writeBody with nothing to do");
 
         }
     }
-
-    // 2- Set Header.bodySize
-
-    // Body Size does not include the copy of the Header!
-    header.bodySize = body.size() - sizeof(MessageHeader);
-
-    // Put the real Body Size in the copy of the Header.
-    (reinterpret_cast<MessageHeader *>(body.getBufferModeRW()))->bodySize = header.bodySize ;
-
-    // 3- Write Header to socket, then write Body to socket.
-    // socket->send((void *) &Header, sizeof(MessageHeader));
-    // G.Out(pdGendoc,"      Message::writeBody ======> send Message");
-    socket->send(body.getBuffer(), body.size());
-    // G.Out(pdGendoc,"exit  Message::writeBody");
+    G.Out(pdGendoc,"exit  Message::writeBody");
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::writeHandleArray(MessageBody &body)
+Message::writeHandleArray(MessageBuffer &msgBuffer)
 {
-    body.writeBlock((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+    msgBuffer.write_bytes( (char *)handleArray,(unsigned int)(handleArraySize * sizeof(AttributeHandle))) ; 
 }
 
 // ----------------------------------------------------------------------------
@@ -545,25 +517,21 @@ Message::writeHandleArray(MessageBody &body)
   required, or by WriteBody is a body has been required by WriteHeader.
 */
 bool
-Message::writeHeader(SocketUN *socket)
+Message::writeHeader(MessageBuffer &msgBuffer)
 {
-    // G.Out(pdGendoc,"enter Message::writeHeader");
-    // 1- Clear Header
-    memset((void *) &header, '\0', sizeof(MessageHeader));
+    G.Out(pdGendoc,"enter Message::writeHeader");
 
-    // 2- Fill Header
     // header contains type,exception and federationTime
     // Note sometimes federationTime is not useful.
-    header.type = this->type ;
-    header.exception = this->exception ;
-    header.date = getFederationTime();
+    msgBuffer.write_int32(this->type) ;
+    msgBuffer.write_int32(this->exception);
+    msgBuffer.write_double(getFederationTime());
 
     // If the message carry an exception, the Body will only contain the
     // exception reason.
     D.Out(pdDebug,"Sent message type <%d> ",type);
     if (exception != e_NO_EXCEPTION) {
-        header.bodySize = 1 ;
-        // G.Out(pdGendoc,"exit  Message::writeHeader carrying exception");
+        G.Out(pdGendoc,"exit  Message::writeHeader carrying exception");
         return true ;
     }
 
@@ -643,7 +611,7 @@ Message::writeHeader(SocketUN *socket)
       case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
       case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
       case TICK_REQUEST:
-        header.bodySize = 1 ;
+        //header.bodySize = 1 ;
         break ;
 
       // ------- federationTime (relevant or zero) depending on boolean value
@@ -653,11 +621,12 @@ Message::writeHeader(SocketUN *socket)
       case REFLECT_ATTRIBUTE_VALUES:
       case SEND_INTERACTION:
       case RECEIVE_INTERACTION:
-        if ( ! boolean )
-          {
-          header.date = 0 ;
-          }
-        header.bodySize = 1 ;
+        //if ( ! boolean )
+          //{
+          //msgBuffer.write_double(0);
+          //header.date = 0 ;
+          //}
+        //header.bodySize = 1 ;
         break ;
 
       // ------- federationTime useful
@@ -682,7 +651,7 @@ Message::writeHeader(SocketUN *socket)
       case GET_DIMENSION_NAME:
       case GET_OBJECT_INSTANCE_HANDLE:
       case GET_OBJECT_INSTANCE_NAME:
-        header.bodySize = 1 ;
+        //header.bodySize = 1 ;
         break ;
  
       // --------------------- BODY EMPTY ----------------------------
@@ -702,7 +671,7 @@ Message::writeHeader(SocketUN *socket)
       case ENABLE_ASYNCHRONOUS_DELIVERY:
       case DISABLE_ASYNCHRONOUS_DELIVERY:
       case TICK_REQUEST_NEXT:
-        header.bodySize = 0 ;
+        //header.bodySize = 0 ;
         break ;
 
       // ------- federationTime useful
@@ -716,72 +685,71 @@ Message::writeHeader(SocketUN *socket)
       case TIME_ADVANCE_GRANT:
       case TIME_REGULATION_ENABLED:
       case TIME_CONSTRAINED_ENABLED:
-        header.bodySize = 0 ;
+        //header.bodySize = 0 ;
         break ;
 
       // federationTime yet put in header
       // We store lookahead in place
       case MODIFY_LOOKAHEAD:
       case QUERY_LOOKAHEAD:
-        header.date = lookahead ;
-        header.bodySize = 0 ;
+        //header.date = lookahead ;
+        // we store another time but is the lookahead
+        msgBuffer.write_double(lookahead);
+        //header.bodySize = 0 ;
         break ;
        
         // -- Default Handler --
       default:
-        D.Out(pdExcept, "Unknown type %d in WriteHeader.", header.type);
-        throw RTIinternalError("Message: Unknown type for Header.");
+        // Nothing to do
+        G.Out(pdGendoc,"exit  Message::writeHeader with nothing to do");
+        return 0;
 
     }
 
     // 4- If Header.bodySize = 0, send message and return RTI_FALSE,
     // Else send nothing(will be done by WriteBody), and return RTI_TRUE.
-    if (header.bodySize == 0)
-        socket->send((const unsigned char *) &header, sizeof(MessageHeader));
+    //if (header.bodySize == 0)
+        //socket->send((const unsigned char *) &header, sizeof(MessageHeader));
 
-    // G.Out(pdGendoc,"exit  Message::writeHeader");
-    return header.bodySize != 0 ;
+    G.Out(pdGendoc,"exit  Message::writeHeader");
+    //return header.bodySize != 0 ;
+    return 0;
 }
 
 // ---------------------------------------------------------------
 void
-Message::writeResignAction(MessageBody &)
+Message::writeResignAction(MessageBuffer &msgBuffer)
 {
     //assert(false);
 }
 
 // ---------------------------------------------------------------
 void
-Message::writeFEDid(MessageBody &body)
+Message::writeFEDid(MessageBuffer &msgBuffer)
 {
-    body.writeShortInt(strlen(FEDid));
-    body.writeString(FEDid);
+    msgBuffer.write_string(FEDid) ;
 }
 
 // ---------------------------------------------------------------
 void
-Message::writeFederationName(MessageBody &body)
+Message::writeFederationName(MessageBuffer &msgBuffer)
 {
-    body.writeShortInt(strlen(federationName));
-    if ( strlen(federationName) != 0 )
-        {
-        body.writeString(federationName);
-        }
+    msgBuffer.write_string(federationName) ;
 }
 
 // ---------------------------------------------------------------------------
 void
-Message::writeValueArray(MessageBody &body)
+Message::writeValueArray(MessageBuffer &msgBuffer)
 {
     // length and value are stored into valueArray 
-    // so we have to write length and then value with a writeBlock
+    // so we have to write length and then value with a write_bytes
     for (int i = 0 ; i < handleArraySize ; i ++)
         {
-        body.writeLongInt(valueArray[i].length) ;
-        body.writeBlock(valueArray[i].value, valueArray[i].length) ;
+        msgBuffer.write_int64(valueArray[i].length) ;
+        msgBuffer.write_bytes(valueArray[i].value, valueArray[i].length) ;
     }
 }
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.27 2008/05/27 07:51:55 rousse Exp $
+// $Id: Message_W.cc,v 3.28 2008/05/29 12:20:38 rousse Exp $

@@ -42,7 +42,7 @@ Message::Message()
     exception = e_NO_EXCEPTION ;
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
-    federationName = NULL ;
+    //federationName = NULL ;is now a string then...
     tag[0] = '\0' ;
     name[0] = '\0' ;
     label[0] = '\0' ;
@@ -66,7 +66,7 @@ Message::Message()
     dimension = 0 ;
     number = 0 ;
     region = 0 ;
-    FEDid = NULL ;
+    //FEDid = NULL ;now string
     for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
         {
         valueArray[i].length = 0 ;
@@ -141,28 +141,16 @@ Message::getValueArray()
     @param NewLabel copied (strcpy) into Message label (NULL label is stored as an empty string)
 */
 void
-Message::setLabel(const char *NewLabel)
+Message::setLabel(std::string NewLabel)
 {
-    if ( NewLabel )
-        {
-        if (strlen(NewLabel) > MAX_USER_TAG_LENGTH)
-            throw ValueLengthExceeded("Label too long to fit in Message.");
-        strcpy(label, NewLabel);
-        }
-    else
-        {
-        strcpy(label, "") ;
-        }
+    label = NewLabel ;
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::setName(const char *NewName)
 {
-    if (strlen(NewName) > MAX_USER_TAG_LENGTH)
-        throw ValueLengthExceeded("Name too long to fit in Message.");
-
-    strcpy(name, NewName);
+   name = NewName ;
 }
 
 // ----------------------------------------------------------------------------
@@ -334,7 +322,7 @@ Message::setException(TypeException the_exception,
     if (strlen(the_reason) > MAX_EXCEPTION_REASON_LENGTH)
         throw ValueLengthExceeded("Exception reason too long to fit in"
                                   " Message.");
-    strcpy(exceptionReason, the_reason);
+    exceptionReason = the_reason;
 }
 
 // ----------------------------------------------------------------------------
@@ -512,10 +500,9 @@ Message::setParameters(ParameterHandle * the_parameters,
 
 // ----------------------------------------------------------------------------
 //! Sets the federation name.
-void Message::setFederationName(const char *NewNomFederation)
+void Message::setFederationName(std::string NewNomFederation)
 {
-    federationName = new char [strlen(NewNomFederation)+1] ;
-    strcpy(federationName, NewNomFederation);
+    federationName = NewNomFederation ;
 }
 
 
@@ -523,12 +510,9 @@ void Message::setFederationName(const char *NewNomFederation)
 // setFederateName
 //
 void
-Message::setFederateName(const char *NewNomFedere)
+Message::setFederateName(std::string NewNomFedere)
 {
-    if (strlen(NewNomFedere) > MAX_FEDERATE_NAME_LENGTH)
-        throw ValueLengthExceeded("NomFedere too long to fit in Message.");
-
-    strcpy(federateName, NewNomFedere);
+    federateName = NewNomFedere ;
 }
 
 // ----------------------------------------------------------------------------
@@ -537,17 +521,9 @@ Message::setFederateName(const char *NewNomFedere)
     @param new_tag tag (NULL tag is stored as an empty string)
 */
 void
-Message::setTag(const char *new_tag)
+Message::setTag(std::string new_tag)
 {
-    if (new_tag) {
-	if (strlen(new_tag) > MAX_USER_TAG_LENGTH) {
-	    throw ValueLengthExceeded("Tag too long to fit in Message.");
-	}
-	strcpy(tag, new_tag);
-    }
-    else {
-	strcpy(tag, "");
-    }
+    tag = new_tag ;
 }
 
 // ----------------------------------------------------------------------------
@@ -579,10 +555,9 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
 // setFEDid
 //
 void
-Message::setFEDid(const char *NewFEDid)
+Message::setFEDid(std::string NewFEDid)
 {
-    FEDid = new char [strlen(NewFEDid)+1] ;
-    strcpy(FEDid, NewFEDid);
+    FEDid = NewFEDid;
 }
 
 // ----------------------------------------------------------------------------
@@ -597,11 +572,10 @@ Message::operator=(const Message& msg)
     lookahead = msg.lookahead ;
     exception = msg.exception ;
 
-    strcpy(exceptionReason, msg.exceptionReason);
-    strcpy(federateName, msg.federateName);
+    exceptionReason = msg.exceptionReason;
+    federateName = msg.federateName ;
 
-    federationName = new char[strlen(msg.federationName)+1] ;
-    strcpy(federationName, msg.federationName);
+    federationName = msg.federationName ;
 
     federate = msg.federate ;
     resignAction = msg.resignAction ;
@@ -621,8 +595,8 @@ Message::operator=(const Message& msg)
     minTickTime = msg.minTickTime ;
     maxTickTime = msg.maxTickTime ;
 
-    strcpy(tag, msg.tag);
-    strcpy(name, msg.name);
+    tag = msg.tag ;
+    name = msg.name ;
 
     transport = msg.transport ;
     order = msg.order ;
@@ -630,7 +604,7 @@ Message::operator=(const Message& msg)
     eventRetraction.theSerialNumber = msg.eventRetraction.theSerialNumber ;
     eventRetraction.sendingFederate = msg.eventRetraction.sendingFederate ;
 
-    strcpy(label, msg.label);
+    label = msg.label ;
 
     handleArraySize = msg.handleArraySize ;
 
@@ -644,8 +618,7 @@ Message::operator=(const Message& msg)
         memcpy(valueArray[i].value, msg.valueArray[i].value, msg.valueArray[i].length );
         }
 
-    FEDid = new char [strlen(msg.FEDid)+1] ;
-    strcpy(FEDid, msg.FEDid) ;
+    FEDid = msg.FEDid ;
 
     return *this ;
 }
@@ -659,17 +632,17 @@ Message::display(char *s)
     printf(" -- MESSAGE - %s -", s);
     if ( type == CREATE_FEDERATION_EXECUTION )
       printf("CREATE_FEDERATION_EXECUTION : federationName %s : filename %s federateHandle %ld \n",
-             ((federationName==NULL)?"empty":federationName),((FEDid==NULL)?"empty":FEDid),federate) ;
+             ((federationName.c_str()==NULL)?"empty":federationName.c_str()),((FEDid.c_str()==NULL)?"empty":FEDid.c_str()),federate) ;
     if ( type == DESTROY_FEDERATION_EXECUTION )
       printf("DESTROY_FEDERATION_EXECUTION : federation %s : federate %ld\n",
-             ((federationName==NULL)?"empty":federationName),federate) ;
+             ((federationName.c_str()==NULL)?"empty":federationName.c_str()),federate) ;
     else if ( type == JOIN_FEDERATION_EXECUTION )
       printf("JOIN_FEDERATION_EXECUTION : federate number %ld federation name %s federate name %s\n",
-             federate,((federationName==NULL)?"empty":federationName),federateName) ;
+             federate,((federationName.c_str()==NULL)?"empty":federationName.c_str()),federateName.c_str()) ;
     else if (type == FEDERATE_SAVE_COMPLETE )
-        printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %ld \n",federationName,federate);
+        printf("FEDERATE_SAVE_COMPLETE : federationName %s : federatehandle %ld \n",federationName.c_str(),federate);
     else if (type == FEDERATE_RESTORE_COMPLETE )
-        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %ld \n",federationName,federate);
+        printf("FEDERATE_RESTORE_COMPLETE : federationName %s : federatehandle %ld \n",federationName.c_str(),federate);
     else if (type == REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE )
         printf("REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE : \n");
     else
@@ -679,7 +652,7 @@ Message::display(char *s)
         printf("NO_EXCEPTION ");
     else
         printf(" exception=%d: ",exception);
-    printf(" reason=%s: ",((exceptionReason==NULL)?"empty":exceptionReason));
+    printf(" reason=%s: ",((exceptionReason.c_str()==NULL)?"empty":exceptionReason.c_str()));
     printf(" objectClass=%ld: ", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.81 2008/05/27 07:51:55 rousse Exp $
+// $Id: RTIambassador.cc,v 3.82 2008/05/29 12:20:40 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -248,7 +248,8 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
     vers_RTI.setMaxTickTime(maximum);
 
     try {
-        vers_RTI.write(privateRefs->socketUn);
+        //vers_RTI.write(privateRefs->socketUn);
+        vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
     }
     catch (NetworkError) {
         cout << "tick 1." << endl ;
@@ -260,7 +261,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
     // Read response(s) from the local RTIA until Message::TICK_REQUEST is received.
     while (1) {
         try {
-            vers_Fed.read(privateRefs->socketUn);
+            vers_Fed.receive(privateRefs->socketUn,privateRefs->msgBufReceive);
         }
         catch (NetworkError) {
             cout << "tick 2." << endl ;
@@ -287,19 +288,19 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
               // Otherwise, the RTI calls a FederateAmbassador service.
 
               case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded(vers_Fed.getLabel());
+                privateRefs->fed_amb->synchronizationPointRegistrationSucceeded((vers_Fed.getLabel()).c_str());
                 break ;
 
               case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
-                privateRefs->fed_amb->announceSynchronizationPoint(vers_Fed.getLabel(),vers_Fed.getTag());
+                privateRefs->fed_amb->announceSynchronizationPoint((vers_Fed.getLabel()).c_str(),(vers_Fed.getTag()).c_str());
                 break ;
 
               case Message::FEDERATION_SYNCHRONIZED:
-                privateRefs->fed_amb->federationSynchronized(vers_Fed.getLabel());
+                privateRefs->fed_amb->federationSynchronized((vers_Fed.getLabel()).c_str());
                 break ;
 
               case Message::INITIATE_FEDERATE_SAVE:
-                privateRefs->fed_amb->initiateFederateSave(vers_Fed.getLabel());
+                privateRefs->fed_amb->initiateFederateSave((vers_Fed.getLabel()).c_str());
                 break ;
 
               case Message::FEDERATION_SAVED:
@@ -308,12 +309,12 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
 
               case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
                 privateRefs->fed_amb->requestFederationRestoreSucceeded(
-                    vers_Fed.getLabel());
+                    (vers_Fed.getLabel()).c_str());
                 break ;
 
               case Message::REQUEST_FEDERATION_RESTORE_FAILED:
-                privateRefs->fed_amb->requestFederationRestoreFailed(vers_Fed.getLabel(),
-                                                        vers_Fed.getTag());
+                privateRefs->fed_amb->requestFederationRestoreFailed((vers_Fed.getLabel()).c_str(),
+                                                        (vers_Fed.getTag()).c_str());
                 break ;
 
               case Message::FEDERATION_RESTORE_BEGUN:
@@ -321,7 +322,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                 break ;
 
               case Message::INITIATE_FEDERATE_RESTORE:
-                privateRefs->fed_amb->initiateFederateRestore(vers_Fed.getLabel(),
+                privateRefs->fed_amb->initiateFederateRestore((vers_Fed.getLabel()).c_str(),
                                                  vers_Fed.getFederate());
                 break ;
 
@@ -366,13 +367,13 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                          reflectAttributeValues(vers_Fed.getObject(),
                                                 *attributes,
                                                 vers_Fed.getFedTime(),
-                                                vers_Fed.getTag(),
+                                                (vers_Fed.getTag()).c_str(),
                                                 vers_Fed.getEventRetraction());
                   else
                      privateRefs->fed_amb->
                          reflectAttributeValues(vers_Fed.getObject(),
                                                 *attributes,
-                                                vers_Fed.getTag());
+                                                (vers_Fed.getTag()).c_str());
                   delete attributes ;
               } break ;
 
@@ -384,13 +385,13 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                                               vers_Fed.getInteractionClass(),
                                               *parameters,
                                               vers_Fed.getFedTime(),
-                                              vers_Fed.getTag(),
+                                              (vers_Fed.getTag()).c_str(),
                                               vers_Fed.getEventRetraction());
                   else
                       privateRefs->fed_amb->receiveInteraction(
                                               vers_Fed.getInteractionClass(),
                                               *parameters,
-                                              vers_Fed.getTag());
+                                              (vers_Fed.getTag()).c_str());
 
                   delete parameters ;
                   } break ;
@@ -400,13 +401,13 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                       privateRefs->fed_amb->removeObjectInstance(
                                                 vers_Fed.getObject(),
                                                 vers_Fed.getFedTime(),
-                                                vers_Fed.getTag(),
+                                                (vers_Fed.getTag()).c_str(),
                                                 vers_Fed.getEventRetraction());
                    }
               else {
                       privateRefs->fed_amb->removeObjectInstance(
                                                 vers_Fed.getObject(),
-                                                vers_Fed.getTag());
+                                                (vers_Fed.getTag()).c_str());
                    }
               } break ;
 
@@ -427,7 +428,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                   privateRefs->fed_amb->
                       requestAttributeOwnershipAssumption(vers_Fed.getObject(),
                                                           *attributeSet,
-                                                          vers_Fed.getTag());
+                                                          (vers_Fed.getTag()).c_str());
                   delete attributeSet ;
               } break ;
 
@@ -437,7 +438,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
                   privateRefs->fed_amb->requestAttributeOwnershipRelease(
                 vers_Fed.getObject(),
                 *attributeSet,
-                vers_Fed.getTag());
+                (vers_Fed.getTag()).c_str());
 
                   delete attributeSet ;
               } break ;
@@ -514,7 +515,7 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
             tick_next.type = Message::TICK_REQUEST_NEXT;
 
             try {
-                tick_next.write(privateRefs->socketUn);
+                tick_next.send(privateRefs->socketUn, privateRefs->msgBufSend);
             }
             catch (NetworkError) {
                 cout << "tick 3." << endl ;
@@ -1665,7 +1666,7 @@ RTI::RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 
     privateRefs->executeService(&req, &rep);
 
-    return ((strcmp(rep.getTag(), "RTI_TRUE") == 0) ? RTI_TRUE : RTI_FALSE);
+    return ((strcmp((rep.getTag()).c_str(), "RTI_TRUE") == 0) ? RTI_TRUE : RTI_FALSE); 
 }
 
 // ----------------------------------------------------------------------------
@@ -2958,4 +2959,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.81 2008/05/27 07:51:55 rousse Exp $
+// $Id: RTIambassador.cc,v 3.82 2008/05/29 12:20:40 rousse Exp $
