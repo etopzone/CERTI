@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.24 2008/05/29 12:20:37 rousse Exp $
+// $Id: Message_R.cc,v 3.25 2008/05/30 09:49:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -490,11 +490,19 @@ Message::readBody(MessageBuffer &msgBuffer)
             handleArraySize = msgBuffer.read_int16();
             readHandleArray(msgBuffer);
 	    break ;
+
+          // lookahead got from header
+          // Warning : FederationTime has been modified (needs validation)
+          case MODIFY_LOOKAHEAD:
+          case QUERY_LOOKAHEAD:
+            // we get another time but is the lookahead
+            lookahead = msgBuffer.read_double();
+            fed_time.setZero();
+            break ;
 	    
             // -- Default Handler --
-
-          default:
-            G.Out(pdGendoc,"exit  Message::readBody with nothing to do");
+            default:
+              G.Out(pdGendoc,"exit  Message::readBody with nothing to do");
 
         }
     }
@@ -502,18 +510,15 @@ Message::readBody(MessageBuffer &msgBuffer)
 }
 
 // ----------------------------------------------------------------------------
-/*! Read a Header from a socket, and process it to read its content. Return
-  RTI_TRUE if the ReadBody Method has to be called.
+/*! Read a Header Message
 */
-bool
+void
 Message::readHeader(MessageBuffer &msgBuffer)
 {
     G.Out(pdGendoc,"enter Message::readHeader");
 
-    // 1- Read Header from Socket
-    //socket->receive((const unsigned char *) &header, sizeof(MessageHeader));
+    // 1- get Header (not a really header but buffer beginning)
 
-    // 2- Parse Header
     type = (Type)msgBuffer.read_int32() ;
     exception = (TypeException)msgBuffer.read_int32();
     setFederationTime(msgBuffer.read_double());    
@@ -525,172 +530,10 @@ Message::readHeader(MessageBuffer &msgBuffer)
     if (exception != e_NO_EXCEPTION)
         {
         G.Out(pdGendoc,"exit  Message::readHeader carrying an exception");
-        return true ;
+        return ;
         }
 
-    // 2- Determine if body exists or not
-    // NULL, UAV and SendInteraction are the most common ones.
-
-    switch(type) {
-
-      // ------------------ BODY NOT EMPTY -----------------------------------
-
-
-      // ------- federationTime not useful
-      case CREATE_FEDERATION_EXECUTION:
-      case DESTROY_FEDERATION_EXECUTION:
-      case REGISTER_FEDERATION_SYNCHRONIZATION_POINT:
-      case SYNCHRONIZATION_POINT_REGISTRATION_FAILED:
-      case SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
-      case ANNOUNCE_SYNCHRONIZATION_POINT:
-      case SYNCHRONIZATION_POINT_ACHIEVED:
-      case FEDERATION_SYNCHRONIZED:
-      case IS_ATTRIBUTE_OWNED_BY_FEDERATE:
-      case QUERY_ATTRIBUTE_OWNERSHIP:
-      case ATTRIBUTE_IS_NOT_OWNED:
-      case INFORM_ATTRIBUTE_OWNERSHIP:
-      case NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-      case REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
-      case ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE:
-      case ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
-      case ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
-      case UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-      case ATTRIBUTE_OWNERSHIP_ACQUISITION:
-      case REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
-      case ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
-      case CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE:
-      case ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE:
-      case CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION:
-      case CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
-      case GET_ATTRIBUTE_SPACE_HANDLE:
-      case GET_INTERACTION_SPACE_HANDLE:
-      case INITIATE_FEDERATE_SAVE:
-      case DDM_CREATE_REGION:
-      case DDM_ASSOCIATE_REGION:
-      case DDM_UNASSOCIATE_REGION:
-      case DDM_SUBSCRIBE_ATTRIBUTES:
-      case DDM_UNSUBSCRIBE_ATTRIBUTES:
-      case DDM_SUBSCRIBE_INTERACTION:
-      case DDM_UNSUBSCRIBE_INTERACTION:
-      case DDM_REGISTER_OBJECT:
-      case REQUEST_FEDERATION_RESTORE:
-      case REQUEST_FEDERATION_RESTORE_SUCCEEDED:
-      case REQUEST_FEDERATION_RESTORE_FAILED:
-      case REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-      case RESIGN_FEDERATION_EXECUTION:
-      case INITIATE_FEDERATE_RESTORE:
-      case JOIN_FEDERATION_EXECUTION:
-      case UNPUBLISH_OBJECT_CLASS:
-      case UNSUBSCRIBE_OBJECT_CLASS:
-      case START_REGISTRATION_FOR_OBJECT_CLASS:
-      case STOP_REGISTRATION_FOR_OBJECT_CLASS:
-      case PUBLISH_INTERACTION_CLASS:
-      case UNPUBLISH_INTERACTION_CLASS:
-      case SUBSCRIBE_INTERACTION_CLASS:
-      case UNSUBSCRIBE_INTERACTION_CLASS:
-      case TURN_INTERACTIONS_ON:
-      case TURN_INTERACTIONS_OFF:
-      case LOCAL_DELETE_OBJECT_INSTANCE:
-      case CHANGE_INTERACTION_TRANSPORTATION_TYPE:
-      case CHANGE_INTERACTION_ORDER_TYPE:
-      case DDM_DELETE_REGION:
-      case DDM_MODIFY_REGION:
-      case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
-      case CHANGE_ATTRIBUTE_ORDER_TYPE:
-      case ENABLE_TIME_REGULATION:
-      case DISABLE_TIME_REGULATION:
-      case ENABLE_TIME_CONSTRAINED:
-      case DISABLE_TIME_CONSTRAINED:
-      case REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE:
-      case PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-      case TICK_REQUEST:
-        break ;
-
-      // ------- federationTime (relevant or zero) depending on boolean value
-      //         i.e. boolean false don't need date (zero received in header)
-      case REQUEST_FEDERATION_SAVE:
-      case UPDATE_ATTRIBUTE_VALUES:
-      case REFLECT_ATTRIBUTE_VALUES:
-      case SEND_INTERACTION:
-      case RECEIVE_INTERACTION:
-        break ;
-
-      // ------- federationTime useful
-      case PUBLISH_OBJECT_CLASS:
-      case SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES:
-      case REGISTER_OBJECT_INSTANCE:
-      case DELETE_OBJECT_INSTANCE:
-      case REMOVE_OBJECT_INSTANCE:
-      case DISCOVER_OBJECT_INSTANCE:
-      case GET_OBJECT_CLASS_HANDLE:
-      case GET_OBJECT_CLASS_NAME:
-      case GET_OBJECT_CLASS:
-      case GET_ATTRIBUTE_HANDLE:
-      case GET_ATTRIBUTE_NAME:
-      case GET_INTERACTION_CLASS_HANDLE:
-      case GET_INTERACTION_CLASS_NAME:
-      case GET_PARAMETER_HANDLE:
-      case GET_PARAMETER_NAME:
-      case GET_SPACE_HANDLE:
-      case GET_SPACE_NAME:
-      case GET_DIMENSION_NAME:
-      case GET_DIMENSION_HANDLE:
-      case GET_OBJECT_INSTANCE_HANDLE:
-      case GET_OBJECT_INSTANCE_NAME:
-        break ;
-
-      // ------------------ BODY EMPTY -----------------------------------
-      // type,exception,size ans federationTime yet got from header
-
-      // ------- federationTime not useful
-      case FEDERATE_SAVE_BEGUN:
-      case FEDERATE_SAVE_COMPLETE:
-      case FEDERATE_SAVE_NOT_COMPLETE:
-      case FEDERATION_SAVED:
-      case FEDERATION_NOT_SAVED:
-      case FEDERATE_RESTORE_COMPLETE:
-      case FEDERATE_RESTORE_NOT_COMPLETE:
-      case FEDERATION_RESTORED:
-      case FEDERATION_NOT_RESTORED:
-      case FEDERATION_RESTORE_BEGUN:
-      case ENABLE_ASYNCHRONOUS_DELIVERY:
-      case DISABLE_ASYNCHRONOUS_DELIVERY:
-      case TICK_REQUEST_NEXT:
-        break ;
-
-      // ------- federationTime useful
-      case QUERY_LBTS:
-      case QUERY_MIN_NEXT_EVENT_TIME:
-      case QUERY_FEDERATE_TIME:
-      case TIME_ADVANCE_REQUEST:
-      case TIME_ADVANCE_REQUEST_AVAILABLE:
-      case NEXT_EVENT_REQUEST:
-      case NEXT_EVENT_REQUEST_AVAILABLE:
-      case TIME_ADVANCE_GRANT:
-      case TIME_REGULATION_ENABLED:
-      case TIME_CONSTRAINED_ENABLED:
-        break ;
-
-      // lookahead got from header
-      // Warning : FederationTime has been modified (needs validation)
-      case MODIFY_LOOKAHEAD:
-      case QUERY_LOOKAHEAD:
-        // we get another time but is the lookahead
-        lookahead = msgBuffer.read_double();
-        fed_time.setZero();
-        break ;
-
-      default:
-        D.Out(pdExcept, "Unknown type %d in ReadHeader.", type);
-        G.Out(pdGendoc,"exit  Message::readHeader on RTIinternalError unknown type");
-        throw RTIinternalError("Message: Received unknown Header type.");
-    }
-
-    // 4- Return depends on body
     G.Out(pdGendoc,"exit  Message::readHeader");
-
-    //return header.bodySize != 0 ;
-    return 0 ;
 }
 
 // ----------------------------------------------------------------------------
@@ -773,4 +616,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.24 2008/05/29 12:20:37 rousse Exp $
+// $Id: Message_R.cc,v 3.25 2008/05/30 09:49:17 rousse Exp $

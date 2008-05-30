@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.82 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambassador.cc,v 3.83 2008/05/30 09:49:18 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -248,7 +248,6 @@ RTI::RTIambassador::__tick_kernel(RTI::Boolean multiple, TickTime minimum, TickT
     vers_RTI.setMaxTickTime(maximum);
 
     try {
-        //vers_RTI.write(privateRefs->socketUn);
         vers_RTI.send(privateRefs->socketUn,privateRefs->msgBufSend);
     }
     catch (NetworkError) {
@@ -2959,4 +2958,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.82 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambassador.cc,v 3.83 2008/05/30 09:49:18 rousse Exp $

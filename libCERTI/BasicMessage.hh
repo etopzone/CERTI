@@ -19,14 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.10 2008/05/29 12:20:36 rousse Exp $
+// $Id: BasicMessage.hh,v 3.11 2008/05/30 09:49:17 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
 #define LIBCERTI_BASIC_MESSAGE
 
 #include "Extent.hh"
-#include "MessageBody.hh"
 #include "MessageBuffer.hh"
 #include "BaseRegion.hh"
 #include <vector>
@@ -75,4 +74,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.10 2008/05/29 12:20:36 rousse Exp $
+// $Id: BasicMessage.hh,v 3.11 2008/05/30 09:49:17 rousse Exp $

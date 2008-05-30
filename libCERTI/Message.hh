@@ -24,7 +24,6 @@
 
 #include "Exception.hh"
 #include "SocketUN.hh"
-#include "MessageBody.hh"
 #include "BasicMessage.hh"
 #include "fedtime.hh"
 
@@ -266,10 +265,6 @@ public:
 
 	 void trace(const char* context);
 
-    // Read and Write NetworkMessage Objects to and from Socket objects.
-    void write(SocketUN *Socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
-    void read(SocketUN *Socket) throw (NetworkError, NetworkSignal);
-
     // -- Attribute Access Methods
     // Value Array Management
     // setValue : Value and its length are stored into valueArray[Rank]
@@ -459,10 +454,8 @@ private:
     // ReadHeader.
     void readBody(MessageBuffer &msgBuffer);
 
-    // Read a Header from a socket, and process it to read its
-    // content. Return RTI_TRUE if the ReadBody Method has to be
-    // called.
-    bool readHeader(MessageBuffer &msgBuffer);
+    // Read a Header (buffer beginning)
+    void readHeader(MessageBuffer &msgBuffer);
 
     // The message is written onto the socket by WriteHeader if no
     // body is required, or by WriteBody is a body has been required
@@ -472,9 +465,8 @@ private:
     // WriteHeader.
     void writeBody(MessageBuffer &msgBuffer);
 
-    // Prepare and Write a Header to a Socket, and return RTI_TRUE if
-    // the WriteBody method has to be called.
-    bool writeHeader(MessageBuffer &msgBuffer);
+    // Write a Header (buffer beginning)
+    void writeHeader(MessageBuffer &msgBuffer);
 
     // -- Other Private Read Methods --
     void readHandleArray(MessageBuffer &msgBuffer);
