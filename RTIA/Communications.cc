@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.27 2008/05/29 12:20:32 rousse Exp $
+// $Id: Communications.cc,v 3.28 2008/05/30 14:01:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -132,7 +132,7 @@ Communications::~Communications()
     G.Out(pdGendoc,"enter Communications::~Communications");
 
     NM_Close_Connexion closeMsg ;    
-    closeMsg.send((SecureTCPSocket *) this);
+    closeMsg.send((SecureTCPSocket *) this, NM_msgBufSend);
     SecureTCPSocket::close();
 
     G.Out(pdGendoc,"exit  Communications::~Communications");
@@ -320,7 +320,7 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
 void
 Communications::sendMessage(NetworkMessage *Msg)
 {
-    Msg->send((SecureTCPSocket *) this);
+    Msg->send((SecureTCPSocket *) this,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -339,4 +339,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.27 2008/05/29 12:20:32 rousse Exp $
+// $Id: Communications.cc,v 3.28 2008/05/30 14:01:06 erk Exp $

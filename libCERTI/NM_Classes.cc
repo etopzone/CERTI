@@ -299,15 +299,17 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 
 NetworkMessage* 
 NM_Factory::receive(Socket* socket) throw (NetworkError, RTIinternalError) {
+	// FIXME this is not thread-safe.
+	static MessageBuffer msgBuffer;
 	NetworkMessage  msgGen;
 	NetworkMessage* msg;
 	
 	/* receive generic message */
-	msgGen.receive(socket);
+	msgGen.receive(socket,msgBuffer);
 	/* create specific message from type */
 	msg = NM_Factory::create(msgGen.getType());
-	/* msg->copyMsgBufFrom(msgGen); */	
-	msg->deserialize(msgGen);
+	msgBuffer.assumeSizeFromReservedBytes();	
+	msg->deserialize(msgBuffer);
 	return msg;	
 } /* end of NM_Factory::receive */
 

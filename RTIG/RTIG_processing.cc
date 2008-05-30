@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.71 2008/05/29 12:20:35 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.72 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -113,7 +113,7 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 
     G.Out(pdGendoc,"processCreateFederation===>write answer to RTIA");
 
-    rep.send(link); // Send answer to RTIA
+    rep.send(link,NM_msgBufSend); // Send answer to RTIA
 
     D.Out(pdInit, "Federation \"%s\" created with Handle %d.",
           federation.c_str(), rep.federation);
@@ -168,7 +168,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
        repFED.exception = e_FederateAlreadyExecutionMember ;
        repFED.exceptionReason="Federate with same name has yet joined the federation";
        G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA GFF ERROR %s",repFED.exceptionReason.c_str());
-       repFED.send(link);
+       repFED.send(link,NM_msgBufSend);
 
        G.Out(pdGendoc,"exit RTIG::processJoinFederation on Error");
        G.Out(pdGendoc,"END ** JOIN FEDERATION (BAD) SERVICE **");
@@ -180,7 +180,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
        G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason.c_str());
 
-       rep.send(link);
+       rep.send(link,NM_msgBufSend);
        return ;
        }               
 
@@ -237,14 +237,14 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
           repFED.getType(),repFED.FEDid.c_str());
     G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
 
-    repFED.send(link);
+    repFED.send(link,NM_msgBufSend);
 
     if ( e ==  e_NO_EXCEPTION )  
         {
         // Wait for OK from RTIA
     	NM_Get_FED_File msg ;        
         D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.getType());
-        msg.receive(link);
+        msg.receive(link,NM_msgBufReceive);
         assert ( msg.number == 0 );
         // RTIA has opened working file then RTIG has to transfer file contents
         // line by line
@@ -265,10 +265,10 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             // line transfered
             repFED.setFEDLine(fileLine);               
             // Send answer
-            repFED.send(link);
+            repFED.send(link,NM_msgBufSend);
 
             // Wait for OK from RTIA
-            msg.receive(link);
+            msg.receive(link,NM_msgBufReceive);
             assert ( msg.number == num_line );
             }
     
@@ -283,7 +283,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
         G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
 
-        repFED.send(link);
+        repFED.send(link,NM_msgBufSend);
         }
     // END of FED file processing
 
@@ -298,7 +298,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
 
     // Send answer
 
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 
     G.Out(pdGendoc,"exit RTIG::processJoinFederation");
     G.Out(pdGendoc,"END ** JOIN FEDERATION SERVICE **");
@@ -325,7 +325,7 @@ RTIG::processResignFederation(Socket *link,Handle federation,
     // Send answer to RTIA
     reponse.federate = federe ;
     reponse.federation = federation ;
-    reponse.send(link);
+    reponse.send(link,NM_msgBufSend);
 
     G.Out(pdGendoc,"exit RTIG::processResignFederation");
     G.Out(pdGendoc,"END ** RESIGN FEDERATION SERVICE **");
@@ -384,7 +384,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
        }
     G.Out(pdGendoc,"processDestroyFederation===>write DFE to RTIA");
 
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 
     G.Out(pdGendoc,"END ** DESTROY FEDERATION SERVICE **");
     G.Out(pdGendoc,"exit RTIG::processDestroyFederation");
@@ -413,7 +413,7 @@ RTIG::processSetTimeRegulating(Socket *link, NM_Set_Time_Regulating *msg)
 
         G.Out(pdGendoc,"      processSetTimeRegulating====> write TRE to RTIA");
 
-        rep.send(link);
+        rep.send(link,NM_msgBufSend);
 
         D.Out(pdTerm, "Federate %u of Federation %u sets TimeRegulation ON.",
               msg->federate, msg->federation);
@@ -453,7 +453,7 @@ RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
 
         G.Out(pdGendoc,"      processSetTimeConstrained====> write TCE to RTIA");
 
-        rep.send(link);
+        rep.send(link,NM_msgBufSend);
 
         D.Out(pdTerm, "Federate %u of Federation %u is now constrained.",
               msg->federate, msg->federation);
@@ -523,7 +523,7 @@ RTIG::processRegisterSynchronization(Socket *link, NM_Register_Federation_Synchr
 
     G.Out(pdGendoc,"      processRegisterSynchronization====> write SPRS to RTIA");
 
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 
     // boolean true means a federates set exists
     if ( req->doesSetExist() )
@@ -669,7 +669,7 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
     rep->federate    = req->federate ;
     rep->objectClass = req->objectClass ;
 
-    rep->send(link); // send answer to RTIA
+    rep->send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -700,7 +700,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     rep->objectClass = req->objectClass ;
     rep->handleArraySize = 0 ;
 
-    rep->send(link); // send answer to RTIA
+    rep->send(link,NM_msgBufSend); // send answer to RTIA
 
     G.Out(pdGendoc,"END   **  SUBSCRIBE OBJECT CLASS SERVICE **");
     G.Out(pdGendoc,"exit  RTIG::processSubscribeObjectClass");
@@ -729,7 +729,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
     rep->federate = req->federate ;
     rep->interactionClass = req->interactionClass ;
 
-    rep->send(link); // send answer to RTIA
+    rep->send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -754,7 +754,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
     rep->federate = req->federate ;
     rep->interactionClass = req->interactionClass ;
 
-    rep->send(link); // send answer to RTIA
+    rep->send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -781,7 +781,7 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
     // rep.object is set by the call of registerObject
     rep->setLabel(req->getLabel());
 
-    rep->send(link); // Send answer to RTIA
+    rep->send(link,NM_msgBufSend); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -834,7 +834,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     rep.setLabel(req->getLabel());
     rep.setTag(req->getTag());
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
     G.Out(pdGendoc,"exit  RTIG::processUpdateAttributeValues");
 }
 
@@ -889,7 +889,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
     rep.setLabel(req->getLabel());
     rep.setTag(req->getTag());
     G.Out(pdGendoc,"processSendInteraction===>write");
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 
     G.Out(pdGendoc,"exit RTIG::processSendInteraction");
     G.Out(pdGendoc,"END ** SEND INTERACTION SERVICE **");
@@ -926,7 +926,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.object   = req->object ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
     
     G.Out(pdGendoc,"exit RTIG::processDeleteObject");
     G.Out(pdGendoc,"END ** DELETE OBJECT INSTANCE **");
@@ -954,7 +954,7 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -983,7 +983,7 @@ RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1009,7 +1009,7 @@ RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1036,7 +1036,7 @@ RTIG::processAcquisitionIfAvailable(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1063,7 +1063,7 @@ RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1090,7 +1090,7 @@ RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1116,7 +1116,7 @@ RTIG::processCancelNegotiatedDivestiture(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1148,7 +1148,7 @@ RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.object = req->object ;
 
-    rep.send(link); // Send answer to RTIA
+    rep.send(link,NM_msgBufSend); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1174,7 +1174,7 @@ RTIG::processCancelAcquisition(Socket *link, NetworkMessage *req)
     rep.object = req->object ;
     rep.handleArraySize = 0 ;
 
-    rep.send(link); // send answer to RTIA
+    rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1196,7 +1196,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
                << endl ;
 
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1213,7 +1213,7 @@ RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
 
     NM_DDM_Modify_Region rep ;
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1232,7 +1232,7 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
     NM_DDM_Delete_Region rep ;    
     rep.federate = req->federate ;
     rep.region = req->region ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1252,7 +1252,7 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 
     NM_DDM_Associate_Region rep ;    
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1271,7 +1271,7 @@ RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
 
     NM_DDM_Unassociate_Region rep ;
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1292,7 +1292,7 @@ RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
     rep.federate = req->federate ;
     rep.objectClass = req->objectClass ;
     rep.handleArraySize = 0 ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1310,7 +1310,7 @@ RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
 
     NM_DDM_Unsubscribe_Attributes rep ;
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1329,7 +1329,7 @@ RTIG::processSubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
     NM_DDM_Subscribe_Interaction rep ;    
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1348,7 +1348,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
 
     NM_DDM_Unsubscribe_Interaction rep ;
     rep.federate = req->federate ;
-    rep.send(link);
+    rep.send(link,NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
@@ -1378,7 +1378,7 @@ RTIG::processRegisterObjectWithRegion(Socket *link, NetworkMessage *req)
           req->getLabel().c_str(), req->federate, rep->object);
 
     rep->federate = req->federate ;
-    rep->send(link); // Send answer to RTIA
+    rep->send(link,NM_msgBufSend); // Send answer to RTIA
 }
 
 // ----------------------------------------------------------------------------
@@ -1422,11 +1422,11 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
     answer.federate = request->federate ;
     answer.object = request->object ;
 
-    answer.send(link); // Send answer to RTIA
+    answer.send(link,NM_msgBufSend); // Send answer to RTIA
     G.Out(pdGendoc,"exit  RTIG::processRequestObjectAttributeValueUpdate");
     G.Out(pdGendoc,"END   ** REQUEST OBJECT ATTRIBUTE VALUE UPDATE **");
 }
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.71 2008/05/29 12:20:35 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.72 2008/05/30 14:01:05 erk Exp $

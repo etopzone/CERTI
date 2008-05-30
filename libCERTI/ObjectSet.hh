@@ -27,6 +27,7 @@
 // Project
 class Object;
 #include "SecurityServer.hh"
+#include "MessageBuffer.hh"
 #include "certi.hh"
 
 // Standard
@@ -172,6 +173,8 @@ protected:
 	typedef Name2ObjectMap_t::const_iterator namedO_const_iterator;
 	Handle2ObjectMap_t OFromHandle;	
 	Name2ObjectMap_t   OFromName;
+	/* The message buffer used to send Network messages */
+	MessageBuffer NM_msgBufSend;
 };
 
 } // namespace certi

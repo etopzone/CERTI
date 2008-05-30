@@ -169,7 +169,7 @@ def goTest():
     myDTestMaster.register(rtig)
     myDTestMaster.register(firstBillard)
     myDTestMaster.register(billard2)
-    #myDTestMaster.register(billard3)  
+    myDTestMaster.register(billard3)  
     #myDTestMaster.register(billard4)  
     myDTestMaster.startTestSequence()
     myDTestMaster.waitTestSequenceEnd()

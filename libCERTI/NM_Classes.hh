@@ -32,6 +32,7 @@ class CERTI_EXPORT NM_Factory {
 public:
 	static NetworkMessage* create(NetworkMessage::Message_T type) throw (RTIinternalError);
 	static NetworkMessage* receive(Socket* socket) throw (NetworkError,RTIinternalError);
+private:
 };
 
 class CERTI_EXPORT NM_WithHandleArray : public NetworkMessage {
@@ -46,7 +47,7 @@ public:
 	void setHandle(AttributeHandle h, int i) {handleArray[i]=h;};
 protected:
 	/* specific field */
-private:
+private:	
 };
 
 class CERTI_EXPORT NM_DDM_Base : public NM_WithHandleArray {

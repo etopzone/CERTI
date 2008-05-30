@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.20 2008/05/23 12:37:21 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.21 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -255,7 +255,7 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
                   "Broadcasting message to Federate %d.", (*i)->Federate);
             try {
                 socket = server->getSocketLink((*i)->Federate);
-                message->send(socket);
+                message->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -361,7 +361,7 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
                 socket = server->getSocketLink((*i)->Federate);
 #endif
                 G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
-                currentMessage->send(socket);
+                currentMessage->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -396,4 +396,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.20 2008/05/23 12:37:21 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.21 2008/05/30 14:01:05 erk Exp $

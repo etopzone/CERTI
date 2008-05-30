@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.8 2005/04/05 20:07:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
@@ -76,10 +76,12 @@ private:
 
     AttributeHandle maxHandle ;
     std::list<ObjectBroadcastLine *> lines ;
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
 };
 
 } // namespace certi
 
 #endif // CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.8 2005/04/05 20:07:08 breholee Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $

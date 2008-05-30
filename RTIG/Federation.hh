@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.46 2008/04/29 08:57:48 erk Exp $
+// $Id: Federation.hh,v 3.47 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -588,10 +588,12 @@ private:
 #ifdef HAVE_XML
     xmlDocPtr doc ; // FIXME: should not be an attribute
 #endif // HAVE_XML
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.46 2008/04/29 08:57:48 erk Exp $
+// $Id: Federation.hh,v 3.47 2008/05/30 14:01:05 erk Exp $

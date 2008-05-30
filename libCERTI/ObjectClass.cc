@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.45 2008/05/29 12:20:38 rousse Exp $
+// $Id: ObjectClass.cc,v 3.46 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -206,7 +206,7 @@ ObjectClass::sendToFederate(NetworkMessage *msg, FederateHandle theFederate)
 #else
         socket = server->getSocketLink(theFederate);
 #endif
-        msg->send(socket);
+        msg->send(socket,NM_msgBufSend);
     }
     catch (RTIinternalError &e) {
         D.Out(pdExcept,
@@ -809,7 +809,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    Socket *socket = NULL ;
 	    try {
 		socket = server->getSocketLink(federate);
-		message.send(socket);
+		message.send(socket,NM_msgBufSend);
 	    }
 	    catch (RTIinternalError &e) {
 		D.Out(pdExcept,
@@ -1810,4 +1810,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.45 2008/05/29 12:20:38 rousse Exp $
+// $Id: ObjectClass.cc,v 3.46 2008/05/30 14:01:05 erk Exp $

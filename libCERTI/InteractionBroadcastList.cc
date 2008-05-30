@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.12 2008/04/26 14:59:40 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.13 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -153,7 +153,7 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
                 G.Out(pdGendoc,"sendPendingMessage===>write");
 
-                message->send(socket);
+                message->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -177,4 +177,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.12 2008/04/26 14:59:40 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.13 2008/05/30 14:01:05 erk Exp $

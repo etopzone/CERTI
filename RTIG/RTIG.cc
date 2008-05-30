@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.44 2008/05/29 12:20:35 rousse Exp $
+// $Id: RTIG.cc,v 3.45 2008/05/30 14:01:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -966,7 +966,7 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
     /* FIXME ***/
     if (rep->exception != e_NO_EXCEPTION) {
         G.Out(pdGendoc,"            processIncomingMessage ===> write on exception to RTIA");
-        rep->send(link);
+        rep->send(link,NM_msgBufSend);
         D.Out(pdExcept,
               "RTIG catched exception %d and sent it back to federate %d.",
               rep->exception, rep->federate);
@@ -990,4 +990,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.44 2008/05/29 12:20:35 rousse Exp $
+// $Id: RTIG.cc,v 3.45 2008/05/30 14:01:06 erk Exp $

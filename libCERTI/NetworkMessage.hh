@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.35 2008/05/23 12:37:21 erk Exp $
+// $Id: NetworkMessage.hh,v 3.36 2008/05/30 14:01:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -156,19 +156,9 @@ public:
 	 * DeSerialize the message from a buffer
 	 */
 	virtual void deserialize(MessageBuffer& msgBuffer);
-
-	/**
-	 * Deserialize a message using the message buffer
-	 * from another message.
-	 * This is used to avoid copy in a virtual constructor
-	 * for network Message.
-	 */ 
-	void deserialize(NetworkMessage& anotherMsg) 
-		{anotherMsg.msgBuf.assumeSizeFromReservedBytes();
-		 deserialize(anotherMsg.msgBuf);};
 	
-	void send(Socket* socket) throw (NetworkError, NetworkSignal);
-	void receive(Socket* socket) throw (NetworkError, NetworkSignal);
+	void send(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
+	void receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
 	// Parameter and Attribute Management
 	// Remove the Parameter of rank 'Rank' in the ParamArray and its value in
@@ -363,4 +353,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.35 2008/05/23 12:37:21 erk Exp $
+// $Id: NetworkMessage.hh,v 3.36 2008/05/30 14:01:04 erk Exp $

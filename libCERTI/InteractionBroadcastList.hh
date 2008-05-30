@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.hh,v 3.8 2008/04/26 14:59:40 erk Exp $
+// $Id: InteractionBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_INTERACTION_BROADCAST_LIST_HH
@@ -63,7 +63,8 @@ public:
 
 private:
     InteractionBroadcastLine *getLineWithFederate(FederateHandle theFederate);
-
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
     std::list<InteractionBroadcastLine *> lines ;
 };
 
@@ -71,4 +72,4 @@ private:
 
 #endif // CERTI_INTERACTION_BROADCAST_LIST_HH
 
-// $Id: InteractionBroadcastList.hh,v 3.8 2008/04/26 14:59:40 erk Exp $
+// $Id: InteractionBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $

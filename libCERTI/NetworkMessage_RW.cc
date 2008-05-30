@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.49 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.50 2008/05/30 14:01:05 erk Exp $
 // ----------------------------------------------------------------------------
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
@@ -101,49 +101,49 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 } /* end of deserialize */
 
 void
-NetworkMessage::send(Socket *socket) throw (NetworkError, NetworkSignal) {
+NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal){
 	G.Out(pdGendoc,"enter NetworkMessage::send");
 	/* 0- reset send buffer */
-	msgBuf.reset();
+	msgBuffer.reset();
 	/* 1- serialize the message
 	 * This is a polymorphic call 
 	 * which may specialized in a daughter class  
 	 */
-	serialize(msgBuf);
+	serialize(msgBuffer);
 	/* 2- update message buffer 'reserved bytes' header */
-	msgBuf.updateReservedBytes();
+	msgBuffer.updateReservedBytes();
 	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuf.size());
-	//msgBuf.show(msgBuf(0),5);
+	//msgBuffer.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
-	socket->send(static_cast<unsigned char*>(msgBuf(0)), msgBuf.size());
+	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
 	G.Out(pdGendoc,"exit  NetworkMessage::send");
 } /* end of send */
 
 void
-NetworkMessage::receive(Socket* socket) throw (NetworkError, NetworkSignal) {
+NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal) {
 	G.Out(pdGendoc,"enter NetworkMessage::receive");
 	/* 0- Reset receive buffer */
 	/* FIXME this reset may not be necessary since we do 
 	 * raw-receive + assume-size
 	 */
-	msgBuf.reset();
+	msgBuffer.reset();
 	/* 1- Read 'reserved bytes' header from socket */
-	//D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuf.reservedBytes);
-	socket->receive(msgBuf(0), msgBuf.reservedBytes);	
-	//msgBuf.show(msgBuf(0),5);fflush(stdout);
+	//D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
+	socket->receive(msgBuffer(0), msgBuffer.reservedBytes);	
+	//msgBuffer.show(msgBuf(0),5);fflush(stdout);
 	/* 2- update (assume) complete message size from reserved bytes */
-	msgBuf.assumeSizeFromReservedBytes();
-	D.Out(pdDebug,"Got a MsgBuf of size %d bytes (including %d reserved)",msgBuf.size(),msgBuf.reservedBytes);
+	msgBuffer.assumeSizeFromReservedBytes();
+	D.Out(pdDebug,"Got a MsgBuf of size %d bytes (including %d reserved)",msgBuffer.size(),msgBuffer.reservedBytes);
 	/* 3- receive the rest of the message */
-	socket->receive(msgBuf(msgBuf.reservedBytes),msgBuf.size()-msgBuf.reservedBytes);
+	socket->receive(msgBuffer(msgBuffer.reservedBytes),msgBuffer.size()-msgBuffer.reservedBytes);
 	/* 4- deserialize the message 
 	 * This is a polymorphic call 
 	 * which may specialized in a daughter class  
 	 */ 
-	deserialize(msgBuf);
+	deserialize(msgBuffer);
 	G.Out(pdGendoc,"exit  NetworkMessage::receive");	
 } /* end of receive */
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.49 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.50 2008/05/30 14:01:05 erk Exp $

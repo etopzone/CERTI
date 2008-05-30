@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.27 2008/05/22 12:20:21 erk Exp $
+// $Id: RTIG.hh,v 3.28 2008/05/30 14:01:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -126,10 +126,14 @@ private:
     SocketServer socketServer ;
     AuditFile auditServer ;
     FederationsList federations ;
+    /* The message buffer used to send Network messages */
+    MessageBuffer NM_msgBufSend;
+    /* The message buffer used to receive Network messages */
+    MessageBuffer NM_msgBufReceive;
 };
 
 }} // namespaces
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.27 2008/05/22 12:20:21 erk Exp $
+// $Id: RTIG.hh,v 3.28 2008/05/30 14:01:06 erk Exp $

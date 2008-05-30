@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.87 2008/05/29 12:20:34 rousse Exp $
+// $Id: Federation.cc,v 3.88 2008/05/30 14:01:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -445,7 +445,7 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
 		  "Sending NULL message(type %d) from %d to new federate.",
                   nullMessage.getType(), nullMessage.federate);
 
-            nullMessage.send(tcp_link);
+            nullMessage.send(tcp_link,NM_msgBufSend);
         }
 
         // If federation is synchronizing, put federate in same state.
@@ -461,7 +461,7 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
                 D.Out(pdTerm, "Sending synchronization message %s (type %d)"
                       " to the new Federate.", (*i).first, ASPMessage.getType());
 
-                ASPMessage.send(tcp_link);
+                ASPMessage.send(tcp_link,NM_msgBufSend);
                 federates.back().addSynchronizationLabel((*i).first);
             }
         }
@@ -547,7 +547,7 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
 #else
                 socket = server->getSocketLink(i->getHandle());
 #endif
-                msg->send(socket);
+                msg->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
                 D[pdExcept] << "Reference to a killed Federate while "
@@ -595,7 +595,7 @@ Federation::broadcastSomeMessage(NetworkMessage *msg,
 #else
                             socket = server->getSocketLink(i->getHandle());
 #endif
-                            msg->send(socket);
+                            msg->send(socket,NM_msgBufSend);
                             }
                         catch (RTIinternalError &e)
                             {
@@ -1132,7 +1132,7 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     else
        G.Out(pdGendoc,"             =====> send message R_F_R_F to RTIA");
 
-    msg->send(socket);
+    msg->send(socket,NM_msgBufSend);
     delete msg ;
 
     // Reading file failed: not restoring !
@@ -1170,7 +1170,7 @@ Federation::requestFederationRestore(FederateHandle the_federate,
         // send message.
         socket = server->getSocketLink(msg->federate);
         G.Out(pdGendoc,"             =====> send message I_F_R to federate %d",msg->federate);
-        msg->send(socket);
+        msg->send(socket,NM_msgBufSend);
     }
     delete msg;
     G.Out(pdGendoc,"exit  Federation::requestFederationRestore");
@@ -2266,7 +2266,7 @@ NM_Provide_Attribute_Value_Update mess ;
         mess.handleArray[i] = theAttributeList[i] ;
         }
 
-     mess.send(server->getSocketLink(theOwnerHandle));
+     mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
  
    G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
                    ,theOwnerHandle);
@@ -2277,5 +2277,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.87 2008/05/29 12:20:34 rousse Exp $
+// $Id: Federation.cc,v 3.88 2008/05/30 14:01:06 erk Exp $
 
