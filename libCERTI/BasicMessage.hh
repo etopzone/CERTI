@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.hh,v 3.11 2008/05/30 09:49:17 rousse Exp $
+// $Id: BasicMessage.hh,v 3.12 2008/05/30 14:04:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_BASIC_MESSAGE
@@ -61,12 +61,6 @@ protected:
 
     std::vector<Extent> extents ;
     std::vector<RegionHandle> regions ;
-    /**
-     * The buffer used to easilly serialize/deserialize a message
-     * in order to easilly send/receive message content using socket
-     * like API.
-     */
-    MessageBuffer msgBuf;
 
 };
 
@@ -74,4 +68,4 @@ protected:
 
 #endif // LIBCERTI_BASIC_MESSAGE
 
-// $Id: BasicMessage.hh,v 3.11 2008/05/30 09:49:17 rousse Exp $
+// $Id: BasicMessage.hh,v 3.12 2008/05/30 14:04:47 erk Exp $

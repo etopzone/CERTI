@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.50 2008/05/30 14:01:05 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.51 2008/05/30 14:04:47 erk Exp $
 // ----------------------------------------------------------------------------
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
@@ -112,7 +112,7 @@ NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkErr
 	serialize(msgBuffer);
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuf.size());
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuffer.size());
 	//msgBuffer.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 	socket->send(static_cast<unsigned char*>(msgBuffer(0)), msgBuffer.size());
@@ -146,4 +146,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.50 2008/05/30 14:01:05 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.51 2008/05/30 14:04:47 erk Exp $
