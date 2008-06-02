@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.29 2008/05/30 09:49:17 rousse Exp $
+// $Id: Message_W.cc,v 3.30 2008/06/02 07:57:35 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -492,6 +492,13 @@ Message::writeBody(MessageBuffer &msgBuffer)
             writeHandleArray(msgBuffer);
             break;             
 
+          // lookahead
+          // Warning : FederationTime has been modified (needs validation)
+          case MODIFY_LOOKAHEAD:
+          case QUERY_LOOKAHEAD:
+            // we put another time but is the lookahead
+	    msgBuffer.write_double(lookahead) ;
+            break ;
             // -- Default Handler --
 
           default:
@@ -570,4 +577,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.29 2008/05/30 09:49:17 rousse Exp $
+// $Id: Message_W.cc,v 3.30 2008/06/02 07:57:35 rousse Exp $
