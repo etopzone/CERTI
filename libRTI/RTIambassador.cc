@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.83 2008/05/30 09:49:18 rousse Exp $
+// $Id: RTIambassador.cc,v 3.84 2008/06/03 08:45:50 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1671,8 +1671,8 @@ RTI::RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 // ----------------------------------------------------------------------------
 // Enable Time Regulation
 void
-RTI::RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
-                                    const FedTime& /*theLookahead*/)
+RTI::RTIambassador::enableTimeRegulation(const FedTime& theFederateTime,
+                                    const FedTime& theLookahead)
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, 
 	   RTI::SaveInProgress, RTI::FederateNotExecutionMember, 
 	   RTI::ConcurrentAccessAttempted, RTI::InvalidLookahead, 
@@ -1681,6 +1681,8 @@ RTI::RTIambassador::enableTimeRegulation(const FedTime& /*theFederateTime*/,
 {
     Message req, rep ;
     req.type = Message::ENABLE_TIME_REGULATION ;
+    req.setFedTime(theFederateTime);
+    req.setLookahead(theLookahead);
     req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
@@ -2958,4 +2960,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.83 2008/05/30 09:49:18 rousse Exp $
+// $Id: RTIambassador.cc,v 3.84 2008/06/03 08:45:50 rousse Exp $

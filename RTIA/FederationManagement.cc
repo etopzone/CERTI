@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.63 2008/05/29 12:20:33 rousse Exp $
+// $Id: FederationManagement.cc,v 3.64 2008/06/03 08:45:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -440,7 +440,7 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         tm->StopperAvanceTemps();
 
         if (tm->requestRegulateurState())
-            tm->setTimeRegulating(false, exception);
+            tm->setTimeRegulating(false,0,0, exception);
 
         msg.federation = _numero_federation ;
         msg.federate = federate ;

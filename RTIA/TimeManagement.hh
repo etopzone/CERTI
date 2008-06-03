@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.17 2008/05/12 12:17:01 erk Exp $
+// $Id: TimeManagement.hh,v 3.18 2008/06/03 08:45:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -90,7 +90,8 @@ public:
     // Change Federate Time State
     void setLookahead(FederationTimeDelta lookahead, TypeException &e);
     void setTimeConstrained(bool etat, TypeException &e);
-    void setTimeRegulating(bool etat, TypeException &e);
+    void setTimeRegulating(bool etat,FederationTime heure_logique,
+                           FederationTimeDelta lookahead, TypeException &e);
     void StopperAvanceTemps() {
         _avancee_en_cours = PAS_D_AVANCEE ;
     };
@@ -157,4 +158,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.17 2008/05/12 12:17:01 erk Exp $
+// $Id: TimeManagement.hh,v 3.18 2008/06/03 08:45:49 rousse Exp $

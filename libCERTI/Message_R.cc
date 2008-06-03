@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.25 2008/05/30 09:49:17 rousse Exp $
+// $Id: Message_R.cc,v 3.26 2008/06/03 08:45:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -460,6 +460,7 @@ Message::readBody(MessageBuffer &msgBuffer)
           case ENABLE_TIME_CONSTRAINED:
           case DISABLE_TIME_CONSTRAINED:
             boolean = msgBuffer.read_bool();
+            lookahead = msgBuffer.read_double();
             break ;
 
           // Body contains boolean, TickTime, TickTime
@@ -616,4 +617,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.25 2008/05/30 09:49:17 rousse Exp $
+// $Id: Message_R.cc,v 3.26 2008/06/03 08:45:49 rousse Exp $

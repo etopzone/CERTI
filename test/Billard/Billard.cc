@@ -225,7 +225,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
             constrained = true ;
             D.Out(pdInit, "Time Constrained enabled.");
         }
-        rtiamb.modifyLookahead(TIME_STEP);
+        //rtiamb.modifyLookahead(TIME_STEP);
     }
     else {
         if (constrained) {
@@ -243,6 +243,7 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
                 rtiamb.queryFederateTime(localTime);
 
                 try {
+std::cout<<"BILLARD"<<std::endl;
                     rtiamb.enableTimeRegulation(localTime, TIME_STEP);
                     regulating = true ;
                     break ;

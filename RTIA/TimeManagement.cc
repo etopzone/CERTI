@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.39 2008/05/12 12:17:00 erk Exp $
+// $Id: TimeManagement.cc,v 3.40 2008/06/03 08:45:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -627,8 +627,11 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
 }
 
 // ----------------------------------------------------------------------------
+// Rajouter le time et le lookahead
+// Modifier le lookahead courant
 void
-TimeManagement::setTimeRegulating(bool etat, TypeException &e)
+TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
+               FederationTimeDelta the_lookahead, TypeException &e)
 {
     NM_Set_Time_Regulating msg ;
 
@@ -657,7 +660,10 @@ TimeManagement::setTimeRegulating(bool etat, TypeException &e)
         	msg.regulatorOn();
         } else {
         	msg.regulatorOff();
-        }        
+        } 
+    // Modifier lookahead courant 
+    _lookahead_courant = the_lookahead;
+    // faudrait peut etre remplacer heure courante par le temps en parametre      
         msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
@@ -958,4 +964,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.39 2008/05/12 12:17:00 erk Exp $
+// $Id: TimeManagement.cc,v 3.40 2008/06/03 08:45:49 rousse Exp $

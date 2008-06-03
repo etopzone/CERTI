@@ -964,7 +964,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetTimeRegulating.");
 
-        tm->setTimeRegulating(req->getBoolean(), e);
+        tm->setTimeRegulating(req->getBoolean(),req->getFederationTime(),req->getFederationTimeDelta(), e);
         break ;
 
       case Message::ENABLE_TIME_CONSTRAINED:
