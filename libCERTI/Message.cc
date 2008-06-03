@@ -43,7 +43,7 @@ Message::Message()
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
     //federationName = NULL ;is now a string then...
-    tag[0] = '\0' ;
+    tag = "" ;
     name[0] = '\0' ;
     label[0] = '\0' ;
     handleArraySize = 0 ;

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.84 2008/06/03 08:45:50 rousse Exp $
+// $Id: RTIambassador.cc,v 3.85 2008/06/03 14:16:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1237,7 +1237,11 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(theInteraction);
     req.setFedTime(theTime);
-    req.setTag(theTag);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling sendInteraction with Tag null") ;
+       }
+    req.setTag((std::string)theTag);
     req.setPHVPS(theParameters);
     req.setRegion(0);
     req.setBoolean(true);
@@ -1269,7 +1273,11 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 
     req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(theInteraction);
-    req.setTag(theTag);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling sendIntercation with Tag null") ;
+       }
+    req.setTag((std::string)theTag);
     req.setPHVPS(theParameters);
     req.setRegion(0);
     req.setBoolean(false);
@@ -2960,4 +2968,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.84 2008/06/03 08:45:50 rousse Exp $
+// $Id: RTIambassador.cc,v 3.85 2008/06/03 14:16:22 rousse Exp $

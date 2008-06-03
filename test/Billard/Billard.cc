@@ -243,7 +243,6 @@ Billard::setTimeRegulation(bool start_constrained, bool start_regulating)
                 rtiamb.queryFederateTime(localTime);
 
                 try {
-std::cout<<"BILLARD"<<std::endl;
                     rtiamb.enableTimeRegulation(localTime, TIME_STEP);
                     regulating = true ;
                     break ;
@@ -674,6 +673,7 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
             }
     }
     catch (RTI::Exception& e) {
+        std::cout<<"sendInteraction raise exception "<<e._name<<"("<<e._reason<<")"<<std::endl;
         D.Out(pdExcept, "**** Exception sending interaction : %d", &e);
     }
 
