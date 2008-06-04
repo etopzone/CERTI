@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.3 2007/06/22 08:51:36 erk Exp $
+// $Id: HandleManager.hh,v 3.4 2008/06/04 07:42:05 siron Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -101,10 +101,10 @@ HandleManager<T>::provide()
 template<typename T> void
 HandleManager<T>::free(T handle)
 {
-    if (handle + 1 == highest)
-	--highest ;
-    else
-	available.push_back(handle);
+    //if (handle + 1 == highest)
+	//--highest ;
+    //else
+	//available.push_back(handle);
 }
 
 } // certi
