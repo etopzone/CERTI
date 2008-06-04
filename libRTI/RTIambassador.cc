@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.85 2008/06/03 14:16:22 rousse Exp $
+// $Id: RTIambassador.cc,v 3.86 2008/06/04 15:08:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -703,6 +703,10 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 
     req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
+    if ( the_tag == NULL )
+       {
+       throw RTIinternalError ("Calling registerFederationSynchronizationPoint with Tag NULL");
+       }
     req.setTag(the_tag);
     // boolean false because without set of federates
     req.setBoolean(false);
@@ -735,6 +739,10 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
 
     req.type = Message::REGISTER_FEDERATION_SYNCHRONIZATION_POINT ;
     req.setLabel(label);
+    if ( theTag == NULL )
+       {
+       throw RTIinternalError ("Calling registerFederationSynchronizationPoint with Tag NULL");
+       }
     req.setTag(theTag);
     // boolean must be true because federate set exists but if size=0 (set empty)
     // we have to put boolean false (HLA 1.3 compliance to inform ALL federates)
@@ -1170,6 +1178,10 @@ updateAttributeValues(ObjectHandle theObject,
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(theObject);
     req.setFedTime(theTime);
+    if ( theTag == NULL)
+       {
+       throw RTIinternalError ("Calling updateAttributeValues with Tag NULL");
+       }
     req.setTag(theTag);
     req.setAHVPS(theAttributes);
     req.setBoolean(true);
@@ -1201,6 +1213,10 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(the_object);
+    if ( theTag == NULL)
+       {
+       throw RTIinternalError ("Calling updateAttributeValues with Tag NULL");
+       }
     req.setTag(theTag);
     req.setAHVPS(theAttributes);
     req.setBoolean(false);
@@ -1239,7 +1255,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.setFedTime(theTime);
     if (theTag == NULL)
        {
-       throw RTIinternalError ("Calling sendInteraction with Tag null") ;
+       throw RTIinternalError ("Calling sendInteraction with Tag NULL") ;
        }
     req.setTag((std::string)theTag);
     req.setPHVPS(theParameters);
@@ -1275,7 +1291,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.setInteractionClass(theInteraction);
     if (theTag == NULL)
        {
-       throw RTIinternalError ("Calling sendIntercation with Tag null") ;
+       throw RTIinternalError ("Calling sendIntercation with Tag NULL") ;
        }
     req.setTag((std::string)theTag);
     req.setPHVPS(theParameters);
@@ -1311,8 +1327,11 @@ RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
     req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
     req.setFedTime(theTime);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling deleteObjectInstance with Tag NULL") ;
+       }
     req.setTag(theTag);
-
     req.setBoolean(true);
 
     privateRefs->executeService(&req, &rep);
@@ -1336,8 +1355,12 @@ RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 
     req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling deleteObjectInstance with Tag NULL") ;
+       }
     req.setTag(theTag);
-    
+   
     req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
@@ -1490,6 +1513,10 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.type = Message::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling negotiatedAttributeOwnershipDivestiture with Tag NULL") ;
+       }
     req.setTag(theTag);
     req.setAHS(attrs);
 
@@ -1518,6 +1545,10 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.setObject(theObject);
+    if (theTag == NULL)
+       {
+       throw RTIinternalError ("Calling attributeOwnershipAcquisition with Tag NULL") ;
+       }
     req.setTag(theTag);
     req.setAHS(desiredAttributes);
 
@@ -2158,7 +2189,10 @@ RTI::RTIambassador::registerObjectInstanceWithRegion(ObjectClassHandle object_cl
 
     req.setType(Message::DDM_REGISTER_OBJECT);
     req.setObjectClass(object_class);
-    req.setTag(tag);
+    if ( tag != NULL )
+       {
+       req.setTag(tag);
+       }
     req.setAHS(attrs, nb);
     req.setRegions(build_region_handles(regions, nb));
 
@@ -2404,6 +2438,10 @@ RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction
     req.setInteractionClass(interaction);
     req.setPHVPS(par);
     req.setFedTime(time);
+    if ( tag == NULL )
+       {
+       throw RTIinternalError ("Calling sendInteractionWithRegion with Tag NULL");
+       }
     req.setTag(tag);
     req.setRegion(get_handle(region));
 
@@ -2434,6 +2472,10 @@ RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction
     req.setType(Message::SEND_INTERACTION);
     req.setInteractionClass(interaction);
     req.setPHVPS(par);
+    if ( tag == NULL )
+       {
+       throw RTIinternalError ("Calling sendInteractionWithRegion with Tag NULL");
+       }
     req.setTag(tag);
     req.setRegion(get_handle(region));
 
@@ -2968,4 +3010,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.85 2008/06/03 14:16:22 rousse Exp $
+// $Id: RTIambassador.cc,v 3.86 2008/06/04 15:08:31 rousse Exp $
