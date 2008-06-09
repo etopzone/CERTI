@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
+// $Id: main.cc,v 3.20 2008/06/09 11:17:12 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,6 +34,7 @@ using namespace std;
 
 extern "C"void SignalHandler(int Signal);
 void NewHandler();
+int normal_end;
 
 // ----------------------------------------------------------------------------
 int main() {
@@ -43,6 +44,7 @@ int main() {
 #endif
 
 	set_new_handler(NewHandler);
+        normal_end = 0;
 
 	if (NULL!=getenv("RTIA_DEBUG")) {
 		cerr << "RTIA:: RTIA_DEBUG is set: Waiting <"<< getenv("RTIA_DEBUG")
@@ -57,11 +59,15 @@ int main() {
 			rtia.execute();
 		}
 		catch (Exception &e) {
-			cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
-			cerr.flush();
+                        if (! normal_end) {
+			        cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
+			        cerr.flush();
+                        }
 			if (e._reason) {
-				cerr << "RTIA:: Reason: " << e._reason << endl;                       
-				cerr.flush();
+                                if (! normal_end) {
+				      cerr << "RTIA:: Reason: " << e._reason << endl;                       
+				      cerr.flush();
+                                }
 				rtia.displayStatistics();
 			}
 
@@ -70,10 +76,12 @@ int main() {
 
 		rtia.displayStatistics();
 	} catch (Exception &e) {
-		cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
-		if (e._reason) {
-			cerr << "RTIA:: Reason: " << e._reason << endl;
-		}
+                if (! normal_end) {
+		      cerr << "RTIA:: RTIA has thrown " << e._name << " exception." << endl;
+		      if (e._reason) {
+		 	  cerr << "RTIA:: Reason: " << e._reason << endl;
+		      }
+                }
 	}
 	cout << "RTIA:: End execution."<< endl ;
 
@@ -84,6 +92,7 @@ int main() {
 void SignalHandler(int Signal) {
 
 	printf("\nRTIA: Received signal %d. Exiting peacefully.\n", Signal);
+        normal_end = 1;
         //exit(0);
 }
 
@@ -92,4 +101,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.19 2008/04/26 14:59:41 erk Exp $
+// EOF $Id: main.cc,v 3.20 2008/06/09 11:17:12 siron Exp $

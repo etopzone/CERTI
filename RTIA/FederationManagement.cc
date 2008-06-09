@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.64 2008/06/03 08:45:49 rousse Exp $
+// $Id: FederationManagement.cc,v 3.65 2008/06/09 11:17:11 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -97,7 +97,7 @@ FederationManagement::~FederationManagement()
 	//			sleep(1);
           //  destroyFederationExecution(_nom_federation, e);
        // }
-        cout << "RTIA: Federation destroyed" << endl ;
+        cout << "RTIA: Federate destroyed" << endl ;
     //}
     
     //delete[] _FEDid ;
