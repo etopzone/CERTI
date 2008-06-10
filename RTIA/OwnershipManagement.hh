@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.7 2008/05/29 12:20:33 rousse Exp $
+// $Id: OwnershipManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
@@ -72,44 +72,44 @@ public:
 
     void
     negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                            AttributeHandle *attribArray,
+                                            std::vector <AttributeHandle> &attribArray,
                                             UShort attribArraySize,
                                             std::string theTag,
                                             TypeException &e);
     void
     cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                                  AttributeHandle *,
+                                                  std::vector <AttributeHandle> &,
                                                   UShort attribArraySize,
                                                   TypeException &e);
 
     void
     attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
-                                             AttributeHandle *attribArray,
+                                             std::vector <AttributeHandle> &attribArray,
                                              UShort attribArraySize,
                                              TypeException &e);
 
     void
     cancelattributeOwnershipAcquisition(ObjectHandle theObject,
-                                        AttributeHandle *attribArray,
+                                        std::vector <AttributeHandle> &attribArray,
                                         UShort attribArraySize,
                                         TypeException &e);
 
     void
     attributeOwnershipAcquisitionNotification(ObjectHandle theObject,
-                                              AttributeHandle *attribArray,
+                                              std::vector <AttributeHandle> &attribArray,
                                               UShort attribArraySize,
                                               FederateHandle theOwner,
                                               TypeException &e);
     void
     attributeOwnershipUnavailable(ObjectHandle theObject,
-                                  AttributeHandle *attribArray,
+                                  std::vector <AttributeHandle> &attribArray,
                                   UShort attribArraySize,
                                   FederateHandle theOwner,
                                   TypeException &e);
 
     void
     requestAttributeOwnershipAssumption(ObjectHandle theObject,
-                                        AttributeHandle *attribArray,
+                                        std::vector <AttributeHandle> &attribArray,
                                         UShort attribArraySize,
                                         FederateHandle theOwner,
                                         std::string theTag,
@@ -117,38 +117,38 @@ public:
 
     void
     unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                               AttributeHandle *attribArray,
+                                               std::vector <AttributeHandle> &attribArray,
                                                UShort attribArraySize,
                                                TypeException &e);
 
     void
     attributeOwnershipAcquisition(ObjectHandle theObject,
-                                  AttributeHandle *attribArray,
+                                  std::vector <AttributeHandle> &attribArray,
                                   UShort attribArraySize,
                                   std::string theTag,
                                   TypeException &e);
 
     void
     requestAttributeOwnershipRelease(ObjectHandle theObject,
-                                     AttributeHandle *attribArray,
+                                     std::vector <AttributeHandle> &attribArray,
                                      UShort attribArraySize,
                                      std::string theTag,
                                      TypeException &e);
 
     void
     attributeOwnershipDivestitureNotification(ObjectHandle theObject,
-                                              AttributeHandle *attribArray,
+                                              std::vector <AttributeHandle> &attribArray,
                                               UShort attribArraySize,
                                               TypeException &e);
     AttributeHandleSet*
     attributeOwnershipRealeaseResponse(ObjectHandle theObject,
-                                       AttributeHandle *attribArray,
+                                       std::vector <AttributeHandle> &attribArray,
                                        UShort attribArraySize,
                                        TypeException &e);
 
     void
     confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle theObject,
-                                                     AttributeHandle *,
+                                                     std::vector <AttributeHandle> &,
                                                      UShort attribArraySize,
                                                      TypeException &e);
 
@@ -162,4 +162,4 @@ protected:
 
 #endif // _CERTI_RTIA_OWM
 
-// $Id: OwnershipManagement.hh,v 3.7 2008/05/29 12:20:33 rousse Exp $
+// $Id: OwnershipManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $

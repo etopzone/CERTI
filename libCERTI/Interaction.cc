@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.37 2008/05/07 15:37:37 erk Exp $
+// $Id: Interaction.cc,v 3.38 2008/06/10 13:41:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -314,7 +314,7 @@ Interaction::isPublishing(FederateHandle fed)
 */
 void
 Interaction::isReady(FederateHandle federate_handle,
-                     ParameterHandle *parameter_list,
+                     std::vector <ParameterHandle> &parameter_list,
                      UShort list_size)
     throw (FederateNotPublishing,
            InteractionParameterNotDefined,
@@ -387,7 +387,7 @@ Interaction::unpublish(FederateHandle the_handle)
 */
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
-                             ParameterHandle *parameter_list,
+                             std::vector <ParameterHandle> &parameter_list,
                              ParameterLengthPair *value_list,
                              UShort list_size,
                              FederationTime time,
@@ -418,6 +418,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
+        answer->handleArray.resize(list_size) ;
         for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
             answer->setValue(i, value_list[i].value, value_list[i].length);
@@ -446,7 +447,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 */
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
-                             ParameterHandle *parameter_list,
+                             std::vector <ParameterHandle> &parameter_list,
                              ParameterLengthPair *value_list,
                              UShort list_size,
 			     const RTIRegion *region,
@@ -474,6 +475,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->setLabel(the_tag);
 
         answer->handleArraySize = list_size ;
+        answer->handleArray.resize(list_size) ;
         for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
             answer->setValue(i, value_list[i].value, value_list[i].length);
@@ -549,4 +551,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.37 2008/05/07 15:37:37 erk Exp $
+// $Id: Interaction.cc,v 3.38 2008/06/10 13:41:45 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.19 2008/05/05 14:28:55 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.20 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,10 +66,11 @@ DeclarationManagement::~DeclarationManagement()
 // publishObjectClass
 void
 DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
-                                          AttributeHandle *attribArray,
+                                          std::vector <AttributeHandle> &attribArray,
                                           UShort attribArraySize,
                                           TypeException &e)
 {
+    G.Out(pdGendoc,"enter DeclarationManagement::publishObjectClass") ;
     e = e_NO_EXCEPTION ;
 
     // Partie Locale
@@ -82,6 +83,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
                                            true);
     }
     catch (Exception *e) {
+        G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass on exception") ;
         D.Out(pdExcept, "Exception catched in PublishObjectClass.");
         throw e ;
     }
@@ -90,6 +92,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     NM_Publish_Object_Class req ;    
     req.objectClass     = theClassHandle ;
     req.handleArraySize = attribArraySize ;
+    req.handleArray.resize(attribArraySize) ;
     req.federation      = fm->_numero_federation ;
     req.federate        = fm->federate ;
 
@@ -103,6 +106,7 @@ DeclarationManagement::publishObjectClass(ObjectClassHandle theClassHandle,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::PUBLISH_OBJECT_CLASS, req.federate));
 
     e = rep->exception ;
+    G.Out(pdGendoc,"exit  DeclarationManagement::publishObjectClass") ;
 } /* end of publishObjectClass */
 
 // ----------------------------------------------------------------------------
@@ -112,8 +116,10 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
                                             TypeException &e)
 {
     // Variables leurres
-    AttributeHandle *attribArray = NULL ;
+    //AttributeHandle *attribArray = NULL ;
     UShort attribArraySize = 0 ;
+    std::vector <AttributeHandle> attribArrayVector ;
+    attribArrayVector.empty();
 
     e = e_NO_EXCEPTION ;
 
@@ -122,7 +128,7 @@ DeclarationManagement::unpublishObjectClass(ObjectClassHandle theClassHandle,
     try {
         rootObject->ObjectClasses->publish(fm->federate,
                                            theClassHandle,
-                                           attribArray,
+                                           attribArrayVector,
                                            attribArraySize,
                                            false);
     } catch (Exception *e) {
@@ -216,7 +222,7 @@ unpublishInteractionClass(InteractionClassHandle theInteractionHandle,
 void
 DeclarationManagement::
 subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                              AttributeHandle *attribArray,
+                              std::vector <AttributeHandle> &attribArray,
                               UShort attribArraySize,
                               TypeException &e)
 {
@@ -230,6 +236,7 @@ subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
     req.federation      = fm->_numero_federation ;
     req.federate        = fm->federate ;
     req.objectClass     = theClassHandle ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i=0 ; i<attribArraySize ; i++)
@@ -452,4 +459,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.19 2008/05/05 14:28:55 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.20 2008/06/10 13:41:44 rousse Exp $

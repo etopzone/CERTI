@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.7 2004/05/18 13:18:52 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -47,7 +47,7 @@ public:
     ~DeclarationManagement();
 
     void publishObjectClass(ObjectClassHandle theClassHandle,
-                            AttributeHandle *attribArray,
+                            std::vector <AttributeHandle> &attribArray,
                             UShort attribArraySize,
                             TypeException &e);
 
@@ -61,7 +61,7 @@ public:
                                    TypeException &e);
 
     void subscribeObjectClassAttribute(ObjectClassHandle theClassHandle,
-                                       AttributeHandle *attribArray,
+                                       std::vector <AttributeHandle> &attribArray,
                                        UShort attribArraySize,
                                        TypeException &e);
 
@@ -97,4 +97,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.7 2004/05/18 13:18:52 breholee Exp $
+// $Id: DeclarationManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.24 2008/04/26 14:59:42 erk Exp $
+// $Id: DataDistribution.cc,v 3.25 2008/06/10 13:41:43 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -214,7 +214,7 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 void
 DataDistribution::associateRegion(ObjectHandle object,
 				  RegionHandle region,
-				  AttributeHandle *attr,
+				  std::vector <AttributeHandle> &attr,
 				  int nb,
 				  TypeException &e)
     throw (RegionNotKnown)
@@ -236,6 +236,7 @@ DataDistribution::associateRegion(ObjectHandle object,
     req.federate = fm->federate ;
     req.object = object ;
     req.region = region ;
+
     req.setAHS(attr, nb);
 
     comm->sendMessage(&req);
@@ -249,7 +250,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 ObjectHandle
 DataDistribution::registerObject(ObjectClassHandle class_handle,
 				 const std::string name,
-				 const AttributeHandle *attrs,
+				 const std::vector <AttributeHandle> &attrs,
 				 int nb,
 				 const std::vector<RegionHandle> regions,
 				 TypeException &e)
@@ -318,7 +319,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 void
 DataDistribution::subscribe(ObjectClassHandle obj_class,
 			    RegionHandle region,
-			    AttributeHandle *attr,
+			    std::vector <AttributeHandle> &attr,
 			    int nb,
 			    TypeException &e)
     throw (RegionNotKnown)
@@ -412,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.24 2008/04/26 14:59:42 erk Exp $
+// $Id: DataDistribution.cc,v 3.25 2008/06/10 13:41:43 rousse Exp $

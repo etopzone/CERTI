@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.21 2008/05/29 12:20:33 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.22 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -53,7 +53,7 @@ public:
 
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
-                          AttributeHandle *attribArray,
+                          std::vector<AttributeHandle> &attribArray,
                           ValueLengthPair *valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
@@ -61,7 +61,7 @@ public:
                           TypeException &e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
-                          AttributeHandle *attribArray,
+                          std::vector<AttributeHandle> &attribArray,
                           ValueLengthPair *valueArray,
                           UShort attribArraySize,
                           std::string theTag,
@@ -75,7 +75,7 @@ public:
                         TypeException &e);
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                AttributeHandle *attribArray,
+                                std::vector <AttributeHandle> &attribArray,
                                 ValueLengthPair *valueArray,
                                 UShort attribArraySize,
                                 FederationTime theTime,
@@ -84,7 +84,7 @@ public:
                                 TypeException &e);
 
    void reflectAttributeValues(ObjectHandle theObjectHandle,
-                                AttributeHandle *attribArray,
+                                std::vector <AttributeHandle> &attribArray,
                                 ValueLengthPair *valueArray,
                                 UShort attribArraySize,
                                 const char *theTag,
@@ -92,7 +92,7 @@ public:
 
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
-                    ParameterHandle *paramArray,
+                    std::vector <ParameterHandle> &paramArray,
                     ParameterLengthPair *valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
@@ -102,7 +102,7 @@ public:
 
     void
     sendInteraction(InteractionClassHandle theInteraction,
-                    ParameterHandle *paramArray,
+                    std::vector <ParameterHandle> &paramArray,
                     ParameterLengthPair *valueArray,
                     UShort paramArraySize,
                     std::string theTag,
@@ -110,7 +110,7 @@ public:
                     TypeException &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
-                            ParameterHandle *paramArray,
+                            std::vector <ParameterHandle> &paramArray,
                             ParameterLengthPair *valueArray,
                             UShort paramArraySize,
                             FederationTime theTime,
@@ -119,7 +119,7 @@ public:
                             TypeException &e);
 
     void receiveInteraction(InteractionClassHandle theInteraction,
-                            ParameterHandle *paramArray,
+                            std::vector <ParameterHandle> &paramArray,
                             ParameterLengthPair *valueArray,
                             UShort paramArraySize,
                             const char *theTag,
@@ -152,14 +152,14 @@ public:
 
     EventRetractionHandle
     changeAttributeTransportType(ObjectHandle theObjectHandle,
-                                 AttributeHandle *attribArray,
+                                 std::vector <AttributeHandle> &attribArray,
                                  UShort attribArraySize,
                                  TransportType theType,
                                  TypeException &e);
 
     EventRetractionHandle
     changeAttributeOrderType(ObjectHandle theObjectHandle,
-                             AttributeHandle *attribArray,
+                             std::vector <AttributeHandle> &attribArray,
                              UShort attribArraySize,
                              OrderType theType,
                              TypeException &e);
@@ -176,12 +176,12 @@ public:
 
     void
     requestObjectAttributeValueUpdate(ObjectHandle theObjectHandle,
-                                      AttributeHandle *attribArray,
+                                      std::vector <AttributeHandle> &attribArray,
                                       UShort attribArraySize,
                                       TypeException &e);
 
     void provideAttributeValueUpdate(ObjectHandle theObject,
-                                      AttributeHandle *theAttributes,
+                                      std::vector <AttributeHandle> &theAttributes,
                                       UShort attribArraySize,
                                      TypeException &e);
 
@@ -229,4 +229,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.21 2008/05/29 12:20:33 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.22 2008/06/10 13:41:44 rousse Exp $

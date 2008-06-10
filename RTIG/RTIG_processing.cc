@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.72 2008/05/30 14:01:05 erk Exp $
+// $Id: RTIG_processing.cc,v 3.73 2008/06/10 13:41:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -680,6 +680,8 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"enter RTIG::processSubscribeObjectClass");
     G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
 
+    std::vector <AttributeHandle> arrayVide ;
+    arrayVide.empty() ;
     bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
     auditServer << "Class = " << req->objectClass
@@ -688,7 +690,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     federations.subscribeObject(req->federation,
 				req->federate,
 				req->objectClass,
-				sub ? req->handleArray : 0,
+				sub ? req->handleArray : arrayVide,
 				sub ? req->handleArraySize : 0);
 
     D.Out(pdRegister,
@@ -1140,6 +1142,7 @@ RTIG::processReleaseResponse(Socket *link, NetworkMessage *req)
 
     NM_Attribute_Ownership_Release_Response rep ;
     rep.handleArraySize = attributes->size();
+    rep.handleArray.resize(rep.handleArraySize) ;
 
     for (unsigned int i = 0 ; i < attributes->size(); i++) {
         rep.handleArray[i] = attributes->getHandle(i);
@@ -1429,4 +1432,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.72 2008/05/30 14:01:05 erk Exp $
+// $Id: RTIG_processing.cc,v 3.73 2008/06/10 13:41:45 rousse Exp $

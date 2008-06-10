@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.36 2008/05/30 14:01:04 erk Exp $
+// $Id: NetworkMessage.hh,v 3.37 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -194,7 +194,7 @@ public:
 	// containing the actual Parameter values. You must FREE this structure.
 	ParameterLengthPair *getParamValueArray();
 
-	void setAHS(const AttributeHandle *, int);
+	void setAHS(const std::vector <AttributeHandle> &, int);
 
 	UShort number ;
 
@@ -252,8 +252,7 @@ public:
 
 	/* NM_WithHandleArray class specific fields */
 	UShort handleArraySize ;
-	/* FIXME will make this a vector<AttributeHandle> */
-	AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
+	std::vector <AttributeHandle> handleArray ;
 
 	TransportType transport ;
 	OrderType order ;
@@ -353,4 +352,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.36 2008/05/30 14:01:04 erk Exp $
+// $Id: NetworkMessage.hh,v 3.37 2008/06/10 13:41:46 rousse Exp $

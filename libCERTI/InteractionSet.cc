@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.20 2007/10/31 10:30:23 erk Exp $
+// $Id: InteractionSet.cc,v 3.21 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -59,7 +59,7 @@ InteractionSet::addClass(Interaction *the_class)
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      InteractionClassHandle interaction_handle,
-                                     ParameterHandle *parameter_list,
+                                     std::vector <ParameterHandle> &parameter_list,
                                      ParameterLengthPair *value_list,
                                      UShort list_size,
                                      FederationTime the_time,
@@ -109,7 +109,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 void
 InteractionSet::broadcastInteraction(FederateHandle federate_handle,
                                      InteractionClassHandle interaction_handle,
-                                     ParameterHandle *parameter_list,
+                                     std::vector <ParameterHandle> &parameter_list,
                                      ParameterLengthPair *value_list,
                                      UShort list_size,
 				     const RTIRegion *region,
@@ -292,7 +292,7 @@ InteractionSet::getParameterName(ParameterHandle the_handle,
 void
 InteractionSet::isReady(FederateHandle federate_handle,
                         InteractionClassHandle the_interaction,
-                        ParameterHandle *param_array,
+                        std::vector <ParameterHandle> &param_array,
                         UShort param_array_size)
     throw (FederateNotPublishing,
            InteractionClassNotDefined,
@@ -357,4 +357,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.20 2007/10/31 10:30:23 erk Exp $
+// $Id: InteractionSet.cc,v 3.21 2008/06/10 13:41:46 rousse Exp $

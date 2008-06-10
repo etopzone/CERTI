@@ -560,6 +560,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::RETRACT:
+        std::cout<<"retract not yet implemented in chooseFederateProcessing"<<std::endl;
         e = e_UnimplementedService ;
         break ;
 

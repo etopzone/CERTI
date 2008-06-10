@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.15 2007/10/31 10:30:20 erk Exp $
+// $Id: InteractionSet.hh,v 3.16 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -105,7 +105,7 @@ public:
     // -------------------------------------
     void isReady(FederateHandle theFederateHandle,
                  InteractionClassHandle theInteraction,
-                 ParameterHandle *paramArray,
+                 std::vector <ParameterHandle> &paramArray,
                  UShort paramArraySize)
         throw (FederateNotPublishing,
                InteractionClassNotDefined,
@@ -114,7 +114,7 @@ public:
 
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
-                              ParameterHandle *theParameterList,
+                              std::vector <ParameterHandle> &theParameterList,
                               ParameterLengthPair *theValueList,
                               UShort theListSize,
                               FederationTime theTime,
@@ -127,7 +127,7 @@ public:
 
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
-                              ParameterHandle *theParameterList,
+                              std::vector <ParameterHandle> &theParameterList,
                               ParameterLengthPair *theValueList,
                               UShort theListSize,
 			      const RTIRegion *,
@@ -145,4 +145,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.15 2007/10/31 10:30:20 erk Exp $
+// $Id: InteractionSet.hh,v 3.16 2008/06/10 13:41:46 rousse Exp $

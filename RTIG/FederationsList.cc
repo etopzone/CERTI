@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.56 2008/04/29 08:33:04 erk Exp $
+// $Id: FederationsList.cc,v 3.57 2008/06/10 13:41:45 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -437,7 +437,7 @@ void
 FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
-                                 AttributeHandle *attributes,
+                                 std::vector <AttributeHandle> &attributes,
                                  ValueLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
@@ -470,7 +470,7 @@ void
 FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
-                                 AttributeHandle *attributes,
+                                 std::vector <AttributeHandle> &attributes,
                                  ValueLengthPair *values,
                                  UShort list_size,
                                  const char *tag)
@@ -501,7 +501,7 @@ void
 FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
-                                 ParameterHandle *parameters,
+                                 std::vector <ParameterHandle> &parameters,
                                  ParameterLengthPair *values,
                                  UShort list_size,
                                  FederationTime time,
@@ -540,7 +540,7 @@ void
 FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
-                                 ParameterHandle *parameters,
+                                 std::vector <ParameterHandle> &parameters,
                                  ParameterLengthPair *values,
                                  UShort list_size,
 				 RegionHandle region,
@@ -614,7 +614,7 @@ FederationsList::manageSynchronization(Handle handle,
                                        const char *label,
                                        const char *tag,
                                        unsigned short federate_setSize,
-                                       FederateHandle *federate_set)
+                                       std::vector <FederateHandle> &federate_set)
     throw (FederationAlreadyPaused,
            FederationNotPaused,
            FederateNotExecutionMember,
@@ -677,7 +677,7 @@ FederationsList::broadcastSynchronization(Handle handle,
                                           const char *label,
                                           const char *tag,
                                           unsigned short federate_setSize,
-                                          FederateHandle *federate_set)
+                                          std::vector <FederateHandle> &federate_set)
     throw (FederationExecutionDoesNotExist,
            RTIinternalError)
 {
@@ -730,7 +730,7 @@ void
 FederationsList::publishObject(Handle handle,
                                FederateHandle federate,
                                ObjectClassHandle object_class,
-                               AttributeHandle *attributes,
+                               std::vector <AttributeHandle> &attributes,
                                UShort list_size,
                                bool pub)
     throw (ObjectClassNotDefined,
@@ -789,7 +789,7 @@ void
 FederationsList::subscribeObject(Handle handle,
                                  FederateHandle federate,
                                  ObjectClassHandle object_class,
-                                 AttributeHandle *attributes,
+                                 std::vector <AttributeHandle> &attributes,
                                  UShort list_size)
     throw (ObjectClassNotDefined,
            AttributeNotDefined,
@@ -1003,7 +1003,7 @@ void
 FederationsList::negotiateDivestiture(Handle handle,
                                       FederateHandle federate,
                                       ObjectHandle id,
-                                      AttributeHandle *attributes,
+                                      std::vector <AttributeHandle> &attributes,
                                       UShort list_size,
                                       const char *tag)
     throw (FederateNotExecutionMember,
@@ -1035,7 +1035,7 @@ void
 FederationsList::acquireIfAvailable(Handle handle,
                                     FederateHandle federate,
                                     ObjectHandle id,
-                                    AttributeHandle *attributes,
+                                    std::vector <AttributeHandle> &attributes,
                                     UShort list_size)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
@@ -1066,7 +1066,7 @@ void
 FederationsList::divest(Handle handle,
                         FederateHandle federate,
                         ObjectHandle id,
-                        AttributeHandle *attributes,
+                        std::vector <AttributeHandle> &attributes,
                         UShort list_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -1094,7 +1094,7 @@ void
 FederationsList::acquire(Handle handle,
                          FederateHandle federate,
                          ObjectHandle id,
-                         AttributeHandle *attributes,
+                         std::vector <AttributeHandle> &attributes,
                          UShort list_size,
                          const char *tag)
     throw (ObjectNotKnown,
@@ -1127,7 +1127,7 @@ void
 FederationsList::cancelDivestiture(Handle handle,
                                    FederateHandle federate,
                                    ObjectHandle id,
-                                   AttributeHandle *attributes,
+                                   std::vector <AttributeHandle> &attributes,
                                    UShort list_size)
     throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
            AttributeDivestitureWasNotRequested, FederateNotExecutionMember,
@@ -1154,7 +1154,7 @@ AttributeHandleSet*
 FederationsList::respondRelease(Handle handle,
                                 FederateHandle federate,
                                 ObjectHandle id,
-                                AttributeHandle *attributes,
+                                std::vector <AttributeHandle> &attributes,
                                 UShort list_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -1185,7 +1185,7 @@ void
 FederationsList::cancelAcquisition(Handle handle,
                                    FederateHandle federate,
                                    ObjectHandle id,
-                                   AttributeHandle *attributes,
+                                   std::vector <AttributeHandle> &attributes,
                                    UShort list_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -1275,7 +1275,7 @@ FederationsList::associateRegion(Handle federation,
 				 ObjectHandle object,
 				 RegionHandle region,
 				 unsigned short nb_attributes,
-				 AttributeHandle *attributes)
+				 std::vector <AttributeHandle> &attributes)
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError)
 {
@@ -1319,7 +1319,7 @@ FederationsList::subscribeAttributesWR(Handle federation,
 				       ObjectClassHandle object_class,
 				       RegionHandle region,
 				       unsigned short nb,
-				       AttributeHandle *attributes)
+				       std::vector <AttributeHandle> &attributes)
     throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	   RTIinternalError)
 {
@@ -1402,7 +1402,7 @@ ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
 						       ObjectName tag,
 						       RegionHandle region,
 						       int nb,
-						       AttributeHandle *attrs)
+						       std::vector <AttributeHandle> &attrs)
 	throw (ObjectClassNotDefined, ObjectClassNotPublished,
 	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
 	       InvalidRegionContext, ObjectAlreadyRegistered,
@@ -1535,7 +1535,7 @@ FederateHandle
 FederationsList::requestObjectOwner(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
-                                 AttributeHandle *attributes,
+                                 std::vector <AttributeHandle> &attributes,
                                  UShort list_size)
         throw (ObjectNotKnown,
                FederationExecutionDoesNotExist,
@@ -1558,5 +1558,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.56 2008/04/29 08:33:04 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.57 2008/06/10 13:41:45 rousse Exp $
 

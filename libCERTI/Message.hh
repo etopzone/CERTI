@@ -395,9 +395,9 @@ public:
     RTI::ParameterHandleValuePairSet* getPHVPS() const ;
     void setPHVPS(const RTI::ParameterHandleValuePairSet &);
 
-    void setAttributes(AttributeHandle *, ushort);
-    void setAttributes(AttributeHandle *, ValueLengthPair *, ushort);
-    void setParameters(ParameterHandle *, ParameterLengthPair *, ushort);
+    void setAttributes(std::vector <AttributeHandle> &, ushort);
+    void setAttributes(std::vector <AttributeHandle> &, ValueLengthPair *, ushort);
+    void setParameters(std::vector <ParameterHandle> &, ParameterLengthPair *, ushort);
 
     void setException(TypeException, const char *the_reason = "\0");
     TypeException getExceptionType() const { return exception ; };
@@ -442,7 +442,9 @@ public:
 
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
-    AttributeHandle handleArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    // handle array is now a vector so MAX_ATTRIBUTES_PER_CLASS will be
+    // suppressed asap
+    std::vector <AttributeHandle> handleArray ;
 
     Message &operator=(const Message &);
 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.86 2008/06/04 15:08:31 rousse Exp $
+// $Id: RTIambassador.cc,v 3.87 2008/06/10 13:41:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -755,6 +755,7 @@ RTI::RTIambassador::registerFederationSynchronizationPoint(const char *label,
         req.setBoolean(true);
         // and then we have to store this set (after the size)
         req.handleArraySize = set_of_fed.size() ;
+        req.handleArray.resize(req.handleArraySize) ;
         for (unsigned long i=0 ; i<set_of_fed.size() ; i++)
             {
             req.handleArray[i] = set_of_fed.getHandle(i) ;
@@ -1873,7 +1874,7 @@ RTI::RTIambassador::flushQueueRequest(const FedTime& theTime)
            RestoreInProgress,
            RTIinternalError)
 {
-    throw RTIinternalError("Unimplemented Service");
+    throw RTIinternalError("Unimplemented Service flushQueueRequest");
     Message req, rep ;
 
     req.type = Message::FLUSH_QUEUE_REQUEST ;
@@ -2017,7 +2018,7 @@ RTI::RTIambassador::retract(EventRetractionHandle handle)
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::InvalidRetractionHandle)
 {
-    throw RTIinternalError("Unimplemented Service");
+    throw RTIinternalError("Unimplemented Service retract");
     Message req, rep ;
 
     req.type = Message::RETRACT ;
@@ -3010,4 +3011,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.86 2008/06/04 15:08:31 rousse Exp $
+// $Id: RTIambassador.cc,v 3.87 2008/06/10 13:41:47 rousse Exp $

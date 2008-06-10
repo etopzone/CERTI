@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.26 2008/06/03 08:45:49 rousse Exp $
+// $Id: Message_R.cc,v 3.27 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -541,7 +541,12 @@ Message::readHeader(MessageBuffer &msgBuffer)
 void
 Message::readHandleArray(MessageBuffer &msgBuffer)
 {
-    msgBuffer.read_bytes((char *) handleArray, handleArraySize * sizeof(AttributeHandle));
+    handleArraySize = msgBuffer.read_uint16() ;
+    handleArray.resize(handleArraySize) ;
+    for ( short i=0 ; i<handleArraySize ; i++)
+      {
+      handleArray[i] = msgBuffer.read_uint64() ;
+      }
 }
 
 // ----------------------------------------------------------------------------
@@ -617,4 +622,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.26 2008/06/03 08:45:49 rousse Exp $
+// $Id: Message_R.cc,v 3.27 2008/06/10 13:41:46 rousse Exp $

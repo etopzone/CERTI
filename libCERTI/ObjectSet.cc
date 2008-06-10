@@ -250,6 +250,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         answer->federation = server->federation();
         answer->exception = e_NO_EXCEPTION ;
         answer->object = the_object ;
+        answer->handleArray.resize(1) ;
         answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
         
@@ -329,7 +330,7 @@ ObjectSet::attributeOwnershipAcquisition(FederateHandle,
 void ObjectSet::
 cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                               ObjectHandle the_object,
-                                              AttributeHandle *the_attributes,
+                                              std::vector <AttributeHandle> &the_attributes,
                                               UShort the_size)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -369,7 +370,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
 AttributeHandleSet *
 ObjectSet::attributeOwnershipReleaseResponse(FederateHandle,
                                              ObjectHandle,
-                                             AttributeHandle *,
+                                             std::vector <AttributeHandle> &,
                                              UShort)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -386,7 +387,7 @@ ObjectSet::attributeOwnershipReleaseResponse(FederateHandle,
 void
 ObjectSet::cancelAttributeOwnershipAcquisition(FederateHandle,
                                                ObjectHandle,
-                                               AttributeHandle *,
+                                               std::vector <AttributeHandle> &,
                                                UShort)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -458,4 +459,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.21 2008/05/30 14:01:05 erk Exp $
+// $Id: ObjectSet.cc,v 3.22 2008/06/10 13:41:47 rousse Exp $

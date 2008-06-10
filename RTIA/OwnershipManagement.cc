@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.14 2008/05/29 12:20:33 rousse Exp $
+// $Id: OwnershipManagement.cc,v 3.15 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -73,6 +73,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(1) ;
     req.handleArray[0] = theAttribute ;
     req.handleArraySize = 1 ;
 
@@ -109,6 +110,7 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(1) ;
     req.handleArray[0] = theAttribute ;
     req.handleArraySize = 1 ;
 
@@ -127,7 +129,7 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
 void
 OwnershipManagement::
 negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                        AttributeHandle *attribArray,
+                                        std::vector <AttributeHandle> &attribArray,
                                         UShort attribArraySize,
                                         std::string theTag,
                                         TypeException &e)
@@ -138,6 +140,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -160,7 +163,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 void
 OwnershipManagement::
 cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                              AttributeHandle *attribArray,
+                                              std::vector <AttributeHandle> &attribArray,
                                               UShort attribArraySize,
                                               TypeException &e)
 {
@@ -169,6 +172,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -191,7 +195,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 void
 OwnershipManagement::
 attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
-                                         AttributeHandle *attribArray,
+                                         std::vector <AttributeHandle> &attribArray,
                                          UShort attribArraySize,
                                          TypeException &e)
 {
@@ -200,6 +204,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -220,7 +225,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 void
 OwnershipManagement::
 unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
-                                           AttributeHandle *attribArray,
+                                           std::vector <AttributeHandle> &attribArray,
                                            UShort attribArraySize,
                                            TypeException &e)
 {
@@ -229,6 +234,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -250,7 +256,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 void
 OwnershipManagement::
 attributeOwnershipAcquisition(ObjectHandle theObject,
-                              AttributeHandle *attribArray,
+                              std::vector <AttributeHandle> &attribArray,
                               UShort attribArraySize,
                               std::string theTag,
                               TypeException &e)
@@ -260,6 +266,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -282,7 +289,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
 AttributeHandleSet*
 OwnershipManagement::
 attributeOwnershipRealeaseResponse(ObjectHandle theObject,
-                                   AttributeHandle *attribArray,
+                                   std::vector <AttributeHandle> &attribArray,
                                    UShort attribArraySize,
                                    TypeException &e)
 {
@@ -291,6 +298,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     D.Out(pdDebug, "RELEASE_RESPONSE Object %u handleArraySize %u",
@@ -327,7 +335,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 void
 OwnershipManagement::
 cancelattributeOwnershipAcquisition(ObjectHandle theObject,
-                                    AttributeHandle *attribArray,
+                                    std::vector <AttributeHandle> &attribArray,
                                     UShort attribArraySize,
                                     TypeException &e)
 {
@@ -336,6 +344,7 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
+    req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
 
     for (int i = 0 ; i < attribArraySize ; i++)
@@ -392,7 +401,7 @@ OwnershipManagement::attributeIsNotOwned(ObjectHandle the_object,
 void
 OwnershipManagement::
 attributeOwnershipUnavailable(ObjectHandle the_object,
-                              AttributeHandle *the_attributes,
+                              std::vector <AttributeHandle> &the_attributes,
                               UShort the_size,
                               FederateHandle,
                               TypeException &)
@@ -411,7 +420,7 @@ attributeOwnershipUnavailable(ObjectHandle the_object,
 void
 OwnershipManagement::
 attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
-                                          AttributeHandle *the_attributes,
+                                          std::vector <AttributeHandle> &the_attributes,
                                           UShort the_size,
                                           FederateHandle,
                                           TypeException &)
@@ -430,7 +439,7 @@ attributeOwnershipAcquisitionNotification(ObjectHandle the_object,
 void
 OwnershipManagement::
 requestAttributeOwnershipAssumption(ObjectHandle the_object,
-                                    AttributeHandle *the_attributes,
+                                    std::vector <AttributeHandle> &the_attributes,
                                     UShort the_size,
                                     FederateHandle,
                                     std::string the_tag,
@@ -451,7 +460,7 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
 void
 OwnershipManagement::
 requestAttributeOwnershipRelease(ObjectHandle the_object,
-                                 AttributeHandle *the_attributes,
+                                 std::vector <AttributeHandle> &the_attributes,
                                  UShort the_size,
                                  std::string the_tag,
                                  TypeException &)
@@ -471,7 +480,7 @@ requestAttributeOwnershipRelease(ObjectHandle the_object,
 void
 OwnershipManagement::
 attributeOwnershipDivestitureNotification(ObjectHandle the_object,
-                                          AttributeHandle *the_attributes,
+                                          std::vector <AttributeHandle> &the_attributes,
                                           UShort the_size,
                                           TypeException &)
 {
@@ -489,7 +498,7 @@ attributeOwnershipDivestitureNotification(ObjectHandle the_object,
 void
 OwnershipManagement::
 confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
-                                                 AttributeHandle *the_attributes,
+                                                 std::vector <AttributeHandle> &the_attributes,
                                                  UShort the_size,
                                                  TypeException &)
 {
@@ -504,4 +513,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.14 2008/05/29 12:20:33 rousse Exp $
+// $Id: OwnershipManagement.cc,v 3.15 2008/06/10 13:41:44 rousse Exp $

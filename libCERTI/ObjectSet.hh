@@ -137,7 +137,7 @@ public:
     void
     cancelNegotiatedAttributeOwnershipDivestiture(FederateHandle the_federate,
                                                   ObjectHandle the_object,
-                                                  AttributeHandle *,
+                                                  std::vector <AttributeHandle> &,
                                                   UShort the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                AttributeDivestitureWasNotRequested, RTIinternalError);
@@ -145,7 +145,7 @@ public:
     AttributeHandleSet *
     attributeOwnershipReleaseResponse(FederateHandle the_federate,
                                       ObjectHandle the_object,
-                                      AttributeHandle *the_attributes,
+                                      std::vector <AttributeHandle> &the_attributes,
                                       UShort the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                FederateWasNotAskedToReleaseAttribute, RTIinternalError);
@@ -153,7 +153,7 @@ public:
     void
     cancelAttributeOwnershipAcquisition(FederateHandle the_federate,
                                         ObjectHandle the_object,
-                                        AttributeHandle *the_attributes,
+                                        std::vector <AttributeHandle> &the_attributes,
                                         UShort the_size)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested, RTIinternalError);

@@ -350,22 +350,28 @@ Message::getAHS() const
 void
 Message::setAHS(const AttributeHandleSet &the_attributes)
 {
+    G.Out(pdGendoc,"enter Message::setAHS");
     handleArraySize = the_attributes.size();
+    handleArray.resize(handleArraySize);
 
     for (unsigned int i = 0 ; i < the_attributes.size(); ++i) {
         handleArray[i] = the_attributes.getHandle(i);
     }
+    G.Out(pdGendoc,"exit  Message::setAHS");
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::setAHS(const AttributeHandle *attr, int size)
 {
+    G.Out(pdGendoc,"enter Message::setAHS with size");
     handleArraySize = size ;
+    handleArray.resize(handleArraySize);
 
     for (int i = 0 ; i < size ; ++i) {
         handleArray[i] = attr[i] ;
     }
+    G.Out(pdGendoc,"exit  Message::setAHS with size");
 }
 
 // ----------------------------------------------------------------------------
@@ -400,6 +406,7 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
     unsigned long size ;
     size = the_attributes.size() ;
     handleArraySize = size ;
+    handleArray.resize(handleArraySize);
 
     for (unsigned long i = 0 ; i < size ; i++) {
 
@@ -446,6 +453,7 @@ Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
     unsigned long size ;
     size = the_parameters.size() ;
     handleArraySize = size ;
+    handleArray.resize(handleArraySize);
 
     for (unsigned long i = 0 ; i < size ; i++)
         {
@@ -460,9 +468,10 @@ Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
 
 // ----------------------------------------------------------------------------
 void
-Message::setAttributes(AttributeHandle *the_attributes, ushort the_size)
+Message::setAttributes(std::vector <AttributeHandle> &the_attributes, ushort the_size)
 {
     handleArraySize = the_size ;
+    handleArray.resize(handleArraySize);
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_attributes[i] ;
@@ -471,11 +480,12 @@ Message::setAttributes(AttributeHandle *the_attributes, ushort the_size)
 
 // ----------------------------------------------------------------------------
 void
-Message::setAttributes(AttributeHandle *the_attributes,
+Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
                        ValueLengthPair *the_values,
                        ushort the_size)
 {
     handleArraySize = the_size ;
+    handleArray.resize(handleArraySize);
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_attributes[i] ;
@@ -485,12 +495,13 @@ Message::setAttributes(AttributeHandle *the_attributes,
 
 // ----------------------------------------------------------------------------
 void
-Message::setParameters(ParameterHandle * the_parameters,
+Message::setParameters(std::vector <ParameterHandle> & the_parameters,
                        ParameterLengthPair * the_values,
                        ushort the_size)
 
 {
     handleArraySize = the_size ;
+    handleArray.resize(handleArraySize);
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_parameters[i] ;
@@ -607,6 +618,7 @@ Message::operator=(const Message& msg)
     label = msg.label ;
 
     handleArraySize = msg.handleArraySize ;
+    handleArray.resize(handleArraySize);
 
     int i ;
     for (i=0 ; i < handleArraySize ; i++)

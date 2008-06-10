@@ -349,7 +349,8 @@ void NM_WithHandleArray::deserialize(MessageBuffer& msgBuffer) {
 	 * Note that if handleArraySize is 0 
 	 * the loop is void which is done on purpose.
 	 * (this is a feature not a bug :-) 
-	 */	
+	 */
+        handleArray.resize(handleArraySize);	
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		handleArray[i] = msgBuffer.read_int16();
 	}

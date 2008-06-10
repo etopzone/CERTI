@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.34 2008/05/30 14:01:04 erk Exp $
+// $Id: ObjectClass.hh,v 3.35 2008/06/10 13:41:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -55,7 +55,8 @@ public:
 
     } DiffStruct ;
 
-    DiffStruct DiffArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    //DiffStruct DiffArray[MAX_ATTRIBUTES_PER_CLASS] ;
+    std::vector <DiffStruct> DiffArray ;
 
     int size ;
 
@@ -97,12 +98,12 @@ public:
 
     // Publication and Subscription
     void publish(FederateHandle theFederateHandle,
-                 AttributeHandle *theAttributeList,
+                 std::vector <AttributeHandle> &theAttributeList,
                  UShort theListSize,
                  bool PubOrUnpub)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
-    bool subscribe(FederateHandle, AttributeHandle *, int, const RTIRegion *)
+    bool subscribe(FederateHandle, std::vector <AttributeHandle> &, int, const RTIRegion *)
         throw (AttributeNotDefined, RTIinternalError, SecurityError);
 
     void unsubscribe(FederateHandle, const RTIRegion *);
@@ -112,7 +113,7 @@ public:
     ObjectClassBroadcastList *
     negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                             ObjectHandle theObjectHandle,
-                                            AttributeHandle *theAttributeList,
+                                            std::vector <AttributeHandle> &theAttributeList,
                                             UShort theListSize,
                                             const char *theTag)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
@@ -122,7 +123,7 @@ public:
     void
     attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                              ObjectHandle theObjectHandle,
-                                             AttributeHandle *theAttributeList,
+                                             std::vector <AttributeHandle> &theAttributeList,
                                              UShort theListSize)
         throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
                AttributeNotPublished, FederateOwnsAttributes,
@@ -131,7 +132,7 @@ public:
     ObjectClassBroadcastList *
     unconditionalAttributeOwnershipDivestiture(FederateHandle,
                                                ObjectHandle theObjectHandle,
-                                               AttributeHandle*,
+                                               std::vector <AttributeHandle> &,
                                                UShort theListSize)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError);
@@ -139,7 +140,7 @@ public:
     void
     attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                   ObjectHandle theObjectHandle,
-                                  AttributeHandle *theAttributeList,
+                                  std::vector <AttributeHandle> &theAttributeList,
                                   UShort theListSize,
                                   const char *theTag)
         throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
@@ -148,14 +149,14 @@ public:
     AttributeHandleSet *
     attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                       ObjectHandle theObjectHandle,
-                                      AttributeHandle *theAttributeList,
+                                      std::vector <AttributeHandle> &theAttributeList,
                                       UShort theListSize)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
     void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                              ObjectHandle theObjectHandle,
-                                             AttributeHandle *theAttributeList,
+                                             std::vector <AttributeHandle> &theAttributeList,
                                              UShort theListSize)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
                AttributeAcquisitionWasNotRequested, RTIinternalError);
@@ -200,13 +201,13 @@ public:
 			       const Object * = NULL);
 
     ObjectClassBroadcastList *
-    updateAttributeValues(FederateHandle, Object *, AttributeHandle *,
+    updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
                           ValueLengthPair *, int, FederationTime, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
     ObjectClassBroadcastList *
-    updateAttributeValues(FederateHandle, Object *, AttributeHandle *,
+    updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
                           ValueLengthPair *, int, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
@@ -262,4 +263,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.34 2008/05/30 14:01:04 erk Exp $
+// $Id: ObjectClass.hh,v 3.35 2008/06/10 13:41:47 rousse Exp $

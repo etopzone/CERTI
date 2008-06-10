@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.40 2008/06/03 08:45:49 rousse Exp $
+// $Id: TimeManagement.cc,v 3.41 2008/06/10 13:41:44 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -268,6 +268,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break ;
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+          {
         owm->requestAttributeOwnershipAssumption(msg.object,
                                                  msg.handleArray,
                                                  msg.handleArraySize,
@@ -275,44 +276,55 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                                  const_cast<char*>(msg.getLabel().c_str()),
                                                  msg.exception);
         break ;
+           }
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+        {
         owm->attributeOwnershipUnavailable(msg.object,
                                            msg.handleArray,
                                            msg.handleArraySize,
                                            msg.federate,
                                            msg.exception);
         break ;
+        }
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+        {
         owm->attributeOwnershipAcquisitionNotification(msg.object,
                                                        msg.handleArray,
                                                        msg.handleArraySize,
                                                        msg.federate,
                                                        msg.exception);
         break ;
+        }
 
       case NetworkMessage::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+        {
         owm->attributeOwnershipDivestitureNotification(msg.object,
                                                        msg.handleArray,
                                                        msg.handleArraySize,
                                                        msg.exception);
         break ;
+        }
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+        {
         owm->requestAttributeOwnershipRelease(msg.object,
                                               msg.handleArray,
                                               msg.handleArraySize,
                                               const_cast<char*>(msg.getLabel().c_str()),
                                               msg.exception);
         break ;
+        }
 
       case NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        {
         owm->confirmAttributeOwnershipAcquisitionCancellation(msg.object,
                                                               msg.handleArray,
                                                               msg.handleArraySize,
                                                               msg.exception);
         break ;
+        }
 
       case NetworkMessage::INITIATE_FEDERATE_SAVE:
         fm->initiateFederateSave(msg.getLabel().c_str());
@@ -964,4 +976,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.40 2008/06/03 08:45:49 rousse Exp $
+// $Id: TimeManagement.cc,v 3.41 2008/06/10 13:41:44 rousse Exp $

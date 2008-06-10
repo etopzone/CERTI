@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.35 2008/05/29 12:20:38 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.36 2008/06/10 13:41:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -464,7 +464,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
 void
 ObjectClassSet::publish(FederateHandle theFederateHandle,
                         ObjectClassHandle theClassHandle,
-                        AttributeHandle *theAttributeList,
+                        std::vector <AttributeHandle> &theAttributeList,
                         UShort theListSize,
                         bool PubOrUnpub)
     throw (ObjectClassNotDefined,
@@ -548,7 +548,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
 void
 ObjectClassSet::subscribe(FederateHandle federate,
                           ObjectClassHandle class_handle,
-                          AttributeHandle *attributes,
+                          std::vector <AttributeHandle> &attributes,
                           int nb,
 			  const RTIRegion *region)
     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
@@ -567,7 +567,7 @@ ObjectClassSet::subscribe(FederateHandle federate,
 void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
-                                      AttributeHandle *attributes,
+                                      std::vector <AttributeHandle> &attributes,
                                       ValueLengthPair *values,
                                       UShort nb,
                                       FederationTime time,
@@ -613,7 +613,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
 void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
-                                      AttributeHandle *attributes,
+                                      std::vector <AttributeHandle> &attributes,
                                       ValueLengthPair *values,
                                       UShort nb,
                                       const char *tag)
@@ -659,7 +659,7 @@ void
 ObjectClassSet::
 negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         ObjectHandle theObjectHandle,
-                                        AttributeHandle *theAttributeList,
+                                        std::vector <AttributeHandle> &theAttributeList,
                                         UShort theListSize,
                                         const char *theTag)
     throw (ObjectNotKnown,
@@ -705,7 +705,7 @@ void
 ObjectClassSet::
 attributeOwnershipAcquisitionIfAvailable(FederateHandle theFederateHandle,
                                          ObjectHandle theObjectHandle,
-                                         AttributeHandle *theAttributeList,
+                                         std::vector <AttributeHandle> &theAttributeList,
                                          UShort theListSize)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
@@ -731,7 +731,7 @@ void
 ObjectClassSet::
 unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                            ObjectHandle theObjectHandle,
-                                           AttributeHandle *theAttributeList,
+                                           std::vector <AttributeHandle> &theAttributeList,
                                            UShort theListSize)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -774,7 +774,7 @@ void
 ObjectClassSet::
 attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                               ObjectHandle theObjectHandle,
-                              AttributeHandle *theAttributeList,
+                              std::vector <AttributeHandle> &theAttributeList,
                               UShort theListSize,
                               const char *theTag)
     throw (ObjectNotKnown,
@@ -800,7 +800,7 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 AttributeHandleSet * ObjectClassSet::
 attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
                                   ObjectHandle theObjectHandle,
-                                  AttributeHandle *theAttributeList,
+                                  std::vector <AttributeHandle> &theAttributeList,
                                   UShort theListSize)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -823,7 +823,7 @@ attributeOwnershipReleaseResponse(FederateHandle theFederateHandle,
 void ObjectClassSet::
 cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                     ObjectHandle theObjectHandle,
-                                    AttributeHandle *theAttributeList,
+                                    std::vector <AttributeHandle> &theAttributeList,
                                     UShort theListSize)
     throw (ObjectNotKnown,
            AttributeNotDefined,
@@ -843,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.35 2008/05/29 12:20:38 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.36 2008/06/10 13:41:47 rousse Exp $

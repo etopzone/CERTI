@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.32 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage.cc,v 3.33 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -207,10 +207,10 @@ NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
 
 // ----------------------------------------------------------------------------
 void
-NetworkMessage::setAHS(const AttributeHandle *attr, int size)
+NetworkMessage::setAHS(const std::vector <AttributeHandle> &attr, int size)
 {
     handleArraySize = size ;
-
+    handleArray.resize(size) ;
     for (int i = 0 ; i < size ; ++i) {
         handleArray[i] = attr[i] ;
     }
@@ -218,4 +218,4 @@ NetworkMessage::setAHS(const AttributeHandle *attr, int size)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.32 2008/05/09 20:21:39 erk Exp $
+// $Id: NetworkMessage.cc,v 3.33 2008/06/10 13:41:46 rousse Exp $

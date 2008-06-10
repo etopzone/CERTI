@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.31 2008/06/03 08:45:50 rousse Exp $
+// $Id: Message_W.cc,v 3.32 2008/06/10 13:41:46 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -515,7 +515,12 @@ Message::writeBody(MessageBuffer &msgBuffer)
 void
 Message::writeHandleArray(MessageBuffer &msgBuffer)
 {
-    msgBuffer.write_bytes( (char *)handleArray,(unsigned int)(handleArraySize * sizeof(AttributeHandle))) ; 
+    //msgBuffer.write_bytes( (char *)handleArray,(unsigned int)(handleArraySize * sizeof(AttributeHandle))) ; 
+    msgBuffer.write_uint16(handleArraySize) ;
+    for ( short i=0 ; i<handleArraySize ; i++)
+      {
+      msgBuffer.write_uint64(handleArray[i]) ;
+      }
 }
 
 // ----------------------------------------------------------------------------
@@ -578,4 +583,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.31 2008/06/03 08:45:50 rousse Exp $
+// $Id: Message_W.cc,v 3.32 2008/06/10 13:41:46 rousse Exp $
