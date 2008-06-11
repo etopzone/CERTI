@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.37 2008/06/10 13:41:46 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.38 2008/06/11 15:19:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -188,11 +188,11 @@ public:
 
 	// Return a newly allocated ValueArray, exactly of size AttribArraySize.
 	// containing the actual Attribute values. You must FREE this structure.
-	ValueLengthPair *getAttribValueArray();
+	std::vector <ValueLengthPair> getAttribValueArray();
 
 	// Return a newly allocated ValueArray, exactly of size ParamArraySize,
 	// containing the actual Parameter values. You must FREE this structure.
-	ParameterLengthPair *getParamValueArray();
+	std::vector <ParameterLengthPair> getParamValueArray();
 
 	void setAHS(const std::vector <AttributeHandle> &, int);
 
@@ -243,6 +243,8 @@ public:
 	void setTag(const std::string tag) {_isTagged = true; this->tag = tag;};
 	void setTag(const char *new_tag) {_isTagged = true; tag = std::string(new_tag); }
 	const std::string getTag() const {return this->tag;};
+
+        void sizeValueArray(int size) ;
 
 	ObjectHandlecount idCount ;
 	ObjectHandle firstId ;
@@ -301,7 +303,7 @@ protected:
 	Message_T type;
 
 	// ValueArray is now a ValueLengthPair
-	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS] ;
+        std::vector <ValueLengthPair> ValueArray ;
 
 private:
 	/** 
@@ -352,4 +354,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.37 2008/06/10 13:41:46 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.38 2008/06/11 15:19:22 rousse Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.33 2008/06/10 13:41:46 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.34 2008/06/11 15:19:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -64,10 +64,8 @@ NetworkMessage::NetworkMessage()
     interactionClass = 0 ;
 
     handleArraySize  = 0 ;
-    for (int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; ++i) {
-        ValueArray[i].length   = 0 ;
-        ValueArray[i].value[0] = '\0' ;
-    }
+    ValueArray.empty();
+
 } /* end of NetworkMessage() */
 
 NetworkMessage::~NetworkMessage() {
@@ -75,18 +73,15 @@ NetworkMessage::~NetworkMessage() {
 }
 
 // ----------------------------------------------------------------------------
-ValueLengthPair *
+std::vector <ValueLengthPair> 
 NetworkMessage::getAttribValueArray()
 {
 
-    ValueLengthPair *NewValueArray = NULL ;
-
-    NewValueArray = (ValueLengthPair *) calloc(handleArraySize, sizeof(ValueLengthPair));
+    std::vector <ValueLengthPair> NewValueArray ;
     
     unsigned long length ;
 
-    if (NewValueArray == NULL)
-        throw RTIinternalError("No memory.");
+    NewValueArray.resize(handleArraySize) ;
 
     for (int i = 0 ; i <handleArraySize ; i++)
         {
@@ -98,15 +93,12 @@ NetworkMessage::getAttribValueArray()
 }
 
 // ----------------------------------------------------------------------------
-ParameterLengthPair *
+std::vector <ParameterLengthPair>
 NetworkMessage::getParamValueArray()
 {
-    ParameterLengthPair *NewValueArray = NULL ;
+    std::vector <ParameterLengthPair> NewValueArray ;
 
-    NewValueArray = (ParameterLengthPair *) calloc(handleArraySize, sizeof(ParameterLengthPair));
-
-    if (NewValueArray == NULL)
-        throw RTIinternalError("No memory.");
+    NewValueArray.resize(handleArraySize) ;
 
     unsigned long length ;
 
@@ -200,6 +192,7 @@ NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
 
     // Setting Value
     // First we store the length, then copy Value with memcpy instead of strcpy
+    ValueArray.resize(handleArraySize) ;
     ValueArray[Rank].length = length ;
     memcpy(ValueArray[Rank].value, Value, length);
 
@@ -215,7 +208,13 @@ NetworkMessage::setAHS(const std::vector <AttributeHandle> &attr, int size)
         handleArray[i] = attr[i] ;
     }
 }
+// ----------------------------------------------------------------------------
+void
+NetworkMessage::sizeValueArray(int size)
+{
+ValueArray.resize(size) ;
+}
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.33 2008/06/10 13:41:46 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.34 2008/06/11 15:19:21 rousse Exp $

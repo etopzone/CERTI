@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.47 2008/06/10 13:41:46 rousse Exp $
+// $Id: ObjectClass.cc,v 3.48 2008/06/11 15:19:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -883,7 +883,7 @@ ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
                                    std::vector <AttributeHandle> &the_attributes,
-                                   ValueLengthPair *the_values,
+                                   std::vector <ValueLengthPair> &the_values,
                                    int the_size,
                                    FederationTime the_time,
                                    const char *the_tag)
@@ -946,7 +946,7 @@ ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
                                    std::vector <AttributeHandle> &the_attributes,
-                                   ValueLengthPair *the_values,
+                                   std::vector <ValueLengthPair> &the_values,
                                    int the_size,
                                    const char *the_tag)
     throw (ObjectNotKnown,
@@ -1823,4 +1823,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.47 2008/06/10 13:41:46 rousse Exp $
+// $Id: ObjectClass.cc,v 3.48 2008/06/11 15:19:22 rousse Exp $

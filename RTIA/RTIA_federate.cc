@@ -398,7 +398,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::UPDATE_ATTRIBUTE_VALUES: {
 
-          ValueLengthPair *ValueArray = req->getValueArray();
+          std::vector <ValueLengthPair> ValueArray = req->getValueArray();
 
           try {
               if (req->getBoolean() )
@@ -427,9 +427,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   }
               // Don't forget boolean value for the answer
               rep.setBoolean(req->getBoolean()) ;
-              free(ValueArray);
+              ValueArray.empty() ;
           } catch (Exception *e) {
-              free(ValueArray);
+              ValueArray.empty() ;
               throw e ;
           }
       }
@@ -437,7 +437,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::SEND_INTERACTION: {
 
-          ParameterLengthPair *ValueArray = (ParameterLengthPair *) req->getValueArray();
+          std::vector <ParameterLengthPair> ValueArray = req->getValueArray();
           G.Out(pdGendoc,"S_I into RTIA::chooseFederateProcessing") ;
           try {
               if (req->getBoolean() )
@@ -466,9 +466,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 				      req->getRegion(),
                                       e);
                   }
-              free(ValueArray);
+              ValueArray.empty();
           } catch (Exception *e) {
-              free(ValueArray);
+              ValueArray.empty();
               throw e ;
           }
       }

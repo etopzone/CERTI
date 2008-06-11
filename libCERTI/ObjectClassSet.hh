@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.28 2008/06/10 13:41:47 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.29 2008/06/11 15:19:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -109,7 +109,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttribArray,
-                               ValueLengthPair *theValueArray,
+                               std::vector <ValueLengthPair> &theValueArray,
                                UShort theArraySize,
                                FederationTime theTime,
                                const char *theUserTag)
@@ -119,7 +119,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttribArray,
-                               ValueLengthPair *theValueArray,
+                               std::vector <ValueLengthPair> &theValueArray,
                                UShort theArraySize,
                                const char *theUserTag)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
@@ -210,4 +210,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.28 2008/06/10 13:41:47 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.29 2008/06/11 15:19:22 rousse Exp $

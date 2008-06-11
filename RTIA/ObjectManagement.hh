@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.22 2008/06/10 13:41:44 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.23 2008/06/11 15:19:19 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -54,7 +54,7 @@ public:
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
                           std::vector<AttributeHandle> &attribArray,
-                          ValueLengthPair *valueArray,
+                          std::vector <ValueLengthPair> &valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
                           std::string theTag,
@@ -62,7 +62,7 @@ public:
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
                           std::vector<AttributeHandle> &attribArray,
-                          ValueLengthPair *valueArray,
+                          std::vector <ValueLengthPair> &valueArray,
                           UShort attribArraySize,
                           std::string theTag,
                           TypeException &e);
@@ -76,7 +76,7 @@ public:
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
-                                ValueLengthPair *valueArray,
+                                std::vector <ValueLengthPair> &valueArray,
                                 UShort attribArraySize,
                                 FederationTime theTime,
                                 const char *theTag,
@@ -85,7 +85,7 @@ public:
 
    void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
-                                ValueLengthPair *valueArray,
+                                std::vector <ValueLengthPair> &valueArray,
                                 UShort attribArraySize,
                                 const char *theTag,
                                 TypeException &e);
@@ -93,7 +93,7 @@ public:
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
                     std::vector <ParameterHandle> &paramArray,
-                    ParameterLengthPair *valueArray,
+                    std::vector <ParameterLengthPair> &valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
                     std::string theTag,
@@ -103,7 +103,7 @@ public:
     void
     sendInteraction(InteractionClassHandle theInteraction,
                     std::vector <ParameterHandle> &paramArray,
-                    ParameterLengthPair *valueArray,
+                    std::vector <ParameterLengthPair> &valueArray,
                     UShort paramArraySize,
                     std::string theTag,
 		    RegionHandle,
@@ -111,7 +111,7 @@ public:
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
-                            ParameterLengthPair *valueArray,
+                            std::vector <ParameterLengthPair> &valueArray,
                             UShort paramArraySize,
                             FederationTime theTime,
                             const char *theTag,
@@ -120,7 +120,7 @@ public:
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
-                            ParameterLengthPair *valueArray,
+                            std::vector <ParameterLengthPair> &valueArray,
                             UShort paramArraySize,
                             const char *theTag,
                             TypeException &e);
@@ -229,4 +229,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.22 2008/06/10 13:41:44 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.23 2008/06/11 15:19:19 rousse Exp $

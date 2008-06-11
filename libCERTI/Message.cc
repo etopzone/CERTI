@@ -67,11 +67,7 @@ Message::Message()
     number = 0 ;
     region = 0 ;
     //FEDid = NULL ;now string
-    for ( int i=0 ; i<MAX_ATTRIBUTES_PER_CLASS ; i++ )
-        {
-        valueArray[i].length = 0 ;
-        valueArray[i].value[0]  = '\0' ;
-        }
+    valueArray.empty() ;
 }
 /** getValue : Value and its length are tooken from valueArray[Rank]
     @param Rank valueArray rank
@@ -88,7 +84,7 @@ char *Message::getValue(int Rank, unsigned long *length, char *Value) const
 {
     // Pre-Checking
 
-    if ((Rank < 0) || (Rank >= handleArraySize))
+    if ((Rank < 0) || ((Rank+1) > (int)valueArray.size()) )
         throw RTIinternalError("Bad Rank in Message.");
 
     // Getting Value
@@ -113,19 +109,15 @@ char *Message::getValue(int Rank, unsigned long *length, char *Value) const
 // ----------------------------------------------------------------------------
 /** Return a newly allocated ValueArray, exactly of size HandleArraySize.
 */
-ParameterLengthPair *
+std::vector <ParameterLengthPair>
 Message::getValueArray()
 {
     int i ;
     unsigned long length ;
 
-    ParameterLengthPair *NewValueArray = NULL ;
+    std::vector <ParameterLengthPair> NewValueArray ;
 
-    NewValueArray = (ParameterLengthPair *) calloc(handleArraySize,
-                                              sizeof(ParameterLengthPair));
-
-    if (NewValueArray == NULL)
-        throw RTIinternalError("No memory.");
+    NewValueArray.resize(handleArraySize) ;
 
     for (i = 0 ; i < handleArraySize ; i++)
         {
@@ -407,6 +399,7 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
     size = the_attributes.size() ;
     handleArraySize = size ;
     handleArray.resize(handleArraySize);
+    valueArray.resize(size) ;
 
     for (unsigned long i = 0 ; i < size ; i++) {
 
@@ -481,11 +474,12 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes, ushort the
 // ----------------------------------------------------------------------------
 void
 Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
-                       ValueLengthPair *the_values,
+                       std::vector <ValueLengthPair> &the_values,
                        ushort the_size)
 {
     handleArraySize = the_size ;
     handleArray.resize(handleArraySize);
+    valueArray.resize(the_size) ;
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_attributes[i] ;
@@ -496,12 +490,13 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
 // ----------------------------------------------------------------------------
 void
 Message::setParameters(std::vector <ParameterHandle> & the_parameters,
-                       ParameterLengthPair * the_values,
+                       std::vector <ParameterLengthPair> & the_values,
                        ushort the_size)
 
 {
     handleArraySize = the_size ;
     handleArray.resize(handleArraySize);
+    valueArray.resize(the_size) ;
 
     for (int i = 0 ; i < the_size ; i++) {
         handleArray[i] = the_parameters[i] ;
@@ -553,9 +548,10 @@ Message::setValue(int Rank, const char *Value, unsigned long length)
     if ((Value == NULL) || (length > MAX_BYTES_PER_VALUE))
         throw RTIinternalError("Bad Value for message.");
 
-    if ((Rank < 0) || (Rank >= handleArraySize))
+    if ((Rank < 0))
         throw RTIinternalError("Bad Rank for message.");
-
+    if ( (Rank+1) > (int)valueArray.size() )
+       valueArray.resize(Rank+1) ;
     // Setting Value
     // First we store the length, then copy with memcpy instead of strcpy
     valueArray[Rank].length = length ;
@@ -619,6 +615,7 @@ Message::operator=(const Message& msg)
 
     handleArraySize = msg.handleArraySize ;
     handleArray.resize(handleArraySize);
+    valueArray.resize(handleArraySize) ;
 
     int i ;
     for (i=0 ; i < handleArraySize ; i++)

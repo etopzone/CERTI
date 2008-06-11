@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.10 2008/06/11 15:19:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
@@ -31,6 +31,8 @@
 
 #include <list>
 
+#define MAX_STATE_SIZE 1024
+
 namespace certi {
 
 class ObjectBroadcastLine {
@@ -40,7 +42,8 @@ public:
     ObjectBroadcastLine(FederateHandle fed, State init = notSub);
 
     FederateHandle Federate ;
-    State state[MAX_ATTRIBUTES_PER_CLASS + 1] ;
+
+    State state[MAX_STATE_SIZE+1] ;
 
 };
 
@@ -84,4 +87,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_BROADCAST_LIST_HH
 
-// $Id: ObjectClassBroadcastList.hh,v 3.9 2008/05/30 14:01:05 erk Exp $
+// $Id: ObjectClassBroadcastList.hh,v 3.10 2008/06/11 15:19:22 rousse Exp $

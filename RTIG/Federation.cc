@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.89 2008/06/10 13:41:45 rousse Exp $
+// $Id: Federation.cc,v 3.90 2008/06/11 15:19:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -622,7 +622,7 @@ void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameter_handles,
-                                 ParameterLengthPair *parameter_values,
+                                 std::vector <ParameterLengthPair> &parameter_values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region_handle,
@@ -671,7 +671,7 @@ void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameter_handles,
-                                 ParameterLengthPair *parameter_values,
+                                 std::vector <ParameterLengthPair> &parameter_values,
                                  UShort list_size,
 				 RegionHandle region_handle,
                                  const char *tag)
@@ -1596,7 +1596,7 @@ void
 Federation::updateAttributeValues(FederateHandle federate,
                                   ObjectHandle id,
                                   std::vector <AttributeHandle> &attributes,
-                                  ValueLengthPair *values,
+                                  std::vector <ValueLengthPair> &values,
                                   UShort list_size,
                                   FederationTime time,
                                   const char *tag)
@@ -1629,7 +1629,7 @@ void
 Federation::updateAttributeValues(FederateHandle federate,
                                   ObjectHandle id,
                                   std::vector <AttributeHandle> &attributes,
-                                  ValueLengthPair *values,
+                                  std::vector <ValueLengthPair> &values,
                                   UShort list_size,
                                   const char *tag)
     throw (FederateNotExecutionMember,
@@ -2278,5 +2278,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.89 2008/06/10 13:41:45 rousse Exp $
+// $Id: Federation.cc,v 3.90 2008/06/11 15:19:20 rousse Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.48 2008/06/10 13:41:45 rousse Exp $
+// $Id: Federation.hh,v 3.49 2008/06/11 15:19:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -288,7 +288,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttributeList,
-                               ValueLengthPair *theValueList,
+                               std::vector <ValueLengthPair> &theValueList,
                                UShort theListSize,
                                FederationTime theTime,
                                const char *theTag)
@@ -303,7 +303,7 @@ public:
     void updateAttributeValues(FederateHandle theFederateHandle,
                                ObjectHandle theObjectHandle,
                                std::vector <AttributeHandle> &theAttributeList,
-                               ValueLengthPair *theValueList,
+                               std::vector <ValueLengthPair> &theValueList,
                                UShort theListSize,
                                const char *theTag)
         throw (FederateNotExecutionMember,
@@ -321,7 +321,7 @@ public:
     void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               std::vector <ParameterHandle> &theParameterList,
-                              ParameterLengthPair *theValueList,
+                              std::vector <ParameterLengthPair> &theValueList,
                               UShort theListSize,
                               FederationTime theTime,
 			      RegionHandle,
@@ -337,7 +337,7 @@ public:
    void broadcastInteraction(FederateHandle theFederateHandle,
                               InteractionClassHandle theInteractionHandle,
                               std::vector <ParameterHandle> &theParameterList,
-                              ParameterLengthPair *theValueList,
+                              std::vector <ParameterLengthPair> &theValueList,
                               UShort theListSize,
 			      RegionHandle,
                               const char *theTag)
@@ -597,4 +597,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.48 2008/06/10 13:41:45 rousse Exp $
+// $Id: Federation.hh,v 3.49 2008/06/11 15:19:20 rousse Exp $

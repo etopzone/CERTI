@@ -777,7 +777,6 @@ public:
 protected:
 	/* specific field */
 	//	ObjectClassHandle objectClass;	
-	//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 
@@ -809,7 +808,6 @@ public:
 protected:
 	/* specific field */
 	//	InteractionClassHandle interactionClass;	
-	//	ValueLengthPair ValueArray[MAX_ATTRIBUTES_PER_CLASS];
 private:
 };
 

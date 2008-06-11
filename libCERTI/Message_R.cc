@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.27 2008/06/10 13:41:46 rousse Exp $
+// $Id: Message_R.cc,v 3.28 2008/06/11 15:19:21 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -541,7 +541,7 @@ Message::readHeader(MessageBuffer &msgBuffer)
 void
 Message::readHandleArray(MessageBuffer &msgBuffer)
 {
-    handleArraySize = msgBuffer.read_uint16() ;
+    //handleArraySize = msgBuffer.read_uint16() ;
     handleArray.resize(handleArraySize) ;
     for ( short i=0 ; i<handleArraySize ; i++)
       {
@@ -603,10 +603,14 @@ Message::readFEDid(MessageBuffer &msgBuffer)
 void
 Message::readValueArray(MessageBuffer &msgBuffer)
 {
+   G.Out(pdGendoc,"enter Message::readValueArray");
 // valueArray contains length and value
 // so we have to read length and then value with a read_bytes
+
+    valueArray.resize(handleArraySize) ;
     for (int i = 0 ; i < handleArraySize ; i ++)
         {
+
         valueArray[i].length = msgBuffer.read_int64() ;
         msgBuffer.read_bytes((char *) valueArray[i].value, valueArray[i].length);
         }
@@ -622,4 +626,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.27 2008/06/10 13:41:46 rousse Exp $
+// $Id: Message_R.cc,v 3.28 2008/06/11 15:19:21 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.73 2008/06/10 13:41:45 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.74 2008/06/11 15:19:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -792,7 +792,7 @@ void
 RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
     G.Out(pdGendoc,"enter RTIG::processUpdateAttributeValues");
-    ValueLengthPair *ValueArray = NULL ;
+    std::vector <ValueLengthPair> ValueArray ;
 
     auditServer << "ObjID = " << req->object
 		<< ", Date = " << req->getDate() ;
@@ -824,7 +824,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->handleArraySize,
                                  req->getLabel().c_str());
         }
-    free(ValueArray);
+    ValueArray.empty();
 
     // Building answer (Network Message re)
     NM_Update_Attribute_Values rep ;
@@ -845,7 +845,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 void
 RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 {
-    ValueLengthPair *values = NULL ;
+    std::vector <ValueLengthPair> values ;
 
     G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processSendInteraction");
@@ -878,7 +878,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				req->region,
 				req->getLabel().c_str());
         }
-    free(values);
+    values.empty();
 
     D.Out(pdDebug, "Interaction %d parameters update completed",
           req->interactionClass);
@@ -1432,4 +1432,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.73 2008/06/10 13:41:45 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.74 2008/06/11 15:19:20 rousse Exp $

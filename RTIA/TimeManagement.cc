@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.41 2008/06/10 13:41:44 rousse Exp $
+// $Id: TimeManagement.cc,v 3.42 2008/06/11 15:19:20 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -176,7 +176,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
-          ValueLengthPair *ValueArray = msg.getAttribValueArray();
+          std::vector <ValueLengthPair> ValueArray = msg.getAttribValueArray();
 
           if (msg.isDated())
              om->reflectAttributeValues(msg.object,
@@ -194,7 +194,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                         msg.handleArraySize,
                                         msg.getLabel().c_str(),
                                         msg.exception);
-          free(ValueArray);
+          ValueArray.empty();
           break ;
       }
 
@@ -210,7 +210,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
-          ParameterLengthPair *ValueArray = msg.getParamValueArray();
+          std::vector <ParameterLengthPair> ValueArray = msg.getParamValueArray();
 
           if (msg.isDated())
               om->receiveInteraction(msg.interactionClass,
@@ -228,7 +228,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                      msg.handleArraySize,
                                      msg.getLabel().c_str(),
                                      msg.exception);
-          free(ValueArray);
+          ValueArray.empty();
 
           break ;
       }
@@ -976,4 +976,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.41 2008/06/10 13:41:44 rousse Exp $
+// $Id: TimeManagement.cc,v 3.42 2008/06/11 15:19:20 rousse Exp $

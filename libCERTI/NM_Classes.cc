@@ -984,7 +984,8 @@ void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	/* handleArraySize was done by superclass */
 	/* specific code (if any) goes here */		
 	object          = msgBuffer.read_int32();	
-	objectClass     = msgBuffer.read_int32();	
+	objectClass     = msgBuffer.read_int32();
+        ValueArray.resize(handleArraySize) ;	
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
 		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);		
@@ -1030,6 +1031,7 @@ void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	region           = msgBuffer.read_int32();
 	interactionClass = msgBuffer.read_int32();
+        ValueArray.resize(handleArraySize) ;
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
 		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);

@@ -107,7 +107,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 EventRetractionHandle
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         std::vector<AttributeHandle> &attribArray,
-                                        ValueLengthPair *valueArray,
+                                        std::vector<ValueLengthPair> &valueArray,
                                         UShort attribArraySize,
                                         FederationTime theTime,
                                         std::string theTag,
@@ -130,6 +130,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     	req.setDate(theTime);
         req.handleArray.resize(attribArraySize) ;   
     	req.handleArraySize = attribArraySize ;
+        req.sizeValueArray(attribArraySize) ;
 
     	for (i = 0 ; i < attribArraySize ; i++) {
     	    req.handleArray[i] = attribArray[i] ;
@@ -172,7 +173,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 void
 ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         std::vector<AttributeHandle> &attribArray,
-                                        ValueLengthPair *valueArray,
+                                        std::vector<ValueLengthPair> &valueArray,
                                         UShort attribArraySize,
                                         std::string theTag,
                                         TypeException &e)
@@ -187,6 +188,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     // Do no set Date if without time
     req.handleArray.resize(attribArraySize) ;
     req.handleArraySize = attribArraySize ;
+    req.sizeValueArray(attribArraySize) ;
 
     for (i = 0 ; i < attribArraySize ; i++) {
         req.handleArray[i] = attribArray[i] ;
@@ -233,7 +235,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeHandle> &the_attributes,
-                                         ValueLengthPair *the_values,
+                                         std::vector <ValueLengthPair> &the_values,
                                          UShort the_size,
                                          FederationTime the_time,
                                          const char *the_tag,
@@ -261,7 +263,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 void
 ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeHandle> &the_attributes,
-                                         ValueLengthPair *the_values,
+                                         std::vector <ValueLengthPair> &the_values,
                                          UShort the_size,
                                          const char *the_tag,
                                          TypeException &)
@@ -285,7 +287,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
 EventRetractionHandle
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   std::vector <ParameterHandle> &paramArray,
-                                  ParameterLengthPair *valueArray,
+                                  std::vector <ParameterLengthPair> &valueArray,
                                   UShort paramArraySize,
                                   FederationTime theTime,
                                   std::string theTag,
@@ -315,6 +317,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
        req.federate = fm->federate ;
        req.handleArray.resize(paramArraySize) ;
        req.handleArraySize = paramArraySize ;
+       req.sizeValueArray(paramArraySize) ;
 
        for (int i=0 ; i<paramArraySize ; i++) {
         	req.handleArray[i] = paramArray[i] ;
@@ -342,7 +345,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 void
 ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   std::vector <ParameterHandle> &paramArray,
-                                  ParameterLengthPair *valueArray,
+                                  std::vector <ParameterLengthPair> &valueArray,
                                   UShort paramArraySize,
                                   std::string theTag,
 				  RegionHandle region,
@@ -363,6 +366,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     req.federate   = fm->federate ;
     req.handleArray.resize(paramArraySize) ;
     req.handleArraySize = paramArraySize ;
+    req.sizeValueArray(paramArraySize) ;
 
     for (int i=0 ; i<paramArraySize ; i++) {
 	req.handleArray[i] = paramArray[i] ;
@@ -384,7 +388,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterHandle> &the_parameters,
-                                     ParameterLengthPair *the_values,
+                                     std::vector <ParameterLengthPair> &the_values,
                                      UShort the_size,
                                      FederationTime the_time,
                                      const char *the_tag,
@@ -408,7 +412,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 void
 ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterHandle> &the_parameters,
-                                     ParameterLengthPair *the_values,
+                                     std::vector <ParameterLengthPair> &the_values,
                                      UShort the_size,
                                      const char *the_tag,
                                      TypeException &)

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.21 2008/05/30 14:01:05 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.22 2008/06/11 15:19:22 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,7 +42,7 @@ ObjectBroadcastLine::ObjectBroadcastLine(FederateHandle theFederate,
                                          ObjectBroadcastLine::State init_state)
 {
     Federate = theFederate ;
-    for (AttributeHandle i = 0 ; i <= MAX_ATTRIBUTES_PER_CLASS ; i++)
+    for (AttributeHandle i = 0 ; i <= MAX_STATE_SIZE ; i++)
         state[i] = init_state ;
 }
 
@@ -396,4 +396,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.21 2008/05/30 14:01:05 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.22 2008/06/11 15:19:22 rousse Exp $
