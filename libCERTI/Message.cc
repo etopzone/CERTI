@@ -25,6 +25,7 @@
 #include "PrettyDebug.hh"
 #include "GAV.hh"
 
+#include <stdlib.h>
 #include <cstdio>
 #include <cstring>
 

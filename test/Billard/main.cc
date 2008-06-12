@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.21 2007/10/22 14:23:24 erk Exp $
+// $Id: main.cc,v 3.22 2008/06/12 07:39:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,11 +39,11 @@
 #include <cstdio>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <stdlib.h>
-#include <memory.h>
+#include <cstdlib>
+#include <memory>
 #include <math.h>
 #include <iostream>
-#include <signal.h>
+#include <csignal>
 #include <exception>
 
 #ifndef _WIN32

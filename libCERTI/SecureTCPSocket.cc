@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.9 2007/07/06 09:25:19 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.10 2008/06/12 07:39:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -27,6 +27,7 @@
 
 #include <sys/types.h>
 #include <unistd.h>
+#include <cstdlib>
 //#include <pwd.h>
 
 namespace certi {
@@ -258,4 +259,4 @@ SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.9 2007/07/06 09:25:19 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.10 2008/06/12 07:39:50 erk Exp $

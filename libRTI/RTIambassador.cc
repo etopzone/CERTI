@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.87 2008/06/10 13:41:47 rousse Exp $
+// $Id: RTIambassador.cc,v 3.88 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,6 +42,7 @@
 #include <signal.h>
 #include <cassert>
 #include <cerrno>
+#include <typeinfo>
 
 using std::cout ;
 using std::cerr ;
@@ -3011,4 +3012,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.87 2008/06/10 13:41:47 rousse Exp $
+// $Id: RTIambassador.cc,v 3.88 2008/06/12 07:39:51 erk Exp $

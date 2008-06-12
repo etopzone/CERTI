@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.33 2008/05/29 12:20:39 rousse Exp $
+// $Id: RootObject.cc,v 3.34 2008/06/12 07:39:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -40,12 +40,14 @@
 #include <stdio.h>
 #include <cstring>
 #include <cassert>
+#include <algorithm>
 
 using std::vector ;
 using std::cout ;
 using std::endl ;
 using std::string ;
 using std::list ;
+
 
 namespace certi {
 
@@ -344,4 +346,4 @@ RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle th
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.33 2008/05/29 12:20:39 rousse Exp $
+// $Id: RootObject.cc,v 3.34 2008/06/12 07:39:48 erk Exp $

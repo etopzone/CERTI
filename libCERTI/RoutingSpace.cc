@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.14 2007/09/03 13:26:05 erk Exp $
+// $Id: RoutingSpace.cc,v 3.15 2008/06/12 07:39:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -28,6 +28,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 using std::vector ;
 using std::cout ;
@@ -116,4 +117,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.14 2007/09/03 13:26:05 erk Exp $
+// $Id: RoutingSpace.cc,v 3.15 2008/06/12 07:39:49 erk Exp $

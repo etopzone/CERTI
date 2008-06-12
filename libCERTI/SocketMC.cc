@@ -30,7 +30,8 @@
 	#include <errno.h>
 	#include <sys/time.h>
 #endif
-#include <assert.h>
+#include <cassert>
+#include <cstdlib>
 
 namespace certi {
 

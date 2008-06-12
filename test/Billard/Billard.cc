@@ -28,6 +28,9 @@
 #include <unistd.h>
 #endif
 
+#include <memory>
+#include <cstdlib>
+
 using std::auto_ptr ;
 using std::string ;
 using std::endl ;

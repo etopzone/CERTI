@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.74 2008/06/11 15:19:20 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.75 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,7 +26,8 @@
 #include "NM_Classes.hh"
 
 #include <iostream>
-#include <assert.h>
+#include <cassert>
+#include <memory>
 
 using std::endl ;
 using std::cout ;
@@ -1432,4 +1433,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.74 2008/06/11 15:19:20 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.75 2008/06/12 07:39:51 erk Exp $

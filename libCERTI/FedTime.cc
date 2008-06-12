@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <limits>
 #include <sstream>
+#include <typeinfo>
 
 using std::stringstream ;
 

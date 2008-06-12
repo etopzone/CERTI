@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.12 2008/04/29 08:57:48 erk Exp $
+// $Id: Exception.cc,v 3.13 2008/06/12 07:39:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -27,6 +27,8 @@
 #include "certi.hh"
 #include "PrettyDebug.hh"
 #include <sstream>
+#include <cstdlib>
+#include <cstring>
 
 // static members for HLA Exceptions
 const char *RTI::ArrayIndexOutOfBounds::_ex = "ArrayIndexOutOfBounds" ;

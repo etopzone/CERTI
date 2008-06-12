@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Dimension.cc,v 3.7 2007/09/03 13:26:05 erk Exp $
+// $Id: Dimension.cc,v 3.8 2008/06/12 07:39:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Dimension.hh"
+#include <limits.h>
 
 namespace certi {
 
@@ -51,6 +52,6 @@ Dimension::setUpperBound(ULong upperBound)
 
 } // namespace certi
 
-// $Id: Dimension.cc,v 3.7 2007/09/03 13:26:05 erk Exp $
+// $Id: Dimension.cc,v 3.8 2008/06/12 07:39:49 erk Exp $
 
 

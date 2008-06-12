@@ -24,6 +24,7 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
+#include <cstring>
 
 namespace certi {
 

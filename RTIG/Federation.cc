@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.90 2008/06/11 15:19:20 rousse Exp $
+// $Id: Federation.cc,v 3.91 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 #include "NM_Classes.hh"
 #include <sstream>
 #include <cassert>
+#include <memory>
 
 #ifdef _WIN32
 
@@ -2278,5 +2279,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.90 2008/06/11 15:19:20 rousse Exp $
+// $Id: Federation.cc,v 3.91 2008/06/12 07:39:51 erk Exp $
 

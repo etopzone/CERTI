@@ -29,6 +29,7 @@ using std::endl;
 #include "MessageBuffer.hh"
 #include <cassert>
 #include <string>
+#include <cstring>
 
 #include "Clock.hh"
 void clockTests(certi::Clock& aClock) {

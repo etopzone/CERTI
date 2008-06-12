@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.20 2007/07/06 09:25:19 erk Exp $
+// $Id: BillardDDM.cc,v 3.21 2008/06/12 07:39:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -38,6 +38,8 @@
 		#undef min
 	#endif
 #endif
+
+#include <memory>
 
 using std::string ;
 using std::auto_ptr ;

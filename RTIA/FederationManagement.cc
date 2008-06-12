@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.66 2008/06/10 13:41:44 rousse Exp $
+// $Id: FederationManagement.cc,v 3.67 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,9 +36,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdlib.h>
+#include <cstdlib>
 #endif
-#include <assert.h>
+#include <cassert>
+#include <memory>
 
 using std::list ;
 using std::string ;

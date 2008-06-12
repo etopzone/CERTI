@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.45 2008/05/30 14:01:06 erk Exp $
+// $Id: RTIG.cc,v 3.46 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,8 +33,9 @@
 #include <unistd.h>
 #include <iostream>
 #endif
-#include <errno.h>
+#include <cerrno>
 #include <csignal>
+#include <memory>
 
 using std::cout ;
 using std::endl ;
@@ -990,4 +991,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.45 2008/05/30 14:01:06 erk Exp $
+// $Id: RTIG.cc,v 3.46 2008/06/12 07:39:51 erk Exp $

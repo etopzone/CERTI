@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.28 2008/05/30 14:01:06 erk Exp $
+// $Id: Communications.cc,v 3.29 2008/06/12 07:39:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,6 +39,7 @@
 	#include <errno.h>
 #endif
 
+#include <cstdlib>
 
 
 
@@ -339,4 +340,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.28 2008/05/30 14:01:06 erk Exp $
+// $Id: Communications.cc,v 3.29 2008/06/12 07:39:51 erk Exp $

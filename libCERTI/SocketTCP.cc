@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.23 2008/05/05 09:06:52 erk Exp $
+// $Id: SocketTCP.cc,v 3.24 2008/06/12 07:39:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -34,8 +34,10 @@
 #include "PrettyDebug.hh"
 #include "baseTypes.hh"
 
-#include <assert.h>
-#include <errno.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
 
 using std::cout ;
 using std::endl ;
@@ -595,4 +597,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.23 2008/05/05 09:06:52 erk Exp $
+// $Id: SocketTCP.cc,v 3.24 2008/06/12 07:39:50 erk Exp $

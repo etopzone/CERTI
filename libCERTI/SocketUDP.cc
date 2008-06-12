@@ -22,6 +22,8 @@
 #include "certi.hh"
 #include "SocketUDP.hh"
 #include "PrettyDebug.hh"
+#include <cstdlib>
+#include <cstring>
 
 #ifndef MAXHOSTNAMELEN
 #define MAXHOSTNAMELEN 4096
