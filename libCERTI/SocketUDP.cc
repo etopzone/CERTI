@@ -104,12 +104,12 @@ struct hostent * hp_local;
 assert(!_est_init_udp);
 
 // Building Local Address
-memset((struct sockaddr_in *) &sock_local, 0, sizeof(struct sockaddr_in));
-hp_local = (struct hostent *)malloc(sizeof(struct hostent));
+memset(&sock_local, 0, sizeof(struct sockaddr_in));
+hp_local = NULL;
 
 gethostname(localhost, 4096);
 
-if ((hp_local = (struct hostent *)gethostbyname(localhost)) == NULL)
+if ((hp_local = gethostbyname(localhost)) == NULL)
 	{
 		msg << "gethostbyname gave NULL answer for hostname <"
 			<< localhost 
