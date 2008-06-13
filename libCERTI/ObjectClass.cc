@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.49 2008/06/12 07:39:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.50 2008/06/13 10:55:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -345,7 +345,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
     list<Object *>::iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.
+            objectSet.erase(o); // i is dereferenced.            
             break ;
         }
     }
@@ -408,11 +408,11 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         throw DeletePrivilegeNotHeld("");
     }
 
-    // 2. Remove Instance from list.
+    // 2. Remove Instance from list.   
     list<Object *>::iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.
+            objectSet.erase(o); // i is dereferenced.            
             break ;
         }
     }
@@ -1824,4 +1824,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.49 2008/06/12 07:39:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.50 2008/06/13 10:55:13 erk Exp $

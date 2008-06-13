@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.21 2008/05/29 12:20:34 rousse Exp $
+// $Id: RTIA.cc,v 3.22 2008/06/13 10:55:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,18 +43,18 @@ RTIA::RTIA()
     // No SocketServer is passed to the RootObject.
     rootObject = new RootObject(NULL);
 
-    comm = new Communications();
+    comm   = new Communications();
     queues = new Queues ;
-    fm = new FederationManagement(comm,&stat);
-    om = new ObjectManagement(comm, fm, rootObject);
-    owm = new OwnershipManagement(comm, fm);
-    dm = new DeclarationManagement(comm, fm, rootObject);
-    tm = new TimeManagement(comm, queues, fm, om, owm);
-    ddm = new DataDistribution(rootObject, fm, comm);
+    fm     = new FederationManagement(comm,&stat);
+    om     = new ObjectManagement(comm, fm, rootObject);
+    owm    = new OwnershipManagement(comm, fm);
+    dm     = new DeclarationManagement(comm, fm, rootObject);
+    tm     = new TimeManagement(comm, queues, fm, om, owm);
+    ddm    = new DataDistribution(rootObject, fm, comm);
 
-    fm->tm = tm ;
+    fm->tm     = tm ;
     queues->fm = fm ;
-    om->tm = tm ;
+    om->tm     = tm ;
 }
 
 // ----------------------------------------------------------------------------
@@ -82,13 +82,16 @@ RTIA::~RTIA()
            fm->_FEDid[0] = '\0' ;
            }
         }
+     
+     /* delete objects in reverse order just like generated destructor would have done */
+    delete ddm ;
     delete tm ;
     delete dm ;
-    delete om ;
+    delete owm ;
+    delete om ;    
     delete fm ;
     delete queues ;
-    delete comm ;
-    delete ddm ;
+    delete comm ;    
     delete rootObject ;
 }
 
@@ -197,4 +200,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.21 2008/05/29 12:20:34 rousse Exp $
+// $Id: RTIA.cc,v 3.22 2008/06/13 10:55:13 erk Exp $

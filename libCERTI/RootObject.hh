@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.28 2008/05/29 12:20:39 rousse Exp $
+// $Id: RootObject.hh,v 3.29 2008/06/13 10:55:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -111,7 +111,7 @@ public:
     // -- Attributes
     ObjectClassSet *ObjectClasses ;
     InteractionSet *Interactions ;
-    ObjectSet *objects ;
+    ObjectSet      *objects ;
 
 private:
     std::vector<RoutingSpace> spaces ;
@@ -126,4 +126,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.28 2008/05/29 12:20:39 rousse Exp $
+// $Id: RootObject.hh,v 3.29 2008/06/13 10:55:13 erk Exp $

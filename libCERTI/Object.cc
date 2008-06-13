@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.21 2007/10/31 10:30:21 erk Exp $
+// $Id: Object.cc,v 3.22 2008/06/13 10:55:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -55,11 +55,9 @@ Object::~Object()
         free(name);
         name = NULL ;
     }
-
-    while (!sf.empty()) {
-        delete sf.front();
-        sf.pop_front();
-    }
+    
+    sf.clear();
+    attributeState.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -155,4 +153,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.21 2007/10/31 10:30:21 erk Exp $
+// $Id: Object.cc,v 3.22 2008/06/13 10:55:13 erk Exp $

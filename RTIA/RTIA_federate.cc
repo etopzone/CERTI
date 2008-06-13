@@ -192,8 +192,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               else 
                   throw CouldNotOpenFED("nor .fed nor .xml");
     
-              ifstream *fdd = new ifstream(filename.c_str());
-              if (fdd->is_open())
+              ifstream fdd(filename.c_str());
+              if (fdd.is_open())
                   {
                   if ( is_a_fed )
                       {        
@@ -205,10 +205,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                       {
                       if (XmlParser::exists())
                           {
-                          XmlParser *parser = new XmlParser(rootObject);
-                          parser->parse(filename);
-                          delete fdd ;
-                          delete parser ;
+                          XmlParser parser(rootObject);
+                          parser.parse(filename);                                                    
                           }
 		       else 
                           throw CouldNotOpenFED("no XmlParser");
