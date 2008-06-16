@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 3.35 2008/04/28 12:25:58 erk Exp $
+## $Id: Makefile.am,v 3.36 2008/06/16 14:02:36 erk Exp $
 
 if HAVE_POSIX_CLOCK
 POSIX_CLK_HEADER = PosixClock.hh
@@ -28,7 +28,7 @@ noinst_HEADERS = AuditFile.hh AuditLine.hh BaseRegion.hh		\
 BasicMessage.hh Dimension.hh Exception.hh Extent.hh	\
 FederateLevelList.hh fed.hh FedRegion.hh GAV.hh GSSAPIHandler.hh	\
 Handled.hh HandleManager.hh helper.hh InteractionBroadcastList.hh	\
-Interaction.hh InteractionSet.hh LBTS.hh MessageBody.hh Message.hh	\
+Interaction.hh InteractionSet.hh LBTS.hh Message.hh	\
 Named.hh NetworkMessage.hh ObjectAttribute.hh ObjectClassAttribute.hh	\
 ObjectClassBroadcastList.hh ObjectClass.hh ObjectClassSet.hh Object.hh	\
 ObjectSet.hh Parameter.hh RootObject.hh RoutingSpace.hh RTIRegion.hh	\
@@ -43,7 +43,7 @@ libCERTI_la_SOURCES = AuditFile.cc AuditLine.cc BaseRegion.cc		\
 BasicMessage.cc Dimension.cc Exception.cc Extent.cc	\
 fed.cc FederateLevelList.cc FedRegion.cc FedTime.cc GAV_aux.cc GAV.cc	\
 GSSAPIHandler.cc InteractionBroadcastList.cc Interaction.cc		\
-InteractionSet.cc LBTS.cc MessageBody.cc Message.cc Message_R.cc	\
+InteractionSet.cc LBTS.cc Message.cc Message_R.cc	\
 Message_W.cc \
 Named.cc NetworkMessage.cc NetworkMessage_RW.cc ObjectAttribute.cc	\
 NM_Classes.hh NM_Classes.cc \
