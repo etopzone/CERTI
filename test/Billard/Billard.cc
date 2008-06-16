@@ -735,6 +735,7 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
             }
     }
     catch (RTI::Exception& e) {
+        std::cout<<"Exception "<<e._name<<" ("<<e._reason<<")"<<std::endl;
         D.Out(pdExcept, "**** Exception updating attribute values: %d", &e);
     }
 

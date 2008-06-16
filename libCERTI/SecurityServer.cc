@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
+// $Id: SecurityServer.cc,v 3.12 2008/06/16 09:03:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -143,7 +143,7 @@ SecurityServer::getLevelIDWithName(const char *theName)
         insertPublicLevel();
     }
 
-    if ((theName == NULL) || (strlen(theName) > MAX_USER_TAG_LENGTH)) {
+    if ((theName == NULL) || (strlen(theName) > MAX_SECURITYLEVELNAME)) {
 	D[pdDebug] << "Security Level Name null or too long." << endl ;
         throw RTIinternalError("Security Level Name null or too long.");
     }
@@ -190,4 +190,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
+// $Id: SecurityServer.cc,v 3.12 2008/06/16 09:03:24 rousse Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.91 2008/06/12 07:39:51 erk Exp $
+// $Id: Federation.cc,v 3.92 2008/06/16 09:03:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -786,8 +786,8 @@ Federation::registerSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
-        throw RTIinternalError("Bad pause label(null or too long).");
+    if (label == NULL )
+        throw RTIinternalError("Bad pause label(null).");
 
     // Verify label does not already exists
     std::map<const char *, const char *>::const_iterator i ;
@@ -835,8 +835,8 @@ Federation::registerSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
-        throw RTIinternalError("Bad pause label(null or too long).");
+    if (label == NULL)
+        throw RTIinternalError("Bad pause label(null).");
 
     // Verify label does not already exists
     std::map<const char *, const char *>::const_iterator i ;
@@ -885,8 +885,8 @@ Federation::broadcastSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
-        throw RTIinternalError("Bad pause label(null or too long).");
+    if (label == NULL)
+        throw RTIinternalError("Bad pause label(null).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
     NM_Announce_Synchronization_Point msg ;    
@@ -920,7 +920,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
+    if (label == NULL)
         throw RTIinternalError("Bad pause label(null or too long).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
@@ -1495,8 +1495,8 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
 
     this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
-    if ((label == NULL) || (strlen(label) > MAX_USER_TAG_LENGTH))
-        throw RTIinternalError("Bad pause label(null or too long).");
+    if (label == NULL)
+        throw RTIinternalError("Bad pause label(null).");
 
     // Set federate synchronized on this label.
     Federate &federate = getFederate(federate_handle);
@@ -2279,5 +2279,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.91 2008/06/12 07:39:51 erk Exp $
+// $Id: Federation.cc,v 3.92 2008/06/16 09:03:24 rousse Exp $
 

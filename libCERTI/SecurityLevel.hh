@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.8 2007/07/06 09:25:18 erk Exp $
+// $Id: SecurityLevel.hh,v 3.9 2008/06/16 09:03:24 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -29,6 +29,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#define MAX_SECURITYLEVELNAME 500
 
 typedef char *SecurityLevelName ; // Max length MAX_USER_TAG_LENGTH
 typedef unsigned short SecurityLevelID ;
@@ -48,12 +50,12 @@ public:
                   SecurityLevelID InitLevelID)
     {
 /*#ifdef _WIN32
-    if((InitName == NULL) ||(strlen(InitName) > MAX_USER_TAG_LENGTH))
+    if((InitName == NULL) ||(strlen(InitName) > MAX_SECURITYLEVELNAME))
 #else
-    if((InitName == NULL) ||(std::strlen(InitName) > MAX_USER_TAG_LENGTH))
+    if((InitName == NULL) ||(std::strlen(InitName) > MAX_SECURITYLEVELNAME))
 #endif*/
 
-       if ((InitName == NULL) || (strlen(InitName) > MAX_USER_TAG_LENGTH))
+       if ((InitName == NULL) || (strlen(InitName) > MAX_SECURITYLEVELNAME))
             throw RTIinternalError("Bad Security Level Name.");
         Name = strdup(InitName);
         LevelID = InitLevelID ;
@@ -66,4 +68,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.8 2007/07/06 09:25:18 erk Exp $
+// $Id: SecurityLevel.hh,v 3.9 2008/06/16 09:03:24 rousse Exp $
