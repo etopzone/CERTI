@@ -20,7 +20,7 @@
 #ifndef CERTI_SOCKET_UN_HH
 #define CERTI_SOCKET_UN_HH
 
-#ifdef _WIN32
+#if defined(RTIA_USE_TCP)
 	#include "SocketTCP.hh"
 #else
 	#include <netdb.h>

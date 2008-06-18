@@ -23,8 +23,12 @@
 #include "SocketUN.hh"
 #include "baseTypes.hh"
 
-#ifdef _WIN32
+#if defined(RTIA_USE_TCP)
 #include "SocketTCP.hh"
+#if not defined(_WIN32)
+#include <cstring>
+#include <cerrno>
+#endif
 #else
 #include <unistd.h>
 #include <strings.h>
@@ -52,13 +56,16 @@ static PrettyDebug G("GENDOC",__FILE__);
 void
 SocketUN::acceptUN()
 {
-#ifdef _WIN32
+#if defined(RTIA_USE_TCP)
 	struct sockaddr_in nom_client, nom_serveur;
 	int lg_nom;
 	int result;
+	socklen_t socklen;
 
+#if defined(_WIN32)
 	assert(SocketTCP::winsockInitialized());
-
+#endif
+	
 	if((sock_connect=socket(AF_INET,SOCK_STREAM,0)) < 0)
 		error("socket");
 
@@ -79,17 +86,16 @@ SocketUN::acceptUN()
 
 	result = ::bind(sock_connect,(sockaddr *)&nom_serveur, lg_nom);
 
-	if((result <0) &&(WSAGetLastError() == WSAEADDRINUSE))
+	if(result <0)
 		{// Error on Bind. If the error is "Address already in use", allow
 		// the user to choose to "reuse address" and then try again.
 		error("bind");
 		}
-
 	pD->Out(pdInit, "Server: Bind succeeded, now listening.");
 #else
 
     struct sockaddr_un nom_client, nom_serveur ;
-    socklen_t lg_nom ;
+    socklen_t socklen ;
 
     pD->Out(pdInit, "Opening Server UNIX Socket.");
 
@@ -131,10 +137,10 @@ if (listen(sock_connect, 10) == -1)
 pD->Out(pdInit, "Server: Listen returned, now accepting.");
 
 // Accept
-lg_nom = sizeof(struct sockaddr_in);
+socklen = sizeof(struct sockaddr_in);
 if ((_socket_un = accept(sock_connect,
                        (struct sockaddr*)&nom_client,
-                       &lg_nom)) < 0)
+                       &socklen)) < 0)
   // HPUX:(int*) &lg_nom)) < 0)
   error("accept");
 
@@ -155,11 +161,13 @@ _est_serveur = true ;
 int Attempt = 0 ;
 int Result = 0 ;
 
-#ifdef _WIN32
+#if defined(RTIA_USE_TCP)
 	struct sockaddr_in nom_serveur;
-	int lg_nom;
+	int lg_nom;	
+#ifdef _WIN32
 	struct hostent *hptr = NULL;
 	assert(SocketTCP::winsockInitialized());
+#endif
 #else
 	struct sockaddr_un nom_serveur;
 #endif
@@ -172,8 +180,8 @@ while (Attempt < MAX_ATTEMPTS)
 	{
 	pD->Out(pdInit, "Opening Client UNIX Socket.");
 	
-// Socket--------------------------------------------------
-#ifdef _WIN32
+// TCP Socket case--------------------------------------------------
+#if defined(RTIA_USE_TCP)
 	if((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		error("socket");
 
