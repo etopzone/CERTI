@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.50 2008/06/13 10:55:13 erk Exp $
+// $Id: ObjectClass.cc,v 3.51 2008/06/18 13:46:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -867,7 +867,7 @@ ObjectClass::subscribe(FederateHandle fed,
 
     unsubscribe(fed, region);
 
-    D[pdTrace] << __FUNCTION__ << " : fed " << fed << ", class " << handle
+    D[pdTrace] << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
 	       << ", " << nb_attributes << " attributes, region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
@@ -1749,7 +1749,7 @@ ObjectClass::getHandle() const
 void
 ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
-    D[pdTrace] << __FUNCTION__ << ": fed " << fed << ", region "
+    D[pdTrace] << "ObjectClass::unsubscribe" << ": fed " << fed << ", region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
     list<ObjectClassAttribute *>::iterator i ;
@@ -1824,4 +1824,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.50 2008/06/13 10:55:13 erk Exp $
+// $Id: ObjectClass.cc,v 3.51 2008/06/18 13:46:14 erk Exp $
