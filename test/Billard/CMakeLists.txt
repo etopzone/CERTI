@@ -39,4 +39,9 @@ INSTALL(TARGETS billard
 INSTALL(FILES  
   Test.fed Test.xml 
   DESTINATION share/federations)
+  
+INSTALL(FILES  
+  dtest_billard.py 
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE WORLD_READ WORLD_EXECUTE
+  DESTINATION share/scripts)
 
