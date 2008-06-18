@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.43 2008/06/18 06:40:06 erk Exp $
+// $Id: TimeManagement.cc,v 3.44 2008/06/18 10:02:42 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -699,6 +699,7 @@ void
 TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) {
     Message req;
     
+    D.Out(pdDebug,"Sending TIME_REGULATION_ENABLED to Federate");
     req.type = Message::TIME_REGULATION_ENABLED;
     req.setFederationTime(theTime);
     comm->requestFederateService(&req);
@@ -709,6 +710,7 @@ void
 TimeManagement::timeConstrainedEnabled(FederationTime theTime, TypeException &e) {
     Message req;
 
+    D.Out(pdDebug,"Sending TIME_CONSTRAINED_ENABLED to Federate");
     req.type = Message::TIME_CONSTRAINED_ENABLED;
     req.setFederationTime(theTime);
     comm->requestFederateService(&req);
@@ -775,11 +777,18 @@ TimeManagement::tick(TypeException &e)
 
 
     // 2nd try, give a FIFO message. (discoverObject, etc.)
-    if (!msg_donne)
-        if ( _asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE) || (! _est_contraint))
+    if (!msg_donne){
+        if ( _asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE) || (! _est_contraint)) {
+        	D.Out(pdDebug,"FIFO message to be delivered async_deliver=%d, _avancee=%d, constrained=%d",
+        	        		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
           // to exclude the case not asynchronous_delivery and
           // not time advancing for a constrained federate
           msg = queues->giveFifoMessage(msg_donne, msg_restant);
+        } else {
+          D.Out(pdDebug,"FIFO message skipped async_deliver=%d, _avancee=%d, constrained=%d",
+        		  _asynchronous_delivery,_avancee_en_cours,_est_contraint);
+        }
+    }
 
     // If message exists, send it to federate.
     if (msg_donne) {
@@ -988,4 +997,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.43 2008/06/18 06:40:06 erk Exp $
+// $Id: TimeManagement.cc,v 3.44 2008/06/18 10:02:42 erk Exp $
