@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.42 2008/06/11 15:19:20 rousse Exp $
+// $Id: TimeManagement.cc,v 3.43 2008/06/18 06:40:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -670,11 +670,17 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
         msg.federate = fm->federate ;
         if (etat) {
         	msg.regulatorOn();
+        	D.Out(pdDebug,
+        		  "REGULATOR ON");
         } else {
         	msg.regulatorOff();
+        	D.Out(pdDebug,
+        	      "REGULATOR OFF");
         } 
     // Modifier lookahead courant 
     _lookahead_courant = the_lookahead;
+          D.Out(pdDebug,
+    	        "New lookahead = %f",_lookahead_courant);
     // faudrait peut etre remplacer heure courante par le temps en parametre      
         msg.setDate(_heure_courante + _lookahead_courant);
 
@@ -905,11 +911,17 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_TimeAdvanceAlreadyInProgress ;
 
-    if (logical_time < _heure_courante)
+    /* logical_time <_heure_courante */
+    if (RTIfedTime::fcmp(logical_time ,_heure_courante) < 0)
         e = e_FederationTimeAlreadyPassed ;
-
-    if (logical_time < _heure_courante + _lookahead_courant)
+    
+    /* logical_time < _heure_courante + _lookahead_courant */
+    if (RTIfedTime::fcmp(logical_time , _heure_courante + _lookahead_courant)<0) {
+    	
+    D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
+    			_lookahead_courant,_heure_courante,logical_time);
        e = e_InvalidFederationTime ;
+    }
 
     if (e == e_NO_EXCEPTION) {
 
@@ -976,4 +988,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.42 2008/06/11 15:19:20 rousse Exp $
+// $Id: TimeManagement.cc,v 3.43 2008/06/18 06:40:06 erk Exp $
