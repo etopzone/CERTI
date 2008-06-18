@@ -60,10 +60,12 @@ SocketUN::acceptUN()
 	struct sockaddr_in nom_client, nom_serveur;
 	int lg_nom;
 	int result;
-	socklen_t socklen;
 
 #if defined(_WIN32)
 	assert(SocketTCP::winsockInitialized());
+	int socklen;
+#else
+	socklen_t socklen;
 #endif
 	
 	if((sock_connect=socket(AF_INET,SOCK_STREAM,0)) < 0)
