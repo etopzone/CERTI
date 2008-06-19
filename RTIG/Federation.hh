@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.49 2008/06/11 15:19:20 rousse Exp $
+// $Id: Federation.hh,v 3.50 2008/06/19 13:56:59 jmm Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -597,4 +597,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.49 2008/06/11 15:19:20 rousse Exp $
+// $Id: Federation.hh,v 3.50 2008/06/19 13:56:59 jmm Exp $

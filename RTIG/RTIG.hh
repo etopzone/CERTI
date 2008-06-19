@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.28 2008/05/30 14:01:06 erk Exp $
+// $Id: RTIG.hh,v 3.29 2008/06/19 13:56:59 jmm Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -54,9 +54,11 @@ public:
     RTIG();
     ~RTIG();
 
-    void signalHandler(int sig);
+    static void signalHandler(int sig);
+    static bool terminate ;
     void setVerbose(bool flag) { verbose = flag ; }
     void execute();
+	 
 
 private:
     // Both methods return the socket, because it may have been closed
@@ -117,8 +119,7 @@ private:
 
 private:
     int tcpPort ;
-    int udpPort ;
-    bool terminate ;
+    int udpPort ; 
     bool verbose ;
     HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
@@ -136,4 +137,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.28 2008/05/30 14:01:06 erk Exp $
+// $Id: RTIG.hh,v 3.29 2008/06/19 13:56:59 jmm Exp $

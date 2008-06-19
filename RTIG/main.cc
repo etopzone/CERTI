@@ -38,13 +38,11 @@ using std::cout ;
 using std::endl ;
 using std::string ;
 
-static RTIG myRTIG;
-
 // ----------------------------------------------------------------------------
 //! SignalHandler.
 extern "C" void SignalHandler(int sig)
 {
-    myRTIG.signalHandler(sig);
+    RTIG::signalHandler(sig);    
     // Catch signal again.
     std::signal(sig, SignalHandler);
 }
@@ -55,13 +53,14 @@ void
 NewHandler()
     throw (MemoryExhausted)
 {
-    throw MemoryExhausted("");
+    throw MemoryExhausted("main RTIG");
 }
 
 // ----------------------------------------------------------------------------
 //! RTIG server entry point.
 int main(int argc, char *argv[])
 {
+    RTIG myRTIG;
     gengetopt_args_info args ;
     if (cmdline_parser(argc, argv, &args)) exit(EXIT_FAILURE);
     bool verbose = args.verbose_flag ;
@@ -87,7 +86,7 @@ int main(int argc, char *argv[])
     }
 
     std::signal(SIGINT, SignalHandler);
-	#ifndef WIN32
+	#ifndef _WIN32
 		std::signal(SIGPIPE, SignalHandler);
 	#endif
 

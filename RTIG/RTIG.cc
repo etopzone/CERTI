@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.46 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIG.cc,v 3.47 2008/06/19 13:56:59 jmm Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -47,11 +47,13 @@ namespace rtig {
 static PrettyDebug D("RTIG", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
+bool RTIG::terminate = false;
+
 // ----------------------------------------------------------------------------
 // Constructor
 // Note (JYR) : udpPort modified AFTER used in socketServer(.) call, strange...
 RTIG::RTIG()
-    : terminate(false), federationHandles(1),
+    :  federationHandles(1),
       socketServer(&tcpSocketServer, &udpSocketServer, udpPort),
       auditServer(RTIG_AUDIT_FILENAME),
       federations(socketServer, auditServer)
@@ -428,19 +430,37 @@ terminate = false ;
 
 while (!terminate) {
 	// Initialize fd_set structure with all opened sockets.
-	FD_ZERO(&fd);
-	FD_SET(tcpSocketServer.returnSocket(), &fd);
-
 	#if WIN32
-		 int highest_fd = socketServer.addToFDSet(&fd);
-		 int server_socket = tcpSocketServer.returnSocket();
-		 highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
-		 
-		 result = 0;	// Wait for an incoming message.
-		 result = select(highest_fd+1, &fd, NULL, NULL, NULL);
-		 
-		 if((result == -1)&&(WSAGetLastError() == WSAEINTR)) break;
+
+	result = 0;	// Wait for an incoming message.
+	while (!result)
+		{
+		int test;
+		
+		FD_ZERO(&fd);
+		FD_SET(tcpSocketServer.returnSocket(), &fd);
+
+		int highest_fd = socketServer.addToFDSet(&fd);
+		int server_socket = tcpSocketServer.returnSocket();
+
+		//typedef struct timeval {  long tv_sec;  long tv_usec; } 	 
+		timeval		watchDog;
+		watchDog.tv_sec= 0;
+		watchDog.tv_usec= 50000L;
+
+		highest_fd = server_socket>highest_fd ? server_socket : highest_fd;
+
+		result = select(highest_fd+1, &fd, NULL, NULL, &watchDog);
+		if (result < 0) test= WSAGetLastError();
+		if (terminate) break;
+		}
+	if (terminate) break;
+
+	if((result == -1)&&(WSAGetLastError() == WSAEINTR)) break;
 	#else
+		FD_ZERO(&fd);
+		FD_SET(tcpSocketServer.returnSocket(), &fd);
+
 		int fd_max = socketServer.addToFDSet(&fd);
 		fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
 	
@@ -978,17 +998,17 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
 
 // ----------------------------------------------------------------------------
 //! process received signals.
-void
+ void
 RTIG::signalHandler(int sig)
 {
 D.Out(pdError, "Received Signal %d.", sig);
 
 if (sig == SIGINT) terminate = true ;
-#ifndef WIN32
+#ifndef _WIN32
 	if (sig == SIGPIPE) cout << "Ignoring 'Broken pipe' signal." << endl ;
 #endif
 }
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.46 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIG.cc,v 3.47 2008/06/19 13:56:59 jmm Exp $
