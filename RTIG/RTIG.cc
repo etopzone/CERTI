@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.47 2008/06/19 13:56:59 jmm Exp $
+// $Id: RTIG.cc,v 3.48 2008/06/19 14:19:43 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -430,7 +430,7 @@ terminate = false ;
 
 while (!terminate) {
 	// Initialize fd_set structure with all opened sockets.
-	#if WIN32
+	#if _WIN32
 
 	result = 0;	// Wait for an incoming message.
 	while (!result)
@@ -1011,4 +1011,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.47 2008/06/19 13:56:59 jmm Exp $
+// $Id: RTIG.cc,v 3.48 2008/06/19 14:19:43 erk Exp $
