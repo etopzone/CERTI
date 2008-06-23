@@ -54,7 +54,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 // ----------------------------------------------------------------------------
 //! Called by server to open the socket and wait for the connection.
 void
-SocketUN::acceptUN()
+SocketUN::acceptUN(int RTIA_port)
 {
 #if defined(RTIA_USE_TCP)
 	struct sockaddr_in nom_client, nom_serveur;
@@ -77,12 +77,18 @@ SocketUN::acceptUN()
 	nom_serveur.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 
 	// TEMPO : UNIX socket emulation with TCP/IP sockets
-	int pid = getpid();
+	int tcpport;
+	if (RTIA_port>0) {
+		tcpport = RTIA_port; 
+	} else {
+	    tcpport = getpid();
+	}
+	
 	// make sure it is contained in a short
-	if (pid > 65535)
-		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
+	if (tcpport > 65535)
+		throw RTIinternalError("TCP Port too big.");
 
-	nom_serveur.sin_port = htons(pid);
+	nom_serveur.sin_port = htons(tcpport);
 
 	lg_nom = sizeof(nom_serveur);
 
@@ -154,7 +160,7 @@ _est_serveur = true ;
 
 // ----------------------------------------------------------------------------
 //! Called by client to connect.
-#ifdef _WIN32
+#ifdef RTIA_USE_TCP
 	void SocketUN::connectUN(int Server_pid)
 #else
 	int SocketUN::connectUN(pid_t Server_pid)

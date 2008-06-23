@@ -18,12 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.20 2008/06/09 11:17:12 siron Exp $
+// $Id: main.cc,v 3.21 2008/06/23 12:49:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 
 #include "RTIA.hh"
+#include "RTIA_cmdline.h"
 
 #include <sys/types.h>
 #include <signal.h>
@@ -37,23 +38,34 @@ void NewHandler();
 int normal_end;
 
 // ----------------------------------------------------------------------------
-int main() {
+int 
+main(int argc, char **argv) {
 	signal(SIGINT, SignalHandler);
 #ifndef _WIN32
 	signal(SIGPIPE, SignalHandler);
 #endif
 
 	set_new_handler(NewHandler);
-        normal_end = 0;
+    normal_end = 0;
 
 	if (NULL!=getenv("RTIA_DEBUG")) {
 		cerr << "RTIA:: RTIA_DEBUG is set: Waiting <"<< getenv("RTIA_DEBUG")
 				<< " seconds> before starting RTIA"<<endl;
 		sleep(atoi(getenv("RTIA_DEBUG")));
 	}
+	
+	// Command line
+	gengetopt_args_info args ;
+	if (cmdline_parser(argc, argv, &args))
+	    exit(EXIT_FAILURE);	
 
 	try {
-		RTIA rtia;
+		int rtia_port = 0;
+		if (args.port_given) {
+			rtia_port = args.port_arg;
+		}
+		
+		RTIA rtia(rtia_port);
 
 		try {
 			rtia.execute();
@@ -101,4 +113,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.20 2008/06/09 11:17:12 siron Exp $
+// EOF $Id: main.cc,v 3.21 2008/06/23 12:49:15 erk Exp $

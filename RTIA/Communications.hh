@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.14 2008/05/30 14:01:06 erk Exp $
+// $Id: Communications.hh,v 3.15 2008/06/23 12:49:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -47,7 +47,7 @@ class Communications : public SocketUN,
                        public SocketUDP
 {
 public:
-    Communications();
+    Communications(int RTIA_port);
     ~Communications();
 
     //! Send a message to RTIG.
@@ -88,4 +88,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.14 2008/05/30 14:01:06 erk Exp $
+// $Id: Communications.hh,v 3.15 2008/06/23 12:49:15 erk Exp $

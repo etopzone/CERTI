@@ -70,7 +70,7 @@ public:
 	#else
 		int connectUN(pid_t Server_pid);
 	#endif
-	void acceptUN();									//Called by server
+	void acceptUN(int RTIA_port);									//Called by server
 
 	bool isDataReady();
 

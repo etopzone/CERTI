@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.13 2008/05/07 09:55:01 rousse Exp $
+// $Id: RTIA.hh,v 3.14 2008/06/23 12:49:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -40,7 +40,7 @@ namespace rtia {
 class RTIA
 {
 public:
-    RTIA();
+    RTIA(int RTIA_port);
     ~RTIA();
 
     void execute();
@@ -74,4 +74,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.13 2008/05/07 09:55:01 rousse Exp $
+// $Id: RTIA.hh,v 3.14 2008/06/23 12:49:15 erk Exp $
