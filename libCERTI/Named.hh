@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.4 2007/12/09 16:26:49 erk Exp $
+// $Id: Named.hh,v 3.5 2008/06/23 13:25:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -51,7 +51,7 @@ public:
      * Constructor with inital value.
      * @param[in] name Initial name
      */	
-    Named(const std::string name);
+    Named(const std::string newName);
     
     /**
      * Virtual destructor.
@@ -63,13 +63,13 @@ public:
      *  Set name.     
      *  @param[in] name the new name
      */
-    virtual void setName(const std::string name);
+    virtual void setName(const std::string newName);
     
     /**
      *  Set name (char* version)
      *  @param[in] name the new name
      */
-    virtual void setName(const char* name);
+    virtual void setName(const char* newName);
     
     /** 
      * Get name.
@@ -88,7 +88,7 @@ public:
      * @param name String to compare
      * @return true if strings match
      */
-    bool isNamed(const std::string& name) const ;
+    bool isNamed(const std::string& newName) const ;
     
 	/**
 	 * This method check if the provided name 
@@ -135,4 +135,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.4 2007/12/09 16:26:49 erk Exp $
+// $Id: Named.hh,v 3.5 2008/06/23 13:25:05 erk Exp $

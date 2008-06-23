@@ -20,9 +20,9 @@
 #include "Clock.hh"
 namespace certi {
 
-Clock::Clock(const std::string name)
+Clock::Clock(const std::string newName)
 {
-	this->name = name;
+	name = newName;
 }
 
 uint64_t 

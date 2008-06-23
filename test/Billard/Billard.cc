@@ -855,13 +855,13 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
           theParameters.size());
 
     for (unsigned int j = 0 ; j < theParameters.size(); ++j) {
-        RTI::ParameterHandle handle = theParameters.getHandle(j);
+        RTI::ParameterHandle parmHandle = theParameters.getHandle(j);
 
         valueLength = theParameters.getValueLength(j);
         parmValue = new char[valueLength] ;
         theParameters.getValue(j, parmValue, valueLength);
 
-        if (handle == ParamDXID) {
+        if (parmHandle == ParamDXID) {
             if (parmValue != NULL) {
                 // OLD : dx1 = atoi(parmValue);
                 double d_dx1 ;
@@ -875,7 +875,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
                 D.Out(pdError, "Missing Attribute in RAV.");
         }
         else
-            if (handle == ParamDYID) {
+            if (parmHandle == ParamDYID) {
                 if (parmValue != NULL) {
                     // OLD : dy1 = atoi(parmValue);
                     double d_dy1 ;
@@ -889,7 +889,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
                     D.Out(pdError, "Missing Attribute in RAV.");
             }
             else
-                if (handle == ParamBoulID) {
+                if (parmHandle == ParamBoulID) {
                     if (parmValue != NULL) {
                         // OLD : h1 = atoi(parmValue);
                         RTI::ObjectHandle d_h1 ;
@@ -937,12 +937,12 @@ Billard::reflectAttributeValues(
 
     for (unsigned int j=0 ; j<theAttributes.size(); j++) {
 
-        RTI::AttributeHandle handle = theAttributes.getHandle(j);
+        RTI::AttributeHandle parmHandle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
         attrValue = new char[valueLength] ;
         theAttributes.getValue(j, attrValue, valueLength);
 
-        if (handle == AttrXID) {
+        if (parmHandle == AttrXID) {
             if (attrValue != NULL) {
                 // OLD : x1 = atof(attrValue);
                 double d_x1 ;
@@ -953,7 +953,7 @@ Billard::reflectAttributeValues(
             else
                 D.Out(pdError, "Fed: ERREUR: missing Attribute.");
         }
-        else if (handle == AttrYID) {
+        else if (parmHandle == AttrYID) {
             if (attrValue != NULL) {
                 // OLD : y1 = atof(attrValue);
                 double d_y1 ;
@@ -1014,12 +1014,12 @@ Billard::reflectAttributeValues(
 
     for (unsigned int j=0 ; j<theAttributes.size(); j++) {
 
-        RTI::AttributeHandle handle = theAttributes.getHandle(j);
+        RTI::AttributeHandle parmHandle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
         attrValue = new char[valueLength] ;
         theAttributes.getValue(j, attrValue, valueLength);
 
-        if (handle == AttrXID) {
+        if (parmHandle == AttrXID) {
             if (attrValue != NULL) {
                 // OLD : x1 = atof(attrValue);
                 double d_x1 ;
@@ -1030,7 +1030,7 @@ Billard::reflectAttributeValues(
             else
                 D.Out(pdError, "Fed: ERREUR: missing Attribute.");
         }
-        else if (handle == AttrYID) {
+        else if (parmHandle == AttrYID) {
             if (attrValue != NULL) {
                 // OLD : y1 = atof(attrValue);
                 double d_y1 ;

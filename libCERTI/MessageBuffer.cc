@@ -205,7 +205,7 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {	
 	if (n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "::invalid read of size <" << n
+		smsg << "read_uint8s::invalid read of size <" << n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -249,7 +249,7 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	
 	if (2*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "::invalid read of size <" << 2*n
+		smsg << "read_uint16s::invalid read of size <" << 2*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -303,7 +303,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	
 	if (4*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "::invalid read of size <" << 4*n
+		smsg << "read_uint32s::invalid read of size <" << 4*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
@@ -370,7 +370,7 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	
 	if (8*n + readOffset > writeOffset) {
 		std::stringstream smsg;
-		smsg << __func__ << "::invalid read of size <" << 4*n
+		smsg << "read_uint64s::invalid read of size <" << 4*n
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";

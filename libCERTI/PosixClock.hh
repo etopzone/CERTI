@@ -22,7 +22,7 @@ public:
 	 *      - CLOCK_REALTIME_HR
 	 *      - CLOCK_MONOTONIC_HR
 	 */
-	PosixClock(clockid_t clockId=CLOCK_REALTIME);
+	PosixClock(clockid_t newClockId=CLOCK_REALTIME);
 	/**
 	 * Get the clock resolution in nano-seconds.
 	 * @return the clock resolution in nano-seconds

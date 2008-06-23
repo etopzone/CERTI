@@ -43,7 +43,7 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);	
 	/* specific Getter/Setter */	
-	AttributeHandle getHandle(int i) {return handleArray[i];};
+	AttributeHandle getHandle(int i) const {return handleArray[i];};
 	void setHandle(AttributeHandle h, int i) {handleArray[i]=h;};
 protected:
 	/* specific field */
@@ -59,22 +59,22 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer) = 0;	
 	/* specific Getter/Setter */	
 	const SpaceHandle getSpace() const {return space;};
-	void setSpace(SpaceHandle space) {this->space=space;};
+	void setSpace(SpaceHandle newSpace) {space=newSpace;};
 
 	const int32_t geNbExtents() const {return nbExtents;};
-	void setNbExtents(int32_t nbExtents) {this->nbExtents=nbExtents;};
+	void setNbExtents(int32_t newNbExtents) {nbExtents=newNbExtents;};
 
 	const int32_t getRegion() const {return region;};
-	void setRegion(int32_t region) {this->region=region;};	
+	void setRegion(int32_t newRegion) {region=newRegion;};	
 
 	const ObjectHandle getObject() const {return object;};
-	void setObject(ObjectHandle object) {this->object=object;};
+	void setObject(ObjectHandle newObject) {object=newObject;};
 
 	const ObjectClassHandle getObjectClass() const {return objectClass;};
-	void setObjectClass(ObjectClassHandle objectClass) {this->objectClass=objectClass;};
+	void setObjectClass(ObjectClassHandle newObjectClass) {objectClass=newObjectClass;};
 
 	const InteractionClassHandle getInteractionClass() const {return interactionClass;};
-	void setInteractionClass(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
+	void setInteractionClass(InteractionClassHandle newInteractionClass) {interactionClass=newInteractionClass;};
 protected:
 	/* specific field */
 	bool DDM_bool;
@@ -624,7 +624,7 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const InteractionClassHandle getInteractionClassHandle() const {return interactionClass;};
-	void setInteractionClassHandle(InteractionClassHandle interactionClass) {this->interactionClass=interactionClass;};
+	void setInteractionClassHandle(InteractionClassHandle newInteractionClass) {interactionClass=newInteractionClass;};
 protected:
 	/* specific field */
 	//	InteractionClassHandle interactionClass;
@@ -946,7 +946,7 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const ObjectHandle getObject() const {return object;};
-	void setObject(ObjectHandle object) {this->object=object;};
+	void setObject(ObjectHandle newObject) {object=newObject;};
 protected:
 	/* specific field */
 private:
@@ -1206,9 +1206,9 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const SpaceHandle getSpace() const {return space;};
-	void setSpace(SpaceHandle space) {this->space=space;};	
+	void setSpace(SpaceHandle newSpace) {space=newSpace;};	
 	const int32_t getRegion() const {return region;};
-	void setRegion(SpaceHandle region) {this->region=region;};
+	void setRegion(SpaceHandle newRegion) {region=newRegion;};
 protected:
 	/* specific field */
 	//	SpaceHandle space;
@@ -1229,7 +1229,7 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
-	void setRegion(SpaceHandle region) {this->region=region;};
+	void setRegion(SpaceHandle newRegion) {region=newRegion;};
 protected:
 	/* specific field */
 	//	int32_t region;
@@ -1248,7 +1248,7 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
-	void setRegion(SpaceHandle region) {this->region=region;};
+	void setRegion(SpaceHandle newRegion) {region=newRegion;};
 protected:
 	/* specific field */
 	//	int32_t region;	
@@ -1267,9 +1267,9 @@ public:
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
 	const int32_t getRegion() const {return region;};
-	void setRegion(SpaceHandle region) {this->region=region;};
+	void setRegion(SpaceHandle newRegion) {region=newRegion;};
 	const ObjectHandle getObject() const {return object;};
-	void setObject(ObjectHandle object) {this->object=object;};		
+	void setObject(ObjectHandle newObject) {object=newObject;};
 protected:
 	/* specific field */
 	//	int32_t      region;
@@ -1396,12 +1396,12 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
-	void setFEDid(std::string FEDid) {this->FEDid=FEDid;};
+	void setFEDid(std::string newFEDid) {FEDid=newFEDid;};
 	const std::string getFEDid() const {return FEDid;};
 	//	void setLineFollows() {lineFollows=true;};
 	//	void unsetLineFollows() {lineFollows=true;};
 	//const bool getLineFollows() {return lineFollows;};
-	void setFEDLine(std::string line) {this->line=line;};
+	void setFEDLine(std::string newLine) {line=newLine;};
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */

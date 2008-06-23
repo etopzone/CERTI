@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.29 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.30 2008/06/23 13:25:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -47,7 +47,7 @@ class CERTI_EXPORT ObjectClassSet
 {
 
 public:
-    ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet=false);
+    ObjectClassSet(SecurityServer *theSecurityServer, bool newIsRootClassSet=false);
     ~ObjectClassSet();
 
     void addClass(ObjectClass *theClass) throw (RTIinternalError);
@@ -210,4 +210,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.29 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassSet.hh,v 3.30 2008/06/23 13:25:04 erk Exp $

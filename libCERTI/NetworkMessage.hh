@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.38 2008/06/11 15:19:22 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.39 2008/06/23 13:25:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -223,7 +223,7 @@ public:
 	 * If ones set Date then this is a Dated message
 	 * Message builder which setDate will generate a Dated message 
 	 */
-	void setDate(FederationTime date) {_isDated=true; this->date = date;};
+	void setDate(FederationTime new_date) {_isDated=true; date = new_date;};
 	const FederationTime getDate() const {return this->date;};
 
 	unsigned long multicastAddress ;
@@ -232,7 +232,7 @@ public:
 	 * Indicate if the message is Labelled or not
 	 */
 	bool isLabelled() {return _isLabelled;};	
-	void setLabel(const std::string label) {_isLabelled = true; this->label = label;};
+	void setLabel(const std::string new_label) {_isLabelled = true; label = new_label;};
 	void setLabel(const char *new_label) {_isLabelled = true; label = std::string(new_label); }
 	const std::string getLabel() const {return this->label;};
 
@@ -240,7 +240,7 @@ public:
 	 * Indicate if the message is Tagged or not
 	 */
 	bool isTagged() {return _isTagged;};
-	void setTag(const std::string tag) {_isTagged = true; this->tag = tag;};
+	void setTag(const std::string new_tag) {_isTagged = true; tag = new_tag;};
 	void setTag(const char *new_tag) {_isTagged = true; tag = std::string(new_tag); }
 	const std::string getTag() const {return this->tag;};
 
@@ -354,4 +354,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.38 2008/06/11 15:19:22 rousse Exp $
+// $Id: NetworkMessage.hh,v 3.39 2008/06/23 13:25:04 erk Exp $

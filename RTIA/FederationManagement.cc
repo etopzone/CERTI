@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.67 2008/06/12 07:39:51 erk Exp $
+// $Id: FederationManagement.cc,v 3.68 2008/06/23 13:25:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,12 +52,12 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
 //! FederationManagement.
-  FederationManagement::FederationManagement(Communications *GC, Statistics* stat)
+  FederationManagement::FederationManagement(Communications *GC, Statistics* newStat)
     : savingState(false), restoringState(false)
 {
     G.Out(pdGendoc,"enter FederationManagement::FederationManagement");
     comm = GC ;
-    this->stat = stat ;
+    stat = newStat ;
     tm = NULL ;
 
     _numero_federation = 0 ;

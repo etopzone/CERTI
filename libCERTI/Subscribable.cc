@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.7 2008/06/12 07:39:48 erk Exp $
+// $Id: Subscribable.cc,v 3.8 2008/06/23 13:25:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -107,7 +107,9 @@ Subscribable::~Subscribable()
 void
 Subscribable::unsubscribe(FederateHandle fed)
 {
-    subscribers.remove_if(HandleComparator<Subscriber>(fed));
+    std::remove_if(subscribers.begin(),
+                   subscribers.end(),
+                   HandleComparator<Subscriber>(fed));
 }
 
 // ----------------------------------------------------------------------------
@@ -199,4 +201,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.7 2008/06/12 07:39:48 erk Exp $
+// $Id: Subscribable.cc,v 3.8 2008/06/23 13:25:04 erk Exp $

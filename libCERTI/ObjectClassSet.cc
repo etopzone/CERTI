@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.37 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.38 2008/06/23 13:25:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -94,12 +94,12 @@ ObjectClassSet::buildParentRelation(ObjectClass *subclass,
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet)   
+ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool newIsRootClassSet)
 
 {
     // It can be NULL on the RTIA.
-    this->server = theSecurityServer ;
-    this->isRootClassSet = isRootClassSet;
+    server = theSecurityServer ;
+    isRootClassSet = newIsRootClassSet;
 }
 
 // ----------------------------------------------------------------------------
@@ -843,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.37 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassSet.cc,v 3.38 2008/06/23 13:25:05 erk Exp $

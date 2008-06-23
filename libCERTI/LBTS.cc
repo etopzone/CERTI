@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.10 2008/04/23 13:03:28 erk Exp $
+// $Id: LBTS.cc,v 3.11 2008/06/23 13:25:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -94,7 +94,11 @@ void
 LBTS::get(std::vector<FederateClock> &v) const
 {
     v.reserve(v.size() + clocks.size());
-    std::copy(clocks.begin(), clocks.end(), std::back_inserter(v));
+    // append clocks to v
+    // note, the ClockSet::value_type and FederateClock differ in const-ness
+    for(ClockSet::const_iterator pos = clocks.begin();
+        pos != clocks.end(); pos++)
+        v.push_back(FederateClock(pos->first, pos->second));
 }
 
 // ----------------------------------------------------------------------------
@@ -155,4 +159,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.10 2008/04/23 13:03:28 erk Exp $
+// $Id: LBTS.cc,v 3.11 2008/06/23 13:25:05 erk Exp $

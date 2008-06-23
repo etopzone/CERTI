@@ -4,10 +4,10 @@
 
 namespace certi {
 
-PosixClock::PosixClock(clockid_t clockId) : Clock("PosixClock")
+PosixClock::PosixClock(clockid_t newClockId) : Clock("PosixClock")
 {
-		this->clockId = clockId;
-		clock_getres(clockId,&this->resolution);
+    clockId = newClockId;
+    clock_getres(newClockId, &resolution);
 }   
 
 double 

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedRegion.hh,v 3.2 2007/06/22 08:51:36 erk Exp $
+// $Id: FedRegion.hh,v 3.3 2008/06/23 13:25:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FED_REGION_HH
@@ -28,9 +28,9 @@
 #include "certi.hh"
 #include "BaseRegion.hh"
 
-class RoutingSpace ;
-
 namespace certi {
+
+class RoutingSpace ;
 
 class CERTI_EXPORT FedRegion : public BaseRegion, public RTI::Region
 {
@@ -75,4 +75,4 @@ private:
 
 #endif // CERTI_FED_REGION_HH
 
-// $Id: FedRegion.hh,v 3.2 2007/06/22 08:51:36 erk Exp $
+// $Id: FedRegion.hh,v 3.3 2008/06/23 13:25:05 erk Exp $
