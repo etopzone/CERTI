@@ -10,5 +10,5 @@ description	"Launched by the fedarate in order to handle RTI<-->Federate communi
 args "-F RTIA_cmdline"
 
 # Options
-option "port"  		p "tcp port to be used" 	short  
-option "verbose"  	v "verbose mode" 			short   no
+option "port"  		p "tcp port to be used to communicate with FederateAmbassador" 	int     optional
+option "verbose"  	v "verbose mode" 			short   optional
