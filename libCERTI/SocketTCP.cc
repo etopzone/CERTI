@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.24 2008/06/12 07:39:50 erk Exp $
+// $Id: SocketTCP.cc,v 3.25 2008/06/24 09:09:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -481,7 +481,7 @@ assert(_est_init_tcp);
 
 long nReceived = 0 ;
 #ifndef SOCKTCP_BUFFER_LENGTH
-long RBLength = 0 ;
+unsigned long RBLength = 0 ;
 #endif
 
 D.Out(pdDebug, "Beginning to receive TCP message...(Size  %ld)",size);
@@ -597,4 +597,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.24 2008/06/12 07:39:50 erk Exp $
+// $Id: SocketTCP.cc,v 3.25 2008/06/24 09:09:14 erk Exp $

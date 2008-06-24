@@ -401,7 +401,7 @@ assert(_est_init_un);
 long nReceived = 0 ;
 
 #ifndef SOCKUN_BUFFER_LENGTH
-	long RBLength = 0 ;
+	unsigned long RBLength = 0 ;
 #endif
 
 pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)",Size);
