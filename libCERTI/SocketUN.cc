@@ -24,11 +24,11 @@
 #include "baseTypes.hh"
 
 #if defined(RTIA_USE_TCP)
-#include "SocketTCP.hh"
-#if not defined(_WIN32)
-#include <cstring>
-#include <cerrno>
-#endif
+	#include "SocketTCP.hh"
+	#if not defined(_WIN32)
+		#include <cstring>
+		#include <cerrno>
+	#endif
 #else
 #include <unistd.h>
 #include <strings.h>
@@ -416,7 +416,7 @@ while (RBLength < Size)
 						 0);
 		#else
 				nReceived = recv(_socket_un,
-						 (char *) Buffer + RBLength,
+						 (char *) buffer + RBLength,
 						 Size - RBLength,
 						 0);
 		#endif
