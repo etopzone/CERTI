@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.51 2008/06/18 13:46:14 erk Exp $
+// $Id: ObjectClass.cc,v 3.52 2008/06/24 08:56:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -916,10 +916,14 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         answer->setLabel(the_tag);
         answer->handleArray.resize(the_size) ;
         answer->handleArraySize = the_size ;
+        answer->sizeValueArray(the_size) ;
 
         for (int i = 0 ; i < the_size ; i++) {
             answer->handleArray[i] = the_attributes[i] ;
-            answer->setValue(i, the_values[i].value, the_values[i].length);
+            // value recopy into answer
+            char *tempValue = new char[the_values[i].length] ;
+            memcpy(tempValue,the_values[i].value,the_values[i].length) ;
+            answer->setValue(i, tempValue, the_values[i].length);   
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
@@ -979,10 +983,14 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         answer->handleArraySize = the_size ;
         answer->handleArray.resize(the_size) ;
+        answer->sizeValueArray(the_size) ;
 
         for (int i = 0 ; i < the_size ; i++) {
             answer->handleArray[i] = the_attributes[i] ;
-            answer->setValue(i, the_values[i].value, the_values[i].length);
+            // value recopy into answer
+            char *tempValue = new char[the_values[i].length] ;
+            memcpy(tempValue,the_values[i].value,the_values[i].length) ;
+            answer->setValue(i, tempValue, the_values[i].length);   
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
@@ -1824,4 +1832,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.51 2008/06/18 13:46:14 erk Exp $
+// $Id: ObjectClass.cc,v 3.52 2008/06/24 08:56:49 rousse Exp $

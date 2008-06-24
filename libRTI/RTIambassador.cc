@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.88 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIambassador.cc,v 3.89 2008/06/24 08:56:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -1175,6 +1175,7 @@ updateAttributeValues(ObjectHandle theObject,
            RestoreInProgress,
            RTIinternalError)
 {
+    G.Out(pdGendoc,"enter RTIambassador::updateAttributeValues with time");
     Message req, rep ;
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
@@ -1189,7 +1190,7 @@ updateAttributeValues(ObjectHandle theObject,
     req.setBoolean(true);
 
     privateRefs->executeService(&req, &rep);
-
+    G.Out(pdGendoc,"return  RTIambassador::updateAttributeValues with time");
     return rep.getEventRetraction();
 }
 
@@ -1211,6 +1212,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember, 
 	   RTI::AttributeNotOwned, RTI::AttributeNotDefined, RTI::ObjectNotKnown)
 {
+    G.Out(pdGendoc,"enter RTIambassador::updateAttributeValues without time");
     Message req, rep ;
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
@@ -1224,6 +1226,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
     req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
+    G.Out(pdGendoc,"exit  RTIambassador::updateAttributeValues without time");
 }
 
 // ----------------------------------------------------------------------------
@@ -1263,7 +1266,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.setPHVPS(theParameters);
     req.setRegion(0);
     req.setBoolean(true);
-    
+
     privateRefs->executeService(&req, &rep);
 
     return rep.getEventRetraction();
@@ -1299,7 +1302,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
     req.setPHVPS(theParameters);
     req.setRegion(0);
     req.setBoolean(false);
-
+  
     privateRefs->executeService(&req, &rep);
 }
 
@@ -3012,4 +3015,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.88 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIambassador.cc,v 3.89 2008/06/24 08:56:49 rousse Exp $

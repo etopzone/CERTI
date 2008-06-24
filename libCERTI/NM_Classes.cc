@@ -19,7 +19,7 @@
 // ----------------------------------------------------------------------------
 
 #include "NM_Classes.hh"
-
+#include <assert.h>
 namespace certi {
 
 NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIinternalError) {
@@ -988,7 +988,9 @@ void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
         ValueArray.resize(handleArraySize) ;	
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
-		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);		
+                char *tempValue = new char[ValueArray[i].length] ;
+		msgBuffer.read_bytes(tempValue, ValueArray[i].length);
+                ValueArray[i].value = tempValue ;		
 	}
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
@@ -1021,7 +1023,7 @@ void NM_Send_Interaction::serialize(MessageBuffer& msgBuffer) {
 	/* the value pre-encoded by the user (HLA 1.3) */
 	for (i = 0 ; i < handleArraySize ; i++) {
 		msgBuffer.write_int32(ValueArray[i].length) ;
-		msgBuffer.write_bytes(ValueArray[i].value, ValueArray[i].length);
+		msgBuffer.write_bytes((char *)ValueArray[i].value, ValueArray[i].length);
 	}    
 } /* end of serialize */ 
 void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
@@ -1034,7 +1036,9 @@ void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
         ValueArray.resize(handleArraySize) ;
 	for (i = 0 ; i < handleArraySize ; i ++) {
 		ValueArray[i].length = msgBuffer.read_int32();
-		msgBuffer.read_bytes(ValueArray[i].value, ValueArray[i].length);
+                char *tempValue = new char[ValueArray[i].length] ;
+		msgBuffer.read_bytes(tempValue, ValueArray[i].length);
+                ValueArray[i].value = tempValue ;
 	}
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/

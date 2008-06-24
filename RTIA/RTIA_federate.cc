@@ -395,9 +395,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       }
 
       case Message::UPDATE_ATTRIBUTE_VALUES: {
-
-          std::vector <ValueLengthPair> ValueArray = req->getValueArray();
-
+          std::vector <ValueLengthPair> ValueArrayTemp ;
+          ValueArrayTemp = req->getValueArray();
           try {
               if (req->getBoolean() )
                   {
@@ -406,7 +405,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   rep.setEventRetraction(
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
-                                            ValueArray,
+                                            ValueArrayTemp,
                                             req->handleArraySize,
                                             req->getFederationTime(),
                                             req->getTag(),
@@ -418,16 +417,16 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                                 "UpdateAttribValues without TIMESTAMP.");
 		  om->updateAttributeValues(req->getObject(),
                                             req->handleArray,
-                                            ValueArray,
+                                            ValueArrayTemp,
                                             req->handleArraySize,
                                             req->getTag(),
                                             e);
                   }
               // Don't forget boolean value for the answer
               rep.setBoolean(req->getBoolean()) ;
-              ValueArray.empty() ;
+              ValueArrayTemp.empty() ;
           } catch (Exception *e) {
-              ValueArray.empty() ;
+              ValueArrayTemp.empty() ;
               throw e ;
           }
       }
@@ -435,7 +434,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::SEND_INTERACTION: {
 
-          std::vector <ParameterLengthPair> ValueArray = req->getValueArray();
+          std::vector <ParameterLengthPair> ValueArrayTemp = req->getValueArray();
           G.Out(pdGendoc,"S_I into RTIA::chooseFederateProcessing") ;
           try {
               if (req->getBoolean() )
@@ -445,7 +444,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   rep.setEventRetraction(
                       om->sendInteraction(req->getInteractionClass(),
                                       req->handleArray,
-                                      ValueArray,
+                                      ValueArrayTemp,
                                       req->handleArraySize,
                                       req->getFederationTime(),
                                       req->getTag(),
@@ -458,15 +457,15 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
    "Receiving Message from Federate, type SendInteraction without TIMESTAMP.");
                       om->sendInteraction(req->getInteractionClass(),
                                       req->handleArray,
-                                      ValueArray,
+                                      ValueArrayTemp,
                                       req->handleArraySize,
                                       req->getTag(),
 				      req->getRegion(),
                                       e);
                   }
-              ValueArray.empty();
+              ValueArrayTemp.empty();
           } catch (Exception *e) {
-              ValueArray.empty();
+              ValueArrayTemp.empty();
               throw e ;
           }
       }

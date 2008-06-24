@@ -43,7 +43,7 @@ typedef enum { stSignalInterrupt, stIgnoreSignal } SignalHandlerType ;
 // This is the read buffer of UNIX sockets. It must be at least as
 // long as the longest data ever received by a socket. If the next
 // line is commented out, no buffer will be used at all.
-#define SOCKUN_BUFFER_LENGTH 4096
+//#define SOCKUN_BUFFER_LENGTH 4096
 
 /**
  * Socket Unix handling class.

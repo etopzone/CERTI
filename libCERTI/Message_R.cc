@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.28 2008/06/11 15:19:21 rousse Exp $
+// $Id: Message_R.cc,v 3.29 2008/06/24 08:56:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,7 +42,7 @@ Message::receive(SocketUN* socket, MessageBuffer &msgBuffer) throw (NetworkError
 	 */
 	msgBuffer.reset();
 	/* 1- Read 'reserved bytes' header from socket */
-	//D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
+	D.Out(pdDebug,"Reading %d 'reserved' bytes",msgBuffer.reservedBytes);
 	socket->receive(static_cast<const unsigned char *>(msgBuffer(0)), msgBuffer.reservedBytes);	
 	//msgBuffer.show(msgBuffer(0),5);fflush(stdout);
 	/* 2- update (assume) complete message size from reserved bytes */
@@ -610,9 +610,10 @@ Message::readValueArray(MessageBuffer &msgBuffer)
     valueArray.resize(handleArraySize) ;
     for (int i = 0 ; i < handleArraySize ; i ++)
         {
-
         valueArray[i].length = msgBuffer.read_int64() ;
-        msgBuffer.read_bytes((char *) valueArray[i].value, valueArray[i].length);
+        char *TempValue = new char[valueArray[i].length] ;
+        msgBuffer.read_bytes((char *) TempValue, valueArray[i].length);
+        valueArray[i].value=TempValue;
         }
 }
 
@@ -626,4 +627,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.28 2008/06/11 15:19:21 rousse Exp $
+// $Id: Message_R.cc,v 3.29 2008/06/24 08:56:49 rousse Exp $

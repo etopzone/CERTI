@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.33 2008/06/11 15:19:21 rousse Exp $
+// $Id: Message_W.cc,v 3.34 2008/06/24 08:56:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -577,10 +577,11 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
     for (int i = 0 ; i < handleArraySize ; i ++)
         {
         msgBuffer.write_int64(valueArray[i].length) ;
-        msgBuffer.write_bytes(valueArray[i].value, valueArray[i].length) ;
+        assert(valueArray[i].value != 0);
+        msgBuffer.write_bytes((char *)(valueArray[i].value), valueArray[i].length) ;
     }
 }
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.33 2008/06/11 15:19:21 rousse Exp $
+// $Id: Message_W.cc,v 3.34 2008/06/24 08:56:49 rousse Exp $

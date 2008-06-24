@@ -31,7 +31,7 @@
 // This is the read buffer of TCP sockets. It must be at least as long
 // as the longest data ever received by a socket.
 // If the next line is commented out, no buffer will be used at all.
-#define SOCKTCP_BUFFER_LENGTH 4096
+//#define SOCKTCP_BUFFER_LENGTH 4096
 
 namespace certi {
 

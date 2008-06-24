@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.22 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.23 2008/06/24 08:56:49 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
+#include <assert.h>
 
 #include "ObjectClassBroadcastList.hh"
 #include "PrettyDebug.hh"
@@ -83,7 +84,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
     // Copy attributes that are in the bsWaiting state in Line.
     UShort currentSize ;
     AttributeHandle currentAttrib ;
-    char buffer[MAX_BYTES_PER_VALUE + 1] ;
+    char *buffer =NULL;
     unsigned long length ;
 
     reducedMessage->handleArraySize = 0 ;
@@ -97,6 +98,8 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             // Update number of attributes in ReducedMessage.
             currentSize = reducedMessage->handleArraySize ;
             reducedMessage->handleArraySize ++ ;
+            reducedMessage->handleArray.resize(reducedMessage->handleArraySize);
+            reducedMessage->sizeValueArray(reducedMessage->handleArraySize);
 
             // Copy Attribute Handle.
             reducedMessage->handleArray[currentSize] = currentAttrib ;
@@ -104,8 +107,10 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
             if (message->getType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) {
                 // Copy Attribute Value.
                 message->getValue(i, &length, buffer);
-                reducedMessage->setValue(currentSize, buffer, length);
-
+                char *tempValue = new char[length] ;
+                memcpy(tempValue,buffer,length) ;
+                reducedMessage->setValue(currentSize, tempValue, length);
+                buffer = NULL ;
             }
         }
     }
@@ -396,4 +401,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.22 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.23 2008/06/24 08:56:49 rousse Exp $

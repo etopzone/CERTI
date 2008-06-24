@@ -281,7 +281,7 @@ public:
     // Parameter 1 : Rank (int) : valueArray rank
     // Parameter 2 :length (unsigned long *) : byte number of Value tooken
     //              from valueArray[Rank]
-    // Parameter 3 : Value (char *) : Value tooken from valueArray[Rank]
+    // Parameter 3 : Value (char *) : Value address tooken from valueArray[Rank]
     //               Value is managed as a set of bytes
     // Note : if parametre 3 not present, Value is created and its address is returned
     //        by getValue
@@ -405,6 +405,9 @@ public:
 
     std::string getFEDid() const { return FEDid ; };
     void setFEDid(std::string FEDid);
+
+        void displayvalueArray(char *);
+
     // Public attributes
     Type type ;
 

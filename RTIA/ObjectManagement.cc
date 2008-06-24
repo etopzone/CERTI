@@ -131,12 +131,14 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     	req.setDate(theTime);
         req.handleArray.resize(attribArraySize) ;   
     	req.handleArraySize = attribArraySize ;
-        req.sizeValueArray(attribArraySize) ;
+        req.sizeValueArray(attribArraySize) ; 
 
-    	for (i = 0 ; i < attribArraySize ; i++) {
-    	    req.handleArray[i] = attribArray[i] ;
-        	req.setValue(i, valueArray[i].value, valueArray[i].length);
-    	} 
+        for (i = 0 ; i < attribArraySize ; i++) {
+            req.handleArray[i] = attribArray[i] ;
+            char *tempValue = new char[valueArray[i].length] ;
+            memcpy(tempValue,valueArray[i].value,valueArray[i].length) ;
+            req.setValue(i, tempValue, valueArray[i].length);       
+        }
 
     	req.setLabel(theTag);
 
@@ -182,6 +184,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     NM_Update_Attribute_Values req;
     int i ;
 
+    G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues without time");
     // Building request (req NetworkMessage)    
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -193,7 +196,9 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 
     for (i = 0 ; i < attribArraySize ; i++) {
         req.handleArray[i] = attribArray[i] ;
-        req.setValue(i, valueArray[i].value, valueArray[i].length);
+        char *tempValue = new char[valueArray[i].length] ;
+        memcpy(tempValue,valueArray[i].value,valueArray[i].length) ;
+        req.setValue(i, tempValue, valueArray[i].length);       
     }
 
     req.setLabel(theTag);
@@ -202,7 +207,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
 
     e = rep->exception ;
-
+    G.Out(pdGendoc,"exit  ObjectManagement::updateAttributeValues without time");
 }
 
 // ----------------------------------------------------------------------------
@@ -322,7 +327,9 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
        for (int i=0 ; i<paramArraySize ; i++) {
         	req.handleArray[i] = paramArray[i] ;
-	        req.setValue(i, valueArray[i].value, valueArray[i].length);
+                char *tempValue = new char[valueArray[i].length] ;
+                memcpy(tempValue,valueArray[i].value,valueArray[i].length) ;
+	        req.setValue(i, tempValue, valueArray[i].length);
        }
 
        req.setLabel(theTag);
@@ -370,8 +377,10 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     req.sizeValueArray(paramArraySize) ;
 
     for (int i=0 ; i<paramArraySize ; i++) {
-	req.handleArray[i] = paramArray[i] ;
-	req.setValue(i, valueArray[i].value, valueArray[i].length);
+        	req.handleArray[i] = paramArray[i] ;
+                char *tempValue = new char[valueArray[i].length] ;
+                memcpy(tempValue,valueArray[i].value,valueArray[i].length) ;
+	        req.setValue(i, tempValue, valueArray[i].length) ;
     }
 
     req.setLabel(theTag);
