@@ -24,6 +24,26 @@ ENDIF(BIG_ENDIAN)
 # default behaviour is to build library as shared on all platform
 OPTION(BUILD_SHARED
              "Build libraries as shared library" ON)
+             
+OPTION(USE_FULL_RPATH
+             "Use the full RPATH" OFF)
+             
+IF (USE_FULL_RPATH)       
+    # see http://www.cmake.org/Wiki/CMake_RPATH_handling#Always_full_RPATH
+    # use, i.e. don't skip the full RPATH for the build tree
+    SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+    
+    # when building, don't use the install RPATH already
+    # (but later on when installing)
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
+    
+    # the RPATH to be used when installing
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    
+    # add the automatically determined parts of the RPATH
+    # which point to directories outside the build tree to the install RPATH
+    SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+ENDIF(USE_FULL_RPATH)
   
 OPTION(BUILD_API_DOC
              "Build doxygen documentation" OFF)         
