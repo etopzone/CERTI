@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.9 2008/06/16 09:03:24 rousse Exp $
+// $Id: SecurityLevel.hh,v 3.10 2008/06/24 12:23:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -32,7 +32,7 @@
 
 #define MAX_SECURITYLEVELNAME 500
 
-typedef char *SecurityLevelName ; // Max length MAX_USER_TAG_LENGTH
+typedef char *SecurityLevelName ;
 typedef unsigned short SecurityLevelID ;
 
 #define PublicLevelID 0
@@ -68,4 +68,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.9 2008/06/16 09:03:24 rousse Exp $
+// $Id: SecurityLevel.hh,v 3.10 2008/06/24 12:23:31 rousse Exp $

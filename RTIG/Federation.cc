@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.93 2008/06/23 13:25:06 erk Exp $
+// $Id: Federation.cc,v 3.94 2008/06/24 12:23:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -404,7 +404,7 @@ Federation::getFEDid() const
 
 // ----------------------------------------------------------------------------
 /*! Add the Federate to the Federation, and return its new federate handle.
-  MAX_FEDERATE is the maximum number of federates per federation. Also send
+  Also send
   Null messages from all others federates to initialize its LBTS, and
   finally a RequestPause message if the Federation is already paused.
 */
@@ -2279,5 +2279,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.93 2008/06/23 13:25:06 erk Exp $
+// $Id: Federation.cc,v 3.94 2008/06/24 12:23:31 rousse Exp $
 

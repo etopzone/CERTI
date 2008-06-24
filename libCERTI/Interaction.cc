@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.40 2008/06/24 08:56:49 rousse Exp $
+// $Id: Interaction.cc,v 3.41 2008/06/24 12:23:31 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -498,28 +498,6 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     return ibList ;
 }
 
-// ----------------------------------------------------------------------------
-//! Change the interaction name.
-// Name attribute access(GetName reference must be considered READ-ONLY).
-// NewName length must be lower or equal to MAX_USER_TAG_LENGTH.
-//void
-//Interaction::setName(const char *new_name)
-//    throw (ValueLengthExceeded, RTIinternalError)
-//{
-//	std::stringstream msg;
-//	
-//	if (strlen(new_name)>MAX_USER_TAG_LENGTH) {
-//		msg <<"<"<< new_name <<"> length <"<< strlen(new_name)
-//			<<"> exceed MAX_USER_TAG_LENGTH = "<<MAX_USER_TAG_LENGTH;
-//		throw ValueLengthExceeded(msg.str().c_str());
-//	}
-//	
-//	if (new_name==0) {
-//		Named::setName("");
-//	} else {	
-//		Named::setName(new_name);	
-//	}    
-//}
 
 // ----------------------------------------------------------------------------
 //! Change the level ID.
@@ -552,4 +530,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.40 2008/06/24 08:56:49 rousse Exp $
+// $Id: Interaction.cc,v 3.41 2008/06/24 12:23:31 rousse Exp $

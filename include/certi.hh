@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.31 2008/06/24 08:56:48 rousse Exp $
+// $Id: certi.hh,v 3.32 2008/06/24 12:23:31 rousse Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -90,18 +90,6 @@
  * @ingroup CERTI_Libraries
  * The CERTI library contains CERTI specific HLA implementation
  */
-   
-// Deprecated HLA macros still in use
-// Will be suppressed asap
-//#define MAX_BYTES_PER_VALUE 500
-//#define MAX_FEDERATE_NAME_LENGTH 64
-//#undef MAX_USER_TAG_LENGTH
-//#define MAX_USER_TAG_LENGTH 64
-//#undef MAX_ATTRIBUTES_PER_CLASS
-//#define MAX_ATTRIBUTES_PER_CLASS 50
-//#define MAX_BYTES_PER_VALUETYPE 128
-//#undef MAX_PARAMETERS_PER_CLASS
-//#define MAX_PARAMETERS_PER_CLASS 50
 
 // next used in RTIG::processIncomingMessage method
 #define BUFFER_EXCEPTION_REASON_SIZE 256
@@ -237,7 +225,6 @@ RTI_EXCEPT(NetworkSignal)
 RTI_EXCEPT(NetworkError)
 
 // Deprecated HLA types still in use
-//typedef char AttributeValue[MAX_BYTES_PER_VALUE + 1] ;
 typedef char *AttributeValue ;
 
 //  typedef std::vector<char>  AttributeValue;
@@ -247,8 +234,7 @@ typedef char *ObjectName ;
 typedef AttributeValue ParameterValue ;
 typedef char *ParameterName ;
 typedef AttributeValue ValueName ;
-//typedef char ValueType[MAX_BYTES_PER_VALUETYPE + 1] ;
-//  typedef std::vector<char>  ValueType;
+
 struct Value {
     ValueName name ;
     ValueName value ;
@@ -384,4 +370,4 @@ typedef  struct vlp
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.31 2008/06/24 08:56:48 rousse Exp $
+// $Id: certi.hh,v 3.32 2008/06/24 12:23:31 rousse Exp $

@@ -564,8 +564,8 @@ Message::setFederateName(std::string NewNomFedere)
 
 // ----------------------------------------------------------------------------
 // setTag
-/** Store Tag into a Message (i.e. in tag, size is limited by MAX_USER_TAG_LENGTH)
-    @param new_tag tag (NULL tag is stored as an empty string)
+/** Store Tag into a Message
+    @param new_tag tag
 */
 void
 Message::setTag(std::string new_tag)
