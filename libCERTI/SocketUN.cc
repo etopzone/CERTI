@@ -409,7 +409,7 @@ pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)",Size);
 while (RBLength < Size) 
 	{
 	#ifdef _WIN32
-		#ifdef SOCKTCP_BUFFER_LENGTH
+		#ifdef SOCKUN_BUFFER_LENGTH
 				nReceived = recv(_socket_un,
 						 ReadBuffer + RBLength,
 						 SOCKUN_BUFFER_LENGTH - RBLength,
