@@ -7,7 +7,7 @@ usage		"rtia [-p <tcp_port>] [-v]"
 description	"Launched by the fedarate in order to handle RTI<-->Federate communication"
 
 # gengetopt options
-args "-F RTIA_cmdline"
+args "-F RTIA_cmdline -G"
 
 # Options
 option "port"  		p "tcp port to be used to communicate with FederateAmbassador" 	int     optional
