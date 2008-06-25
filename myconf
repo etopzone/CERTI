@@ -1,6 +1,6 @@
 #! /bin/sh
 # CERTI myconf
-# $Id: myconf,v 3.13 2008/06/04 07:42:05 siron Exp $
+# $Id: myconf,v 3.14 2008/06/25 09:04:50 erk Exp $
 
 case $1 in
     sun)
@@ -58,9 +58,13 @@ case $1 in
 esac
 
 WHERE=`dirname $0`
-$WHERE/configure --prefix=$HOME/CERTI-3.2.8 $SHARED $2 $3 $4 $5
+#$WHERE/configure --prefix=$HOME/CERTI-3.x.y $SHARED $2 $3 $4 $5
+echo "This script is obsolete please use CMake"
+echo "in order to configure and compile CERTI."
+echo "See for example http://download.savannah.gnu.org/releases/certi/documentation/CERTI-Compilation-HOWTO.pdf"
+echo "or generic CMake usage at: http://www.cmake.org/HTML/RunningCMake.html"
 make clean
 make
 make install
 
-# $Id: myconf,v 3.13 2008/06/04 07:42:05 siron Exp $
+# $Id: myconf,v 3.14 2008/06/25 09:04:50 erk Exp $
