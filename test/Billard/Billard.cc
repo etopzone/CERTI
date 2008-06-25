@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <cstdlib>
+#include <cassert>
 
 using std::auto_ptr ;
 using std::string ;
@@ -630,39 +631,35 @@ void
 Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTime,
 			 RTI::ObjectHandle id)
 {
-    char buf[512] ;
+    certi::MessageBuffer buffer;
     RTI::ParameterHandleValuePairSet *parameterSet=NULL ;
 
     parameterSet = RTI::ParameterSetFactory::create(3);
 
-    // OLD : sprintf(buf, "%ld", id);
-    // OLD : parameterSet->add(ParamBoulID, buf, strlen(buf)+1);
-    memcpy(buf,&id,sizeof(id));
-    parameterSet->add(ParamBoulID, buf, sizeof(id));
+    buffer.reset();
+    buffer.write_int32(id);
+    buffer.updateReservedBytes();              
+    parameterSet->add(ParamBoulID, static_cast<char*>(buffer(0)), buffer.size());
 
     D.Out(pdDebug, "SendInteraction");
     D.Out(pdDebug, "SendInteraction - ParamBoulID= %u", ParamBoulID);
-    D.Out(pdDebug, "SendInteraction - x= %d", id);
-    D.Out(pdDebug, "SendInteraction - buf= %s", buf);
+    D.Out(pdDebug, "SendInteraction - x= %d", id);    
 
-    // D.Out(pdDebug, "SendInteraction - ParamBoulID= %u, x= %f, buf= %s",
-    // ParamBoulID, Id, buf);
+    buffer.reset();
+	buffer.write_double(dx);
+	buffer.updateReservedBytes();
+    parameterSet->add(ParamDXID, static_cast<char*>(buffer(0)), buffer.size());
 
-    // OLD : sprintf(buf, "%f", dx);
-    // OLD : parameterSet->add(ParamDXID, buf, strlen(buf)+1);
-    memcpy(buf,&dx,sizeof(dx)); 
-    parameterSet->add(ParamDXID, buf, sizeof(dx));
+    D.Out(pdDebug, "SendInteraction - ParamDXID= %u, x= %f",
+          ParamDXID, dx);
+    
+    buffer.reset();
+    buffer.write_double(dy);
+    buffer.updateReservedBytes();
+    parameterSet->add(ParamDYID, static_cast<char*>(buffer(0)), buffer.size());
 
-    D.Out(pdDebug, "SendInteraction - ParamDXID= %u, x= %f, buf= %s",
-          ParamDXID, dx, buf);
-
-    // OLD : sprintf(buf, "%f", dy);
-    // OLD : parameterSet->add(ParamDYID, buf, strlen(buf)+1);
-    memcpy(buf,&dy,sizeof(dy));
-    parameterSet->add(ParamDYID, buf, sizeof(dy));
-
-    D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f, buf= %s",
-          ParamDYID, dy, buf);
+    D.Out(pdDebug, "SendInteraction - ParamDYID= %u, x= %f",
+          ParamDYID, dy);
 
     try {
         if ( notimestamp )
@@ -706,24 +703,24 @@ Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTim
     buffer.reset();
     buffer.write_double(x);
     buffer.updateReservedBytes();
-    attributeSet->add(AttrXID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);    
+    attributeSet->add(AttrXID, static_cast<char*>(buffer(0)),buffer.size());    
     D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u, attribute size=%d",
-          AttrXID, x, attributeSet->size(),buffer.size()+buffer.reservedBytes);
+          AttrXID, x, attributeSet->size(),buffer.size());
     
     buffer.reset();
     buffer.write_double(y);	
     buffer.updateReservedBytes();
-    attributeSet->add(AttrYID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);
+    attributeSet->add(AttrYID, static_cast<char*>(buffer(0)),buffer.size());
     D.Out(pdDebug, "SendUpdate - AttrYID= %u, y= %f, size= %u",
-          AttrYID, y, buffer.size()+buffer.reservedBytes);
+          AttrYID, y, buffer.size());
 
     buffer.reset();
     buffer.write_int32(color);	
     buffer.updateReservedBytes();
-    attributeSet->add(AttrColorID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);
+    attributeSet->add(AttrColorID, static_cast<char*>(buffer(0)),buffer.size());
    
     D.Out(pdDebug, "SendUpdate - AttrColorID= %u, color= %f, size= %u",
-          AttrColorID, color, buffer.size()+buffer.reservedBytes);
+          AttrColorID, color, buffer.size());
 
     try {
         if ( notimestamp )
@@ -838,7 +835,7 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
            RTI::InvalidFederationTime,
            RTI::FederateInternalError)
 {
-    char *parmValue ;
+	certi::MessageBuffer buffer;
     RTI::ULong valueLength ;
     int dx1 = 0 ;
     int dy1 = 0 ;
@@ -859,48 +856,30 @@ Billard::receiveInteraction(RTI::InteractionClassHandle theInteraction,
         RTI::ParameterHandle parmHandle = theParameters.getHandle(j);
 
         valueLength = theParameters.getValueLength(j);
-        parmValue = new char[valueLength] ;
-        theParameters.getValue(j, parmValue, valueLength);
+        assert(valueLength>0);
+        buffer.resize(valueLength);
+        buffer.reset();
+        theParameters.getValue(j, static_cast<char*>(buffer(0)), valueLength);        
+        buffer.assumeSizeFromReservedBytes();
 
-        if (parmHandle == ParamDXID) {
-            if (parmValue != NULL) {
-                // OLD : dx1 = atoi(parmValue);
-                double d_dx1 ;
-                memcpy(&d_dx1,parmValue,valueLength) ;
-                dx1 = static_cast<int>(d_dx1);
-                // Local.dx = atof(parmValue);
-                D.Out(pdDebug, "receiveInteraction(*) - dx= %s", parmValue);
-                delete[] parmValue ;
-            }
-            else
-                D.Out(pdError, "Missing Attribute in RAV.");
+        if (parmHandle == ParamDXID) {            
+             dx1 = static_cast<int>(buffer.read_double());                            
         }
-        else
+        else {
             if (parmHandle == ParamDYID) {
-                if (parmValue != NULL) {
-                    // OLD : dy1 = atoi(parmValue);
-                    double d_dy1 ;
-                    memcpy(&d_dy1,parmValue,valueLength) ;
-                    dy1 = static_cast<int>(d_dy1);
-                    // Local.dy = atof(parmValue);
-                    D.Out(pdDebug, "receiveInteraction(*) - dy= %s", parmValue);
-                    delete[] parmValue ;
+            	dy1 = static_cast<int>(buffer.read_double());                    
+            }                
+            
+            else {
+                if (parmHandle == ParamBoulID) {                                                                   
+                    h1 = buffer.read_int32(); ;
+                    bille = true ;
                 }
-                else
-                    D.Out(pdError, "Missing Attribute in RAV.");
+                else {
+                     D.Out(pdError, "Unrecognized parameter handle");
+                }
             }
-            else
-                if (parmHandle == ParamBoulID) {
-                    if (parmValue != NULL) {
-                        // OLD : h1 = atoi(parmValue);
-                        RTI::ObjectHandle d_h1 ;
-                        memcpy(&d_h1,parmValue,valueLength) ;
-                        h1 = d_h1 ;
-                        bille = true ;
-                    }
-                    else
-                        D.Out(pdError, "Unrecognized parameter handle");
-                }
+        }
     }
     if (bille) {
 	if (h1 == local.ID) {
@@ -931,8 +910,7 @@ Billard::reflectAttributeValues(
     float x1 = 0 ;
     float y1 = 0 ;
 
-    RTI::ULong valueLength ;
-    char *attrValue ;
+    RTI::ULong valueLength ;  
 
     D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
           theAttributes.size());
@@ -941,28 +919,17 @@ Billard::reflectAttributeValues(
 
         RTI::AttributeHandle parmHandle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
-        attrValue = new char[valueLength] ;
-        theAttributes.getValue(j, attrValue, valueLength);
-
+        assert(valueLength>0);
+        buffer.resize(valueLength);        
+        buffer.reset();        
+        theAttributes.getValue(j, static_cast<char*>(buffer(0)), valueLength);        
+        buffer.assumeSizeFromReservedBytes();
+        
         if (parmHandle == AttrXID) {
-            if (attrValue != NULL) {                               
-                memcpy(buffer(0),attrValue,valueLength);
-                buffer.assumeSizeFromReservedBytes();
-                x1 = buffer.read_double();                
-                delete[] attrValue ;
-            }
-            else
-                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+           x1 = buffer.read_double();                
         }
         else if (parmHandle == AttrYID) {
-            if (attrValue != NULL) {                                
-                memcpy(buffer(0),attrValue,valueLength);
-                buffer.assumeSizeFromReservedBytes();
-                y1 = buffer.read_double();
-                delete[] attrValue ;
-            }
-            else
-                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+           y1 = buffer.read_double();            
         }
         else
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
@@ -1007,8 +974,7 @@ Billard::reflectAttributeValues(
     float y1 = 0 ;
     certi::MessageBuffer buffer;
 
-    RTI::ULong valueLength ;
-    char *attrValue ;
+    RTI::ULong valueLength ;   
 
     D.Out(pdDebug, "reflectAttributeValues - nb attributs= %d",
           theAttributes.size());
@@ -1017,31 +983,21 @@ Billard::reflectAttributeValues(
 
         RTI::AttributeHandle parmHandle = theAttributes.getHandle(j);
         valueLength = theAttributes.getValueLength(j);
-        attrValue = new char[valueLength] ;
-        theAttributes.getValue(j, attrValue, valueLength);
+        assert(valueLength>0);
+        buffer.resize(valueLength);        
+        buffer.reset();        
+        theAttributes.getValue(j, static_cast<char*>(buffer(0)), valueLength);        
+        buffer.assumeSizeFromReservedBytes();
 
-        if (parmHandle == AttrXID) {
-            if (attrValue != NULL) {
-                memcpy(buffer(0),attrValue,valueLength);
-                buffer.assumeSizeFromReservedBytes();
-                x1 = buffer.read_double();                
-                delete[] attrValue ;
-            }
-            else
-                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        if (parmHandle == AttrXID) {            
+        	x1 = buffer.read_double();                                            
         }
-        else if (parmHandle == AttrYID) {
-            if (attrValue != NULL) {
-                memcpy(buffer(0),attrValue,valueLength);
-                buffer.assumeSizeFromReservedBytes();
-                y1 = buffer.read_double();                 
-                delete[] attrValue ;
-            }
-            else
-                D.Out(pdError, "Fed: ERREUR: missing Attribute.");
+        else if (parmHandle == AttrYID) {        	
+        	y1 = buffer.read_double();                                           
         }
-        else
+        else {
             D.Out(pdError, "Fed: ERREUR: handle inconnu.");
+        }
     }
     
     vector<Ball>::iterator it = remote.begin() ;
