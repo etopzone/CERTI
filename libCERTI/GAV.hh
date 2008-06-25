@@ -130,8 +130,6 @@ public:
     virtual ULong next(ULong i) const ;
 };
 
-class RTI::ParameterHandleValuePairSet ;
-
 class ParameterHandleValuePair
 {
 public:
