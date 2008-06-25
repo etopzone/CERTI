@@ -1,4 +1,12 @@
-CERTI is an efficient and Open Source
-HLA Runtime Infrastructure (RTI).
+CERTI is an efficient and Open Source HLA Runtime Infrastructure (RTI).
+CERTI is currently near to full HLA 1.3 compliance and looks forward to IEEE-1516.
 
-More explanation to come soon...
+CERTI is primarily developed and maintained by the Toulouse research center of ONERA [http://www.onera.fr], the French Aerospace Labs. 
+The primary goal of CERTI is to be used in research activities but CERTI has a growing
+number of users and contributors among the CERTI Open Source community.
+
+People interested in CERTI may join the CERTI Open Source
+community at https://savannah.nongnu.org/projects/certi.
+by using the mailing list 
+http://lists.nongnu.org/mailman/listinfo/certi-devel
+for discussion regarding CERTI usage.
