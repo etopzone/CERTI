@@ -43,7 +43,11 @@ CERTI releases should be done with the following steps:
 6) Run autotests :))
    Which means for today run as many tests as you can do
       - billard
-      - HLA Tutorial
+      - HLA Tutorial 
+      - HLA TestsSuite
+   All those tests do have an associated dtest scripts. 
+   see for example certi/tests/Billard/dtest_billard.py
+   or HLA_TestsSuite/dtest_*.py    
 
 7) Tag certi tree with appropriate version
 
@@ -88,7 +92,6 @@ CERTI releases should be done with the following steps:
 
    Remember that once you have posted the news you should
    approve it before it appears on first page.
-
 
 You are right this process IS painful and should be automated (a lot...)
 be sure we are working on it :))
