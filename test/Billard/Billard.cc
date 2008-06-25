@@ -23,6 +23,7 @@
 
 #include "Billard.hh"
 #include "PrettyDebug.hh"
+#include "MessageBuffer.hh"
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -694,35 +695,35 @@ Billard::sendInteraction(double dx, double dy, const RTI::FedTime& InteractionTi
 void
 Billard::sendUpdate(double x, double y, int color, const RTI::FedTime& UpdateTime,
 		    RTI::ObjectHandle id)
-{
-    char buf[512] ;
+{    
+    certi::MessageBuffer buffer;
     RTI::AttributeHandleValuePairSet *attributeSet ;
 
     attributeSet = RTI::AttributeSetFactory::create(3);
 
     D.Out(pdTrace, "SendUpdate.");
-
-    // OLD : sprintf(buf, "%f", x);
-    // OLD : attributeSet->add(AttrXID, buf, strlen(buf)+1);
-    memcpy(buf,&x,sizeof(x));
-    attributeSet->add(AttrXID, buf,sizeof(x));    
+   
+    buffer.reset();
+    buffer.write_double(x);
+    buffer.updateReservedBytes();
+    attributeSet->add(AttrXID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);    
     D.Out(pdDebug, "SendUpdate - AttrXID= %u, x= %f, size= %u, attribute size=%d",
-          AttrXID, x, attributeSet->size(),sizeof(x));
-
-    // OLD : sprintf(buf, "%f", y);
-    // OLD : attributeSet->add(AttrYID, buf, strlen(buf)+1);
-    memcpy(buf,&y,sizeof(y));
-    attributeSet->add(AttrYID, buf,sizeof(y));
+          AttrXID, x, attributeSet->size(),buffer.size()+buffer.reservedBytes);
+    
+    buffer.reset();
+    buffer.write_double(y);	
+    buffer.updateReservedBytes();
+    attributeSet->add(AttrYID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);
     D.Out(pdDebug, "SendUpdate - AttrYID= %u, y= %f, size= %u",
-          AttrYID, y, attributeSet->size());
+          AttrYID, y, buffer.size()+buffer.reservedBytes);
 
-    // OLD : sprintf(buf, "%d", color);
-    // OLD : attributeSet->add(AttrColorID, buf, strlen(buf)+1);
-    memcpy(buf,&color,sizeof(color));
-    attributeSet->add(AttrColorID, buf,sizeof(color));
+    buffer.reset();
+    buffer.write_int32(color);	
+    buffer.updateReservedBytes();
+    attributeSet->add(AttrColorID, static_cast<char*>(buffer(0)),buffer.size()+buffer.reservedBytes);
    
     D.Out(pdDebug, "SendUpdate - AttrColorID= %u, color= %f, size= %u",
-          AttrColorID, color, attributeSet->size());
+          AttrColorID, color, buffer.size()+buffer.reservedBytes);
 
     try {
         if ( notimestamp )
@@ -926,6 +927,7 @@ Billard::reflectAttributeValues(
 {
     D.Out(pdTrace, "reflectAttributeValues with time");
 
+    certi::MessageBuffer buffer;
     float x1 = 0 ;
     float y1 = 0 ;
 
@@ -943,22 +945,20 @@ Billard::reflectAttributeValues(
         theAttributes.getValue(j, attrValue, valueLength);
 
         if (parmHandle == AttrXID) {
-            if (attrValue != NULL) {
-                // OLD : x1 = atof(attrValue);
-                double d_x1 ;
-                memcpy(&d_x1,attrValue,valueLength) ;
-                x1 = d_x1 ;
+            if (attrValue != NULL) {                               
+                memcpy(buffer(0),attrValue,valueLength);
+                buffer.assumeSizeFromReservedBytes();
+                x1 = buffer.read_double();                
                 delete[] attrValue ;
             }
             else
                 D.Out(pdError, "Fed: ERREUR: missing Attribute.");
         }
         else if (parmHandle == AttrYID) {
-            if (attrValue != NULL) {
-                // OLD : y1 = atof(attrValue);
-                double d_y1 ;
-                memcpy(&d_y1,attrValue,valueLength) ;
-                y1 = d_y1 ;
+            if (attrValue != NULL) {                                
+                memcpy(buffer(0),attrValue,valueLength);
+                buffer.assumeSizeFromReservedBytes();
+                y1 = buffer.read_double();
                 delete[] attrValue ;
             }
             else
@@ -1005,6 +1005,7 @@ Billard::reflectAttributeValues(
 
     float x1 = 0 ;
     float y1 = 0 ;
+    certi::MessageBuffer buffer;
 
     RTI::ULong valueLength ;
     char *attrValue ;
@@ -1021,10 +1022,9 @@ Billard::reflectAttributeValues(
 
         if (parmHandle == AttrXID) {
             if (attrValue != NULL) {
-                // OLD : x1 = atof(attrValue);
-                double d_x1 ;
-                memcpy(&d_x1,attrValue,valueLength) ;
-                x1 = d_x1 ;
+                memcpy(buffer(0),attrValue,valueLength);
+                buffer.assumeSizeFromReservedBytes();
+                x1 = buffer.read_double();                
                 delete[] attrValue ;
             }
             else
@@ -1032,10 +1032,9 @@ Billard::reflectAttributeValues(
         }
         else if (parmHandle == AttrYID) {
             if (attrValue != NULL) {
-                // OLD : y1 = atof(attrValue);
-                double d_y1 ;
-                memcpy(&d_y1,attrValue,valueLength) ;
-                y1 = d_y1 ;
+                memcpy(buffer(0),attrValue,valueLength);
+                buffer.assumeSizeFromReservedBytes();
+                y1 = buffer.read_double();                 
                 delete[] attrValue ;
             }
             else
