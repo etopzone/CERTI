@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.12 2008/06/16 09:03:24 rousse Exp $
+// $Id: SecurityServer.cc,v 3.13 2008/06/27 09:54:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -33,6 +33,7 @@ using std::list ;
 using std::endl ;
 
 static pdCDebug D("SECURITY_SERVER", __FILE__);
+static PrettyDebug G("GENDOC",__FILE__);
 
 namespace certi {
 
@@ -44,6 +45,7 @@ Socket*
 SecurityServer::getSocketLink(FederateHandle theFederate,
                               TransportType theType) const
 {
+// G.Out(pdGendoc,"into SecurityServer::getSocketLink");
     return RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
 }
 
@@ -190,4 +192,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.12 2008/06/16 09:03:24 rousse Exp $
+// $Id: SecurityServer.cc,v 3.13 2008/06/27 09:54:47 rousse Exp $

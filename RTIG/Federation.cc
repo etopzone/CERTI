@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.94 2008/06/24 12:23:31 rousse Exp $
+// $Id: Federation.cc,v 3.95 2008/06/27 09:54:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -2268,6 +2268,14 @@ NM_Provide_Attribute_Value_Update mess ;
         mess.handleArray[i] = theAttributeList[i] ;
         }
 
+     // JYR : BUG if getSocketLink return NULL means
+     // owner federate has been killed and so rtig don't crash
+     // better development needed
+     if ( server->getSocketLink(theOwnerHandle) == NULL )
+        {
+        throw ObjectNotKnown ( "Owner federate killed") ;
+        }
+
      mess.send(server->getSocketLink(theOwnerHandle),NM_msgBufSend);
  
    G.Out(pdGendoc,"            requestObjectOwner ===> write PAVU to RTIA %d"
@@ -2279,5 +2287,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.94 2008/06/24 12:23:31 rousse Exp $
+// $Id: Federation.cc,v 3.95 2008/06/27 09:54:47 rousse Exp $
 

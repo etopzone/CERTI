@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.16 2008/04/23 11:54:41 rousse Exp $
+// $Id: SocketServer.cc,v 3.17 2008/06/27 09:54:47 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -216,6 +216,8 @@ SocketServer::getActiveSocket(fd_set *select_fdset) const
   this should not happen. In fact, when a Client(Federate) crashes, the
   RTIG is supposed be remove all references to this federate. That's the
   reason why a RTIinternalError is thrown in that case.
+
+  JYR : sorry but we return NULL (avoid rtig crash) because development needed
 */
 Socket*
 SocketServer::getSocketLink(Handle the_federation,
@@ -229,12 +231,18 @@ SocketServer::getSocketLink(Handle the_federation,
 
     if (the_type == RELIABLE) {
         if (tuple->ReliableLink == 0)
-            throw RTIinternalError("Reference to a killed Federate.");
+            {
+            return NULL ;
+            }
+            //throw RTIinternalError("Reference to a killed Federate.");
         return tuple->ReliableLink ;
     }
     else {
         if (tuple->BestEffortLink == 0)
-            throw RTIinternalError("Reference to a killed Federate.");
+            {
+            return NULL ;
+            }
+            //throw RTIinternalError("Reference to a killed Federate.");
         return tuple->BestEffortLink ;
     }
     // G.Out(pdGendoc,"exit  SocketServer::getSocketLink without return");
@@ -330,4 +338,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.16 2008/04/23 11:54:41 rousse Exp $
+// $Id: SocketServer.cc,v 3.17 2008/06/27 09:54:47 rousse Exp $
