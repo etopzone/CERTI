@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.23 2008/06/23 12:49:15 erk Exp $
+// $Id: RTIA.cc,v 3.24 2008/06/27 08:22:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <limits.h>
 
 namespace certi {
 namespace rtia {
@@ -200,4 +201,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.23 2008/06/23 12:49:15 erk Exp $
+// $Id: RTIA.cc,v 3.24 2008/06/27 08:22:11 erk Exp $
