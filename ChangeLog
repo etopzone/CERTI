@@ -1,4 +1,815 @@
-2008-04-25 16:39  tag CERTI-3_2_7
+2008-07-02 11:13  tag CERTI-3_3_0
+
+2008-07-02 11:13  erk
+
+	* CMakeLists.txt (1.50), configure.in (3.34) (utags: CERTI-3_3_0):
+	  CERTI 3.3.0 release
+
+2008-06-27 11:54  rousse
+
+	* RTIG/Federation.cc (3.95), libCERTI/SecurityServer.cc (3.13),
+	  libCERTI/SocketServer.cc (3.17) (utags: CERTI-3_3_0): #23725 BUG,
+	  avoid rtig crashes, but other works are needed
+
+2008-06-27 10:22  erk
+
+	* RTIA/RTIA.cc (3.24), libCERTI/TSCClock.cc (4.4) (utags:
+	  CERTI-3_3_0): Fix bug #23722 : Compilation errors with gcc 3.4.0
+	  at Fedora 9
+
+2008-06-25 16:23  erk
+
+	* test/Billard/Billard.cc (3.40, CERTI-3_3_0): Use MessageBuffer in
+	  order to handle heterogeneity  in the billard.   [second part for
+	  interaction]
+
+	  This is a temporary solution before using plain IEEE-1516 type
+	  encoding.
+
+2008-06-25 15:52  erk
+
+	* test/Billard/Billard.cc (3.39): Use MessageBuffer in order to
+	  handle heterogeneity in the billard.	This is a temporary
+	  solution before using plain IEEE-1516 type encoding.
+
+2008-06-25 11:08  erk
+
+	* TODO (3.3, CERTI-3_3_0): Update TODO
+
+2008-06-25 11:04  erk
+
+	* myconf (3.14, CERTI-3_3_0): Indicate autoconf related script are
+	  obsolete
+
+2008-06-25 11:00  erk
+
+	* INSTALL (3.1), NEWS (3.2): Supress obsolete files
+
+2008-06-25 11:00  erk
+
+	* ReleaseProcess.txt (1.4, CERTI-3_3_0): Update ReleaseProcess to
+	  include other tests and note the possible dtest usage.
+
+2008-06-25 10:56  erk
+
+	* CERTI_DESCRIPTION.txt (1.2, CERTI-3_3_0): Update CERTI
+	  Description
+
+2008-06-25 10:28  erk
+
+	* CMakeLists.txt (1.49), configure.in (3.33): Prepare CERTI 3.3.0
+
+2008-06-25 10:28  erk
+
+	* RTIA/Makefile.am (3.9, CERTI-3_3_0): Update Makefile.am
+
+2008-06-25 10:27  erk
+
+	* libCERTI/GAV.hh (3.12, CERTI-3_3_0): Suppress spurious forward
+	  declaration
+
+2008-06-24 16:08  jmm
+
+	* libCERTI/SocketUN.cc (3.26, CERTI-3_3_0): Fix WIN32 bug
+
+2008-06-24 14:23  rousse
+
+	* RTIG/Federation.cc (3.94), include/certi.hh (3.32, CERTI-3_3_0),
+	  libCERTI/Interaction.cc (3.41, CERTI-3_3_0), libCERTI/Message.cc
+	  (3.59, CERTI-3_3_0), libCERTI/ObjectBroadcastLine.hh (3.6),
+	  libCERTI/SecurityLevel.hh (3.10, CERTI-3_3_0): Summer cleaning
+
+2008-06-24 14:10  jmm
+
+	* libCERTI/SocketUN.cc (3.25): Fix WIN32 error after _no buffer
+	  usage_ since JYR fixed large UAV value
+
+2008-06-24 14:05  erk
+
+	* RTIA/: RTIA.ggo (1.3), RTIA_cmdline.c (1.2) (utags: CERTI-3_3_0):
+	  Should include getopt (aka use gengetopt -G) in order to avoid
+	  dependency (for WIN32)
+
+2008-06-24 11:16  erk
+
+	* CMakeLists.txt (1.48): Add option in order to use full rpath
+
+2008-06-24 11:09  erk
+
+	* libCERTI/: SocketTCP.cc (3.25, CERTI-3_3_0), SocketUN.cc (3.24):
+	  Fix compiler warning
+
+2008-06-24 10:56  rousse
+
+	* RTIA/ObjectManagement.cc (3.50, CERTI-3_3_0),
+	  RTIA/RTIA_federate.cc (3.85, CERTI-3_3_0), include/certi.hh
+	  (3.31), libCERTI/Interaction.cc (3.40), libCERTI/Message.cc
+	  (3.58), libCERTI/Message.hh (3.49, CERTI-3_3_0),
+	  libCERTI/Message_R.cc (3.29, CERTI-3_3_0), libCERTI/Message_W.cc
+	  (3.34, CERTI-3_3_0), libCERTI/NM_Classes.cc (3.11, CERTI-3_3_0),
+	  libCERTI/NetworkMessage.cc (3.36, CERTI-3_3_0),
+	  libCERTI/NetworkMessage.hh (3.40, CERTI-3_3_0),
+	  libCERTI/ObjectClass.cc (3.52, CERTI-3_3_0),
+	  libCERTI/ObjectClassBroadcastList.cc (3.23, CERTI-3_3_0),
+	  libCERTI/SocketTCP.hh (3.21, CERTI-3_3_0), libCERTI/SocketUN.hh
+	  (3.16, CERTI-3_3_0), libRTI/RTIambassador.cc (3.89, CERTI-3_3_0):
+	  #23329 continued : MAX_BYTES_PER_VALUE suppressed
+
+2008-06-23 21:02  erk
+
+	* test/Billard/main.cc (3.23, CERTI-3_3_0): Fix compiler warning on
+	  Solaris with Sun Studio
+
+2008-06-23 15:25  erk
+
+	* libCERTI/NM_Classes.hh (3.7, CERTI-3_3_0),
+	  libCERTI/NetworkMessage.hh (3.39), libCERTI/ObjectClassSet.hh
+	  (3.30, CERTI-3_3_0), libCERTI/PosixClock.hh (4.3, CERTI-3_3_0),
+	  libCERTI/Subscribable.cc (3.8, CERTI-3_3_0), libCERTI/Clock.cc
+	  (4.4, CERTI-3_3_0), libCERTI/Clock.hh (4.5, CERTI-3_3_0),
+	  libCERTI/FedRegion.hh (3.3, CERTI-3_3_0), libCERTI/LBTS.cc (3.11,
+	  CERTI-3_3_0), libCERTI/MessageBuffer.cc (3.11, CERTI-3_3_0),
+	  libCERTI/Named.cc (3.6, CERTI-3_3_0), libCERTI/Named.hh (3.5,
+	  CERTI-3_3_0), libCERTI/ObjectClassSet.cc (3.38, CERTI-3_3_0),
+	  libCERTI/PosixClock.cc (4.4, CERTI-3_3_0),
+	  test/Billard/Billard.cc (3.38), RTIA/FederationManagement.cc
+	  (3.68, CERTI-3_3_0), RTIG/Federation.cc (3.93): Merge in Petr
+	  patch for bug #23666 : Compilation errors with Sun Studio 12
+
+2008-06-23 14:49  erk
+
+	* RTIA/CMakeLists.txt (1.5, CERTI-3_3_0), RTIA/Communications.cc
+	  (3.31, CERTI-3_3_0), RTIA/Communications.hh (3.15, CERTI-3_3_0),
+	  RTIA/RTIA.cc (3.23), RTIA/RTIA.hh (3.14, CERTI-3_3_0),
+	  RTIA/main.cc (3.21, CERTI-3_3_0), libCERTI/SocketUN.cc (3.23),
+	  libCERTI/SocketUN.hh (3.15): Add -p option to RTIA main in order
+	  to make it possible to choose port from command line.  (this is
+	  not the default behavior though)
+
+2008-06-23 14:48  erk
+
+	* RTIA/: RTIA.ggo (1.2), RTIA_cmdline.c (1.1), RTIA_cmdline.h (1.1,
+	  CERTI-3_3_0): Add gengetopt command line parser for RTIA
+
+2008-06-20 15:12  erk
+
+	* RTIA/RTIA.ggo (1.1): Gengetopt conf file for RTIA
+
+2008-06-19 16:19  erk
+
+	* RTIG/RTIG.cc (3.48, CERTI-3_3_0): Correct macro is _WIN32 WIN32
+	  (without _ prefix) is only defined by CMake
+
+2008-06-19 15:56  jmm
+
+	* RTIG/: Federation.hh (3.50, CERTI-3_3_0), RTIG.cc (3.47), RTIG.hh
+	  (3.29, CERTI-3_3_0), main.cc (3.17, CERTI-3_3_0): RTIG.cc Exit
+	  from RTIG :  For avoinding crash on exit after CTRl(C) action,
+	  include a watchdog within select function to check "terminate
+	  bool variable"
+
+2008-06-18 15:46  erk
+
+	* libCERTI/ObjectClass.cc (3.51): Avoid not portable __FUNCTION__
+	  predefined macro (sun CC does not seem to define it)
+
+2008-06-18 15:11  erk
+
+	* libCERTI/SocketUN.cc (3.22): Quick fix for WIN32 compilation
+
+2008-06-18 13:14  erk
+
+	* CMakeLists.txt (1.47), libCERTI/SocketUN.cc (3.21),
+	  libCERTI/SocketUN.hh (3.14): Add option in order to use TCP
+	  socket for RTIA<-->Federate communication on Unix platform.  One
+	  should use the RTIA_USE_TCP option with CMake
+
+2008-06-18 13:13  erk
+
+	* test/Billard/CMakeLists.txt (1.6, CERTI-3_3_0): Install dtest
+	  script for billard, this way we may do sanity check more easily
+	  if dtest is available
+
+2008-06-18 12:02  erk
+
+	* RTIA/TimeManagement.cc (3.44, CERTI-3_3_0): Add some more trace
+	  regardind message delivery
+
+2008-06-18 08:40  erk
+
+	* RTIA/TimeManagement.cc (3.43): Use proper floating point
+	  comparison +More debug output
+
+2008-06-16 16:02  erk
+
+	* libCERTI/: CMakeLists.txt (1.14, CERTI-3_3_0), Makefile.am (3.36,
+	  CERTI-3_3_0), MessageBody.cc (3.19), MessageBody.hh (3.17):
+	  Suppress no more used and empty MessageBody.*
+
+2008-06-16 11:03  rousse
+
+	* RTIG/Federation.cc (3.92), include/certi.hh (3.30),
+	  libCERTI/SecurityLevel.hh (3.9), libCERTI/SecurityServer.cc
+	  (3.12), test/Billard/Billard.cc (3.37): #23329 BUG, dleteing
+	  others some constants. To be continued.
+
+2008-06-13 12:55  erk
+
+	* RTIA/RTIA.cc (3.22), RTIA/RTIA_federate.cc (3.84),
+	  libCERTI/Object.cc (3.22, CERTI-3_3_0), libCERTI/ObjectClass.cc
+	  (3.50), libCERTI/RootObject.hh (3.29, CERTI-3_3_0),
+	  RTIA/Communications.cc (3.30): Fix some memleak.
+
+2008-06-13 12:54  erk
+
+	* libCERTI/SocketUDP.cc (3.21, CERTI-3_3_0): avoid C-style cast and
+	  fix memleak
+
+2008-06-12 09:39  erk
+
+	* libCERTI/ObjectClass.cc (3.49), libCERTI/RootObject.cc (3.34,
+	  CERTI-3_3_0), libCERTI/Subscribable.cc (3.7),
+	  libCERTI/Dimension.cc (3.8, CERTI-3_3_0), libCERTI/FedTime.cc
+	  (3.14, CERTI-3_3_0), libCERTI/GAV_aux.cc (3.17, CERTI-3_3_0),
+	  libCERTI/MessageBuffer.cc (3.10), libCERTI/NetworkMessage.cc
+	  (3.35), libCERTI/RoutingSpace.cc (3.15, CERTI-3_3_0),
+	  libCERTI/SocketMC.cc (3.15, CERTI-3_3_0),
+	  RTIA/OwnershipManagement.cc (3.16, CERTI-3_3_0),
+	  libCERTI/Exception.cc (3.13, CERTI-3_3_0), libCERTI/Message.cc
+	  (3.57), libCERTI/SecureTCPSocket.cc (3.10, CERTI-3_3_0),
+	  libCERTI/SocketTCP.cc (3.24), libCERTI/SocketUDP.cc (3.20),
+	  test/Billard/Billard.cc (3.36), test/Billard/BillardDDM.cc (3.21,
+	  CERTI-3_3_0), test/Billard/main.cc (3.22), RTIA/Communications.cc
+	  (3.29), RTIA/FederationManagement.cc (3.67),
+	  RTIA/ObjectManagement.cc (3.49), RTIG/Federate.cc (3.15,
+	  CERTI-3_3_0), RTIG/Federation.cc (3.91), RTIG/RTIG.cc (3.46),
+	  RTIG/RTIG_processing.cc (3.75, CERTI-3_3_0),
+	  libRTI/RTIambassador.cc (3.88), test/utility/CertiUtilTests.cc
+	  (1.10, CERTI-3_3_0): Fix bug #23538 : Lots of warning when
+	  compiling with gcc version 4.3.1
+
+2008-06-11 17:19  rousse
+
+	* RTIA/ObjectManagement.cc (3.48), RTIA/ObjectManagement.hh (3.23,
+	  CERTI-3_3_0), RTIA/RTIA_federate.cc (3.83),
+	  RTIA/TimeManagement.cc (3.42), RTIG/Federation.cc (3.90),
+	  RTIG/Federation.hh (3.49), RTIG/FederationsList.cc (3.58,
+	  CERTI-3_3_0), RTIG/FederationsList.hh (3.43, CERTI-3_3_0),
+	  RTIG/RTIG_processing.cc (3.74), include/certi.hh (3.29),
+	  libCERTI/Interaction.cc (3.39), libCERTI/Interaction.hh (3.28,
+	  CERTI-3_3_0), libCERTI/InteractionSet.cc (3.22, CERTI-3_3_0),
+	  libCERTI/InteractionSet.hh (3.17, CERTI-3_3_0),
+	  libCERTI/Message.cc (3.56), libCERTI/Message.hh (3.48),
+	  libCERTI/Message_R.cc (3.28), libCERTI/Message_W.cc (3.33),
+	  libCERTI/NM_Classes.cc (3.10), libCERTI/NM_Classes.hh (3.6),
+	  libCERTI/NetworkMessage.cc (3.34), libCERTI/NetworkMessage.hh
+	  (3.38), libCERTI/ObjectClass.cc (3.48), libCERTI/ObjectClass.hh
+	  (3.36, CERTI-3_3_0), libCERTI/ObjectClassBroadcastList.cc (3.22),
+	  libCERTI/ObjectClassBroadcastList.hh (3.10, CERTI-3_3_0),
+	  libCERTI/ObjectClassSet.cc (3.37), libCERTI/ObjectClassSet.hh
+	  (3.29): #23329 BUG correction (MAX_ATTRIBUTES_PER_CLASS
+	  suppressed) and to be continued
+
+2008-06-10 15:41  rousse
+
+	* RTIA/DataDistribution.cc (3.25, CERTI-3_3_0),
+	  RTIA/DataDistribution.hh (3.16, CERTI-3_3_0),
+	  RTIA/DeclarationManagement.cc (3.20, CERTI-3_3_0),
+	  RTIA/DeclarationManagement.hh (3.8, CERTI-3_3_0),
+	  RTIA/FederationManagement.cc (3.66), RTIA/FederationManagement.hh
+	  (3.24, CERTI-3_3_0), RTIA/ObjectManagement.cc (3.47),
+	  RTIA/ObjectManagement.hh (3.22), RTIA/OwnershipManagement.cc
+	  (3.15), RTIA/OwnershipManagement.hh (3.8, CERTI-3_3_0),
+	  RTIA/RTIA_federate.cc (3.82), RTIA/TimeManagement.cc (3.41),
+	  RTIG/Federation.cc (3.89), RTIG/Federation.hh (3.48),
+	  RTIG/FederationsList.cc (3.57), RTIG/FederationsList.hh (3.42),
+	  RTIG/RTIG_processing.cc (3.73), libCERTI/Interaction.cc (3.38),
+	  libCERTI/Interaction.hh (3.27), libCERTI/InteractionSet.cc
+	  (3.21), libCERTI/InteractionSet.hh (3.16), libCERTI/Message.cc
+	  (3.55), libCERTI/Message.hh (3.47), libCERTI/Message_R.cc (3.27),
+	  libCERTI/Message_W.cc (3.32), libCERTI/NM_Classes.cc (3.9),
+	  libCERTI/NetworkMessage.cc (3.33), libCERTI/NetworkMessage.hh
+	  (3.37), libCERTI/ObjectClass.cc (3.47), libCERTI/ObjectClass.hh
+	  (3.35), libCERTI/ObjectClassSet.cc (3.36),
+	  libCERTI/ObjectClassSet.hh (3.28), libCERTI/ObjectSet.cc (3.22,
+	  CERTI-3_3_0), libCERTI/ObjectSet.hh (3.13, CERTI-3_3_0),
+	  libRTI/RTIambassador.cc (3.87): #23329 BUG continued
+	  (handleArray, size unlimited) to be continued.
+
+2008-06-09 13:17  siron
+
+	* RTIA/: FederationManagement.cc (3.65), main.cc (3.20): Remove the
+	  message "NetworkError Exception" in the case of a normal end.
+
+2008-06-04 17:08  tag before_handleArray_vector
+
+2008-06-04 17:08  rousse
+
+	* libRTI/RTIambassador.cc (3.86, before_handleArray_vector): About
+	  Tag NULL
+
+2008-06-04 09:42  siron
+
+	* myconf (3.13), libCERTI/HandleManager.hh (3.4, CERTI-3_3_0)
+	  (utags: before_handleArray_vector): The handles must be unique in
+	  a federation.
+
+2008-06-03 16:16  rousse
+
+	* libCERTI/Message.cc (3.54, before_handleArray_vector),
+	  libRTI/RTIambassador.cc (3.85), test/Billard/Billard.cc (3.35,
+	  before_handleArray_vector): #23469 Bug correction : Tag null in
+	  sendInteraction not allowed
+
+2008-06-03 10:45  rousse
+
+	* RTIA/FederationManagement.cc (3.64, before_handleArray_vector),
+	  RTIA/RTIA_federate.cc (3.81, before_handleArray_vector),
+	  RTIA/TimeManagement.cc (3.40, before_handleArray_vector),
+	  RTIA/TimeManagement.hh (3.18, CERTI-3_3_0,
+	  before_handleArray_vector), libCERTI/Message_R.cc (3.26,
+	  before_handleArray_vector), libCERTI/Message_W.cc (3.31,
+	  before_handleArray_vector), libRTI/RTIambassador.cc (3.84),
+	  test/Billard/Billard.cc (3.34): #23460 bug corrected, Carle
+	  please test it
+
+2008-06-02 09:57  tag IESTA_V0
+
+2008-06-02 09:57  rousse
+
+	* libCERTI/Message_W.cc (3.30, IESTA_V0): Oups ! Missing something
+	  important in write Message
+
+2008-05-30 16:04  erk
+
+	* libCERTI/: BasicMessage.hh (3.12), NetworkMessage_RW.cc (3.51)
+	  (utags: CERTI-3_3_0, IESTA_V0, before_handleArray_vector): Really
+	  get rid-of per Message  msgBuf
+
+2008-05-30 16:01  erk
+
+	* libCERTI/NetworkMessage.hh (3.36, IESTA_V0,
+	  before_handleArray_vector), libCERTI/ObjectClass.hh (3.34,
+	  IESTA_V0, before_handleArray_vector),
+	  test/Billard/dtest_billard.py (1.5, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector), RTIG/Federation.hh (3.47, IESTA_V0,
+	  before_handleArray_vector), RTIG/RTIG_processing.cc (3.72,
+	  IESTA_V0, before_handleArray_vector),
+	  libCERTI/InteractionBroadcastList.cc (3.13, CERTI-3_3_0,
+	  IESTA_V0, before_handleArray_vector),
+	  libCERTI/InteractionBroadcastList.hh (3.9, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector), libCERTI/NM_Classes.cc (3.8,
+	  IESTA_V0, before_handleArray_vector), libCERTI/NM_Classes.hh
+	  (3.5, IESTA_V0, before_handleArray_vector),
+	  libCERTI/NetworkMessage_RW.cc (3.50), libCERTI/ObjectClass.cc
+	  (3.46, IESTA_V0, before_handleArray_vector),
+	  libCERTI/ObjectClassBroadcastList.cc (3.21, IESTA_V0,
+	  before_handleArray_vector), libCERTI/ObjectClassBroadcastList.hh
+	  (3.9, IESTA_V0, before_handleArray_vector), libCERTI/ObjectSet.cc
+	  (3.21, IESTA_V0, before_handleArray_vector),
+	  libCERTI/ObjectSet.hh (3.12, IESTA_V0,
+	  before_handleArray_vector), RTIA/Communications.cc (3.28,
+	  IESTA_V0, before_handleArray_vector), RTIA/Communications.hh
+	  (3.14, IESTA_V0, before_handleArray_vector), RTIG/Federation.cc
+	  (3.88, IESTA_V0, before_handleArray_vector), RTIG/RTIG.cc (3.45,
+	  IESTA_V0, before_handleArray_vector), RTIG/RTIG.hh (3.28,
+	  IESTA_V0, before_handleArray_vector): Minimize MessageBuffer
+	  allocation used for NetworkMessage.
+
+2008-05-30 11:49  rousse
+
+	* libCERTI/BasicMessage.hh (3.11), libCERTI/Message.hh (3.46,
+	  IESTA_V0, before_handleArray_vector), libCERTI/Message_R.cc
+	  (3.25, IESTA_V0), libCERTI/Message_W.cc (3.29),
+	  libRTI/RTIambassador.cc (3.83, IESTA_V0): #23329 BUG continued
+	  and to be continued
+
+2008-05-29 14:20  rousse
+
+	* RTIA/Communications.cc (3.27), RTIA/Communications.hh (3.13),
+	  RTIA/FederationManagement.cc (3.63, IESTA_V0),
+	  RTIA/FederationManagement.hh (3.23, IESTA_V0,
+	  before_handleArray_vector), RTIA/ObjectManagement.cc (3.46,
+	  IESTA_V0, before_handleArray_vector), RTIA/ObjectManagement.hh
+	  (3.21, IESTA_V0, before_handleArray_vector),
+	  RTIA/OwnershipManagement.cc (3.14, IESTA_V0,
+	  before_handleArray_vector), RTIA/OwnershipManagement.hh (3.7,
+	  IESTA_V0, before_handleArray_vector), RTIA/RTIA.cc (3.21,
+	  IESTA_V0, before_handleArray_vector), RTIA/RTIA_federate.cc
+	  (3.80, IESTA_V0), RTIG/Federation.cc (3.87), RTIG/RTIG.cc (3.44),
+	  RTIG/RTIG_processing.cc (3.71), include/certi.hh (3.28, IESTA_V0,
+	  before_handleArray_vector), libCERTI/BasicMessage.cc (3.12,
+	  CERTI-3_3_0, IESTA_V0, before_handleArray_vector),
+	  libCERTI/BasicMessage.hh (3.10), libCERTI/Message.cc (3.53,
+	  IESTA_V0), libCERTI/Message.hh (3.45), libCERTI/MessageBody.cc
+	  (3.18, IESTA_V0, before_handleArray_vector),
+	  libCERTI/MessageBody.hh (3.16, IESTA_V0,
+	  before_handleArray_vector), libCERTI/Message_R.cc (3.24),
+	  libCERTI/Message_W.cc (3.28), libCERTI/ObjectClass.cc (3.45),
+	  libCERTI/ObjectClass.hh (3.33), libCERTI/ObjectClassSet.cc (3.35,
+	  IESTA_V0, before_handleArray_vector), libCERTI/ObjectClassSet.hh
+	  (3.27, IESTA_V0, before_handleArray_vector),
+	  libCERTI/ObjectSet.cc (3.20), libCERTI/ObjectSet.hh (3.11),
+	  libCERTI/RootObject.cc (3.33, IESTA_V0,
+	  before_handleArray_vector), libCERTI/RootObject.hh (3.28,
+	  IESTA_V0, before_handleArray_vector), libRTI/RTIambPrivateRefs.cc
+	  (3.13, CERTI-3_3_0, IESTA_V0, before_handleArray_vector),
+	  libRTI/RTIambPrivateRefs.hh (3.5, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector), libRTI/RTIambassador.cc (3.82): #bug
+	  23329 and others, correction (beginning)
+	  BUFFER_SIZE_DEFAULT,MAX_FEDERATE_NAME_LENGTH,MAX_PARAMETERS_CLASS
+	  suppressed
+
+2008-05-27 14:26  tag dev_before_dynbuffer
+
+2008-05-27 14:26  jmm
+
+	* RTIA/ObjectManagement.cc (3.45), RTIA/RTIA_federate.cc (3.79),
+	  libCERTI/PrettyDebug.cc (4.9, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector) (utags: dev_before_dynbuffer): Fix bug
+	  #23358 : libgen.h missing
+
+2008-05-27 09:51  rousse
+
+	* RTIA/ObjectManagement.cc (3.44), RTIA/RTIA_federate.cc (3.78),
+	  libCERTI/Message.hh (3.44, dev_before_dynbuffer),
+	  libCERTI/Message_W.cc (3.27, dev_before_dynbuffer),
+	  libRTI/RTIambassador.cc (3.81, dev_before_dynbuffer): Dynamic
+	  management of Message Buffer (beginning)
+
+2008-05-23 14:37  erk
+
+	* libCERTI/NetworkMessage.hh (3.35),
+	  libCERTI/ObjectClassBroadcastList.cc (3.20),
+	  RTIG/RTIG_processing.cc (3.70), libCERTI/NM_Classes.cc (3.7),
+	  libCERTI/NM_Classes.hh (3.4) (utags: dev_before_dynbuffer): get
+	  rid of "NetworkMessage::boolean" multi-usage field.
+
+2008-05-22 14:20  erk
+
+	* libCERTI/Message_W.cc (3.26), libCERTI/NM_Classes.hh (3.3),
+	  libCERTI/Message_R.cc (3.23, dev_before_dynbuffer),
+	  libCERTI/NM_Classes.cc (3.6), RTIG/RTIG.cc (3.43,
+	  dev_before_dynbuffer), RTIG/RTIG.hh (3.27, dev_before_dynbuffer),
+	  RTIG/RTIG_processing.cc (3.69), RTIA/FederationManagement.cc
+	  (3.62, dev_before_dynbuffer): Should fix synchronization trouble.
+	  bug #23313 : Billard : 3rd federate never synchronizes
+
+2008-05-16 10:54  rousse
+
+	* libCERTI/PrettyDebug.cc (4.8): minimize trace by keeping only
+	  basename
+
+2008-05-15 14:41  erk
+
+	* RTIA/Statistics.cc (3.16, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Declaration of
+	  NetworkMessage::TIME_REGULATION_ENABLED
+	  NetworkMessage::TIME_CONSTRAINED_ENABLED was missing
+
+2008-05-13 15:03  rousse
+
+	* RTIA/ObjectManagement.cc (3.43), RTIA/RTIA_federate.cc (3.77),
+	  libCERTI/ObjectClass.cc (3.44, dev_before_dynbuffer),
+	  libCERTI/ObjectClassSet.cc (3.34, dev_before_dynbuffer),
+	  libRTI/RTIambassador.cc (3.80): Better management exception on
+	  Get attribute Handle
+
+2008-05-12 14:16  erk
+
+	* libRTI/RTIambassador.cc (3.79), libCERTI/Message_W.cc (3.25),
+	  libCERTI/NM_Classes.hh (3.2), libCERTI/NetworkMessage.hh (3.34),
+	  RTIA/TimeManagement.cc (3.39, IESTA_V0, dev_before_dynbuffer),
+	  libCERTI/Message_R.cc (3.22), libCERTI/NM_Classes.cc (3.5),
+	  libCERTI/PrettyDebEx.cc (4.4, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  RTIA/RTIA_network.cc (3.26, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  RTIA/TimeManagement.hh (3.17, IESTA_V0, dev_before_dynbuffer),
+	  RTIG/Federation.cc (3.86, dev_before_dynbuffer),
+	  RTIG/RTIG_processing.cc (3.68), RTIG/RTIG.cc (3.42), RTIG/RTIG.hh
+	  (3.26), scripts/NW_MessageType.txt (1.2, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Fix bug #1795 :
+	  Enable Time Constrained/Regulation callbacks not used This is a
+	  patch from Christian Stenzel slightly modified.
+
+2008-05-09 22:21  erk
+
+	* libCERTI/NM_Classes.cc (3.4), libCERTI/NetworkMessage.cc (3.32,
+	  IESTA_V0, before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/NetworkMessage.hh (3.33), libCERTI/NetworkMessage_RW.cc
+	  (3.49, dev_before_dynbuffer), RTIA/ObjectManagement.cc (3.42),
+	  RTIA/RTIA_network.cc (3.25), RTIA/TimeManagement.cc (3.38),
+	  RTIG/RTIG_processing.cc (3.67): Some NetworkMessage field should
+	  be private in order to enforce getter/setter usage.
+
+2008-05-07 18:00  erk
+
+	* libCERTI/Message.cc (3.52, dev_before_dynbuffer): Applied
+	  something like: https://savannah.nongnu.org/patch/?6499
+
+2008-05-07 17:37  erk
+
+	* libCERTI/Interaction.cc (3.37, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/NetworkMessage.cc (3.31), libCERTI/NetworkMessage.hh
+	  (3.32), libCERTI/NetworkMessage_RW.cc (3.48),
+	  RTIA/FederationManagement.cc (3.61), RTIA/Files.cc (3.10,
+	  CERTI-3_3_0, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer), RTIA/ObjectManagement.cc (3.41),
+	  RTIA/RTIA_network.cc (3.24), RTIA/TimeManagement.cc (3.37): Fix
+	  bug #23187 : removeObjectInstance with null time Time was
+	  conveyed in network messages but not in Federate<->RTIA messages
+
+2008-05-07 16:14  jmm
+
+	* RTIA/CMakeLists.txt (1.4), RTIG/CMakeLists.txt (1.3, CERTI-3_3_0)
+	  (utags: IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): Remove old comment garbage at the end of
+	  the file
+
+2008-05-07 16:10  jmm
+
+	* CMakeLists.txt (1.46, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): More fix for bug #23196 : Make CERTI
+	  compilable with cmake 2.6.0 on Win32 platform
+
+2008-05-07 16:09  jmm
+
+	* scripts/FindLexYacc.cmake (1.4, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Use Windows
+	  registry for searching GnuWin32 install path
+
+2008-05-07 12:51  erk
+
+	* CMakeLists.txt (1.45), libCERTI/CMakeLists.txt (1.13, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Fix CMake-2.6
+	  warnings.  Merged patch from Christian Ehrlicher see bug #23196 :
+	  Make CERTI compilable with cmake 2.6.0
+
+2008-05-07 11:55  rousse
+
+	* RTIA/ObjectManagement.cc (3.40), RTIA/RTIA.hh (3.13, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  RTIA/RTIA_federate.cc (3.76), libCERTI/ObjectClassSet.cc (3.33):
+	  Improvement of return exception NameNotFound during
+	  getObjectClassHandle
+
+2008-05-06 15:36  erk
+
+	* libCERTI/FedTime.cc (3.13, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer), RTIA/TimeManagement.cc (3.36),
+	  include/fedtime.hh (3.9, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Fix bug #23090
+	  : UpdateAttributeValues throws InvalidFederationTime We should
+	  use consistent epsilon value and carefully compare floating point
+	  numbers (for time)
+
+2008-05-05 16:28  erk
+
+	* RTIA/DeclarationManagement.cc (3.19, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Should fix :bug
+	  #23172 : unsubscribeInteractionClass hangs NetworkMessage type
+	  mismatch
+
+2008-05-05 11:47  erk
+
+	* libCERTI/Message.hh (3.43), libCERTI/Message_R.cc (3.21),
+	  libCERTI/Message_W.cc (3.24), RTIA/RTIA.cc (3.20,
+	  dev_before_dynbuffer), RTIA/RTIA_federate.cc (3.75),
+	  RTIA/TimeManagement.cc (3.35), libRTI/RTIambassador.cc (3.78),
+	  RTIA/Communications.cc (3.26, dev_before_dynbuffer),
+	  RTIA/Statistics.cc (3.15), RTIA/TimeManagement.hh (3.16): Fix bug
+	  #23113 : Assert violation when invoking a federation service from
+	  a federate service Patch from Petr Gotthard
+
+2008-05-05 11:06  erk
+
+	* libCERTI/: SocketTCP.cc (3.23), SocketTCP.hh (3.20) (utags:
+	  IESTA_V0, before_handleArray_vector, dev_before_dynbuffer): Fix
+	  bug #23151 : Annoying "address already in use" error A patch from
+	  Petr Gotthard
+
+2008-05-05 10:42  jmm
+
+	* libCERTI/NM_Classes.cc (3.3): Write boolean as 'bool' and not as
+	  int32
+
+2008-05-05 10:27  erk
+
+	* libCERTI/PrettyDebug.cc (4.7): Check-in patch #6498 : PrettyDebug
+	  fix warning from Matteo Boccafoli
+
+2008-05-05 10:12  erk
+
+	* test/Billard/Billard.cc (3.33, IESTA_V0, dev_before_dynbuffer):
+	  Check-in patch #6497 from Matteo Boccafoli
+
+2008-05-05 10:11  erk
+
+	* test/Billard/dtest_billard.py (1.4, dev_before_dynbuffer):
+	  simplify dtest script
+
+2008-05-03 22:14  erk
+
+	* RTIA/FederationManagement.cc (3.60), libCERTI/Message.cc (3.51):
+	  Fix bug #23150 : Memory leak in Message::getAHVPS This is the
+	  patch from Petr Gotthard
+
+2008-05-03 20:37  erk
+
+	* libCERTI/NM_Classes.cc (3.2): Fix bug #23149 : uknown object
+	  class<0> exception in RTIA From Petr Gotthard
+
+2008-05-03 20:34  erk
+
+	* RTIG/main.cc (3.16, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): Fix bug #23135 : RTIG/RTIA generates no
+	  coredump after unhandled exception (RTIG part only) Do not catch
+	  all exception then exit(EXIT_FAILURE) this is like a "silent
+	  die".  Let RTIG die with a coredump from which we may retrieve
+	  the stacktrace.
+
+2008-05-02 12:48  erk
+
+	* RTIA/ObjectManagement.cc (3.39): Build better looking error
+	  Message
+
+2008-04-30 19:01  erk
+
+	* RTIA/TimeManagement.cc (3.34): Try to avoid round-off error using
+	  RTIfedTime._epsilon First try for "easy fix" of bug #23090 :
+	  UpdateAttributeValues throws InvalidFederationTime
+
+2008-04-30 15:11  erk
+
+	* test/Billard/Billard.cc (3.32): Fix bug #23116 : Resolve conflict
+	  between different changes Reversed to 3.29 will fix the compiler
+	  warning later
+
+2008-04-29 15:21  rousse
+
+	* libRTI/RTIambassador.cc (3.77): BUG #23071 correction :
+	  federation or federate empty names not allowed
+
+2008-04-29 15:11  erk
+
+	* RTIA/: FederationManagement.hh (3.22, dev_before_dynbuffer),
+	  FederationManagement.cc (3.59): Replace char* with std::string in
+	  order to avoid some mem leak
+
+2008-04-29 14:23  erk
+
+	* RTIA/ObjectManagement.cc (3.38): Add more debug for
+	  InvalidFedTime
+
+2008-04-29 11:59  rousse
+
+	* test/Billard/Billard.cc (3.31): typo error
+
+2008-04-29 11:38  erk
+
+	* RTIG/RTIG_processing.cc (3.66), libCERTI/SocketUDP.cc (3.19,
+	  IESTA_V0, before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/SocketUDP.hh (3.11, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): memory leak--
+
+2008-04-29 10:57  erk
+
+	* RTIG/Federation.cc (3.85), RTIG/Federation.hh (3.46,
+	  dev_before_dynbuffer), libCERTI/Exception.cc (3.12, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/ObjectClass.cc (3.43): Fix some more small mem leak
+
+2008-04-29 10:33  erk
+
+	* RTIG/Federation.cc (3.84), RTIG/FederationsList.cc (3.56,
+	  IESTA_V0, before_handleArray_vector, dev_before_dynbuffer),
+	  RTIG/FederationsList.hh (3.41, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer), RTIG/RTIG.cc
+	  (3.41), test/Billard/Billard.cc (3.30), libCERTI/BasicMessage.cc
+	  (3.11, dev_before_dynbuffer), libCERTI/BasicMessage.hh (3.9,
+	  dev_before_dynbuffer), libCERTI/SocketUDP.cc (3.18): Fix more
+	  compiler warnings Preliminary fix for bug #23088 : Memory leak in
+	  RTIG
+
+2008-04-29 09:50  rousse
+
+	* include/baseTypes.hh (3.11, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/Exception.cc (3.11), libCERTI/Exception.hh (3.6,
+	  CERTI-3_3_0, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): Adding some internal tools to improve
+	  exception management
+
+2008-04-28 19:46  erk
+
+	* CMakeLists.txt (1.44): Add debian target using UseDebian.cmake
+	  Will make it conditionnal if CMake 2.6 is used.
+
+2008-04-28 19:20  erk
+
+	* RTIA/FederationManagement.cc (3.58), libCERTI/NetworkMessage.cc
+	  (3.30): Fix some more compiler warnings
+
+2008-04-28 19:14  erk
+
+	* CMakeLists.txt (1.43), include/certi.hh (3.27,
+	  dev_before_dynbuffer): Add -Wall in order to catch more warning
+	  which could be errors.  Fix bug #23092 : include miss
+
+2008-04-28 17:35  rousse
+
+	* RTIA/FederationManagement.cc (3.57), RTIG/RTIG_processing.cc
+	  (3.65): Restoring create federation trace into auditserver
+	  (RTIG.log)
+
+2008-04-28 16:51  rousse
+
+	* RTIA/FederationManagement.cc (3.56): fast temporary correction of
+	  BUG #23019 (don't remove my fed file please !)
+
+2008-04-28 14:25  erk
+
+	* libCERTI/Makefile.am (3.35, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): Update Makefile.am bug #23087 :
+	  Makefile.am not updated
+
+2008-04-27 14:38  erk
+
+	* .cvsignore (1.3, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): ignore build
+	  directory usually used by CMake build
+
+2008-04-27 14:37  erk
+
+	* RTIG/RTIG_processing.cc (3.64): Remove debug output
+
+2008-04-27 10:37  erk
+
+	* RTIA/FederationManagement.cc (3.55), RTIG/Federation.cc (3.83),
+	  RTIG/RTIG_processing.cc (3.63): Prefer C++ style I/O FILE* -->
+	  std::ifstream or std::oftstream
+
+2008-04-26 16:59  erk
+
+	* CMakeLists.txt (1.42), TODO (3.2, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/BasicMessage.cc (3.10), libCERTI/Interaction.cc (3.36),
+	  libCERTI/InteractionBroadcastList.cc (3.12,
+	  dev_before_dynbuffer), libCERTI/InteractionBroadcastList.hh (3.8,
+	  dev_before_dynbuffer), libCERTI/MessageBuffer.cc (3.9, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/MessageBuffer.hh (3.7, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  libCERTI/NM_Classes.hh (3.1), libCERTI/NetworkMessage.hh (3.31),
+	  libCERTI/ObjectClass.cc (3.42), libCERTI/ObjectClass.hh (3.32,
+	  dev_before_dynbuffer), libCERTI/ObjectClassAttribute.cc (3.28,
+	  CERTI-3_3_0, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer), libCERTI/ObjectSet.cc (3.19,
+	  dev_before_dynbuffer), libCERTI/XmlParser.cc (3.26, CERTI-3_3_0,
+	  IESTA_V0, before_handleArray_vector, dev_before_dynbuffer),
+	  RTIA/Communications.cc (3.25), RTIA/Communications.hh (3.12,
+	  dev_before_dynbuffer), RTIA/DeclarationManagement.cc (3.18),
+	  RTIA/FederationManagement.cc (3.54), RTIA/Files.cc (3.9),
+	  RTIA/OwnershipManagement.cc (3.13, dev_before_dynbuffer),
+	  RTIA/RTIA.cc (3.19), RTIA/TimeManagement.cc (3.33), RTIA/main.cc
+	  (3.19, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer), libCERTI/BasicMessage.hh (3.8),
+	  libCERTI/CMakeLists.txt (1.12), libCERTI/NM_Classes.cc (3.1),
+	  libCERTI/NetworkMessage.cc (3.29), libCERTI/NetworkMessage_RW.cc
+	  (3.47), libCERTI/ObjectClassBroadcastList.cc (3.19),
+	  libCERTI/ObjectClassSet.cc (3.32), RTIA/DataDistribution.cc
+	  (3.24, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer), RTIA/ObjectManagement.cc (3.37),
+	  RTIA/RTIA_federate.cc (3.74), RTIA/RTIA_network.cc (3.23),
+	  RTIG/Federation.cc (3.82), RTIG/RTIG.cc (3.40), RTIG/RTIG.hh
+	  (3.25), RTIG/RTIG_processing.cc (3.62), scripts/FindLexYacc.cmake
+	  (1.3), scripts/GenMessageClass.py (1.3, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  scripts/NW_MessageType.ods (1.2, CERTI-3_3_0, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer),
+	  test/Billard/dtest_billard.py (1.3),
+	  test/utility/CertiUtilTests.cc (1.9, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Merge from
+	  br_DEV_HETEROGENEOUS Should be OK!! dtest_billard.py : PASSED
+	  dtest_HLA_Tutorial.py : PASSED
+
+2008-04-26 14:07  erk
+
+	* test/Billard/dtest_billard.py (1.1.2.3): Update billard dtest
+	  script after dtest update
+
+2008-04-25 16:55  erk
+
+	* CMakeLists.txt (1.41), configure.in (3.32, IESTA_V0,
+	  before_handleArray_vector, dev_before_dynbuffer): Change 3.2.7 to
+	  3.2.8cvs since 3.2.7 is done
+
+2008-04-25 16:54  erk
+
+	* ReleaseProcess.txt (1.3, IESTA_V0, before_handleArray_vector,
+	  dev_before_dynbuffer): Typo fix
 
 2008-04-25 16:39  erk
 
