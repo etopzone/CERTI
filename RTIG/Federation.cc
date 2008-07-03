@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.95 2008/06/27 09:54:47 rousse Exp $
+// $Id: Federation.cc,v 3.96 2008/07/03 19:54:20 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -281,14 +281,14 @@ Federation::Federation(const char *federation_name,
 
             // Retrieve the FED file last modification time(for Audit)
             STAT_STRUCT StatBuffer ;
-            #if defined(_WIN32) && !defined(__MINGW32__)
+            #if defined(_WIN32) && _MSC_VER >= 1400
             char MTimeBuffer[26];
             #else
             char *MTimeBuffer ;
             #endif
 
             if (STAT_FUNCTION(filename.c_str(), &StatBuffer) == 0) {
-            #if defined(_WIN32) && !defined(__MINGW32__)                
+            #if defined(_WIN32) && _MSC_VER >= 1400
                 ctime_s(&MTimeBuffer[0],26,&StatBuffer.st_mtime);
             #else
                 MTimeBuffer = ctime(&StatBuffer.st_mtime);
@@ -2287,5 +2287,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.95 2008/06/27 09:54:47 rousse Exp $
+// $Id: Federation.cc,v 3.96 2008/07/03 19:54:20 gotthardp Exp $
 
