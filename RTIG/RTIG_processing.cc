@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.75 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIG_processing.cc,v 3.76 2008/07/09 16:43:12 rousse Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -653,7 +653,7 @@ RTIG::processPublishObjectClass(Socket *link, NetworkMessage *req)
 {
     bool pub = (req->getType() == NetworkMessage::PUBLISH_OBJECT_CLASS);
 
-    auditServer << "Class = " << req->objectClass << ", # of att. = " 
+    auditServer << "Publish Object Class = " << req->objectClass << ", # of att. = " 
 		<< req->handleArraySize ;
 
     federations.publishObject(req->federation,
@@ -685,7 +685,7 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     arrayVide.empty() ;
     bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
-    auditServer << "Class = " << req->objectClass
+    auditServer << "Subscribe Object Class = " << req->objectClass
 		<< ", # of att. = " << req->handleArraySize ;
 
     federations.subscribeObject(req->federation,
@@ -718,7 +718,7 @@ RTIG::processPublishInteractionClass(Socket *link, NetworkMessage *req)
 
     bool pub = (req->getType() == NetworkMessage::PUBLISH_INTERACTION_CLASS);
 
-    auditServer << "Class = " << req->interactionClass ;
+    auditServer << "Publish Interaction Class = " << req->interactionClass ;
     federations.publishInteraction(req->federation,
                                     req->federate,
                                     req->interactionClass,
@@ -742,7 +742,7 @@ RTIG::processSubscribeInteractionClass(Socket *link, NetworkMessage *req)
 {
     bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_INTERACTION_CLASS);
 
-    auditServer << "Class = %u" << req->interactionClass ;
+    auditServer << "Subscribe Interaction Class = " << req->interactionClass ;
     federations.subscribeInteraction(req->federation,
                                       req->federate,
                                       req->interactionClass,
@@ -767,7 +767,7 @@ RTIG::processRegisterObject(Socket *link, NetworkMessage *req)
 {
   std::auto_ptr<NetworkMessage> rep(NM_Factory::create(req->getType()));;
 
-    auditServer << "Class = %u" << req->objectClass ;
+    auditServer << "Register Object Class = " << req->objectClass ;
     rep->object = federations.registerObject(req->federation,
                                              req->federate,
                                              req->objectClass,
@@ -906,7 +906,7 @@ RTIG::processDeleteObject(Socket *link, NetworkMessage *req)
 {
     G.Out(pdGendoc,"BEGIN ** DELETE OBJECT INSTANCE service **");
     G.Out(pdGendoc,"enter RTIG::processDeleteObject");
-    auditServer << "ObjID = %u" << req->object ;
+    auditServer << "Delete ObjID = " << req->object ;
 
     if ( req->isDated() ) {
     	federations.destroyObject(req->federation,
@@ -995,7 +995,7 @@ void
 RTIG::processNegotiatedOwnershipDivestiture(Socket *link, NetworkMessage *req)
 {
     auditServer << "Object = " <<  req->object
-		<< ", # of att. = %u" << req->handleArraySize ;
+		<< ", # of att. = " << req->handleArraySize ;
     federations.negotiateDivestiture(req->federation,
                                       req->federate,
                                       req->object,
@@ -1048,7 +1048,7 @@ void
 RTIG::processUnconditionalDivestiture(Socket *link, NetworkMessage *req)
 {
     auditServer << "Object = " << req->object
-		<< ", # of att. = %u" << req->handleArraySize ;
+		<< ", # of att. = " << req->handleArraySize ;
 
     federations.divest(req->federation,
                         req->federate,
@@ -1075,7 +1075,7 @@ void
 RTIG::processOwnershipAcquisition(Socket *link, NetworkMessage *req)
 {
     auditServer << "Object = " << req->object
-		<< ", # of att. = %u" << req->handleArraySize ;
+		<< ", # of att. = " << req->handleArraySize ;
 
     federations.acquire(req->federation,
                          req->federate,
@@ -1433,4 +1433,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.75 2008/06/12 07:39:51 erk Exp $
+// $Id: RTIG_processing.cc,v 3.76 2008/07/09 16:43:12 rousse Exp $
