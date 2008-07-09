@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.23 2008/06/11 15:19:19 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.24 2008/07/09 13:48:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -190,6 +190,40 @@ public:
     void reflectRetraction(EventRetractionHandle theHandle,
                            TypeException &e);
 
+    void setAttributeScopeAdvisorySwitch(bool state,
+                                         TypeException &e);
+
+    // 6.13
+    void 
+    attributesInScope(ObjectHandle theObject,
+                      const std::vector <AttributeHandle> &attribArray,
+                      const UShort attribArraySize,
+                      TypeException &e);
+
+    // 6.14
+    void 
+    attributesOutOfScope(ObjectHandle theObject,
+                      const std::vector <AttributeHandle> &attribArray,
+                      const UShort attribArraySize,
+                      TypeException &e);
+
+    void setAttributeRelevanceAdvisorySwitch(bool state,
+                                             TypeException &e);
+
+    // 6.17
+    void 
+    turnUpdatesOnForObjectInstance(ObjectHandle theObject,
+                      const std::vector <AttributeHandle> &attribArray,
+		      const UShort attribArraySize,
+                      TypeException &e);
+
+    // 6.18
+    void 
+    turnUpdatesOffForObjectInstance(ObjectHandle theObject,
+                      const std::vector <AttributeHandle> &attribArray,
+                      const UShort attribArraySize,
+                      TypeException &e);
+
     // RTI Support Services
     ObjectClassHandle getObjectClassHandle(const char *theName);
     std::string getObjectClassName(ObjectClassHandle);
@@ -229,4 +263,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.23 2008/06/11 15:19:19 rousse Exp $
+// $Id: ObjectManagement.hh,v 3.24 2008/07/09 13:48:28 erk Exp $

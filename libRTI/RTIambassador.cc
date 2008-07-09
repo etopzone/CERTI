@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.89 2008/06/24 08:56:49 rousse Exp $
+// $Id: RTIambassador.cc,v 3.90 2008/07/09 13:48:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2919,8 +2919,8 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2932,8 +2932,8 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2945,8 +2945,8 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2958,8 +2958,8 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2970,8 +2970,8 @@ void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2983,8 +2983,8 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -2996,8 +2996,8 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
@@ -3009,10 +3009,10 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
 {
-    throw UnimplementedService("");
     Message req, rep ;
+
     req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.89 2008/06/24 08:56:49 rousse Exp $
+// $Id: RTIambassador.cc,v 3.90 2008/07/09 13:48:28 erk Exp $

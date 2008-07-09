@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
+// $Id: DeclarationManagement.hh,v 3.9 2008/07/09 13:48:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -74,15 +74,25 @@ public:
     void unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                                      TypeException &e);
 
+    void setClassRelevanceAdvisorySwitch(bool state,
+                                         TypeException &e);
+
+    // 5.10
     void startRegistrationForObjectClass(ObjectClassHandle theClass,
                                          TypeException &e);
 
+    // 5.11
     void stopRegistrationForObjectClass(ObjectClassHandle theClass,
                                         TypeException &e);
 
+    void setInteractionRelevanceAdvisorySwitch(bool state,
+                                               TypeException &e);
+
+    // 5.12
     void turnInteractionsOn(InteractionClassHandle theHandle,
                             TypeException &e);
 
+    // 5.13
     void turnInteractionsOff(InteractionClassHandle theHandle,
                              TypeException &e);
 
@@ -97,4 +107,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
+// $Id: DeclarationManagement.hh,v 3.9 2008/07/09 13:48:28 erk Exp $

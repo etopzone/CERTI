@@ -683,7 +683,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
                                               UShort attribArraySize,
                                               TypeException &)
 {    
-     Message req;
+    Message req;
 
     G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
     req.type = Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE ;
@@ -697,7 +697,6 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
     comm->requestFederateService(&req);
     G.Out(pdGendoc,"exit  ObjectManagement::provideAttributeValueUpdate");   
 }
-
 
 // ------------------
 // -- 4.16 retract --
@@ -838,6 +837,135 @@ ObjectClassHandle
 ObjectManagement::getObjectClass(ObjectHandle object)
 {
     return rootObject->objects->getObjectClass(object);
+}
+
+// --------------------------------------
+// setAttributeScopeAdvisorySwitch
+// --------------------------------------
+void
+ObjectManagement::
+setAttributeScopeAdvisorySwitch(bool state, TypeException &e) {
+    G.Out(pdGendoc,"enter ObjectManagement::setAttributeScopeAdvisorySwitch");
+
+    G.Out(pdGendoc,"exit ObjectManagement::setAttributeScopeAdvisorySwitch");
+}
+
+// --------------------------------------
+// -- 6.13 attributesInScope
+// --------------------------------------
+void
+ObjectManagement::
+attributesInScope(ObjectHandle theObject,
+                  const std::vector <AttributeHandle> &attribArray,
+                  const UShort attribArraySize,
+                  TypeException &e) {
+    Message req;
+
+    G.Out(pdGendoc,"enter ObjectManagement::attributesInScope");
+
+    req.type = Message::ATTRIBUTES_IN_SCOPE;
+    req.setObject(theObject);
+    req.handleArraySize = attribArraySize;
+    req.handleArray.resize(attribArraySize);
+
+    for (int i = 0 ; i < attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i];
+
+    comm->requestFederateService(&req);
+
+    G.Out(pdGendoc,"exit  ObjectManagement::attributesInScope");   
+}
+
+// --------------------------------------
+// -- 6.14 attributesOutOfScope
+// --------------------------------------
+
+void
+ObjectManagement::
+attributesOutOfScope(ObjectHandle theObject,
+                     const std::vector <AttributeHandle> &attribArray,
+                     const UShort attribArraySize,
+                     TypeException &e) {
+    Message req;
+
+    G.Out(pdGendoc,"enter ObjectManagement::attributesOutScope");
+
+    req.type = Message::ATTRIBUTES_OUT_OF_SCOPE;
+    req.setObject(theObject);
+    req.handleArraySize = attribArraySize;
+    req.handleArray.resize(attribArraySize);
+
+    for (int i = 0 ; i < attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i];
+
+    comm->requestFederateService(&req);
+
+    G.Out(pdGendoc,"exit  ObjectManagement::attributesOutScope");   
+}
+
+// --------------------------------------
+// setAttributeRelevanceAdvisorySwitch
+// --------------------------------------
+void
+ObjectManagement::
+setAttributeRelevanceAdvisorySwitch(bool state, TypeException &e) {
+    G.Out(pdGendoc,"enter ObjectManagement::setAttributeRelevanceAdvisorySwitch");
+
+    G.Out(pdGendoc,"exit ObjectManagement::setAttributeRelevanceAdvisorySwitch");
+}
+
+// --------------------------------------
+// -- 6.17 turnUpdatesOnForObjectInstance
+// --------------------------------------
+
+void 
+ObjectManagement::
+turnUpdatesOnForObjectInstance(ObjectHandle theObject,
+                           const std::vector <AttributeHandle> &attribArray,
+                           const UShort attribArraySize,
+                           TypeException &e) {
+    Message req;
+
+    G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOnForObjectInstance");
+
+    req.type = Message::TURN_UPDATES_ON_FOR_OBJECT_INSTANCE;
+    req.setObject(theObject);
+    req.handleArraySize = attribArraySize;
+    req.handleArray.resize(attribArraySize);
+
+    for (int i = 0 ; i < attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i];
+
+    comm->requestFederateService(&req);
+
+    G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOnForObjectInstance");   
+}
+
+// --------------------------------------
+// -- 6.18 turnUpdatesOffForObjectInstance
+// --------------------------------------
+
+void
+ObjectManagement::
+turnUpdatesOffForObjectInstance(ObjectHandle theObject,
+                         const std::vector <AttributeHandle> &attribArray,
+                         const UShort attribArraySize,
+                         TypeException &e) {
+    Message req;
+
+    G.Out(pdGendoc,"enter ObjectManagement::turnUpdatesOffForObjectInstance");
+
+    req.type = Message::TURN_UPDATES_OFF_FOR_OBJECT_INSTANCE;
+    req.setObject(theObject);
+    req.handleArraySize = attribArraySize;
+    req.handleArray.resize(attribArraySize);
+
+    for (int i = 0 ; i < attribArraySize ; i++)
+        req.handleArray[i] = attribArray[i];
+
+    comm->requestFederateService(&req);
+
+    G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOffForObjectInstance");
 }
 
 }} // namespace certi/rtia

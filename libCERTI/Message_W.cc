@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.34 2008/06/24 08:56:49 rousse Exp $
+// $Id: Message_W.cc,v 3.35 2008/07/09 13:48:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -479,6 +479,18 @@ Message::writeBody(MessageBuffer &msgBuffer)
             msgBuffer.write_double(lookahead);
             break ;
 
+	  // Body contains boolean
+	  case ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
+	  case DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
+	  case ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+	  case DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+	  case ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+	  case DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+	  case ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+	  case DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+            msgBuffer.write_bool(boolean);
+	    break;
+
           // Body contains boolean, TickTime, TickTime
           case TICK_REQUEST:
             msgBuffer.write_bool(boolean);
@@ -584,4 +596,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.34 2008/06/24 08:56:49 rousse Exp $
+// $Id: Message_W.cc,v 3.35 2008/07/09 13:48:29 erk Exp $

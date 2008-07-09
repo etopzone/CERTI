@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.20 2008/06/10 13:41:44 rousse Exp $
+// $Id: DeclarationManagement.cc,v 3.21 2008/07/09 13:48:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -357,6 +357,15 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
 } /* end of unsubscribeInteractionClass */
 
 // ----------------------------------------------------------------------------
+// setClassRelevanceAdvisorySwitch
+void
+DeclarationManagement::
+setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
+    G.Out(pdGendoc,"enter DeclarationManagement::setClassRelevanceAdvisorySwitch");
+    G.Out(pdGendoc,"exit DeclarationManagement::setClassRelevanceAdvisorySwitch");
+}
+
+// ----------------------------------------------------------------------------
 // startRegistrationForObjectClass
 void
 DeclarationManagement::
@@ -415,10 +424,23 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
 }
 
 // ----------------------------------------------------------------------------
+// setInteractionRelevanceAdvisorySwitch
+void
+DeclarationManagement::
+setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
+    G.Out(pdGendoc,"enter DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
+
+    G.Out(pdGendoc,"exit DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
+}
+
+/* further refinement required, see OM.cc e.g. attributesInScope */
+
+// ----------------------------------------------------------------------------
 // turnInteractionsOn
 void
-DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
-                                          TypeException &e)
+DeclarationManagement::
+turnInteractionsOn(InteractionClassHandle interaction,
+                   TypeException &e)
 {
     Message req, rep ;
     req.type = Message::TURN_INTERACTIONS_ON ;
@@ -438,8 +460,9 @@ DeclarationManagement::turnInteractionsOn(InteractionClassHandle interaction,
 // ----------------------------------------------------------------------------
 // turnInteractionsOff
 void
-DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
-                                           TypeException &e)
+DeclarationManagement::
+turnInteractionsOff(InteractionClassHandle interaction,
+                    TypeException &e)
 {
     Message req ;
     req.type = Message::TURN_INTERACTIONS_OFF ;
@@ -459,4 +482,4 @@ DeclarationManagement::turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.20 2008/06/10 13:41:44 rousse Exp $
+// $Id: DeclarationManagement.cc,v 3.21 2008/07/09 13:48:28 erk Exp $
