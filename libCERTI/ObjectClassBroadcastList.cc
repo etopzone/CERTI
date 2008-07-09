@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.23 2008/06/24 08:56:49 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.24 2008/07/09 15:04:26 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -260,7 +260,9 @@ ObjectClassBroadcastList::sendPendingDOMessage(SecurityServer *server)
                   "Broadcasting message to Federate %d.", (*i)->Federate);
             try {
                 socket = server->getSocketLink((*i)->Federate);
-                message->send(socket,NM_msgBufSend);
+                // socket NULL means federate dead (killed ?)
+                if ( socket != NULL )
+                    message->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -365,8 +367,12 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 #else
                 socket = server->getSocketLink((*i)->Federate);
 #endif
-                G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
-                currentMessage->send(socket,NM_msgBufSend);
+                // socket NULL means federate is dead (killed ?)
+                if ( socket != NULL )
+                   {
+                   G.Out(pdGendoc,"                                 sendPendingRAVMessage=====> write");
+                   currentMessage->send(socket,NM_msgBufSend);
+                   }
             }
             catch (RTIinternalError &e) {
                 D.Out(pdExcept,
@@ -401,4 +407,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.23 2008/06/24 08:56:49 rousse Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.24 2008/07/09 15:04:26 rousse Exp $

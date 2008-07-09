@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.13 2008/06/27 09:54:47 rousse Exp $
+// $Id: SecurityServer.cc,v 3.14 2008/07/09 15:04:26 rousse Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -46,7 +46,12 @@ SecurityServer::getSocketLink(FederateHandle theFederate,
                               TransportType theType) const
 {
 // G.Out(pdGendoc,"into SecurityServer::getSocketLink");
-    return RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
+Socket * sock = RTIG_SocketServer.getSocketLink(myFederation, theFederate, theType);
+if ( sock == NULL )
+   // Federate killed
+   return NULL ;
+else
+   return sock ;
 }
 
 // ----------------------------------------------------------------------------
@@ -192,4 +197,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.13 2008/06/27 09:54:47 rousse Exp $
+// $Id: SecurityServer.cc,v 3.14 2008/07/09 15:04:26 rousse Exp $
