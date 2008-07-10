@@ -198,7 +198,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   if ( is_a_fed )
                       {        
 	              int result = certi::fedparser::build(filename.c_str(),
-		        				   rootObject, true);  
+		        				   rootObject, false);  
                       if (result != 0 ) throw ErrorReadingFED("invalid .fed");
                       }
                   else if ( is_an_xml )

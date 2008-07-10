@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.15 2007/11/20 09:14:07 erk Exp $
+// $Id: fed.cc,v 3.16 2008/07/10 14:05:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -117,10 +117,12 @@ build(const char *filename, RootObject *root, bool v)
 void
 indent()
 {
-    cout << endl ;
-    for (int i = 0 ; i < indentation ; ++i) {
-	cout << " " << " " << " " << " " ;
-    }
+	if(verbose) {
+		cout << endl ;
+		for (int i = 0 ; i < indentation ; ++i) {
+			cout << " " << " " << " " << " " ;
+		}
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -128,7 +130,9 @@ void
 startFed()
 {
     indent();
-    cout << "(FED" ;
+    if(verbose) {
+	  cout << "(FED";
+    }
     ++indentation ;
 }
 
@@ -137,7 +141,9 @@ void
 endFed()
 {
     --indentation ;
-    cout << ")" << endl << endl ;
+    if(verbose) {
+	  cout << ")" << endl << endl ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -145,7 +151,9 @@ void
 addFederation()
 {
     indent();
-    cout << "(federation \"" << arg.c_str() << "\")" ;
+    if(verbose) {
+	  cout << "(federation \"" << arg.c_str() << "\")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -153,7 +161,9 @@ void
 addFedVersion()
 {
     indent();
-    cout << "(FEDversion \"" << arg.c_str() << "\")" ;
+    if(verbose) {
+	  cout << "(FEDversion \"" << arg.c_str() << "\")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -161,7 +171,9 @@ void
 startSpaces()
 {
     indent();
-    cout << "(spaces" ;
+    if(verbose) {
+	  cout << "(spaces" ;
+    }
     ++indentation ;
 }
 
@@ -170,7 +182,9 @@ void
 end()
 {
     --indentation ;
-    cout << ")" ;
+    if(verbose) {
+	  cout << ")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -178,7 +192,9 @@ void
 startObjects()
 {
      indent();
-     cout << "(objects" ;    
+     if(verbose) {
+	   cout << "(objects" ;
+     }
      ++indentation ;
 }
 
@@ -186,8 +202,10 @@ startObjects()
 void
 startInteractions()
 {
-     indent();
-     cout << "(interactions" ;    
+     indent(); 
+     if(verbose) {
+	   cout << "(interactions" ;
+     }
      ++indentation ;
 }
 
@@ -205,8 +223,10 @@ endFederate()
     SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
     root_object->registerFederate(federate.c_str(), level);
     indent();
-    cout <<"(federate \"" << federate.c_str() << "\" \"" 
-	 << arg.c_str() << "\")" ;
+    if(verbose) {
+	  cout <<"(federate \"" << federate.c_str() << "\" \""	 
+		   << arg.c_str() << "\")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -227,8 +247,10 @@ startObject()
     root_object->ObjectClasses->addClass(object);
 
     indent();
-    cout << "(class \"" << arg.c_str() << "\" (id " 
-	     << object->getHandle()	<< ")" ;
+    if(verbose) {
+	  cout << "(class \"" << arg.c_str() << "\" (id "
+		   << object->getHandle()	<< ")" ;
+    }
     ++indentation ;
 }
 
@@ -239,7 +261,9 @@ addObjectSecLevel(string name)
     SecurityLevelID level = root_object->GetSecurityLevelID(name.c_str());
     objects.back()->setLevelId(level);
     indent();
-    cout << "(sec_level \"" << name.c_str() << "\")" ;
+    if(verbose) {
+	  cout << "(sec_level \"" << name.c_str() << "\")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -253,18 +277,24 @@ addAttribute()
     objects.back()->addAttribute(attribute);
     
     indent();
-    cout << "(attribute \"" << arg.c_str() << "\" (id "
-	 << attribute->getHandle() << ")" ;
+    if(verbose) {
+	  cout << "(attribute \"" << arg.c_str() << "\" (id "
+		   << attribute->getHandle() << ")" ;
+    }
     printTransport();
     printOrder();
-    cout << ")" ;
+    if(verbose) {
+	  cout << ")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
 void
 endObject()
 {
-    cout << ")" ;
+    if(verbose) {
+	  cout << ")" ;
+    }
     objects.pop_back();    
     if (objects.size() == 0) attributeHandle = 1 ;
     --indentation ;
@@ -288,8 +318,9 @@ startInteraction()
     root_object->Interactions->addClass(interaction);
 
     indent();
-    cout << "(interaction \"" << arg.c_str() << "\" (id "
-	 << interaction->getHandle() << ")" ;
+    if(verbose)
+	  cout << "(interaction \"" << arg.c_str() << "\" (id "
+		   << interaction->getHandle() << ")" ;
     printTransport();
     printOrder();
     ++indentation ;
@@ -302,7 +333,8 @@ addInteractionSecurityLevel()
     SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
     interactions.back()->setLevelId(level);
     indent();
-    cout << "(sec_level \"" << arg.c_str() << "\")" ;
+    if(verbose)
+	  cout << "(sec_level \"" << arg.c_str() << "\")" ;
 }
 
 // ----------------------------------------------------------------------------
@@ -312,7 +344,9 @@ addObjectSecurityLevel()
     SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
     objects.back()->setLevelId(level);
     indent();
-    cout << "(sec_level \"" << arg.c_str() << "\")" ;
+    if(verbose) {
+	  cout << "(sec_level \"" << arg.c_str() << "\")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -325,15 +359,19 @@ addParameter()
     interactions.back()->addParameter(parameter);
 
     indent();
-    cout << "(parameter \"" << arg.c_str() << "\" (id "
-	 << parameter->getHandle() << "))" << std::flush;
+    if(verbose) {
+	  cout << "(parameter \"" << arg.c_str() << "\" (id "
+		   << parameter->getHandle() << "))" << std::flush;
+    }
 }
 
 // ----------------------------------------------------------------------------
 void
 endInteraction()
 {
-    cout << ")" ;
+    if(verbose) {
+	  cout << ")" ;
+    }
     interactions.pop_back();
     if (interactions.size() == 0) parameterHandle = 1 ;
     --indentation ;
@@ -344,8 +382,10 @@ void
 printOrder()
 {
     switch (order) {
-      case RECEIVE: cout << " receive" ; break ;
-      case TIMESTAMP: cout << " timestamp" ; break ;
+      case RECEIVE: if(verbose)
+		cout << " receive" ; break ;
+      case TIMESTAMP: if(verbose)
+		cout << " timestamp" ; break ;
     }
 }
 
@@ -354,8 +394,10 @@ void
 printTransport()
 {
     switch (transport) {
-      case RELIABLE: cout << " reliable" ; break ;
-      case BEST_EFFORT: cout << " best_effort" ; break ;
+      case RELIABLE: if(verbose)
+		cout << " reliable" ; break ;
+      case BEST_EFFORT: if(verbose)
+		cout << " best_effort" ; break ;
     }
 }
 
@@ -363,15 +405,17 @@ printTransport()
 void
 startSpace()
 {
-    routing_space = RoutingSpace();
-    routing_space.setHandle(spaceHandle++);
-    routing_space.setName(arg);
-    dimensionHandle = 1 ;
+	routing_space = RoutingSpace();
+	routing_space.setHandle(spaceHandle++);
+	routing_space.setName(arg);
+	dimensionHandle = 1 ;
 
-    indent();
-    cout << "(space \"" << arg.c_str() << "\" (id " 
-	 << routing_space.getHandle() << ")" ;
-    ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(space \"" << arg.c_str() << "\" (id " 
+		     << routing_space.getHandle() << ")" ;
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
@@ -381,7 +425,9 @@ endSpace()
     root_object->addRoutingSpace(routing_space);
  
     --indentation ;
-    cout << ")" ;
+    if(verbose) {
+	  cout << ")" ;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -393,10 +439,12 @@ addDimension()
     routing_space.addDimension(dimension);
 
     indent();
-    cout << "(dimension \"" << arg.c_str() << "\" (id "
-	 << dimension.getHandle() << "))" ;
+    if(verbose) {
+	  cout << "(dimension \"" << arg.c_str() << "\" (id "
+		   << dimension.getHandle() << "))" ;
+    }
 }
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.15 2007/11/20 09:14:07 erk Exp $
+// $Id: fed.cc,v 3.16 2008/07/10 14:05:30 erk Exp $
