@@ -276,6 +276,27 @@ private:
 /*<END>---------- Time_Constrained_Enabled ------------<END>*/
 
 
+/*<BEGIN>---------- Set_Class_Relevance_Advisory_Switch ------------<BEGIN>*/
+class CERTI_EXPORT NM_Set_Class_Relevance_Advisory_Switch : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Set_Class_Relevance_Advisory_Switch();
+	virtual ~NM_Set_Class_Relevance_Advisory_Switch();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	void classRelevanceAdvisorySwitchOn() {classRelevanceAdvisorySwitch=true;};
+	void classRelevanceAdvisorySwitchOff() {classRelevanceAdvisorySwitch=false;};	
+	bool getClassRelevanceAdvisorySwitch() {return classRelevanceAdvisorySwitch;};
+protected:
+	/* specific field */
+	/* value of CRA switch */
+	bool classRelevanceAdvisorySwitch ;
+private:
+};
+
+/*<END>---------- Set_Class_Relevance_Advisory_Switch ------------<END>*/
+
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public NM_WithHandleArray {
 public:
@@ -296,6 +317,7 @@ private:
 };
 
 /*<END>---------- Register_Federation_Synchronization_Point ------------<END>*/
+
 
 /*<BEGIN>---------- Synchronization_Point_Registration_Succeeded ------------<BEGIN>*/
 class CERTI_EXPORT NM_Synchronization_Point_Registration_Succeeded : public NetworkMessage {

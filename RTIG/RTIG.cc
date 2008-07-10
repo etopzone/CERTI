@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.48 2008/06/19 14:19:43 erk Exp $
+// $Id: RTIG.cc,v 3.49 2008/07/10 20:20:05 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -245,6 +245,20 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         processSubscribeInteractionClass(link, msg);
         break ;
 
+      case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+	D[pdTrace] << "setClassRelevanceAdvisorySwitch (DM) " << 
+		static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg)->
+		getClassRelevanceAdvisorySwitch() <<  endl;
+        auditServer.setLevel(6);
+	/*
+	 * Successful passing of services 
+	 * enableClassRelevanceAdvisorySwitch
+	 * and 
+	 * disableClassRelevanceAdvisorySwitch 
+	 * to RTIG
+	 */
+	break;
+	
       case NetworkMessage::REGISTER_OBJECT:
         D.Out(pdTrace, "registerObject.");
         auditServer.setLevel(6);
@@ -370,7 +384,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         auditServer.setLevel(6);
         processUnsubscribeInteractionWR(link, msg);
         break ;	
-	
+
       default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
         D.Out(pdError, "processMessageRecu: unknown type %u.", msg->getType());
@@ -1011,4 +1025,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.48 2008/06/19 14:19:43 erk Exp $
+// $Id: RTIG.cc,v 3.49 2008/07/10 20:20:05 approx Exp $

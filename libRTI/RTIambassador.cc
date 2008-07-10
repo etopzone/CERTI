@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.90 2008/07/09 13:48:28 erk Exp $
+// $Id: RTIambassador.cc,v 3.91 2008/07/10 20:20:08 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2922,6 +2922,7 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2935,6 +2936,7 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -3015,4 +3017,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.90 2008/07/09 13:48:28 erk Exp $
+// $Id: RTIambassador.cc,v 3.91 2008/07/10 20:20:08 approx Exp $

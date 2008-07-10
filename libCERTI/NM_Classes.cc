@@ -147,6 +147,9 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	case NetworkMessage::UNSUBSCRIBE_INTERACTION_CLASS:
 		msg = new NM_Unsubscribe_Interaction_Class(); 
 		break;
+	case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+	        msg = new NM_Set_Class_Relevance_Advisory_Switch();
+		break;
 	case NetworkMessage::TURN_INTERACTIONS_ON:
 		msg = new NM_Turn_Interactions_On(); 
 		break;
@@ -553,6 +556,29 @@ NM_Time_Constrained_Enabled::NM_Time_Constrained_Enabled() {
 NM_Time_Constrained_Enabled::~NM_Time_Constrained_Enabled() {
 }
 /*<END>---------- Time_Constrained_Enabled ------------<END>*/
+
+/*<BEGIN>---------- Set_Class_Relevance_Advisory_Switch ------------<BEGIN>*/
+NM_Set_Class_Relevance_Advisory_Switch::NM_Set_Class_Relevance_Advisory_Switch() {
+	this->name = "SET_CLASS_RELEVANCE_ADVISORY_SWITCH";
+	this->type = NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH;
+	/* specific field init */
+	classRelevanceAdvisorySwitch=true;
+}
+NM_Set_Class_Relevance_Advisory_Switch::~NM_Set_Class_Relevance_Advisory_Switch() {
+}
+void NM_Set_Class_Relevance_Advisory_Switch::serialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::serialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	msgBuffer.write_bool(classRelevanceAdvisorySwitch);  
+} /* end of serialize */ 
+void NM_Set_Class_Relevance_Advisory_Switch::deserialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::deserialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	classRelevanceAdvisorySwitch = msgBuffer.read_bool();
+} /* end of deserialize */
+/*<END>---------- Set_Class_Relevance_Advisory_Switch ------------<BEGIN>*/
 
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 NM_Register_Federation_Synchronization_Point::NM_Register_Federation_Synchronization_Point() {

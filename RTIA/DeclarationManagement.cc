@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.21 2008/07/09 13:48:28 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.22 2008/07/10 20:20:04 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -362,6 +362,23 @@ void
 DeclarationManagement::
 setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
     G.Out(pdGendoc,"enter DeclarationManagement::setClassRelevanceAdvisorySwitch");
+
+    NM_Set_Class_Relevance_Advisory_Switch msg ;
+
+    e = e_NO_EXCEPTION ;
+
+    msg.federation = fm->_numero_federation ;
+    msg.federate = fm->federate ;
+
+    if (state) {
+        msg.classRelevanceAdvisorySwitchOn();
+    }
+    else {
+        msg.classRelevanceAdvisorySwitchOff();
+    }
+
+    comm->sendMessage(&msg);
+
     G.Out(pdGendoc,"exit DeclarationManagement::setClassRelevanceAdvisorySwitch");
 }
 
@@ -482,4 +499,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.21 2008/07/09 13:48:28 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.22 2008/07/10 20:20:04 approx Exp $
