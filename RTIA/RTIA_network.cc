@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.26 2008/05/12 12:17:01 erk Exp $
+// $Id: RTIA_network.cc,v 3.27 2008/07/11 14:56:00 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -329,12 +329,12 @@ NetworkMessage::Type msgType = msg->getType();
       case NetworkMessage::TIME_REGULATION_ENABLED:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type TimeRegulationEnabled.");
-    	  queues->insertFifoMessage(msg);
+    	  queues->insertLastCommand(msg);
     	  break ;
       case NetworkMessage::TIME_CONSTRAINED_ENABLED:
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type TimeConstrainedEnabled.");
-    	  queues->insertFifoMessage(msg);
+    	  queues->insertLastCommand(msg);
     	  break;
 
       default:
@@ -352,4 +352,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.26 2008/05/12 12:17:01 erk Exp $
+// $Id: RTIA_network.cc,v 3.27 2008/07/11 14:56:00 approx Exp $
