@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAtypesIEEE1516.hh,v 1.1 2008/07/15 10:54:11 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.2 2008/07/17 16:03:53 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_IEEE1516_HH
@@ -27,6 +27,8 @@
 /* These templates implement efficient access functions that provide direct
  * access to IEEE 1516.2 compliant data buffers.
  * The data are manipulated "in situ", no temporary variables are created.
+ *
+ * Use hlaomtdif2cpp -i <file> to generate FOM/SOM specific datatypes.
  *
  * The extensive use of template metaprogramming allows many operations to
  * be pre-calculated during compile-time.
@@ -59,7 +61,7 @@ std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t le
 class __HLAbuffer
 {
 private:
-    // static buffer for all instantiations of the HLAbuffer template
+    // static buffer for all instantiations of the HLAdata template
     // indexed by pointers after the last element, the end() pointers
     typedef std::map<char*,__HLAbuffer*> BufferList;
     static BufferList gBuffers;
@@ -100,7 +102,7 @@ public:
         // find the first pointer not less than "this", what is the end() pointer
         BufferList::iterator result = gBuffers.lower_bound((char*)__this);
         if (result == gBuffers.end())
-            throw std::runtime_error("HLAbuffer: bad pointer");
+            throw std::runtime_error("HLAdata: bad pointer");
         return result;
     }
 
@@ -125,7 +127,7 @@ public:
                     gBuffers[mBegin + mCapacity] = this;
                 }
                 else
-                    throw std::length_error("HLAbuffer: data buffer overflow");
+                    throw std::length_error("HLAdata: data buffer overflow");
             }
 
             char* ptr = (char*)mBegin + offset;
@@ -143,7 +145,7 @@ public:
     {
         const __HLAbuffer& buffer = __buffer(__this);
         if ((char*)__this + size > (char*)buffer.mBegin + buffer.mCapacity)
-            throw std::length_error("HLAbuffer: data buffer overflow");
+            throw std::length_error("HLAdata: data buffer overflow");
     }
 
     virtual const size_t size() const = 0;
@@ -280,7 +282,7 @@ struct __swap<T,8>
  *
  * For example:
  * typedef HLAbasicType<long, uint32_t, LittleEndian> HLAinteger32BE;
- * HLAbuffer<HLAinteger32BE> value;
+ * HLAdata<HLAinteger32BE> value;
  *
  * value = 42;
  */
@@ -333,23 +335,50 @@ typedef HLAbasicType<wchar_t, wchar_t, LittleEndian> HLAoctetPairLE;
 
 typedef HLAbasicType<char, char, BigEndian> HLAoctet;
 
-/* IEEE 1516.2, Table 25:
- * Simple datatype table
+/* Additional datatypes used by RPR-FOM
  */
-typedef HLAoctet HLAASCIIchar;
-typedef HLAoctetPairBE HLAunicodeChar;
-typedef HLAoctet HLAbyte;
+typedef HLAbasicType<unsigned short, uint16_t, BigEndian> Unsignedinteger16BE;
+typedef HLAbasicType<unsigned long, uint32_t, BigEndian> Unsignedinteger32BE;
 
-/* IEEE 1516.2, Table 27:
- * Enumeration datatype table
+//! HLA enumerated type, enumeration <E> with representation <R>.
+/*!
+ * HLAenumeratedType<ENUMERATION, REPRESENTATION>
+ * defines an user-convenient ENUMERATION stored using given REPRESENTATION.
+ *
+ * The data can be accessed in an usual way.
+ *
+ * For example:
+ * enum __HLAboolean
+ * {
+ *   HLAfalse = 0,
+ *   HLAtrue = 1
+ * };
+ * typedef HLAenumeratedType<__HLAboolean, HLAinteger32BE> HLAboolean;
+ * HLAdata<HLAboolean> value;
+ *
+ * value = HLAtrue;
  */
-enum __HLAboolean
+template<class E, class R>
+struct HLAenumeratedType
 {
-    HLAfalse = 0,
-    HLAtrue = 1
+    HLAenumeratedType& operator = (const E& data)
+    {
+        *(R*)this = data;
+        return *this;
+    }
+
+    operator E() const
+    { return *(R*)this; }
+
+    static const size_t empty_sizeof()
+    { return R::empty_sizeof(); }
+
+    static const size_t __sizeof()
+    { return R::__sizeof(); }
+
+    static const size_t m_octetBoundary = R::m_octetBoundary;
+    static const bool m_isVariable = false;
 };
-// As 64bit architectures may have 64bit enum, we need static-cast to uint32_t.
-typedef HLAbasicType<__HLAboolean, uint32_t, BigEndian> HLAboolean;
 
 #ifndef MAX
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -370,7 +399,7 @@ inline size_t __padding(size_t size, size_t boundary)
  *
  * For example:
  * typedef HLAfixedArray<HLAinteger32BE,3> Coordinates;
- * HLAbuffer<Coordinates> value;
+ * HLAdata<Coordinates> value;
  *
  * (*value)[0] = 100;
  * (*value)[1] = 200;
@@ -460,7 +489,7 @@ struct HLAfixedArray<M, N, true>
  *
  * For example:
  * typedef HLAvariableArray<HLAinteger32BE> List;
- * HLAbuffer<List> value;
+ * HLAdata<List> value;
  *
  * (*value).set_size(2);
  * (*value)[0] = 100;
@@ -616,19 +645,21 @@ struct HLAvariableArray<M, true>
  * is a zero-based order of the field being accessed.
  *
  * For example:
+ * enum {
+ *   FIELD_X = 0,
+ *   FIELD_Y,
+ *   FIELD_Z
+ * };
  * typedef
- * #define FIELD_X 0
  *   HLAfixedRecord<HLAfloat23LE,
- * #define FIELD_Y 1
  *   HLAfixedRecord<HLAfloat32LE,
- * #define FIELD_Z 2
  *   HLAfixedRecord<HLAfloat32LE,
  *   HLAfixedRecordEnd> > > Coordinates;
- * HLAbuffer<Coordinates> value;
+ * HLAdata<Coordinates> value;
  *
- * (*value).field<FIELD_X>() = 3.14;
- * (*value).field<FIELD_Y>() = 6.28;
- * (*value).field<FIELD_Z>() = 9.42;
+ * value->field<FIELD_X>() = 3.14;
+ * value->field<FIELD_Y>() = 6.28;
+ * value->field<FIELD_Z>() = 9.42;
  */
 template<class M, class N, bool hasVariable = M::m_isVariable || N::m_isVariable>
 struct HLAfixedRecord;
@@ -759,5 +790,5 @@ struct __FieldAt<HLAfixedRecord<M, N, V>,0>
 
 #endif // _HLATYPES_IEEE1516_HH
 
-// $Id: HLAtypesIEEE1516.hh,v 1.1 2008/07/15 10:54:11 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.2 2008/07/17 16:03:53 gotthardp Exp $
 
