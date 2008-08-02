@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// HLAtypesIEEE1516.cc - IEEE 1516.2 compliant datatypes
+// HLAbuffer.cc - IEEE 1516.2 compliant datatypes
 // Copyright (C) 2008  Petr Gotthard <petr.gotthard@centrum.cz>
 //
 // This library is free software; you can redistribute it and/or
@@ -11,10 +11,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAtypesIEEE1516.cc,v 1.1 2008/07/15 10:54:11 gotthardp Exp $
+// $Id: HLAbuffer.cc,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
-#include "HLAtypesIEEE1516.hh"
+#include "HLAbuffer.hh"
+
+#include <iomanip>
 
 // #define HLATYPES_IEEE1516_DISPLAYPRINTABLE
 
@@ -60,5 +62,5 @@ std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t le
 
 } // namespace libhla
 
-// $Id: HLAtypesIEEE1516.cc,v 1.1 2008/07/15 10:54:11 gotthardp Exp $
+// $Id: HLAbuffer.cc,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
 

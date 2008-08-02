@@ -1,6 +1,6 @@
 
 SET(CERTI_TYPES1516_SRCS
-    HLAtypesIEEE1516.hh HLAtypesIEEE1516.cc
+    HLAbuffer.hh HLAbuffer.cc
 )
  
 SOURCE_GROUP("Source Files\\Types1516" FILES ${CERTI_TYPES1516_SRCS})
@@ -25,6 +25,13 @@ SET_TARGET_PROPERTIES(HLA PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
 INSTALL(FILES
     HLAtypesIEEE1516.hh
+    HLAbuffer.hh
+    HLAbasicType.hh
+    HLAenumeratedType.hh
+    HLAfixedArray.hh
+    HLAvariableArray.hh
+    HLAfixedRecord.hh
+    HLAvariantRecord.hh
     DESTINATION include)
 
 INSTALL(PROGRAMS
