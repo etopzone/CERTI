@@ -424,6 +424,7 @@ INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.csh
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindCERTI.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/UseCERTI.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindRTI.cmake
   DESTINATION share/scripts)
   
  ## Patch generating target
