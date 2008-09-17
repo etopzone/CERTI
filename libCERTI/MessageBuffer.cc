@@ -30,20 +30,20 @@ namespace certi {
 
 static PrettyDebug D("MB","MB::");
 
-const bool 
+const bool
 MessageBuffer::HostIsBigEndian() {
 #ifdef HOST_IS_BIG_ENDIAN
 	return true;
-#else    
+#else
 	return false;
 #endif
 }
 
-const bool 
+const bool
 MessageBuffer::HostIsLittleEndian() {
 #ifdef HOST_IS_BIG_ENDIAN
 	return false;
-#else    
+#else
 	return true;
 #endif
 }
@@ -56,8 +56,8 @@ MessageBuffer::show(const void* data, uint32_t n) {
 	   if ((0==(i%2))&&(i>0)) {
 	   		   printf(" ");
 	   }
-	   printf("%02X",u8data[i]);	  
-   }   
+	   printf("%02X",u8data[i]);
+   }
 }
 
 const uint8_t MessageBuffer::reservedBytes = 5;
@@ -65,7 +65,7 @@ const uint8_t MessageBuffer::reservedBytes = 5;
 void MessageBuffer::initialize() {
 	buffer = NULL;
 	bufferMaxSize = DEFAULT_MESSAGE_BUFFER_SIZE;
-	bufferHasMyEndianness = true;	
+	bufferHasMyEndianness = true;
 	writeOffset  = reservedBytes;
 	readOffset   = reservedBytes;
 } /* end of MessageBuffer::initialize() */
@@ -80,7 +80,7 @@ MessageBuffer::MessageBuffer(uint32_t n) {
 	reallocate(n);
 } /* end of MessageBuffer::MessageBuffer(uint32_t) */
 
-/* 
+/*
  * FIXME we may put a COMPILED FLAG here in order
  * to prevent reallocation beside the first one (when buffer==NULL)
  */
@@ -96,9 +96,9 @@ void MessageBuffer::reallocate(uint32_t n) {
 		// ands wrap-up inside RTIinternalError
 		buffer = new uint8_t[n];
 		bufferMaxSize = n;
-		/* 
+		/*
 		 * If oldbuf wasn't null then copy
-		 * oldbuf in the new buf 
+		 * oldbuf in the new buf
 		 * the writeOffset should be valid.
 		 */
 		if (NULL!=oldbuf) {
@@ -117,7 +117,7 @@ MessageBuffer::~MessageBuffer() {
 	}
 } /* end of MessageBuffer::~MessageBuffer() */
 
-uint32_t MessageBuffer::size() const {	
+uint32_t MessageBuffer::size() const {
 	return writeOffset;
 }
 
@@ -147,16 +147,16 @@ uint32_t MessageBuffer::resize(uint32_t newSize) {
 	return bufferMaxSize;
 }
 
-void MessageBuffer::assumeSize(uint32_t size) {	
-	/* This is done in order to overflow 
+void MessageBuffer::assumeSize(uint32_t size) {
+	/* This is done in order to overflow
 	 * buffer max size but this may well be
-	 * an error (FIXME should throw an exception ?) 
+	 * an error (FIXME should throw an exception ?)
 	 */
 	if (size <= bufferMaxSize) {
 		writeOffset       = size;
 	} else {
 	    writeOffset       = bufferMaxSize;
-	}	
+	}
 }
 
 void MessageBuffer::assumeSizeFromReservedBytes() {
@@ -165,7 +165,7 @@ void MessageBuffer::assumeSizeFromReservedBytes() {
 	if (buffer[0]==0x01) {
 		assumeBufferIsBigEndian();
 	} else {
-		assumeBufferIsLittleEndian();	
+		assumeBufferIsLittleEndian();
 	}
 	/* read size from reserved bytes 1..4 */
 	readOffset = 1;
@@ -184,12 +184,12 @@ void MessageBuffer::setSizeInReservedBytes(uint32_t n) {
 	D.Out(pdTrace,"setSizeInReservedBytes(%u)",n);
 	write_uint32(n);
 	/* restore writeOffset */
-	writeOffset  = oldWR_Offset;	
+	writeOffset  = oldWR_Offset;
 } /* end of setSizeInReservedBytes */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
     D.Out(pdTrace,"write_uint8s(%p = [%u ...] , %d)",data,data[0],n);
-    
+
 	if (n >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (n-(bufferMaxSize-writeOffset))
@@ -202,7 +202,7 @@ int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
 	return (writeOffset-n);
 } /* end of MessageBuffer::write_uint8s(uint8_t*, uint32_t) */
 
-int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {	
+int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 	if (n + readOffset > writeOffset) {
 		std::stringstream smsg;
 		smsg << "read_uint8s::invalid read of size <" << n
@@ -222,7 +222,7 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
 	uint16_t an_uint16;
 	D.Out(pdTrace,"write_uint16s(%p = [%u ...], %d)",data,data[0],n);
-	
+
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (2*n)-(bufferMaxSize - writeOffset)
@@ -245,8 +245,8 @@ int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	uint32_t i;
-	uint16_t an_uint16;	
-	
+	uint16_t an_uint16;
+
 	if (2*n + readOffset > writeOffset) {
 		std::stringstream smsg;
 		smsg << "read_uint16s::invalid read of size <" << 2*n
@@ -260,14 +260,14 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 2*n);
 		readOffset += 2*n;
-	} else {		
+	} else {
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint16, buffer+readOffset,2);
 			data[i] = CERTI_UINT16_SWAP_BYTES(an_uint16);
 			readOffset += 2;
 		}
 	}
-	
+
 	D.Out(pdTrace,"read_uint16s(%p = [%u ...], %d)",data,data[0],n);
 	return (readOffset-2*n);
 } /* end of MessageBuffer::read_uint16s(uint16_t*, uint32_t) */
@@ -276,7 +276,7 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
 	uint32_t an_uint32;
 	D.Out(pdTrace,"write_uint32s(%p = [%u ...] , %d)",data,data[0],n);
-	
+
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (4*n)-(bufferMaxSize - writeOffset)
@@ -287,7 +287,7 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(buffer+writeOffset, data, 4*n);
 		writeOffset += 4*n;
-	} else {		
+	} else {
 		for (i=0; i<n; ++i) {
 			an_uint32 = CERTI_UINT32_SWAP_BYTES(data[i]);
 			memcpy(buffer+writeOffset,&an_uint32,4);
@@ -299,8 +299,8 @@ int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 
 int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	uint32_t i;
-	uint32_t an_uint32;	
-	
+	uint32_t an_uint32;
+
 	if (4*n + readOffset > writeOffset) {
 		std::stringstream smsg;
 		smsg << "read_uint32s::invalid read of size <" << 4*n
@@ -314,7 +314,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 4*n);
 		readOffset += 4*n;
-	} else {		
+	} else {
 		for (i=0; i<n; ++i) {
 			memcpy(&an_uint32,buffer+readOffset,4);
 			data[i] = CERTI_UINT32_SWAP_BYTES(an_uint32);
@@ -332,9 +332,9 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 		uint64_t    ui64;
 	} a_deux32;
 	uint32_t an_uint32;
-	
+
 	D.Out(pdTrace,"write_uint64s(%p , %d)",data,n);
-	
+
 	if ((8*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (8*n)-(bufferMaxSize - writeOffset)
@@ -345,7 +345,7 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(buffer+writeOffset, data, 8*n);
 		writeOffset += 8*n;
-	} else {				
+	} else {
 		for (i=0; i<n; ++i) {
 			a_deux32.ui64 = data[i];
 			an_uint32 = CERTI_UINT32_SWAP_BYTES(a_deux32.ui32[1]);
@@ -365,9 +365,9 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 			uint32_t    ui32[2];
 			uint64_t    ui64;
 	} a_deux32;
-	uint32_t an_uint32;	
+	uint32_t an_uint32;
 	D.Out(pdTrace,"read_uint64s(%p , %d)",data,n);
-	
+
 	if (8*n + readOffset > writeOffset) {
 		std::stringstream smsg;
 		smsg << "read_uint64s::invalid read of size <" << 4*n
@@ -381,17 +381,17 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 	if (bufferHasMyEndianness) {
 		memcpy(data, buffer+readOffset, 8*n);
 		readOffset += 8*n;
-	} else {		
-		for (i=0; i<n; ++i) {			
-			memcpy(&an_uint32,buffer+readOffset,4);			
+	} else {
+		for (i=0; i<n; ++i) {
+			memcpy(&an_uint32,buffer+readOffset,4);
 			a_deux32.ui32[1] = CERTI_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
-			
+
 			memcpy(&an_uint32,buffer+readOffset,4);
 			a_deux32.ui32[0] = CERTI_UINT32_SWAP_BYTES(an_uint32);
 			readOffset += 4;
-			
-			data[i] = a_deux32.ui64;			
+
+			data[i] = a_deux32.ui64;
 		}
 	}
 	return (readOffset-8*n);
@@ -400,28 +400,28 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 int32_t MessageBuffer::write_floats(const float* data, uint32_t n) {
 	const uint32_t* data32;
 	D.Out(pdTrace,"write_floats(%p = [%f ...], %d)",data,data[0],n);
-	data32 = reinterpret_cast<const uint32_t*>(data);	
+	data32 = reinterpret_cast<const uint32_t*>(data);
 	return write_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::read_floats(float* data, uint32_t n) {
 	uint32_t* data32;
 	D.Out(pdTrace,"read_floats(%p , %d)",data,n);
-	data32 = reinterpret_cast<uint32_t*>(data);	
-	return read_uint32s(data32,n);	
+	data32 = reinterpret_cast<uint32_t*>(data);
+	return read_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::write_doubles(const double* data, uint32_t n) {
 	const uint64_t* data64;
-	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,data[0],n);	
-	data64 = reinterpret_cast<const uint64_t*>(data);	
-	return write_uint64s(data64,n);	
+	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,data[0],n);
+	data64 = reinterpret_cast<const uint64_t*>(data);
+	return write_uint64s(data64,n);
 }
 
 int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 	uint64_t* data64;
 	D.Out(pdTrace,"read_doubles(%p , %d)",data,n);
-	data64 = reinterpret_cast<uint64_t*>(data);	
+	data64 = reinterpret_cast<uint64_t*>(data);
 	return read_uint64s(data64,n);
 }
 
@@ -430,20 +430,17 @@ MessageBuffer::write_string(const std::string& str) {
    write_int32(str.length());
    return write_chars(str.c_str(),str.length());
 } /* end of write_string */
-  
-std::string 
+
+std::string
 MessageBuffer::read_string() {
  std::string retval;
  int32_t len;
  char* buf;
- 
+
  read_int32(&len);
- buf = new char[len+1];
+ buf = new char[len];
  read_chars(buf,len);
- /* terminate the string */
- buf[len] = '\0';
- /* build an std::string and retrun it */
- retval = std::string(buf);
+ retval.assign(buf,len);
  delete[] buf;
  return retval;
 } /* end of read_string */
@@ -452,16 +449,16 @@ void MessageBuffer::updateReservedBytes() {
 	/* set up buffer endianess */
 	if ((HostIsBigEndian() && bufferHasMyEndianness) ||
 	    (HostIsLittleEndian() && !bufferHasMyEndianness)) {
-	   buffer[0] = 0x01;	   
+	   buffer[0] = 0x01;
 	} else {
 	   buffer[0] = 0x00;
 	}
-    /* set up size */	
-	setSizeInReservedBytes(size());	
+    /* set up size */
+	setSizeInReservedBytes(size());
 } /* end of updateReservedBytes */
 
 void*
-MessageBuffer::operator ()(uint32_t offset) {	
+MessageBuffer::operator ()(uint32_t offset) {
 	return buffer+offset;
 }
 
