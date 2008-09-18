@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.34 2008/09/18 17:13:33 erk Exp $
+// $Id: certi.hh,v 3.35 2008/09/18 17:19:27 erk Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -227,7 +227,6 @@ RTI_EXCEPT(NetworkError)
 typedef RTI::Double FederationTime ;
 typedef UShort ObjectHandlecount ;
 typedef std::string ObjectName_t ;
-typedef char *ParameterName ;
 typedef std::string AttributeValue_t;
 typedef std::string ParameterValue_t;
 
@@ -353,4 +352,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.34 2008/09/18 17:13:33 erk Exp $
+// $Id: certi.hh,v 3.35 2008/09/18 17:19:27 erk Exp $
