@@ -16,29 +16,29 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.33 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: certi.hh,v 3.34 2008/09/18 17:13:33 erk Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
-#if defined(_WIN32)	
+#if defined(_WIN32)
     #include <windows.h>
-    #include <algorithm>	
+    #include <algorithm>
     #include <process.h>
     #define	sleep(a)	      Sleep(a * 1000)
     #define	usleep(a)	      Sleep(a / 1000)
     typedef unsigned short        ushort;
-    typedef	int	              pid_t;			      
+    typedef	int	              pid_t;
     #define  strcasecmp           strcmp
     #define	STAT_FUNCTION         _stat
     #define	STAT_STRUCT           struct _stat
     /* TCP/IP related typedef and includes */
     #ifndef _WINSOCK2API_
         #ifndef _WINSOCKAPI_
-	   #include <winsock2.h>             
-	#endif    
-    #endif	
+	   #include <winsock2.h>
+	#endif
+    #endif
     typedef u_long			in_addr_t;
     typedef unsigned short		in_port_t;
     #ifdef _MSC_VER
@@ -50,7 +50,7 @@
         typedef __int16			 int16_t;
         typedef unsigned __int8	         uint8_t;
         typedef __int8			  int8_t;
-        #ifdef _M_X64 
+        #ifdef _M_X64
            #define  CERTI_INT64_CONSTANT(val)  (val##L)
            #define  CERTI_INT64_FORMAT         "l"
         #else
@@ -84,7 +84,7 @@
 #endif
 
 #include "RTI.hh"
-	
+
 /**
  * @defgroup libCERTI The CERTI library.
  * @ingroup CERTI_Libraries
@@ -226,7 +226,7 @@ RTI_EXCEPT(NetworkError)
 
 typedef RTI::Double FederationTime ;
 typedef UShort ObjectHandlecount ;
-typedef char *ObjectName ;
+typedef std::string ObjectName_t ;
 typedef char *ParameterName ;
 typedef std::string AttributeValue_t;
 typedef std::string ParameterValue_t;
@@ -321,7 +321,7 @@ const int MAX_BACKLOG = 256 ;
 #define HLA_GSS_FLAGS 0
 
 
-/* 
+/*
  * Basic bit swapping functions
  */
 #define CERTI_UINT16_SWAP_BYTES(val)	((uint16_t) ( \
@@ -353,4 +353,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.33 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: certi.hh,v 3.34 2008/09/18 17:13:33 erk Exp $

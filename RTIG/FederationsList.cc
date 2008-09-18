@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.59 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: FederationsList.cc,v 3.60 2008/09/18 17:13:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -207,7 +207,7 @@ void FederationsList::createFederation(const char *name,
         throw ErrorReadingFED(e._reason);
         }
 
-    
+
 #endif
     if (federation == NULL)
         throw MemoryExhausted("No memory left for new Federation.");
@@ -370,7 +370,7 @@ ObjectHandle
 FederationsList::registerObject(Handle handle,
                                 FederateHandle federate,
                                 ObjectClassHandle object_class,
-                                ObjectName name)
+                                ObjectName_t name)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            ObjectAlreadyRegistered,
@@ -390,8 +390,8 @@ FederationsList::registerObject(Handle handle,
     // It may throw FederationExecutionDoesNotExist.
     searchFederation(handle, federation);
 
-    D.Out(pdTrace, "theObjectClass = %d, name = %s.", object_class, name);
-    return(federation->registerObject(federate, object_class, name));
+    D.Out(pdTrace, "theObjectClass = %d, name = %s.", object_class, name.c_str());
+    return(federation->registerObject(federate, object_class, name.c_str()));
 }
 
 // ----------------------------------------------------------------------------
@@ -1294,7 +1294,7 @@ FederationsList::associateRegion(Handle federation,
 
 // ----------------------------------------------------------------------------
 void
-FederationsList::unassociateRegion(Handle federation, 
+FederationsList::unassociateRegion(Handle federation,
 				   FederateHandle federate,
 				   ObjectHandle object,
 				   RegionHandle region)
@@ -1373,7 +1373,7 @@ FederationsList::subscribeInteractionWR(Handle federation,
 
     f->subscribeInteractionWR(federate, ic, region);
 }
-    
+
 // ----------------------------------------------------------------------------
 void
 FederationsList::unsubscribeInteractionWR(Handle federation,
@@ -1397,9 +1397,9 @@ FederationsList::unsubscribeInteractionWR(Handle federation,
 // ----------------------------------------------------------------------------
 // registerObjectWithRegion
 ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
-						       FederateHandle federate, 
+						       FederateHandle federate,
 						       ObjectClassHandle handle,
-						       ObjectName tag,
+						       ObjectName_t tag,
 						       RegionHandle region,
 						       int nb,
 						       std::vector <AttributeHandle> &attrs)
@@ -1415,7 +1415,7 @@ ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    return f->registerObjectWithRegion(federate, handle, tag, region, nb, attrs);
+    return f->registerObjectWithRegion(federate, handle, tag.c_str(), region, nb, attrs);
 }
 
 // ----------------------------------------------------------------------------
@@ -1558,5 +1558,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.59 2008/09/18 14:41:27 gotthardp Exp $
+// EOF $Id: FederationsList.cc,v 3.60 2008/09/18 17:13:33 erk Exp $
 

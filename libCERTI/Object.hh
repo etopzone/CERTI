@@ -19,13 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.18 2007/12/09 16:26:49 erk Exp $
+// $Id: Object.hh,v 3.19 2008/09/18 17:13:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
 #define _CERTI_OBJECT_HH
 
-// forward declaration 
+// forward declaration
 namespace certi {
 	class ObjectAttribute;
 	class RTIRegion;
@@ -44,10 +44,10 @@ class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle>
 {
 public:
     Object(FederateHandle the_owner)
-        : Owner(the_owner), name(NULL) { handle = 0 ; };
+        : Owner(the_owner), name("") { handle = 0 ; };
 
     Object(FederateHandle the_owner, const char *the_name);
-    
+
     virtual ~Object();
 
     void display() const ;
@@ -65,7 +65,7 @@ public:
     FederateHandle getOwner() const ;
     void setOwner(FederateHandle);
 
-    void unassociate(RTIRegion *);       
+    void unassociate(RTIRegion *);
 
     // -----------------------
     // -- Public Attributes --
@@ -81,7 +81,7 @@ private:
 
     ObjectHandle handle ; //!< Object Instance ID
     ObjectClassHandle classHandle ; //! Object Class
-    ObjectName name ; //!< Instance name.
+    ObjectName_t name ; //!< Instance name.
 
     /*! federate list subscribed to this class and with subscription region
       intersect with UR.
@@ -93,4 +93,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.18 2007/12/09 16:26:49 erk Exp $
+// $Id: Object.hh,v 3.19 2008/09/18 17:13:32 erk Exp $

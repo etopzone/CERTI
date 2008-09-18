@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.44 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: FederationsList.hh,v 3.45 2008/09/18 17:13:33 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -129,12 +129,12 @@ public:
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
-    void requestFederationSave(Handle the_federation, 
-                               FederateHandle the_federate, 
+    void requestFederationSave(Handle the_federation,
+                               FederateHandle the_federate,
                                const char *the_label,
                                FederationTime the_time);
 
-    void requestFederationSave(Handle the_federation, 
+    void requestFederationSave(Handle the_federation,
                                FederateHandle the_federate,
                                const char *the_label);
 
@@ -249,7 +249,7 @@ public:
     ObjectHandle registerObject(Handle theHandle,
                                 FederateHandle theFederateHandle,
                                 ObjectClassHandle theClass,
-                                ObjectName theName)
+                                ObjectName_t theName)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                ObjectAlreadyRegistered,
@@ -258,7 +258,7 @@ public:
                SaveInProgress,
                RestoreInProgress,
                RTIinternalError);
- 
+
     FederateHandle requestObjectOwner(Handle handle,
                                 FederateHandle federate,
                                 ObjectHandle id,
@@ -266,8 +266,8 @@ public:
                                  UShort list_size)
         throw (ObjectNotKnown,
                FederationExecutionDoesNotExist,
-               RTIinternalError);      
-   
+               RTIinternalError);
+
     void destroyObject(Handle theHandle,
     		       FederateHandle theFederateHandle,
 		       ObjectHandle theObjectHandle,
@@ -527,7 +527,7 @@ public:
 		      const std::vector<Extent> &)
 	throw (InvalidExtents, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
-    
+
     void deleteRegion(Handle, FederateHandle, long)
         throw (RegionNotKnown, RegionInUse, FederateNotExecutionMember,
                SaveInProgress, RestoreInProgress, RTIinternalError);
@@ -555,23 +555,23 @@ public:
 				RegionHandle)
 	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
-    
+
     void unsubscribeInteractionWR(Handle, FederateHandle,
 				  InteractionClassHandle, RegionHandle)
 	throw (FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
-    ObjectHandle registerObjectWithRegion(Handle, FederateHandle, 
-					  ObjectClassHandle, ObjectName,
+    ObjectHandle registerObjectWithRegion(Handle, FederateHandle,
+					  ObjectClassHandle, ObjectName_t,
 					  RegionHandle, int, std::vector <AttributeHandle> &)
 	throw (ObjectClassNotDefined, ObjectClassNotPublished,
 	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
 	       InvalidRegionContext, ObjectAlreadyRegistered,
 	       FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
-	       RTIinternalError);               
+	       RTIinternalError);
 
     void setVerbose(bool flag) { verbose = flag ; }
-    
+
 private:
     // Private methods
     void checkHandle(Handle theHandle) throw (RTIinternalError);
@@ -585,4 +585,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.44 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: FederationsList.hh,v 3.45 2008/09/18 17:13:33 erk Exp $

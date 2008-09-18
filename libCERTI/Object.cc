@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.22 2008/06/13 10:55:13 erk Exp $
+// $Id: Object.cc,v 3.23 2008/09/18 17:13:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -51,11 +51,6 @@ Object::Object(FederateHandle the_owner, const char *the_name)
 //! Destructor.
 Object::~Object()
 {
-    if (name != NULL) {
-        free(name);
-        name = NULL ;
-    }
-    
     sf.clear();
     attributeState.clear();
 }
@@ -67,7 +62,7 @@ Object::display() const
 {
     cout << " Instance: handle =" << handle ;
 
-    if (name != NULL)
+    if (name.length() > 0)
         cout << ", name=\"" << name << "\"" << endl ;
     else
         cout << ", (No name)." << endl ;
@@ -153,4 +148,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.22 2008/06/13 10:55:13 erk Exp $
+// $Id: Object.cc,v 3.23 2008/09/18 17:13:32 erk Exp $
