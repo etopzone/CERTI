@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.58 2008/06/11 15:19:20 rousse Exp $
+// $Id: FederationsList.cc,v 3.59 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -438,7 +438,7 @@ FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
                                  std::vector <AttributeHandle> &attributes,
-                                 std::vector <ValueLengthPair> &values,
+                                 std::vector <AttributeValue_t> &values,
                                  UShort list_size,
                                  FederationTime time,
                                  const char *tag)
@@ -471,7 +471,7 @@ FederationsList::updateAttribute(Handle handle,
                                  FederateHandle federate,
                                  ObjectHandle id,
                                  std::vector <AttributeHandle> &attributes,
-                                 std::vector <ValueLengthPair> &values,
+                                 std::vector <AttributeValue_t> &values,
                                  UShort list_size,
                                  const char *tag)
     throw (FederateNotExecutionMember,
@@ -502,7 +502,7 @@ FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameters,
-                                 std::vector <ParameterLengthPair> &values,
+                                 std::vector <ParameterValue_t> &values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region,
@@ -541,7 +541,7 @@ FederationsList::updateParameter(Handle handle,
                                  FederateHandle federate,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameters,
-                                 std::vector <ParameterLengthPair> &values,
+                                 std::vector <ParameterValue_t> &values,
                                  UShort list_size,
 				 RegionHandle region,
                                  const char *tag)
@@ -1558,5 +1558,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.58 2008/06/11 15:19:20 rousse Exp $
+// EOF $Id: FederationsList.cc,v 3.59 2008/09/18 14:41:27 gotthardp Exp $
 

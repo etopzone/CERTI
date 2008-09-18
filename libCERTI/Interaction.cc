@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.42 2008/07/16 08:11:35 rousse Exp $
+// $Id: Interaction.cc,v 3.43 2008/09/18 14:41:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -388,7 +388,7 @@ Interaction::unpublish(FederateHandle the_handle)
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
                              std::vector <ParameterHandle> &parameter_list,
-                             std::vector <ParameterLengthPair> &value_list,
+                             std::vector <ParameterValue_t> &value_list,
                              UShort list_size,
                              FederationTime time,
 			     const RTIRegion *region,
@@ -422,7 +422,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
         answer->sizeValueArray(list_size);
         for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
-            answer->setValue(i, value_list[i].value, value_list[i].length);
+            answer->valueArray[i] = value_list[i];
         }
 
         D.Out(pdProtocol, "Preparing broadcast list.");
@@ -449,7 +449,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 InteractionBroadcastList *
 Interaction::sendInteraction(FederateHandle federate_handle,
                              std::vector <ParameterHandle> &parameter_list,
-                             std::vector <ParameterLengthPair> &value_list,
+                             std::vector <ParameterValue_t> &value_list,
                              UShort list_size,
 			     const RTIRegion *region,
                              const char *the_tag)
@@ -481,7 +481,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 
         for (int i = 0 ; i < list_size ; i++) {
             answer->handleArray[i] = parameter_list[i] ;
-            answer->setValue(i, value_list[i].value, value_list[i].length);
+            answer->valueArray[i] = value_list[i];
         }
 
         D.Out(pdProtocol, "Preparing broadcast list.");
@@ -532,4 +532,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.42 2008/07/16 08:11:35 rousse Exp $
+// $Id: Interaction.cc,v 3.43 2008/09/18 14:41:28 gotthardp Exp $

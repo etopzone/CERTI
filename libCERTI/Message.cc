@@ -71,61 +71,22 @@ Message::Message()
     //FEDid = NULL ;now string
     valueArray.empty() ;
 }
-/** getValue : Value and its length are tooken from valueArray[Rank]
-    @param Rank valueArray rank
-    @param length byte number of Value tooken from valueArray[Rank] (modified)
-    @param Value Value tooken from valueArray[Rank]
-           Value is managed as an address to a set of bytes
-    Note : if Value is not present, Value is created and its address is returned
-           by getValue
-    getValue allows Value as a set of bytes because length (parameter 2) is known
-*/
-// ----------------------------------------------------------------------------
-char *Message::getValue(int Rank, unsigned long *length, char *Value) const
-    throw (RTIinternalError)
-{
-    // Pre-Checking
-
-    if ((Rank < 0) )
-        throw RTIinternalError("(getValue) Bad Rank in Message.");
-
-    // Getting Value
-    // First, the length of the Value
-    *length = valueArray[Rank].length ;  
-
-    if (Value != NULL)
-        // Value exists, we copy it with memcpy instead of strcpy
-        {
-        memcpy(Value,(char *)*(valueArray[Rank].value), *length) ;     
-        return NULL ;
-        }
-    else
-        // Value doesn't exists, so create it then copy
-        {
-        char *TempValue = new char [*length] ;
-        memcpy(TempValue,(char *)*(valueArray[Rank].value), *length) ;
-        Value = TempValue ;
-        return Value ;
-        }
-}
 
 // ----------------------------------------------------------------------------
 /** Return a newly allocated ValueArray, exactly of size HandleArraySize.
 */
-std::vector <ParameterLengthPair>
+std::vector <ParameterValue_t>
 Message::getValueArray()
 {
     G.Out(pdGendoc,"enter Message::getValueArray");
     int i ;
 
-    std::vector <ParameterLengthPair> NewValueArray ;
+    std::vector <ParameterValue_t> NewValueArray;
     NewValueArray.resize(handleArraySize) ;
 
     for (i = 0 ; i < handleArraySize ; i++)
         {
-        NewValueArray[i].length = valueArray[i].length ;
-        NewValueArray[i].value = new char[NewValueArray[i].length] ;
-        memcpy(&(NewValueArray[i].value[0]),valueArray[i].value,NewValueArray[i].length);
+        NewValueArray[i] = valueArray[i];
         }
 
     G.Out(pdGendoc,"return Message::getValueArray");
@@ -377,17 +338,8 @@ Message::getAHVPS() const
     RTI::AttributeHandleValuePairSet *ahvps ;
     ahvps = RTI::AttributeSetFactory::create(handleArraySize);
 
-    unsigned long length ;
-    char *value ;
-
     for (int i = 0 ; i < handleArraySize ; i++)
-        {
-        length = valueArray[i].length ;
-        value = new char[length] ;
-        memcpy(value,valueArray[i].value,length);
-        ahvps->add(handleArray[i], value, length);
-        //delete[] value;
-        }
+        ahvps->add(handleArray[i], valueArray[i].data(), valueArray[i].length());
 
     return ahvps ;
 }
@@ -400,10 +352,8 @@ void
 Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 {
     G.Out(pdGendoc,"enter Message::setAHVPS");
-    ULong length ;
 
     unsigned long size ;
-    char *valuebuf=NULL;
 
     size = the_attributes.size() ;
     handleArraySize = size ;
@@ -414,17 +364,12 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
 
         // handle stored into handleArray[i]
         handleArray[i] = the_attributes.getHandle(size-1-i);
-        // value length extracted from the_attributes
-        length = the_attributes.getValueLength(size-1-i) ;
 
-        // copying into valuebuf created by getValue
-        valuebuf = new char[length] ;
-        the_attributes.getValue(size-1-i,valuebuf,length) ;
-
-        // valuebuf address and its length are stored into valueArray[i]
-        valueArray[i].length = length ;
-        valueArray[i].value = valuebuf ;
-
+        // value stored into valueArray[i]
+        ULong length;
+        char *valueptr = the_attributes.getValuePointer(size-1-i, length);
+        valueArray[i].assign(valueptr, length);
+        // no free(valueptr), getValuePointer does not allocate memory
     }
     G.Out(pdGendoc,"exit  Message::setAHVPS");
 }
@@ -436,16 +381,8 @@ Message::getPHVPS() const
     ParameterHandleValuePairSetImp *phvps ;
     phvps = new ParameterHandleValuePairSetImp(handleArraySize);
 
-    unsigned long length ;
-    char *value ;
-
     for (int i = 0 ; i < handleArraySize ; i++)
-        {
-        length = valueArray[i].length ;
-        value = new char[length] ;
-        memcpy(value,valueArray[i].value,length);
-        phvps->add(handleArray[i], value, length);
-        }
+        phvps->add(handleArray[i], valueArray[i].data(), valueArray[i].length());
 
     return phvps ;
 }
@@ -455,30 +392,25 @@ void
 Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
 {
     G.Out(pdGendoc,"enter Message::setPHVPS");
-    ULong length ;
 
     unsigned long size ;
-    char *valuebuf=NULL;
 
     size = the_parameters.size() ;
     handleArraySize = size ;
     handleArray.resize(handleArraySize);
     valueArray.resize(size) ;
 
-    for (unsigned long i = 0 ; i < size ; i++)
-        {
+    for (unsigned long i = 0 ; i < size ; i++) {
+
         // handle stored into handleArray[i]
         handleArray[i] = the_parameters.getHandle(size-1-i);
-        // value length extracted from the_parameters
-        length = the_parameters.getValueLength(size-1-i) ;
-        // copying into valuebuf created by getValue
-        valuebuf = new char[length] ;
-        the_parameters.getValue(size-1-i, valuebuf, length) ;
-        // valuebuf address and its length are stored into valueArray(i]
-        valueArray[i].length = length ;
-        valueArray[i].value = valuebuf ;
 
-        }
+        // value stored into valueArray[i]
+        ULong length;
+        char *valueptr = the_parameters.getValuePointer(size-1-i, length);
+        valueArray[i].assign(valueptr, length);
+        // no free(valueptr), getValuePointer does not allocate memory
+    }
     G.Out(pdGendoc,"exit  Message::setPHVPS");
 }
 
@@ -500,11 +432,10 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes, ushort the
 // store values     into valueArray
 void
 Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
-                       std::vector <ValueLengthPair> &the_values,
+                       std::vector <AttributeValue_t> &the_values,
                        ushort the_size)
 {
     G.Out(pdGendoc,"enter Message::setAttributes");
-    char *tempValue ;
     handleArraySize = the_size ;
     handleArray.resize(handleArraySize);
     valueArray.resize(the_size) ;
@@ -512,10 +443,8 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
     for (int i = 0 ; i < the_size ; i++) {
         // attributes into handleArray
         handleArray[i] = the_attributes[i] ;
-        // values     into valueArray
-        tempValue = new char[the_values[i].length] ;
-        memcpy(tempValue,the_values[i].value,the_values[i].length ) ;
-        setValue(i, tempValue,the_values[i].length ) ;
+        // values into valueArray
+        valueArray[i] = the_values[i] ;
     }
     G.Out(pdGendoc,"exit  Message::setAttributes");
 }
@@ -526,11 +455,10 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
 // store values     into valueArray
 void
 Message::setParameters(std::vector <ParameterHandle> & the_parameters,
-                       std::vector <ParameterLengthPair> & the_values,
+                       std::vector <ParameterValue_t> & the_values,
                        ushort the_size)
 
 {
-    char *tempValue ;
     handleArraySize = the_size ;
     handleArray.resize(handleArraySize);
     valueArray.resize(the_size) ;
@@ -538,10 +466,8 @@ Message::setParameters(std::vector <ParameterHandle> & the_parameters,
     for (int i = 0 ; i < the_size ; i++) {
         // parameters into handleArray
         handleArray[i] = the_parameters[i] ;
-        // values     into valueArray
-        tempValue = new char[the_values[i].length] ;
-        memcpy(tempValue,the_values[i].value,the_values[i].length ) ;
-        setValue(i, the_values[i].value, the_values[i].length);
+        // values into valueArray
+        valueArray[i] = the_values[i] ;
     }
 }
 
@@ -571,30 +497,6 @@ void
 Message::setTag(std::string new_tag)
 {
     tag = new_tag ;
-}
-
-// ----------------------------------------------------------------------------
-// setValue
-// Store Value into valueArray[Rank)
-void
-Message::setValue(int Rank, const char *Value, unsigned long length)
-    throw (RTIinternalError)
-{
-
-    // Pre-Checking
-
-    if ((Value == NULL))
-        throw RTIinternalError("Bad Value (NULL) for message.");
-
-    if ((Rank < 0) )
-        throw RTIinternalError("(setValue) Bad Rank for message.");
-
-    // Setting Value
-    // First we store the value length
-    valueArray[Rank].length = length ;
-    
-    // then copy Value address into valueArray
-    valueArray[Rank].value = (char *)Value ;
 }
 
 // ----------------------------------------------------------------------------
@@ -661,12 +563,7 @@ Message::operator=(const Message& msg)
         handleArray[i] = msg.handleArray[i] ;
 
     for (i=0 ; i < handleArraySize ; i++)
-        {
-        valueArray[i].length = msg.valueArray[i].length ;
-        char * TempValue = new char[valueArray[i].length] ;
-        memcpy(TempValue, (char *)*(msg.valueArray[i].value), msg.valueArray[i].length );
-        valueArray[i].value=TempValue ;
-        }
+        valueArray[i] = msg.valueArray[i] ;
 
     FEDid = msg.FEDid ;
 
@@ -722,16 +619,16 @@ Message::displayvalueArray(char *titre)
 printf("(%s) valueArray size=%d\n",titre,(int)valueArray.size());
 for (int i=0; i<(int)valueArray.size();i++)
    {
-   printf("%d : length=%d : value=",i,(int)(valueArray[i].length));
-   for (int k=0; k<(int)valueArray[i].length ;k++)
+   printf("%d : length=%d : value=",i,(int)(valueArray[i].length()));
+   for (int k=0; k<(int)valueArray[i].length() ;k++)
       {
-      if (isprint(valueArray[i].value[k]) == 0 )
+      if (isprint(valueArray[i][k]) == 0 )
          {
-         printf(" %x",valueArray[i].value[k]);
+         printf(" %x",valueArray[i][k]);
          }
       else
          {
-         printf("%c",valueArray[i].value[k]);
+         printf("%c",valueArray[i][k]);
          }
       }
 printf("\n");

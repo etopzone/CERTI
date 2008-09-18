@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.76 2008/07/09 16:43:12 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.77 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -793,7 +793,7 @@ void
 RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
     G.Out(pdGendoc,"enter RTIG::processUpdateAttributeValues");
-    std::vector <ValueLengthPair> ValueArray ;
+    std::vector <AttributeValue_t> ValueArray ;
 
     auditServer << "ObjID = " << req->object
 		<< ", Date = " << req->getDate() ;
@@ -846,7 +846,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 void
 RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 {
-    std::vector <ValueLengthPair> values ;
+    std::vector <ParameterValue_t> values ;
 
     G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processSendInteraction");
@@ -1433,4 +1433,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.76 2008/07/09 16:43:12 rousse Exp $
+// $Id: RTIG_processing.cc,v 3.77 2008/09/18 14:41:27 gotthardp Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.43 2008/06/11 15:19:20 rousse Exp $
+// $Id: FederationsList.hh,v 3.44 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -299,7 +299,7 @@ public:
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
-                         std::vector <ValueLengthPair> &theValueList,
+                         std::vector <AttributeValue_t> &theValueList,
                          UShort theListSize,
                          FederationTime theTime,
                          const char *theTag)
@@ -316,7 +316,7 @@ public:
                          FederateHandle theFederateHandle,
                          ObjectHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
-                         std::vector <ValueLengthPair> &theValueList,
+                         std::vector <AttributeValue_t> &theValueList,
                          UShort theListSize,
                          const char *theTag)
         throw (FederateNotExecutionMember,
@@ -360,7 +360,7 @@ public:
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
                          std::vector <ParameterHandle> &theParameterList,
-                         std::vector <ParameterLengthPair> &theValueList,
+                         std::vector <ParameterValue_t> &theValueList,
                          UShort theListSize,
                          FederationTime theTime,
 			 RegionHandle,
@@ -378,7 +378,7 @@ public:
                          FederateHandle theFederateHandle,
                          InteractionClassHandle theInteractionHandle,
                          std::vector <ParameterHandle> &theParameterList,
-                         std::vector <ParameterLengthPair> &theValueList,
+                         std::vector <ParameterValue_t> &theValueList,
                          UShort theListSize,
 			 RegionHandle,
                          const char *theTag)
@@ -585,4 +585,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.43 2008/06/11 15:19:20 rousse Exp $
+// $Id: FederationsList.hh,v 3.44 2008/09/18 14:41:27 gotthardp Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.36 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClass.hh,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -201,13 +201,13 @@ public:
 
     ObjectClassBroadcastList *
     updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-                          std::vector <ValueLengthPair> &, int, FederationTime, const char *)
+                          std::vector <AttributeValue_t> &, int, FederationTime, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
     ObjectClassBroadcastList *
     updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-                          std::vector <ValueLengthPair> &, int, const char *)
+                          std::vector <AttributeValue_t> &, int, const char *)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                RTIinternalError, InvalidObjectHandle);
 
@@ -262,4 +262,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.36 2008/06/11 15:19:22 rousse Exp $
+// $Id: ObjectClass.hh,v 3.37 2008/09/18 14:41:29 gotthardp Exp $

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.35 2008/07/09 13:48:29 erk Exp $
+// $Id: Message_W.cc,v 3.36 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -587,13 +587,9 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
     // length and value are stored into valueArray 
     // so we have to write length and then value with a write_bytes
     for (int i = 0 ; i < handleArraySize ; i ++)
-        {
-        msgBuffer.write_int64(valueArray[i].length) ;
-        assert(valueArray[i].value != 0);
-        msgBuffer.write_bytes((char *)(valueArray[i].value), valueArray[i].length) ;
-    }
+        msgBuffer.write_string(valueArray[i]) ;
 }
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.35 2008/07/09 13:48:29 erk Exp $
+// $Id: Message_W.cc,v 3.36 2008/09/18 14:41:29 gotthardp Exp $

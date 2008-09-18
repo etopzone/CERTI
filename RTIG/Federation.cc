@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.96 2008/07/03 19:54:20 gotthardp Exp $
+// $Id: Federation.cc,v 3.97 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -623,7 +623,7 @@ void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameter_handles,
-                                 std::vector <ParameterLengthPair> &parameter_values,
+                                 std::vector <ParameterValue_t> &parameter_values,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region_handle,
@@ -660,7 +660,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
         D.Out(pdRequest,
               " Param %d Value %s",
               parameter_handles[i],
-              parameter_values[i]);
+              parameter_values[i].c_str());
 
     G.Out(pdGendoc,"exit Federation::broadcastInteraction with time");
 
@@ -672,7 +672,7 @@ void
 Federation::broadcastInteraction(FederateHandle federate_handle,
                                  InteractionClassHandle interaction,
                                  std::vector <ParameterHandle> &parameter_handles,
-                                 std::vector <ParameterLengthPair> &parameter_values,
+                                 std::vector <ParameterValue_t> &parameter_values,
                                  UShort list_size,
 				 RegionHandle region_handle,
                                  const char *tag)
@@ -707,7 +707,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
         D.Out(pdRequest,
               " Param %d Value %s",
               parameter_handles[i],
-              parameter_values[i]);
+              parameter_values[i].c_str());
 
     G.Out(pdGendoc,"exit Federation::broadcastInteraction without time");
 
@@ -1597,7 +1597,7 @@ void
 Federation::updateAttributeValues(FederateHandle federate,
                                   ObjectHandle id,
                                   std::vector <AttributeHandle> &attributes,
-                                  std::vector <ValueLengthPair> &values,
+                                  std::vector <AttributeValue_t> &values,
                                   UShort list_size,
                                   FederationTime time,
                                   const char *tag)
@@ -1630,7 +1630,7 @@ void
 Federation::updateAttributeValues(FederateHandle federate,
                                   ObjectHandle id,
                                   std::vector <AttributeHandle> &attributes,
-                                  std::vector <ValueLengthPair> &values,
+                                  std::vector <AttributeValue_t> &values,
                                   UShort list_size,
                                   const char *tag)
     throw (FederateNotExecutionMember,
@@ -2287,5 +2287,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.96 2008/07/03 19:54:20 gotthardp Exp $
+// $Id: Federation.cc,v 3.97 2008/09/18 14:41:27 gotthardp Exp $
 

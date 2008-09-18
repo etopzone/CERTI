@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.30 2008/07/09 13:48:29 erk Exp $
+// $Id: Message_R.cc,v 3.31 2008/09/18 14:41:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -616,17 +616,10 @@ void
 Message::readValueArray(MessageBuffer &msgBuffer)
 {
    G.Out(pdGendoc,"enter Message::readValueArray");
-// valueArray contains length and value
-// so we have to read length and then value with a read_bytes
 
     valueArray.resize(handleArraySize) ;
     for (int i = 0 ; i < handleArraySize ; i ++)
-        {
-        valueArray[i].length = msgBuffer.read_int64() ;
-        char *TempValue = new char[valueArray[i].length] ;
-        msgBuffer.read_bytes((char *) TempValue, valueArray[i].length);
-        valueArray[i].value=TempValue;
-        }
+        valueArray[i] = msgBuffer.read_string();
 }
 
 // ----------------------------------------------------------------------------
@@ -639,4 +632,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.30 2008/07/09 13:48:29 erk Exp $
+// $Id: Message_R.cc,v 3.31 2008/09/18 14:41:28 gotthardp Exp $

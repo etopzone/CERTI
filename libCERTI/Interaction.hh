@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.28 2008/06/11 15:19:21 rousse Exp $
+// $Id: Interaction.hh,v 3.29 2008/09/18 14:41:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -105,7 +105,7 @@ public:
     InteractionBroadcastList *
     sendInteraction(FederateHandle federate_handle,
                     std::vector <ParameterHandle> &parameter_list,
-                    std::vector <ParameterLengthPair> &value_list,
+                    std::vector <ParameterValue_t> &value_list,
                     UShort list_size,
                     FederationTime the_time,
 		    const RTIRegion *,
@@ -118,7 +118,7 @@ public:
     InteractionBroadcastList *
     sendInteraction(FederateHandle federate_handle,
                     std::vector <ParameterHandle> &parameter_list,
-                    std::vector <ParameterLengthPair> &value_list,
+                    std::vector <ParameterValue_t> &value_list,
                     UShort list_size,
 		    const RTIRegion *,
                     const char *the_tag)
@@ -167,4 +167,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.28 2008/06/11 15:19:21 rousse Exp $
+// $Id: Interaction.hh,v 3.29 2008/09/18 14:41:28 gotthardp Exp $

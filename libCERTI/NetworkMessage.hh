@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.42 2008/07/11 06:06:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.43 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -177,23 +177,13 @@ public:
 
 	// Value Array Management
 
-	// setValue : Value and its length are stored into ValueArray[Rank]
-	void setValue(int Rank, const char *Value, unsigned long length)
-	throw (RTIinternalError); // Bad Rank, Bad Value
-
-	// getValue : Value and its length are tooken from ValueArray[Rank]
-	// If Value == NULL return a newly allocated copy of Value, else copy it
-	// in Value.
-	char *getValue(int Rank, unsigned long *length, char *Value = NULL)
-	throw (RTIinternalError); // Bad Rank
-
 	// Return a newly allocated ValueArray, exactly of size AttribArraySize.
 	// containing the actual Attribute values. You must FREE this structure.
-	std::vector <ValueLengthPair> getAttribValueArray();
+	std::vector <AttributeValue_t> getAttribValueArray();
 
 	// Return a newly allocated ValueArray, exactly of size ParamArraySize,
 	// containing the actual Parameter values. You must FREE this structure.
-	std::vector <ParameterLengthPair> getParamValueArray();
+	std::vector <ParameterValue_t> getParamValueArray();
 
 	void setAHS(const std::vector <AttributeHandle> &, int);
 
@@ -258,6 +248,7 @@ public:
 	/* NM_WithHandleArray class specific fields */
 	UShort handleArraySize ;
 	std::vector <AttributeHandle> handleArray ;
+        std::vector <AttributeValue_t> valueArray ;
 
 	TransportType transport ;
 	OrderType order ;
@@ -304,9 +295,6 @@ protected:
 	 *   - getter should be used to get it. 
 	 */
 	Message_T type;
-
-	// ValueArray is now a ValueLengthPair
-        std::vector <ValueLengthPair> ValueArray ;
 
 private:
 	/** 
@@ -357,4 +345,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.42 2008/07/11 06:06:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.43 2008/09/18 14:41:29 gotthardp Exp $

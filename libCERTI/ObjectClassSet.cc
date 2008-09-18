@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.38 2008/06/23 13:25:05 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.39 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -568,7 +568,7 @@ void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
                                       std::vector <AttributeHandle> &attributes,
-                                      std::vector <ValueLengthPair> &values,
+                                      std::vector <AttributeValue_t> &values,
                                       UShort nb,
                                       FederationTime time,
                                       const char *tag)
@@ -614,7 +614,7 @@ void
 ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       ObjectHandle object_handle,
                                       std::vector <AttributeHandle> &attributes,
-                                      std::vector <ValueLengthPair> &values,
+                                      std::vector <AttributeValue_t> &values,
                                       UShort nb,
                                       const char *tag)
     throw (ObjectNotKnown,
@@ -843,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.38 2008/06/23 13:25:05 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.39 2008/09/18 14:41:29 gotthardp Exp $

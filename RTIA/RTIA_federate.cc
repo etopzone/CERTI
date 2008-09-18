@@ -395,7 +395,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       }
 
       case Message::UPDATE_ATTRIBUTE_VALUES: {
-          std::vector <ValueLengthPair> ValueArrayTemp ;
+          std::vector <AttributeValue_t> ValueArrayTemp ;
           ValueArrayTemp = req->getValueArray();
           try {
               if (req->getBoolean() )
@@ -434,7 +434,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::SEND_INTERACTION: {
 
-          std::vector <ParameterLengthPair> ValueArrayTemp = req->getValueArray();
+          std::vector <ParameterValue_t> ValueArrayTemp = req->getValueArray();
           G.Out(pdGendoc,"S_I into RTIA::chooseFederateProcessing") ;
           try {
               if (req->getBoolean() )

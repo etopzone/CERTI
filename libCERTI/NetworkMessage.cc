@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.36 2008/06/24 08:56:49 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -65,7 +65,7 @@ NetworkMessage::NetworkMessage()
     interactionClass = 0 ;
 
     handleArraySize  = 0 ;
-    ValueArray.empty();
+    valueArray.empty();
 
 } /* end of NetworkMessage() */
 
@@ -74,88 +74,42 @@ NetworkMessage::~NetworkMessage() {
 }
 
 // ----------------------------------------------------------------------------
-std::vector <ValueLengthPair> 
+std::vector <AttributeValue_t> 
 NetworkMessage::getAttribValueArray()
 {
-
-    std::vector <ValueLengthPair> NewValueArray ;
-    
+    std::vector <std::string> NewValueArray ;
 
     NewValueArray.resize(handleArraySize) ;
 
     for (int i = 0 ; i <handleArraySize ; i++)
-        {
-        NewValueArray[i].length = ValueArray[i].length ;
-        NewValueArray[i].value = new char[NewValueArray[i].length] ;
-        memcpy(NewValueArray[i].value,ValueArray[i].value,NewValueArray[i].length);
-        }
+        NewValueArray[i] = valueArray[i] ;
 
     return NewValueArray ;
 }
 
 // ----------------------------------------------------------------------------
-std::vector <ParameterLengthPair>
+std::vector <ParameterValue_t>
 NetworkMessage::getParamValueArray()
 {
-    std::vector <ParameterLengthPair> NewValueArray ;
+    std::vector <std::string> NewValueArray ;
 
     NewValueArray.resize(handleArraySize) ;
 
-
     for (int i = 0 ; i < handleArraySize ; i++)
-        {
-        NewValueArray[i].length = ValueArray[i].length ;
-        NewValueArray[i].value = new char[NewValueArray[i].length] ;
-        memcpy(NewValueArray[i].value,ValueArray[i].value,NewValueArray[i].length);
-        }
+        NewValueArray[i] = valueArray[i] ;
 
     return NewValueArray ;
-}
-
-// ----------------------------------------------------------------------------
-char *
-NetworkMessage::getValue(int Rank, unsigned long *length, char *Value)
-    throw (RTIinternalError)
-{
-    // Pre-Checking
-    if ((Rank < 0) || (Rank >= (int)ValueArray.size()))
-        throw RTIinternalError("(getValue) Bad Rank in NMessage.");
-
-    // Getting Value
-    // First, the length of the Value
-    *length = ValueArray[Rank].length ;
-
-    if (Value != NULL) 
-        // Value exists, we copy it with memcpy instead of strcpy
-        {
-        memcpy(Value, (char *)*(ValueArray[Rank].value), *length);
-        return NULL ;
-        }
-    else
-        // Value doesn't exist, so create it then copy
-        {
-        char *TempValue = new char [*length] ;
-        memcpy(TempValue,(char *)*(ValueArray[Rank].value), *length) ;
-        Value = TempValue ;
-        return Value ;
-        }
 }
 
 // ----------------------------------------------------------------------------
 void
 NetworkMessage::removeAttribute(UShort Rank)
 {
-    UShort AttribIndex = 0 ;
-
-    if (Rank >= ValueArray.size())
+    if (Rank >= valueArray.size())
         throw RTIinternalError("Bad Rank while removing Nmessage attribute.");
 
-    // Shift Attribute Handles and Values
-    for (AttribIndex = Rank ; AttribIndex < handleArraySize - 1 ; AttribIndex ++) {
-        handleArray[AttribIndex] = handleArray[AttribIndex + 1] ;
-        ValueArray[AttribIndex].length = ValueArray[AttribIndex + 1].length ;
-        ValueArray[AttribIndex].value = ValueArray[AttribIndex + 1].value ;
-    }
+    handleArray.erase(handleArray.begin() + Rank);
+    valueArray.erase(valueArray.begin() + Rank);
 
     handleArraySize -- ;
 }
@@ -164,43 +118,13 @@ NetworkMessage::removeAttribute(UShort Rank)
 void
 NetworkMessage::removeParameter(UShort Rank)
 {
-    UShort ParamIndex = 0 ;
-
-    if (Rank >= ValueArray.size())
+    if (Rank >= valueArray.size())
         throw RTIinternalError("Bad Rank while removing Nmessage parameter.");
 
-    // Shift Parameter Handles and Values
-    for (ParamIndex = Rank ; ParamIndex < handleArraySize - 1 ; ParamIndex ++) {
-        handleArray[ParamIndex] = handleArray[ParamIndex + 1] ;
-        ValueArray[ParamIndex].length = ValueArray[ParamIndex + 1].length ;
-        ValueArray[ParamIndex].value = ValueArray[ParamIndex + 1].value ;
-    }
+    handleArray.erase(handleArray.begin() + Rank);
+    valueArray.erase(valueArray.begin() + Rank);
 
     handleArraySize -- ;
-}
-
-// ----------------------------------------------------------------------------
-// Store Value into ValueArray[Rank)
-void
-NetworkMessage::setValue(int Rank, const char *Value, unsigned long length)
-    throw (RTIinternalError)
-{
-    // Pre-Checking
-    if (Value == NULL)
-        throw RTIinternalError("Bad Value (NULL) for Network message.");
-
-    if ((Rank < 0) || (Rank >= (int)ValueArray.size() ))
-        throw RTIinternalError("(setValue) Bad Rank for Nmessage.");
-
-    // Setting Value
-    // First we store the length
-    ValueArray[Rank].length = length ;
-
-    // then copy Value address into ValueArray
-    char *tempValue = new char[length] ;
-    memcpy(tempValue, Value, length);
-    ValueArray[Rank].value = (char *)tempValue ;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -217,29 +141,27 @@ NetworkMessage::setAHS(const std::vector <AttributeHandle> &attr, int size)
 void
 NetworkMessage::sizeValueArray(int size)
 {
-ValueArray.resize(size) ;
+valueArray.resize(size) ;
 }
 // ----------------------------------------------------------------------------
 void
 NetworkMessage::displayValueArray(char *titre)
 {
-printf("(%s) ValueArray size=%d\n",titre,(int)ValueArray.size());
-for (int i=0; i<(int)ValueArray.size();i++)
-   {
-   printf("%d : length=%d : value=",i,(int)(ValueArray[i].length));
-   for (int k=0; k<(int)ValueArray[i].length ;k++)
-      if (isprint(ValueArray[i].value[k]) == 0 )
-         {
-         printf(" %x",ValueArray[i].value[k]);
-         }
-      else
-         {
-         printf("%c",ValueArray[i].value[k]);
-         }
-printf("\n");
-   }
+    printf("(%s) valueArray size=%d\n",titre,(int)valueArray.size());
+    for (int i=0; i<(int)valueArray.size();i++)
+    {
+        printf("%d : length=%d : value=",i,(int)(valueArray[i].length()));
+
+        for(int k=0; k<(int)valueArray[i].length(); k++)
+            if (isprint(valueArray[i][k]) == 0 )
+                printf(" %x",valueArray[i][k]);
+            else
+                printf("%c",valueArray[i][k]);
+
+        printf("\n");
+    }
 }
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.36 2008/06/24 08:56:49 rousse Exp $
+// $Id: NetworkMessage.cc,v 3.37 2008/09/18 14:41:29 gotthardp Exp $

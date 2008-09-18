@@ -188,8 +188,8 @@ void MessageBuffer::setSizeInReservedBytes(uint32_t n) {
 } /* end of setSizeInReservedBytes */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
-    D.Out(pdTrace,"write_uint8s(%p = [%u ...] , %d)",data,data[0],n);
-
+    D.Out(pdTrace,"write_uint8s(%p = [%u ...] , %d)",data,n>0?data[0]:0,n);
+    
 	if (n >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (n-(bufferMaxSize-writeOffset))
@@ -214,15 +214,15 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 
 	memcpy(data, buffer+readOffset, n);
 	readOffset += n;
-	D.Out(pdTrace,"read_uint8s(%p = [%u ...], %d)",data,data[0],n);
+	D.Out(pdTrace,"read_uint8s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
 	return (readOffset-n);
 } /* end of MessageBuffer::read_uint8s(uint8_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
 	uint16_t an_uint16;
-	D.Out(pdTrace,"write_uint16s(%p = [%u ...], %d)",data,data[0],n);
-
+	D.Out(pdTrace,"write_uint16s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
+	
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (2*n)-(bufferMaxSize - writeOffset)
@@ -267,16 +267,16 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 			readOffset += 2;
 		}
 	}
-
-	D.Out(pdTrace,"read_uint16s(%p = [%u ...], %d)",data,data[0],n);
+	
+	D.Out(pdTrace,"read_uint16s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
 	return (readOffset-2*n);
 } /* end of MessageBuffer::read_uint16s(uint16_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
 	uint32_t an_uint32;
-	D.Out(pdTrace,"write_uint32s(%p = [%u ...] , %d)",data,data[0],n);
-
+	D.Out(pdTrace,"write_uint32s(%p = [%u ...] , %d)",data,n>0?data[0]:0,n);
+	
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (4*n)-(bufferMaxSize - writeOffset)
@@ -321,7 +321,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 			readOffset += 4;
 		}
 	}
-	D.Out(pdTrace,"read_uint32s(%p = [%u ...], %d)",data,data[0],n);
+	D.Out(pdTrace,"read_uint32s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
 	return (readOffset-4*n);
 } /* end of read_uint32s */
 
@@ -399,8 +399,8 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_floats(const float* data, uint32_t n) {
 	const uint32_t* data32;
-	D.Out(pdTrace,"write_floats(%p = [%f ...], %d)",data,data[0],n);
-	data32 = reinterpret_cast<const uint32_t*>(data);
+	D.Out(pdTrace,"write_floats(%p = [%f ...], %d)",data,n>0?data[0]:0,n);
+	data32 = reinterpret_cast<const uint32_t*>(data);	
 	return write_uint32s(data32,n);
 }
 
@@ -413,9 +413,9 @@ int32_t MessageBuffer::read_floats(float* data, uint32_t n) {
 
 int32_t MessageBuffer::write_doubles(const double* data, uint32_t n) {
 	const uint64_t* data64;
-	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,data[0],n);
-	data64 = reinterpret_cast<const uint64_t*>(data);
-	return write_uint64s(data64,n);
+	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,n>0?data[0]:0,n);	
+	data64 = reinterpret_cast<const uint64_t*>(data);	
+	return write_uint64s(data64,n);	
 }
 
 int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
@@ -427,22 +427,22 @@ int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 
 int32_t
 MessageBuffer::write_string(const std::string& str) {
-   write_int32(str.length());
-   return write_chars(str.c_str(),str.length());
+    write_int32(str.length());
+    return write_chars(str.data(),str.length());
 } /* end of write_string */
 
 std::string
 MessageBuffer::read_string() {
- std::string retval;
- int32_t len;
- char* buf;
+    std::string retval;
+    int32_t len;
+    char* buf;
 
- read_int32(&len);
- buf = new char[len];
- read_chars(buf,len);
- retval.assign(buf,len);
- delete[] buf;
- return retval;
+    read_int32(&len);
+    buf = new char[len];
+    read_chars(buf,len);
+    retval.assign(buf,len);
+    delete[] buf;
+    return retval;
 } /* end of read_string */
 
 void MessageBuffer::updateReservedBytes() {

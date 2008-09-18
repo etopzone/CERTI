@@ -998,10 +998,8 @@ void NM_Update_Attribute_Values::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_int32(object);	
 	msgBuffer.write_int32(objectClass);
 	/* the value pre-encoded by the user (HLA 1.3) */
-	for (i = 0 ; i < handleArraySize ; i++) {
-		msgBuffer.write_int32(ValueArray[i].length) ;
-		msgBuffer.write_bytes(ValueArray[i].value, ValueArray[i].length);
-	}    
+	for (i = 0 ; i < handleArraySize ; i++)
+		msgBuffer.write_string(valueArray[i]) ;
 } /* end of serialize */ 
 void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	int i;
@@ -1011,13 +1009,9 @@ void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */		
 	object          = msgBuffer.read_int32();	
 	objectClass     = msgBuffer.read_int32();
-        ValueArray.resize(handleArraySize) ;	
-	for (i = 0 ; i < handleArraySize ; i ++) {
-		ValueArray[i].length = msgBuffer.read_int32();
-                char *tempValue = new char[ValueArray[i].length] ;
-		msgBuffer.read_bytes(tempValue, ValueArray[i].length);
-                ValueArray[i].value = tempValue ;		
-	}
+    valueArray.resize(handleArraySize) ;	
+    for (i = 0; i < handleArraySize; i++)
+        valueArray[i] = msgBuffer.read_string();
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
 
@@ -1047,10 +1041,8 @@ void NM_Send_Interaction::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_int32(region);
 	msgBuffer.write_int32(interactionClass);	
 	/* the value pre-encoded by the user (HLA 1.3) */
-	for (i = 0 ; i < handleArraySize ; i++) {
-		msgBuffer.write_int32(ValueArray[i].length) ;
-		msgBuffer.write_bytes((char *)ValueArray[i].value, ValueArray[i].length);
-	}    
+	for (i = 0 ; i < handleArraySize ; i++)
+		msgBuffer.write_string(valueArray[i]);
 } /* end of serialize */ 
 void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	int i;
@@ -1059,13 +1051,9 @@ void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	region           = msgBuffer.read_int32();
 	interactionClass = msgBuffer.read_int32();
-        ValueArray.resize(handleArraySize) ;
-	for (i = 0 ; i < handleArraySize ; i ++) {
-		ValueArray[i].length = msgBuffer.read_int32();
-                char *tempValue = new char[ValueArray[i].length] ;
-		msgBuffer.read_bytes(tempValue, ValueArray[i].length);
-                ValueArray[i].value = tempValue ;
-	}
+    valueArray.resize(handleArraySize);
+    for (i = 0; i < handleArraySize; i++)
+        valueArray[i] = msgBuffer.read_string();
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/
 

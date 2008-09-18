@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.52 2008/06/24 08:56:49 rousse Exp $
+// $Id: ObjectClass.cc,v 3.53 2008/09/18 14:41:29 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -884,7 +884,7 @@ ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
                                    std::vector <AttributeHandle> &the_attributes,
-                                   std::vector <ValueLengthPair> &the_values,
+                                   std::vector <AttributeValue_t> &the_values,
                                    int the_size,
                                    FederationTime the_time,
                                    const char *the_tag)
@@ -920,10 +920,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         for (int i = 0 ; i < the_size ; i++) {
             answer->handleArray[i] = the_attributes[i] ;
-            // value recopy into answer
-            char *tempValue = new char[the_values[i].length] ;
-            memcpy(tempValue,the_values[i].value,the_values[i].length) ;
-            answer->setValue(i, tempValue, the_values[i].length);   
+            answer->valueArray[i] = the_values[i] ;
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
@@ -951,7 +948,7 @@ ObjectClassBroadcastList *
 ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    Object *object,
                                    std::vector <AttributeHandle> &the_attributes,
-                                   std::vector <ValueLengthPair> &the_values,
+                                   std::vector <AttributeValue_t> &the_values,
                                    int the_size,
                                    const char *the_tag)
     throw (ObjectNotKnown,
@@ -987,10 +984,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
 
         for (int i = 0 ; i < the_size ; i++) {
             answer->handleArray[i] = the_attributes[i] ;
-            // value recopy into answer
-            char *tempValue = new char[the_values[i].length] ;
-            memcpy(tempValue,the_values[i].value,the_values[i].length) ;
-            answer->setValue(i, tempValue, the_values[i].length);   
+            answer->valueArray[i] = the_values[i];
         }
 
         ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
@@ -1832,4 +1826,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.52 2008/06/24 08:56:49 rousse Exp $
+// $Id: ObjectClass.cc,v 3.53 2008/09/18 14:41:29 gotthardp Exp $

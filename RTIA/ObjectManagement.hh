@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.24 2008/07/09 13:48:28 erk Exp $
+// $Id: ObjectManagement.hh,v 3.25 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -54,7 +54,7 @@ public:
     EventRetractionHandle
     updateAttributeValues(ObjectHandle theObjectHandle,
                           std::vector<AttributeHandle> &attribArray,
-                          std::vector <ValueLengthPair> &valueArray,
+                          std::vector<AttributeValue_t> &valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
                           std::string theTag,
@@ -62,7 +62,7 @@ public:
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
                           std::vector<AttributeHandle> &attribArray,
-                          std::vector <ValueLengthPair> &valueArray,
+                          std::vector<AttributeValue_t> &valueArray,
                           UShort attribArraySize,
                           std::string theTag,
                           TypeException &e);
@@ -76,7 +76,7 @@ public:
 
     void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
-                                std::vector <ValueLengthPair> &valueArray,
+                                std::vector <AttributeValue_t> &valueArray,
                                 UShort attribArraySize,
                                 FederationTime theTime,
                                 const char *theTag,
@@ -85,7 +85,7 @@ public:
 
    void reflectAttributeValues(ObjectHandle theObjectHandle,
                                 std::vector <AttributeHandle> &attribArray,
-                                std::vector <ValueLengthPair> &valueArray,
+                                std::vector <AttributeValue_t> &valueArray,
                                 UShort attribArraySize,
                                 const char *theTag,
                                 TypeException &e);
@@ -93,7 +93,7 @@ public:
     EventRetractionHandle
     sendInteraction(InteractionClassHandle theInteraction,
                     std::vector <ParameterHandle> &paramArray,
-                    std::vector <ParameterLengthPair> &valueArray,
+                    std::vector <ParameterValue_t> &valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
                     std::string theTag,
@@ -103,7 +103,7 @@ public:
     void
     sendInteraction(InteractionClassHandle theInteraction,
                     std::vector <ParameterHandle> &paramArray,
-                    std::vector <ParameterLengthPair> &valueArray,
+                    std::vector <ParameterValue_t> &valueArray,
                     UShort paramArraySize,
                     std::string theTag,
 		    RegionHandle,
@@ -111,7 +111,7 @@ public:
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
-                            std::vector <ParameterLengthPair> &valueArray,
+                            std::vector <ParameterValue_t> &valueArray,
                             UShort paramArraySize,
                             FederationTime theTime,
                             const char *theTag,
@@ -120,7 +120,7 @@ public:
 
     void receiveInteraction(InteractionClassHandle theInteraction,
                             std::vector <ParameterHandle> &paramArray,
-                            std::vector <ParameterLengthPair> &valueArray,
+                            std::vector <ParameterValue_t> &valueArray,
                             UShort paramArraySize,
                             const char *theTag,
                             TypeException &e);
@@ -263,4 +263,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.24 2008/07/09 13:48:28 erk Exp $
+// $Id: ObjectManagement.hh,v 3.25 2008/09/18 14:41:27 gotthardp Exp $

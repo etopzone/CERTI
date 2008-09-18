@@ -265,32 +265,9 @@ public:
 
 	 void trace(const char* context);
 
-    // -- Attribute Access Methods
-    // Value Array Management
-    // setValue : Value and its length are stored into valueArray[Rank]
-    // Parameter 1 : Rank (int) : valueArray rank
-    // Parameter 2 : Value (char *) : Value to store into valueArray[Rank]
-    //               Value is managed as a set of bytes
-    // Parameter 3 : length (unsigned long) : byte number of Value
-    void setValue(int Rank, const char *Value, unsigned long length)
-        throw (RTIinternalError); // Bad Rank, Bad Value
-
-    // If Value == NULL return a newly allocated copy of Value, else copy it
-    // in Value.
-    // getValue : Value and its length are tooken from valueArray[Rank]
-    // Parameter 1 : Rank (int) : valueArray rank
-    // Parameter 2 :length (unsigned long *) : byte number of Value tooken
-    //              from valueArray[Rank]
-    // Parameter 3 : Value (char *) : Value address tooken from valueArray[Rank]
-    //               Value is managed as a set of bytes
-    // Note : if parametre 3 not present, Value is created and its address is returned
-    //        by getValue
-    char *getValue(int Rank, unsigned long *length, char *Value = 0) const
-        throw (RTIinternalError); // Bad Rank
-
     // Return a newly allocated ValueArray, exactly of size HandleArraySize.
-    // containing the actual Attrib/Param values. You must FREE this structure.
-    std::vector <ValueLengthPair> getValueArray();
+    // containing the actual Attrib/Param values.
+    std::vector <AttributeValue_t> getValueArray();
 
     std::string getLabel() const { return label ; };
     void setLabel(std::string new_label);
@@ -396,8 +373,8 @@ public:
     void setPHVPS(const RTI::ParameterHandleValuePairSet &);
 
     void setAttributes(std::vector <AttributeHandle> &, ushort);
-    void setAttributes(std::vector <AttributeHandle> &, std::vector <ValueLengthPair> &, ushort);
-    void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterLengthPair> &, ushort);
+    void setAttributes(std::vector <AttributeHandle> &, std::vector <AttributeValue_t> &, ushort);
+    void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterValue_t> &, ushort);
 
     void setException(TypeException, const char *the_reason = "\0");
     TypeException getExceptionType() const { return exception ; };
@@ -446,6 +423,7 @@ public:
     // used for both Attributes and Parameters arrays.
     UShort handleArraySize ;
     std::vector <AttributeHandle> handleArray ;
+    std::vector <AttributeValue_t> valueArray ;
 
     Message &operator=(const Message &);
 
@@ -497,8 +475,6 @@ private:
 
     std::string tag ;
     std::string FEDid ;
-
-    std::vector<ValueLengthPair> valueArray ;
 };
 
 } // namespace certi

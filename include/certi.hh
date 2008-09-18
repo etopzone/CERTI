@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.32 2008/06/24 12:23:31 rousse Exp $
+// $Id: certi.hh,v 3.33 2008/09/18 14:41:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -224,23 +224,13 @@ RTI_EXCEPT(UnknownLabel)
 RTI_EXCEPT(NetworkSignal)
 RTI_EXCEPT(NetworkError)
 
-// Deprecated HLA types still in use
-typedef char *AttributeValue ;
-
-//  typedef std::vector<char>  AttributeValue;
 typedef RTI::Double FederationTime ;
 typedef UShort ObjectHandlecount ;
 typedef char *ObjectName ;
-typedef AttributeValue ParameterValue ;
 typedef char *ParameterName ;
-typedef AttributeValue ValueName ;
+typedef std::string AttributeValue_t;
+typedef std::string ParameterValue_t;
 
-struct Value {
-    ValueName name ;
-    ValueName value ;
-    ValueName type ;
-    ULong length ;
-};
 typedef RTI::Double FederationTimeDelta ;
 enum ObjectRemovalReason {
     OUT_OF_REGION = 1,
@@ -257,13 +247,6 @@ const OrderType TIMESTAMP = 2 ;
 
 // Constants
 const int MAX_BACKLOG = 256 ;
-
-// next introduced in order to manage value including any char (as \0)
-typedef  struct vlp
-    {
-    AttributeValue value ;          // value is a lot of bytes
-    ULong length ;                  // length i.e. bytes number of the value
-} ValueLengthPair, ParameterLengthPair ;
 
 } // namespace certi
 
@@ -370,4 +353,4 @@ typedef  struct vlp
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.32 2008/06/24 12:23:31 rousse Exp $
+// $Id: certi.hh,v 3.33 2008/09/18 14:41:28 gotthardp Exp $

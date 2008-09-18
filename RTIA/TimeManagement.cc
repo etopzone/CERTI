@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.44 2008/06/18 10:02:42 erk Exp $
+// $Id: TimeManagement.cc,v 3.45 2008/09/18 14:41:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -176,7 +176,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
-          std::vector <ValueLengthPair> ValueArray = msg.getAttribValueArray();
+          std::vector<AttributeValue_t> ValueArray = msg.getAttribValueArray();
 
           if (msg.isDated())
              om->reflectAttributeValues(msg.object,
@@ -210,7 +210,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
-          std::vector <ParameterLengthPair> ValueArray = msg.getParamValueArray();
+          std::vector<ParameterValue_t> ValueArray = msg.getParamValueArray();
 
           if (msg.isDated())
               om->receiveInteraction(msg.interactionClass,
@@ -997,4 +997,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.44 2008/06/18 10:02:42 erk Exp $
+// $Id: TimeManagement.cc,v 3.45 2008/09/18 14:41:27 gotthardp Exp $
