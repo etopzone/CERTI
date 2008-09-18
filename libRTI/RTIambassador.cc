@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.91 2008/07/10 20:20:08 approx Exp $
+// $Id: RTIambassador.cc,v 3.92 2008/09/18 14:47:33 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -146,6 +146,13 @@ RTI::RTIambassador::RTIambassador()
   sleep(1);
   privateRefs->socketUn->connectUN(privateRefs->pid_RTIA);
 #else
+    sigset_t nset, oset;
+    // temporarily block termination signals
+    // note: this is to prevent child processes from receiving termination signals
+    sigemptyset(&nset);
+    sigaddset(&nset, SIGINT);
+    sigprocmask(SIG_BLOCK, &nset, &oset);
+
     switch((privateRefs->pid_RTIA = fork())) {
       case -1: // fork failed.
         perror("fork");
@@ -176,6 +183,9 @@ RTI::RTIambassador::RTIambassador()
         };
         break ;
     }
+
+    // unbock the above blocked signals
+    sigprocmask(SIG_SETMASK, &oset, NULL);
 #endif
     G.Out(pdGendoc,"exit  RTIambassador::RTIambassador");
 }
@@ -3017,4 +3027,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.91 2008/07/10 20:20:08 approx Exp $
+// $Id: RTIambassador.cc,v 3.92 2008/09/18 14:47:33 gotthardp Exp $
