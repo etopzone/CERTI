@@ -56,7 +56,7 @@ then
 	export PATH=$MOREPATHBIN:$PATH
 	echo "Your PATH variable has been modified for bin"
 fi
-MOREPATHSCRIPTS=$CERTI_HOME/scripts
+MOREPATHSCRIPTS=$CERTI_HOME/share/scripts
 MODIFPATH=`echo $PATH | grep $MOREPATHSCRIPTS`
 if [ -z "$MODIFPATH" ];
 then

@@ -47,7 +47,7 @@ if ( $MODIFPATH == "" ) then
     setenv PATH $MOREPATHBIN":"$PATH
     echo "Your PATH variable has been modified for bin"
 endif
-setenv MOREPATHSCRIPTS "$CERTI_HOME/scripts"
+setenv MOREPATHSCRIPTS "$CERTI_HOME/share/scripts"
 setenv MODIFPATH `echo $PATH | grep $MOREPATHSCRIPTS`
 if ( $MODIFPATH == "" ) then    
     setenv PATH $MOREPATHSCRIPTS":"$PATH
