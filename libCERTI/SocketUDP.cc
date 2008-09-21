@@ -204,6 +204,7 @@ _est_init_udp = true ;
 SocketUDP::SocketUDP()
 {
 _est_init_udp = false ;
+    _socket_udp = 0;
 
 hp_distant = NULL ;
 PhysicalLink = true ;

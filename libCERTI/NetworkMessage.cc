@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: NetworkMessage.cc,v 3.38 2008/09/21 16:46:25 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -57,6 +57,8 @@ NetworkMessage::NetworkMessage()
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
+    numberOfRegulators = 0;
+    multicastAddress = 0;
     
     date             = 0.0;
 
@@ -164,4 +166,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: NetworkMessage.cc,v 3.38 2008/09/21 16:46:25 gotthardp Exp $
