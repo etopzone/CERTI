@@ -1,4 +1,174 @@
-2008-07-02 11:13  tag CERTI-3_3_0
+2008-09-21 13:04  tag CERTI-3_3_1
+
+2008-09-21 13:04  erk
+
+	* CMakeLists.txt (1.55, CERTI-3_3_1): Prepare CERTI 3.3.1
+
+2008-09-21 12:48  erk
+
+	* myCERTI_env.csh.in (3.4), myCERTI_env.sh.in (1.6) (utags:
+	  CERTI-3_3_1): Fix PATH update for scripts
+
+2008-09-19 15:20  erk
+
+	* CMakeLists.txt (1.54): Fix Typo
+
+2008-09-18 19:19  erk
+
+	* include/certi.hh (3.35, CERTI-3_3_1): Suppress unused type
+
+2008-09-18 19:13  erk
+
+	* libCERTI/Object.cc (3.23, CERTI-3_3_1), libCERTI/Object.hh (3.19,
+	  CERTI-3_3_1), RTIG/FederationsList.cc (3.60, CERTI-3_3_1),
+	  RTIG/FederationsList.hh (3.45, CERTI-3_3_1), include/certi.hh
+	  (3.34): One char* type less :=)
+
+2008-09-18 16:47  gotthardp
+
+	* libRTI/RTIambassador.cc (3.92, CERTI-3_3_1): BUGFIX: Mask SIGINT
+	  sent to RTIA; first part of solution for bug #24279.
+
+2008-09-18 16:41  gotthardp
+
+	* RTIA/ObjectManagement.cc (3.52, CERTI-3_3_1),
+	  RTIA/ObjectManagement.hh (3.25, CERTI-3_3_1),
+	  RTIA/RTIA_federate.cc (3.88, CERTI-3_3_1), RTIA/TimeManagement.cc
+	  (3.45, CERTI-3_3_1), RTIG/Federation.cc (3.97, CERTI-3_3_1),
+	  RTIG/Federation.hh (3.51, CERTI-3_3_1), RTIG/FederationsList.cc
+	  (3.59), RTIG/FederationsList.hh (3.44), RTIG/RTIG_processing.cc
+	  (3.77, CERTI-3_3_1), include/certi.hh (3.33),
+	  libCERTI/Interaction.cc (3.43, CERTI-3_3_1),
+	  libCERTI/Interaction.hh (3.29, CERTI-3_3_1),
+	  libCERTI/InteractionSet.cc (3.23, CERTI-3_3_1),
+	  libCERTI/InteractionSet.hh (3.18, CERTI-3_3_1),
+	  libCERTI/Message.cc (3.60, CERTI-3_3_1), libCERTI/Message.hh
+	  (3.50, CERTI-3_3_1), libCERTI/MessageBuffer.cc (3.13,
+	  CERTI-3_3_1), libCERTI/Message_R.cc (3.31, CERTI-3_3_1),
+	  libCERTI/Message_W.cc (3.36, CERTI-3_3_1), libCERTI/NM_Classes.cc
+	  (3.13, CERTI-3_3_1), libCERTI/NetworkMessage.cc (3.37,
+	  CERTI-3_3_1), libCERTI/NetworkMessage.hh (3.43, CERTI-3_3_1),
+	  libCERTI/ObjectClass.cc (3.53, CERTI-3_3_1),
+	  libCERTI/ObjectClass.hh (3.37, CERTI-3_3_1),
+	  libCERTI/ObjectClassBroadcastList.cc (3.25, CERTI-3_3_1),
+	  libCERTI/ObjectClassSet.cc (3.39, CERTI-3_3_1),
+	  libCERTI/ObjectClassSet.hh (3.31, CERTI-3_3_1): BUGFIX:
+	  valueArray changed to std::string, should fix bugs #23873,
+	  #23921, #24294
+
+2008-09-17 13:59  erk
+
+	* libCERTI/MessageBuffer.cc (3.12): Fix read_string in order to
+	  avoid stupid \0 addition and use std::string::assign
+
+2008-09-13 20:59  gotthardp
+
+	* CMakeLists.txt (1.53), scripts/FindRTI.cmake (1.1, CERTI-3_3_1):
+	  BUG #24248: Implemented FindRTI.cmake
+
+2008-08-02 16:03  gotthardp
+
+	* libHLA/: CMakeLists.txt (1.3, CERTI-3_3_1), HLAbasicType.hh (1.1,
+	  CERTI-3_3_1), HLAbuffer.cc (1.1, CERTI-3_3_1), HLAbuffer.hh (1.1,
+	  CERTI-3_3_1), HLAenumeratedType.hh (1.1, CERTI-3_3_1),
+	  HLAfixedArray.hh (1.1, CERTI-3_3_1), HLAfixedRecord.hh (1.1,
+	  CERTI-3_3_1), HLAtypesIEEE1516.cc (1.2), HLAtypesIEEE1516.hh
+	  (1.4, CERTI-3_3_1), HLAvariableArray.hh (1.1, CERTI-3_3_1),
+	  HLAvariantRecord.hh (1.1, CERTI-3_3_1): HLAtypesIEEE1516.hh
+	  separated into several files for better maintainability and
+	  extensibility.  HLAbuffer.cc renamed due to "implicit include"
+	  mechanism of Sun's C++.
+
+2008-08-02 13:44  gotthardp
+
+	* libHLA/: HLAtypesIEEE1516.hh (1.3), hlaomtdif2cpp.py (1.2,
+	  CERTI-3_3_1): New feature: Support for HLAvariantRecord.
+
+2008-07-17 18:03  gotthardp
+
+	* libHLA/: CMakeLists.txt (1.2), HLAtypesIEEE1516.hh (1.2),
+	  hlaomtdif2cpp.py (1.1): Initial implementation of automatic
+	  datatype generation XML SOM/FOM --> C++
+
+2008-07-16 10:11  rousse
+
+	* libCERTI/Interaction.cc (3.42): I apologize about this very
+	  stupid bug. I think this correction will be Ok
+
+2008-07-15 12:54  gotthardp
+
+	* libHLA/: CMakeLists.txt (1.1), HLAtypesIEEE1516.cc (1.1),
+	  HLAtypesIEEE1516.hh (1.1): Initial implementation of IEEE 1516.2
+	  compliant data encoding (patch #6534).
+
+2008-07-15 09:09  erk
+
+	* libHLA/00README_libHLA.txt (1.1, CERTI-3_3_1): Create libHLA
+	  directory Will add CMakeLists.txt and source code later.
+
+2008-07-15 08:56  erk
+
+	* CMakeLists.txt (1.52.2.1), configure.in (3.35.2.1): Change
+	  version in order to indicate branch
+
+2008-07-11 16:56  approx
+
+	* RTIA/RTIA_network.cc (3.27, CERTI-3_3_1): callbacks TRE/TCE now
+	  commands, all tests passed
+
+2008-07-11 08:06  erk
+
+	* libCERTI/NetworkMessage.hh (3.42): LAST should be last :=)
+
+2008-07-10 22:20  approx
+
+	* RTIA/DeclarationManagement.cc (3.22, CERTI-3_3_1), RTIG/RTIG.cc
+	  (3.49, CERTI-3_3_1), libCERTI/NM_Classes.cc (3.12),
+	  libCERTI/NM_Classes.hh (3.8, CERTI-3_3_1),
+	  libCERTI/NetworkMessage.hh (3.41), libRTI/RTIambassador.cc
+	  (3.91): Next step regarding switches.
+	  SetClassRelevanceAdvisorySwitch transmitted to RTIG.	To be
+	  continued ...
+
+2008-07-10 16:05  erk
+
+	* RTIA/RTIA_federate.cc (3.87), libCERTI/fed.cc (3.16,
+	  CERTI-3_3_1): merge patch #6564 : Remove Fed file dump from Rtia
+	  from Patrice Carle Avoid printing FED file on RTIA start-up
+
+2008-07-09 18:43  rousse
+
+	* RTIG/RTIG_processing.cc (3.76): Little enhancements on
+	  auditserver (i.e. RTIG.log file)
+
+2008-07-09 17:04  rousse
+
+	* libCERTI/: ObjectClassBroadcastList.cc (3.24), SecurityServer.cc
+	  (3.14, CERTI-3_3_1): #23755 BUG correction. Need more validation
+
+2008-07-09 15:48  erk
+
+	* RTIA/DeclarationManagement.cc (3.21),
+	  RTIA/DeclarationManagement.hh (3.9, CERTI-3_3_1),
+	  RTIA/ObjectManagement.cc (3.51), RTIA/ObjectManagement.hh (3.24),
+	  RTIA/RTIA_federate.cc (3.86), libRTI/RTIambassador.cc (3.90),
+	  libCERTI/Message_R.cc (3.30), libCERTI/Message_W.cc (3.35):
+	  Applied switch.patch1 from Christian Stenzel
+	  https://savannah.nongnu.org/task/?6893 A first step to implement
+	  switches.
+
+2008-07-09 15:34  erk
+
+	* CMakeLists.txt (1.52): Add a default CPACK_PACKAGE_CONTACT
+
+2008-07-03 21:54  gotthardp
+
+	* RTIG/Federation.cc (3.96): Bug #23747 fixed.
+
+2008-07-02 11:35  erk
+
+	* CMakeLists.txt (1.51), configure.in (3.35, CERTI-3_3_1): Change
+	  from 3.3.0 to 3.3.1cvs for cvs version
 
 2008-07-02 11:13  erk
 
