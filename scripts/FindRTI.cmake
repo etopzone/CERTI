@@ -1,7 +1,11 @@
-# - Find HLA RTI libraries
-# This module finds if any HLA RTI is installed and determines where the include
-# files and libraries are.
-# See http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)
+# - Try to find HLA RTI libraries
+# This module finds if any HLA RTI is installed and locates the standard RTI
+# include files and libraries.
+#
+# RTI is a simulation infrastructure standartized by IEEE and SISO. It has a
+# well defined C++ API that assures that simulation applications are
+# independent on a particular RTI implementation.
+# http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)
 #
 # This code sets the following variables:
 #  RTI_INCLUDE_DIRS = the directory(ies) where RTI includes file are found
@@ -9,6 +13,8 @@
 #  RTI_DEFINITIONS = -DRTI_USES_STD_FSTREAM
 #  RTI_LIBRARY_DIRS = Set of library directories
 #  RTI_FOUND = Set to FALSE if any HLA RTI was not found
+#
+# Report problems to <certi-devel@nongnu.org>
 
 INCLUDE(CMakeFindFrameworks)
 
@@ -18,9 +24,7 @@ MACRO(MESSAGE_QUIETLY QUIET TYPE MSG)
   ENDIF(NOT ${QUIET})
 ENDMACRO(MESSAGE_QUIETLY QUIET TYPE MSG)
 
-# Detect the CERTI installation
-# CERTI is an Open Source HLA RunTime Infrastructure
-# See https://savannah.nongnu.org/projects/certi or http://www.cert.fr/CERTI/
+# Detect the CERTI installation, http://www.cert.fr/CERTI
 IF ("$ENV{CERTI_HOME}" STRGREATER "")
   FILE(TO_CMAKE_PATH "$ENV{CERTI_HOME}" CERTI_HOME)
   MESSAGE_QUIETLY(RTI_FIND_QUIETLY STATUS "Using environment defined CERTI_HOME: ${CERTI_HOME}")
@@ -28,6 +32,7 @@ ENDIF ("$ENV{CERTI_HOME}" STRGREATER "")
 
 SET(RTI_DEFINITIONS "-DRTI_USES_STD_FSTREAM")
 
+# Detect the MAK Technologies RTI installation, http://www.mak.com/products/rti.php
 # note: the following list is ordered to find first the most recent version
 SET(POSSIBLE_DIRS
   ${CERTI_HOME}
@@ -93,4 +98,4 @@ MARK_AS_ADVANCED(
   RTI_DEFINITIONS
   RTI_LIBRARY_DIRS)
 
-# $Id: FindRTI.cmake,v 1.1 2008/09/13 18:59:49 gotthardp Exp $
+# $Id: FindRTI.cmake,v 1.2 2008/09/22 07:37:00 gotthardp Exp $
