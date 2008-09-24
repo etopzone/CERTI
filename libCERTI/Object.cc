@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.23 2008/09/18 17:13:32 erk Exp $
+// $Id: Object.cc,v 3.24 2008/09/24 12:53:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,6 +31,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <functional>
 
 using std::cout ;
 using std::endl ;
@@ -47,11 +48,22 @@ Object::Object(FederateHandle the_owner, const char *the_name)
     setName(the_name);
 }
 
+template <class T>
+struct delme : public std::unary_function<T, void> {
+  void operator() (T& x) {
+    delete x;
+  }
+};
+
 // ----------------------------------------------------------------------------
 //! Destructor.
 Object::~Object()
 {
     sf.clear();
+    // We should delete the pointee because it belongs to the object.
+    for (std::deque<ObjectAttribute *>::iterator i = attributeState.begin(); i!=attributeState.end();++i) {
+    	delete (*i);
+    }
     attributeState.clear();
 }
 
@@ -148,4 +160,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.23 2008/09/18 17:13:32 erk Exp $
+// $Id: Object.cc,v 3.24 2008/09/24 12:53:11 erk Exp $
