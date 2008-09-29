@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.13 2008/06/12 07:39:50 erk Exp $
+// $Id: Exception.cc,v 3.14 2008/09/29 12:31:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -260,13 +260,13 @@ RTI::Exception::~Exception()
 RTI::Exception::Exception(const char *reason)
 {
     _reason = (reason == NULL)?NULL:strdup(reason);
-    _serial = 0 ;    
+    _serial = 0 ;
 }
 
 RTI::Exception::Exception(ULong serial, const char *reason)
 {
     _serial = serial ;
-    _reason = (reason == NULL)?NULL:strdup(reason);      
+    _reason = (reason == NULL)?NULL:strdup(reason);
 }
 
 
@@ -274,21 +274,21 @@ RTI::Exception::Exception(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
     _reason = ( toCopy._reason== NULL)?NULL:strdup(toCopy._reason) ;
-    _name = toCopy._name ;    
+    _name = toCopy._name ;
 }
 
 RTI::Exception& RTI::Exception::operator=(const Exception &toCopy)
 {
     _serial = toCopy._serial ;
     _reason = (toCopy._reason == NULL)?NULL:strdup(toCopy._reason) ;
-    _name = toCopy._name ;    
+    _name = toCopy._name ;
     return *this ;
 }
 
-const char* RTI::Exception::displayMe() const {
-		
+const std::string RTI::Exception::displayMe() const {
+
 	std::stringstream msg;
-		
+
 	msg << "RTI::Exception [";
 	 if (NULL!=_name) {
 		msg <<_name;
@@ -304,9 +304,9 @@ const char* RTI::Exception::displayMe() const {
 	 }
 	 msg << std::endl;
 	 msg << std::flush;
-	 
+
 	 PD_Exception[pdExcept] << msg.str().c_str();
-	 return msg.str().c_str();
+	 return msg.str();
 }
 
 RTI_STD::ostream &

@@ -29,8 +29,8 @@ public:
     virtual ~Exception();
     Exception &operator=(const Exception &);
     virtual Exception *cloneSelf() const throw() = 0 ;
-    virtual void throwSelf() const = 0 ;	
-    const char* displayMe() const;
+    virtual void throwSelf() const = 0 ;
+    const std::string displayMe() const;
     virtual long getType() = 0;
 };
 
