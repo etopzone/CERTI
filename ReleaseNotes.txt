@@ -1,34 +1,7 @@
-Release Notes for CERTI 3.2
-===========================
+Release Notes for CERTI 3.3.1
+==============================
 
-* Architecture
-
-	GNU/Linux
-
-* HLA
-
-	Implemented services follow HLA 1.3 specification
-
-* What's new
-
-        Data Distribution Management :
-		- createRegion
-		- notifyAboutRegionModification
-		- deleteRegion
-		- registerObjectInstanceWithRegion
-		- associateRegionForUpdates
-		- unassociateRegionForUpdates
-		- subscribeObjectClassAttributesWithRegion
-		- unsubscribeObjectClassWithRegion
-		- subscribeInteractionClassWithRegion
-		- unsubscribeInteractionClassWithRegion
-		- sendInteractionWithRegion
-        Strict HLA 1.3 headers
-	Shared libraries
-
-* Installation
-
-	See doc/install.txt
+FIXME: we should update this
 
 -- 
 Home page    http://www.nongnu.org/certi/
