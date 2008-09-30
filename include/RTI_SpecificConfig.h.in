@@ -1,0 +1,27 @@
+/***********************************************************************
+IEEE 1516.1 High Level Architecture Interface Specification C++ API
+File: RTI_SpecificConfig.h
+***********************************************************************/
+// Purpose: This file contains definitions that are used to isolate
+// platform configuration issues.
+#ifndef RTI_SpecificConfig_h
+#define RTI_SpecificConfig_h
+#include <sys/types.h> // for size_t
+// macro to support Windows library export mechanism
+#define RTI_EXPORT /* nothing */
+//
+// When and how to use inline methods is left up to the RTI implementor
+//
+#ifdefRTI_DEBUG_ON
+#undefRTI_USE_INLINE
+#define RTI_INLINE /* inline */
+#else
+#define RTI_USE_INLINE
+#define RTI_INLINE inline
+#endif // RTI_DEBUG_ON
+#ifdef __GNUC__
+#ifndef RTI_TEMPLATES_REQUIRE_SOURCE
+#define RTI_TEMPLATES_REQUIRE_SOURCE
+#endif
+#endif // __GNUC__
+#endif // RTI_SpecificConfig_h
