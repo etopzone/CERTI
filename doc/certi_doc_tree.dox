@@ -43,8 +43,21 @@
  * 
  * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
  * The primary format of distribution is gzip compressed tar archive (.tar.gz)
- * and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
+ * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
  *
+ * CERTI build system uses  <a href="http://www.cmake.org/">CMake,  http://www.cmake.org/ </a>
+ * which is a cross-platform build system generator. CMake should be used to 
+ * compile CERTI SDK on a variety of platform/compiler combination like:
+ * <ul>
+ *   <li> Linux x86 / gcc </li>
+ *   <li> Linux x86_64 / gcc </li>
+ *   <li> Solaris Sparc / Sun Studio </li>
+ *   <li> Windows / Visual Studio </li>
+ *   <li> Windows / Code::Blocks+MinGW </li>
+ *   <li> ... </li>
+ * </ul>
+ * 
+ * 
  * \subsection certi_sdk_TARGZ Tarball based SDK
  * 
  * If you get a tarball source CERTI distribution such as you may found in the download 
@@ -63,16 +76,23 @@
  * \verbatim
  mkdir build_certi
  cd build_certi
- cmake /path/to/certi-\<version\>-Source
+ cmake -DCMAKE_INSTALL_PREFIX=/path/to/install /path/to/certi-\<version\>-Source
  ... wait for cmake run  ending ... \endverbatim
- * <li>
  * <li>compile your certi</li>
  * \verbatim
  make
  ... wait the compilation end ... \endverbatim
+ <li> Then you may either install CERTI or build
+      a binary package that will be usable for installation</li>
+ <ul>
+ * <li>install CERTI</li>
+ * \verbatim
+ make install
+ ... wait for make install end ... \endverbatim
  * <li>build your binary package </li>
  * \verbatim
  make package \endverbatim
+ </ul>
  * </ol>
  * After that you will have a compiled and usable CERTI package.
  *  
@@ -86,23 +106,33 @@
  * and ease of use.
  * The CERTI itself consists in a set of libraries and tests applications.
  * @see HLA_Libraries the (normative) HLA Run Time Libraries
+ * @see HLA_Helpers_Libraries some RTI-agnostic HLA Helper Libraries 
  * @see CERTI_Libraries the private CERTI library. 
  * @see CERTI_Applications Some applications bundled with CERTI.
  * More informations on
  * <A HREF="http://savannah.nongnu.org/projects/certi">http://savannah.nongnu.org/projects/certi</A>.
  */
- 
- /**
-  * @defgroup HLA_Libraries the normatives HLA libraries
-  * This group of libraries contains the HLA/IEEE-1516 compliant normative libraries.
-  */
+  
+/**
+ * @defgroup HLA_Libraries Normatives HLA libraries
+ * This group of libraries contains the HLA/IEEE-1516 compliant normative libraries.
+ */
 
 /**
  * @defgroup CERTI_Libraries The CERTI libraries
  * The CERTI programming libraries.
  * @ingroup certi
  */
-
+ 
+ 
+/**
+ * @defgroup HLA_Helper_Libraries NON-normative HLA helper libraries
+ * This group of libraries contains helper libraries which are non normative
+ * and may be used to ease the development of an HLA federate. 
+ * Those libraries are RTI agnostic, they may be used with other RTI than CERTI.
+ * @ingroup certi
+ */
+ 
 /**
  * @defgroup CERTI_Applications Applications bundled with CERTI.
  * @ingroup certi
