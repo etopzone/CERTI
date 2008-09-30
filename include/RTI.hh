@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.11 2007/12/06 17:11:19 erk Exp $
+// $Id: RTI.hh,v 3.12 2008/09/30 13:53:18 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -16,15 +16,15 @@
 	#else
 		#define RTI_EXPORT __declspec(dllimport)
 	#endif
-	
+
 	#if defined(CERTI_EXPORTS)
 		#define CERTI_EXPORT __declspec(dllexport)
 	#else
 		#define CERTI_EXPORT __declspec(dllimport)
 	#endif
 #else
-	#define RTI_EXPORT  
-	#define CERTI_EXPORT  
+	#define RTI_EXPORT
+	#define CERTI_EXPORT
 #endif
 
 #ifdef RTI_USES_STD_FSTREAM
@@ -39,11 +39,11 @@ class RTIambPrivateRefs ;
 struct RTIambPrivateData ;
 
 /**
- * @defgroup libRTI the RTI library (normative API).
- * @ingroup HLA_Libraries 
- * The API comes directly from HLA specifications. 
+ * @defgroup libRTI RTI library (normative API).
+ * @ingroup HLA_Libraries
+ * The API comes directly from HLA specifications.
  * @{
- */ 
+ */
 
 class RTI_EXPORT RTI
 {
@@ -67,10 +67,10 @@ public:
     };
 };
 
-RTI_STD::ostream CERTI_EXPORT & 
+RTI_STD::ostream CERTI_EXPORT &
 operator<<(RTI_STD::ostream &os, RTI::Exception *ex);
 
-RTI_STD::ostream CERTI_EXPORT & 
+RTI_STD::ostream CERTI_EXPORT &
 operator<<(RTI_STD::ostream &os, RTI::Exception const &ex);
 
 /** @} */
