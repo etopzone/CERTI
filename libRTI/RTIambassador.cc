@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.92 2008/09/18 14:47:33 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.93 2008/10/02 09:52:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -569,6 +569,26 @@ RTI::RTIambassador::tick(TickTime minimum, TickTime maximum)
            RTIinternalError)
 {
     return __tick_kernel(RTI_TRUE, minimum, maximum);
+}
+
+// ----------------------------------------------------------------------------
+//! Get Region Token.
+RTI::RegionToken
+RTI::RTIambassador::getRegionToken(Region *)
+    throw (RTI::FederateNotExecutionMember, RTI::ConcurrentAccessAttempted,
+           RTI::RegionNotKnown, RTI::RTIinternalError)
+{
+    throw UnimplementedService("");
+}
+
+// ----------------------------------------------------------------------------
+//! Get Region.
+RTI::Region *
+RTI::RTIambassador::getRegion(RegionToken)
+    throw (RTI::FederateNotExecutionMember, RTI::ConcurrentAccessAttempted,
+           RTI::RegionNotKnown, RTI::RTIinternalError)
+{
+    throw UnimplementedService("");
 }
 
 // ----------------------------------------------------------------------------
@@ -3027,4 +3047,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.92 2008/09/18 14:47:33 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.93 2008/10/02 09:52:28 gotthardp Exp $
