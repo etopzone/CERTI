@@ -10,32 +10,55 @@ for libraries librti and libcerti (LGPL) can be found in the file
 Installation
 ------------
 
-See INSTALL for detailed generic installation instructions. This
-program uses GNU Autoconf/Automake, so your standard ./configure /
-make / make install procedure should work, if you're used to this kind
-of installation.
+The CERTI build system is using CMake 
+(http://www.cmake.org/HTML/RunningCMake.html) such that
+you need to have a working CMake on your system in order to build CERTI.
 
-If not, your ./configure command should look like: 
+Depending on the target platform (Windows, Linux, Solaris...) and
+the compiler (GCC, Visual Studio, MinGW, ...) the CERTI CMake build
+system should discover and require the needed dependency.
 
-[env {definitions}] ./configure [options] 
+The fast (and hopefully easy) way to build CERTI is:
 
-for non-standard include/lib path. The installation directory can be
-set with the --prefix option (default: /usr/local).
+1) Get the CERTI tarball or zip from 
+   http://download.savannah.nongnu.org/releases/certi/
+   
+2) Unzip/Untar the archive
+   This will create CERTI-X.Y.Z-Source/ directory
+    
+   on Unix this would be
+   tar zxvf CERTI-X.Y.Z.tar.gz
 
-- Example 1: This line launches the configuration, with standard
-defaults and "$HOME/CERTI" as the target directory:
-
-./configure --prefix=$HOME/CERTI
-
-- Example 2: Using a recent GCC and a quite old X library, we had to use
-a "-fpermissive" option in each compilation command. This can be done
-by modifying the CXXFLAGS variable:
-
-env CXXFLAGS="-fpermissive " ./configure --prefix=$HOME/CERTI
-
-- Example 3: This is the line we used on Solaris 6 stations, note how the
-default compiler names and directory values can be modified:
-
-env CC=cc CXX=CC CXXFLAGS="-RTTI -g -features=no%conststrings -I/opt/SUNWspro/SC5.0/include/CC " LDFLAGS="-L/opt/SUNWspro/SC5.0/lib/CC4 -L/opt/SUNWspro/SC5.0/lib/CC4/libp -lC " ./configure --prefix=$HOME/CERTI
-
-You'll find an installation document in the doc directory.
+3) Create a build directory
+   Build_CERTI-X.Y.Z/
+   mkdir Build_CERTI-X.Y.Z
+   
+4) Go to the build directory and launch CMake
+   cd Build_CERTI-X.Y.Z
+   cmake </path/to>/CERTI-X.Y.Z-Source
+   
+   may be
+   cmake ../CERTI-X.Y.Z-Source
+   
+   one may choose the installation prefix with
+   cmake -DCMAKE_INSTALL_PREFIX=/path/to/install ../CERTI-X.Y.Z-Source
+   
+   or launch an interactive CMake UI in order to modify CMAKE_INSTALL_PREFIX.
+   cmake-gui ../CERTI-X.Y.Z-Source 
+   or
+   ccmake ../CERTI-X.Y.Z-Source
+   
+5) Build 
+   make
+   
+6) Install 
+   make install
+   
+The command used for building and installing CERTI depends
+on the platform/compiler combination you chose. The previous
+examples are for Unix-like system with make.
+You may look at
+   http://download.savannah.gnu.org/releases/certi/documentation/CERTI-Compilation-HOWTO.pdf
+   for windows build examples.
+   or generic CMake usage:
+   http://www.cmake.org/cmake/help/runningcmake.html
