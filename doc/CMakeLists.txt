@@ -33,6 +33,10 @@ CONFIGURE_FILE(
   
 FILE(MAKE_DIRECTORY ${CERTI_DOC_DIR}/html)
 
+#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/favicon.ico
+#               ${CERTI_DOC_DIR}/html/favicon.ico
+#                COPYONLY)
+                
 #CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/tsp.css ${APIDOC_DIR}/html/tsp.css COPYONLY)
 #FILE(GLOB header_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/header/*.htm*)
 #FILE(GLOB footer_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/footer/*.htm*)

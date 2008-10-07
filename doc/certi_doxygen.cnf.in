@@ -448,6 +448,7 @@ INPUT                  = "${CMAKE_BINARY_DIR}/include" \
 	                     "${CMAKE_SOURCE_DIR}/include" \			             
                          "${CMAKE_SOURCE_DIR}/libCERTI" \
                          "${CMAKE_SOURCE_DIR}/libRTI" \
+                         "${CMAKE_SOURCE_DIR}/libHLA" \
                          "${CMAKE_SOURCE_DIR}/RTIG" \
                          "${CMAKE_SOURCE_DIR}/RTIA" \
                          "${CMAKE_SOURCE_DIR}/doc"

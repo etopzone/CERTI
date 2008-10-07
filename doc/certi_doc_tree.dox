@@ -27,9 +27,22 @@
  * \section intro_sec Introduction
  *
  * This is the CERTI documentation.
- * CERTI is an Open Source HLA compliant RunTime Infrastructure (RTI).
+ * CERTI is an Open Source HLA compliant  
+ * <a href="http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)">
+ * RunTime Infrastructure (RTI)</a>.
  * You'll find hereafter the documentation for the main modules
  * of the CERTI project.
+ * CERTI is primarily developed and maintained by the Toulouse research center of ONERA [http://www.onera.fr], the French Aerospace Labs. 
+ * The primary goal of CERTI is to be used in research activities but CERTI has a growing
+ * number of users and contributors among the CERTI Open Source community.
+ * 
+ * People interested in CERTI may join the CERTI Open Source
+ * community at <a href="https://savannah.nongnu.org/projects/certi">
+ * https://savannah.nongnu.org/projects/certi </a> and/or
+ * by using the mailing list 
+ * <a href="http://lists.nongnu.org/mailman/listinfo/certi-devel">
+ * http://lists.nongnu.org/mailman/listinfo/certi-devel </a>
+ * for discussion regarding CERTI usage.
  *
  * \section certi_modules Main CERTI Modules
  * The main CERTI modules are:
@@ -38,11 +51,16 @@
  *   <li> \ref libRTI </li>
  *   <li> \ref Billard_Application </li> 
  * </ul>
+ * There are some RTI-agnostic libraries or applications which
+ * are bundled with the CERTI distribution:
+ * <ul>
+ *   <li> \ref libHLA </li>
+ * </ul>
  * 
  * \section certi_sdk Installing and using CERTI SDK
  * 
  * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
- * The primary format of distribution is gzip compressed tar archive (.tar.gz)
+ * The primary distribution format is gzip compressed tar source archive (.tar.gz)
  * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
  *
  * CERTI build system uses  <a href="http://www.cmake.org/">CMake,  http://www.cmake.org/ </a>
@@ -57,6 +75,9 @@
  *   <li> ... </li>
  * </ul>
  * 
+ * You may follow generic CMake usage instruction for building CERTI
+ * on various platforms:  <a href="http://www.cmake.org/cmake/help/runningcmake.html">Running CMake,  http://www.cmake.org/cmake/help/runningcmake.html://www.cmake.org/ </a>
+ * or you may try to follow the below CERTI CMake usage.
  * 
  * \subsection certi_sdk_TARGZ Tarball based SDK
  * 
@@ -101,9 +122,8 @@
 /**
  * @defgroup certi CERT Run Time Infrastructure (CERTI)
  * The CERTI is an Open Source HLA Run Time Infrastructure (RTI)
- * CERTI is a networked enabled  multi-consumer multi-provider
- * protocol for sampling data, certi is designed for efficiency
- * and ease of use.
+ * primarily developed by the Toulouse Center of ONERA
+ * (http://www.onera.fr)  
  * The CERTI itself consists in a set of libraries and tests applications.
  * @see HLA_Libraries the (normative) HLA Run Time Libraries
  * @see HLA_Helpers_Libraries some RTI-agnostic HLA Helper Libraries 
@@ -123,7 +143,6 @@
  * The CERTI programming libraries.
  * @ingroup certi
  */
- 
  
 /**
  * @defgroup HLA_Helper_Libraries NON-normative HLA helper libraries
