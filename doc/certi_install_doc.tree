@@ -1,0 +1,49 @@
+/* -*- c -*- 
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002, 2003, 2004  ONERA
+//
+// This file is part of CERTI
+//
+// CERTI-libCERTI is free software ; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation ; either version 2 of
+// the License, or (at your option) any later version.
+//
+// CERTI-libCERTI is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+// ----------------------------------------------------------------------------
+*/
+ 
+/**
+ * @mainpage
+ * \section intro_sec Introduction
+ *
+ * This is the CERTI installation documentation.
+ * CERTI is an Open Source HLA compliant  
+ * <a href="http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)">
+ * RunTime Infrastructure (RTI)</a>.
+ * You'll find hereafter the documentation for building and installing CERTI.
+ * CERTI is primarily developed and maintained by the Toulouse research center of ONERA [http://www.onera.fr], the French Aerospace Labs. 
+ * The primary goal of CERTI is to be used in research activities but CERTI has a growing
+ * number of users and contributors among the CERTI Open Source community.
+ * 
+ * People interested in CERTI may join the CERTI Open Source
+ * community at <a href="https://savannah.nongnu.org/projects/certi">
+ * https://savannah.nongnu.org/projects/certi </a> and/or
+ * by using the mailing list 
+ * <a href="http://lists.nongnu.org/mailman/listinfo/certi-devel">
+ * http://lists.nongnu.org/mailman/listinfo/certi-devel </a>
+ * for discussion regarding CERTI usage.
+ *
+ * \subpage Installation
+ *
+ */
+ 

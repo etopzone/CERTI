@@ -47,8 +47,8 @@ IF (USE_FULL_RPATH)
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 ENDIF(USE_FULL_RPATH)
   
-OPTION(BUILD_API_DOC
-             "Build doxygen documentation" OFF)         
+OPTION(BUILD_DOC
+             "Build documentation (using doxygen)" OFF)         
              
 OPTION(FORCE_NO_X11 
               "Force not to use X11 (i.e. no Billard GUI)" OFF)   

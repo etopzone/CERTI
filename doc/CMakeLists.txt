@@ -1,79 +1,65 @@
-
-
-IF (BUILD_API_DOC)
+IF (BUILD_DOC)
     FIND_PACKAGE(Doxygen)
-ENDIF(BUILD_API_DOC)
+    IF (DOXYGEN_FOUND)
+    LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+    INCLUDE(DoxyTools)
+    IF (WIN32)
+      SET(DOXYGEN_GENERATE_MAN NO)
+      FIND_PROGRAM(HHC_PROGRAM 
+        NAMES hhc.exe 
+        PATHS "c:/Program Files/HTML Help Workshop"
+        DOC "HTML Help Compiler program")
+    ELSE (WIN32)
+      SET(DOXYGEN_GENERATE_MAN YES)
+      SET(HHC_PROGRAM)
+    ENDIF (WIN32)    
+    OPTION(BUILD_DOC_INSTALL
+             "Build CERTI installation documentation" ON)
+    OPTION(BUILD_DOC_USER
+             "Build CERTI user documentation" ON)
+    OPTION(BUILD_DOC_DEVELOPER
+             "Build CERTI developer documentation" OFF)
+    ENDIF(DOXYGEN_FOUND)              
+ENDIF(BUILD_DOC)
 
-IF (DOXYGEN_FOUND)  
-  SET(CERTI_DOXYGEN_INPUT ${CMAKE_BINARY_DIR}/certi_doxygen.cnf)
-  SET(CERTI_DOC_DIR ${CMAKE_BINARY_DIR}/doc/reference CACHE PATH "CERTI documentation directory")
-  SET(CERTI_DOXYGEN_OUTPUT ${CERTI_DOC_DIR}/html/index.html)
-#SET(STATIC_PAGES  ${CMAKE_CURRENT_SOURCE_DIR}/footer/footer.html ${CMAKE_CURRENT_SOURCE_DIR}/header/header.html)  
+IF (DOXYGEN_FOUND)
+  #pages global to all documentation  
+  SET(CERTI_STATIC_PAGES certi_header.html certi_footer.html)
+  #install documentation
+  IF (BUILD_DOC_INSTALL)  
+      DoxyTools_ADD_DocSet(Install
+                           CONFIG_FILE certi_install.cnf
+                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           DOC_TYPE    html
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/install
+                           COMMENTS "CERTI installation documentation"
+                           )                           
+  ENDIF (BUILD_DOC_INSTALL)
   
-  #SET(DOXYGEN_INPUT_USER ${CMAKE_BINARY_DIR}/user.dox)
-  #SET(DOXYGEN_INPUT_BILLARD ${CMAKE_BINARY_DIR}/billard.doxy)  
+  #user documentation
+  IF (BUILD_DOC_USER)  
+      DoxyTools_ADD_DocSet(User
+                           CONFIG_FILE certi_user.cnf
+                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           DOC_TYPE    html
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/user
+                           COMMENTS "CERTI user documentation"
+                           )                           
+  ENDIF (BUILD_DOC_USER)
   
-  SET(BILLARD_DOC_DIR ${CMAKE_BINARY_DIR}/doc/billard CACHE PATH "billard documentation directory")
-  SET(USER_DOC_DIR ${CMAKE_BINARY_DIR}/doc/user CACHE PATH "user documentation directory")
-  
-IF (WIN32)
-  SET(DOXYGEN_GENERATE_MAN NO)
-  FIND_PROGRAM(HHC_PROGRAM 
-    NAMES hhc.exe 
-    PATHS "c:/Program Files/HTML Help Workshop"
-    DOC "HTML Help Compiler program")
-ELSE (WIN32)
-  SET(DOXYGEN_GENERATE_MAN YES)
-  SET(HHC_PROGRAM)
-ENDIF (WIN32)
-
-CONFIGURE_FILE(
-  ${CMAKE_CURRENT_SOURCE_DIR}/certi_doxygen.cnf.in
-  ${CERTI_DOXYGEN_INPUT})
-  
-FILE(MAKE_DIRECTORY ${CERTI_DOC_DIR}/html)
-
-#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/favicon.ico
-#               ${CERTI_DOC_DIR}/html/favicon.ico
-#                COPYONLY)
-                
-#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/tsp.css ${APIDOC_DIR}/html/tsp.css COPYONLY)
-#FILE(GLOB header_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/header/*.htm*)
-#FILE(GLOB footer_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/footer/*.htm*)
-#FILE(GLOB images_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/images/*.png)
-
-# Copy necessary doc files
-#FOREACH (file ${header_files} ${footer_files} ${images_files})
-#  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/${file} ${APIDOC_DIR}/html/${file} COPYONLY)
-#ENDFOREACH (file)
-
-ADD_CUSTOM_COMMAND(
-  OUTPUT ${CERTI_DOXYGEN_OUTPUT}
-  COMMAND ${CMAKE_COMMAND} -E echo_append "Building Reference Documentation..."
-  COMMAND ${DOXYGEN_EXECUTABLE} ${CERTI_DOXYGEN_INPUT}
-  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  DEPENDS ${CERTI_DOXYGEN_INPUT}
-  )
-
-ADD_CUSTOM_TARGET(doc ALL DEPENDS ${CERTI_DOXYGEN_OUTPUT})
-
-ADD_CUSTOM_TARGET(doc_forced
-  COMMAND ${CMAKE_COMMAND} -E echo_append "Building Reference Documentation..."
-  COMMAND ${DOXYGEN_EXECUTABLE} ${CERTI_DOXYGEN_INPUT}
-  COMMAND ${CMAKE_COMMAND} -E echo "Done."
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-  
-FILE(GLOB_RECURSE doc_files RELATIVE ${CERTI_DOC_DIR} ${CERTI_DOC_DIR}/*)
-FOREACH(file ${doc_files})
-  GET_FILENAME_COMPONENT(file_prefix ${file} PATH)
-  INSTALL(FILES ${CERTI_DOC_DIR}/${file}
-    DESTINATION share/doc/certi/${file_prefix})
-ENDFOREACH(file)
+  #developer documentation
+  IF (BUILD_DOC_DEVELOPER)  
+      DoxyTools_ADD_DocSet(Developer
+                           CONFIG_FILE certi_developer.cnf
+                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           DOC_TYPE    html
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/developer
+                           COMMENTS "CERTI developer documentation"
+                           VERBOSE)                           
+  ENDIF (BUILD_DOC_DEVELOPER)
 
 ENDIF (DOXYGEN_FOUND)
 
 INSTALL(FILES  
-    index.html certi.html install.txt
+    index.html favicon.ico
     DESTINATION share/doc/certi)
