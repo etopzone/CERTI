@@ -22,24 +22,25 @@
 
 /**
  * Clock abstraction which tries to use high-resolution
- * system clock in order to be able to help user to 
+ * system clock in order to be able to help user to
  * profile it's application using simple clock API.
  * Derived class will use effective clock API like
  * POSIX clock_xxxx functions:
- * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html 
+ * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html
  * or other hardware assisted clock like Pentium TSC.
  */
- 
-#if defined(_WIN32) && defined(_MSC_VER) 
+
+#if defined(_WIN32) && defined(_MSC_VER)
 #define	uint64_t			unsigned __int64
 #else
 #include <stdint.h>
 #endif
 #include <string>
+#include "certi.hh"
 
 namespace certi {
 
-class Clock
+class CERTI_EXPORT Clock
 {
 public:
 	/**
@@ -51,7 +52,7 @@ public:
 	 * Get the clock name.
 	 * @return the clock name
 	 */
-	const std::string getName() const {return name;}; 
+	const std::string getName() const {return name;};
 	/**
 	 * Get the clock resolution in nano-seconds.
 	 * @return the clock resolution in nano-seconds
@@ -65,7 +66,7 @@ public:
 	/**
 	 * Get the delta between current ticks value and
 	 * the one provided as argument.
-	 * @param[in] previousTicks a previous ticks value 
+	 * @param[in] previousTicks a previous ticks value
 	 * @return the delta tick value
 	 */
 	virtual uint64_t getDeltaTicks(const uint64_t previousTicks);
@@ -73,7 +74,7 @@ public:
 	 * Convert a number of ticks into a double value
 	 * representing nanoseconds.
 	 * @param[in] ticks the number of tick to convert
-	 * @return the nano-seconds value 
+	 * @return the nano-seconds value
 	 */
 	virtual double   tick2NanoSecond(const uint64_t ticks)  = 0;
 	/**
@@ -81,19 +82,19 @@ public:
 	 * @param[in] firstTicks the first tick value
 	 * @param[in] secondTicks the second (later) tick value
 	 * @return the delta time between the two ticks value in nano-seconds.
-	 */ 
+	 */
 	virtual double   getDeltaNanoSecond(const uint64_t firstTicks, const uint64_t secondTicks);
-	
+
 	/**
 	 * Get delta between current ticks value and
 	 * the one provided as argument as nano-second value
-	 * @param[in] previousTicks 
-	 */ 
+	 * @param[in] previousTicks
+	 */
 	virtual double   getDeltaNanoSecond(const uint64_t previousTicks);
-	
-	
-	
-	virtual ~Clock();	
+
+
+
+	virtual ~Clock();
 protected:
 	std::string name;
 };

@@ -5,7 +5,7 @@
 
 namespace certi {
 /**
- * The TSCClock is a Clock using the Time Stamp Counter 
+ * The TSCClock is a Clock using the Time Stamp Counter
  * which may be found in Pentium-like processors
  * http://en.wikipedia.org/wiki/Time_Stamp_Counter
  * Note that using TSC on a symmetric (or multi-core)
@@ -13,9 +13,9 @@ namespace certi {
  * moreover TSC behavior may be biaised if processor
  * supports dynamic frequency scaling such as Pentium M
  * used on mobile device.
- * If you want a more "robust" Clock class you may use PosixClock. 
+ * If you want a more "robust" Clock class you may use PosixClock.
  */
-class TSCClock : public Clock
+class CERTI_EXPORT TSCClock : public Clock
 {
 public:
 	TSCClock();
@@ -24,36 +24,36 @@ public:
 	 * @return the clock resolution in nano-seconds
 	 */
 	virtual double getResolution();
-	/**	
+	/**
 	 * Get the current ticks value.
 	 * @return the current ticks value
 	 */
-	virtual uint64_t getCurrentTicksValue();	
+	virtual uint64_t getCurrentTicksValue();
 	/**
 	 * Convert a number of ticks into a double value
 	 * representing nanoseconds.
 	 * @param[in] ticks the number of tick to convert
-	 * @return the nano-seconds value 
+	 * @return the nano-seconds value
 	 */
 	virtual double   tick2NanoSecond(const uint64_t ticks);
 	virtual ~TSCClock();
 private:
 	/**
 	 * Get processor frequency
-	 * @return the processor frequency in MHz 
+	 * @return the processor frequency in MHz
 	 */
 	static double getProcessorFrequency();
-	
+
 	/**
-	 * Read the Time Stamp Counter using 
+	 * Read the Time Stamp Counter using
 	 * rdtsc assembly instruction
 	 */
 	inline uint64_t readTSC() {
 	  uint64_t tsc;
 	  __asm__ __volatile__("rdtsc" : "=A" (tsc));
 	  return tsc;
-	};		
-		
+	};
+
 	/**
 	 * The TSC clock resolution in nano-seconds
 	 */

@@ -8,8 +8,8 @@ namespace certi {
 
 /**
  * A Clock implemented using POSIX clock_xxxxx API.
- */ 
-class PosixClock : public Clock
+ */
+class CERTI_EXPORT PosixClock : public Clock
 {
 public:
 	/**
@@ -31,13 +31,13 @@ public:
 	/**
 	 * Get the current ticks value.
 	 * @return the current ticks value
-	 */ 
+	 */
 	virtual uint64_t getCurrentTicksValue();
 	/**
 	 * Convert a number of ticks into a double value
 	 * representing nanoseconds.
 	 * @param[in] ticks the number of tick to convert
-	 * @return the nano-seconds value 
+	 * @return the nano-seconds value
 	 */
 	virtual double   tick2NanoSecond(const uint64_t ticks);
 	virtual ~PosixClock();
