@@ -35,14 +35,14 @@ using std::endl;
 void clockTests(certi::Clock& aClock) {
 	uint64_t tick1;
 	uint64_t tick2;
-	cout << "Testing clock <" << aClock.getName() << "> BEGIN..." <<endl; 
+	cout << "Testing clock <" << aClock.getName() << "> BEGIN..." <<endl;
 	cout << "    Clock resolution is: " << aClock.getResolution() << " nano-seconds" <<endl;
 	tick1 = aClock.getCurrentTicksValue();
 	tick2 = aClock.getCurrentTicksValue();
 	cout << "    Tick1 = " << tick1 << endl;
 	cout << "    Tick2 = " << tick2 << endl;
 	cout << "    Delta = " << aClock.getDeltaNanoSecond(tick1,tick2) << " nano-seconds" <<endl;
-	cout << "Testing clock <" << aClock.getName() << "> END." <<endl; 
+	cout << "Testing clock <" << aClock.getName() << "> END." <<endl;
 }
 #ifdef HAVE_TSC_CLOCK
 #include "TSCClock.hh"
@@ -51,7 +51,6 @@ void clockTests(certi::Clock& aClock) {
 #include "PosixClock.hh"
 #endif
 
-#define HAVE_WIN_CLOCK 1
 #ifdef HAVE_WIN_CLOCK
 #include "WinClock.hh"
 #endif
@@ -86,7 +85,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	float    vf32  = 0.0;
 	double   vd64  = 0.0;
 	bool     vtrueBool  = false;
-	bool     vfalseBool = true;		
+	bool     vfalseBool = true;
 	cout << "Testing MessageBuffer class BEGIN..."<<endl;
 	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
 	cout << "    Current (initially void) MessageBuffer size = "<< MsgBuf.size()<<endl;
@@ -116,7 +115,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.read_bytes(vstr,vu32);
 	cout << "    bytes string = " << vstr << endl; assert(0==strcmp(str,vstr));
 	MsgBuf.read_uint8(&vu8); assert(vu8==u8);
-	MsgBuf.read_uint16(&vu16); assert(vu16==u16);	
+	MsgBuf.read_uint16(&vu16); assert(vu16==u16);
 	MsgBuf.read_uint32(&vu32); assert(vu32==u32);
 	MsgBuf.read_uint64(&vu64); assert(vu64==u64);
 	MsgBuf.read_int8(&vi8); assert(vi8==i8);
@@ -145,7 +144,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.write_double(d64);
 	cout << "   Read using alternative method..." <<endl;
 	vu8  = MsgBuf.read_uint8(); assert(vu8==u8);
-	vu16 = MsgBuf.read_uint16(); assert(vu16==u16);	
+	vu16 = MsgBuf.read_uint16(); assert(vu16==u16);
 	vu32 = MsgBuf.read_uint32(); assert(vu32==u32);
 	vu64 = MsgBuf.read_uint64(); assert(vu64==u64);
 	vi8  = MsgBuf.read_int8(); assert(vi8==i8);
@@ -169,7 +168,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.write_float(f32);cout << "        Written <"; certi::MessageBuffer::show(&f32,4); cout << ">" << endl;
 	MsgBuf.write_double(d64);cout << "        Written <"; certi::MessageBuffer::show(&d64,8); cout << ">" << endl;
 
-	cout << "    ...and assume it is ";    
+	cout << "    ...and assume it is ";
 	if (certi::MessageBuffer::HostIsBigEndian()) {
 		cout << "Little Endian";
 		MsgBuf.assumeBufferIsLittleEndian();
@@ -191,16 +190,16 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.read_float(&vf32);  cout << "        Read <"; certi::MessageBuffer::show(&vf32,4); cout << ">" << endl;
 	MsgBuf.read_double(&vd64); cout << "        Read <"; certi::MessageBuffer::show(&vd64,8); cout << ">" << endl;
 	delete[] vstr;
-	
+
 	cout << "    Trying to overload the buffer..." <<endl;
 	cout << "    Current (Default) MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
 	MsgBuf.reset();
 	u32 = MsgBuf.maxSize()*2;
 	vstr = new char[u32+1];
 	vstr[u32]='\0';
-	memset(vstr,'A',u32);	
+	memset(vstr,'A',u32);
 	MsgBuf.write_uint32(u32);
-	MsgBuf.write_chars(vstr,u32);	
+	MsgBuf.write_chars(vstr,u32);
 	cout << "    Written char* is " << vstr << endl;
 	u32 = MsgBuf.size();
 	delete[] vstr;
@@ -210,13 +209,13 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	cout << "    Forcibly resize the buffer to "<< MsgBuf.maxSize()*2 << endl;
 	MsgBuf.resize(MsgBuf.maxSize()*2);
 	cout << "    Current           MessageBuffer MaxSize               = "<< MsgBuf.maxSize() <<endl;
-    cout << "    Now reset buffer and assume size is                   = "<< u32 << endl; 	
+    cout << "    Now reset buffer and assume size is                   = "<< u32 << endl;
 	MsgBuf.reset();
 	MsgBuf.assumeSize(u32);
 	vstdstr = "";
 	vstdstr = MsgBuf.read_string();
 	cout << "    (re)Read String is   " << vstdstr << endl;
-	
+
 	cout << "    preparing a buffer for network send..." <<endl;
 	MsgBuf.reset();
 	MsgBuf.write_uint32(u32);
@@ -224,7 +223,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	MsgBuf.write_uint16(u16);
 	MsgBuf.updateReservedBytes();
 	cout << "    now (pseudo) sending a buffer of size " << MsgBuf.size() << " bytes ..." << endl;
-	memcpy(MsgBuf2(0),MsgBuf(0),MsgBuf.reservedBytes);	
+	memcpy(MsgBuf2(0),MsgBuf(0),MsgBuf.reservedBytes);
 	printf("MsgBuf = ");MsgBuf.show(MsgBuf(0),MsgBuf.reservedBytes);printf("\n");
 	printf("MsgBuf = ");MsgBuf2.show(MsgBuf(0),MsgBuf2.reservedBytes);printf("\n");
 	cout << "    now (pseudo) receiving buffer header of " << (uint32_t) MsgBuf.reservedBytes << " bytes ..." << endl;
@@ -242,14 +241,14 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 
 int
 main(int argc, char **argv)
-{	
-#ifdef HAVE_POSIX_CLOCK	
+{
+#ifdef HAVE_POSIX_CLOCK
 	certi::PosixClock posixClk;
 #endif
-#ifdef HAVE_TSC_CLOCK	
+#ifdef HAVE_TSC_CLOCK
 	certi::TSCClock   tscClk;
 #endif
-#ifdef HAVE_WIN_CLOCK	
+#ifdef HAVE_WIN_CLOCK
 	certi::WinClock   WinClk;
 #endif
 
@@ -264,7 +263,7 @@ main(int argc, char **argv)
 	if (certi::MessageBuffer::HostIsLittleEndian()) {
 		cout << "Little Endian";
 	}
-	cout << endl;	
+	cout << endl;
 	messageBufferTests(MsgBuf);
 
 #ifdef HAVE_TSC_CLOCK
