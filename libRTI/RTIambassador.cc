@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.94 2008/10/10 13:42:58 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.95 2008/10/10 15:18:23 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -197,12 +197,14 @@ RTI::RTIambassador::RTIambassador()
 RTI::RTIambassador::~RTIambassador()
     throw (RTIinternalError)
 {
-#ifdef _WIN32
-	TerminateProcess(privateRefs->handle_RTIA, 1);
-#else
-	kill(privateRefs->pid_RTIA, SIGINT);
-#endif
-delete privateRefs ;
+    Message req, rep ;
+
+    req.type = Message::CLOSE_CONNEXION;
+    G.Out(pdGendoc,"        ====>executeService CLOSE_CONNEXION");
+    privateRefs->executeService(&req, &rep);
+    // after the response is received, the privateRefs->socketUn must not be used
+
+    delete privateRefs;
 }
 
 // ----------------------------------------------------------------------------
@@ -3043,4 +3045,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.94 2008/10/10 13:42:58 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.95 2008/10/10 15:18:23 gotthardp Exp $

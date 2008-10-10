@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.37 2008/10/10 13:37:36 gotthardp Exp $
+// $Id: Message_W.cc,v 3.38 2008/10/10 15:18:22 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -94,6 +94,10 @@ Message::writeBody(MessageBuffer &msgBuffer)
 
         // 1- Prepare Body Structure according to Message type
         switch(type) {
+
+          // Empty body
+          case CLOSE_CONNEXION:
+            break;
 
           // Body contains federationName,FEDid
           case CREATE_FEDERATION_EXECUTION:
@@ -606,4 +610,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.37 2008/10/10 13:37:36 gotthardp Exp $
+// $Id: Message_W.cc,v 3.38 2008/10/10 15:18:22 gotthardp Exp $

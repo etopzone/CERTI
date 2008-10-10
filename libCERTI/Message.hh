@@ -80,6 +80,7 @@ public:
 
     enum Type {
         NOT_USED = 0,
+        CLOSE_CONNEXION,
 
         // gestion federation
         CREATE_FEDERATION_EXECUTION,

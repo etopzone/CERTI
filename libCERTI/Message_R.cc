@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.32 2008/10/10 13:37:36 gotthardp Exp $
+// $Id: Message_R.cc,v 3.33 2008/10/10 15:18:22 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -94,6 +94,10 @@ Message::readBody(MessageBuffer &msgBuffer)
 			this->trace("RTIG::chooseProcessingMethod ");
 
         switch(type) {
+
+          // Empty body
+          case CLOSE_CONNEXION:
+            break;
 
           // Body contains federationName, FEDid
           // Note : relevant only on federate request
@@ -646,4 +650,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.32 2008/10/10 13:37:36 gotthardp Exp $
+// $Id: Message_R.cc,v 3.33 2008/10/10 15:18:22 gotthardp Exp $

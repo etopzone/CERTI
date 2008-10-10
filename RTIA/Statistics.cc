@@ -56,6 +56,9 @@ Statistics::Statistics()
 	myDisplay = false ;
 
     if (!initialized) {
+        FED_MSG_NAME(Message::CLOSE_CONNEXION);
+
+        // Federation
 	FED_MSG_NAME(Message::CREATE_FEDERATION_EXECUTION);
 	FED_MSG_NAME(Message::DESTROY_FEDERATION_EXECUTION);
 	FED_MSG_NAME(Message::JOIN_FEDERATION_EXECUTION);
@@ -364,4 +367,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.16 2008/05/15 12:41:44 erk Exp $
+// $Id: Statistics.cc,v 3.17 2008/10/10 15:18:22 gotthardp Exp $

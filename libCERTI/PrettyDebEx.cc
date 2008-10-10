@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.4 2008/05/12 12:17:00 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.5 2008/10/10 15:18:23 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -63,6 +63,7 @@ if (type == 'M')
 	
 	switch (testMess)
 		{
+		case certi::Message::CLOSE_CONNEXION : strcat(theMessage,"CLOSE_CONNEXION"); break;
 		case certi::Message::CREATE_FEDERATION_EXECUTION :							strcat(theMessage,"CREATE_FEDERATION_EXECUTION"); break;
 		case certi::Message::DESTROY_FEDERATION_EXECUTION :						strcat(theMessage,"DESTROY_FEDERATION_EXECUTION"); break;
 		case certi::Message::JOIN_FEDERATION_EXECUTION :							strcat(theMessage,"JOIN_FEDERATION_EXECUTION"); break;
@@ -307,4 +308,4 @@ PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, theMessage);
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.4 2008/05/12 12:17:00 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.5 2008/10/10 15:18:23 gotthardp Exp $

@@ -67,6 +67,7 @@ G.Out(pdGendoc,"enter RTIA::saveAndRestoreStatus");
 //D.Mes(pdMessage, 'N', type);
 
     switch (type) {
+      case Message::CLOSE_CONNEXION:
       case Message::RESIGN_FEDERATION_EXECUTION:
       case Message::TICK_REQUEST:
       case Message::TICK_REQUEST_NEXT:
@@ -122,6 +123,13 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
     e = e_NO_EXCEPTION ;
 
     switch(req->type) {
+
+      case Message::CLOSE_CONNEXION:
+        D.Out(pdTrace,
+              "Receiving Message from Federate, type CloseConnexion.");
+        fm->_fin_execution = true;
+        // the this->comm can now be used only to sent the CLOSE_CONNEXION response
+        break ;
 
       case Message::CREATE_FEDERATION_EXECUTION:
         D.Out(pdTrace,
