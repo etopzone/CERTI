@@ -53,6 +53,7 @@ void clockTests(certi::Clock& aClock) {
 
 #ifdef HAVE_WIN_CLOCK
 #include "WinClock.hh"
+#include "WinPerfClock.hh"
 #endif
 
 
@@ -249,7 +250,8 @@ main(int argc, char **argv)
 	certi::TSCClock   tscClk;
 #endif
 #ifdef HAVE_WIN_CLOCK
-	certi::WinClock   WinClk;
+	certi::WinClock       WinClk;
+	certi::WinPerfClock   WinPerfClk;
 #endif
 
 	certi::MessageBuffer MsgBuf;
@@ -274,6 +276,7 @@ main(int argc, char **argv)
 #endif
 #ifdef HAVE_WIN_CLOCK
 	clockTests(WinClk);
+	clockTests(WinPerfClk);
 #endif
 
 	cout << "CERTI Utility Test->END." <<endl;

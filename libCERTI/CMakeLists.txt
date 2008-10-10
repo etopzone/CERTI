@@ -93,7 +93,8 @@ ENDIF(HAVE_TSC_CLOCK)
 IF (HAVE_WIN_CLOCK)
     SET(CERTI_SUPPORT_SRCS 
            ${CERTI_SUPPORT_SRCS}
-           WinClock.cc WinClock.hh)              
+           WinClock.cc WinClock.hh 
+           WinPerfClock.cc WinPerfClock.hh)              
 ENDIF(HAVE_WIN_CLOCK)
 
 SET(CERTI_SOCKET_SRCS
