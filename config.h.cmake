@@ -109,4 +109,7 @@
 /* Define to 1 if the processor have TSC support */
 #cmakedefine HAVE_TSC_CLOCK 1
 
+/* Define to 1 if the processor have WIN support */
+#cmakedefine HAVE_WIN_CLOCK 1
+
 

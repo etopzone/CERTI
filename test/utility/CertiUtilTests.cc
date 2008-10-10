@@ -51,6 +51,12 @@ void clockTests(certi::Clock& aClock) {
 #include "PosixClock.hh"
 #endif
 
+#define HAVE_WIN_CLOCK 1
+#ifdef HAVE_WIN_CLOCK
+#include "WinClock.hh"
+#endif
+
+
 void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	certi::MessageBuffer MsgBuf2;
 	std::string    stdstr = "a std:string";
@@ -63,7 +69,7 @@ void messageBufferTests(certi::MessageBuffer& MsgBuf) {
 	int32_t  i32  = -9999;
 	uint64_t u64  = 0xFFEEDDCC;
 	int64_t  i64  = -1000000000;
-	float    f32  = 3.1415927;
+	float    f32  = 3.1415927f;
 	double   d64  = 2.7182818;
 	bool     trueBool  = true;
 	bool     falseBool = false;
@@ -243,6 +249,10 @@ main(int argc, char **argv)
 #ifdef HAVE_TSC_CLOCK	
 	certi::TSCClock   tscClk;
 #endif
+#ifdef HAVE_WIN_CLOCK	
+	certi::WinClock   WinClk;
+#endif
+
 	certi::MessageBuffer MsgBuf;
 
 	cout << "CERTI Utility Tests->BEGIN..."<< endl ;
@@ -256,13 +266,18 @@ main(int argc, char **argv)
 	}
 	cout << endl;	
 	messageBufferTests(MsgBuf);
+
 #ifdef HAVE_TSC_CLOCK
 	clockTests(tscClk);
 #endif
 #ifdef HAVE_POSIX_CLOCK
 	clockTests(posixClk);
 #endif
-	cout << "CERTI Utility Test->END." <<endl;
+#ifdef HAVE_WIN_CLOCK
+	clockTests(WinClk);
+#endif
 
+	cout << "CERTI Utility Test->END." <<endl;
+getchar();
 	return 0;
 }

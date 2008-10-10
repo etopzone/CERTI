@@ -90,6 +90,12 @@ IF (HAVE_TSC_CLOCK)
            TSCClock.cc TSCClock.hh)              
 ENDIF(HAVE_TSC_CLOCK)
 
+IF (HAVE_WIN_CLOCK)
+    SET(CERTI_SUPPORT_SRCS 
+           ${CERTI_SUPPORT_SRCS}
+           WinClock.cc WinClock.hh)              
+ENDIF(HAVE_WIN_CLOCK)
+
 SET(CERTI_SOCKET_SRCS
 SocketServer.cc
 SocketTCP.cc
@@ -103,7 +109,6 @@ SecurityServer.hh
 GSSAPIHandler.hh
 Socket.hh
 )
-
 
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
 

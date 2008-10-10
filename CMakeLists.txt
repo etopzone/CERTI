@@ -207,6 +207,7 @@ IF (WIN32)
 	#                          NAMES Ws2_32
 	#			DOC "The Winsock2 library")
 	SET(SOCKET_LIBRARY Ws2_32)
+	SET(HAVE_WIN_CLOCK 1)
 ENDIF (WIN32)
 
 ################ LIBXML2 install Check ####################
