@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.36 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: Message_W.cc,v 3.37 2008/10/10 13:37:36 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -437,6 +437,20 @@ Message::writeBody(MessageBuffer &msgBuffer)
             msgBuffer.write_int64(order);  
             break ;
 
+          // Body contains name,transport
+          case GET_TRANSPORTATION_HANDLE:
+          case GET_TRANSPORTATION_NAME:
+            msgBuffer.write_string(name);
+            msgBuffer.write_int64(transport);
+            break ;
+
+          // Body contains name,order
+          case GET_ORDERING_HANDLE:
+          case GET_ORDERING_NAME:
+            msgBuffer.write_string(name);
+            msgBuffer.write_int64(order);  
+            break ;
+
           // Body contains region,extents            
 	  case DDM_MODIFY_REGION:
             msgBuffer.write_int64(region);
@@ -592,4 +606,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.36 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: Message_W.cc,v 3.37 2008/10/10 13:37:36 gotthardp Exp $
