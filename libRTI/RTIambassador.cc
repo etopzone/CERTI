@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.93 2008/10/02 09:52:28 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.94 2008/10/10 13:42:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -574,11 +574,11 @@ RTI::RTIambassador::tick(TickTime minimum, TickTime maximum)
 // ----------------------------------------------------------------------------
 //! Get Region Token.
 RTI::RegionToken
-RTI::RTIambassador::getRegionToken(Region *)
+RTI::RTIambassador::getRegionToken(Region *region)
     throw (RTI::FederateNotExecutionMember, RTI::ConcurrentAccessAttempted,
            RTI::RegionNotKnown, RTI::RTIinternalError)
 {
-    throw UnimplementedService("");
+    return get_handle(*region);
 }
 
 // ----------------------------------------------------------------------------
@@ -2888,7 +2888,6 @@ RTI::RTIambassador::getTransportationHandle(const char *theName)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::FederateNotExecutionMember, RTI::NameNotFound)
 {
-    throw UnimplementedService("");
     Message req, rep ;
     req.type = Message::GET_TRANSPORTATION_HANDLE ;
     req.setName(theName);
@@ -2903,7 +2902,6 @@ RTI::RTIambassador::getTransportationName(TransportationHandle theHandle)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::FederateNotExecutionMember, RTI::InvalidTransportationHandle)
 {
-    throw UnimplementedService("");
     Message req, rep ;
     req.type = Message::GET_TRANSPORTATION_NAME ;
     req.setTransportation(theHandle);
@@ -2918,7 +2916,6 @@ RTI::RTIambassador::getOrderingHandle(const char *theName)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::FederateNotExecutionMember, RTI::NameNotFound)
 {
-    throw UnimplementedService("");
     Message req, rep ;
     req.type = Message::GET_ORDERING_HANDLE ;
     req.setName(theName);
@@ -2934,7 +2931,6 @@ RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
     throw (RTI::RTIinternalError, RTI::ConcurrentAccessAttempted, 
 	   RTI::FederateNotExecutionMember, RTI::InvalidOrderingHandle)
 {
-    throw UnimplementedService("");
     Message req, rep ;
     req.type = Message::GET_ORDERING_NAME ;
     req.setOrdering(theHandle);
@@ -3047,4 +3043,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.93 2008/10/02 09:52:28 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.94 2008/10/10 13:42:58 gotthardp Exp $
