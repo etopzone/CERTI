@@ -52,6 +52,20 @@ namespace rtia {
 static PrettyDebug D("RTIA_OM", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
+const ObjectManagement::TransportTypeList
+ObjectManagement::transportTypeList[] = {
+    { "HLAreliable", RELIABLE },
+    { "HLAbestEffort", BEST_EFFORT },
+    { NULL }
+};
+
+const ObjectManagement::OrderTypeList
+ObjectManagement::orderTypeList[] = {
+    { "Receive", RECEIVE },
+    { "Timestamp", TIMESTAMP },
+    { NULL }
+};
+
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
                                    RootObject *theRootObj)
@@ -844,13 +858,6 @@ ObjectManagement::getTransportationHandle(const char *theName)
     throw NameNotFound(theName);
 }
 
-const ObjectManagement::TransportTypeList
-ObjectManagement::transportTypeList[] = {
-    { "HLAreliable", RELIABLE },
-    { "HLAbestEffort", BEST_EFFORT },
-    { NULL }
-};
-
 // ----------------------------------------------------------------------------
 //! getTransportationName
 const char *
@@ -876,13 +883,6 @@ ObjectManagement::getOrderingHandle(const char *theName)
 
     throw NameNotFound(theName);
 }
-
-const ObjectManagement::OrderTypeList
-ObjectManagement::orderTypeList[] = {
-    { "Receive", RECEIVE },
-    { "Timestamp", TIMESTAMP },
-    { NULL }
-};
 
 // ----------------------------------------------------------------------------
 //! getOrderingName
