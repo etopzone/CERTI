@@ -1,6 +1,7 @@
 /**
- * \page Installation Installing and using CERTI SDK
- * 
+ * \page install Installing CERTI SDK 
+ *
+ * \addindex installation
  * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
  * The primary distribution format is gzip compressed tar source archive (.tar.gz)
  * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.

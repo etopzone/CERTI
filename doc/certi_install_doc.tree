@@ -23,27 +23,17 @@
 */
  
 /**
- * @mainpage
- * \section intro_sec Introduction
+ * \page index
  *
+ * <h1> CERTI Installation Documentation </h1>
+ * \n
  * This is the CERTI installation documentation.
- * CERTI is an Open Source HLA compliant  
- * <a href="http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)">
- * RunTime Infrastructure (RTI)</a>.
- * You'll find hereafter the documentation for building and installing CERTI.
- * CERTI is primarily developed and maintained by the Toulouse research center of ONERA [http://www.onera.fr], the French Aerospace Labs. 
- * The primary goal of CERTI is to be used in research activities but CERTI has a growing
- * number of users and contributors among the CERTI Open Source community.
+ * The installation documentation is divided into several part:
  * 
- * People interested in CERTI may join the CERTI Open Source
- * community at <a href="https://savannah.nongnu.org/projects/certi">
- * https://savannah.nongnu.org/projects/certi </a> and/or
- * by using the mailing list 
- * <a href="http://lists.nongnu.org/mailman/listinfo/certi-devel">
- * http://lists.nongnu.org/mailman/listinfo/certi-devel </a>
- * for discussion regarding CERTI usage.
- *
- * \subpage Installation
+ * <ul>
+ *  <li>Section \ref intro</li>
+ *  <li>Section \ref install</li>
+ * </ul> 
  *
  */
  

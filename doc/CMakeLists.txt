@@ -22,14 +22,12 @@ IF (BUILD_DOC)
     ENDIF(DOXYGEN_FOUND)              
 ENDIF(BUILD_DOC)
 
-IF (DOXYGEN_FOUND)
-  #pages global to all documentation  
-  SET(CERTI_STATIC_PAGES certi_header.html certi_footer.html)
+IF (DOXYGEN_FOUND)  
   #install documentation
   IF (BUILD_DOC_INSTALL)  
       DoxyTools_ADD_DocSet(Install
                            CONFIG_FILE certi_install.cnf
-                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           INPUT_FILES certi_install_header.html certi_footer.html
                            DOC_TYPE    html
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/install
                            COMMENTS "CERTI installation documentation"
@@ -40,7 +38,7 @@ IF (DOXYGEN_FOUND)
   IF (BUILD_DOC_USER)  
       DoxyTools_ADD_DocSet(User
                            CONFIG_FILE certi_user.cnf
-                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           INPUT_FILES certi_header.html certi_footer.html
                            DOC_TYPE    html
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/user
                            COMMENTS "CERTI user documentation"
@@ -51,7 +49,7 @@ IF (DOXYGEN_FOUND)
   IF (BUILD_DOC_DEVELOPER)  
       DoxyTools_ADD_DocSet(Developer
                            CONFIG_FILE certi_developer.cnf
-                           INPUT_FILES ${CERTI_STATIC_PAGES}
+                           INPUT_FILES certi_header.html certi_footer.html
                            DOC_TYPE    html
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/developer
                            COMMENTS "CERTI developer documentation"
