@@ -112,8 +112,6 @@ G.Out(pdGendoc,"exit  RTIA::saveAndRestoreStatus");
 //! Choose federate processing.
 void
 RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
-       throw (CouldNotOpenFED,FederationExecutionAlreadyExists,ErrorReadingFED,
-              FederateAlreadyExecutionMember,SaveInProgress,RestoreInProgress)
 {
     G.Out(pdGendoc,"enter RTIA::chooseFederateProcessing for type = %d",req->type);
 
@@ -889,6 +887,26 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D[pdTrace] << "Message from Federate: getObjectClass" << endl ;
 	rep.setObjectClass(om->getObjectClass(req->getObject()));
 	break ;	
+
+      case Message::GET_TRANSPORTATION_HANDLE:
+        D[pdTrace] << "Message from Federate: getTransportationHandle" << endl ;
+        rep.setTransportation(om->getTransportationHandle(req->getName().c_str()));
+        break ;	
+
+      case Message::GET_TRANSPORTATION_NAME:
+        D[pdTrace] << "Message from Federate: getTransportationName" << endl ;
+        rep.setName(om->getTransportationName(req->getTransportation()));
+        break ;	
+
+      case Message::GET_ORDERING_HANDLE:
+        D[pdTrace] << "Message from Federate: getOrderingHandle" << endl ;
+        rep.setOrdering(om->getOrderingHandle(req->getName().c_str()));
+        break ;	
+
+      case Message::GET_ORDERING_NAME:
+        D[pdTrace] << "Message from Federate: getOrderingName" << endl ;
+        rep.setName(om->getOrderingName(req->getOrdering()));
+        break ;	
 
       case Message::DDM_CREATE_REGION:
         D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;

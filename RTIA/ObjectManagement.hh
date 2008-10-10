@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.25 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: ObjectManagement.hh,v 3.26 2008/10/10 14:04:48 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -249,6 +249,24 @@ public:
 
     ObjectClassHandle getObjectClass(ObjectHandle);
 
+    struct TransportTypeList {
+        const char *name;
+        TransportType type;
+    };
+    static const TransportTypeList transportTypeList[];
+
+    TransportType getTransportationHandle(const char *theName);
+    const char *getTransportationName(TransportType theType);
+
+    struct OrderTypeList {
+        const char *name;
+        OrderType type;
+    };
+    static const OrderTypeList orderTypeList[];
+
+    OrderType getOrderingHandle(const char *theName);
+    const char *getOrderingName(OrderType theType);
+
     TimeManagement *tm ;
 
 protected:
@@ -263,4 +281,4 @@ protected:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.25 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: ObjectManagement.hh,v 3.26 2008/10/10 14:04:48 gotthardp Exp $

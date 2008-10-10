@@ -831,6 +831,72 @@ ObjectManagement::getObjectClass(ObjectHandle object)
     return rootObject->objects->getObjectClass(object);
 }
 
+// ----------------------------------------------------------------------------
+//! getTransportationHandle
+TransportType
+ObjectManagement::getTransportationHandle(const char *theName)
+{
+    for(const TransportTypeList *item = transportTypeList; item->name != NULL; item++) {
+        if(strcmp(theName, item->name) == 0)
+            return item->type;
+    }
+
+    throw NameNotFound(theName);
+}
+
+const ObjectManagement::TransportTypeList
+ObjectManagement::transportTypeList[] = {
+    { "HLAreliable", RELIABLE },
+    { "HLAbestEffort", BEST_EFFORT },
+    { NULL }
+};
+
+// ----------------------------------------------------------------------------
+//! getTransportationName
+const char *
+ObjectManagement::getTransportationName(TransportType theType)
+{
+    for(const TransportTypeList *item = transportTypeList; item->name != NULL; item++) {
+        if(theType == item->type)
+            return item->name;
+    }
+
+    throw InvalidTransportationHandle("");
+}
+
+// ----------------------------------------------------------------------------
+//! getOrderingHandle
+OrderType
+ObjectManagement::getOrderingHandle(const char *theName)
+{
+    for(const OrderTypeList *item = orderTypeList; item->name != NULL; item++) {
+        if(strcmp(theName, item->name) == 0)
+            return item->type;
+    }
+
+    throw NameNotFound(theName);
+}
+
+const ObjectManagement::OrderTypeList
+ObjectManagement::orderTypeList[] = {
+    { "Receive", RECEIVE },
+    { "Timestamp", TIMESTAMP },
+    { NULL }
+};
+
+// ----------------------------------------------------------------------------
+//! getOrderingName
+const char *
+ObjectManagement::getOrderingName(OrderType theType)
+{
+    for(const OrderTypeList *item = orderTypeList; item->name != NULL; item++) {
+        if(theType == item->type)
+            return item->name;
+    }
+
+    throw InvalidOrderingHandle("");
+}
+
 // --------------------------------------
 // setAttributeScopeAdvisorySwitch
 // --------------------------------------
