@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.15 2008/06/23 12:49:15 erk Exp $
+// $Id: Communications.hh,v 3.16 2008/10/11 12:53:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -39,12 +39,7 @@
 namespace certi {
 namespace rtia {
 
-class Communications : public SocketUN,
-#ifdef FEDERATION_USES_MULTICAST
-                       public SocketMC,
-#endif
-                       public SecureTCPSocket,
-                       public SocketUDP
+class Communications
 {
 public:
     Communications(int RTIA_port);
@@ -71,6 +66,14 @@ public:
     MessageBuffer NM_msgBufSend,NM_msgBufReceive;
     MessageBuffer msgBufSend, msgBufReceive ;
 
+protected:
+    SocketUN *socketUN;
+#ifdef FEDERATION_USES_MULTICAST
+    SocketMC *socketMC;
+#endif
+    SocketTCP *socketTCP;
+    SocketUDP *socketUDP;
+
 private:
 	/**
 	 * this is the wait list of message 
@@ -88,4 +91,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.15 2008/06/23 12:49:15 erk Exp $
+// $Id: Communications.hh,v 3.16 2008/10/11 12:53:52 gotthardp Exp $

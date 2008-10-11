@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.31 2008/06/23 12:49:15 erk Exp $
+// $Id: Communications.cc,v 3.32 2008/10/11 12:53:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -72,14 +72,14 @@ NetworkMessage* Communications::waitMessage(
 
     // Otherwise, wait for a message with same type than expected and with
     // same federate number.
-    msg = NM_Factory::receive((SecureTCPSocket *) this);    
+    msg = NM_Factory::receive(socketTCP);
 
     D.Out(pdProtocol, "TCP Message of Type %d has arrived.", type_msg);
 
     while ((msg->getType() != type_msg) ||
            ((numeroFedere != 0) && (msg->federate != numeroFedere))) {
         waitingList.push_back(msg);
-        msg = NM_Factory::receive((SecureTCPSocket *) this);        
+        msg = NM_Factory::receive(socketTCP);
         D.Out(pdProtocol, "Message of Type %d has arrived.", type_msg);
     }
     
@@ -91,13 +91,19 @@ NetworkMessage* Communications::waitMessage(
 // ----------------------------------------------------------------------------
 //! Communications.
 Communications::Communications(int RTIA_port)
-    : SocketUN(), SecureTCPSocket(), SocketUDP()
 {
     char nom_serveur_RTIG[200] ;
     const char *default_host = "localhost" ;
 
+    socketUN = new SocketUN();
+#ifdef FEDERATION_USES_MULTICAST
+    socketMC = new SocketMC();
+#endif
+    socketTCP = new SecureTCPSocket();
+    socketUDP = new SocketUDP();
+
     // Federate/RTIA link creation.
-    acceptUN(RTIA_port);
+    socketUN->acceptUN(RTIA_port);
 
     // RTIG TCP link creation.
     const char *certihost = NULL ;
@@ -120,8 +126,8 @@ Communications::Communications(int RTIA_port)
     if (tcp_port==NULL) tcp_port = PORT_TCP_RTIG ;
     if (udp_port==NULL) udp_port = PORT_UDP_RTIG ;
 
-    createTCPClient(atoi(tcp_port), certihost);
-    createUDPClient(atoi(udp_port), certihost);
+    socketTCP->createTCPClient(atoi(tcp_port), certihost);
+    socketUDP->createUDPClient(atoi(udp_port), certihost);
 }
 
 // ----------------------------------------------------------------------------
@@ -132,8 +138,15 @@ Communications::~Communications()
     G.Out(pdGendoc,"enter Communications::~Communications");
 
     NM_Close_Connexion closeMsg ;    
-    closeMsg.send((SecureTCPSocket *) this, NM_msgBufSend);
-    SecureTCPSocket::close();
+    closeMsg.send(socketTCP, NM_msgBufSend);
+    socketTCP->close();
+
+    delete socketUN;
+#ifdef FEDERATION_USES_MULTICAST
+    delete socketMC;
+#endif
+    delete socketTCP;
+    delete socketUDP;
 
     G.Out(pdGendoc,"exit  Communications::~Communications");
 }
@@ -147,7 +160,7 @@ Communications::requestFederateService(Message *req)
     //               "type %d",req->type);
     assert(req != NULL);
     D.Out(pdRequest, "Sending Request to Federate, Type %d.", req->type);
-    sendUN(req);
+    req->send(socketUN, msgBufSend);
     // G.Out(pdGendoc,"exit  Communications::requestFederateService");
 }
 
@@ -155,14 +168,14 @@ Communications::requestFederateService(Message *req)
 unsigned long
 Communications::getAddress()
 {
-    return((SocketUDP *) this)->getAddr();
+    return socketUDP->getAddr();
 }
 
 // ----------------------------------------------------------------------------
 unsigned int
 Communications::getPort()
 {
-    return((SocketUDP *) this)->getPort();
+    return socketUDP->getPort();
 }
 
 // ----------------------------------------------------------------------------
@@ -174,8 +187,8 @@ void
 Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
                             struct timeval *timeout)
 {
-    const int tcp_fd(SecureTCPSocket::returnSocket());
-    const int udp_fd(SocketUDP::returnSocket());
+    const int tcp_fd(socketTCP->returnSocket());
+    const int udp_fd(socketUDP->returnSocket());
 
     int max_fd = 0; // not used for _WIN32
     fd_set fdset ;
@@ -189,9 +202,9 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
 #endif
     }
     if (msg) {
-        FD_SET(_socket_un, &fdset);
+        FD_SET(socketUN->returnSocket(), &fdset);
 #ifndef _WIN32
-	max_fd = std::max(max_fd, _socket_un);
+	max_fd = std::max(max_fd, socketUN->returnSocket());
 #endif
     }
 
@@ -211,23 +224,23 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
         waitingList.pop_front();                
         n = 1 ;
     }
-    else if (msg_reseau && SecureTCPSocket::isDataReady()) {
+    else if (msg_reseau && socketTCP->isDataReady()) {
         // Datas are in TCP waiting buffer.
         // Read a message from RTIG TCP link.
-    	*msg_reseau = NM_Factory::receive((SecureTCPSocket *) this);        
+    	*msg_reseau = NM_Factory::receive(socketTCP);
         n = 1 ;
     }
-    else if (msg_reseau && SocketUDP::isDataReady()) {
+    else if (msg_reseau && socketUDP->isDataReady()) {
         // Datas are in UDP waiting buffer.
         // Read a message from RTIG UDP link.
-    	*msg_reseau = NM_Factory::receive((SocketUDP *) this);       
+    	*msg_reseau = NM_Factory::receive(socketUDP);
         n = 1 ;
     }
-    else if (msg && SocketUN::isDataReady()) {
+    else if (msg && socketUN->isDataReady()) {
         // Datas are in UNIX waiting buffer.
         // Read a message from federate UNIX link.
     	(*msg) = new Message();
-        (*msg)->receive((SocketUN *) this,msgBufReceive);
+        (*msg)->receive(socketUN, msgBufReceive);
         n = 2 ;
     }
     else {
@@ -261,20 +274,20 @@ Communications::readMessage(int &n, NetworkMessage **msg_reseau, Message **msg,
         }
 #endif
 
-        if (FD_ISSET(SecureTCPSocket::returnSocket(), &fdset)) {
+        if (FD_ISSET(socketTCP->returnSocket(), &fdset)) {
             // Read a message coming from the TCP link with RTIG.
-        	(*msg_reseau) = NM_Factory::receive((SecureTCPSocket *) this);            
+        	(*msg_reseau) = NM_Factory::receive(socketTCP);
             n = 1 ;
         }
-        else if (FD_ISSET(SocketUDP::returnSocket(), &fdset)) {
+        else if (FD_ISSET(socketUDP->returnSocket(), &fdset)) {
             // Read a message coming from the UDP link with RTIG.
-        	(*msg_reseau) = NM_Factory::receive((SocketUDP *) this);        	
+        	(*msg_reseau) = NM_Factory::receive(socketUDP);
             n = 1 ;
         }
-        else if (FD_ISSET(_socket_un, &fdset)) {
+        else if (FD_ISSET(socketUN->returnSocket(), &fdset)) {
             // Read a message coming from the federate.            
             (*msg) = new Message();
-            receiveUN(*msg);
+            (*msg)->receive(socketUN, msgBufReceive);
             n = 2 ;
         }
         else
@@ -320,23 +333,23 @@ Communications::searchMessage(NetworkMessage::Type type_msg,
 void
 Communications::sendMessage(NetworkMessage *Msg)
 {
-    Msg->send((SecureTCPSocket *) this,NM_msgBufSend);
+    Msg->send(socketTCP, NM_msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
 void
 Communications::sendUN(Message *Msg)
 {
-    Msg->send((SocketUN *) this,msgBufSend);
+    Msg->send(socketUN, msgBufSend);
 }
 
 // ----------------------------------------------------------------------------
 void
 Communications::receiveUN(Message *Msg)
 {
-    Msg->receive((SocketUN *) this,msgBufReceive);
+    Msg->receive(socketUN, msgBufReceive);
 }
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.31 2008/06/23 12:49:15 erk Exp $
+// $Id: Communications.cc,v 3.32 2008/10/11 12:53:52 gotthardp Exp $

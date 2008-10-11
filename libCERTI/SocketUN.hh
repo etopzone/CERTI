@@ -74,6 +74,12 @@ public:
 
 	bool isDataReady();
 
+    #ifdef _WIN32
+        SOCKET returnSocket();
+    #else
+        int returnSocket();
+    #endif
+
 	void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
 	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
 

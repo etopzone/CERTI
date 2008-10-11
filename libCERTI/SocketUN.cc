@@ -390,6 +390,17 @@ SocketUN::isDataReady()
 }
 
 // ----------------------------------------------------------------------------
+#ifdef _WIN32
+SOCKET
+#else
+int
+#endif
+SocketUN::returnSocket()
+{
+    return _socket_un;
+}
+
+// ----------------------------------------------------------------------------
 void
 SocketUN::receive(const unsigned char *buffer, size_t Size)
     throw (NetworkError, NetworkSignal)
