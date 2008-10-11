@@ -1,0 +1,2 @@
+MESSAGE(STATUS "Now installing doc set <@DOCSET@> ...")
+EXECUTE_PROCESS(COMMAND @CMAKE_COMMAND@ -E copy_directory @DoxyTools_OUTPUT_DIR@ @CMAKE_INSTALL_PREFIX@/share/doc/certi/@DOCSET@)

@@ -1,63 +1,7 @@
 /**
- * \page install Installing CERTI SDK 
+ * \page install Using CERTI 
  *
- * \addindex installation
- * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
- * The primary distribution format is gzip compressed tar source archive (.tar.gz)
- * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
- *
- * CERTI build system uses  <a href="http://www.cmake.org/">CMake,  http://www.cmake.org/ </a>
- * which is a cross-platform build system generator. CMake should be used to 
- * compile CERTI SDK on a variety of platform/compiler combination like:
- * <ul>
- *   <li> Linux x86 / gcc </li>
- *   <li> Linux x86_64 / gcc </li>
- *   <li> Solaris Sparc / Sun Studio </li>
- *   <li> Windows / Visual Studio </li>
- *   <li> Windows / Code::Blocks+MinGW </li>
- *   <li> ... </li>
- * </ul>
- * 
- * You may follow generic CMake usage instruction for building CERTI
- * on various platforms:  <a href="http://www.cmake.org/cmake/help/runningcmake.html">Running CMake,  http://www.cmake.org/cmake/help/runningcmake.html://www.cmake.org/ </a>
- * or you may try to follow the below CERTI CMake usage.
- * 
- * \section certi_sdk_TARGZ Tarball based SDK
- * 
- * If you get a tarball source CERTI distribution such as you may found in the download 
- * section of the Savannah project 
- * <a>http://download.savannah.nongnu.org/releases/certi/</a>, 
- * you should follow these steps: 
- * <ol>
- * <li>untar the archive: tar zxvf certi-\<version\>-Source.tar.gz 
- *     this should create a certi-\<version\>-Source directory
- * </li>
- * \verbatim
- tar zxvf certi-3.2.4-Source.tar.gz
- ... wait for tar ending ... \endverbatim
- * <li>Prepare separate build directory and run CMake
- * </li>
- * \verbatim
- mkdir build_certi
- cd build_certi
- cmake -DCMAKE_INSTALL_PREFIX=/path/to/install /path/to/certi-\<version\>-Source
- ... wait for cmake run  ending ... \endverbatim
- * <li>compile your certi</li>
- * \verbatim
- make
- ... wait the compilation end ... \endverbatim
- <li> Then you may either install CERTI or build
-      a binary package that will be usable for installation</li>
- <ul>
- * <li>install CERTI</li>
- * \verbatim
- make install
- ... wait for make install end ... \endverbatim
- * <li>build your binary package </li>
- * \verbatim
- make package \endverbatim
- </ul>
- * </ol>
- * After that you will have a compiled and usable CERTI package.
+ * \addindex using
  *  
+ * Using CERTI blah blah ....
  */

@@ -53,29 +53,19 @@ CREATE_SUBDIRS         = NO
 
 OUTPUT_LANGUAGE        = English
 
-# This tag can be used to specify the encoding used in the generated output. 
-# The encoding is not always determined by the language that is chosen, 
-# but also whether or not the output is meant for Windows or non-Windows users. 
-# In case there is a difference, setting the USE_WINDOWS_ENCODING tag to YES 
-# forces the Windows encoding (this is the default for the Windows binary), 
-# whereas setting the tag to NO uses a Unix-style encoding (the default for 
-# all platforms other than Windows).
-
-USE_WINDOWS_ENCODING   = NO
-
 # If the BRIEF_MEMBER_DESC tag is set to YES (the default) Doxygen will 
 # include brief member descriptions after the members that are listed in 
 # the file and class documentation (similar to JavaDoc). 
 # Set to NO to disable this.
 
-BRIEF_MEMBER_DESC      = YES
+BRIEF_MEMBER_DESC      = NO
 
 # If the REPEAT_BRIEF tag is set to YES (the default) Doxygen will prepend 
 # the brief description of a member or function before the detailed description. 
 # Note: if both HIDE_UNDOC_MEMBERS and BRIEF_MEMBER_DESC are set to NO, the 
 # brief descriptions will be completely suppressed.
 
-REPEAT_BRIEF           = YES
+REPEAT_BRIEF           = NO
 
 # This tag implements a quasi-intelligent brief description abbreviator 
 # that is used to form the text in various listings. Each string 
@@ -159,7 +149,7 @@ DETAILS_AT_TOP         = NO
 # member inherits the documentation from any documented member that it 
 # re-implements.
 
-INHERIT_DOCS           = YES
+INHERIT_DOCS           = NO
 
 # If member grouping is used in the documentation and the DISTRIBUTE_GROUP_DOC 
 # tag is set to YES, then doxygen will reuse the documentation of the first 
@@ -213,23 +203,23 @@ SUBGROUPING            = YES
 # Private class members and static file members will be hidden unless 
 # the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES
 
-EXTRACT_ALL            = YES
+EXTRACT_ALL            = NO
 
 # If the EXTRACT_PRIVATE tag is set to YES all private members of a class 
 # will be included in the documentation.
 
-EXTRACT_PRIVATE        = YES
+EXTRACT_PRIVATE        = NO
 
 # If the EXTRACT_STATIC tag is set to YES all static members of a file 
 # will be included in the documentation.
 
-EXTRACT_STATIC         = YES
+EXTRACT_STATIC         = NO
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs) 
 # defined locally in source files will be included in the documentation. 
 # If set to NO only classes defined in header files are included.
 
-EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_CLASSES  = NO
 
 # This flag is only useful for Objective-C code. When set to YES local 
 # methods, which are defined in the implementation section but not in 
@@ -272,7 +262,7 @@ HIDE_IN_BODY_DOCS      = NO
 # to NO (the default) then the documentation will be excluded. 
 # Set it to YES to include the internal documentation.
 
-INTERNAL_DOCS          = YES
+INTERNAL_DOCS          = NO
 
 # If the CASE_SENSE_NAMES tag is set to NO then Doxygen will only generate 
 # file names in lower-case letters. If set to YES upper-case letters are also 
@@ -292,19 +282,19 @@ HIDE_SCOPE_NAMES       = YES
 # will put a list of the files that are included by a file in the documentation 
 # of that file.
 
-SHOW_INCLUDE_FILES     = YES
+SHOW_INCLUDE_FILES     = NO
 
 # If the INLINE_INFO tag is set to YES (the default) then a tag [inline] 
 # is inserted in the documentation for inline members.
 
-INLINE_INFO            = YES
+INLINE_INFO            = NO
 
 # If the SORT_MEMBER_DOCS tag is set to YES (the default) then doxygen 
 # will sort the (detailed) documentation of file and class members 
 # alphabetically by member name. If set to NO the members will appear in 
 # declaration order.
 
-SORT_MEMBER_DOCS       = YES
+SORT_MEMBER_DOCS       = NO
 
 # If the SORT_BRIEF_DOCS tag is set to YES then doxygen will sort the 
 # brief documentation of file, namespace and class members alphabetically 
@@ -327,30 +317,30 @@ SORT_BY_SCOPE_NAME     = NO
 # disable (NO) the todo list. This list is created by putting \todo 
 # commands in the documentation.
 
-GENERATE_TODOLIST      = YES
+GENERATE_TODOLIST      = NO
 
 # The GENERATE_TESTLIST tag can be used to enable (YES) or 
 # disable (NO) the test list. This list is created by putting \test 
 # commands in the documentation.
 
-GENERATE_TESTLIST      = YES
+GENERATE_TESTLIST      = NO
 
 # The GENERATE_BUGLIST tag can be used to enable (YES) or 
 # disable (NO) the bug list. This list is created by putting \bug 
 # commands in the documentation.
 
-GENERATE_BUGLIST       = YES
+GENERATE_BUGLIST       = NO
 
 # The GENERATE_DEPRECATEDLIST tag can be used to enable (YES) or 
 # disable (NO) the deprecated list. This list is created by putting 
 # \deprecated commands in the documentation.
 
-GENERATE_DEPRECATEDLIST= YES
+GENERATE_DEPRECATEDLIST= NO
 
 # The ENABLED_SECTIONS tag can be used to enable conditional 
 # documentation sections, marked by \if sectionname ... \endif.
 
-ENABLED_SECTIONS       = 
+ENABLED_SECTIONS       = YES
 
 # The MAX_INITIALIZER_LINES tag determines the maximum number of lines 
 # the initial value of a variable or define consists of for it to appear in 
@@ -366,13 +356,13 @@ MAX_INITIALIZER_LINES  = 30
 # at the bottom of the documentation of classes and structs. If set to YES the 
 # list will mention the files that were used to generate the documentation.
 
-SHOW_USED_FILES        = YES
+SHOW_USED_FILES        = NO
 
 # If the sources in your project are distributed over multiple directories 
 # then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy 
 # in the documentation.
 
-SHOW_DIRECTORIES       = YES
+SHOW_DIRECTORIES       = NO
 
 # The FILE_VERSION_FILTER tag can be used to specify a program or script that 
 # doxygen should invoke to get the current version for each file (typically from the 
@@ -462,14 +452,13 @@ FILE_PATTERNS          = *.cc *.hh \
 # should be searched for input files as well. Possible values are YES and NO. 
 # If left blank NO is used.
 
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # The EXCLUDE tag can be used to specify files and/or directories that should 
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
-EXCLUDE                = CVS \
-                         test/libgraphc
+EXCLUDE                = CVS
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -543,7 +532,7 @@ FILTER_SOURCE_FILES    = NO
 # Note: To get rid of all source code in the generated output, make sure also 
 # VERBATIM_HEADERS is set to NO.
 
-SOURCE_BROWSER         = YES
+SOURCE_BROWSER         = NO
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation.
@@ -560,13 +549,13 @@ STRIP_CODE_COMMENTS    = YES
 # then for each documented function all documented 
 # functions referencing it will be listed.
 
-REFERENCED_BY_RELATION = YES
+REFERENCED_BY_RELATION = NO
 
 # If the REFERENCES_RELATION tag is set to YES (the default) 
 # then for each documented function all documented entities 
 # called/used by that function will be listed.
 
-REFERENCES_RELATION    = YES
+REFERENCES_RELATION    = NO
 
 # If the VERBATIM_HEADERS tag is set to YES (the default) then Doxygen 
 # will generate a verbatim copy of the header file for each class for 
@@ -622,7 +611,7 @@ HTML_FILE_EXTENSION    = .html
 # each generated HTML page. If it is left blank doxygen will generate a 
 # standard header.
 
-HTML_HEADER            = certi_header.html
+HTML_HEADER            = certi_user_header.html
 
 # The HTML_FOOTER tag can be used to specify a personal HTML footer for 
 # each generated HTML page. If it is left blank doxygen will generate a 
@@ -687,7 +676,7 @@ TOC_EXPAND             = NO
 # top of each HTML page. The value NO (the default) enables the index and 
 # the value YES disables it.
 
-DISABLE_INDEX          = NO
+DISABLE_INDEX          = YES
 
 # This tag can be used to set the number of enum values (range [1..20]) 
 # that doxygen will group on one line in the generated HTML documentation.
@@ -701,7 +690,7 @@ ENUM_VALUES_PER_LINE   = 4
 # Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are 
 # probably better off using the HTML help feature.
 
-GENERATE_TREEVIEW      = YES
+GENERATE_TREEVIEW      = NO
 
 # If the treeview is enabled (see GENERATE_TREEVIEW) then this tag can be 
 # used to set the initial width (in pixels) of the frame in which the tree 
@@ -722,7 +711,7 @@ GENERATE_LATEX         = @User_DOC_GENERATE_LATEX@
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
 # put in front of it. If left blank `latex' will be used as the default path.
 
-LATEX_OUTPUT           = latex
+LATEX_OUTPUT           = pdflatex
 
 # The LATEX_CMD_NAME tag can be used to specify the LaTeX command name to be 
 # invoked. If left blank `latex' will be used as the default command name.
@@ -1150,22 +1139,6 @@ DOT_PATH               = "${DOXYGEN_DOT_PATH}"
 # \dotfile command).
 
 DOTFILE_DIRS           = 
-
-# The MAX_DOT_GRAPH_WIDTH tag can be used to set the maximum allowed width 
-# (in pixels) of the graphs generated by dot. If a graph becomes larger than 
-# this value, doxygen will try to truncate the graph, so that it fits within 
-# the specified constraint. Beware that most browsers cannot cope with very 
-# large images.
-
-MAX_DOT_GRAPH_WIDTH    = 1024
-
-# The MAX_DOT_GRAPH_HEIGHT tag can be used to set the maximum allows height 
-# (in pixels) of the graphs generated by dot. If a graph becomes larger than 
-# this value, doxygen will try to truncate the graph, so that it fits within 
-# the specified constraint. Beware that most browsers cannot cope with very 
-# large images.
-
-MAX_DOT_GRAPH_HEIGHT   = 1024
 
 # The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the 
 # graphs generated by dot. A depth value of 3 means that only nodes reachable 

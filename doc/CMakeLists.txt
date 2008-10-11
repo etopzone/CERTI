@@ -29,7 +29,7 @@ IF (DOXYGEN_FOUND)
                            CONFIG_FILE certi_install.cnf
                            INPUT_FILES certi_install_header.html certi_footer.html
                            DOC_TYPE    "html;pdf"
-                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/install
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/Install
                            COMMENTS "CERTI installation documentation"
                            VERBOSE)                           
   ENDIF (BUILD_DOC_INSTALL)
@@ -40,7 +40,7 @@ IF (DOXYGEN_FOUND)
                            CONFIG_FILE certi_user.cnf
                            INPUT_FILES certi_header.html certi_footer.html
                            DOC_TYPE    "html;pdf"
-                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/user
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/User
                            COMMENTS "CERTI user documentation"
                            )                           
   ENDIF (BUILD_DOC_USER)
@@ -51,7 +51,7 @@ IF (DOXYGEN_FOUND)
                            CONFIG_FILE certi_developer.cnf
                            INPUT_FILES certi_header.html certi_footer.html
                            DOC_TYPE    "html"
-                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/developer
+                           OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/Developer
                            COMMENTS "CERTI developer documentation"
                            )                           
   ENDIF (BUILD_DOC_DEVELOPER)

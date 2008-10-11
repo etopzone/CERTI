@@ -107,7 +107,8 @@ MACRO(DoxyTools_ADD_DocSet)
        
     IF (genhtml)
        MESSAGE(STATUS "Will install ${DoxyTools_OUTPUT_DIR}")
-       INSTALL(DIRECTORY ${DoxyTools_OUTPUT_DIR} DESTINATION share/doc/certi)      
+       CONFIGURE_FILE(doc_install.in ${DOCSET}_doc_install.cmake)
+       INSTALL(SCRIPT ${CMAKE_BINARY_DIR}/${DOCSET}_doc_install.cmake COMPONENT DOC)            
     ENDIF (genhtml)
     
 ENDMACRO(DoxyTools_ADD_DocSet)
