@@ -56,6 +56,20 @@ MACRO(DoxyTools_ADD_DocSet)
     ENDIF(DoxyTools_VERBOSE)
     
     SET(${DOCSET}_DOC_OUTPUT_DIR ${DoxyTools_OUTPUT_DIR} CACHE PATH "${DOCSET} doc output dir")
+    # Define appropriate doc type generation for Doxygen
+    LIST_CONTAINS(genpdf "pdf" ${DoxyTools_DOC_TYPE}) 
+    IF (genpdf)
+       SET(${DOCSET}_DOC_GENERATE_LATEX "YES")
+    ELSE (genpdf)
+       SET(${DOCSET}_DOC_GENERATE_LATEX "NO")
+    ENDIF(genpdf)
+    
+    LIST_CONTAINS(genhtml "html" ${DoxyTools_DOC_TYPE})
+    IF (genhtml) 
+       SET(${DOCSET}_DOC_GENERATE_HTML "YES")
+    ELSE (genhtml)
+       SET(${DOCSET}_DOC_GENERATE_HTML "NO")
+    ENDIF(genhtml)
     
     # configure Doxygen config file if .in exists
     IF (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${DoxyTools_CONFIG_FILE}.in)
@@ -65,30 +79,35 @@ MACRO(DoxyTools_ADD_DocSet)
         CONFIGURE_FILE(${DoxyTools_CONFIG_FILE}.in ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
     ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${DoxyTools_CONFIG_FILE}.in)
     
-    IF (DoxyTools_DOC_TYPE STREQUAL "html") 
+    IF (genhtml) 
        SET(OUTPUT_FILE ${DoxyTools_OUTPUT_DIR}/html/index.html)
        FOREACH(arg ${DoxyTools_INPUT_FILES})
           CONFIGURE_FILE(${arg} ${DoxyTools_OUTPUT_DIR}/html/${arg} COPYONLY)
-       ENDFOREACH(arg)
-    ENDIF(DoxyTools_DOC_TYPE STREQUAL "html")
+       ENDFOREACH(arg)   
+    ENDIF(genhtml)   
     
     # create output directory
     FILE(MAKE_DIRECTORY ${DoxyTools_OUTPUT_DIR})
-    ADD_CUSTOM_COMMAND(
-       OUTPUT  ${OUTPUT_FILE}
-       COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
-       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
-       COMMAND ${CMAKE_COMMAND} -E echo "Done."
-       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
-
-    ADD_CUSTOM_TARGET(${DOCSET}_doc ALL DEPENDS ${OUTPUT_FILE})
+    IF(OUTPUT_FILE)
+       ADD_CUSTOM_COMMAND(
+          OUTPUT  ${OUTPUT_FILE}
+          COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
+          COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
+          COMMAND ${CMAKE_COMMAND} -E echo "Done."
+          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+          DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
+       ADD_CUSTOM_TARGET(${DOCSET}_doc ALL DEPENDS ${OUTPUT_FILE})
+    ENDIF(OUTPUT_FILE)
 
     ADD_CUSTOM_TARGET(${DOCSET}_doc_forced
        COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
        COMMAND ${CMAKE_COMMAND} -E echo "Done."
        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
-    INSTALL(DIRECTORY ${DoxyTools_OUTPUT_DIR} DESTINATION share/doc/certi)
+       
+    IF (genhtml)
+       MESSAGE(STATUS "Will install ${DoxyTools_OUTPUT_DIR}")
+       INSTALL(DIRECTORY ${DoxyTools_OUTPUT_DIR} DESTINATION share/doc/certi)      
+    ENDIF (genhtml)
+    
 ENDMACRO(DoxyTools_ADD_DocSet)

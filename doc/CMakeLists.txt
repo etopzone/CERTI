@@ -28,10 +28,10 @@ IF (DOXYGEN_FOUND)
       DoxyTools_ADD_DocSet(Install
                            CONFIG_FILE certi_install.cnf
                            INPUT_FILES certi_install_header.html certi_footer.html
-                           DOC_TYPE    html
+                           DOC_TYPE    "html;pdf"
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/install
                            COMMENTS "CERTI installation documentation"
-                           )                           
+                           VERBOSE)                           
   ENDIF (BUILD_DOC_INSTALL)
   
   #user documentation
@@ -39,7 +39,7 @@ IF (DOXYGEN_FOUND)
       DoxyTools_ADD_DocSet(User
                            CONFIG_FILE certi_user.cnf
                            INPUT_FILES certi_header.html certi_footer.html
-                           DOC_TYPE    html
+                           DOC_TYPE    "html;pdf"
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/user
                            COMMENTS "CERTI user documentation"
                            )                           
@@ -50,14 +50,14 @@ IF (DOXYGEN_FOUND)
       DoxyTools_ADD_DocSet(Developer
                            CONFIG_FILE certi_developer.cnf
                            INPUT_FILES certi_header.html certi_footer.html
-                           DOC_TYPE    html
+                           DOC_TYPE    "html"
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/developer
                            COMMENTS "CERTI developer documentation"
-                           VERBOSE)                           
+                           )                           
   ENDIF (BUILD_DOC_DEVELOPER)
 
 ENDIF (DOXYGEN_FOUND)
 
 INSTALL(FILES  
-    index.html favicon.ico
+    index.html favicon.ico 
     DESTINATION share/doc/certi)

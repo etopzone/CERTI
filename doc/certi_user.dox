@@ -1,8 +1,8 @@
 /**
- * \page install Installing CERTI 
+ * \page install Installing CERTI SDK 
  *
  * \addindex installation
- * CERTI comes as either as an installer (binary) or compressed tar source archives.
+ * CERTI SDK comes as either as an installer (binary) or compressed tar source archives.
  * The primary distribution format is gzip compressed tar source archive (.tar.gz)
  * or ZIP archive (.zip) and may be found on Savannah CERTI download area: <a href="http://download.savannah.nongnu.org/releases/certi/"> http://download.savannah.nongnu.org/releases/certi/ </a>.
  *
@@ -21,8 +21,8 @@
  * You may follow generic CMake usage instruction for building CERTI
  * on various platforms:  <a href="http://www.cmake.org/cmake/help/runningcmake.html">Running CMake,  http://www.cmake.org/cmake/help/runningcmake.html://www.cmake.org/ </a>
  * or you may try to follow the below CERTI CMake usage.
- *
- * \section certi_unix_build Building CERTI on Unix with Makefile generator
+ * 
+ * \section certi_sdk_TARGZ Tarball based SDK
  * 
  * If you get a tarball source CERTI distribution such as you may found in the download 
  * section of the Savannah project 
@@ -59,14 +59,5 @@
  </ul>
  * </ol>
  * After that you will have a compiled and usable CERTI package.
- *
- * \section certi_unix_build_GUI Building CERTI on Unix (GUI)
- *
- * CMake 2.6.0 and up comes with a nice and handy graphical user interface
- * which may be invoked with the cmake-gui command. 
- *
- * \section certi_win32_build Building CERTI on Windows
- *  
- * CMake 2.
  *  
  */

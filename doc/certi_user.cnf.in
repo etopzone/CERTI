@@ -444,14 +444,9 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = "${CMAKE_BINARY_DIR}/include" \
-	                     "${CMAKE_SOURCE_DIR}/include" \			             
-                         "${CMAKE_SOURCE_DIR}/libCERTI" \
-                         "${CMAKE_SOURCE_DIR}/libRTI" \
-                         "${CMAKE_SOURCE_DIR}/libHLA" \
-                         "${CMAKE_SOURCE_DIR}/RTIG" \
-                         "${CMAKE_SOURCE_DIR}/RTIA" \
-                         "${CMAKE_SOURCE_DIR}/doc"
+INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_user_doc.tree" \
+                         "${CMAKE_SOURCE_DIR}/doc/certi_introduction.dox" \
+                         "${CMAKE_SOURCE_DIR}/doc/certi_user.dox"
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -609,7 +604,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES (the default) Doxygen will 
 # generate HTML output.
 
-GENERATE_HTML          = YES
+GENERATE_HTML          = @User_DOC_GENERATE_HTML@
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
@@ -721,7 +716,7 @@ TREEVIEW_WIDTH         = 250
 # If the GENERATE_LATEX tag is set to YES (the default) Doxygen will 
 # generate Latex output.
 
-GENERATE_LATEX         = NO
+GENERATE_LATEX         = @User_DOC_GENERATE_LATEX@
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. 
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be 
