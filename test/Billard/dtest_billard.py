@@ -62,7 +62,7 @@ def createAnotherOneBillardSequence(billardTester):
     billardTester.addRunStep("runCommand",command=billard_param['path']+" -n \""+billardTester.name+"\" -t 10 -FTest.fed -fTest")
     billardTester.addRunStep("expectFromCommand",pattern="Synchronization")
     billardTester.addRunStep("barrier","All Billard(s) started")
-    billardTester.addRunStep("expectFromCommand",pattern="Exiting.")
+    billardTester.addRunStep("expectFromCommand",pattern="RTIA:: End execution.")
     billardTester.addRunStep("terminateCommand")
     billardTester.addRunStep("barrier","All Billard(s) ended")
 
@@ -138,7 +138,7 @@ firstBillard.addRunStep("expectFromCommand",pattern="Press ENTER to start execut
 firstBillard.addRunStep("barrier","First billard started")
 firstBillard.addRunStep("barrier","All Billard(s) started")
 firstBillard.addRunStep("sendToCommand",string="\n")
-firstBillard.addRunStep("expectFromCommand",pattern="Exiting.")
+firstBillard.addRunStep("expectFromCommand",pattern="RTIA:: End execution.")
 firstBillard.addRunStep("terminateCommand")
 firstBillard.addRunStep("barrier","All Billard(s) ended")
 
