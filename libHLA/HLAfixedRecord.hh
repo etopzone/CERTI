@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAfixedRecord.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAfixedRecord.hh,v 1.2 2008/10/11 09:35:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_FIXEDRECORD_HH
@@ -39,9 +39,9 @@ namespace libhla {
  * +-------------+---------+--------------+-----------+----------------+-----------+
  * |             | FIELD_X | HLAfloat32LE |           |                |           |
  * |             +---------+--------------+-----------+                |           |
- * | Coordinates | FIELD_X | HLAfloat32LE |           | HLAfixedRecord |           |
+ * | Coordinates | FIELD_Y | HLAfloat32LE |           | HLAfixedRecord |           |
  * |             +---------+--------------+-----------+                |           |
- * |             | FIELD_X | HLAfloat32LE |           |                |           |
+ * |             | FIELD_Z | HLAfloat32LE |           |                |           |
  * +-------------+---------+--------------+-----------+----------------+-----------+
  * 
  * enum {
@@ -267,5 +267,5 @@ struct __FieldAt<HLAfixedEnd, d>
 
 #endif // _HLATYPES_FIXEDRECORD_HH
 
-// $Id: HLAfixedRecord.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAfixedRecord.hh,v 1.2 2008/10/11 09:35:51 gotthardp Exp $
 
