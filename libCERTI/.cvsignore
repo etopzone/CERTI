@@ -1,1 +1,9 @@
-Makefile.in
+CMakeFiles
+CTestTestfile.cmake
+cmake_install.cmake
+Makefile
+syntax.cc
+syntax.h
+tokens.cc
+y.tab.c
+y.tab.h
