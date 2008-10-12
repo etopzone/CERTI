@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.32 2008/10/11 12:53:52 gotthardp Exp $
+// $Id: Communications.cc,v 3.33 2008/10/12 11:46:39 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,6 +26,9 @@
 #include <assert.h>
 #include "PrettyDebug.hh"
 #include "NM_Classes.hh"
+
+#include "SocketHTTPProxy.hh"
+#include "SecureTCPSocket.hh"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -99,7 +102,14 @@ Communications::Communications(int RTIA_port)
 #ifdef FEDERATION_USES_MULTICAST
     socketMC = new SocketMC();
 #endif
-    socketTCP = new SecureTCPSocket();
+    if(getenv("CERTI_HTTP_PROXY") != NULL || getenv("http_proxy") != NULL)
+        socketTCP = new SocketHTTPProxy();
+    else
+#ifdef WITH_GSSAPI
+        socketTCP = new SecureTCPSocket();
+#else
+        socketTCP = new SocketTCP();
+#endif
     socketUDP = new SocketUDP();
 
     // Federate/RTIA link creation.
@@ -126,8 +136,8 @@ Communications::Communications(int RTIA_port)
     if (tcp_port==NULL) tcp_port = PORT_TCP_RTIG ;
     if (udp_port==NULL) udp_port = PORT_UDP_RTIG ;
 
-    socketTCP->createTCPClient(atoi(tcp_port), certihost);
-    socketUDP->createUDPClient(atoi(udp_port), certihost);
+    socketTCP->createConnection(certihost, atoi(tcp_port));
+    socketUDP->createConnection(certihost, atoi(udp_port));
 }
 
 // ----------------------------------------------------------------------------
@@ -352,4 +362,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.32 2008/10/11 12:53:52 gotthardp Exp $
+// $Id: Communications.cc,v 3.33 2008/10/12 11:46:39 gotthardp Exp $

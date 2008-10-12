@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.16 2008/10/11 12:53:52 gotthardp Exp $
+// $Id: Communications.hh,v 3.17 2008/10/12 11:46:39 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -28,7 +28,7 @@
 #include "NetworkMessage.hh"
 #include "Message.hh"
 #include "SocketUN.hh"
-#include "SecureTCPSocket.hh"
+#include "SocketTCP.hh"
 #include "SocketUDP.hh"
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -91,4 +91,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.16 2008/10/11 12:53:52 gotthardp Exp $
+// $Id: Communications.hh,v 3.17 2008/10/12 11:46:39 gotthardp Exp $

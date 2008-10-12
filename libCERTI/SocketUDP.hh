@@ -63,8 +63,8 @@ public :
 	virtual void close();
 
 	// SocketUDP
-	void createUDPClient(unsigned int port, const char *nom_serveur)
-	throw (NetworkError, NetworkSignal);
+    virtual void createConnection(const char *server_name, unsigned int port)
+        throw (NetworkError);
 
 	void createUDPServer(unsigned int port)
 	throw (NetworkError, NetworkSignal);

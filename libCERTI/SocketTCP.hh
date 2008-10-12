@@ -52,7 +52,8 @@ public :
 	virtual ~SocketTCP();
 	virtual void close();
 
-	void createTCPClient(in_port_t port, const char *nom_serveur) throw (NetworkError);
+    virtual void createConnection(const char *server_name, unsigned int port)
+        throw (NetworkError);
 	void createTCPClient(in_port_t port, in_addr_t addr) throw (NetworkError);
 	void createTCPServer(in_port_t port = 0, in_addr_t addr = INADDR_ANY) throw (NetworkError);
 
@@ -76,6 +77,12 @@ public :
                 virtual int returnSocket() ;
 	#endif
 
+protected:
+    int timeoutTCP(int, int);
+
+    ByteCount_t SentBytesCount;
+    ByteCount_t RcvdBytesCount;
+
 private:
 	int open();
 	int connect(in_port_t port, in_addr_t addr);
@@ -84,7 +91,6 @@ private:
 	void setPort(in_port_t port);
 	in_port_t getPort() const ;
 	in_addr_t getAddr() const ;
-	int timeoutTCP(int, int);
 
 	#ifdef _WIN32
 	  SOCKET _socket_tcp;
@@ -92,8 +98,6 @@ private:
 	#else
 	  long _socket_tcp;
 	#endif
-	ByteCount_t SentBytesCount;
-    ByteCount_t RcvdBytesCount;
 bool	_est_init_tcp;
 struct sockaddr_in _sockIn;
 

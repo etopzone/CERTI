@@ -102,6 +102,7 @@ SocketServer.cc
 SocketTCP.cc
 SecureTCPSocket.cc
 SecurityServer.cc
+SocketHTTPProxy.cc SocketHTTPProxy.hh
 GSSAPIHandler.cc
 SocketServer.hh
 SocketTCP.hh

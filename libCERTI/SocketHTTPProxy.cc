@@ -1,0 +1,186 @@
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002-2005  ONERA
+//
+// This program is free software ; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation ; either version 2 of
+// the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+//
+// $Id: SocketHTTPProxy.cc,v 3.1 2008/10/12 11:46:40 gotthardp Exp $
+// ----------------------------------------------------------------------------
+
+#include "SocketHTTPProxy.hh"
+#include "PrettyDebug.hh"
+
+#include <cstdlib>
+#include <cstring>
+#include <cerrno>
+
+namespace certi {
+
+static PrettyDebug D("SOCKHTTP", "(SocketHTTPProxy) - ");
+static PrettyDebug G("GENDOC",__FILE__);
+
+// ----------------------------------------------------------------------------
+SocketHTTPProxy::SocketHTTPProxy() : SocketTCP()
+{
+}
+
+// ----------------------------------------------------------------------------
+SocketHTTPProxy::~SocketHTTPProxy()
+{
+}
+
+// ----------------------------------------------------------------------------
+void
+SocketHTTPProxy::createConnection(const char *server_name, unsigned int port)
+    throw (NetworkError)
+{
+    const char *http_proxy;
+    // check if proxy is requested
+    http_proxy = getenv("CERTI_HTTP_PROXY");
+    if (http_proxy == NULL)
+        http_proxy = getenv("http_proxy"); // global settings
+
+    if (http_proxy != NULL) {
+        std::string proxy_address;
+        in_port_t proxy_port;
+
+        const char *strpport = strchr(http_proxy, ':');
+        if (strpport) {
+            proxy_address.assign(http_proxy, strpport-http_proxy);
+            proxy_port = atoi(strpport+1);
+        }
+        else {
+            proxy_address.assign(http_proxy);
+            proxy_port = 3128;
+        }
+
+        D.Out(pdTrace, "Connect to '%s:%d' via 'http://%s:%d'.",
+            server_name, port, proxy_address.c_str(), proxy_port);
+        SocketTCP::createConnection(proxy_address.c_str(), proxy_port);
+        sendHTTPConnect(server_name, port);
+    }
+    else {
+        D.Out(pdTrace, "Connect to '%s:%d'.", server_name, port);
+        SocketTCP::createConnection(server_name, port);
+    }
+}
+
+// ----------------------------------------------------------------------------
+int SocketHTTPProxy::sendHTTPConnect(const char* addr, in_port_t port)
+{
+    std::stringstream request;
+    // build the HTTP request
+    request
+        << "CONNECT " << addr << ":" << port << " HTTP/1.0\x0D\x0A"
+        << "Host: " << addr << ":" << port << "\x0D\x0A"
+        << "\x0D\x0A";
+
+    D.Out(pdTrace, "HTTP proxy connection request\n%s<",
+        request.str().c_str());
+    // send the HTTP reuqest
+    send((const unsigned char*)request.str().c_str(), request.str().length());
+
+    size_t received;
+    static const size_t maxLineLength = 1024;
+    char response[maxLineLength];
+
+    // wait for the HTTP response
+    timeoutTCP(5,0);
+    // receive the HTTP response line
+    received = receiveLine(response, maxLineLength);
+    D.Out(pdTrace, "<HTTP PROXY> %s", response);
+
+    char* sCode;
+    // the response line must be "HTTP/<version> <code> <reason>"
+    if (received < 5 || strncmp(response,"HTTP/",5) != 0 ||
+        (sCode = strchr(response, ' ')) == NULL) {
+        D.Out(pdDebug, "Unexpected HTTP response.");
+        throw NetworkError("Unexpected HTTP response.");
+    }
+
+    int iCode = atoi(sCode);
+    // the response code must be 2xx
+    if (iCode < 200 || iCode >= 300) {
+        std::stringstream msg;
+        msg << "Proxy connection refused: " << response;
+        D.Out(pdDebug, "%s", msg.str().c_str());
+        throw NetworkError(msg.str().c_str());
+    }
+
+    // receive the rest of the HTTP response
+    // we wait for an empty line
+    do {
+        timeoutTCP(5,0);
+        // receive the HTTP header
+        received = receiveLine(response, maxLineLength);
+        D.Out(pdTrace, "<HTTP PROXY> %s", response);
+    }
+    while (received > 0);
+
+    return 1;
+}
+
+// ----------------------------------------------------------------------------
+size_t
+SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
+    throw (NetworkError, NetworkSignal)
+{
+    size_t nReceived = 0;
+    while (nReceived < max_size-1)
+    {
+        int result = ::recv(SocketTCP::returnSocket(), buffer+nReceived, 1, 0);
+        if (result < 0)
+        {
+            D.Out(pdExcept, "Error while receiving on TCP socket.");
+#ifdef _WIN32
+            if (WSAGetLastError() == WSAEINTR)
+#else
+            if (errno == EINTR)
+#endif
+                throw NetworkSignal("");
+            else {
+                perror("TCP Socket(RecevoirTCP) ");
+                throw NetworkError("Error while receiving TCP message.");
+            }
+        }
+        else if (result == 0)	{
+            D.Out(pdExcept, "TCP connection has been closed by peer.");
+            throw NetworkError("Connection closed by client.");
+        }
+
+        nReceived += result;
+        // update statistics
+        RcvdBytesCount += result;
+
+        if (buffer[nReceived-1] == '\x0A') {
+            // strip trailing CRLF and terminate the received string
+            if(nReceived > 1 && buffer[nReceived-2] == '\x0D') {
+                buffer[nReceived-2] = 0;
+                return nReceived-2;
+            }
+            else {
+                buffer[nReceived-1] = 0;
+                return nReceived-1;
+            }
+        }
+    }
+
+    throw NetworkError("Too large HTTP response received.");
+}
+
+} // namespace
+
+// $Id: SocketHTTPProxy.cc,v 3.1 2008/10/12 11:46:40 gotthardp Exp $

@@ -85,9 +85,8 @@ SocketUDP::bind()
 // ----------------------------------------------------------------------------
 //! Create an UDP client.
 void
-SocketUDP::createUDPClient(unsigned int, // port
-                           const char *) // nom serveur
-    throw (NetworkError, NetworkSignal)
+SocketUDP::createConnection(const char *server_name, unsigned int port)
+    throw (NetworkError)
 {
 // unsigned long addr = 0 ;
 struct sockaddr_in sock_temp ;

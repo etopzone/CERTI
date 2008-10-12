@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.25 2008/06/24 09:09:14 erk Exp $
+// $Id: SocketTCP.cc,v 3.26 2008/10/12 11:46:41 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -262,17 +262,17 @@ Length = sizeof(_sockIn);
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPClient(in_port_t port, const char *nom_serveur)
-throw (NetworkError)
+SocketTCP::createConnection(const char *server_name, unsigned int port)
+    throw (NetworkError)
 {
 	std::stringstream msg;
 	// get host information from server name
 	// this may perform DNS query
-	struct hostent *hptr = gethostbyname(nom_serveur);
+	struct hostent *hptr = gethostbyname(server_name);
 	if (NULL == hptr)
 	{
 		msg << "gethostbyname gave NULL answer for hostname <"
-		<< nom_serveur
+		<< server_name
 		<< "> with error <"
 		<< strerror(errno)
 		<< ">";
@@ -597,4 +597,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.25 2008/06/24 09:09:14 erk Exp $
+// $Id: SocketTCP.cc,v 3.26 2008/10/12 11:46:41 gotthardp Exp $
