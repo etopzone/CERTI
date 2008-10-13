@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.14 2008/07/09 15:04:26 rousse Exp $
+// $Id: SecurityServer.cc,v 3.15 2008/10/13 10:06:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -73,15 +73,14 @@ bool
 SecurityServer::canFederateAccessData(FederateHandle theFederate,
                                       SecurityLevelID theDataLevelID)
 {
-    Socket *FederateSocket ;
-    SecureTCPSocket *SecureSocket ;
+    Socket          *FederateSocket=NULL;
+    SecureTCPSocket *SecureSocket=NULL;
 
     const char *FederateName ;
     SecurityLevelID FederateLevel ;
 
     // 1- Get the socket of this federate
     //(Killed federate/link will throw an RTIinternalError)
-
     try {
         FederateSocket = getSocketLink(theFederate);
     }
@@ -90,19 +89,19 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
     }
 
     // 2- Check if it is a secure socket
+    if (NULL!=FederateSocket) {
+    	SecureSocket = dynamic_cast<SecureTCPSocket *>(FederateSocket);
+    }
 
-    if (FederateSocket->getClass() != SOCKET_TYPE_S_TCP)
+    if (NULL==SecureSocket) {
         // If not, all federate are at Public Level.
-        return dominates(PublicLevelID, theDataLevelID);
+    	return dominates(PublicLevelID, theDataLevelID);
+    }
 
     // 3- If yes, retrieve federate principal name.
-
-    SecureSocket = (SecureTCPSocket *) FederateSocket ;
-
     FederateName = SecureSocket->getPeerName();
 
     // 4- Retrieve Federate level
-
     FederateLevel = getLevel(FederateName);
 
     return dominates(FederateLevel, theDataLevelID);
@@ -197,4 +196,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.14 2008/07/09 15:04:26 rousse Exp $
+// $Id: SecurityServer.cc,v 3.15 2008/10/13 10:06:48 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.49 2008/07/10 20:20:05 approx Exp $
+// $Id: RTIG.cc,v 3.50 2008/10/13 10:06:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,8 +91,8 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
     G.Out(pdGendoc,"enter RTIG::chooseProcessingMethod type (%s)",msg->getName().c_str());
     // This may throw a security error.
     if ( msg->getType() != NetworkMessage::DESTROY_FEDERATION_EXECUTION)
-       socketServer.checkMessage(link->returnSocket(), msg);	
-	
+       socketServer.checkMessage(link->returnSocket(), msg);
+
     switch(msg->getType()) {
       case NetworkMessage::MESSAGE_NULL:
         D.Out(pdDebug, "Message Null.");
@@ -150,7 +150,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         D.Out(pdTrace,
               "Federation %u: registerFedSyncPoint from federate %u.",
               msg->federation, msg->federate);
-        auditServer.setLevel(8);        
+        auditServer.setLevel(8);
         processRegisterSynchronization(link, static_cast<NM_Register_Federation_Synchronization_Point*>(msg));
         break ;
 
@@ -213,7 +213,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::SET_TIME_CONSTRAINED:
         D.Out(pdTrace, "SetTimeConstrained du federe %u.", msg->federate);
         auditServer.setLevel(8);
-        
+
         processSetTimeConstrained(link, static_cast<NM_Set_Time_Constrained*>(msg));
         break ;
 
@@ -246,19 +246,19 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-	D[pdTrace] << "setClassRelevanceAdvisorySwitch (DM) " << 
+	D[pdTrace] << "setClassRelevanceAdvisorySwitch (DM) " <<
 		static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg)->
 		getClassRelevanceAdvisorySwitch() <<  endl;
         auditServer.setLevel(6);
 	/*
-	 * Successful passing of services 
+	 * Successful passing of services
 	 * enableClassRelevanceAdvisorySwitch
-	 * and 
-	 * disableClassRelevanceAdvisorySwitch 
+	 * and
+	 * disableClassRelevanceAdvisorySwitch
 	 * to RTIG
 	 */
 	break;
-	
+
       case NetworkMessage::REGISTER_OBJECT:
         D.Out(pdTrace, "registerObject.");
         auditServer.setLevel(6);
@@ -353,37 +353,37 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 	D[pdTrace] << "associateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
         processAssociateRegion(link, msg);
-        break ;	
+        break ;
 
       case NetworkMessage::DDM_UNASSOCIATE_REGION:
 	D[pdTrace] << "unassociateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
         processUnassociateRegion(link, msg);
-        break ;	
+        break ;
 
       case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
 	D[pdTrace] << "subscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
         processSubscribeAttributesWR(link, msg);
         break ;
-	
+
       case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
 	D[pdTrace] << "unsubscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
         processUnsubscribeAttributesWR(link, msg);
         break ;
-	
+
       case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
 	D[pdTrace] << "subscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
         processSubscribeInteractionWR(link, msg);
         break ;
-	
+
       case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
 	D[pdTrace] << "unsubscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
         processUnsubscribeInteractionWR(link, msg);
-        break ;	
+        break ;
 
       default:
         // FIXME: Should treat other cases CHANGE_*_ORDER/TRANSPORT_TYPE
@@ -450,14 +450,14 @@ while (!terminate) {
 	while (!result)
 		{
 		int test;
-		
+
 		FD_ZERO(&fd);
 		FD_SET(tcpSocketServer.returnSocket(), &fd);
 
 		int highest_fd = socketServer.addToFDSet(&fd);
 		int server_socket = tcpSocketServer.returnSocket();
 
-		//typedef struct timeval {  long tv_sec;  long tv_usec; } 	 
+		//typedef struct timeval {  long tv_sec;  long tv_usec; }
 		timeval		watchDog;
 		watchDog.tv_sec= 0;
 		watchDog.tv_usec= 50000L;
@@ -477,10 +477,10 @@ while (!terminate) {
 
 		int fd_max = socketServer.addToFDSet(&fd);
 		fd_max = std::max(tcpSocketServer.returnSocket(), fd_max);
-	
+
 		result = 0 ;	// Wait for an incoming message.
 		result = select(fd_max + 1, &fd, NULL, NULL, NULL);
-		
+
 		if((result == -1)&&(errno == EINTR)) break;
 	#endif
 
@@ -491,7 +491,7 @@ while (!terminate) {
 		link->returnSocket());
 		try {
 			do {
-				link = processIncomingMessage((SecureTCPSocket *)link);
+				link = processIncomingMessage(link);
 				if (link == NULL)break ;
 				} while (link->isDataReady());
 			}
@@ -502,7 +502,7 @@ while (!terminate) {
 			D.Out(pdExcept, "Catching Network Error, no reason string.");
 			cout << "RTIG dropping client connection " << link->returnSocket()
 			<< '.' << endl ;
-			closeConnection((SecureTCPSocket *)link, true);
+			closeConnection(link, true);
 			link = NULL ;
 			}
 		}
@@ -545,7 +545,7 @@ Socket*
 RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
 {
     NetworkMessage* msg ;
-    
+
     char buffer[BUFFER_EXCEPTION_REASON_SIZE] ; // To store the exception reason
     G.Out(pdGendoc,"enter RTIG::processIncomingMessage");
     if (link == NULL) {
@@ -555,9 +555,9 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
 
     /* virtual constructor call */
     msg = NM_Factory::receive(link);
-    
+
     // Server Answer(only if an exception is raised)
-    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getType()));    
+    std::auto_ptr<NetworkMessage> rep(NM_Factory::create(msg->getType()));
     rep->federate = msg->federate ;
 
     auditServer.startLine(msg->federation, msg->federate, msg->getType());
@@ -1025,4 +1025,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.49 2008/07/10 20:20:05 approx Exp $
+// $Id: RTIG.cc,v 3.50 2008/10/13 10:06:48 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketServer.cc,v 3.17 2008/06/27 09:54:47 rousse Exp $
+// $Id: SocketServer.cc,v 3.18 2008/10/13 10:06:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -293,7 +293,11 @@ void
 SocketServer::open()
     throw (RTIinternalError)
 {
+#ifdef WITH_GSSAPI
     SecureTCPSocket *newLink = new SecureTCPSocket();
+#else
+    SocketTCP *newLink = new SocketTCP();
+#endif
 
     if (newLink == NULL)
         throw RTIinternalError("Could not allocate new socket.");
@@ -338,4 +342,4 @@ SocketServer::setReferences(long socket,
 
 }
 
-// $Id: SocketServer.cc,v 3.17 2008/06/27 09:54:47 rousse Exp $
+// $Id: SocketServer.cc,v 3.18 2008/10/13 10:06:48 erk Exp $
