@@ -58,7 +58,10 @@
  * one rtig process for each federation. However a single rtig may
  * be used for several federation.
  *
- * \subsection certi_user_rtia
+ * \subsection certi_user_rtia RTIA CERTI RunTime Infrastructure Ambassador aka RTIA
+ *
+ * \copydoc certi_executable_RTIA
+ *
  * The CERTI RunTime Infrastructure Ambassador (RTIA) is a process
  * which is automatically launched by any federate as soon as its
  * RTIambassador is created.

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.21 2008/06/23 12:49:15 erk Exp $
+// $Id: main.cc,v 3.22 2008/10/13 19:07:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,8 +37,21 @@ extern "C"void SignalHandler(int Signal);
 void NewHandler();
 int normal_end;
 
-// ----------------------------------------------------------------------------
-int 
+/**
+ * @defgroup certi_executable_RTIA RTIA
+ *
+ * RTIA is the RunTime Infrastructure Ambassador. RTIA is launched (fork/CreateProcess) by the RTIambassador
+ * constructor.
+ * \par rtia [-v] [-p \<port\>]
+ * \par
+ * <ul>
+ *   <li> \b -v  (optional) verbose, display more information </li>
+ *   <li> \b -p  (optional) tcp port to be used to communicate with FederateAmbassador</li>
+ * </ul>
+ *
+ * @ingroup certi_executable
+ */
+int
 main(int argc, char **argv) {
 	signal(SIGINT, SignalHandler);
 #ifndef _WIN32
@@ -53,18 +66,18 @@ main(int argc, char **argv) {
 				<< " seconds> before starting RTIA"<<endl;
 		sleep(atoi(getenv("RTIA_DEBUG")));
 	}
-	
+
 	// Command line
 	gengetopt_args_info args ;
 	if (cmdline_parser(argc, argv, &args))
-	    exit(EXIT_FAILURE);	
+	    exit(EXIT_FAILURE);
 
 	try {
 		int rtia_port = 0;
 		if (args.port_given) {
 			rtia_port = args.port_arg;
 		}
-		
+
 		RTIA rtia(rtia_port);
 
 		try {
@@ -77,7 +90,7 @@ main(int argc, char **argv) {
                         }
 			if (e._reason) {
                                 if (! normal_end) {
-				      cerr << "RTIA:: Reason: " << e._reason << endl;                       
+				      cerr << "RTIA:: Reason: " << e._reason << endl;
 				      cerr.flush();
                                 }
 				rtia.displayStatistics();
@@ -113,4 +126,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.21 2008/06/23 12:49:15 erk Exp $
+// EOF $Id: main.cc,v 3.22 2008/10/13 19:07:30 erk Exp $

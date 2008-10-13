@@ -32,7 +32,7 @@ IF (DOXYGEN_FOUND)
                            DOC_TYPE    "html;pdf"
                            OUTPUT_DIR ${CMAKE_BINARY_DIR}/doc/Install
                            COMMENTS "CERTI installation documentation"
-                           VERBOSE)                           
+                           )                           
   ENDIF (BUILD_DOC_INSTALL)
   
   #user documentation

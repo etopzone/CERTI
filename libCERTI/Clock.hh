@@ -20,7 +20,15 @@
 #ifndef CLOCK_HH_
 #define CLOCK_HH_
 
+
+
+#include <string>
+#include "certi.hh"
+
+namespace certi {
+
 /**
+ * An abstract Clock class.
  * Clock abstraction which tries to use high-resolution
  * system clock in order to be able to help user to
  * profile it's application using simple clock API.
@@ -29,12 +37,6 @@
  * http://www.opengroup.org/onlinepubs/000095399/functions/clock_getres.html
  * or other hardware assisted clock like Pentium TSC.
  */
-
-#include <string>
-#include "certi.hh"
-
-namespace certi {
-
 class CERTI_EXPORT Clock
 {
 public:
