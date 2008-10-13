@@ -31,12 +31,6 @@
 #include <string>
 #include <sstream>
 
-// Those values are returned by the GetClass method.
-#define SOCKET_TYPE_TCP 0 // TCP Socket class ID
-#define SOCKET_TYPE_MC 1 // Multicast Socket class ID
-#define SOCKET_TYPE_UDP 2
-#define SOCKET_TYPE_S_TCP 3 // Secure TCP Socket class ID
-
 namespace certi {
 
 class Socket
@@ -56,7 +50,6 @@ public:
 	// See Important Note in SocketTCP.hh
 	virtual bool isDataReady() const = 0 ;
 
-	virtual int getClass() const = 0 ;
 	virtual unsigned long returnAdress() const = 0 ;
 
 	#ifdef _WIN32

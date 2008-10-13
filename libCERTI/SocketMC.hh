@@ -66,7 +66,6 @@ public:
 	#endif
 
 	virtual unsigned long returnAdress() const ;
-	virtual int getClass() const { return SOCKET_TYPE_MC ; };
 	virtual void close();
 
 	void sendMC(NetworkMessage *msg);

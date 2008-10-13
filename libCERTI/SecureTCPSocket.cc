@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.10 2008/06/12 07:39:50 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.11 2008/10/13 11:27:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -107,17 +107,6 @@ SecureTCPSocket::getMessage()
     DecryptedMessageReady = true ;
 }
 #endif // WITH_GSSAPI
-
-// ----------------------------------------------------------------------------
-int
-SecureTCPSocket::getClass() const
-{
-#ifdef HLA_USES_GSSAPI
-    return SOCKET_TYPE_S_TCP ;
-#else
-    return SOCKET_TYPE_TCP ;
-#endif
-}
 
 #ifdef WITH_GSSAPI
 // ----------------------------------------------------------------------------
@@ -259,4 +248,4 @@ SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.10 2008/06/12 07:39:50 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.11 2008/10/13 11:27:51 gotthardp Exp $

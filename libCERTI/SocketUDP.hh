@@ -52,7 +52,6 @@ public :
 
 	virtual bool isDataReady() const ;
 
-	virtual int getClass() const { return SOCKET_TYPE_UDP ; };
 	#ifdef _WIN32
 		SOCKET returnSocket();
 	#else

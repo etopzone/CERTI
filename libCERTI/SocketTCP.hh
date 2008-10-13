@@ -63,7 +63,6 @@ public :
 
 	virtual bool isDataReady() const ;
 
-	virtual int getClass() const { return SOCKET_TYPE_TCP ; };
 	virtual unsigned long returnAdress() const ;
 	
 	SocketTCP &operator=(SocketTCP &theSocket);

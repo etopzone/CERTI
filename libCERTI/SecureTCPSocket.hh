@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.8 2007/06/22 08:51:39 erk Exp $
+// $Id: SecureTCPSocket.hh,v 3.9 2008/10/13 11:27:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SECURE_TCP_SOCKET_HH
@@ -51,7 +51,6 @@ public:
     // FIXME: Peut-etre devrait-on regarder si un message est pret en interne,
     // et balancer une exception dans ce cas la.
     virtual bool isDataReady() const { return SocketTCP::isDataReady(); }
-    virtual int getClass() const ;
 
     // Return Peer's principal name. Must not be freed ! Principal name is
     // without any network address part(starting with a '@').
@@ -95,5 +94,5 @@ private:
 
 #endif // CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.8 2007/06/22 08:51:39 erk Exp $
+// $Id: SecureTCPSocket.hh,v 3.9 2008/10/13 11:27:51 gotthardp Exp $
 
