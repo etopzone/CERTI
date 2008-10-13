@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.95 2008/10/10 15:18:23 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.96 2008/10/13 09:38:08 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -81,6 +81,25 @@ get_handle(const RTI::Region &region)
     }
     catch (std::bad_cast) {
 	throw RTI::RegionNotKnown("");
+    }
+    throw RTI::RTIinternalError("");
+}
+
+char *
+hla_strdup(const std::string &s)
+    throw (RTIinternalError)
+{
+    try {
+        size_t len = s.length();
+        // the HLA 1.3 standard defines, that char* must be free-ed by delete[]
+        char *result = new char[len+1];
+        strncpy(result, s.c_str(), len);
+        result[len] = '\0';
+
+        return result;
+    }
+    catch (std::bad_alloc) {
+        throw RTI::RTIinternalError("Cannot allocate memory.");
     }
     throw RTI::RTIinternalError("");
 }
@@ -2579,7 +2598,7 @@ RTI::RTIambassador::getObjectClassName(ObjectClassHandle handle)
     req.type = Message::GET_OBJECT_CLASS_NAME ;
     req.setObjectClass(handle);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2627,7 +2646,7 @@ RTI::RTIambassador::getAttributeName(AttributeHandle theHandle,
     req.setAttribute(theHandle);
     req.setObjectClass(whichClass);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2665,7 +2684,7 @@ RTI::RTIambassador::getInteractionClassName(InteractionClassHandle theHandle)
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2709,7 +2728,7 @@ RTI::RTIambassador::getParameterName(ParameterHandle theHandle,
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2743,7 +2762,7 @@ RTI::RTIambassador::getObjectInstanceName(ObjectHandle theHandle)
 
     privateRefs->executeService(&req, &rep);
 
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2780,7 +2799,7 @@ RTI::RTIambassador::getRoutingSpaceName(SpaceHandle handle)
     req.type = Message::GET_SPACE_NAME ;
     req.setSpace(handle);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2824,7 +2843,7 @@ RTI::RTIambassador::getDimensionName(DimensionHandle dimension,
     req.setDimension(dimension);
     req.setSpace(space);
     privateRefs->executeService(&req, &rep);
-    return strdup(rep.getName().c_str());
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2908,7 +2927,7 @@ RTI::RTIambassador::getTransportationName(TransportationHandle theHandle)
     req.type = Message::GET_TRANSPORTATION_NAME ;
     req.setTransportation(theHandle);
     privateRefs->executeService(&req, &rep);
-    return(strdup(rep.getName().c_str()));
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -2937,7 +2956,7 @@ RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
     req.type = Message::GET_ORDERING_NAME ;
     req.setOrdering(theHandle);
     privateRefs->executeService(&req, &rep);
-    return(strdup(rep.getName().c_str()));
+    return hla_strdup(rep.getName());
 }
 
 // ----------------------------------------------------------------------------
@@ -3045,4 +3064,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.95 2008/10/10 15:18:23 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.96 2008/10/13 09:38:08 gotthardp Exp $
