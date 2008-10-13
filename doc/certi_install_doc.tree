@@ -31,8 +31,8 @@
  * The installation documentation is divided into several part:
  * 
  * <ul>
- *  <li>Section \ref intro</li>
- *  <li>Section \ref install</li>
+ *  <li>\ref intro</li>
+ *  <li>\ref install</li>
  * </ul> 
  *
  */

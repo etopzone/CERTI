@@ -98,13 +98,23 @@ MACRO(DoxyTools_ADD_DocSet)
           DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE})
        ADD_CUSTOM_TARGET(${DOCSET}_doc ALL DEPENDS ${OUTPUT_FILE})
     ENDIF(OUTPUT_FILE)
-
+      
     ADD_CUSTOM_TARGET(${DOCSET}_doc_forced
-       COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
-       COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
-       COMMAND ${CMAKE_COMMAND} -E echo "Done."
-       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-       
+           COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} Documentation..."
+           COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/${DoxyTools_CONFIG_FILE}
+           COMMAND ${CMAKE_COMMAND} -E echo "Done."
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})   
+    
+    # If genpdf was specified AND a pdflatex compiler was found
+    # then create a rule for running pdflatex
+    IF(genpdf AND PDFLATEX_COMPILER)
+        ADD_CUSTOM_TARGET(${DOCSET}_doc_forced_pdf
+           COMMAND ${CMAKE_COMMAND} -E echo_append "Building CERTI ${DOCSET} PDF Documentation..."       
+           COMMAND ${PDFLATEX_COMPILER} refman.tex
+           COMMAND ${CMAKE_COMMAND} -E echo "Done."
+           WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOCSET}/latex)                   
+    ENDIF(genpdf AND PDFLATEX_COMPILER)
+    
     IF (genhtml)
        MESSAGE(STATUS "Will install ${DoxyTools_OUTPUT_DIR}")
        CONFIGURE_FILE(doc_install.in ${DOCSET}_doc_install.cmake)
