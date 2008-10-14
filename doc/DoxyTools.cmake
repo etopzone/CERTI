@@ -116,8 +116,8 @@ MACRO(DoxyTools_ADD_DocSet)
     ENDIF(genpdf AND PDFLATEX_COMPILER)
     
     IF (genhtml)
-       MESSAGE(STATUS "Will install ${DoxyTools_OUTPUT_DIR}")
-       CONFIGURE_FILE(doc_install.in ${DOCSET}_doc_install.cmake)
+       MESSAGE(STATUS "Will build DOC Set <${DOCSET}> in <${DoxyTools_OUTPUT_DIR}>")
+       CONFIGURE_FILE(doc_install.in ${DOCSET}_doc_install.cmake @ONLY)
        INSTALL(SCRIPT ${CMAKE_BINARY_DIR}/${DOCSET}_doc_install.cmake COMPONENT DOC)            
     ENDIF (genhtml)
     
