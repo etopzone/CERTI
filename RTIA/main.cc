@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.22 2008/10/13 19:07:30 erk Exp $
+// $Id: main.cc,v 3.23 2008/10/18 18:48:16 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,8 +40,9 @@ int normal_end;
 /**
  * @defgroup certi_executable_RTIA RTIA
  *
- * RTIA is the RunTime Infrastructure Ambassador. RTIA is launched (fork/CreateProcess) by the RTIambassador
- * constructor.
+ * The CERTI RunTime Infrastructure Ambassador (RTIA) is a process
+ * which is usually automatically launched by the federate as soon as its
+ * RTIambassador is created.
  * \par rtia [-v] [-p \<port\>]
  * \par
  * <ul>
@@ -126,4 +127,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.22 2008/10/13 19:07:30 erk Exp $
+// EOF $Id: main.cc,v 3.23 2008/10/18 18:48:16 gotthardp Exp $

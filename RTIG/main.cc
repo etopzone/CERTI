@@ -57,7 +57,21 @@ NewHandler()
 }
 
 // ----------------------------------------------------------------------------
-//! RTIG server entry point.
+/** 
+ * @defgroup certi_executable_RTIG RTIG
+ *
+ * The CERTI RunTime Infrastructure Gateway (RTIG) is a process which
+ * coordinate the HLA simulation with CERTI, there should be at least
+ * one rtig process for each federation. However a single rtig may
+ * be used for several federation.
+ * \par rtig [-v]
+ * \par
+ * <ul>
+ *   <li> \b -v  (optional) verbose, display more information </li>
+ * </ul>
+ *
+ * @ingroup certi_executable
+ */
 int main(int argc, char *argv[])
 {
     RTIG myRTIG;
