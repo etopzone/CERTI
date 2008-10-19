@@ -435,8 +435,12 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_install_doc.tree" \
-                         "${CMAKE_SOURCE_DIR}/doc/certi_introduction.dox" \
-                         "${CMAKE_SOURCE_DIR}/doc/certi_install.dox"
+                         "${CMAKE_SOURCE_DIR}/doc/introduction.dox" \
+                         "${CMAKE_SOURCE_DIR}/doc/build.dox" \
+                         "${CMAKE_SOURCE_DIR}/doc/install.dox" \
+                         "${CMAKE_SOURCE_DIR}/doc/execute.dox" \
+                         "${CMAKE_SOURCE_DIR}/RTIG/main.cc" \
+                         "${CMAKE_SOURCE_DIR}/RTIA/main.cc"
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -446,7 +450,7 @@ INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_install_doc.tree" \
 # *.hpp *.h++ *.idl *.odl *.cs *.php *.php3 *.inc *.m *.mm
 
 FILE_PATTERNS          = *.cc *.hh \
-                         				*.dox \ 
+                         *.dox \ 
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -496,7 +500,8 @@ EXAMPLE_RECURSIVE      = NO
 # directories that contain image that are included in the documentation (see 
 # the \image command).
 
-IMAGE_PATH             = 
+IMAGE_PATH             = "${CMAKE_SOURCE_DIR}/doc" \
+                         "${CMAKE_SOURCE_DIR}/doc/images" 
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should 
 # invoke to filter for each input file. Doxygen will invoke the filter program 

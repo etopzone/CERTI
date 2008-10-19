@@ -25,15 +25,22 @@
 /**
  * \page index
  *
- * <h1> CERTI Installation Documentation </h1>
- * \n
- * This is the CERTI installation documentation.
- * The installation documentation is divided into several part:
- * 
+ * \image html "certi.png"
+ * <h1>Installation Documentation</h1>
+ *
+ * This documentation describes CERTI installation/configuration and simulation
+ * execution.
+ * If you want to develop own HLA simulations using CERTI, please refer the User documentation.
+ *
+ * This documentation is divided into several parts:
+ *
  * <ul>
  *  <li>\ref intro</li>
+ *  <li>\ref build</li>
  *  <li>\ref install</li>
+ *  <li>\ref execute</li>
  * </ul> 
  *
  */
- 
+
+// $Id: certi_install_doc.tree,v 3.4 2008/10/19 21:44:24 gotthardp Exp $

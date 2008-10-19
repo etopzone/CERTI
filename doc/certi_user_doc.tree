@@ -22,11 +22,12 @@
 // ----------------------------------------------------------------------------
 */
  
- /**
+/**
  * \page index
  *
- * <h1> CERTI User Documentation </h1>
- * \n
+ * \image html "certi.png"
+ * <h1>User Documentation</h1>
+ *
  * This is the CERTI installation documentation.
  * The installation documentation is divided into several part:
  * 
@@ -36,3 +37,5 @@
  * </ul> 
  *
  */
+
+// $Id: certi_user_doc.tree,v 3.4 2008/10/19 21:44:24 gotthardp Exp $
