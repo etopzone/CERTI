@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: syntax.yy,v 3.7 2007/12/10 21:38:47 erk Exp $
+// $Id: syntax.yy,v 3.8 2008/10/21 10:55:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "fed.hh"
@@ -211,7 +211,8 @@ parameter_list:
 	| parameter_list parameter ;
 
 parameter:
-	PARAMETER TIMESTAMP_TOKEN { certi::fedparser::addParameter(); }
+	PARAMETER TIMESTAMP_TOKEN {certi::fedparser::arg = certi::fedparser::timestamp_arg; 
+	                           certi::fedparser::addParameter(); }
 	R_PAR ;
 
 parameter:
