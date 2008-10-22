@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.68 2008/06/23 13:25:06 erk Exp $
+// $Id: FederationManagement.cc,v 3.69 2008/10/22 14:24:34 jmm Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -310,10 +310,16 @@ joinFederationExecution(std::string Federate,
             char pid_name[10];
             sprintf(pid_name,"%d_",getpid());
 
-            //filename = new char[6+strlen(pid_name)+strlen(Federation)+4+1] ;
-            filename += "_RTIA_";
-            filename += pid_name ;
-             filename += Federation ;
+            #ifdef _WIN32	//Write the file into 
+            char	*theDir; 
+            
+            theDir= getenv("TMP"); if (theDir == NULL) theDir= getenv("TEMP");          
+            if (theDir) { filename+= theDir; filename+= "\\";}      
+            #endif
+            
+            filename+= "_RTIA_";
+            filename+= pid_name ;
+            filename+= Federation ;
             // Last file type : fed or xml ?
    
             string filename_RTIG = reponse->FEDid ;
