@@ -15,8 +15,6 @@
 #
 # Report problems to <certi-devel@nongnu.org>
 
-INCLUDE(CMakeFindFrameworks)
-
 MACRO(RTI_MESSAGE_QUIETLY QUIET TYPE MSG)
   IF(NOT ${QUIET})
     MESSAGE(${TYPE} "${MSG}")
@@ -92,4 +90,4 @@ ELSE (RTI_LIBRARY AND RTI_INCLUDE_DIR)
   ENDIF (RTI_FIND_REQUIRED)
 ENDIF(RTI_LIBRARY AND RTI_INCLUDE_DIR)
 
-# $Id: FindRTI.cmake,v 1.5 2008/10/25 16:37:29 gotthardp Exp $
+# $Id: FindRTI.cmake,v 1.6 2008/10/25 18:34:59 gotthardp Exp $
