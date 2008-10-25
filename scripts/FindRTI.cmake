@@ -1,4 +1,4 @@
-# - Try to find HLA RTI libraries
+# - Try to find M&S HLA RTI libraries
 # This module finds if any HLA RTI is installed and locates the standard RTI
 # include files and libraries.
 #
@@ -32,7 +32,7 @@ ENDIF ("$ENV{CERTI_HOME}" STRGREATER "")
 SET(RTI_DEFINITIONS "-DRTI_USES_STD_FSTREAM")
 
 # Detect the MAK Technologies RTI installation, http://www.mak.com/products/rti.php
-# note: the following list is ordered to find first the most recent version
+# note: the following list is ordered to find the most recent version first
 SET(RTI_POSSIBLE_DIRS
   ${CERTI_HOME}
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MAK Technologies\\MAK RTI 3.2 MSVC++ 8.0;Location]"
@@ -92,4 +92,4 @@ ELSE (RTI_LIBRARY AND RTI_INCLUDE_DIR)
   ENDIF (RTI_FIND_REQUIRED)
 ENDIF(RTI_LIBRARY AND RTI_INCLUDE_DIR)
 
-# $Id: FindRTI.cmake,v 1.4 2008/09/25 08:54:15 gotthardp Exp $
+# $Id: FindRTI.cmake,v 1.5 2008/10/25 16:37:29 gotthardp Exp $
