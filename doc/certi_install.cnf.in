@@ -440,7 +440,8 @@ INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_install_doc.tree" \
                          "${CMAKE_SOURCE_DIR}/doc/install.dox" \
                          "${CMAKE_SOURCE_DIR}/doc/execute.dox" \
                          "${CMAKE_SOURCE_DIR}/RTIG/main.cc" \
-                         "${CMAKE_SOURCE_DIR}/RTIA/main.cc"
+                         "${CMAKE_SOURCE_DIR}/RTIA/main.cc" \
+                         "${CMAKE_SOURCE_DIR}/libCERTI/SocketHTTPProxy.cc"
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 

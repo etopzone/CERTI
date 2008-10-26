@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.1 2008/10/12 11:46:40 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.2 2008/10/26 16:20:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -31,6 +31,64 @@ namespace certi {
 
 static PrettyDebug D("SOCKHTTP", "(SocketHTTPProxy) - ");
 static PrettyDebug G("GENDOC",__FILE__);
+
+/**
+ * @page certi_HTTP_proxy Connecting to RTIG via a HTTP tunnel
+ *
+ * To pass the RTIA--RTIG connection through firewalls, you may use
+ * the HTTP tunnel.
+ *
+ * Federates behind a firewall may be unnable to connect to the RTIG.
+ * To connect via a HTTP tunnel
+ * -# Set the \p CERTI_HOST and \p CERTI_TCP_PORT environment variables
+ *    to RTIG address and port.
+ * -# Set the \p CERTI_HTTP_PROXY environment variable to HTTP proxy address
+ *    in the form http://host:port.
+ * -# Run the federate.
+ *
+ * Note: In the HTTP proxy configuration you may need to enable the HTTP CONNECT
+ * method for the port number defined in \p CERTI_TCP_PORT. For example, in
+ * the /etc/squid/squid.conf you may need to configure
+\verbatim
+ acl CERTI_ports port 60400   # the value of CERTI_TCP_PORT
+ acl CONNECT method CONNECT
+ http_access allow CONNECT CERTI_ports
+\endverbatim
+ *
+ * If \p CERTI_HTTP_PROXY is not defined, the system-wide \p http_proxy is used.
+ * To disable HTTP tunneling, you must unset both environment variables, or set
+ * \p CERTI_HTTP_PROXY to an empty string.
+ *
+ * If the HTTP proxy is directly accessible for the federate (RTIA), you can set
+ * the \p CERTI_HTTP_PROXY environment variable to address of the HTTP proxy,
+ * e.g. http://proxy.example.com. The default port is 3128.
+ *
+ * If you cannot access the HTTP proxy directly, you may use SSH port forwarding.
+ * The SSH client will listen to a local port and will ask the remote SSH server
+ * to open an outgoing connection to the HTTP proxy. It will then forward all
+ * traffic between the local port and the HTTP proxy inside the SSH connection.
+ *
+ * To use SSH port forwarding
+ * -# Set the \p CERTI_HTTP_PROXY environment variable to an arbitrary local port
+ * number, e.g. http://localhost:8808.
+ * -# Establish an SSH connection as follows.
+ *
+ * On Windows you may use the PuTTY client
+ * http://www.chiark.greenend.org.uk/~sgtatham/putty
+ *
+ * Create a SSH session and select the SSH protocol.
+ * Open the Connection -- SSH -- Tunnels configuration. Select "Local", enter
+ * chosen arbitrary "Source port" number (e.g. 8808) and the HTTP proxy
+ * address as "Destination". Make sure you then click "Add".
+ *
+ * \image html "putty-portforwarding.png"
+ *
+ * Most Linux systems have a SSH client installed. Use the \p ssh command.
+\verbatim
+ ssh -L8808:proxy.example.com:3128 user@hostname
+\endverbatim
+ *
+ */
 
 // ----------------------------------------------------------------------------
 SocketHTTPProxy::SocketHTTPProxy() : SocketTCP()
@@ -183,4 +241,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.1 2008/10/12 11:46:40 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.2 2008/10/26 16:20:15 gotthardp Exp $

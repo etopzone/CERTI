@@ -34,13 +34,12 @@
  *
  * This documentation is divided into several parts:
  *
- * <ul>
- *  <li>\ref intro</li>
- *  <li>\ref build</li>
- *  <li>\ref install</li>
- *  <li>\ref execute</li>
- * </ul> 
+ * - \ref intro
+ * - \ref build
+ * - \ref install
+ * - \ref execute
+ *   - \ref certi_HTTP_proxy
  *
  */
 
-// $Id: certi_install_doc.tree,v 3.4 2008/10/19 21:44:24 gotthardp Exp $
+// $Id: certi_install_doc.tree,v 3.5 2008/10/26 16:20:13 gotthardp Exp $
