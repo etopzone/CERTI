@@ -131,14 +131,17 @@
  * Enter the folder for building the programs (e.g. \c \\tempo).
  *
  * \image html "cmake-launch.png"
+ * \image latex "cmake-launch.png" "Launch CMake" width=12cm
  *
  * Hit the \c Configure button.
  *
  * \image html "cmake-generator.png"
+ * \image latex "cmake-generator.png" "Configure" width=10cm
  *
  * Choose the appropriate Generator.
  *
  * \image html "cmake-verify.png"
+ * \image latex "cmake-verify.png" "Choose Generator" width=12cm
  *
  * Verify the the paths for the different tools (flex, bison) before hitting
  * \c Configure again.
@@ -146,20 +149,24 @@
  * Repeat \c Configure until you get an enabled \c OK button.
  *
  * \image html "cmake-generate.png"
+ * \image latex "cmake-generate.png" "Generate project" width=12cm
  *
  * You should get a \c build folder (e.g. \\tempo) which looks like this:
  *
  * \image html "cmake-vsfiles.png"
+ * \image latex "cmake-vsfiles.png" "Visual Studio files" width=12cm
  *
  * Launch the \c CERTI.sln (e.g. using Microsoft Visual C++ 2005).
  *
  * \image html "cmake-vsproject.png"
+ * \image latex "cmake-vsproject.png" "CMake VS Project" width=6cm
  *
  * Select desired configuration (Debug or Release) and build the project
  * (using Build All). Take a look at your folder:
  *
  * \image html "cmake-binaries.png"
+ * \image latex "cmake-binaries.png" "Build Tree" width=14cm
  *  
  */
 
-// $Id: build.dox,v 3.1 2008/10/19 21:44:24 gotthardp Exp $
+// $Id: build.dox,v 3.2 2008/10/27 10:26:50 erk Exp $

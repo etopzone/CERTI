@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.2 2008/10/26 16:20:15 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.3 2008/10/27 10:26:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -81,7 +81,8 @@ static PrettyDebug G("GENDOC",__FILE__);
  * chosen arbitrary "Source port" number (e.g. 8808) and the HTTP proxy
  * address as "Destination". Make sure you then click "Add".
  *
- * \image html "putty-portforwarding.png"
+ * \image html  "putty-portforwarding.png"
+ * \image latex "putty-portforwarding.png" "Putty Portforwarding" width=12cm
  *
  * Most Linux systems have a SSH client installed. Use the \p ssh command.
 \verbatim
@@ -241,4 +242,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.2 2008/10/26 16:20:15 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.3 2008/10/27 10:26:49 erk Exp $
