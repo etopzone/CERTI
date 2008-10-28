@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.14 2008/09/29 12:31:28 erk Exp $
+// $Id: Exception.cc,v 3.15 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <assert.h>
@@ -115,8 +115,6 @@ const char *RTI::ValueLengthExceeded::_ex = "ValueLengthExceeded" ;
 const char *certi::FederateNotPublishing::_ex = "FederateNotPublishing" ;
 const char *certi::FederateNotSubscribing::_ex = "FederateNotSubscribing" ;
 const char *certi::InvalidObjectHandle::_ex = "InvalidObjectHandle" ;
-const char *certi::InvalidOrderType::_ex = "InvalidOrderType" ;
-const char *certi::InvalidTransportType::_ex = "InvalidTransportType" ;
 const char *certi::SecurityError::_ex = "SecurityError" ;
 const char *certi::CouldNotOpenRID::_ex = "CouldNotOpenRID" ;
 const char *certi::ErrorReadingRID::_ex = "ErrorReadingRID" ;
@@ -224,8 +222,6 @@ long RTI::ValueLengthExceeded::type = certi::e_ValueLengthExceeded ;
 long certi::FederateNotPublishing::type = certi::e_FederateNotPublishing ;
 long certi::FederateNotSubscribing::type = certi::e_FederateNotSubscribing ;
 long certi::InvalidObjectHandle::type = certi::e_InvalidObjectHandle ;
-long certi::InvalidOrderType::type = certi::e_InvalidOrderType ;
-long certi::InvalidTransportType::type = certi::e_InvalidTransportType ;
 long certi::SecurityError::type = certi::e_SecurityError ;
 long certi::CouldNotOpenRID::type = certi::e_CouldNotOpenRID ;
 long certi::ErrorReadingRID::type = certi::e_ErrorReadingRID ;

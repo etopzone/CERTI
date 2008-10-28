@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.43 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: Interaction.cc,v 3.44 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -142,14 +142,14 @@ void
 Interaction::changeTransportationType(TransportType new_type,
                                       FederateHandle the_handle)
     throw (FederateNotPublishing,
-           InvalidTransportType,
+           InvalidTransportationHandle,
            RTIinternalError)
 {
     if (!isPublishing(the_handle))
         throw FederateNotPublishing("Change Interaction Transport Type.");
 
     if ((new_type != RELIABLE) && (new_type != BEST_EFFORT))
-        throw InvalidTransportType("");
+        throw InvalidTransportationHandle("");
 
     transport = new_type ;
 
@@ -162,14 +162,14 @@ Interaction::changeTransportationType(TransportType new_type,
 void
 Interaction::changeOrderType(OrderType new_order, FederateHandle the_handle)
     throw (FederateNotPublishing,
-           InvalidOrderType,
+           InvalidOrderingHandle,
            RTIinternalError)
 {
     if (!isPublishing(the_handle))
         throw FederateNotPublishing("Change Interaction Order Type.");
 
     if ((new_order != RECEIVE) && (new_order != TIMESTAMP))
-        throw InvalidOrderType("");
+        throw InvalidOrderingHandle("");
 
     D.Out(pdInit, "Interaction %d: New Order type is %d.", handle, order);
 }
@@ -532,4 +532,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.43 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: Interaction.cc,v 3.44 2008/10/28 12:07:26 gotthardp Exp $

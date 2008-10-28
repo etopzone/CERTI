@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.50 2008/10/13 10:06:48 erk Exp $
+// $Id: RTIG.cc,v 3.51 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -807,10 +807,10 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
         CPY_NOT_NULL(e);
         rep->exception = e_InvalidObjectHandle ;
     }
-    catch (InvalidOrderType &e) {
+    catch (InvalidOrderingHandle &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep->exception = e_InvalidOrderType ;
+        rep->exception = e_InvalidOrderingHandle ;
     }
     catch (InvalidResignAction &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
@@ -827,10 +827,10 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
         CPY_NOT_NULL(e);
         rep->exception = e_InvalidRoutingSpace ;
     }
-    catch (InvalidTransportType &e) {
+    catch (InvalidTransportationHandle &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         CPY_NOT_NULL(e);
-        rep->exception = e_InvalidTransportType ;
+        rep->exception = e_InvalidTransportationHandle ;
     }
     catch (MemoryExhausted &e) {
         D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
@@ -1025,4 +1025,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.50 2008/10/13 10:06:48 erk Exp $
+// $Id: RTIG.cc,v 3.51 2008/10/28 12:07:26 gotthardp Exp $

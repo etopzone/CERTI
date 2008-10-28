@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.29 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: Interaction.hh,v 3.30 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -89,10 +89,10 @@ public:
     // -- Transport and Ordering --
     void changeTransportationType(TransportType new_type,
                                   FederateHandle the_handle)
-        throw (FederateNotPublishing, InvalidTransportType, RTIinternalError);
+        throw (FederateNotPublishing, InvalidTransportationHandle, RTIinternalError);
 
     void changeOrderType(OrderType new_order, FederateHandle the_handle)
-        throw (FederateNotPublishing, InvalidOrderType, RTIinternalError);
+        throw (FederateNotPublishing, InvalidOrderingHandle, RTIinternalError);
 
     // -- Instance Broadcasting --
     void isReady(FederateHandle federate_handle,
@@ -167,4 +167,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.29 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: Interaction.hh,v 3.30 2008/10/28 12:07:26 gotthardp Exp $

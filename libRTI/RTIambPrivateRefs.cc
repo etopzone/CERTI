@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.13 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.14 2008/10/28 12:07:27 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -375,9 +375,9 @@ RTIambPrivateRefs::processException(Message *msg)
           throw InvalidObjectHandle(msg->getExceptionReason());
       } break ;
 
-      case e_InvalidOrderType: {
-          D.Out(pdExcept, "Throwing e_InvalidOrderType exception.");
-          throw InvalidOrderType(msg->getExceptionReason());
+      case e_InvalidOrderingHandle: {
+          D.Out(pdExcept, "Throwing e_InvalidOrderingHandle exception.");
+          throw InvalidOrderingHandle(msg->getExceptionReason());
       } break ;
 
       case e_InvalidResignAction: {
@@ -395,9 +395,9 @@ RTIambPrivateRefs::processException(Message *msg)
           throw InvalidRoutingSpace(msg->getExceptionReason());
       } break ;
 
-      case e_InvalidTransportType: {
-          D.Out(pdExcept, "Throwing e_InvalidTransportType exception.");
-          throw InvalidTransportType(msg->getExceptionReason());
+      case e_InvalidTransportationHandle: {
+          D.Out(pdExcept, "Throwing e_InvalidTransportationHandle exception.");
+          throw InvalidTransportationHandle(msg->getExceptionReason());
       } break ;
 
       case e_MemoryExhausted: {
@@ -539,4 +539,4 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.13 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.14 2008/10/28 12:07:27 gotthardp Exp $

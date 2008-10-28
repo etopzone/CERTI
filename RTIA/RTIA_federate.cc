@@ -515,7 +515,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         om->changeAttributeTransportType(req->getObject(),
                                          req->handleArray,
                                          req->handleArraySize,
-                                         req->getTransportType(),
+                                         req->getTransportation(),
                                          e);
         break ;
 
@@ -526,7 +526,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         om->changeAttributeOrderType(req->getObject(),
                                      req->handleArray,
                                      req->handleArraySize,
-                                     req->getOrderType(),
+                                     req->getOrdering(),
                                      e);
         break ;
 
@@ -535,7 +535,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type ChangeInterTransport.");
 
         om->changeInteractionTransportType(req->getInteractionClass(),
-                                           req->getTransportType(),
+                                           req->getTransportation(),
                                            e);
         break ;
 
@@ -544,7 +544,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type ChangeInterOrder.");
 
         om->changeInteractionOrderType(req->getInteractionClass(),
-                                       req->getOrderType(), e);
+                                       req->getOrdering(), e);
         break ;
 
       case Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
@@ -1356,9 +1356,9 @@ RTIA::processFederateRequest(Message *req)
         D.Out(pdExcept, "Catched %s Exception.", e._name);
         rep.setException(e_InvalidObjectHandle);
     }
-    catch (InvalidOrderType &e) {
+    catch (InvalidOrderingHandle &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_InvalidOrderType);
+        rep.setException(e_InvalidOrderingHandle);
     }
     catch (InvalidResignAction &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
@@ -1372,9 +1372,9 @@ RTIA::processFederateRequest(Message *req)
         D.Out(pdExcept, "Catched %s Exception.", e._name);
         rep.setException(e_InvalidRoutingSpace);
     }
-    catch (InvalidTransportType &e) {
+    catch (InvalidTransportationHandle &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);
-        rep.setException(e_InvalidTransportType);
+        rep.setException(e_InvalidTransportationHandle);
     }
     catch (MemoryExhausted &e) {
         D.Out(pdExcept, "Catched %s Exception.", e._name);

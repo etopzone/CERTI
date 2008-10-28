@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.hh,v 3.6 2008/04/29 07:50:23 rousse Exp $
+// $Id: Exception.hh,v 3.7 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_EXCEPTION_HH
@@ -83,11 +83,9 @@ typedef enum {
     e_InvalidFederationTime,
     e_InvalidFederationTimeDelta,
     e_InvalidObjectHandle,
-    e_InvalidOrderType,
     e_InvalidResignAction,
     e_InvalidRetractionHandle,
     e_InvalidRoutingSpace,
-    e_InvalidTransportType,
     e_MemoryExhausted,
     e_NameNotFound,
     e_NoPauseRequested,
@@ -144,4 +142,4 @@ typedef enum {
 
 #endif // _CERTI_EXCEPTION_HH
 
-// $Id: Exception.hh,v 3.6 2008/04/29 07:50:23 rousse Exp $
+// $Id: Exception.hh,v 3.7 2008/10/28 12:07:26 gotthardp Exp $

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.35 2008/09/18 17:19:27 erk Exp $
+// $Id: certi.hh,v 3.36 2008/10/28 12:07:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -200,8 +200,6 @@ typedef RTI::ValueLengthExceeded ValueLengthExceeded ;
 RTI_EXCEPT(FederateNotPublishing)
 RTI_EXCEPT(FederateNotSubscribing)
 RTI_EXCEPT(InvalidObjectHandle)
-RTI_EXCEPT(InvalidOrderType)
-RTI_EXCEPT(InvalidTransportType)
 RTI_EXCEPT(SecurityError)
 RTI_EXCEPT(CouldNotOpenRID)
 RTI_EXCEPT(ErrorReadingRID)
@@ -352,4 +350,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.35 2008/09/18 17:19:27 erk Exp $
+// $Id: certi.hh,v 3.36 2008/10/28 12:07:26 gotthardp Exp $

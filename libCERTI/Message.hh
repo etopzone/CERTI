@@ -341,16 +341,11 @@ public:
 
     void setTransportation(RTI::TransportationHandle);
     RTI::TransportationHandle getTransportation() const
-    { return ((transport == RELIABLE) ? 1 : 0); };
-
-    TransportType getTransportType() const
-    { return transport ; };
+    { return transport; }
 
     void setOrdering(RTI::OrderingHandle);
     RTI::OrderingHandle getOrdering() const
-    { return ((order == RECEIVE) ? 1 : 0); };
-
-    RTI::OrderType getOrderType() const { return order ; };
+    { return order; }
 
     void setEventRetraction(EventRetractionHandle);
     EventRetractionHandle getEventRetraction() const

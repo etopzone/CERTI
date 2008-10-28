@@ -241,14 +241,14 @@ Message::setObject(ObjectHandle the_object)
 void
 Message::setTransportation(RTI::TransportationHandle the_transport)
 {
-    transport = ((the_transport == 1) ? RELIABLE : BEST_EFFORT);
+    transport = the_transport;
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::setOrdering(RTI::OrderingHandle the_ordering)
 {
-    order = ((the_ordering == 1) ? RECEIVE : TIMESTAMP);
+    order = the_ordering;
 }
 
 // ----------------------------------------------------------------------------
