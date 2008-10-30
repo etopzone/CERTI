@@ -20,11 +20,11 @@
 
 #include "RTIA_cmdline.h"
 
-const char *gengetopt_args_info_purpose = "RunTime Infrastructure Ambassador";
+const char *gengetopt_args_info_purpose = "CERTI RunTime Infrastructure Ambassador (RTIA)";
 
-const char *gengetopt_args_info_usage = "Usage: rtia [-p <tcp_port>] [-v]";
+const char *gengetopt_args_info_usage = "Usage: rtia [-v] [-p <tcp_port>]";
 
-const char *gengetopt_args_info_description = "Launched by the fedarate in order to handle RTI<-->Federate communication";
+const char *gengetopt_args_info_description = "Launched by the federate in order to handle RTI<-->Federate communication";
 
 const char *gengetopt_args_info_help[] = {
   "  -h, --help           Print help and exit",
