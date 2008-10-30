@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.98 2008/10/30 10:49:28 erk Exp $
+// $Id: Federation.cc,v 3.99 2008/10/30 10:57:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -163,7 +163,9 @@ Federation::Federation(const char *federation_name,
     // Read FOM File to initialize Root Object.
     root = new RootObject(server);
 
-    cout << "New federation: " << name << endl ;
+	if (verboseLevel>0) {
+		cout << "New federation: " << name << endl ;
+	}
 
     // We should try to open FOM file from different
     // predefined places:
@@ -177,46 +179,66 @@ Federation::Federation(const char *federation_name,
     //
     string filename   = FEDid;
     bool   filefound  = false;
-    cout << "Looking for FOM file... " << endl ;
+    if (verboseLevel>0) {
+    	cout << "Looking for FOM file... " << endl ;
 
-    cout << "   Trying... " << filename;
+    	cout << "   Trying... " << filename;
+    }
     filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
 
 #ifdef _WIN32
     if (!filefound) {
       char temp[260];
-      cout << " --> cannot access." <<endl;
+      if (verboseLevel>0) {
+    	  cout << " --> cannot access." <<endl;
+      }
       GetCurrentDirectory(260,temp);
       filename = string(temp);
       filename = filename + "\\share\\federations\\"+string(FEDid_name);
-      cout << "   Now trying..." << filename;
+      if (verboseLevel>0) {
+    	  cout << "   Now trying..." << filename;
+      }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 
     if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
-      cout << " --> cannot access." <<endl;
+      if (verboseLevel>0) {
+    		cout << " --> cannot access." <<endl;
+      }
       filename = string(getenv("CERTI_HOME"))+"\\share\\federations\\"+FEDid_name;
-      cout << "   Now trying..." << filename;
+      if (verboseLevel>0) {
+        cout << "   Now trying..." << filename;
+      }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 #else
     if (!filefound) {
-      cout << " --> cannot access." <<endl;
+      if (verboseLevel>0) {
+         cout << " --> cannot access." <<endl;
+      }
       filename = "/usr/local/share/federations/"+string(FEDid_name);
-      cout << "   Now trying..." << filename;
+      if (verboseLevel>0) {
+         cout << "   Now trying..." << filename;
+      }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 
     if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
-      cout << " --> cannot access." <<endl;
+      if (verboseLevel>0) {
+         cout << " --> cannot access." <<endl;
+      }
       filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
-      cout << "   Now trying..." << filename;
+      if (verboseLevel>0) {
+         cout << "   Now trying..." << filename;
+      }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 #endif
 
     if (!filefound) {
-      cout << " --> cannot access." <<endl;
+      if (verboseLevel>0) {
+        cout << " --> cannot access." <<endl;
+      }
       cerr << "Next step will fail"<<endl;
       G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
       throw CouldNotOpenFED("RTIG cannot find FED file.");
@@ -229,12 +251,16 @@ Federation::Federation(const char *federation_name,
     std::ifstream fedTry(FEDid.c_str());
     if (!fedTry.is_open())
         {
-        cout << "... failed : ";
+    	if (verboseLevel>0) {
+           cout << "... failed : ";
+    	}
         G.Out(pdGendoc,"exit Federation::Federation on exception CouldNotOpenFED");
         throw CouldNotOpenFED("RTIG have found but cannot open FED file");
         }
     else {
-        cout << "... opened." << endl ;
+    	if (verboseLevel>0) {
+    		cout << "... opened." << endl ;
+    	}
         fedTry.close();
     }
 
@@ -2290,5 +2316,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.98 2008/10/30 10:49:28 erk Exp $
+// $Id: Federation.cc,v 3.99 2008/10/30 10:57:55 erk Exp $
 
