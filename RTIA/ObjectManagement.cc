@@ -69,7 +69,7 @@ ObjectManagement::orderTypeList[] = {
 ObjectManagement::ObjectManagement(Communications *GC,
                                    FederationManagement *GF,
                                    RootObject *theRootObj)
-    : comm(GC), 
+    : comm(GC),
       fm(GF),
       rootObject(theRootObj) { }
 
@@ -86,7 +86,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
                                  TypeException & e)
 {
     NM_Register_Object req;
-    
+
     req.federate    = fm->federate ;
     req.federation  = fm->_numero_federation ;
     req.objectClass = the_class ;
@@ -137,15 +137,15 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     validCall = tm->testValidTime(theTime) ;
     if (validCall) {
 
-		// Building request (req NetworkMessage)    
+		// Building request (req NetworkMessage)
     	req.federation = fm->_numero_federation ;
     	req.federate = fm->federate ;
     	req.object = theObjectHandle ;
     	// set Date for UAV with time
     	req.setDate(theTime);
-        req.handleArray.resize(attribArraySize) ;   
+        req.handleArray.resize(attribArraySize) ;
     	req.handleArraySize = attribArraySize ;
-        req.sizeValueArray(attribArraySize) ; 
+        req.sizeValueArray(attribArraySize) ;
 
         for (i = 0 ; i < attribArraySize ; i++) {
             req.handleArray[i] = attribArray[i] ;
@@ -157,19 +157,19 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
        	comm->sendMessage(&req);
     	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
     	e = rep->exception ;
-    	evtrHandle = rep->eventRetraction;    	
+    	evtrHandle = rep->eventRetraction;
     }
     else {
        std::stringstream errorMsg;
        errorMsg << "UAV InvalidFederationTime: "<<std::endl;
        errorMsg << " providedTime =" << theTime<<std::endl;
        errorMsg << " currentTime  =" << tm->requestFederateTime()<<std::endl;
-       errorMsg << " lookahead    =" << tm->requestLookahead()<<std::endl;       
-       
+       errorMsg << " lookahead    =" << tm->requestLookahead()<<std::endl;
+
        D.Out(pdDebug,errorMsg.str().c_str());
        e = e_InvalidFederationTime;
     }
-    
+
     // FIXME returned evtrHandle carry uninitialized value
     G.Out(pdGendoc,"exit ObjectManagement::updateAttributeValues with time");
     return evtrHandle ;
@@ -197,7 +197,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     int i ;
 
     G.Out(pdGendoc,"enter ObjectManagement::updateAttributeValues without time");
-    // Building request (req NetworkMessage)    
+    // Building request (req NetworkMessage)
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObjectHandle ;
@@ -326,7 +326,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
 
        // Building network message (req) to RTIG.
        req.interactionClass = theInteraction ;
-       // true for UAV with time    
+       // true for UAV with time
        req.setDate(theTime);
        req.region = region ;
        req.federation = fm->_numero_federation ;
@@ -351,7 +351,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     else {
        e = e_InvalidFederationTime ;
     }
-    
+
     // FIXME returned evtrHandle carry uninitialized value
     return evtrHandle ;
 }
@@ -375,7 +375,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                       paramArray,
                                       paramArraySize);
 
-    // Building network message (req) to RTIG.   
+    // Building network message (req) to RTIG.
     req.interactionClass = theInteraction ;
     req.region     = region ;
     req.federation = fm->_numero_federation ;
@@ -447,7 +447,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 //! deleteObject with time
 EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-			       FederationTime theTime,	
+			       FederationTime theTime,
                                std::string theTag,
                                TypeException &e)
 {
@@ -479,8 +479,8 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
                                TypeException &e)
 {
     NM_Delete_Object req;
-    
-    req.object     = theObjectHandle ;   
+
+    req.object     = theObjectHandle ;
     req.federation = fm->_numero_federation ;
     req.federate   = fm->federate ;
 
@@ -534,7 +534,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
     req.setObject(the_object);
     req.setTag(the_tag);
     req.setBoolean(false);
-    
+
     comm->requestFederateService(&req);
 
     rootObject->deleteObjectInstance(the_federate, the_object, the_tag);
@@ -659,7 +659,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     NM_Request_Object_Attribute_Value_Update req;
 
     G.Out(pdGendoc,"enter ObjectManagement::requestObjectAttributeValueUpdate");
-    
+
     req.object = handle ;
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
@@ -675,7 +675,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
                       req.federate));
     e = rep->exception ;
     G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
-    
+
 } /* end of requestObjectAttributeValueUpdate */
 
 
@@ -688,7 +688,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
                                               std::vector <AttributeHandle> &the_attributes,
                                               UShort attribArraySize,
                                               TypeException &)
-{    
+{
     Message req;
 
     G.Out(pdGendoc,"enter ObjectManagement::provideAttributeValueUpdate");
@@ -701,7 +701,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
     }
 
     comm->requestFederateService(&req);
-    G.Out(pdGendoc,"exit  ObjectManagement::provideAttributeValueUpdate");   
+    G.Out(pdGendoc,"exit  ObjectManagement::provideAttributeValueUpdate");
 }
 
 // ------------------
@@ -710,7 +710,7 @@ ObjectManagement::provideAttributeValueUpdate(ObjectHandle the_object,
 
 void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
                                TypeException & /*e*/)
-{    
+{
     throw RTIinternalError("ObjectManagement::retract not implemented.");
 }
 
@@ -722,7 +722,7 @@ void ObjectManagement::retract(EventRetractionHandle /*theHandle*/,
 void
 ObjectManagement::reflectRetraction(EventRetractionHandle,
                                     TypeException &)
-{    
+{
     throw RTIinternalError("ObjectManagement::reflectRetraction not implemented.");
 }
 
@@ -829,7 +829,7 @@ ObjectManagement::getParameterHandle(const char *theParameterName,
 
 // ----------------------------------------------------------------------------
 //! getParameterName.
-const char *
+const std::string&
 ObjectManagement::getParameterName(ParameterHandle theParameterHandle,
                                    InteractionClassHandle theClassHandle)
 {
@@ -931,7 +931,7 @@ attributesInScope(ObjectHandle theObject,
 
     comm->requestFederateService(&req);
 
-    G.Out(pdGendoc,"exit  ObjectManagement::attributesInScope");   
+    G.Out(pdGendoc,"exit  ObjectManagement::attributesInScope");
 }
 
 // --------------------------------------
@@ -958,7 +958,7 @@ attributesOutOfScope(ObjectHandle theObject,
 
     comm->requestFederateService(&req);
 
-    G.Out(pdGendoc,"exit  ObjectManagement::attributesOutScope");   
+    G.Out(pdGendoc,"exit  ObjectManagement::attributesOutScope");
 }
 
 // --------------------------------------
@@ -976,7 +976,7 @@ setAttributeRelevanceAdvisorySwitch(bool state, TypeException &e) {
 // -- 6.17 turnUpdatesOnForObjectInstance
 // --------------------------------------
 
-void 
+void
 ObjectManagement::
 turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                            const std::vector <AttributeHandle> &attribArray,
@@ -996,7 +996,7 @@ turnUpdatesOnForObjectInstance(ObjectHandle theObject,
 
     comm->requestFederateService(&req);
 
-    G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOnForObjectInstance");   
+    G.Out(pdGendoc,"exit  ObjectManagement::turnUpdatesOnForObjectInstance");
 }
 
 // --------------------------------------

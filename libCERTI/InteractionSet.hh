@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.18 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: InteractionSet.hh,v 3.19 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -67,7 +67,7 @@ public:
                InteractionClassNotDefined,
                RTIinternalError);
 
-    const char *
+    const std::string&
     getParameterName(ParameterHandle the_handle,
                      InteractionClassHandle the_class)
         throw (InteractionParameterNotDefined,
@@ -145,4 +145,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.18 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: InteractionSet.hh,v 3.19 2008/10/30 10:11:41 erk Exp $

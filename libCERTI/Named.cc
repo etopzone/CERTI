@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.6 2008/06/23 13:25:05 erk Exp $
+// $Id: Named.cc,v 3.7 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -39,12 +39,12 @@ Named::setName(std::string newName)
     name = newName ;
 }
 
-void 
+void
 Named::setName(const char* newName) {
     name = newName;
 }
 
-const std::string
+const std::string&
 Named::getName() const
 {
     return name ;
@@ -69,20 +69,20 @@ Named::validateHLAName(const std::string& name) {
 	// using IEEE-1516.2-2000 (§3.3.1 Names).
 	return true;
 }
- 
-bool 
+
+bool
 Named::isQualifiedClassName(const std::string& name) {
-	
+
 	size_t idx = name.find_first_of('.',0);
 	return (idx!=std::string::npos);
 }
-		
-std::string 
+
+std::string
 Named::getNextClassName(std::string& qualifiedClassName) {
 	std::string retval;
 	size_t idx = 0;
 	/* take the substring from start up to '.' (excluded) */
-	idx    = qualifiedClassName.find_first_of('.',0);	
+	idx    = qualifiedClassName.find_first_of('.',0);
 	if (idx!=std::string::npos) {
 		retval = qualifiedClassName.substr(0,idx);
 		/* update the string with the remaining string */
@@ -90,9 +90,9 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 	} else {
 		retval = qualifiedClassName;
 	}
-	return retval;	
+	return retval;
 }
 
 } // certi
 
-// $Id: Named.cc,v 3.6 2008/06/23 13:25:05 erk Exp $
+// $Id: Named.cc,v 3.7 2008/10/30 10:11:41 erk Exp $

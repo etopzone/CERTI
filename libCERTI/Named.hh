@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.5 2008/06/23 13:25:05 erk Exp $
+// $Id: Named.hh,v 3.6 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -33,71 +33,71 @@ namespace certi {
  * A based class used for CERTI named object.
  * This class should be used to handle HLA named object
  * the setName method should enforce HLA rules for naming
- * scheme as specified in 
+ * scheme as specified in
  * IEEE-1516.2-2000 (§3.3.1 Names)
  * "IEEE Standard for Modeling and Simulation (M&S) High Level
- *  Architecture (HLA)—Object Model Template (OMT) Specification" 
+ *  Architecture (HLA)—Object Model Template (OMT) Specification"
  */
 class Named
 {
 public:
-	/** 
-	 * Default constructor. 
+	/**
+	 * Default constructor.
 	 * Name initialized with the empty string.
 	 */
     Named();
-    
-    /** 
+
+    /**
      * Constructor with inital value.
      * @param[in] name Initial name
-     */	
+     */
     Named(const std::string newName);
-    
+
     /**
      * Virtual destructor.
-     * Necessary for a class having virtual methods. 
+     * Necessary for a class having virtual methods.
      */
     virtual ~Named();
 
     /**
-     *  Set name.     
+     *  Set name.
      *  @param[in] name the new name
      */
     virtual void setName(const std::string newName);
-    
+
     /**
      *  Set name (char* version)
      *  @param[in] name the new name
      */
     virtual void setName(const char* newName);
-    
-    /** 
+
+    /**
      * Get name.
      * @return name value
      */
-    virtual const std::string getName() const ;
-    
-    /** 
+    virtual const std::string& getName() const ;
+
+    /**
      * Get C-style name.
      * @return pointer on name, as const char *
      */
     virtual const char *getCName() const ;
-    
-    /** 
+
+    /**
      * Check if the name matches the provided parameter.
      * @param name String to compare
      * @return true if strings match
      */
     bool isNamed(const std::string& newName) const ;
-    
+
 	/**
-	 * This method check if the provided name 
+	 * This method check if the provided name
 	 * respects the HLA named object specifications, IEEE-1516.2-2000 (§3.3.1 Names).
 	 * @param[in] name the name to be checked
 	 * @return true if the name is a valid HLA name, false otherwise.
 	 */
 	static bool validateHLAName(const std::string& name);
-	
+
 	/**
 	 * Check if the provided name is a qualified class name.
 	 * Qualified HLA class name are those beginning at
@@ -106,16 +106,16 @@ public:
 	 * "ObjectRoot.Bille.PositionX"
 	 * @param[in] name the name to be checked
 	 * @return true if the name is qualified one
-	 */ 
-	static bool isQualifiedClassName(const std::string& name);	
-	
+	 */
+	static bool isQualifiedClassName(const std::string& name);
+
 	/**
 	 * Get next class name component.
 	 * @param[in,out] qualifiedClassName
 	 * @return the next (leading) class name
 	 */
 	static std::string getNextClassName(std::string& qualifiedClassName);
-	
+
 	class IsNamed {
 		public:
 			IsNamed(const std::string named) : named(named) {};
@@ -123,11 +123,11 @@ public:
 				return (namedObject.getName() == named);
 			}
 		private:
-			std::string named; 
+			std::string named;
 	};
 
 protected:
-		
+
     std::string name ;
 };
 
@@ -135,4 +135,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.5 2008/06/23 13:25:05 erk Exp $
+// $Id: Named.hh,v 3.6 2008/10/30 10:11:41 erk Exp $

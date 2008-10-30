@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.27 2008/10/10 15:41:11 gotthardp Exp $
+// $Id: ObjectManagement.hh,v 3.28 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -37,7 +37,7 @@ class Queues ;
 class FederationManagement ;
 class TimeManagement ;
 
-class ObjectManagement 
+class ObjectManagement
 {
 
 public:
@@ -126,7 +126,7 @@ public:
                             TypeException &e);
 
     EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
-    				       FederationTime theTime,	
+    				       FederationTime theTime,
                                        std::string theTag,
                                        TypeException &e);
 
@@ -194,14 +194,14 @@ public:
                                          TypeException &e);
 
     // 6.13
-    void 
+    void
     attributesInScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const UShort attribArraySize,
                       TypeException &e);
 
     // 6.14
-    void 
+    void
     attributesOutOfScope(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const UShort attribArraySize,
@@ -211,14 +211,14 @@ public:
                                              TypeException &e);
 
     // 6.17
-    void 
+    void
     turnUpdatesOnForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
 		      const UShort attribArraySize,
                       TypeException &e);
 
     // 6.18
-    void 
+    void
     turnUpdatesOffForObjectInstance(ObjectHandle theObject,
                       const std::vector <AttributeHandle> &attribArray,
                       const UShort attribArraySize,
@@ -244,7 +244,7 @@ public:
     ParameterHandle getParameterHandle(const char *theParameterName,
                                        InteractionClassHandle theClassHandle);
 
-    const char *getParameterName(ParameterHandle theParameterHandle,
+    const std::string& getParameterName(ParameterHandle theParameterHandle,
                                  InteractionClassHandle theClassHandle);
 
     ObjectClassHandle getObjectClass(ObjectHandle);
@@ -281,4 +281,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.27 2008/10/10 15:41:11 gotthardp Exp $
+// $Id: ObjectManagement.hh,v 3.28 2008/10/30 10:11:41 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.44 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: Interaction.cc,v 3.45 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -49,7 +49,7 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 {
 	// FIXME: the parameter handle has already been set
 	// in fed.cc::addParameter() why should it be set again
-	// here 
+	// here
     //the_parameter->setHandle(parameterSet.size() + 1);
 
     // An inherited parameter keeps its security level, any other get the
@@ -60,8 +60,8 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
     parameterSet.push_front(the_parameter);
 
     D[pdRegister] << "Interaction " << handle << "[" << name.c_str()
-		  << "] has a new parameter " 
-		  << the_parameter->getHandle() << "[" << the_parameter->getName().c_str() << "]" 
+		  << "] has a new parameter "
+		  << the_parameter->getHandle() << "[" << the_parameter->getName().c_str() << "]"
 		  << std::flush;
 
     return the_parameter->getHandle();
@@ -88,7 +88,7 @@ Interaction::addParametersToChild(Interaction *the_child)
 
         the_child->addParameter(child, true);
 
-        /* FIXME EN: what is the purpose of the check ?? */ 
+        /* FIXME EN: what is the purpose of the check ?? */
         if (child->getHandle() != (*it)->getHandle()) {
             throw RTIinternalError("Error while copying child's attributes.");
         } else {
@@ -291,13 +291,13 @@ Interaction::getParameterHandle(const char *the_name) const
 }
 
 // ----------------------------------------------------------------------------
-//! Returns the parameter name obtained by its handle.
-const char *
+
+const std::string&
 Interaction::getParameterName(ParameterHandle the_handle) const
     throw (InteractionParameterNotDefined,
            RTIinternalError)
 {
-    return getParameterByHandle(the_handle)->getName().c_str();
+    return getParameterByHandle(the_handle)->getName();
 }
 
 // ----------------------------------------------------------------------------
@@ -354,7 +354,7 @@ Interaction::publish(FederateHandle the_handle)
     throw (FederateNotPublishing, RTIinternalError, SecurityError)
 {
     checkFederateAccess(the_handle, (char *) "Publish");
-    
+
     if (!isPublishing(the_handle)) {
 	D.Out(pdInit, "Interaction %d: Added Federate %d to publishers list.", handle, the_handle);
 	publishers.insert(the_handle);
@@ -408,11 +408,11 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;       
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
-        answer->interactionClass = handle ; // Interaction Class Handle        
+        answer->interactionClass = handle ; // Interaction Class Handle
 	    answer->setDate(time);
 
         answer->setLabel(the_tag);
@@ -468,7 +468,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
     // Prepare and Broadcast message for this class
     InteractionBroadcastList *ibList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;        
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
         answer->exception = e_NO_EXCEPTION ;
         answer->federation = server->federation();
         answer->federate = federate_handle ;
@@ -532,4 +532,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.44 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: Interaction.cc,v 3.45 2008/10/30 10:11:41 erk Exp $

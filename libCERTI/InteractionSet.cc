@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.23 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: InteractionSet.cc,v 3.24 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -273,7 +273,7 @@ InteractionSet::getParameterHandle(const char *the_name,
 
 // ----------------------------------------------------------------------------
 //! Return the parameter name associated to handle and class handle.
-const char *
+const std::string&
 InteractionSet::getParameterName(ParameterHandle the_handle,
                                  InteractionClassHandle the_class)
     throw (InteractionParameterNotDefined,
@@ -331,7 +331,7 @@ InteractionSet::publish(FederateHandle federate_handle,
     Interaction *interaction = getByHandle(interaction_handle);
     if (publish)
 	interaction->publish(federate_handle);
-    else 
+    else
 	interaction->unpublish(federate_handle);
 }
 
@@ -357,4 +357,4 @@ InteractionSet::subscribe(FederateHandle federate_handle,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.23 2008/09/18 14:41:28 gotthardp Exp $
+// $Id: InteractionSet.cc,v 3.24 2008/10/30 10:11:41 erk Exp $

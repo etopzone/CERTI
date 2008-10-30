@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.30 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: Interaction.hh,v 3.31 2008/10/30 10:11:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -47,7 +47,7 @@ class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
     Interaction();
-    ~Interaction();        
+    ~Interaction();
 
     void setSpace(SpaceHandle);
     SpaceHandle getSpace();
@@ -75,12 +75,17 @@ public:
 
     void unpublish(FederateHandle)
         throw (FederateNotPublishing, RTIinternalError, SecurityError);
-    
+
     // -- RTI Support Services --
     ParameterHandle getParameterHandle(const char *) const
         throw (NameNotFound, RTIinternalError);
 
-    const char *getParameterName(ParameterHandle) const
+    /**
+     * Get interaction parameter name from its handle
+     * @param[in] the_handle the parameter handle
+     * @return the name of the parameter
+     */
+    const std::string& getParameterName(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined, RTIinternalError);
 
     void killFederate(FederateHandle theFederate)
@@ -152,7 +157,7 @@ private:
     void deletePublisher(FederateHandle);
     bool isPublishing(FederateHandle);
 
-    // Attributes       
+    // Attributes
     SecurityLevelID id ; //!< The default Security Level for new parameters
     SpaceHandle space ;
 
@@ -167,4 +172,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.30 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: Interaction.hh,v 3.31 2008/10/30 10:11:41 erk Exp $
