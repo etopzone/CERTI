@@ -45,15 +45,15 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 static RTI::TickTime currentTickTime()
 {
     RTI::TickTime result;
-#ifdef _WIN32 
+#ifdef _WIN32
     _timeb timev;
     _ftime(&timev);
     result = static_cast<RTI::TickTime>(timev.time + timev.millitm/1000);
-#else 
+#else
     struct timeval timev;
     gettimeofday(&timev, NULL);
     result = timev.tv_sec + timev.tv_usec/1000000;
-#endif 
+#endif
     return result;
 }
 
@@ -168,7 +168,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
           rep.setFederate(fm->joinFederationExecution(req->getFederateName(),
                                                       req->getFederationName(),
                                                       e));
-          if ( e == e_NO_EXCEPTION )              
+          if ( e == e_NO_EXCEPTION )
               {
               /// Set RTIA PrettyDebug federate name
               PrettyDebug::setFederateName(req->getFederateName());
@@ -194,17 +194,17 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                   {
                   is_an_xml = true ;
                   D.Out(pdTrace, "Trying to use .xml file");
-                  } 
-              else 
+                  }
+              else
                   throw CouldNotOpenFED("nor .fed nor .xml");
-    
+
               ifstream fdd(filename.c_str());
               if (fdd.is_open())
                   {
                   if ( is_a_fed )
-                      {        
+                      {
 	              int result = certi::fedparser::build(filename.c_str(),
-		        				   rootObject, false);  
+		        				   rootObject, false);
                       if (result != 0 ) throw ErrorReadingFED("invalid .fed");
                       }
                   else if ( is_an_xml )
@@ -212,9 +212,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
                       if (XmlParser::exists())
                           {
                           XmlParser parser(rootObject);
-                          parser.parse(filename);                                                    
+                          parser.parse(filename);
                           }
-		       else 
+		       else
                           throw CouldNotOpenFED("no XmlParser");
                       }
                   }
@@ -241,7 +241,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
         // boolean true means with federates set
         if ( req->getBoolean() )
-            fm->registerSynchronization(req->getLabel(), req->getTag(), 
+            fm->registerSynchronization(req->getLabel(), req->getTag(),
                 (unsigned short)req->handleArraySize, req->handleArray, e);
         else
             fm->registerSynchronization(req->getLabel(), req->getTag(), e);
@@ -478,28 +478,28 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::DELETE_OBJECT_INSTANCE: {
-          
+
 	G.Out(pdGendoc,"D_O_I into RTIA::chooseFederateProcessing") ;
 
 	try {
 	    if ( req->getBoolean() ) {
-        	D.Out(pdTrace, 
+        	D.Out(pdTrace,
 	"Receiving Message from Federate, type DeleteObjectInstance with \
 	 TIMESTAMP.");
                 rep.setEventRetraction(
 			om->deleteObject(
-				req->getObject(), 
+				req->getObject(),
 				req->getFederationTime(),
-				req->getTag(), 
+				req->getTag(),
 				e));
 	    }
 	    else {
-        	D.Out(pdTrace, 
+        	D.Out(pdTrace,
 	"Receiving Message from Federate, type DeleteObjectInstance without \
 	 TIMESTAMP.");
 		om->deleteObject(
-			req->getObject(), 
-			req->getTag(), 
+			req->getObject(),
+			req->getTag(),
 			e);
 	    }
 	} catch (Exception *e) {
@@ -709,9 +709,9 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::QUERY_MIN_NEXT_EVENT_TIME:
         D.Out(pdTrace,
-              "Receiving Message from Federate, type QueryMinNextEventTime."); 
+              "Receiving Message from Federate, type QueryMinNextEventTime.");
 
-        rep.setFederationTime(tm->requestMinNextEventTime());    
+        rep.setFederationTime(tm->requestMinNextEventTime());
         break ;
 
       case Message::MODIFY_LOOKAHEAD:
@@ -769,7 +769,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
             }
         catch (RTI::Exception &egoch)
             {
-            rep.setException(static_cast<TypeException>(egoch.getType()),egoch._reason);  
+            rep.setException(static_cast<TypeException>(egoch.getType()),egoch._reason);
             }
         break ;
 
@@ -812,7 +812,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
             }
         catch (RTI::Exception &egah)
             {
-            rep.setException(static_cast<TypeException>(egah.getType()),egah._reason);  
+            rep.setException(static_cast<TypeException>(egah.getType()),egah._reason);
             }
         break ;
 
@@ -851,7 +851,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetParameterName.");
 
         rep.setName(om->getParameterName(req->getParameter(),
-                                         req->getInteractionClass()));
+                                         req->getInteractionClass()).c_str());
         break ;
 
       case Message::GET_SPACE_HANDLE:
@@ -894,27 +894,27 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::GET_OBJECT_CLASS:
         D[pdTrace] << "Message from Federate: getObjectClass" << endl ;
 	rep.setObjectClass(om->getObjectClass(req->getObject()));
-	break ;	
+	break ;
 
       case Message::GET_TRANSPORTATION_HANDLE:
         D[pdTrace] << "Message from Federate: getTransportationHandle" << endl ;
         rep.setTransportation(om->getTransportationHandle(req->getName().c_str()));
-        break ;	
+        break ;
 
       case Message::GET_TRANSPORTATION_NAME:
         D[pdTrace] << "Message from Federate: getTransportationName" << endl ;
         rep.setName(om->getTransportationName(req->getTransportation()));
-        break ;	
+        break ;
 
       case Message::GET_ORDERING_HANDLE:
         D[pdTrace] << "Message from Federate: getOrderingHandle" << endl ;
         rep.setOrdering(om->getOrderingHandle(req->getName().c_str()));
-        break ;	
+        break ;
 
       case Message::GET_ORDERING_NAME:
         D[pdTrace] << "Message from Federate: getOrderingName" << endl ;
         rep.setName(om->getOrderingName(req->getOrdering()));
-        break ;	
+        break ;
 
       case Message::DDM_CREATE_REGION:
         D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
@@ -982,7 +982,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 	ddm->unsubscribeInteraction(req->getInteractionClass(),
 				    req->getRegion(), e);
 	break ;
-	
+
       case Message::ENABLE_TIME_REGULATION:
       case Message::DISABLE_TIME_REGULATION:
         D.Out(pdTrace,
@@ -1031,7 +1031,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type EnableClassRelevanceAdvisorySwitch.");
 	dm->setClassRelevanceAdvisorySwitch(req->getBoolean(), e);
 	break;
-      
+
       case Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type DisableClassRelevanceAdvisorySwitch.");
@@ -1043,7 +1043,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
 	dm->setInteractionRelevanceAdvisorySwitch(req->getBoolean(), e);
 	break;
-      
+
       case Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
@@ -1055,7 +1055,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
 	om->setAttributeRelevanceAdvisorySwitch(req->getBoolean(), e);
 	break;
-      
+
       case Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
@@ -1067,7 +1067,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
 	om->setAttributeScopeAdvisorySwitch(req->getBoolean(), e);
 	break;
-      
+
       case Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
