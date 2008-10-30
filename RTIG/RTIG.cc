@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.51 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: RTIG.cc,v 3.52 2008/10/30 10:49:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -66,7 +66,7 @@ RTIG::RTIG()
     tcpPort = atoi(tcp_port_s);
     udpPort = atoi(udp_port_s);
 
-    federations.setVerbose(verbose);
+    federations.setVerboseLevel(verboseLevel);
 }
 
 // ----------------------------------------------------------------------------
@@ -437,7 +437,7 @@ udpSocketServer.createUDPServer(udpPort);
 tcpSocketServer.createTCPServer(tcpPort);
 // udpSocketServer.createUDPServer(PORT_UDP_RTIG);
 
-if (verbose) {
+if (verboseLevel>0) {
 	cout << "CERTI RTIG up and running ..." << endl ;
 	}
 terminate = false ;
@@ -1025,4 +1025,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.51 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: RTIG.cc,v 3.52 2008/10/30 10:49:27 erk Exp $

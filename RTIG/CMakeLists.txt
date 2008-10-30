@@ -9,9 +9,7 @@ SET(rtig_SRCS
   RTIG.cc
   RTIG_processing.cc
   Trace.cc
-  cmdline.c
-  getopt1.c
-  getopt.c
+  RTIG_cmdline.c  
   )
 
 ADD_EXECUTABLE(rtig ${rtig_SRCS})

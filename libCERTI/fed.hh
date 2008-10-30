@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.5 2007/10/31 10:30:23 erk Exp $
+// $Id: fed.hh,v 3.6 2008/10/30 10:49:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _FED_HH
@@ -32,8 +32,15 @@
 namespace certi {
 namespace fedparser {
 
-// public interface
-int CERTI_EXPORT build(const char *, RootObject *, bool);
+/**
+ * Main function for parsing FED file.
+ * @param[in] filename the FED file to be parsed
+ * @param[out] the RootObject to build during the FED file parse
+ * @param[in] verboseArg, if true the parsed element will printed on stdout.
+ */
+CERTI_EXPORT
+int
+build(const char *filename, RootObject *root, bool verboseArg);
 
 // internal functions
 void indent();
@@ -69,4 +76,4 @@ void endSpace();
 }
 
 #endif // _FED_HH
-// $Id: fed.hh,v 3.5 2007/10/31 10:30:23 erk Exp $
+// $Id: fed.hh,v 3.6 2008/10/30 10:49:29 erk Exp $

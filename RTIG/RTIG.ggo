@@ -1,0 +1,14 @@
+# This is used by gengetopt to generate RTIG command line parser
+# see http://www.gnu.org/software/gengetopt/gengetopt.html#Basic-Usage
+
+package "RTIG"
+purpose "CERTI RunTime Infrastructure Gateway (RTIG)"
+usage	"rtig [-v 2]"
+
+# gengetopt options
+args "-F RTIG_cmdline -G"
+
+# Options
+option	"verbose"	v	"verbosity level\n 0 -> no output\n 1 -> small amount\n 2 -> show fed parse"	int     optional
+
+# $Id: RTIG.ggo,v 3.1 2008/10/30 10:49:27 erk Exp $

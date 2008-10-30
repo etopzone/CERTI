@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.60 2008/09/18 17:13:33 erk Exp $
+// $Id: FederationsList.cc,v 3.61 2008/10/30 10:49:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -40,7 +40,7 @@ FederationsList::FederationsList(SocketServer &server, AuditFile &audit)
     : list<Federation *>(),
       socketServer(server),
       auditFile(audit),
-      verbose(false)
+      verboseLevel(0)
 {
 }
 
@@ -190,10 +190,10 @@ void FederationsList::createFederation(const char *name,
     }
 
 #ifdef FEDERATION_USES_MULTICAST
-    federation = new Federation(name, handle, socketServer, auditFile, mc_link);
+    federation = new Federation(name, handle, socketServer, auditFile, mc_link, verboseLevel);
 #else
     try {
-        federation = new Federation(name, handle, socketServer, auditFile, FEDid);
+        federation = new Federation(name, handle, socketServer, auditFile, FEDid,verboseLevel);
         D.Out(pdDebug,"new Federation created.");
         }
     catch (RTI::CouldNotOpenFED& e) {
@@ -1558,5 +1558,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.60 2008/09/18 17:13:33 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.61 2008/10/30 10:49:28 erk Exp $
 

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.51 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: Federation.hh,v 3.52 2008/10/30 10:49:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -86,9 +86,10 @@ public:
                FederationHandle,
                SocketServer &,
                AuditFile &,
-               SocketMC*)
+               SocketMC*,
+               int verboseLevel)
 #else
-        Federation(const char *, Handle, SocketServer &, AuditFile &, const char *)
+        Federation(const char *, Handle, SocketServer &, AuditFile &, const char *,int verboseLevel)
 #endif
         throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
                RTIinternalError);
@@ -504,7 +505,7 @@ public:
 	       SaveInProgress,
 	       RestoreInProgress,
 	       RTIinternalError);
-    
+
     void deleteRegion(FederateHandle, long)
         throw (RegionNotKnown,
 	       RegionInUse,
@@ -518,7 +519,7 @@ public:
 	       SaveInProgress,
 	       RestoreInProgress,
 	       RTIinternalError);
-	
+
     void unassociateRegion(FederateHandle, ObjectHandle, RegionHandle)
 	throw (RegionNotKnown,
 	       SaveInProgress,
@@ -560,7 +561,7 @@ public:
 	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
 	       InvalidRegionContext, ObjectAlreadyRegistered,
 	       SaveInProgress, RestoreInProgress,
-	       RTIinternalError);               
+	       RTIinternalError);
 
 private:
     // Private methods
@@ -583,7 +584,7 @@ private:
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
     bool restoreStatus ; //!< True if restoring was correctly done.
-    bool verbose ;
+    int  verboseLevel ;
     std::string saveLabel ; //!< The label associated with the save request.
 
 #ifdef HAVE_XML
@@ -597,4 +598,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.51 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: Federation.hh,v 3.52 2008/10/30 10:49:27 erk Exp $

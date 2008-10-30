@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.hh,v 3.29 2008/06/19 13:56:59 jmm Exp $
+// $Id: RTIG.hh,v 3.30 2008/10/30 10:49:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_HH
@@ -32,13 +32,12 @@
 #include "FederationsList.hh"
 #include "AuditFile.hh"
 #include "HandleManager.hh"
-#include "cmdline.h"
 
 namespace certi {
 namespace rtig {
 
-/** 
- * This class manages the RTIG server, aka RTI Gateway server. 
+/**
+ * This class manages the RTIG server, aka RTI Gateway server.
  * Each time a message is received, it is
  * processed by a RTI_processing.cc module.
  *
@@ -56,9 +55,9 @@ public:
 
     static void signalHandler(int sig);
     static bool terminate ;
-    void setVerbose(bool flag) { verbose = flag ; }
+    void setVerboseLevel(int level) { verboseLevel = level ; federations.setVerboseLevel(level);}
     void execute();
-	 
+
 
 private:
     // Both methods return the socket, because it may have been closed
@@ -119,8 +118,8 @@ private:
 
 private:
     int tcpPort ;
-    int udpPort ; 
-    bool verbose ;
+    int udpPort ;
+    int verboseLevel ;
     HandleManager<Handle> federationHandles ;
     SocketTCP tcpSocketServer ;
     SocketUDP udpSocketServer ;
@@ -137,4 +136,4 @@ private:
 
 #endif // CERTI_RTIG_HH
 
-// $Id: RTIG.hh,v 3.29 2008/06/19 13:56:59 jmm Exp $
+// $Id: RTIG.hh,v 3.30 2008/10/30 10:49:28 erk Exp $

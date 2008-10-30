@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.45 2008/09/18 17:13:33 erk Exp $
+// $Id: FederationsList.hh,v 3.46 2008/10/30 10:49:27 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -570,7 +570,7 @@ public:
 	       FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
-    void setVerbose(bool flag) { verbose = flag ; }
+    void setVerboseLevel(int verboseLevel) { this->verboseLevel = verboseLevel ; }
 
 private:
     // Private methods
@@ -578,11 +578,11 @@ private:
     int searchFederation(Handle the_handle, Federation* &federation)
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
-    bool verbose ;
+    int verboseLevel;
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.45 2008/09/18 17:13:33 erk Exp $
+// $Id: FederationsList.hh,v 3.46 2008/10/30 10:49:27 erk Exp $

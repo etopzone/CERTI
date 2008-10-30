@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.16 2008/07/10 14:05:30 erk Exp $
+// $Id: fed.cc,v 3.17 2008/10/30 10:49:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -81,11 +81,11 @@ static int dimensionHandle = 1 ;
 
 // ----------------------------------------------------------------------------
 int
-build(const char *filename, RootObject *root, bool v)
+build(const char *filename, RootObject *root, bool verboseArg)
 {
     fed_filename = filename ;
     line_number = 1 ;
-    verbose = v ;
+    verbose = verboseArg ;
     root_object = root ;
     FILE *file = fopen(filename, "r");
     if (file == NULL)
@@ -103,12 +103,12 @@ build(const char *filename, RootObject *root, bool v)
     federate = "" ;
     attribute = 0 ;
     parameter = 0 ;
-    #ifndef _WIN32 
+    #ifndef _WIN32
    /* we may need to restart parsing after previous parse error */
     rewind(yyin);
     yyrestart(yyin);
     #endif
-    int result = yyparse();   
+    int result = yyparse();
     fclose(file);
     return result ;
 }
@@ -202,7 +202,7 @@ startObjects()
 void
 startInteractions()
 {
-     indent(); 
+     indent();
      if(verbose) {
 	   cout << "(interactions" ;
      }
@@ -224,7 +224,7 @@ endFederate()
     root_object->registerFederate(federate.c_str(), level);
     indent();
     if(verbose) {
-	  cout <<"(federate \"" << federate.c_str() << "\" \""	 
+	  cout <<"(federate \"" << federate.c_str() << "\" \""
 		   << arg.c_str() << "\")" ;
     }
 }
@@ -242,7 +242,7 @@ startObject()
     	ObjectClass *parent = objects.back();
     	root_object->ObjectClasses->buildParentRelation(object, parent);
     }
-    
+
     objects.push_back(object);
     root_object->ObjectClasses->addClass(object);
 
@@ -275,7 +275,7 @@ addAttribute()
     attribute->transport = transport ;
     attribute->order = order ;
     objects.back()->addAttribute(attribute);
-    
+
     indent();
     if(verbose) {
 	  cout << "(attribute \"" << arg.c_str() << "\" (id "
@@ -295,7 +295,7 @@ endObject()
     if(verbose) {
 	  cout << ")" ;
     }
-    objects.pop_back();    
+    objects.pop_back();
     if (objects.size() == 0) attributeHandle = 1 ;
     --indentation ;
 }
@@ -309,7 +309,7 @@ startInteraction()
     interaction->setName(arg.c_str());
     interaction->transport = transport ;
     interaction->order = order ;
-    
+
     if (interactions.size() > 0) {
 	Interaction *parent = interactions.back();
 	root_object->Interactions->buildParentRelation(interaction, parent);
@@ -412,7 +412,7 @@ startSpace()
 
 	indent();
 	if(verbose) {
-		cout << "(space \"" << arg.c_str() << "\" (id " 
+		cout << "(space \"" << arg.c_str() << "\" (id "
 		     << routing_space.getHandle() << ")" ;
 	}
 	++indentation ;
@@ -421,9 +421,9 @@ startSpace()
 // ----------------------------------------------------------------------------
 void
 endSpace()
-{   
+{
     root_object->addRoutingSpace(routing_space);
- 
+
     --indentation ;
     if(verbose) {
 	  cout << ")" ;
@@ -447,4 +447,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.16 2008/07/10 14:05:30 erk Exp $
+// $Id: fed.cc,v 3.17 2008/10/30 10:49:29 erk Exp $
