@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.53 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClass.cc,v 3.54 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -229,14 +229,14 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
                           NetworkMessage::Type type)
 {
     int nbAttributes = diffusionList->size ;
-    
+
     FederateHandle toFederate ;
     for (int i = 0 ; i < nbAttributes ; i++) {
         toFederate = diffusionList->DiffArray[i].federate ;
         if (toFederate != 0) {
-            std::auto_ptr<NetworkMessage> answer(NM_Factory::create(type));         
+            std::auto_ptr<NetworkMessage> answer(NM_Factory::create(type));
             answer->federation = server->federation();
-            answer->federate = theFederate ;            
+            answer->federate = theFederate ;
             answer->object = theObjectHandle ;
             answer->setLabel(theTag);
             answer->handleArray.resize(nbAttributes) ;
@@ -286,8 +286,8 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-ObjectClass::ObjectClass()
-    : server(NULL), handle(0), maxSubscriberHandle(0), levelId(PublicLevelID),
+ObjectClass::ObjectClass(std::string name, ObjectClassHandle handle)
+    : Named(name), server(NULL), handle(handle), maxSubscriberHandle(0), levelId(PublicLevelID),
       superClass(0), subClasses(NULL)
 {
 	subClasses = new ObjectClassSet(NULL);
@@ -309,7 +309,7 @@ ObjectClass::~ObjectClass()
     }
     // Deleting subclasses
     if (NULL!=subClasses) {
-    	delete subClasses;    
+    	delete subClasses;
     }
 }
 
@@ -345,7 +345,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
     list<Object *>::iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.            
+            objectSet.erase(o); // i is dereferenced.
             break ;
         }
     }
@@ -357,15 +357,15 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
               "Object %u deleted in class %u, now broadcasting...",
               the_object, handle);
 
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);        
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
         answer->objectClass = handle ; // Class Handle
         answer->object = the_object ;
-        
+
 	// with time
-        answer->setDate(theTime);              
+        answer->setDate(theTime);
 	    answer->setLabel(the_tag);
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
@@ -408,11 +408,11 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         throw DeletePrivilegeNotHeld("");
     }
 
-    // 2. Remove Instance from list.   
+    // 2. Remove Instance from list.
     list<Object *>::iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.            
+            objectSet.erase(o); // i is dereferenced.
             break ;
         }
     }
@@ -424,14 +424,14 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
               "Object %u deleted in class %u, now broadcasting...",
               the_object, handle);
 
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);        
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->objectClass = handle ; // Class Handle
         answer->object = the_object ;
-        
+
 	    // without time
-        
+
 	    answer->setLabel(the_tag);
 
         ocbList = new ObjectClassBroadcastList(answer, 0);
@@ -458,12 +458,12 @@ void ObjectClass::display() const
     cout << " Parent Class Handle: " << superClass << endl ;
     cout << " Security Level: " << levelId << endl ;
     cout << " " << subClasses->size() << " Child(s):" << endl ;
-    cout << " Subclasses handles:" ;    
+    cout << " Subclasses handles:" ;
     ObjectClassSet::namedOC_const_iterator i ;
     for (i = subClasses->NamedBegin(); i != subClasses->NamedEnd(); ++i) {
     	cout << " " << i->second->getHandle() << endl;
     }
-                
+
 
     // Display Attributes
     cout << " " << attributeSet.size() << " Attribute(s):" << endl ;
@@ -541,7 +541,7 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     throw (ObjectNotKnown)
 {
 	std::stringstream msg;
-	
+
     list<Object *>::const_iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_id)
@@ -551,9 +551,9 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     msg << "Could not find ObjectHandle <" << the_id << "> among <"
 	       << objectSet.size() << "> objects of ObjectClass "
 	       << handle;
-	       
+
     D[pdError] << msg.str().c_str() << std::endl ;
-	
+
     throw ObjectNotKnown(msg.str().c_str());
 }
 
@@ -749,7 +749,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
               "Object %u registered in class %u, now broadcasting...",
               the_object->getHandle(), handle);
 
-        NM_Discover_Object *answer = new NM_Discover_Object();       
+        NM_Discover_Object *answer = new NM_Discover_Object();
         answer->federation  = server->federation();
         answer->federate    = the_federate ;
         answer->exception   = e_NO_EXCEPTION ;
@@ -789,7 +789,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 {
     // If we are in a subclass to which the federate is already subscribed,
     if ((handle != super_handle) && isSubscribed(federate))
-        return false ;    
+        return false ;
 
     // Else, send message for each object
     list<Object *>::const_iterator o ;
@@ -799,7 +799,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    D.Out(pdInit,
 		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
 		  federate, (*o)->getHandle(), handle, message.getLabel().c_str());
-	    	    
+
 	    message.federation  = server->federation();
 	    message.federate    = federate ;
 	    message.exception   = e_NO_EXCEPTION ;
@@ -808,7 +808,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    message.setLabel((*o)->getName().c_str());
 	    //BUG FIXME strange!!
 	    //message.setDate(0.0);
-	    
+
 	    Socket *socket = NULL ;
 	    try {
 		socket = server->getSocketLink(federate);
@@ -874,7 +874,7 @@ ObjectClass::subscribe(FederateHandle fed,
     for (int i = 0 ; i < nb_attributes ; ++i) {
 	getAttribute(attributes[i])->subscribe(fed, region);
     }
-    
+
     return (nb_attributes > 0) && !was_subscriber ;
 }
 
@@ -906,13 +906,13 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES);        
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES);
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
         answer->object = object->getHandle();
         // with time
-        answer->setDate(the_time);        
+        answer->setDate(the_time);
         answer->setLabel(the_tag);
         answer->handleArray.resize(the_size) ;
         answer->handleArraySize = the_size ;
@@ -969,13 +969,13 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
     if (server != NULL) {
-        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ;      
+        NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ;
         answer->federation = server->federation();
         answer->federate = the_federate ;
         answer->exception = e_NO_EXCEPTION ;
         answer->object = object->getHandle();
         // without time
-       
+
         answer->setLabel(the_tag);
 
         answer->handleArraySize = the_size ;
@@ -1063,7 +1063,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
 
         // Maximum size
         AnswerDivestiture.handleArray.resize(theListSize) ;
-        
+
         CDiffusion diffusionAcquisition;
 
         ObjectAttribute * oa ;
@@ -1115,9 +1115,9 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                          NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
         }
 
-        if (compteur_divestiture !=0) {            
+        if (compteur_divestiture !=0) {
             AnswerDivestiture.federation = server->federation();
-            AnswerDivestiture.federate = theFederateHandle ;            
+            AnswerDivestiture.federate = theFederateHandle ;
             AnswerDivestiture.object = theObjectHandle ;
             AnswerDivestiture.setLabel(std::string(""));
             AnswerDivestiture.handleArraySize = compteur_divestiture ;
@@ -1125,7 +1125,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             sendToFederate(&AnswerDivestiture, theFederateHandle);
         }
 
-        if (compteur_assumption !=0) {            
+        if (compteur_assumption !=0) {
             AnswerAssumption->federation = server->federation();
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
@@ -1207,14 +1207,14 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
                 throw AttributeAlreadyBeingAcquired("");
         }
 
-        NetworkMessage *Answer_notification = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);        
+        NetworkMessage *Answer_notification = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
         Answer_notification->federation = server->federation();
         Answer_notification->federate = the_federate ;
         Answer_notification->exception = e_NO_EXCEPTION ;
         Answer_notification->object = the_object ;
         Answer_notification->handleArray.resize(theListSize) ;
 
-        NetworkMessage *Answer_unavailable = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE) ;        
+        NetworkMessage *Answer_unavailable = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE) ;
         Answer_unavailable->federation = server->federation();
         Answer_unavailable->federate = the_federate ;
         Answer_unavailable->exception = e_NO_EXCEPTION ;
@@ -1382,7 +1382,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             }
         }
 
-        if (compteur_assumption != 0) {           
+        if (compteur_assumption != 0) {
             AnswerAssumption->federation = server->federation();
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->exception = e_NO_EXCEPTION ;
@@ -1696,7 +1696,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
                 throw AttributeAcquisitionWasNotRequested("");
         }
 
-        NetworkMessage *answer_confirmation = NM_Factory::create(NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION);                 
+        NetworkMessage *answer_confirmation = NM_Factory::create(NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION);
         answer_confirmation->federation = server->federation();
         answer_confirmation->federate = federate_handle ;
         answer_confirmation->exception = e_NO_EXCEPTION ;
@@ -1729,13 +1729,6 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
         throw RTIinternalError("CancelAttributeOwnershipAcquisition called "
                                "on the RTIA.");
     }
-}
-
-// ----------------------------------------------------------------------------
-void
-ObjectClass::setHandle(ObjectClassHandle new_handle)
-{
-    handle = new_handle ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1826,4 +1819,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.53 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClass.cc,v 3.54 2008/10/30 16:01:38 erk Exp $

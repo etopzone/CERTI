@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.28 2008/04/26 14:59:40 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.29 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -40,6 +40,11 @@ namespace certi {
 
 static pdCDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 
+ObjectClassAttribute::ObjectClassAttribute(const std::string name, TransportType transport, OrderType order)
+ : order(order), transport(transport) {
+	setName(name);
+
+}
 // ----------------------------------------------------------------------------
 //! No parameters constructor.
 /*! This constructor initialize the attribute with default parameters.
@@ -202,11 +207,11 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
               ocblist->addFederate(*i, handle);
           }
       } break ;
-      
+
       default: ; // nothing done
     }
 }
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.28 2008/04/26 14:59:40 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.29 2008/10/30 16:01:38 erk Exp $

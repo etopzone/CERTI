@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.17 2008/10/30 10:49:29 erk Exp $
+// $Id: fed.cc,v 3.18 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -65,7 +65,10 @@ static bool verbose = false ;
 static int indentation = 0 ;
 const char *fed_filename ;
 
+/* this is the current object stack */
 static std::list<ObjectClass *> objects ;
+
+/* this is the current interaction stack */
 static std::list<Interaction *> interactions ;
 static string federate ;
 static ObjectClassAttribute *attribute ;
@@ -233,18 +236,22 @@ endFederate()
 void
 startObject()
 {
-    ObjectClass *object = new ObjectClass();
+    ObjectClass *parent = NULL;
     /* note how objectHandle counter is incremented */
-    object->setHandle(objectHandle++);
-    object->setName(arg.c_str());
+    ObjectClass *object = new ObjectClass(arg,objectHandle++);
 
+    /*
+     * Does this object class have a parent [object] class?
+     */
     if (objects.size() > 0) {
-    	ObjectClass *parent = objects.back();
-    	root_object->ObjectClasses->buildParentRelation(object, parent);
+    	parent = objects.back();
     }
 
+    /* add current on object stack */
     objects.push_back(object);
-    root_object->ObjectClasses->addClass(object);
+
+    /* add new object to the RootObject */
+    root_object->addObjectClass(object,parent);
 
     indent();
     if(verbose) {
@@ -270,10 +277,7 @@ addObjectSecLevel(string name)
 void
 addAttribute()
 {
-    attribute = new ObjectClassAttribute();
-    attribute->setName(arg.c_str());
-    attribute->transport = transport ;
-    attribute->order = order ;
+    attribute = new ObjectClassAttribute(arg,transport,order);
     objects.back()->addAttribute(attribute);
 
     indent();
@@ -447,4 +451,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.17 2008/10/30 10:49:29 erk Exp $
+// $Id: fed.cc,v 3.18 2008/10/30 16:01:38 erk Exp $

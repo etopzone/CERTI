@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClass.hh,v 3.38 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -27,7 +27,7 @@
 
 // forward declarations
 namespace certi {
-    class    Object;	
+    class    Object;
 	class    ObjectAttribute;
 	class    ObjectClass;
 	class    ObjectClassSet;
@@ -68,12 +68,20 @@ public:
 class CERTI_EXPORT ObjectClass : public Named {
 
 public:
-    ObjectClass();
+	/**
+	 * Create an objectClass.
+	 * @param[in] name the object class name
+	 * @param[in] handle the object class handle value
+	 */
+    ObjectClass(const std::string name, ObjectClassHandle handle);
+
+    /**
+     * Destroy an object class.
+     */
     ~ObjectClass();
 
     void display() const ;
 
-    void setHandle(ObjectClassHandle new_handle);
     ObjectClassHandle getHandle() const ;
 
     void setSuperclass(ObjectClassHandle h) { superClass = h ; };
@@ -221,6 +229,11 @@ public:
     SecurityServer *server ;
 
 private:
+	/*
+	 * private default constructor with no code
+	 * one should not call it.
+	 */
+	ObjectClass();
     void sendToFederate(NetworkMessage *msg, FederateHandle theFederate);
 
     void sendToOwners(CDiffusion *diffusionList,
@@ -245,14 +258,14 @@ private:
     // already receive DO messages for this class(and all child classes).
     bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
 
-    // Attributes   
+    // Attributes
     ObjectClassHandle handle ;
     FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
     SecurityLevelID levelId ; //! default level for non inherited attributes
     std::list<ObjectClassAttribute *> attributeSet ;
     std::list<Object *> objectSet ;
     ObjectClassHandle superClass;
-    // The set of sub classes of this object class 
+    // The set of sub classes of this object class
     ObjectClassSet*   subClasses;
     /* The message buffer used to send Network messages */
     MessageBuffer NM_msgBufSend;
@@ -262,4 +275,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.37 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClass.hh,v 3.38 2008/10/30 16:01:38 erk Exp $

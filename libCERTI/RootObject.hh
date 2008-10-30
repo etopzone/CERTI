@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.29 2008/06/13 10:55:13 erk Exp $
+// $Id: RootObject.hh,v 3.30 2008/10/30 16:01:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -51,15 +51,33 @@ namespace certi {
 /**
  * The RootObject is literally the "root" object
  * of the HLA object class hierarchy.
- * It contains 
+ * One RootObject is created for each federation both
+ * on the RTIG and on each RTIA instance of corresponding
+ * federate which has joined the federation.
+ * It contains the object (resp. interaction) classes
+ * hierarchy with the attached attributes (resp. parameters).
+ * It contains the object instances which has been registered
+ * by all federate (if on RTIG) or by local federate (if on RTIA).
  */
 class CERTI_EXPORT RootObject
 {
 public:
-    RootObject(SecurityServer *);
+
+	/**
+	 * RootObject constructor.
+	 * @param[in] security_server the SocketServer proxy which is used to
+	 *            retrieve the socket link between RTIG and RTIA.
+	 *            This may be NULL on the RTIA.
+	 */
+    RootObject(SecurityServer *security_server);
+
+    /**
+     * RootObject destructor.
+     * Will delete all object or interaction classes.
+     */
     ~RootObject();
 
-    void display() const ;
+    void display() const;
 
     SecurityLevelID GetSecurityLevelID(const char *the_name);
 
@@ -87,11 +105,11 @@ public:
                ObjectClassNotPublished,
                ObjectAlreadyRegistered,
                RTIinternalError);
-  
+
     FederateHandle requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle theObject)
         throw (ObjectNotKnown);
-  
-    void deleteObjectInstance(FederateHandle, ObjectHandle, 
+
+    void deleteObjectInstance(FederateHandle, ObjectHandle,
     			      FederationTime theTime, std::string theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
@@ -100,22 +118,51 @@ public:
 
     void killFederate(FederateHandle) throw (RTIinternalError);
 
-    // Access to elements of the RootObject hierarchy    
+    // Access to elements of the RootObject hierarchy
     ObjectAttribute *getObjectAttribute(ObjectHandle, AttributeHandle);
     ObjectClass *getObjectClass(ObjectClassHandle);
     Interaction *getInteractionClass(InteractionClassHandle);
-    Object *getObject(ObjectHandle);    
+    Object *getObject(ObjectHandle);
     ObjectClassAttribute *getObjectClassAttribute(ObjectHandle,
 						  AttributeHandle);
-    
-    // -- Attributes
-    ObjectClassSet *ObjectClasses ;
-    InteractionSet *Interactions ;
-    ObjectSet      *objects ;
+
+    /**
+     * Add an object class to the ObjectRoot
+     * @param[in,out] currentOC the object class to be added
+     * @param[in,out] parentOC the parent object class of currentOC
+     *                      this may be NULL.
+     */
+    void addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC);
+
+    /**
+     * Add an interaction class to the ObjectRoot
+     * @param[in] currentIC the interaction class to be added.
+     */
+    void addInteractionClass(Interaction* currentIC);
+
+    /**
+     * The set of object classes.
+     * This is created when parsing the FOM.
+     */
+    ObjectClassSet *ObjectClasses;
+
+    /**
+     * The set of interactions classes found
+     * This is created when parsing the FOM.
+     */
+    InteractionSet *Interactions;
+    /**
+     * The set of registered object instance.
+     */
+    ObjectSet      *objects;
 
 private:
-    std::vector<RoutingSpace> spaces ;
-    SecurityServer *server ;
+
+    std::vector<RoutingSpace> spaces;
+    /**
+     * The associated socket server.
+     */
+    SecurityServer           *server;
 
     // Regions
     std::list<RTIRegion *> regions ;
@@ -126,4 +173,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.29 2008/06/13 10:55:13 erk Exp $
+// $Id: RootObject.hh,v 3.30 2008/10/30 16:01:37 erk Exp $

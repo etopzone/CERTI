@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.6 2008/10/30 10:11:41 erk Exp $
+// $Id: Named.hh,v 3.7 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -30,7 +30,7 @@
 namespace certi {
 
 /**
- * A based class used for CERTI named object.
+ * A base class used for CERTI named object.
  * This class should be used to handle HLA named object
  * the setName method should enforce HLA rules for naming
  * scheme as specified in
@@ -135,4 +135,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.6 2008/10/30 10:11:41 erk Exp $
+// $Id: Named.hh,v 3.7 2008/10/30 16:01:38 erk Exp $

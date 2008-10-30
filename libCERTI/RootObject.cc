@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.34 2008/06/12 07:39:48 erk Exp $
+// $Id: RootObject.cc,v 3.35 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -54,18 +54,15 @@ namespace certi {
 static pdCDebug D("ROOTOBJECT", "(RootObject) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
-// ----------------------------------------------------------------------------
-//! The SocketServer can be NULL on the RTIA.
+
 RootObject::RootObject(SecurityServer *security_server)
     : server(security_server), regionHandles(1)
 {
     ObjectClasses = new ObjectClassSet(server,true);
-    Interactions = new InteractionSet(server);
-    objects = new ObjectSet(server);
+    Interactions  = new InteractionSet(server);
+    objects       = new ObjectSet(server);
 }
 
-// ----------------------------------------------------------------------------
-//! Delete object classes, interactions, objects
 RootObject::~RootObject()
 {
     delete ObjectClasses ;
@@ -132,7 +129,7 @@ RootObject::getRoutingSpaceHandle(std::string rs)
 	spaces.begin(),
 	spaces.end(),
 	NameComparator<RoutingSpace>(rs));
-    
+
     if (i == spaces.end()) throw NameNotFound("");
     else return i->getHandle();
 }
@@ -176,7 +173,7 @@ RootObject::createRegion(SpaceHandle handle, unsigned long nb_extents)
     throw (SpaceNotDefined)
 {
     RTIRegion *region = new RTIRegion(regionHandles.provide(),
-				      getRoutingSpace(handle), 
+				      getRoutingSpace(handle),
 				      nb_extents);
     addRegion(region);
 
@@ -226,7 +223,7 @@ RootObject::getRegion(RegionHandle handle)
     throw (RegionNotKnown)
 {
     list<RTIRegion *>::iterator it = std::find_if(
-	regions.begin(), 
+	regions.begin(),
 	regions.end(),
 	HandleComparator<RTIRegion>(handle));
 
@@ -251,7 +248,7 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
           the_federate, the_object, the_class);
 
     Object *object ;
-    object = objects->registerObjectInstance(the_federate, the_class, 
+    object = objects->registerObjectInstance(the_federate, the_class,
 					     the_object, the_object_name);
 
     ObjectClasses->registerObjectInstance(the_federate, object, the_class);
@@ -344,6 +341,26 @@ RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle th
 
 }
 
+void
+RootObject::addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC) {
+	if (NULL != parentOC) {
+		ObjectClasses->buildParentRelation(currentOC, parentOC);
+	}
+	/*
+	 * FIXME EN we must add the class to object root
+	 * after we did build the parent relation
+	 * this is awkward but we need it for
+	 * the "server" link to be OK
+	 * We need to fix this.
+	 */
+	ObjectClasses->addClass(currentOC);
+} /* end of addObjectClass */
+
+void
+RootObject::addInteractionClass(Interaction* currentIC) {
+
+}
+
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.34 2008/06/12 07:39:48 erk Exp $
+// $Id: RootObject.cc,v 3.35 2008/10/30 16:01:38 erk Exp $

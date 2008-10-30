@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.23 2007/10/31 10:30:22 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.24 2008/10/30 16:01:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -48,7 +48,7 @@ namespace certi {
 class CERTI_EXPORT ObjectClassAttribute : public Subscribable {
 
 public:
-    ObjectClassAttribute();
+	ObjectClassAttribute(const std::string name, TransportType transport, OrderType order);
     ObjectClassAttribute(ObjectClassAttribute *source);
     virtual ~ObjectClassAttribute();
 
@@ -67,7 +67,7 @@ public:
     bool isPublishing(FederateHandle) const ;
     void publish(FederateHandle) throw (RTIinternalError, SecurityError);
     void unpublish(FederateHandle) throw (RTIinternalError, SecurityError);
-    
+
     // Update attribute values
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
 			     const RTIRegion *region = 0);
@@ -79,9 +79,14 @@ public:
     SecurityServer *server ;
 
 private:
+	/*
+	 * private default constructor with no code
+	 * one should not call it.
+	 */
+	ObjectClassAttribute();
     void deletePublisher(FederateHandle);
 
-    AttributeHandle handle ; //!< The attribute handle.    
+    AttributeHandle handle ; //!< The attribute handle.
     SpaceHandle space ; //!< Routing space
 
     typedef std::set<FederateHandle> PublishersList ;
@@ -93,4 +98,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.23 2007/10/31 10:30:22 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.24 2008/10/30 16:01:38 erk Exp $

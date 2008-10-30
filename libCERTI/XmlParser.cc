@@ -157,60 +157,46 @@ XmlParser::parse(string pathToXmlFile)
 // ----------------------------------------------------------------------------
 void
 XmlParser::parseClass(ObjectClass* parent)
-{	
-    D[pdTrace] << "New Object Class" << endl ;    
+{
+    D[pdTrace] << "New Object Class" << endl ;
 
     xmlNodePtr prev = cur ;
-    ObjectClass* current = new ObjectClass();
-    current->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
-    current->setHandle(freeObjectClassHandle++);
-    
-    if (parent != 0)
-        root->ObjectClasses->buildParentRelation(current, parent);
+    /* note how objectHandle counter is incremented */
+    ObjectClass* current = new ObjectClass(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)),freeObjectClassHandle++);
 
-    /* FIXME EN we must add the class to object root
-     * after we did build the parent relation
-     * this is awkward but we need it for
-     * the "server" link to be OK
-     * We need to fix this.
-     */
-    root->ObjectClasses->addClass(current);
+    root->addObjectClass(current, parent);
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         // Attributes
         if ((!xmlStrcmp(cur->name, NODE_ATTRIBUTE))) {
-            ObjectClassAttribute *attr = new ObjectClassAttribute();
-
-            // Name
-            attr->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
-
-            // Handle
-            attr->setHandle(freeAttributeHandle++);
+        	std::string name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+        	TransportType transport;
+        	OrderType order;
 
             // Transportation
-            xmlChar* transport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
-            if (!xmlStrcmp(transport,VALUE_RELIABLE)) {
-                attr->transport = RELIABLE ;
+            xmlChar* xtransport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
+            if (!xmlStrcmp(xtransport,VALUE_RELIABLE)) {
+                transport = RELIABLE ;
             }
             else {
-            	if (!xmlStrcmp(transport,VALUE_BESTEFFORT)) {
-            		attr->transport = BEST_EFFORT ;
+            	if (!xmlStrcmp(xtransport,VALUE_BESTEFFORT)) {
+            		transport = BEST_EFFORT ;
             	}
             }
-            xmlFree(transport);
+            xmlFree(xtransport);
 
             // Order
-            xmlChar* order = xmlGetProp(cur, ATTRIBUTE_ORDER);
-            if (!xmlStrcmp(order, VALUE_TSO)) {
-                attr->order = TIMESTAMP ;
+            xmlChar* xorder = xmlGetProp(cur, ATTRIBUTE_ORDER);
+            if (!xmlStrcmp(xorder, VALUE_TSO)) {
+                order = TIMESTAMP ;
             }
             else {
-            	if (!xmlStrcmp(order, VALUE_RO)) {            
-            		attr->order = RECEIVE ;
+            	if (!xmlStrcmp(xorder, VALUE_RO)) {
+            		order = RECEIVE ;
             	}
             }
-            xmlFree(order);
-            
+            xmlFree(xorder);
+            ObjectClassAttribute *attr = new ObjectClassAttribute(name,transport,order);
             // Routing space
             char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
             if (space) {
@@ -264,15 +250,15 @@ XmlParser::parseInteraction(Interaction* parent)
     	}
     }
     xmlFree(transport);
-    
+
     // Order
     xmlChar* order = xmlGetProp(cur, ATTRIBUTE_ORDER);
     if (!xmlStrcmp(order, VALUE_TSO)) {
         current->order = TIMESTAMP ;
     }
     else {
-    	if (!xmlStrcmp(order, VALUE_RO)) {    
-    		current->order = RECEIVE ;	
+    	if (!xmlStrcmp(order, VALUE_RO)) {
+    		current->order = RECEIVE ;
     	}
     }
     xmlFree(order);
@@ -323,7 +309,7 @@ XmlParser::parseRoutingSpace()
     DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;
     RoutingSpace current ;
-    current.setHandle(freeSpaceHandle++);    
+    current.setHandle(freeSpaceHandle++);
     current.setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
     // Dimensions
@@ -336,13 +322,13 @@ XmlParser::parseRoutingSpace()
         }
         cur = cur->next ;
     }
-    // Routing Space should be added after the 
+    // Routing Space should be added after the
     // Dimension has been added since addRoutingSpace store a copy
     // of the object and not a reference
     // see bug #19534
     // https://savannah.nongnu.org/bugs/?19534
     root->addRoutingSpace(current);
-    
+
     cur = prev ;
 }
 
