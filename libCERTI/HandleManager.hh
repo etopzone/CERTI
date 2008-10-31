@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.4 2008/06/04 07:42:05 siron Exp $
+// $Id: HandleManager.hh,v 3.5 2008/10/31 10:17:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -31,79 +31,84 @@
 #ifdef max
 #undef max
 #endif
-#endif 
+#endif
 
 namespace certi {
 
-/** Manage a set of handles ('provide' and 'free' services). Freed
-    handles may be provided again in a future request.
-*/
+/**
+ * Manage a set of handles ('provide' and 'free' services). Freed
+ * handles may be provided again in a future request.
+ */
 template<typename T>
 class HandleManager
 {
 public:
-    HandleManager(T);
-    HandleManager(T, size_t);
-    T provide();
-    void free(T);
+	/**
+	 * Constructor with init value.
+	 * The default maximal value will be based on the type max given
+	 * by numeric_limits traits.
+	 * @param[in] init Initial handle value (use for first requested handle)
+	 */
+	HandleManager(T);
+	/**
+	 * Constructor with init value and max.
+	 * @param[in] init Initial handle value (use for first requested handle)
+	 * @param[in] hmax Maximal handle value
+	 */
+	HandleManager(T init, size_t hmax);
+	/**
+	 * Get a new handle.
+	 * @return the new handle
+	 * @throw RTIinternalError if all handles between first and maximal are used
+	 */
+	T provide() throw (RTIinternalError);
+	/**
+	 * Free a handle.
+	 * @pre handle is a previously-provided handle
+	 * @param handle Handle to free
+	 */
+	void free(T handle);
 
 private:
-    size_t maximum ;
-    T highest ;
-    std::list<T> available ;
+	size_t maximum ;
+	T highest ;
+	std::list<T> available ;
 };
 
-// ============================================================================
-/** Constructor
-    @param init Initial handle value (use for first requested handle)
-    @param hmax Maximal handle value
- */
-template<typename T>
-HandleManager<T>::HandleManager(T init, size_t hmax)
-    : highest(init), maximum(hmax) { }
 
-/** Constructor. The default maximal value will be based on the type max.
-    @param init Initial handle value (use for first requested handle)
- */
 template<typename T>
 HandleManager<T>::HandleManager(T init)
-    : maximum(std::numeric_limits<T>::max()), highest(init) { }
+: maximum(std::numeric_limits<T>::max()), highest(init) { }
 
-// ----------------------------------------------------------------------------
-/** Get a new handle
-    @return handle
-    @throw RTIinternalError if all handles between first and maximal are used
- */
+template<typename T>
+HandleManager<T>::HandleManager(T init, size_t hmax)
+: highest(init), maximum(hmax) { }
+
 template<typename T> T
-HandleManager<T>::provide()
+HandleManager<T>::provide() throw (RTIinternalError)
 {
-    T handle = 0 ;
+	T handle = 0 ;
 
-    if (available.size() > 0) {
-	handle = available.front();
-	available.pop_front();
-    }
-    else {
-	if (highest < maximum)
-	    handle = highest++ ;
-	else
-	    throw RTIinternalError("Maximum handle reached");
-    }
+	if (available.size() > 0) {
+		handle = available.front();
+		available.pop_front();
+	}
+	else {
+		if (highest < maximum)
+			handle = highest++ ;
+		else
+			throw RTIinternalError("Maximum handle reached");
+	}
 
-    return handle ;
-}
+	return handle ;
+} /* end of provide */
 
-// ----------------------------------------------------------------------------
-/** Free a handle
-    @pre handle is a previously-provided handle
-    @param handle Handle to free
- */
 template<typename T> void
 HandleManager<T>::free(T handle)
 {
-    //if (handle + 1 == highest)
+	//if (handle + 1 == highest)
 	//--highest ;
-    //else
+	//else
 	//available.push_back(handle);
 }
 
