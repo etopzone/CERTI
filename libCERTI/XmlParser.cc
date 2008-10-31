@@ -228,40 +228,40 @@ XmlParser::parseClass(ObjectClass* parent)
 void
 XmlParser::parseInteraction(Interaction* parent)
 {
-    D[pdTrace] << "New Interaction Class" << endl ;
+    D[pdTrace] << "New Interaction Class" << endl;
+    std::string name;
+    TransportType transport;
+    OrderType order;
 
     xmlNodePtr prev = cur ;
-    Interaction* current = new Interaction();
 
     // Name
-    current->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
-
-    // Handle
-    current->setHandle(freeInteractionClassHandle++);
+    name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
 
     // Transportation
-    xmlChar* transport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
-    if (!xmlStrcmp(transport, VALUE_RELIABLE)) {
-        current->transport = RELIABLE ;
+    xmlChar* xtransport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
+    if (!xmlStrcmp(xtransport, VALUE_RELIABLE)) {
+        transport = RELIABLE ;
     }
     else {
-    	if (!xmlStrcmp(transport,VALUE_BESTEFFORT))  {
-    		current->transport = BEST_EFFORT ;
+    	if (!xmlStrcmp(xtransport,VALUE_BESTEFFORT))  {
+    		transport = BEST_EFFORT ;
     	}
     }
-    xmlFree(transport);
+    xmlFree(xtransport);
 
     // Order
-    xmlChar* order = xmlGetProp(cur, ATTRIBUTE_ORDER);
-    if (!xmlStrcmp(order, VALUE_TSO)) {
-        current->order = TIMESTAMP ;
+    xmlChar* xorder = xmlGetProp(cur, ATTRIBUTE_ORDER);
+    if (!xmlStrcmp(xorder, VALUE_TSO)) {
+        order = TIMESTAMP ;
     }
     else {
-    	if (!xmlStrcmp(order, VALUE_RO)) {
-    		current->order = RECEIVE ;
+    	if (!xmlStrcmp(xorder, VALUE_RO)) {
+    		order = RECEIVE ;
     	}
     }
-    xmlFree(order);
+    xmlFree(xorder);
+    Interaction* current = new Interaction(name,freeInteractionClassHandle++,transport,order);
 
     // Routing space
     char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
@@ -279,9 +279,7 @@ XmlParser::parseInteraction(Interaction* parent)
     xmlFree(space);
 
     // Add to interactions list, and build inheritance relation
-    root->Interactions->addClass(current);
-    if (parent != 0)
-        root->Interactions->buildParentRelation(current, parent);
+    root->addInteractionClass(current,parent);
 
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {

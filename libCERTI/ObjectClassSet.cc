@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.39 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClassSet.cc,v 3.40 2008/10/31 13:50:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -52,12 +52,12 @@ ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
 {
 	Name2ObjectClassMap_t::iterator findit;
 	std::stringstream       msg;
-	
+
     D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 
     /* link to server */
     newClass->server = server ;
-    /* 
+    /*
      * Check whether addition of this object clas
      * will generate a name collision or not.
      * i.e. we may not add an object class of the SAME
@@ -87,7 +87,7 @@ ObjectClassSet::buildParentRelation(ObjectClass *subclass,
 				    ObjectClass *superclass)
 {
     subclass->setSuperclass(superclass->getHandle());
-    subclass->setLevelId(superclass->getLevelId());    
+    subclass->setSecurityLevelId(superclass->getSecurityLevelId());
     superclass->addSubclass(subclass);
     superclass->addAttributesToChild(subclass);
 }
@@ -107,15 +107,15 @@ ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool newIsRoot
 ObjectClassSet::~ObjectClassSet()
 {
 	/* clear name map */
-	OCFromName.clear();    
-	/* 
+	OCFromName.clear();
+	/*
 	 * If we are Root ClassSet (the class set owned by RootObject)
 	 *    we delete the content
 	 * If not we only clear the map in order to avoid double deletion.
-	 * 	
+	 *
 	 * FIXME EN: this is a trick in order because we do not
 	 *           really maintain a tree of ObjectClass in order
-	 *           to support flat object class name 
+	 *           to support flat object class name
 	 *           ("Boule" instead of "Bille.Boule")
 	 *           We may get rid of this as soon as we want to support
 	 *           same name for object class in different branch of the tree.
@@ -225,7 +225,7 @@ ObjectClassSet::display() const
 {
     cout << " ObjectClasses :" << endl ;
 
-    handledOC_const_iterator i;    
+    handledOC_const_iterator i;
     for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
         i->second->display();
     }
@@ -293,7 +293,7 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
     throw (ObjectNotKnown)
 {
 	std::stringstream msg;
-	
+
 	handledOC_const_iterator i ;
     for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
         if (i->second->isInstanceInClass(theObjectHandle) == true)
@@ -312,9 +312,9 @@ Object *
 ObjectClassSet::getObject(ObjectHandle h) const
     throw (ObjectNotKnown)
 {
-	
+
 	handledOC_const_iterator i ;
-	
+
 	for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
 		try {
 			Object *object = i->second->getInstanceWithID(h);
@@ -331,48 +331,48 @@ ObjectClassSet::getObject(ObjectHandle h) const
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(std::string class_name) const
     throw (NameNotFound)
-{ 
+{
     G.Out(pdGendoc,"enter ObjectClassSet::getObjectClassHandle");
-   
+
     std::string currentName;
     std::string remainingName;
     ObjectClassHandle currentHandle;
     ObjectClass*      currentClass;
     ObjectClassSet const*   currentClassSet;
 	namedOC_const_iterator iter;
-	
+
 	currentClassSet = this;
 	remainingName = class_name;
-    /* 
+    /*
      * If the name is qualified (a.k.a. hierarchical name)
      * like "Bille.Boule"
      * then iterate through subClass in order to reach the leaf
      * "unqualified name"
      */
     while (Named::isQualifiedClassName(remainingName)) {
-    	/* 
+    	/*
     	 * The first current should be the name of
-    	 * of a subclass of the current ObjectClassSet 
-    	 */    	
+    	 * of a subclass of the current ObjectClassSet
+    	 */
     	currentName = Named::getNextClassName(remainingName);
-		/* 
-		 * Get the handle of the subclass 
+		/*
+		 * Get the handle of the subclass
 		 * NOTE that we won't recurse more than once here
 		 * since the provided 'currentName' is not qualified
 		 * 'by design'
-		 * The recursive deepness is at most 2. 
+		 * The recursive deepness is at most 2.
 		 */
 		currentHandle = currentClassSet->getObjectClassHandle(currentName);
 		/* Get the corresponding class object */
 		currentClass = currentClassSet->getWithHandle(currentHandle);
 		/* now update currentClassSet */
-		currentClassSet = currentClass->getSubClasses();       	 
+		currentClassSet = currentClass->getSubClasses();
     }
 
-    /* 
-     * Now the current classClassSet should be a leaf 
-     * so that we can search in the 
-     */           
+    /*
+     * Now the current classClassSet should be a leaf
+     * so that we can search in the
+     */
     iter = currentClassSet->OCFromName.find(remainingName);
 
 	if (iter != currentClassSet->OCFromName.end()) {
@@ -382,7 +382,7 @@ ObjectClassSet::getObjectClassHandle(std::string class_name) const
                 G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle on NameNotFound");
 		throw NameNotFound(class_name.c_str());
 	}
-}  
+}
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
@@ -405,16 +405,16 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
 	std::stringstream msg;
 
 	handledOC_const_iterator iter;
-	
+
 	iter = OCFromHandle.find(theHandle);
-		
+
 	if (iter != OCFromHandle.end()) {
 		return iter->second;
 	} else {
-                msg << "Unknown Object Class Handle <" << theHandle << ">"; 
+                msg << "Unknown Object Class Handle <" << theHandle << ">";
 		D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
 		throw ObjectClassNotDefined(msg.str().c_str());
-	}		    
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -424,9 +424,9 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
 {
     ObjectClassBroadcastList *ocbList      = NULL ;
     ObjectClassHandle         currentClass = 0 ;
-    
+
     Handle2ObjectClassMap_t::iterator i;
-    
+
     for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
         // Call KillFederate on that class until it returns NULL.
         do {
@@ -843,4 +843,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.39 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClassSet.cc,v 3.40 2008/10/31 13:50:25 erk Exp $

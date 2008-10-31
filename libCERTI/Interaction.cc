@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.45 2008/10/30 10:11:41 erk Exp $
+// $Id: Interaction.cc,v 3.46 2008/10/31 13:50:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -199,10 +199,11 @@ Interaction::checkFederateAccess(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 //! Interaction.
-Interaction::Interaction()
-    : parent(0), depth(0), transport(BEST_EFFORT), order(RECEIVE), handle(0),
+Interaction::Interaction(const std::string& name, InteractionClassHandle handle, TransportType transport, OrderType order)
+    : parent(0), depth(0), transport(transport), order(order), handle(handle),
       id(PublicLevelID)
 {
+	setName(name);
 }
 
 // ----------------------------------------------------------------------------
@@ -532,4 +533,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.45 2008/10/30 10:11:41 erk Exp $
+// $Id: Interaction.cc,v 3.46 2008/10/31 13:50:24 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.31 2008/10/30 10:11:41 erk Exp $
+// $Id: Interaction.hh,v 3.32 2008/10/31 13:50:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -46,7 +46,17 @@ namespace certi {
 class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
-    Interaction();
+	/**
+	 * Build an interaction class object.
+	 * @param[in] name the name of the interaction class
+	 * @param[in] handle the handle of this class
+	 * @param[in] transport the transport type
+	 * @param[in] order the receive order type
+	 */
+    Interaction(const std::string& name, InteractionClassHandle handle, TransportType transport, OrderType order);
+    /**
+     * Destructor.
+     */
     ~Interaction();
 
     void setSpace(SpaceHandle);
@@ -149,6 +159,12 @@ public:
     OrderType order ;
 
 private:
+	/*
+	 * private default constructor with no code
+	 * one should not call it.
+	 */
+	Interaction();
+
     InteractionClassHandle handle ; //!< Interaction class handle.
 
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
@@ -172,4 +188,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.31 2008/10/30 10:11:41 erk Exp $
+// $Id: Interaction.hh,v 3.32 2008/10/31 13:50:25 erk Exp $

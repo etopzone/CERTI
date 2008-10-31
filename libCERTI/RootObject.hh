@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.30 2008/10/30 16:01:37 erk Exp $
+// $Id: RootObject.hh,v 3.31 2008/10/31 13:50:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -79,9 +79,16 @@ public:
 
     void display() const;
 
-    SecurityLevelID GetSecurityLevelID(const char *the_name);
+	/**
+	 * Return the security LevelID corresponding to a security level name.
+     * @param[in] levelName the security level name
+     * @return the LevelID of the level whose name is levelName if
+     *                     a security server exists
+     *         PublicLevelID if no security server exists.
+	 */
+    SecurityLevelID getSecurityLevelID(const std::string& levelName);
 
-    void registerFederate(const char *the_federate,
+    void registerFederate(const std::string& the_federate,
                           SecurityLevelID the_level_id);
 
     // Data Distribution Management
@@ -137,8 +144,10 @@ public:
     /**
      * Add an interaction class to the ObjectRoot
      * @param[in] currentIC the interaction class to be added.
+     * @param[in] parentIC the parent interaction class of currentIC
+     *                      this may be NULL.
      */
-    void addInteractionClass(Interaction* currentIC);
+    void addInteractionClass(Interaction* currentIC, Interaction* parentIC);
 
     /**
      * The set of object classes.
@@ -173,4 +182,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.30 2008/10/30 16:01:37 erk Exp $
+// $Id: RootObject.hh,v 3.31 2008/10/31 13:50:24 erk Exp $

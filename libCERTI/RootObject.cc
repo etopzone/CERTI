@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.35 2008/10/30 16:01:38 erk Exp $
+// $Id: RootObject.cc,v 3.36 2008/10/31 13:50:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -87,24 +87,20 @@ RootObject::display() const
     }
 }
 
-// ----------------------------------------------------------------------------
-/*! Return the LevelID of the level whose name is 'theLevelName' if the
-  security server is defined, else return PublicLevelID(on the RTIA).
-*/
 SecurityLevelID
-RootObject::GetSecurityLevelID(const char *theLevelName)
+RootObject::getSecurityLevelID(const std::string& levelName)
 {
-    return server ? server->getLevelIDWithName(theLevelName) : PublicLevelID ;
+    return server ? server->getLevelIDWithName(levelName.c_str()) : PublicLevelID;
 }
 
 // ----------------------------------------------------------------------------
 //! registerFederate.
 void
-RootObject::registerFederate(const char *the_federate,
+RootObject::registerFederate(const std::string& the_federate,
                              SecurityLevelID the_level_id)
 {
     if (server != NULL)
-        server->registerFederate(the_federate, the_level_id);
+        server->registerFederate(the_federate.c_str(), the_level_id);
 }
 
 // ----------------------------------------------------------------------------
@@ -357,10 +353,13 @@ RootObject::addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC) {
 } /* end of addObjectClass */
 
 void
-RootObject::addInteractionClass(Interaction* currentIC) {
-
-}
+RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
+	if (NULL!=parentIC) {
+		Interactions->buildParentRelation(currentIC, parentIC);
+	}
+	Interactions->addClass(currentIC);
+} /* end of addInteractionClass */
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.35 2008/10/30 16:01:38 erk Exp $
+// $Id: RootObject.cc,v 3.36 2008/10/31 13:50:25 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.18 2008/10/30 16:01:38 erk Exp $
+// $Id: fed.cc,v 3.19 2008/10/31 13:50:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -86,34 +86,34 @@ static int dimensionHandle = 1 ;
 int
 build(const char *filename, RootObject *root, bool verboseArg)
 {
-    fed_filename = filename ;
-    line_number = 1 ;
-    verbose = verboseArg ;
-    root_object = root ;
-    FILE *file = fopen(filename, "r");
-    if (file == NULL)
-	return 1 ;
-    yyin = file ;
-    indentation = 0 ;
-    objectHandle = 1 ;
-    interactionHandle = 1 ;
-    attributeHandle = 1 ;
-    parameterHandle = 1 ;
-    spaceHandle = 1 ;
-    dimensionHandle = 1 ;
-    objects.clear();
-    interactions.clear();
-    federate = "" ;
-    attribute = 0 ;
-    parameter = 0 ;
-    #ifndef _WIN32
-   /* we may need to restart parsing after previous parse error */
-    rewind(yyin);
-    yyrestart(yyin);
-    #endif
-    int result = yyparse();
-    fclose(file);
-    return result ;
+	fed_filename = filename ;
+	line_number = 1 ;
+	verbose = verboseArg ;
+	root_object = root ;
+	FILE *file = fopen(filename, "r");
+	if (file == NULL)
+		return 1 ;
+	yyin = file ;
+	indentation = 0 ;
+	objectHandle = 1 ;
+	interactionHandle = 1 ;
+	attributeHandle = 1 ;
+	parameterHandle = 1 ;
+	spaceHandle = 1 ;
+	dimensionHandle = 1 ;
+	objects.clear();
+	interactions.clear();
+	federate = "" ;
+	attribute = 0 ;
+	parameter = 0 ;
+#ifndef _WIN32
+	/* we may need to restart parsing after previous parse error */
+	rewind(yyin);
+	yyrestart(yyin);
+#endif
+	int result = yyparse();
+	fclose(file);
+	return result ;
 }
 
 // ----------------------------------------------------------------------------
@@ -132,277 +132,278 @@ indent()
 void
 startFed()
 {
-    indent();
-    if(verbose) {
-	  cout << "(FED";
-    }
-    ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(FED";
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 endFed()
 {
-    --indentation ;
-    if(verbose) {
-	  cout << ")" << endl << endl ;
-    }
+	--indentation ;
+	if(verbose) {
+		cout << ")" << endl << endl ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 addFederation()
 {
-    indent();
-    if(verbose) {
-	  cout << "(federation \"" << arg.c_str() << "\")" ;
-    }
+	indent();
+	if(verbose) {
+		cout << "(federation \"" << arg << "\")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 addFedVersion()
 {
-    indent();
-    if(verbose) {
-	  cout << "(FEDversion \"" << arg.c_str() << "\")" ;
-    }
+	indent();
+	if(verbose) {
+		cout << "(FEDversion \"" << arg << "\")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 startSpaces()
 {
-    indent();
-    if(verbose) {
-	  cout << "(spaces" ;
-    }
-    ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(spaces" ;
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 end()
 {
-    --indentation ;
-    if(verbose) {
-	  cout << ")" ;
-    }
+	--indentation ;
+	if(verbose) {
+		cout << ")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 startObjects()
 {
-     indent();
-     if(verbose) {
-	   cout << "(objects" ;
-     }
-     ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(objects" ;
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 startInteractions()
 {
-     indent();
-     if(verbose) {
-	   cout << "(interactions" ;
-     }
-     ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(interactions" ;
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 startFederate()
 {
-    federate = arg ;
+	federate = arg ;
 }
 
 // ----------------------------------------------------------------------------
 void
 endFederate()
 {
-    SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
-    root_object->registerFederate(federate.c_str(), level);
-    indent();
-    if(verbose) {
-	  cout <<"(federate \"" << federate.c_str() << "\" \""
-		   << arg.c_str() << "\")" ;
-    }
+	SecurityLevelID level = root_object->getSecurityLevelID(arg);
+	root_object->registerFederate(federate, level);
+	indent();
+	if(verbose) {
+		cout <<"(federate \"" << federate << "\" \""
+		<< arg << "\")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 startObject()
 {
-    ObjectClass *parent = NULL;
-    /* note how objectHandle counter is incremented */
-    ObjectClass *object = new ObjectClass(arg,objectHandle++);
+	ObjectClass *parent = NULL;
+	/* note how objectHandle counter is incremented */
+	ObjectClass *object = new ObjectClass(arg,objectHandle++);
 
-    /*
-     * Does this object class have a parent [object] class?
-     */
-    if (objects.size() > 0) {
-    	parent = objects.back();
-    }
+	/*
+	 * Does this object class have a parent [object] class?
+	 */
+	if (objects.size() > 0) {
+		parent = objects.back();
+	}
 
-    /* add current on object stack */
-    objects.push_back(object);
+	/* add current on object stack */
+	objects.push_back(object);
 
-    /* add new object to the RootObject */
-    root_object->addObjectClass(object,parent);
+	/* add new object to the RootObject */
+	root_object->addObjectClass(object,parent);
 
-    indent();
-    if(verbose) {
-	  cout << "(class \"" << arg.c_str() << "\" (id "
-		   << object->getHandle()	<< ")" ;
-    }
-    ++indentation ;
+	indent();
+	if(verbose) {
+		cout << "(class \"" << arg << "\" (id "
+		<< object->getHandle()	<< ")" ;
+	}
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 addObjectSecLevel(string name)
 {
-    SecurityLevelID level = root_object->GetSecurityLevelID(name.c_str());
-    objects.back()->setLevelId(level);
-    indent();
-    if(verbose) {
-	  cout << "(sec_level \"" << name.c_str() << "\")" ;
-    }
+	SecurityLevelID level = root_object->getSecurityLevelID(name);
+	objects.back()->setSecurityLevelId(level);
+	indent();
+	if(verbose) {
+		cout << "(sec_level \"" << name << "\")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 addAttribute()
 {
-    attribute = new ObjectClassAttribute(arg,transport,order);
-    objects.back()->addAttribute(attribute);
+	attribute = new ObjectClassAttribute(arg,transport,order);
+	objects.back()->addAttribute(attribute);
 
-    indent();
-    if(verbose) {
-	  cout << "(attribute \"" << arg.c_str() << "\" (id "
-		   << attribute->getHandle() << ")" ;
-    }
-    printTransport();
-    printOrder();
-    if(verbose) {
-	  cout << ")" ;
-    }
+	indent();
+	if(verbose) {
+		cout << "(attribute \"" << arg << "\" (id "
+		<< attribute->getHandle() << ")" ;
+	}
+	printTransport();
+	printOrder();
+	if(verbose) {
+		cout << ")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 endObject()
 {
-    if(verbose) {
-	  cout << ")" ;
-    }
-    objects.pop_back();
-    if (objects.size() == 0) attributeHandle = 1 ;
-    --indentation ;
+	if(verbose) {
+		cout << ")" ;
+	}
+	objects.pop_back();
+	if (objects.size() == 0) attributeHandle = 1 ;
+	--indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 startInteraction()
 {
-    Interaction *interaction = new Interaction();
-    interaction->setHandle(interactionHandle++);
-    interaction->setName(arg.c_str());
-    interaction->transport = transport ;
-    interaction->order = order ;
+	Interaction *parent = NULL;
+	Interaction *interaction = new Interaction(arg,interactionHandle++,transport,order);
 
-    if (interactions.size() > 0) {
-	Interaction *parent = interactions.back();
-	root_object->Interactions->buildParentRelation(interaction, parent);
-    }
-    interactions.push_back(interaction);
-    root_object->Interactions->addClass(interaction);
+	/* does this interaction class have a parent ? */
+	if (interactions.size() > 0) {
+		parent = interactions.back();
+	}
 
-    indent();
-    if(verbose)
-	  cout << "(interaction \"" << arg.c_str() << "\" (id "
-		   << interaction->getHandle() << ")" ;
-    printTransport();
-    printOrder();
-    ++indentation ;
+	root_object->addInteractionClass(interaction,parent);
+	/* put the freshly created interaction on the interaction stack
+	 * (for inheritance handle)
+	 */
+	interactions.push_back(interaction);
+
+	indent();
+	if(verbose)
+		cout << "(interaction \"" << arg << "\" (id "
+		<< interaction->getHandle() << ")" ;
+	printTransport();
+	printOrder();
+	++indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 addInteractionSecurityLevel()
 {
-    SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
-    interactions.back()->setLevelId(level);
-    indent();
-    if(verbose)
-	  cout << "(sec_level \"" << arg.c_str() << "\")" ;
+	SecurityLevelID level = root_object->getSecurityLevelID(arg);
+	interactions.back()->setLevelId(level);
+	indent();
+	if(verbose)
+		cout << "(sec_level \"" << arg << "\")" ;
 }
 
 // ----------------------------------------------------------------------------
 void
 addObjectSecurityLevel()
 {
-    SecurityLevelID level = root_object->GetSecurityLevelID(arg.c_str());
-    objects.back()->setLevelId(level);
-    indent();
-    if(verbose) {
-	  cout << "(sec_level \"" << arg.c_str() << "\")" ;
-    }
+	SecurityLevelID level = root_object->getSecurityLevelID(arg);
+	objects.back()->setSecurityLevelId(level);
+	indent();
+	if(verbose) {
+		cout << "(sec_level \"" << arg << "\")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 addParameter()
 {
-    parameter = new Parameter();
-    parameter->setHandle(parameterHandle++);
-    parameter->setName(arg.c_str());
-    interactions.back()->addParameter(parameter);
+	parameter = new Parameter();
+	parameter->setHandle(parameterHandle++);
+	parameter->setName(arg);
+	interactions.back()->addParameter(parameter);
 
-    indent();
-    if(verbose) {
-	  cout << "(parameter \"" << arg.c_str() << "\" (id "
-		   << parameter->getHandle() << "))" << std::flush;
-    }
+	indent();
+	if(verbose) {
+		cout << "(parameter \"" << arg << "\" (id "
+		<< parameter->getHandle() << "))" << std::flush;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 endInteraction()
 {
-    if(verbose) {
-	  cout << ")" ;
-    }
-    interactions.pop_back();
-    if (interactions.size() == 0) parameterHandle = 1 ;
-    --indentation ;
+	if(verbose) {
+		cout << ")" ;
+	}
+	interactions.pop_back();
+	if (interactions.size() == 0) parameterHandle = 1 ;
+	--indentation ;
 }
 
 // ----------------------------------------------------------------------------
 void
 printOrder()
 {
-    switch (order) {
-      case RECEIVE: if(verbose)
+	switch (order) {
+	case RECEIVE: if(verbose)
 		cout << " receive" ; break ;
-      case TIMESTAMP: if(verbose)
+	case TIMESTAMP: if(verbose)
 		cout << " timestamp" ; break ;
-    }
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 printTransport()
 {
-    switch (transport) {
-      case RELIABLE: if(verbose)
+	switch (transport) {
+	case RELIABLE: if(verbose)
 		cout << " reliable" ; break ;
-      case BEST_EFFORT: if(verbose)
+	case BEST_EFFORT: if(verbose)
 		cout << " best_effort" ; break ;
-    }
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -416,8 +417,8 @@ startSpace()
 
 	indent();
 	if(verbose) {
-		cout << "(space \"" << arg.c_str() << "\" (id "
-		     << routing_space.getHandle() << ")" ;
+		cout << "(space \"" << arg << "\" (id "
+		<< routing_space.getHandle() << ")" ;
 	}
 	++indentation ;
 }
@@ -426,29 +427,29 @@ startSpace()
 void
 endSpace()
 {
-    root_object->addRoutingSpace(routing_space);
+	root_object->addRoutingSpace(routing_space);
 
-    --indentation ;
-    if(verbose) {
-	  cout << ")" ;
-    }
+	--indentation ;
+	if(verbose) {
+		cout << ")" ;
+	}
 }
 
 // ----------------------------------------------------------------------------
 void
 addDimension()
 {
-    Dimension dimension(dimensionHandle++);
-    dimension.setName(arg);
-    routing_space.addDimension(dimension);
+	Dimension dimension(dimensionHandle++);
+	dimension.setName(arg);
+	routing_space.addDimension(dimension);
 
-    indent();
-    if(verbose) {
-	  cout << "(dimension \"" << arg.c_str() << "\" (id "
-		   << dimension.getHandle() << "))" ;
-    }
+	indent();
+	if(verbose) {
+		cout << "(dimension \"" << arg << "\" (id "
+		<< dimension.getHandle() << "))" ;
+	}
 }
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.18 2008/10/30 16:01:38 erk Exp $
+// $Id: fed.cc,v 3.19 2008/10/31 13:50:24 erk Exp $

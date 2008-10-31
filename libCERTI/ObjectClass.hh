@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.38 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClass.hh,v 3.39 2008/10/31 13:50:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -94,9 +94,9 @@ public:
     void checkFederateAccess(FederateHandle, const char *)
         throw (SecurityError);
 
-    SecurityLevelID getLevelId() const { return levelId ; };
+    SecurityLevelID getSecurityLevelId() const { return securityLevelId ; };
 
-    void setLevelId(SecurityLevelID NewLevelID);
+    void setSecurityLevelId(SecurityLevelID newLevelID) throw (SecurityError);
 
     AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
                                  bool is_inherited = false);
@@ -261,7 +261,11 @@ private:
     // Attributes
     ObjectClassHandle handle ;
     FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
-    SecurityLevelID levelId ; //! default level for non inherited attributes
+    /**
+     * The security level ID attached to this object class.
+     * default level for non inherited attributes.
+     */
+    SecurityLevelID securityLevelId ;
     std::list<ObjectClassAttribute *> attributeSet ;
     std::list<Object *> objectSet ;
     ObjectClassHandle superClass;
@@ -275,4 +279,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.38 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClass.hh,v 3.39 2008/10/31 13:50:24 erk Exp $

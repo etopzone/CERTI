@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.54 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClass.cc,v 3.55 2008/10/31 13:50:25 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -71,7 +71,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     // If the attribute is inherited, it keeps its security level.
     // If not, it takes the default security level of the class.
     if (!is_inherited)
-        theAttribute->level = levelId ;
+        theAttribute->level = securityLevelId ;
 
     attributeSet.push_front(theAttribute);
 
@@ -275,7 +275,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
     if (server == NULL)
         return ;
 
-    bool result = server->canFederateAccessData(the_federate, levelId);
+    bool result = server->canFederateAccessData(the_federate, securityLevelId);
 
     // BUG: Should use Audit.
     if (!result) {
@@ -287,7 +287,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 
 // ----------------------------------------------------------------------------
 ObjectClass::ObjectClass(std::string name, ObjectClassHandle handle)
-    : Named(name), server(NULL), handle(handle), maxSubscriberHandle(0), levelId(PublicLevelID),
+    : Named(name), server(NULL), handle(handle), maxSubscriberHandle(0), securityLevelId(PublicLevelID),
       superClass(0), subClasses(NULL)
 {
 	subClasses = new ObjectClassSet(NULL);
@@ -456,7 +456,7 @@ void ObjectClass::display() const
 
     // Display inheritance
     cout << " Parent Class Handle: " << superClass << endl ;
-    cout << " Security Level: " << levelId << endl ;
+    cout << " Security Level: " << securityLevelId << endl ;
     cout << " " << subClasses->size() << " Child(s):" << endl ;
     cout << " Subclasses handles:" ;
     ObjectClassSet::namedOC_const_iterator i ;
@@ -827,15 +827,14 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
     return true ;
 }
 
-// ----------------------------------------------------------------------------
-//! A class' LevelID can only be increased.
+// A class' LevelID can only be increased.
 void
-ObjectClass::setLevelId(SecurityLevelID new_levelID)
+ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID) throw (SecurityError)
 {
-    if (!server->dominates(new_levelID, levelId))
+    if (!server->dominates(new_levelID, securityLevelId))
         throw SecurityError("Attempt to lower object class level.");
 
-    levelId = new_levelID ;
+    securityLevelId = new_levelID ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1819,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.54 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClass.cc,v 3.55 2008/10/31 13:50:25 erk Exp $
