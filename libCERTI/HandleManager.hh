@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.5 2008/10/31 10:17:51 erk Exp $
+// $Id: HandleManager.hh,v 3.6 2008/11/01 21:39:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -66,6 +66,7 @@ public:
 	 * Free a handle.
 	 * @pre handle is a previously-provided handle
 	 * @param handle Handle to free
+	 * @todo CHECK how this could be handled, currently free does nothing!
 	 */
 	void free(T handle);
 
