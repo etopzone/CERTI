@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.19 2008/10/30 10:11:41 erk Exp $
+// $Id: InteractionSet.hh,v 3.20 2008/11/01 19:19:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -34,115 +34,168 @@ namespace certi {
 #include "certi.hh"
 #include "SecurityServer.hh"
 
-#include <list>
+#include <string>
+#include <map>
 
 namespace certi {
 
-class CERTI_EXPORT InteractionSet : private std::list<Interaction *>
+class CERTI_EXPORT InteractionSet
 {
 
 public:
-    InteractionSet(SecurityServer *the_server);
-    ~InteractionSet();
+	InteractionSet(SecurityServer *the_server, bool isRootClassSet=false);
+	~InteractionSet();
 
-    void addClass(Interaction *the_class);
-    void buildParentRelation(Interaction *child, Interaction *parent);
-    void display() const ;
+	/**
+	 * Add an interaction class to the set.
+	 * @pre theClass should be non NULL
+	 * @param[in] theClass the object class to be added
+	 */
+	void addClass(Interaction *theClass);
 
-    // --------------------------
-    // -- RTI Support Services --
-    // --------------------------
-    InteractionClassHandle
-    getInteractionClassHandle(const char *the_name)
-        throw (NameNotFound, RTIinternalError);
+	/**
+	 * Build inheritance relation between two objects class.
+	 * Build a Parent-Child relation between two classe, by setting the
+     * Child's Parent handle, and registering the Child in the Parent's SonSet.
+     * Also copy all Parent's Attributes/Parameter in the Child Class.
+	 * @param[in,out] child the future child object class
+	 * @param[in,out] parent the parent object class
+	 * @post the child and parent object classes are linked
+	 *       with inheritance relationship.
+	 */
+	void buildParentRelation(Interaction *child, Interaction *parent);
 
-    const char *
-    getInteractionClassName(InteractionClassHandle the_handle)
-        throw (InteractionClassNotDefined, RTIinternalError);
+	/**
+	 *  Print the Interactions tree to the standard output.
+	 */
+	void display() const ;
 
-    ParameterHandle
-    getParameterHandle(const char *the_name,
-                       InteractionClassHandle the_class)
-        throw (NameNotFound,
-               InteractionClassNotDefined,
-               RTIinternalError);
+	// --------------------------
+	// -- RTI Support Services --
+	// --------------------------
 
-    const std::string&
-    getParameterName(ParameterHandle the_handle,
-                     InteractionClassHandle the_class)
-        throw (InteractionParameterNotDefined,
-               InteractionClassNotDefined,
-               RTIinternalError);
+	/**
+	 * Return the interaction handle associated to name.
+	 * @param[in] class_name the name of the interaction for whose handle is requested
+	 */
+	InteractionClassHandle
+	getInteractionClassHandle(const std::string& class_name) const
+	throw (NameNotFound);
 
-    void killFederate(FederateHandle the_federate)
-        throw ();
+	std::string
+	getInteractionClassName(InteractionClassHandle the_handle) const
+	throw (InteractionClassNotDefined);
 
-    Interaction *getByHandle(InteractionClassHandle the_handle)
-        throw (InteractionClassNotDefined, RTIinternalError);
+	ParameterHandle
+	getParameterHandle(const char *the_name,
+			InteractionClassHandle the_class)
+	throw (NameNotFound,
+			InteractionClassNotDefined,
+			RTIinternalError);
 
-    // ----------------------------------
-    // -- Interaction Class Management --
-    // ----------------------------------
-    void publish(FederateHandle the_federate_handle,
-                 InteractionClassHandle the_interaction_handle,
-                 bool publish)
-        throw (FederateNotPublishing,
-               InteractionClassNotDefined,
-               RTIinternalError,
-               SecurityError);
+	const std::string&
+	getParameterName(ParameterHandle the_handle,
+			InteractionClassHandle the_class)
+	throw (InteractionParameterNotDefined,
+			InteractionClassNotDefined,
+			RTIinternalError);
 
-    void subscribe(FederateHandle the_federate_handle,
-                   InteractionClassHandle the_interaction_handle,
-		   const RTIRegion *,
-                   bool subscribe)
-        throw (FederateNotSubscribing,
-               InteractionClassNotDefined,
-               RTIinternalError,
-               SecurityError);
+	void killFederate(FederateHandle the_federate)
+	throw ();
 
-    // -------------------------------------
-    // -- Interaction Instance Management --
-    // -------------------------------------
-    void isReady(FederateHandle theFederateHandle,
-                 InteractionClassHandle theInteraction,
-                 std::vector <ParameterHandle> &paramArray,
-                 UShort paramArraySize)
-        throw (FederateNotPublishing,
-               InteractionClassNotDefined,
-               InteractionParameterNotDefined,
-               RTIinternalError);
+	/**
+	 *  Return interaction associated to handle.
+	 *  @param[in] the_handle
+	 *  @return the interaction associated to handle
+	 *  @throw InteractionClassNotDefined if the handle does not correspond to
+	 *         any interactrion class
+	 *  @throw RTIinternalError
+	 */
+	Interaction* getByHandle(InteractionClassHandle the_handle) const
+	throw (InteractionClassNotDefined, RTIinternalError);
 
-    void broadcastInteraction(FederateHandle theFederateHandle,
-                              InteractionClassHandle theInteractionHandle,
-                              std::vector <ParameterHandle> &theParameterList,
-                              std::vector <ParameterValue_t> &theValueList,
-                              UShort theListSize,
-                              FederationTime theTime,
-			      const RTIRegion *,
-                              const char *theTag)
-        throw (FederateNotPublishing,
-               InteractionClassNotDefined,
-               InteractionParameterNotDefined,
-               RTIinternalError);
+	// ----------------------------------
+	// -- Interaction Class Management --
+	// ----------------------------------
+	void publish(FederateHandle the_federate_handle,
+			InteractionClassHandle the_interaction_handle,
+			bool publish)
+	throw (FederateNotPublishing,
+			InteractionClassNotDefined,
+			RTIinternalError,
+			SecurityError);
 
-    void broadcastInteraction(FederateHandle theFederateHandle,
-                              InteractionClassHandle theInteractionHandle,
-                              std::vector <ParameterHandle> &theParameterList,
-                              std::vector <ParameterValue_t> &theValueList,
-                              UShort theListSize,
-			      const RTIRegion *,
-                              const char *theTag)
-        throw (FederateNotPublishing,
-               InteractionClassNotDefined,
-               InteractionParameterNotDefined,
-               RTIinternalError);
+	void subscribe(FederateHandle the_federate_handle,
+			InteractionClassHandle the_interaction_handle,
+			const RTIRegion *,
+			bool subscribe)
+	throw (FederateNotSubscribing,
+			InteractionClassNotDefined,
+			RTIinternalError,
+			SecurityError);
+
+	// -------------------------------------
+	// -- Interaction Instance Management --
+	// -------------------------------------
+	void isReady(FederateHandle theFederateHandle,
+			InteractionClassHandle theInteraction,
+			std::vector <ParameterHandle> &paramArray,
+			UShort paramArraySize)
+	throw (FederateNotPublishing,
+			InteractionClassNotDefined,
+			InteractionParameterNotDefined,
+			RTIinternalError);
+
+	void broadcastInteraction(FederateHandle theFederateHandle,
+			InteractionClassHandle theInteractionHandle,
+			std::vector <ParameterHandle> &theParameterList,
+			std::vector <ParameterValue_t> &theValueList,
+			UShort theListSize,
+			FederationTime theTime,
+			const RTIRegion *,
+			const char *theTag)
+	throw (FederateNotPublishing,
+			InteractionClassNotDefined,
+			InteractionParameterNotDefined,
+			RTIinternalError);
+
+	void broadcastInteraction(FederateHandle theFederateHandle,
+			InteractionClassHandle theInteractionHandle,
+			std::vector <ParameterHandle> &theParameterList,
+			std::vector <ParameterValue_t> &theValueList,
+			UShort theListSize,
+			const RTIRegion *,
+			const char *theTag)
+	throw (FederateNotPublishing,
+			InteractionClassNotDefined,
+			InteractionParameterNotDefined,
+			RTIinternalError);
+
+	typedef std::map<InteractionClassHandle,Interaction*,std::less<InteractionClassHandle> > Handle2InteractionClassMap_t;
+	typedef std::map<std::string,Interaction*,std::less<std::string> > Name2InteractionClassMap_t;
+	typedef Handle2InteractionClassMap_t::const_iterator handledIC_const_iterator;
+	typedef Name2InteractionClassMap_t::const_iterator namedIC_const_iterator;
+
+	namedIC_const_iterator NamedBegin() const {
+		return ICFromName.begin();
+	}
+
+	namedIC_const_iterator NamedEnd() const {
+		return ICFromName.end();
+	}
+
+	const size_t size() {return ICFromName.size();}
 
 private:
-    SecurityServer *server ;
+
+	Handle2InteractionClassMap_t ICFromHandle;
+	Name2InteractionClassMap_t   ICFromName;
+	bool                         isRootClassSet;
+	SecurityServer *server ;
 };
 
 } // namespace certi
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.19 2008/10/30 10:11:41 erk Exp $
+// $Id: InteractionSet.hh,v 3.20 2008/11/01 19:19:34 erk Exp $

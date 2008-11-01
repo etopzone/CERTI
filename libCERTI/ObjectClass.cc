@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.55 2008/10/31 13:50:25 erk Exp $
+// $Id: ObjectClass.cc,v 3.56 2008/11/01 19:19:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -311,7 +311,7 @@ ObjectClass::~ObjectClass()
     if (NULL!=subClasses) {
     	delete subClasses;
     }
-}
+} /* end of ObjectClass destructor */
 
 // ----------------------------------------------------------------------------
 /* Delete Instance with time.
@@ -1818,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.55 2008/10/31 13:50:25 erk Exp $
+// $Id: ObjectClass.cc,v 3.56 2008/11/01 19:19:36 erk Exp $

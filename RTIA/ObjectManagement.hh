@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.28 2008/10/30 10:11:41 erk Exp $
+// $Id: ObjectManagement.hh,v 3.29 2008/11/01 19:19:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -239,7 +239,7 @@ public:
 
     InteractionClassHandle getInteractionClassHandle(const char *theName);
 
-    const char *getInteractionClassName(InteractionClassHandle theClassHandle);
+    const std::string getInteractionClassName(InteractionClassHandle theClassHandle);
 
     ParameterHandle getParameterHandle(const char *theParameterName,
                                        InteractionClassHandle theClassHandle);
@@ -281,4 +281,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.28 2008/10/30 10:11:41 erk Exp $
+// $Id: ObjectManagement.hh,v 3.29 2008/11/01 19:19:36 erk Exp $

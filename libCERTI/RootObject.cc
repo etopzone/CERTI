@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.36 2008/10/31 13:50:25 erk Exp $
+// $Id: RootObject.cc,v 3.37 2008/11/01 19:19:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -58,8 +58,10 @@ static PrettyDebug G("GENDOC",__FILE__);
 RootObject::RootObject(SecurityServer *security_server)
     : server(security_server), regionHandles(1)
 {
+	/* this object class set is the root one */
     ObjectClasses = new ObjectClassSet(server,true);
-    Interactions  = new InteractionSet(server);
+    /* this interaction class set is the root one */
+    Interactions  = new InteractionSet(server,true);
     objects       = new ObjectSet(server);
 }
 
@@ -362,4 +364,4 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.36 2008/10/31 13:50:25 erk Exp $
+// $Id: RootObject.cc,v 3.37 2008/11/01 19:19:35 erk Exp $

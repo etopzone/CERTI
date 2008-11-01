@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.32 2008/10/31 13:50:25 erk Exp $
+// $Id: Interaction.hh,v 3.33 2008/11/01 19:19:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -28,6 +28,7 @@
 // forward declaration
 namespace certi {
 	class InteractionBroadcastList;
+	class InteractionSet;
 }  // namespace certi
 
 // CERTI headers
@@ -35,7 +36,6 @@ namespace certi {
 #include "SecurityServer.hh"
 #include "Parameter.hh"
 #include "Subscribable.hh"
-
 
 #include <list>
 #include <set>
@@ -63,7 +63,33 @@ public:
     SpaceHandle getSpace();
 
     void setHandle(InteractionClassHandle h) { handle = h ; }
-    InteractionClassHandle getHandle() const { return handle ; }
+    InteractionClassHandle getHandle() const { return handle ;}
+
+	/**
+	 * Set the super class (parent class) of this object class;
+	 * @param[in] h the handle of the super class.
+	 */
+	void setSuperclass(InteractionClassHandle h) { superClass = h ; };
+	/**
+	 * Get the super class handle.
+	 * @return the super class handle
+	 */
+	InteractionClassHandle getSuperclass() const { return superClass ; };
+	/**
+	 * Add a subclass to this object class.
+	 * @param[in] sc the interaction to add as a sub class
+	 */
+	void addSubclass(Interaction *sc);
+	/**
+	 * Retrieve a sub class by its name.
+	 * @param[in] subClassName the name of the subclass
+	 * @return the sub class object class.
+	 */
+	Interaction* getSubClassByName(const std::string subClassName);
+	/**
+	 * Get the whole set of subclasses.
+	 */
+	InteractionSet* getSubClasses() {return subClasses;};
 
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
@@ -146,8 +172,14 @@ public:
 
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
+    /**
+     * The super class handle.
+     * 0 if they aren't any.
+     */
     InteractionClassHandle parent ;
-    std::list<InteractionClassHandle> children ;
+
+    //std::list<InteractionClassHandle> children ;
+
     UShort depth ;
 
     /*! Interaction messages' Transport Type(Reliable, Best Effort),
@@ -166,6 +198,16 @@ private:
 	Interaction();
 
     InteractionClassHandle handle ; //!< Interaction class handle.
+
+	/**
+	 * The super class handle.
+	 * 0 if they aren't any.
+	 */
+	InteractionClassHandle superClass;
+    /**
+     * The set of interaction classes sub classes.
+     */
+    InteractionSet* subClasses;
 
     Parameter *getParameterByHandle(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined, RTIinternalError);
@@ -188,4 +230,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.32 2008/10/31 13:50:25 erk Exp $
+// $Id: Interaction.hh,v 3.33 2008/11/01 19:19:35 erk Exp $

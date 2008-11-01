@@ -835,7 +835,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetInteractionName.");
 
-        rep.setName(om->getInteractionClassName(req->getInteractionClass()));
+        rep.setName(om->getInteractionClassName(req->getInteractionClass()).c_str());
         break ;
 
       case Message::GET_PARAMETER_HANDLE:

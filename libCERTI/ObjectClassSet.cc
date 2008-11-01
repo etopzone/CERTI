@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.40 2008/10/31 13:50:25 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.41 2008/11/01 19:19:35 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -45,61 +45,13 @@ namespace certi {
 
 static PrettyDebug D("OBJECTCLASSSET", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
-// ----------------------------------------------------------------------------
-//! The class is not allocated, only the pointer is memorized.
-void
-ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
-{
-	Name2ObjectClassMap_t::iterator findit;
-	std::stringstream       msg;
 
-    D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
-
-    /* link to server */
-    newClass->server = server ;
-    /*
-     * Check whether addition of this object clas
-     * will generate a name collision or not.
-     * i.e. we may not add an object class of the SAME
-     * name to the object class set
-     */
-    findit = OCFromName.find(newClass->getName());
-    if (findit != OCFromName.end()) {
-    	msg << "Name collision another object class named <"
-    	    << newClass->getName()
-    	    << "> with handle <"
-    	    << findit->second->getHandle()
-    	    << "> was found when trying to add identically named object class with handle <"
-    	    << newClass->getHandle();
-    	throw RTIinternalError(msg.str().c_str());
-    }
-    /* store ref to new class in ObjectClass from Handle Map */
-    OCFromHandle[newClass->getHandle()] = newClass;
-    /* store ref to new class in ObjectClass from Name Map */
-    OCFromName[newClass->getName()] = newClass;
-}
-
-// ----------------------------------------------------------------------------
-/** Build an inheritance relation between two object classes.
- */
-void
-ObjectClassSet::buildParentRelation(ObjectClass *subclass,
-				    ObjectClass *superclass)
-{
-    subclass->setSuperclass(superclass->getHandle());
-    subclass->setSecurityLevelId(superclass->getSecurityLevelId());
-    superclass->addSubclass(subclass);
-    superclass->addAttributesToChild(subclass);
-}
-
-// ----------------------------------------------------------------------------
-//! Constructor.
-ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool newIsRootClassSet)
+ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet)
 
 {
     // It can be NULL on the RTIA.
     server = theSecurityServer ;
-    isRootClassSet = newIsRootClassSet;
+    this->isRootClassSet = isRootClassSet;
 }
 
 // ----------------------------------------------------------------------------
@@ -129,6 +81,50 @@ ObjectClassSet::~ObjectClassSet()
 	else {
 		OCFromHandle.clear();
 	}
+} /* end of ~ObjectClassSet */
+
+// ----------------------------------------------------------------------------
+//! The class is not allocated, only the pointer is memorized.
+void
+ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
+{
+	Name2ObjectClassMap_t::iterator findit;
+	std::stringstream                  msg;
+
+    D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
+
+    /* link to server */
+    newClass->server = server ;
+    /*
+     * Check whether addition of this object class
+     * will generate a name collision or not.
+     * i.e. we may not add an object class of the SAME
+     * name to the object class set
+     */
+    findit = OCFromName.find(newClass->getName());
+    if (findit != OCFromName.end()) {
+    	msg << "Name collision another object class named <"
+    	    << newClass->getName()
+    	    << "> with handle <"
+    	    << findit->second->getHandle()
+    	    << "> was found when trying to add identically named object class with handle <"
+    	    << newClass->getHandle();
+    	throw RTIinternalError(msg.str().c_str());
+    }
+    /* store ref to new class in ObjectClass from Handle Map */
+    OCFromHandle[newClass->getHandle()] = newClass;
+    /* store ref to new class in ObjectClass from Name Map */
+    OCFromName[newClass->getName()] = newClass;
+} /* end of addClass */
+
+void
+ObjectClassSet::buildParentRelation(ObjectClass *subclass,
+				    ObjectClass *superclass)
+{
+    subclass->setSuperclass(superclass->getHandle());
+    subclass->setSecurityLevelId(superclass->getSecurityLevelId());
+    superclass->addSubclass(subclass);
+    superclass->addAttributesToChild(subclass);
 }
 
 // ----------------------------------------------------------------------------
@@ -229,7 +225,7 @@ ObjectClassSet::display() const
     for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
         i->second->display();
     }
-}
+} /* end of display */
 
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
@@ -382,14 +378,13 @@ ObjectClassSet::getObjectClassHandle(std::string class_name) const
                 G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle on NameNotFound");
 		throw NameNotFound(class_name.c_str());
 	}
-}
+} /* end of getObjectClassHandle */
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
 string
 ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
-    throw (ObjectClassNotDefined,
-           RTIinternalError)
+    throw (ObjectClassNotDefined)
 {
     D.Out(pdRequest, "Looking for class %u...", the_handle);
 
@@ -415,7 +410,7 @@ ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
 		D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
 		throw ObjectClassNotDefined(msg.str().c_str());
 	}
-}
+} /* end of getWithHandle */
 
 // ----------------------------------------------------------------------------
 //! killFederate.
@@ -457,7 +452,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
         } while (ocbList != NULL);
     }
     D.Out(pdExcept, "End of the KillFederate Procedure.");
-}
+} /* end of killFederate */
 
 // ----------------------------------------------------------------------------
 //! publish
@@ -843,4 +838,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.40 2008/10/31 13:50:25 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.41 2008/11/01 19:19:35 erk Exp $

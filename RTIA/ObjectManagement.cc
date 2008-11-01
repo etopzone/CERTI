@@ -809,7 +809,7 @@ ObjectManagement::getInteractionClassHandle(const char *theName)
 
 // ----------------------------------------------------------------------------
 //! getInteractionClassName.
-const char *
+const std::string
 ObjectManagement::
 getInteractionClassName(InteractionClassHandle theClassHandle)
 {
