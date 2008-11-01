@@ -76,6 +76,7 @@ NM_Classes.hh NM_Classes.cc
 Exception.cc Exception.hh
 XmlParser.cc XmlParser.hh
 PrettyDebug.cc PrettyDebEx.cc PrettyDebug.hh
+TreeNamedAndHandledSet.hh
 )
 
 IF (HAVE_POSIX_CLOCK)
