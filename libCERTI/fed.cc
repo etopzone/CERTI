@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.19 2008/10/31 13:50:24 erk Exp $
+// $Id: fed.cc,v 3.20 2008/11/02 00:26:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -336,7 +336,7 @@ void
 addInteractionSecurityLevel()
 {
 	SecurityLevelID level = root_object->getSecurityLevelID(arg);
-	interactions.back()->setLevelId(level);
+	interactions.back()->setSecurityLevelId(level);
 	indent();
 	if(verbose)
 		cout << "(sec_level \"" << arg << "\")" ;
@@ -452,4 +452,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.19 2008/10/31 13:50:24 erk Exp $
+// $Id: fed.cc,v 3.20 2008/11/02 00:26:40 erk Exp $

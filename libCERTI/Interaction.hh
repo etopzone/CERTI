@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.33 2008/11/01 19:19:35 erk Exp $
+// $Id: Interaction.hh,v 3.34 2008/11/02 00:26:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -46,6 +46,15 @@ namespace certi {
 class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
+
+	/**
+	 * The type of the handle of this class.
+	 */
+	typedef InteractionClassHandle handle_t;
+	/**
+	 * The type of the exception to when such object is not found
+	 */
+	typedef InteractionClassNotDefined ObjectNotDefinedException;
 	/**
 	 * Build an interaction class object.
 	 * @param[in] name the name of the interaction class
@@ -94,7 +103,7 @@ public:
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
 
-    void addParametersToChild(Interaction *new_child);
+    void addToChild(Interaction *new_child);
     void display() const ;
 
     // -- Security Methods --
@@ -102,8 +111,8 @@ public:
                              const char *reason) const
         throw (SecurityError);
 
-    SecurityLevelID getLevelId() const { return id ; };
-    void setLevelId(SecurityLevelID NewLevelID);
+    SecurityLevelID getSecurityLevelId() const { return id ; };
+    void setSecurityLevelId(SecurityLevelID NewLevelID);
 
     // -- Publication and Subscription --
     void publish(FederateHandle)
@@ -230,4 +239,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.33 2008/11/01 19:19:35 erk Exp $
+// $Id: Interaction.hh,v 3.34 2008/11/02 00:26:41 erk Exp $

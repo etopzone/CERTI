@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.25 2008/11/01 19:19:35 erk Exp $
+// $Id: InteractionSet.cc,v 3.26 2008/11/02 00:26:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -40,67 +40,22 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 
 InteractionSet::InteractionSet(SecurityServer *security_server, bool isRootClassSet)
-: isRootClassSet(isRootClassSet), server(security_server) {
+: TreeNamedAndHandledSet<Interaction>(isRootClassSet) {
+    // It can be NULL on the RTIA.
+    server = security_server ;
 }
 
 InteractionSet::~InteractionSet() {
-	/* clear name map */
-	ICFromName.clear();
-	/*
-	 * If we are Root ClassSet (the class set owned by RootObject)
-	 *    we delete the content
-	 * If not we only clear the map in order to avoid double deletion.
-	 *
-	 * FIXME EN: this is a trick in order because we do not
-	 *           really maintain a tree of ObjectClass in order
-	 *           to support flat interaction class name
-	 *           ("Boule" instead of "Bille.Boule")
-	 *           We may get rid of this as soon as we want to support
-	 *           same name for interaction class in different branch of the tree.
-	 */
-	if (isRootClassSet) {
-		while (!ICFromHandle.empty()) {
-			delete (ICFromHandle.begin()->second);
-			ICFromHandle.erase(ICFromHandle.begin());
-		}
-	}
-	else {
-		ICFromHandle.clear();
-	}
+
 } /* end of ~InteractionSet */
 
 void
 InteractionSet::addClass(Interaction *newClass) {
 
-	Name2InteractionClassMap_t::iterator findit;
-	std::stringstream                       msg;
-
 	D.Out(pdInit, "Adding new interaction class %d, ", newClass->getHandle());
-
 	/* link to server */
 	newClass->server = server ;
-
-	/*
-	 * Check whether addition of this interaction class
-	 * will generate a name collision or not.
-	 * i.e. we may not add an object class of the SAME
-	 * name to the interaction class set
-	 */
-	findit = ICFromName.find(newClass->getName());
-	if (findit != ICFromName.end()) {
-		msg << "Name collision another interaction class named <"
-		<< newClass->getName()
-		<< "> with handle <"
-		<< findit->second->getHandle()
-		<< "> was found when trying to add identically named object class with handle <"
-		<< newClass->getHandle();
-		throw RTIinternalError(msg.str().c_str());
-	}
-	/* store ref to new class in ObjectClass from Handle Map */
-	ICFromHandle[newClass->getHandle()] = newClass;
-	/* store ref to new class in ObjectClass from Name Map */
-	ICFromName[newClass->getName()] = newClass;
-
+	add(newClass);
 } /* end of addClass */
 
 // ----------------------------------------------------------------------------
@@ -199,27 +154,11 @@ throw (FederateNotPublishing,
 } /* end of broadcastInteraction (WITHOUT time) */
 
 void
-InteractionSet::buildParentRelation(Interaction *child, Interaction *parent)
-{
-	// Register parent to son.
-	child->setSuperclass(parent->getHandle());
-
-	// Transfert security level.
-	child->setLevelId(parent->getLevelId());
-
-	// Register son to parent.
-	parent->addSubclass(child);
-
-	// Copy parent Attribute into child class.
-	parent->addParametersToChild(child);
-} /* end of buildParentRelation */
-
-void
 InteractionSet::display() const
 {
 	cout << " Interactions :" << endl ;
-	handledIC_const_iterator i;
-	for (i = ICFromHandle.begin(); i != ICFromHandle.end(); ++i) {
+	handled_const_iterator i;
+	for (i = handled_begin(); i != handled_end(); ++i) {
 		i->second->display();
 	}
 } /* end of display */
@@ -230,11 +169,11 @@ throw (InteractionClassNotDefined, RTIinternalError)
 {
 	std::stringstream msg;
 
-	handledIC_const_iterator iter;
+	handled_const_iterator iter;
 
-	iter = ICFromHandle.find(the_handle);
+	iter = fromHandle.find(the_handle);
 
-	if (iter != ICFromHandle.end()) {
+	if (iter != fromHandle.end()) {
 		return iter->second;
 	} else {
 		msg << "Unknown Object Class Handle <" << the_handle << ">";
@@ -249,56 +188,7 @@ InteractionClassHandle
 InteractionSet::getInteractionClassHandle(const std::string& class_name) const
 throw (NameNotFound)  {
 
-	std::string                 currentName;
-	std::string                 remainingName;
-	InteractionClassHandle      currentHandle;
-	Interaction*                currentClass;
-	InteractionSet const*       currentClassSet;
-	namedIC_const_iterator      iter;
-
-	currentClassSet = this;
-	remainingName = class_name;
-	D.Out(pdDebug,"Looking for interaction class <%s>",class_name.c_str());
-	/*
-	 * If the name is qualified (a.k.a. hierarchical name)
-	 * like "Bille.Boule"
-	 * then iterate through subClass in order to reach the leaf
-	 * "unqualified name"
-	 */
-	while (Named::isQualifiedClassName(remainingName)) {
-		/*
-		 * The first current should be the name of
-		 * of a subclass of the current ClassSet
-		 */
-		currentName = Named::getNextClassName(remainingName);
-		D.Out(pdDebug,"Now Looking for interaction class <%s>",currentName.c_str());
-		/*
-		 * Get the handle of the subclass
-		 * NOTE that we won't recurse more than once here
-		 * since the provided 'currentName' is not qualified
-		 * 'by design'
-		 * The recursive deepness is at most 2.
-		 */
-		currentHandle = currentClassSet->getInteractionClassHandle(currentName);
-		/* Get the corresponding class object */
-		currentClass = currentClassSet->getByHandle(currentHandle);
-		/* now update currentClassSet */
-		currentClassSet = currentClass->getSubClasses();
-	}
-
-	/*
-	 * Now the current classClassSet should be a leaf
-	 * so that we can search in the
-	 */
-	iter = currentClassSet->ICFromName.find(remainingName);
-
-	if (iter != currentClassSet->ICFromName.end()) {
-		G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle");
-		return iter->second->getHandle();
-	} else {
-		G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle on NameNotFound");
-		throw NameNotFound(class_name.c_str());
-	}
+	return getHandleFromName(class_name);
 
 } /* end of getInteractionClassHandle */
 
@@ -308,7 +198,7 @@ std::string
 InteractionSet::getInteractionClassName(InteractionClassHandle the_handle) const
 throw (InteractionClassNotDefined)
 {
-	return getByHandle(the_handle)->getName();
+	return getNameFromHandle(the_handle);
 } /* end of getInteractionClassName */
 
 // ----------------------------------------------------------------------------
@@ -366,9 +256,9 @@ throw (FederateNotPublishing,
 void
 InteractionSet::killFederate(FederateHandle the_federate)
 throw () {
-    Handle2InteractionClassMap_t::iterator i;
+    handled_const_iterator i;
 
-    for (i = ICFromHandle.begin(); i != ICFromHandle.end(); ++i) {
+    for (i = handled_begin(); i != handled_end(); ++i) {
         // Call KillFederate on that class until it returns NULL.
         i->second->killFederate(the_federate);
     }
@@ -416,4 +306,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.25 2008/11/01 19:19:35 erk Exp $
+// $Id: InteractionSet.cc,v 3.26 2008/11/02 00:26:41 erk Exp $

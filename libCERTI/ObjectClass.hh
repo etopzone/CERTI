@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.41 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClass.hh,v 3.42 2008/11/02 00:26:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -134,7 +134,7 @@ public:
 	AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
 			bool is_inherited = false);
 
-	void addAttributesToChild(ObjectClass *child);
+	void addToChild(ObjectClass *child);
 
 	// Publication and Subscription
 	void publish(FederateHandle theFederateHandle,
@@ -318,4 +318,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.41 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClass.hh,v 3.42 2008/11/02 00:26:40 erk Exp $

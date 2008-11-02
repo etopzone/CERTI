@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.47 2008/11/01 19:19:34 erk Exp $
+// $Id: Interaction.cc,v 3.48 2008/11/02 00:26:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -102,7 +102,7 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 // ----------------------------------------------------------------------------
 //! Add the class' attributes to the 'Child' Class.
 void
-Interaction::addParametersToChild(Interaction *the_child)
+Interaction::addToChild(Interaction *the_child)
 {
 	// The Parameter List is read backward to respect the same attribute order
 	// for the child (Parameters are inserted at the beginning of the list)
@@ -512,7 +512,7 @@ throw (FederateNotPublishing,
 /*! A class' LevelID can only be increased.
  */
 void
-Interaction::setLevelId(SecurityLevelID new_levelID)
+Interaction::setSecurityLevelId(SecurityLevelID new_levelID)
 {
 	if (!server->dominates(new_levelID, id))
 		throw SecurityError("Attempt to lower interaction class level.");
@@ -538,4 +538,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.47 2008/11/01 19:19:34 erk Exp $
+// $Id: Interaction.cc,v 3.48 2008/11/02 00:26:40 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.1 2008/11/01 23:58:59 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.2 2008/11/02 00:26:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -128,6 +128,13 @@ public:
 	typedef typename Handle2ObjectMap_t::const_iterator handled_const_iterator;
 	typedef typename Handle2ObjectMap_t::iterator       handled_iterator;
 
+	handled_const_iterator handled_begin() const {
+		return fromHandle.begin();
+	}
+
+	handled_const_iterator handled_end() const {
+		return fromHandle.end();
+	}
 	/**
 	 * Map from name to ObjectType::handle_t.
 	 */
@@ -229,7 +236,7 @@ TreeNamedAndHandledSet<ObjectType>::buildParentRelation(ObjectType* child, Objec
     child->setSuperclass(parent->getHandle());
     child->setSecurityLevelId(parent->getSecurityLevelId());
     parent->addSubclass(child);
-    parent->addAttributesToChild(child);
+    parent->addToChild(child);
 }
 
 template <typename ObjectType>

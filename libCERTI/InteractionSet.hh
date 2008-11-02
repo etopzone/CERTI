@@ -19,27 +19,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.20 2008/11/01 19:19:34 erk Exp $
+// $Id: InteractionSet.hh,v 3.21 2008/11/02 00:26:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
 #define _CERTI_INTERACTION_SET_HH
 
-// forward declaration
-namespace certi {
-	class Interaction;
-}  // namespace certi
-
 // CERTI headers
 #include "certi.hh"
 #include "SecurityServer.hh"
+#include "Interaction.hh"
+#include "TreeNamedAndHandledSet.hh"
 
+// System headers
 #include <string>
 #include <map>
 
 namespace certi {
 
-class CERTI_EXPORT InteractionSet
+class CERTI_EXPORT InteractionSet : public TreeNamedAndHandledSet<Interaction>
 {
 
 public:
@@ -53,17 +51,6 @@ public:
 	 */
 	void addClass(Interaction *theClass);
 
-	/**
-	 * Build inheritance relation between two objects class.
-	 * Build a Parent-Child relation between two classe, by setting the
-     * Child's Parent handle, and registering the Child in the Parent's SonSet.
-     * Also copy all Parent's Attributes/Parameter in the Child Class.
-	 * @param[in,out] child the future child object class
-	 * @param[in,out] parent the parent object class
-	 * @post the child and parent object classes are linked
-	 *       with inheritance relationship.
-	 */
-	void buildParentRelation(Interaction *child, Interaction *parent);
 
 	/**
 	 *  Print the Interactions tree to the standard output.
@@ -171,26 +158,8 @@ public:
 			InteractionParameterNotDefined,
 			RTIinternalError);
 
-	typedef std::map<InteractionClassHandle,Interaction*,std::less<InteractionClassHandle> > Handle2InteractionClassMap_t;
-	typedef std::map<std::string,Interaction*,std::less<std::string> > Name2InteractionClassMap_t;
-	typedef Handle2InteractionClassMap_t::const_iterator handledIC_const_iterator;
-	typedef Name2InteractionClassMap_t::const_iterator namedIC_const_iterator;
-
-	namedIC_const_iterator NamedBegin() const {
-		return ICFromName.begin();
-	}
-
-	namedIC_const_iterator NamedEnd() const {
-		return ICFromName.end();
-	}
-
-	const size_t size() {return ICFromName.size();}
-
 private:
 
-	Handle2InteractionClassMap_t ICFromHandle;
-	Name2InteractionClassMap_t   ICFromName;
-	bool                         isRootClassSet;
 	SecurityServer *server ;
 };
 
@@ -198,4 +167,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.20 2008/11/01 19:19:34 erk Exp $
+// $Id: InteractionSet.hh,v 3.21 2008/11/02 00:26:40 erk Exp $

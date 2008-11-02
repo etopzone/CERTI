@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.58 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClass.cc,v 3.59 2008/11/02 00:26:41 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -84,7 +84,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
 // ----------------------------------------------------------------------------
 //! Add the class' attributes to the 'Child' Class.
 void
-ObjectClass::addAttributesToChild(ObjectClass *the_child)
+ObjectClass::addToChild(ObjectClass *the_child)
 {
     // The Attribute List is read backwards to respect the same attribute order
     // for the child(Attributes are inserted at the beginning of the list).
@@ -1818,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.58 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClass.cc,v 3.59 2008/11/02 00:26:41 erk Exp $
