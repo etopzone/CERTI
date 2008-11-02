@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.40 2008/11/01 19:19:34 erk Exp $
+// $Id: ObjectClass.hh,v 3.41 2008/11/02 00:02:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -68,6 +68,16 @@ public:
 class CERTI_EXPORT ObjectClass : public Named {
 
 public:
+
+	/**
+	 * The type of the handle of this class.
+	 */
+	typedef ObjectClassHandle handle_t;
+	/**
+	 * The type of the exception to when such object is not found
+	 */
+	typedef ObjectClassNotDefined ObjectNotDefinedException;
+
 	/**
 	 * Create an objectClass.
 	 * @param[in] name the object class name
@@ -308,4 +318,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.40 2008/11/01 19:19:34 erk Exp $
+// $Id: ObjectClass.hh,v 3.41 2008/11/02 00:02:45 erk Exp $

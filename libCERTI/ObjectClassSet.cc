@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.41 2008/11/01 19:19:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.42 2008/11/02 00:02:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -47,85 +47,28 @@ static PrettyDebug D("OBJECTCLASSSET", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet)
-
+ : TreeNamedAndHandledSet<ObjectClass>(isRootClassSet)
 {
     // It can be NULL on the RTIA.
     server = theSecurityServer ;
-    this->isRootClassSet = isRootClassSet;
 }
 
 // ----------------------------------------------------------------------------
 //! Destructor.
 ObjectClassSet::~ObjectClassSet()
 {
-	/* clear name map */
-	OCFromName.clear();
-	/*
-	 * If we are Root ClassSet (the class set owned by RootObject)
-	 *    we delete the content
-	 * If not we only clear the map in order to avoid double deletion.
-	 *
-	 * FIXME EN: this is a trick in order because we do not
-	 *           really maintain a tree of ObjectClass in order
-	 *           to support flat object class name
-	 *           ("Boule" instead of "Bille.Boule")
-	 *           We may get rid of this as soon as we want to support
-	 *           same name for object class in different branch of the tree.
-	 */
-	if (isRootClassSet) {
-		while (!OCFromHandle.empty()) {
-			delete (OCFromHandle.begin()->second);
-			OCFromHandle.erase(OCFromHandle.begin());
-		}
-	}
-	else {
-		OCFromHandle.clear();
-	}
+
 } /* end of ~ObjectClassSet */
 
-// ----------------------------------------------------------------------------
-//! The class is not allocated, only the pointer is memorized.
 void
 ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
 {
-	Name2ObjectClassMap_t::iterator findit;
-	std::stringstream                  msg;
-
-    D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
-
-    /* link to server */
+	D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
+	/* link to server */
     newClass->server = server ;
-    /*
-     * Check whether addition of this object class
-     * will generate a name collision or not.
-     * i.e. we may not add an object class of the SAME
-     * name to the object class set
-     */
-    findit = OCFromName.find(newClass->getName());
-    if (findit != OCFromName.end()) {
-    	msg << "Name collision another object class named <"
-    	    << newClass->getName()
-    	    << "> with handle <"
-    	    << findit->second->getHandle()
-    	    << "> was found when trying to add identically named object class with handle <"
-    	    << newClass->getHandle();
-    	throw RTIinternalError(msg.str().c_str());
-    }
-    /* store ref to new class in ObjectClass from Handle Map */
-    OCFromHandle[newClass->getHandle()] = newClass;
-    /* store ref to new class in ObjectClass from Name Map */
-    OCFromName[newClass->getName()] = newClass;
-} /* end of addClass */
+	add(newClass);
 
-void
-ObjectClassSet::buildParentRelation(ObjectClass *subclass,
-				    ObjectClass *superclass)
-{
-    subclass->setSuperclass(superclass->getHandle());
-    subclass->setSecurityLevelId(superclass->getSecurityLevelId());
-    superclass->addSubclass(subclass);
-    superclass->addAttributesToChild(subclass);
-}
+} /* end of addClass */
 
 // ----------------------------------------------------------------------------
 //! deleteObject with time.
@@ -221,8 +164,8 @@ ObjectClassSet::display() const
 {
     cout << " ObjectClasses :" << endl ;
 
-    handledOC_const_iterator i;
-    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+    handled_const_iterator i;
+    for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
         i->second->display();
     }
 } /* end of display */
@@ -290,8 +233,8 @@ ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
 {
 	std::stringstream msg;
 
-	handledOC_const_iterator i ;
-    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+	handled_const_iterator i ;
+    for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
         if (i->second->isInstanceInClass(theObjectHandle) == true)
             return (i->second);
     }
@@ -309,9 +252,9 @@ ObjectClassSet::getObject(ObjectHandle h) const
     throw (ObjectNotKnown)
 {
 
-	handledOC_const_iterator i ;
+	handled_const_iterator i ;
 
-	for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+	for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
 		try {
 			Object *object = i->second->getInstanceWithID(h);
 			return object ;
@@ -326,58 +269,9 @@ ObjectClassSet::getObject(ObjectHandle h) const
 //! getObjectClassHandle.
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(std::string class_name) const
-    throw (NameNotFound)
-{
-    G.Out(pdGendoc,"enter ObjectClassSet::getObjectClassHandle");
+    throw (NameNotFound){
 
-    std::string currentName;
-    std::string remainingName;
-    ObjectClassHandle currentHandle;
-    ObjectClass*      currentClass;
-    ObjectClassSet const*   currentClassSet;
-	namedOC_const_iterator iter;
-
-	currentClassSet = this;
-	remainingName = class_name;
-    /*
-     * If the name is qualified (a.k.a. hierarchical name)
-     * like "Bille.Boule"
-     * then iterate through subClass in order to reach the leaf
-     * "unqualified name"
-     */
-    while (Named::isQualifiedClassName(remainingName)) {
-    	/*
-    	 * The first current should be the name of
-    	 * of a subclass of the current ObjectClassSet
-    	 */
-    	currentName = Named::getNextClassName(remainingName);
-		/*
-		 * Get the handle of the subclass
-		 * NOTE that we won't recurse more than once here
-		 * since the provided 'currentName' is not qualified
-		 * 'by design'
-		 * The recursive deepness is at most 2.
-		 */
-		currentHandle = currentClassSet->getObjectClassHandle(currentName);
-		/* Get the corresponding class object */
-		currentClass = currentClassSet->getWithHandle(currentHandle);
-		/* now update currentClassSet */
-		currentClassSet = currentClass->getSubClasses();
-    }
-
-    /*
-     * Now the current classClassSet should be a leaf
-     * so that we can search in the
-     */
-    iter = currentClassSet->OCFromName.find(remainingName);
-
-	if (iter != currentClassSet->OCFromName.end()) {
-                G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle");
-		return iter->second->getHandle();
-	} else {
-                G.Out(pdGendoc,"exit ObjectClassSet::getObjectClassHandle on NameNotFound");
-		throw NameNotFound(class_name.c_str());
-	}
+	return getHandleFromName(class_name);
 } /* end of getObjectClassHandle */
 
 // ----------------------------------------------------------------------------
@@ -387,8 +281,7 @@ ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
     throw (ObjectClassNotDefined)
 {
     D.Out(pdRequest, "Looking for class %u...", the_handle);
-
-    return getWithHandle(the_handle)->getName();
+    return getNameFromHandle(the_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -397,19 +290,7 @@ ObjectClass *
 ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
     throw (ObjectClassNotDefined)
 {
-	std::stringstream msg;
-
-	handledOC_const_iterator iter;
-
-	iter = OCFromHandle.find(theHandle);
-
-	if (iter != OCFromHandle.end()) {
-		return iter->second;
-	} else {
-                msg << "Unknown Object Class Handle <" << theHandle << ">";
-		D.Out(pdExcept, "Unknown Object Class Handle %d .", theHandle);
-		throw ObjectClassNotDefined(msg.str().c_str());
-	}
+	return getObjectFromHandle(theHandle);
 } /* end of getWithHandle */
 
 // ----------------------------------------------------------------------------
@@ -420,9 +301,9 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
     ObjectClassBroadcastList *ocbList      = NULL ;
     ObjectClassHandle         currentClass = 0 ;
 
-    Handle2ObjectClassMap_t::iterator i;
+    handled_iterator i;
 
-    for (i = OCFromHandle.begin(); i != OCFromHandle.end(); ++i) {
+    for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
         // Call KillFederate on that class until it returns NULL.
         do {
             D.Out(pdExcept, "Kill Federate Handle %d .", theFederate);
@@ -838,4 +719,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.41 2008/11/01 19:19:35 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.42 2008/11/02 00:02:45 erk Exp $

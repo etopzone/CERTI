@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.57 2008/11/01 21:47:58 erk Exp $
+// $Id: ObjectClass.cc,v 3.58 2008/11/02 00:02:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -459,8 +459,8 @@ void ObjectClass::display() const
     cout << " Security Level: " << securityLevelId << endl ;
     cout << " " << subClasses->size() << " Child(s):" << endl ;
     cout << " Subclasses handles:" ;
-    ObjectClassSet::namedOC_const_iterator i ;
-    for (i = subClasses->NamedBegin(); i != subClasses->NamedEnd(); ++i) {
+    ObjectClassSet::const_iterator i ;
+    for (i = subClasses->begin(); i != subClasses->end(); ++i) {
     	cout << " " << i->second->getHandle() << endl;
     }
 
@@ -1791,8 +1791,8 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
     bool go_deeper = sendDiscoverMessages(federate, subscription);
 
     if (go_deeper) {
-        ObjectClassSet::namedOC_const_iterator i ;
-        for (i = subClasses->NamedBegin(); i != subClasses->NamedEnd(); ++i) {
+        ObjectClassSet::const_iterator i ;
+        for (i = subClasses->begin(); i != subClasses->end(); ++i) {
             i->second->recursiveDiscovering(federate, subscription);
         }
     }
@@ -1818,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.57 2008/11/01 21:47:58 erk Exp $
+// $Id: ObjectClass.cc,v 3.58 2008/11/02 00:02:45 erk Exp $

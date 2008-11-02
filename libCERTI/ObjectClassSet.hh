@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.32 2008/11/01 19:19:34 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.33 2008/11/02 00:02:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -28,12 +28,15 @@
 // forward declaration
 namespace certi {
 class Object;
-class ObjectClass;
 class SecurityServer;
 }  // namespace certi
 
 // CERTI headers
 #include "certi.hh"
+#include "ObjectClass.hh"
+#include "TreeNamedAndHandledSet.hh"
+
+// System headers
 #include <list>
 #include <string>
 #include <map>
@@ -43,7 +46,7 @@ namespace certi {
 /**
  * This class represents a set of object classes.
  */
-class CERTI_EXPORT ObjectClassSet
+class CERTI_EXPORT ObjectClassSet : public TreeNamedAndHandledSet<ObjectClass>
 {
 
 public:
@@ -55,15 +58,6 @@ public:
 	 * @param[in] theClass the object class to be added
 	 */
 	void addClass(ObjectClass *theClass) throw (RTIinternalError);
-
-	/**
-	 * Build inheritance relation between two objects class.
-	 * @param[in,out] child the future child object class
-	 * @param[in,out] parent the parent object class
-	 * @post the child and parent object classes are linked
-	 *       with inheritance relationship.
-	 */
-	void buildParentRelation(ObjectClass *child, ObjectClass *parent);
 
 	void display() const ;
 
@@ -188,26 +182,7 @@ public:
 
 	Object *getObject(ObjectHandle) const throw (ObjectNotKnown);
 
-
-	typedef std::map<ObjectClassHandle,ObjectClass*,std::less<ObjectClassHandle> > Handle2ObjectClassMap_t;
-	typedef std::map<std::string,ObjectClass*,std::less<std::string> > Name2ObjectClassMap_t;
-	typedef Handle2ObjectClassMap_t::const_iterator handledOC_const_iterator;
-	typedef Name2ObjectClassMap_t::const_iterator namedOC_const_iterator;
-
-	namedOC_const_iterator NamedBegin() const {
-		return OCFromName.begin();
-	}
-
-	namedOC_const_iterator NamedEnd() const {
-		return OCFromName.end();
-	}
-
-	const size_t size() {return OCFromName.size();}
-
 private:
-	Handle2ObjectClassMap_t OCFromHandle;
-	Name2ObjectClassMap_t   OCFromName;
-	bool                    isRootClassSet;
 
 	/**
 	 * This object will help to find the TCPLink associated with a Federate.
@@ -223,4 +198,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.32 2008/11/01 19:19:34 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.33 2008/11/02 00:02:45 erk Exp $
