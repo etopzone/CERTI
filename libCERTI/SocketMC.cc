@@ -93,7 +93,7 @@ assert(addr>0);
 _socket_mc = socket(AF_INET, SOCK_DGRAM, 0);
 if (_socket_mc < 0) {
 	perror("socket1");
-	exit(-1);
+        throw NetworkError("cannot create socket");
 	}
 
 memset(&_sin, sizeof(_sin), sizeof(_sin));
@@ -104,7 +104,7 @@ _sinlen = sizeof(_sin);
 
 if (bind(_socket_mc, (struct sockaddr *)&_sin, _sinlen) < 0) {
 	perror("SocketMC: bind");
-	exit(-1);
+        throw NetworkError("cannot bind");
 	}
 
 // joindre le groupe multiCast
@@ -116,14 +116,14 @@ if (setsockopt(_socket_mc,
              IP_ADD_MEMBERSHIP,
              (char *)&_mreq, _mreqlen) < 0) {
 	perror("setsockopt");
-	exit(-1);
+        throw NetworkError("cannot setsockopt");
 	}
 
 // creation du socket emetteur
 _socket_emetteur = socket(AF_INET, SOCK_DGRAM, 0);
 if (_socket_emetteur < 0) {
 	perror("socket2");
-	exit(-1);
+        throw NetworkError("cannot create socket");
 	}
 
 memset(&_sin_e, sizeof(_sin_e), sizeof(_sin_e));
@@ -200,7 +200,7 @@ SocketMC::sendMC(NetworkMessage *message)
 
     if (cnt < 0) {
 	perror("Send");
-	exit(-1);
+        throw NetworkError("cannot sendto");
     }
 }
 
@@ -216,7 +216,7 @@ SocketMC::receiveMC(NetworkMessage *message)
                    (struct sockaddr *)&_sin, &_sinlen);
     if (cnt < 0) {
 	perror("Recv");
-	exit(1);
+        throw NetworkError("cannot recvfrom");
     }
 
     return(inet_ntoa(_sin.sin_addr));
