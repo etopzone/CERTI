@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.25 2008/06/10 13:41:43 rousse Exp $
+// $Id: DataDistribution.cc,v 3.26 2008/11/02 01:01:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -56,7 +56,7 @@ DataDistribution::DataDistribution(RootObject *root_object,
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-DataDistribution::getRoutingSpaceHandle(std::string name) const 
+DataDistribution::getRoutingSpaceHandle(std::string name) const
 {
     return rootObject->getRoutingSpaceHandle(name);
 }
@@ -111,7 +111,7 @@ SpaceHandle
 DataDistribution::getInteractionSpace(InteractionClassHandle interaction) const
     throw (InteractionClassNotDefined)
 {
-    return rootObject->Interactions->getByHandle(interaction)->getSpace();
+    return rootObject->Interactions->getObjectFromHandle(interaction)->getSpace();
 }
 
 // ----------------------------------------------------------------------------
@@ -124,8 +124,8 @@ DataDistribution::createRegion(SpaceHandle space,
     throw (SpaceNotDefined)
 {
     D[pdDebug] << "Start creating region in space " << space << "..." << endl ;
-    NM_DDM_Create_Region req;    
-    
+    NM_DDM_Create_Region req;
+
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.space = space ;
@@ -165,20 +165,20 @@ DataDistribution::modifyRegion(RegionHandle handle,
 
     // Request to RTIG
     NM_DDM_Modify_Region req;
-        
+
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.region = handle ;
     req.setExtents(extents);
 
     comm->sendMessage(&req);
-    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.federate));    
+    std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.federate));
     e = rep->exception ;
 
     if (e == e_NO_EXCEPTION) {
-	region->replaceExtents(extents);	
+	region->replaceExtents(extents);
 	D[pdDebug] << "Modified region " << handle << endl ;
-    }        
+    }
 } /* end of modifyRegion */
 
 // ----------------------------------------------------------------------------
@@ -227,7 +227,7 @@ DataDistribution::associateRegion(ObjectHandle object,
     rootObject->getObject(object)->unassociate(r);
     for (int i = 0 ; i < nb ; ++i) {
 	D[pdDebug] << "- associate attribute " << attr[i] << std::endl ;
-	rootObject->getObjectAttribute(object, attr[i])->associate(r);	
+	rootObject->getObjectAttribute(object, attr[i])->associate(r);
     }
 
     NM_DDM_Associate_Region req;
@@ -243,7 +243,7 @@ DataDistribution::associateRegion(ObjectHandle object,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.federate));
 
     e = rep->exception ;
-    
+
 } /* end of associateRegion */
 
 // ----------------------------------------------------------------------------
@@ -258,8 +258,8 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     D[pdDebug] << "Register object of class " << class_handle << " with "
 	       << regions.size() << " region(s)." << std::endl ;
 
-    NM_DDM_Register_Object req;    
-    
+    NM_DDM_Register_Object req;
+
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = class_handle ;
@@ -278,12 +278,12 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 	for (int i = 0 ; i < nb ; ++i) {
 	    D[pdDebug] << "Register attribute [" << i << "] Attr: " << attrs[i]
 		       << " Region: " << regions[i] << std::endl ;
-		
+
 	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep->object, attrs[i]);
 	    RTIRegion *region = rootObject->getRegion(regions[i]);
 	    attribute->associate(region);
 	}
-	    return rep->object;	    
+	    return rep->object;
     }
     else return 0 ;
 } /* end of registerObject */
@@ -302,7 +302,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
     rootObject->getObject(object)->unassociate(r);
 
     NM_DDM_Unassociate_Region req;
-    
+
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = object ;
@@ -349,7 +349,7 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 					TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Unsubscribe class " << obj_class 
+    D[pdDebug] << "Unsubscribe class " << obj_class
 	       << " with region " << region << endl ;
     rootObject->getRegion(region);
 
@@ -400,7 +400,7 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
     rootObject->getRegion(region);
 
     NM_DDM_Unsubscribe_Interaction req;
-    
+
     req.interactionClass = int_class ;
     req.region = region ;
 
@@ -413,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.25 2008/06/10 13:41:43 rousse Exp $
+// $Id: DataDistribution.cc,v 3.26 2008/11/02 01:01:53 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.2 2008/11/02 00:26:41 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.3 2008/11/02 01:01:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -32,6 +32,7 @@
 // System headers
 #include <string>
 #include <map>
+#include <iostream>
 
 namespace certi {
 
@@ -74,8 +75,10 @@ public:
 	 */
 	typedef typename ObjectType::ObjectNotDefinedException ObjectNotDefinedException;
 
-	TreeNamedAndHandledSet(bool isRootSet=false);
+	TreeNamedAndHandledSet(std::string setName,bool isRootSet=false);
 	~TreeNamedAndHandledSet();
+
+	std::string getSetName() const {return setName;};
 
 	/**
 	 * Add an object to the set.
@@ -161,16 +164,23 @@ public:
 protected:
 	Handle2ObjectMap_t fromHandle;
 	Name2ObjectMap_t   fromName;
-	/* The "Root" set is owning the object
+	/*
+	 * The "Root" set is owning the object
 	 * and will destroy objects in its destructor.
 	 * Non "Root" set won't destroy anything beside itself.
 	 */
 	bool               isRootSet;
+	/*
+	 * The name of the set.
+	 * Mainly used for displaying the set.
+	 */
+	std::string        setName;
 };
 
 template <typename ObjectType>
-TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(bool isRootSet) {
+TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(std::string setName, bool isRootSet) {
    this->isRootSet = isRootSet;
+   this->setName   = setName;
 } /* end of TreeNamedAndHandledSet (constructor) */
 
 template <typename ObjectType>
@@ -199,7 +209,6 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet() {
 		fromHandle.clear();
 	}
 } /* end of ~TreeNamedAndHandledSet (destructor) */
-
 
 template <typename ObjectType>
 void
@@ -314,6 +323,21 @@ TreeNamedAndHandledSet<ObjectType>::getObjectFromHandle(HandleType handle) const
 		throw ObjectNotDefinedException(msg.str().c_str());
 	}
 } /* end of getObjectFromHandle */
+
+template <typename ObjectType>
+std::ostream& operator<<(std::ostream& os, TreeNamedAndHandledSet<ObjectType> set) {
+	typename TreeNamedAndHandledSet<ObjectType>::const_iterator i;
+	// display the set name
+	os << set.getSetName() << " : "<< std::endl ;
+	// then display the object contained in the set
+	// FIXME currently the display method of ObjectClass
+	// and Interaction is not <iostream> oriented.
+	// will update that later
+	for (i = set.begin(); i != set.end(); ++i) {
+		i->second->display();
+	}
+	return os;
+}
 
 } // namespace certi
 

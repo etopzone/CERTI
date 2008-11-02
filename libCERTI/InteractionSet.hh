@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.21 2008/11/02 00:26:40 erk Exp $
+// $Id: InteractionSet.hh,v 3.22 2008/11/02 01:01:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -50,12 +50,6 @@ public:
 	 * @param[in] theClass the object class to be added
 	 */
 	void addClass(Interaction *theClass);
-
-
-	/**
-	 *  Print the Interactions tree to the standard output.
-	 */
-	void display() const ;
 
 	// --------------------------
 	// -- RTI Support Services --
@@ -89,17 +83,6 @@ public:
 
 	void killFederate(FederateHandle the_federate)
 	throw ();
-
-	/**
-	 *  Return interaction associated to handle.
-	 *  @param[in] the_handle
-	 *  @return the interaction associated to handle
-	 *  @throw InteractionClassNotDefined if the handle does not correspond to
-	 *         any interactrion class
-	 *  @throw RTIinternalError
-	 */
-	Interaction* getByHandle(InteractionClassHandle the_handle) const
-	throw (InteractionClassNotDefined, RTIinternalError);
 
 	// ----------------------------------
 	// -- Interaction Class Management --
@@ -167,4 +150,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.21 2008/11/02 00:26:40 erk Exp $
+// $Id: InteractionSet.hh,v 3.22 2008/11/02 01:01:52 erk Exp $

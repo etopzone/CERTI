@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.27 2008/07/11 14:56:00 approx Exp $
+// $Id: RTIA_network.cc,v 3.28 2008/11/02 01:01:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -95,7 +95,7 @@ NetworkMessage::Type msgType = msg->getType();
       {
           D.Out(pdTrace, "Receving Message from RTIG, "
                 "type NetworkMessage::DISCOVER_OBJECT.");
-          queues->insertFifoMessage(msg);          
+          queues->insertFifoMessage(msg);
       }
       break;
 
@@ -116,7 +116,7 @@ NetworkMessage::Type msgType = msg->getType();
          // At this point of development, we cannot assume this facility and
          // decided to store message as TSO only if all attributes meets TSO
          // criteria. Otherwise, a single message will be enqueue in FIFO.
- 
+
          // Here we have to consider RAV without time
          if ( !msg->isDated())
              {
@@ -124,7 +124,7 @@ NetworkMessage::Type msgType = msg->getType();
              updateOrder = RECEIVE ;
              }
          else
-             {        
+             {
              // Retrieve order type
              updateOrder = TIMESTAMP;
 
@@ -138,12 +138,12 @@ NetworkMessage::Type msgType = msg->getType();
                 }
                }
              }
-         
+
          // Decide which queue will be used
-         if(updateOrder == TIMESTAMP && tm->requestContraintState())    
+         if(updateOrder == TIMESTAMP && tm->requestContraintState())
          {
             // Update is TSO
-            queues->insertTsoMessage(msg); 
+            queues->insertTsoMessage(msg);
          }
          else
          {
@@ -168,12 +168,12 @@ NetworkMessage::Type msgType = msg->getType();
              interactionOrder = RECEIVE ;
              }
          else
-             {      
+             {
              // Retrieve order type
              interactionOrder = rootObject->Interactions->
-                getByHandle(msg->interactionClass)->order;
+                getObjectFromHandle(msg->interactionClass)->order;
              }
-         
+
          // Decide which queue will be used
          if (interactionOrder == TIMESTAMP && tm->requestContraintState())
          {
@@ -199,7 +199,7 @@ NetworkMessage::Type msgType = msg->getType();
               // time + lookahead
               queues->insertTsoMessage(msg);
           }
-          else {	      
+          else {
               queues->insertFifoMessage(msg);
 	  }
 
@@ -352,4 +352,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.27 2008/07/11 14:56:00 approx Exp $
+// $Id: RTIA_network.cc,v 3.28 2008/11/02 01:01:53 erk Exp $

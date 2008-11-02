@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.42 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.43 2008/11/02 01:01:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -47,7 +47,7 @@ static PrettyDebug D("OBJECTCLASSSET", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 ObjectClassSet::ObjectClassSet(SecurityServer *theSecurityServer, bool isRootClassSet)
- : TreeNamedAndHandledSet<ObjectClass>(isRootClassSet)
+ : TreeNamedAndHandledSet<ObjectClass>("Object Classes",isRootClassSet)
 {
     // It can be NULL on the RTIA.
     server = theSecurityServer ;
@@ -156,19 +156,6 @@ ObjectClassSet::deleteObject(FederateHandle federate,
 
     D.Out(pdRegister, "Instance %d has been deleted.", object);
 }
-
-// ----------------------------------------------------------------------------
-//! Print the ObjectClasses tree to the standard output.
-void
-ObjectClassSet::display() const
-{
-    cout << " ObjectClasses :" << endl ;
-
-    handled_const_iterator i;
-    for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
-        i->second->display();
-    }
-} /* end of display */
 
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
@@ -719,4 +706,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.42 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.43 2008/11/02 01:01:53 erk Exp $

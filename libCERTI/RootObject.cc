@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.37 2008/11/01 19:19:35 erk Exp $
+// $Id: RootObject.cc,v 3.38 2008/11/02 01:01:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -78,8 +78,8 @@ void
 RootObject::display() const
 {
     cout << endl << "Root Object Tree :" << endl ;
-    ObjectClasses->display();
-    Interactions->display();
+    cout << ObjectClasses;
+    cout << Interactions;
     if (spaces.size() > 0) {
         cout << "+ Routing Spaces :" << endl ;
 	vector<RoutingSpace>::const_iterator it ;
@@ -325,7 +325,7 @@ RootObject::getObjectClass(ObjectClassHandle class_handle)
 Interaction *
 RootObject::getInteractionClass(InteractionClassHandle the_class)
 {
-    return Interactions->getByHandle(the_class);
+    return Interactions->getObjectFromHandle(the_class);
 }
 // ----------------------------------------------------------------------------
 // requestObjectInstance
@@ -364,4 +364,4 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.37 2008/11/01 19:19:35 erk Exp $
+// $Id: RootObject.cc,v 3.38 2008/11/02 01:01:53 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.26 2008/11/02 00:26:41 erk Exp $
+// $Id: InteractionSet.cc,v 3.27 2008/11/02 01:01:53 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -40,7 +40,7 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 
 InteractionSet::InteractionSet(SecurityServer *security_server, bool isRootClassSet)
-: TreeNamedAndHandledSet<Interaction>(isRootClassSet) {
+: TreeNamedAndHandledSet<Interaction>("Interaction Classes",isRootClassSet) {
     // It can be NULL on the RTIA.
     server = security_server ;
 }
@@ -78,7 +78,7 @@ throw (FederateNotPublishing,
 
 	// It may throw InteractionClassNotDefined.
 	//InteractionClassHandle currentClass = interaction_handle ;
-	Interaction *theInteraction = getByHandle(interaction_handle);
+	Interaction *theInteraction = getObjectFromHandle(interaction_handle);
 
 	InteractionBroadcastList *ibList ;
 	ibList = theInteraction->sendInteraction(federate_handle,
@@ -93,7 +93,7 @@ throw (FederateNotPublishing,
 	if (ibList != NULL) {
 		//currentClass = theInteraction->parent ;
 		//while (CurrentClass != 0) {
-		// theInteraction = getByHandle(CurrentClass);
+		// theInteraction = getObjectFromHandle(CurrentClass);
 		// theInteraction->broadcastInteractionMessage(List);
 		// CurrentClass = theInteraction->Father ;
 		//}
@@ -126,7 +126,7 @@ throw (FederateNotPublishing,
 
 	// It may throw InteractionClassNotDefined.
 	//InteractionClassHandle currentClass = interaction_handle ;
-	Interaction *theInteraction = getByHandle(interaction_handle);
+	Interaction *theInteraction = getObjectFromHandle(interaction_handle);
 
 	InteractionBroadcastList *ibList ;
 	ibList = theInteraction->sendInteraction(federate_handle,
@@ -140,7 +140,7 @@ throw (FederateNotPublishing,
 	if (ibList != NULL) {
 		//currentClass = theInteraction->parent ;
 		//while (CurrentClass != 0) {
-		// theInteraction = getByHandle(CurrentClass);
+		// theInteraction = getObjectFromHandle(CurrentClass);
 		// theInteraction->broadcastInteractionMessage(List);
 		// CurrentClass = theInteraction->Father ;
 		//}
@@ -152,35 +152,6 @@ throw (FederateNotPublishing,
 
 	G.Out(pdGendoc,"exit InteractionSet::broadcastInteraction without time") ;
 } /* end of broadcastInteraction (WITHOUT time) */
-
-void
-InteractionSet::display() const
-{
-	cout << " Interactions :" << endl ;
-	handled_const_iterator i;
-	for (i = handled_begin(); i != handled_end(); ++i) {
-		i->second->display();
-	}
-} /* end of display */
-
-Interaction*
-InteractionSet::getByHandle(InteractionClassHandle the_handle) const
-throw (InteractionClassNotDefined, RTIinternalError)
-{
-	std::stringstream msg;
-
-	handled_const_iterator iter;
-
-	iter = fromHandle.find(the_handle);
-
-	if (iter != fromHandle.end()) {
-		return iter->second;
-	} else {
-		msg << "Unknown Object Class Handle <" << the_handle << ">";
-		D.Out(pdExcept, "Unknown Object Class Handle %d .", the_handle);
-		throw InteractionClassNotDefined(msg.str().c_str());
-	}
-} /* end of getByHandle */
 
 // ----------------------------------------------------------------------------
 //! Return the interaction handle associated to name.
@@ -214,7 +185,7 @@ throw (NameNotFound,
 		throw RTIinternalError("");
 
 	// It may throw InteractionClassNotDefined
-	Interaction *interaction = getByHandle(the_class);
+	Interaction *interaction = getObjectFromHandle(the_class);
 	return interaction->getParameterHandle(the_name);
 		}
 
@@ -228,7 +199,7 @@ throw (InteractionParameterNotDefined,
 		RTIinternalError)
 		{
 	// It may throw InteractionClassNotDefined
-	Interaction *interaction = getByHandle(the_class);
+	Interaction *interaction = getObjectFromHandle(the_class);
 	return interaction->getParameterName(the_handle);
 		}
 
@@ -247,7 +218,7 @@ throw (FederateNotPublishing,
 		RTIinternalError)
 		{
 	// It may throw InteractionClassNotDefined
-	Interaction *interaction = getByHandle(the_interaction);
+	Interaction *interaction = getObjectFromHandle(the_interaction);
 	interaction->isReady(federate_handle, param_array, param_array_size);
 		}
 
@@ -277,7 +248,7 @@ throw (FederateNotPublishing,
 		SecurityError)
 		{
 	// It may throw InteractionClassNotDefined
-	Interaction *interaction = getByHandle(interaction_handle);
+	Interaction *interaction = getObjectFromHandle(interaction_handle);
 	if (publish)
 		interaction->publish(federate_handle);
 	else
@@ -297,7 +268,7 @@ throw (FederateNotSubscribing,
 		SecurityError)
 		{
 	// It may throw InteractionClassNotDefined
-	Interaction *interaction = getByHandle(interaction_handle);
+	Interaction *interaction = getObjectFromHandle(interaction_handle);
 	if (subscribe)
 		interaction->subscribe(federate_handle, region);
 	else
@@ -306,4 +277,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.26 2008/11/02 00:26:41 erk Exp $
+// $Id: InteractionSet.cc,v 3.27 2008/11/02 01:01:53 erk Exp $

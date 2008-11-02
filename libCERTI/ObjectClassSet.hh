@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.33 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.34 2008/11/02 01:01:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -58,8 +58,6 @@ public:
 	 * @param[in] theClass the object class to be added
 	 */
 	void addClass(ObjectClass *theClass) throw (RTIinternalError);
-
-	void display() const ;
 
 	// RTI Support Services
 	AttributeHandle getAttributeHandle(const char *the_name,
@@ -198,4 +196,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.33 2008/11/02 00:02:45 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.34 2008/11/02 01:01:52 erk Exp $
