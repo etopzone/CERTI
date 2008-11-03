@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAvariableArray.hh,v 1.1 2008/08/02 14:03:15 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_VARIABLEARRAY_HH
@@ -211,9 +211,31 @@ struct HLAvariableArray<M, true>
     static const bool m_isVariable = true; // variable-size array of variable-size elements
 };
 
+/* IEEE 1516.2, Table 29:
+ * Array datatype table
+ */
+struct HLAASCIIstring : public HLAvariableArray<HLAASCIIchar>
+{
+    HLAASCIIstring& operator = (const std::string& it)
+    {
+        set_size(it.size());
+        memcpy((char*)this + emptysizeof(), it.data(), it.size());
+
+        return *this;
+    }
+
+    operator std::string() const
+    {
+        return std::string((char*)this + emptysizeof(), size());
+    }
+};
+
+typedef HLAvariableArray<HLAunicodeChar> HLAunicodeString;
+typedef HLAvariableArray<HLAbyte> HLAopaqueData;
+
 } // namespace libhla
 
 #endif // _HLATYPES_VARIABLEARRAY_HH
 
-// $Id: HLAvariableArray.hh,v 1.1 2008/08/02 14:03:15 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 

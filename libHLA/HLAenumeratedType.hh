@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAenumeratedType.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAenumeratedType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_ENUMERATEDTYPE_HH
@@ -86,9 +86,18 @@ struct HLAenumeratedType
     static const bool m_isVariable = false;
 };
 
+/* IEEE 1516.2, Table 27:
+ * Enumerated datatype table
+ */
+enum __HLAboolean {
+    HLAfalse = 0,
+    HLAtrue = 1
+};
+typedef HLAenumeratedType<__HLAboolean, HLAinteger32BE> HLAboolean;
+
 } // namespace libhla
 
 #endif // _HLATYPES_ENUMERATEDTYPE_HH
 
-// $Id: HLAenumeratedType.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAenumeratedType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 

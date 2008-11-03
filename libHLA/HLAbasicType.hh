@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -191,6 +191,13 @@ typedef HLAbasicType<wchar_t, wchar_t, LittleEndian> HLAoctetPairLE;
 
 typedef HLAbasicType<char, char, BigEndian> HLAoctet;
 
+/* IEEE 1516.2, Table 25:
+ * Simple datatype table
+ */
+typedef HLAoctet HLAASCIIchar;
+typedef HLAoctetPairBE HLAunicodeChar;
+typedef HLAoctet HLAbyte;
+
 /* Additional datatypes used by RPR-FOM
  */
 typedef HLAbasicType<unsigned short, uint16_t, BigEndian> Unsignedinteger16BE;
@@ -201,5 +208,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
 
