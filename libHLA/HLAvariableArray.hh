@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAvariableArray.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.3 2008/11/04 14:40:39 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_VARIABLEARRAY_HH
@@ -218,8 +218,12 @@ struct HLAASCIIstring : public HLAvariableArray<HLAASCIIchar>
 {
     HLAASCIIstring& operator = (const std::string& it)
     {
+        __HLAbuffer& buffer = __HLAbuffer::__buffer(this);
+        size_t offset = (char*)this - buffer.mBegin;
+
         set_size(it.size());
-        memcpy((char*)this + emptysizeof(), it.data(), it.size());
+        // note: set_size may have caused realloc()
+        memcpy(buffer.mBegin + offset + emptysizeof(), it.data(), it.size());
 
         return *this;
     }
@@ -237,5 +241,5 @@ typedef HLAvariableArray<HLAbyte> HLAopaqueData;
 
 #endif // _HLATYPES_VARIABLEARRAY_HH
 
-// $Id: HLAvariableArray.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.3 2008/11/04 14:40:39 gotthardp Exp $
 
