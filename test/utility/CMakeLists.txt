@@ -14,3 +14,5 @@ INSTALL(TARGETS CertiUtilTests
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
+
+ADD_TEST(CertiUtilTests CertiUtilTests)

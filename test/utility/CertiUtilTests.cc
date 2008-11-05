@@ -280,6 +280,6 @@ main(int argc, char **argv)
 #endif
 
 	cout << "CERTI Utility Test->END." <<endl;
-getchar();
+    /* getchar(); */
 	return 0;
 }
