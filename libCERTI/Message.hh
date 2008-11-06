@@ -236,6 +236,7 @@ public:
         DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
         TICK_REQUEST,
         TICK_REQUEST_NEXT,
+        TICK_REQUEST_STOP,
 
 	LAST // should be the "last" (not used)
     };

@@ -71,6 +71,7 @@ G.Out(pdGendoc,"enter RTIA::saveAndRestoreStatus");
       case Message::RESIGN_FEDERATION_EXECUTION:
       case Message::TICK_REQUEST:
       case Message::TICK_REQUEST_NEXT:
+      case Message::TICK_REQUEST_STOP:
       case Message::GET_OBJECT_CLASS_HANDLE:
       case Message::GET_OBJECT_CLASS_NAME:
       case Message::GET_ATTRIBUTE_HANDLE:
@@ -1000,6 +1001,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST:
+        // called when tick() is invoked
         if (tm->_tick_state != TimeManagement::NO_TICK)
             throw RTIinternalError("TICK_REQUEST cannot be called recursively");
 
@@ -1019,9 +1021,18 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::TICK_REQUEST_NEXT:
+        // called when tick() queries result, or next callback
         if (tm->_tick_state != TimeManagement::TICK_CALLBACK &&
             tm->_tick_state != TimeManagement::TICK_RETURN)
             throw RTIinternalError("unexpected TICK_REQUEST_NEXT");
+
+        processOngoingTick();
+        break ;
+
+      case Message::TICK_REQUEST_STOP:
+        // called to terminate tick() when error occured
+        // do not invoke any callbacks, reset _tick_state and return
+        tm->_tick_state = TimeManagement::TICK_RETURN;
 
         processOngoingTick();
         break ;
@@ -1495,7 +1506,8 @@ RTIA::processFederateRequest(Message *req)
     delete req;
 
     if (rep.type != Message::TICK_REQUEST &&
-        rep.type != Message::TICK_REQUEST_NEXT) {
+        rep.type != Message::TICK_REQUEST_NEXT &&
+        rep.type != Message::TICK_REQUEST_STOP) {
        // generic federate service acknowledgment
        // the TICK_REQUEST confirmation is generated in processOngoingTick()
        comm->sendUN(&rep);

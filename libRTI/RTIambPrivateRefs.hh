@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.5 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.6 2008/11/06 14:28:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -37,6 +37,8 @@ public:
 
     void processException(Message *);
     void executeService(Message *requete, Message *reponse);
+    void sendTickRequestStop();
+    void callFederateAmbassador(Message *msg) throw (RTIinternalError);
     void leave(const char *msg) throw (RTIinternalError);
 
 	#ifdef _WIN32
@@ -57,4 +59,4 @@ public:
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.5 2008/05/29 12:20:40 rousse Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.6 2008/11/06 14:28:58 gotthardp Exp $

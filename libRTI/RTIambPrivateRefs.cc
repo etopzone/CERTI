@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.14 2008/10/28 12:07:27 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.15 2008/11/06 14:28:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -92,9 +92,42 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
 
     D.Out(pdDebug, "processing returned exception (from reply).");
+    // the services may only throw exceptions defined in the HLA standard
+    // the RTIA is responsible for sending 'allowed' exceptions only
     processException(rep);
+
     D.Out(pdDebug, "exception processed.");
     G.Out(pdGendoc,"exit RTIambPrivateRefs::executeService");
+}
+
+void
+RTIambPrivateRefs::sendTickRequestStop()
+{
+    G.Out(pdGendoc,"enter RTIambPrivateRefs::sendTickRequestStop");
+
+    Message req, rep ;
+    req.type = Message::TICK_REQUEST_STOP;
+
+    try {
+        req.send(socketUn, msgBufSend);
+    }
+    catch (NetworkError) {
+        std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
+        throw RTIinternalError("libRTI: Network Write Error");
+    }
+
+    try {
+        rep.receive(socketUn, msgBufReceive);
+    }
+    catch (NetworkError) {
+        std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
+        throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
+    }
+
+    // ignore the response, ignore exceptions
+    // rep->type == Message::TICK_REQUEST;
+
+    G.Out(pdGendoc,"exit RTIambPrivateRefs::sendTickRequestStop");
 }
 
 // ----------------------------------------------------------------------------
@@ -539,4 +572,329 @@ RTIambPrivateRefs::processException(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.14 2008/10/28 12:07:27 gotthardp Exp $
+#define CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(service) \
+    catch (Exception &e) { \
+        std::stringstream msg; \
+        msg << "Error in " << service << ": " << e._name << "[" << e._reason << "]"; \
+        throw RTIinternalError(msg.str().c_str()); \
+    }
+
+void
+RTIambPrivateRefs::callFederateAmbassador(Message *msg)
+    throw (RTIinternalError)
+{
+    switch (msg->type) {
+
+      case Message::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
+        try {
+            fed_amb->synchronizationPointRegistrationSucceeded((msg->getLabel()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("synchronizationPointRegistrationSucceeded")
+        break ;
+
+      case Message::ANNOUNCE_SYNCHRONIZATION_POINT:
+        try {
+            fed_amb->announceSynchronizationPoint((msg->getLabel()).c_str(),(msg->getTag()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("announceSynchronizationPoint")
+        break ;
+
+      case Message::FEDERATION_SYNCHRONIZED:
+        try {
+            fed_amb->federationSynchronized((msg->getLabel()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("federationSynchronized")
+        break ;
+
+      case Message::INITIATE_FEDERATE_SAVE:
+        try {
+            fed_amb->initiateFederateSave((msg->getLabel()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("initiateFederateSave")
+        break ;
+
+      case Message::FEDERATION_SAVED:
+        try {
+            fed_amb->federationSaved();
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("federationSaved")
+        break ;
+
+      case Message::REQUEST_FEDERATION_RESTORE_SUCCEEDED:
+        try {
+            fed_amb->requestFederationRestoreSucceeded(
+                (msg->getLabel()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("requestFederationRestoreSucceeded")
+        break ;
+
+      case Message::REQUEST_FEDERATION_RESTORE_FAILED:
+        try {
+            fed_amb->requestFederationRestoreFailed((msg->getLabel()).c_str(),
+                                                (msg->getTag()).c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("requestFederationRestoreFailed")
+        break ;
+
+      case Message::FEDERATION_RESTORE_BEGUN:
+        try {
+            fed_amb->federationRestoreBegun();
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("federationRestoreBegun")
+        break ;
+
+      case Message::INITIATE_FEDERATE_RESTORE:
+        try {
+            fed_amb->initiateFederateRestore((msg->getLabel()).c_str(),
+                                         msg->getFederate());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("initiateFederateRestore")
+        break ;
+
+      case Message::FEDERATION_RESTORED:
+        try {
+            fed_amb->federationRestored();
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("federationRestored")
+        break ;
+
+      case Message::FEDERATION_NOT_RESTORED:
+        try {
+            fed_amb->federationNotRestored();
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("federationNotRestored")
+        break ;
+
+      case Message::START_REGISTRATION_FOR_OBJECT_CLASS:
+        try {
+            fed_amb->startRegistrationForObjectClass(
+                msg->getObjectClass());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("startRegistrationForObjectClass")
+        break ;
+
+      case Message::STOP_REGISTRATION_FOR_OBJECT_CLASS:
+        try {
+            fed_amb->stopRegistrationForObjectClass(msg->getObjectClass());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("stopRegistrationForObjectClass")
+        break ;
+
+      case Message::TURN_INTERACTIONS_ON:
+        try {
+            fed_amb->turnInteractionsOn(msg->getInteractionClass());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("turnInteractionsOn")
+        break ;
+
+      case Message::TURN_INTERACTIONS_OFF:
+        try {
+            fed_amb->turnInteractionsOff(msg->getInteractionClass());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("turnInteractionsOff")
+        break ;
+
+      case Message::DISCOVER_OBJECT_INSTANCE:
+        try {
+            fed_amb->discoverObjectInstance(msg->getObject(),
+                                            msg->getObjectClass(),
+                                            msg->getName().c_str());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("discoverObjectInstance")
+        break ;
+
+      case Message::REFLECT_ATTRIBUTE_VALUES:
+        try {
+            G.Out(pdGendoc,"          tick_kernel call to reflectAttributeValues");
+            RTI::AttributeHandleValuePairSet *attributes = msg->getAHVPS();
+            if (msg->getBoolean())
+               fed_amb->reflectAttributeValues(msg->getObject(),
+                                               *attributes,
+                                               msg->getFedTime(),
+                                               (msg->getTag()).c_str(),
+                                               msg->getEventRetraction());
+            else
+               fed_amb->reflectAttributeValues(msg->getObject(),
+                                               *attributes,
+                                               (msg->getTag()).c_str());
+            delete attributes ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("reflectAttributeValues")
+        break ;
+
+      case Message::RECEIVE_INTERACTION:
+        try {
+            RTI::ParameterHandleValuePairSet *parameters = msg->getPHVPS();
+            if (msg->getBoolean())
+                fed_amb->receiveInteraction(
+                                        msg->getInteractionClass(),
+                                        *parameters,
+                                        msg->getFedTime(),
+                                        (msg->getTag()).c_str(),
+                                        msg->getEventRetraction());
+            else
+                fed_amb->receiveInteraction(
+                                        msg->getInteractionClass(),
+                                        *parameters,
+                                        (msg->getTag()).c_str());
+
+            delete parameters ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("receiveInteraction")
+        break ;
+
+      case Message::REMOVE_OBJECT_INSTANCE:
+        try {
+            if (msg->getBoolean()) {
+                fed_amb->removeObjectInstance(
+                                          msg->getObject(),
+                                          msg->getFedTime(),
+                                          (msg->getTag()).c_str(),
+                                          msg->getEventRetraction());
+            }
+            else {
+                fed_amb->removeObjectInstance(
+                                          msg->getObject(),
+                                          (msg->getTag()).c_str());
+            }
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("removeObjectInstance")
+        break ;
+
+      case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->provideAttributeValueUpdate(msg->getObject(),*attributeSet);
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("provideAttributeValueUpdate")
+        break ;
+
+      case Message::REQUEST_RETRACTION: {
+
+      } break ;
+
+      case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->
+                requestAttributeOwnershipAssumption(msg->getObject(),
+                                                    *attributeSet,
+                                                    (msg->getTag()).c_str());
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("requestAttributeOwnershipAssumption")
+        break ;
+
+      case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->requestAttributeOwnershipRelease(
+                msg->getObject(),
+                *attributeSet,
+                (msg->getTag()).c_str());
+
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("requestAttributeOwnershipRelease")
+        break ;
+
+      case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->attributeOwnershipUnavailable(msg->getObject(),
+                                                       *attributeSet);
+
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("attributeOwnershipUnavailable")
+        break ;
+
+      case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->attributeOwnershipAcquisitionNotification(
+                msg->getObject(),
+                *attributeSet);
+
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("attributeOwnershipAcquisitionNotification")
+        break ;
+
+      case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->attributeOwnershipDivestitureNotification(
+                msg->getObject(),
+                *attributeSet);
+
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("attributeOwnershipDivestitureNotification")
+        break ;
+
+      case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
+        try {
+            AttributeHandleSet *attributeSet = msg->getAHS();
+
+            fed_amb->confirmAttributeOwnershipAcquisitionCancellation(
+                msg->getObject(),
+                *attributeSet);
+
+            delete attributeSet ;
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("confirmAttributeOwnershipAcquisitionCancellation")
+        break ;
+
+      case Message::INFORM_ATTRIBUTE_OWNERSHIP: 
+        try {
+            fed_amb->
+                informAttributeOwnership(msg->getObject(),
+                                         msg->getAttribute(),
+                                         msg->getFederate());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("informAttributeOwnership")
+        break ;
+
+      case Message::ATTRIBUTE_IS_NOT_OWNED:
+        try {
+            fed_amb->attributeIsNotOwned(msg->getObject(),
+                                                      msg->getAttribute());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("attributeIsNotOwned")
+        break ;
+
+      case Message::TIME_ADVANCE_GRANT:
+        try {
+            fed_amb->timeAdvanceGrant(msg->getFedTime());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeAdvanceGrant")
+        break ;
+
+      case Message::TIME_REGULATION_ENABLED:
+        try {
+            fed_amb->timeRegulationEnabled(msg->getFedTime());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeRegulationEnabled")
+        break ;
+
+      case Message::TIME_CONSTRAINED_ENABLED:
+        try {
+            fed_amb->timeConstrainedEnabled(msg->getFedTime());
+        }
+        CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeConstrainedEnabled")
+        break ;
+
+      default:
+        leave("RTI service requested by RTI is unknown.");
+    }
+}
+
+// $Id: RTIambPrivateRefs.cc,v 3.15 2008/11/06 14:28:58 gotthardp Exp $
