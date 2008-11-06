@@ -11,13 +11,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.3 2008/11/06 22:21:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
 #define _HLATYPES_BASICTYPE_HH
 
 #include <HLAbuffer.hh>
+#include <cstring>
 
 namespace libhla {
 
@@ -208,5 +209,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.3 2008/11/06 22:21:24 erk Exp $
 
