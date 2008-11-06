@@ -69,10 +69,10 @@ throw (MemoryExhausted)
  * <ul>
  *   <li> \b -v  (optional) verbosity level </li>
  *   <ul>
- *          <li> 0 -> no output <li>
- *          <li> 1 -> small amount <li>
- *          <li> 2 -> show fed parse <li>
- *   <ul>
+ *          <li> 0 -> no output </li>
+ *          <li> 1 -> small amount </li>
+ *          <li> 2 -> show fed parse </li>
+ *   </ul>
  * </ul>
  *
  * @ingroup certi_executable
