@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.7 2008/10/30 10:11:41 erk Exp $
+// $Id: Named.cc,v 3.8 2008/11/08 00:59:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -91,8 +91,16 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 		retval = qualifiedClassName;
 	}
 	return retval;
-}
+} /* end of getNextClassName */
+
+std::string
+Named::getLeafClassName(std::string qualifiedClassName) {
+	size_t idx = 0;
+	/* take the substring from '.' (excluded) until the end */
+	idx    = qualifiedClassName.find_last_of('.');
+	return qualifiedClassName.substr(idx+1);
+} /* end of getLeafClassName */
 
 } // certi
 
-// $Id: Named.cc,v 3.7 2008/10/30 10:11:41 erk Exp $
+// $Id: Named.cc,v 3.8 2008/11/08 00:59:38 erk Exp $

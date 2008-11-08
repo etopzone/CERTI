@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.7 2008/10/30 16:01:38 erk Exp $
+// $Id: Named.hh,v 3.8 2008/11/08 00:59:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -116,6 +116,13 @@ public:
 	 */
 	static std::string getNextClassName(std::string& qualifiedClassName);
 
+	/**
+	 * Get leaf class name component.
+	 * @param[in] qualifiedClassName
+	 * @return the leaf class name
+	 */
+	static std::string getLeafClassName(std::string qualifiedClassName);
+
 	class IsNamed {
 		public:
 			IsNamed(const std::string named) : named(named) {};
@@ -135,4 +142,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.7 2008/10/30 16:01:38 erk Exp $
+// $Id: Named.hh,v 3.8 2008/11/08 00:59:38 erk Exp $
