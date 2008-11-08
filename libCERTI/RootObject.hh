@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.31 2008/10/31 13:50:24 erk Exp $
+// $Id: RootObject.hh,v 3.32 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -160,6 +160,7 @@ public:
      * This is created when parsing the FOM.
      */
     InteractionSet *Interactions;
+
     /**
      * The set of registered object instance.
      */
@@ -182,4 +183,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.31 2008/10/31 13:50:24 erk Exp $
+// $Id: RootObject.hh,v 3.32 2008/11/08 11:08:03 erk Exp $

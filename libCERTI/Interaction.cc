@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.49 2008/11/08 01:11:23 erk Exp $
+// $Id: Interaction.cc,v 3.50 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -70,9 +70,20 @@ Interaction::~Interaction()
 	}
 } /* end of ~Interaction */
 
-void Interaction::addSubclass(Interaction *sc) {
-	subClasses->addClass(sc,NULL);
-}
+void Interaction::addSubClass(Interaction *child) {
+	/* build parent-child relationship */
+	/* add child as subclass of parent */
+	subClasses->addClass(child,NULL);
+	/* link child to parent */
+	child->superClass = handle;
+	/* forward inherited properties to child */
+	/* Add Interaction Class Parameter */
+	addInheritedClassParameter(child);
+    /* security server is the same for child */
+    child->server = server;
+	/* inherit security Level */
+	child->setSecurityLevelId(id);
+} /* end of addChild */
 
 // ----------------------------------------------------------------------------
 //! Used only by CRead, return the new parameter's handle.
@@ -99,10 +110,8 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 	return the_parameter->getHandle();
 } /* end of addParameter */
 
-// ----------------------------------------------------------------------------
-//! Add the class' attributes to the 'Child' Class.
 void
-Interaction::addToChild(Interaction *the_child)
+Interaction::addInheritedClassParameter(Interaction *the_child)
 {
 	// The Parameter List is read backward to respect the same attribute order
 	// for the child (Parameters are inserted at the beginning of the list)
@@ -127,7 +136,7 @@ Interaction::addToChild(Interaction *the_child)
 			;
 		}
 	}
-} /* end of addParameterToChild */
+} /* end of addInheritedClassParameter */
 
 // ----------------------------------------------------------------------------
 /*! Called by the InteractionSet on Parent Classes whose Childrens
@@ -538,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.49 2008/11/08 01:11:23 erk Exp $
+// $Id: Interaction.cc,v 3.50 2008/11/08 11:08:03 erk Exp $

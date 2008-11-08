@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.23 2008/11/08 01:11:23 erk Exp $
+// $Id: InteractionSet.hh,v 3.24 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -57,13 +57,19 @@ public:
 	// --------------------------
 
 	/**
-	 * Return the interaction handle associated to name.
-	 * @param[in] class_name the name of the interaction for whose handle is requested
+	 * Return the interaction class handle corresponding to the provided name.
+	 * @param[in] class_name the name of the interaction whose handle is requested
+	 * @return the interaction class handle
 	 */
 	InteractionClassHandle
 	getInteractionClassHandle(const std::string& class_name) const
 	throw (NameNotFound);
 
+	/**
+	 * Return the interaction class name correspondig to the provided handle.
+	 * @param[in] the_handle the handle of the interaction whose name is requested
+	 * @return the interaction class name
+	 */
 	std::string
 	getInteractionClassName(InteractionClassHandle the_handle) const
 	throw (InteractionClassNotDefined);
@@ -151,4 +157,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.23 2008/11/08 01:11:23 erk Exp $
+// $Id: InteractionSet.hh,v 3.24 2008/11/08 11:08:03 erk Exp $

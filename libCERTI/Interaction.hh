@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.34 2008/11/02 00:26:41 erk Exp $
+// $Id: Interaction.hh,v 3.35 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -43,6 +43,14 @@ namespace certi {
 
 namespace certi {
 
+/**
+ * OMT Interaction class.
+ * It also contains:
+ *  <ul>
+ *    <li> the set of subclasses. </li>
+ *    <li> the instance list from this class. </li>
+ *  </ul>
+ */
 class CERTI_EXPORT Interaction : public Subscribable
 {
 public:
@@ -75,20 +83,17 @@ public:
     InteractionClassHandle getHandle() const { return handle ;}
 
 	/**
-	 * Set the super class (parent class) of this object class;
-	 * @param[in] h the handle of the super class.
-	 */
-	void setSuperclass(InteractionClassHandle h) { superClass = h ; };
-	/**
 	 * Get the super class handle.
 	 * @return the super class handle
 	 */
 	InteractionClassHandle getSuperclass() const { return superClass ; };
+
 	/**
-	 * Add a subclass to this object class.
-	 * @param[in] sc the interaction to add as a sub class
+	 * Add a subclass to this interaction class.
+	 * @param[in] child the interaction to add as a sub class
 	 */
-	void addSubclass(Interaction *sc);
+	void addSubClass(Interaction *child);
+
 	/**
 	 * Retrieve a sub class by its name.
 	 * @param[in] subClassName the name of the subclass
@@ -103,7 +108,7 @@ public:
     ParameterHandle addParameter(Parameter *the_parameter,
                                  bool is_inherited = false);
 
-    void addToChild(Interaction *new_child);
+
     void display() const ;
 
     // -- Security Methods --
@@ -206,6 +211,8 @@ private:
 	 */
 	Interaction();
 
+	void addInheritedClassParameter(Interaction *new_child);
+
     InteractionClassHandle handle ; //!< Interaction class handle.
 
 	/**
@@ -239,4 +246,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.34 2008/11/02 00:26:41 erk Exp $
+// $Id: Interaction.hh,v 3.35 2008/11/08 11:08:03 erk Exp $

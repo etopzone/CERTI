@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.42 2008/11/02 00:26:40 erk Exp $
+// $Id: ObjectClass.hh,v 3.43 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -62,8 +62,13 @@ public:
 	CDiffusion() { size = 0 ; };
 };
 
-/*! OMT object class. It also contains the instance list from this
-  class.
+/**
+ *  OMT object class.
+ * It also contains:
+ *  <ul>
+ *    <li> the set of subclasses. </li>
+ *    <li> the instance list from this class. </li>
+ *  </ul>
  */
 class CERTI_EXPORT ObjectClass : public Named {
 
@@ -99,19 +104,17 @@ public:
 	ObjectClassHandle getHandle() const ;
 
 	/**
-	 * Set the super class (parent class) of this object class;
-	 * @param[in] h the handle of the super class.
-	 */
-	void setSuperclass(ObjectClassHandle h) { superClass = h ; };
-	/**
 	 * Get the super class handle.
 	 * @return the super class handle
 	 */
 	ObjectClassHandle getSuperclass() const { return superClass ; };
+
 	/**
 	 * Add a subclass to this object class.
+	 * @param[in] child the new child object class
 	 */
-	void addSubclass(ObjectClass *);
+	void addSubClass(ObjectClass *child);
+
 	/**
 	 * Retrieve a sub class by its name.
 	 * @param[in] subClassName the name of the subclass
@@ -133,8 +136,6 @@ public:
 
 	AttributeHandle addAttribute(ObjectClassAttribute *the_attribute,
 			bool is_inherited = false);
-
-	void addToChild(ObjectClass *child);
 
 	// Publication and Subscription
 	void publish(FederateHandle theFederateHandle,
@@ -267,6 +268,9 @@ private:
 	 * one should not call it.
 	 */
 	ObjectClass();
+
+	void addInheritedClassAttributes(ObjectClass *child);
+
 	void sendToFederate(NetworkMessage *msg, FederateHandle theFederate);
 
 	void sendToOwners(CDiffusion *diffusionList,
@@ -318,4 +322,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.42 2008/11/02 00:26:40 erk Exp $
+// $Id: ObjectClass.hh,v 3.43 2008/11/08 11:08:03 erk Exp $

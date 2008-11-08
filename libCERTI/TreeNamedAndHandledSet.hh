@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.4 2008/11/08 01:11:23 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.5 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -171,14 +171,7 @@ protected:
 	 */
 	std::string        setName;
 private:
-	/**
-	 * Build inheritance relation between two objects class.
-	 * @param[in,out] child the future child object class
-	 * @param[in,out] parent the parent object class
-	 * @post the child and parent object classes are linked
-	 *       with inheritance relationship.
-	 */
-	void buildParentRelation(ObjectType *child, ObjectType *parent);
+
 };
 
 template <typename ObjectType>
@@ -195,13 +188,8 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet() {
 	 * If we are Root Set (the class set owned by RootObject)
 	 *    we delete the content
 	 * If not we only clear the map in order to avoid double deletion.
-	 *
-	 * FIXME EN: this is a trick because we do not
-	 *           really maintain a tree of ObjectClass in order
-	 *           to support flat object class name
-	 *           ("Boule" instead of "Bille.Boule")
-	 *           We may get rid of this as soon as we want to support
-	 *           same name for object class in different branch of the tree.
+	 * The "Non Root" set are those who are not "owning"
+	 * the stored object.
 	 */
 	if (isRootSet) {
 		while (!fromHandle.empty()) {
@@ -238,7 +226,7 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
 			child->setName(parentName+"."+child->getName());
 		}
 		//std::cout << "Adding child :" << child->getName() << std::endl;
-		buildParentRelation(child,parent);
+		parent->addSubClass(child);
 	}
 
     /*
@@ -262,19 +250,6 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
     /* store ref to new object in Object from Name Map */
     fromName[child->getName()] = child;
 } /* end of add */
-
-template <typename ObjectType>
-void
-TreeNamedAndHandledSet<ObjectType>::buildParentRelation(ObjectType* child, ObjectType* parent) {
-	/* Link the child to its parent */
-    child->setSuperclass(parent->getHandle());
-    /* Declare a new child for the parent */
-    parent->addSubclass(child);
-    /* Security Level of the child is inherited from parent */
-    child->setSecurityLevelId(parent->getSecurityLevelId());
-    /* Add inherited feature from parent to child */
-    parent->addToChild(child);
-} /* end of buildParentRelation */
 
 template <typename ObjectType>
 typename TreeNamedAndHandledSet<ObjectType>::HandleType

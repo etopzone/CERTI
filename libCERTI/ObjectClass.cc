@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.60 2008/11/08 01:11:24 erk Exp $
+// $Id: ObjectClass.cc,v 3.61 2008/11/08 11:08:03 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -84,7 +84,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
 // ----------------------------------------------------------------------------
 //! Add the class' attributes to the 'Child' Class.
 void
-ObjectClass::addToChild(ObjectClass *the_child)
+ObjectClass::addInheritedClassAttributes(ObjectClass *the_child)
 {
     // The Attribute List is read backwards to respect the same attribute order
     // for the child(Attributes are inserted at the beginning of the list).
@@ -105,7 +105,7 @@ ObjectClass::addToChild(ObjectClass *the_child)
         if (childAttribute->getHandle() != (*a)->getHandle())
             throw RTIinternalError("Error while copying child's attributes.");
     }
-}
+} /* end of addInheritedClassAttributes */
 
 // ----------------------------------------------------------------------------
 /*! Take a Broadcast List and continue to send messages. You should
@@ -1766,14 +1766,25 @@ ObjectClass::unsubscribe(FederateHandle fed)
 	    (*i)->unsubscribe(fed);
 	}
     }
-}
+} /* end of unsubscribe */
 
-// ----------------------------------------------------------------------------
 void
-ObjectClass::addSubclass(ObjectClass *c)
-{
-    subClasses->addClass(c,NULL);
-}
+ObjectClass::addSubClass(ObjectClass *child) {
+
+	/* build parent-child relationship */
+	/* add child as subclass of parent */
+    subClasses->addClass(child,NULL);
+    /* link child to parent */
+    child->superClass = handle;
+    /* forward inherited properties to child */
+    /* Add Object Class Attribute */
+    addInheritedClassAttributes(child);
+    /* security server is the same for child */
+    child->server = server;
+    /* inherit security Level */
+    child->setSecurityLevelId(securityLevelId);
+
+} /* end of addChild */
 
 // ----------------------------------------------------------------------------
 /** Recursively start discovery of existing objects.
@@ -1818,4 +1829,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.60 2008/11/08 01:11:24 erk Exp $
+// $Id: ObjectClass.cc,v 3.61 2008/11/08 11:08:03 erk Exp $
