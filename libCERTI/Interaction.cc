@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.48 2008/11/02 00:26:40 erk Exp $
+// $Id: Interaction.cc,v 3.49 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -71,7 +71,7 @@ Interaction::~Interaction()
 } /* end of ~Interaction */
 
 void Interaction::addSubclass(Interaction *sc) {
-	subClasses->addClass(sc);
+	subClasses->addClass(sc,NULL);
 }
 
 // ----------------------------------------------------------------------------
@@ -538,4 +538,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.48 2008/11/02 00:26:40 erk Exp $
+// $Id: Interaction.cc,v 3.49 2008/11/08 01:11:23 erk Exp $

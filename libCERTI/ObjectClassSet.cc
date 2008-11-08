@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.43 2008/11/02 01:01:53 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.44 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -61,12 +61,12 @@ ObjectClassSet::~ObjectClassSet()
 } /* end of ~ObjectClassSet */
 
 void
-ObjectClassSet::addClass(ObjectClass *newClass) throw (RTIinternalError)
+ObjectClassSet::addClass(ObjectClass *newClass,ObjectClass *parentClass) throw (RTIinternalError)
 {
 	D.Out(pdInit, "Adding new object class %d.", newClass->getHandle());
 	/* link to server */
     newClass->server = server ;
-	add(newClass);
+	add(newClass,parentClass);
 
 } /* end of addClass */
 
@@ -256,8 +256,7 @@ ObjectClassSet::getObject(ObjectHandle h) const
 //! getObjectClassHandle.
 ObjectClassHandle
 ObjectClassSet::getObjectClassHandle(std::string class_name) const
-    throw (NameNotFound){
-
+throw (NameNotFound){
 	return getHandleFromName(class_name);
 } /* end of getObjectClassHandle */
 
@@ -706,4 +705,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.43 2008/11/02 01:01:53 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.44 2008/11/08 01:11:23 erk Exp $

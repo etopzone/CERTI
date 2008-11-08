@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.38 2008/11/02 01:01:53 erk Exp $
+// $Id: RootObject.cc,v 3.39 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -341,27 +341,14 @@ RootObject::requestObjectOwner(FederateHandle theFederateHandle, ObjectHandle th
 
 void
 RootObject::addObjectClass(ObjectClass* currentOC,ObjectClass* parentOC) {
-	if (NULL != parentOC) {
-		ObjectClasses->buildParentRelation(currentOC, parentOC);
-	}
-	/*
-	 * FIXME EN we must add the class to object root
-	 * after we did build the parent relation
-	 * this is awkward but we need it for
-	 * the "server" link to be OK
-	 * We need to fix this.
-	 */
-	ObjectClasses->addClass(currentOC);
+	ObjectClasses->addClass(currentOC,parentOC);
 } /* end of addObjectClass */
 
 void
 RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
-	if (NULL!=parentIC) {
-		Interactions->buildParentRelation(currentIC, parentIC);
-	}
-	Interactions->addClass(currentIC);
+	Interactions->addClass(currentIC,parentIC);
 } /* end of addInteractionClass */
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.38 2008/11/02 01:01:53 erk Exp $
+// $Id: RootObject.cc,v 3.39 2008/11/08 01:11:23 erk Exp $

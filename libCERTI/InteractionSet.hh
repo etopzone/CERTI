@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.22 2008/11/02 01:01:52 erk Exp $
+// $Id: InteractionSet.hh,v 3.23 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -48,8 +48,9 @@ public:
 	 * Add an interaction class to the set.
 	 * @pre theClass should be non NULL
 	 * @param[in] theClass the object class to be added
+	 * @param[in] parentClass the parent class (may be NULL)
 	 */
-	void addClass(Interaction *theClass);
+	void addClass(Interaction *theClass, Interaction *parentClass);
 
 	// --------------------------
 	// -- RTI Support Services --
@@ -150,4 +151,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.22 2008/11/02 01:01:52 erk Exp $
+// $Id: InteractionSet.hh,v 3.23 2008/11/08 01:11:23 erk Exp $

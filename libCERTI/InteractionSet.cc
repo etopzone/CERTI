@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.27 2008/11/02 01:01:53 erk Exp $
+// $Id: InteractionSet.cc,v 3.28 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -50,12 +50,12 @@ InteractionSet::~InteractionSet() {
 } /* end of ~InteractionSet */
 
 void
-InteractionSet::addClass(Interaction *newClass) {
+InteractionSet::addClass(Interaction *newClass, Interaction *parentClass) {
 
 	D.Out(pdInit, "Adding new interaction class %d, ", newClass->getHandle());
 	/* link to server */
 	newClass->server = server ;
-	add(newClass);
+	add(newClass,parentClass);
 } /* end of addClass */
 
 // ----------------------------------------------------------------------------
@@ -158,9 +158,7 @@ throw (FederateNotPublishing,
 InteractionClassHandle
 InteractionSet::getInteractionClassHandle(const std::string& class_name) const
 throw (NameNotFound)  {
-
 	return getHandleFromName(class_name);
-
 } /* end of getInteractionClassHandle */
 
 // ----------------------------------------------------------------------------
@@ -169,7 +167,7 @@ std::string
 InteractionSet::getInteractionClassName(InteractionClassHandle the_handle) const
 throw (InteractionClassNotDefined)
 {
-	return getNameFromHandle(the_handle);
+	return getNameFromHandle(+the_handle);
 } /* end of getInteractionClassName */
 
 // ----------------------------------------------------------------------------
@@ -277,4 +275,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.27 2008/11/02 01:01:53 erk Exp $
+// $Id: InteractionSet.cc,v 3.28 2008/11/08 01:11:23 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.59 2008/11/02 00:26:41 erk Exp $
+// $Id: ObjectClass.cc,v 3.60 2008/11/08 01:11:24 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1772,7 +1772,7 @@ ObjectClass::unsubscribe(FederateHandle fed)
 void
 ObjectClass::addSubclass(ObjectClass *c)
 {
-    subClasses->addClass(c);
+    subClasses->addClass(c,NULL);
 }
 
 // ----------------------------------------------------------------------------
@@ -1818,4 +1818,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.59 2008/11/02 00:26:41 erk Exp $
+// $Id: ObjectClass.cc,v 3.60 2008/11/08 01:11:24 erk Exp $

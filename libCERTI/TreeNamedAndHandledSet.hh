@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.3 2008/11/02 01:01:52 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.4 2008/11/08 01:11:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -81,21 +81,16 @@ public:
 	std::string getSetName() const {return setName;};
 
 	/**
-	 * Add an object to the set.
-	 * @param[in] object the object to be added
+	 * Add an object to the set and build parent <--> child relationship.
+	 * @param[in,out] child the object to be added
+	 *                the child will be linked to his parent.
+	 * @param[in,out] parent the parent object of the child
+	 *                the parent will get updated with a link to the
+	 *                new child.
 	 * @throw RTIinternalError the object cannot be stored in the set
 	 *                         may be because of a name collision
 	 */
-	void add(ObjectType *object) throw (RTIinternalError);
-
-	/**
-	 * Build inheritance relation between two objects class.
-	 * @param[in,out] child the future child object class
-	 * @param[in,out] parent the parent object class
-	 * @post the child and parent object classes are linked
-	 *       with inheritance relationship.
-	 */
-	void buildParentRelation(ObjectType *child, ObjectType *parent);
+	void add(ObjectType *child, ObjectType* parent=NULL) throw (RTIinternalError);
 
 	/**
 	 * Get the handle corresponding to the name.
@@ -175,6 +170,15 @@ protected:
 	 * Mainly used for displaying the set.
 	 */
 	std::string        setName;
+private:
+	/**
+	 * Build inheritance relation between two objects class.
+	 * @param[in,out] child the future child object class
+	 * @param[in,out] parent the parent object class
+	 * @post the child and parent object classes are linked
+	 *       with inheritance relationship.
+	 */
+	void buildParentRelation(ObjectType *child, ObjectType *parent);
 };
 
 template <typename ObjectType>
@@ -192,7 +196,7 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet() {
 	 *    we delete the content
 	 * If not we only clear the map in order to avoid double deletion.
 	 *
-	 * FIXME EN: this is a trick in order because we do not
+	 * FIXME EN: this is a trick because we do not
 	 *           really maintain a tree of ObjectClass in order
 	 *           to support flat object class name
 	 *           ("Boule" instead of "Bille.Boule")
@@ -212,10 +216,30 @@ TreeNamedAndHandledSet<ObjectType>::~TreeNamedAndHandledSet() {
 
 template <typename ObjectType>
 void
-TreeNamedAndHandledSet<ObjectType>::add(ObjectType *object)
+TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
 	throw (RTIinternalError) {
 	typename Name2ObjectMap_t::iterator findit;
 	std::stringstream             msg;
+
+	/* build hierarchical name if a parent is given */
+	if (NULL!=parent) {
+		std::string parentName = parent->getName();
+		/*
+		 * Inclusion or exclusion of those prefix is optional
+		 * see IEEE-1516.1-2000 - 10.1.1 Names
+		 * Do not build HLA root name in the hierarchical name
+		 */
+		if (!((parentName=="ObjectRoot") ||
+			  (parentName=="InteractionRoot") ||
+			  (parentName=="HLAobjectRoot") ||
+			  (parentName=="HLAinteractionRoot")
+			  )
+			  ){
+			child->setName(parentName+"."+child->getName());
+		}
+		//std::cout << "Adding child :" << child->getName() << std::endl;
+		buildParentRelation(child,parent);
+	}
 
     /*
      * Check whether addition of this object class
@@ -223,79 +247,88 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *object)
      * i.e. we may not add an object class of the SAME
      * name to the object class set
      */
-    findit = fromName.find(object->getName());
+    findit = fromName.find(child->getName());
     if (findit != fromName.end()) {
     	msg << "Name collision another object class named <"
-    	    << object->getName()
+    	    << child->getName()
     	    << "> with handle <"
     	    << findit->second->getHandle()
     	    << "> was found when trying to add identically named object class with handle <"
-    	    << object->getHandle();
+    	    << child->getHandle();
     	throw RTIinternalError(msg.str().c_str());
     }
     /* store ref to new object in Object from Handle Map */
-    fromHandle[object->getHandle()] = object;
+    fromHandle[child->getHandle()] = child;
     /* store ref to new object in Object from Name Map */
-    fromName[object->getName()] = object;
+    fromName[child->getName()] = child;
 } /* end of add */
 
 template <typename ObjectType>
 void
 TreeNamedAndHandledSet<ObjectType>::buildParentRelation(ObjectType* child, ObjectType* parent) {
+	/* Link the child to its parent */
     child->setSuperclass(parent->getHandle());
-    child->setSecurityLevelId(parent->getSecurityLevelId());
+    /* Declare a new child for the parent */
     parent->addSubclass(child);
+    /* Security Level of the child is inherited from parent */
+    child->setSecurityLevelId(parent->getSecurityLevelId());
+    /* Add inherited feature from parent to child */
     parent->addToChild(child);
-}
+} /* end of buildParentRelation */
 
 template <typename ObjectType>
 typename TreeNamedAndHandledSet<ObjectType>::HandleType
 TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
     throw (NameNotFound) {
 
-    std::string                                currentName;
-    std::string                              remainingName;
-    HandleType                               currentHandle;
-    ObjectType*                              currentObject;
-    TreeNamedAndHandledSet<ObjectType> const*   currentSet;
-	named_const_iterator                              iter;
+	named_const_iterator   findit;
+	std::string            sname;
+	std::string            prefix;
 
-	currentSet    = this;
-	remainingName = name;
-    /*
-     * If the name is qualified (a.k.a. hierarchical name) like "Bille.Boule"
-     * then iterate through subClass in order to reach the leaf "unqualified name"
-     */
-    while (Named::isQualifiedClassName(remainingName)) {
-    	/*
-    	 * The first current should be the name of
-    	 * of a child of the current set
-    	 */
-    	currentName = Named::getNextClassName(remainingName);
-		/*
-		 * Get the handle of the child
-		 * NOTE that we won't recurse more than once here
-		 * since the provided 'currentName' is not qualified 'by design'
-		 * The recursive deepness is at most 2.
-		 */
-		currentHandle = currentSet->getHandleFromName(currentName);
-		/* Get the corresponding object */
-		currentObject = currentSet->getObjectFromHandle(currentHandle);
-		/* now update currentClassSet */
-		currentSet    = currentObject->getSubClasses();
-    }
-
-    /*
-     * Now the current classClassSet should be a leaf
-     * so that we can search in the
-     */
-    iter = currentSet->fromName.find(remainingName);
-
-	if (iter != currentSet->fromName.end()) {
-		return iter->second->getHandle();
-	} else {
-		throw NameNotFound(name.c_str());
+	sname = name;
+	prefix = Named::getNextClassName(sname);
+	/*
+	 * Inclusion or exclusion of those prefix is optional
+	 * see IEEE-1516.1-2000 - 10.1.1 Names
+	 * Do not build HLA root name in the hierarchical name
+	 */
+	if (!((prefix=="ObjectRoot") ||
+		  (prefix=="InteractionRoot") ||
+		  (prefix=="HLAobjectRoot") ||
+		  (prefix=="HLAinteractionRoot")
+	     )
+	   ) {
+		sname = name;
 	}
+	/*
+	 * First try to find the named object
+	 * This should be an efficient binary_search
+	 */
+	findit = fromName.find(sname);
+	std::cout << "Looking for " << sname << std::endl;
+	/* If found return the handle */
+	if (findit != fromName.end()) {
+		return findit->second->getHandle();
+	}
+
+	/*
+	 * If not found then look for shortcut name
+	 * this is a CERTI non-standard behavior
+	 */
+	if (!Named::isQualifiedClassName(sname)) {
+		/* linear search in the whole set */
+		for (findit=fromName.begin(); findit!=fromName.end();++findit) {
+			if (Named::getLeafClassName(findit->first) == sname) {
+				return findit->second->getHandle();
+			}
+			else {
+			std::cout << 	Named::getLeafClassName(findit->first) << "- and -" << sname << " - dot not match" << std::endl;
+			}
+		}
+	}
+
+	/* every search has failed */
+	throw NameNotFound(name.c_str());
 } /* end of getObjectClassHandle */
 
 template <typename ObjectType>
