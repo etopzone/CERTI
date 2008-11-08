@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.6 2007/10/31 10:30:22 erk Exp $
+// $Id: Subscribable.hh,v 3.7 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
@@ -41,7 +41,7 @@ class Subscriber
 public:
     Subscriber(FederateHandle);
     Subscriber(FederateHandle, const RTIRegion *);
-    
+
     FederateHandle getHandle() const ;
     const RTIRegion *getRegion() const ;
     bool equals(FederateHandle, const RTIRegion *) const ;
@@ -54,6 +54,10 @@ protected:
     const RTIRegion *region ; //!< the subscription region
 };
 
+/**
+ * This class is a base class for "subscribable" classes.
+ * That is ObjectClassAttribute and Interaction.
+ */
 class CERTI_EXPORT Subscribable : public Named
 {
 public:
@@ -81,4 +85,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.6 2007/10/31 10:30:22 erk Exp $
+// $Id: Subscribable.hh,v 3.7 2008/11/08 11:36:05 erk Exp $

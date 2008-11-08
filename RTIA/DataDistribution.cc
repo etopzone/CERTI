@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.26 2008/11/02 01:01:53 erk Exp $
+// $Id: DataDistribution.cc,v 3.27 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -100,7 +100,7 @@ DataDistribution::getAttributeSpace(AttributeHandle attribute,
     throw (ObjectClassNotDefined, AttributeNotDefined)
 {
 std::cout<<"DataDistribution::getAttributeSpace"<<std::endl;
-    return rootObject->ObjectClasses->getWithHandle(object_class)->
+    return rootObject->ObjectClasses->getObjectFromHandle(object_class)->
         getAttribute(attribute)->getSpace();
 }
 
@@ -413,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.26 2008/11/02 01:01:53 erk Exp $
+// $Id: DataDistribution.cc,v 3.27 2008/11/08 11:36:05 erk Exp $

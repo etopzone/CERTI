@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.28 2008/11/02 01:01:53 erk Exp $
+// $Id: RTIA_network.cc,v 3.29 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,7 +130,7 @@ NetworkMessage::Type msgType = msg->getType();
 
              for (UShort i=0; i< msg->handleArraySize; ++i)
                {
-                if (rootObject->ObjectClasses->getWithHandle( msg->objectClass)
+                if (rootObject->ObjectClasses->getObjectFromHandle( msg->objectClass)
                     ->getAttribute(msg->handleArray[i])->order != TIMESTAMP)
                 {
                    updateOrder = RECEIVE;
@@ -352,4 +352,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.28 2008/11/02 01:01:53 erk Exp $
+// $Id: RTIA_network.cc,v 3.29 2008/11/08 11:36:05 erk Exp $

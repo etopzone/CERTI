@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.39 2008/11/08 01:11:23 erk Exp $
+// $Id: RootObject.cc,v 3.40 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -317,7 +317,7 @@ RootObject::getObject(ObjectHandle object)
 ObjectClass *
 RootObject::getObjectClass(ObjectClassHandle class_handle)
 {
-    return ObjectClasses->getWithHandle(class_handle);
+    return ObjectClasses->getObjectFromHandle(class_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -351,4 +351,4 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.39 2008/11/08 01:11:23 erk Exp $
+// $Id: RootObject.cc,v 3.40 2008/11/08 11:36:05 erk Exp $

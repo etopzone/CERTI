@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.35 2008/11/08 01:11:23 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.36 2008/11/08 11:36:04 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -73,9 +73,6 @@ public:
 	throw (NameNotFound);
 
 	std::string getObjectClassName(ObjectClassHandle the_handle) const
-	throw (ObjectClassNotDefined);
-
-	ObjectClass *getWithHandle(ObjectClassHandle theHandle) const
 	throw (ObjectClassNotDefined);
 
 	void killFederate(FederateHandle theFederate)
@@ -197,4 +194,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.35 2008/11/08 01:11:23 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.36 2008/11/08 11:36:04 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.61 2008/11/08 11:08:03 erk Exp $
+// $Id: ObjectClass.cc,v 3.62 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -849,33 +849,34 @@ ObjectClass::setSecurityLevelId(SecurityLevelID new_levelID) throw (SecurityErro
  */
 bool
 ObjectClass::subscribe(FederateHandle fed,
-                       std::vector <AttributeHandle> &attributes,
-                       int nb_attributes,
-		       const RTIRegion *region)
-    throw (AttributeNotDefined, RTIinternalError, SecurityError)
+		std::vector <AttributeHandle> &attributes,
+		int nb_attributes,
+		const RTIRegion *region)
+throw (AttributeNotDefined, RTIinternalError, SecurityError)
 {
-    checkFederateAccess(fed, "Subscribe");
+	checkFederateAccess(fed, "Subscribe");
 
-    for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
-        getAttribute(attributes[i]);
+	for (int i = 0 ; i < nb_attributes ; ++i) // Check attributes
+		getAttribute(attributes[i]);
 
-    if (nb_attributes > 0)
-	maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
+	if (nb_attributes > 0)
+		maxSubscriberHandle = std::max(fed, maxSubscriberHandle);
 
-    bool was_subscriber = isSubscribed(fed);
+	bool was_subscriber = isSubscribed(fed);
 
-    unsubscribe(fed, region);
+	// FIXME what does this means?
+	unsubscribe(fed, region);
 
-    D[pdTrace] << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
-	       << ", " << nb_attributes << " attributes, region "
-	       << (region ? region->getHandle() : 0) << std::endl ;
+	D[pdTrace] << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
+	<< ", " << nb_attributes << " attributes, region "
+	<< (region ? region->getHandle() : 0) << std::endl ;
 
-    for (int i = 0 ; i < nb_attributes ; ++i) {
-	getAttribute(attributes[i])->subscribe(fed, region);
-    }
+	for (int i = 0 ; i < nb_attributes ; ++i) {
+		getAttribute(attributes[i])->subscribe(fed, region);
+	}
 
-    return (nb_attributes > 0) && !was_subscriber ;
-}
+	return (nb_attributes > 0) && !was_subscriber ;
+} /* end of subscribe */
 
 // ----------------------------------------------------------------------------
 //! update Attribute Values with time.
@@ -1829,4 +1830,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.61 2008/11/08 11:08:03 erk Exp $
+// $Id: ObjectClass.cc,v 3.62 2008/11/08 11:36:05 erk Exp $

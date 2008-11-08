@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.44 2008/11/08 01:11:23 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.45 2008/11/08 11:36:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -104,7 +104,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
                   current_class, object);
 
             // It may throw ObjectClassNotDefined
-            oclass = getWithHandle(current_class);
+            oclass = getObjectFromHandle(current_class);
             oclass->broadcastClassMessage(ocbList);
 
             current_class = oclass->getSuperclass();
@@ -145,7 +145,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
                   current_class, object);
 
             // It may throw ObjectClassNotDefined
-            oclass = getWithHandle(current_class);
+            oclass = getObjectFromHandle(current_class);
             oclass->broadcastClassMessage(ocbList);
 
             current_class = oclass->getSuperclass();
@@ -176,7 +176,7 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
           the_name, the_class);
 
     // It may throw ObjectClassNotDefined.
-    objectClass = getWithHandle(the_class);
+    objectClass = getObjectFromHandle(the_class);
 
 
     try
@@ -207,7 +207,7 @@ ObjectClassSet::getAttributeName(AttributeHandle the_handle,
           the_handle, the_class);
 
     // It may throw ObjectClassNotDefined.
-    objectClass = getWithHandle(the_class);
+    objectClass = getObjectFromHandle(the_class);
 
     return objectClass->getAttributeName(the_handle);
 }
@@ -271,15 +271,6 @@ ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
 }
 
 // ----------------------------------------------------------------------------
-//! getWithHandle (private method).
-ObjectClass *
-ObjectClassSet::getWithHandle(ObjectClassHandle theHandle) const
-    throw (ObjectClassNotDefined)
-{
-	return getObjectFromHandle(theHandle);
-} /* end of getWithHandle */
-
-// ----------------------------------------------------------------------------
 //! killFederate.
 void ObjectClassSet::killFederate(FederateHandle theFederate)
     throw ()
@@ -307,7 +298,7 @@ void ObjectClassSet::killFederate(FederateHandle theFederate)
                           currentClass);
 
                     // It may throw ObjectClassNotDefined
-                    i->second = getWithHandle(currentClass);
+                    i->second = getObjectFromHandle(currentClass);
 
                     i->second->broadcastClassMessage(ocbList);
 
@@ -335,7 +326,7 @@ ObjectClassSet::publish(FederateHandle theFederateHandle,
            SecurityError)
 {
     // It may throw ObjectClassNotDefined
-    ObjectClass *theClass = getWithHandle(theClassHandle);
+    ObjectClass *theClass = getObjectFromHandle(theClassHandle);
 
     if (PubOrUnpub)
         D.Out(pdInit, "Federate %d attempts to publish Object Class %d.",
@@ -366,7 +357,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
     ObjectClassHandle currentClass = the_class ;
 
     // It may throw ObjectClassNotDefined
-    ObjectClass *theClass = getWithHandle(the_class);
+    ObjectClass *theClass = getObjectFromHandle(the_class);
 
     // It may throw a bunch of exceptions.
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -384,7 +375,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
                   "%d for instance %d.",
                   currentClass, the_object);
             // It may throw ObjectClassNotDefined
-            theClass = getWithHandle(currentClass);
+            theClass = getObjectFromHandle(currentClass);
 
             theClass->broadcastClassMessage(ocbList);
 
@@ -416,7 +407,7 @@ ObjectClassSet::subscribe(FederateHandle federate,
     throw (ObjectClassNotDefined, AttributeNotDefined, RTIinternalError,
            SecurityError)
 {
-    ObjectClass *object_class = getWithHandle(class_handle);
+    ObjectClass *object_class = getObjectFromHandle(class_handle);
 
     bool need_discover = object_class->subscribe(federate, attributes, nb, region);
 
@@ -441,7 +432,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
            InvalidObjectHandle)
 {
     Object *object = getObject(object_handle);
-    ObjectClass *object_class = getWithHandle(object->getClass());
+    ObjectClass *object_class = getObjectFromHandle(object->getClass());
     ObjectClassHandle current_class = object_class->getHandle();
 
     D.Out(pdProtocol, "Federate %d Updating object %d from class %d.",
@@ -461,7 +452,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
               current_class, object_handle);
 
         // It may throw ObjectClassNotDefined
-        object_class = getWithHandle(current_class);
+        object_class = getObjectFromHandle(current_class);
         object_class->broadcastClassMessage(ocbList, object);
 
         current_class = object_class->getSuperclass();
@@ -486,7 +477,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
            InvalidObjectHandle)
 {
     Object *object = getObject(object_handle);
-    ObjectClass *object_class = getWithHandle(object->getClass());
+    ObjectClass *object_class = getObjectFromHandle(object->getClass());
     ObjectClassHandle current_class = object_class->getHandle();
 
     D.Out(pdProtocol, "Federate %d Updating object %d from class %d.",
@@ -506,7 +497,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
               current_class, object_handle);
 
         // It may throw ObjectClassNotDefined
-        object_class = getWithHandle(current_class);
+        object_class = getObjectFromHandle(current_class);
         object_class->broadcastClassMessage(ocbList, object);
 
         current_class = object_class->getSuperclass();
@@ -552,7 +543,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
               currentClass, theObjectHandle);
 
         // It may throw ObjectClassNotDefined
-        objectClass = getWithHandle(currentClass);
+        objectClass = getObjectFromHandle(currentClass);
         objectClass->broadcastClassMessage(ocbList);
 
         currentClass = objectClass->getSuperclass();
@@ -621,7 +612,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
               currentClass, theObjectHandle);
 
         // It may throw ObjectClassNotDefined
-        objectClass = getWithHandle(currentClass);
+        objectClass = getObjectFromHandle(currentClass);
         objectClass->broadcastClassMessage(ocbList);
 
         currentClass = objectClass->getSuperclass();
@@ -705,4 +696,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.44 2008/11/08 01:11:23 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.45 2008/11/08 11:36:05 erk Exp $
