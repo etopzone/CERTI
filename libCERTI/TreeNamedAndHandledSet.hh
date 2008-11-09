@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.5 2008/11/08 11:08:03 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.6 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -175,9 +175,9 @@ private:
 };
 
 template <typename ObjectType>
-TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(std::string setName, bool isRootSet) {
-   this->isRootSet = isRootSet;
-   this->setName   = setName;
+TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(std::string theSetName, bool theIsRootSet) {
+   this->setName   = theSetName;
+   this->isRootSet = theIsRootSet;
 } /* end of TreeNamedAndHandledSet (constructor) */
 
 template <typename ObjectType>

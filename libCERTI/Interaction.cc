@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.50 2008/11/08 11:08:03 erk Exp $
+// $Id: Interaction.cc,v 3.51 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -43,11 +43,11 @@ namespace certi {
 static pdCDebug D("INTERACTION", "(Interact) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
-Interaction::Interaction(const std::string& name, InteractionClassHandle handle, TransportType transport, OrderType order)
-: parent(0), depth(0), transport(transport), order(order), handle(handle),
+Interaction::Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder)
+: parent(0), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
 id(PublicLevelID)
 {
-	setName(name);
+	setName(theName);
 	/*
 	 * The set of interaction subclass has no security server
 	 */
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.50 2008/11/08 11:08:03 erk Exp $
+// $Id: Interaction.cc,v 3.51 2008/11/09 12:41:40 gotthardp Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.99 2008/10/30 10:57:55 erk Exp $
+// $Id: Federation.cc,v 3.100 2008/11/09 12:41:39 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -106,7 +106,7 @@ Federation::Federation(const char *federation_name,
                        SocketServer &socket_server,
                        AuditFile &audit_server,
                        SocketMC *mc_link,
-                       int verboseLevel)
+                       int theVerboseLevel)
 #else
 /** with FEDERATION_USES_MULTICAST not defined
     @param federation_name
@@ -120,13 +120,13 @@ Federation::Federation(const char *federation_name,
                            SocketServer &socket_server,
                            AuditFile &audit_server,
                            const char *FEDid_name,
-                           int verboseLevel)
+                           int theVerboseLevel)
 #endif
     throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
            RTIinternalError)
     : federateHandles(1), objectHandles(1), saveInProgress(false),
       restoreInProgress(false), saveStatus(true), restoreStatus(true),
-      verboseLevel(verboseLevel)
+      verboseLevel(theVerboseLevel)
 
 {
     //    fedparser::FedParser *fed_reader ;
@@ -2316,5 +2316,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.99 2008/10/30 10:57:55 erk Exp $
+// $Id: Federation.cc,v 3.100 2008/11/09 12:41:39 gotthardp Exp $
 

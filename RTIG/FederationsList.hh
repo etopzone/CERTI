@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.46 2008/10/30 10:49:27 erk Exp $
+// $Id: FederationsList.hh,v 3.47 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -570,7 +570,7 @@ public:
 	       FederateNotExecutionMember, SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
-    void setVerboseLevel(int verboseLevel) { this->verboseLevel = verboseLevel ; }
+    void setVerboseLevel(int theVerboseLevel) { this->verboseLevel = theVerboseLevel ; }
 
 private:
     // Private methods
@@ -585,4 +585,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.46 2008/10/30 10:49:27 erk Exp $
+// $Id: FederationsList.hh,v 3.47 2008/11/09 12:41:40 gotthardp Exp $

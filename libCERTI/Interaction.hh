@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.35 2008/11/08 11:08:03 erk Exp $
+// $Id: Interaction.hh,v 3.36 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -70,7 +70,7 @@ public:
 	 * @param[in] transport the transport type
 	 * @param[in] order the receive order type
 	 */
-    Interaction(const std::string& name, InteractionClassHandle handle, TransportType transport, OrderType order);
+    Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder);
     /**
      * Destructor.
      */
@@ -246,4 +246,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.35 2008/11/08 11:08:03 erk Exp $
+// $Id: Interaction.hh,v 3.36 2008/11/09 12:41:40 gotthardp Exp $

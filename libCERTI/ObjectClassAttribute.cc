@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.29 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.30 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -40,9 +40,9 @@ namespace certi {
 
 static pdCDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 
-ObjectClassAttribute::ObjectClassAttribute(const std::string name, TransportType transport, OrderType order)
- : order(order), transport(transport) {
-	setName(name);
+ObjectClassAttribute::ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder)
+ : order(theOrder), transport(theTransport) {
+	setName(theName);
 
 }
 // ----------------------------------------------------------------------------
@@ -214,4 +214,4 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.29 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.30 2008/11/09 12:41:40 gotthardp Exp $

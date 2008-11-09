@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.24 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.25 2008/11/09 12:41:40 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -48,7 +48,7 @@ namespace certi {
 class CERTI_EXPORT ObjectClassAttribute : public Subscribable {
 
 public:
-	ObjectClassAttribute(const std::string name, TransportType transport, OrderType order);
+    ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder);
     ObjectClassAttribute(ObjectClassAttribute *source);
     virtual ~ObjectClassAttribute();
 
@@ -98,4 +98,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.24 2008/10/30 16:01:38 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.25 2008/11/09 12:41:40 gotthardp Exp $
