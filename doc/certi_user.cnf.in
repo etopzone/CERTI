@@ -17,7 +17,7 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project.
 
-PROJECT_NAME           = CERTI_User
+PROJECT_NAME           = CERTI User Documentation
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
@@ -437,7 +437,9 @@ WARN_LOGFILE           =
 INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_user_doc.tree" \
                          "${CMAKE_SOURCE_DIR}/doc/introduction.dox" \
                          "${CMAKE_SOURCE_DIR}/doc/execute.dox" \
+                         "${CMAKE_SOURCE_DIR}/libCERTI/SocketHTTPProxy.cc" \
                          "${CMAKE_SOURCE_DIR}/RTIG/main.cc" \
+                         "${CMAKE_SOURCE_DIR}/RTIG/Federation.cc" \
                          "${CMAKE_SOURCE_DIR}/RTIA/main.cc" 
 
 # If the value of the INPUT tag contains directories, you can use the 

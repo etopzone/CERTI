@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.100 2008/11/09 12:41:39 gotthardp Exp $
+// $Id: Federation.cc,v 3.101 2008/11/10 13:19:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,10 +27,6 @@
 #include <sstream>
 #include <cassert>
 #include <memory>
-
-#ifdef _WIN32
-
-#endif
 
 #include "fed.hh"
 #include "XmlParser.hh"
@@ -88,19 +84,19 @@ namespace rtig {
 static PrettyDebug D("FEDERATION", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
-// ----------------------------------------------------------------------------
-//! Constructor
-/*! Allocates memory the Name's storage, and read its FED file to store the
-  result in RootObj.
-*/
+/**
+ * \defgroup certi_FOM_FileSearch CERTI FOM file search algorithm
+ * RTIG tries to open FOM file from different
+ * predefined places:
+ *
+ * -# bare filename considered as a path provided through FEDid_name
+ * -# getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
+ * -# default (unix) installation place plus FEDid_name
+ *     "/usr/local/share/federation/" + FEDid_name
+ */
+
 #ifdef FEDERATION_USES_MULTICAST
-/** with FEDERATION_USES_MULTICAST defined
-    @param federation_name
-    @param federation_handle
-    @param socket_server
-    @param audit_server
-    @param mc_link
-*/
+
 Federation::Federation(const char *federation_name,
                        FederationHandle federation_handle,
                        SocketServer &socket_server,
@@ -108,13 +104,6 @@ Federation::Federation(const char *federation_name,
                        SocketMC *mc_link,
                        int theVerboseLevel)
 #else
-/** with FEDERATION_USES_MULTICAST not defined
-    @param federation_name
-    @param federation_handle
-    @param socket_server
-    @param audit_server
-    @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
-*/
     Federation::Federation(const char *federation_name,
                            Handle federation_handle,
                            SocketServer &socket_server,
@@ -2316,5 +2305,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.100 2008/11/09 12:41:39 gotthardp Exp $
+// $Id: Federation.cc,v 3.101 2008/11/10 13:19:01 erk Exp $
 

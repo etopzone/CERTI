@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.53 2008/11/09 12:41:39 gotthardp Exp $
+// $Id: Federation.hh,v 3.54 2008/11/10 13:19:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -82,6 +82,16 @@ private:
     // METHODS -----------------------------------------------------------------
 public:
 #ifdef FEDERATION_USES_MULTICAST
+	/**
+	 * Allocates memory the Name's storage, and read its FED file to store the
+	 * result in RootObj.
+	 *   (with FEDERATION_USES_MULTICAST defined).
+	 *  @param federation_name
+	 *  @param federation_handle
+	 *  @param socket_server
+	 *  @param audit_server
+	 *  @param mc_link
+	 */
     Federation(const char *,
                FederationHandle,
                SocketServer &,
@@ -89,6 +99,16 @@ public:
                SocketMC*,
                int theVerboseLevel)
 #else
+               /**
+                * Allocates memory the Name's storage, and read its FED file to store the
+                * result in RootObj.
+                * with FEDERATION_USES_MULTICAST not defined
+                * @param federation_name
+                * @param federation_handle
+                * @param socket_server
+                * @param audit_server
+                * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
+                */
         Federation(const char *, Handle, SocketServer &, AuditFile &, const char *, int theVerboseLevel)
 #endif
         throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
@@ -598,4 +618,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.53 2008/11/09 12:41:39 gotthardp Exp $
+// $Id: Federation.hh,v 3.54 2008/11/10 13:19:01 erk Exp $

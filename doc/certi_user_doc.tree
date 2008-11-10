@@ -28,14 +28,14 @@
  * \image html "certi.png"
  * <h1>User Documentation</h1>
  *
- * This is the CERTI installation documentation.
- * The installation documentation is divided into several part:
+ * This is the CERTI user documentation.
+ * The user documentation is divided into several part:
  * 
  * <ul>
  *  <li>\ref intro</li>
- *  <li>\ref user</li>
+ *  <li>\ref execute</li>
  * </ul> 
  *
  */
 
-// $Id: certi_user_doc.tree,v 3.4 2008/10/19 21:44:24 gotthardp Exp $
+// $Id: certi_user_doc.tree,v 3.5 2008/11/10 13:19:00 erk Exp $

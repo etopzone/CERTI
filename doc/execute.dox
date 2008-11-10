@@ -25,9 +25,16 @@
  *   }
  * \enddot
  *
- * TODO: How to execute simulation: (0) configure PATH, (1) store .fed file, (2) run rtig,
- * (3) configure HOST/PORT/PROXY, (3) run federations, rtia is started automatically.
- *
+ * \subsection certi_user_execute
+ * If ones want to properly execute an HLA simulation using CERTI one must:
+ * (FIXME more detail to come).
+ * <ol> 
+ *  <li> configure PATH </li>
+ *  <li> store .fed (or .xml) FOM file in the search path of the rtig \see certi_FOM_FileSearch</li>
+ *  <li> run rtig, \see certi_executable_RTIG </li>
+ *  <li> configure HOST/PORT/PROXY, </li>
+ *  <li> run federations, rtia is started automatically. </li>
+ * </ol>
  * \subsection certi_user_env CERTI environment variables
  * 
  * CERTI uses a set of environment variables which may influence its 
@@ -38,7 +45,16 @@
  * <td><b>Variable</b></td><td><b>Used by</b></td><td><b>Description</b></td>
  * </tr>
  * <tr>
- * <td>CERTI_HOST</td> <td>RTIA</td><td>machine on which RTIG is running</td>
+ * <td>CERTI_HOME</td> <td>RTIG</td><td>the CERTI installation base directory.
+ *                                      This is used by the RTIG in order
+ *                                      to look for FOM files 
+ *                                      (see \ref certi_executable_RTIG).</td>
+ * </tr>
+ * <tr>
+ * <td>CERTI_HOST</td> <td>RTIA</td><td>machine on which RTIG is running. 
+ *                                      As soon as it starts the RTIA will try to connect 
+ *                                      to the RTIG running on CERTI_HOST 
+ *                                      (see \ref certi_executable_RTIA).</td>
  * </tr>
  * <tr>
  * <td>CERTI_TCP_PORT</td> <td>RTIG, RTIA</td> <td>TCP port used for RTIA/RTIG communications</td>
@@ -77,4 +93,4 @@
  * \image latex "billiard.png" "Billard consoleshot" width=12cm
  */
 
-// $Id: execute.dox,v 3.3 2008/10/27 10:26:50 erk Exp $
+// $Id: execute.dox,v 3.4 2008/11/10 13:19:00 erk Exp $

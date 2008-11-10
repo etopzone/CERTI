@@ -62,8 +62,9 @@ throw (MemoryExhausted)
  *
  * The CERTI RunTime Infrastructure Gateway (RTIG) is a process which
  * coordinate the HLA simulation with CERTI, there should be at least
- * one rtig process for each federation. However a single rtig may
- * be used for several federation.
+ * one rtig process for each federation. However a single RTIG may
+ * be used for several federations.
+ * The command line usage of the RTIG is following:
  * \par rtig [-v 2]
  * \par
  * <ul>
@@ -75,6 +76,19 @@ throw (MemoryExhausted)
  *   </ul>
  * </ul>
  *
+ * Once the RTIG is launched an HLA Federate may interact with the RTI.
+ * In fact a federate does not talk to the RTIG directly but it uses
+ * its \ref certi_executable_RTIA.
+ * RTIG is listening to \ref certi_executable_RTIA connection on TCP port:
+ *    <ol>
+ *      <li> 60400 or, </li>
+ *      <li> the value of environment variable CERTI_TCP_PORT if it is defined</li>
+ *    </ol>
+ * The RTIG exchange messages with the \ref certi_executable_RTIA in order
+ * to satify HLA request coming from the Federate.
+ * In particular RTIG is responsible for giving to the Federate (through its RTIA)
+ * the FOM file needed to create or join the federation.
+ * \copydoc certi_FOM_FileSearch
  * @ingroup certi_executable
  */
 int main(int argc, char *argv[])
