@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.3 2008/11/14 23:24:16 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.4 2008/11/14 23:28:09 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -36,6 +36,7 @@ typedef __int8            int8_t;
 #endif
 
 #if defined(_WIN32)
+    #pragma warning(disable: 4251)
     #if defined(HLA_EXPORTS)
         #define HLA_EXPORT __declspec(dllexport)
     #else
@@ -164,5 +165,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.3 2008/11/14 23:24:16 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.4 2008/11/14 23:28:09 gotthardp Exp $
 
