@@ -16,9 +16,13 @@ SET(CVS_DIFF_ARGS "diff -u")
 MESSAGE(STATUS "CVS Patch:: Generating patch using CVS...")
 MESSAGE(STATUS "CVS Patch:: Using command     : ${CVS_COMMAND} ${CVS_DIFF_ARGS}")
 MESSAGE(STATUS "CVS Patch:: Rooted at Workdir : ${WDIR}")
-EXECUTE_PROCESS(COMMAND ${CVS_COMMAND} ${CVS_DIFF_ARGS}
+EXECUTE_PROCESS(COMMAND ${CVS_COMMAND} diff -u
                 OUTPUT_FILE ${ODIR}/patch.diff
                 RESULT_VARIABLE PATCHOK
                 WORKING_DIRECTORY ${WDIR}
-                ERROR_QUIET)               
-MESSAGE(STATUS "CVS Patch:: Patch file is : ${ODIR}/patch.diff")              
+                ERROR_QUIET)              
+IF(PATCHOK)                
+    MESSAGE(STATUS "CVS Patch:: Patch file is : ${ODIR}/patch.diff")
+ELSE(PATCHOK)   
+    MESSAGE(SEND_ERROR "CVS Patch:: FAILED")
+ENDIF(PATCHOK)          
