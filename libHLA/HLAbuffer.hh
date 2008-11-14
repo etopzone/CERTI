@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.2 2008/09/29 21:05:20 erk Exp $
+// $Id: HLAbuffer.hh,v 1.3 2008/11/14 23:24:16 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -35,6 +35,16 @@ typedef __int8            int8_t;
 #include <stdint.h>
 #endif
 
+#if defined(_WIN32)
+    #if defined(HLA_EXPORTS)
+        #define HLA_EXPORT __declspec(dllexport)
+    #else
+        #define HLA_EXPORT __declspec(dllimport)
+    #endif
+#else
+    #define HLA_EXPORT
+#endif
+
 namespace libhla {
 
 std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t length);
@@ -45,7 +55,7 @@ std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t le
  * All structures must have no virtual functions and no non-static members.
  */
 
-class __HLAbuffer
+class HLA_EXPORT __HLAbuffer
 {
 private:
     // static buffer for all instantiations of the HLAdata template
@@ -154,5 +164,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.2 2008/09/29 21:05:20 erk Exp $
+// $Id: HLAbuffer.hh,v 1.3 2008/11/14 23:24:16 gotthardp Exp $
 
