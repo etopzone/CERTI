@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.6 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.7 2008/11/14 23:07:57 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -60,7 +60,7 @@ namespace certi {
  * from handle to name and name to handle.
  */
 template<typename ObjectType>
-class CERTI_EXPORT TreeNamedAndHandledSet
+class TreeNamedAndHandledSet
 {
 
 public:
