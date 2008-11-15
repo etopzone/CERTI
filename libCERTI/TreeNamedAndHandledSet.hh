@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.7 2008/11/14 23:07:57 gotthardp Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.8 2008/11/15 14:54:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -280,7 +280,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
 	 * This should be an efficient binary_search
 	 */
 	findit = fromName.find(sname);
-	std::cout << "Looking for " << sname << std::endl;
+	//std::cout << "Looking for " << sname << std::endl;
 	/* If found return the handle */
 	if (findit != fromName.end()) {
 		return findit->second->getHandle();
@@ -297,7 +297,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
 				return findit->second->getHandle();
 			}
 			else {
-			std::cout << 	Named::getLeafClassName(findit->first) << "- and -" << sname << " - dot not match" << std::endl;
+			//std::cout << Named::getLeafClassName(findit->first) << "- and -" << sname << " - do not match" << std::endl;
 			}
 		}
 	}
