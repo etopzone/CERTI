@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: TestHLAtypes.cc,v 1.2 2008/11/18 16:39:02 gotthardp Exp $
+// $Id: TestHLAtypes.cc,v 1.3 2008/11/18 17:38:59 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <memory>
@@ -186,12 +186,10 @@ int main(int argc, char* argv[])
     int result = 0;
 
     std::cerr << "Host byte-order: "
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-        << "__LITTLE_ENDIAN" << std::endl;
-#elif __BYTE_ORDER == __BIG_ENDIAN
-        << "__BIG_ENDIAN" << std::endl;
+#ifdef HOST_IS_BIG_ENDIAN
+        << "big-endian" << std::endl;
 #else
-        << "(unknown)" << std::endl;
+        << "little-endian" << std::endl;
 #endif
 
     result += test1();
@@ -203,4 +201,4 @@ int main(int argc, char* argv[])
     return result;
 }
 
-// $Id: TestHLAtypes.cc,v 1.2 2008/11/18 16:39:02 gotthardp Exp $
+// $Id: TestHLAtypes.cc,v 1.3 2008/11/18 17:38:59 gotthardp Exp $

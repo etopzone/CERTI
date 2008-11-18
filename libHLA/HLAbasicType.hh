@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.3 2008/11/06 22:21:24 erk Exp $
+// $Id: HLAbasicType.hh,v 1.4 2008/11/18 17:38:59 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -49,12 +49,10 @@ template<class T>
 struct LittleEndian
 {
     inline const T operator()(const T& x) const {
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-        return x;
-#elif __BYTE_ORDER == __BIG_ENDIAN
+#ifdef HOST_IS_BIG_ENDIAN
         return __swap<T>()( x );
 #else
-#error Undefined __BYTE_ORDER
+        return x;
 #endif
     }
 };
@@ -64,10 +62,10 @@ template<class T>
 struct BigEndian
 {
     inline const T operator()(const T& x) const {
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-        return __swap<T>()( x );
-#elif __BYTE_ORDER == __BIG_ENDIAN
+#ifdef HOST_IS_BIG_ENDIAN
         return x;
+#else
+        return __swap<T>()( x );
 #endif
     }
 };
@@ -209,5 +207,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.3 2008/11/06 22:21:24 erk Exp $
+// $Id: HLAbasicType.hh,v 1.4 2008/11/18 17:38:59 gotthardp Exp $
 
