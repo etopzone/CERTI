@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.4 2008/11/14 23:28:09 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.5 2008/11/18 10:21:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -20,7 +20,7 @@
 #include <iostream>
 #include <map>
 #include <stdexcept>
-#include <malloc.h>
+#include <cstdlib>
 
 #ifdef _MSC_VER
 typedef unsigned __int64  uint64_t;
@@ -165,5 +165,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.4 2008/11/14 23:28:09 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.5 2008/11/18 10:21:34 erk Exp $
 
