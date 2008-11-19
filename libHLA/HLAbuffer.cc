@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.cc,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAbuffer.cc,v 1.2 2008/11/19 10:25:03 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "HLAbuffer.hh"
@@ -23,6 +23,26 @@
 namespace libhla {
 
 __HLAbuffer::BufferList __HLAbuffer::gBuffers;
+
+const bool
+__HLAbuffer::__is_big_endian()
+{
+#ifdef HOST_IS_BIG_ENDIAN 
+    return true;
+#else 
+    return false;
+#endif 
+}
+
+const bool
+__HLAbuffer::__is_little_endian()
+{
+#ifdef HOST_IS_BIG_ENDIAN 
+    return false;
+#else 
+    return true;
+#endif 
+}
 
 //! Print the physical data buffer (for debugging purposes only)
 std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t length)
@@ -62,5 +82,5 @@ std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t le
 
 } // namespace libhla
 
-// $Id: HLAbuffer.cc,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAbuffer.cc,v 1.2 2008/11/19 10:25:03 gotthardp Exp $
 

@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.5 2008/11/18 10:21:34 erk Exp $
+// $Id: HLAbuffer.hh,v 1.6 2008/11/19 10:25:05 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -64,6 +64,21 @@ private:
     typedef std::map<char*,__HLAbuffer*> BufferList;
     static BufferList gBuffers;
 
+    // used to verify that user set correct endianess
+    static const bool __is_big_endian();
+    static const bool __is_little_endian();
+
+    void __assert_endianess()
+    {
+#ifdef HOST_IS_BIG_ENDIAN
+        if (!__is_big_endian())
+            throw std::runtime_error("compile without -DHOST_IS_BIG_ENDIAN");
+#else
+        if (!__is_little_endian())
+            throw std::runtime_error("compile with -DHOST_IS_BIG_ENDIAN");
+#endif
+    }
+
 public:
     char *mBegin;
     size_t mCapacity;
@@ -76,6 +91,7 @@ public:
     __HLAbuffer(size_t capacity)
      : mUserAllocated(false), mShakeThat(NULL)
     {
+        __assert_endianess();
         // exponential growth: capacity *= 1.5
         mCapacity = (size_t)(capacity*1.5);
         mBegin = (char*)calloc(1, mCapacity);
@@ -86,6 +102,7 @@ public:
     __HLAbuffer(void *begin, size_t capacity)
       : mBegin((char*)begin), mCapacity(capacity), mUserAllocated(true), mShakeThat(NULL)
     {
+        __assert_endianess();
         // store "this" to a global table
         gBuffers[mBegin + mCapacity] = this;
     }
@@ -165,5 +182,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.5 2008/11/18 10:21:34 erk Exp $
+// $Id: HLAbuffer.hh,v 1.6 2008/11/19 10:25:05 gotthardp Exp $
 
