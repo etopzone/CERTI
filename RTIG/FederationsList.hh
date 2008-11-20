@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.47 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: FederationsList.hh,v 3.48 2008/11/20 18:21:56 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -164,6 +164,70 @@ public:
         throw (FederationExecutionDoesNotExist,
                FederateOwnsAttributes,
                FederateNotExecutionMember,
+               RTIinternalError);
+
+    void setClassRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void unsetClassRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+    
+    void setInteractionRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void unsetInteractionRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void setAttributeRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void unsetAttributeRelevanceAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void setAttributeScopeAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError);
+
+    void unsetAttributeScopeAdvisorySwitch(Handle theHandle,
+                        FederateHandle theFederateHandle)
+        throw (FederationExecutionDoesNotExist,
+               FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
                RTIinternalError);
 
     void killFederate(Handle, FederateHandle)
@@ -585,4 +649,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.47 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: FederationsList.hh,v 3.48 2008/11/20 18:21:56 approx Exp $

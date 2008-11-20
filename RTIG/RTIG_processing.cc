@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.78 2008/10/13 10:06:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.79 2008/11/20 18:21:56 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -392,6 +392,126 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 }
 
 // ----------------------------------------------------------------------------
+//! Set federate's class relevance advisroy switch
+void
+RTIG::processSetClassRelevanceAdvisorySwitch(Socket *link, 
+			     NM_Set_Class_Relevance_Advisory_Switch *msg)
+{
+  NM_Set_Class_Relevance_Advisory_Switch rep;
+
+  G.Out(pdGendoc,"enter RTIG::processSetClassRelevanceAdvisorySwitch");
+  G.Out(pdGendoc,"BEGIN ** SET CLASS RELEVANCE ADVISORY SWITCH **");
+
+  if (msg->getClassRelevanceAdvisorySwitch()) {
+        auditServer << "ON";
+	federations.setClassRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u sets AttributeRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+  else {
+        auditServer << "OFF";
+	federations.unsetClassRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u clears AttributeRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+
+  rep.send(link,NM_msgBufSend);
+
+  G.Out(pdGendoc,"END ** SET CLASS RELEVANCE ADVISORY SWITCH **");
+  G.Out(pdGendoc,"exit RTIG::processSetClassRelevanceAdvisorySwitch");
+}
+
+// ----------------------------------------------------------------------------
+//! Set federate's interaction relevance advisroy switch
+void
+RTIG::processSetInteractionRelevanceAdvisorySwitch(Socket *link,
+			     NM_Set_Interaction_Relevance_Advisory_Switch *msg)
+{
+  NM_Set_Interaction_Relevance_Advisory_Switch rep;
+
+  G.Out(pdGendoc,"enter RTIG::processSetInteractionRelevanceAdvisorySwitch");
+  G.Out(pdGendoc,"BEGIN ** SET INTERACTION RELEVANCE ADVISORY SWITCH **");
+
+  if (msg->getInteractionRelevanceAdvisorySwitch()) {
+        auditServer << "ON";
+	federations.setInteractionRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u sets InteractionRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+  else {
+        auditServer << "OFF";
+	federations.unsetInteractionRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u clears InteractionRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+
+  rep.send(link,NM_msgBufSend);
+
+  G.Out(pdGendoc,"END ** SET INTERACTION RELEVANCE ADVISORY SWITCH **");
+  G.Out(pdGendoc,"exit RTIG::processSetInteractionRelevanceAdvisorySwitch");
+}
+
+// ----------------------------------------------------------------------------
+//! Set federate's attribute relevance advisroy switch
+void
+RTIG::processSetAttributeRelevanceAdvisorySwitch(Socket *link, 
+			     NM_Set_Attribute_Relevance_Advisory_Switch *msg)
+{
+  NM_Set_Attribute_Relevance_Advisory_Switch rep;
+
+  G.Out(pdGendoc,"enter RTIG::processSetAttributeRelevanceAdvisorySwitch");
+  G.Out(pdGendoc,"BEGIN ** SET ATTRIBUTE RELEVANCE ADVISORY SWITCH **");
+
+  if (msg->getAttributeRelevanceAdvisorySwitch()) {
+        auditServer << "ON";
+	federations.setAttributeRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u sets AttributeRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+  else {
+        auditServer << "OFF";
+	federations.unsetAttributeRelevanceAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u clears AttributeRelevanceAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+
+  rep.send(link,NM_msgBufSend);
+
+  G.Out(pdGendoc,"END ** SET ATTRIBUTE RELEVANCE ADVISORY SWITCH **");
+  G.Out(pdGendoc,"exit RTIG::processSetAttributeRelevanceAdvisorySwitch");
+}
+
+// ----------------------------------------------------------------------------
+//! Set federate's attribute scope advisroy switch
+void
+RTIG::processSetAttributeScopeAdvisorySwitch(Socket *link,
+			     NM_Set_Attribute_Scope_Advisory_Switch *msg)
+{
+  NM_Set_Attribute_Scope_Advisory_Switch rep;
+
+  G.Out(pdGendoc,"enter RTIG::processSetAttributeScopeAdvisorySwitch");
+  G.Out(pdGendoc,"BEGIN ** SET ATTRIBUTE SCOPE ADVISORY SWITCH **");
+
+  if (msg->getAttributeScopeAdvisorySwitch()) {
+        auditServer << "ON";
+	federations.setAttributeScopeAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u sets AttributeScopeAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+  else {
+        auditServer << "OFF";
+	federations.unsetAttributeScopeAdvisorySwitch(msg->federation, msg->federate);
+        D.Out(pdTerm, "Federate %u of Federation %u clears AttributeScopeAdvisorySwitch.",
+              msg->federate, msg->federation);
+  }
+
+  rep.send(link,NM_msgBufSend);
+
+  G.Out(pdGendoc,"END ** SET ATTRIBUTE SCOPE ADVISORY SWITCH **");
+  G.Out(pdGendoc,"exit RTIG::processSetAttributeScopeAdvisorySwitch");
+}
+
+// ----------------------------------------------------------------------------
 //! Put federate as time regulating.
 void
 RTIG::processSetTimeRegulating(Socket *link, NM_Set_Time_Regulating *msg)
@@ -693,6 +813,9 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 				req->objectClass,
 				sub ? req->handleArray : arrayVide,
 				sub ? req->handleArraySize : 0);
+
+    /* here we want a callback -> inform publisher(s) of objectclass
+     * with startRegistrationForObjectClass */
 
     D.Out(pdRegister,
           "Federate %u of Federation %u subscribed to object class %d.",
@@ -1433,4 +1556,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.78 2008/10/13 10:06:47 erk Exp $
+// $Id: RTIG_processing.cc,v 3.79 2008/11/20 18:21:56 approx Exp $

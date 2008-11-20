@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.22 2008/07/10 20:20:04 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.23 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -447,10 +447,24 @@ DeclarationManagement::
 setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
     G.Out(pdGendoc,"enter DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
 
+    NM_Set_Interaction_Relevance_Advisory_Switch msg ;
+
+    e = e_NO_EXCEPTION ;
+
+    msg.federation = fm->_numero_federation ;
+    msg.federate = fm->federate ;
+
+    if (state) {
+        msg.interactionRelevanceAdvisorySwitchOn();
+    }
+    else {
+        msg.interactionRelevanceAdvisorySwitchOff();
+    }
+
+    comm->sendMessage(&msg);
+
     G.Out(pdGendoc,"exit DeclarationManagement::setInteractionRelevanceAdvisorySwitch");
 }
-
-/* further refinement required, see OM.cc e.g. attributesInScope */
 
 // ----------------------------------------------------------------------------
 // turnInteractionsOn
@@ -499,4 +513,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.22 2008/07/10 20:20:04 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.23 2008/11/20 18:21:55 approx Exp $

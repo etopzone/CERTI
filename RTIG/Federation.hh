@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.54 2008/11/10 13:19:01 erk Exp $
+// $Id: Federation.hh,v 3.55 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -583,6 +583,55 @@ public:
 	       SaveInProgress, RestoreInProgress,
 	       RTIinternalError);
 
+    // switches
+    void setClassRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void unsetClassRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void setInteractionRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void unsetInteractionRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void setAttributeRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void unsetAttributeRelevanceAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void setAttributeScopeAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
+    void unsetAttributeScopeAdvisorySwitch(FederateHandle theHandle)
+        throw (FederateNotExecutionMember,
+               SaveInProgress,
+               RestoreInProgress,
+               RTIinternalError); 
+
 private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
@@ -618,4 +667,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.54 2008/11/10 13:19:01 erk Exp $
+// $Id: Federation.hh,v 3.55 2008/11/20 18:21:55 approx Exp $

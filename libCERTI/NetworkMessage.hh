@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.43 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: NetworkMessage.hh,v 3.44 2008/11/20 18:21:56 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -140,6 +140,9 @@ public:
 		PROVIDE_ATTRIBUTE_VALUE_UPDATE,
 		GET_FED_FILE,
 		SET_CLASS_RELEVANCE_ADVISORY_SWITCH,
+		SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
+		SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH,
+		SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
 		LAST		
 	} Message_T;	
 
@@ -345,4 +348,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.43 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: NetworkMessage.hh,v 3.44 2008/11/20 18:21:56 approx Exp $

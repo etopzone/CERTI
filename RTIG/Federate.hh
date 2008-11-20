@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.11 2005/04/13 12:04:01 breholee Exp $
+// $Id: Federate.hh,v 3.12 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
@@ -46,6 +46,16 @@ public:
     void setConstrained(bool c) { constrained = c ; };
     void setRegulator(bool r) { regulator = r ; };
 
+    void setClassRelevanceAdvisorySwitch(bool val) { cras = val ; };
+    void setInteractionRelevanceAdvisorySwitch(bool val) { iras = val ; };
+    void setAttributeRelevanceAdvisorySwitch(bool val) { aras = val ; };
+    void setAttributeScopeAdvisorySwitch(bool val) { asas = val ; };
+
+    bool isClassRelevanceAdvisorySwitch() const { return cras ; };
+    bool isInteractionRelevanceAdvisorySwitch() const { return iras ; };
+    bool isAttributeRelevanceAdvisorySwitch() const { return aras ; };
+    bool isAttributeScopeAdvisorySwitch() const { return asas ; };
+
     bool isSaving() const { return saving ; };
     bool isRestoring() const { return restoring ; };
     void setSaving(bool s) { saving = s ; };
@@ -64,6 +74,11 @@ private:
     bool regulator ;
     bool constrained ; //!< = false by default.
 
+    bool cras ; //!< = class relevance advisory switch -> true  by default.
+    bool iras ; //!< = interaction relevance advisory siwtch -> true  by default.
+    bool aras ; //!< = attribute relevance advisory switch -> false by default.
+    bool asas ; //!< = attribute scope advisory switch -> false by default.
+
     typedef std::vector<std::string> SyncList ;
     SyncList syncLabels ; // List of labels to synchronize.
 
@@ -75,4 +90,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.11 2005/04/13 12:04:01 breholee Exp $
+// $Id: Federate.hh,v 3.12 2008/11/20 18:21:55 approx Exp $

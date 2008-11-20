@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.15 2008/06/12 07:39:51 erk Exp $
+// $Id: Federate.cc,v 3.16 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,9 +43,9 @@ namespace rtig {
 //! A new FederateName is allocated. theLink must have been opened before.
 Federate::Federate(const char *the_name, FederateHandle the_handle)
     throw (RTIinternalError)
-    : handle(the_handle), name(the_name), regulator(false), constrained(false), saving(false),
-      restoring(false)
-
+    : handle(the_handle), name(the_name), regulator(false), constrained(false),
+      cras(true), iras(true), aras(false), asas(false), 
+      saving(false), restoring(false)
 {
     if (handle == 0)
         throw RTIinternalError("Bad initialization parameter for Federate.");
@@ -94,4 +94,4 @@ Federate::isSynchronizationLabel(const char *label) const
 
 }}
 
-// $Id: Federate.cc,v 3.15 2008/06/12 07:39:51 erk Exp $
+// $Id: Federate.cc,v 3.16 2008/11/20 18:21:55 approx Exp $

@@ -905,6 +905,22 @@ ObjectManagement::
 setAttributeScopeAdvisorySwitch(bool state, TypeException &e) {
     G.Out(pdGendoc,"enter ObjectManagement::setAttributeScopeAdvisorySwitch");
 
+    NM_Set_Attribute_Scope_Advisory_Switch msg ;
+
+    e = e_NO_EXCEPTION ;
+
+    msg.federation = fm->_numero_federation ;
+    msg.federate = fm->federate ;
+
+    if (state) {
+        msg.attributeScopeAdvisorySwitchOn();
+    }
+    else {
+        msg.attributeScopeAdvisorySwitchOff();
+    }
+
+    comm->sendMessage(&msg);
+
     G.Out(pdGendoc,"exit ObjectManagement::setAttributeScopeAdvisorySwitch");
 }
 
@@ -968,6 +984,22 @@ void
 ObjectManagement::
 setAttributeRelevanceAdvisorySwitch(bool state, TypeException &e) {
     G.Out(pdGendoc,"enter ObjectManagement::setAttributeRelevanceAdvisorySwitch");
+
+    NM_Set_Attribute_Relevance_Advisory_Switch msg ;
+
+    e = e_NO_EXCEPTION ;
+
+    msg.federation = fm->_numero_federation ;
+    msg.federate = fm->federate ;
+
+    if (state) {
+        msg.attributeRelevanceAdvisorySwitchOn();
+    }
+    else {
+        msg.attributeRelevanceAdvisorySwitchOff();
+    }
+
+    comm->sendMessage(&msg);
 
     G.Out(pdGendoc,"exit ObjectManagement::setAttributeRelevanceAdvisorySwitch");
 }

@@ -297,6 +297,75 @@ private:
 
 /*<END>---------- Set_Class_Relevance_Advisory_Switch ------------<END>*/
 
+/*<BEGIN>---------- Set_Interaction_Relevance_Advisory_Switch ------------<BEGIN>*/
+class CERTI_EXPORT NM_Set_Interaction_Relevance_Advisory_Switch : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Set_Interaction_Relevance_Advisory_Switch();
+	virtual ~NM_Set_Interaction_Relevance_Advisory_Switch();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	void interactionRelevanceAdvisorySwitchOn() { 
+		interactionRelevanceAdvisorySwitch=true;};
+	void interactionRelevanceAdvisorySwitchOff() { 
+		interactionRelevanceAdvisorySwitch=false;};	
+	bool getInteractionRelevanceAdvisorySwitch() {
+		return interactionRelevanceAdvisorySwitch;};
+protected:
+	/* specific field */
+	/* value of IRA switch */
+	bool interactionRelevanceAdvisorySwitch ;
+private:
+};
+
+/*<END>---------- Set_Interaction_Relevance_Advisory_Switch ------------<END>*/
+
+/*<BEGIN>---------- Set_Attribute_Relevance_Advisory_Switch ------------<BEGIN>*/
+class CERTI_EXPORT NM_Set_Attribute_Relevance_Advisory_Switch : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Set_Attribute_Relevance_Advisory_Switch();
+	virtual ~NM_Set_Attribute_Relevance_Advisory_Switch();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	void attributeRelevanceAdvisorySwitchOn() {
+			attributeRelevanceAdvisorySwitch=true;};
+	void attributeRelevanceAdvisorySwitchOff() {
+			attributeRelevanceAdvisorySwitch=false;};	
+	bool getAttributeRelevanceAdvisorySwitch() {return 
+		attributeRelevanceAdvisorySwitch;};
+protected:
+	/* specific field */
+	/* value of ARA switch */
+	bool attributeRelevanceAdvisorySwitch ;
+private:
+};
+
+/*<END>---------- Set_Attribute_Relevance_Advisory_Switch ------------<END>*/
+
+/*<BEGIN>---------- Set_Attribute_Scope_Advisory_Switch ------------<BEGIN>*/
+class CERTI_EXPORT NM_Set_Attribute_Scope_Advisory_Switch : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Set_Attribute_Scope_Advisory_Switch();
+	virtual ~NM_Set_Attribute_Scope_Advisory_Switch();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	void attributeScopeAdvisorySwitchOn() {attributeScopeAdvisorySwitch=true;};
+	void attributeScopeAdvisorySwitchOff() {attributeScopeAdvisorySwitch=false;};	
+	bool getAttributeScopeAdvisorySwitch() {return attributeScopeAdvisorySwitch;};
+protected:
+	/* specific field */
+	/* value of ASA switch */
+	bool attributeScopeAdvisorySwitch ;
+private:
+};
+
+/*<END>---------- Set_Attribute_Scope_Advisory_Switch ------------<END>*/
+
 /*<BEGIN>---------- Register_Federation_Synchronization_Point ------------<BEGIN>*/
 class CERTI_EXPORT NM_Register_Federation_Synchronization_Point : public NM_WithHandleArray {
 public:

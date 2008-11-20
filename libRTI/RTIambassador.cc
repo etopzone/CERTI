@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.97 2008/11/06 14:28:58 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.98 2008/11/20 18:21:57 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2761,6 +2761,7 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2774,6 +2775,7 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2786,6 +2788,7 @@ void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2799,6 +2802,7 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
+    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2812,6 +2816,7 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
@@ -2825,7 +2830,8 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
+    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.97 2008/11/06 14:28:58 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.98 2008/11/20 18:21:57 approx Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.52 2008/10/30 10:49:27 erk Exp $
+// $Id: RTIG.cc,v 3.53 2008/11/20 18:21:56 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -246,17 +246,31 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
-	D[pdTrace] << "setClassRelevanceAdvisorySwitch (DM) " <<
-		static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg)->
-		getClassRelevanceAdvisorySwitch() <<  endl;
+	D.Out(pdTrace, "setClassRelevanceAdvisorySwitch.");
         auditServer.setLevel(6);
-	/*
-	 * Successful passing of services
-	 * enableClassRelevanceAdvisorySwitch
-	 * and
-	 * disableClassRelevanceAdvisorySwitch
-	 * to RTIG
-	 */
+        processSetClassRelevanceAdvisorySwitch(link, 
+			static_cast<NM_Set_Class_Relevance_Advisory_Switch*>(msg));
+	break;
+
+      case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+	D.Out(pdTrace, "setInteractionRelevanceAdvisorySwitch.");
+        auditServer.setLevel(6);
+        processSetInteractionRelevanceAdvisorySwitch(link,
+			static_cast<NM_Set_Interaction_Relevance_Advisory_Switch*>(msg));
+	break;
+
+      case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+	D.Out(pdTrace, "setAttributeRelevanceAdvisorySwitch.");
+        auditServer.setLevel(6);
+        processSetAttributeRelevanceAdvisorySwitch(link,
+			static_cast<NM_Set_Attribute_Relevance_Advisory_Switch*>(msg));
+	break;
+
+      case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+	D.Out(pdTrace, "setAttributeScopeAdvisorySwitch.");
+        auditServer.setLevel(6);
+        processSetAttributeScopeAdvisorySwitch(link,
+			static_cast<NM_Set_Attribute_Scope_Advisory_Switch*>(msg));
 	break;
 
       case NetworkMessage::REGISTER_OBJECT:
@@ -1025,4 +1039,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.52 2008/10/30 10:49:27 erk Exp $
+// $Id: RTIG.cc,v 3.53 2008/11/20 18:21:56 approx Exp $

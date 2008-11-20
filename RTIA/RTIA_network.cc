@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.29 2008/11/08 11:36:05 erk Exp $
+// $Id: RTIA_network.cc,v 3.30 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -336,7 +336,23 @@ NetworkMessage::Type msgType = msg->getType();
     			  " type TimeConstrainedEnabled.");
     	  queues->insertLastCommand(msg);
     	  break;
-
+      case NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH:
+    	  D.Out(pdTrace, "Receiving Message from RTIG, "
+    			  " type setCRAS.");
+	  break;
+      case NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
+    	  D.Out(pdTrace, "Receiving Message from RTIG, "
+    			  " type setIRAS.");
+	  break;
+      case NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
+    	  D.Out(pdTrace, "Receiving Message from RTIG, "
+    			  " type setARAS.");
+	  break;
+      case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
+    	  D.Out(pdTrace, "Receiving Message from RTIG, "
+    			  " type setASAS.");
+	  break;
+      	
       default:
       {
           D.Out(pdTrace,
@@ -352,4 +368,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.29 2008/11/08 11:36:05 erk Exp $
+// $Id: RTIA_network.cc,v 3.30 2008/11/20 18:21:55 approx Exp $

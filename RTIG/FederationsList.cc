@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.61 2008/10/30 10:49:28 erk Exp $
+// $Id: FederationsList.cc,v 3.62 2008/11/20 18:21:56 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -55,6 +55,198 @@ FederationsList::~FederationsList()
         delete(*i);
     }
     clear();
+}
+
+// ----------------------------------------------------------------------------
+//! Sets Class Relevance Advisory Switch
+void
+FederationsList::setClassRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->setClassRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Clears Class Relevance Advisory Switch
+void
+FederationsList::unsetClassRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->unsetClassRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Sets Interaction Relevance Advisory Switch
+void
+FederationsList::setInteractionRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->setInteractionRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Clears Interaction Relevance Advisory Switch
+void
+FederationsList::unsetInteractionRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->unsetInteractionRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Sets Attribute Relevance Advisory Switch
+void
+FederationsList::setAttributeRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->setAttributeRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Clears Attribute Relevance Advisory Switch
+void
+FederationsList::unsetAttributeRelevanceAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->unsetAttributeRelevanceAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Sets Attribute Scope Advisory Switch
+void
+FederationsList::setAttributeScopeAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->setAttributeScopeAdvisorySwitch(federate);
+}
+
+// ----------------------------------------------------------------------------
+//! Clears Attribute Scope Advisory Switch
+void
+FederationsList::unsetAttributeScopeAdvisorySwitch(Handle handle,
+                                		 FederateHandle federate)
+    throw (FederationExecutionDoesNotExist,
+           FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    Federation *federation = NULL ;
+
+    // It may throw RTIinternalError.
+    checkHandle(handle);
+    checkHandle(federate);
+
+    // It may throw FederationExecutionDoesNotExist.
+    searchFederation(handle, federation);
+
+    // It may throw a bunch of exceptions.
+    federation->unsetAttributeScopeAdvisorySwitch(federate);
 }
 
 // ----------------------------------------------------------------------------
@@ -1558,5 +1750,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.61 2008/10/30 10:49:28 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.62 2008/11/20 18:21:56 approx Exp $
 

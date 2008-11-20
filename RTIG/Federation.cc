@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.101 2008/11/10 13:19:01 erk Exp $
+// $Id: Federation.cc,v 3.102 2008/11/20 18:21:55 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -508,12 +508,188 @@ Federation::addConstrained(FederateHandle federate_handle)
 
     if (federate.isConstrained()) {
         D.Out(pdExcept, "Federate %d already constrained.", federate_handle);
-        throw RTIinternalError("Time Regulating already enabled.");
+        throw RTIinternalError("Time Constrained already enabled.");
     }
 
     federate.setConstrained(true);
     D.Out(pdTerm, "Federation %d: Federate %d is now constrained.",
           handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Set Class Relevance Advisory Switch
+void
+Federation::setClassRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (federate.isClassRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d already set CRA switch.", federate_handle);
+        throw RTIinternalError("CRA switch already enabled.");
+    }
+
+    federate.setClassRelevanceAdvisorySwitch(true);
+    D.Out(pdTerm, "Federation %d: Federate %d sets CRA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Set Interaction Relevance Advisory Switch
+void
+Federation::setInteractionRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (federate.isInteractionRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d already set IRA switch.", federate_handle);
+        throw RTIinternalError("IRA switch already enabled.");
+    }
+
+    federate.setInteractionRelevanceAdvisorySwitch(true);
+    D.Out(pdTerm, "Federation %d: Federate %d sets IRA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Set Attribute Relevance Advisory Switch
+void
+Federation::setAttributeRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (federate.isAttributeRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d already set ARA switch.", federate_handle);
+        throw RTIinternalError("ARA switch already enabled.");
+    }
+
+    federate.setAttributeRelevanceAdvisorySwitch(true);
+    D.Out(pdTerm, "Federation %d: Federate %d sets ARA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Set Attribute Scope Advisory Switch
+void
+Federation::setAttributeScopeAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (federate.isAttributeScopeAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d already set ASA switch.", federate_handle);
+        throw RTIinternalError("ASA switch already enabled.");
+    }
+
+    federate.setAttributeScopeAdvisorySwitch(true);
+    D.Out(pdTerm, "Federation %d: Federate %d sets ASA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Clear Class Relevance Advisory Switch
+void
+Federation::unsetClassRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (!federate.isClassRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d did not set CRA switch.", federate_handle);
+        throw RTIinternalError("CRA switch not enabled.");
+    }
+
+    federate.setClassRelevanceAdvisorySwitch(false);
+    D.Out(pdTerm, "Federation %d: Federate %d clears CRA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Clear Interaction Relevance Advisory Switch
+void
+Federation::unsetInteractionRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (!federate.isInteractionRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d did not set IRA switch.", federate_handle);
+        throw RTIinternalError("IRA switch not enabled.");
+    }
+
+    federate.setInteractionRelevanceAdvisorySwitch(false);
+    D.Out(pdTerm, "Federation %d: Federate %d clears IRA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+// Clear Attribute Relevance Advisory Switch
+void
+Federation::unsetAttributeRelevanceAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (!federate.isAttributeRelevanceAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d did not set ARA switch.", federate_handle);
+        throw RTIinternalError("ARA switch not enabled.");
+    }
+
+    federate.setAttributeRelevanceAdvisorySwitch(false);
+    D.Out(pdTerm, "Federation %d: Federate %d clears ARA switch.",
+              handle, federate_handle);
+}
+
+// ----------------------------------------------------------------------------
+//  Clear Attribute Scope Advisory Switch
+void
+Federation::unsetAttributeScopeAdvisorySwitch(FederateHandle federate_handle)
+    throw (FederateNotExecutionMember,
+           SaveInProgress,
+           RestoreInProgress,
+           RTIinternalError)
+{
+    // It may throw FederateNotExecutionMember
+    Federate &federate = getFederate(federate_handle);
+
+    if (!federate.isAttributeScopeAdvisorySwitch()) {
+        D.Out(pdExcept, "Federate %d did not set ASA switch.", federate_handle);
+        throw RTIinternalError("ASA switch not enabled.");
+    }
+
+    federate.setAttributeScopeAdvisorySwitch(false);
+    D.Out(pdTerm, "Federation %d: Federate %d clears ASA switch.",
+              handle, federate_handle);
 }
 
 // ----------------------------------------------------------------------------
@@ -1602,6 +1778,7 @@ Federation::subscribeObject(FederateHandle federate,
 
     // It may throw *NotDefined
     root->ObjectClasses->subscribe(federate, object, attributes, list_size);
+
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
           handle, federate, list_size, object);
@@ -2305,5 +2482,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.101 2008/11/10 13:19:01 erk Exp $
+// $Id: Federation.cc,v 3.102 2008/11/20 18:21:55 approx Exp $
 
