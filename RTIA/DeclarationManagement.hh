@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.hh,v 3.9 2008/07/09 13:48:28 erk Exp $
+// $Id: DeclarationManagement.hh,v 3.10 2008/11/21 13:41:52 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_DM
@@ -74,6 +74,16 @@ public:
     void unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
                                      TypeException &e);
 
+    /**
+     * Transmits the Networkmessage NM_Set_Class_Relevance_Advisory_Switch to 
+     * RTIG. The transmission sets the ClassRelevanceAdvisory switch at RTIG 
+     * side to the value of the input parameter state. The invocation is caused
+     * by a successfull transmission of the message 
+     * ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH from the federate to RTIA.
+     * @param[in] state is the new value for the switch, true means enable, 
+     * false means disable
+     * @param[in,out] e is a reference to a possible exception
+     */
     void setClassRelevanceAdvisorySwitch(bool state,
                                          TypeException &e);
 
@@ -85,6 +95,16 @@ public:
     void stopRegistrationForObjectClass(ObjectClassHandle theClass,
                                         TypeException &e);
 
+    /**
+     * Transmits the Networkmessage NM_Set_Interaction_Relevance_Advisory_Switch
+     * to RTIG. The transmission sets the InteractionRelevanceAdvisory switch at
+     * RTIG side to the value of the input parameter state. The invocation is 
+     * caused by a successfull transmission of the message 
+     * ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH from the federate to RTIA.
+     * @param[in] state is the new value for the switch, true means enable, 
+     * false means disable
+     * @param[in,out] e is a reference to a possible exception
+     */
     void setInteractionRelevanceAdvisorySwitch(bool state,
                                                TypeException &e);
 
@@ -107,4 +127,4 @@ protected:
 
 #endif // _CERTI_RTIA_DM
 
-// $Id: DeclarationManagement.hh,v 3.9 2008/07/09 13:48:28 erk Exp $
+// $Id: DeclarationManagement.hh,v 3.10 2008/11/21 13:41:52 approx Exp $

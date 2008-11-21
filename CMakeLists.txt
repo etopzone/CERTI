@@ -25,7 +25,7 @@ ENDIF(BIG_ENDIAN)
 
 # default behaviour is to build library as shared on all platform
 OPTION(BUILD_SHARED
-             "Build libraries as shared library" ON)
+             "Build libraries as shared library" OFF)
              
 OPTION(USE_FULL_RPATH
              "Use the full RPATH" OFF)
@@ -48,7 +48,7 @@ IF (USE_FULL_RPATH)
 ENDIF(USE_FULL_RPATH)
   
 OPTION(BUILD_DOC
-             "Build documentation (using doxygen)" OFF)         
+             "Build documentation (using doxygen)" ON)         
              
 OPTION(FORCE_NO_X11 
               "Force not to use X11 (i.e. no Billard GUI)" OFF)   

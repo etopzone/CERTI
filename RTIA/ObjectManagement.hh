@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.29 2008/11/01 19:19:36 erk Exp $
+// $Id: ObjectManagement.hh,v 3.30 2008/11/21 13:41:52 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
@@ -190,6 +190,16 @@ public:
     void reflectRetraction(EventRetractionHandle theHandle,
                            TypeException &e);
 
+    /**
+     * Transmits the Networkmessage NM_Set_Attribute_Scope_Advisory_Switch to 
+     * RTIG. The transmission sets the AttributeScopeAdvisory switch at RTIG 
+     * side to the value of the input parameter state. The invocation is caused
+     * by a successfull transmission of the message 
+     * ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH from the federate to RTIA.
+     * @param[in] state is the new value for the switch, true means enable,
+     * false means disable
+     * @param[in,out] e is a reference to a possible exception
+     */
     void setAttributeScopeAdvisorySwitch(bool state,
                                          TypeException &e);
 
@@ -207,6 +217,16 @@ public:
                       const UShort attribArraySize,
                       TypeException &e);
 
+    /**
+     * Transmits the Networkmessage NM_Set_Attribute_Relevance_Advisory_Switch 
+     * to RTIG. The transmission sets the AttributeRelevanceAdvisory switch at 
+     * RTIG side to the value of the input parameter state. The invocation is 
+     * caused by a successfull transmission of the message 
+     * ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH from the federate to RTIA.
+     * @param[in] state is the new value for the switch, true means enable, 
+     * false means disable
+     * @param[in,out] e is a reference to a possible exception
+     */
     void setAttributeRelevanceAdvisorySwitch(bool state,
                                              TypeException &e);
 
@@ -281,4 +301,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.29 2008/11/01 19:19:36 erk Exp $
+// $Id: ObjectManagement.hh,v 3.30 2008/11/21 13:41:52 approx Exp $

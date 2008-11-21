@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.99 2008/11/21 12:45:25 approx Exp $
+// $Id: RTIambassador.cc,v 3.100 2008/11/21 13:41:52 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2724,8 +2724,8 @@ RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
 }
 
 /**
- * This service sets the ClassRelevanceAdvisory (CRA) Switch to true.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the ClassRelevanceAdvisory (CRA) switch to true. The switch 
+ * state is hold on the RTIG side. That's why the message
  * ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2753,8 +2753,8 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
 }
 
 /**
- * This service sets the ClassRelevanceAdvisory (CRA) Switch to false.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the ClassRelevanceAdvisory (CRA) switch to false. The switch
+ * state is hold on the RTIG side. That's why the message
  * DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2782,8 +2782,8 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
 }
 
 /**
- * This service sets the AttributeRelevanceAdvisory (ARA) Switch to true.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the AttributeRelevanceAdvisory (ARA) switch to true. The switch 
+ * state is hold on the RTIG side. That's why the message
  * ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2812,8 +2812,8 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
 }
 
 /**
- * This service sets the AttributeRelevanceAdvisory (ARA) Switch to false.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the AttributeRelevanceAdvisory (ARA) switch to false. The switch 
+ * state is hold on the RTIG side. That's why the message
  * DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2842,8 +2842,8 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
 }
 
 /**
- * This service sets the AttributeScopeAdvisory (ASA) Switch to true.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the AttributeScopeAdvisory (ASA) switch to true. The switch state 
+ * is hold on the RTIG side. That's why the message
  * ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2870,8 +2870,8 @@ void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
 }
 
 /**
- * This service sets the AttributeScopeAdvisory (ASA) Switch to false.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the AttributeScopeAdvisory (ASA) switch to false. The switch state 
+ * is hold on the RTIG side. That's why the message
  * DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2899,8 +2899,8 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
 }
 
 /**
- * This service sets the InteractionRelevanceAdvisory (IRA) Switch to true.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the InteractionRelevanceAdvisory (IRA) switch to true. The switch 
+ * state is hold on the RTIG side. That's why the message
  * ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2928,8 +2928,8 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
 }
 
 /**
- * This service sets the InteractionRelevanceAdvisory (IRA) Switch to false.
- * The switch state is hold on the RTIG side. That's why the message
+ * Sets the InteractionRelevanceAdvisory (IRA) switch to false. The switch 
+ * state is hold on the RTIG side. That's why the message
  * DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH 
  * is transmitted to RTIA. RTIA transmits the message towards RTIG.
  *
@@ -2956,4 +2956,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.99 2008/11/21 12:45:25 approx Exp $
+// $Id: RTIambassador.cc,v 3.100 2008/11/21 13:41:52 approx Exp $
