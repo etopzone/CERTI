@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.12 2008/11/20 18:21:55 approx Exp $
+// $Id: Federate.hh,v 3.13 2008/11/21 12:45:25 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
@@ -46,14 +46,68 @@ public:
     void setConstrained(bool c) { constrained = c ; };
     void setRegulator(bool r) { regulator = r ; };
 
+    /**
+     * This method sets the ClassRelevanceAdvisorySwitch of the federate
+     * to the value of the input parameter val. The CRA switch is enabled
+     * by default.
+     * @param val is a boolean [true, false]
+     * @return void
+     */
     void setClassRelevanceAdvisorySwitch(bool val) { cras = val ; };
+
+    /**
+     * This method sets the InteractionRelevanceAdvisorySwitch of the federate
+     * to the value of the input parameter val. The IRA switch is enabled
+     * by default.
+     * @param val is a boolean [true, false]
+     * @return void
+     */
     void setInteractionRelevanceAdvisorySwitch(bool val) { iras = val ; };
+
+    /**
+     * This method sets the AttributeRelevanceAdvisorySwitch of the federate
+     * to the value of the input parameter val. The ARA switch is disabled
+     * by default.
+     * @param val is a boolean [true, false]
+     * @return void
+     */
     void setAttributeRelevanceAdvisorySwitch(bool val) { aras = val ; };
+
+    /**
+     * This method sets the AttributeScopeAdvisorySwitch of the federate
+     * to the value of the input parameter val. The ASA switch is disabled
+     * by default.
+     * @param val is a boolean [true, false]
+     * @return void
+     */
     void setAttributeScopeAdvisorySwitch(bool val) { asas = val ; };
 
+    /**
+     * This method returns the current state of the 
+     * ClassRelevanceAdvisory switch.
+     * @return a boolean indicating the current state of the switch 
+     */
     bool isClassRelevanceAdvisorySwitch() const { return cras ; };
+
+    /**
+     * This method returns the current state of the 
+     * InteractionRelevanceAdvisory switch.
+     * @return a boolean indicating the current state of the switch 
+     */
     bool isInteractionRelevanceAdvisorySwitch() const { return iras ; };
+
+    /**
+     * This method returns the current state of the 
+     * AttributeRelevanceAdvisory switch.
+     * @return a boolean indicating the current state of the switch 
+     */
     bool isAttributeRelevanceAdvisorySwitch() const { return aras ; };
+
+    /**
+     * This method returns the current state of the 
+     * AttributeScopeAdvisory switch.
+     * @return a boolean indicating the current state of the switch 
+     */
     bool isAttributeScopeAdvisorySwitch() const { return asas ; };
 
     bool isSaving() const { return saving ; };
@@ -90,4 +144,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.12 2008/11/20 18:21:55 approx Exp $
+// $Id: Federate.hh,v 3.13 2008/11/21 12:45:25 approx Exp $

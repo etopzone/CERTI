@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.23 2008/11/20 18:21:55 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.24 2008/11/21 12:45:24 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -356,8 +356,15 @@ unsubscribeInteractionClass(InteractionClassHandle theClassHandle,
     e = rep->exception ;
 } /* end of unsubscribeInteractionClass */
 
-// ----------------------------------------------------------------------------
-// setClassRelevanceAdvisorySwitch
+/**
+ * This methods transmits the Networkmessage 
+ * NM_Set_Class_Relevance_Advisory_Switch to RTIG. The transmission sets the
+ * ClassRelevanceAdvisory switch at RTIG side to the value of the input 
+ * parameter state. The invocation is caused by a successfull transmission of 
+ * the message ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH from the federate to RTIA.
+ * @param state is a boolean [true, false]
+ * @param e is a reference to a possible exception
+ */
 void
 DeclarationManagement::
 setClassRelevanceAdvisorySwitch(bool state, TypeException &e) {
@@ -440,8 +447,16 @@ stopRegistrationForObjectClass(ObjectClassHandle the_class,
     e = rep.getExceptionType();
 }
 
-// ----------------------------------------------------------------------------
-// setInteractionRelevanceAdvisorySwitch
+/**
+ * This methods transmits the Networkmessage 
+ * NM_Set_Interaction_Relevance_Advisory_Switch to RTIG. The transmission sets the
+ * InteractionRelevanceAdvisory switch at RTIG side to the value of the input 
+ * parameter state. The invocation is caused by a successfull transmission of 
+ * the message ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH from the federate to 
+ * RTIA.
+ * @param state is a boolean [true, false]
+ * @param e is a reference to a possible exception
+ */
 void
 DeclarationManagement::
 setInteractionRelevanceAdvisorySwitch(bool state, TypeException &e) {
@@ -513,4 +528,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.23 2008/11/20 18:21:55 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.24 2008/11/21 12:45:24 approx Exp $

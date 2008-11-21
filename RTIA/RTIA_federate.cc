@@ -1040,49 +1040,49 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type EnableClassRelevanceAdvisorySwitch.");
-	dm->setClassRelevanceAdvisorySwitch(req->getBoolean(), e);
+	dm->setClassRelevanceAdvisorySwitch(true, e);
 	break;
 
       case Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type DisableClassRelevanceAdvisorySwitch.");
-	dm->setClassRelevanceAdvisorySwitch(req->getBoolean(), e);
+	dm->setClassRelevanceAdvisorySwitch(false, e);
 	break;
 
       case Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
-	dm->setInteractionRelevanceAdvisorySwitch(req->getBoolean(), e);
+	dm->setInteractionRelevanceAdvisorySwitch(true, e);
 	break;
 
       case Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetInteractionRelevanceAdvisorySwitch.");
-	dm->setInteractionRelevanceAdvisorySwitch(req->getBoolean(), e);
+	dm->setInteractionRelevanceAdvisorySwitch(false, e);
 	break;
 
       case Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
-	om->setAttributeRelevanceAdvisorySwitch(req->getBoolean(), e);
+	om->setAttributeRelevanceAdvisorySwitch(true, e);
 	break;
 
       case Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeRelevanceAdvisorySwitch.");
-	om->setAttributeRelevanceAdvisorySwitch(req->getBoolean(), e);
+	om->setAttributeRelevanceAdvisorySwitch(false, e);
 	break;
 
       case Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
-	om->setAttributeScopeAdvisorySwitch(req->getBoolean(), e);
+	om->setAttributeScopeAdvisorySwitch(true, e);
 	break;
 
       case Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
         D.Out(pdTrace,
               "Receiving Message from Federate, type SetAttributeScopeAdvisorySwitch.");
-	om->setAttributeScopeAdvisorySwitch(req->getBoolean(), e);
+	om->setAttributeScopeAdvisorySwitch(false, e);
 	break;
 
       default:

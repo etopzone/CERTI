@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.98 2008/11/20 18:21:57 approx Exp $
+// $Id: RTIambassador.cc,v 3.99 2008/11/21 12:45:25 approx Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -2723,8 +2723,24 @@ RTI::RTIambassador::getOrderingName(OrderingHandle theHandle)
     return hla_strdup(rep.getName());
 }
 
-// ----------------------------------------------------------------------------
-// Enable Class Relevance Advisory Switch
+/**
+ * This service sets the ClassRelevanceAdvisory (CRA) Switch to true.
+ * The switch state is hold on the RTIG side. That's why the message
+ * ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the CRA switch is true. This causes a delivery of the
+ * federate service startRegistrationForObjectClass to a publisher 
+ * if there are any new subscribers for the federates published object 
+ * classes. If there are no more subscribers a publisher gets the 
+ * federate service stopRegistrationForObjectClass.
+ *
+ * By disabling the CRA switch the federate is no longer informed by 
+ * subscriptions to its published object classes, i.e. the federate 
+ * services startRegistrationForObjectClass and 
+ * stopRegistrationForObjectClass respectively are not invoked.
+ * @see disableClassRelevanceAdvisorySwitch()
+ */
 void
 RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2733,12 +2749,27 @@ RTI::RTIambassador::enableClassRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Disable Class Relevance Advisory Switch
+/**
+ * This service sets the ClassRelevanceAdvisory (CRA) Switch to false.
+ * The switch state is hold on the RTIG side. That's why the message
+ * DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the CRA switch is true. This causes a delivery of the
+ * federate service startRegistrationForObjectClass to a publisher 
+ * if there are any new subscribers for the federates published object 
+ * classes. If there are no more subscribers a publisher gets the 
+ * federate service stopRegistrationForObjectClass.
+ * @see enableClassRelevanceAdvisorySwitch()
+ *
+ * By disabling the CRA switch the federate is no longer informed by 
+ * subscriptions to its published object classes, i.e. the federate 
+ * services startRegistrationForObjectClass and 
+ * stopRegistrationForObjectClass respectively are not invoked.
+ */
 void
 RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2747,12 +2778,28 @@ RTI::RTIambassador::disableClassRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Enable Attribute Relevance Advisory Switch
+/**
+ * This service sets the AttributeRelevanceAdvisory (ARA) Switch to true.
+ * The switch state is hold on the RTIG side. That's why the message
+ * ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ARA switch is false. When enabling the ARA switch
+ * the federate is informed by the federate service 
+ * turnUpdatesOnForObjectInstance of new object instances within remote 
+ * federates actively subscribed to its published attributes. If there
+ * are no active subscribers for a set of instance-attributes the federate
+ * receives the federate service turnUpdatesOffForObjectInstance. 
+ *
+ * By disabling the ARA switch the federate is no longer informed by 
+ * subscriptions to its published attributes, i.e. the federate 
+ * services turnUpdatesOnForObjectInstance and 
+ * turnUpdatesOffForObjectInstance respectively are not invoked.
+ * @see disableAttributeRelevanceAdvisorySwitch()
+ */
 void
 RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2761,12 +2808,28 @@ RTI::RTIambassador::enableAttributeRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Disable Attribute Relevance Advisory Switch
+/**
+ * This service sets the AttributeRelevanceAdvisory (ARA) Switch to false.
+ * The switch state is hold on the RTIG side. That's why the message
+ * DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ARA switch is false. When enabling the ARA switch
+ * the federate is informed by the federate service 
+ * turnUpdatesOnForObjectInstance of new object instances within remote 
+ * federates actively subscribed to its published attributes. If there
+ * are no active subscribers for a set of instance-attributes the federate
+ * receives the federate service turnUpdatesOffForObjectInstance. 
+ * @see enableAttributeRelevanceAdvisorySwitch()
+ *
+ * By disabling the ARA switch the federate is no longer informed by 
+ * subscriptions to its published attributes, i.e. the federate 
+ * services turnUpdatesOnForObjectInstance and 
+ * turnUpdatesOffForObjectInstance respectively are not invoked.
+ */
 void
 RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2775,12 +2838,27 @@ RTI::RTIambassador::disableAttributeRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Enable Attribute Scope Advisory Switch
+/**
+ * This service sets the AttributeScopeAdvisory (ASA) Switch to true.
+ * The switch state is hold on the RTIG side. That's why the message
+ * ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ASA switch is false. When enabling the ASA switch
+ * the federate is informed by the federate services
+ * attributesInScope and attributesOutScope respectively of discovered
+ * or registrated but not owned attribute-instances intersecting or
+ * leaving its subscription regions.
+ *
+ * By disabling the ASA switch the federate is no longer informed of
+ * changes in attribute-instance scope, i.e. the federate 
+ * services attributesInScope and attributesOutScope respectively are 
+ * not invoked.
+ * @see disableAttributeScopeAdvisorySwitch()
+ */
 void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
 	   RTI::ConcurrentAccessAttempted, RTI::FederateNotExecutionMember)
@@ -2788,12 +2866,27 @@ void RTI::RTIambassador::enableAttributeScopeAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
-    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Disable Attribute Scope Advisory Switch
+/**
+ * This service sets the AttributeScopeAdvisory (ASA) Switch to false.
+ * The switch state is hold on the RTIG side. That's why the message
+ * DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the ASA switch is false. When enabling the ASA switch
+ * the federate is informed by the federate services
+ * attributesInScope and attributesOutScope respectively of discovered
+ * or registrated but not owned attribute-instances intersecting or
+ * leaving its subscription regions.
+ * @see enableAttributeScopeAdvisorySwitch()
+ *
+ * By disabling the ASA switch the federate is no longer informed of
+ * changes in attribute-instance scope, i.e. the federate 
+ * services attributesInScope and attributesOutScope respectively are 
+ * not invoked.
+ */
 void
 RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2802,12 +2895,27 @@ RTI::RTIambassador::disableAttributeScopeAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH ;
-    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Enable Interaction Relevance Advisory Switch
+/**
+ * This service sets the InteractionRelevanceAdvisory (IRA) Switch to true.
+ * The switch state is hold on the RTIG side. That's why the message
+ * ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the IRA switch is true. This causes a delivery of the
+ * federate service turnInteractionsOn to a publisher if there are 
+ * any new subscribers for the federates published interaction 
+ * classes. If there are no more subscribers a publisher gets the 
+ * federate service turnInteractionsOff(). 
+ *
+ * By disabling the IRA switch the federate is no longer informed by 
+ * subscriptions to its published interaction classes, i.e. the federate 
+ * services turnInteractionsOn and turnInteractionsOff respectively are 
+ * not invoked.
+ * @see disableInteractionRelevanceAdvisorySwitch()
+ */
 void
 RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2816,12 +2924,27 @@ RTI::RTIambassador::enableInteractionRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
 
-// ----------------------------------------------------------------------------
-// Disable Interaction Relevance Advisory Switch
+/**
+ * This service sets the InteractionRelevanceAdvisory (IRA) Switch to false.
+ * The switch state is hold on the RTIG side. That's why the message
+ * DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH 
+ * is transmitted to RTIA. RTIA transmits the message towards RTIG.
+ *
+ * By default, the IRA switch is true. This causes a delivery of the
+ * federate service turnInteractionsOn to a publisher if there are 
+ * any new subscribers for the federates published interaction 
+ * classes. If there are no more subscribers a publisher gets the 
+ * federate service turnInteractionsOff(). 
+ * @see enableInteractionRelevanceAdvisorySwitch()
+ *
+ * By disabling the IRA switch the federate is no longer informed by 
+ * subscriptions to its published interaction classes, i.e. the federate 
+ * services turnInteractionsOn and turnInteractionsOff respectively are 
+ * not invoked.
+ */
 void
 RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     throw (RTI::RTIinternalError, RTI::RestoreInProgress, RTI::SaveInProgress, 
@@ -2830,8 +2953,7 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     Message req, rep ;
 
     req.type = Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH ;
-    req.setBoolean(false);
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.98 2008/11/20 18:21:57 approx Exp $
+// $Id: RTIambassador.cc,v 3.99 2008/11/21 12:45:25 approx Exp $

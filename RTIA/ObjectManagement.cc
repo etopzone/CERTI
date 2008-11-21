@@ -897,9 +897,15 @@ ObjectManagement::getOrderingName(OrderType theType)
     throw InvalidOrderingHandle("");
 }
 
-// --------------------------------------
-// setAttributeScopeAdvisorySwitch
-// --------------------------------------
+/**
+ * This methods transmits the Networkmessage 
+ * NM_Set_Attribute_Scope_Advisory_Switch to RTIG. The transmission sets the
+ * AttributeScopeAdvisory switch at RTIG side to the value of the input 
+ * parameter state. The invocation is caused by a successfull transmission of 
+ * the message ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH from the federate to RTIA.
+ * @param state is a boolean [true, false]
+ * @param e is a reference to a possible exception
+ */
 void
 ObjectManagement::
 setAttributeScopeAdvisorySwitch(bool state, TypeException &e) {
@@ -977,9 +983,16 @@ attributesOutOfScope(ObjectHandle theObject,
     G.Out(pdGendoc,"exit  ObjectManagement::attributesOutScope");
 }
 
-// --------------------------------------
-// setAttributeRelevanceAdvisorySwitch
-// --------------------------------------
+/**
+ * This methods transmits the Networkmessage 
+ * NM_Set_Attribute_Relevance_Advisory_Switch to RTIG. The transmission sets the
+ * AttributeRelevanceAdvisory switch at RTIG side to the value of the input 
+ * parameter state. The invocation is caused by a successfull transmission of 
+ * the message ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH from the federate to 
+ * RTIA.
+ * @param state is a boolean [true, false]
+ * @param e is a reference to a possible exception
+ */
 void
 ObjectManagement::
 setAttributeRelevanceAdvisorySwitch(bool state, TypeException &e) {
