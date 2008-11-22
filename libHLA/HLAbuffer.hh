@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.6 2008/11/19 10:25:05 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.7 2008/11/22 14:55:58 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -60,7 +60,7 @@ class HLA_EXPORT __HLAbuffer
 {
 private:
     // static buffer for all instantiations of the HLAdata template
-    // indexed by pointers after the last element, the end() pointers
+    // indexed by "last pointers", i.e. pointers to the last byte in the buffer
     typedef std::map<char*,__HLAbuffer*> BufferList;
     static BufferList gBuffers;
 
@@ -96,7 +96,7 @@ public:
         mCapacity = (size_t)(capacity*1.5);
         mBegin = (char*)calloc(1, mCapacity);
         // store "this" to a global table
-        gBuffers[mBegin + mCapacity] = this;
+        gBuffers[mBegin + mCapacity-1] = this;
     }
 
     __HLAbuffer(void *begin, size_t capacity)
@@ -104,7 +104,7 @@ public:
     {
         __assert_endianess();
         // store "this" to a global table
-        gBuffers[mBegin + mCapacity] = this;
+        gBuffers[mBegin + mCapacity-1] = this;
     }
 
     virtual ~__HLAbuffer()
@@ -122,16 +122,16 @@ public:
 
         mBegin = newBuffer.mBegin;
         mCapacity = newBuffer.mCapacity;
-        gBuffers[mBegin + mCapacity] = this; // update
+        gBuffers[mBegin + mCapacity-1] = this; // update
 
         newBuffer.mBegin = oldBegin;
         newBuffer.mCapacity = oldCapacity;
-        gBuffers[oldBegin + oldCapacity] = &newBuffer; // update
+        gBuffers[oldBegin + oldCapacity-1] = &newBuffer; // update
     }
 
     static BufferList::iterator __buffer_iterator(const void* __this)
     {
-        // find the first pointer not less than "this", what is the end() pointer
+        // find the first pointer not less than "this", the last pointer
         BufferList::iterator result = gBuffers.lower_bound((char*)__this);
         if (result == gBuffers.end())
             throw std::runtime_error("HLAdata: bad pointer");
@@ -182,5 +182,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.6 2008/11/19 10:25:05 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.7 2008/11/22 14:55:58 gotthardp Exp $
 
