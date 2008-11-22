@@ -8,10 +8,12 @@
 # http://en.wikipedia.org/wiki/Run-Time_Infrastructure_(simulation)
 #
 # This code sets the following variables:
+#  RTI_PATH = the RTI install prefix
 #  RTI_INCLUDE_DIR = the directory where RTI includes file are found
 #  RTI_LIBRARIES = The libraries to link against to use RTI
 #  RTI_DEFINITIONS = -DRTI_USES_STD_FSTREAM
 #  RTI_FOUND = Set to FALSE if any HLA RTI was not found
+#  RTI_VERSION = version of the detected HLA infrastructure
 #
 # Report problems to <certi-devel@nongnu.org>
 
@@ -23,8 +25,8 @@ ENDMACRO(RTI_MESSAGE_QUIETLY QUIET TYPE MSG)
 
 # Detect the CERTI installation, http://www.cert.fr/CERTI
 IF ("$ENV{CERTI_HOME}" STRGREATER "")
-  FILE(TO_CMAKE_PATH "$ENV{CERTI_HOME}" CERTI_HOME)
-  RTI_MESSAGE_QUIETLY(RTI_FIND_QUIETLY STATUS "Using environment defined CERTI_HOME: ${CERTI_HOME}")
+  FILE(TO_CMAKE_PATH "$ENV{CERTI_HOME}" RTI_PATH)
+  RTI_MESSAGE_QUIETLY(RTI_FIND_QUIETLY STATUS "Using environment defined CERTI_HOME: ${RTI_PATH}")
 ENDIF ("$ENV{CERTI_HOME}" STRGREATER "")
 
 SET(RTI_DEFINITIONS "-DRTI_USES_STD_FSTREAM")
@@ -32,7 +34,7 @@ SET(RTI_DEFINITIONS "-DRTI_USES_STD_FSTREAM")
 # Detect the MAK Technologies RTI installation, http://www.mak.com/products/rti.php
 # note: the following list is ordered to find the most recent version first
 SET(RTI_POSSIBLE_DIRS
-  ${CERTI_HOME}
+  ${RTI_PATH}
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MAK Technologies\\MAK RTI 3.2 MSVC++ 8.0;Location]"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MAK RTI 3.2-win32-msvc++8.0;InstallLocation]"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\MAK Technologies\\MAK RTI 2.2;Location]"
@@ -43,7 +45,7 @@ SET(RTI_OLD_FIND_LIBRARY_PREFIXES "${CMAKE_FIND_LIBRARY_PREFIXES}")
 SET(CMAKE_FIND_LIBRARY_PREFIXES "lib" "")
 
 FIND_LIBRARY(RTI_LIBRARY
-  NAMES RTI RTI-NG
+  NAMES RTI-NG RTI
   PATHS ${RTI_POSSIBLE_DIRS}
   PATH_SUFFIXES lib
   DOC "The RTI Library")
@@ -78,6 +80,22 @@ ELSE (RTI_INCLUDE_DIR)
   RTI_MESSAGE_QUIETLY(RTI_FIND_QUIETLY STATUS "RTI headers NOT found")
 ENDIF (RTI_INCLUDE_DIR)
 
+FIND_PROGRAM(CERTI_RTIG_EXECUTABLE
+  NAMES rtig
+  PATHS ${RTI_PATH}
+  PATH_SUFFIXES bin
+  DOC "The RTI Gateway")
+IF (CERTI_RTIG_EXECUTABLE)
+  EXECUTE_PROCESS(COMMAND ${CERTI_RTIG_EXECUTABLE} -V
+    RESULT_VARIABLE RTI_RESV
+    OUTPUT_VARIABLE RTI_OUTV
+    ERROR_VARIABLE  RTI_ERRV
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+  STRING(REGEX REPLACE ".*RTIG " "" RTI_VERSION ${RTI_OUTV})
+  RTI_MESSAGE_QUIETLY(RTI_FIND_QUIETLY STATUS "Found CERTI version: ${RTI_VERSION}")
+ENDIF (CERTI_RTIG_EXECUTABLE)
+
 # Set the modified system variables back to the original value.
 SET(CMAKE_FIND_LIBRARY_PREFIXES "${RTI_OLD_FIND_LIBRARY_PREFIXES}")
 
@@ -90,4 +108,4 @@ ELSE (RTI_LIBRARY AND RTI_INCLUDE_DIR)
   ENDIF (RTI_FIND_REQUIRED)
 ENDIF(RTI_LIBRARY AND RTI_INCLUDE_DIR)
 
-# $Id: FindRTI.cmake,v 1.7 2008/10/27 09:27:21 gotthardp Exp $
+# $Id: FindRTI.cmake,v 1.8 2008/11/22 17:14:10 gotthardp Exp $
