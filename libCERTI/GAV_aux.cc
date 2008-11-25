@@ -18,7 +18,6 @@
 // ----------------------------------------------------------------------------
 
 
-
 #include "GAV.hh"
 #include "PrettyDebug.hh"
 #include <string.h>
@@ -568,43 +567,4 @@ ParameterHandleValuePairSetImp::next(ULong) const
 
 } // namespace certi
 
-// ----------------------------------------------------------------------------
-RTI::AttributeHandleValuePairSet *
-RTI::AttributeSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
-{
-    AttributeHandleValuePairSetImp *ahvps ;
-    ahvps = new AttributeHandleValuePairSetImp ;
-    ahvps->_order = RECEIVE ;
-    ahvps->_transport = RELIABLE ;
-    return (AttributeHandleValuePairSet *) ahvps ;
-}
-
-// ----------------------------------------------------------------------------
-RTI::AttributeHandleSet *
-RTI::AttributeHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return new AttributeHandleSetImp();
-}
-
-// ----------------------------------------------------------------------------
-RTI::FederateHandleSet *
-RTI::FederateHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return ((FederateHandleSet *) new FederateHandleSetImp());
-}
-
-// ----------------------------------------------------------------------------
-RTI::ParameterHandleValuePairSet *
-RTI::ParameterSetFactory::create(ULong size)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
-{
-    ParameterHandleValuePairSetImp *phvps ;
-    phvps = new ParameterHandleValuePairSetImp(size);
-
-    phvps->_order = RECEIVE ;
-    phvps->_transport = RELIABLE ;
-    return (ParameterHandleValuePairSet *) phvps ;
-}
+// $Id: GAV_aux.cc,v 3.18 2008/11/25 16:32:14 gotthardp Exp $
