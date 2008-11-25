@@ -89,9 +89,13 @@ public:
 	 */
 	virtual double   getDeltaNanoSecond(const uint64_t previousTicks);
 
-
-
 	virtual ~Clock();
+
+       /** 
+	* Retrieve the best possible clock. 
+	* @return  the obtained clock      
+	*/
+	static Clock* getBestClock (); 
 protected:
 	std::string name;
 };

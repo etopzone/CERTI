@@ -69,6 +69,7 @@ AuditFile.cc AuditFile.hh
 AuditLine.cc AuditLine.hh
 BasicMessage.cc BasicMessage.hh
 Clock.cc Clock.hh
+ClockFactory.cc
 MessageBuffer.cc MessageBuffer.hh
 Message.cc Message_R.cc Message_W.cc Message.hh
 NetworkMessage.cc NetworkMessage_RW.cc NetworkMessage.hh

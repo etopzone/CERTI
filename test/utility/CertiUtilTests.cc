@@ -279,6 +279,9 @@ main(int argc, char **argv)
 	clockTests(WinPerfClk);
 #endif
 
+	certi::Clock *myClock = certi::Clock::getBestClock () ;
+        clockTests(*myClock);
+        delete myClock ; 
 	cout << "CERTI Utility Test->END." <<endl;
     /* getchar(); */
 	return 0;
