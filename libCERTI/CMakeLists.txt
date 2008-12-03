@@ -1,4 +1,10 @@
 
+##################################################################
+# Lib CERTI
+# The CERTI library is the internal CERTI library it should
+# not depends on _ANY_ RTI libs, neither libRTI nor libFedTime.
+# because it will end-up in an unwanted circular reference.
+##################################################################
 SET(CERTI_FEDERATION_SRCS
     fed.cc fed.hh
     FederateLevelList.cc FederateLevelList.hh
@@ -61,10 +67,6 @@ RoutingSpace.hh
 SET(CERTI_TIME_SRCS
 LBTS.cc
 LBTS.hh
-)
-
-SET(CERTI_FEDTIME_SRCS
-FedTime.cc
 )
 
 SET(CERTI_SUPPORT_SRCS
@@ -178,9 +180,6 @@ IF (WIN32)
     INCLUDE_DIRECTORIES("C:/Program Files/GnuWin32/include")
 ENDIF (WIN32)
 
-SET(CERTI_EXPORTED_INCLUDES
-	../include/fedtime.hh)
-
 ADD_LIBRARY(CERTI
     ${CERTI_FEDERATION_SRCS}
     ${CERTI_DECLARATION_SRCS}
@@ -190,8 +189,7 @@ ADD_LIBRARY(CERTI
     ${CERTI_TIME_SRCS}
     ${CERTI_SUPPORT_SRCS}
     ${CERTI_SOCKET_SRCS}
-    ${CERTI_GENERATED_SRCS}	
-    ${CERTI_EXPORTED_INCLUDES}
+    ${CERTI_GENERATED_SRCS}    
 )
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
@@ -209,8 +207,22 @@ ENDIF (HAVE_POSIX_CLOCK)
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+##################################################################
+# Lib FedTime 
+# A replacement lib FedTime may be provided by the user
+# CERTI is provided one. The lib FedTime depends on libRTI
+# since it inherits from the RTI::FedTime abstract class.
+##################################################################
+
+SET(FEDTIME_SRCS
+    FedTime.cc
+    ${CMAKE_SOURCE_DIR}/include/fedtime.hh
+)
+
+SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME_SRCS})
+
 ADD_LIBRARY(FedTime
-    ${CERTI_FEDTIME_SRCS}
+    ${FEDTIME_SRCS}
 )
 
 SET_TARGET_PROPERTIES(FedTime PROPERTIES PROJECT_LABEL LibFedTime)
@@ -223,6 +235,7 @@ ENDIF (MINGW)
 
 SET_TARGET_PROPERTIES(FedTime PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
+# Install rules for both libCERTI and libFedTime
 INSTALL(TARGETS CERTI FedTime
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib

@@ -1,24 +1,24 @@
 // HLA 1.3 Header "fedtime.hh"
-// $Id: fedtime.hh,v 3.9 2008/05/06 13:36:19 erk Exp $
+// $Id: fedtime.hh,v 3.10 2008/12/03 10:23:53 erk Exp $
 
 #ifndef HLA_FEDTIME_HH
 #define HLA_FEDTIME_HH
 
 #ifdef _WIN32
 #include <windows.h>
-#else 
+#else
 #include <sys/types.h>
 #include <string.h>
 #endif
 #include "RTI.hh"
 
-class CERTI_EXPORT RTIfedTime : public RTI::FedTime
+class FEDTIME_EXPORT RTIfedTime : public RTI::FedTime
 {
 public:
-	
-	static const double epsilon; 
+
+	static const double epsilon;
 	static int fcmp(const double x1, const double x2);
-	
+
     RTIfedTime();
     RTIfedTime(const RTI::Double &);
     RTIfedTime(const RTI::FedTime &);
@@ -38,88 +38,88 @@ public:
 
     virtual RTI::FedTime& operator+=(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime& operator-=(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator<=(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator<(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator>=(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator>(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator==(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime & operator=(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Double getTime() const;
 
     virtual RTI::Boolean operator==(const RTI::Double &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator!=(const RTI::FedTime &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::Boolean operator!=(const RTI::Double &) const
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator=(const RTIfedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator=(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator*=(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator/=(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator+=(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator-=(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator*=(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTI::FedTime &operator/=(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator+(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator+(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator-(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator-(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator*(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator*(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator/(const RTI::FedTime &)
 	throw (RTI::InvalidFederationTime);
-    
+
     virtual RTIfedTime operator/(const RTI::Double &)
 	throw (RTI::InvalidFederationTime);
-    
-    friend RTI_STD::ostream CERTI_EXPORT &operator<<(RTI_STD::ostream&, const RTI::FedTime &);
+
+    friend RTI_STD::ostream FEDTIME_EXPORT &operator<<(RTI_STD::ostream&, const RTI::FedTime &);
 
 private:
     RTI::Double _fedTime ;
@@ -135,4 +135,4 @@ RTIfedTime operator/(const RTI::Double &, const RTI::FedTime &);
 
 #endif // HLA_FEDTIME_HH
 
-// $Id: fedtime.hh,v 3.9 2008/05/06 13:36:19 erk Exp $
+// $Id: fedtime.hh,v 3.10 2008/12/03 10:23:53 erk Exp $
