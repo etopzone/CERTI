@@ -96,9 +96,11 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 # Enforce strict ANSI C/C++ compliance checking
 IF(NOT MINGW)
 IF(CMAKE_COMPILER_IS_GNUCC)
+  # we may add -Wextra if we want gcc to _really_ scream
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -ansi -Wall -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 IF(CMAKE_COMPILER_IS_GNUCXX)
+  # we may add -Wextra if we want gcc to _really_ scream
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -ansi -Wall -Woverloaded-virtual -Wno-unused-function")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
