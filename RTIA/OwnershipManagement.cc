@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.16 2008/06/12 07:39:50 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.17 2008/12/07 20:16:09 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -319,7 +319,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
 
     if (e == e_NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
-        AttributeSet = RTI::AttributeHandleSetFactory::create(rep->handleArraySize);
+        AttributeSet = new AttributeHandleSet(rep->handleArraySize);
 
         for (int i = 0 ; i < rep->handleArraySize ; i++) {
             AttributeSet->add(rep->handleArray[i]);
@@ -514,4 +514,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.16 2008/06/12 07:39:50 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.17 2008/12/07 20:16:09 gotthardp Exp $

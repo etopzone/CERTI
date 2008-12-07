@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.62 2008/11/08 11:36:05 erk Exp $
+// $Id: ObjectClass.cc,v 3.63 2008/12/07 20:16:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1603,7 +1603,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
     if (server != NULL) {
         CDiffusion *diffusionAcquisition = new CDiffusion();
 
-        theAttribute = RTI::AttributeHandleSetFactory::create(the_size);
+        theAttribute = new AttributeHandleSet(the_size);
 
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < the_size ; i++) {
@@ -1830,4 +1830,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.62 2008/11/08 11:36:05 erk Exp $
+// $Id: ObjectClass.cc,v 3.63 2008/12/07 20:16:15 gotthardp Exp $

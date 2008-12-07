@@ -768,7 +768,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         try {
             rep.setObjectClass(om->getObjectClassHandle(req->getName().c_str()));
             }
-        catch (RTI::Exception &egoch)
+        catch (Exception &egoch)
             {
             rep.setException(static_cast<TypeException>(egoch.getType()),egoch._reason);
             }
@@ -811,7 +811,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
             rep.setAttribute(om->getAttributeHandle(req->getName().c_str(),
                                                 req->getObjectClass()));
             }
-        catch (RTI::Exception &egah)
+        catch (Exception &egah)
             {
             rep.setException(static_cast<TypeException>(egah.getType()),egah._reason);
             }
@@ -1441,7 +1441,7 @@ RTIA::processFederateRequest(Message *req)
     }
     catch (RTIinternalError &e) {
         cout << "RTIA sends InternalError to Fed., " ;
-        if (e._reason != NULL)
+        if (!e._reason.empty())
             cout << "reason : " << e._reason << endl ;
         else
             cout << "no reason given." << endl ;

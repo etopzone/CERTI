@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.55 2008/11/20 18:21:55 approx Exp $
+// $Id: Federation.hh,v 3.56 2008/12/07 20:16:11 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -27,6 +27,7 @@
 #include "Federate.hh"
 #include "RootObject.hh"
 #include "LBTS.hh"
+#include "GAV.hh"
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
 #include "certi.hh"
@@ -667,4 +668,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.55 2008/11/20 18:21:55 approx Exp $
+// $Id: Federation.hh,v 3.56 2008/12/07 20:16:11 gotthardp Exp $

@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.hh,v 3.9 2007/09/03 13:26:05 erk Exp $
+// $Id: Extent.hh,v 3.10 2008/12/07 20:16:13 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_EXTENT_HH
 #define CERTI_EXTENT_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 
 #include <vector>
 #include <utility>
@@ -71,4 +72,4 @@ private:
 
 #endif // CERTI_EXTENT_HH
 
-// $Id: Extent.hh,v 3.9 2007/09/03 13:26:05 erk Exp $
+// $Id: Extent.hh,v 3.10 2008/12/07 20:16:13 gotthardp Exp $

@@ -25,6 +25,7 @@
 #include "Exception.hh"
 #include "SocketUN.hh"
 #include "BasicMessage.hh"
+#include "GAV.hh"
 #include "fedtime.hh"
 
 #include <vector>
@@ -333,7 +334,7 @@ public:
 
     void setFederationTime(FederationTime);
     FederationTime getFederationTime() const { return fed_time.getTime(); };
-    
+
     void setBoolean(bool);
     bool getBoolean() const { return boolean ; };
 
@@ -350,7 +351,6 @@ public:
 
     void setEventRetraction(EventRetractionHandle);
     EventRetractionHandle getEventRetraction() const
-
     { return eventRetraction ; };
 
     void setParameter(ParameterHandle);
@@ -359,21 +359,21 @@ public:
     void setFederate(FederateHandle);
     FederateHandle getFederate() const { return federate ; };
 
-    AttributeHandleSet* getAHS() const ;
-    void setAHS(const AttributeHandleSet &);
+    const std::vector<AttributeHandle>& getAHS() const ;
+    void setAHS(const std::vector<AttributeHandle> &);
     void setAHS(const AttributeHandle *, int);
 
-    RTI::AttributeHandleValuePairSet* getAHVPS() const ;
-    void setAHVPS(const RTI::AttributeHandleValuePairSet &);
+    std::vector<std::pair<AttributeHandle, AttributeValue_t> > getAHVPS() const ;
+    void setAHVPS(const std::vector<std::pair<AttributeHandle, AttributeValue_t> > &);
 
-    RTI::ParameterHandleValuePairSet* getPHVPS() const ;
-    void setPHVPS(const RTI::ParameterHandleValuePairSet &);
+    std::vector<std::pair<ParameterHandle, ParameterValue_t> > getPHVPS() const ;
+    void setPHVPS(const std::vector<std::pair<ParameterHandle, ParameterValue_t> > &);
 
     void setAttributes(std::vector <AttributeHandle> &, ushort);
     void setAttributes(std::vector <AttributeHandle> &, std::vector <AttributeValue_t> &, ushort);
     void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterValue_t> &, ushort);
 
-    void setException(TypeException, const char *the_reason = "\0");
+    void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
 
@@ -387,7 +387,6 @@ public:
 
 protected:
     TypeException exception ;
-    //char exceptionReason[MAX_EXCEPTION_REASON_LENGTH + 1] ;
     std::string exceptionReason;
 
     RTIfedTime fed_time;

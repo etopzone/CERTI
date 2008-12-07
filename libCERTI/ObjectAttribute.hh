@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.16 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectAttribute.hh,v 3.17 2008/12/07 20:16:14 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
 #define CERTI_OBJECT_ATTRIBUTE_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 
 #include <list>
 
@@ -94,4 +95,4 @@ private:
 
 #endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.16 2007/06/22 08:51:38 erk Exp $
+// $Id: ObjectAttribute.hh,v 3.17 2008/12/07 20:16:14 gotthardp Exp $

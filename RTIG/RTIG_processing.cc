@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.79 2008/11/20 18:21:56 approx Exp $
+// $Id: RTIG_processing.cc,v 3.80 2008/12/07 20:16:11 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -159,7 +159,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
                                           federate.c_str(),
                                           static_cast<SocketTCP*>(link));
         }
-    catch (RTI::FederateAlreadyExecutionMember &e)
+    catch (FederateAlreadyExecutionMember &e)
         {
         // Federate yet has joined this federation(same or another with same name)
         // RTIG has to return something to RTIA
@@ -358,8 +358,8 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
       federationHandles.free(num_federation);
       D.Out(pdInit, "Federation \"%s\" has been destroyed.", federation.c_str());
     }
-    catch (RTI::Exception &e)
-      { printf("ERROR : %s  reason : %s\n",e._name,e._reason);
+    catch (Exception &e)
+      { printf("ERROR : %s  reason : %s\n",e._name,e._reason.c_str());
         if (strcmp(e._name,"RTIinternalError")==0 )
           {
           rep.exception = e_RTIinternalError;
@@ -394,7 +394,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Set federate's class relevance advisroy switch
 void
-RTIG::processSetClassRelevanceAdvisorySwitch(Socket *link, 
+RTIG::processSetClassRelevanceAdvisorySwitch(Socket *link,
 			     NM_Set_Class_Relevance_Advisory_Switch *msg)
 {
   NM_Set_Class_Relevance_Advisory_Switch rep;
@@ -454,7 +454,7 @@ RTIG::processSetInteractionRelevanceAdvisorySwitch(Socket *link,
 // ----------------------------------------------------------------------------
 //! Set federate's attribute relevance advisroy switch
 void
-RTIG::processSetAttributeRelevanceAdvisorySwitch(Socket *link, 
+RTIG::processSetAttributeRelevanceAdvisorySwitch(Socket *link,
 			     NM_Set_Attribute_Relevance_Advisory_Switch *msg)
 {
   NM_Set_Attribute_Relevance_Advisory_Switch rep;
@@ -1556,4 +1556,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.79 2008/11/20 18:21:56 approx Exp $
+// $Id: RTIG_processing.cc,v 3.80 2008/12/07 20:16:11 gotthardp Exp $

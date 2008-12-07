@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.53 2008/11/20 18:21:56 approx Exp $
+// $Id: RTIG.cc,v 3.54 2008/12/07 20:16:11 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -510,8 +510,8 @@ while (!terminate) {
 				} while (link->isDataReady());
 			}
 		catch (NetworkError &e) {
-			if (e._reason != NULL)
-			D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason);
+			if (!e._reason.empty())
+			D.Out(pdExcept, "Catching Network Error, reason : %s", e._reason.c_str());
 			else
 			D.Out(pdExcept, "Catching Network Error, no reason string.");
 			cout << "RTIG dropping client connection " << link->returnSocket()
@@ -539,7 +539,7 @@ RTIG::openConnection()
         socketServer.open();
     }
     catch (RTIinternalError &e) {
-        D.Out(pdExcept, "Error while accepting new connection : %s.", e._reason);
+        D.Out(pdExcept, "Error while accepting new connection : %s.", e._reason.c_str());
     }
 
     D.Out(pdInit, "Accepting new connection.");
@@ -579,7 +579,7 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
     // This macro is used to copy any non null exception reason
     // string into our buffer(used for Audit purpose).
 
-#define CPY_NOT_NULL(A) { if (A._reason != NULL)strcpy(buffer, A._reason); }
+#define CPY_NOT_NULL(A) { if (!A._reason.empty())strcpy(buffer, A._reason.c_str()); }
 
     buffer[0] = 0 ;
 
@@ -912,10 +912,10 @@ RTIG::processIncomingMessage(Socket *link) throw (NetworkError)
         rep->exception = e_RestoreNotRequested ;
     }
     catch (RTIinternalError &e) {
-        if (e._reason == NULL)
+        if (e._reason.empty())
             D.Out(pdExcept, "Catching \"%s\" exception.", e._name);
         else
-            D.Out(pdExcept, "Catching \"%s\" exception: %s.", e._name, e._reason);
+            D.Out(pdExcept, "Catching \"%s\" exception: %s.", e._name, e._reason.c_str());
         CPY_NOT_NULL(e);
         rep->exception = e_RTIinternalError ;
     }
@@ -1039,4 +1039,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.53 2008/11/20 18:21:56 approx Exp $
+// $Id: RTIG.cc,v 3.54 2008/12/07 20:16:11 gotthardp Exp $

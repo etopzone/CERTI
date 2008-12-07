@@ -21,16 +21,18 @@
 #define CERTI_GAV_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 
 #include <list>
 
 namespace certi {
 
-class AttributeHandleSetImp
-    : public std::list<AttributeHandle>, public AttributeHandleSet
+class AttributeHandleSet
+    : public std::list<AttributeHandle>
 {
 public:
-    virtual ~AttributeHandleSetImp();
+    AttributeHandleSet(ULong size);
+    virtual ~AttributeHandleSet();
 
     virtual ULong size() const ;
 
@@ -49,10 +51,11 @@ public:
     virtual RTI::Boolean isMember(AttributeHandle h) const ;
 };
 
-class FederateHandleSetImp : public std::list<FederateHandle>, RTI::FederateHandleSet
+class FederateHandleSet : public std::list<FederateHandle>
 {
 public:
-    virtual ~FederateHandleSetImp();
+    FederateHandleSet(ULong size);
+    virtual ~FederateHandleSet();
 
     virtual ULong size() const ;
 
@@ -63,7 +66,7 @@ public:
         throw (ValueCountExceeded);
 
     virtual void remove(FederateHandle h)
-        throw (RTI::ArrayIndexOutOfBounds);
+        throw (ArrayIndexOutOfBounds);
 
     virtual void empty();
 
@@ -86,8 +89,8 @@ public :
     ~AttributeHandleValuePair();
 };
 
-class AttributeHandleValuePairSetImp
-    : public std::list<AttributeHandleValuePair *>, RTI::AttributeHandleValuePairSet
+class AttributeHandleValuePairSet
+    : public std::list<AttributeHandleValuePair *>
 {
     // ATTRIBUTES
 public:
@@ -96,7 +99,8 @@ public:
 
     // METHODS
 public:
-    virtual ~AttributeHandleValuePairSetImp();
+    AttributeHandleValuePairSet(ULong size);
+    virtual ~AttributeHandleValuePairSet();
 
     virtual ULong size() const ;
     virtual Handle getHandle(ULong i) const throw (ArrayIndexOutOfBounds);
@@ -109,7 +113,7 @@ public:
         throw (ArrayIndexOutOfBounds);
 
     virtual TransportType getTransportType(ULong i) const
-        throw (RTI::InvalidHandleValuePairSetContext);
+        throw (InvalidHandleValuePairSetContext);
 
     virtual OrderType getOrderType(ULong i) const
         throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
@@ -141,16 +145,16 @@ public:
     ~ParameterHandleValuePair();
 };
 
-class ParameterHandleValuePairSetImp
-    : public std::list<ParameterHandleValuePair *>, public RTI::ParameterHandleValuePairSet
+class ParameterHandleValuePairSet
+    : public std::list<ParameterHandleValuePair *>
 {
 public:
     OrderType _order ;
     TransportType _transport ;
 
 public:
-    ParameterHandleValuePairSetImp(ULong size);
-    virtual ~ParameterHandleValuePairSetImp();
+    ParameterHandleValuePairSet(ULong size);
+    virtual ~ParameterHandleValuePairSet();
 
     virtual ULong size() const ;
 

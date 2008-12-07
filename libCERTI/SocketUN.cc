@@ -18,10 +18,8 @@
 // ----------------------------------------------------------------------------
 
 
-
 #include "certi.hh"
 #include "SocketUN.hh"
-#include "baseTypes.hh"
 
 #if defined(RTIA_USE_TCP)
 	#include "SocketTCP.hh"
@@ -67,7 +65,7 @@ SocketUN::acceptUN(int RTIA_port)
 #else
 	socklen_t socklen;
 #endif
-	
+
 	if((sock_connect=socket(AF_INET,SOCK_STREAM,0)) < 0)
 		error("socket");
 
@@ -79,11 +77,11 @@ SocketUN::acceptUN(int RTIA_port)
 	// TEMPO : UNIX socket emulation with TCP/IP sockets
 	int tcpport;
 	if (RTIA_port>0) {
-		tcpport = RTIA_port; 
+		tcpport = RTIA_port;
 	} else {
 	    tcpport = getpid();
 	}
-	
+
 	// make sure it is contained in a short
 	if (tcpport > 65535)
 		throw RTIinternalError("TCP Port too big.");
@@ -171,7 +169,7 @@ int Result = 0 ;
 
 #if defined(RTIA_USE_TCP)
 	struct sockaddr_in nom_serveur;
-	int lg_nom;	
+	int lg_nom;
 #ifdef _WIN32
 	struct hostent *hptr = NULL;
 	assert(SocketTCP::winsockInitialized());
@@ -184,10 +182,10 @@ char buffer[256] ;
 sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, Server_pid ) ;
 name = buffer ;
 
-while (Attempt < MAX_ATTEMPTS) 
+while (Attempt < MAX_ATTEMPTS)
 	{
 	pD->Out(pdInit, "Opening Client UNIX Socket.");
-	
+
 // TCP Socket case--------------------------------------------------
 #if defined(RTIA_USE_TCP)
 	if((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -207,7 +205,7 @@ while (Attempt < MAX_ATTEMPTS)
 
 	lg_nom = sizeof(nom_serveur);
 	Result = ::connect(_socket_un,(sockaddr *)&nom_serveur, lg_nom);
-	
+
 	//pD->Out(pdInit, "Client: Connect returned %d.", Result);
 #else
 	if ((_socket_un = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
@@ -271,11 +269,11 @@ SocketUN::SocketUN(SignalHandlerType theType)
 //! Close the socket.
 SocketUN::~SocketUN()
 {
-if (_est_init_un) 
+if (_est_init_un)
 	{
 	#ifdef _WIN32
 		closesocket(_socket_un);
-		if(_est_serveur == RTI_TRUE)
+		if (_est_serveur)
 			closesocket(sock_connect);
 	#else
 		close(_socket_un);
@@ -283,7 +281,7 @@ if (_est_init_un)
 			close(sock_connect);
 		unlink(name.c_str());
 	#endif
-	
+
 	if (_est_serveur)
 		pD->Out(pdTerm, "Server: Closed all sockets.");
 	else
@@ -317,7 +315,7 @@ assert(_est_init_un);
 
 pD->Out(pdTrace, "Beginning to send UN message...");
 
-while (total_sent < size) 
+while (total_sent < size)
 	{
 	#ifdef _WIN32
 		sent = ::send(_socket_un, (char *) buffer + total_sent, size - total_sent, 0);
@@ -325,17 +323,17 @@ while (total_sent < size)
 		sent = write(_socket_un, (char *) buffer + total_sent, size - total_sent);
 	#endif
 
-	if (sent > 0) 
+	if (sent > 0)
 		{
 		total_sent += sent ;
 		pD->Out(pdTrace, "Sent %ld bytes out of %ld.", total_sent, size);
 		}
-	else 
+	else
 		{
-		if (sent < 0) 
+		if (sent < 0)
 			{
 			pD->Out(pdExcept, "Error while sending on UN socket.");
-			
+
 			#ifdef _WIN32
 				if(WSAGetLastError() == WSAEINTR)
 			#else
@@ -344,14 +342,14 @@ while (total_sent < size)
 				{// Incoming Signal
 				if (HandlerType == stSignalInterrupt) throw NetworkSignal("");
 				else pD->Out(pdExcept, "EmettreUN ignoring signal interruption.");
-				}		
+				}
 			else // Other errors
 				{
 				perror("UN Socket(EmettreUN) : ");
 					throw NetworkError("Error while sending UN message.");
 			}	}
-			
-		if (sent == 0) 
+
+		if (sent == 0)
 			{
 			pD->Out(pdExcept, "No data could be sent, connection closed?.");
 			throw NetworkError("Could not send any data on UN socket.");
@@ -370,7 +368,7 @@ void SocketUN::error(const char *msg) throw (NetworkError)
 
  smsg << "SocketUN::error <"
  	  << strerror(errno)
- 	  << "> msg = <" 	  
+ 	  << "> msg = <"
  	  << msg <<">";
  throw NetworkError(smsg.str().c_str());
 }
@@ -417,7 +415,7 @@ long nReceived = 0 ;
 
 pD->Out(pdTrace, "Beginning to receive U/W message...(Size  %ld)",Size);
 
-while (RBLength < Size) 
+while (RBLength < Size)
 	{
 	#ifdef _WIN32
 		#ifdef SOCKUN_BUFFER_LENGTH
@@ -442,7 +440,7 @@ while (RBLength < Size)
 	if (nReceived < 0)
 		{
 		pD->Out(pdExcept, "Error while receiving on UN socket.");
-	
+
 		#ifdef _WIN32
 			if(WSAGetLastError() == WSAEINTR)
 		#else
@@ -454,19 +452,19 @@ while (RBLength < Size)
 			else
 				pD->Out(pdExcept, "RecevoirUN ignoring signal interruption.");
 			}
-		else 
+		else
 			{// Other errors
 			perror("UN Socket(RecevoirUN) : ");
 			throw NetworkError("Error while receiving UN message.");
 			}
 		}
 
-	if (nReceived == 0) 
+	if (nReceived == 0)
 		{
 		pD->Out(pdExcept, "UN connection has been closed by peer.");
 		throw NetworkError("Connection closed by client.");
 		}
-	else if (nReceived > 0) 
+	else if (nReceived > 0)
 		{
 		RBLength += nReceived ;
 		RcvdBytesCount += nReceived ;

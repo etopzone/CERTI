@@ -28,6 +28,7 @@
 class Object;
 #include "SecurityServer.hh"
 #include "MessageBuffer.hh"
+#include "GAV.hh"
 #include "certi.hh"
 
 // Standard

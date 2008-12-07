@@ -19,11 +19,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.15 2008/11/06 14:28:58 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16 2008/12/07 20:16:16 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIambPrivateRefs.hh"
+#include "RTItypesImp.hh"
 #include "PrettyDebug.hh"
 #include <sstream>
 
@@ -48,11 +49,11 @@ RTIambPrivateRefs::~RTIambPrivateRefs()
 
 // ----------------------------------------------------------------------------
 void
-RTIambPrivateRefs::leave(const char *msg) throw (RTIinternalError)
+RTIambPrivateRefs::leave(const char *msg) throw (RTI::RTIinternalError)
 {
 	std::stringstream smsg;
 	smsg << "RTI called leave because <" <<msg<<">"; 
-	throw RTIinternalError(smsg.str().c_str());   
+    throw RTI::RTIinternalError(smsg.str().c_str());
 }
 
 // ----------------------------------------------------------------------------
@@ -68,7 +69,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
-        throw RTIinternalError("libRTI: Network Write Error");
+        throw RTI::RTIinternalError("libRTI: Network Write Error");
     }
 
     D.Out(pdDebug, "waiting RTIA reply.");
@@ -79,7 +80,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
-        throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
+        throw RTI::RTIinternalError("libRTI: Network Read Error waiting RTI reply");
     }
 
     D.Out(pdDebug, "RTIA reply received.");
@@ -87,7 +88,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
 
     if (rep->type != req->type) {
         std::cout << "LibRTI: Assertion failed: rep->type != req->type" << std::endl ;
-        throw RTIinternalError("RTIambPrivateRefs::executeService: "
+        throw RTI::RTIinternalError("RTIambPrivateRefs::executeService: "
                                "rep->type != req->type");
     }
 
@@ -113,7 +114,7 @@ RTIambPrivateRefs::sendTickRequestStop()
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (write)" << std::endl ;
-        throw RTIinternalError("libRTI: Network Write Error");
+        throw RTI::RTIinternalError("libRTI: Network Write Error");
     }
 
     try {
@@ -121,7 +122,7 @@ RTIambPrivateRefs::sendTickRequestStop()
     }
     catch (NetworkError) {
         std::cerr << "libRTI: exception: NetworkError (read)" << std::endl ;
-        throw RTIinternalError("libRTI: Network Read Error waiting RTI reply");
+        throw RTI::RTIinternalError("libRTI: Network Read Error waiting RTI reply");
     }
 
     // ignore the response, ignore exceptions
@@ -145,162 +146,162 @@ RTIambPrivateRefs::processException(Message *msg)
 
       case e_ArrayIndexOutOfBounds: {
           D.Out(pdExcept, "Throwing e_ArrayIndexOutOfBounds exception.");
-          throw ArrayIndexOutOfBounds(msg->getExceptionReason());
+          throw RTI::ArrayIndexOutOfBounds(msg->getExceptionReason());
       } break ;
 
       case e_AsynchronousDeliveryAlreadyEnabled: {
           D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyEnabled exception.");
-          throw AsynchronousDeliveryAlreadyEnabled(msg->getExceptionReason());
+          throw RTI::AsynchronousDeliveryAlreadyEnabled(msg->getExceptionReason());
       } break ;
 
       case e_AsynchronousDeliveryAlreadyDisabled: {
           D.Out(pdExcept, "Throwing e_AsynchronousDeliveryAlreadyDisabled exception.");
-          throw AsynchronousDeliveryAlreadyDisabled(msg->getExceptionReason());
+          throw RTI::AsynchronousDeliveryAlreadyDisabled(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAlreadyOwned: {
           D.Out(pdExcept, "Throwing e_AttributeAlreadyOwned exception.");
-          throw AttributeAlreadyOwned(msg->getExceptionReason());
+          throw RTI::AttributeAlreadyOwned(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAlreadyBeingAcquired: {
           D.Out(pdExcept,
 		"Throwing e_AttributeAlreadyBeingAcquired exception.");
-          throw AttributeAlreadyBeingAcquired(msg->getExceptionReason());
+          throw RTI::AttributeAlreadyBeingAcquired(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAlreadyBeingDivested: {
           D.Out(pdExcept,
 		"Throwing e_AttributeAlreadyBeingDivested exception.");
-          throw AttributeAlreadyBeingDivested(msg->getExceptionReason());
+          throw RTI::AttributeAlreadyBeingDivested(msg->getExceptionReason());
       } break ;
 
       case e_AttributeDivestitureWasNotRequested: {
           D.Out(pdExcept,
                 "Throwing e_AttributeDivestitureWasNotRequested exception.");
-          throw AttributeDivestitureWasNotRequested(msg->getExceptionReason());
+          throw RTI::AttributeDivestitureWasNotRequested(msg->getExceptionReason());
       } break ;
 
       case e_AttributeAcquisitionWasNotRequested: {
           D.Out(pdExcept,
                 "Throwing e_AttributeAcquisitionWasNotRequested exception.");
-          throw AttributeAcquisitionWasNotRequested(msg->getExceptionReason());
+          throw RTI::AttributeAcquisitionWasNotRequested(msg->getExceptionReason());
       } break ;
 
       case e_AttributeNotDefined: {
           D.Out(pdExcept, "Throwing e_AttributeNotDefined exception.");
-          throw AttributeNotDefined(msg->getExceptionReason());
+          throw RTI::AttributeNotDefined(msg->getExceptionReason());
       } break ;
 
       case e_AttributeNotKnown: {
           D.Out(pdExcept, "Throwing e_AttributeNotKnown exception.");
-          throw AttributeNotKnown(msg->getExceptionReason());
+          throw RTI::AttributeNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_AttributeNotOwned: {
           D.Out(pdExcept, "Throwing e_AttributeNotOwned exception.");
-          throw AttributeNotOwned(msg->getExceptionReason());
+          throw RTI::AttributeNotOwned(msg->getExceptionReason());
       } break ;
 
       case e_AttributeNotPublished: {
           D.Out(pdExcept, "Throwing e_AttributeNotPublished exception.");
-          throw AttributeNotPublished(msg->getExceptionReason());
+          throw RTI::AttributeNotPublished(msg->getExceptionReason());
       } break ;
 
       case e_AttributeNotSubscribed: {
           D.Out(pdExcept, "Throwing e_AttributeNotSubscribed exception.");
-          throw AttributeNotSubscribed(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_ConcurrentAccessAttempted: {
           D.Out(pdExcept, "Throwing e_ConcurrentAccessAttempted exception.");
-          throw ConcurrentAccessAttempted(msg->getExceptionReason());
+          throw RTI::ConcurrentAccessAttempted(msg->getExceptionReason());
       } break ;
 
       case e_CouldNotDiscover: {
           D.Out(pdExcept, "Throwing e_CouldNotDiscover exception.");
-          throw CouldNotDiscover(msg->getExceptionReason());
+          throw RTI::CouldNotDiscover(msg->getExceptionReason());
       } break ;
 
       case e_CouldNotOpenFED: {
           D.Out(pdExcept, "Throwing e_CouldNotOpenFED exception.");
-          throw CouldNotOpenFED(msg->getExceptionReason());
+          throw RTI::CouldNotOpenFED(msg->getExceptionReason());
       } break ;
 
       case e_CouldNotOpenRID: {
           D.Out(pdExcept, "Throwing e_CouldNotOpenRID exception.");
-          throw CouldNotOpenRID(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_CouldNotRestore: {
           D.Out(pdExcept, "Throwing e_CouldNotRestore exception.");
-          throw CouldNotRestore(msg->getExceptionReason());
+          throw RTI::CouldNotRestore(msg->getExceptionReason());
       } break ;
 
       case e_DeletePrivilegeNotHeld: {
           D.Out(pdExcept, "Throwing e_DeletePrivilegeNotHeld exception.");
-          throw DeletePrivilegeNotHeld(msg->getExceptionReason());
+          throw RTI::DeletePrivilegeNotHeld(msg->getExceptionReason());
       } break ;
 
       case e_ErrorReadingRID: {
           D.Out(pdExcept, "Throwing e_ErrorReadingRID exception.");
-          throw ErrorReadingRID(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_ErrorReadingFED: {
           D.Out(pdExcept, "Throwing e_ErrorReadingFED exception.");
-          throw ErrorReadingFED(msg->getExceptionReason());
+          throw RTI::ErrorReadingFED(msg->getExceptionReason());
       } break ;
 
       case e_EventNotKnown: {
           D.Out(pdExcept, "Throwing e_EventNotKnown exception.");
-          throw EventNotKnown(msg->getExceptionReason());
+          throw RTI::EventNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_FederateAlreadyPaused: {
           D.Out(pdExcept, "Throwing e_FederateAlreadyPaused exception.");
-          throw FederateAlreadyPaused(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateAlreadyExecutionMember: {
           D.Out(pdExcept,
 		"Throwing e_FederateAlreadyExecutionMember exception.");
-          throw FederateAlreadyExecutionMember(msg->getExceptionReason());
+          throw RTI::FederateAlreadyExecutionMember(msg->getExceptionReason());
       } break ;
 
       case e_FederateDoesNotExist: {
           D.Out(pdExcept, "Throwing e_FederateDoesNotExist exception.");
-          throw FederateDoesNotExist(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateInternalError: {
           D.Out(pdExcept, "Throwing e_FederateInternalError exception.");
-          throw FederateInternalError(msg->getExceptionReason());
+          throw RTI::FederateInternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateNameAlreadyInUse: {
           D.Out(pdExcept, "Throwing e_FederateNameAlreadyInUse exception.");
-          throw FederateNameAlreadyInUse(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateNotExecutionMember: {
           D.Out(pdExcept, "Throwing e_FederateNotExecutionMember exception.");
-          throw FederateNotExecutionMember(msg->getExceptionReason());
+          throw RTI::FederateNotExecutionMember(msg->getExceptionReason());
       } break ;
 
       case e_FederateNotPaused: {
           D.Out(pdExcept, "Throwing e_FederateNotPaused exception.");
-          throw FederateNotPaused(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateOwnsAttributes: {
           D.Out(pdExcept, "Throwing e_FederateOwnsAttributes exception.");
-          throw FederateOwnsAttributes(msg->getExceptionReason());
+          throw RTI::FederateOwnsAttributes(msg->getExceptionReason());
       } break ;
 
       case e_FederatesCurrentlyJoined: {
           D.Out(pdExcept, "Throwing e_FederatesCurrentlyJoined exception.");
-          throw FederatesCurrentlyJoined(msg->getExceptionReason());
+          throw RTI::FederatesCurrentlyJoined(msg->getExceptionReason());
       } break ;
 
       case e_FederateWasNotAskedToReleaseAttribute: {
@@ -308,266 +309,265 @@ RTIambPrivateRefs::processException(Message *msg)
                 "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
           D.Out(pdDebug,
                 "Throwing e_FederateWasNotAskedToReleaseAttribute exception.");
-          throw
-	      FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
+          throw RTI::FederateWasNotAskedToReleaseAttribute(msg->getExceptionReason());
       } break ;
 
       case e_FederationAlreadyPaused: {
           D.Out(pdExcept, "Throwing e_FederationAlreadyPaused exception.");
-          throw FederationAlreadyPaused(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederationExecutionAlreadyExists: {
           D.Out(pdExcept, "Throwing e_FederationExecutionAlreadyExists excep.");
-          throw FederationExecutionAlreadyExists(msg->getExceptionReason());
+          throw RTI::FederationExecutionAlreadyExists(msg->getExceptionReason());
       } break ;
 
       case e_FederationExecutionDoesNotExist: {
           D.Out(pdExcept, "Throwing e_FederationExecutionDoesNotExist except.");
-          throw FederationExecutionDoesNotExist(msg->getExceptionReason());
+          throw RTI::FederationExecutionDoesNotExist(msg->getExceptionReason());
       } break ;
 
       case e_FederationNotPaused: {
           D.Out(pdExcept, "Throwing e_FederationNotPaused exception.");
-          throw FederationNotPaused(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederationTimeAlreadyPassed: {
           D.Out(pdExcept, "Throwing e_FederationTimeAlreadyPassed exception.");
-          throw FederationTimeAlreadyPassed(msg->getExceptionReason());
+          throw RTI::FederationTimeAlreadyPassed(msg->getExceptionReason());
       } break ;
 
       case e_FederateNotPublishing: {
           D.Out(pdExcept, "Throwing e_FederateNotPublishing exception.");
-          throw FederateNotPublishing(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_FederateNotSubscribing: {
           D.Out(pdExcept, "Throwing e_FederateNotSubscribing exception.");
-          throw FederateNotSubscribing(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_RegionNotKnown: {
           D.Out(pdExcept, "Throwing e_RegionNotKnown exception.");
-          throw RegionNotKnown(msg->getExceptionReason());
+          throw RTI::RegionNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_IDsupplyExhausted: {
           D.Out(pdExcept, "Throwing e_IDsupplyExhausted exception.");
-          throw IDsupplyExhausted(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_InteractionClassNotDefined: {
           D.Out(pdExcept, "Throwing e_InteractionClassNotDefined exception.");
-          throw InteractionClassNotDefined(msg->getExceptionReason());
+          throw RTI::InteractionClassNotDefined(msg->getExceptionReason());
       } break ;
 
       case e_InteractionClassNotKnown: {
           D.Out(pdExcept, "Throwing e_InteractionClassNotKnown exception.");
-          throw InteractionClassNotKnown(msg->getExceptionReason());
+          throw RTI::InteractionClassNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_InteractionClassNotPublished: {
           D.Out(pdExcept, "Throwing e_InteractionClassNotPublished exception.");
-          throw InteractionClassNotPublished(msg->getExceptionReason());
+          throw RTI::InteractionClassNotPublished(msg->getExceptionReason());
       } break ;
 
       case e_InteractionParameterNotDefined: {
           D.Out(pdExcept,
 		"Throwing e_InteractionParameterNotDefined exception.");
-          throw InteractionParameterNotDefined(msg->getExceptionReason());
+          throw RTI::InteractionParameterNotDefined(msg->getExceptionReason());
       } break ;
 
       case e_InteractionParameterNotKnown: {
           D.Out(pdExcept, "Throwing e_InteractionParameterNotKnown exception.");
-          throw InteractionParameterNotKnown(msg->getExceptionReason());
+          throw RTI::InteractionParameterNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_InvalidDivestitureCondition: {
           D.Out(pdExcept, "Throwing e_InvalidDivestitureCondition exception.");
-          throw InvalidDivestitureCondition(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_InvalidExtents: {
           D.Out(pdExcept, "Throwing e_InvalidExtents exception.");
-          throw InvalidExtents(msg->getExceptionReason());
+          throw RTI::InvalidExtents(msg->getExceptionReason());
       } break ;
 
       case e_InvalidFederationTime: {
           D.Out(pdExcept, "Throwing e_InvalidFederationTime exception.");
-          throw InvalidFederationTime(msg->getExceptionReason());
+          throw RTI::InvalidFederationTime(msg->getExceptionReason());
       } break ;
 
       case e_InvalidFederationTimeDelta: {
           D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
-          throw InvalidFederationTimeDelta(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_InvalidObjectHandle: {
           D.Out(pdExcept, "Throwing e_InvalidObjectHandle exception.");
-          throw InvalidObjectHandle(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_InvalidOrderingHandle: {
           D.Out(pdExcept, "Throwing e_InvalidOrderingHandle exception.");
-          throw InvalidOrderingHandle(msg->getExceptionReason());
+          throw RTI::InvalidOrderingHandle(msg->getExceptionReason());
       } break ;
 
       case e_InvalidResignAction: {
           D.Out(pdExcept, "Throwing e_InvalidResignAction exception.");
-          throw InvalidResignAction(msg->getExceptionReason());
+          throw RTI::InvalidResignAction(msg->getExceptionReason());
       } break ;
 
       case e_InvalidRetractionHandle: {
           D.Out(pdExcept, "Throwing e_InvalidRetractionHandle exception.");
-          throw InvalidRetractionHandle(msg->getExceptionReason());
+          throw RTI::InvalidRetractionHandle(msg->getExceptionReason());
       } break ;
 
       case e_InvalidRoutingSpace: {
           D.Out(pdExcept, "Throwing e_InvalidRoutingSpace exception.");
-          throw InvalidRoutingSpace(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_InvalidTransportationHandle: {
           D.Out(pdExcept, "Throwing e_InvalidTransportationHandle exception.");
-          throw InvalidTransportationHandle(msg->getExceptionReason());
+          throw RTI::InvalidTransportationHandle(msg->getExceptionReason());
       } break ;
 
       case e_MemoryExhausted: {
           D.Out(pdExcept, "Throwing e_MemoryExhausted exception.");
-          throw MemoryExhausted(msg->getExceptionReason());
+          throw RTI::MemoryExhausted(msg->getExceptionReason());
       } break ;
 
       case e_NameNotFound: {
           D.Out(pdExcept, "Throwing e_NameNotFound exception.");
-          throw NameNotFound(msg->getExceptionReason());
+          throw RTI::NameNotFound(msg->getExceptionReason());
       } break ;
 
       case e_NoPauseRequested: {
           D.Out(pdExcept, "Throwing e_NoPauseRequested exception.");
-          throw NoPauseRequested(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_NoResumeRequested: {
           D.Out(pdExcept, "Throwing e_NoResumeRequested exception.");
-          throw NoResumeRequested(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_ObjectClassNotDefined: {
           D.Out(pdExcept, "Throwing e_ObjectClassNotDefined exception.");
-          throw ObjectClassNotDefined(msg->getExceptionReason());
+          throw RTI::ObjectClassNotDefined(msg->getExceptionReason());
       } break ;
 
       case e_ObjectClassNotKnown: {
           D.Out(pdExcept, "Throwing e_ObjectClassNotKnown exception.");
-          throw ObjectClassNotKnown(msg->getExceptionReason());
+          throw RTI::ObjectClassNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_ObjectClassNotPublished: {
           D.Out(pdExcept, "Throwing e_ObjectClassNotPublished exception.");
-          throw ObjectClassNotPublished(msg->getExceptionReason());
+          throw RTI::ObjectClassNotPublished(msg->getExceptionReason());
       } break ;
 
       case e_ObjectClassNotSubscribed: {
           D.Out(pdExcept, "Throwing e_ObjectClassNotSubscribed exception.");
-          throw ObjectClassNotSubscribed(msg->getExceptionReason());
+          throw RTI::ObjectClassNotSubscribed(msg->getExceptionReason());
       } break ;
 
       case e_ObjectNotKnown: {
           D.Out(pdExcept, "Throwing e_ObjectNotKnown exception.");
-          throw ObjectNotKnown(msg->getExceptionReason());
+          throw RTI::ObjectNotKnown(msg->getExceptionReason());
       } break ;
 
       case e_ObjectAlreadyRegistered: {
           D.Out(pdExcept, "Throwing e_ObjectAlreadyRegistered exception.");
-          throw ObjectAlreadyRegistered(msg->getExceptionReason());
+          throw RTI::ObjectAlreadyRegistered(msg->getExceptionReason());
       } break ;
 
       case e_RestoreInProgress: {
           D.Out(pdExcept, "Throwing e_RestoreInProgress exception.");
-          throw RestoreInProgress(msg->getExceptionReason());
+          throw RTI::RestoreInProgress(msg->getExceptionReason());
       } break ;
 
       case e_RestoreNotRequested: {
           D.Out(pdExcept, "Throwing e_RestoreNotRequested exception.");
-          throw RestoreNotRequested(msg->getExceptionReason());
+          throw RTI::RestoreNotRequested(msg->getExceptionReason());
       } break ;
 
       case e_RTIinternalError: {
           D.Out(pdExcept, "Throwing e_RTIinternalError exception.");
-          throw RTIinternalError(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_SpaceNotDefined: {
           D.Out(pdExcept, "Throwing e_SpaceNotDefined exception.");
-          throw SpaceNotDefined(msg->getExceptionReason());
+          throw RTI::SpaceNotDefined(msg->getExceptionReason());
       } break ;
 
       case e_SaveInProgress: {
           D.Out(pdExcept, "Throwing e_SaveInProgress exception.");
-          throw SaveInProgress(msg->getExceptionReason());
+          throw RTI::SaveInProgress(msg->getExceptionReason());
       } break ;
 
       case e_SaveNotInitiated: {
           D.Out(pdExcept, "Throwing e_SaveNotInitiated exception.");
-          throw SaveNotInitiated(msg->getExceptionReason());
+          throw RTI::SaveNotInitiated(msg->getExceptionReason());
       } break ;
 
       case e_SecurityError: {
           D.Out(pdExcept, "Throwing e_SecurityError exception.");
-          throw SecurityError(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_SpecifiedSaveLabelDoesNotExist: {
           D.Out(pdExcept,
 		"Throwing e_SpecifiedSaveLabelDoesNotExist exception.");
-          throw SpecifiedSaveLabelDoesNotExist(msg->getExceptionReason());
+          throw RTI::SpecifiedSaveLabelDoesNotExist(msg->getExceptionReason());
       } break ;
 
       case e_TimeAdvanceAlreadyInProgress: {
           D.Out(pdExcept, "Throwing e_TimeAdvanceAlreadyInProgress exception.");
-          throw TimeAdvanceAlreadyInProgress(msg->getExceptionReason());
+          throw RTI::TimeAdvanceAlreadyInProgress(msg->getExceptionReason());
       } break ;
 
       case e_TimeAdvanceWasNotInProgress: {
           D.Out(pdExcept, "Throwing e_TimeAdvanceWasNotInProgress exception.");
-          throw TimeAdvanceWasNotInProgress(msg->getExceptionReason());
+          throw RTI::TimeAdvanceWasNotInProgress(msg->getExceptionReason());
       } break ;
 
       case e_TooManyIDsRequested: {
           D.Out(pdExcept, "Throwing e_TooManyIDsRequested exception.");
-          throw TooManyIDsRequested(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_UnableToPerformSave: {
           D.Out(pdExcept, "Throwing e_UnableToPerformSave exception.");
-          throw UnableToPerformSave(msg->getExceptionReason());
+          throw RTI::UnableToPerformSave(msg->getExceptionReason());
       } break ;
 
       case e_UnimplementedService: {
           D.Out(pdExcept, "Throwing e_UnimplementedService exception.");
-          throw UnimplementedService(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_UnknownLabel: {
           D.Out(pdExcept, "Throwing e_UnknownLabel exception.");
-          throw UnknownLabel(msg->getExceptionReason());
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
 
       case e_ValueCountExceeded: {
           D.Out(pdExcept, "Throwing e_ValueCountExceeded exception.");
-          throw ValueCountExceeded(msg->getExceptionReason());
+          throw RTI::ValueCountExceeded(msg->getExceptionReason());
       } break ;
 
       case e_ValueLengthExceeded: {
           D.Out(pdExcept, "Throwing e_ValueLengthExceeded exception.");
-          throw ValueLengthExceeded(msg->getExceptionReason());
+          throw RTI::ValueLengthExceeded(msg->getExceptionReason());
       } break ;
 
       default: {
           D.Out(pdExcept, "Throwing unknown exception !");
-          std::cout << "LibRTI: Receiving unknown exception." << std::endl ;
-          throw RTIinternalError(msg->getExceptionReason());
+          std::cout << "LibRTI: Receiving unknown RTI exception." << std::endl;
+          throw RTI::RTIinternalError(msg->getExceptionReason());
       } break ;
     }
 }
@@ -576,12 +576,12 @@ RTIambPrivateRefs::processException(Message *msg)
     catch (Exception &e) { \
         std::stringstream msg; \
         msg << "Error in " << service << ": " << e._name << "[" << e._reason << "]"; \
-        throw RTIinternalError(msg.str().c_str()); \
+        throw RTI::RTIinternalError(msg.str().c_str()); \
     }
 
 void
 RTIambPrivateRefs::callFederateAmbassador(Message *msg)
-    throw (RTIinternalError)
+    throw (RTI::RTIinternalError)
 {
     switch (msg->type) {
 
@@ -706,7 +706,9 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
       case Message::REFLECT_ATTRIBUTE_VALUES:
         try {
             G.Out(pdGendoc,"          tick_kernel call to reflectAttributeValues");
-            RTI::AttributeHandleValuePairSet *attributes = msg->getAHVPS();
+            RTI::AttributeHandleValuePairSet *attributes =
+                new AttributeHandleValuePairSetImp(msg->getAHVPS());
+
             if (msg->getBoolean())
                fed_amb->reflectAttributeValues(msg->getObject(),
                                                *attributes,
@@ -724,7 +726,9 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::RECEIVE_INTERACTION:
         try {
-            RTI::ParameterHandleValuePairSet *parameters = msg->getPHVPS();
+            RTI::ParameterHandleValuePairSet *parameters =
+                new ParameterHandleValuePairSetImp(msg->getPHVPS());
+
             if (msg->getBoolean())
                 fed_amb->receiveInteraction(
                                         msg->getInteractionClass(),
@@ -763,7 +767,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->provideAttributeValueUpdate(msg->getObject(),*attributeSet);
             delete attributeSet ;
@@ -777,7 +782,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->
                 requestAttributeOwnershipAssumption(msg->getObject(),
@@ -790,7 +796,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->requestAttributeOwnershipRelease(
                 msg->getObject(),
@@ -804,7 +811,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_UNAVAILABLE:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->attributeOwnershipUnavailable(msg->getObject(),
                                                        *attributeSet);
@@ -816,7 +824,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->attributeOwnershipAcquisitionNotification(
                 msg->getObject(),
@@ -829,7 +838,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->attributeOwnershipDivestitureNotification(
                 msg->getObject(),
@@ -842,7 +852,8 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION:
         try {
-            AttributeHandleSet *attributeSet = msg->getAHS();
+            RTI::AttributeHandleSet *attributeSet =
+                new AttributeHandleSetImp(msg->getAHS());
 
             fed_amb->confirmAttributeOwnershipAcquisitionCancellation(
                 msg->getObject(),
@@ -897,4 +908,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.15 2008/11/06 14:28:58 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16 2008/12/07 20:16:16 gotthardp Exp $

@@ -22,7 +22,7 @@ SET(billard_SRCS
   )
 
 ADD_EXECUTABLE(billard ${billard_SRCS})
-TARGET_LINK_LIBRARIES(billard graph RTI-NG FedTime)
+TARGET_LINK_LIBRARIES(billard graph RTI FedTime)
 
 IF (X11_FOUND)
   TARGET_LINK_LIBRARIES(billard ${X11_LIBRARIES})

@@ -23,7 +23,6 @@
 #include "Message.hh"
 #include "certi.hh"
 #include "PrettyDebug.hh"
-#include "GAV.hh"
 
 #include <stdlib.h>
 #include <cstdio>
@@ -272,13 +271,9 @@ Message::setParameter(ParameterHandle the_parameter)
 */
 void
 Message::setException(TypeException the_exception,
-                      const char *the_reason)
+                      const std::string& the_reason)
 {
     exception = the_exception ;
-
-    if (strlen(the_reason) > MAX_EXCEPTION_REASON_LENGTH)
-        throw ValueLengthExceeded("Exception reason too long to fit in"
-                                  " Message.");
     exceptionReason = the_reason;
 }
 
@@ -290,29 +285,22 @@ Message::setFederate(FederateHandle the_federate)
 }
 
 // ----------------------------------------------------------------------------
-AttributeHandleSet*
+const std::vector<AttributeHandle>&
 Message::getAHS() const
 {
-    AttributeHandleSet *attributeSet ;
-    attributeSet = RTI::AttributeHandleSetFactory::create(handleArraySize);
-
-    for (int i = 0 ; i < handleArraySize ; i++) {
-        attributeSet->add(handleArray[i]);
-    }
-
-    return attributeSet ;
+    return handleArray;
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setAHS(const AttributeHandleSet &the_attributes)
+Message::setAHS(const std::vector<AttributeHandle> &the_attributes)
 {
     G.Out(pdGendoc,"enter Message::setAHS");
     handleArraySize = the_attributes.size();
     handleArray.resize(handleArraySize);
 
     for (unsigned int i = 0 ; i < the_attributes.size(); ++i) {
-        handleArray[i] = the_attributes.getHandle(i);
+        handleArray[i] = the_attributes[i];
     }
     G.Out(pdGendoc,"exit  Message::setAHS");
 }
@@ -332,16 +320,18 @@ Message::setAHS(const AttributeHandle *attr, int size)
 }
 
 // ----------------------------------------------------------------------------
-RTI::AttributeHandleValuePairSet *
+std::vector<std::pair<AttributeHandle, AttributeValue_t> >
 Message::getAHVPS() const
 {
-    RTI::AttributeHandleValuePairSet *ahvps ;
-    ahvps = RTI::AttributeSetFactory::create(handleArraySize);
+    std::vector<std::pair<AttributeHandle, AttributeValue_t> > result;
+    result.resize(handleArraySize);
 
-    for (int i = 0 ; i < handleArraySize ; i++)
-        ahvps->add(handleArray[i], valueArray[i].data(), valueArray[i].length());
+    for (int i = 0 ; i < handleArraySize ; i++) {
+        result[i].first = handleArray[i];
+        result[i].second.assign(valueArray[i].data(), valueArray[i].length());
+    }
 
-    return ahvps ;
+    return result;
 }
 
 // ----------------------------------------------------------------------------
@@ -349,7 +339,7 @@ Message::getAHVPS() const
     @param the_attributes attribute set
 */
 void
-Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
+Message::setAHVPS(const std::vector<std::pair<AttributeHandle, AttributeValue_t> > &the_attributes)
 {
     G.Out(pdGendoc,"enter Message::setAHVPS");
 
@@ -361,35 +351,30 @@ Message::setAHVPS(const RTI::AttributeHandleValuePairSet &the_attributes)
     valueArray.resize(size) ;
 
     for (unsigned long i = 0 ; i < size ; i++) {
-
-        // handle stored into handleArray[i]
-        handleArray[i] = the_attributes.getHandle(size-1-i);
-
-        // value stored into valueArray[i]
-        ULong length;
-        char *valueptr = the_attributes.getValuePointer(size-1-i, length);
-        valueArray[i].assign(valueptr, length);
-        // no free(valueptr), getValuePointer does not allocate memory
+        handleArray[i] = the_attributes[size-1-i].first;
+        valueArray[i] = the_attributes[size-1-i].second;
     }
     G.Out(pdGendoc,"exit  Message::setAHVPS");
 }
 
 // ----------------------------------------------------------------------------
-RTI::ParameterHandleValuePairSet *
+std::vector<std::pair<ParameterHandle, ParameterValue_t> >
 Message::getPHVPS() const
 {
-    ParameterHandleValuePairSetImp *phvps ;
-    phvps = new ParameterHandleValuePairSetImp(handleArraySize);
+    std::vector<std::pair<ParameterHandle, ParameterValue_t> > result;
+    result.resize(handleArraySize);
 
-    for (int i = 0 ; i < handleArraySize ; i++)
-        phvps->add(handleArray[i], valueArray[i].data(), valueArray[i].length());
+    for (int i = 0 ; i < handleArraySize ; i++) {
+        result[i].first = handleArray[i];
+        result[i].second.assign(valueArray[i].data(), valueArray[i].length());
+    }
 
-    return phvps ;
+    return result;
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
+Message::setPHVPS(const std::vector<std::pair<ParameterHandle, ParameterValue_t> > &the_parameters)
 {
     G.Out(pdGendoc,"enter Message::setPHVPS");
 
@@ -401,15 +386,8 @@ Message::setPHVPS(const RTI::ParameterHandleValuePairSet &the_parameters)
     valueArray.resize(size) ;
 
     for (unsigned long i = 0 ; i < size ; i++) {
-
-        // handle stored into handleArray[i]
-        handleArray[i] = the_parameters.getHandle(size-1-i);
-
-        // value stored into valueArray[i]
-        ULong length;
-        char *valueptr = the_parameters.getValuePointer(size-1-i, length);
-        valueArray[i].assign(valueptr, length);
-        // no free(valueptr), getValuePointer does not allocate memory
+        handleArray[i] = the_parameters[size-1-i].first;
+        valueArray[i] = the_parameters[size-1-i].second;
     }
     G.Out(pdGendoc,"exit  Message::setPHVPS");
 }
@@ -441,9 +419,7 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
     valueArray.resize(the_size) ;
 
     for (int i = 0 ; i < the_size ; i++) {
-        // attributes into handleArray
         handleArray[i] = the_attributes[i] ;
-        // values into valueArray
         valueArray[i] = the_values[i] ;
     }
     G.Out(pdGendoc,"exit  Message::setAttributes");
@@ -464,9 +440,7 @@ Message::setParameters(std::vector <ParameterHandle> & the_parameters,
     valueArray.resize(the_size) ;
 
     for (int i = 0 ; i < the_size ; i++) {
-        // parameters into handleArray
         handleArray[i] = the_parameters[i] ;
-        // values into valueArray
         valueArray[i] = the_values[i] ;
     }
 }
@@ -599,7 +573,7 @@ Message::display(char *s)
         printf("NO_EXCEPTION ");
     else
         printf(" exception=%d: ",exception);
-    printf(" reason=%s: ",((exceptionReason.c_str()==NULL)?"empty":exceptionReason.c_str()));
+    printf(" reason=%s: ",(exceptionReason.empty()?"empty":exceptionReason.c_str()));
     printf(" objectClass=%ld: ", objectClass);
     printf(" interactionClass=%ld:\n", interactionClass);
     printf(" attribute=%ld:\n", attribute);

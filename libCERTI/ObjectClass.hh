@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.43 2008/11/08 11:08:03 erk Exp $
+// $Id: ObjectClass.hh,v 3.44 2008/12/07 20:16:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -39,6 +39,7 @@ class    ObjectClassBroadcastList;
 #include "certi.hh"
 #include "SecurityServer.hh"
 #include "Named.hh"
+#include "GAV.hh"
 
 // Standard
 #include <list>
@@ -322,4 +323,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.43 2008/11/08 11:08:03 erk Exp $
+// $Id: ObjectClass.hh,v 3.44 2008/12/07 20:16:15 gotthardp Exp $

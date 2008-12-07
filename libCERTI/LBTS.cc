@@ -19,12 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.11 2008/06/23 13:25:05 erk Exp $
+// $Id: LBTS.cc,v 3.12 2008/12/07 20:16:14 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
 
 #include "LBTS.hh"
+#include "Exception.hh"
 #include "PrettyDebug.hh"
 
 #ifndef _WIN32
@@ -159,4 +160,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.11 2008/06/23 13:25:05 erk Exp $
+// $Id: LBTS.cc,v 3.12 2008/12/07 20:16:14 gotthardp Exp $

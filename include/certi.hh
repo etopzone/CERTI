@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.36 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: certi.hh,v 3.37 2008/12/07 20:16:12 gotthardp Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -98,10 +98,8 @@ namespace certi {
 
 // RTI Shortcuts
 typedef RTI::AttributeHandle AttributeHandle ;
-typedef RTI::AttributeHandleSet AttributeHandleSet ;
 typedef RTI::DimensionHandle DimensionHandle ;
 typedef RTI::EventRetractionHandle EventRetractionHandle ;
-typedef RTI::Exception Exception ;
 typedef RTI::ExtentIndex ExtentIndex ;
 typedef RTI::FederateHandle FederateHandle ;
 typedef RTI::Handle Handle ;
@@ -114,113 +112,6 @@ typedef RTI::SpaceHandle SpaceHandle ;
 typedef RTI::TransportType TransportType ;
 typedef RTI::ULong ULong ;
 typedef RTI::UShort UShort ;
-
-// RTI Shortcuts (exceptions)
-typedef RTI::ArrayIndexOutOfBounds ArrayIndexOutOfBounds ;
-typedef RTI::AsynchronousDeliveryAlreadyDisabled AsynchronousDeliveryAlreadyDisabled ;
-typedef RTI::AsynchronousDeliveryAlreadyEnabled  AsynchronousDeliveryAlreadyEnabled ;
-typedef RTI::AttributeAcquisitionWasNotRequested AttributeAcquisitionWasNotRequested ;
-typedef RTI::AttributeAcquisitionWasNotCanceled AttributeAcquisitionWasNotCanceled ;
-typedef RTI::AttributeAlreadyBeingAcquired AttributeAlreadyBeingAcquired ;
-typedef RTI::AttributeAlreadyBeingDivested AttributeAlreadyBeingDivested ;
-typedef RTI::AttributeAlreadyOwned AttributeAlreadyOwned ;
-typedef RTI::AttributeDivestitureWasNotRequested AttributeDivestitureWasNotRequested ;
-typedef RTI::AttributeNotDefined AttributeNotDefined ;
-typedef RTI::AttributeNotKnown AttributeNotKnown ;
-typedef RTI::AttributeNotOwned AttributeNotOwned ;
-typedef RTI::AttributeNotPublished AttributeNotPublished ;
-typedef RTI::ConcurrentAccessAttempted ConcurrentAccessAttempted ;
-typedef RTI::CouldNotDiscover CouldNotDiscover ;
-typedef RTI::CouldNotOpenFED CouldNotOpenFED ;
-typedef RTI::CouldNotRestore CouldNotRestore ;
-typedef RTI::DeletePrivilegeNotHeld DeletePrivilegeNotHeld ;
-typedef RTI::DimensionNotDefined DimensionNotDefined ;
-typedef RTI::EnableTimeConstrainedPending EnableTimeConstrainedPending ;
-typedef RTI::EnableTimeConstrainedWasNotPending EnableTimeConstrainedWasNotPending ;
-typedef RTI::EnableTimeRegulationPending EnableTimeRegulationPending ;
-typedef RTI::EnableTimeRegulationWasNotPending EnableTimeRegulationWasNotPending ;
-typedef RTI::ErrorReadingFED ErrorReadingFED ;
-typedef RTI::EventNotKnown EventNotKnown ;
-typedef RTI::FederateAlreadyExecutionMember FederateAlreadyExecutionMember ;
-typedef RTI::FederateInternalError FederateInternalError ;
-typedef RTI::FederateLoggingServiceCalls FederateLoggingServiceCalls ;
-typedef RTI::FederateNotExecutionMember FederateNotExecutionMember ;
-typedef RTI::FederateOwnsAttributes FederateOwnsAttributes ;
-typedef RTI::FederateWasNotAskedToReleaseAttribute FederateWasNotAskedToReleaseAttribute ;
-typedef RTI::FederatesCurrentlyJoined FederatesCurrentlyJoined ;
-typedef RTI::FederationExecutionAlreadyExists FederationExecutionAlreadyExists ;
-typedef RTI::FederationExecutionDoesNotExist FederationExecutionDoesNotExist ;
-typedef RTI::FederationTimeAlreadyPassed FederationTimeAlreadyPassed ;
-typedef RTI::HandleValuePairMaximumExceeded HandleValuePairMaximumExceeded ;
-typedef RTI::InteractionClassNotDefined InteractionClassNotDefined ;
-typedef RTI::InteractionClassNotKnown InteractionClassNotKnown ;
-typedef RTI::InteractionClassNotPublished InteractionClassNotPublished ;
-typedef RTI::InteractionClassNotSubscribed InteractionClassNotSubscribed ;
-typedef RTI::InteractionParameterNotDefined InteractionParameterNotDefined ;
-typedef RTI::InteractionParameterNotKnown InteractionParameterNotKnown ;
-typedef RTI::InvalidExtents InvalidExtents ;
-typedef RTI::InvalidFederationTime InvalidFederationTime ;
-typedef RTI::InvalidHandleValuePairSetContext InvalidHandleValuePairSetContext ;
-typedef RTI::InvalidLookahead InvalidLookahead ;
-typedef RTI::InvalidOrderingHandle InvalidOrderingHandle ;
-typedef RTI::InvalidRegionContext InvalidRegionContext ;
-typedef RTI::InvalidResignAction InvalidResignAction ;
-typedef RTI::InvalidRetractionHandle InvalidRetractionHandle ;
-typedef RTI::InvalidTransportationHandle InvalidTransportationHandle ;
-typedef RTI::MemoryExhausted MemoryExhausted ;
-typedef RTI::NameNotFound NameNotFound ;
-typedef RTI::ObjectClassNotDefined ObjectClassNotDefined ;
-typedef RTI::ObjectClassNotKnown ObjectClassNotKnown ;
-typedef RTI::ObjectClassNotPublished ObjectClassNotPublished ;
-typedef RTI::ObjectClassNotSubscribed ObjectClassNotSubscribed ;
-typedef RTI::ObjectNotKnown ObjectNotKnown ;
-typedef RTI::ObjectAlreadyRegistered ObjectAlreadyRegistered ;
-typedef RTI::OwnershipAcquisitionPending OwnershipAcquisitionPending ;
-typedef RTI::RegionInUse RegionInUse ;
-typedef RTI::RegionNotKnown RegionNotKnown ;
-typedef RTI::RestoreInProgress RestoreInProgress ;
-typedef RTI::RestoreNotRequested RestoreNotRequested ;
-typedef RTI::RTIinternalError RTIinternalError ;
-typedef RTI::SpaceNotDefined SpaceNotDefined ;
-typedef RTI::SaveInProgress SaveInProgress ;
-typedef RTI::SaveNotInitiated SaveNotInitiated ;
-typedef RTI::SpecifiedSaveLabelDoesNotExist SpecifiedSaveLabelDoesNotExist ;
-typedef RTI::SynchronizationPointLabelWasNotAnnounced SynchronizationPointLabelWasNotAnnounced ;
-typedef RTI::TimeAdvanceAlreadyInProgress TimeAdvanceAlreadyInProgress ;
-typedef RTI::TimeAdvanceWasNotInProgress TimeAdvanceWasNotInProgress ;
-typedef RTI::TimeConstrainedAlreadyEnabled TimeConstrainedAlreadyEnabled ;
-typedef RTI::TimeConstrainedWasNotEnabled TimeConstrainedWasNotEnabled ;
-typedef RTI::TimeRegulationAlreadyEnabled TimeRegulationAlreadyEnabled ;
-typedef RTI::TimeRegulationWasNotEnabled TimeRegulationWasNotEnabled ;
-typedef RTI::UnableToPerformSave UnableToPerformSave ;
-typedef RTI::ValueCountExceeded ValueCountExceeded ;
-typedef RTI::ValueLengthExceeded ValueLengthExceeded ;
-
-// CERTI Exception-derived Exceptions (including deprecated HLA exceptions)
-RTI_EXCEPT(FederateNotPublishing)
-RTI_EXCEPT(FederateNotSubscribing)
-RTI_EXCEPT(InvalidObjectHandle)
-RTI_EXCEPT(SecurityError)
-RTI_EXCEPT(CouldNotOpenRID)
-RTI_EXCEPT(ErrorReadingRID)
-RTI_EXCEPT(FederationAlreadyPaused)
-RTI_EXCEPT(FederationNotPaused)
-RTI_EXCEPT(AttributeNotSubscribed)
-RTI_EXCEPT(FederateAlreadyPaused)
-RTI_EXCEPT(FederateDoesNotExist)
-RTI_EXCEPT(FederateNameAlreadyInUse)
-RTI_EXCEPT(FederateNotPaused)
-RTI_EXCEPT(IDsupplyExhausted)
-RTI_EXCEPT(InvalidDivestitureCondition)
-RTI_EXCEPT(InvalidFederationTimeDelta)
-RTI_EXCEPT(InvalidRoutingSpace)
-RTI_EXCEPT(NoPauseRequested)
-RTI_EXCEPT(NoResumeRequested)
-RTI_EXCEPT(TooManyIDsRequested)
-RTI_EXCEPT(UnimplementedService)
-RTI_EXCEPT(UnknownLabel)
-RTI_EXCEPT(NetworkSignal)
-RTI_EXCEPT(NetworkError)
 
 typedef RTI::Double FederationTime ;
 typedef UShort ObjectHandlecount ;
@@ -350,4 +241,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.36 2008/10/28 12:07:26 gotthardp Exp $
+// $Id: certi.hh,v 3.37 2008/12/07 20:16:12 gotthardp Exp $

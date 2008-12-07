@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.26 2008/10/12 11:46:41 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.27 2008/12/07 20:16:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -32,7 +32,6 @@
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
-#include "baseTypes.hh"
 
 #include <cassert>
 #include <cerrno>
@@ -59,11 +58,11 @@ int lError;
 if (winsockInits > 0)
 	{
 	winsockInits++;
-	return RTI_TRUE;
-	} 
+	return true;
+	}
 else if (winsockInits <0)
 	{
-	return RTI_FALSE;
+	return false;
 	}
 
 wVersionRequested = MAKEWORD( 2, 0 );
@@ -71,18 +70,18 @@ lError = WSAStartup( wVersionRequested, &wsaData );
 if (lError != 0)
 	{
 	winsockInits = -1;
-	return RTI_FALSE;
+	return false;
 	}
 
 if (LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 0)
-	{// Tell the user that we couldn't find a usable WinSock DLL.    
+	{// Tell the user that we couldn't find a usable WinSock DLL.
 	WSACleanup( );
 	winsockInits = -1;
-	return RTI_FALSE; 
+	return false;
 	}
 
 winsockInits = 1;
-return RTI_TRUE;
+return true;
 }
 
 void SocketTCP::winsockShutdown()
@@ -156,7 +155,7 @@ if (Result < 0)
 // Set the TCP_NODELAY option(Client Side)
 
 TCPent = getprotobyname("tcp");
-if (TCPent == NULL) 
+if (TCPent == NULL)
 	{
 	cout << "Unable to retrieve TCP protocol number." << endl ;
 	return 0 ;
@@ -166,7 +165,7 @@ if (setsockopt(_socket_tcp,
 				TCPent->p_proto,
 				TCP_NODELAY,
 				(char *) &optval,
-				sizeof(optval))) 
+				sizeof(optval)))
 	{
 	cout << "Error while calling setsockopt." << endl ;
 	return 0 ;
@@ -197,16 +196,16 @@ assert(serveur != NULL);
 l = sizeof(_sockIn);
 
 _socket_tcp = ::accept(serveur->_socket_tcp, (sockaddr*)&_sockIn, &l);
-if (_socket_tcp < 0) 
+if (_socket_tcp < 0)
 	{
 	  msg << "SocketTCP: Accept Failed"
-	      << "<" << strerror(errno) <<">"; 
-	  throw NetworkError(msg.str().c_str());	
+	      << "<" << strerror(errno) <<">";
+	  throw NetworkError(msg.str().c_str());
 	}
 
 // Set the TCP_NODELAY option(Server Side)
 TCPent = getprotobyname("tcp");
-if (TCPent == NULL) 
+if (TCPent == NULL)
 	{
 	cout << "Unable to retrieve TCP protocol number." << endl ;
 	return 0 ;
@@ -216,7 +215,7 @@ if (setsockopt(_socket_tcp,
 					TCPent->p_proto,
 					TCP_NODELAY,
 					(char *) &optval,
-					sizeof(optval))) 
+					sizeof(optval)))
 	{
 	cout << "Error while calling setsockopt." << endl ;
 	return 0 ;
@@ -287,25 +286,25 @@ SocketTCP::createConnection(const char *server_name, unsigned int port)
 
 // ----------------------------------------------------------------------------
 void
-SocketTCP::createTCPClient(in_port_t port, in_addr_t addr) 
+SocketTCP::createTCPClient(in_port_t port, in_addr_t addr)
 throw (NetworkError)
 {
 assert(!_est_init_tcp);
 std::stringstream msg;
-if (!open()) 
+if (!open())
 	{
-		msg << "Cannot open port <" << port 
+		msg << "Cannot open port <" << port
 			<< "> on addr <" << addr2string(addr)
 			<< "> : error =" << strerror(errno);
 		throw NetworkError(msg.str().c_str());
 	}
 
-if (!connect(port, addr)) 
+if (!connect(port, addr))
 	{
-		msg << "Cannot connect port <" << port 
+		msg << "Cannot connect port <" << port
 		    << "> on addr <" << addr2string(addr)
 			<< "> : error =" << strerror(errno);
-		throw NetworkError(msg.str().c_str());	
+		throw NetworkError(msg.str().c_str());
 	}
 
 _est_init_tcp = true ;
@@ -320,25 +319,25 @@ throw (NetworkError)
 	assert(!_est_init_tcp);
 
 
-if (!open()) 
+if (!open())
 	{
-	msg << "Cannot open port <" << port 
+	msg << "Cannot open port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
 	throw NetworkError(msg.str().c_str());
 	}
 
-if (!bind(port, addr)) 
+if (!bind(port, addr))
 	{
-	msg << "Cannot bind port <" << port 
+	msg << "Cannot bind port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
 	throw NetworkError(msg.str().c_str());
 	}
 
-if (!listen(MAX_BACKLOG)) 
+if (!listen(MAX_BACKLOG))
 	{
-	msg << "Cannot listen port <" << port 
+	msg << "Cannot listen port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
 	throw NetworkError(msg.str().c_str());
@@ -360,7 +359,7 @@ assert(_est_init_tcp);
 
 D.Out(pdDebug, "Beginning to send TCP message...");
 
-while (total_sent < expected_size) 
+while (total_sent < expected_size)
 	{
 	#ifdef _WIN32
 		int sent = ::send(_socket_tcp, (char*) buffer + total_sent, expected_size - total_sent, 0);
@@ -368,7 +367,7 @@ while (total_sent < expected_size)
 		int sent = ::send(_socket_tcp, buffer + total_sent, expected_size - total_sent, 0);
 	#endif
 
-	if (sent < 0) 
+	if (sent < 0)
 		{
 		D.Out(pdExcept, "Error while sending on TCP socket.");
 
@@ -378,14 +377,14 @@ while (total_sent < expected_size)
 			if(errno == EINTR)
 		#endif
 			throw NetworkSignal("");
-		else 
+		else
 			{
 			perror("TCP Socket(EmettreTCP) ");
 			throw NetworkError("Error while sending TCP message.");
 			}
 		}
 
-	if (sent == 0) 
+	if (sent == 0)
 		{
 		D.Out(pdExcept, "No data could be sent, connection closed?.");
 		throw NetworkError("Could not send any data on TCP socket.");
@@ -402,7 +401,7 @@ SentBytesCount += total_sent ;
 void
 SocketTCP::close()
 {
-if (_est_init_tcp) 
+if (_est_init_tcp)
 	{
 	#ifdef _WIN32
 		::closesocket(_socket_tcp);
@@ -501,7 +500,7 @@ while (RBLength < size)
 							0);
 	#endif
 
-	if (nReceived < 0) 
+	if (nReceived < 0)
 		{
 		D.Out(pdExcept, "Error while receiving on TCP socket.");
 		#ifdef _WIN32
@@ -510,14 +509,14 @@ while (RBLength < size)
 			if(errno == EINTR)
 		#endif
 			throw NetworkSignal("");
-		else 
+		else
 			{
 			perror("TCP Socket(RecevoirTCP) ");
 			throw NetworkError("Error while receiving TCP message.");
 			}
 		}
 
-	if (nReceived == 0) 
+	if (nReceived == 0)
 		{
 		D.Out(pdExcept, "TCP connection has been closed by peer.");
 		throw NetworkError("Connection closed by client.");
@@ -570,7 +569,7 @@ SocketTCP::timeoutTCP(int sec, int usec)
 {
 assert(_est_init_tcp);
 
-struct timeval time_out ;    
+struct timeval time_out ;
 time_out.tv_sec = sec ;
 time_out.tv_usec = usec ;
 
@@ -580,7 +579,7 @@ FD_SET(_socket_tcp, &fdset);
 
 int nb = select(_socket_tcp+1, &fdset, NULL, NULL, &time_out);
 
-if (nb < 0) 
+if (nb < 0)
 	{
 	#ifdef _WIN32
 		 if(WSAGetLastError() == WSAEINTR)
@@ -591,10 +590,10 @@ if (nb < 0)
 	else
 		throw NetworkError("Select gave negative return value");
 	}
-else 
+else
 	return nb > 0 ;
 }
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.26 2008/10/12 11:46:41 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.27 2008/12/07 20:16:15 gotthardp Exp $

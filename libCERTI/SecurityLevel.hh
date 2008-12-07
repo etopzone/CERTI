@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.10 2008/06/24 12:23:31 rousse Exp $
+// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
 #define _CERTI_SECURITY_LEVEL_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 
 #include <stdlib.h>
 #include <string.h>
@@ -68,4 +69,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.10 2008/06/24 12:23:31 rousse Exp $
+// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $

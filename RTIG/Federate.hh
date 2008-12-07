@@ -16,13 +16,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.14 2008/11/21 13:41:52 approx Exp $
+// $Id: Federate.hh,v 3.15 2008/12/07 20:16:11 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
 #define CERTI_RTIG_FEDERATE_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 
 #include <vector>
 #include <string>
@@ -140,4 +141,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.14 2008/11/21 13:41:52 approx Exp $
+// $Id: Federate.hh,v 3.15 2008/12/07 20:16:11 gotthardp Exp $

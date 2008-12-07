@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.19 2008/09/18 17:13:32 erk Exp $
+// $Id: Object.hh,v 3.20 2008/12/07 20:16:14 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -34,6 +34,7 @@ namespace certi {
 #include "certi.hh"
 #include "Named.hh"
 #include "Handled.hh"
+#include "Exception.hh"
 
 #include <deque>
 #include <list>
@@ -93,4 +94,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.19 2008/09/18 17:13:32 erk Exp $
+// $Id: Object.hh,v 3.20 2008/12/07 20:16:14 gotthardp Exp $

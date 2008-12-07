@@ -20,6 +20,7 @@
 // ----------------------------------------------------------------------------
 
 #include "MessageBuffer.hh"
+#include "Exception.hh"
 #include "PrettyDebug.hh"
 #include <cassert>
 #include <sstream>

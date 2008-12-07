@@ -15,9 +15,11 @@
 // You should have received a copy of the GNU Lesser General Public
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+//
+// $Id: RTItypes.cc,v 1.2 2008/12/07 20:16:16 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
-#include "GAV.hh"
+#include "RTItypesImp.hh"
 #include "Exception.hh"
 #include "PrettyDebug.hh"
 #include <assert.h>
@@ -271,45 +273,4 @@ operator<<(RTI_STD::ostream &os, RTI::Exception *ex)
     return os<<(*ex);
 }
 
-// ----------------------------------------------------------------------------
-RTI::AttributeHandleValuePairSet *
-RTI::AttributeSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
-{
-    AttributeHandleValuePairSetImp *ahvps ;
-    ahvps = new AttributeHandleValuePairSetImp ;
-    ahvps->_order = RECEIVE ;
-    ahvps->_transport = RELIABLE ;
-    return (AttributeHandleValuePairSet *) ahvps ;
-}
-
-// ----------------------------------------------------------------------------
-RTI::AttributeHandleSet *
-RTI::AttributeHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return new AttributeHandleSetImp();
-}
-
-// ----------------------------------------------------------------------------
-RTI::FederateHandleSet *
-RTI::FederateHandleSetFactory::create(ULong)
-    throw (MemoryExhausted, ValueCountExceeded)
-{
-    return ((FederateHandleSet *) new FederateHandleSetImp());
-}
-
-// ----------------------------------------------------------------------------
-RTI::ParameterHandleValuePairSet *
-RTI::ParameterSetFactory::create(ULong size)
-    throw (MemoryExhausted, ValueCountExceeded, HandleValuePairMaximumExceeded)
-{
-    ParameterHandleValuePairSetImp *phvps ;
-    phvps = new ParameterHandleValuePairSetImp(size);
-
-    phvps->_order = RECEIVE ;
-    phvps->_transport = RELIABLE ;
-    return (ParameterHandleValuePairSet *) phvps ;
-}
-
-// $Id: RTItypes.cc,v 1.1 2008/11/25 16:32:14 gotthardp Exp $
+// $Id: RTItypes.cc,v 1.2 2008/12/07 20:16:16 gotthardp Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.62 2008/11/20 18:21:56 approx Exp $
+// $Id: FederationsList.cc,v 3.63 2008/12/07 20:16:11 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -388,12 +388,12 @@ void FederationsList::createFederation(const char *name,
         federation = new Federation(name, handle, socketServer, auditFile, FEDid,verboseLevel);
         D.Out(pdDebug,"new Federation created.");
         }
-    catch (RTI::CouldNotOpenFED& e) {
+    catch (CouldNotOpenFED& e) {
         D.Out(pdInit, "Federation constructor : Could not open FED file.");
         G.Out(pdGendoc,"exit FederationsList::createFederation on exception CouldNotOpenFED");
         throw CouldNotOpenFED(e._reason);
         }
-    catch (RTI::ErrorReadingFED &e) {
+    catch (ErrorReadingFED &e) {
         D.Out(pdInit, "Federation constructor : Could not read FED file (maybe incorrect).");
         G.Out(pdGendoc,"exit FederationsList::createFederation on exception ErrorReadingFED");
         throw ErrorReadingFED(e._reason);
@@ -1750,5 +1750,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.62 2008/11/20 18:21:56 approx Exp $
+// EOF $Id: FederationsList.cc,v 3.63 2008/12/07 20:16:11 gotthardp Exp $
 

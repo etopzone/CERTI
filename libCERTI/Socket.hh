@@ -21,6 +21,7 @@
 #define CERTI_SOCKET_HH
 
 #include "certi.hh"
+#include "Exception.hh"
 #ifndef _WIN32
 	#include <sys/time.h>
 	#include <sys/types.h>
