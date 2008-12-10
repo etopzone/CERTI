@@ -19,14 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: DebugOStream.hh,v 4.1 2007/06/22 08:51:36 erk Exp $
+// $Id: DebugOStream.hh,v 4.2 2008/12/10 16:53:23 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DEBUGOSTREAM_HH
 #define _CERTI_DEBUGOSTREAM_HH
 
 #include <iostream>
-#include "RTI.hh"
+#include "certi.hh"
 
 /** Stream used by PrettyDebug
  */
@@ -34,16 +34,16 @@ class CERTI_EXPORT DebugOStream
 {
 private:
     std::ostream& ostr;
-    
+
 public:
     static DebugOStream nullOutputStream;
-    
+
     DebugOStream(std::ostream& theostr) : ostr(theostr) {}
-    
-    int isNullOstream(void) { 
+
+    int isNullOstream(void) {
         return(this != &(nullOutputStream));
     }
-    
+
     // Global insertors on strings and characters are defined as
     // members of DebugOStream.
     DebugOStream& operator<<(const char* thestr)
@@ -52,37 +52,37 @@ public:
             ostr << thestr;
         return *this ;
     }
-    
-    DebugOStream& operator<<(const signed char* thestr) 
+
+    DebugOStream& operator<<(const signed char* thestr)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << thestr;
         return *this ;
     }
-    
-    DebugOStream& operator<<(const unsigned char* thestr) 
+
+    DebugOStream& operator<<(const unsigned char* thestr)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << thestr;
         return *this ;
     }
-    
-    DebugOStream& operator<<(char ch) 
+
+    DebugOStream& operator<<(char ch)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << ch;
         return *this ;
     }
-    
-    DebugOStream& operator<<(signed char ch) 
+
+    DebugOStream& operator<<(signed char ch)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << ch;
         return *this ;
     }
-    
-    DebugOStream& operator<<(unsigned char ch) 
+
+    DebugOStream& operator<<(unsigned char ch)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << ch;
         return *this ;
     }
-    
+
     //Copy And Redefine the ostream public interface
     //Arithmetic Inserters
     DebugOStream& operator<<(bool n)
@@ -96,7 +96,7 @@ public:
         if (this != &(DebugOStream::nullOutputStream)) ostr << n;
         return(*this);
     }
- 
+
     DebugOStream& operator<<(unsigned short n)
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << n;
@@ -131,7 +131,7 @@ public:
     {
         if (this != &(DebugOStream::nullOutputStream)) ostr << f;
         return(*this);
-    }  
+    }
 
     DebugOStream& operator<<(double f)
     {
@@ -175,7 +175,7 @@ public:
         return(*this);
     }
 
-    //Dans la norme C++, il faut passer une référence et pas un
+    //Dans la norme C++, il faut passer une rï¿½fï¿½rence et pas un
     //pointeur mais ca marche pas avec gcc
 
     //DebugOStream& operator<<(streambuf& sb)
@@ -186,21 +186,21 @@ public:
 
     DebugOStream& operator<<(std::ostream& (*pf)(std::ostream&))
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr << pf;
         return(*this);
     }
 
     DebugOStream& operator<<(std::ios& (*pf)(std::ios&))
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr << pf;
         return(*this);
     }
 
     DebugOStream& operator<<(std::ios_base& (*pf)(std::ios_base&))
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr << pf;
         return(*this);
     }
@@ -208,14 +208,14 @@ public:
     // Unformatted output:
     DebugOStream& put(char c)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr.put(c);
         return(*this);
     }
-   
+
     DebugOStream& write(const char* str, std::streamsize n)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr.write(str, n);
         return(*this);
     }
@@ -223,28 +223,28 @@ public:
     // Other methods
     DebugOStream& flush(void)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr.flush();
         return(*this);
     }
 
     DebugOStream& seekp(std::streampos pos)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr.seekp(pos);
         return(*this);
     }
 
     DebugOStream& seekp(std::streamoff off, std::ios_base::seekdir dir)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             ostr.seekp(off, dir);
         return(*this);
     }
 
     std::streampos tellp(void)
     {
-        if (this != &(DebugOStream::nullOutputStream)) 
+        if (this != &(DebugOStream::nullOutputStream))
             return(ostr.tellp());
         else return(0);
     }
@@ -258,4 +258,4 @@ public:
 
 #endif // _CERTI_DEBUGOSTREAM_HH
 
-// $Id: DebugOStream.hh,v 4.1 2007/06/22 08:51:36 erk Exp $
+// $Id: DebugOStream.hh,v 4.2 2008/12/10 16:53:23 erk Exp $

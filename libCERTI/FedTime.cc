@@ -23,6 +23,7 @@
 
 #include "certi.hh"
 #include "fedtime.hh"
+#include "HLAtypesIEEE1516.hh"
 
 #ifdef _WIN32
 	#ifdef max
@@ -69,8 +70,8 @@ is_infinity(const FedTime &time)
  Copyright (c) 1998-2000 Theodore C. Belding
  University of Michigan Center for the Study of Complex Systems
  <mailto:Ted.Belding@umich.edu>
- <http://fcmp.sourceforge.net>    
-  
+ <http://fcmp.sourceforge.net>
+
  This file is part of the fcmp distribution. fcmp is free software;
  you can redistribute and modify it under the terms of the GNU Library
  General Public License (LGPL), version 2 or later.  This software
@@ -78,7 +79,7 @@ is_infinity(const FedTime &time)
  and terms of copying.
 
  Description:
- 
+
  Knuth's floating point comparison operators, from:
  Knuth, D. E. (1998). The Art of Computer Programming.
  Volume 2: Seminumerical Algorithms. 3rd ed. Addison-Wesley.
@@ -95,7 +96,7 @@ is_infinity(const FedTime &time)
 
  This routine may be used for both single-precision (float) and
  double-precision (double) floating-point numbers.
- 
+
  Returns:
  -1 if x1 < x2
   0 if x1 == x2
@@ -108,7 +109,7 @@ fcmp(double x1,double x2, double epsilon)
     int exponent;
     double delta;
     double difference;
-    
+
     /* Get exponent(max(fabs(x1), fabs(x2))) and store it in exponent. */
 
     /* If neither x1 nor x2 is 0, */
@@ -118,7 +119,7 @@ fcmp(double x1,double x2, double epsilon)
     /* which is much larger than the exponents of numbers close to 0 in */
     /* magnitude. But the exponent of 0 should be less than any number */
     /* whose magnitude is greater than 0. */
-    
+
     /* So we only want to set exponent to 0 if both x1 and */
     /* x2 are 0. Hence, the following works for all x1 and x2. */
 
@@ -132,14 +133,14 @@ fcmp(double x1,double x2, double epsilon)
     /* If x1 is within this delta neighborhood of x2, x1 == x2. */
     /* Otherwise x1 > x2 or x1 < x2, depending on which side of */
     /* the neighborhood x1 is on. */
-    
-    delta = ldexp(epsilon, exponent); 
-    
+
+    delta = ldexp(epsilon, exponent);
+
     difference = x1 - x2;
 
     if (difference > delta)
         return 1; /* x1 > x2 */
-    else if (difference < -delta) 
+    else if (difference < -delta)
         return -1;  /* x1 < x2 */
     else /* -delta <= difference <= delta */
         return 0;  /* x1 == x2 */
@@ -151,18 +152,18 @@ const char *infinity_str = "+inf" ;
 
 // ----------------------------------------------------------------------------
 // FedTimeFactory
-FedTime *
+RTI::FedTime *
 RTI::FedTimeFactory::makeZero()
     throw (RTI::MemoryExhausted)
 {
     return new RTIfedTime();
 }
 
-FedTime *
+RTI::FedTime *
 RTI::FedTimeFactory::decode(const char *)
     throw (RTI::MemoryExhausted)
 {
-    throw RTIinternalError("Not implemented");
+    throw RTI::RTIinternalError("Not implemented");
 }
 
 // ----------------------------------------------------------------------------
@@ -175,7 +176,7 @@ const double RTIfedTime::epsilon = std::numeric_limits<double>::epsilon();
 
 int
 RTIfedTime::fcmp(const double x1, const double x2) {
-	return ::fcmp(x1,x2,RTIfedTime::epsilon); 
+	return ::fcmp(x1,x2,RTIfedTime::epsilon);
 }
 
 // ----------------------------------------------------------------------------
@@ -250,14 +251,21 @@ RTIfedTime::isPositiveInfinity()
 int
 RTIfedTime::encodedLength() const
 {
-    throw RTI::RTIinternalError("Not implemented");
+	// current implementation of RTIfedtime takes
+	// four IEEE-754 double values.
+	return (sizeof(_fedTime)+
+			sizeof(_zero)+
+			sizeof(_epsilon)+
+			sizeof(_positiveInfinity));
 }
 
 // ----------------------------------------------------------------------------
 void
-RTIfedTime::encode(char *) const
+RTIfedTime::encode(char *buffer) const
 {
-    throw RTI::RTIinternalError("Not implemented");
+	libhla::HLAfloat64LE encoded_fedTime;
+	encoded_fedTime = _fedTime;
+	strncpy(buffer,(char*)&(encoded_fedTime),encoded_fedTime.__sizeof());
 }
 
 // ----------------------------------------------------------------------------
@@ -327,7 +335,7 @@ RTIfedTime::operator<(const FedTime &time) const
 {
     if (is_infinity(*this))
 	return RTI::RTI_FALSE ;
-    else 
+    else
 	return RTI::Boolean(is_infinity(time) || ::fcmp(_fedTime, rft(time)._fedTime, _epsilon) < 0);
 }
 

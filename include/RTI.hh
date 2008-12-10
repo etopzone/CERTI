@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.13 2008/12/03 10:23:53 erk Exp $
+// $Id: RTI.hh,v 3.14 2008/12/10 16:53:24 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -16,21 +16,14 @@
 	#else
 		#define RTI_EXPORT __declspec(dllimport)
 	#endif
-
-	#if defined(CERTI_EXPORTS)
-		#define CERTI_EXPORT __declspec(dllexport)
-	#else
-		#define CERTI_EXPORT __declspec(dllimport)
-	#endif
-    #if defined(FEDTIME_EXPORTS)
-        #define FEDTIME_EXPORT __declspec(dllexport)
-    #else
-        #define FEDTIME_EXPORT __declspec(dllimport)
+    #if not defined(FEDTIME_EXPORT)
+       #define FEDTIME_EXPORT
     #endif
 #else
 	#define RTI_EXPORT
-	#define CERTI_EXPORT
-    #define FEDTIME_EXPORT
+    #if not defined(FEDTIME_EXPORT)
+        #define FEDTIME_EXPORT
+    #endif
 #endif
 
 #ifdef RTI_USES_STD_FSTREAM
@@ -73,10 +66,10 @@ public:
     };
 };
 
-RTI_STD::ostream CERTI_EXPORT &
+RTI_STD::ostream RTI_EXPORT &
 operator<<(RTI_STD::ostream &os, RTI::Exception *ex);
 
-RTI_STD::ostream CERTI_EXPORT &
+RTI_STD::ostream RTI_EXPORT &
 operator<<(RTI_STD::ostream &os, RTI::Exception const &ex);
 
 /** @} */

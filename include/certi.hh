@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.37 2008/12/07 20:16:12 gotthardp Exp $
+// $Id: certi.hh,v 3.38 2008/12/10 16:53:24 erk Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -70,6 +70,11 @@
           #define  CERTI_INT64_FORMAT         "ll"
        #endif
     #endif
+    #if defined(CERTI_EXPORTS)
+		#define CERTI_EXPORT __declspec(dllexport)
+	#else
+		#define CERTI_EXPORT __declspec(dllimport)
+	#endif
 #else
     #include <stdint.h>
     #define  STAT_FUNCTION		stat
@@ -81,6 +86,7 @@
        #define  CERTI_INT64_CONSTANT(val)  (val##LL)
        #define  CERTI_INT64_FORMAT         "ll"
     #endif
+	#define CERTI_EXPORT
 #endif
 
 #include "RTI.hh"
@@ -241,4 +247,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.37 2008/12/07 20:16:12 gotthardp Exp $
+// $Id: certi.hh,v 3.38 2008/12/10 16:53:24 erk Exp $
