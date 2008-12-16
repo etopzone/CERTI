@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.25 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: ObjectClassAttribute.hh,v 3.26 2008/12/16 07:08:29 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -48,6 +48,12 @@ namespace certi {
 class CERTI_EXPORT ObjectClassAttribute : public Subscribable {
 
 public:
+    /**
+     * A set of federate handles. The corresponding federates are publishers of
+     * the object class attribute.
+     */
+    typedef std::set<FederateHandle> PublishersList_t;
+
     ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder);
     ObjectClassAttribute(ObjectClassAttribute *source);
     virtual ~ObjectClassAttribute();
@@ -72,6 +78,12 @@ public:
     void updateBroadcastList(ObjectClassBroadcastList *ocb_list,
 			     const RTIRegion *region = 0);
 
+    /**
+     * Getter for the attributes publisher list.
+     * param[out] PublishersList_t @see ObjectClassAttribute::PublisherList_t
+     */
+    PublishersList_t getPublishers(void);
+
     // Attributes
     SecurityLevelID level ;
     OrderType order ;
@@ -89,13 +101,11 @@ private:
     AttributeHandle handle ; //!< The attribute handle.
     SpaceHandle space ; //!< Routing space
 
-    typedef std::set<FederateHandle> PublishersList ;
-    PublishersList publishers ; //!< The publisher's list.
-
+    PublishersList_t publishers ; //!< The publisher's list.
 };
 
 } // namespace
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.25 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: ObjectClassAttribute.hh,v 3.26 2008/12/16 07:08:29 approx Exp $

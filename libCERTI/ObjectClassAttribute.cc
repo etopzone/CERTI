@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.30 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: ObjectClassAttribute.cc,v 3.31 2008/12/16 07:08:29 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -97,7 +97,7 @@ ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
 void
 ObjectClassAttribute::deletePublisher(FederateHandle fed)
 {
-    PublishersList::iterator it = publishers.find(fed);
+    PublishersList_t::iterator it = publishers.find(fed);
     if (it != publishers.end())
 	publishers.erase(it);
 }
@@ -202,7 +202,7 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
 	  addFederatesIfOverlap(*ocblist, region, handle);
       } break ;
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
-          PublishersList::iterator i ;
+          PublishersList_t::iterator i ;
           for (i = publishers.begin(); i != publishers.end(); i++) {
               ocblist->addFederate(*i, handle);
           }
@@ -212,6 +212,11 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
     }
 }
 
+ObjectClassAttribute::PublishersList_t
+ObjectClassAttribute::getPublishers(void) {
+    return publishers;
+}
+
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.30 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: ObjectClassAttribute.cc,v 3.31 2008/12/16 07:08:29 approx Exp $

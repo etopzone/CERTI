@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.56 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: Federation.hh,v 3.57 2008/12/16 07:08:29 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -295,6 +295,15 @@ public:
                                 UShort theListSize)
         throw (ObjectNotKnown);
 
+    /**
+     * Subscribes attributes to an object class. After subscription, attribute 
+     * publishers are notified by the federate service 
+     * startRegistrationForObjectClass.
+     * @param[in] federate federate handle of the subscriber
+     * @param[in] object subscripted object class handle 
+     * @param[in] attributes subscripted vector of attributes 
+     * @param[in] list_size size of the attribute vector
+    */
     void subscribeObject(FederateHandle theFederateHandle,
                          ObjectClassHandle theObjectHandle,
                          std::vector <AttributeHandle> &theAttributeList,
@@ -668,4 +677,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.56 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: Federation.hh,v 3.57 2008/12/16 07:08:29 approx Exp $

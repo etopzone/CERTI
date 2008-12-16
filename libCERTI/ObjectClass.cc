@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.63 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: ObjectClass.cc,v 3.64 2008/12/16 07:08:29 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1828,6 +1828,11 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 //     }
 // }
 
+ObjectClass::AttributeList_t
+ObjectClass::getAttributeList(void) {
+	    return attributeSet;
+}
+
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.63 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: ObjectClass.cc,v 3.64 2008/12/16 07:08:29 approx Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.102 2008/11/20 18:21:55 approx Exp $
+// $Id: Federation.cc,v 3.103 2008/12/16 07:08:29 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1779,6 +1779,49 @@ Federation::subscribeObject(FederateHandle federate,
     // It may throw *NotDefined
     root->ObjectClasses->subscribe(federate, object, attributes, list_size);
 
+    // get object class from object class handle	
+    ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
+
+    // get attributes of object class
+    ObjectClass::AttributeList_t attrForObjClass = objectClass->getAttributeList();
+
+    ObjectClassAttribute::PublishersList_t publishers;
+    publishers.clear();
+
+    // get publishers of attributes	
+    // first for: iterate through the attribute list and get publishers of 
+    //            each attribtue
+    // second for: iterate through the temporal publishers list and store 
+    //             non-duplicate entries in publishers
+    ObjectClassAttribute::PublishersList_t tmp_publishers;
+    tmp_publishers.clear();
+    for (ObjectClass::AttributeList_t::const_iterator 
+         i=attrForObjClass.begin();
+	 i!=attrForObjClass.end(); 
+	 i++) {
+    	 tmp_publishers = (*i)->getPublishers();
+         for (ObjectClassAttribute::PublishersList_t::const_iterator
+             j=tmp_publishers.begin(); 
+	     j!=tmp_publishers.end(); 
+	     j++) {
+	     // insert only non-duplicate entries ->
+	     // pair<iterator, bool> set::insert(const TYPE& val);
+	     publishers.insert(*j);
+         }
+	 tmp_publishers.clear();
+    }
+
+    // notify all publishers
+    for (ObjectClassAttribute::PublishersList_t::const_iterator
+        k=publishers.begin(); 
+	k!=publishers.end(); 
+	k++) {
+	// what shall we do when subscriber and publisher are the same?
+	if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
+		// invoke startRegistrationForObjectClass
+	}
+    }
+
     D.Out(pdRegister,
           "Federation %d: Federate %d(un)sub. to %d attrib. of ObjClass %d.",
           handle, federate, list_size, object);
@@ -2482,5 +2525,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.102 2008/11/20 18:21:55 approx Exp $
+// $Id: Federation.cc,v 3.103 2008/12/16 07:08:29 approx Exp $
 
