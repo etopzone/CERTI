@@ -194,6 +194,16 @@ ENDIF (NOT WIN32)
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H=1)
 
+################## Gen library Check #####################
+CHECK_LIBRARY_EXISTS("gen" "basename" "/usr/lib" GEN_LIBRARY_HAS_BASENAME)
+IF (GEN_LIBRARY_HAS_BASENAME)
+    MESSAGE(STATUS "Gen library needed for system ${CMAKE_SYSTEM_NAME}")
+    FIND_LIBRARY(GEN_LIBRARY
+        NAMES gen)
+ELSE (GEN_LIBRARY_HAS_BASENAME)
+    SET(GEN_LIBRARY)
+ENDIF (GEN_LIBRARY_HAS_BASENAME)
+
 ################ Socket library Check ####################
 CHECK_LIBRARY_EXISTS("socket" "connect" "/usr/lib" SOCKET_LIBRARY_HAS_CONNECT)
 IF (SOCKET_LIBRARY_HAS_CONNECT)
