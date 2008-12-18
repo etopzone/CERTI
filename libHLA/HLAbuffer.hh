@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.7 2008/11/22 14:55:58 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.8 2008/12/18 19:45:47 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -32,7 +32,7 @@ typedef __int16           int16_t;
 typedef unsigned __int8   uint8_t;
 typedef __int8            int8_t;
 #else
-#include <stdint.h>
+#include <inttypes.h>
 #endif
 
 #if defined(_WIN32)
@@ -182,5 +182,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.7 2008/11/22 14:55:58 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.8 2008/12/18 19:45:47 gotthardp Exp $
 

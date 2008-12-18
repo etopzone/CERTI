@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.38 2008/12/10 16:53:24 erk Exp $
+// $Id: certi.hh,v 3.39 2008/12/18 19:45:47 gotthardp Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -61,7 +61,7 @@
         #define __func__ "<unknown>"
         #endif
     #else
-       #include <stdint.h>
+       #include <inttypes.h>
        #ifdef __x86_64__
           #define  CERTI_INT64_CONSTANT(val)  (val##L)
           #define  CERTI_INT64_FORMAT         "l"
@@ -76,7 +76,7 @@
 		#define CERTI_EXPORT __declspec(dllimport)
 	#endif
 #else
-    #include <stdint.h>
+    #include <inttypes.h>
     #define  STAT_FUNCTION		stat
     #define  STAT_STRUCT		struct stat
     #ifdef __x86_64__
@@ -247,4 +247,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.38 2008/12/10 16:53:24 erk Exp $
+// $Id: certi.hh,v 3.39 2008/12/18 19:45:47 gotthardp Exp $
