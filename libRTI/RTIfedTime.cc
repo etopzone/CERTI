@@ -148,7 +148,7 @@ RTIfedTime::setPositiveInfinity()
 }
 
 // ----------------------------------------------------------------------------
-inline RTI::Boolean
+RTI::Boolean
 RTIfedTime::isPositiveInfinity()
 {
     return RTI::Boolean(_fedTime == _positiveInfinity);

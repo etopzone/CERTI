@@ -18,7 +18,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FedTime.cc,v 3.15.4.1 2009/01/05 13:34:50 gotthardp Exp $
+// $Id: FedTime.cc,v 3.15.4.2 2009/01/05 15:22:34 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <math.h>
@@ -101,7 +101,7 @@ FedTime::setPositiveInfinity()
 }
 
 // ----------------------------------------------------------------------------
-inline bool
+bool
 FedTime::isPositiveInfinity() const
 {
     return bool(_fedTime == _positiveInfinity);
@@ -376,8 +376,9 @@ FedTime::operator/(const double &time)
 }
 
 // ----------------------------------------------------------------------------
+namespace certi {
 std::ostream &
-certi::operator<<(std::ostream &s, const FedTime &time)
+operator<<(std::ostream &s, const FedTime &time)
 {
     if (time.isPositiveInfinity())
 	s << infinity_str ;
@@ -385,7 +386,7 @@ certi::operator<<(std::ostream &s, const FedTime &time)
 	s << time.getTime();
     return s ;
 }
-
+}
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -420,5 +421,5 @@ operator/(const double &d, const FedTime &time)
     return fedtime ;
 }
 
-// $Id: FedTime.cc,v 3.15.4.1 2009/01/05 13:34:50 gotthardp Exp $
+// $Id: FedTime.cc,v 3.15.4.2 2009/01/05 15:22:34 gotthardp Exp $
 
