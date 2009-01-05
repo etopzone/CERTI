@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.15 2008/12/10 17:42:43 gotthardp Exp $
+// $Id: RTI.hh,v 3.15.4.1 2009/01/05 13:34:50 gotthardp Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
@@ -16,14 +16,14 @@
 	#else
 		#define RTI_EXPORT __declspec(dllimport)
 	#endif
-    #if !defined(FEDTIME_EXPORT)
-       #define FEDTIME_EXPORT
+    #if defined(FedTime_EXPORTS)
+        #define FEDTIME_EXPORT __declspec(dllexport)
+    #else
+        #define FEDTIME_EXPORT __declspec(dllimport)
     #endif
 #else
 	#define RTI_EXPORT
-    #if !defined(FEDTIME_EXPORT)
-        #define FEDTIME_EXPORT
-    #endif
+    #define FEDTIME_EXPORT
 #endif
 
 #ifdef RTI_USES_STD_FSTREAM

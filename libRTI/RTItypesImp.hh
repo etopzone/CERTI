@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypesImp.hh,v 3.1 2008/12/07 20:16:17 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.1.4.1 2009/01/05 13:34:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _RTI_TYPESIMP_HH
@@ -38,6 +38,18 @@ struct cast
     {
         try {
             return dynamic_cast<const I&>(imp);
+        }
+        catch (...)
+        {
+            throw RTI::RTIinternalError("Incompatible object on input.");
+        }
+    }
+
+    template<class R>
+    I& operator()(R& imp)
+    {
+        try {
+            return dynamic_cast<I&>(imp);
         }
         catch (...)
         {
@@ -251,4 +263,4 @@ private:
 
 #endif // _RTI_TYPESIMP_HH
 
-// $Id: RTItypesImp.hh,v 3.1 2008/12/07 20:16:17 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.1.4.1 2009/01/05 13:34:52 gotthardp Exp $

@@ -19,10 +19,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.7 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.7.4.1 2009/01/05 13:34:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
+#include "fedtime.hh"
 #include "Message.hh"
 #include "RootObject.hh"
 #include "MessageBuffer.hh"
@@ -59,4 +60,4 @@ public:
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.7 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.7.4.1 2009/01/05 13:34:52 gotthardp Exp $

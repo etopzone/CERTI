@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: GAV.cc,v 3.18 2008/12/07 20:16:13 gotthardp Exp $
+// $Id: GAV.cc,v 3.18.4.1 2009/01/05 13:34:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -159,14 +159,6 @@ AttributeHandleValuePairSet::getOrderType(ULong) const
 }
 
 // ----------------------------------------------------------------------------
-RTI::Region *
-AttributeHandleValuePairSet::getRegion(ULong) const
-    throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext)
-{
-    throw RTIinternalError("Unimplemented service");
-}
-
-// ----------------------------------------------------------------------------
 void
 AttributeHandleValuePairSet::add(Handle h,
                                     const char *buff,
@@ -286,7 +278,7 @@ void
 AttributeHandleSet::remove(AttributeHandle h)
     throw (AttributeNotDefined)// not guaranteed safe while iterating
 {
-    if (isMember(h) == RTI::RTI_TRUE)
+    if (isMember(h) == true)
         list<AttributeHandle>::remove(h);
     else
         throw AttributeNotDefined("");
@@ -300,17 +292,17 @@ AttributeHandleSet::empty()
 }
 
 // ----------------------------------------------------------------------------
-RTI::Boolean
+bool
 AttributeHandleSet::isEmpty() const
 {
-    return RTI::Boolean(list<AttributeHandle>::empty());
+    return list<AttributeHandle>::empty();
 }
 
 // ----------------------------------------------------------------------------
-RTI::Boolean
+bool
 AttributeHandleSet::isMember(AttributeHandle h) const
 {
-    return RTI::Boolean(find(begin(), end(), h) != end());
+    return find(begin(), end(), h) != end();
 }
 
 // ----------------------------------------------------------------------------
@@ -356,7 +348,7 @@ void
 FederateHandleSet::remove(FederateHandle h)
     throw (ArrayIndexOutOfBounds)
 {
-    if (isMember(h) == RTI::RTI_TRUE)
+    if (isMember(h) == true)
         list<FederateHandle>::remove(h);
     else
         throw AttributeNotDefined("");
@@ -370,10 +362,10 @@ FederateHandleSet::empty()
 }
 
 // ----------------------------------------------------------------------------
-RTI::Boolean
+bool
 FederateHandleSet::isMember(FederateHandle h) const
 {
-    return RTI::Boolean(find(begin(), end(), h) != end());
+    return find(begin(), end(), h) != end();
 }
 
 // ----------------------------------------------------------------------------
@@ -499,14 +491,6 @@ ParameterHandleValuePairSet::getOrderType() const
 }
 
 // ----------------------------------------------------------------------------
-RTI::Region *
-ParameterHandleValuePairSet::getRegion() const
-    throw (InvalidHandleValuePairSetContext)
-{
-    throw RTIinternalError("Unimplemented service");
-}
-
-// ----------------------------------------------------------------------------
 void
 ParameterHandleValuePairSet::add(Handle h,
                                     const char *buff,
@@ -581,5 +565,5 @@ ParameterHandleValuePairSet::next(ULong) const
 
 } // namespace certi
 
-// $Id: GAV.cc,v 3.18 2008/12/07 20:16:13 gotthardp Exp $
+// $Id: GAV.cc,v 3.18.4.1 2009/01/05 13:34:51 gotthardp Exp $
 

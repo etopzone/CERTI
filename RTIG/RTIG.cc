@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.54 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: RTIG.cc,v 3.54.4.1 2009/01/05 13:34:49 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -205,7 +205,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
 
       case NetworkMessage::SET_TIME_REGULATING:
         D.Out(pdTrace, "SetTimeRegulating du federe %u(date=%f).",
-              msg->federate, msg->getDate());
+              msg->federate, msg->getDate().getTime());
         auditServer.setLevel(8);
         processSetTimeRegulating(link, static_cast<NM_Set_Time_Regulating*>(msg));
         break ;
@@ -1039,4 +1039,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.54 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: RTIG.cc,v 3.54.4.1 2009/01/05 13:34:49 gotthardp Exp $

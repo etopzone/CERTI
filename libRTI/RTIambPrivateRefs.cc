@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.16 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16.4.1 2009/01/05 13:34:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -712,7 +712,7 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
             if (msg->getBoolean())
                fed_amb->reflectAttributeValues(msg->getObject(),
                                                *attributes,
-                                               msg->getFedTime(),
+                                               RTIfedTime(msg->getFedTime()),
                                                (msg->getTag()).c_str(),
                                                msg->getEventRetraction());
             else
@@ -733,7 +733,7 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
                 fed_amb->receiveInteraction(
                                         msg->getInteractionClass(),
                                         *parameters,
-                                        msg->getFedTime(),
+                                        RTIfedTime(msg->getFedTime()),
                                         (msg->getTag()).c_str(),
                                         msg->getEventRetraction());
             else
@@ -752,7 +752,7 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
             if (msg->getBoolean()) {
                 fed_amb->removeObjectInstance(
                                           msg->getObject(),
-                                          msg->getFedTime(),
+                                          RTIfedTime(msg->getFedTime()),
                                           (msg->getTag()).c_str(),
                                           msg->getEventRetraction());
             }
@@ -884,21 +884,21 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::TIME_ADVANCE_GRANT:
         try {
-            fed_amb->timeAdvanceGrant(msg->getFedTime());
+            fed_amb->timeAdvanceGrant(RTIfedTime(msg->getFedTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeAdvanceGrant")
         break ;
 
       case Message::TIME_REGULATION_ENABLED:
         try {
-            fed_amb->timeRegulationEnabled(msg->getFedTime());
+            fed_amb->timeRegulationEnabled(RTIfedTime(msg->getFedTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeRegulationEnabled")
         break ;
 
       case Message::TIME_CONSTRAINED_ENABLED:
         try {
-            fed_amb->timeConstrainedEnabled(msg->getFedTime());
+            fed_amb->timeConstrainedEnabled(RTIfedTime(msg->getFedTime()));
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("timeConstrainedEnabled")
         break ;
@@ -908,4 +908,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.16 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16.4.1 2009/01/05 13:34:52 gotthardp Exp $

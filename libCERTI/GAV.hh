@@ -47,8 +47,8 @@ public:
 
     virtual void empty();
 
-    virtual RTI::Boolean isEmpty() const ;
-    virtual RTI::Boolean isMember(AttributeHandle h) const ;
+    virtual bool isEmpty() const ;
+    virtual bool isMember(AttributeHandle h) const ;
 };
 
 class FederateHandleSet : public std::list<FederateHandle>
@@ -70,7 +70,7 @@ public:
 
     virtual void empty();
 
-    virtual RTI::Boolean isMember(FederateHandle h) const ;
+    virtual bool isMember(FederateHandle h) const ;
 };
 
 class AttributeHandleValuePair
@@ -116,9 +116,6 @@ public:
         throw (InvalidHandleValuePairSetContext);
 
     virtual OrderType getOrderType(ULong i) const
-        throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
-
-    virtual RTI::Region *getRegion(ULong i) const
         throw (ArrayIndexOutOfBounds, InvalidHandleValuePairSetContext);
 
     virtual void add(Handle h, const char *buff, ULong valueLength)
@@ -172,9 +169,6 @@ public:
         throw (InvalidHandleValuePairSetContext);
 
     virtual OrderType getOrderType() const
-        throw (InvalidHandleValuePairSetContext);
-
-    virtual RTI::Region *getRegion() const
         throw (InvalidHandleValuePairSetContext);
 
     virtual void add(Handle h, const char *buff, ULong valueLength)

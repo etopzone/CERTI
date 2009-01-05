@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.45 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: TimeManagement.cc,v 3.45.4.1 2009/01/05 13:34:49 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -107,11 +107,11 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
 
         comm->sendMessage(&msg);
         lastNullMessageDate = heure_logique ;
-        D.Out(pdDebug, "NULL message sent (Time = %f).", heure_logique) ;
+        D.Out(pdDebug, "NULL message sent (Time = %f).", heure_logique.getTime()) ;
     }
     else {
         D.Out(pdExcept, "NULL message not sent (Time = %f, Last = %f).",
-              heure_logique, lastNullMessageDate);
+              heure_logique.getTime(), lastNullMessageDate.getTime());
     }
 }
 
@@ -497,11 +497,7 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
-        // FIXME Erk-->Pierre 
-        // We were changing lookahead value to epsilon
-        // when doing zero lookahead I'd rather handle
-        // _any_ near-to-zero lookahead as ZERO_LK
-        if (0==RTIfedTime::fcmp(_lookahead_courant,0.0)) {           
+        if (_lookahead_courant == 0.0) {
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -572,7 +568,7 @@ TimeManagement::requestMinNextEventTime()
     else
         dateMNET = (_LBTS <= dateTSO ? _LBTS : dateTSO) ;
 
-   D.Out(pdRegister, "Minimum Next Event Time : %f.", dateMNET);
+   D.Out(pdRegister, "Minimum Next Event Time : %f.", dateMNET.getTime());
 
    return dateMNET ;
 }
@@ -597,7 +593,7 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
         if (_est_regulateur)
             sendNullMessage(_heure_courante);
 
-        D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant);
+        D.Out(pdRegister, "New Lookahead : %f.", _lookahead_courant.getTime());
     }
 }
 
@@ -680,7 +676,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
     // Modifier lookahead courant 
     _lookahead_courant = the_lookahead;
           D.Out(pdDebug,
-    	        "New lookahead = %f",_lookahead_courant);
+    	        "New lookahead = %f",_lookahead_courant.getTime());
     // faudrait peut etre remplacer heure courante par le temps en parametre      
         msg.setDate(_heure_courante + _lookahead_courant);
 
@@ -722,35 +718,23 @@ TimeManagement::timeConstrainedEnabled(FederationTime theTime, TypeException &e)
 bool
 TimeManagement::testValidTime(FederationTime theTime)
 {
-   int compareResult;
-   // FIXME Erk-->Pierre
-   // We should use RTIfedTime object and not _plain_ double
-   // value
    if (_avancee_en_cours == PAS_D_AVANCEE) {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-    	 compareResult = RTIfedTime::fcmp(theTime,_heure_courante);
-    	 // if theTime <= _heure_courante
-         if (compareResult==-1 || compareResult==0)
+         if (theTime <= _heure_courante)
             return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-    	 compareResult = RTIfedTime::fcmp(theTime,_heure_courante + _lookahead_courant);
-    	 // if theTime  < _heure_courante + _lookahead_courant
-         if (compareResult == -1)
+         if (theTime  < _heure_courante + _lookahead_courant)
             return false;
       }
    }
    else {
       if (_type_granted_state == AFTER_TAR_OR_NER_WITH_ZERO_LK) {
-    	 compareResult = RTIfedTime::fcmp(theTime,date_avancee);
-    	 // if theTime <= date_avancee
-         if (compareResult==-1 || compareResult==0)
+         if (theTime <= date_avancee)
             return false;
       }
       else {  // AFTER_TAR_OR_NER or AFTER_TARA_OR_NARA
-    	 compareResult = RTIfedTime::fcmp(theTime,date_avancee + _lookahead_courant);
-    	 // if (theTime  < date_avancee + _lookahead_courant)
-         if (compareResult == -1)
+         if (theTime  < date_avancee + _lookahead_courant)
             return false;
       }
    }
@@ -838,9 +822,9 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
     if (_est_contraint) {
         // give a TSO message.
         if (_LBTS == std::numeric_limits<double>::infinity())
-           D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee);
+           D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee.getTime());
         else
-           D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee, _LBTS);
+           D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee.getTime(), _LBTS.getTime());
         min = (_LBTS<date_avancee)?(_LBTS):(date_avancee);
         msg = queues->giveTsoMessage(min, msg_donne, msg_restant);
 
@@ -849,10 +833,10 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
             // if LBTS allows to give a timeAdvanceGrant.
             if (_LBTS == std::numeric_limits<double>::infinity())
                D.Out(pdDebug, "Logical time : %f, LBTS : infini, lookahead : %f.",
-                     date_avancee, _lookahead_courant);
+                     date_avancee.getTime(), _lookahead_courant.getTime());
             else
                D.Out(pdDebug, "Logical time : %15.12f, LBTS : %15.12f, lookahead : %f.",
-                     date_avancee, _LBTS, _lookahead_courant);
+                     date_avancee.getTime(), _LBTS.getTime(), _lookahead_courant.getTime());
 
             if ((date_avancee < _LBTS) || 
                ((date_avancee == _LBTS) && (_avancee_en_cours == TARA))) {
@@ -895,7 +879,7 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     req.setFederationTime(logical_time);
 
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
-          req.getFederationTime());
+          req.getFederationTime().getTime());
 
     _tick_state = TICK_NEXT;  // indicate the callback was processed
 
@@ -920,15 +904,13 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
     if (_avancee_en_cours != PAS_D_AVANCEE)
         e = e_TimeAdvanceAlreadyInProgress ;
 
-    /* logical_time <_heure_courante */
-    if (RTIfedTime::fcmp(logical_time ,_heure_courante) < 0)
+    if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
     
-    /* logical_time < _heure_courante + _lookahead_courant */
-    if (RTIfedTime::fcmp(logical_time , _heure_courante + _lookahead_courant)<0) {
+    if (logical_time < _heure_courante + _lookahead_courant) {
     	
     D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
-    			_lookahead_courant,_heure_courante,logical_time);
+    			_lookahead_courant.getTime(),_heure_courante.getTime(),logical_time.getTime());
        e = e_InvalidFederationTime ;
     }
 
@@ -936,11 +918,7 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
-        // FIXME Erk-->Pierre 
-        // We were changing lookahead value to epsilon
-        // when doing zero lookahead I'd rather handle
-        // _any_ near-to-zero lookahead as ZERO_LK
-        if (0==RTIfedTime::fcmp(_lookahead_courant,0.0)) {         
+        if (_lookahead_courant == 0.0) {         
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -951,7 +929,7 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
         date_avancee = logical_time ;
 
         D.Out(pdTrace, "timeAdvanceRequest accepted (asked time=%f).",
-              date_avancee);
+              date_avancee.getTime());
     }
     else {
         D.Out(pdExcept, "timeAdvanceRequest refused (exception = %d).", e);
@@ -987,7 +965,7 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
         date_avancee = logical_time ;
 
         D.Out(pdTrace, "timeAdvanceRequestAvailable accepted (asked time=%f).",
-              date_avancee);
+              date_avancee.getTime());
     }
     else {
         D.Out(pdExcept, "timeAdvanceRequestAvailable refused (exception = %d).", e);
@@ -997,4 +975,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.45 2008/09/18 14:41:27 gotthardp Exp $
+// $Id: TimeManagement.cc,v 3.45.4.1 2009/01/05 13:34:49 gotthardp Exp $

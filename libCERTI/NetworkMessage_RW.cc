@@ -16,8 +16,9 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.52 2008/10/23 13:46:19 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.52.4.1 2009/01/05 13:34:52 gotthardp Exp $
 // ----------------------------------------------------------------------------
+
 #include "NetworkMessage.hh"
 #include "PrettyDebug.hh"
 
@@ -53,8 +54,8 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	 */
 	msgBuffer.write_bool(_isDated);
 	if (_isDated) {
-		msgBuffer.write_double(date);
-		D.Out(pdDebug, "Sent Message date is  <%f>", date);
+		msgBuffer.write_double(date.getTime());
+		D.Out(pdDebug, "Sent Message date is  <%f>", date.getTime());
 	}
 	msgBuffer.write_bool(_isLabelled);
 	if (_isLabelled) {
@@ -74,8 +75,8 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	 */
 	D[pdDebug] << "Deserialize <" << getName().c_str()<<">"<<endl;
 	/* deserialize common part */
-	type        = static_cast<certi::NetworkMessage::Type>(msgBuffer.read_int32());
-	exception   = static_cast<certi::TypeException>(msgBuffer.read_int32());
+	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
+	exception   = static_cast<TypeException>(msgBuffer.read_int32());
 	federate    = msgBuffer.read_int32();
 	federation  = msgBuffer.read_int32();
 	/*
@@ -87,7 +88,7 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	_isDated = msgBuffer.read_bool();
 	if (_isDated) {
 		date = msgBuffer.read_double();
-		D.Out(pdDebug, "Received Message date is  <%f>", date);
+		D.Out(pdDebug, "Received Message date is  <%f>", date.getTime());
 	}
 	_isLabelled = msgBuffer.read_bool();
 	if (_isLabelled) {
@@ -151,4 +152,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.52 2008/10/23 13:46:19 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.52.4.1 2009/01/05 13:34:52 gotthardp Exp $

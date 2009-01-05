@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.80 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: RTIG_processing.cc,v 3.80.4.1 2009/01/05 13:34:50 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -520,7 +520,7 @@ RTIG::processSetTimeRegulating(Socket *link, NM_Set_Time_Regulating *msg)
   G.Out(pdGendoc,"BEGIN ** SET TIME REGULATING **");
 
   if (msg->isRegulator()) {
-        auditServer << "ON at time " << msg->getDate();
+        auditServer << "ON at time " << msg->getDate().getTime();
 
         federations.createRegulator(msg->federation,
                                      msg->federate,
@@ -561,7 +561,7 @@ RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
   G.Out(pdGendoc,"BEGIN ** SET TIME CONSTRAINED **");
 
   if (msg->isConstrained()) {
-        auditServer << "ON at time " << msg->getDate();
+        auditServer << "ON at time " << msg->getDate().getTime();
 
         federations.addConstrained(msg->federation,
                                     msg->federate);
@@ -597,7 +597,7 @@ RTIG::processSetTimeConstrained(Socket *link, NM_Set_Time_Constrained *msg)
 void
 RTIG::processMessageNull(NetworkMessage *msg)
 {
-    auditServer << "Date " << msg->getDate() ;
+    auditServer << "Date " << msg->getDate().getTime();
 
     // Catch all exceptions because RTIA does not expect an answer anyway.
     try {
@@ -919,7 +919,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
     std::vector <AttributeValue_t> ValueArray ;
 
     auditServer << "ObjID = " << req->object
-		<< ", Date = " << req->getDate() ;
+		<< ", Date = " << req->getDate().getTime();
 
     // Get Value Array
     ValueArray = req->getAttribValueArray();
@@ -976,7 +976,7 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 
     // Building Value Array
     auditServer << "IntID = " << req->interactionClass
-		<< ", date = " << req->getDate() ;
+		<< ", date = " << req->getDate().getTime();
     values = req->getParamValueArray();
 
     if ( req->isDated() )
@@ -1556,4 +1556,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.80 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: RTIG_processing.cc,v 3.80.4.1 2009/01/05 13:34:50 gotthardp Exp $

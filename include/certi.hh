@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.39 2008/12/18 19:45:47 gotthardp Exp $
+// $Id: certi.hh,v 3.38.4.1 2009/01/05 13:34:50 gotthardp Exp $
 // ----------------------------------------------------------------------------
 #include <vector>
 
@@ -61,7 +61,7 @@
         #define __func__ "<unknown>"
         #endif
     #else
-       #include <inttypes.h>
+       #include <stdint.h>
        #ifdef __x86_64__
           #define  CERTI_INT64_CONSTANT(val)  (val##L)
           #define  CERTI_INT64_FORMAT         "l"
@@ -76,7 +76,7 @@
 		#define CERTI_EXPORT __declspec(dllimport)
 	#endif
 #else
-    #include <inttypes.h>
+    #include <stdint.h>
     #define  STAT_FUNCTION		stat
     #define  STAT_STRUCT		struct stat
     #ifdef __x86_64__
@@ -102,30 +102,29 @@
 
 namespace certi {
 
-// RTI Shortcuts
-typedef RTI::AttributeHandle AttributeHandle ;
-typedef RTI::DimensionHandle DimensionHandle ;
-typedef RTI::EventRetractionHandle EventRetractionHandle ;
-typedef RTI::ExtentIndex ExtentIndex ;
-typedef RTI::FederateHandle FederateHandle ;
-typedef RTI::Handle Handle ;
-typedef RTI::InteractionClassHandle InteractionClassHandle ;
-typedef RTI::ObjectClassHandle ObjectClassHandle ;
-typedef RTI::ObjectHandle ObjectHandle ;
-typedef RTI::OrderType OrderType ;
-typedef RTI::ParameterHandle ParameterHandle ;
-typedef RTI::SpaceHandle SpaceHandle ;
-typedef RTI::TransportType TransportType ;
-typedef RTI::ULong ULong ;
-typedef RTI::UShort UShort ;
+typedef unsigned short UShort;
+typedef unsigned long ULong;
+typedef long Long;
+typedef ULong Handle;
+typedef Handle ObjectClassHandle;
+typedef Handle InteractionClassHandle;
+typedef ULong ExtentIndex;
+typedef Handle AttributeHandle;
+typedef Handle ParameterHandle;
+typedef Handle ObjectHandle;
+typedef Handle DimensionHandle;
+typedef Handle FederateHandle;
+typedef Handle OrderType;
+typedef Long SpaceHandle;
+typedef Handle TransportType;
 
-typedef RTI::Double FederationTime ;
+typedef RTI::EventRetractionHandle EventRetractionHandle;
+
 typedef UShort ObjectHandlecount ;
 typedef std::string ObjectName_t ;
 typedef std::string AttributeValue_t;
 typedef std::string ParameterValue_t;
 
-typedef RTI::Double FederationTimeDelta ;
 enum ObjectRemovalReason {
     OUT_OF_REGION = 1,
     OBJECT_DELETED,
@@ -247,4 +246,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.39 2008/12/18 19:45:47 gotthardp Exp $
+// $Id: certi.hh,v 3.38.4.1 2009/01/05 13:34:50 gotthardp Exp $

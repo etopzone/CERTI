@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.39 2008/11/21 12:45:25 approx Exp $
+// $Id: Message_W.cc,v 3.39.4.1 2009/01/05 13:34:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -494,7 +494,7 @@ Message::writeBody(MessageBuffer &msgBuffer)
           case ENABLE_TIME_CONSTRAINED:
           case DISABLE_TIME_CONSTRAINED:
             msgBuffer.write_bool(boolean);
-            msgBuffer.write_double(lookahead);
+            msgBuffer.write_double(lookahead.getTime());
             break ;
 
 	  // Body contains boolean
@@ -527,7 +527,7 @@ Message::writeBody(MessageBuffer &msgBuffer)
           case MODIFY_LOOKAHEAD:
           case QUERY_LOOKAHEAD:
             // we put another time but is the lookahead
-	    msgBuffer.write_double(lookahead) ;
+	    msgBuffer.write_double(lookahead.getTime());
             break ;
             // -- Default Handler --
 
@@ -564,7 +564,7 @@ Message::writeHeader(MessageBuffer &msgBuffer)
     // Note sometimes federationTime is not useful.
     msgBuffer.write_int32(this->type) ;
     msgBuffer.write_int32(this->exception);
-    msgBuffer.write_double(getFederationTime());
+    msgBuffer.write_double(getFederationTime().getTime());
 
     // If the message carry an exception, the Body will only contain the
     // exception reason.
@@ -609,4 +609,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.39 2008/11/21 12:45:25 approx Exp $
+// $Id: Message_W.cc,v 3.39.4.1 2009/01/05 13:34:51 gotthardp Exp $

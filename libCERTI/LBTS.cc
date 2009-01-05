@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.12 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: LBTS.cc,v 3.12.4.1 2009/01/05 13:34:51 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -122,7 +122,7 @@ LBTS::insert(FederateHandle num_fed, FederationTime time)
 void
 LBTS::update(FederateHandle num_fed, FederationTime time)
 {
-    D.Out(pdDebug, "LBTS.update: Updating federate %d(%f).", num_fed, time);
+    D.Out(pdDebug, "LBTS.update: Updating federate %d(%f).", num_fed, time.getTime());
 
     ClockSet::iterator it = clocks.find(num_fed);
 
@@ -136,10 +136,10 @@ LBTS::update(FederateHandle num_fed, FederationTime time)
               num_fed);
     else {
         D.Out(pdDebug, "before LBTS.update: federate %u, old time %f.",
-              it->first, it->second);
+              it->first, it->second.getTime());
         it->second = time ;
         D.Out(pdDebug, "after LBTS.update: federate %u, new time %f.",
-              it->first, it->second) ;
+              it->first, it->second.getTime());
         compute();
     }
 }
@@ -160,4 +160,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.12 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: LBTS.cc,v 3.12.4.1 2009/01/05 13:34:51 gotthardp Exp $

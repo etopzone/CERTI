@@ -26,7 +26,7 @@
 #include "SocketUN.hh"
 #include "BasicMessage.hh"
 #include "GAV.hh"
-#include "fedtime.hh"
+#include "FedTimeD.hh"
 
 #include <vector>
 #include <string>
@@ -327,10 +327,10 @@ public:
     void setResignAction(RTI::ResignAction);
     RTI::ResignAction getResignAction() const { return resignAction ; };
 
-    void setFedTime(const RTI::FedTime&);
-    const RTI::FedTime& getFedTime() const { return fed_time; };
+    void setFedTime(const double);
+    double getFedTime() const { return fed_time.getTime(); };
 
-    void setLookahead(const RTI::FedTime&);
+    void setLookahead(const double);
 
     void setFederationTime(FederationTime);
     FederationTime getFederationTime() const { return fed_time.getTime(); };
@@ -341,12 +341,12 @@ public:
     void setObject(ObjectHandle);
     ObjectHandle getObject() const { return object ; };
 
-    void setTransportation(RTI::TransportationHandle);
-    RTI::TransportationHandle getTransportation() const
+    void setTransportation(TransportType);
+    TransportType getTransportation() const
     { return transport; }
 
-    void setOrdering(RTI::OrderingHandle);
-    RTI::OrderingHandle getOrdering() const
+    void setOrdering(OrderType);
+    OrderType getOrdering() const
     { return order; }
 
     void setEventRetraction(EventRetractionHandle);
@@ -389,7 +389,7 @@ protected:
     TypeException exception ;
     std::string exceptionReason;
 
-    RTIfedTime fed_time;
+    FedTime fed_time;
     bool boolean ;
     FederationTimeDelta lookahead ;
     FederateHandle federate ;
