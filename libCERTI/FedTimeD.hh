@@ -19,11 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: FedTimeD.hh,v 1.1.2.1 2009/01/05 13:34:51 gotthardp Exp $
+// $Id: FedTimeD.hh,v 1.1.2.2 2009/01/07 10:39:57 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_FEDTIMED_HH
 #define CERTI_FEDTIMED_HH
+
+#include "certi.hh"
 
 #include <math.h>
 #include <ostream>
@@ -111,7 +113,7 @@ fcmp(double x1,double x2, double epsilon)
         return 0;  /* x1 == x2 */
 }
 
-class FedTime
+class CERTI_EXPORT FedTime
 {
 public:
     static const double epsilon;
@@ -161,7 +163,7 @@ public:
     FedTime operator/(const FedTime &);
     FedTime operator/(const double &);
 
-    friend std::ostream &operator<<(std::ostream&, const FedTime &time);
+    friend std::ostream CERTI_EXPORT &operator<<(std::ostream&, const FedTime &time);
 
 private:
     double _fedTime ;
@@ -182,4 +184,4 @@ typedef FedTime FederationTimeDelta;
 
 #endif // CERTI_FEDTIMED_HH
 
-// $Id: FedTimeD.hh,v 1.1.2.1 2009/01/05 13:34:51 gotthardp Exp $
+// $Id: FedTimeD.hh,v 1.1.2.2 2009/01/07 10:39:57 gotthardp Exp $

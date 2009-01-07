@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.19 2008/12/10 16:53:24 erk Exp $
+// $Id: RTItypes.hh,v 3.19.4.1 2009/01/07 10:39:57 gotthardp Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -330,7 +330,7 @@ public:
 	throw (ArrayIndexOutOfBounds) = 0 ;
 } ;
 
-class RTI_EXPORT FedTime
+class FEDTIME_EXPORT FedTime
 {
 public:
     virtual ~FedTime(){};
@@ -390,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.19 2008/12/10 16:53:24 erk Exp $
+// $Id: RTItypes.hh,v 3.19.4.1 2009/01/07 10:39:57 gotthardp Exp $

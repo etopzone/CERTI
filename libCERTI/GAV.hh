@@ -27,7 +27,7 @@
 
 namespace certi {
 
-class AttributeHandleSet
+class CERTI_EXPORT AttributeHandleSet
     : public std::list<AttributeHandle>
 {
 public:
