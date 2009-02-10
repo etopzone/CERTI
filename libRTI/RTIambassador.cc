@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.101.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.101.4.2 2009/02/10 18:25:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -626,7 +626,7 @@ RTI::RTIambassador::requestFederationSave(const char *label,
     G.Out(pdGendoc,"enter RTIambassador::requestFederationSave with time");
 
     req.type = Message::REQUEST_FEDERATION_SAVE ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     req.setLabel(label);
     // boolean true means time constrained
     req.setBoolean(true);
@@ -796,7 +796,7 @@ RTI::RTIambassador::publishObjectClass(ObjectClassHandle theClass,
 
     req.type = Message::PUBLISH_OBJECT_CLASS ;
     req.setObjectClass(theClass);
-    req.setAHS(cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles());
     G.Out(pdGendoc,"      ====>executeService PUBLISH_OBJECT_CLASS");
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::publishObjectClass");
@@ -870,7 +870,7 @@ subscribeObjectClassAttributes(ObjectClassHandle theClass,
     G.Out(pdGendoc,"enter RTIambassador::subscribeObjectClassAttributes");
     req.type = Message::SUBSCRIBE_OBJECT_CLASS_ATTRIBUTES ;
     req.setObjectClass(theClass);
-    req.setAHS(cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attributeList).getAttributeHandles());
     req.setBoolean(active);
 
     privateRefs->executeService(&req, &rep);
@@ -996,13 +996,13 @@ updateAttributeValues(ObjectHandle theObject,
 
     req.type = Message::UPDATE_ATTRIBUTE_VALUES ;
     req.setObject(theObject);
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     if ( theTag == NULL)
        {
        throw RTI::RTIinternalError ("Calling updateAttributeValues with Tag NULL");
        }
     req.setTag(theTag);
-    req.setAHVPS(cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs());
+    req.setAHVPS(certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs());
     req.setBoolean(true);
 
     privateRefs->executeService(&req, &rep);
@@ -1038,7 +1038,7 @@ RTI::RTIambassador::updateAttributeValues(ObjectHandle the_object,
        throw RTI::RTIinternalError ("Calling updateAttributeValues with Tag NULL");
        }
     req.setTag(theTag);
-    req.setAHVPS(cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs());
+    req.setAHVPS(certi_cast<AttributeHandleValuePairSetImp>()(theAttributes).getAttributeHandleValuePairs());
     req.setBoolean(false);
 
     privateRefs->executeService(&req, &rep);
@@ -1073,13 +1073,13 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
 
     req.type = Message::SEND_INTERACTION ;
     req.setInteractionClass(theInteraction);
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     if (theTag == NULL)
        {
        throw RTI::RTIinternalError ("Calling sendInteraction with Tag NULL") ;
        }
     req.setTag((std::string)theTag);
-    req.setPHVPS(cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
+    req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
     req.setRegion(0);
     req.setBoolean(true);
 
@@ -1115,7 +1115,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
        throw RTI::RTIinternalError ("Calling sendIntercation with Tag NULL") ;
        }
     req.setTag((std::string)theTag);
-    req.setPHVPS(cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
+    req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
     req.setRegion(0);
     req.setBoolean(false);
   
@@ -1147,7 +1147,7 @@ RTI::RTIambassador::deleteObjectInstance(ObjectHandle theObject,
 
     req.type = Message::DELETE_OBJECT_INSTANCE ;
     req.setObject(theObject);
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     if (theTag == NULL)
        {
        throw RTI::RTIinternalError ("Calling deleteObjectInstance with Tag NULL") ;
@@ -1222,7 +1222,7 @@ changeAttributeTransportationType(ObjectHandle theObject,
     req.type = Message::CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE ;
     req.setObject(theObject);
     req.setTransportation(theType);
-    req.setAHS(cast<AttributeHandleSetImp>()(theAttributes).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(theAttributes).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1262,7 +1262,7 @@ RTI::RTIambassador::requestObjectAttributeValueUpdate(ObjectHandle theObject,
     G.Out(pdGendoc,"enter RTIambassador::requestObjectAttributeValueUpdate");
     req.type = Message::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(ahs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(ahs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::requestObjectAttributeValueUpdate");
@@ -1283,7 +1283,7 @@ RTI::RTIambassador::requestClassAttributeValueUpdate(ObjectClassHandle theClass,
     G.Out(pdGendoc,"enter RTIambassador::requestClassAttributeValueUpdate");
     req.type = Message::REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE ;
     req.setObjectClass(theClass);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
     G.Out(pdGendoc,"exit  RTIambassador::requestClassAttributeValueUpdate");
@@ -1308,7 +1308,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.type = Message::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1339,7 +1339,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
        throw RTI::RTIinternalError ("Calling negotiatedAttributeOwnershipDivestiture with Tag NULL") ;
        }
     req.setTag(theTag);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1371,7 +1371,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
        throw RTI::RTIinternalError ("Calling attributeOwnershipAcquisition with Tag NULL") ;
        }
     req.setTag(theTag);
-    req.setAHS(cast<AttributeHandleSetImp>()(desiredAttributes).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(desiredAttributes).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1396,7 +1396,7 @@ attributeOwnershipReleaseResponse(ObjectHandle theObject,
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 
@@ -1427,7 +1427,7 @@ cancelNegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
 
     req.type = Message::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1452,7 +1452,7 @@ cancelAttributeOwnershipAcquisition(ObjectHandle theObject,
 
     req.type = Message::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1479,7 +1479,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
 
     req.type = Message::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE ;
     req.setObject(theObject);
-    req.setAHS(cast<AttributeHandleSetImp>()(desired).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(desired).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1541,8 +1541,8 @@ RTI::RTIambassador::enableTimeRegulation(const RTI::FedTime& theFederateTime,
 {
     Message req, rep ;
     req.type = Message::ENABLE_TIME_REGULATION ;
-    req.setFedTime(cast<RTIfedTime>()(theFederateTime).getTime());
-    req.setLookahead(cast<RTIfedTime>()(theLookahead).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theFederateTime).getTime());
+    req.setLookahead(certi_cast<RTIfedTime>()(theLookahead).getTime());
     req.setBoolean(true);
     privateRefs->executeService(&req, &rep);
 }
@@ -1618,7 +1618,7 @@ RTI::RTIambassador::timeAdvanceRequest(const RTI::FedTime& theTime)
     Message req, rep ;
 
     req.type = Message::TIME_ADVANCE_REQUEST ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     privateRefs->executeService(&req, &rep);
 }
 
@@ -1635,7 +1635,7 @@ RTI::RTIambassador::timeAdvanceRequestAvailable(const RTI::FedTime& theTime)
     Message req, rep ;
 
     req.type = Message::TIME_ADVANCE_REQUEST_AVAILABLE ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1658,7 +1658,7 @@ RTI::RTIambassador::nextEventRequest(const RTI::FedTime& theTime)
     Message req, rep ;
 
     req.type = Message::NEXT_EVENT_REQUEST ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     privateRefs->executeService(&req, &rep);
 }
 
@@ -1675,7 +1675,7 @@ RTI::RTIambassador::nextEventRequestAvailable(const RTI::FedTime& theTime)
     Message req, rep ;
 
     req.type = Message::NEXT_EVENT_REQUEST_AVAILABLE ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
     privateRefs->executeService(&req, &rep);
 }
 
@@ -1698,7 +1698,7 @@ RTI::RTIambassador::flushQueueRequest(const RTI::FedTime& theTime)
     Message req, rep ;
 
     req.type = Message::FLUSH_QUEUE_REQUEST ;
-    req.setFedTime(cast<RTIfedTime>()(theTime).getTime());
+    req.setFedTime(certi_cast<RTIfedTime>()(theTime).getTime());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1750,7 +1750,7 @@ RTI::RTIambassador::queryLBTS(RTI::FedTime& theTime)
     req.type = Message::QUERY_LBTS ;
     privateRefs->executeService(&req, &rep);
 
-    cast<RTIfedTime>()(theTime) = rep.getFedTime();
+    certi_cast<RTIfedTime>()(theTime) = rep.getFedTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1768,7 +1768,7 @@ RTI::RTIambassador::queryFederateTime(RTI::FedTime& theTime)
     req.type = Message::QUERY_FEDERATE_TIME ;
     privateRefs->executeService(&req, &rep);
 
-    cast<RTIfedTime>()(theTime) = rep.getFedTime();
+    certi_cast<RTIfedTime>()(theTime) = rep.getFedTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1786,7 +1786,7 @@ RTI::RTIambassador::queryMinNextEventTime(RTI::FedTime& theTime)
     req.type = Message::QUERY_MIN_NEXT_EVENT_TIME ;
     privateRefs->executeService(&req, &rep);
 
-    cast<RTIfedTime>()(theTime) = rep.getFedTime();
+    certi_cast<RTIfedTime>()(theTime) = rep.getFedTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1800,7 +1800,7 @@ RTI::RTIambassador::modifyLookahead(const RTI::FedTime& theLookahead)
     Message req, rep ;
 
     req.type = Message::MODIFY_LOOKAHEAD ;
-    req.setLookahead(cast<RTIfedTime>()(theLookahead).getTime());
+    req.setLookahead(certi_cast<RTIfedTime>()(theLookahead).getTime());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -1820,7 +1820,7 @@ RTI::RTIambassador::queryLookahead(RTI::FedTime &theTime)
     req.type = Message::QUERY_LOOKAHEAD ;
     privateRefs->executeService(&req, &rep);
 
-    cast<RTIfedTime>()(theTime) = rep.getFederationTimeDelta().getTime();
+    certi_cast<RTIfedTime>()(theTime) = rep.getFederationTimeDelta().getTime();
 }
 
 // ----------------------------------------------------------------------------
@@ -1856,7 +1856,7 @@ RTI::RTIambassador::changeAttributeOrderType(ObjectHandle theObject,
     req.type = Message::CHANGE_ATTRIBUTE_ORDER_TYPE ;
     req.setObject(theObject);
     req.setOrdering(theType);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
 }
@@ -2074,7 +2074,7 @@ RTI::RTIambassador::associateRegionForUpdates(Region &region,
     req.type = Message::DDM_ASSOCIATE_REGION ;
     req.setObject(object);
     req.setRegion(get_handle(region));
-    req.setAHS(cast<AttributeHandleSetImp>()(attributes).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attributes).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
     D[pdDebug] << "- Associate Region for Updates" << endl ;
@@ -2140,7 +2140,7 @@ RTI::RTIambassador::subscribeObjectClassAttributesWithRegion(
     req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
     req.setObjectClass(object_class);
     req.setRegion(get_handle(region));
-    req.setAHS(cast<AttributeHandleSetImp>()(attributes).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attributes).getAttributeHandles());
     req.setBoolean(passive);
 
     privateRefs->executeService(&req, &rep);
@@ -2250,8 +2250,8 @@ RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction
 
     req.setType(Message::SEND_INTERACTION);
     req.setInteractionClass(interaction);
-    req.setPHVPS(cast<ParameterHandleValuePairSetImp>()(par).getParameterHandleValuePairs());
-    req.setFedTime(cast<RTIfedTime>()(time).getTime());
+    req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(par).getParameterHandleValuePairs());
+    req.setFedTime(certi_cast<RTIfedTime>()(time).getTime());
     if ( tag == NULL )
        {
        throw RTI::RTIinternalError ("Calling sendInteractionWithRegion with Tag NULL");
@@ -2285,7 +2285,7 @@ RTI::RTIambassador::sendInteractionWithRegion(InteractionClassHandle interaction
 
     req.setType(Message::SEND_INTERACTION);
     req.setInteractionClass(interaction);
-    req.setPHVPS(cast<ParameterHandleValuePairSetImp>()(par).getParameterHandleValuePairs());
+    req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(par).getParameterHandleValuePairs());
     if ( tag == NULL )
        {
        throw RTI::RTIinternalError ("Calling sendInteractionWithRegion with Tag NULL");
@@ -2310,7 +2310,7 @@ requestClassAttributeValueUpdateWithRegion(ObjectClassHandle /*object*/,
 
     Message req, rep ;
     req.setType(Message::DDM_REQUEST_UPDATE);
-    req.setAHS(cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
+    req.setAHS(certi_cast<AttributeHandleSetImp>()(attrs).getAttributeHandles());
     req.setRegion(get_handle(region));
     privateRefs->executeService(&req, &rep);    
 }
@@ -2949,4 +2949,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.101.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.101.4.2 2009/02/10 18:25:15 erk Exp $

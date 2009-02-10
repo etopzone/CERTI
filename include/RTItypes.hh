@@ -1,5 +1,5 @@
 // HLA 1.3 Header "RTItypes.hh"
-// $Id: RTItypes.hh,v 3.19.4.1 2009/01/07 10:39:57 gotthardp Exp $
+// $Id: RTItypes.hh,v 3.19.4.2 2009/02/10 18:25:15 erk Exp $
 
 #ifndef RTITYPES_HH_INCLUDED
 #define RTITYPES_HH_INCLUDED
@@ -374,11 +374,11 @@ public:
 class FEDTIME_EXPORT FedTimeFactory
 {
 public:
-    static RTI::FedTime *makeZero()
-	throw (RTI::MemoryExhausted);
+    static FedTime *makeZero()
+	throw (MemoryExhausted);
 
-    static RTI::FedTime* decode(const char *buf)
-	throw (RTI::MemoryExhausted);
+    static FedTime* decode(const char *buf)
+	throw (MemoryExhausted);
 };
 
 struct EventRetractionHandle_s {
@@ -390,4 +390,4 @@ typedef struct EventRetractionHandle_s EventRetractionHandle ;
 
 #endif // RTITYPES_HH_INCLUDED
 
-// $Id: RTItypes.hh,v 3.19.4.1 2009/01/07 10:39:57 gotthardp Exp $
+// $Id: RTItypes.hh,v 3.19.4.2 2009/02/10 18:25:15 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.16.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16.4.2 2009/02/10 18:25:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -29,7 +29,7 @@
 #include <sstream>
 
 namespace {
-PrettyDebug D("LIBRTI", __FILE__);
+static PrettyDebug D("LIBRTI", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 }
 
@@ -908,4 +908,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.16.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.16.4.2 2009/02/10 18:25:14 erk Exp $

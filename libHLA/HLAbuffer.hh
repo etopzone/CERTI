@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbuffer.hh,v 1.8 2008/12/18 19:45:47 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.7.4.1 2009/02/10 18:25:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BUFFER_HH
@@ -32,7 +32,7 @@ typedef __int16           int16_t;
 typedef unsigned __int8   uint8_t;
 typedef __int8            int8_t;
 #else
-#include <inttypes.h>
+#include <stdint.h>
 #endif
 
 #if defined(_WIN32)
@@ -48,7 +48,7 @@ typedef __int8            int8_t;
 
 namespace libhla {
 
-std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t length);
+HLA_EXPORT std::ostream& __print_buffer(std::ostream& stream, const void *buffer, size_t length);
 
 /* Caution:
  * This implementation assumes that there are no compiler-generated data in
@@ -182,5 +182,5 @@ inline size_t __padding(size_t size, size_t boundary)
 
 #endif // _HLATYPES_BUFFER_HH
 
-// $Id: HLAbuffer.hh,v 1.8 2008/12/18 19:45:47 gotthardp Exp $
+// $Id: HLAbuffer.hh,v 1.7.4.1 2009/02/10 18:25:15 erk Exp $
 

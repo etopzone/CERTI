@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypesImp.hh,v 3.1.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.1.4.2 2009/02/10 18:25:14 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _RTI_TYPESIMP_HH
@@ -31,7 +31,7 @@
 namespace certi {
 
 template<class I>
-struct cast
+struct certi_cast
 {
     template<class R>
     const I& operator()(const R& imp)
@@ -263,4 +263,4 @@ private:
 
 #endif // _RTI_TYPESIMP_HH
 
-// $Id: RTItypesImp.hh,v 3.1.4.1 2009/01/05 13:34:52 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.1.4.2 2009/02/10 18:25:14 erk Exp $

@@ -46,7 +46,7 @@ rft(const RTI::FedTime &time)
 	return dynamic_cast<const RTIfedTime &>(time);
     }
     catch (std::bad_cast) {
-	throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
+	//throw RTI::InvalidFederationTime("Could not cast to RTIfedTime");
     }
 }
 
@@ -69,8 +69,8 @@ RTI::FedTimeFactory::makeZero()
     try {
         return new RTIfedTime();
     }
-    catch (std::bad_alloc) {
-        throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
+    catch (std::bad_alloc) {		
+        //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
 
@@ -82,7 +82,7 @@ RTI::FedTimeFactory::decode(const char *buf)
         return new RTIfedTime(*(const RTI::Double*)buf);
     }
     catch (std::bad_alloc) {
-        throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
+        //throw RTI::MemoryExhausted("Cannot allocate RTI::FedTime.");
     }
 }
 
