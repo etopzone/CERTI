@@ -197,23 +197,23 @@ Message::setFederationTimeDelta(FederationTimeDelta the_lookahead)
     @param the_time federation time
 */
 void
-Message::setFedTime(const RTI::FedTime &the_time)
+Message::setFedTime(const double the_time)
 {
-    fed_time = dynamic_cast<const RTIfedTime &>(the_time);
+    fed_time = the_time;
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setLookahead(const RTI::FedTime& the_lookahead)
+Message::setLookahead(const double the_lookahead)
 {
-    lookahead = (FederationTimeDelta) ((RTIfedTime&) the_lookahead).getTime();
+    lookahead = the_lookahead;
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::setFederationTime(FederationTime the_time)
 {
-    fed_time = RTIfedTime(the_time);
+    fed_time = the_time;
 }
 
 // ----------------------------------------------------------------------------
@@ -238,14 +238,14 @@ Message::setObject(ObjectHandle the_object)
 
 // ----------------------------------------------------------------------------
 void
-Message::setTransportation(RTI::TransportationHandle the_transport)
+Message::setTransportation(TransportType the_transport)
 {
     transport = the_transport;
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setOrdering(RTI::OrderingHandle the_ordering)
+Message::setOrdering(OrderType the_ordering)
 {
     order = the_ordering;
 }

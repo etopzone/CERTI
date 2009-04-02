@@ -17,13 +17,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.44 2008/11/20 18:21:56 approx Exp $
+// $Id: NetworkMessage.hh,v 3.45 2009/04/02 19:58:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
 #define CERTI_NETWORK_MESSAGE_HH
 
-#include "fedtime.hh"
+#include "FedTimeD.hh"
 #include "Exception.hh"
 #include "Socket.hh"
 #include "RTIRegion.hh"
@@ -348,4 +348,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.44 2008/11/20 18:21:56 approx Exp $
+// $Id: NetworkMessage.hh,v 3.45 2009/04/02 19:58:09 erk Exp $

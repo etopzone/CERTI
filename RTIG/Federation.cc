@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.103 2008/12/16 07:08:29 approx Exp $
+// $Id: Federation.cc,v 3.104 2009/04/02 19:58:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -712,7 +712,7 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
     federate.setRegulator(true);
 
     D.Out(pdTerm, "Federation %d: Federate %d is now a regulator(Time=%f).",
-          handle, federate_handle, time);
+          handle, federate_handle, time.getTime());
 
     NM_Set_Time_Regulating msg ;
     msg.exception = e_NO_EXCEPTION ;
@@ -1909,7 +1909,7 @@ Federation::updateRegulator(FederateHandle federate_handle,
     }
 
     D.Out(pdTerm, "Federation %d: Federate %d's new time is %f.",
-          handle, federate_handle, time);
+          handle, federate_handle, time.getTime());
 
     regulators.update(federate_handle, time);
 
@@ -2525,5 +2525,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.103 2008/12/16 07:08:29 approx Exp $
+// $Id: Federation.cc,v 3.104 2009/04/02 19:58:09 erk Exp $
 

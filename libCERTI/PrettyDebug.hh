@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.4 2007/08/09 09:22:45 rousse Exp $
+// $Id: PrettyDebug.hh,v 4.5 2009/04/02 19:58:07 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -132,6 +132,7 @@ public:
 #else
 	void Out(pdDebugLevel Level, const char *Format, ...);
 	void Mes(pdDebugLevel Level, const char type, const short testMess, const char *context);
+
 #endif
 
 };
@@ -142,4 +143,4 @@ typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.4 2007/08/09 09:22:45 rousse Exp $
+// $Id: PrettyDebug.hh,v 4.5 2009/04/02 19:58:07 erk Exp $

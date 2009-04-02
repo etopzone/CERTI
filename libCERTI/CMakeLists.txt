@@ -64,6 +64,7 @@ RoutingSpace.hh
 )
 
 SET(CERTI_TIME_SRCS
+FedTime.cc FedTimeD.hh
 LBTS.cc
 LBTS.hh
 )
@@ -209,44 +210,7 @@ ENDIF (HAVE_POSIX_CLOCK)
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES VERSION 1.0.0 SOVERSION 1)
 
-##################################################################
-# Lib FedTime 
-# A replacement lib FedTime may be provided by the user
-# CERTI is provided one. The lib FedTime depends on libRTI
-# since it inherits from the RTI::FedTime abstract class.
-##################################################################
-IF(CMAKE_COMPILER_IS_GNUCC)
-    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
-IF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-long-long")
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
-
-INCLUDE_DIRECTORIES(../libHLA)
-SET(FEDTIME_SRCS
-    FedTime.cc
-    ${CMAKE_SOURCE_DIR}/include/fedtime.hh
-)
-
-SOURCE_GROUP("Source Files\\FedTime" FILES ${FEDTIME_SRCS})
-
-ADD_LIBRARY(FedTime
-    ${FEDTIME_SRCS}
-)
-
-TARGET_LINK_LIBRARIES(FedTime RTI HLA)
-
-SET_TARGET_PROPERTIES(FedTime PROPERTIES PROJECT_LABEL LibFedTime)
-IF (MINGW)
-    SET_TARGET_PROPERTIES(FedTime PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libFedTime.def")
-    INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libFedTime.def
-            DESTINATION lib)
-ENDIF (MINGW)
-
-SET_TARGET_PROPERTIES(FedTime PROPERTIES VERSION 1.0.0 SOVERSION 1)
-
-# Install rules for both libCERTI and libFedTime
-INSTALL(TARGETS CERTI FedTime
+INSTALL(TARGETS CERTI
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)

@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.1 2008/12/07 20:16:17 gotthardp Exp $
+// $Id: RTItypesImp.cc,v 3.2 2009/04/02 19:58:05 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "certi.hh"
@@ -30,12 +30,9 @@
 
 using namespace certi ;
 
-namespace {
-
 static PrettyDebug D("LIBRTI", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
-}
 
 // ----------------------------------------------------------------------------
 AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(ULong size)
@@ -539,4 +536,4 @@ ULong RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index, Dimensio
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-// $Id: RTItypesImp.cc,v 3.1 2008/12/07 20:16:17 gotthardp Exp $
+// $Id: RTItypesImp.cc,v 3.2 2009/04/02 19:58:05 erk Exp $

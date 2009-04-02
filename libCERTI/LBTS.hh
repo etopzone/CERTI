@@ -19,13 +19,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.hh,v 3.8 2007/11/20 09:04:54 erk Exp $
+// $Id: LBTS.hh,v 3.9 2009/04/02 19:58:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_LBTS_HH
 #define LIBCERTI_LBTS_HH
 
 #include "certi.hh"
+#include "FedTimeD.hh"
 
 #ifndef _WIN32				
 #include <unistd.h>
@@ -68,4 +69,4 @@ private:
 
 #endif // LIBCERTI_LBTS_HH
 
-// $Id: LBTS.hh,v 3.8 2007/11/20 09:04:54 erk Exp $
+// $Id: LBTS.hh,v 3.9 2009/04/02 19:58:08 erk Exp $

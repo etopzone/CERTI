@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypes.cc,v 1.2 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTItypes.cc,v 1.3 2009/04/02 19:58:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTItypesImp.hh"
@@ -26,15 +26,6 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
-
-using namespace certi ;
-
-namespace {
-
-static PrettyDebug D("LIBRTI", __FILE__);
-static PrettyDebug G("GENDOC",__FILE__);
-
-}
 
 // static members for HLA Exceptions
 const char *RTI::ArrayIndexOutOfBounds::_ex = "ArrayIndexOutOfBounds" ;
@@ -198,7 +189,7 @@ long RTI::UnableToPerformSave::type = certi::e_UnableToPerformSave ;
 long RTI::ValueCountExceeded::type = certi::e_ValueCountExceeded ;
 long RTI::ValueLengthExceeded::type = certi::e_ValueLengthExceeded ;
 
-static PrettyDebug PD_Exception("RTI_EXCEPTION",__FILE__);
+static PrettyDebug PD_RTIException("RTI_EXCEPTION",__FILE__);
 
 RTI::Exception::~Exception()
 {
@@ -255,7 +246,7 @@ const std::string RTI::Exception::displayMe() const
     msg << std::endl;
     msg << std::flush;
 
-    PD_Exception[pdExcept] << msg.str().c_str();
+    PD_RTIException[pdExcept] << msg.str().c_str();
     return msg.str();
 }
 
@@ -273,4 +264,4 @@ operator<<(RTI_STD::ostream &os, RTI::Exception *ex)
     return os<<(*ex);
 }
 
-// $Id: RTItypes.cc,v 1.2 2008/12/07 20:16:16 gotthardp Exp $
+// $Id: RTItypes.cc,v 1.3 2009/04/02 19:58:06 erk Exp $

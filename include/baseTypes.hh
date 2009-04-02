@@ -35,10 +35,10 @@ public:
 };
 
 #define RTI_EXCEPT(A) \
-class RTI_EXPORT A : public Exception { \
+class A : public Exception { \
 public: \
-    static const char *_ex ; \
-    static long type ; \
+    static RTI_EXPORT const char *_ex ; \
+    static RTI_EXPORT long type ; \
     A (const char *reason) : Exception(reason) { _name = #A ; this->displayMe();} \
     A (ULong serial, const char *reason = 0) \
         : Exception(serial, reason) { _name = #A ; this->displayMe(); } \
