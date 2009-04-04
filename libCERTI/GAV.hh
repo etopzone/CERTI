@@ -28,7 +28,6 @@
 namespace certi {
 
 class CERTI_EXPORT AttributeHandleSet
-    : public std::list<AttributeHandle>
 {
 public:
     AttributeHandleSet(ULong size);
@@ -49,9 +48,12 @@ public:
 
     virtual bool isEmpty() const ;
     virtual bool isMember(AttributeHandle h) const ;
+
+protected:
+    std::list<AttributeHandle> _set;
 };
 
-class FederateHandleSet : public std::list<FederateHandle>
+class FederateHandleSet
 {
 public:
     FederateHandleSet(ULong size);
@@ -71,6 +73,9 @@ public:
     virtual void empty();
 
     virtual bool isMember(FederateHandle h) const ;
+
+protected:
+    std::list<FederateHandle> _set;
 };
 
 class AttributeHandleValuePair
@@ -90,7 +95,6 @@ public :
 };
 
 class AttributeHandleValuePairSet
-    : public std::list<AttributeHandleValuePair *>
 {
     // ATTRIBUTES
 public:
@@ -129,6 +133,9 @@ public:
     virtual ULong start() const ;
     virtual ULong valid(ULong i) const ;
     virtual ULong next(ULong i) const ;
+
+protected:
+    std::list<AttributeHandleValuePair *> _set;
 };
 
 class ParameterHandleValuePair
@@ -143,7 +150,6 @@ public:
 };
 
 class ParameterHandleValuePairSet
-    : public std::list<ParameterHandleValuePair *>
 {
 public:
     OrderType _order ;
@@ -183,6 +189,9 @@ public:
     virtual ULong start() const ;
     virtual ULong valid(ULong i) const ;
     virtual ULong next(ULong i) const ;
+
+protected:
+    std::list<ParameterHandleValuePair *> _set;
 };
 
 } // namespace certi
