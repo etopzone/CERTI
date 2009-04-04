@@ -16,10 +16,9 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypes.cc,v 1.3 2009/04/02 19:58:06 erk Exp $
+// $Id: RTItypes.cc,v 1.4 2009/04/04 13:30:54 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
-#include "RTItypesImp.hh"
 #include "Exception.hh"
 #include "PrettyDebug.hh"
 #include <assert.h>
@@ -264,4 +263,4 @@ operator<<(RTI_STD::ostream &os, RTI::Exception *ex)
     return os<<(*ex);
 }
 
-// $Id: RTItypes.cc,v 1.3 2009/04/02 19:58:06 erk Exp $
+// $Id: RTItypes.cc,v 1.4 2009/04/04 13:30:54 gotthardp Exp $
