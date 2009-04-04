@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.2 2009/04/02 19:58:05 erk Exp $
+// $Id: RTItypesImp.cc,v 3.3 2009/04/04 13:18:12 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "certi.hh"
@@ -40,11 +40,11 @@ AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(ULong size)
     _order = RECEIVE;
     _transport = RELIABLE;
 
-    std::vector<AttributeHandleValuePair_t>::reserve(size);
+    _set.reserve(size);
 }
 
 AttributeHandleValuePairSetImp::AttributeHandleValuePairSetImp(const std::vector<AttributeHandleValuePair_t> &val)
-    : std::vector<AttributeHandleValuePair_t>(val)
+    : _set(val)
 {
     _order = RECEIVE;
     _transport = RELIABLE;
@@ -56,14 +56,14 @@ AttributeHandleValuePairSetImp::~AttributeHandleValuePairSetImp()
 
 ULong AttributeHandleValuePairSetImp::size() const
 {
-    return std::vector<AttributeHandleValuePair_t>::size();
+    return _set.size();
 }
 
 Handle AttributeHandleValuePairSetImp::getHandle(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i).first;
+        return _set[i].first;
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -72,7 +72,7 @@ ULong AttributeHandleValuePairSetImp::getValueLength(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i).second.size();
+        return _set[i].second.size();
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -81,7 +81,7 @@ void AttributeHandleValuePairSetImp::getValue(ULong i, char *buff, ULong &len) c
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
-        const AttributeHandleValuePair_t& item = operator[](i);
+        const AttributeHandleValuePair_t& item = _set[i];
         len = item.second.size();
         memcpy(buff, item.second.data(), len);
     }
@@ -93,7 +93,7 @@ char *AttributeHandleValuePairSetImp::getValuePointer(ULong i, ULong &len) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
-        const AttributeHandleValuePair_t& item = operator[](i);
+        const AttributeHandleValuePair_t& item = _set[i];
         len = item.second.size();
         return (char *)item.second.data();
     }
@@ -122,15 +122,16 @@ RTI::Region *AttributeHandleValuePairSetImp::getRegion(ULong) const
 void AttributeHandleValuePairSetImp::add(Handle h, const char *str, ULong len)
     throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
 {
-    push_back(AttributeHandleValuePair_t(h, std::string(str, len)));
+    _set.push_back(AttributeHandleValuePair_t(h, std::string(str, len)));
 }
 
 void AttributeHandleValuePairSetImp::remove(Handle h)
     throw (RTI::ArrayIndexOutOfBounds)
 {
-    for (iterator pos = begin(); pos != end(); pos++) {
+    for (std::vector<AttributeHandleValuePair_t>::iterator pos = _set.begin();
+            pos != _set.end(); pos++) {
         if (pos->first == h) {
-            std::vector<AttributeHandleValuePair_t>::erase(pos);
+            _set.erase(pos);
             return;
         }
     }
@@ -146,7 +147,7 @@ void AttributeHandleValuePairSetImp::moveFrom(const AttributeHandleValuePairSet 
 
 void AttributeHandleValuePairSetImp::empty()
 {
-    std::vector<AttributeHandleValuePair_t>::clear();
+    _set.clear();
 }
 
 ULong AttributeHandleValuePairSetImp::start() const
@@ -170,17 +171,17 @@ ULong AttributeHandleValuePairSetImp::next(ULong i) const
 const std::vector<AttributeHandleValuePair_t>&
 AttributeHandleValuePairSetImp::getAttributeHandleValuePairs() const
 {
-    return *this;
+    return _set;
 }
 
 // ----------------------------------------------------------------------------
 AttributeHandleSetImp::AttributeHandleSetImp(ULong size)
 {
-    std::vector<AttributeHandle>::reserve(size);
+    _set.reserve(size);
 }
 
 AttributeHandleSetImp::AttributeHandleSetImp(const std::vector<AttributeHandle> &val)
-    : std::vector<AttributeHandle>(val)
+    : _set(val)
 {
 }
 
@@ -190,14 +191,14 @@ AttributeHandleSetImp::~AttributeHandleSetImp()
 
 ULong AttributeHandleSetImp::size() const
 {
-    return std::vector<AttributeHandle>::size();
+    return _set.size();
 }
 
 AttributeHandle AttributeHandleSetImp::getHandle(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i);
+        return _set[i];
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -205,44 +206,44 @@ AttributeHandle AttributeHandleSetImp::getHandle(ULong i) const
 void AttributeHandleSetImp::add(AttributeHandle h)
     throw (RTI::ArrayIndexOutOfBounds, RTI::AttributeNotDefined)
 {
-    std::vector<AttributeHandle>::push_back(h);
+    _set.push_back(h);
 }
 
 void AttributeHandleSetImp::remove(AttributeHandle h)
     throw (RTI::AttributeNotDefined)
 {
-    iterator pos = std::find(begin(), end(), h);
-    if (pos != end())
-        std::vector<AttributeHandle>::erase(pos);
+    std::vector<AttributeHandle>::iterator pos = std::find(_set.begin(), _set.end(), h);
+    if (pos != _set.end())
+        _set.erase(pos);
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
 void AttributeHandleSetImp::empty()
 {
-    std::vector<AttributeHandle>::clear();
+    _set.clear();
 }
 
 RTI::Boolean AttributeHandleSetImp::isEmpty() const
 {
-    return RTI::Boolean(std::vector<AttributeHandle>::empty());
+    return RTI::Boolean(_set.empty());
 }
 
 RTI::Boolean AttributeHandleSetImp::isMember(AttributeHandle h) const
 {
-    return RTI::Boolean(std::find(begin(), end(), h) != end());
+    return RTI::Boolean(std::find(_set.begin(), _set.end(), h) != _set.end());
 }
 
 const std::vector<AttributeHandle>&
 AttributeHandleSetImp::getAttributeHandles() const
 {
-    return *this;
+    return _set;
 }
 
 // ----------------------------------------------------------------------------
 FederateHandleSetImp::FederateHandleSetImp(ULong size)
 {
-    std::vector<FederateHandle>::reserve(size);
+    _set.reserve(size);
 }
 
 FederateHandleSetImp::~FederateHandleSetImp()
@@ -251,14 +252,14 @@ FederateHandleSetImp::~FederateHandleSetImp()
 
 ULong FederateHandleSetImp::size() const
 {
-    return std::vector<FederateHandle>::size();
+    return _set.size();
 }
 
 FederateHandle FederateHandleSetImp::getHandle(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i);
+        return _set[i];
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -266,27 +267,27 @@ FederateHandle FederateHandleSetImp::getHandle(ULong i) const
 void FederateHandleSetImp::add(FederateHandle h)
     throw (RTI::ValueCountExceeded)
 {
-    std::vector<FederateHandle>::push_back(h);
+    _set.push_back(h);
 }
 
 void FederateHandleSetImp::remove(FederateHandle h)
     throw (RTI::ArrayIndexOutOfBounds)
 {
-    iterator pos = std::find(begin(), end(), h);
-    if (pos != end())
-        std::vector<FederateHandle>::erase(pos);
+    std::vector<FederateHandle>::iterator pos = std::find(_set.begin(), _set.end(), h);
+    if (pos != _set.end())
+        _set.erase(pos);
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
 
 void FederateHandleSetImp::empty()
 {
-    std::vector<AttributeHandle>::clear();
+    _set.clear();
 }
 
 RTI::Boolean FederateHandleSetImp::isMember(FederateHandle h) const
 {
-    return RTI::Boolean(std::find(begin(), end(), h) != end());
+    return RTI::Boolean(std::find(_set.begin(), _set.end(), h) != _set.end());
 }
 
 // ----------------------------------------------------------------------------
@@ -295,11 +296,11 @@ ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(ULong size)
     _order = RECEIVE;
     _transport = RELIABLE;
 
-    std::vector<ParameterHandleValuePair_t>::reserve(size);
+    _set.reserve(size);
 }
 
 ParameterHandleValuePairSetImp::ParameterHandleValuePairSetImp(const std::vector<ParameterHandleValuePair_t> &val)
-    : std::vector<ParameterHandleValuePair_t>(val)
+    : _set(val)
 {
     _order = RECEIVE;
     _transport = RELIABLE;
@@ -311,14 +312,14 @@ ParameterHandleValuePairSetImp::~ParameterHandleValuePairSetImp()
 
 ULong ParameterHandleValuePairSetImp::size() const
 {
-    return std::vector<ParameterHandleValuePair_t>::size();
+    return _set.size();
 }
 
 Handle ParameterHandleValuePairSetImp::getHandle(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i).first;
+        return _set[i].first;
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -327,7 +328,7 @@ ULong ParameterHandleValuePairSetImp::getValueLength(ULong i) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size())
-        return operator[](i).second.size();
+        return _set[i].second.size();
     else
         throw RTI::ArrayIndexOutOfBounds("");
 }
@@ -336,7 +337,7 @@ void ParameterHandleValuePairSetImp::getValue(ULong i, char *buff, ULong &len) c
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
-        const ParameterHandleValuePair_t& item = operator[](i);
+        const ParameterHandleValuePair_t& item = _set[i];
         len = item.second.size();
         memcpy(buff, item.second.data(), len);
     }
@@ -348,7 +349,7 @@ char *ParameterHandleValuePairSetImp::getValuePointer(ULong i, ULong &len) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
     if (i < size()) {
-        const ParameterHandleValuePair_t& item = operator[](i);
+        const ParameterHandleValuePair_t& item = _set[i];
         len = item.second.size();
         return (char *)item.second.data();
     }
@@ -377,15 +378,16 @@ RTI::Region *ParameterHandleValuePairSetImp::getRegion() const
 void ParameterHandleValuePairSetImp::add(Handle h, const char *str, ULong len)
     throw (RTI::ValueLengthExceeded, RTI::ValueCountExceeded)
 {
-    push_back(ParameterHandleValuePair_t(h, std::string(str, len)));
+    _set.push_back(ParameterHandleValuePair_t(h, std::string(str, len)));
 }
 
 void ParameterHandleValuePairSetImp::remove(Handle h)
     throw (RTI::ArrayIndexOutOfBounds)
 {
-    for (iterator pos = begin(); pos != end(); pos++) {
+    for (std::vector<ParameterHandleValuePair_t>::iterator pos = _set.begin();
+            pos != _set.end(); pos++) {
         if (pos->first == h) {
-            std::vector<ParameterHandleValuePair_t>::erase(pos);
+            _set.erase(pos);
             return;
         }
     }
@@ -401,7 +403,7 @@ void ParameterHandleValuePairSetImp::moveFrom(const ParameterHandleValuePairSet 
 
 void ParameterHandleValuePairSetImp::empty()
 {
-    return std::vector<ParameterHandleValuePair_t>::clear();
+    return _set.clear();
 }
 
 ULong ParameterHandleValuePairSetImp::start() const
@@ -425,7 +427,7 @@ ULong ParameterHandleValuePairSetImp::next(ULong i) const
 const std::vector<ParameterHandleValuePair_t> &
 ParameterHandleValuePairSetImp::getParameterHandleValuePairs() const
 {
-    return *this;
+    return _set;
 }
 
 // ----------------------------------------------------------------------------
@@ -536,4 +538,4 @@ ULong RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index, Dimensio
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-// $Id: RTItypesImp.cc,v 3.2 2009/04/02 19:58:05 erk Exp $
+// $Id: RTItypesImp.cc,v 3.3 2009/04/04 13:18:12 gotthardp Exp $

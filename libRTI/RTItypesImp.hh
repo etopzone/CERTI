@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypesImp.hh,v 3.2 2009/04/02 19:58:06 erk Exp $
+// $Id: RTItypesImp.hh,v 3.3 2009/04/04 13:18:13 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _RTI_TYPESIMP_HH
@@ -60,8 +60,7 @@ struct certi_cast
 
 typedef std::pair<AttributeHandle, AttributeValue_t> AttributeHandleValuePair_t;
 
-class RTI_EXPORT AttributeHandleValuePairSetImp
-    : public RTI::AttributeHandleValuePairSet, protected std::vector<AttributeHandleValuePair_t>
+class RTI_EXPORT AttributeHandleValuePairSetImp : public RTI::AttributeHandleValuePairSet
 {
 public:
     AttributeHandleValuePairSetImp(ULong);
@@ -110,12 +109,12 @@ public:
     const std::vector<AttributeHandleValuePair_t>& getAttributeHandleValuePairs() const;
 
 protected:
+    std::vector<AttributeHandleValuePair_t> _set;
     OrderType _order ;
     TransportType _transport ;
 };
 
-class RTI_EXPORT AttributeHandleSetImp
-    : public RTI::AttributeHandleSet, protected std::vector<AttributeHandle>
+class RTI_EXPORT AttributeHandleSetImp : public RTI::AttributeHandleSet
 {
 public:
     AttributeHandleSetImp(ULong);
@@ -140,10 +139,12 @@ public:
     virtual RTI::Boolean isMember(AttributeHandle h) const;
 
     const std::vector<AttributeHandle>& getAttributeHandles() const;
+
+protected:
+    std::vector<AttributeHandle> _set;
 };
 
-class RTI_EXPORT FederateHandleSetImp
-    : public RTI::FederateHandleSet, protected std::vector<FederateHandle>
+class RTI_EXPORT FederateHandleSetImp : public RTI::FederateHandleSet
 {
 public:
     FederateHandleSetImp(ULong);
@@ -163,12 +164,14 @@ public:
     virtual void empty();
 
     virtual RTI::Boolean isMember(FederateHandle) const;
+
+protected:
+    std::vector<FederateHandle> _set;
 };
 
 typedef std::pair<ParameterHandle, ParameterValue_t> ParameterHandleValuePair_t;
 
-class RTI_EXPORT ParameterHandleValuePairSetImp
-    : public RTI::ParameterHandleValuePairSet, protected std::vector<ParameterHandleValuePair_t>
+class RTI_EXPORT ParameterHandleValuePairSetImp : public RTI::ParameterHandleValuePairSet
 {
 public:
     ParameterHandleValuePairSetImp(ULong);
@@ -216,6 +219,7 @@ public:
     const std::vector<ParameterHandleValuePair_t>& getParameterHandleValuePairs() const;
 
 protected:
+    std::vector<ParameterHandleValuePair_t> _set;
     OrderType _order ;
     TransportType _transport ;
 };
@@ -263,4 +267,4 @@ private:
 
 #endif // _RTI_TYPESIMP_HH
 
-// $Id: RTItypesImp.hh,v 3.2 2009/04/02 19:58:06 erk Exp $
+// $Id: RTItypesImp.hh,v 3.3 2009/04/04 13:18:13 gotthardp Exp $
