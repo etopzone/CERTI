@@ -8,3 +8,5 @@ CPackSourceConfig.cmake
 CTestTestfile.cmake
 Makefile
 config.h
+.project
+.cproject
