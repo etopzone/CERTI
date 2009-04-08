@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.25 2008/11/21 13:41:52 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.26 2009/04/08 10:47:17 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -387,26 +387,16 @@ DeclarationManagement::
 startRegistrationForObjectClass(ObjectClassHandle the_class,
                                 TypeException &e)
 {
-    Message req, rep ;
+    G.Out(pdGendoc,"enter DeclarationManagement::startRegistrationForObjectClass");
 
-    // Pas de partie locale
-
-    // Partie Federe
+    Message req;
 
     req.type = Message::START_REGISTRATION_FOR_OBJECT_CLASS ;
     req.setObjectClass(the_class);
 
-    comm->sendUN(&req);
+    comm->requestFederateService(&req);
 
-    comm->receiveUN(&rep);
-
-    if (rep.type != req.type) {
-        D.Out(pdExcept, "Unknown response type when waiting for "
-              "START_REGISTRATION_FOR_OBJECT_CLASS.");
-        throw RTIinternalError("");
-    }
-
-    e = rep.getExceptionType();
+    G.Out(pdGendoc,"exit  DeclarationManagement::startRegistrationForObjectClass");
 }
 
 // ----------------------------------------------------------------------------
@@ -509,4 +499,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.25 2008/11/21 13:41:52 approx Exp $
+// $Id: DeclarationManagement.cc,v 3.26 2009/04/08 10:47:17 approx Exp $

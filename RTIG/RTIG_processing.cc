@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.81 2009/04/02 19:58:10 erk Exp $
+// $Id: RTIG_processing.cc,v 3.82 2009/04/08 10:47:19 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -814,9 +814,6 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
 				sub ? req->handleArray : arrayVide,
 				sub ? req->handleArraySize : 0);
 
-    /* here we want a callback -> inform publisher(s) of objectclass
-     * with startRegistrationForObjectClass */
-
     D.Out(pdRegister,
           "Federate %u of Federation %u subscribed to object class %d.",
           req->federate, req->federation, req->objectClass);
@@ -1556,4 +1553,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.81 2009/04/02 19:58:10 erk Exp $
+// $Id: RTIG_processing.cc,v 3.82 2009/04/08 10:47:19 approx Exp $

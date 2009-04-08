@@ -159,6 +159,12 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	case NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH:
 	        msg = new NM_Set_Attribute_Scope_Advisory_Switch();
 		break;
+	case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
+	        msg = new NM_Start_Registration_For_Object_Class();
+		break;
+	case NetworkMessage::STOP_REGISTRATION_FOR_OBJECT_CLASS:
+	        msg = new NM_Stop_Registration_For_Object_Class();
+		break;
 	case NetworkMessage::TURN_INTERACTIONS_ON:
 		msg = new NM_Turn_Interactions_On(); 
 		break;
@@ -565,6 +571,52 @@ NM_Time_Constrained_Enabled::NM_Time_Constrained_Enabled() {
 NM_Time_Constrained_Enabled::~NM_Time_Constrained_Enabled() {
 }
 /*<END>---------- Time_Constrained_Enabled ------------<END>*/
+
+/*<BEGIN>---------- Start_Registration_For_Object_Class ------------<BEGIN>*/
+NM_Start_Registration_For_Object_Class::NM_Start_Registration_For_Object_Class() {
+	this->name = "START_REGISTRATION_FOR_OBJECT_CLASS";
+	this->type = NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS;
+	/* specific field init */
+}
+NM_Start_Registration_For_Object_Class::~NM_Start_Registration_For_Object_Class() {
+}
+void NM_Start_Registration_For_Object_Class::serialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::serialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	msgBuffer.write_int32(objectClass);
+} /* end of serialize */ 
+void NM_Start_Registration_For_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::deserialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	objectClass = msgBuffer.read_int32();
+} /* end of deserialize */
+
+/*<END>---------- Start_Registration_For_Object_Class ------------<END>*/
+
+/*<BEGIN>---------- Stop_Registration_For_Object_Class ------------<BEGIN>*/
+NM_Stop_Registration_For_Object_Class::NM_Stop_Registration_For_Object_Class() {
+	this->name = "STOP_REGISTRATION_FOR_OBJECT_CLASS";
+	this->type = NetworkMessage::STOP_REGISTRATION_FOR_OBJECT_CLASS;
+	/* specific field init */
+}
+NM_Stop_Registration_For_Object_Class::~NM_Stop_Registration_For_Object_Class() {
+}
+void NM_Stop_Registration_For_Object_Class::serialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::serialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	msgBuffer.write_int32(objectClass);
+} /* end of serialize */ 
+void NM_Stop_Registration_For_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+	/* call mother class */      
+	Super::deserialize(msgBuffer); 
+	/* specific code (if any) goes here */
+	objectClass = msgBuffer.read_int32();
+} /* end of deserialize */
+
+/*<END>---------- Stop_Registration_For_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Set_Class_Relevance_Advisory_Switch ------------<BEGIN>*/
 NM_Set_Class_Relevance_Advisory_Switch::NM_Set_Class_Relevance_Advisory_Switch() {

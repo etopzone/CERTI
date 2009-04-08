@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.17 2009/04/02 19:58:06 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.18 2009/04/08 10:47:20 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -667,8 +667,7 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
 
       case Message::START_REGISTRATION_FOR_OBJECT_CLASS:
         try {
-            fed_amb->startRegistrationForObjectClass(
-                msg->getObjectClass());
+            fed_amb->startRegistrationForObjectClass(msg->getObjectClass());
         }
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("startRegistrationForObjectClass")
         break ;
@@ -908,4 +907,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.17 2009/04/02 19:58:06 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.18 2009/04/08 10:47:20 approx Exp $

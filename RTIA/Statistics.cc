@@ -298,6 +298,12 @@ Statistics::Statistics()
 	RTI_MSG_NAME(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION);
         RTI_MSG_NAME(NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE);
         RTI_MSG_NAME(NetworkMessage::GET_FED_FILE);
+	RTI_MSG_NAME(NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH);
+	RTI_MSG_NAME(NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH);
+	RTI_MSG_NAME(NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH);
+	RTI_MSG_NAME(NetworkMessage::SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH);
+	RTI_MSG_NAME(NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS);
+	RTI_MSG_NAME(NetworkMessage::STOP_REGISTRATION_FOR_OBJECT_CLASS);
 
         initialized = true ;
     }
@@ -368,4 +374,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.18 2008/11/06 14:28:58 gotthardp Exp $
+// $Id: Statistics.cc,v 3.19 2009/04/08 10:47:18 approx Exp $

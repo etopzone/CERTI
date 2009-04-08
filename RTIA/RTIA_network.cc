@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.31 2009/04/02 19:58:12 erk Exp $
+// $Id: RTIA_network.cc,v 3.32 2009/04/08 10:47:18 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -352,6 +352,11 @@ NetworkMessage::Type msgType = msg->getType();
     	  D.Out(pdTrace, "Receiving Message from RTIG, "
     			  " type setASAS.");
 	  break;
+      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
+    	  D.Out(pdTrace, "Receiving Message from RTIG, "
+    			  " type StartRegForObjClass.");
+    	  queues->insertLastCommand(msg);
+	  break;
       	
       default:
       {
@@ -368,4 +373,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.31 2009/04/02 19:58:12 erk Exp $
+// $Id: RTIA_network.cc,v 3.32 2009/04/08 10:47:18 approx Exp $

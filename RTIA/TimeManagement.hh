@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.18 2008/06/03 08:45:49 rousse Exp $
+// $Id: TimeManagement.hh,v 3.19 2009/04/08 10:47:18 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -28,6 +28,7 @@
 #include "certi.hh"
 #include "Communications.hh"
 #include "FederationManagement.hh"
+#include "DeclarationManagement.hh"
 #include "ObjectManagement.hh"
 #include "OwnershipManagement.hh"
 #include "Files.hh"
@@ -75,6 +76,7 @@ public:
     TimeManagement(Communications *,
                    Queues*,
                    FederationManagement *,
+		   DeclarationManagement *,
                    ObjectManagement *,
                    OwnershipManagement *);
 
@@ -135,6 +137,7 @@ private:
     Communications *comm ;
     Queues *queues ;
     FederationManagement *fm ;
+    DeclarationManagement *dm ;
     ObjectManagement *om ;
     OwnershipManagement *owm ;
 
@@ -158,4 +161,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.18 2008/06/03 08:45:49 rousse Exp $
+// $Id: TimeManagement.hh,v 3.19 2009/04/08 10:47:18 approx Exp $

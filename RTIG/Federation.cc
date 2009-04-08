@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.104 2009/04/02 19:58:09 erk Exp $
+// $Id: Federation.cc,v 3.105 2009/04/08 10:47:18 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1779,47 +1779,93 @@ Federation::subscribeObject(FederateHandle federate,
     // It may throw *NotDefined
     root->ObjectClasses->subscribe(federate, object, attributes, list_size);
 
-    // get object class from object class handle	
-    ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
+    /*
+     * The subscription process in CERTI:
+     * In RTIG.cc the network messages SUBSCRIBE_OBJECT_CLASS and UNSUBSCRIBE_
+     * OBJECT_CLASS are both mapped to the method processSubscribeObject within
+     * RTIG_processing.cc. RTIG_proccessing invokes this method 
+     * (subscribeObject). 
+     * The above code line (root->ObjectClasses->subscribe(...) calls the 
+     * subscription within the CERTI library in ObjectClassSet.cc. Further on,
+     * ObjectClassSet::subscribe invokes ObjectClass::subscribe. That method 
+     * first unsubscribes all attributes, afterwards the subscription is 
+     * done in a for loop til list_size.  
+     * This means: Unsubscription and subscription are realized by the same
+     * method. Only the list_size parameter controls the
+     * unsubscription/subscription process.
+     *
+     * Do we need a cleaner solution, e.g. separate methods for subscription/
+     * unsubscription?
+     */
 
-    // get attributes of object class
-    ObjectClass::AttributeList_t attrForObjClass = objectClass->getAttributeList();
+    if (list_size!=0) {  // do only for subscription
+        // get object class from object class handle	
+        ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
 
-    ObjectClassAttribute::PublishersList_t publishers;
-    publishers.clear();
+        // get attributes of object class
+        ObjectClass::AttributeList_t attrForObjClass = objectClass->getAttributeList();
 
-    // get publishers of attributes	
-    // first for: iterate through the attribute list and get publishers of 
-    //            each attribtue
-    // second for: iterate through the temporal publishers list and store 
-    //             non-duplicate entries in publishers
-    ObjectClassAttribute::PublishersList_t tmp_publishers;
-    tmp_publishers.clear();
-    for (ObjectClass::AttributeList_t::const_iterator 
-         i=attrForObjClass.begin();
-	 i!=attrForObjClass.end(); 
-	 i++) {
-    	 tmp_publishers = (*i)->getPublishers();
-         for (ObjectClassAttribute::PublishersList_t::const_iterator
-             j=tmp_publishers.begin(); 
-	     j!=tmp_publishers.end(); 
-	     j++) {
-	     // insert only non-duplicate entries ->
-	     // pair<iterator, bool> set::insert(const TYPE& val);
-	     publishers.insert(*j);
-         }
-	 tmp_publishers.clear();
-    }
+        ObjectClassAttribute::PublishersList_t publishers;
+        publishers.clear();
 
-    // notify all publishers
-    for (ObjectClassAttribute::PublishersList_t::const_iterator
-        k=publishers.begin(); 
-	k!=publishers.end(); 
-	k++) {
-	// what shall we do when subscriber and publisher are the same?
-	if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
-		// invoke startRegistrationForObjectClass
-	}
+        // get publishers of attributes	
+        // first for: iterate through the attribute list and get publishers of 
+        //            each attribtue
+        // second for: iterate through the temporal publishers list and store 
+        //             non-duplicate entries in publishers
+        ObjectClassAttribute::PublishersList_t tmp_publishers;
+        tmp_publishers.clear();
+        for (ObjectClass::AttributeList_t::const_iterator 
+            i=attrForObjClass.begin();
+	    i!=attrForObjClass.end(); 
+	    i++) {
+    	    tmp_publishers = (*i)->getPublishers();
+            for (ObjectClassAttribute::PublishersList_t::const_iterator
+                j=tmp_publishers.begin(); 
+	        j!=tmp_publishers.end(); 
+	        j++) {
+	            // insert only non-duplicate entries ->
+	            // pair<iterator, bool> set::insert(const TYPE& val);
+	            publishers.insert(*j);
+            }
+	    tmp_publishers.clear();
+        }
+
+        // notify all publishers
+        std::set<FederateHandle> federate_set;
+
+        for (ObjectClassAttribute::PublishersList_t::const_iterator
+            k=publishers.begin(); 
+	    k!=publishers.end(); 
+	    k++) {
+
+	    if (getFederate(*k).isClassRelevanceAdvisorySwitch()) {
+	        federate_set.insert(*k);
+	    }
+        }
+
+        // broadcastSomeMessage needs a vector, no set -> conversion
+        vector<FederateHandle> federate_vector(federate_set.begin(),federate_set.end()); 
+    
+        NM_Start_Registration_For_Object_Class msg ;
+        msg.federate = federate ;
+        msg.federation = handle ;
+        msg.setObjectClass(object);
+
+        this->broadcastSomeMessage(&msg, 0, federate_vector, (unsigned short)federate_vector.size());
+
+        publishers.clear();
+        federate_set.clear();
+        federate_vector.clear();	
+    } 
+    else {	// unsubscribe branch
+	/* test if objectclass is subscribed by anyone else
+         * -> yes : do nothing
+         * -> no : test if publisher sets its CRA switch
+         *  	-> no : do nothing
+         *  	-> yes : inform publisher with federate service stopRegistrationForObjectClass
+         */
+
     }
 
     D.Out(pdRegister,
@@ -2525,5 +2571,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.104 2009/04/02 19:58:09 erk Exp $
+// $Id: Federation.cc,v 3.105 2009/04/08 10:47:18 approx Exp $
 

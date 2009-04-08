@@ -241,9 +241,23 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
 
     comm->requestFederateService(&req);
 
-    // Adding discovered object in federate internal object list.
-    rootObject->registerObjectInstance(fm->federate, the_class, the_object,
-                                       req.getName().c_str());
+    /* FIXME
+     *
+     * discoverObject tries to auto-registrate a discovered object instance,
+     * if the object is already discovered through a previous invocation of
+     * discoverObject the exceptiobn ObjectAlreadyRegistered is raised.
+     *
+     * This behaviour needs further investigation. 
+     * Is it useful to call registerObjectInstance within a federate service?
+     */
+
+    try {
+      // Adding discovered object in federate internal object list.
+      rootObject->registerObjectInstance(fm->federate, the_class, the_object,
+                                         req.getName().c_str());
+    } 
+    catch (ObjectAlreadyRegistered) {
+    }
 }
 
 // ----------------------------------------------------------------------------

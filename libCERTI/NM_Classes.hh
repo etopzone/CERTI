@@ -275,6 +275,38 @@ private:
 
 /*<END>---------- Time_Constrained_Enabled ------------<END>*/
 
+/*<BEGIN>---------- Start_Registration_For_Object_Class  ------------<BEGIN>*/
+class CERTI_EXPORT NM_Start_Registration_For_Object_Class : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Start_Registration_For_Object_Class();
+	virtual ~NM_Start_Registration_For_Object_Class();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	const ObjectClassHandle getObjectClass() const {return objectClass;};
+	void setObjectClass(ObjectClassHandle newObjectClass) {objectClass=newObjectClass;};
+protected:
+	/* specific field */
+private:
+};
+
+/*<END>---------- Start_Registration_For_Object_Class ------------<END>*/
+
+/*<BEGIN>---------- Stop_Registration_For_Object_Class  ------------<BEGIN>*/
+class CERTI_EXPORT NM_Stop_Registration_For_Object_Class : public NetworkMessage {
+public:
+	typedef NetworkMessage Super;
+	NM_Stop_Registration_For_Object_Class();
+	virtual ~NM_Stop_Registration_For_Object_Class();
+	virtual void serialize(MessageBuffer& msgBuffer);
+	virtual void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+protected:
+	/* specific field */
+private:
+};
+
+/*<END>---------- Stop_Registration_For_Object_Class ------------<END>*/
 
 /*<BEGIN>---------- Set_Class_Relevance_Advisory_Switch ------------<BEGIN>*/
 class CERTI_EXPORT NM_Set_Class_Relevance_Advisory_Switch : public NetworkMessage {

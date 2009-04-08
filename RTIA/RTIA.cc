@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.24 2008/06/27 08:22:11 erk Exp $
+// $Id: RTIA.cc,v 3.25 2009/04/08 10:47:17 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -50,11 +50,12 @@ RTIA::RTIA(int RTIA_port)
     om     = new ObjectManagement(comm, fm, rootObject);
     owm    = new OwnershipManagement(comm, fm);
     dm     = new DeclarationManagement(comm, fm, rootObject);
-    tm     = new TimeManagement(comm, queues, fm, om, owm);
+    tm     = new TimeManagement(comm, queues, fm, dm, om, owm);
     ddm    = new DataDistribution(rootObject, fm, comm);
 
     fm->tm     = tm ;
     queues->fm = fm ;
+    queues->dm = dm ;
     om->tm     = tm ;
 }
 
@@ -201,4 +202,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.24 2008/06/27 08:22:11 erk Exp $
+// $Id: RTIA.cc,v 3.25 2009/04/08 10:47:17 approx Exp $

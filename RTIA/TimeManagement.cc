@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.46 2009/04/02 19:58:12 erk Exp $
+// $Id: TimeManagement.cc,v 3.47 2009/04/08 10:47:18 approx Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -69,6 +69,7 @@ TimeManagement::advance(bool &msg_restant, TypeException &e)
 TimeManagement::TimeManagement(Communications *GC,
                                Queues *GQueues,
                                FederationManagement *GF,
+                               DeclarationManagement *GD,
                                ObjectManagement *GO,
                                OwnershipManagement *GP)
     : LBTS()
@@ -76,6 +77,7 @@ TimeManagement::TimeManagement(Communications *GC,
     comm = GC ;
     queues = GQueues ;
     fm = GF ;
+    dm = GD ;
     om = GO ;
     owm = GP ;
 
@@ -364,6 +366,9 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break;
       case NetworkMessage::TIME_CONSTRAINED_ENABLED:
         this->timeConstrainedEnabled(msg.getDate(), msg.exception);
+        break;
+      case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
+	dm->startRegistrationForObjectClass(msg.objectClass, msg.exception);
         break;
 
       default:
@@ -759,7 +764,6 @@ TimeManagement::tick(TypeException &e)
     // 1st try, give a command message. (requestPause, etc.)
     msg = queues->giveCommandMessage(msg_donne, msg_restant);
 
-
     // 2nd try, give a FIFO message. (discoverObject, etc.)
     if (!msg_donne){
         if ( _asynchronous_delivery || (_avancee_en_cours != PAS_D_AVANCEE) || (! _est_contraint)) {
@@ -975,4 +979,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.46 2009/04/02 19:58:12 erk Exp $
+// $Id: TimeManagement.cc,v 3.47 2009/04/08 10:47:18 approx Exp $

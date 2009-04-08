@@ -18,13 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Files.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
+// $Id: Files.hh,v 3.8 2009/04/08 10:47:17 approx Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_FILES_HH
 #define CERTI_RTIA_FILES_HH
 
 #include "FederationManagement.hh"
+#include "DeclarationManagement.hh"
 #include "ObjectManagement.hh"
 #include "NetworkMessage.hh"
 
@@ -35,6 +36,7 @@ namespace certi {
 namespace rtia {
 
 class FederationManagement ;
+class DeclarationManagement ;
 class ObjectManagement ;
 
 class Queues
@@ -57,6 +59,7 @@ public:
     NetworkMessage *giveCommandMessage(bool &msg_donne, bool &msg_restant);
 
     FederationManagement *fm ;
+    DeclarationManagement *dm ;
     ObjectManagement *om ;
 
 private:
@@ -73,4 +76,4 @@ private:
 
 #endif // CERTI_RTIA_FILES_HH
 
-// $Id: Files.hh,v 3.7 2005/04/30 16:38:39 breholee Exp $
+// $Id: Files.hh,v 3.8 2009/04/08 10:47:17 approx Exp $
