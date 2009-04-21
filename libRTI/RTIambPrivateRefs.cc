@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.18 2009/04/08 10:47:20 approx Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.19 2009/04/21 13:54:02 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,7 +52,7 @@ void
 RTIambPrivateRefs::leave(const char *msg) throw (RTI::RTIinternalError)
 {
 	std::stringstream smsg;
-	smsg << "RTI called leave because <" <<msg<<">"; 
+	smsg << "RTI called leave because <" <<msg<<">";
     throw RTI::RTIinternalError(smsg.str().c_str());
 }
 
@@ -63,7 +63,7 @@ RTIambPrivateRefs::executeService(Message *req, Message *rep)
     G.Out(pdGendoc,"enter RTIambPrivateRefs::executeService");
 
     D.Out(pdDebug, "sending request to RTIA.");
-    
+
     try {
         req->send(socketUn,msgBufSend);
     }
@@ -401,6 +401,11 @@ RTIambPrivateRefs::processException(Message *msg)
       case e_InvalidFederationTimeDelta: {
           D.Out(pdExcept, "Throwing e_InvalidFederationTimeDelta exception.");
           throw RTI::RTIinternalError(msg->getExceptionReason());
+      } break ;
+
+      case e_InvalidLookahead: {
+          D.Out(pdExcept, "Throwing e_InvalidLookahead.");
+          throw RTI::InvalidLookahead(msg->getExceptionReason());
       } break ;
 
       case e_InvalidObjectHandle: {
@@ -863,7 +868,7 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
         CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS("confirmAttributeOwnershipAcquisitionCancellation")
         break ;
 
-      case Message::INFORM_ATTRIBUTE_OWNERSHIP: 
+      case Message::INFORM_ATTRIBUTE_OWNERSHIP:
         try {
             fed_amb->
                 informAttributeOwnership(msg->getObject(),
@@ -907,4 +912,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.18 2009/04/08 10:47:20 approx Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.19 2009/04/21 13:54:02 siron Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.47 2009/04/08 10:47:18 approx Exp $
+// $Id: TimeManagement.cc,v 3.48 2009/04/21 13:54:02 siron Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,6 +33,7 @@ namespace {
 
 PrettyDebug D("RTIA_TM", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
+const double epsilon2 = 1.0e-4 ;
 
 }
 
@@ -102,7 +103,7 @@ void TimeManagement::sendNullMessage(FederationTime heure_logique)
     msg.setDate(heure_logique);
     heure_logique += _lookahead_courant ;
 
-    if (heure_logique > lastNullMessageDate) {        
+    if (heure_logique > lastNullMessageDate) {
         msg.federation = fm->_numero_federation ;
         msg.federate = fm->federate ;
         msg.setDate(heure_logique) ; // ? See 6 lines upper !
@@ -201,7 +202,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       }
 
       case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
-      { 
+      {
       om->provideAttributeValueUpdate(msg.object,
                                       msg.handleArray,
                                       msg.handleArraySize,
@@ -373,7 +374,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       default:
 	std::stringstream errorMsg;
-        D.Out(pdExcept, "Unknown message type in executeFederateService.");        
+        D.Out(pdExcept, "Unknown message type in executeFederateService.");
 	errorMsg << "Unknown message <" <<  msg.getName() << " in executeFederateService.";
         throw RTIinternalError(errorMsg.str().c_str());
     }
@@ -503,6 +504,7 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
         if (_lookahead_courant == 0.0) {
+           _lookahead_courant == epsilon2 ;
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -565,7 +567,7 @@ TimeManagement::requestMinNextEventTime()
     FederationTime dateTSO ;
     FederationTime dateMNET ;
     bool found ;
- 
+
     queues->nextTsoDate(found, dateTSO) ;
 
     if (!found)
@@ -587,8 +589,12 @@ TimeManagement::setLookahead(FederationTimeDelta lookahead, TypeException &e)
     // Verifications
 
     if (lookahead < 0.0)
-        e = e_InvalidFederationTimeDelta ;
+        e = e_InvalidLookahead ;
 
+    if (lookahead == epsilon2) {
+    	cout << "Bad value of lookahead due to a zero lookahead implementation trick" << endl;
+    	e = e_RTIinternalError ;
+    }
 
     if (e == e_NO_EXCEPTION) {
         _lookahead_courant = lookahead ;
@@ -627,7 +633,7 @@ TimeManagement::setTimeConstrained(bool etat, TypeException &e)
         	msg.constrainedOn();
         } else {
         	msg.constrainedOff();
-        }        
+        }
 
         comm->sendMessage(&msg);
 
@@ -677,12 +683,12 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
         	msg.regulatorOff();
         	D.Out(pdDebug,
         	      "REGULATOR OFF");
-        } 
-    // Modifier lookahead courant 
+        }
+    // Modifier lookahead courant
     _lookahead_courant = the_lookahead;
           D.Out(pdDebug,
     	        "New lookahead = %f",_lookahead_courant.getTime());
-    // faudrait peut etre remplacer heure courante par le temps en parametre      
+    // faudrait peut etre remplacer heure courante par le temps en parametre
         msg.setDate(_heure_courante + _lookahead_courant);
 
         comm->sendMessage(&msg);
@@ -699,7 +705,7 @@ TimeManagement::setTimeRegulating(bool etat,FederationTime heure_logique,
 void
 TimeManagement::timeRegulationEnabled(FederationTime theTime, TypeException &e) {
     Message req;
-    
+
     D.Out(pdDebug,"Sending TIME_REGULATION_ENABLED to Federate");
     req.type = Message::TIME_REGULATION_ENABLED;
     req.setFederationTime(theTime);
@@ -842,7 +848,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
                D.Out(pdDebug, "Logical time : %15.12f, LBTS : %15.12f, lookahead : %f.",
                      date_avancee.getTime(), _LBTS.getTime(), _lookahead_courant.getTime());
 
-            if ((date_avancee < _LBTS) || 
+            if ((date_avancee < _LBTS) ||
                ((date_avancee == _LBTS) && (_avancee_en_cours == TARA))) {
                 // send a timeAdvanceGrant to federate.
                 timeAdvanceGrant(date_avancee, e);
@@ -885,6 +891,9 @@ TimeManagement::timeAdvanceGrant(FederationTime logical_time,
     D.Out(pdRegister, "timeAdvanceGrant sent to federate (time = %f).",
           req.getFederationTime().getTime());
 
+    if (_lookahead_courant == epsilon2)
+        _lookahead_courant = 0.0 ;
+
     _tick_state = TICK_NEXT;  // indicate the callback was processed
 
     comm->requestFederateService(&req);
@@ -910,9 +919,9 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
     if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
-    
+
     if (logical_time < _heure_courante + _lookahead_courant) {
-    	
+
     D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
     			_lookahead_courant.getTime(),_heure_courante.getTime(),logical_time.getTime());
        e = e_InvalidFederationTime ;
@@ -922,7 +931,8 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
 
         _type_granted_state = AFTER_TAR_OR_NER ;  // will be
 
-        if (_lookahead_courant == 0.0) {         
+        if (_lookahead_courant == 0.0) {
+           _lookahead_courant = epsilon2 ;
            _type_granted_state = AFTER_TAR_OR_NER_WITH_ZERO_LK ;
         }
 
@@ -979,4 +989,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.47 2009/04/08 10:47:18 approx Exp $
+// $Id: TimeManagement.cc,v 3.48 2009/04/21 13:54:02 siron Exp $
