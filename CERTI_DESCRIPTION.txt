@@ -10,3 +10,6 @@ community at https://savannah.nongnu.org/projects/certi.
 by using the mailing list 
 http://lists.nongnu.org/mailman/listinfo/certi-devel
 for discussion regarding CERTI usage.
+
+There is some online documentation for CERTI at:
+http://www.nongnu.org/certi
