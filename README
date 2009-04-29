@@ -58,7 +58,7 @@ The command used for building and installing CERTI depends
 on the platform/compiler combination you chose. The previous
 examples are for Unix-like system with make.
 You may look at
-   http://download.savannah.gnu.org/releases/certi/documentation/CERTI-Compilation-HOWTO.pdf
-   for windows build examples.
+   http://www.nongnu.org/certi/certi_doc/Install/html/index.html
+   for other build examples.
    or generic CMake usage:
    http://www.cmake.org/cmake/help/runningcmake.html
