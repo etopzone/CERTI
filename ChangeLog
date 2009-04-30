@@ -1,4 +1,1124 @@
-2008-09-21 13:04  tag CERTI-3_3_1
+2009-04-30 11:16  tag CERTI-3_3_2
+
+2009-04-30 11:16  erk
+
+	* ReleaseProcess.txt (1.5, CERTI-3_3_2): Update release process
+
+2009-04-29 11:04  erk
+
+	* CMakeLists.txt (1.67, CERTI-3_3_2): Prepare CERTI 3.3.2
+
+2009-04-29 10:59  erk
+
+	* CERTI_DESCRIPTION.txt (1.3, CERTI-3_3_2): Add CERTI online
+	  documentation reference
+
+2009-04-29 10:58  erk
+
+	* README (3.3, CERTI-3_3_2): Update documentation reference
+
+2009-04-29 10:56  erk
+
+	* ReleaseNotes.txt (3.4, CERTI-3_3_2): Say a word about this almost
+	  empty ReleaseNote file
+
+2009-04-29 10:53  erk
+
+	* doc/certi_developer.cnf.in (3.5, CERTI-3_3_2): Try to build CERTI
+	  developer doc PDF version (not working ...  [yet] )
+
+2009-04-23 10:15  adele
+
+	* CMakeLists.txt (1.66): Add WIndows version to the binary package
+	  name
+
+2009-04-21 15:54  siron
+
+	* RTIA/TimeManagement.cc (3.48), libRTI/RTIambPrivateRefs.cc (3.19)
+	  (utags: CERTI-3_3_2): Use of epsilon2 to implement the zero
+	  lookahead features (NARA & TARA).
+
+2009-04-08 12:47  approx
+
+	* RTIA/DeclarationManagement.cc (3.26, CERTI-3_3_2), RTIA/Files.hh
+	  (3.8, CERTI-3_3_2), RTIA/ObjectManagement.cc (3.60, CERTI-3_3_2),
+	  RTIA/RTIA.cc (3.25, CERTI-3_3_2), RTIA/RTIA_network.cc (3.32,
+	  CERTI-3_3_2), RTIA/Statistics.cc (3.19, CERTI-3_3_2),
+	  RTIA/TimeManagement.cc (3.47), RTIA/TimeManagement.hh (3.19,
+	  CERTI-3_3_2), RTIG/Federation.cc (3.105, CERTI-3_3_2),
+	  RTIG/RTIG_processing.cc (3.82, CERTI-3_3_2),
+	  libCERTI/NM_Classes.cc (3.15, CERTI-3_3_2),
+	  libCERTI/NM_Classes.hh (3.10, CERTI-3_3_2),
+	  libCERTI/NetworkMessage.hh (3.46, CERTI-3_3_2),
+	  libRTI/RTIambPrivateRefs.cc (3.18):
+	  startRegistrationForObjectClass implemented
+
+2009-04-07 11:25  erk
+
+	* .cvsignore (1.6, CERTI-3_3_2): Ignore eclipse project files
+
+2009-04-07 11:24  erk
+
+	* .cproject (1.2), .project (1.2): Remove eclipse project file
+	  (addition was an error)
+
+2009-04-04 15:53  gotthardp
+
+	* libCERTI/: GAV.cc (3.20), GAV.hh (3.15) (utags: CERTI-3_3_2): Bug
+	  #24930: Do not inherit from std::<Container> classes to avoid
+	  link error under Visual Studio 9.
+
+2009-04-04 15:30  gotthardp
+
+	* libRTI/RTItypes.cc (1.4, CERTI-3_3_2): Bug #24930: Removed
+	  unnecessary #include causing link failure.
+
+2009-04-04 15:18  gotthardp
+
+	* libRTI/: RTItypesImp.cc (3.3), RTItypesImp.hh (3.3) (utags:
+	  CERTI-3_3_2): Bug #24930: Do not inherit from std::<Container>
+	  classes to avoid link error under Visual Studio 9.
+
+2009-04-02 21:58  erk
+
+	* libRTI/RTItypesImp.cc (3.2), libRTI/CMakeLists.txt (1.11,
+	  CERTI-3_3_2), libRTI/RTIambPrivateRefs.cc (3.17),
+	  libRTI/RTIambassador.cc (3.102, CERTI-3_3_2),
+	  libRTI/RTIfedTime.cc (3.1, CERTI-3_3_2), libRTI/RTItypes.cc
+	  (1.3), libRTI/RTItypesImp.hh (3.2), libCERTI/LBTS.cc (3.13,
+	  CERTI-3_3_2), libCERTI/Message.cc (3.63, CERTI-3_3_2),
+	  libCERTI/PrettyDebug.hh (4.5, CERTI-3_3_2),
+	  libRTI/RTIambPrivateRefs.hh (3.8, CERTI-3_3_2),
+	  libCERTI/CMakeLists.txt (1.25, CERTI-3_3_2), libCERTI/GAV.cc
+	  (3.19), libCERTI/GAV.hh (3.14), libCERTI/LBTS.hh (3.9,
+	  CERTI-3_3_2), libCERTI/Message.hh (3.55, CERTI-3_3_2),
+	  libCERTI/Message_W.cc (3.40, CERTI-3_3_2),
+	  libCERTI/NetworkMessage_RW.cc (3.53, CERTI-3_3_2),
+	  libCERTI/SocketMC.cc (3.17, CERTI-3_3_2), RTIG/Federation.cc
+	  (3.104), libCERTI/FedTime.cc (3.16, CERTI-3_3_2),
+	  libCERTI/FedTimeD.hh (4.1, CERTI-3_3_2),
+	  libCERTI/NetworkMessage.hh (3.45), RTIG/RTIG.cc (3.55,
+	  CERTI-3_3_2), RTIG/RTIG_processing.cc (3.81), include/RTItypes.hh
+	  (3.20, CERTI-3_3_2), libHLA/HLAbuffer.hh (1.9, CERTI-3_3_2),
+	  .project (1.1), include/RTI.hh (3.16, CERTI-3_3_2),
+	  include/baseTypes.hh (3.14, CERTI-3_3_2), include/certi.hh (3.40,
+	  CERTI-3_3_2), include/fedtime.hh (3.13, CERTI-3_3_2), .cproject
+	  (1.1), RTIA/RTIA_network.cc (3.31), RTIA/TimeManagement.cc
+	  (3.46): Merge-in patch for bug #24930 WIndows build broken.
+
+2009-02-10 19:25  erk
+
+	* libRTI/CMakeLists.txt (1.10.4.2), libRTI/RTIambPrivateRefs.cc
+	  (3.16.4.2), libRTI/RTIfedTime.cc (1.1.2.3), libRTI/RTItypes.cc
+	  (1.2.4.1), libRTI/RTItypesImp.cc (3.1.4.1), libRTI/RTItypesImp.hh
+	  (3.1.4.2), include/RTItypes.hh (3.19.4.2), include/baseTypes.hh
+	  (3.13.4.1), libCERTI/Exception.cc (3.17.4.2),
+	  libCERTI/PrettyDebug.hh (4.4.8.1), libHLA/HLAbuffer.hh (1.7.4.1),
+	  libRTI/RTIambassador.cc (3.101.4.2): Update which should make the
+	  branch compiles & run fine on  - Linux x86/x86_64  - WindowsXP
+	  MingGW  - WindowsXP VIsual Studio 8
+
+	  There seems to be a remaining error for Visual Studio 9...
+
+2009-01-07 11:39  gotthardp
+
+	* include/RTItypes.hh (3.19.4.1), libCERTI/FedTimeD.hh (1.1.2.2),
+	  libCERTI/GAV.hh (3.13.4.2): Bug #24930: Fixed. This must be a
+	  miracle, or a mistake. :-)
+
+2009-01-05 16:22  gotthardp
+
+	* libCERTI/FedTime.cc (3.15.4.2), libCERTI/SocketMC.cc (3.16.4.1),
+	  libRTI/RTIfedTime.cc (1.1.2.2): Latest GCC compilability fix.
+
+2009-01-05 14:34  gotthardp
+
+	* RTIA/RTIA_network.cc (3.30.4.1), RTIA/TimeManagement.cc
+	  (3.45.4.1), RTIG/Federation.cc (3.102.4.1), RTIG/RTIG.cc
+	  (3.54.4.1), RTIG/RTIG_processing.cc (3.80.4.1), include/RTI.hh
+	  (3.15.4.1), include/certi.hh (3.38.4.1), include/fedtime.hh
+	  (3.12.4.1), libCERTI/CMakeLists.txt (1.23.4.1),
+	  libCERTI/Exception.cc (3.17.4.1), libCERTI/FedTime.cc (3.15.4.1),
+	  libCERTI/FedTimeD.hh (1.1.2.1), libCERTI/GAV.cc (3.18.4.1),
+	  libCERTI/GAV.hh (3.13.4.1), libCERTI/LBTS.cc (3.12.4.1),
+	  libCERTI/LBTS.hh (3.8.8.1), libCERTI/Message.cc (3.62.4.1),
+	  libCERTI/Message.hh (3.54.4.1), libCERTI/Message_W.cc (3.39.4.1),
+	  libCERTI/NetworkMessage.hh (3.44.4.1),
+	  libCERTI/NetworkMessage_RW.cc (3.52.4.1), libRTI/CMakeLists.txt
+	  (1.10.4.1), libRTI/RTIambPrivateRefs.cc (3.16.4.1),
+	  libRTI/RTIambPrivateRefs.hh (3.7.4.1), libRTI/RTIambassador.cc
+	  (3.101.4.1), libRTI/RTIfedTime.cc (1.1.2.1),
+	  libRTI/RTItypesImp.hh (3.1.4.1): Bug #24930: Implemented a
+	  separate FedTime for libCERTI.  The implementation is not
+	  complete. Next step: Integration into Windows.
+
+2008-12-18 20:45  tag DEV_before_NoCircularRef_merge
+
+2008-12-18 20:45  gotthardp
+
+	* include/certi.hh (3.39), libHLA/HLAbuffer.hh (1.8) (utags:
+	  DEV_before_NoCircularRef_merge): Bug #25119, IRIX portability:
+	  use inttypes.h instead of stdint.h
+
+2008-12-18 12:56  gotthardp
+
+	* CMakeLists.txt (1.65), libCERTI/CMakeLists.txt (1.24) (utags:
+	  DEV_before_NoCircularRef_merge): IRIX64 portability: added check
+	  for libgen library
+
+2008-12-16 08:08  approx
+
+	* RTIG/Federation.cc (3.103), RTIG/Federation.hh (3.57,
+	  CERTI-3_3_2), libCERTI/ObjectClass.cc (3.64, CERTI-3_3_2),
+	  libCERTI/ObjectClass.hh (3.45, CERTI-3_3_2),
+	  libCERTI/ObjectClassAttribute.cc (3.31, CERTI-3_3_2),
+	  libCERTI/ObjectClassAttribute.hh (3.26, CERTI-3_3_2) (utags:
+	  DEV_before_NoCircularRef_merge): next step of the implementation
+	  towards notification services
+
+2008-12-11 14:51  erk
+
+	* scripts/FindLexYacc.cmake (1.5, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Use appropriate include
+	  directory for GnuWin32 - flex
+
+2008-12-10 18:42  gotthardp
+
+	* include/: RTI.hh (3.15), fedtime.hh (3.12) (utags:
+	  DEV_before_NoCircularRef_merge): Fixed errors on Win32.
+
+2008-12-10 17:53  erk
+
+	* libCERTI/DebugOStream.hh (4.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), include/RTI.hh (3.14),
+	  include/RTItypes.hh (3.19, DEV_before_NoCircularRef_merge),
+	  include/certi.hh (3.38), include/fedtime.hh (3.11),
+	  libCERTI/CMakeLists.txt (1.23), libCERTI/FedTime.cc (3.15,
+	  DEV_before_NoCircularRef_merge): More work for a (as far as
+	  possible) clean libFedTime
+
+2008-12-07 21:16  gotthardp
+
+	* RTIA/CMakeLists.txt (1.7, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIA/OwnershipManagement.cc
+	  (3.17, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTIA/RTIA_federate.cc (3.96, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIA/main.cc (3.25, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/CMakeLists.txt (1.6,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTIG/Federate.hh
+	  (3.15, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTIG/Federation.hh (3.56), RTIG/FederationsList.cc (3.63,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTIG/RTIG.cc (3.54,
+	  DEV_before_NoCircularRef_merge), RTIG/RTIG_processing.cc (3.80,
+	  DEV_before_NoCircularRef_merge), include/baseTypes.hh (3.13,
+	  DEV_before_NoCircularRef_merge), include/certi.hh (3.37),
+	  libCERTI/CMakeLists.txt (1.22), libCERTI/Exception.cc (3.17,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/Exception.hh (3.8, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/Extent.hh (3.10,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/FedRegion.hh (3.4, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/GAV.cc (3.18,
+	  DEV_before_NoCircularRef_merge), libCERTI/GAV.hh (3.13,
+	  DEV_before_NoCircularRef_merge), libCERTI/GAV_aux.cc (3.19),
+	  libCERTI/GSSAPIHandler.cc (3.7, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/LBTS.cc (3.12,
+	  DEV_before_NoCircularRef_merge), libCERTI/Message.cc (3.62,
+	  DEV_before_NoCircularRef_merge), libCERTI/Message.hh (3.54,
+	  DEV_before_NoCircularRef_merge), libCERTI/MessageBuffer.cc (3.14,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), libCERTI/Object.hh
+	  (3.20, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/ObjectAttribute.hh (3.17, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/ObjectClass.cc (3.63),
+	  libCERTI/ObjectClass.hh (3.44), libCERTI/ObjectSet.hh (3.14,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/SecurityLevel.hh (3.11, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/Socket.hh (3.16,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/SocketTCP.cc (3.27, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/SocketUN.cc (3.28,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libRTI/CMakeLists.txt (1.10, DEV_before_NoCircularRef_merge),
+	  libRTI/RTIambPrivateRefs.cc (3.16,
+	  DEV_before_NoCircularRef_merge), libRTI/RTIambPrivateRefs.hh
+	  (3.7, DEV_before_NoCircularRef_merge), libRTI/RTIambassador.cc
+	  (3.101, DEV_before_NoCircularRef_merge), libRTI/RTItypes.cc (1.2,
+	  DEV_before_NoCircularRef_merge), libRTI/RTItypesImp.cc (3.1,
+	  DEV_before_NoCircularRef_merge), libRTI/RTItypesImp.hh (3.1,
+	  DEV_before_NoCircularRef_merge), test/Billard/CMakeLists.txt
+	  (1.8, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  test/utility/CMakeLists.txt (1.4, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Bug #24930: First step of RTI::
+	  and certi:: namespace separation.  Done: Exceptions, Region and
+	  "HandleSets" separated; To-Do: FedTime separation and final
+	  cleanup.
+
+2008-12-03 11:24  erk
+
+	* CMakeLists.txt (1.64): For later use.  Not essential but it may
+	  ease the bug catch.
+
+2008-12-03 11:23  erk
+
+	* include/RTI.hh (3.13), include/fedtime.hh (3.10),
+	  libCERTI/CMakeLists.txt (1.21): Update for cleanly independant
+	  libFedTime
+
+2008-11-25 17:32  gotthardp
+
+	* RTIA/CMakeLists.txt (1.6), RTIG/CMakeLists.txt (1.5),
+	  libCERTI/CMakeLists.txt (1.20), libCERTI/Exception.cc (3.16),
+	  libCERTI/GAV_aux.cc (3.18), libRTI/CMakeLists.txt (1.9),
+	  libRTI/RTItypes.cc (1.1), test/Billard/CMakeLists.txt (1.7),
+	  test/utility/CMakeLists.txt (1.3): Bug #22881: Better DLC
+	  compliancy.	- Symbols in RTI namespace moved from libCERTI to
+	  libRTI;   - RTI::FedTime moved to libFedTime.
+
+2008-11-25 16:13  bussenotjl
+
+	* libCERTI/CMakeLists.txt (1.19), libCERTI/Clock.hh (4.9,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/ClockFactory.cc (4.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), test/utility/CertiUtilTests.cc
+	  (1.15, CERTI-3_3_2, DEV_before_NoCircularRef_merge): Add clock
+	  factory method
+
+2008-11-24 13:21  gotthardp
+
+	* scripts/FindRTI.cmake (1.9, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Bug #24914: FindRTI.cmake was
+	  not robust to 'unnable to execute RTIG'
+
+2008-11-22 18:14  gotthardp
+
+	* scripts/FindRTI.cmake (1.8): Added RTI_PATH and RTI_VERSION
+	  support.  Currently available only for the CERTI HLA
+	  infrastructure.
+
+2008-11-22 15:55  gotthardp
+
+	* libHLA/HLAbuffer.hh (1.7): Adjacent __HLAbuffer structures caused
+	  failure of the __check_memory() function. [Wrong buffer was found
+	  by the std::lower_bound() function.] Occured on FreeBSD 7.0;
+	  reported by Martin Spott.
+
+2008-11-21 16:27  erk
+
+	* CMakeLists.txt (1.63): Reverse to default behavior.	 - should
+	  not build the doc    - library should be shared  Please do not
+	  change default CMakeLists.txt behavior before asking to other.
+
+2008-11-21 14:41  approx
+
+	* CMakeLists.txt (1.62), RTIA/DeclarationManagement.cc (3.25,
+	  DEV_before_NoCircularRef_merge), RTIA/DeclarationManagement.hh
+	  (3.10, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTIA/ObjectManagement.cc (3.59, DEV_before_NoCircularRef_merge),
+	  RTIA/ObjectManagement.hh (3.30, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/Federate.hh (3.14),
+	  libRTI/RTIambassador.cc (3.100): doxygen comments slightly
+	  adapted to Eric's advices
+
+2008-11-21 13:45  approx
+
+	* RTIA/DeclarationManagement.cc (3.24), RTIA/ObjectManagement.cc
+	  (3.58), RTIA/RTIA_federate.cc (3.95), RTIG/Federate.hh (3.13),
+	  libCERTI/Message_R.cc (3.34, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/Message_W.cc (3.39,
+	  DEV_before_NoCircularRef_merge), libRTI/RTIambassador.cc (3.99):
+	  some doxygen comments added
+
+2008-11-20 19:21  approx
+
+	* RTIA/DeclarationManagement.cc (3.23), RTIA/ObjectManagement.cc
+	  (3.57), RTIA/RTIA_network.cc (3.30,
+	  DEV_before_NoCircularRef_merge), RTIG/Federate.cc (3.16,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTIG/Federate.hh
+	  (3.12), RTIG/Federation.cc (3.102), RTIG/Federation.hh (3.55),
+	  RTIG/FederationsList.cc (3.62), RTIG/FederationsList.hh (3.48,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTIG/RTIG.cc
+	  (3.53), RTIG/RTIG.hh (3.31, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/RTIG_processing.cc (3.79),
+	  libCERTI/NM_Classes.cc (3.14, DEV_before_NoCircularRef_merge),
+	  libCERTI/NM_Classes.hh (3.9, DEV_before_NoCircularRef_merge),
+	  libCERTI/NetworkMessage.hh (3.44,
+	  DEV_before_NoCircularRef_merge), libCERTI/PrettyDebEx.cc (4.6,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libRTI/RTIambassador.cc (3.98): implementation of switches: CRAS,
+	  IRAS, ARAS and ASAS
+
+2008-11-20 15:46  erk
+
+	* scripts/FindCERTI.cmake (1.10, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Flag FindCERTI as deprecated
+
+2008-11-19 11:25  gotthardp
+
+	* libHLA/: HLAbuffer.cc (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), HLAbuffer.hh (1.6): Implemented
+	  __assert_endianess to verify that libHLA is used correctly.
+
+2008-11-18 18:38  gotthardp
+
+	* libHLA/: HLAbasicType.hh (1.4), TestHLAtypes.cc (1.3) (utags:
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge): The __BYTE_ORDER
+	  variable is wrong on some systems. Use the CMake provided value
+	  instead.
+
+2008-11-18 17:39  gotthardp
+
+	* libHLA/TestHLAtypes.cc (1.2): Print the host byte-order before
+	  tests.
+
+2008-11-18 11:21  erk
+
+	* libHLA/HLAbuffer.hh (1.5): Fix compilation issue on FreeBSD 7
+	  Reported on ML by Martin Spott
+
+2008-11-15 15:54  gotthardp
+
+	* libCERTI/TreeNamedAndHandledSet.hh (1.8, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Bug #24840: Debugging messages
+	  commented out.
+
+2008-11-15 00:28  gotthardp
+
+	* libHLA/HLAbuffer.hh (1.4): Suppress a wrong warning.
+
+2008-11-15 00:24  gotthardp
+
+	* libHLA/HLAbuffer.hh (1.3): Fixed DLL export/import.
+
+2008-11-15 00:07  gotthardp
+
+	* libCERTI/TreeNamedAndHandledSet.hh (1.7): Bugfix: Template
+	  classes cannot use dllexport/dllimport.
+
+2008-11-14 12:13  erk
+
+	* scripts/CreatePatchCVS.cmake (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Merged modification from tsp
+	  tree.  EXECUTE_PROCESS seems to handle the argument of the
+	  command  in a different way as before.  I'll have look at that
+	  later.  Better check-in a working script.
+
+2008-11-10 14:19  erk
+
+	* doc/certi_developer.cnf.in (3.4, DEV_before_NoCircularRef_merge),
+	  doc/certi_install.cnf.in (3.6, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/certi_user.cnf.in (3.8,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  doc/certi_user_doc.tree (3.5, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/execute.dox (3.4,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTIA/main.cc
+	  (3.24), RTIG/Federation.cc (3.101), RTIG/Federation.hh (3.54),
+	  RTIG/main.cc (3.21, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  doc/certi_developer_doc.tree (3.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): User documentation update
+
+2008-11-09 13:41  gotthardp
+
+	* RTIG/Federation.cc (3.100), RTIG/Federation.hh (3.53),
+	  RTIG/FederationsList.hh (3.47), libCERTI/Interaction.cc (3.51,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/Interaction.hh (3.36, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/ObjectClassAttribute.cc
+	  (3.30), libCERTI/ObjectClassAttribute.hh (3.25),
+	  libCERTI/TreeNamedAndHandledSet.hh (1.6): Sun Studio portability:
+	  renamed some variables to avoid compiler warnings.
+
+2008-11-08 12:36  erk
+
+	* libCERTI/ObjectClassSet.hh (3.36, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIA/DataDistribution.cc (3.27,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTIA/RTIA_network.cc (3.29), libCERTI/ObjectClass.cc (3.62),
+	  libCERTI/ObjectClassSet.cc (3.45, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/RootObject.cc (3.40,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/Subscribable.hh (3.7, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): More clean-up:   - delete
+	  redundant ObjectClass::getWithHandle	 - add some source code
+	  documentation (comment)
+
+2008-11-08 12:08  erk
+
+	* libCERTI/: Interaction.cc (3.50), Interaction.hh (3.35),
+	  InteractionSet.hh (3.24, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), ObjectClass.cc (3.61),
+	  ObjectClass.hh (3.43), RootObject.hh (3.32, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), TreeNamedAndHandledSet.hh (1.5):
+	  More interaction and object class refactoring.  Should be clean
+	  and simple "enough" for now.
+
+2008-11-08 02:11  erk
+
+	* libCERTI/: Interaction.cc (3.49), InteractionSet.cc (3.28,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), InteractionSet.hh
+	  (3.23), ObjectClassSet.cc (3.44), ObjectClassSet.hh (3.35),
+	  RootObject.cc (3.39), TreeNamedAndHandledSet.hh (1.4),
+	  XmlParser.cc (3.29, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  ObjectClass.cc (3.60): Now we should be near to both HLA 1.3 and
+	  IEEE-1516 compliant regarding object class name and interaction
+	  class name handling
+
+2008-11-08 01:59  erk
+
+	* libCERTI/: Named.cc (3.8), Named.hh (3.8) (utags: CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Add method used to get leaf name
+
+2008-11-06 23:21  erk
+
+	* libHLA/HLAbasicType.hh (1.3): gcc 4.3.2 fix.	It was worried
+	  about "undefined" memcpy.
+
+2008-11-06 17:18  gotthardp
+
+	* libHLA/: CMakeLists.txt (1.4, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), TestHLAtypes.cc (1.1): First
+	  module tests added.
+
+2008-11-06 15:28  gotthardp
+
+	* RTIA/RTIA_federate.cc (3.94), RTIA/Statistics.cc (3.18,
+	  DEV_before_NoCircularRef_merge), libCERTI/Message.hh (3.53),
+	  libRTI/RTIambPrivateRefs.cc (3.15), libRTI/RTIambPrivateRefs.hh
+	  (3.6), libRTI/RTIambassador.cc (3.97): Bug #24746: Fixed CERTI
+	  crash after exception in FederateAmbassador.
+
+2008-11-06 15:14  erk
+
+	* RTIG/main.cc (3.20): Fixed a doc(xygen) typo.
+
+2008-11-05 21:41  erk
+
+	* test/utility/: CMakeLists.txt (1.2), CertiUtilTests.cc (1.14):
+	  Add CertiUtilsTests to TESTING
+
+2008-11-04 15:40  gotthardp
+
+	* libHLA/HLAvariableArray.hh (1.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Fix SIGSEGV when realloc occurs
+	  during HLAASCIIstring::operator =
+
+2008-11-03 12:10  gotthardp
+
+	* libHLA/: HLAbasicType.hh (1.2), HLAenumeratedType.hh (1.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), HLAvariableArray.hh
+	  (1.2): Added datatypes mandated by IEEE 1516.2; HLAASCIIstring
+	  supports std::string conversions.
+
+2008-11-02 13:54  gotthardp
+
+	* libCERTI/SocketMC.cc (3.16, DEV_before_NoCircularRef_merge): Bug
+	  #21648: Replace exit() by throwing an exception.
+
+2008-11-02 02:01  erk
+
+	* libCERTI/InteractionSet.hh (3.22), libCERTI/ObjectClassSet.hh
+	  (3.34), libCERTI/TreeNamedAndHandledSet.hh (1.3),
+	  RTIA/DataDistribution.cc (3.26), RTIA/RTIA_network.cc (3.28),
+	  libCERTI/InteractionSet.cc (3.27), libCERTI/ObjectClassSet.cc
+	  (3.43), libCERTI/RootObject.cc (3.38): More clean-up.  Remove
+	  duplicate method getByHandle from Interaction (same as
+	  getObjectFromHandle in the base class) begin more <iostream>
+	  compliant refactoring
+
+2008-11-02 01:26  erk
+
+	* libCERTI/: Interaction.cc (3.48), InteractionSet.hh (3.21),
+	  ObjectClass.hh (3.42), fed.cc (3.20, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), Interaction.hh (3.34),
+	  InteractionSet.cc (3.26), ObjectClass.cc (3.59),
+	  TreeNamedAndHandledSet.hh (1.2): Now both Object Class set and
+	  Interaction Class set inherit from same templated base class.  So
+	  much duplicated code gained :=)
+
+2008-11-02 01:02  erk
+
+	* libCERTI/: ObjectClass.cc (3.58), ObjectClass.hh (3.41),
+	  ObjectClassSet.cc (3.42), ObjectClassSet.hh (3.33): Make
+	  ObjectClass set inherit from the new template class
+
+2008-11-02 00:58  erk
+
+	* libCERTI/: TreeNamedAndHandledSet.hh (1.1), CMakeLists.txt
+	  (1.18): Add a template base class for ObjectClass and Interaction
+	  sets
+
+2008-11-01 22:47  erk
+
+	* libCERTI/ObjectClass.cc (3.57): Get rid of more char* usage.
+	  Here did throw away strcmp
+
+2008-11-01 22:39  erk
+
+	* libCERTI/HandleManager.hh (3.6, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Add todo
+
+2008-11-01 20:19  erk
+
+	* libCERTI/Interaction.cc (3.47), libCERTI/InteractionSet.hh
+	  (3.20), libCERTI/ObjectClass.hh (3.40),
+	  libCERTI/ObjectClassSet.hh (3.32), libCERTI/Interaction.hh
+	  (3.33), libCERTI/InteractionSet.cc (3.25),
+	  libCERTI/ObjectClassSet.cc (3.41), libCERTI/RootObject.cc (3.37),
+	  RTIA/ObjectManagement.cc (3.56), RTIA/ObjectManagement.hh (3.29),
+	  RTIA/RTIA_federate.cc (3.93), libCERTI/ObjectClass.cc (3.56):
+	  Fixes bug #23730: support get Handle using
+	  'getClassHandle("parentclass.subclass") format Now interaction
+	  and object classes handle may be retrieved with fully qualified
+	  names.
+
+2008-10-31 14:50  erk
+
+	* libCERTI/: Interaction.cc (3.46), ObjectClass.hh (3.39),
+	  RootObject.hh (3.31), fed.cc (3.19), Interaction.hh (3.32),
+	  ObjectClass.cc (3.55), ObjectClassSet.cc (3.40), RootObject.cc
+	  (3.36), XmlParser.cc (3.28): More parser clean-up...
+
+2008-10-31 11:17  erk
+
+	* libCERTI/HandleManager.hh (3.5): Source code pruning
+
+2008-10-30 17:01  erk
+
+	* libCERTI/: RootObject.hh (3.30), Named.hh (3.7), ObjectClass.cc
+	  (3.54), ObjectClass.hh (3.38), ObjectClassAttribute.cc (3.29),
+	  ObjectClassAttribute.hh (3.24), RootObject.cc (3.35),
+	  XmlParser.cc (3.27), fed.cc (3.18): Improver Parsing architecture
+	  (to be continued)
+
+2008-10-30 11:57  erk
+
+	* RTIG/Federation.cc (3.99): end of RTIG verbosity handling
+
+2008-10-30 11:49  erk
+
+	* RTIG/CMakeLists.txt (1.4), RTIG/CommandLine.ggo (3.3),
+	  RTIG/Federation.hh (3.52), RTIG/FederationsList.hh (3.46),
+	  RTIG/RTIG.cc (3.52), RTIG/RTIG.ggo (3.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/getopt1.c (3.2),
+	  RTIG/Federation.cc (3.98), RTIG/FederationsList.cc (3.61),
+	  RTIG/RTIG.hh (3.30), RTIG/RTIG_cmdline.c (3.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/cmdline.c (3.5),
+	  RTIG/cmdline.h (3.4), RTIG/getopt.c (3.4), RTIG/getopt.h (3.2),
+	  RTIG/main.cc (3.19), RTIG/RTIG_cmdline.h (3.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/fed.cc (3.17),
+	  libCERTI/fed.hh (3.6, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Update RTIG command line option
+	  handling and add a verbosity level handling in order to ease
+	  testing and avoid to display FED file parse if verbosity is
+	  strictly less than 2.  The default level is 2 in order to keep
+	  backward compatibility
+
+2008-10-30 11:20  erk
+
+	* RTIA/: RTIA.ggo (1.4), RTIA_cmdline.c (1.3), RTIA_cmdline.h (1.2)
+	  (utags: CERTI-3_3_2, DEV_before_NoCircularRef_merge): Update .ggo
+	  in order to have appropriate version number taken from config.h
+
+2008-10-30 11:18  erk
+
+	* RTIA/RTIA_federate.cc (3.92): Fix bug #24691 : Bug in
+	  getParameterName We should replace internal char* usage with
+	  appropriate std::string or const std::string&
+
+	  done for Named::getName() method.
+
+2008-10-30 11:11  erk
+
+	* RTIA/ObjectManagement.hh (3.28), libCERTI/Interaction.cc (3.45),
+	  libCERTI/Interaction.hh (3.31), libCERTI/InteractionSet.cc
+	  (3.24), libCERTI/InteractionSet.hh (3.19), libCERTI/Named.cc
+	  (3.7), libCERTI/Named.hh (3.6), RTIA/ObjectManagement.cc (3.55):
+	  Fix bug #24691 : Bug in getParameterName We should replace
+	  internal char* usage with appropriate std::string or const
+	  std::string&
+
+	  done for Named::getName() method.
+
+2008-10-29 10:10  erk
+
+	* CTestConfig.cmake (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Update CTest config
+
+2008-10-28 13:07  gotthardp
+
+	* RTIA/RTIA_federate.cc (3.91), RTIG/RTIG.cc (3.51),
+	  include/certi.hh (3.36), libCERTI/Exception.cc (3.15),
+	  libCERTI/Exception.hh (3.7), libCERTI/Interaction.cc (3.44),
+	  libCERTI/Interaction.hh (3.30), libCERTI/Message.cc (3.61),
+	  libCERTI/Message.hh (3.52), libRTI/RTIambPrivateRefs.cc (3.14):
+	  Bug #24516: Unified OrderType/OrderingHandle and
+	  TransportType/TransportationHandle.
+
+2008-10-27 11:26  erk
+
+	* libCERTI/SocketHTTPProxy.cc (3.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/build.dox (3.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/execute.dox (3.3): Add latex
+	  case for images.  There is no need to transform png images to eps
+	  since an up to date latex graphics package should be able to
+	  include png as well.
+
+2008-10-27 11:25  erk
+
+	* doc/certi_user.cnf.in (3.7): Avoid latex batchmode which seems to
+	  produce bad output
+
+2008-10-27 10:27  gotthardp
+
+	* scripts/FindRTI.cmake (1.7): Fixed CMAKE_FIND_LIBRARY_PREFIXES
+	  related error on Win32 systems.
+
+2008-10-26 17:20  gotthardp
+
+	* doc/certi_install.cnf.in (3.5), doc/certi_install_doc.tree (3.5,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), doc/execute.dox
+	  (3.2), doc/images/putty-portforwarding.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/SocketHTTPProxy.cc
+	  (3.2): Bug #24536: Described HTTP tunneling.
+
+2008-10-25 20:34  gotthardp
+
+	* scripts/FindRTI.cmake (1.6): Removed unused CMakeFindFrameworks
+	  include
+
+2008-10-25 18:37  gotthardp
+
+	* scripts/FindRTI.cmake (1.5): Fixed typos in comments.
+
+2008-10-23 15:46  erk
+
+	* libCERTI/NetworkMessage_RW.cc (3.52,
+	  DEV_before_NoCircularRef_merge): Merged patch #6657 from Enrico
+	  as a first "fast" solution to bug #24627 : rtig error in program
+	  sequence
+
+2008-10-22 16:24  jmm
+
+	* RTIA/FederationManagement.cc (3.69, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): bug #24626 : For Win32 only :
+	  Tempory FED file saved within TMP / TEMP directory
+
+2008-10-21 12:55  erk
+
+	* libCERTI/syntax.yy (3.8, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Hopefully (final) Fix bug
+	  #21610, Timestamp should be allowed as...
+
+2008-10-19 23:44  gotthardp
+
+	* doc/: .cvsignore (1.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), build.dox (3.1),
+	  certi_install.cnf.in (3.4), certi_install.dox (3.4),
+	  certi_install_doc.tree (3.4), certi_introduction.dox (3.2),
+	  certi_user.cnf.in (3.6), certi_user.dox (3.5),
+	  certi_user_doc.tree (3.4), execute.dox (3.1), install.dox (3.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), introduction.dox
+	  (3.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  images/billiard.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), images/cmake-binaries.png (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  images/cmake-generate.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), images/cmake-generator.png (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  images/cmake-launch.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), images/cmake-verify.png (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  images/cmake-vsfiles.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), images/cmake-vsproject.png (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), images/rtig.png
+	  (1.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge): Installation
+	  documentation updated. Integrated text and screenshots from
+	  CERTI-Compilation-HOWTO.
+
+2008-10-18 20:48  gotthardp
+
+	* RTIA/main.cc (3.23), RTIG/main.cc (3.18): Documentation update.
+
+2008-10-14 23:09  erk
+
+	* doc/: doc_install.in (3.3), DoxyTools.cmake (3.5) (utags:
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge): Handle DESTDIR
+	  properly.  This is needed for building RPM and DEB packages
+
+2008-10-13 22:57  erk
+
+	* doc/certi.html (3.1): Suppress remaining obsolete file.
+
+2008-10-13 21:07  erk
+
+	* RTIA/main.cc (3.22), doc/CMakeLists.txt (1.10, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/certi_user.cnf.in (3.5),
+	  doc/certi_user.dox (3.4), libCERTI/Clock.hh (4.8): Add an example
+	  of \defgroup and \copydoc for Petr
+
+2008-10-13 16:32  erk
+
+	* doc/: CMakeLists.txt (1.9), DoxyTools.cmake (3.4),
+	  certi_developer_doc.tree (3.2), certi_user.cnf.in (3.4),
+	  certi_user_doc.tree (3.3), certi_user_header.html (3.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), doc_install.in
+	  (3.2), index.html (3.6, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), certi_developer.cnf.in (3.3),
+	  certi_doc_tree.dox (1.5), certi_install_doc.tree (3.3),
+	  certi_install_header.html (3.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), certi_user.dox (3.3): Hopefully
+	  working doxygen documentation generation system.  PDF output
+	  needs improvement, however the idea are there
+
+2008-10-13 13:27  gotthardp
+
+	* libCERTI/: SecureTCPSocket.cc (3.11, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), SecureTCPSocket.hh (3.9,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), Socket.hh (3.15),
+	  SocketMC.hh (3.13, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  SocketTCP.hh (3.23, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  SocketUDP.hh (3.13, CERTI-3_3_2, DEV_before_NoCircularRef_merge):
+	  Bug #24537: Socket::getClass() removed.
+
+2008-10-13 12:06  erk
+
+	* RTIG/RTIG_processing.cc (3.78), RTIG/RTIG.cc (3.50),
+	  libCERTI/SecurityServer.cc (3.15, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/SocketServer.cc (3.18,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge): Partial bug #24537:
+	  Remove unused Socket::getClass() fix Now we may remove getClass
+	  but the polymorphic Socket subclasses usage is NOT yet clean.
+	  More work to come...
+
+2008-10-13 11:38  gotthardp
+
+	* libRTI/RTIambassador.cc (3.96): Bug #24538: Replaced strdup by
+	  new[].
+
+2008-10-12 21:42  erk
+
+	* .cvsignore (1.5, DEV_before_NoCircularRef_merge): Please leave
+	  "build" inside .cvsignore - Erk
+
+2008-10-12 17:58  gotthardp
+
+	* .cvsignore (1.4), RTIA/.cvsignore (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIG/.cvsignore (1.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), doc/.cvsignore
+	  (1.2), include/.cvsignore (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/.cvsignore (1.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), libHLA/.cvsignore
+	  (1.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libRTI/.cvsignore (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), test/.cvsignore (1.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  test/Billard/.cvsignore (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), test/libgraphc/.cvsignore (1.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  test/utility/.cvsignore (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Update .cvsignore to reflect the
+	  automake->cmake migration
+
+2008-10-12 13:46  gotthardp
+
+	* RTIA/Communications.cc (3.33, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTIA/Communications.hh (3.17,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/CMakeLists.txt (1.17), libCERTI/Socket.hh (3.14),
+	  libCERTI/SocketHTTPProxy.cc (3.1), libCERTI/SocketHTTPProxy.hh
+	  (3.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/SocketTCP.cc (3.26), libCERTI/SocketTCP.hh (3.22),
+	  libCERTI/SocketUDP.cc (3.23, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/SocketUDP.hh (3.12):
+	  Patch #6561: Implemented support for RTIA-->RTIG connections via
+	  a HTTP proxy
+
+2008-10-12 01:03  erk
+
+	* CMakeLists.txt (1.61), doc/CMakeLists.txt (1.8),
+	  doc/certi_user.cnf.in (3.3), doc/certi_user_doc.tree (3.2),
+	  doc/certi_user_header.html (3.1), doc/doc_install.in (3.1),
+	  doc/index.html (3.5), doc/DoxyTools.cmake (3.3),
+	  doc/certi_user.dox (3.2): On step more for a better doc.  Now
+	  make install will install "Install" and "User" doc in
+	  share/doc/certi
+
+2008-10-12 00:08  erk
+
+	* include/CMakeLists.txt (1.4, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Do not install CVS/ subdir
+
+2008-10-11 23:40  erk
+
+	* doc/: CMakeLists.txt (1.7), certi_developer.cnf.in (3.2),
+	  certi_install.cnf.in (3.3), certi_install.dox (3.3),
+	  certi_user.cnf.in (3.2), DoxyTools.cmake (3.2), certi_user.dox
+	  (3.1): Small doxygen doc update
+
+2008-10-11 23:23  erk
+
+	* test/Billard/dtest_billard.py (1.6, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Modification of   RTIA
+	  termination handling by Petr needs exiting test modification
+
+2008-10-11 14:53  gotthardp
+
+	* RTIA/Communications.cc (3.32), RTIA/Communications.hh (3.16),
+	  libCERTI/SocketUN.cc (3.27), libCERTI/SocketUN.hh (3.17,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge): Replace multiple
+	  inheritance in the Communications object. (A step towards patch
+	  #6561.)
+
+2008-10-11 11:35  gotthardp
+
+	* libHLA/HLAfixedRecord.hh (1.2, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Fix typo in comment.
+
+2008-10-10 17:41  gotthardp
+
+	* RTIA/: ObjectManagement.cc (3.54), ObjectManagement.hh (3.27):
+	  Make the TransportTypeList/OrderTypeList private.
+
+2008-10-10 17:18  gotthardp
+
+	* RTIA/RTIA_federate.cc (3.90), RTIA/Statistics.cc (3.17),
+	  libCERTI/Message.hh (3.51), libCERTI/Message_R.cc (3.33),
+	  libCERTI/Message_W.cc (3.38), libCERTI/PrettyDebEx.cc (4.5),
+	  libRTI/RTIambassador.cc (3.95): Bug #24279: Using CLOSE_CONNEXION
+	  to terminate the RTIA connection.
+
+2008-10-10 16:04  gotthardp
+
+	* RTIA/: ObjectManagement.cc (3.53), ObjectManagement.hh (3.26),
+	  RTIA.hh (3.15, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTIA_federate.cc (3.89): Bugfix #24515:
+	  GET_TRANSPORTATION_HANDLE/NAME and GET_ORDERING_HANDLE/NAME
+	  handling implemented Bugfix #24514: Fixed RTIA crash after
+	  unexpected exception
+
+2008-10-10 15:42  gotthardp
+
+	* libRTI/RTIambassador.cc (3.94): Bugfix #24420 and #24515: Remove
+	  throw UnimplementedService.
+
+2008-10-10 15:37  gotthardp
+
+	* libCERTI/: Message_R.cc (3.32), Message_W.cc (3.37): Bugfix
+	  #24515: Encoding/decoding for getOrderingName/Handle and
+	  getTransportationName/Handle
+
+2008-10-10 14:37  erk
+
+	* doc/: certi_install.cnf.in (3.2), certi_install.dox (3.2),
+	  certi_install_doc.tree (3.2), certi_install_header.html (3.1),
+	  certi_introduction.dox (3.1), CMakeLists.txt (1.6): Doxygen
+	  documentation update
+
+2008-10-10 13:29  jmm
+
+	* libCERTI/CMakeLists.txt (1.16), libCERTI/WinClock.cc (4.2,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  libCERTI/WinPerfClock.cc (4.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/WinPerfClock.hh (4.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  test/utility/CertiUtilTests.cc (1.13): Update Window clock
+	  classes We now have "classic" 1ms clock class + "high perf" HW
+	  clock class
+
+2008-10-10 12:53  erk
+
+	* test/utility/CertiUtilTests.cc (1.12): Remove unconditionnal
+	  #define
+
+2008-10-10 09:34  jmm
+
+	* CMakeLists.txt (1.60), config.h.cmake (1.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), libCERTI/CMakeLists.txt (1.15),
+	  libCERTI/Clock.hh (4.7), libCERTI/WinClock.cc (4.1),
+	  libCERTI/WinClock.hh (4.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), test/utility/CertiUtilTests.cc
+	  (1.11): Add WinClock class for windows timer
+
+2008-10-10 01:39  erk
+
+	* CMakeLists.txt (1.59), doc/CMakeLists.txt (1.5),
+	  doc/certi_footer.html (3.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), doc/certi_header.html (3.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  doc/certi_user_doc.tree (3.1), doc/index.html (3.4),
+	  doc/billard.dox (3.6), doc/billard.dox.in (3.2),
+	  doc/certi_doxygen.cnf.in (1.3), doc/certi_install.cnf.in (3.1),
+	  doc/certi_install.dox (3.1), doc/DoxyTools.cmake (3.1),
+	  doc/certi.css (3.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  doc/certi_developer_doc.tree (3.1), doc/certi_user.cnf.in (3.1),
+	  doc/user.dox.in (3.2), doc/certi_developer.cnf.in (3.1),
+	  doc/certi_install_doc.tree (3.1), doc/reference.dox (3.9),
+	  doc/user.dox (3.7): First update for a better Doxygen generated
+	  documentation.  Not finished, please don't try to use it now
+
+2008-10-09 22:22  erk
+
+	* libCERTI/: Clock.hh (4.6), PosixClock.hh (4.4, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), TSCClock.hh (4.3, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Missing CERTI_EXPORT for those
+	  classes.  Will be needed for the forthcoming WinClock class
+
+2008-10-07 23:03  erk
+
+	* doc/: CMakeLists.txt (1.4), certi-favi.png (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), certi_doc_tree.dox (1.4),
+	  certi_doxygen.cnf.in (1.2), certi-favi-16x16.png (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), favicon.ico (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge): Update doxygen
+	  documentation
+
+2008-10-07 21:08  erk
+
+	* myconf (3.15), AUTHORS (3.11, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), README (3.2,
+	  DEV_before_NoCircularRef_merge): Fix bug #24411: Remove autotools
+	  from documentation
+
+2008-10-07 20:46  erk
+
+	* include/: RTI/Enums.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/Handle.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/LogicalTimeInterval.h (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTI/RTI1516.h (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTI/RTIambassador.h
+	  (1.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTI/RTIambassadorFactory.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/RangeBounds.h (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTI/SpecificConfig.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/VariableLengthData.h (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTI_RTIambassador.h
+	  (1.2), RTI_ServiceGroupIndicator.h (1.2), RTI_set.h (1.2),
+	  RTI/Exception.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/FederateAmbassador.h (1.1,
+	  CERTI-3_3_2, DEV_before_NoCircularRef_merge), RTI/LogicalTime.h
+	  (1.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTI/LogicalTimeFactory.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI/NullFederateAmbassador.h
+	  (1.1, CERTI-3_3_2, DEV_before_NoCircularRef_merge),
+	  RTI/Typedefs.h (1.1, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), RTI_EncodedLogicalTime.h (1.2),
+	  RTI_EncodedLogicalTimeInterval.h (1.2), RTI_LogicalTimeInterval.h
+	  (1.2), RTI_LogicalTimeIntervalFactory.h (1.2), RTI_OrderType.h
+	  (1.2), RTI_SaveFailureReason.h (1.2), RTI_TransportationType.h
+	  (1.2), RTI_bool.h (1.2), RTI_1516.h (1.2),
+	  RTI_RTIambassadorFactory.h (1.2), RTI_RangeBounds.h (1.2),
+	  RTI_ResignAction.h (1.2), RTI_RestoreStatus.h (1.2),
+	  RTI_SynchronizationFailureReason.h (1.2), RTI_Value.h (1.2),
+	  RTI_exception.h (1.2), RTI_string.h (1.2), CMakeLists.txt (1.3),
+	  RTI_FederateAmbassador.h (1.2), RTI_Handle.h (1.2),
+	  RTI_LogicalTime.h (1.2), RTI_LogicalTimeFactory.h (1.2),
+	  RTI_SaveStatus.h (1.2), RTI_Typedefs.h (1.2), RTI_map.h (1.2),
+	  RTI_memory.h (1.2), RTI_RestoreFailureReason.h (1.2),
+	  RTI_SpecificConfig.h.in (1.2), RTI_SpecificPostamble.h (1.2),
+	  RTI_SpecificTypedefs.h (1.2), RTI_vector.h (1.2): Install proper
+	  SISO-STD-004.1-2004 DLC files
+
+2008-10-02 11:52  gotthardp
+
+	* libRTI/RTIambassador.cc (3.93): Bug #24420: Added empty
+	  implementation of getRegion() and getRegionToken()
+
+2008-09-30 15:53  erk
+
+	* include/RTI.hh (3.12): Doxygen comment update
+
+2008-09-30 15:52  erk
+
+	* include/: RTI_Handle.h (1.1), RTI_LogicalTimeFactory.h (1.1),
+	  RTI_LogicalTimeIntervalFactory.h (1.1),
+	  RTI_RTIambassadorFactory.h (1.1), RTI_SpecificPostamble.h (1.1),
+	  RTI_SynchronizationFailureReason.h (1.1),
+	  RTI_TransportationType.h (1.1), RTI_exception.h (1.1), RTI_1516.h
+	  (1.1), RTI_EncodedLogicalTime.h (1.1), RTI_FederateAmbassador.h
+	  (1.1), RTI_LogicalTime.h (1.1), RTI_OrderType.h (1.1),
+	  RTI_RangeBounds.h (1.1), RTI_RestoreFailureReason.h (1.1),
+	  RTI_SpecificConfig.h.in (1.1), RTI_SpecificTypedefs.h (1.1),
+	  RTI_vector.h (1.1), RTI_EncodedLogicalTimeInterval.h (1.1),
+	  RTI_ResignAction.h (1.1), RTI_RestoreStatus.h (1.1),
+	  RTI_SaveStatus.h (1.1), RTI_ServiceGroupIndicator.h (1.1),
+	  RTI_Typedefs.h (1.1), RTI_Value.h (1.1), RTI_memory.h (1.1),
+	  RTI_set.h (1.1), RTI_string.h (1.1), RTI_LogicalTimeInterval.h
+	  (1.1), RTI_RTIambassador.h (1.1), RTI_SaveFailureReason.h (1.1),
+	  RTI_bool.h (1.1), RTI_map.h (1.1): Add RTI 1516 headers taken
+	  from IEEE-1516-2000 the main header is RTI_1516.h
+
+2008-09-30 11:34  erk
+
+	* doc/certi_doc_tree.dox (1.3): Small doxygen doc update
+
+2008-09-29 23:44  erk
+
+	* acinclude.m4 (3.3), autogen.sh (1.4), Makefile.am (3.14),
+	  configure.in (3.36), libCERTI/Makefile.am (3.37),
+	  RTIG/Makefile.am (3.9), doc/Makefile.am (3.6),
+	  test/Billard/Makefile.am (3.18), test/libgraphc/Makefile.am
+	  (3.3), RTIA/Makefile.am (3.10), libRTI/Makefile.am (3.7),
+	  test/utility/Makefile.am (1.2), include/Makefile.am (3.7),
+	  test/Makefile.am (3.4): Suppress autoconf support files
+
+2008-09-29 23:05  erk
+
+	* CMakeLists.txt (1.58): Add libHLA to mainstream CERTI
+
+2008-09-29 23:05  erk
+
+	* libHLA/HLAbuffer.hh (1.2): Fix compiler warning (gcc 4.3.2-1)
+	  telling that free/malloc were undeclared
+
+2008-09-29 14:31  erk
+
+	* include/baseTypes.hh (3.12), libCERTI/Exception.cc (3.14): Fix
+	  bug #24403 : RTI::Exception::displayMe() returns temporary may
+	  fix bug #23755 : rtig crashed when directly closed one billard
+	  federate application
+
+2008-09-29 10:41  erk
+
+	* ReleaseNotes.txt (3.3, DEV_before_NoCircularRef_merge): test
+	  continuous build
+
+2008-09-27 00:29  erk
+
+	* CMakeLists.txt (1.57), CTestConfig.cmake (1.1): Add CDash support
+	  see: http://www.cdash.org/CDashPublic/index.php?project=CERTI
+
+2008-09-25 10:54  gotthardp
+
+	* scripts/FindRTI.cmake (1.4): Bugfix: Save and restore the system
+	  variables.
+
+2008-09-24 19:00  gotthardp
+
+	* scripts/FindRTI.cmake (1.3): Improved based on Philip Lowman
+	  comments.  This is a CMake 2.4 compatible version. The version
+	  sent to CMake is 2.6 only.
+
+2008-09-24 14:53  erk
+
+	* libCERTI/Object.cc (3.24, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge): Fix bug #24362 : Memleak in
+	  ObjectClass
+
+2008-09-22 09:37  gotthardp
+
+	* scripts/FindRTI.cmake (1.2): Version sent to CMake. Added
+	  additional comments explaining what is HLA RTI.
+
+2008-09-21 18:46  gotthardp
+
+	* libCERTI/: NetworkMessage.cc (3.38, CERTI-3_3_2,
+	  DEV_before_NoCircularRef_merge), SocketUDP.cc (3.22): Initialize
+	  variables. This is mainly to avoid false Valgrind errors, so the
+	  true errors can be more easily detected.
+
+2008-09-21 13:15  erk
+
+	* CMakeLists.txt (1.56): Change cvs version to 3.3.2cvs
 
 2008-09-21 13:04  erk
 
