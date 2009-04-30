@@ -38,7 +38,9 @@ CERTI releases should be done with the following steps:
 
      Better is at least 2 built:
          Linux ix86 wth gcc  (32bits)
-         Windows win32 with Visual Studio or Wascana
+         Windows win32 with Visual Studio 
+                     and/or Code::Blocks (http://www.codeblocks.org/)
+                     and/or Wascana (http://wascana.sourceforge.net/)                     
 
 6) Run autotests :))
    Which means for today run as many tests as you can do
@@ -75,23 +77,26 @@ CERTI releases should be done with the following steps:
    Fix packaging trouble if any and move the previous tag 
    if any commit occured.
 
-10) digitally sign the packages you made and put them
-   in the download area:
-   https://savannah.gnu.org/maintenance/DownloadArea
+10) Digitally sign the packages you made and put them
+    in the download area:
+    https://savannah.gnu.org/maintenance/DownloadArea
 
-   gpg -b certi-3.2.5.tar.gz
+    gpg -b certi-3.2.5.tar.gz
 
 11) Check is the download area has been properly updated
      http://download.savannah.nongnu.org/releases/certi/
 
-12) post the appropriate news on Savannah CERTI pages
-   https://savannah.nongnu.org/news/submit.php?group=certi
+12) Post the appropriate news on Savannah CERTI pages
+    https://savannah.nongnu.org/news/submit.php?group=certi
 
-   DON'T MAIL to certi-devel since news are 
-   automagically forwarded to appropriate ML
+    DON'T MAIL to certi-devel since news are 
+    automagically forwarded to appropriate ML
 
-   Remember that once you have posted the news you should
-   approve it before it appears on first page.
+    Remember that once you have posted the news you should
+    approve it before it appears on first page.
+    
+13) OPTIONNALLY update online CERTI documentation at 
+        http://www.nongnu.org/certi
 
 You are right this process IS painful and should be automated (a lot...)
 be sure we are working on it :))
