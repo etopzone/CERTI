@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.105 2009/04/08 10:47:18 approx Exp $
+// $Id: Federation.cc,v 3.106 2009/05/19 09:39:26 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1845,8 +1845,11 @@ Federation::subscribeObject(FederateHandle federate,
         }
 
         // broadcastSomeMessage needs a vector, no set -> conversion
-        vector<FederateHandle> federate_vector(federate_set.begin(),federate_set.end()); 
-    
+        vector<FederateHandle> federate_vector;
+        // federate_vector = federate_set
+        federate_vector.resize(federate_set.size());
+        std::copy(federate_set.begin(), federate_set.end(), federate_vector.begin());
+
         NM_Start_Registration_For_Object_Class msg ;
         msg.federate = federate ;
         msg.federation = handle ;
@@ -2571,5 +2574,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.105 2009/04/08 10:47:18 approx Exp $
+// $Id: Federation.cc,v 3.106 2009/05/19 09:39:26 gotthardp Exp $
 
