@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.3 2008/10/27 10:26:49 erk Exp $
+// $Id: SocketHTTPProxy.cc,v 3.4 2009/05/19 15:52:46 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -112,17 +112,27 @@ SocketHTTPProxy::createConnection(const char *server_name, unsigned int port)
     if (http_proxy == NULL)
         http_proxy = getenv("http_proxy"); // global settings
 
-    if (http_proxy != NULL) {
+    if (http_proxy != NULL && *http_proxy != '\0') {
         std::string proxy_address;
         in_port_t proxy_port;
 
-        const char *strpport = strchr(http_proxy, ':');
+        // skip http://
+        const char *protoend = strchr(http_proxy, ':');
+        if (protoend == NULL ||
+          protoend[1] != '/' || protoend[2] != '/' || protoend[3] == '\0')
+        {
+            D.Out(pdDebug, "Invalid HTTP proxy URL.");
+            throw NetworkError("Invalid HTTP proxy URL.");
+        }
+
+        const char *strpaddress = protoend+3;
+        const char *strpport = strchr(strpaddress, ':');
         if (strpport) {
-            proxy_address.assign(http_proxy, strpport-http_proxy);
+            proxy_address.assign(strpaddress, strpport-strpaddress);
             proxy_port = atoi(strpport+1);
         }
         else {
-            proxy_address.assign(http_proxy);
+            proxy_address.assign(strpaddress);
             proxy_port = 3128;
         }
 
@@ -242,4 +252,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.3 2008/10/27 10:26:49 erk Exp $
+// $Id: SocketHTTPProxy.cc,v 3.4 2009/05/19 15:52:46 gotthardp Exp $
