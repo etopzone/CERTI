@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketHTTPProxy.cc,v 3.4 2009/05/19 15:52:46 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.5 2009/05/20 08:17:16 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "SocketHTTPProxy.hh"
@@ -46,6 +46,14 @@ static PrettyDebug G("GENDOC",__FILE__);
  *    in the form http://host:port.
  * -# Run the federate.
  *
+ * If \p CERTI_HTTP_PROXY is not defined, the system-wide \p http_proxy is used.
+ * To disable HTTP tunneling, you must unset both environment variables, or set
+ * \p CERTI_HTTP_PROXY to an empty string.
+ *
+ * If the HTTP proxy is directly accessible for the federate (RTIA), you can set
+ * the \p CERTI_HTTP_PROXY environment variable to address of the HTTP proxy,
+ * e.g. http://proxy.example.com. The default port is 3128.
+ *
  * Note: In the HTTP proxy configuration you may need to enable the HTTP CONNECT
  * method for the port number defined in \p CERTI_TCP_PORT. For example, in
  * the /etc/squid/squid.conf you may need to configure
@@ -54,14 +62,6 @@ static PrettyDebug G("GENDOC",__FILE__);
  acl CONNECT method CONNECT
  http_access allow CONNECT CERTI_ports
 \endverbatim
- *
- * If \p CERTI_HTTP_PROXY is not defined, the system-wide \p http_proxy is used.
- * To disable HTTP tunneling, you must unset both environment variables, or set
- * \p CERTI_HTTP_PROXY to an empty string.
- *
- * If the HTTP proxy is directly accessible for the federate (RTIA), you can set
- * the \p CERTI_HTTP_PROXY environment variable to address of the HTTP proxy,
- * e.g. http://proxy.example.com. The default port is 3128.
  *
  * If you cannot access the HTTP proxy directly, you may use SSH port forwarding.
  * The SSH client will listen to a local port and will ask the remote SSH server
@@ -252,4 +252,4 @@ SocketHTTPProxy::receiveLine(char *buffer, size_t max_size)
 
 } // namespace
 
-// $Id: SocketHTTPProxy.cc,v 3.4 2009/05/19 15:52:46 gotthardp Exp $
+// $Id: SocketHTTPProxy.cc,v 3.5 2009/05/20 08:17:16 gotthardp Exp $

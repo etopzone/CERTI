@@ -66,6 +66,9 @@
  * <td>HTTP proxy address in the format http://host:port.
  * See \ref certi_HTTP_proxy "HTTP tunneling".</td>
  * </tr>
+ * <tr> <td>http_proxy</td> <td>RTIA</td>
+ * <td>System-wide HTTP proxy address used if CERTI_HTTP_PROXY is not defined.</td>
+ * </tr>
  * <tr> <td>CERTI_NO_STATISTICS</td> <td>RTIA</td> <td>if set, do not display service calls statistics</td>
  * </tr>
  * </TABLE>
@@ -93,4 +96,4 @@
  * \image latex "billiard.png" "Billard consoleshot" width=12cm
  */
 
-// $Id: execute.dox,v 3.4 2008/11/10 13:19:00 erk Exp $
+// $Id: execute.dox,v 3.5 2009/05/20 08:17:15 gotthardp Exp $
