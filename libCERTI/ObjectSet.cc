@@ -98,7 +98,7 @@ ObjectSet::getObjectInstanceHandle(std::string the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
 	std::stringstream msg;
-	
+
     std::map<ObjectHandle, Object *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if (i->second->getName() == the_name)
@@ -196,14 +196,18 @@ void
 ObjectSet::killFederate(FederateHandle the_federate)
     throw (RTIinternalError)
 {
-    std::map<ObjectHandle, Object *>::iterator i ;
-    for (i = begin(); i != end(); i++) {
-        if ((i->second)->getOwner() == the_federate) {
-            std::map<ObjectHandle, Object *>::erase(i);
-            i = begin();
-        }
-    }
-}
+	std::map<ObjectHandle, Object *>::iterator i = begin();
+
+	while( i != end() ) {
+		if ((i->second)->getOwner() == the_federate) {
+			std::map<ObjectHandle, Object *>::erase(i);
+			i = begin();
+		}
+		else {
+			i++;
+		}
+	}
+} /* end of killFederate */
 
 // ----------------------------------------------------------------------------
 bool
@@ -246,14 +250,14 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         } else {
         	answer = NM_Factory::create(NetworkMessage::ATTRIBUTE_IS_NOT_OWNED);
         }
-        
+
         answer->federation = server->federation();
         answer->exception = e_NO_EXCEPTION ;
         answer->object = the_object ;
         answer->handleArray.resize(1) ;
         answer->handleArray[0] = the_attribute ;
         answer->federate = oa->getOwner();
-        
+
         sendToFederate(answer, the_federate);
     }
     else {
@@ -459,4 +463,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.22 2008/06/10 13:41:47 rousse Exp $
+// $Id: ObjectSet.cc,v 3.23 2009/06/04 11:57:19 erk Exp $
