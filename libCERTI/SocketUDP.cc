@@ -111,9 +111,9 @@ gethostname(localhost, 4096);
 if ((hp_local = gethostbyname(localhost)) == NULL)
 	{
 		msg << "gethostbyname gave NULL answer for hostname <"
-			<< localhost 
+			<< localhost
 			<< "> with error <"
-			<< strerror(errno) 
+			<< strerror(errno)
 			<< ">";
 	   throw NetworkError(msg.str().c_str());
 	}
@@ -131,16 +131,16 @@ sock_local.sin_port = 0 ;
 if (!open())
 	{
 	msg << "Cannot Open Socket open gave error < "
-	    << 	strerror(errno) 
-	    << ">";	
+	    << 	strerror(errno)
+	    << ">";
 	throw NetworkError(msg.str().c_str());
 	}
-	
+
 if (!bind())
 	{
 	msg << "Cannot Bind Socket bind gave error < "
-		    << 	strerror(errno) 
-		    << ">";	
+		    << 	strerror(errno)
+		    << ">";
 	throw NetworkError(msg.str().c_str());
 	}
 
@@ -158,7 +158,7 @@ SocketUDP::createUDPServer(unsigned int port)
     throw (NetworkError, NetworkSignal)
 {
   assert(!_est_init_udp);
-  
+
   char localhost[MAXHOSTNAMELEN+1] ;
   std::stringstream msg;
   struct hostent * hp_local=NULL;
@@ -169,28 +169,28 @@ SocketUDP::createUDPServer(unsigned int port)
   gethostname(localhost, MAXHOSTNAMELEN);
 
   hp_local = (struct hostent *) gethostbyname(localhost);
-  if (NULL == hp_local) 
+  if (NULL == hp_local)
 	{
 	 msg << "gethostbyname gave NULL answer for hostname <"
-	 			<< localhost 
+	 			<< localhost
 	 			<< "> with error <"
-	 			<< strerror(errno) 
+	 			<< strerror(errno)
 	 			<< ">";
 	 		//perror("SocketUDP: gethostbyname");
-	 	   throw NetworkError(msg.str().c_str());		
+	 	   throw NetworkError(msg.str().c_str());
 	}
 
    memcpy((char *) &sock_local.sin_addr,(char *)hp_local->h_addr, hp_local->h_length);
    sock_local.sin_family = hp_local->h_addrtype ;
    sock_local.sin_port   = htons((u_short)port);
 
-if (!open()) 
+if (!open())
 	{
 	perror("SocketUDP: Open");
 	throw NetworkError("Cannot open UDP Socket");
 	}
 
-if (!bind()) 
+if (!bind())
 	{
 	perror("SocketUDP: Bind");
 	throw NetworkError("Cannot bind UDP Socket");
@@ -233,12 +233,12 @@ if (_est_init_udp)
     cout.width(2);
     cout << _socket_udp << " : total = " ;
     cout.width(9);
-    cout << SentBytesCount << "b sent " << endl ;
+    cout << SentBytesCount << " Bytes sent " << endl ;
     cout << " UDP Socket " ;
     cout.width(2);
     cout << _socket_udp << " : total = " ;
     cout.width(9);
-    cout << RcvdBytesCount << "b received" << endl ;
+    cout << RcvdBytesCount << " Bytes received" << endl ;
 #endif
 }
 
@@ -247,13 +247,13 @@ void
 SocketUDP::send(const unsigned char * Message, size_t Size)
     throw (NetworkError, NetworkSignal)
 {
-	
+
 D.Out(pdDebug, "Beginning to send UDP message... Size = %ld", Size);
 assert(_est_init_udp);
 
 int sent = sendto(_socket_udp, (char*)Message, Size, 0,
       (struct sockaddr *)&sock_distant, sizeof(sock_distant));
-if (sent < 0) 
+if (sent < 0)
 	{
 	perror("Sendto");
 	throw NetworkError("cannot sendto");
@@ -266,11 +266,11 @@ SentBytesCount += sent ;
 void
 SocketUDP::close()
 {
-if (_est_init_udp) 
+if (_est_init_udp)
 	{
 	D.Out(pdDebug, "Closing UDP object...");
 	_est_init_udp = false ;
-	if (PhysicalLink) 
+	if (PhysicalLink)
 		{
 		D.Out(pdDebug, "Closing physical UDP link...");
 		#ifdef _WIN32								//netDot
@@ -335,30 +335,30 @@ int CR ;
 assert(_est_init_udp);
 
 D.Out(pdDebug, "Beginning to receive UDP message...");
-if (BufferSize == 0) 
+if (BufferSize == 0)
 	{
 	CR = recvfrom(_socket_udp,
 	Buffer, BUFFER_MAXSIZE, 0,
 	(struct sockaddr *)&sock_source, &taille);
 	//HPUX:(struct sockaddr *)&sock_source, (int*) &taille);
-	if (CR <= 0) 
+	if (CR <= 0)
 		{
 		perror("Recvfrom");
 		throw NetworkError("cannot recvfrom");
 		}
-	else 
+	else
 		{
 		RcvdBytesCount += CR ;
 		BufferSize += CR ;
 		}
 	}
 
-if (BufferSize < Size) 
+if (BufferSize < Size)
 	{
 	perror("Taille du Buffer inferieure a celle demandee");
 	throw NetworkError("");
 	}
-else 
+else
 	{
 	BufferSize -= Size ;
 	memcpy(Message, (void *)Buffer, Size);

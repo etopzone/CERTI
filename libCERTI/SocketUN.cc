@@ -292,8 +292,8 @@ if (_est_init_un)
   SocketTCP::winsockShutdown();
 #endif
 
-pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount ) ;
-pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount ) ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9d Bytes sent", _socket_un, SentBytesCount ) ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9d Bytes received", _socket_un, RcvdBytesCount ) ;
 
 delete pD ;
 }

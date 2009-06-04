@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.27 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.28 2009/06/04 11:58:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -124,12 +124,12 @@ if (_est_init_tcp)
     cout.width(2);
     cout << _socket_tcp << " : total = " ;
     cout.width(9);
-    cout << SentBytesCount << "b sent " << endl ;
+    cout << SentBytesCount << " Bytes sent " << endl ;
     cout << " TCP Socket " ;
     cout.width(2);
     cout << _socket_tcp << " : total = " ;
     cout.width(9);
-    cout << RcvdBytesCount << "b received" << endl ;
+    cout << RcvdBytesCount << " Bytes received" << endl ;
 #endif
 }
 
@@ -596,4 +596,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.27 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SocketTCP.cc,v 3.28 2009/06/04 11:58:51 erk Exp $
