@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.48 2009/04/21 13:54:02 siron Exp $
+// $Id: TimeManagement.cc,v 3.49 2009/06/04 11:31:50 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -496,8 +496,9 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
     if (heure_logique < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-    if (heure_logique < _heure_courante + _lookahead_courant)
-       e = e_InvalidFederationTime ;
+// Fix bug #25497
+//    if (heure_logique < _heure_courante + _lookahead_courant)
+//       e = e_InvalidFederationTime ;
 
     if (e == e_NO_EXCEPTION) {
 
@@ -532,8 +533,9 @@ TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
     if (heure_logique < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-    if (heure_logique < _heure_courante + _lookahead_courant)
-       e = e_InvalidFederationTime ;
+// Fix bug #25497
+//    if (heure_logique < _heure_courante + _lookahead_courant)
+//       e = e_InvalidFederationTime ;
 
     if (e == e_NO_EXCEPTION) {
         _type_granted_state = AFTER_TARA_OR_NERA ;  // will be
@@ -920,12 +922,13 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
     if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-    if (logical_time < _heure_courante + _lookahead_courant) {
-
-    D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
-    			_lookahead_courant.getTime(),_heure_courante.getTime(),logical_time.getTime());
-       e = e_InvalidFederationTime ;
-    }
+// Fix bug #25497
+//    if (logical_time < _heure_courante + _lookahead_courant) {
+//
+//    D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
+//    			_lookahead_courant.getTime(),_heure_courante.getTime(),logical_time.getTime());
+//       e = e_InvalidFederationTime ;
+//    }
 
     if (e == e_NO_EXCEPTION) {
 
@@ -965,8 +968,9 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
     if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-    if (logical_time < _heure_courante + _lookahead_courant)
-       e = e_InvalidFederationTime ;
+//  Fix bug #25497
+//    if (logical_time < _heure_courante + _lookahead_courant)
+//       e = e_InvalidFederationTime ;
 
     if (e == e_NO_EXCEPTION) {
 
@@ -989,4 +993,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.48 2009/04/21 13:54:02 siron Exp $
+// $Id: TimeManagement.cc,v 3.49 2009/06/04 11:31:50 erk Exp $
