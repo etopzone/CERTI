@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.82 2009/04/08 10:47:19 approx Exp $
+// $Id: RTIG_processing.cc,v 3.83 2009/06/07 15:08:45 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1309,7 +1309,6 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
     // TODO: audit...
 
     NM_DDM_Create_Region rep ;
-
     rep.region = federations.createRegion(req->federation,
                                            req->federate,
                                            req->space,
@@ -1328,12 +1327,12 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 void
 RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
 {
-    federations.modifyRegion(req->federation, req->federate,
-			      req->region, req->getExtents());
-
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " modifies region " << req->region
                << endl ;
+
+    federations.modifyRegion(req->federation, req->federate,
+			      req->region, req->getExtents());
 
     NM_DDM_Modify_Region rep ;
     rep.federate = req->federate ;
@@ -1347,11 +1346,11 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    federations.deleteRegion(req->federation, req->federate, req->region);
-
     D[pdDebug] << "Federate " << req->federate << " of Federation "
                << req->federation << " deletes region " << req->region
                << endl ;
+
+    federations.deleteRegion(req->federation, req->federate, req->region);
 
     NM_DDM_Delete_Region rep ;
     rep.federate = req->federate ;
@@ -1553,4 +1552,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.82 2009/04/08 10:47:19 approx Exp $
+// $Id: RTIG_processing.cc,v 3.83 2009/06/07 15:08:45 gotthardp Exp $

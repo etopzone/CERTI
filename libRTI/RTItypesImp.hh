@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTItypesImp.hh,v 3.3 2009/04/04 13:18:13 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.4 2009/06/07 15:08:46 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _RTI_TYPESIMP_HH
@@ -255,16 +255,22 @@ public:
     virtual ULong getRangeUpperBoundNotificationLimit(ExtentIndex, DimensionHandle) const
         throw (RTI::ArrayIndexOutOfBounds);
 
+    RegionHandle getHandle() const;
+
+    const std::vector<Extent>& getExtents() const;
+
+    void commit();
+
 private:
     RegionHandle handle;
     SpaceHandle space;
     std::vector<Extent> extents;
-
-    std::vector<Extent> coExtents;
+    // extents used in last notifyAboutRegionModification
+    std::vector<Extent> effectiveExtents;
 };
 
 }
 
 #endif // _RTI_TYPESIMP_HH
 
-// $Id: RTItypesImp.hh,v 3.3 2009/04/04 13:18:13 gotthardp Exp $
+// $Id: RTItypesImp.hh,v 3.4 2009/06/07 15:08:46 gotthardp Exp $

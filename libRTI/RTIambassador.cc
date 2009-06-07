@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.102 2009/04/02 19:58:06 erk Exp $
+// $Id: RTIambassador.cc,v 3.103 2009/06/07 15:08:46 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -28,7 +28,6 @@
 #include "RTIambPrivateRefs.hh"
 #include "RTItypesImp.hh"
 
-#include "FedRegion.hh"
 #include "Message.hh"
 #include "PrettyDebug.hh"
 
@@ -64,7 +63,7 @@ build_region_handles(RTI::Region **regions, int nb)
     for (int i = 0 ; i < nb ; ++i) {
     	RTI::Region *region = regions[i] ;
     	try {
-    		vect[i] = dynamic_cast<FedRegion *>(region)->getHandle();
+    		vect[i] = dynamic_cast<RegionImp *>(region)->getHandle();
     	}
     	catch (std::bad_cast) {
     		throw RTI::RegionNotKnown("");
@@ -78,7 +77,7 @@ get_handle(const RTI::Region &region)
     throw (RTI::RegionNotKnown, RTI::RTIinternalError)
 {
     try {
-	return dynamic_cast<const FedRegion &>(region).getHandle();
+	return dynamic_cast<const RegionImp &>(region).getHandle();
     }
     catch (std::bad_cast) {
 	throw RTI::RegionNotKnown("");
@@ -1925,7 +1924,7 @@ RTI::RTIambassador::notifyAboutRegionModification(Region &r)
            RTI::RTIinternalError)
 {
     try {
-	FedRegion &region = dynamic_cast<FedRegion &>(r);
+	RegionImp &region = dynamic_cast<RegionImp &>(r);
 	D[pdDebug] << "Notify About Region " << region.getHandle()
 		   << " Modification" << endl ;
 	Message req, rep ;
@@ -1968,7 +1967,7 @@ RTI::RTIambassador::deleteRegion(Region *region)
 
     req.setType(Message::DDM_DELETE_REGION);
     try {
-	req.setRegion(dynamic_cast<FedRegion *>(region)->getHandle());
+	req.setRegion(dynamic_cast<RegionImp *>(region)->getHandle());
     }
     catch (std::bad_cast) {
 	throw RegionNotKnown("");
@@ -2949,4 +2948,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.102 2009/04/02 19:58:06 erk Exp $
+// $Id: RTIambassador.cc,v 3.103 2009/06/07 15:08:46 gotthardp Exp $

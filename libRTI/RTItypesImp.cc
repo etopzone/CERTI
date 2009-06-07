@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.3 2009/04/04 13:18:12 gotthardp Exp $
+// $Id: RTItypesImp.cc,v 3.4 2009/06/07 15:08:46 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "certi.hh"
@@ -464,7 +464,7 @@ RTI::ParameterSetFactory::create(ULong size)
 
 // ----------------------------------------------------------------------------
 RegionImp::RegionImp(RegionHandle h, SpaceHandle s, const std::vector<Extent> &ext)
-    : handle(h), space(s), coExtents(ext)
+    : handle(h), space(s), extents(ext), effectiveExtents(ext)
 {
 }
 
@@ -517,14 +517,14 @@ SpaceHandle RegionImp::getSpaceHandle() const
 ULong RegionImp::getNumberOfExtents() const
     throw ()
 {
-    return coExtents.size();
+    return extents.size();
 }
 
 ULong RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index, DimensionHandle dimension) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
-    if (index < coExtents.size())
-        return coExtents[index].getRangeLowerBound(dimension);
+    if (index < effectiveExtents.size())
+        return effectiveExtents[index].getRangeLowerBound(dimension);
     else
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
@@ -532,10 +532,34 @@ ULong RegionImp::getRangeLowerBoundNotificationLimit(ExtentIndex index, Dimensio
 ULong RegionImp::getRangeUpperBoundNotificationLimit(ExtentIndex index, DimensionHandle dimension) const
     throw (RTI::ArrayIndexOutOfBounds)
 {
-    if (index < coExtents.size())
-        return coExtents[index].getRangeUpperBound(dimension);
+    if (index < effectiveExtents.size())
+        return effectiveExtents[index].getRangeUpperBound(dimension);
     else
         throw RTI::ArrayIndexOutOfBounds("Extent index above limit");
 }
 
-// $Id: RTItypesImp.cc,v 3.3 2009/04/04 13:18:12 gotthardp Exp $
+RegionHandle RegionImp::getHandle() const
+{
+    return handle;
+}
+
+/** Get the region's extents 
+    \return The extents, as a vector 
+ */
+const std::vector<Extent> &
+RegionImp::getExtents() const
+{
+    return extents;
+}
+
+/** Register a successful notifyAboutRegionModification()
+ */
+void RegionImp::commit()
+{
+    if (extents.size() != effectiveExtents.size())
+        throw InvalidExtents("Different number of extents");
+
+    effectiveExtents = extents;
+}
+
+// $Id: RTItypesImp.cc,v 3.4 2009/06/07 15:08:46 gotthardp Exp $

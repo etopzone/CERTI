@@ -1562,13 +1562,19 @@ void NM_DDM_Modify_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::serialize(msgBuffer);	
 	/* specific code (if any) goes here */
-	BasicMessage::serialize(msgBuffer);
+	msgBuffer.write_int32(federation);
+	msgBuffer.write_int32(federate);
+	msgBuffer.write_int32(region);
+	writeExtents(msgBuffer);
 } /* end of serialize */ 
 void NM_DDM_Modify_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	BasicMessage::deserialize(msgBuffer);	
+	federation = msgBuffer.read_int32();
+	federate   = msgBuffer.read_int32();
+	region     = msgBuffer.read_int32();
+	readExtents(msgBuffer);
 } /* end of deserialize */
 /*<END>---------- DDM_Modify_Region ------------<END>*/
 
@@ -1584,13 +1590,17 @@ void NM_DDM_Delete_Region::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	BasicMessage::serialize(msgBuffer);	
+	msgBuffer.write_int32(federation);
+	msgBuffer.write_int32(federate);
+	msgBuffer.write_int32(region);
 } /* end of serialize */ 
 void NM_DDM_Delete_Region::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	NetworkMessage::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	BasicMessage::deserialize(msgBuffer);
+	federation = msgBuffer.read_int32();
+	federate   = msgBuffer.read_int32();
+	region     = msgBuffer.read_int32();
 } /* end of deserialize */
 /*<END>---------- DDM_Delete_Region ------------<END>*/
 
