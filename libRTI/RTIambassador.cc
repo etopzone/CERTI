@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.103 2009/06/07 15:08:46 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.104 2009/06/12 08:59:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -233,8 +233,8 @@ RTI::RTIambassador::~RTIambassador()
  */
 RTI::Boolean
 RTI::RTIambassador::tick()
-    throw (SpecifiedSaveLabelDoesNotExist,
-           ConcurrentAccessAttempted,
+    throw (RTI::SpecifiedSaveLabelDoesNotExist,
+           RTI::ConcurrentAccessAttempted,
            RTI::RTIinternalError)
 {
    __tick_kernel(RTI_FALSE, 0.0, 0.0);
@@ -1937,9 +1937,9 @@ RTI::RTIambassador::notifyAboutRegionModification(Region &r)
 	region.commit();
     }
     catch (std::bad_cast) {
-	throw RegionNotKnown("");
+	throw RTI::RegionNotKnown("");
     }
-    catch (Exception &e) {
+    catch (RTI::Exception &e) {
 	throw ;
     }
 }
@@ -2948,4 +2948,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.103 2009/06/07 15:08:46 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.104 2009/06/12 08:59:28 gotthardp Exp $

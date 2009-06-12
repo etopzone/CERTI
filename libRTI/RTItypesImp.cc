@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypesImp.cc,v 3.4 2009/06/07 15:08:46 gotthardp Exp $
+// $Id: RTItypesImp.cc,v 3.5 2009/06/12 08:59:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "certi.hh"
@@ -557,9 +557,9 @@ RegionImp::getExtents() const
 void RegionImp::commit()
 {
     if (extents.size() != effectiveExtents.size())
-        throw InvalidExtents("Different number of extents");
+        throw RTI::InvalidExtents("Different number of extents");
 
     effectiveExtents = extents;
 }
 
-// $Id: RTItypesImp.cc,v 3.4 2009/06/07 15:08:46 gotthardp Exp $
+// $Id: RTItypesImp.cc,v 3.5 2009/06/12 08:59:28 gotthardp Exp $

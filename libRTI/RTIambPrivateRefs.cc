@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.19 2009/04/21 13:54:02 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.20 2009/06/12 08:59:28 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -578,7 +578,7 @@ RTIambPrivateRefs::processException(Message *msg)
 }
 
 #define CATCH_FEDERATE_AMBASSADOR_EXCEPTIONS(service) \
-    catch (Exception &e) { \
+    catch (RTI::Exception &e) { \
         std::stringstream msg; \
         msg << "Error in " << service << ": " << e._name << "[" << e._reason << "]"; \
         throw RTI::RTIinternalError(msg.str().c_str()); \
@@ -912,4 +912,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.19 2009/04/21 13:54:02 siron Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.20 2009/06/12 08:59:28 gotthardp Exp $
