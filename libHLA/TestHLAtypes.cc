@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: TestHLAtypes.cc,v 1.3 2008/11/18 17:38:59 gotthardp Exp $
+// $Id: TestHLAtypes.cc,v 1.4 2009/06/12 08:29:15 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <memory>
@@ -181,6 +181,36 @@ int test6()
     }
 }
 
+enum test7_enum {
+    ENUM_0 = 0,
+    ENUM_1 = 1,
+    ENUM_2 = 2
+};
+
+int test7()
+{
+    typedef HLAenumeratedType<test7_enum, HLAoctet> TA;
+
+    HLAdata<TA> A;
+    *A = ENUM_2;
+
+    std::stringstream result;
+    A.print(result);
+
+    const char* correct =
+        "0000:  02\n";
+
+    if(strcmp(result.str().c_str(), correct) != 0) {
+        std::cerr << "test7: <output> does not match expected result" << std::endl
+            << result.str() << std::endl << correct << std::endl;
+        return 1;
+    }
+    else {
+        std::cout << result.str();
+        return 0;
+    }
+}
+
 int main(int argc, char* argv[])
 {
     int result = 0;
@@ -197,8 +227,9 @@ int main(int argc, char* argv[])
     result += test4();
     result += test5();
     result += test6();
+    result += test7();
 
     return result;
 }
 
-// $Id: TestHLAtypes.cc,v 1.3 2008/11/18 17:38:59 gotthardp Exp $
+// $Id: TestHLAtypes.cc,v 1.4 2009/06/12 08:29:15 gotthardp Exp $
