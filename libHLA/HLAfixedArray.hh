@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAfixedArray.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAfixedArray.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_FIXEDARRAY_HH
@@ -21,23 +21,31 @@
 
 namespace libhla {
 
-/* HLAfixedArray<DATATYPE, NUMBER>
+/**
+ * @page certi_HLAfixedArray Fixed Array
+ *
+ * The template
+\verbatim
+ HLAfixedArray<DATATYPE, NUMBER>
+\endverbatim
  * defines a fixed array of NUMBER elements of type DATATYPE.
  *
  * The data can be accessed in an usual way.
  *
  * For example:
- * +-------------+----------------+-------------+-----------------+-----------+
- * | Name        | Element type   | Cardinality | Encoding        | Semantics |
- * +-------------+----------------+-------------+-----------------+-----------+
- * | Coordinates | HLAinteger32BE | 3           | HLAfixedArray   |           |
- * +-------------+----------------+-------------+-----------------+-----------+
- *
- * typedef HLAfixedArray<HLAinteger32BE,3> Coordinates;
- * HLAdata<Coordinates> value;
- *
- * (*value)[0] = 100;
- * (*value)[1] = 200;
+\verbatim
+ +-------------+----------------+-------------+-----------------+-----------+
+ | Name        | Element type   | Cardinality | Encoding        | Semantics |
+ +-------------+----------------+-------------+-----------------+-----------+
+ | Coordinates | HLAinteger32BE | 3           | HLAfixedArray   |           |
+ +-------------+----------------+-------------+-----------------+-----------+
+
+ typedef HLAfixedArray<HLAinteger32BE,3> Coordinates;
+ HLAdata<Coordinates> value;
+
+ (*value)[0] = 100;
+ (*value)[1] = 200;
+\endverbatim
  */
 
 //! Fixed array of <N> elements of type <M>
@@ -150,5 +158,5 @@ struct HLAfixedArray<M, N, true>
 
 #endif // _HLATYPES_FIXEDARRAY_HH
 
-// $Id: HLAfixedArray.hh,v 1.1 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAfixedArray.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
 

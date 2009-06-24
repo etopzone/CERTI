@@ -11,17 +11,35 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAtypesIEEE1516.hh,v 1.4 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_IEEE1516_HH
 #define _HLATYPES_IEEE1516_HH
 
-/* These templates implement efficient access functions that provide direct
- * access to IEEE 1516.2 compliant data buffers.
+/**
+ * @page certi_HLAtypesIEEE1516 IEEE 1516.2 Data Encoding Functions
+ *
+ * These templates implement efficient access functions that provide direct
+ * access to IEEE 1516.2 compliant data buffers. The functions are RTI
+ * independent and thus compatible with any RTI.
  * The data are manipulated "in situ", no temporary variables are created.
  *
- * Use hlaomtdif2cpp -i <file> to generate FOM/SOM specific datatypes.
+ * Use
+\verbatim
+ hlaomtdif2cpp -i <file>
+\endverbatim
+ * to generate FOM/SOM specific datatypes.
+ *
+ * The following templates are provided:
+ * <ul>
+ *  <li>\ref certi_HLAbasicType</li>
+ *  <li>\ref certi_HLAenumeratedType</li>
+ *  <li>\ref certi_HLAfixedArray</li>
+ *  <li>\ref certi_HLAfixedRecord</li>
+ *  <li>\ref certi_HLAvariableArray</li>
+ *  <li>\ref certi_HLAvariantRecord</li>
+ * </ul>
  *
  * The extensive use of template metaprogramming allows many operations to
  * be pre-calculated during compile-time.
@@ -102,5 +120,5 @@ public:
 
 #endif // _HLATYPES_IEEE1516_HH
 
-// $Id: HLAtypesIEEE1516.hh,v 1.4 2008/08/02 14:03:14 gotthardp Exp $
+// $Id: HLAtypesIEEE1516.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
 

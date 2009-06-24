@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAenumeratedType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAenumeratedType.hh,v 1.3 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_ENUMERATEDTYPE_HH
@@ -19,7 +19,13 @@
 
 namespace libhla {
 
-/* HLAenumeratedType<ENUMERATION, REPRESENTATION>
+/**
+ * @page certi_HLAenumeratedType Enumeration Types
+ *
+ * The template
+\verbatim
+ HLAenumeratedType<ENUMERATION, REPRESENTATION>
+\endverbatim
  * defines an user-convenient ENUMERATION stored using given REPRESENTATION.
  *
  * The data can be accessed in an usual way.
@@ -28,27 +34,29 @@ namespace libhla {
  * name collisions it's recommended to put the ENUMERATION in an individual namespace.
  *
  * For example:
- * +------------+----------------+------------+--------+-----------+
- * | Name       | Representation | Enumerator | Values | Semantics |
- * +------------+----------------+------------+--------+-----------+
- * |            |                | HLAfalse   | 0      |           |
- * | HLAboolean | HLAinteger32BE +------------+--------+-----------+
- * |            |                | HLAfalse   | 1      |           |
- * +------------+----------------+------------+--------+-----------+
- * 
- * namespace __HLAboolean {
- * enum __enum {
- *   HLAfalse = 0,
- *   HLAtrue = 1
- * };
- * }
- * typedef HLAenumeratedType<__HLAboolean::__enum, HLAinteger32BE> HLAboolean;
- * HLAdata<HLAboolean> value;
- *
- * value = HLAtrue;
+\verbatim
+ +------------+----------------+------------+--------+-----------+
+ | Name       | Representation | Enumerator | Values | Semantics |
+ +------------+----------------+------------+--------+-----------+
+ |            |                | HLAfalse   | 0      |           |
+ | HLAboolean | HLAinteger32BE +------------+--------+-----------+
+ |            |                | HLAfalse   | 1      |           |
+ +------------+----------------+------------+--------+-----------+
+ 
+ namespace __HLAboolean {
+ enum __enum {
+   HLAfalse = 0,
+   HLAtrue = 1
+ };
+ }
+ typedef HLAenumeratedType<__HLAboolean::__enum, HLAinteger32BE> HLAboolean;
+ HLAdata<HLAboolean> value;
+
+ value = HLAtrue;
+\endverbatim
  */
 
-//! HLA enumerated type, enumeration <E> with representation <R>.
+// HLA enumerated type, enumeration <E> with representation <R>.
 template<class E, class R>
 struct HLAenumeratedType
 {
@@ -99,5 +107,5 @@ typedef HLAenumeratedType<__HLAboolean, HLAinteger32BE> HLAboolean;
 
 #endif // _HLATYPES_ENUMERATEDTYPE_HH
 
-// $Id: HLAenumeratedType.hh,v 1.2 2008/11/03 11:10:58 gotthardp Exp $
+// $Id: HLAenumeratedType.hh,v 1.3 2009/06/24 12:33:31 gotthardp Exp $
 

@@ -438,6 +438,13 @@ INPUT                  = "${CMAKE_SOURCE_DIR}/doc/certi_user_doc.tree" \
                          "${CMAKE_SOURCE_DIR}/doc/introduction.dox" \
                          "${CMAKE_SOURCE_DIR}/doc/execute.dox" \
                          "${CMAKE_SOURCE_DIR}/libCERTI/SocketHTTPProxy.cc" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAtypesIEEE1516.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAbasicType.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAenumeratedType.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAfixedArray.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAfixedRecord.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAvariableArray.hh" \
+                         "${CMAKE_SOURCE_DIR}/libHLA/HLAvariantRecord.hh" \
                          "${CMAKE_SOURCE_DIR}/RTIG/main.cc" \
                          "${CMAKE_SOURCE_DIR}/RTIG/Federation.cc" \
                          "${CMAKE_SOURCE_DIR}/RTIA/main.cc" 

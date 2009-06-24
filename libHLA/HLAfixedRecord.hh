@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAfixedRecord.hh,v 1.2 2008/10/11 09:35:51 gotthardp Exp $
+// $Id: HLAfixedRecord.hh,v 1.3 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_FIXEDRECORD_HH
@@ -21,44 +21,52 @@
 
 namespace libhla {
 
-/* HLAfixedRecord<
- *   HLAfixedField<INDEX1, DATATYPE1,
- *   HLAfixedField<INDEX2, DATATYPE2,
- *   ...
- *   > ... > TYPENAME;
+/**
+ * @page certi_HLAfixedRecord Fixed Record
+ *
+ * The template
+\verbatim
+ HLAfixedRecord<
+   HLAfixedField<INDEX1, DATATYPE1,
+   HLAfixedField<INDEX2, DATATYPE2,
+   ...
+   > ... > TYPENAME;
+\endverbatim
  * defines an ordered sequence of DATATYPE entries.
  *
  * The data can be accessed using the field<INDEX>() function. The INDEX is a logical
  * identifier only. The data are stored in the declaration order.
  *
  * For example:
- * +-------------+------------------------------------+----------------+-----------+
- * |             | Field                              |                |           |
- * | Record name +---------+--------------+-----------+ Encoding       | Semantics |
- * |             | Name    | Type         | Semantics |                |           |
- * +-------------+---------+--------------+-----------+----------------+-----------+
- * |             | FIELD_X | HLAfloat32LE |           |                |           |
- * |             +---------+--------------+-----------+                |           |
- * | Coordinates | FIELD_Y | HLAfloat32LE |           | HLAfixedRecord |           |
- * |             +---------+--------------+-----------+                |           |
- * |             | FIELD_Z | HLAfloat32LE |           |                |           |
- * +-------------+---------+--------------+-----------+----------------+-----------+
- * 
- * enum {
- *   FIELD_X = 0,
- *   FIELD_Y,
- *   FIELD_Z
- * };
- * typedef HLAfixedRecord<
- *   HLAfixedField<FIELD_X, HLAfloat32LE,
- *   HLAfixedField<FIELD_Y, HLAfloat32LE,
- *   HLAfixedField<FIELD_Z, HLAfloat32LE
- *   > > > > Coordinates;
- * HLAdata<Coordinates> value;
- *
- * value->field<FIELD_X>() = 3.14;
- * value->field<FIELD_Y>() = 6.28;
- * value->field<FIELD_Z>() = 9.42;
+\verbatim
+ +-------------+------------------------------------+----------------+-----------+
+ |             | Field                              |                |           |
+ | Record name +---------+--------------+-----------+ Encoding       | Semantics |
+ |             | Name    | Type         | Semantics |                |           |
+ +-------------+---------+--------------+-----------+----------------+-----------+
+ |             | FIELD_X | HLAfloat32LE |           |                |           |
+ |             +---------+--------------+-----------+                |           |
+ | Coordinates | FIELD_Y | HLAfloat32LE |           | HLAfixedRecord |           |
+ |             +---------+--------------+-----------+                |           |
+ |             | FIELD_Z | HLAfloat32LE |           |                |           |
+ +-------------+---------+--------------+-----------+----------------+-----------+
+ 
+ enum {
+   FIELD_X = 0,
+   FIELD_Y,
+   FIELD_Z
+ };
+ typedef HLAfixedRecord<
+   HLAfixedField<FIELD_X, HLAfloat32LE,
+   HLAfixedField<FIELD_Y, HLAfloat32LE,
+   HLAfixedField<FIELD_Z, HLAfloat32LE
+   > > > > Coordinates;
+ HLAdata<Coordinates> value;
+
+ value->field<FIELD_X>() = 3.14;
+ value->field<FIELD_Y>() = 6.28;
+ value->field<FIELD_Z>() = 9.42;
+\endverbatim
  */
 
 //! Fixed record of fields <R>
@@ -267,5 +275,5 @@ struct __FieldAt<HLAfixedEnd, d>
 
 #endif // _HLATYPES_FIXEDRECORD_HH
 
-// $Id: HLAfixedRecord.hh,v 1.2 2008/10/11 09:35:51 gotthardp Exp $
+// $Id: HLAfixedRecord.hh,v 1.3 2009/06/24 12:33:31 gotthardp Exp $
 

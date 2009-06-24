@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAvariableArray.hh,v 1.3 2008/11/04 14:40:39 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.4 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_VARIABLEARRAY_HH
@@ -22,25 +22,33 @@
 
 namespace libhla {
 
-/* HLAvariableArray<DATATYPE>
+/**
+ * @page certi_HLAvariableArray Variable Array
+ *
+ * The template
+\verbatim
+ HLAvariableArray<DATATYPE>
+\endverbatim
  * defines an array of a variable number of DATATYPE elements.
  *
  * The size() member must be set before accessing the data. No data are moved
  * when the size() is changed.
  *
  * For example:
- * +-------------+----------------+-------------+-----------------+-----------+
- * | Name        | Element type   | Cardinality | Encoding        | Semantics |
- * +-------------+----------------+-------------+-----------------+-----------+
- * | List        | HLAinteger32BE | Dynamic     | HLAvaribleArray |           |
- * +-------------+----------------+-------------+-----------------+-----------+
- *
- * typedef HLAvariableArray<HLAinteger32BE> List;
- * HLAdata<List> value;
- *
- * (*value).set_size(2);
- * (*value)[0] = 100;
- * (*value)[1] = 200;
+\verbatim
+ +-------------+----------------+-------------+-----------------+-----------+
+ | Name        | Element type   | Cardinality | Encoding        | Semantics |
+ +-------------+----------------+-------------+-----------------+-----------+
+ | List        | HLAinteger32BE | Dynamic     | HLAvaribleArray |           |
+ +-------------+----------------+-------------+-----------------+-----------+
+
+ typedef HLAvariableArray<HLAinteger32BE> List;
+ HLAdata<List> value;
+
+ (*value).set_size(2);
+ (*value)[0] = 100;
+ (*value)[1] = 200;
+\endverbatim
  */
 
 //! Variable array of type <M>
@@ -241,5 +249,5 @@ typedef HLAvariableArray<HLAbyte> HLAopaqueData;
 
 #endif // _HLATYPES_VARIABLEARRAY_HH
 
-// $Id: HLAvariableArray.hh,v 1.3 2008/11/04 14:40:39 gotthardp Exp $
+// $Id: HLAvariableArray.hh,v 1.4 2009/06/24 12:33:31 gotthardp Exp $
 

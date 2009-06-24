@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.4 2008/11/18 17:38:59 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -22,8 +22,14 @@
 
 namespace libhla {
 
-/* HLAbasicType<DATATYPE, STORAGE, ENCODING>
- * defines a user-convenient DATATYPE, stored in STORAGE using given ENCODING.
+/**
+ * @page certi_HLAbasicType Basic Types
+ *
+ * The template
+\verbatim
+ HLAbasicType<DATATYPE, STORAGE, ENCODING>
+\endverbatim
+ * defines a user-convenient \p DATATYPE, stored in \p STORAGE using given \p ENCODING.
  *
  * The data are stored in a buffer of sizeof(STORAGE).
  *
@@ -32,10 +38,12 @@ namespace libhla {
  * The DATATYPE may have any sizeof(), but must have static-cast to STORAGE.
  *
  * For example:
- * typedef HLAbasicType<long, uint32_t, LittleEndian> HLAinteger32BE;
- * HLAdata<HLAinteger32BE> value;
- *
- * value = 42;
+\verbatim
+ typedef HLAbasicType<long, uint32_t, LittleEndian> HLAinteger32BE;
+ HLAdata<HLAinteger32BE> value;
+
+ value = 42;
+\endverbatim
  */
 
 //! Swap <i> bytes of the <T> type
@@ -128,7 +136,7 @@ struct __swap<T,8>
     }
 };
 
-//! HLA basic type, represented by <T> type stored in <S> using <E> encoding.
+// HLA basic type, represented by <T> type stored in <S> using <E> encoding.
 template<class T, class S, template<class T>class E>
 struct HLAbasicType
 {
@@ -207,5 +215,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.4 2008/11/18 17:38:59 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
 

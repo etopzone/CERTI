@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAvariantRecord.hh,v 1.1 2008/08/02 14:03:15 gotthardp Exp $
+// $Id: HLAvariantRecord.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_VARIANTRECORD_HH
@@ -21,12 +21,18 @@
 
 namespace libhla {
 
-/* HLAvariantRecord<
- *   INDEX, DATATYPE,
- *   HLAvariantField<ENUMERATORS1, INDEX1, DATATYPE1,
- *   HLAvariantField<ENUMERATORS2, INDEX2, DATATYPE2,
- *   ...
- *   > ... > TYPENAME;
+/**
+ * @page certi_HLAvariantRecord Variant Record
+ *
+ * The template
+\verbatim
+ HLAvariantRecord<
+   INDEX, DATATYPE,
+   HLAvariantField<ENUMERATORS1, INDEX1, DATATYPE1,
+   HLAvariantField<ENUMERATORS2, INDEX2, DATATYPE2,
+   ...
+   > ... > TYPENAME;
+\endverbatim
  * defines an ordered sequence of DATATYPE entries.
  *
  * The data can be accessed using the field<INDEX>() function. The INDEX is a logical
@@ -35,33 +41,35 @@ namespace libhla {
  * ENUMERATORS match the discriminant value.
  *
  * For example:
- * +-------------+-------------------------------+------------------------------------+------------------+-----------+
- * |             | Discriminant                  | Alternative                        |                  |           |
- * | Record name +------+-----------+------------+---------+--------------+-----------+ Encoding         | Semantics |
- * |             | Name | Type      | Enumerator | Name    | Type         | Semantics |                  |           |
- * +-------------+------+-----------+------------+---------+--------------+-----------+------------------+-----------+
- * |             |      |           | AXIS_X     | FIELD_X | HLAfloat32LE |           |                  |           |
- * | Coordinates | TYPE | TypesEnum +------------+---------+--------------+-----------+ HLAvariantRecord |           |
- * |             |      |           | AXIS_Y     | FIELD_Y | HLAfloat32LE |           |                  |           |
- * +-------------+------+-----------+------------+---------+--------------+-----------+------------------+-----------+
- * 
- * namespace __Fields {
- * enum __enum {
- *   TYPE = 0,
- *   FIELD_X = 101,
- *   FIELD_Y = 102
- * };
- * }
- * typedef HLAenumeratedType<__Fields::__enum, HLAinteger32BE> Fields;
- * typedef HLAvariantRecord<
- *   __Fields::TYPE, TypesEnum,
- *   HLAvariantField<HLAsetValue<AXIS_X>, __Fields::FIELD_X, HLAfloat32LE,
- *   HLAvariantField<HLAsetValue<AXIS_Y>, __Fields::FIELD_Y, HLAfloat32LE
- *   > > > Coordinates;
- * HLAdata<Coordinates> value;
- *
- * value->set_discriminant(AXIS_X);
- * value->field<__Fields::FIELD_X>() = 3.14;
+\verbatim
+ +-------------+-------------------------------+------------------------------------+------------------+-----------+
+ |             | Discriminant                  | Alternative                        |                  |           |
+ | Record name +------+-----------+------------+---------+--------------+-----------+ Encoding         | Semantics |
+ |             | Name | Type      | Enumerator | Name    | Type         | Semantics |                  |           |
+ +-------------+------+-----------+------------+---------+--------------+-----------+------------------+-----------+
+ |             |      |           | AXIS_X     | FIELD_X | HLAfloat32LE |           |                  |           |
+ | Coordinates | TYPE | TypesEnum +------------+---------+--------------+-----------+ HLAvariantRecord |           |
+ |             |      |           | AXIS_Y     | FIELD_Y | HLAfloat32LE |           |                  |           |
+ +-------------+------+-----------+------------+---------+--------------+-----------+------------------+-----------+
+ 
+ namespace __Fields {
+ enum __enum {
+   TYPE = 0,
+   FIELD_X = 101,
+   FIELD_Y = 102
+ };
+ }
+ typedef HLAenumeratedType<__Fields::__enum, HLAinteger32BE> Fields;
+ typedef HLAvariantRecord<
+   __Fields::TYPE, TypesEnum,
+   HLAvariantField<HLAsetValue<AXIS_X>, __Fields::FIELD_X, HLAfloat32LE,
+   HLAvariantField<HLAsetValue<AXIS_Y>, __Fields::FIELD_Y, HLAfloat32LE
+   > > > Coordinates;
+ HLAdata<Coordinates> value;
+
+ value->set_discriminant(AXIS_X);
+ value->field<__Fields::FIELD_X>() = 3.14;
+\endverbatim
  */
 
 //! Variant record of discriminant <D> at index <E> and alternatives <R>
@@ -396,5 +404,5 @@ struct __FieldAt<HLAvariantEnd, e>
 
 #endif // _HLATYPES_VARIANTRECORD_HH
 
-// $Id: HLAvariantRecord.hh,v 1.1 2008/08/02 14:03:15 gotthardp Exp $
+// $Id: HLAvariantRecord.hh,v 1.2 2009/06/24 12:33:31 gotthardp Exp $
 

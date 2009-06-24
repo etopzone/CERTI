@@ -34,8 +34,17 @@
  * <ul>
  *  <li>\ref intro</li>
  *  <li>\ref execute</li>
+ *  <li>\ref certi_HLAtypesIEEE1516</li>
+ *  <ul>
+ *   <li>\ref certi_HLAbasicType</li>
+ *   <li>\ref certi_HLAenumeratedType</li>
+ *   <li>\ref certi_HLAfixedArray</li>
+ *   <li>\ref certi_HLAfixedRecord</li>
+ *   <li>\ref certi_HLAvariableArray</li>
+ *   <li>\ref certi_HLAvariantRecord</li>
+ *  </ul> 
  * </ul> 
  *
  */
 
-// $Id: certi_user_doc.tree,v 3.5 2008/11/10 13:19:00 erk Exp $
+// $Id: certi_user_doc.tree,v 3.6 2009/06/24 12:33:31 gotthardp Exp $
