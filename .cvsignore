@@ -17,3 +17,4 @@ missing
 mkinstalldirs
 ltmain.sh
 stamp-h1
+autom4te.cache
