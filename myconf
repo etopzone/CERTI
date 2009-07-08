@@ -1,0 +1,46 @@
+#! /bin/sh
+# CERTI myconf
+# $Id: myconf,v 3.2.2.1 2009/07/08 14:48:03 erk Exp $
+
+case $1 in
+    sun)
+	echo Sun Workshop configuration ;
+	CC=cc ;
+	CXX=CC ;
+	AR=CC ;
+	AR_FLAGS=$CXXFLAGS" -xar -o" ;
+	export CC CXX AR CXXFLAGS LDFLAGS AR_FLAGS
+	;;
+
+    sun-gcc) 
+	echo Sun / gcc configuration ;
+	CXXFLAGS=" -fpermissive " 
+	export CXXFLAGS
+	;;
+
+    linux) 
+	echo GNU/Linux / gcc configuration ;
+	;;
+
+    hpux)
+        echo HPUX / aCC configuration
+	CC=cc ;
+        CXX=aCC ;
+        export CC CXX
+	;;
+
+    hpux-gcc)
+        echo HPUX / gcc configuration  
+        CC=gcc ;
+        CXX=g++ ;
+        export CC CXX
+	;;
+    *)
+	echo --- WARNING: Default installation ---
+	;;
+esac
+
+
+./configure --prefix=/mnt/disk2/LOCAL/ADELE/BETOULE/CERTI $2 $3 $4 $5
+
+# $Id: myconf,v 3.2.2.1 2009/07/08 14:48:03 erk Exp $
