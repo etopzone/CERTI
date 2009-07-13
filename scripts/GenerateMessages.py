@@ -148,31 +148,83 @@ lexer = ply.lex.lex()
 # Message set
 class MessageAST(object):
     def __init__(self,name):
-        self.messageTypeSet = set()
-        self.enumSet        = set()
+        self.name = name
+        self.nativeMessageType = set()
+        self.messageTypeSet    = set()
+        self.enumTypeSet       = set()
         
+    def add(self,any):
+        if any == None:
+            print "<None> given to AST some rule aren't finished"
+        elif isinstance(any,type("")):
+            pass
+        else:         
+            if isinstance(any,EnumType):            
+                self.addEnumType(any)                            
+            elif isinstance(any,NativeMessageType):
+                self.addNativeMessageType(any)
+            elif isinstance(any,MessageType):
+                self.addMessageType(any)
+            else:            
+                print "<%s> not handle [yet]" % any
+            print "%s added to AST" % any
+            
     def addMessageType(self,message):
         self.messageTypeSet.add(message)
         
     def addEnumType(self,enumType):
-        self.enumSet.add(enumType)
+        self.enumTypeSet.add(enumType)
+    
+    def addNativeMessageType(self,message):
+        self.messageTypeSet.add(message)
+        
+class NativeMessageType(object):
+    """ Represents a native message type
+    """
+    def __init__(self,name):
+        self.name = name      
+        
+    def __repr__(self):
+        return "native_message %s" % self.name 
                     
 class MessageType(object):
     """ Represents a message type
     """
-    def __init__(self,name):
-        self.name = name
+    def __init__(self,name,field_list,merge):
+        self.name       = name
+        self.field_list = field_list
+        self.merge      = merge
         
     def addField(self,name,type,defaultValue=None):
         self.field[name] = [type,defaultValue]
+    
+    def __repr__(self):
+        res = "message %s " % self.name
+        return res
                 
-
 class EnumType(object):
     """ Represents an enum type 
     """
-    def __init__(self,name):
+    def __init__(self,name,values):
         self.name   = name
-        self.values = list()
+        # rebuild dictionary with value from the list                     
+        self.values = []
+        lastval = -1        
+        for val in values:                                    
+            if (val[1]==None):
+                self.values.append((val[0],lastval+1))
+                lastval += 1
+            else:
+                self.values.append(val)                           
+                lastval = val[1]
+        
+    def __repr__(self):
+        res = "Enum %s {\n" % self.name
+        for val in self.values:            
+            res = res + "  " + str(val[0]) + "=" + str(val[1]) + ", \n"
+        res = res + "}"
+        return res 
+                
         
     def addValue(self,value):
         self.values.append(value)
@@ -185,27 +237,38 @@ def p_statement(p):
                  | native_message
                  | native_message statement  
                  | enum
-                 | enum statement'''                        
-    print "statement"
+                 | enum statement'''
+        
+    p.parser.AST.add(p[1])                            
         
 def p_comment_line(p):
     '''comment_line : COMMENT'''
-    print "comment line =",p[1]
+    p[0]=p[1].strip('/')    
             
 def p_message(p):
     '''message : MESSAGE ID LBRACE optional_comment field_list RBRACE optional_comment
                | MESSAGE ID LBRACE optional_comment RBRACE optional_comment
                | MESSAGE ID COLON MERGE ID LBRACE  optional_comment RBRACE optional_comment
-               | MESSAGE ID COLON MERGE ID LBRACE optional_comment field_list RBRACE optional_comment'''                                
-    print "message =",p[1],p[2],p[3],p[4]
+               | MESSAGE ID COLON MERGE ID LBRACE optional_comment field_list RBRACE optional_comment'''
+    if len(p)==7:        
+        p[0] = MessageType(p[2],[],None)
+    elif len(p)==8:
+        p[0] = MessageType(p[2],p[5],None)
+    elif len(p)==9:
+        p[0] = MessageType(p[2],[],p[5])
+    elif len(p)==10:
+        p[0] = MessageType(p[2],p[7],p[5])                                    
 
 def p_native_message(p): 
     'native_message : NATIVE_MESSAGE ID optional_comment'
-    print "native_message = ", p[1],p[2],p[3] 
+    p[0]=NativeMessageType(p[2])    
         
 def p_enum(p):
-    'enum : ENUM ID LBRACE optional_comment enum_list RBRACE optional_comment'
-    print p[0]
+    'enum : ENUM ID LBRACE optional_comment enum_value_list RBRACE optional_comment'
+    # we should reverse the enum value list
+    # because the parse build it the other way around (recursive way)
+    p[5].reverse()
+    p[0] = EnumType(p[2],p[5])
     
 def p_empty(p):
     'empty :'
@@ -214,34 +277,54 @@ def p_empty(p):
 def p_optional_comment(p):
     '''optional_comment : COMMENT 
                         | empty'''
-    print "Comment = %s" % p[1]    
+    # we may store the comment text for future use
+    if len(p) > 1 and isinstance(p[1],type("")) :
+        p[0] = p[1].strip('/')
+    else:
+        p[0] = ""         
     
-def p_enum_list(p):
-    '''enum_list : enum_val optional_comment  
-                 | enum_val COMMA optional_comment
-                 | enum_val COMMA optional_comment enum_list'''
-    print p
+def p_enum_value_list(p):
+    '''enum_value_list : enum_val optional_comment  
+                       | enum_val COMMA optional_comment
+                       | enum_val COMMA optional_comment enum_value_list'''
+    # Create or append the list (of pair)            
+    if len(p) > 4:        
+        p[4].append(p[1])
+        p[0]=p[4]
+    else:
+        p[0]=[p[1]]    
     
 def p_enum_val(p):
     '''enum_val : ID 
                 | ID EQUAL INTEGER_VALUE'''
-    print p
+    # Build a pair (ID,value)
+    # value may be None    
+    if len(p)>3:
+        p[0] = (p[1],p[3])
+    else:
+        p[0] = (p[1],None)     
 
 def p_field_list(p):
     '''field_list : field_spec optional_comment
                   | field_spec optional_comment field_list'''
-    print p
+    if len(p)==3:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[3].append(p[1])     
 
 def p_field_spec(p):
     '''field_spec : qualifier typeid ID optional_comment
                   | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET optional_comment'''
-    print p
+    if len(p)==5:
+        p[0] = (p[1],p[2],p[3],None)
+    else:        
+        p[0] = (p[1],p[2],p[3],p[7])   
 
 def p_qualifier(p):
     '''qualifier : REQUIRED
                  | REPEATED
                  | OPTIONAL'''
-    print p
+    p[0] = p[1]
     
 def p_typeid(p):
     '''typeid : BOOL_T
@@ -258,18 +341,17 @@ def p_typeid(p):
               | FLOAT_T
               | DOUBLE_T
               | ID'''
-    print p
+    p[0] = p[1]    
     
 def p_value(p):
     '''value : INTEGER_VALUE 
              | FLOAT_VALUE 
              | BOOL_VALUE'''
-    print p   
+    p[0]=p[1].value
     
 def p_error(p):     
     print "Syntax error at '%s' on line %d (token type is '%s')" % (p.value,p.lineno,p.type)    
-    
-     
+         
 # Build the PLY parser
 parser = ply.yacc.yacc() 
 
@@ -290,9 +372,10 @@ if False:
 print "Trying to parse..."    
 msgFile =  open(messagefile,'r')
 lexer.lineno = 1
-parser.parse(msgFile.read(),lexer=lexer)
+parser.AST = MessageAST(messagefile)
+ast = parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
-print "Parse succeeded"    
+print "Parse succeeded AST = %s" % ast
 
 sys.exit()
 for l in msgFile:
