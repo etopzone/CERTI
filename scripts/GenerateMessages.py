@@ -10,20 +10,23 @@ import ply.lex
 # We use logging for ... logging :-)
 import logging 
 
-
+# Build some logger related objects
 stdoutHandler = logging.StreamHandler(sys.stdout)
-stdoutHandler.setFormatter(logging.Formatter("%(msecs)d-[%(name)s::%(levelname)s] %(message)s"))
-mylogger = logging.Logger("GenerateMessage")
-mylogger.setLevel(logging.ERROR)
-mylogger.addHandler(stdoutHandler)
+# See formatting there:
+# http://docs.python.org/library/datetime.html#strftime-behavior
+# http://docs.python.org/library/logging.html#formatter-objects
+stdoutHandler.setFormatter(logging.Formatter("%(asctime)s.%(msecs)d-[%(name)s::%(levelname)s] %(message)s","%a %H:%M:%S"))
+mainlogger = logging.Logger("Main")
+mainlogger.setLevel(logging.INFO)
+mainlogger.addHandler(stdoutHandler)
 
 def usage():
-    print "Usage:\n %s --file=<message> [--language=C++|Java|Python] [--type=header|body|factory] [--verbose] [--help]" % os.path.basename(sys.argv[0])
+    print "Usage:\n %s --file=<message> [--language=C++|Java|Python] [--type=header|body|factory] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:l:t:vh", ["file=","language=","type=","verbose","help"])
+    opts, args = getopt.getopt(sys.argv[1:], "f:l:t:vho:", ["file=","language=","type=","output","verbose","help"])
 except getopt.GetoptError, err:
-    mylogger.error("opt = %s, msg = %s" % (err.opt,err.msg))    
+    mainlogger.error("opt = %s, msg = %s" % (err.opt,err.msg))    
     usage()
     sys.exit(2)
 
@@ -35,6 +38,7 @@ if len(opts) < 1:
 verbose=False
 gentype="header"
 language="C++"
+output=sys.stdout
 
 # Parse command line options
 for o, a in opts:
@@ -44,6 +48,9 @@ for o, a in opts:
         language=a
     if o in ("-t", "--type"):
         gentype=a
+    if o in ("-o", "--output"):
+        mainlogger.info("output send to file: <%s>" % a)
+        output=open(a)
     if o in ("-v", "--verbose"):
         verbose=True
     if o in ("-h", "--help"):
@@ -105,7 +112,7 @@ def t_COMMENT(t):
     # if pass No return value. Comments are discarded
     
 def t_INTEGER_VALUE(t): 
-    r'\d+' 
+    r'\d+'     
     try: 
         t.value = int(t.value) 
     except ValueError: 
@@ -129,7 +136,7 @@ def t_BOOL_VALUE(t):
     elif (t.value.lower()=="false"):
         t.value = False
     else:                
-        print "Invalid Boolean value too large", t.value 
+        t.lexer.logger.error("Invalid Boolean value too large", t.value) 
         t.value = False 
     return t
     
@@ -156,65 +163,79 @@ def t_error(t):
     t.lexer.skip(1)
 
 # Build the PLY lexer
-lexer = ply.lex.lex()
+lexerlogger = logging.Logger("Lexer")
+lexerlogger.setLevel(logging.ERROR)
+lexerlogger.addHandler(stdoutHandler)
+lexer = ply.lex.lex(debug=False)
+lexer.logger = lexerlogger
 
 # Named Class
-class Named(object):
-    def __init__(self,name):
+class ASTElement(object):
+    def __init__(self,name):        
         self.__name    = name
         self.__comment = None
+        self.logger = logging.Logger("ASTElement")
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(stdoutHandler)
     
-    def __getName(self):
+    def getName(self):
         return self.__name    
-    def __setName(self,name):
+    def setName(self,name):        
         self.__name = name
     # pythonic getter/setter using properties    
-    name = property(fget=__getName,fset=__setName)
+    name = property(fget=getName,fset=setName,fdel=None, doc=None)    
     
-    def __getComment(self):
+    def getComment(self):
         return self.__comment    
-    def __setComment(self,comment):
-        self.__comment = comment
+    def setComment(self,comment):
+        if isinstance(comment,type("")):
+            pass
+        else:
+            self.logger.info("Adding comment %s to element %s" % (comment.lines,self.name))
+            self.__comment = comment
     # pythonic getter/setter using properties    
-    name = property(fget=__getComment,fset=__setComment)
+    comment = property(fget=getComment,fset=setComment,fdel=None, doc=None)
 
 # Message set
-class MessageNotAnAST(Named):
+class MessageAST(ASTElement):
     def __init__(self,name):
-        super(MessageNotAnAST,self).__init__(name=name)        
+        super(MessageAST,self).__init__(name=name)        
         self.__nativeMessageTypeSet = set()
         self.__messageTypeSet       = set()
         self.__enumTypeSet          = set()
         self.__package              = None
         self.__types                = dict()
-        self.logger = logging.Logger("MessageNotAnAST")
-        self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(stdoutHandler)
+        self.__ultimateElement      = None
+        self.__penultimateElement   = None
+        self.__currentComment       = None
+        self.logger = logging.Logger("MessageAST")
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.addHandler(stdoutHandler)        
         
     def __getNativeMessageTypeSet(self):
         return self.__nativeMessageTypeSet        
-    nativeMessages = property(fget=__getNativeMessageTypeSet)
+    nativeMessages = property(fget=__getNativeMessageTypeSet,fset=None,fdel=None,doc=None)
     
     def __getMessageTypeSet(self):
         return self.__messageTypeSet        
-    messages = property(fget=__getMessageTypeSet)
+    messages = property(fget=__getMessageTypeSet,fset=None,fdel=None,doc=None)
     
     def __getEnumTypeSet(self):
         return self.__enumTypeSet    
-    enums = property(fget=__getEnumTypeSet)         
+    enums = property(fget=__getEnumTypeSet,fset=None,fdel=None,doc=None)         
     
     def __getPackage(self):
         return self.__package
     def __setPackage(self,package):
         self.__package = package
-    package = property(fget=__getPackage,fset=__setPackage)
+    package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None) 
         
     def add(self,any):
+        """ Add an ASTElement to the AST """
         if any == None:
-            self.logger.error("<None> given to AST some rule aren't finished")
-        elif isinstance(any,type("")):
-            pass
-        else:         
+            self.logger.error("<None> given to AST some rule aren't finished")    
+        else:                     
+            self.logger.debug("Add %s %s" % (type(any).__name__,any.name))            
             if isinstance(any,EnumType):            
                 self.addEnumType(any)                            
             elif isinstance(any,NativeMessageType):
@@ -223,17 +244,30 @@ class MessageNotAnAST(Named):
                 self.addMessageType(any)
             elif isinstance(any,Package):
                 self.package = any
+            # Handle multiline comment
+            elif isinstance(any,CommentBlock):                
+                if isinstance(self.__ultimateElement,CommentBlock):
+                    # the Comment block continues
+                    self.__ultimateElement.lines.append(any.lines)
+                elif self.__ultimateElement != None:
+                    # attach the comment block to the preceding
+                    # AST element (recursion is backtracking)
+                    self.__ultimateElement.comment = any
+                else:
+                    pass               
             else:            
-                self.logger.error("<%s> not handle [yet]" % any)            
+                self.logger.error("<%s> not handle [yet]" % any)
+            # update ultimate and penultimate AST element                      
+            self.__penultimateElement = self.__ultimateElement                      
+            self.__ultimateElement    = any            
             
-    def addMessageType(self,message):
+    def addMessageType(self,message):        
         self.__messageTypeSet.add(message)
         self.__types[message.name] = message
         
-    def addEnumType(self,enumType):
+    def addEnumType(self,enumType):        
         self.__enumTypeSet.add(enumType)
-        self.__types[enumType.name] = enumType       
-        self.logger.debug("Adding enum type %s" % enumType.name) 
+        self.__types[enumType.name] = enumType               
     
     def addNativeMessageType(self,message):
         self.__nativeMessageTypeSet.add(message)
@@ -249,20 +283,23 @@ class MessageNotAnAST(Named):
     def __repr__(self):
         res = "AST with:\n <%d> native messages type,\n <%d> message type,\n <%d> enum type\n" % (len(self.nativeMessages),len(self.messages),len(self.enums))
         res = res + " will be in package <%s>\n" % self.package
-        return res
+        return res    
     
-    def visit(self):        
-        return None
+class CommentBlock(ASTElement):
+    def __init__(self,content,optComment):
+        super(CommentBlock,self).__init__(name="comment")
+        self.lines=[content]
+        self.__optComment=optComment
     
-class Package(Named):
+class Package(ASTElement):
     """Represents a package"""
-    def __init__(self,name):
-        super(Package,self).__init__(name=name)
+    def __init__(self,name):        
+        super(Package,self).__init__(name)                        
           
     def __repr__(self):
         return "package %s" % self.name
      
-class NativeMessageType(Named):
+class NativeMessageType(ASTElement):
     """ Represents a native message type
     """
     def __init__(self,name):
@@ -271,22 +308,28 @@ class NativeMessageType(Named):
     def __repr__(self):
         return "native_message %s" % self.name 
                     
-class MessageType(Named):
+class MessageType(ASTElement):
     """ Represents a message type
     """
     def __init__(self,name,field_list,merge):
         super(MessageType,self).__init__(name=name)
         self.field_list = field_list
-        self.merge      = merge
-        
-    def addField(self,name,type,defaultValue=None):
-        self.field[name] = [type,defaultValue]
+        self.merge      = merge                    
     
     def __repr__(self):
         res = "message %s " % self.name
         return res
+    
+    class MessageField(ASTElement):
+        """ Represents a message type
+        """
+        def __init__(self,qualifier,typeid,name,defaultValue=None):
+            super(MessageType.MessageField,self).__init__(name=name)
+            self.qualifier    = qualifier
+            self.typeid       = typeid
+            self.defaultValue = defaultValue
                 
-class EnumType(Named):
+class EnumType(ASTElement):
     """ Represents an enum type 
     """
     def __init__(self,name,values):
@@ -295,12 +338,13 @@ class EnumType(Named):
         self.values = []
         lastval     = -1        
         for val in values:                                    
-            if (val[1]==None):
-                self.values.append((val[0],lastval+1))
+            if (val.value==None):
+                val.value = lastval+1
+                self.values.append(val)
                 lastval += 1
             else:
                 self.values.append(val)                           
-                lastval = val[1]
+                lastval = val.value
         
     def __repr__(self):
         res = "Enum %s {\n" % self.name
@@ -308,10 +352,14 @@ class EnumType(Named):
             res = res + "  " + str(val[0]) + " = " + str(val[1]) + ", \n"
         res = res + "}"
         return res                 
-        
-    def addValue(self,value):
-        self.values.append(value)        
-        
+               
+    class EnumValue(ASTElement):
+        """ Represents an Enum Value
+        """
+        def __init__(self,name,value):
+            super(EnumType.EnumValue,self).__init__(name=name)    
+            self.value = value
+            
 def p_statement_list(p):
     '''statement_list : statement 
                       | statement statement_list'''
@@ -327,11 +375,10 @@ def p_statement(p):
         
 def p_comment_line(p):
     '''comment_line : COMMENT'''
-    p[0]=p[1].strip('/')
+    p[0]=CommentBlock(p[1].strip('/'),optComment=False)
     
 def p_package(p):
-    '''package : PACKAGE package_id 
-               | PACKAGE package_id optional_comment'''    
+    '''package : PACKAGE package_id'''    
     p[0]=Package(p[2])
     
 def p_package_id(p):
@@ -376,7 +423,7 @@ def p_optional_comment(p):
                         | empty'''
     # we may store the comment text for future use
     if len(p) > 1 and isinstance(p[1],type("")) :
-        p[0] = p[1].strip('/')
+        p[0] = CommentBlock(p[1].strip('/'),optComment=True)        
     else:
         p[0] = ""         
     
@@ -384,12 +431,17 @@ def p_enum_value_list(p):
     '''enum_value_list : enum_val optional_comment  
                        | enum_val COMMA optional_comment
                        | enum_val COMMA optional_comment enum_value_list'''
-    # Create or append the list (of pair)            
-    if len(p) > 4:        
-        p[4].append(p[1])
-        p[0]=p[4]
+    # Create or append the list (of pair)
+    if len(p)==3:
+        p[1].comment = p[2]
+        p[0]=[p[1]]
+    elif len(p)==4:
+        p[1].comment = p[3]
+        p[0]=[p[1]]              
     else:
-        p[0]=[p[1]]    
+        p[1].comment = p[3]
+        p[4].append(p[1])
+        p[0]=p[4]        
     
 def p_enum_val(p):
     '''enum_val : ID 
@@ -397,9 +449,9 @@ def p_enum_val(p):
     # Build a pair (ID,value)
     # value may be None    
     if len(p)>3:
-        p[0] = (p[1],p[3])
+        p[0] = EnumType.EnumValue(p[1],p[3])
     else:
-        p[0] = (p[1],None)     
+        p[0] = EnumType.EnumValue(p[1],None)     
 
 def p_field_list(p):
     '''field_list : field_spec optional_comment
@@ -414,9 +466,11 @@ def p_field_spec(p):
     '''field_spec : qualifier typeid ID optional_comment
                   | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET optional_comment'''
     if len(p)==5:
-        p[0] = (p[1],p[2],p[3],None)
+        p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
+        p[0].comment = p[4]
     else:        
-        p[0] = (p[1],p[2],p[3],p[7])   
+        p[0] = MessageType.MessageField(p[1],p[2],p[3],p[7])
+        p[0].comment = p[8]   
 
 def p_qualifier(p):
     '''qualifier : REQUIRED
@@ -452,8 +506,8 @@ def p_defined_type(p):
 def p_value(p):
     '''value : INTEGER_VALUE 
              | FLOAT_VALUE 
-             | BOOL_VALUE'''
-    p[0]=p[1].value
+             | BOOL_VALUE'''    
+    p[0]=p[1]
     
 # Compute column. 
 #     input is the input text string
@@ -467,10 +521,8 @@ def find_column(input,token):
     
 def p_error(p):         
     print "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
-    
-         
-# Build the PLY parser
-parser = ply.yacc.yacc() 
+             
+
 
 if False:
     print "Trying to lex..."
@@ -485,14 +537,20 @@ if False:
         #print tok
         print "Lex succeeded"
         
+# Build the PLY parser
+parserlogger = logging.Logger("MessageParser")
+parserlogger.setLevel(logging.ERROR)
+parserlogger.addHandler(stdoutHandler)
+parser = ply.yacc.yacc(debug=True)
+parser.logger = parserlogger 
     
-print "Trying to parse..."    
+mainlogger.info("Trying to parse...")    
 msgFile =  open(messagefile,'r')
 lexer.lineno = 1
-parser.AST = MessageNotAnAST(messagefile)
+parser.AST = MessageAST(messagefile)
 parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
-print "Parse succeeded AST = %s (type=%s)" % (parser.AST,type(parser.AST)) 
+mainlogger.info("Parse succeeded AST = %s" % (parser.AST)) 
 
 sys.exit()
 for l in msgFile:

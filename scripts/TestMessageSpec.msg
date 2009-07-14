@@ -1,11 +1,12 @@
 // CERTI message description spec test file
-package my.hierarchy.pack // don't you know it
+// another line
+package my.hierarchy.pack
 
 //
 //  This is a multiline
 //  comment
 //
-enum MessageType {
+enum EType {
    FIRST_VAL = 0, // one may specify the value of the first enum symbol
    REAL_VAL1    ,
    REAL_VAL2    ,
@@ -24,7 +25,7 @@ message MyMessage {
 }
 
 message MyOtherMessage : merge MyMessage {
-    required bool              constrained	
+    required bool              constrained
 	required MessageType       type
-	required uint32            a
+	required uint32            a [ default=1 ]
 }
