@@ -17,11 +17,11 @@ stdoutHandler = logging.StreamHandler(sys.stdout)
 # http://docs.python.org/library/logging.html#formatter-objects
 stdoutHandler.setFormatter(logging.Formatter("%(asctime)s.%(msecs)d-[%(name)s::%(levelname)s] %(message)s","%a %H:%M:%S"))
 mainlogger = logging.Logger("Main")
-mainlogger.setLevel(logging.INFO)
+mainlogger.setLevel(logging.ERROR)
 mainlogger.addHandler(stdoutHandler)
 
 def usage():
-    print "Usage:\n %s --file=<message> [--language=C++|Java|Python] [--type=header|body|factory] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
+    print "Usage:\n %s --file=<message> [--language=C++|Java|Python|Text] [--type=header|body|factory] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
     opts, args = getopt.getopt(sys.argv[1:], "f:l:t:vho:", ["file=","language=","type=","output","verbose","help"])
@@ -37,7 +37,7 @@ if len(opts) < 1:
 # default value
 verbose=False
 gentype="header"
-language="C++"
+language="Text"
 output=sys.stdout
 
 # Parse command line options
@@ -53,6 +53,7 @@ for o, a in opts:
         output=open(a)
     if o in ("-v", "--verbose"):
         verbose=True
+        mainlogger.setLevel(logging.INFO)
     if o in ("-h", "--help"):
         usage()
         sys.exit(0)                
@@ -174,7 +175,7 @@ class ASTElement(object):
         self.__name    = name
         self.__comment = None
         self.logger = logging.Logger("ASTElement")
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
     
     def getName(self):
@@ -209,7 +210,7 @@ class MessageAST(ASTElement):
         self.__types                = dict()
         self.__ultimateElement      = None                
         self.logger = logging.Logger("MessageAST")
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)        
         
     def __getNativeMessageTypeSet(self):
@@ -586,6 +587,57 @@ class TextGenerator(object):
                     stream.write("[default=%s] " % field.defaultValue)                                    
                 self.writeComment(stream, field)                    
             stream.write("}\n")
+            
+class CXXGenerator(object):
+    """This is a C++ generator"""
+    def __init__(self,MessageAST):
+        self.AST = MessageAST
+            
+    def writeComment(self,stream,ASTElement):
+        if ASTElement.hasComment():
+            for line in ASTElement.comment.lines:                
+                stream.write("// ")
+                stream.write(str(line))
+                stream.write("\n")
+        else:
+            stream.write("\n")
+            
+    def generate(self,stream):
+        stream.write("C++ generator is NOT Implemented\n")
+
+class JavaGenerator(object):
+    """This is a Java generator"""
+    def __init__(self,MessageAST):
+        self.AST = MessageAST
+            
+    def writeComment(self,stream,ASTElement):
+        if ASTElement.hasComment():
+            for line in ASTElement.comment.lines:                
+                stream.write("// ")
+                stream.write(str(line))
+                stream.write("\n")
+        else:
+            stream.write("\n")
+            
+    def generate(self,stream):
+        stream.write("Java generator is NOT Implemented\n")
+                     
+class PythonGenerator(object):
+    """This is a Python generator"""
+    def __init__(self,MessageAST):
+        self.AST = MessageAST
+            
+    def writeComment(self,stream,ASTElement):
+        if ASTElement.hasComment():
+            for line in ASTElement.comment.lines:                
+                stream.write("// ")
+                stream.write(str(line))
+                stream.write("\n")
+        else:
+            stream.write("\n")
+            
+    def generate(self,stream):
+        stream.write("Python generator is NOT Implemented\n")                     
                      
 # Build the PLY parser
 parserlogger = logging.Logger("MessageParser")
@@ -601,9 +653,22 @@ parser.AST = MessageAST(messagefile)
 parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
 mainlogger.info("Parse succeeded AST = %s" % (parser.AST))
-mainlogger.info("Generate Text AST:")
-textGen = TextGenerator(parser.AST)
-textGen.generate(sys.stdout)
+
+mainlogger.info("Generate %s from AST,..."%language)
+if language=="Text":    
+    textGen = TextGenerator(parser.AST)
+    textGen.generate(sys.stdout)    
+elif language=="C++":
+    cxxGen = CXXGenerator(parser.AST)
+    cxxGen.generate(sys.stdout)
+elif language=="Java":
+    cxxGen = JavaGenerator(parser.AST)
+    cxxGen.generate(sys.stdout)
+elif language=="Python":
+    cxxGen = PythonGenerator(parser.AST)
+    cxxGen.generate(sys.stdout)
+
+mainlogger.info("Generate %s from AST, Done."%language)
 
 sys.exit()
 for l in msgFile:
