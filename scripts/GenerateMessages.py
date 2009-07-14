@@ -4,8 +4,18 @@ import os
 import getopt, sys
 import shutil
 # We use PLY in order to parse CERTI message specification files 
+# PLY is there: http://www.dabeaz.com/ply/
 import ply.yacc
 import ply.lex
+# We use logging for ... logging :-)
+import logging 
+
+
+stdoutHandler = logging.StreamHandler(sys.stdout)
+stdoutHandler.setFormatter(logging.Formatter("%(msecs)d-[%(name)s::%(levelname)s] %(message)s"))
+mylogger = logging.Logger("GenerateMessage")
+mylogger.setLevel(logging.ERROR)
+mylogger.addHandler(stdoutHandler)
 
 def usage():
     print "Usage:\n %s --file=<message> [--language=C++|Java|Python] [--type=header|body|factory] [--verbose] [--help]" % os.path.basename(sys.argv[0])
@@ -13,7 +23,7 @@ def usage():
 try:
     opts, args = getopt.getopt(sys.argv[1:], "f:l:t:vh", ["file=","language=","type=","verbose","help"])
 except getopt.GetoptError, err:
-    print >> stderr, "opt = %s, msg = %s" % (err.opt,err.msg)
+    mylogger.error("opt = %s, msg = %s" % (err.opt,err.msg))    
     usage()
     sys.exit(2)
 
@@ -43,6 +53,7 @@ for o, a in opts:
 # Lexer+Parser specification begins here
 # reserved keywords
 reserved = {
+   'package'        : 'PACKAGE',
    'native_message' : 'NATIVE_MESSAGE',            
    'message' : 'MESSAGE',
    'merge' : 'MERGE',
@@ -67,7 +78,7 @@ reserved = {
 }
 
 # List of token names.   This is always required
-tokens = ['ID',
+tokens = ['ID',                 
           'COMMENT',
           'INTEGER_VALUE',
           'FLOAT_VALUE',
@@ -77,12 +88,13 @@ tokens = ['ID',
           'COMMA',
           'EQUAL',
           'COLON',
+          'PERIOD',
           ] + list(reserved.values())
 
-# This is a message of field identifier          
+# This is a message of field or name identifier          
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value,'ID')    # Check for reserved words
+    t.type = reserved.get(t.value,'ID') # Check for reserved words
     return t
 
 # Comment begins with // and ends up at the end of the line
@@ -128,6 +140,7 @@ t_RBRACKET = r'\]'
 t_COMMA = r','
 t_EQUAL = r'='
 t_COLON = r':'
+t_PERIOD = r'\.'
 
 # Define a rule so we can track line numbers
 def t_newline(t):
@@ -145,17 +158,60 @@ def t_error(t):
 # Build the PLY lexer
 lexer = ply.lex.lex()
 
-# Message set
-class MessageAST(object):
+# Named Class
+class Named(object):
     def __init__(self,name):
-        self.name = name
-        self.nativeMessageType = set()
-        self.messageTypeSet    = set()
-        self.enumTypeSet       = set()
+        self.__name    = name
+        self.__comment = None
+    
+    def __getName(self):
+        return self.__name    
+    def __setName(self,name):
+        self.__name = name
+    # pythonic getter/setter using properties    
+    name = property(fget=__getName,fset=__setName)
+    
+    def __getComment(self):
+        return self.__comment    
+    def __setComment(self,comment):
+        self.__comment = comment
+    # pythonic getter/setter using properties    
+    name = property(fget=__getComment,fset=__setComment)
+
+# Message set
+class MessageNotAnAST(Named):
+    def __init__(self,name):
+        super(MessageNotAnAST,self).__init__(name=name)        
+        self.__nativeMessageTypeSet = set()
+        self.__messageTypeSet       = set()
+        self.__enumTypeSet          = set()
+        self.__package              = None
+        self.__types                = dict()
+        self.logger = logging.Logger("MessageNotAnAST")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)
+        
+    def __getNativeMessageTypeSet(self):
+        return self.__nativeMessageTypeSet        
+    nativeMessages = property(fget=__getNativeMessageTypeSet)
+    
+    def __getMessageTypeSet(self):
+        return self.__messageTypeSet        
+    messages = property(fget=__getMessageTypeSet)
+    
+    def __getEnumTypeSet(self):
+        return self.__enumTypeSet    
+    enums = property(fget=__getEnumTypeSet)         
+    
+    def __getPackage(self):
+        return self.__package
+    def __setPackage(self,package):
+        self.__package = package
+    package = property(fget=__getPackage,fset=__setPackage)
         
     def add(self,any):
         if any == None:
-            print "<None> given to AST some rule aren't finished"
+            self.logger.error("<None> given to AST some rule aren't finished")
         elif isinstance(any,type("")):
             pass
         else:         
@@ -165,33 +221,61 @@ class MessageAST(object):
                 self.addNativeMessageType(any)
             elif isinstance(any,MessageType):
                 self.addMessageType(any)
+            elif isinstance(any,Package):
+                self.package = any
             else:            
-                print "<%s> not handle [yet]" % any
-            print "%s added to AST" % any
+                self.logger.error("<%s> not handle [yet]" % any)            
             
     def addMessageType(self,message):
-        self.messageTypeSet.add(message)
+        self.__messageTypeSet.add(message)
+        self.__types[message.name] = message
         
     def addEnumType(self,enumType):
-        self.enumTypeSet.add(enumType)
+        self.__enumTypeSet.add(enumType)
+        self.__types[enumType.name] = enumType       
+        self.logger.debug("Adding enum type %s" % enumType.name) 
     
     def addNativeMessageType(self,message):
-        self.messageTypeSet.add(message)
+        self.__nativeMessageTypeSet.add(message)
+        self.__types[message.name] = message
         
-class NativeMessageType(object):
+    def isDefined(self,typename):
+        self.logger.debug("%s" % self.__types.keys())
+        if typename in self.__types.keys():
+            return True
+        else:
+            return False 
+    
+    def __repr__(self):
+        res = "AST with:\n <%d> native messages type,\n <%d> message type,\n <%d> enum type\n" % (len(self.nativeMessages),len(self.messages),len(self.enums))
+        res = res + " will be in package <%s>\n" % self.package
+        return res
+    
+    def visit(self):        
+        return None
+    
+class Package(Named):
+    """Represents a package"""
+    def __init__(self,name):
+        super(Package,self).__init__(name=name)
+          
+    def __repr__(self):
+        return "package %s" % self.name
+     
+class NativeMessageType(Named):
     """ Represents a native message type
     """
     def __init__(self,name):
-        self.name = name      
+        super(NativeMessageType,self).__init__(name=name)        
         
     def __repr__(self):
         return "native_message %s" % self.name 
                     
-class MessageType(object):
+class MessageType(Named):
     """ Represents a message type
     """
     def __init__(self,name,field_list,merge):
-        self.name       = name
+        super(MessageType,self).__init__(name=name)
         self.field_list = field_list
         self.merge      = merge
         
@@ -202,14 +286,14 @@ class MessageType(object):
         res = "message %s " % self.name
         return res
                 
-class EnumType(object):
+class EnumType(Named):
     """ Represents an enum type 
     """
     def __init__(self,name,values):
-        self.name   = name
+        super(EnumType,self).__init__(name=name)
         # rebuild dictionary with value from the list                     
         self.values = []
-        lastval = -1        
+        lastval     = -1        
         for val in values:                                    
             if (val[1]==None):
                 self.values.append((val[0],lastval+1))
@@ -221,54 +305,67 @@ class EnumType(object):
     def __repr__(self):
         res = "Enum %s {\n" % self.name
         for val in self.values:            
-            res = res + "  " + str(val[0]) + "=" + str(val[1]) + ", \n"
+            res = res + "  " + str(val[0]) + " = " + str(val[1]) + ", \n"
         res = res + "}"
-        return res 
-                
+        return res                 
         
     def addValue(self,value):
-        self.values.append(value)
+        self.values.append(value)        
+        
+def p_statement_list(p):
+    '''statement_list : statement 
+                      | statement statement_list'''
+    p.parser.AST.add(p[1])
 
 def p_statement(p):
     '''statement : comment_line
-                 | comment_line statement
-                 | message
-                 | message statement
-                 | native_message
-                 | native_message statement  
-                 | enum
-                 | enum statement'''
-        
-    p.parser.AST.add(p[1])                            
+                 | package                 
+                 | message                 
+                 | native_message                 
+                 | enum'''        
+    p[0]=p[1]                            
         
 def p_comment_line(p):
     '''comment_line : COMMENT'''
-    p[0]=p[1].strip('/')    
+    p[0]=p[1].strip('/')
+    
+def p_package(p):
+    '''package : PACKAGE package_id 
+               | PACKAGE package_id optional_comment'''    
+    p[0]=Package(p[2])
+    
+def p_package_id(p):
+    '''package_id : ID 
+                  | ID PERIOD package_id'''
+    if len(p)==2:
+        p[0]=p[1]
+    else:
+        p[0]=p[1]+"."+p[3]
             
 def p_message(p):
-    '''message : MESSAGE ID LBRACE optional_comment field_list RBRACE optional_comment
-               | MESSAGE ID LBRACE optional_comment RBRACE optional_comment
-               | MESSAGE ID COLON MERGE ID LBRACE  optional_comment RBRACE optional_comment
-               | MESSAGE ID COLON MERGE ID LBRACE optional_comment field_list RBRACE optional_comment'''
-    if len(p)==7:        
+    '''message : MESSAGE ID LBRACE RBRACE optional_comment
+               | MESSAGE ID LBRACE field_list RBRACE optional_comment
+               | MESSAGE ID COLON MERGE ID LBRACE RBRACE optional_comment
+               | MESSAGE ID COLON MERGE ID LBRACE field_list RBRACE optional_comment'''
+    if len(p)==6:        
         p[0] = MessageType(p[2],[],None)
+    elif len(p)==7:
+        p[0] = MessageType(p[2],p[4],None)
     elif len(p)==8:
-        p[0] = MessageType(p[2],p[5],None)
+        p[0] = MessageType(p[2],[],p[4])
     elif len(p)==9:
-        p[0] = MessageType(p[2],[],p[5])
-    elif len(p)==10:
-        p[0] = MessageType(p[2],p[7],p[5])                                    
+        p[0] = MessageType(p[2],p[7],p[4])                                    
 
 def p_native_message(p): 
-    'native_message : NATIVE_MESSAGE ID optional_comment'
+    'native_message : NATIVE_MESSAGE ID'
     p[0]=NativeMessageType(p[2])    
         
 def p_enum(p):
-    'enum : ENUM ID LBRACE optional_comment enum_value_list RBRACE optional_comment'
+    'enum : ENUM ID LBRACE enum_value_list RBRACE optional_comment'
     # we should reverse the enum value list
     # because the parse build it the other way around (recursive way)
-    p[5].reverse()
-    p[0] = EnumType(p[2],p[5])
+    p[4].reverse()
+    p[0] = EnumType(p[2],p[4])
     
 def p_empty(p):
     'empty :'
@@ -309,8 +406,9 @@ def p_field_list(p):
                   | field_spec optional_comment field_list'''
     if len(p)==3:
         p[0] = [p[1]]
-    else:
-        p[0] = p[3].append(p[1])     
+    else:        
+        p[0] = p[3]
+        p[0].append(p[1])    
 
 def p_field_spec(p):
     '''field_spec : qualifier typeid ID optional_comment
@@ -340,8 +438,16 @@ def p_typeid(p):
               | UINT64_T
               | FLOAT_T
               | DOUBLE_T
-              | ID'''
+              | defined_type'''
     p[0] = p[1]    
+    
+def p_defined_type(p):
+    '''defined_type : ID'''
+    # This kind of type should be checked
+    # When the AST has been built.
+    # We cannot check it now because of the recursive
+    # nature of the parser.
+    p[0]=p[1]    
     
 def p_value(p):
     '''value : INTEGER_VALUE 
@@ -349,8 +455,19 @@ def p_value(p):
              | BOOL_VALUE'''
     p[0]=p[1].value
     
-def p_error(p):     
-    print "Syntax error at '%s' on line %d (token type is '%s')" % (p.value,p.lineno,p.type)    
+# Compute column. 
+#     input is the input text string
+#     token is a token instance
+def find_column(input,token):
+    last_cr = input.rfind('\n',0,token.lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (token.lexpos - last_cr) + 1
+    return column
+    
+def p_error(p):         
+    print "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
+    
          
 # Build the PLY parser
 parser = ply.yacc.yacc() 
@@ -372,10 +489,10 @@ if False:
 print "Trying to parse..."    
 msgFile =  open(messagefile,'r')
 lexer.lineno = 1
-parser.AST = MessageAST(messagefile)
-ast = parser.parse(msgFile.read(),lexer=lexer)
+parser.AST = MessageNotAnAST(messagefile)
+parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
-print "Parse succeeded AST = %s" % ast
+print "Parse succeeded AST = %s (type=%s)" % (parser.AST,type(parser.AST)) 
 
 sys.exit()
 for l in msgFile:
