@@ -96,6 +96,7 @@ tokens = ['ID',
           'EQUAL',
           'COLON',
           'PERIOD',
+          'NEWLINE',
           ] + list(reserved.values())
 
 # This is a message of field or name identifier          
@@ -148,7 +149,7 @@ t_COLON = r':'
 t_PERIOD = r'\.'
 
 # Define a rule so we can track line numbers
-def t_newline(t):
+def t_NEWLINE(t):
     r'\n'
     t.lexer.lineno += 1
     
@@ -206,9 +207,7 @@ class MessageAST(ASTElement):
         self.__enumTypeSet          = set()
         self.__package              = None
         self.__types                = dict()
-        self.__ultimateElement      = None
-        self.__penultimateElement   = None
-        self.__currentComment       = None
+        self.__ultimateElement      = None                
         self.logger = logging.Logger("MessageAST")
         self.logger.setLevel(logging.DEBUG)
         self.logger.addHandler(stdoutHandler)        
@@ -247,21 +246,18 @@ class MessageAST(ASTElement):
                 self.addMessageType(any)
             elif isinstance(any,Package):
                 self.package = any
-            # Handle multiline comment
+            # Handle comment block preceding other AST element
             elif isinstance(any,CommentBlock):                
-                if isinstance(self.__ultimateElement,CommentBlock):
-                    # the Comment block continues
-                    self.__ultimateElement.lines.append(any.lines)
-                elif self.__ultimateElement != None:
+                if self.__ultimateElement != None:
                     # attach the comment block to the preceding
                     # AST element (recursion is backtracking)
+                    # The list of comment line should be reversed
+                    any.lines.reverse()
                     self.__ultimateElement.comment = any
                 else:
                     pass               
             else:            
-                self.logger.error("<%s> not handle [yet]" % any)
-            # update ultimate and penultimate AST element                      
-            self.__penultimateElement = self.__ultimateElement                      
+                self.logger.error("<%s> not handle [yet]" % any)                   
             self.__ultimateElement    = any            
             
     def addMessageType(self,message):        
@@ -290,7 +286,7 @@ class MessageAST(ASTElement):
     
 class CommentBlock(ASTElement):
     def __init__(self,content,optComment):
-        super(CommentBlock,self).__init__(name="comment")
+        super(CommentBlock,self).__init__(name="ANY Comment Block")
         self.lines=[content]
         self.__optComment=optComment
     
@@ -324,7 +320,7 @@ class MessageType(ASTElement):
         return res
     
     
-    def hasMerger(self):
+    def hasMerge(self):
         return self.merge != None
     
     class MessageField(ASTElement):
@@ -376,16 +372,21 @@ def p_statement_list(p):
     p.parser.AST.add(p[1])
 
 def p_statement(p):
-    '''statement : comment_line
+    '''statement : comment_block
                  | package                 
                  | message                 
                  | native_message                 
                  | enum'''        
     p[0]=p[1]                            
         
-def p_comment_line(p):
-    '''comment_line : COMMENT'''
-    p[0]=CommentBlock(p[1].strip('/'),optComment=False)
+def p_comment_block(p):
+    '''comment_block : COMMENT
+                     | COMMENT comment_block'''
+    if len(p)==2:                 
+        p[0]=CommentBlock(p[1].strip('/'),optComment=False)
+    else:
+        p[0]=p[2]
+        p[0].lines.append(p[1].strip('/'))        
     
 def p_package(p):
     '''package : PACKAGE package_id'''    
@@ -400,25 +401,27 @@ def p_package_id(p):
         p[0]=p[1]+"."+p[3]
             
 def p_message(p):
-    '''message : MESSAGE ID LBRACE RBRACE optional_comment
-               | MESSAGE ID LBRACE field_list RBRACE optional_comment
-               | MESSAGE ID COLON MERGE ID LBRACE RBRACE optional_comment
-               | MESSAGE ID COLON MERGE ID LBRACE field_list RBRACE optional_comment'''
-    if len(p)==6:        
+    '''message : MESSAGE ID LBRACE RBRACE 
+               | MESSAGE ID LBRACE field_list RBRACE 
+               | MESSAGE ID COLON MERGE ID LBRACE RBRACE 
+               | MESSAGE ID COLON MERGE ID LBRACE field_list RBRACE'''
+    if len(p)==5:        
         p[0] = MessageType(p[2],[],None)
-    elif len(p)==7:
+    elif len(p)==6:
+        p[4].reverse()
         p[0] = MessageType(p[2],p[4],None)
     elif len(p)==8:
-        p[0] = MessageType(p[2],[],p[4])
+        p[0] = MessageType(p[2],[],p[5])
     elif len(p)==9:
-        p[0] = MessageType(p[2],p[7],p[4])                                    
+        p[7].reverse()
+        p[0] = MessageType(p[2],p[7],p[5])                                    
 
 def p_native_message(p): 
     'native_message : NATIVE_MESSAGE ID'
     p[0]=NativeMessageType(p[2])    
         
 def p_enum(p):
-    'enum : ENUM ID LBRACE enum_value_list RBRACE optional_comment'
+    'enum : ENUM ID LBRACE enum_value_list RBRACE'
     # we should reverse the enum value list
     # because the parse build it the other way around (recursive way)
     p[4].reverse()
@@ -536,40 +539,52 @@ class TextGenerator(object):
     """This is a text generator"""
     def __init__(self,MessageAST):
         self.AST = MessageAST
-
-    def writeMultiLineComment(self,stream,ASTElement):
+            
+    def writeComment(self,stream,ASTElement):
         if ASTElement.hasComment():
             for line in ASTElement.comment.lines:                
                 stream.write("// ")
                 stream.write(str(line))
                 stream.write("\n")
+        else:
+            stream.write("\n")
             
     def generate(self,stream):
         # Generate package 
         if self.AST.hasPackage():
-            self.writeMultiLineComment(stream, self.AST.package)
-            stream.write("package %s" % self.AST.package.name)
+            self.writeComment(stream, self.AST.package)
+            stream.write("package %s\n" % self.AST.package.name)
         # Generate enum
         for enum in self.AST.enums:
-            self.writeMultiLineComment(stream, enum)
+            self.writeComment(stream, enum)
             stream.write("enum %s {\n" % enum.name)
+            first = True
             for enumval in enum.values:
-                stream.write("     %s,\n" % enumval.name)                
+                if first:
+                    stream.write("     %s = %d, " % (enumval.name,enumval.value))                
+                    first=False
+                else:
+                    stream.write("     %s, " % enumval.name)
+                self.writeComment(stream, enumval)                
             stream.write("}\n")
         # Generate native message
         for native in self.AST.nativeMessages:            
-            self.writeMultiLineComment(stream, native)
+            self.writeComment(stream, native)
             stream.write("native_message %s\n" % native.name) 
         # Generate message type
         for msg in self.AST.messages:
-            self.writeMultiLineComment(stream, msg)
-            stream.write("message %s {\n"%msg.name)
+            self.writeComment(stream, msg)
+            stream.write("message %s"%msg.name)
+            if msg.hasMerge():
+                stream.write(" : merge %s {\n" % msg.merge)
+            else:
+                stream.write(" {\n")
+            
             for field in msg.field_list:
-                stream.write("        %s %s %s" % (field.qualifier,field.typeid,field.name))
+                stream.write("        %s %s %s " % (field.qualifier,field.typeid,field.name))
                 if field.hasDefaultValue():
-                    stream.write("= %s\n" % field.defaultValue)
-                else:
-                    stream.write("\n")                    
+                    stream.write("[default=%s] " % field.defaultValue)                                    
+                self.writeComment(stream, field)                    
             stream.write("}\n")
                      
 # Build the PLY parser
