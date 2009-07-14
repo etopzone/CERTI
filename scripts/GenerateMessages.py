@@ -109,8 +109,7 @@ def t_COMMENT(t):
     r'//.*'
     return t
     #pass
-    # if pass No return value. Comments are discarded
-    
+    # if pass No return value. Comments are discarded    
 def t_INTEGER_VALUE(t): 
     r'\d+'     
     try: 
@@ -119,7 +118,6 @@ def t_INTEGER_VALUE(t):
         print "Integer value too large", t.value 
         t.value = 0 
     return t
-
 def t_FLOAT_VALUE(t): 
     r'\d+\.\d+' 
     try: 
@@ -185,6 +183,9 @@ class ASTElement(object):
     # pythonic getter/setter using properties    
     name = property(fget=getName,fset=setName,fdel=None, doc=None)    
     
+    def hasComment(self):
+        return self.__comment!=None
+    
     def getComment(self):
         return self.__comment    
     def setComment(self,comment):
@@ -224,6 +225,8 @@ class MessageAST(ASTElement):
         return self.__enumTypeSet    
     enums = property(fget=__getEnumTypeSet,fset=None,fdel=None,doc=None)         
     
+    def hasPackage(self):
+        return self.__package != None
     def __getPackage(self):
         return self.__package
     def __setPackage(self,package):
@@ -320,6 +323,10 @@ class MessageType(ASTElement):
         res = "message %s " % self.name
         return res
     
+    
+    def hasMerger(self):
+        return self.merge != None
+    
     class MessageField(ASTElement):
         """ Represents a message type
         """
@@ -328,6 +335,9 @@ class MessageType(ASTElement):
             self.qualifier    = qualifier
             self.typeid       = typeid
             self.defaultValue = defaultValue
+            
+        def hasDefaultValue(self):
+            return self.defaultValue != None
                 
 class EnumType(ASTElement):
     """ Represents an enum type 
@@ -521,22 +531,47 @@ def find_column(input,token):
     
 def p_error(p):         
     print "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
-             
+    
+class TextGenerator(object):
+    """This is a text generator"""
+    def __init__(self,MessageAST):
+        self.AST = MessageAST
 
-
-if False:
-    print "Trying to lex..."
-    msgFile =  open(messagefile,'r')
-    lexer.lineno = 1
-    lexer.input(msgFile.read())
-    msgFile.close()
-    # Tokenize
-    while True:
-        tok = lexer.token()
-        if not tok: break      # No more input
-        #print tok
-        print "Lex succeeded"
-        
+    def writeMultiLineComment(self,stream,ASTElement):
+        if ASTElement.hasComment():
+            for line in ASTElement.comment.lines:                
+                stream.write("// ")
+                stream.write(str(line))
+                stream.write("\n")
+            
+    def generate(self,stream):
+        # Generate package 
+        if self.AST.hasPackage():
+            self.writeMultiLineComment(stream, self.AST.package)
+            stream.write("package %s" % self.AST.package.name)
+        # Generate enum
+        for enum in self.AST.enums:
+            self.writeMultiLineComment(stream, enum)
+            stream.write("enum %s {\n" % enum.name)
+            for enumval in enum.values:
+                stream.write("     %s,\n" % enumval.name)                
+            stream.write("}\n")
+        # Generate native message
+        for native in self.AST.nativeMessages:            
+            self.writeMultiLineComment(stream, native)
+            stream.write("native_message %s\n" % native.name) 
+        # Generate message type
+        for msg in self.AST.messages:
+            self.writeMultiLineComment(stream, msg)
+            stream.write("message %s {\n"%msg.name)
+            for field in msg.field_list:
+                stream.write("        %s %s %s" % (field.qualifier,field.typeid,field.name))
+                if field.hasDefaultValue():
+                    stream.write("= %s\n" % field.defaultValue)
+                else:
+                    stream.write("\n")                    
+            stream.write("}\n")
+                     
 # Build the PLY parser
 parserlogger = logging.Logger("MessageParser")
 parserlogger.setLevel(logging.ERROR)
@@ -550,7 +585,10 @@ lexer.lineno = 1
 parser.AST = MessageAST(messagefile)
 parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
-mainlogger.info("Parse succeeded AST = %s" % (parser.AST)) 
+mainlogger.info("Parse succeeded AST = %s" % (parser.AST))
+mainlogger.info("Generate Text AST:")
+textGen = TextGenerator(parser.AST)
+textGen.generate(sys.stdout)
 
 sys.exit()
 for l in msgFile:
