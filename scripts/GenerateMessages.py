@@ -1,13 +1,39 @@
 #!/usr/bin/env python
 
+## ----------------------------------------------------------------------------
+## CERTI - HLA RunTime Infrastructure
+## Copyright (C) 2002-2005  ONERA
+##
+## This program is free software ; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public License
+## as published by the Free Software Foundation ; either version 2 of
+## the License, or (at your option) Any later version.
+##
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY ; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+## Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public
+## License along with this program ; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+## USA
+##
+## $Id: GenerateMessages.py,v 1.8 2009/07/15 17:12:02 erk Exp $
+## ----------------------------------------------------------------------------
+
+"""
+The CERTI Message Generator
+"""
+
 import os
 import getopt, sys
-import shutil
 # We use PLY in order to parse CERTI message specification files 
 # PLY is there: http://www.dabeaz.com/ply/
 import ply.yacc
 import ply.lex
 # We use logging for ... logging :-)
+# see http://docs.python.org/library/logging.html
 import logging 
 
 # Build some logger related objects
@@ -48,21 +74,24 @@ for o, a in opts:
         language=a
     if o in ("-t", "--type"):
         gentype=a
-    if o in ("-o", "--output"):
-        mainlogger.info("output send to file: <%s>" % a)
+    if o in ("-o", "--output"):        
         output=open(a)
     if o in ("-v", "--verbose"):
         verbose=True
         mainlogger.setLevel(logging.INFO)
     if o in ("-h", "--help"):
         usage()
-        sys.exit(0)                
+        sys.exit(0)
+
+mainlogger.info("Reading message specifications from: <%s>" % messagefile)       
+mainlogger.info("output send to: <%s>" % repr(output))
+mainlogger.info("Generating for language: <%s>" % language)
 
 # Lexer+Parser specification begins here
 # reserved keywords
 reserved = {
    'package'        : 'PACKAGE',
-   'native_message' : 'NATIVE_MESSAGE',            
+   'native' : 'NATIVE',            
    'message' : 'MESSAGE',
    'merge' : 'MERGE',
    'enum' : 'ENUM',
@@ -169,80 +198,145 @@ lexerlogger.addHandler(stdoutHandler)
 lexer = ply.lex.lex(debug=False)
 lexer.logger = lexerlogger
 
-# Named Class
 class ASTElement(object):
+    """
+    The base class for all Abstract Syntax Tree element.
+
+    @param name: the name of the element
+    @type name: C{string}
+    @param comment: the comment attached to this element.
+                    may be C{None}
+    @type comment: C{CommentBlock}   
+    """
     def __init__(self,name):        
-        self.__name    = name
-        self.__comment = None
+        self.__name     = name
+        self.__comment  = None
+        self.__linespan = None
         self.logger = logging.Logger("ASTElement")
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
     
-    def getName(self):
+    def __getName(self):
         return self.__name    
-    def setName(self,name):        
+    def __setName(self,name):        
         self.__name = name
     # pythonic getter/setter using properties    
-    name = property(fget=getName,fset=setName,fdel=None, doc=None)    
+    name = property(fget=__getName,fset=__setName,fdel=None, doc="The name of the C{ASTElement}")    
     
     def hasComment(self):
         return self.__comment!=None
     
-    def getComment(self):
+    def __getComment(self):
         return self.__comment    
-    def setComment(self,comment):
+    def __setComment(self,comment):
         if isinstance(comment,type("")):
             pass
         else:
             self.logger.info("Adding comment %s to element %s" % (comment.lines,self.name))
             self.__comment = comment
     # pythonic getter/setter using properties    
-    comment = property(fget=getComment,fset=setComment,fdel=None, doc=None)
+    comment = property(fget=__getComment,fset=__setComment,fdel=None, doc="The comment block attached to the C{ASTElement}")
+    
+    def __getLinespan(self):
+        return self.__linespan    
+    def __setLinespan(self,linespan):        
+        self.__linespan = linespan
+    # pythonic getter/setter using properties    
+    linespan = property(fget=__getLinespan,fset=__setLinespan,fdel=None, doc="The line span of this C{ASTElement} in the original file")    
+    
 
-# Message set
 class MessageAST(ASTElement):
+    """
+    Message Abstract Syntax Tree root class.
+    
+    This class represents the abstraction of the message description
+    language including all the features represented by corresponding
+    class field. Object instance of C{MessageAST} may be used by a 
+    language generator in order to generate code for the target language.
+    
+    @param package: the package which the generated message will belong
+                    this will be used by the specific AST generator
+    @type package:  C{Package}                     
+    @param nativeMessages: the set of native messages described in this
+                          C{MessageAST}
+    @type nativeMessages: C{set} of C{NativeType}
+    @param messages: the set of messages described in this C{MessageAST}
+    @type messages: C{set} of C{MessageType}          
+    
+    """
     def __init__(self,name):
-        super(MessageAST,self).__init__(name=name)        
-        self.__nativeMessageTypeSet = set()
+        super(MessageAST,self).__init__(name=name)
+        self.__package              = None        
+        self.__NativeTypeSet = set()
         self.__messageTypeSet       = set()
         self.__enumTypeSet          = set()
-        self.__package              = None
-        self.__types                = dict()
+        # The types dictionary is initialized with builtin types
+        self.__types                = {'bool' : ASTElement("bool"),
+                                       'string' : ASTElement("string"),
+                                       'byte' : ASTElement("byte"),
+                                       'int8' : ASTElement("int8"),
+                                       'uint8' : ASTElement("uint8"),
+                                       'int16' : ASTElement("int16"),
+                                       'uint16' : ASTElement("uint16"),
+                                       'int32' : ASTElement("int32"),
+                                       'uint32' : ASTElement("uint32"),   
+                                       'int64' : ASTElement("int64"),
+                                       'uint64' : ASTElement("uint64"),
+                                       'float' : ASTElement("float"),
+                                       'double' : ASTElement("double")}
         self.__ultimateElement      = None                
         self.logger = logging.Logger("MessageAST")
         self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(stdoutHandler)        
+        self.logger.addHandler(stdoutHandler)
         
-    def __getNativeMessageTypeSet(self):
-        return self.__nativeMessageTypeSet        
-    nativeMessages = property(fget=__getNativeMessageTypeSet,fset=None,fdel=None,doc=None)
-    
-    def __getMessageTypeSet(self):
-        return self.__messageTypeSet        
-    messages = property(fget=__getMessageTypeSet,fset=None,fdel=None,doc=None)
-    
-    def __getEnumTypeSet(self):
-        return self.__enumTypeSet    
-    enums = property(fget=__getEnumTypeSet,fset=None,fdel=None,doc=None)         
-    
     def hasPackage(self):
         return self.__package != None
     def __getPackage(self):
         return self.__package
     def __setPackage(self,package):
         self.__package = package
-    package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None) 
+    # pythonic getter/setter using properties   
+    package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None)        
+        
+    def __getNativeTypeSet(self):
+        return self.__NativeTypeSet  
+    # pythonic getter/setter using properties   
+    nativeMessages = property(fget=__getNativeTypeSet,fset=None,fdel=None,doc=None)
+    
+    def __getMessageTypeSet(self):
+        return self.__messageTypeSet  
+    # pythonic getter/setter using properties      
+    messages = property(fget=__getMessageTypeSet,fset=None,fdel=None,doc=None)
+    
+    def __getEnumTypeSet(self):
+        return self.__enumTypeSet
+    # pythonic getter/setter using properties   
+    enums = property(fget=__getEnumTypeSet,fset=None,fdel=None,doc=None)         
+        
         
     def add(self,any):
-        """ Add an ASTElement to the AST """
+        """ 
+        Add an ASTElement to the AST.
+        
+        The parser will call this method as soons as it has
+        built the appropriate ASTElement sub-class.
+        
+        @param any: the object to be added to the tree
+        @type any: some sub-class of C{ASTElement}, see: G{ASTElement}
+          
+        """
         if any == None:
             self.logger.error("<None> given to AST some rule aren't finished")    
         else:                     
-            self.logger.debug("Add %s %s" % (type(any).__name__,any.name))            
-            if isinstance(any,EnumType):            
+            self.logger.debug("Add %s %s" % (type(any).__name__,any.name))
+            # Typename must be unique
+            if self.isDefined(any.name):                
+                self.logger.error("%s already defined in the AST" % any.name)
+                self.logger.error(" --> Check lines (%d,%d) " % any.linespan + "and (%d,%d)" % self.getType(any.name).linespan+ " of <%s>" % self.name)                          
+            elif isinstance(any,EnumType):            
                 self.addEnumType(any)                            
-            elif isinstance(any,NativeMessageType):
-                self.addNativeMessageType(any)
+            elif isinstance(any,NativeType):
+                self.addNativeType(any)
             elif isinstance(any,MessageType):
                 self.addMessageType(any)
             elif isinstance(any,Package):
@@ -261,60 +355,113 @@ class MessageAST(ASTElement):
                 self.logger.error("<%s> not handle [yet]" % any)                   
             self.__ultimateElement    = any            
             
-    def addMessageType(self,message):        
+    def addMessageType(self,message): 
+        """
+        Add a message type to the AST.
+        
+        @param message: The message type to be added
+        @type message: C{MessageType}  
+        """       
         self.__messageTypeSet.add(message)
         self.__types[message.name] = message
         
-    def addEnumType(self,enumType):        
+    def addEnumType(self,enumType):
+        """
+        Add an enum type to the AST.
+        
+        @param enumType: The enum type to be added
+        @type enumType: C{EnumType}  
+        """        
         self.__enumTypeSet.add(enumType)
         self.__types[enumType.name] = enumType               
     
-    def addNativeMessageType(self,message):
-        self.__nativeMessageTypeSet.add(message)
-        self.__types[message.name] = message
+    def addNativeType(self,native):
+        """
+        Add a native type to the AST.
+        
+        @param native: The message type to be added
+        @type native: C{NativeType}  
+        """
+        self.__NativeTypeSet.add(native)
+        self.__types[native.name] = native
         
     def isDefined(self,typename):
-        self.logger.debug("%s" % self.__types.keys())
-        if typename in self.__types.keys():
-            return True
+        """
+        Return true if the typename is know in this AST.
+        
+        @param typename: the name of the type
+        @type typename: C{string}  
+        """
+        return self.getType(typename)!=None
+    
+    def getType(self,typename):
+        if isinstance(typename,type("")):
+            if typename in self.__types.keys():
+                return self.__types[typename]
+            else:
+                return None
         else:
-            return False 
+            return typename        
     
     def __repr__(self):
-        res = "AST with:\n <%d> native messages type,\n <%d> message type,\n <%d> enum type\n" % (len(self.nativeMessages),len(self.messages),len(self.enums))
-        res = res + " will be in package <%s>\n" % self.package
+        res = "AST with <%d> native message, <%d> enum, <%d> message type(s)" % (len(self.nativeMessages),len(self.enums),len(self.messages))
+        res = res + " in package <%s>" % self.package
         return res    
     
 class CommentBlock(ASTElement):
+    """
+    Represents a block of comment
+    
+    A C{CommentBlock} has lines which is a list of C{string}.
+    @param lines: the comments lines
+    @type lines: C{list} of C{string}  
+    """
     def __init__(self,content,optComment):
+        """
+        C{CommentBlock} constructor
+        """
         super(CommentBlock,self).__init__(name="ANY Comment Block")
         self.lines=[content]
         self.__optComment=optComment
     
 class Package(ASTElement):
-    """Represents a package"""
+    """
+    Represents a package.
+    
+    A C{Package} is a simple C{ASTElement} whose
+    name is a C{string} containing a
+    dot-separated IDs like: "fr.onera.certi"
+    """
     def __init__(self,name):        
         super(Package,self).__init__(name)                        
           
     def __repr__(self):
         return "package %s" % self.name
      
-class NativeMessageType(ASTElement):
-    """ Represents a native message type
+class NativeType(ASTElement):
+    """ 
+    Represents a native message type.
+    
+    A C{NaptiveMessageType} is a simple C{ASTElement} whose
+    name is the name the native type.
     """
     def __init__(self,name):
-        super(NativeMessageType,self).__init__(name=name)        
+        super(NativeType,self).__init__(name=name)        
         
     def __repr__(self):
-        return "native_message %s" % self.name 
+        return "native %s" % self.name 
                     
 class MessageType(ASTElement):
-    """ Represents a message type
+    """ 
+    Represents a message type.
+    
+    @param fields: the fields of this C{MessageType}
+    @type fields: C{list} of C{MessageType.MessageField}  
     """
-    def __init__(self,name,field_list,merge):
+    def __init__(self,name,fields,merge):
         super(MessageType,self).__init__(name=name)
-        self.field_list = field_list
-        self.merge      = merge                    
+        self.fields = fields
+        self.merge  = merge                    
     
     def __repr__(self):
         res = "message %s " % self.name
@@ -376,7 +523,7 @@ def p_statement(p):
     '''statement : comment_block
                  | package                 
                  | message                 
-                 | native_message                 
+                 | native                 
                  | enum'''        
     p[0]=p[1]                            
         
@@ -392,6 +539,7 @@ def p_comment_block(p):
 def p_package(p):
     '''package : PACKAGE package_id'''    
     p[0]=Package(p[2])
+    p[0].linespan = (p.linespan(1)[0],p.linespan(2)[1])
     
 def p_package_id(p):
     '''package_id : ID 
@@ -407,7 +555,7 @@ def p_message(p):
                | MESSAGE ID COLON MERGE ID LBRACE RBRACE 
                | MESSAGE ID COLON MERGE ID LBRACE field_list RBRACE'''
     if len(p)==5:        
-        p[0] = MessageType(p[2],[],None)
+        p[0] = MessageType(p[2],[],None)        
     elif len(p)==6:
         p[4].reverse()
         p[0] = MessageType(p[2],p[4],None)
@@ -416,10 +564,12 @@ def p_message(p):
     elif len(p)==9:
         p[7].reverse()
         p[0] = MessageType(p[2],p[7],p[5])                                    
-
-def p_native_message(p): 
-    'native_message : NATIVE_MESSAGE ID'
-    p[0]=NativeMessageType(p[2])    
+    p[0].linespan = (p.linespan(1)[0],p.linespan(len(p)-1)[1]) 
+    
+def p_native(p): 
+    'native : NATIVE ID'
+    p[0]=NativeType(p[2])    
+    p[0].linespan = p.linespan(1)
         
 def p_enum(p):
     'enum : ENUM ID LBRACE enum_value_list RBRACE'
@@ -427,6 +577,7 @@ def p_enum(p):
     # because the parse build it the other way around (recursive way)
     p[4].reverse()
     p[0] = EnumType(p[2],p[4])
+    p[0].linespan = (p.linespan(1)[0],p.linespan(5)[1])
     
 def p_empty(p):
     'empty :'
@@ -437,7 +588,8 @@ def p_optional_comment(p):
                         | empty'''
     # we may store the comment text for future use
     if len(p) > 1 and isinstance(p[1],type("")) :
-        p[0] = CommentBlock(p[1].strip('/'),optComment=True)        
+        p[0] = CommentBlock(p[1].strip('/'),optComment=True)
+        p[0].linespan = p.linespan(1)        
     else:
         p[0] = ""         
     
@@ -464,8 +616,10 @@ def p_enum_val(p):
     # value may be None    
     if len(p)>3:
         p[0] = EnumType.EnumValue(p[1],p[3])
+        p[0].linespan = (p.linespan(1)[0],p.linespan(3)[1])
     else:
-        p[0] = EnumType.EnumValue(p[1],None)     
+        p[0] = EnumType.EnumValue(p[1],None)
+        p[0].linespan = p.linespan(1)     
 
 def p_field_list(p):
     '''field_list : field_spec optional_comment
@@ -482,9 +636,11 @@ def p_field_spec(p):
     if len(p)==5:
         p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
         p[0].comment = p[4]
+        p[0].linespan = (p.linespan(1)[0],p.linespan(4)[1])
     else:        
         p[0] = MessageType.MessageField(p[1],p[2],p[3],p[7])
         p[0].comment = p[8]   
+        p[0].linespan = (p.linespan(1)[0],p.linespan(8)[1])
 
 def p_qualifier(p):
     '''qualifier : REQUIRED
@@ -535,9 +691,63 @@ def find_column(input,token):
     
 def p_error(p):         
     print "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
+
+class ASTChecker(object):
+    """
+    The Purpose of this class is to check AST properties. 
+        
+    """
+    def __init__(self):
+        self.logger = logging.Logger("ASTChecker")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)
+        pass
+    
+    def check(self,AST):
+        """
+        Check the AST.
+        
+        @param AST: the AST to be checked
+        @type AST: C{MessageAST}  
+        """
+        
+        # check if the supplied object has appropriate super type
+        # @todo: note that we may just require to have the appropriate
+        #        fields and not being sub-class of MesssageAST.
+        #        this could be done with introspection.
+        #        see: http://docs.python.org/library/inspect.html
+        if not isinstance(AST, MessageAST):
+           self.logger.error("The supplied object is not an instance of MessageAST: <%s>" % type(AST))
+           AST.checked = False 
+           return
+       
+        # check if all field used in message have known types
+        for msg in AST.messages:
+            for f in msg.fields:
+                if not AST.isDefined(f.typeid):
+                    self.logger.fatal("The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)" % (f.typeid,msg.name,f.name))
+                    self.logger.fatal(" --> Check lines (%d,%d)" % (f.linespan) + " of <%s>" % AST.name)
+                    AST.checked = False
+                    return
+                else:                   
+                   f.typeid = AST.getType(f.typeid)
+                                
+        # check if merger are either native or message
+        for msg in AST.messages:
+            if msg.hasMerge():
+                if not AST.isDefined(msg.merge):
+                    self.logger.fatal("The merge target <%s> of message <%s> is unknown (not a builtin, nor native, nor message)" % (msg.merge,msg.name))
+                    self.logger.fatal(" --> Check lines (%d,%d)" % (msg.linespan) + " of <%s>" % AST.name )                    
+                    AST.checked = False
+                    return
+                else:
+                    msg.merge = AST.getType(msg.merge)
+        AST.checked = True                  
     
 class TextGenerator(object):
-    """This is a text generator"""
+    """
+    This is a text generator.
+    """
     def __init__(self,MessageAST):
         self.AST = MessageAST
             
@@ -571,18 +781,18 @@ class TextGenerator(object):
         # Generate native message
         for native in self.AST.nativeMessages:            
             self.writeComment(stream, native)
-            stream.write("native_message %s\n" % native.name) 
+            stream.write("native %s\n" % native.name) 
         # Generate message type
         for msg in self.AST.messages:
             self.writeComment(stream, msg)
             stream.write("message %s"%msg.name)
             if msg.hasMerge():
-                stream.write(" : merge %s {\n" % msg.merge)
+                stream.write(" : merge %s {\n" % msg.merge.name)
             else:
                 stream.write(" {\n")
             
-            for field in msg.field_list:
-                stream.write("        %s %s %s " % (field.qualifier,field.typeid,field.name))
+            for field in msg.fields:
+                stream.write("        %s %s %s " % (field.qualifier,field.typeid.name,field.name))
                 if field.hasDefaultValue():
                     stream.write("[default=%s] " % field.defaultValue)                                    
                 self.writeComment(stream, field)                    
@@ -646,13 +856,21 @@ parserlogger.addHandler(stdoutHandler)
 parser = ply.yacc.yacc(debug=True)
 parser.logger = parserlogger 
     
-mainlogger.info("Trying to parse...")    
+mainlogger.info("Parsing message file specifications...")    
 msgFile =  open(messagefile,'r')
 lexer.lineno = 1
 parser.AST = MessageAST(messagefile)
 parser.parse(msgFile.read(),lexer=lexer)
 msgFile.close()
-mainlogger.info("Parse succeeded AST = %s" % (parser.AST))
+mainlogger.info("Parse succeeded %s" % (parser.AST))
+
+mainlogger.info("Checking AST properties....")
+checker = ASTChecker()
+checker.check(parser.AST)
+if parser.AST.checked:    
+    mainlogger.info("AST properties checked Ok.")
+else:
+    mainlogger.error("AST has error, generation step may produce invalid files!!!")
 
 mainlogger.info("Generate %s from AST,..."%language)
 if language=="Text":    

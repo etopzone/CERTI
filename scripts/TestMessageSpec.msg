@@ -5,12 +5,12 @@ package my.hierarchy.pack
 
 //
 //  This is a multiline
-//  comment
+//  comment which may contains markup
+//  @desc here comes the EType
 //
-
 enum EType {
    FIRST_VAL = 0, // one may specify the value of the first enum symbol
-   REAL_VAL1    ,
+   REAL_VAL1    , //! the real value 1
    REAL_VAL2    ,
    UNUSED
 }
@@ -18,9 +18,11 @@ enum EType {
 message MyMessage {} 
 
 // blah
-native_message ANativeMessageType 
+native ANativeType 
 
-native_message ANotherativeMessageType 
+native AnotherNativeType 
+
+native MessageType
 
 message MyMessage2 { 
     repeated int32 whatever
@@ -28,6 +30,6 @@ message MyMessage2 {
 
 message MyOtherMessage : merge MyMessage {
     required bool              constrained  // constrain 
-	required MessageType       type
+	optional MessageType       mytype
 	required uint32            a [ default=1 ]
 }
