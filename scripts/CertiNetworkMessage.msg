@@ -1,108 +1,192 @@
-// CERTI messages description
 
+// ----------------------------------------------------------------------------
+// CERTI - HLA RunTime Infrastructure
+// Copyright (C) 2002-2008  ONERA
+//
+// This program is free software ; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public License
+// as published by the Free Software Foundation ; either version 2 of
+// the License, or (at your option) Any later version.
+//
+// This program is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY ; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program ; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+//
+// ----------------------------------------------------------------------------
+// CERTI Network Messages description
+// ----------------------------------------------------------------------------
 // The messages related classes will be placed in the certi package
 package certi
+
+// Basic Message is the base class message for CERTI
+native BasicMessage
 
 // Network message is the base class
 // for message exchanged between RTIA and RTIG
 // AKA CERTI Network Message
-native_message NetworkMessage
+native NetworkMessage
 
-native_message BasicMessage
+// Message is the base class 
+// for message exchanged between Federate and RTIA
+// AKA CERTI Message
+native Message
 
-native_message Message
+enum SampleMessageType {
+   NOT_USED,
+   SMT_BASIC,
+   SMT_NETWORK_MESSAGE,
+   SMT_MESSAGE
+}
 
-enum Message_T {
-		NOT_USED = 0, // Not used.
-		CLOSE_CONNEXION,
-		MESSAGE_NULL,
-		CREATE_FEDERATION_EXECUTION,
-		DESTROY_FEDERATION_EXECUTION,
-		JOIN_FEDERATION_EXECUTION,
-		RESIGN_FEDERATION_EXECUTION,
-		SET_TIME_REGULATING,
-		SET_TIME_CONSTRAINED,
-		TIME_REGULATION_ENABLED, // RTIG to RTIA
-		TIME_CONSTRAINED_ENABLED, // RTIG to RTIA
-		REGISTER_FEDERATION_SYNCHRONIZATION_POINT,
-		SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED, // RTIG to RTIA
-		ANNOUNCE_SYNCHRONIZATION_POINT, // RTIG to RTIA
-		SYNCHRONIZATION_POINT_ACHIEVED,
-		FEDERATION_SYNCHRONIZED, // RTIG to RTIA
-		REQUEST_FEDERATION_SAVE,
-		FEDERATE_SAVE_BEGUN,
-		FEDERATE_SAVE_COMPLETE,
-		FEDERATE_SAVE_NOT_COMPLETE,
-		INITIATE_FEDERATE_SAVE, // RTIG to RTIA
-		FEDERATION_SAVED, // RTIG to RTIA
-		FEDERATION_NOT_SAVED, // RTIG to RTIA
-		REQUEST_FEDERATION_RESTORE,
-		FEDERATE_RESTORE_COMPLETE,
-		FEDERATE_RESTORE_NOT_COMPLETE,
-		REQUEST_FEDERATION_RESTORE_SUCCEEDED, // RTIG to RTIA
-		REQUEST_FEDERATION_RESTORE_FAILED, // RTIG to RTIA
-		FEDERATION_RESTORE_BEGUN, // RTIG to RTIA
-		INITIATE_FEDERATE_RESTORE, // RTIG to RTIA
-		FEDERATION_RESTORED, // RTIG to RTIA
-		FEDERATION_NOT_RESTORED, // RTIG to RTIA
-		PUBLISH_OBJECT_CLASS,
-		UNPUBLISH_OBJECT_CLASS,
-		PUBLISH_INTERACTION_CLASS,
-		UNPUBLISH_INTERACTION_CLASS,
-		SUBSCRIBE_OBJECT_CLASS,
-		UNSUBSCRIBE_OBJECT_CLASS,
-		SUBSCRIBE_INTERACTION_CLASS,
-		UNSUBSCRIBE_INTERACTION_CLASS,
-		TURN_INTERACTIONS_ON, // only RTIG->RTIA
-		TURN_INTERACTIONS_OFF, // only RTIG->RTIA
-		REGISTER_OBJECT,
-		DISCOVER_OBJECT, // only RTIG->RTIA
-		UPDATE_ATTRIBUTE_VALUES,
-		REFLECT_ATTRIBUTE_VALUES, // only RTIG->RTIA
-		SEND_INTERACTION,
-		RECEIVE_INTERACTION, // only RTIG->RTIA
-		DELETE_OBJECT,
-		REMOVE_OBJECT, // only RTIG->RTIA
-		CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
-		CHANGE_ATTRIBUTE_ORDER_TYPE,
-		CHANGE_INTERACTION_TRANSPORT_TYPE,
-		CHANGE_INTERACTION_ORDER_TYPE,
-		REQUEST_CLASS_ATTRIBUTE_VALUE_UPDATE,
-		REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
-		IS_ATTRIBUTE_OWNED_BY_FEDERATE,
-		QUERY_ATTRIBUTE_OWNERSHIP,
-		ATTRIBUTE_IS_NOT_OWNED,
-		INFORM_ATTRIBUTE_OWNERSHIP,
-		NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-		ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION,
-		ATTRIBUTE_OWNERSHIP_DIVESTITURE_NOTIFICATION,
-		REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION,
-		ATTRIBUTE_OWNERSHIP_UNAVAILABLE,
-		ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
-		UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-		ATTRIBUTE_OWNERSHIP_ACQUISITION,
-		REQUEST_ATTRIBUTE_OWNERSHIP_RELEASE,
-		CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
-		ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
-		CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
-		CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION,
-		DDM_CREATE_REGION,
-		DDM_MODIFY_REGION,
-		DDM_DELETE_REGION,
-		DDM_ASSOCIATE_REGION,
-		DDM_REGISTER_OBJECT,
-		DDM_UNASSOCIATE_REGION,
-		DDM_SUBSCRIBE_ATTRIBUTES,
-		DDM_UNSUBSCRIBE_ATTRIBUTES,
-		DDM_SUBSCRIBE_INTERACTION,
-		DDM_UNSUBSCRIBE_INTERACTION,
-		PROVIDE_ATTRIBUTE_VALUE_UPDATE,
-		GET_FED_FILE,
-		SET_CLASS_RELEVANCE_ADVISORY_SWITCH,
-		SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH,
-		SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH,
-		SET_ATTRIBUTE_SCOPE_ADVISORY_SWITCH,
-		START_REGISTRATION_FOR_OBJECT_CLASS,
-		STOP_REGISTRATION_FOR_OBJECT_CLASS,
-		LAST		
+native AttributeHandle
+message NM_WithHandleArray : merge  NetworkMessage {
+	repeated AttributeHandle handle 
+}
+
+message NM_DDM_Base : merge  NM_WithHandleArray {
+	required bool DDM_bool
+}
+
+message NM_Close_Connexion : merge NetworkMessage {}
+
+message NM_Message_Null : merge NetworkMessage {}
+
+message NM_Create_Federation_Execution : merge NetworkMessage {}
+
+message NM_Destroy_Federation_Execution : merge NetworkMessage {}
+
+message NM_Join_Federation_Execution : merge NetworkMessage {}
+
+message NM_Resign_Federation_Execution : merge NetworkMessage {}
+
+message NM_Set_Time_Regulating : merge NetworkMessage {
+	required bool regulator
+}
+
+message NM_Set_Time_Constrained : merge NetworkMessage {
+	required bool regulator
+}
+
+message NM_Time_Regulation_Enabled : merge NetworkMessage {}
+
+message NM_Time_Constrained_Enabled : merge NetworkMessage {}
+
+native ObjectClassHandle
+message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
+	required ObjectClassHandle objectClass
+}
+
+message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
+}
+
+message NM_Set_Class_Relevance_Advisory_Switch : merge NetworkMessage {    
+	required bool classRelevanceAdvisorySwitch // value of CRA switch 	
+}
+
+message NM_Set_Interaction_Relevance_Advisory_Switch : merge NetworkMessage {    
+	required bool interactionRelevanceAdvisorySwitch // value of IRA switch 	
+}
+
+message NM_Set_Attribute_Relevance_Advisory_Switch : merge NetworkMessage {    
+	required bool attributeRelevanceAdvisorySwitch // value of ARA switch 	
+}
+
+message NM_Set_Attribute_Scope_Advisory_Switch : merge NetworkMessage {    
+	required bool attributeScopeAdvisorySwitch // value of ASA switch 	
+}
+
+message NM_Register_Federation_Synchronization_Point : merge NetworkMessage {    
+	required bool setExists // tell whether if the synchronization set is specified or not    
+}
+
+message NM_Synchronization_Point_Registration_Succeeded : merge NetworkMessage {}
+
+message NM_Announce_Synchronization_Point : merge NetworkMessage {}
+
+message NM_Synchronization_Point_Achieved : merge NetworkMessage {}
+
+message NM_Federation_Synchronized : merge NetworkMessage {}
+
+message NM_Request_Federation_Save : merge NetworkMessage {}
+
+message NM_Federate_Save_Begun : merge NetworkMessage {}
+
+message NM_Federate_Save_Complete : merge NetworkMessage {}
+
+message NM_Federate_Save_Not_Complete : merge NetworkMessage {}
+
+message NM_Initiate_Federate_Save : merge NetworkMessage {}
+
+message NM_Federation_Saved : merge NetworkMessage {}
+
+message NM_Federation_Not_Saved : merge NetworkMessage {}
+
+message NM_Request_Federation_Restore : merge NetworkMessage {}
+
+message NM_Federate_Restore_Complete : merge NetworkMessage {}
+
+message NM_Federate_Restore_Not_Complete : merge NetworkMessage {}
+
+message NM_Request_Federation_Restore_Succeeded : merge NetworkMessage {}
+
+message NM_Request_Federation_Restore_Failed : merge NetworkMessage {}
+
+message NM_Federation_Restore_Begun : merge NetworkMessage {}
+
+message NM_Initiate_Federate_Restore : merge NetworkMessage {}
+
+message NM_Federation_Restored : merge NetworkMessage {}
+
+message NM_Federation_Not_Restored : merge NetworkMessage {}
+
+message NM_Publish_Object_Class : merge NM_WithHandleArray {}
+
+message NM_Unpublish_Object_Class : merge NetworkMessage {}
+
+native InteractionClassHandle
+message NM_Publish_Interaction_Class : merge NetworkMessage {
+	required InteractionClassHandle interactionClass // the interaction class
+}
+
+message NM_Unpublish_Interaction_Class : merge NM_Publish_Interaction_Class {}
+
+message NM_Subscribe_Object_Class : merge NM_WithHandleArray {}
+
+message NM_Unsubscribe_Object_Class : merge NM_Unpublish_Object_Class {}
+
+message NM_Subscribe_Interaction_Class : merge NM_Publish_Interaction_Class {}
+
+message NM_Unsubscribe_Interaction_Class : merge NM_Publish_Interaction_Class {}
+
+message NM_Turn_Interactions_On : merge NM_Publish_Interaction_Class {}
+
+message NM_Turn_Interactions_Off : merge NM_Publish_Interaction_Class {}
+
+message NM_Register_Object : merge NetworkMessage {}
+
+message NM_Discover_Object : merge NM_Register_Object {}
+
+message NM_Update_Attribute_Values : merge NM_WithHandleArray {}
+
+message NM_Reflect_Attribute_Values : merge NM_Update_Attribute_Values {}
+
+message NM_Send_Interaction : merge NM_WithHandleArray {}
+
+message NM_Receive_Interaction : merge NM_Send_Interaction {}
+
+message NM_Delete_Object : merge NM_Register_Object {}
+
+message NM_Remove_Object : merge NM_Delete_Object {}
+
+message NM_Change_Attribute_Transport_Type : merge NetworkMessage {}
+
+message NM_Get_FED_File : merge NetworkMessage {
+	required string FEDid // the FED identifier
+	required string line  // one line of the FED file
 }

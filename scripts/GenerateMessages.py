@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.8 2009/07/15 17:12:02 erk Exp $
+## $Id: GenerateMessages.py,v 1.9 2009/07/15 20:57:24 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -28,6 +28,7 @@ The CERTI Message Generator
 
 import os
 import getopt, sys
+import datetime
 # We use PLY in order to parse CERTI message specification files 
 # PLY is there: http://www.dabeaz.com/ply/
 import ply.yacc
@@ -35,6 +36,7 @@ import ply.lex
 # We use logging for ... logging :-)
 # see http://docs.python.org/library/logging.html
 import logging 
+
 
 # Build some logger related objects
 stdoutHandler = logging.StreamHandler(sys.stdout)
@@ -50,7 +52,7 @@ def usage():
     print "Usage:\n %s --file=<message> [--language=C++|Java|Python|Text] [--type=header|body|factory] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:l:t:vho:", ["file=","language=","type=","output","verbose","help"])
+    opts, args = getopt.getopt(sys.argv[1:], "f:l:t:o:vh", ["file=","language=","type=","output=","verbose","help"])
 except getopt.GetoptError, err:
     mainlogger.error("opt = %s, msg = %s" % (err.opt,err.msg))    
     usage()
@@ -75,7 +77,7 @@ for o, a in opts:
     if o in ("-t", "--type"):
         gentype=a
     if o in ("-o", "--output"):        
-        output=open(a)
+        output=open(a,mode="w")
     if o in ("-v", "--verbose"):
         verbose=True
         mainlogger.setLevel(logging.INFO)
@@ -257,19 +259,19 @@ class MessageAST(ASTElement):
     @param package: the package which the generated message will belong
                     this will be used by the specific AST generator
     @type package:  C{Package}                     
-    @param nativeMessages: the set of native messages described in this
+    @param natives: the set of native messages described in this
                           C{MessageAST}
-    @type nativeMessages: C{set} of C{NativeType}
+    @type natives: C{set} of C{NativeType}
     @param messages: the set of messages described in this C{MessageAST}
     @type messages: C{set} of C{MessageType}          
     
     """
     def __init__(self,name):
         super(MessageAST,self).__init__(name=name)
-        self.__package              = None        
-        self.__NativeTypeSet = set()
-        self.__messageTypeSet       = set()
-        self.__enumTypeSet          = set()
+        self.__package            = None        
+        self.__nativeTypes        = []
+        self.__messageTypes       = []
+        self.__enumTypes          = []
         # The types dictionary is initialized with builtin types
         self.__types                = {'bool' : ASTElement("bool"),
                                        'string' : ASTElement("string"),
@@ -298,20 +300,20 @@ class MessageAST(ASTElement):
     # pythonic getter/setter using properties   
     package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None)        
         
-    def __getNativeTypeSet(self):
-        return self.__NativeTypeSet  
+    def __getNativeTypes(self):
+        return self.__nativeTypes  
     # pythonic getter/setter using properties   
-    nativeMessages = property(fget=__getNativeTypeSet,fset=None,fdel=None,doc=None)
+    natives = property(fget=__getNativeTypes,fset=None,fdel=None,doc=None)
     
-    def __getMessageTypeSet(self):
-        return self.__messageTypeSet  
+    def __getMessageTypes(self):
+        return self.__messageTypes  
     # pythonic getter/setter using properties      
-    messages = property(fget=__getMessageTypeSet,fset=None,fdel=None,doc=None)
+    messages = property(fget=__getMessageTypes,fset=None,fdel=None,doc=None)
     
-    def __getEnumTypeSet(self):
-        return self.__enumTypeSet
+    def __getEnumTypes(self):
+        return self.__enumTypes
     # pythonic getter/setter using properties   
-    enums = property(fget=__getEnumTypeSet,fset=None,fdel=None,doc=None)         
+    enums = property(fget=__getEnumTypes,fset=None,fdel=None,doc=None)         
         
         
     def add(self,any):
@@ -362,7 +364,7 @@ class MessageAST(ASTElement):
         @param message: The message type to be added
         @type message: C{MessageType}  
         """       
-        self.__messageTypeSet.add(message)
+        self.__messageTypes.append(message)
         self.__types[message.name] = message
         
     def addEnumType(self,enumType):
@@ -372,7 +374,7 @@ class MessageAST(ASTElement):
         @param enumType: The enum type to be added
         @type enumType: C{EnumType}  
         """        
-        self.__enumTypeSet.add(enumType)
+        self.__enumTypes.append(enumType)
         self.__types[enumType.name] = enumType               
     
     def addNativeType(self,native):
@@ -382,7 +384,7 @@ class MessageAST(ASTElement):
         @param native: The message type to be added
         @type native: C{NativeType}  
         """
-        self.__NativeTypeSet.add(native)
+        self.__nativeTypes.append(native)
         self.__types[native.name] = native
         
     def isDefined(self,typename):
@@ -404,7 +406,7 @@ class MessageAST(ASTElement):
             return typename        
     
     def __repr__(self):
-        res = "AST with <%d> native message, <%d> enum, <%d> message type(s)" % (len(self.nativeMessages),len(self.enums),len(self.messages))
+        res = "AST with <%d> native message, <%d> enum, <%d> message type(s)" % (len(self.natives),len(self.enums),len(self.messages))
         res = res + " in package <%s>" % self.package
         return res    
     
@@ -416,13 +418,18 @@ class CommentBlock(ASTElement):
     @param lines: the comments lines
     @type lines: C{list} of C{string}  
     """
-    def __init__(self,content,optComment):
+    def __init__(self,content,isAtEOL):
         """
         C{CommentBlock} constructor
         """
         super(CommentBlock,self).__init__(name="ANY Comment Block")
         self.lines=[content]
-        self.__optComment=optComment
+        self.__isAtEOL=isAtEOL
+        
+    def __getisAtEOL(self):
+        return self.__isAtEOL
+    # pythonic getter/setter using properties   
+    isAtEOL = property(fget=__getisAtEOL,fset=None,fdel=None,doc="True if the comment is optional")   
     
 class Package(ASTElement):
     """
@@ -531,7 +538,7 @@ def p_comment_block(p):
     '''comment_block : COMMENT
                      | COMMENT comment_block'''
     if len(p)==2:                 
-        p[0]=CommentBlock(p[1].strip('/'),optComment=False)
+        p[0]=CommentBlock(p[1].strip('/'),isAtEOL=False)
     else:
         p[0]=p[2]
         p[0].lines.append(p[1].strip('/'))        
@@ -583,20 +590,20 @@ def p_empty(p):
     'empty :'
     pass
 
-def p_optional_comment(p):
-    '''optional_comment : COMMENT 
+def p_eol_comment(p):
+    '''eol_comment : COMMENT 
                         | empty'''
     # we may store the comment text for future use
     if len(p) > 1 and isinstance(p[1],type("")) :
-        p[0] = CommentBlock(p[1].strip('/'),optComment=True)
+        p[0] = CommentBlock(p[1].strip('/'),isAtEOL=True)
         p[0].linespan = p.linespan(1)        
     else:
         p[0] = ""         
     
 def p_enum_value_list(p):
-    '''enum_value_list : enum_val optional_comment  
-                       | enum_val COMMA optional_comment
-                       | enum_val COMMA optional_comment enum_value_list'''
+    '''enum_value_list : enum_val eol_comment  
+                       | enum_val COMMA eol_comment
+                       | enum_val COMMA eol_comment enum_value_list'''
     # Create or append the list (of pair)
     if len(p)==3:
         p[1].comment = p[2]
@@ -622,8 +629,8 @@ def p_enum_val(p):
         p[0].linespan = p.linespan(1)     
 
 def p_field_list(p):
-    '''field_list : field_spec optional_comment
-                  | field_spec optional_comment field_list'''
+    '''field_list : field_spec eol_comment
+                  | field_spec eol_comment field_list'''
     if len(p)==3:
         p[0] = [p[1]]
     else:        
@@ -631,8 +638,8 @@ def p_field_list(p):
         p[0].append(p[1])    
 
 def p_field_spec(p):
-    '''field_spec : qualifier typeid ID optional_comment
-                  | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET optional_comment'''
+    '''field_spec : qualifier typeid ID eol_comment
+                  | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET eol_comment'''
     if len(p)==5:
         p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
         p[0].comment = p[4]
@@ -689,8 +696,13 @@ def find_column(input,token):
     column = (token.lexpos - last_cr) + 1
     return column
     
-def p_error(p):         
-    print "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
+def p_error(p):             
+    if lexer in dir(p):
+        msg = "Syntax error at '%s' on line %d column %d (token type is '%s')" % (p.value,p.lineno,find_column(p.lexer.lexdata, p),p.type)
+    else:
+        msg = "Syntax error at '%s' on line %d (token type is '%s')" % (p.value,p.lineno,p.type)
+    print msg
+    
 
 class ASTChecker(object):
     """
@@ -700,8 +712,7 @@ class ASTChecker(object):
     def __init__(self):
         self.logger = logging.Logger("ASTChecker")
         self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(stdoutHandler)
-        pass
+        self.logger.addHandler(stdoutHandler)        
     
     def check(self,AST):
         """
@@ -744,44 +755,142 @@ class ASTChecker(object):
                     msg.merge = AST.getType(msg.merge)
         AST.checked = True                  
     
-class TextGenerator(object):
+class CodeGenerator(object):
     """
-    This is a text generator.
+    This is a base class generator for C{MessageAST}.
+    
+    This is not a working generator it should be subclassed. 
     """
-    def __init__(self,MessageAST):
+    def __init__(self,MessageAST,commentLineBeginWith):
         self.AST = MessageAST
+        self.commentLineBeginWith = commentLineBeginWith
+        self.logger = logging.Logger("CodeGenerator")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)
+        self.__indentString = "   "
+        self.__indentLevel  = 0        
+        
+    def setIndentString(self,indentString):
+        self.__indentString = indentString
+        
+    def indent(self):
+        self.__indentLevel += 1            
+        
+    def unIndent(self):
+        if self.__indentLevel>0:
+            self.__indentLevel -= 1
+        else:
+            self.logger.error("Trying to unIndent lower than 0!??!")
             
+    def getIndent(self):
+        res=""
+        i = self.__indentLevel
+        while i>0:
+             res = res + self.__indentString
+             i -= 1
+        return res
+    
+    def lowerFirst(self,str):
+        res = str[0].lower()+str[1:]
+        return res
+        
+    def upperFirst(self,str):
+        res = str[0].upper()+str[1:]
+        return res        
+        
     def writeComment(self,stream,ASTElement):
+        """
+        Write a comment block to the stream.
+        
+        This function may be generic if the target
+        language has whole line comment support
+        with some beginning characters.
+        """
         if ASTElement.hasComment():
-            for line in ASTElement.comment.lines:                
-                stream.write("// ")
+            for line in ASTElement.comment.lines:
+                # we should not indent optional comment
+                # since they come at the end of a line
+                if not ASTElement.comment.isAtEOL:                
+                    stream.write(self.getIndent())                
+                stream.write(self.commentLineBeginWith)
                 stream.write(str(line))
                 stream.write("\n")
-        else:
-            stream.write("\n")
-            
-    def generate(self,stream):
+        else:            
+            stream.write("\n")        
+    
+    def generateHeader(self,stream):
+        """
+        Generate the header.
+        """
+        self.logger.error("generateHeader not IMPLEMENTED")
+    
+    def generateBody(self,stream):
+        """
+        Generate the body.
+        """
+        self.logger.error("generateHeader not IMPLEMENTED")        
+    
+    def generateFactory(self,stream):
+        """
+        Generate the Factory.
+        """
+        self.logger.error("generateHeader not IMPLEMENTED")
+    
+    def generate(self,stream,what):
+        stream.write(self.commentLineBeginWith)
+        stream.write(" Generated on %s by the CERTI message generator\n"%datetime.datetime.now().strftime("%Y %B %a, %d at %H:%M:%S"))
+        if what.lower() == "header":
+            self.generateHeader(stream)
+        elif what.lower() == "body":
+            self.generateBody(stream)
+        elif what.lower() == "factory":
+            self.generateFactory(stream)
+    
+class TextGenerator(CodeGenerator):
+    """
+    This is a text generator for C{MessageAST}.
+    
+    This generator should produce almost the same output
+    as the input message specification file. 
+    """
+    def __init__(self,MessageAST):
+        super(TextGenerator,self).__init__(MessageAST,"//")
+        self.logger = logging.Logger("TextGenerator")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)            
+                        
+    def generate(self,stream,what):
+        """
+        Redefine super.generate.
+        
+        what is not important in this case.
+        """
         # Generate package 
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
-            stream.write("package %s\n" % self.AST.package.name)
+            stream.write("package %s\n\n" % self.AST.package.name)
+            
+        # Generate native type
+        for native in self.AST.natives:            
+            self.writeComment(stream, native)
+            stream.write("native %s\n\n" % native.name)          
+            
         # Generate enum
         for enum in self.AST.enums:
             self.writeComment(stream, enum)
             stream.write("enum %s {\n" % enum.name)
             first = True
-            for enumval in enum.values:
+            self.indent()
+            for enumval in enum.values:                
                 if first:
-                    stream.write("     %s = %d, " % (enumval.name,enumval.value))                
+                    stream.write(self.getIndent()+"%s = %d, " % (enumval.name,enumval.value))                
                     first=False
                 else:
-                    stream.write("     %s, " % enumval.name)
-                self.writeComment(stream, enumval)                
-            stream.write("}\n")
-        # Generate native message
-        for native in self.AST.nativeMessages:            
-            self.writeComment(stream, native)
-            stream.write("native %s\n" % native.name) 
+                    stream.write(self.getIndent()+"%s, " % enumval.name)
+                self.writeComment(stream, enumval)
+            self.unIndent()                    
+            stream.write("}\n\n")                                
+             
         # Generate message type
         for msg in self.AST.messages:
             self.writeComment(stream, msg)
@@ -796,58 +905,170 @@ class TextGenerator(object):
                 if field.hasDefaultValue():
                     stream.write("[default=%s] " % field.defaultValue)                                    
                 self.writeComment(stream, field)                    
-            stream.write("}\n")
+            stream.write("}\n\n")        
             
-class CXXGenerator(object):
-    """This is a C++ generator"""
+class CXXGenerator(CodeGenerator):
+    """
+    This is a C++ generator for C{MessageAST}.
+    
+    """
     def __init__(self,MessageAST):
-        self.AST = MessageAST
+        super(CXXGenerator,self).__init__(MessageAST,"//")
+        self.logger = logging.Logger("CXXGenerator")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)                    
+        
+    def openNamespaces(self,stream):
+        if self.AST.hasPackage():
+            self.writeComment(stream, self.AST.package)
+            # we may have nested namespace
+            nameSpaceList = self.AST.package.name.split(".")            
+            for ns in nameSpaceList:
+                stream.write(self.getIndent()+"namespace %s {\n" % ns)
+                self.indent()
+                
+    def closeNamespaces(self, stream):        
+        if self.AST.hasPackage():
+            # we may have nested namespace
+            nameSpaceList = self.AST.package.name.split(".")
+            nameSpaceList.reverse()
+            for ns in nameSpaceList:
+                self.unIndent()
+                stream.write(self.getIndent()+"} "+self.commentLineBeginWith+" end of namespace %s \n" % ns)
+                
+    def writeOneGetterSetter(self,stream,field):
+        if field.typeid.name == "bool":
+            stream.write(self.getIndent())
+            stream.write("void "+field.name+"On()")
+            stream.write(" {"+field.name+" = true;};\n")
             
-    def writeComment(self,stream,ASTElement):
-        if ASTElement.hasComment():
-            for line in ASTElement.comment.lines:                
-                stream.write("// ")
-                stream.write(str(line))
-                stream.write("\n")
+            stream.write(self.getIndent())
+            stream.write("void "+field.name+"Off()")
+            stream.write(" {"+field.name+" = false;};\n")
+        
+            stream.write(self.getIndent())
+            stream.write("bool get"+self.upperFirst(field.name)+"()")
+            stream.write(" {return "+field.name+";};\n")
         else:
-            stream.write("\n")
+            stream.write(self.getIndent())
+            stream.write(field.typeid.name + " get"+self.upperFirst(field.name)+"()")
+            stream.write(" {return "+field.name+";};\n")        
             
-    def generate(self,stream):
-        stream.write("C++ generator is NOT Implemented\n")
+            stream.write(self.getIndent())
+            stream.write("void set"+self.upperFirst(field.name)+"(")
+            stream.write(field.typeid.name+" new"+self.upperFirst(field.name)+")")
+            stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")        
+                                                    
+    def generateHeader(self,stream):        
+        # Generate namespace for specified package package 
+        # we may have nested namespace
+        self.openNamespaces(stream)
+        
+        # Native type should be defined in included header
+        stream.write(self.getIndent()+self.commentLineBeginWith)
+        stream.write("Native types should be defined by included headers\n")
+        for native in self.AST.natives:                        
+            self.writeComment(stream, native)
+            stream.write(self.getIndent()+self.commentLineBeginWith)
+            stream.write("native %s\n" % native.name)
+        
+        # Generate enum
+        for enum in self.AST.enums:            
+            self.writeComment(stream, enum)
+            stream.write(self.getIndent())
+            stream.write("enum %s {\n" % enum.name)
+            self.indent()
+            first = True
+            for enumval in enum.values:
+                if first:
+                    stream.write(self.getIndent())
+                    stream.write("%s = %d, " % (enumval.name,enumval.value))                
+                    first=False
+                else:
+                    stream.write(self.getIndent())
+                    stream.write("%s, " % enumval.name)
+                self.writeComment(stream, enumval)
+            self.unIndent()      
+            stream.write(self.getIndent())          
+            stream.write("}"+ self.commentLineBeginWith + "end of enum %s \n" % enum.name)
+         
+        # Generate message type
+        for msg in self.AST.messages:
+            self.writeComment(stream, msg)            
+            stream.write(self.getIndent())
+            stream.write("class CERTI_EXPORT %s" % msg.name)
+            if msg.hasMerge():
+                stream.write(" : public %s {\n" % msg.merge.name)                
+            else:
+                stream.write(" {\n")
+            
+            self.indent()
+            
+            # begin public
+            stream.write(self.getIndent()+"public:\n")            
+            self.indent()
+            if msg.hasMerge():
+               stream.write(self.getIndent()+"typedef %s Super;\n"%msg.merge.name) 
+            # now write constructor/destructor
+            stream.write(self.getIndent()+msg.name+";\n")
+            stream.write(self.getIndent()+"virtual ~"+msg.name+";\n")
+            
+            # write virtual serialize and deserialize
+            # if we have some specific field
+            if len(msg.fields)>0:
+                # serialize/deserialize 
+                stream.write(self.getIndent()+"virtual void serialize(MessageBuffer& msgBuffer);\n")
+                stream.write(self.getIndent()+"virtual void deserialize(MessageBuffer& msgBuffer);\n")
+                # specific getter/setter
+                stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
+                for field in msg.fields:
+                    self.writeOneGetterSetter(stream,field)
+                            
+            self.unIndent()
+            # end public:
+            
+            # begin protected
+            stream.write(self.getIndent()+"protected:\n")
+            self.indent()
+            for field in msg.fields:
+                stream.write(self.getIndent())                
+                stream.write("%s %s;" % (field.typeid.name,field.name))                                        
+                self.writeComment(stream, field)
+            self.unIndent()
+            # end protected  
+            
+            # begin private
+            stream.write(self.getIndent()+"private:\n")
+            self.indent()
+            self.unIndent()
+            # end private
+            
+            self.unIndent()
+            stream.write(self.getIndent() + "}\n")
+            
+        # may close any open namespaces 
+        self.closeNamespaces(stream)
 
-class JavaGenerator(object):
-    """This is a Java generator"""
+class JavaGenerator(CodeGenerator):
+    """
+    This is a Java generator for C{MessageAST}.
+    """
     def __init__(self,MessageAST):
-        self.AST = MessageAST
-            
-    def writeComment(self,stream,ASTElement):
-        if ASTElement.hasComment():
-            for line in ASTElement.comment.lines:                
-                stream.write("// ")
-                stream.write(str(line))
-                stream.write("\n")
-        else:
-            stream.write("\n")
-            
-    def generate(self,stream):
-        stream.write("Java generator is NOT Implemented\n")
+        super(JavaGenerator,self).__init__(MessageAST,"//")
+        self.logger = logging.Logger("JavaGenerator")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)        
                      
-class PythonGenerator(object):
-    """This is a Python generator"""
+class PythonGenerator(CodeGenerator):
+    """
+    This is a Python generator for C{MessageAST}.
+    """
     def __init__(self,MessageAST):
-        self.AST = MessageAST
-            
-    def writeComment(self,stream,ASTElement):
-        if ASTElement.hasComment():
-            for line in ASTElement.comment.lines:                
-                stream.write("// ")
-                stream.write(str(line))
-                stream.write("\n")
-        else:
-            stream.write("\n")
-            
-    def generate(self,stream):
-        stream.write("Python generator is NOT Implemented\n")                     
+        super(PythonGenerator,self).__init__(MessageAST,"##")
+        self.logger = logging.Logger("PythonGenerator")
+        self.logger.setLevel(logging.ERROR)
+        self.logger.addHandler(stdoutHandler)
+                                                
                      
 # Build the PLY parser
 parserlogger = logging.Logger("MessageParser")
@@ -861,6 +1082,9 @@ msgFile =  open(messagefile,'r')
 lexer.lineno = 1
 parser.AST = MessageAST(messagefile)
 parser.parse(msgFile.read(),lexer=lexer)
+parser.AST.messages.reverse()
+parser.AST.enums.reverse()
+parser.AST.natives.reverse()
 msgFile.close()
 mainlogger.info("Parse succeeded %s" % (parser.AST))
 
@@ -871,41 +1095,27 @@ if parser.AST.checked:
     mainlogger.info("AST properties checked Ok.")
 else:
     mainlogger.error("AST has error, generation step may produce invalid files!!!")
+    sys.exit()
 
 mainlogger.info("Generate %s from AST,..."%language)
 if language=="Text":    
     textGen = TextGenerator(parser.AST)
-    textGen.generate(sys.stdout)    
+    textGen.generate(output,gentype)    
 elif language=="C++":
     cxxGen = CXXGenerator(parser.AST)
-    cxxGen.generate(sys.stdout)
+    cxxGen.generate(output,gentype)
 elif language=="Java":
     cxxGen = JavaGenerator(parser.AST)
-    cxxGen.generate(sys.stdout)
+    cxxGen.generate(output,gentype)
 elif language=="Python":
     cxxGen = PythonGenerator(parser.AST)
-    cxxGen.generate(sys.stdout)
+    cxxGen.generate(output,gentype)
 
 mainlogger.info("Generate %s from AST, Done."%language)
 
 sys.exit()
 for l in msgFile:
     cname = l.strip('_ \n')    
-    if (gentype.lower()=="header"):
-        print "/*<BEGIN>---------- %s ------------<BEGIN>*/" % cname.title()
-        print "class CERTI_EXPORT NM_%s : public NetworkMessage {" % cname.title()
-        print "  public:"
-        print "       NM_%s();"  % cname.title()
-        print "       virtual ~NM_%s();"  % cname.title()
-        print "       virtual void serialize();"
-        print "       virtual void deserialize();"
-        print "       /* specific Getter/Setter */"
-        print "  protected:"
-        print "       /* specific field */"
-        print "  private:"       
-        print "};\n"
-        print "/*<END>---------- %s ------------<END>*/\n" % cname.title()
-        
 
     if (gentype.lower()=="body"):
         print "/*<BEGIN>---------- %s ------------<BEGIN>*/" % cname.title()
