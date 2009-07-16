@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.9 2009/07/15 20:57:24 erk Exp $
+## $Id: GenerateMessages.py,v 1.10 2009/07/16 13:13:15 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -259,7 +259,7 @@ class MessageAST(ASTElement):
     @param package: the package which the generated message will belong
                     this will be used by the specific AST generator
     @type package:  C{Package}                     
-    @param natives: the set of native messages described in this
+    @param natives: the set of native types described in this
                           C{MessageAST}
     @type natives: C{set} of C{NativeType}
     @param messages: the set of messages described in this C{MessageAST}
@@ -406,7 +406,7 @@ class MessageAST(ASTElement):
             return typename        
     
     def __repr__(self):
-        res = "AST with <%d> native message, <%d> enum, <%d> message type(s)" % (len(self.natives),len(self.enums),len(self.messages))
+        res = "AST with <%d> native type(s), <%d> enum, <%d> message type(s)" % (len(self.natives),len(self.enums),len(self.messages))
         res = res + " in package <%s>" % self.package
         return res    
     
@@ -959,7 +959,12 @@ class CXXGenerator(CodeGenerator):
             stream.write(field.typeid.name+" new"+self.upperFirst(field.name)+")")
             stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")        
                                                     
-    def generateHeader(self,stream):        
+    def generateHeader(self,stream):
+        # write the usual header protecting MACRO
+        (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
+        headerProtectMacroName = "%s__HH" % headerProtectMacroName.upper()
+        stream.write("#ifndef %s"%headerProtectMacroName)
+        stream.write("#define %s"%headerProtectMacroName)        
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1010,8 +1015,8 @@ class CXXGenerator(CodeGenerator):
             if msg.hasMerge():
                stream.write(self.getIndent()+"typedef %s Super;\n"%msg.merge.name) 
             # now write constructor/destructor
-            stream.write(self.getIndent()+msg.name+";\n")
-            stream.write(self.getIndent()+"virtual ~"+msg.name+";\n")
+            stream.write(self.getIndent()+msg.name+"();\n")
+            stream.write(self.getIndent()+"virtual ~"+msg.name+"();\n")
             
             # write virtual serialize and deserialize
             # if we have some specific field
@@ -1048,6 +1053,9 @@ class CXXGenerator(CodeGenerator):
             
         # may close any open namespaces 
         self.closeNamespaces(stream)
+        # close usual HEADER protecting MACRO
+        stream.write(self.commentLineBeginWith+"%s\n"%headerProtectMacroName)
+        stream.write("#endif")
 
 class JavaGenerator(CodeGenerator):
     """
@@ -1098,18 +1106,22 @@ else:
     sys.exit()
 
 mainlogger.info("Generate %s from AST,..."%language)
-if language=="Text":    
+if language.lower()=="text":    
     textGen = TextGenerator(parser.AST)
     textGen.generate(output,gentype)    
-elif language=="C++":
+elif language.lower=="c++":
     cxxGen = CXXGenerator(parser.AST)
     cxxGen.generate(output,gentype)
-elif language=="Java":
+elif language.lower=="java":
     cxxGen = JavaGenerator(parser.AST)
     cxxGen.generate(output,gentype)
-elif language=="Python":
+elif language.lower()=="python":
     cxxGen = PythonGenerator(parser.AST)
     cxxGen.generate(output,gentype)
+elif language.lower()=="none":
+    mainlogger.info("Nothing to generate for <%s>."%language)
+else:
+    mainlogger.error("Language <%s> is unknown" % language)
 
 mainlogger.info("Generate %s from AST, Done."%language)
 

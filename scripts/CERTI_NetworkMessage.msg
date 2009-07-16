@@ -186,6 +186,85 @@ message NM_Remove_Object : merge NM_Delete_Object {}
 
 message NM_Change_Attribute_Transport_Type : merge NetworkMessage {}
 
+message NM_Change_Attribute_Order_Type : merge NetworkMessage {}
+
+message NM_Change_Interaction_Transport_Type : merge NetworkMessage {}
+
+message NM_Change_Interaction_Order_Type : merge NetworkMessage {}
+
+message NM_Request_Class_Attribute_Value_Update : merge NetworkMessage {}
+
+native ObjectHandle
+message NM_Request_Object_Attribute_Value_Update : merge NM_WithHandleArray {
+	required ObjectHandle object
+}
+
+message NM_Is_Attribute_Owned_By_Federate : merge NetworkMessage {}
+
+message NM_Query_Attribute_Ownership : merge NM_Is_Attribute_Owned_By_Federate {}
+
+message NM_Attribute_Is_Not_Owned : merge NM_Is_Attribute_Owned_By_Federate {}
+
+message NM_Inform_Attribute_Ownership : merge NM_Is_Attribute_Owned_By_Federate {}
+
+message NM_Negotiated_Attribute_Ownership_Divestiture : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Attribute_Ownership_Acquisition_Notification : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Attribute_Ownership_Divestiture_Notification : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Request_Attribute_Ownership_Assumption : merge NM_Negotiated_Attribute_Ownership_Divestiture {}
+
+message NM_Attribute_Ownership_Unavailable : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Attribute_Ownership_Acquisition_If_Available : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Unconditional_Attribute_Ownership_Divestiture : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Attribute_Ownership_Acquisition : merge NM_Negotiated_Attribute_Ownership_Divestiture {}
+
+message NM_Request_Attribute_Ownership_Release : merge NM_Negotiated_Attribute_Ownership_Divestiture {}
+
+message NM_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Attribute_Ownership_Release_Response : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Request_Object_Attribute_Value_Update {}
+
+message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Request_Object_Attribute_Value_Update {}
+
+native SpaceHandle
+message NM_DDM_Create_Region : merge NM_DDM_Base {
+	required SpaceHandle space
+	required int32 region
+}
+
+message NM_DDM_Modify_Region : merge NM_DDM_Base {
+	required int32 region
+}
+
+message NM_DDM_Delete_Region : merge NM_DDM_Base {
+	required int32 region
+}
+
+message NM_DDM_Associate_Region : merge NM_DDM_Base {
+	required int32 region
+	required ObjectHandle object
+}
+message NM_DDM_Unassociate_Region : merge NM_DDM_Base {}
+
+message NM_DDM_Register_Object : merge NM_DDM_Base {}
+
+message NM_DDM_Subscribe_Attributes : merge NM_DDM_Base {}
+message NM_DDM_Unsubscribe_Attributes : merge NM_DDM_Base {}
+
+message NM_DDM_Subscribe_Interaction : merge NM_DDM_Base {}
+message NM_DDM_Unsubscribe_Interaction : merge NM_DDM_Subscribe_Interaction {}
+
+message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Value_Update {}
+
+
+
 message NM_Get_FED_File : merge NetworkMessage {
 	required string FEDid // the FED identifier
 	required string line  // one line of the FED file
