@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.12 2009/07/17 15:31:58 erk Exp $
+## $Id: GenerateMessages.py,v 1.13 2009/07/17 15:36:16 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -911,9 +911,9 @@ class CodeGenerator(object):
         stream.write(self.commentLineBeginWith)
         stream.write(" Generated on %s by the CERTI message generator\n"%datetime.datetime.now().strftime("%Y %B %a, %d at %H:%M:%S"))
         if what.lower() == "header":
-            self.generateHeader(stream)
+            self.generateHeader(stream,factoryOnly)
         elif what.lower() == "body":
-            self.generateBody(stream)
+            self.generateBody(stream,factoryOnly)
         else:
             self.logger.error("What <%s> unknown type??"%what)
     
@@ -1070,87 +1070,88 @@ class CXXGenerator(CodeGenerator):
         # we may have nested namespace
         self.openNamespaces(stream)
         
-        # Native type should be defined in included header
-        stream.write(self.getIndent()+self.commentLineBeginWith)
-        stream.write("Native types should be defined by included headers\n")
-        for native in self.AST.natives:                        
-            self.writeComment(stream, native)
+        if not factoryOnly:
+            # Native type should be defined in included header
             stream.write(self.getIndent()+self.commentLineBeginWith)
-            stream.write("native %s\n" % native.name)
-        
-        # Generate enum
-        for enum in self.AST.enums:            
-            self.writeComment(stream, enum)
-            stream.write(self.getIndent())
-            stream.write("enum %s {\n" % enum.name)
-            self.indent()
-            first = True
-            for enumval in enum.values:
-                if first:
-                    stream.write(self.getIndent())
-                    stream.write("%s = %d, " % (enumval.name,enumval.value))                
-                    first=False
+            stream.write("Native types should be defined by included headers\n")
+            for native in self.AST.natives:                        
+                self.writeComment(stream, native)
+                stream.write(self.getIndent()+self.commentLineBeginWith)
+                stream.write("native %s\n" % native.name)
+            
+            # Generate enum
+            for enum in self.AST.enums:            
+                self.writeComment(stream, enum)
+                stream.write(self.getIndent())
+                stream.write("enum %s {\n" % enum.name)
+                self.indent()
+                first = True
+                for enumval in enum.values:
+                    if first:
+                        stream.write(self.getIndent())
+                        stream.write("%s = %d, " % (enumval.name,enumval.value))                
+                        first=False
+                    else:
+                        stream.write(self.getIndent())
+                        stream.write("%s, " % enumval.name)
+                    self.writeComment(stream, enumval)
+                self.unIndent()      
+                stream.write(self.getIndent())          
+                stream.write("}"+ self.commentLineBeginWith + "end of enum %s \n" % enum.name)
+             
+            # Generate message type
+            for msg in self.AST.messages:
+                self.writeComment(stream, msg)            
+                stream.write(self.getIndent())
+                stream.write("class CERTI_EXPORT %s" % msg.name)
+                if msg.hasMerge():
+                    stream.write(" : public %s {\n" % msg.merge.name)                
                 else:
-                    stream.write(self.getIndent())
-                    stream.write("%s, " % enumval.name)
-                self.writeComment(stream, enumval)
-            self.unIndent()      
-            stream.write(self.getIndent())          
-            stream.write("}"+ self.commentLineBeginWith + "end of enum %s \n" % enum.name)
-         
-        # Generate message type
-        for msg in self.AST.messages:
-            self.writeComment(stream, msg)            
-            stream.write(self.getIndent())
-            stream.write("class CERTI_EXPORT %s" % msg.name)
-            if msg.hasMerge():
-                stream.write(" : public %s {\n" % msg.merge.name)                
-            else:
-                stream.write(" {\n")
-            
-            self.indent()
-            
-            # begin public
-            stream.write(self.getIndent()+"public:\n")            
-            self.indent()
-            if msg.hasMerge():
-               stream.write(self.getIndent()+"typedef %s Super;\n"%msg.merge.name) 
-            # now write constructor/destructor
-            stream.write(self.getIndent()+msg.name+"();\n")
-            stream.write(self.getIndent()+"virtual ~"+msg.name+"();\n")
-            
-            # write virtual serialize and deserialize
-            # if we have some specific field
-            if len(msg.fields)>0:
-                # serialize/deserialize 
-                stream.write(self.getIndent()+"virtual void serialize(MessageBuffer& msgBuffer);\n")
-                stream.write(self.getIndent()+"virtual void deserialize(MessageBuffer& msgBuffer);\n")
-                # specific getter/setter
-                stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
+                    stream.write(" {\n")
+                
+                self.indent()
+                
+                # begin public
+                stream.write(self.getIndent()+"public:\n")            
+                self.indent()
+                if msg.hasMerge():
+                   stream.write(self.getIndent()+"typedef %s Super;\n"%msg.merge.name) 
+                # now write constructor/destructor
+                stream.write(self.getIndent()+msg.name+"();\n")
+                stream.write(self.getIndent()+"virtual ~"+msg.name+"();\n")
+                
+                # write virtual serialize and deserialize
+                # if we have some specific field
+                if len(msg.fields)>0:
+                    # serialize/deserialize 
+                    stream.write(self.getIndent()+"virtual void serialize(MessageBuffer& msgBuffer);\n")
+                    stream.write(self.getIndent()+"virtual void deserialize(MessageBuffer& msgBuffer);\n")
+                    # specific getter/setter
+                    stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
+                    for field in msg.fields:
+                        self.writeOneGetterSetter(stream,field)
+                                
+                self.unIndent()
+                # end public:
+                
+                # begin protected
+                stream.write(self.getIndent()+"protected:\n")
+                self.indent()
                 for field in msg.fields:
-                    self.writeOneGetterSetter(stream,field)
-                            
-            self.unIndent()
-            # end public:
-            
-            # begin protected
-            stream.write(self.getIndent()+"protected:\n")
-            self.indent()
-            for field in msg.fields:
-                stream.write(self.getIndent())                
-                stream.write("%s %s;" % (field.typeid.name,field.name))                                        
-                self.writeComment(stream, field)
-            self.unIndent()
-            # end protected  
-            
-            # begin private
-            stream.write(self.getIndent()+"private:\n")
-            self.indent()
-            self.unIndent()
-            # end private
-            
-            self.unIndent()
-            stream.write(self.getIndent() + "}\n")
+                    stream.write(self.getIndent())                
+                    stream.write("%s %s;" % (field.typeid.name,field.name))                                        
+                    self.writeComment(stream, field)
+                self.unIndent()
+                # end protected  
+                
+                # begin private
+                stream.write(self.getIndent()+"private:\n")
+                self.indent()
+                self.unIndent()
+                # end private
+                
+                self.unIndent()
+                stream.write(self.getIndent() + "}\n")
 
         # Generate Factory (if any)
         # @todo
