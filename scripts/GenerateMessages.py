@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.11 2009/07/17 00:22:05 erk Exp $
+## $Id: GenerateMessages.py,v 1.12 2009/07/17 15:31:58 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -49,10 +49,10 @@ mainlogger.setLevel(logging.ERROR)
 mainlogger.addHandler(stdoutHandler)
 
 def usage():
-    print "Usage:\n %s --file=<message> [--language=C++|Java|Python|Text] [--type=header|body|factory] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
+    print "Usage:\n %s --input=<message> [--language=C++|Java|Python|Text] [--type=header|body] [--factory-only] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
-    opts, args = getopt.getopt(sys.argv[1:], "f:l:t:o:vh", ["file=","language=","type=","output=","verbose","help"])
+    opts, args = getopt.getopt(sys.argv[1:], "i:l:t:o:vh", ["input=","language=","type=","factory-only","output=","verbose","help"])
 except getopt.GetoptError, err:
     mainlogger.error("opt = %s, msg = %s" % (err.opt,err.msg))    
     usage()
@@ -64,18 +64,21 @@ if len(opts) < 1:
     
 # default value
 verbose=False
+factoryOnly=False
 gentype="header"
 language="Text"
 output=sys.stdout
 
 # Parse command line options
 for o, a in opts:
-    if o in ("-f", "--file"):
-        messagefile=a
+    if o in ("-i", "--input"):
+        inputFile=a
     if o in ("-l", "--language"):
         language=a
     if o in ("-t", "--type"):
         gentype=a
+    if o in ("-f", "--factory-only"):
+        factoryOnly=True
     if o in ("-o", "--output"):        
         output=open(a,mode="w")
     if o in ("-v", "--verbose"):
@@ -85,7 +88,7 @@ for o, a in opts:
         usage()
         sys.exit(0)
 
-mainlogger.info("Reading message specifications from: <%s>" % messagefile)       
+mainlogger.info("Reading message specifications from: <%s>" % inputFile)       
 mainlogger.info("output send to: <%s>" % repr(output))
 mainlogger.info("Generating for language: <%s>" % language)
 
@@ -892,33 +895,27 @@ class CodeGenerator(object):
         else:            
             stream.write("\n")        
     
-    def generateHeader(self,stream):
+    def generateHeader(self,stream,factoryOnly=False):
         """
         Generate the header.
         """
         self.logger.error("generateHeader not IMPLEMENTED")
     
-    def generateBody(self,stream):
+    def generateBody(self,stream,factoryOnly=False):
         """
         Generate the body.
         """
-        self.logger.error("generateHeader not IMPLEMENTED")        
+        self.logger.error("generateBody not IMPLEMENTED")            
     
-    def generateFactory(self,stream):
-        """
-        Generate the Factory.
-        """
-        self.logger.error("generateHeader not IMPLEMENTED")
-    
-    def generate(self,stream,what):
+    def generate(self,stream,what,factoryOnly=False):        
         stream.write(self.commentLineBeginWith)
         stream.write(" Generated on %s by the CERTI message generator\n"%datetime.datetime.now().strftime("%Y %B %a, %d at %H:%M:%S"))
         if what.lower() == "header":
             self.generateHeader(stream)
         elif what.lower() == "body":
             self.generateBody(stream)
-        elif what.lower() == "factory":
-            self.generateFactory(stream)
+        else:
+            self.logger.error("What <%s> unknown type??"%what)
     
 class TextGenerator(CodeGenerator):
     """
@@ -933,7 +930,7 @@ class TextGenerator(CodeGenerator):
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)            
                         
-    def generate(self,stream,what):
+    def generate(self,stream,what,factoryOnly=False):
         """
         Redefine super.generate.
         
@@ -944,43 +941,43 @@ class TextGenerator(CodeGenerator):
             self.writeComment(stream, self.AST.package)
             stream.write("package %s\n\n" % self.AST.package.name)
 
-
-        # Generate native type
-        for native in self.AST.natives:            
-            self.writeComment(stream, native)
-            stream.write("native %s\n\n" % native.name)          
-            
-        # Generate enum
-        for enum in self.AST.enums:
-            self.writeComment(stream, enum)
-            stream.write("enum %s {\n" % enum.name)
-            first = True
-            self.indent()
-            for enumval in enum.values:                
-                if first:
-                    stream.write(self.getIndent()+"%s = %d, " % (enumval.name,enumval.value))                
-                    first=False
+        if not factoryOnly:
+            # Generate native type
+            for native in self.AST.natives:            
+                self.writeComment(stream, native)
+                stream.write("native %s\n\n" % native.name)          
+                
+            # Generate enum
+            for enum in self.AST.enums:
+                self.writeComment(stream, enum)
+                stream.write("enum %s {\n" % enum.name)
+                first = True
+                self.indent()
+                for enumval in enum.values:                
+                    if first:
+                        stream.write(self.getIndent()+"%s = %d, " % (enumval.name,enumval.value))                
+                        first=False
+                    else:
+                        stream.write(self.getIndent()+"%s, " % enumval.name)
+                    self.writeComment(stream, enumval)
+                self.unIndent()                    
+                stream.write("}\n\n")                                
+                 
+            # Generate message type
+            for msg in self.AST.messages:
+                self.writeComment(stream, msg)
+                stream.write("message %s"%msg.name)
+                if msg.hasMerge():
+                    stream.write(" : merge %s {\n" % msg.merge.name)
                 else:
-                    stream.write(self.getIndent()+"%s, " % enumval.name)
-                self.writeComment(stream, enumval)
-            self.unIndent()                    
-            stream.write("}\n\n")                                
-             
-        # Generate message type
-        for msg in self.AST.messages:
-            self.writeComment(stream, msg)
-            stream.write("message %s"%msg.name)
-            if msg.hasMerge():
-                stream.write(" : merge %s {\n" % msg.merge.name)
-            else:
-                stream.write(" {\n")
-            
-            for field in msg.fields:
-                stream.write("        %s %s %s " % (field.qualifier,field.typeid.name,field.name))
-                if field.hasDefaultValue():
-                    stream.write("[default=%s] " % field.defaultValue)                                    
-                self.writeComment(stream, field)                    
-            stream.write("}\n\n")
+                    stream.write(" {\n")
+                
+                for field in msg.fields:
+                    stream.write("        %s %s %s " % (field.qualifier,field.typeid.name,field.name))
+                    if field.hasDefaultValue():
+                        stream.write("[default=%s] " % field.defaultValue)                                    
+                    self.writeComment(stream, field)                    
+                stream.write("}\n\n")
             
         # Generate Factory
         if self.AST.hasFactory():
@@ -991,8 +988,6 @@ class TextGenerator(CodeGenerator):
             stream.write(self.getIndent()+"factoryReceiver %s %s(%s)\n"% self.AST.factory.creator)
             self.unIndent()
             stream.write("}\n\n")
-
-
             
 class CXXGenerator(CodeGenerator):
     """
@@ -1065,7 +1060,7 @@ class CXXGenerator(CodeGenerator):
             stream.write(targetTypeName+" new"+self.upperFirst(field.name)+")")
             stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")        
                                                     
-    def generateHeader(self,stream):
+    def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
         (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
         headerProtectMacroName = "%s__HH" % headerProtectMacroName.upper()
@@ -1161,8 +1156,7 @@ class CXXGenerator(CodeGenerator):
         # @todo
         if self.AST.hasFactory():
             pass
-            
-            
+                        
         # may close any open namespaces 
         self.closeNamespaces(stream)
         # close usual HEADER protecting MACRO
@@ -1177,7 +1171,24 @@ class JavaGenerator(CodeGenerator):
         super(JavaGenerator,self).__init__(MessageAST,"//")
         self.logger = logging.Logger("JavaGenerator")
         self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(stdoutHandler)        
+        self.logger.addHandler(stdoutHandler)
+        # Message builtin type to Java type
+        # Note that java integer type are ALL signed:
+        # http://java.sun.com/docs/books/tutorial/java/nutsandbolts/datatypes.html
+        self.builtinTypeMap = {'onoff'    : 'boolean',
+                               'bool'     : 'boolean',
+                               'string'   : 'java.lang.String',
+                               'byte'     : 'byte',
+                               'int8'     : 'byte',
+                               'uint8'    : 'byte',
+                               'int16'    : 'short',
+                               'uint16'   : 'short',
+                               'int32'    : 'int',
+                               'uint32'   : 'int',   
+                               'int64'    : 'long',
+                               'uint64'   : 'long',
+                               'float'    : 'float',
+                               'double'   : 'double',}      
                      
 class PythonGenerator(CodeGenerator):
     """
@@ -1188,6 +1199,7 @@ class PythonGenerator(CodeGenerator):
         self.logger = logging.Logger("PythonGenerator")
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
+        # Message builtin type to Java type
                                                 
                      
 # Build the PLY parser
@@ -1198,9 +1210,9 @@ parser = ply.yacc.yacc(debug=True)
 parser.logger = parserlogger 
     
 mainlogger.info("Parsing message file specifications...")    
-msgFile =  open(messagefile,'r')
+msgFile =  open(inputFile,'r')
 lexer.lineno = 1
-parser.AST = MessageAST(messagefile)
+parser.AST = MessageAST(inputFile)
 parser.parse(msgFile.read(),lexer=lexer)
 parser.AST.messages.reverse()
 parser.AST.enums.reverse()
@@ -1220,22 +1232,22 @@ else:
 mainlogger.info("Generate %s from AST,..."%language)
 if language.lower()=="text":    
     textGen = TextGenerator(parser.AST)
-    textGen.generate(output,gentype)    
+    textGen.generate(output,gentype,factoryOnly)    
 elif language.lower()=="c++":
     cxxGen = CXXGenerator(parser.AST)
-    cxxGen.generate(output,gentype)
+    cxxGen.generate(output,gentype,factoryOnly)
 elif language.lower()=="java":
-    cxxGen = JavaGenerator(parser.AST)
-    cxxGen.generate(output,gentype)
+    javaGen = JavaGenerator(parser.AST)
+    javaGen.generate(output,gentype,factoryOnly)
 elif language.lower()=="python":
-    cxxGen = PythonGenerator(parser.AST)
-    cxxGen.generate(output,gentype)
+    pythonGen = PythonGenerator(parser.AST)
+    pythonGen.generate(output,gentype,factoryOnly)
 elif language.lower()=="none":
-    mainlogger.info("Nothing to generate for <%s>."%language)
+    mainlogger.info("Nothing to generate for <%s>." % language)
 else:
     mainlogger.error("Language <%s> is unknown" % language)
 
-mainlogger.info("Generate %s from AST, Done."%language)
+mainlogger.info("Generate %s from AST, Done." % language)
 
 sys.exit()
 for l in msgFile:
