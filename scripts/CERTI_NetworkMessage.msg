@@ -31,6 +31,7 @@ native BasicMessage
 // for message exchanged between RTIA and RTIG
 // AKA CERTI Network Message
 native NetworkMessage
+native NM_Type
 
 // Message is the base class 
 // for message exchanged between Federate and RTIA
@@ -66,11 +67,11 @@ message NM_Join_Federation_Execution : merge NetworkMessage {}
 message NM_Resign_Federation_Execution : merge NetworkMessage {}
 
 message NM_Set_Time_Regulating : merge NetworkMessage {
-	required bool regulator
+	required onoff regulator
 }
 
 message NM_Set_Time_Constrained : merge NetworkMessage {
-	required bool regulator
+	required onoff constrained
 }
 
 message NM_Time_Regulation_Enabled : merge NetworkMessage {}
@@ -86,11 +87,11 @@ message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
 }
 
 message NM_Set_Class_Relevance_Advisory_Switch : merge NetworkMessage {    
-	required bool classRelevanceAdvisorySwitch // value of CRA switch 	
+	required onoff classRelevanceAdvisorySwitch // value of CRA switch 	
 }
 
 message NM_Set_Interaction_Relevance_Advisory_Switch : merge NetworkMessage {    
-	required bool interactionRelevanceAdvisorySwitch // value of IRA switch 	
+	required onoff interactionRelevanceAdvisorySwitch // value of IRA switch 	
 }
 
 message NM_Set_Attribute_Relevance_Advisory_Switch : merge NetworkMessage {    
@@ -269,3 +270,10 @@ message NM_Get_FED_File : merge NetworkMessage {
 	required string FEDid // the FED identifier
 	required string line  // one line of the FED file
 }
+
+factory NM_Factory {
+
+	factoryCreator  NetworkMessage create(NM_Type)
+	factoryReceiver NetworkMessage receive(StreamType)
+}
+

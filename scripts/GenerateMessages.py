@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.10 2009/07/16 13:13:15 erk Exp $
+## $Id: GenerateMessages.py,v 1.11 2009/07/17 00:22:05 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -93,27 +93,31 @@ mainlogger.info("Generating for language: <%s>" % language)
 # reserved keywords
 reserved = {
    'package'        : 'PACKAGE',
-   'native' : 'NATIVE',            
-   'message' : 'MESSAGE',
-   'merge' : 'MERGE',
-   'enum' : 'ENUM',
-   'default' : 'DEFAULT',
+   'factory'        : 'FACTORY',
+   'factoryCreator' : 'FACTORY_CREATOR',
+   'factoryReceiver': 'FACTORY_RECEIVER',   
+   'native'   : 'NATIVE',            
+   'message'  : 'MESSAGE',
+   'merge'    : 'MERGE',
+   'enum'     : 'ENUM',
+   'default'  : 'DEFAULT',
    'required' : 'REQUIRED',
-   'optional': 'OPTIONAL',
-   'repeated': 'REPEATED',
-   'bool' : 'BOOL_T',
-   'string' : 'STRING_T',
-   'byte' : 'BYTE_T',
-   'int8' : 'INT8_T',
-   'uint8' : 'UINT8_T',
-   'int16' : 'INT16_T',
-   'uint16' : 'UINT16_T',
-   'int32' : 'INT32_T',
-   'uint32' : 'UINT32_T',   
-   'int64' : 'INT64_T',
-   'uint64' : 'UINT64_T',
-   'float' : 'FLOAT_T',
-   'double' : 'DOUBLE_T',
+   'optional' : 'OPTIONAL',
+   'repeated' : 'REPEATED',
+   'onoff'    : 'ONOFF_T',
+   'bool'     : 'BOOL_T',
+   'string'   : 'STRING_T',
+   'byte'     : 'BYTE_T',
+   'int8'     : 'INT8_T',
+   'uint8'    : 'UINT8_T',
+   'int16'    : 'INT16_T',
+   'uint16'   : 'UINT16_T',
+   'int32'    : 'INT32_T',
+   'uint32'   : 'UINT32_T',   
+   'int64'    : 'INT64_T',
+   'uint64'   : 'UINT64_T',
+   'float'    : 'FLOAT_T',
+   'double'   : 'DOUBLE_T',
 }
 
 # List of token names.   This is always required
@@ -123,6 +127,7 @@ tokens = ['ID',
           'FLOAT_VALUE',
           'BOOL_VALUE',          
           'RBRACE','LBRACE',
+          'RPAREN','LPAREN',
           'RBRACKET','LBRACKET',
           'COMMA',
           'EQUAL',
@@ -161,10 +166,10 @@ def t_FLOAT_VALUE(t):
     return t
 
 def t_BOOL_VALUE(t): 
-    r'true|false|True|False'     
-    if (t.value.lower()=="true"):        
+    r'true|false|True|False|On|on|Off|off'     
+    if t.value.lower()=="true" or t.value.lower()=="on":        
         t.value = True
-    elif (t.value.lower()=="false"):
+    elif t.value.lower()=="false" or t.value.lower()=="off" :
         t.value = False
     else:                
         t.lexer.logger.error("Invalid Boolean value too large", t.value) 
@@ -175,6 +180,8 @@ t_LBRACE = r'{'
 t_RBRACE = r'}'
 t_LBRACKET = r'\['
 t_RBRACKET = r'\]'
+t_LPAREN = r'\('
+t_RPAREN = r'\)'
 t_COMMA = r','
 t_EQUAL = r'='
 t_COLON = r':'
@@ -268,12 +275,14 @@ class MessageAST(ASTElement):
     """
     def __init__(self,name):
         super(MessageAST,self).__init__(name=name)
-        self.__package            = None        
+        self.__package            = None
+        self.__factory            = None
         self.__nativeTypes        = []
         self.__messageTypes       = []
         self.__enumTypes          = []
         # The types dictionary is initialized with builtin types
-        self.__types                = {'bool' : ASTElement("bool"),
+        self.__types                = {'onoff' : ASTElement("onoff"),
+                                       'bool' : ASTElement("bool"),
                                        'string' : ASTElement("string"),
                                        'byte' : ASTElement("byte"),
                                        'int8' : ASTElement("int8"),
@@ -298,7 +307,16 @@ class MessageAST(ASTElement):
     def __setPackage(self,package):
         self.__package = package
     # pythonic getter/setter using properties   
-    package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None)        
+    package = property(fget=__getPackage,fset=__setPackage,fdel=None,doc=None)
+
+    def hasFactory(self):
+        return self.__factory != None
+    def __getFactory(self):
+        return self.__factory
+    def __setFactory(self,factory):
+        self.__factory = factory
+    # pythonic getter/setter using properties   
+    factory = property(fget=__getFactory,fset=__setFactory,fdel=None,doc=None)
         
     def __getNativeTypes(self):
         return self.__nativeTypes  
@@ -343,6 +361,8 @@ class MessageAST(ASTElement):
                 self.addMessageType(any)
             elif isinstance(any,Package):
                 self.package = any
+            elif isinstance(any,Factory):
+                self.factory = any
             # Handle comment block preceding other AST element
             elif isinstance(any,CommentBlock):                
                 if self.__ultimateElement != None:
@@ -407,6 +427,7 @@ class MessageAST(ASTElement):
     
     def __repr__(self):
         res = "AST with <%d> native type(s), <%d> enum, <%d> message type(s)" % (len(self.natives),len(self.enums),len(self.messages))
+        res = res + " and factory <%s> "% self.factory.name
         res = res + " in package <%s>" % self.package
         return res    
     
@@ -444,6 +465,24 @@ class Package(ASTElement):
           
     def __repr__(self):
         return "package %s" % self.name
+
+class Factory(ASTElement):
+    """
+    Represents a factory.
+    
+    A C{Factory} is anC{ASTElement} whose
+    name is a C{string}.
+    """
+    def __init__(self,name,creator,receiver):        
+        super(Factory,self).__init__(name)
+        self.creator  = creator
+        self.receiver = receiver
+          
+    def __repr__(self):
+        res="factory %s" % self.name
+        res=res+ ", creator = %s %s(%s)" % creator
+        res=res+ ", receiver = %s %s(%s)" % receiver
+        return res    
      
 class NativeType(ASTElement):
     """ 
@@ -528,7 +567,8 @@ def p_statement_list(p):
 
 def p_statement(p):
     '''statement : comment_block
-                 | package                 
+                 | package
+                 | factory
                  | message                 
                  | native                 
                  | enum'''        
@@ -555,6 +595,18 @@ def p_package_id(p):
         p[0]=p[1]
     else:
         p[0]=p[1]+"."+p[3]
+
+def p_factory(p):
+    '''factory : FACTORY ID LBRACE factory_creator factory_receiver RBRACE'''
+    p[0] = Factory(p[2],p[4],p[5])
+
+def p_factory_creator(p):
+    '''factory_creator : FACTORY_CREATOR ID ID LPAREN ID RPAREN'''
+    p[0]=(p[2],p[3],p[5])
+
+def p_factory_receiver(p):
+    '''factory_receiver : FACTORY_RECEIVER ID ID LPAREN ID RPAREN'''
+    p[0]=(p[2],p[3],p[5])
             
 def p_message(p):
     '''message : MESSAGE ID LBRACE RBRACE 
@@ -656,7 +708,8 @@ def p_qualifier(p):
     p[0] = p[1]
     
 def p_typeid(p):
-    '''typeid : BOOL_T
+    '''typeid : ONOFF_T
+              | BOOL_T
               | STRING_T
               | BYTE_T
               | INT8_T
@@ -674,10 +727,10 @@ def p_typeid(p):
     
 def p_defined_type(p):
     '''defined_type : ID'''
+    # A defined type is either a Message or Native or Enum Type.
     # This kind of type should be checked
-    # When the AST has been built.
-    # We cannot check it now because of the recursive
-    # nature of the parser.
+    # **after* the AST has been built entirely.
+    # We cannot check it now because of the recursive nature of the parser.
     p[0]=p[1]    
     
 def p_value(p):
@@ -742,8 +795,15 @@ class ASTChecker(object):
                     return
                 else:                   
                    f.typeid = AST.getType(f.typeid)
+
+        # @todo
+        # Should check if the default value of a field
+        # has the appropriate type (builtin types)
+        # and that field with defined type have NO
+        # default value
                                 
         # check if merger are either native or message
+        # @todo should check that merger is not an enum
         for msg in AST.messages:
             if msg.hasMerge():
                 if not AST.isDefined(msg.merge):
@@ -768,7 +828,21 @@ class CodeGenerator(object):
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
         self.__indentString = "   "
-        self.__indentLevel  = 0        
+        self.__indentLevel  = 0
+        self.builtinTypeMap = {'onoff'    : 'onoff',
+                               'bool'     : 'bool',
+                               'string'   : 'string',
+                               'byte'     : 'byte',
+                               'int8'     : 'int8',
+                               'uint8'    : 'uint8',
+                               'int16'    : 'int16',
+                               'uint16'   : 'uint16',
+                               'int32'    : 'int32',
+                               'uint32'   : 'uint32',   
+                               'int64'    : 'int64',
+                               'uint64'   : 'uint64',
+                               'float'    : 'float',
+                               'double'   : 'double',}
         
     def setIndentString(self,indentString):
         self.__indentString = indentString
@@ -869,7 +943,8 @@ class TextGenerator(CodeGenerator):
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
             stream.write("package %s\n\n" % self.AST.package.name)
-            
+
+
         # Generate native type
         for native in self.AST.natives:            
             self.writeComment(stream, native)
@@ -905,7 +980,19 @@ class TextGenerator(CodeGenerator):
                 if field.hasDefaultValue():
                     stream.write("[default=%s] " % field.defaultValue)                                    
                 self.writeComment(stream, field)                    
-            stream.write("}\n\n")        
+            stream.write("}\n\n")
+            
+        # Generate Factory
+        if self.AST.hasFactory():
+            self.writeComment(stream, self.AST.factory)
+            stream.write("factory %s {\n" % self.AST.factory.name)
+            self.indent()
+            stream.write(self.getIndent()+"factoryCreator %s %s(%s)\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"factoryReceiver %s %s(%s)\n"% self.AST.factory.creator)
+            self.unIndent()
+            stream.write("}\n\n")
+
+
             
 class CXXGenerator(CodeGenerator):
     """
@@ -916,7 +1003,22 @@ class CXXGenerator(CodeGenerator):
         super(CXXGenerator,self).__init__(MessageAST,"//")
         self.logger = logging.Logger("CXXGenerator")
         self.logger.setLevel(logging.ERROR)
-        self.logger.addHandler(stdoutHandler)                    
+        self.logger.addHandler(stdoutHandler)
+        self.builtinTypeMap = {'onoff'    : 'bool',
+                               'bool'     : 'bool',
+                               'string'   : 'std::string',
+                               'byte'     : 'byte',
+                               'int8'     : 'int8_t',
+                               'uint8'    : 'uint8_t',
+                               'int16'    : 'int16_t',
+                               'uint16'   : 'uint16_t',
+                               'int32'    : 'int32_t',
+                               'uint32'   : 'uint32_t',   
+                               'int64'    : 'int64_t',
+                               'uint64'   : 'uint64_t',
+                               'float'    : 'float_t',
+                               'double'   : 'double_t',}
+
         
     def openNamespaces(self,stream):
         if self.AST.hasPackage():
@@ -937,7 +1039,11 @@ class CXXGenerator(CodeGenerator):
                 stream.write(self.getIndent()+"} "+self.commentLineBeginWith+" end of namespace %s \n" % ns)
                 
     def writeOneGetterSetter(self,stream,field):
-        if field.typeid.name == "bool":
+        if field.typeid.name in self.builtinTypeMap.keys():
+            targetTypeName = self.builtinTypeMap[field.typeid.name]
+        else:
+            targetTypeName = field.typeid.name
+        if field.typeid.name == "onoff":
             stream.write(self.getIndent())
             stream.write("void "+field.name+"On()")
             stream.write(" {"+field.name+" = true;};\n")
@@ -947,24 +1053,24 @@ class CXXGenerator(CodeGenerator):
             stream.write(" {"+field.name+" = false;};\n")
         
             stream.write(self.getIndent())
-            stream.write("bool get"+self.upperFirst(field.name)+"()")
+            stream.write(targetTypeName+ " is"+self.upperFirst(field.name)+"On()")
             stream.write(" {return "+field.name+";};\n")
         else:
             stream.write(self.getIndent())
-            stream.write(field.typeid.name + " get"+self.upperFirst(field.name)+"()")
+            stream.write(targetTypeName + " get"+self.upperFirst(field.name)+"()")
             stream.write(" {return "+field.name+";};\n")        
             
             stream.write(self.getIndent())
             stream.write("void set"+self.upperFirst(field.name)+"(")
-            stream.write(field.typeid.name+" new"+self.upperFirst(field.name)+")")
+            stream.write(targetTypeName+" new"+self.upperFirst(field.name)+")")
             stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")        
                                                     
     def generateHeader(self,stream):
         # write the usual header protecting MACRO
         (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
         headerProtectMacroName = "%s__HH" % headerProtectMacroName.upper()
-        stream.write("#ifndef %s"%headerProtectMacroName)
-        stream.write("#define %s"%headerProtectMacroName)        
+        stream.write("#ifndef %s\n"%headerProtectMacroName)
+        stream.write("#define %s\n"%headerProtectMacroName)        
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1050,12 +1156,18 @@ class CXXGenerator(CodeGenerator):
             
             self.unIndent()
             stream.write(self.getIndent() + "}\n")
+
+        # Generate Factory (if any)
+        # @todo
+        if self.AST.hasFactory():
+            pass
+            
             
         # may close any open namespaces 
         self.closeNamespaces(stream)
         # close usual HEADER protecting MACRO
-        stream.write(self.commentLineBeginWith+"%s\n"%headerProtectMacroName)
-        stream.write("#endif")
+        stream.write(self.commentLineBeginWith+" %s\n"%headerProtectMacroName)
+        stream.write("#endif\n")
 
 class JavaGenerator(CodeGenerator):
     """
@@ -1109,10 +1221,10 @@ mainlogger.info("Generate %s from AST,..."%language)
 if language.lower()=="text":    
     textGen = TextGenerator(parser.AST)
     textGen.generate(output,gentype)    
-elif language.lower=="c++":
+elif language.lower()=="c++":
     cxxGen = CXXGenerator(parser.AST)
     cxxGen.generate(output,gentype)
-elif language.lower=="java":
+elif language.lower()=="java":
     cxxGen = JavaGenerator(parser.AST)
     cxxGen.generate(output,gentype)
 elif language.lower()=="python":
