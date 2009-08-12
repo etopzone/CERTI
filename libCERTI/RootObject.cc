@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.40 2008/11/08 11:36:05 erk Exp $
+// $Id: RootObject.cc,v 3.41 2009/08/12 13:48:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -247,9 +247,18 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
 
     Object *object ;
     object = objects->registerObjectInstance(the_federate, the_class,
-					     the_object, the_object_name);
-
-    ObjectClasses->registerObjectInstance(the_federate, object, the_class);
+                                             the_object, the_object_name);
+    try {
+        ObjectClasses->registerObjectInstance(the_federate, object, the_class);
+    }
+    catch(...)
+    {   //the object is added to the ObjectSet before we check to see if the
+        //object class has been defined or published.  Therefore, if an
+        //exception is thrown and the instance was not added, we remove
+        //it from the ObjectSet here and rethrow the exception.
+        objects->deleteObjectInstance(the_federate, the_object, "");
+        throw;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -351,4 +360,4 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.40 2008/11/08 11:36:05 erk Exp $
+// $Id: RootObject.cc,v 3.41 2009/08/12 13:48:37 erk Exp $

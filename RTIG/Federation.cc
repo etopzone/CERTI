@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.107 2009/05/19 09:52:06 gotthardp Exp $
+// $Id: Federation.cc,v 3.108 2009/08/12 13:48:36 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1590,8 +1590,18 @@ Federation::registerObject(FederateHandle federate,
     strname += object_name ? string(object_name) : "HLA" + new_id ;
 
     // Register Object.
-    root->registerObjectInstance(federate, class_handle, new_id,
-				 strname.c_str());
+    try
+    {
+        root->registerObjectInstance(federate, class_handle, new_id,
+                                     strname.c_str());
+    }
+    catch(...)
+    {   //If an exception was thrown, the object instance was not added
+        //and we can free the object handle id for future use and rethrow
+        //the exception
+        objectHandles.free(new_id);
+        throw;
+    }
     G.Out(pdGendoc,"exit Federation::registerObject");
     return new_id ;
 }
@@ -2572,5 +2582,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.107 2009/05/19 09:52:06 gotthardp Exp $
+// $Id: Federation.cc,v 3.108 2009/08/12 13:48:36 erk Exp $
 
