@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.13 2009/07/17 15:36:16 erk Exp $
+## $Id: GenerateMessages.py,v 1.14 2009/08/18 13:54:54 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -430,8 +430,10 @@ class MessageAST(ASTElement):
     
     def __repr__(self):
         res = "AST with <%d> native type(s), <%d> enum, <%d> message type(s)" % (len(self.natives),len(self.enums),len(self.messages))
-        res = res + " and factory <%s> "% self.factory.name
-        res = res + " in package <%s>" % self.package
+        if (self.hasFactory()):
+            res = res + " and factory <%s> "% self.factory.name
+        if (self.hasPackage()):
+            res = res + " in package <%s>" % self.package
         return res    
     
 class CommentBlock(ASTElement):
