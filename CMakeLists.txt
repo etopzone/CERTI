@@ -46,7 +46,10 @@ IF (USE_FULL_RPATH)
     # which point to directories outside the build tree to the install RPATH
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 ENDIF(USE_FULL_RPATH)
-  
+
+OPTION(BUILD_LEGACY_LIBRTI
+             "Build CERTI legacy libRTI" OFF)
+
 OPTION(BUILD_DOC
              "Build documentation (using doxygen)" OFF)         
              

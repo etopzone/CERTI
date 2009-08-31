@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.104 2009/06/12 08:59:28 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.105 2009/08/31 13:25:45 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -237,7 +237,14 @@ RTI::RTIambassador::tick()
            RTI::ConcurrentAccessAttempted,
            RTI::RTIinternalError)
 {
-   __tick_kernel(RTI_FALSE, 0.0, 0.0);
+#if defined(LEGACY_LIBRTI)
+    __tick_kernel(RTI_FALSE, 0.0, 0.0);
+#elif defined (HLA13NG_LIBRTI)
+    // may suffer from starving
+    __tick_kernel(RTI_TRUE, 0.0, std::numeric_limits<double>::infinity());
+#else
+#error "At least one LIBRTI flag must be defined."
+#endif
    return RTI_FALSE;
 }
 
@@ -2948,4 +2955,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.104 2009/06/12 08:59:28 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.105 2009/08/31 13:25:45 gotthardp Exp $
