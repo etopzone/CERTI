@@ -24,7 +24,7 @@ class SemaphorePosix : public Semaphore {
 
     public :
     SemaphorePosix() ;
-    ~SemaphorePosix() ;
+    virtual ~SemaphorePosix() ;
     void Create_Init(const int initval, const std::string& New_Semname ) ;
     void Attach(const std::string& New_Semname ) ;
     void P() ;

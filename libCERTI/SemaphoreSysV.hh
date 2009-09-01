@@ -21,7 +21,7 @@ class SemaphoreSysV : public Semaphore {
 
     public :
     SemaphoreSysV() ;
-    ~SemaphoreSysV() ;
+    virtual ~SemaphoreSysV() ;
     void Create_Init(const int initval, const int cle) ;
     void P() ;
     void V() ;

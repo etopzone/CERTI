@@ -14,7 +14,6 @@ SemaphorePosix::~SemaphorePosix() {}
 // Method : SemaphorePosix::Create_Init(...)
 // ************************************************
 void SemaphorePosix::Create_Init(const int initval, const std::string& New_Semname) {
-int flag ;
 
  _Semname.assign(New_Semname) ;
 sem_unlink(_Semname.c_str()) ;
@@ -33,7 +32,6 @@ printf("On a ouvert le semaphore %s avec une valeur %d\n", _Semname.c_str(), sem
 // ************************************************
 void SemaphorePosix::Attach(const std::string& New_Semname) {
 
-int flag ;
 _Semname.assign(New_Semname) ;
 _Sem = sem_open( _Semname.c_str(), O_CREAT);  
 if(_Sem == SEM_FAILED){

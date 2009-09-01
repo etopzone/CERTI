@@ -13,7 +13,7 @@ class Semaphore {
 
     public :
     // Semaphore() ;
-    // ~Semaphore() ;
+    virtual ~Semaphore() {};
     // virtual void Sem_create_init(int initval, char * semname) = 0 ;
     // virtual void Sem_create(key_t cle) = 0 ;
     // virtual void Sem_init(int initval) = 0 ;
