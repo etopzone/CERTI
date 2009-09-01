@@ -119,6 +119,27 @@ GSSAPIHandler.hh
 Socket.hh
 )
 
+if (WIN32)
+    message(STATUS "Shared Memory communication is currently unsupported on Windows")
+else(WIN32)
+    SET(CERTI_SHM_SRCS 
+        SHM.hh
+        SHMPosix.cc SHMPosix.hh
+        SHMSysV.cc SHMSysV.hh)
+        
+    SET(CERTI_SEMAPHORE_SRCS
+        Semaphore.hh
+        SemaphorePosix.cc SemaphorePosix.hh
+        SemaphoreSysV.cc SemaphoreSysV.hh
+        )
+        
+    SET(CERTI_SOCKET_SHM_SRC 
+        SocketSHMPosix.cc SocketSHMPosix.hh
+        SocketSHMSysV.cc SocketSHMSysV.hh
+        )
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC}) 
+endif(WIN32)
+
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
 
 SOURCE_GROUP("Source Files\\Socket" FILES ${CERTI_SOCKET_SRCS})
