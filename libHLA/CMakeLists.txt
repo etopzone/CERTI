@@ -2,6 +2,11 @@
 SET(CERTI_TYPES1516_SRCS
     HLAbuffer.hh HLAbuffer.cc
 )
+
+enable_language(C)
+SET(CERTI_UTILITY_SRCS sha1.c sha1.h)
+set_source_files_properties(sha1.c sha1.h PROPERTIES LANGUAGE "C")
+        
  
 SOURCE_GROUP("Source Files\\Types1516" FILES ${CERTI_TYPES1516_SRCS})
 
@@ -17,6 +22,7 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 ADD_LIBRARY(HLA
     ${CERTI_TYPES1516_SRCS}
+    ${CERTI_UTILITY_SRCS}
 )
 
 SET_TARGET_PROPERTIES(HLA PROPERTIES PROJECT_LABEL LibHLA)
@@ -42,6 +48,7 @@ INSTALL(FILES
     HLAvariableArray.hh
     HLAfixedRecord.hh
     HLAvariantRecord.hh
+    sha1.h
     DESTINATION include)
 
 INSTALL(PROGRAMS
