@@ -6,14 +6,6 @@
 #include <iostream>
 #include <string.h>
 
-// Correctly define BOOL type
-//#ifndef __bool_true_false_are_defined
-//#  define TRUE 1
-//#  define FALSE 0
-//#  define bool int
-//#  define __bool_true_false_are_defined
-//#endif
-
 class SHM {
     protected :
     std::string _Name ;
