@@ -1,4 +1,43 @@
 #include "SocketSHMSysV.hh"
+#include "sha1.h"
+
+
+key_t
+SocketSHMSysV::ntokUser(const char* name, int32_t user_specific_value) {
+	  key_t s_key;
+	  int32_t retcode;
+
+	  SHA1Context sha;
+	  uint8_t Message_Digest[20];
+
+	  /* We use the first byte of a SHA1 hash of the BBname
+	   * unless the algorithm fail.
+	   * If SHA1 fail we go back to poor key generation method
+	   * using the name length.
+	   * In both case we must Xored the key with user_specific in order
+	   * to isolate different user from using the same key
+	   */
+	  retcode  = SHA1Reset(&sha);
+	  retcode &= SHA1Input(&sha, (const unsigned char *) name,strlen(name));
+	  retcode &= SHA1Result(&sha, Message_Digest);
+
+	  /* SHA 1 NOK back to old poor method */
+	  if (0 != retcode) {
+	    s_key = ((strlen(name) << 16) & 0xFFFF0000) ^ (user_specific_value & 0x0000FFFF);
+	  } else {
+	    s_key = (Message_Digest[0]        |
+		     (Message_Digest[1] << 8) |
+		     (Message_Digest[2] << 16)|
+		     (Message_Digest[3] << 24)) ^
+	      user_specific_value;
+	  }
+	  return s_key;
+}
+
+key_t
+SocketSHMSysV::ntok(const char* name) {
+	return SocketSHMSysV::ntokUser(name,getuid());
+}
 
 // ************************************************
 // Constructor with args

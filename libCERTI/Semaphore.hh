@@ -2,14 +2,19 @@
 #define SEMAPHORE_H
 
 // Systems includes
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-
+#include <string>
 
 class Semaphore {
-    private :
-    // int _Sem_Id ;
+
+protected:
+	/**
+	 * Build a proper Semaphore name from a user provided name.
+	 * Idea kindly borrowed from TSP (https://savannah.nongnu.org)
+	 * bb_utils_build_sem_name
+	 */
+	std::string buildSemName(std::string& SemName) {
+		return "/"+SemName+"_sem";
+	}
 
     public :
     // Semaphore() ;

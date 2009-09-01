@@ -122,6 +122,7 @@ Socket.hh
 if (WIN32)
     message(STATUS "Shared Memory communication is currently unsupported on Windows")
 else(WIN32)
+    include_directories(${CERTI_SOURCE_DIR}/libHLA)
     SET(CERTI_SHM_SRCS 
         SHM.hh
         SHMPosix.cc SHMPosix.hh
@@ -218,7 +219,7 @@ SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
 TARGET_LINK_LIBRARIES(CERTI
     ${LIBXML2_LIBRARIES}
     ${GEN_LIBRARY}
-    ${SOCKET_LIBRARY})
+    ${SOCKET_LIBRARY} HLA)
 IF (MINGW)
     SET_TARGET_PROPERTIES(CERTI PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libCERTI.def")
     INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libCERTI.def

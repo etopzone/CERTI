@@ -1,3 +1,16 @@
+// SHM useful systems includes
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <fcntl.h>
+
+// Others Systems includes
+#include <math.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <iostream>
+#include <string.h>
+
 #include "SHMPosix.hh"
 
 // ************************************************

@@ -2,9 +2,7 @@
 #define SOCKET_SHM_SYSV_H
 
 // Specifics includes
-#include "Semaphore.hh"
 #include "SemaphoreSysV.hh"
-#include "SHM.hh"
 #include "SHMSysV.hh"
 
 class SocketSHMSysV {
@@ -16,6 +14,36 @@ private:
     /***** Customer -->>> Server ******/
     SHMSysV _Shm_CS ;
     SemaphoreSysV _Sem_plein_CS, _Sem_vide_CS ;      
+
+    /**
+     * Build a SysV IPC key from a name and user specific value.
+     * The purpose of this function is to build a (quasi) unique
+     * key from unique entry as ftok(3) do with existing file name.
+     * We use SHA1 hash function Xored with the user_specific
+     * value supplied.
+     * @param[in] name, the name representing the IPC element for which
+     *                 we want a key.
+     * @param[in] user_specific_value, any user specific value
+     *                               (for example uid).
+     * @return The generated SysV IPC key corresponding to the specified entry
+     */
+    key_t
+    static ntokUser(const char* name, int32_t user_specific_value);
+
+    /**
+     * Build a SysV IPC key from a name.
+     * L'objectif de cette fonction est de g�n�rer des
+     * clefs diff�rentes pour des noms diff�rents, � la mani�re
+     * d'une fonction de hachage ou checksum parfaite.
+     * Cette fonction vise les m�me objectifs que ftok(3)
+     * avec les noms de fichiers mais avec une chaine
+     * de caractere quelconque.
+     * @param name un nom repr�sentant l'�l�ment IPC pour lequel on
+     *                veut g�n�rer une clef.
+     * @return SysV IPC key corresponding to the specified name.
+     */
+    key_t
+    static ntok(const char* name);
 
 public :
     // Constructor
