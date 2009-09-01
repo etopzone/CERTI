@@ -7,12 +7,12 @@
 #include <string.h>
 
 // Correctly define BOOL type
-#ifndef __bool_true_false_are_defined
-#  define TRUE 1
-#  define FALSE 0
-#  define bool int
-#  define __bool_true_false_are_defined
-#endif
+//#ifndef __bool_true_false_are_defined
+//#  define TRUE 1
+//#  define FALSE 0
+//#  define bool int
+//#  define __bool_true_false_are_defined
+//#endif
 
 class SHM {
     protected :
@@ -23,6 +23,7 @@ class SHM {
 
     public :
     SHM(const std::string& SHMName, const int SHMSize,const bool isCreator) {_Name=SHMName; _Size=SHMSize; _IsCreator=isCreator; }
+    virtual ~SHM() {};
     const std::string getName() const {return _Name ; } ; 
     inline void* GetShm(){return _Shm ; } ;
     inline bool IsCreator(){return _IsCreator ; } ;
