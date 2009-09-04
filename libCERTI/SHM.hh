@@ -16,28 +16,23 @@ protected :
 	bool _IsCreator ;
 	void *_Shm ;
 
-	/**
-	 * Build a proper SHM name from a user provided name.
-	 * Idea kindly borrowed from TSP (https://savannah.nongnu.org)
-	 * bb_utils_build_shm_name
-	 */
-	std::string buildShmName(std::string& ShmName) {
-	  return "/"+ShmName+"_shm";
-	}
-
 public :
 	/**
 	 * Constructor.
 	 * @param[in] SHNName, the name of the shared memory segment.
 	 *            this should be unique on a specified host.
 	 * @param[in] SHMSize, the requested size of the SHM
-	 * @param[in] isCreator,
 	 */
-	SHM(const std::string& SHMName, const int SHMSize, const bool isCreator)
+	SHM(const std::string& SHMName, const int SHMSize, const bool True)
 		{_Name=SHMName;
 		 _Size=SHMSize;
-		 _IsCreator=isCreator;
+		 _IsCreator=True;
 		 }
+ 	SHM(const std::string& SHMName, const int SHMSize)
+		{_Name=SHMName;
+		 _Size=SHMSize;
+		 _IsCreator=false;
+		 }       
 	virtual ~SHM() {};
 	const std::string getName() const {return _Name ; } ;
 	inline void* GetShm(){return _Shm ; } ;
@@ -46,6 +41,15 @@ public :
 	virtual void Open() = 0 ;
 	virtual void Attach() = 0 ;
 	virtual void Close() = 0 ;
+
+        /**
+	 * Build a proper SHM name from a user provided name.
+	 * Idea kindly borrowed from TSP (https://savannah.nongnu.org)
+	 * bb_utils_build_shm_name
+	 */
+	static std::string buildShmName(const std::string& ShmName) {
+	  return "/"+ShmName+"_shm";
+	}
 } ;
 
 #endif

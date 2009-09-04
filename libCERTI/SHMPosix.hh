@@ -10,7 +10,8 @@ class SHMPosix : public SHM {
     int _Id ;  // identifiant du segment memoire affecté dans la methode : Open()
    
     public :
-    SHMPosix(const std::string& New_Shm_Name, const int New_Shm_Size, const bool It_IsServer) ;
+    SHMPosix(const std::string& SHMName, const int SHMSize, const bool True) ;
+    SHMPosix(const std::string& SHMName, const int SHMSize) ;  
     ~SHMPosix() ;
 
     void Open() ;

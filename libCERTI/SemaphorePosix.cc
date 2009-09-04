@@ -3,12 +3,18 @@
 // ************************************************
 // Constructor
 // ************************************************
-SemaphorePosix::SemaphorePosix(){}
+SemaphorePosix::SemaphorePosix(){
+_Sem = NULL ;
+}
 
 // ************************************************
 // Destructor
 // ************************************************
-SemaphorePosix::~SemaphorePosix() {}
+SemaphorePosix::~SemaphorePosix() {
+if (_Sem!=NULL) {
+  Delete() ;
+}
+}
 
 // ************************************************
 // Method : SemaphorePosix::Create_Init(...)
@@ -17,14 +23,17 @@ void SemaphorePosix::Create_Init(const int initval, const std::string& New_Semna
 
  _Semname.assign(New_Semname) ;
 sem_unlink(_Semname.c_str()) ;
-_Sem = sem_open( _Semname.c_str(), O_CREAT | O_EXCL, S_IRUSR | S_IWUSR ,(int)initval);
+_Sem = sem_open( _Semname.c_str(), O_CREAT | O_EXCL , S_IRUSR | S_IWUSR ,(int)initval) ;
 if(_Sem == SEM_FAILED) {
-     printf("Erreur de creation du semaphore ") ; 
+     perror("Error with sem_open() in SemaphorePosix::Create_Init(...)") ; 
      }
 
+#ifdef DEBUG
 int sem_val ;
-sem_getvalue(_Sem, &sem_val); 
-printf("On a ouvert le semaphore %s avec une valeur %d\n", _Semname.c_str(), sem_val) ; 
+sem_getvalue(_Sem, &sem_val) ; 
+std::cout << "We create the semaphore identified by name : " << _Semname.c_str() << " with an init value : " <<  sem_val << std ::endl ; 
+#endif
+
 } // End of Create_Init(...)
 
 // ************************************************
@@ -32,15 +41,17 @@ printf("On a ouvert le semaphore %s avec une valeur %d\n", _Semname.c_str(), sem
 // ************************************************
 void SemaphorePosix::Attach(const std::string& New_Semname) {
 
-_Semname.assign(New_Semname) ;
-_Sem = sem_open( _Semname.c_str(), O_CREAT);  
+ _Semname.assign(New_Semname) ;
+_Sem = sem_open( New_Semname.c_str(), O_CREAT ) ;  
 if(_Sem == SEM_FAILED){
-   printf("Erreur de creation du semaphore ") ; 
+   perror("Error with sem_open() in SemaphorePosix::Attach(...)") ; 
    } 
 
+#ifdef DEBUG
 int sem_val ;
-sem_getvalue(_Sem, &sem_val); 
-printf("On a attaché le semaphore %s avec une valeur %d\n", _Semname.c_str(), sem_val) ; 
+sem_getvalue(_Sem, &sem_val) ; 
+std::cout << "We attach the semaphore identified by name : " << _Semname.c_str() << " which have the value : " <<  sem_val << std ::endl ; 
+#endif
 } // End of Attach(...)
 
 // ************************************************
@@ -50,12 +61,19 @@ printf("On a attaché le semaphore %s avec une valeur %d\n", _Semname.c_str(), s
 
 void SemaphorePosix::P() {
 
+#ifdef DEBUG
 int sem_val ;
-sem_getvalue(_Sem, &sem_val); 
-printf("Debut P() Pour le Semaphore %s qui a une valeur %d \n", _Semname.c_str(), sem_val ) ;
+sem_getvalue(_Sem, &sem_val) ; 
+std::cout << "Begin of Operation P for the semaphore identified by name : " << _Semname << " which have the value : " << sem_val << std::endl ;
+#endif
+
 sem_wait(_Sem) ;
-sem_getvalue(_Sem, &sem_val);
-printf("Fin P() Pour le Semaphore %s qui a une valeur %d \n", _Semname.c_str(), sem_val ) ; 
+
+#ifdef DEBUG
+sem_getvalue(_Sem, &sem_val) ;
+std::cout << "End of Operation P for the semaphore identified by name : " << _Semname << " which have the value : " << sem_val << std::endl ; 
+#endif
+
 } // End of P()
 
 
@@ -66,20 +84,28 @@ printf("Fin P() Pour le Semaphore %s qui a une valeur %d \n", _Semname.c_str(), 
 
 void SemaphorePosix::V() {
 
+#ifdef DEBUG
 int sem_val ;
-sem_getvalue(_Sem, &sem_val); 
-printf("Debut V() Pour le Semaphore %s qui a une valeur %d \n", _Semname.c_str(), sem_val ) ;
+sem_getvalue(_Sem, &sem_val) ; 
+std::cout << "Begin of Operation V for the semaphore identified by name <" << _Semname << "> which have the value : " << sem_val << std::endl ;
+#endif
+
 sem_post(_Sem) ;
-sem_getvalue(_Sem, &sem_val);
-printf("Fin V() Pour le Semaphore %s qui a une valeur %d \n", _Semname.c_str(), sem_val ) ; 
-printf("\n") ; 
+
+#ifdef DEBUG
+sem_getvalue(_Sem, &sem_val) ;
+std::cout << "End of Operation V for the semaphore identified by name <" << _Semname << "> which have the value : " << sem_val << std::endl ; 
+#endif
+
 } // End of V()
 
 // ************************************************
 // Methode : SemaphorePosix::Delete()
 // ************************************************
 void SemaphorePosix::Delete(){
+
 sem_close(_Sem) ;
-sem_destroy(_Sem);
+sem_destroy(_Sem) ;
+
 } // End of Delete()
 

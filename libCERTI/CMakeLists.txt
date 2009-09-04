@@ -135,6 +135,7 @@ else(WIN32)
         )
         
     SET(CERTI_SOCKET_SHM_SRC 
+        SocketSHM.cc SocketSHM.hh
         SocketSHMPosix.cc SocketSHMPosix.hh
         SocketSHMSysV.cc SocketSHMSysV.hh
         )

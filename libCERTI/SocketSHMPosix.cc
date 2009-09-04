@@ -3,37 +3,43 @@
 // ************************************************
 // Constructor with args
 // ************************************************
-SocketSHMPosix ::SocketSHMPosix (const std::string& New_Shm_Name_SC, 
-		   	         const std::string& New_Shm_Name_CS, 
-                                 const bool& IsServerSC,
-                                 const bool& IsServerCS,
-                                 const int& Size_Shm_SC,
-                                 const int& Size_Shm_CS,
-                                 const std::string& Nom_Sem_plein_SC, 
-		                 const std::string& Nom_Sem_vide_SC,
-                                 const std::string& Nom_Sem_plein_CS, 
-		                 const std::string& Nom_Sem_vide_CS) 
-                              : _Shm_SC(New_Shm_Name_SC, Size_Shm_SC, IsServerSC) ,
-                                _Shm_CS(New_Shm_Name_CS, Size_Shm_CS, IsServerCS) {
+SocketSHMPosix ::SocketSHMPosix (const std::string& Socket_Name, 
+                                 const SHM_SIDE_t& Socket_Side,
+                                 const int Socket_Size ) : SocketSHM(Socket_Name,Socket_Side,Socket_Size) {
+std::string New_Name ;
+// SHMs
+if(_Side == SHM_SC){
+_Shm_SC = new SHMPosix(SHM::buildShmName(Socket_Name+"_SC"), Socket_Size, true) ;
+_Shm_CS = new SHMPosix(SHM::buildShmName(Socket_Name+"_CS"), Socket_Size) ;
+  }
+else {
+_Shm_CS = new SHMPosix(SHM::buildShmName(Socket_Name+"_CS"), Socket_Size, true) ;
+_Shm_SC = new SHMPosix(SHM::buildShmName(Socket_Name+"_SC"), Socket_Size) ;
+}
 
 // Semaphores
-int init_plein = 0, init_vide = 1 ;
 
-if(_Shm_SC.IsCreator()){
-  _Sem_plein_SC.Create_Init(init_plein, Nom_Sem_plein_SC) ;
-  _Sem_vide_SC.Create_Init(init_vide, Nom_Sem_vide_SC) ;
+_Sem_full_SC = new SemaphorePosix() ;
+_Sem_empty_SC = new SemaphorePosix() ;
+_Sem_full_CS = new SemaphorePosix() ;
+_Sem_empty_CS = new SemaphorePosix() ;
+
+int init_full = 0, init_empty = 1 ;
+if(_Side == SHM_SC){
+  _Sem_full_SC->Create_Init(init_full, Semaphore::buildSemName(Socket_Name+"_FULL_SC")) ;
+  _Sem_empty_SC->Create_Init(init_empty, Semaphore::buildSemName(Socket_Name+"_EMPTY_SC")) ;
   }
-if(_Shm_CS.IsCreator()){
-  _Sem_plein_CS.Create_Init(init_plein, Nom_Sem_plein_CS) ;
-  _Sem_vide_CS.Create_Init(init_vide, Nom_Sem_vide_CS) ;
+else{
+  _Sem_full_CS->Create_Init(init_full, Semaphore::buildSemName(Socket_Name+"_FULL_CS")) ;
+  _Sem_empty_CS->Create_Init(init_empty, Semaphore::buildSemName(Socket_Name+"_EMPTY_CS")) ;
   }
-if(_Shm_SC.IsCreator()){
-  _Sem_plein_CS.Attach(Nom_Sem_plein_CS) ;
-  _Sem_vide_CS.Attach(Nom_Sem_vide_CS) ;
+if(_Side == SHM_CS){
+  _Sem_full_SC->Attach(Semaphore::buildSemName(Socket_Name+"_FULL_SC")) ;
+  _Sem_empty_SC->Attach(Semaphore::buildSemName(Socket_Name+"_EMPTY_SC")) ;
   }
-if(_Shm_CS.IsCreator()){
-  _Sem_plein_SC.Attach(Nom_Sem_plein_SC) ;
-  _Sem_vide_SC.Attach(Nom_Sem_vide_SC) ;
+else{
+  _Sem_full_CS->Attach(Semaphore::buildSemName(Socket_Name+"_FULL_CS")) ;
+  _Sem_empty_CS->Attach(Semaphore::buildSemName(Socket_Name+"_EMPTY_CS")) ;
   }
 
 }
@@ -42,15 +48,23 @@ if(_Shm_CS.IsCreator()){
 // ************************************************
 SocketSHMPosix ::~SocketSHMPosix() {
 
-if(_Shm_SC.IsCreator()){
-   _Sem_plein_SC.Delete() ;
-   _Sem_vide_SC.Delete() ;
+if(_Side == SHM_SC){
+   _Sem_full_SC->Delete() ;
+   _Sem_empty_SC->Delete() ;
    }
 
-if(_Shm_CS.IsCreator()){
-   _Sem_plein_CS.Delete() ;
-   _Sem_vide_CS.Delete() ;
+else{
+   _Sem_full_CS->Delete() ;
+   _Sem_empty_CS->Delete() ;
    } 
+
+delete _Sem_full_SC  ;
+delete _Sem_empty_SC  ;
+delete _Sem_full_CS  ;
+delete _Sem_empty_CS ;
+
+delete _Shm_SC ;
+delete _Shm_CS ;
 } // End of ~SocketSHMPosix()
 
 // ************************************************
@@ -59,83 +73,43 @@ if(_Shm_CS.IsCreator()){
 void SocketSHMPosix::Open() {
 
 
-if(_Shm_SC.IsCreator()){
-    _Sem_vide_SC.P() ; 
-     _Shm_SC.Open() ;
-     _Shm_SC.Attach() ;
-    _Sem_vide_SC.V() ;
-     } // End of --> if(_Shm_SC.GetIsServer())
-
-if(_Shm_CS.IsCreator()){
-     _Sem_vide_SC.P() ;  
-     _Shm_SC.Open() ;
-     _Shm_SC.Attach() ;
-     _Sem_vide_SC.V() ;
-     } // End of --> if(_Shm_CS.GetIsServer())
-
-if(_Shm_CS.IsCreator()){
-     _Sem_vide_CS.P() ;
-     _Shm_CS.Open() ;
-     _Shm_CS.Attach() ;
-     _Sem_vide_CS.V() ;
-     } // End of --> if(_Shm_CS.GetIsServer())
-
-if(_Shm_SC.IsCreator()){
-     _Sem_vide_CS.P() ;  
-     _Shm_CS.Open() ;
-     _Shm_CS.Attach() ;
-     _Sem_vide_CS.V() ;
-     } // End of --> if(_Shm_CS.GetIsServer())
+if(_Side == SHM_SC){
+    _Sem_empty_SC->P() ; 
+     _Shm_SC->Open() ;
+     _Shm_SC->Attach() ;
+    _Sem_empty_SC->V() ;
+    #ifdef DEBUG
+    std::cout << " The SHM from Server to Customer is Open " << std::endl ;
+    #endif
+     } 
+else{
+     _Sem_empty_CS->P() ;
+     _Shm_CS->Open() ;
+     _Shm_CS->Attach() ;
+     _Sem_empty_CS->V() ;
+     #ifdef DEBUG
+     std::cout << " The SHM from Customer to Server is Create and Attach" << std::endl ;
+     #endif
+     } 
+if(_Side == SHM_CS){
+     _Sem_empty_SC->P() ;  
+     _Shm_SC->Open() ;
+     _Shm_SC->Attach() ;
+     _Sem_empty_SC->V() ;
+     #ifdef DEBUG
+     std::cout << " The SHM from Server to Customer is identified and attached " << std::endl ;
+     #endif
+     } 
+else{
+     _Sem_empty_CS->P() ;  
+     _Shm_CS->Open() ;
+     _Shm_CS->Attach() ;
+     _Sem_empty_CS->V() ;
+     #ifdef DEBUG
+     std::cout << " The SHM from Customer to Server is identified and attached " << std::endl ;
+     #endif
+     } 
 
 } // End of Open()
 
-// ************************************************
-// Method : SocketSHMPosix::Send(...)
-// ************************************************
-void SocketSHMPosix::Send(void *Buffer) {
-printf("On veut envoyer \n") ;
-
-if(_Shm_SC.IsCreator()){
-     _Sem_vide_SC.P() ;     
-    memcpy(_Shm_SC.GetShm(), Buffer, _Shm_SC.GetSize());
-     _Sem_plein_SC.V() ;
-     } // End of --> if(_Shm_SC.GetIsServer())
-
-if(_Shm_CS.IsCreator()){
-     _Sem_vide_CS.P() ;  
-     memcpy(_Shm_CS.GetShm(), Buffer, _Shm_CS.GetSize());
-     _Sem_plein_CS.V() ;
-     } // End of --> if(_Shm_CS.GetIsServer())
-
-} // End of Send(...)
-
-// ************************************************
-// Method : SocketSHMPosix::Receive(...)
-// ************************************************
-void SocketSHMPosix::Receive(void *Buffer) {
-printf("On veut recevoir \n") ;
-
-if(_Shm_SC.IsCreator()){
-     _Sem_plein_CS.P() ; 
-    memcpy(Buffer, _Shm_CS.GetShm(), _Shm_CS.GetSize());
-     _Sem_vide_CS.V() ;
-     } // End of --> if(_Shm_SC.GetIsServer())
-
-if(_Shm_CS.IsCreator()){
-      _Sem_plein_SC.P() ;  
-     memcpy( Buffer, _Shm_SC.GetShm(), _Shm_SC.GetSize());
-    _Sem_vide_SC.V() ;
-     } // End of --> if(_Shm_CS.GetIsServer())
-
-} // End of --> SocketSHM::Receive(...)
-
-// ************************************************
-// Method : SocketSHMPosix::Close()
-// ************************************************
-void SocketSHMPosix::Close() {
-
-_Shm_SC.Close() ;
-_Shm_CS.Close() ;
-
-} // End of --> SocketSHM::Close()
 
