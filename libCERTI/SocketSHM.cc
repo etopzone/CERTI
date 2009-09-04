@@ -1,4 +1,5 @@
 #include "SocketSHM.hh"
+#include <cstring>
 
 // ************************************************
 // Destructor

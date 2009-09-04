@@ -1,5 +1,6 @@
 #include "SemaphoreSysV.hh"
 #include "sha1.h"
+#include <cstring>
 
 key_t SemaphoreSysV::ntokUser(const char* name, int32_t user_specific_value) {
 
