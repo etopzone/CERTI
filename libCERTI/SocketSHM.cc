@@ -6,6 +6,22 @@
 SocketSHM ::~SocketSHM (){}
 
 // ************************************************
+// Method : SocketSHM::Connect()
+// ************************************************
+void SocketSHM::Connect() {
+
+if(_Side == SHM_CS){
+  _Sem_full_SC->Attach(Semaphore::buildSemName(_Name+"_FULL_SC")) ;
+  _Sem_empty_SC->Attach(Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
+  }
+else{
+  _Sem_full_CS->Attach(Semaphore::buildSemName(_Name+"_FULL_CS")) ;
+  _Sem_empty_CS->Attach(Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
+  }
+
+}
+
+// ************************************************
 // Method : SocketSHM::Send(...)
 // ************************************************
 void SocketSHM::Send(void *Buffer) {

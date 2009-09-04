@@ -17,10 +17,11 @@ INSTALL(TARGETS CertiUtilTests
     
 ADD_TEST(CertiUtilTests CertiUtilTests)
 
-ADD_EXECUTABLE(CertiProcessus_A Main_SocketSHM_A.cc SharedStruct.hh)
+ADD_EXECUTABLE(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)
 TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI rt)
+SET_TARGET_PROPERTIES(CertiProcessus_A PROPERTIES COMPILE_FLAGS -DSIDE_SC)
 
-ADD_EXECUTABLE(CertiProcessus_B Main_SocketSHM_B.cc SharedStruct.hh)
+ADD_EXECUTABLE(CertiProcessus_B Main_SocketSHM.cc SharedStruct.hh)
 TARGET_LINK_LIBRARIES(CertiProcessus_B CERTI rt)
 
 INSTALL(TARGETS CertiProcessus_A CertiProcessus_B

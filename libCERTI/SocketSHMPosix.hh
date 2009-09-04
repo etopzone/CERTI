@@ -20,6 +20,7 @@ public :
     ~SocketSHMPosix (); 
      
     void Open();
+    
 
 }; // End of --> class SocketSHM
 

@@ -33,15 +33,6 @@ else{
   _Sem_full_CS->Create_Init(init_full, Semaphore::buildSemName(Socket_Name+"_FULL_CS")) ;
   _Sem_empty_CS->Create_Init(init_empty, Semaphore::buildSemName(Socket_Name+"_EMPTY_CS")) ;
   }
-if(_Side == SHM_CS){
-  _Sem_full_SC->Attach(Semaphore::buildSemName(Socket_Name+"_FULL_SC")) ;
-  _Sem_empty_SC->Attach(Semaphore::buildSemName(Socket_Name+"_EMPTY_SC")) ;
-  }
-else{
-  _Sem_full_CS->Attach(Semaphore::buildSemName(Socket_Name+"_FULL_CS")) ;
-  _Sem_empty_CS->Attach(Semaphore::buildSemName(Socket_Name+"_EMPTY_CS")) ;
-  }
-
 }
 // ************************************************
 // Destructor

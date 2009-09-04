@@ -19,6 +19,8 @@ public :
     // Destructor
     virtual ~SocketSHM ();
 
+    virtual void Connect() ;
+
     virtual void Send(void *Buffer) ; // To send Data on a memory segment
     virtual void Receive(void *Buffer) ; // To receive Data on a memory segment 
 

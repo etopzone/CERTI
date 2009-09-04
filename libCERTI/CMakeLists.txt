@@ -123,6 +123,9 @@ if (WIN32)
     message(STATUS "Shared Memory communication is currently unsupported on Windows")
 else(WIN32)
     include_directories(${CERTI_SOURCE_DIR}/libHLA)
+
+ADD_DEFINITIONS(-DDEBUG)
+
     SET(CERTI_SHM_SRCS 
         SHM.hh
         SHMPosix.cc SHMPosix.hh
@@ -139,6 +142,7 @@ else(WIN32)
         SocketSHMPosix.cc SocketSHMPosix.hh
         SocketSHMSysV.cc SocketSHMSysV.hh
         )
+
     LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC}) 
 endif(WIN32)
 
