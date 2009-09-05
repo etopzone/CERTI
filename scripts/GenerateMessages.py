@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.16 2009/09/05 18:40:49 erk Exp $
+## $Id: GenerateMessages.py,v 1.17 2009/09/05 21:26:33 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1199,6 +1199,18 @@ class CXXGenerator(CodeGenerator):
         stream.write("#endif\n")
         
     def writeInitFieldStatement(self,stream,field):
+        if field.hasDefaultValue():            
+            stream.write(self.getIndent())
+            stream.write(field.name+"="+field.defaultValue+";\n")
+        else:
+            stream.write(self.getIndent())
+            stream.write(self.commentLineBeginWith)
+            stream.write(field.name+"= <no default value>\n")
+            
+    def writeSerializeFieldStatement(self,stream,field):
+        pass
+    
+    def writeDeSerializeFieldStatement(self,stream,field):
         pass
         
     def generateBody(self,stream,factoryOnly=False):
@@ -1210,81 +1222,87 @@ class CXXGenerator(CodeGenerator):
         self.openNamespaces(stream)
         if not factoryOnly:                        
             # Generate message type
-            for msg in self.AST.messages:
-                self.writeComment(stream, msg)                            
+            for msg in self.AST.messages:                                        
                 # Generate Constructor                
                 stream.write(self.getIndent()+"%s::%s() {\n" % (msg.name,msg.name))            
                 self.indent()
+                # Assign my name.
+                stream.write(self.getIndent()+"this->name = \""+msg.name+"\";\n")
+                stream.write(self.getIndent()+"this->type = "+msg.name.upper().replace("NM_","NetworkMessage::")+";\n")
                 # Write init value if any was provided
                 if len(msg.fields)>0:
                     for field in msg.fields:
                         self.writeInitFieldStatement(stream,field)                        
                 self.unIndent()
-                stream.write(self.getIndent()+"}\n")
+                stream.write(self.getIndent()+"}\n\n")
                 # Generate Destructor                
                 stream.write(self.getIndent()+"%s::~%s() {\n" % (msg.name,msg.name))            
                 self.indent()
                 self.unIndent()
-                stream.write(self.getIndent()+"}\n")
+                stream.write(self.getIndent()+"}\n\n")
                                 
                 # write virtual serialize and deserialize
                 # if we have some specific field
                 if len(msg.fields)>0:
-                    # serialize/deserialize 
-                    stream.write(self.getIndent()+"virtual void serialize(MessageBuffer& msgBuffer);\n")
-                    stream.write(self.getIndent()+"virtual void deserialize(MessageBuffer& msgBuffer);\n")
-                    # specific getter/setter
-                    stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
+                    # begin serialize method 
+                    stream.write(self.getIndent()+"void serialize(MessageBuffer& msgBuffer) {\n")
+                    self.indent()
+                    stream.write(self.getIndent()+self.commentLineBeginWith)
+                    stream.write("Call mother class\n")
+                    stream.write(self.getIndent()+"Super::serialize(msgBuffer);\n")
+                    stream.write(self.getIndent()+self.commentLineBeginWith)
+                    stream.write("Specific serialization code\n")
                     for field in msg.fields:
-                        self.writeOneGetterSetter(stream,field)
-                                
-                self.unIndent()
-                # end public:
-                
-                # begin protected
-                stream.write(self.getIndent()+"protected:\n")
-                self.indent()
-                for field in msg.fields:
-                    stream.write(self.getIndent())                
-                    stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
-                    self.writeComment(stream, field)
-                self.unIndent()
-                # end protected  
-                
-                # begin private
-                stream.write(self.getIndent()+"private:\n")
-                self.indent()
-                self.unIndent()
-                # end private
-                
-                self.unIndent()
-                stream.write(self.getIndent() + "}\n")
-
+                        self.writeSerializeFieldStatement(stream,field)
+                    self.unIndent()
+                    stream.write(self.getIndent()+"}\n\n")
+                    # end serialize method
+                    
+                    # begin deserialize method
+                    stream.write(self.getIndent()+"void deserialize(MessageBuffer& msgBuffer) {\n")
+                    self.indent()
+                    stream.write(self.getIndent()+self.commentLineBeginWith)
+                    stream.write("Call mother class\n")
+                    stream.write(self.getIndent()+"Super::deserialize(msgBuffer);\n")
+                    stream.write(self.getIndent()+self.commentLineBeginWith)
+                    stream.write("Specific deserialization code\n")
+                    for field in msg.fields:
+                        self.writeDeSerializeFieldStatement(stream,field)
+                    self.unIndent()
+                    stream.write(self.getIndent()+"}\n\n")
+                    # end deserialize method
+                    
         # Generate Factory (if any)
         # @todo
-        if self.AST.hasFactory():             
-            self.writeComment(stream, self.AST.factory)
-            stream.write(self.getIndent() + "class CERTI_EXPORT %s {\n" % self.AST.factory.name)
+        if self.AST.hasFactory():                                                             
+            # begin creator                                           
+            creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
+            stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (RTIinternalError) {\n"% creator)
             self.indent()
-            # begin public
-            stream.write(self.getIndent()+"public:\n")            
-            self.indent()            
-            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.creator)
-            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.receiver)
-            self.unIndent()
-            #end public
-            #begin protected
-            stream.write(self.getIndent()+"protected:\n")
-            self.indent()
-            self.unIndent()
-            #end protected
-            #begin private
-            stream.write(self.getIndent()+"private:\n")
-            self.indent()
-            self.unIndent()
-            #end private
+            # FIXME put creator code here
             self.unIndent()
             stream.write(self.getIndent()+"}\n\n")
+            # begin receiver
+            receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
+            stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (RTIinternalError) {\n"% receiver)
+            self.indent()
+            stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
+            stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
+            stream.write(self.getIndent()+"NetworkMessage  msgGen;\n")
+            stream.write(self.getIndent()+"NetworkMessage* msg;\n\n")
+            stream.write(self.getIndent()+self.commentLineBeginWith+" receive generic message \n")
+            stream.write(self.getIndent()+"msgGen.receive(socket,msgBuffer);\n")
+            stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
+            
+            stream.write(self.getIndent()+"msg = ");
+            stream.write(self.AST.factory.name+self.AST.factory.creator[1]+"(msgGen.getType());")
+            
+            stream.write(self.getIndent()+"msgBuffer.assumeSizeFromReservedBytes();\n")    
+            stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")
+            stream.write(self.getIndent()+"return msg;\n")
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n\n")                                    
+                        
         self.closeNamespaces(stream)                        
 
 class JavaGenerator(CodeGenerator):
