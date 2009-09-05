@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.15 2009/09/05 18:38:56 erk Exp $
+## $Id: GenerateMessages.py,v 1.16 2009/09/05 18:40:49 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -704,12 +704,10 @@ def p_field_spec(p):
                   | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET eol_comment'''
     
     if len(p)==5:
-        print p[0],p[1],p[2],p[3]
         p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
         p[0].comment = p[4]
         p[0].linespan = (p.linespan(1)[0],p.linespan(4)[1])
-    else:        
-        print p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9]
+    else:                
         p[0] = MessageType.MessageField(p[1],p[2],p[3],p[7])
         p[0].comment = p[9]   
         p[0].linespan = (p.linespan(1)[0],p.linespan(8)[1])
