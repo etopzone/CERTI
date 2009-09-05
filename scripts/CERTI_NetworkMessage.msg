@@ -51,7 +51,7 @@ message NM_WithHandleArray : merge  NetworkMessage {
 }
 
 message NM_DDM_Base : merge  NM_WithHandleArray {
-	required bool DDM_bool
+	required bool DDM_bool [ default=false ]
 }
 
 message NM_Close_Connexion : merge NetworkMessage {}

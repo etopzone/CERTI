@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.14 2009/08/18 13:54:54 erk Exp $
+## $Id: GenerateMessages.py,v 1.15 2009/09/05 18:38:56 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -33,6 +33,8 @@ import datetime
 # PLY is there: http://www.dabeaz.com/ply/
 import ply.yacc
 import ply.lex
+# We need some regular expression handling 
+import re
 # We use logging for ... logging :-)
 # see http://docs.python.org/library/logging.html
 import logging 
@@ -49,7 +51,7 @@ mainlogger.setLevel(logging.ERROR)
 mainlogger.addHandler(stdoutHandler)
 
 def usage():
-    print "Usage:\n %s --input=<message> [--language=C++|Java|Python|Text] [--type=header|body] [--factory-only] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
+    print "Usage:\n %s --input=<message> [--language=C++|Java|Python|MsgSpec] [--type=header|body] [--factory-only] [--output=<filename>] [--verbose] [--help]" % os.path.basename(sys.argv[0])
     
 try:
     opts, args = getopt.getopt(sys.argv[1:], "i:l:t:o:vh", ["input=","language=","type=","factory-only","output=","verbose","help"])
@@ -66,7 +68,7 @@ if len(opts) < 1:
 verbose=False
 factoryOnly=False
 gentype="header"
-language="Text"
+language="MsgSpec"
 output=sys.stdout
 
 # Parse command line options
@@ -89,7 +91,7 @@ for o, a in opts:
         sys.exit(0)
 
 mainlogger.info("Reading message specifications from: <%s>" % inputFile)       
-mainlogger.info("output send to: <%s>" % repr(output))
+mainlogger.info("output send to: <%s>" % repr(output.name))
 mainlogger.info("Generating for language: <%s>" % language)
 
 # Lexer+Parser specification begins here
@@ -120,7 +122,7 @@ reserved = {
    'int64'    : 'INT64_T',
    'uint64'   : 'UINT64_T',
    'float'    : 'FLOAT_T',
-   'double'   : 'DOUBLE_T',
+   'double'   : 'DOUBLE_T', 
 }
 
 # List of token names.   This is always required
@@ -142,7 +144,10 @@ tokens = ['ID',
 # This is a message of field or name identifier          
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
-    t.type = reserved.get(t.value,'ID') # Check for reserved words
+    if re.match( "^true$|^false$|^True$|^False$|^On$|^on$|^Off$|^off$",t.value):
+        t.type = 'BOOL_VALUE'
+    else:
+        t.type = reserved.get(t.value,'ID') # Check for reserved words  
     return t
 
 # Comment begins with // and ends up at the end of the line
@@ -697,13 +702,16 @@ def p_field_list(p):
 def p_field_spec(p):
     '''field_spec : qualifier typeid ID eol_comment
                   | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET eol_comment'''
+    
     if len(p)==5:
+        print p[0],p[1],p[2],p[3]
         p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
         p[0].comment = p[4]
         p[0].linespan = (p.linespan(1)[0],p.linespan(4)[1])
     else:        
+        print p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9]
         p[0] = MessageType.MessageField(p[1],p[2],p[3],p[7])
-        p[0].comment = p[8]   
+        p[0].comment = p[9]   
         p[0].linespan = (p.linespan(1)[0],p.linespan(8)[1])
 
 def p_qualifier(p):
@@ -869,6 +877,12 @@ class CodeGenerator(object):
              i -= 1
         return res
     
+    def getTargetTypeName(self,name):
+        if name in self.builtinTypeMap.keys():
+            return self.builtinTypeMap[name]
+        else:
+            return name
+    
     def lowerFirst(self,str):
         res = str[0].lower()+str[1:]
         return res
@@ -919,7 +933,7 @@ class CodeGenerator(object):
         else:
             self.logger.error("What <%s> unknown type??"%what)
     
-class TextGenerator(CodeGenerator):
+class MsgSpecGenerator(CodeGenerator):
     """
     This is a text generator for C{MessageAST}.
     
@@ -927,8 +941,8 @@ class TextGenerator(CodeGenerator):
     as the input message specification file. 
     """
     def __init__(self,MessageAST):
-        super(TextGenerator,self).__init__(MessageAST,"//")
-        self.logger = logging.Logger("TextGenerator")
+        super(MsgSpecGenerator,self).__init__(MessageAST,"//")
+        self.logger = logging.Logger("MsgSpecGenerator")
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)            
                         
@@ -987,7 +1001,7 @@ class TextGenerator(CodeGenerator):
             stream.write("factory %s {\n" % self.AST.factory.name)
             self.indent()
             stream.write(self.getIndent()+"factoryCreator %s %s(%s)\n"% self.AST.factory.creator)
-            stream.write(self.getIndent()+"factoryReceiver %s %s(%s)\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"factoryReceiver %s %s(%s)\n"% self.AST.factory.receiver)
             self.unIndent()
             stream.write("}\n\n")
             
@@ -1036,10 +1050,9 @@ class CXXGenerator(CodeGenerator):
                 stream.write(self.getIndent()+"} "+self.commentLineBeginWith+" end of namespace %s \n" % ns)
                 
     def writeOneGetterSetter(self,stream,field):
-        if field.typeid.name in self.builtinTypeMap.keys():
-            targetTypeName = self.builtinTypeMap[field.typeid.name]
-        else:
-            targetTypeName = field.typeid.name
+        
+        targetTypeName = self.getTargetTypeName(field.typeid.name)
+        
         if field.typeid.name == "onoff":
             stream.write(self.getIndent())
             stream.write("void "+field.name+"On()")
@@ -1141,7 +1154,7 @@ class CXXGenerator(CodeGenerator):
                 self.indent()
                 for field in msg.fields:
                     stream.write(self.getIndent())                
-                    stream.write("%s %s;" % (field.typeid.name,field.name))                                        
+                    stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
                     self.writeComment(stream, field)
                 self.unIndent()
                 # end protected  
@@ -1157,14 +1170,124 @@ class CXXGenerator(CodeGenerator):
 
         # Generate Factory (if any)
         # @todo
-        if self.AST.hasFactory():
-            pass
+        if self.AST.hasFactory():             
+            self.writeComment(stream, self.AST.factory)
+            stream.write(self.getIndent() + "class CERTI_EXPORT %s {\n" % self.AST.factory.name)
+            self.indent()
+            # begin public
+            stream.write(self.getIndent()+"public:\n")            
+            self.indent()            
+            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.receiver)
+            self.unIndent()
+            #end public
+            #begin protected
+            stream.write(self.getIndent()+"protected:\n")
+            self.indent()
+            self.unIndent()
+            #end protected
+            #begin private
+            stream.write(self.getIndent()+"private:\n")
+            self.indent()
+            self.unIndent()
+            #end private
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n\n")            
                         
         # may close any open namespaces 
         self.closeNamespaces(stream)
         # close usual HEADER protecting MACRO
         stream.write(self.commentLineBeginWith+" %s\n"%headerProtectMacroName)
         stream.write("#endif\n")
+        
+    def writeInitFieldStatement(self,stream,field):
+        pass
+        
+    def generateBody(self,stream,factoryOnly=False):
+        """
+        Generate the body.
+        """
+        # Generate namespace for specified package package 
+        # we may have nested namespace
+        self.openNamespaces(stream)
+        if not factoryOnly:                        
+            # Generate message type
+            for msg in self.AST.messages:
+                self.writeComment(stream, msg)                            
+                # Generate Constructor                
+                stream.write(self.getIndent()+"%s::%s() {\n" % (msg.name,msg.name))            
+                self.indent()
+                # Write init value if any was provided
+                if len(msg.fields)>0:
+                    for field in msg.fields:
+                        self.writeInitFieldStatement(stream,field)                        
+                self.unIndent()
+                stream.write(self.getIndent()+"}\n")
+                # Generate Destructor                
+                stream.write(self.getIndent()+"%s::~%s() {\n" % (msg.name,msg.name))            
+                self.indent()
+                self.unIndent()
+                stream.write(self.getIndent()+"}\n")
+                                
+                # write virtual serialize and deserialize
+                # if we have some specific field
+                if len(msg.fields)>0:
+                    # serialize/deserialize 
+                    stream.write(self.getIndent()+"virtual void serialize(MessageBuffer& msgBuffer);\n")
+                    stream.write(self.getIndent()+"virtual void deserialize(MessageBuffer& msgBuffer);\n")
+                    # specific getter/setter
+                    stream.write(self.getIndent()+self.commentLineBeginWith+" specific Getter(s)/Setter(s)\n")
+                    for field in msg.fields:
+                        self.writeOneGetterSetter(stream,field)
+                                
+                self.unIndent()
+                # end public:
+                
+                # begin protected
+                stream.write(self.getIndent()+"protected:\n")
+                self.indent()
+                for field in msg.fields:
+                    stream.write(self.getIndent())                
+                    stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
+                    self.writeComment(stream, field)
+                self.unIndent()
+                # end protected  
+                
+                # begin private
+                stream.write(self.getIndent()+"private:\n")
+                self.indent()
+                self.unIndent()
+                # end private
+                
+                self.unIndent()
+                stream.write(self.getIndent() + "}\n")
+
+        # Generate Factory (if any)
+        # @todo
+        if self.AST.hasFactory():             
+            self.writeComment(stream, self.AST.factory)
+            stream.write(self.getIndent() + "class CERTI_EXPORT %s {\n" % self.AST.factory.name)
+            self.indent()
+            # begin public
+            stream.write(self.getIndent()+"public:\n")            
+            self.indent()            
+            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.receiver)
+            self.unIndent()
+            #end public
+            #begin protected
+            stream.write(self.getIndent()+"protected:\n")
+            self.indent()
+            self.unIndent()
+            #end protected
+            #begin private
+            stream.write(self.getIndent()+"private:\n")
+            self.indent()
+            self.unIndent()
+            #end private
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n\n")
+        self.closeNamespaces(stream)                        
 
 class JavaGenerator(CodeGenerator):
     """
@@ -1203,8 +1326,7 @@ class PythonGenerator(CodeGenerator):
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
         # Message builtin type to Java type
-                                                
-                     
+                                                                     
 # Build the PLY parser
 parserlogger = logging.Logger("MessageParser")
 parserlogger.setLevel(logging.ERROR)
@@ -1233,23 +1355,22 @@ else:
     sys.exit()
 
 mainlogger.info("Generate %s from AST,..."%language)
-if language.lower()=="text":    
-    textGen = TextGenerator(parser.AST)
-    textGen.generate(output,gentype,factoryOnly)    
+generator = None
+if language.lower()=="msgspec":    
+    generator = MsgSpecGenerator(parser.AST)    
 elif language.lower()=="c++":
-    cxxGen = CXXGenerator(parser.AST)
-    cxxGen.generate(output,gentype,factoryOnly)
+    generator = CXXGenerator(parser.AST)    
 elif language.lower()=="java":
-    javaGen = JavaGenerator(parser.AST)
-    javaGen.generate(output,gentype,factoryOnly)
+    generator = JavaGenerator(parser.AST)
 elif language.lower()=="python":
-    pythonGen = PythonGenerator(parser.AST)
-    pythonGen.generate(output,gentype,factoryOnly)
+    generator= PythonGenerator(parser.AST)    
 elif language.lower()=="none":
     mainlogger.info("Nothing to generate for <%s>." % language)
 else:
     mainlogger.error("Language <%s> is unknown" % language)
 
+if generator != None:
+    generator.generate(output,gentype,factoryOnly) 
 mainlogger.info("Generate %s from AST, Done." % language)
 
 sys.exit()
