@@ -26,6 +26,11 @@ package certi
 
 // Basic Message is the base class message for CERTI
 native BasicMessage
+//native BasicMessage {
+//    language C++    [#include BasicMessage.hh]
+//    language Python [import certi.BasicMessage]
+//    language Java   [import certi.BasicMessage]
+//}
 
 // Network message is the base class
 // for message exchanged between RTIA and RTIG
@@ -38,14 +43,8 @@ native NM_Type
 // AKA CERTI Message
 native Message
 
-enum SampleMessageType {
-   NOT_USED,
-   SMT_BASIC,
-   SMT_NETWORK_MESSAGE,
-   SMT_MESSAGE
-}
-
 native AttributeHandle
+
 message NM_WithHandleArray : merge  NetworkMessage {
 	repeated AttributeHandle handle 
 }

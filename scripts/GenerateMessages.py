@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.17 2009/09/05 21:26:33 erk Exp $
+## $Id: GenerateMessages.py,v 1.18 2009/09/06 10:02:02 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1052,33 +1052,67 @@ class CXXGenerator(CodeGenerator):
         targetTypeName = self.getTargetTypeName(field.typeid.name)
         
         if field.typeid.name == "onoff":
-            stream.write(self.getIndent())
-            stream.write("void "+field.name+"On()")
-            stream.write(" {"+field.name+" = true;};\n")
+            if field.qualifier == "repeated":
+                stream.write(self.getIndent())
+                stream.write("void "+field.name+"On(uint32_t rank)")
+                stream.write(" {"+field.name+"[rank] = true;};\n")
             
-            stream.write(self.getIndent())
-            stream.write("void "+field.name+"Off()")
-            stream.write(" {"+field.name+" = false;};\n")
+                stream.write(self.getIndent())
+                stream.write("void "+field.name+"Off(uint32_t rank)")
+                stream.write(" {"+field.name+"[rank] = false;};\n")
         
-            stream.write(self.getIndent())
-            stream.write(targetTypeName+ " is"+self.upperFirst(field.name)+"On()")
-            stream.write(" {return "+field.name+";};\n")
-        else:
-            stream.write(self.getIndent())
-            stream.write(targetTypeName + " get"+self.upperFirst(field.name)+"()")
-            stream.write(" {return "+field.name+";};\n")        
+                stream.write(self.getIndent())
+                stream.write(targetTypeName+ " is"+self.upperFirst(field.name)+"On(uint32_t rank)")
+                stream.write(" {return "+field.name+"[rank];};\n")
+            else:
+                stream.write(self.getIndent())
+                stream.write("void "+field.name+"On()")
+                stream.write(" {"+field.name+" = true;};\n")
             
-            stream.write(self.getIndent())
-            stream.write("void set"+self.upperFirst(field.name)+"(")
-            stream.write(targetTypeName+" new"+self.upperFirst(field.name)+")")
-            stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")        
+                stream.write(self.getIndent())
+                stream.write("void "+field.name+"Off()")
+                stream.write(" {"+field.name+" = false;};\n")
+        
+                stream.write(self.getIndent())
+                stream.write(targetTypeName+ " is"+self.upperFirst(field.name)+"On()")
+                stream.write(" {return "+field.name+";};\n")
+        else:
+            if field.qualifier == "repeated":
+                stream.write(self.getIndent())
+                stream.write(targetTypeName + " get"+self.upperFirst(field.name)+"(uint32_t rank)")
+                stream.write(" {return "+field.name+"[rank];};\n")  
+                
+                stream.write(self.getIndent())
+                stream.write("void set"+self.upperFirst(field.name)+"(")
+                stream.write(targetTypeName+" new"+self.upperFirst(field.name)+", uint32_t rank)")
+                stream.write(" {"+field.name+"[rank]=new"+self.upperFirst(field.name)+";};\n")      
+            else:
+                stream.write(self.getIndent())
+                stream.write(targetTypeName + " get"+self.upperFirst(field.name)+"()")
+                stream.write(" {return "+field.name+";};\n")        
+            
+                stream.write(self.getIndent())
+                stream.write("void set"+self.upperFirst(field.name)+"(")
+                stream.write(targetTypeName+" new"+self.upperFirst(field.name)+")")
+                stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")
+            
+    def writeDeclarationFieldStatement(self,stream,field):
+        stream.write(self.getIndent())     
+        if field.qualifier == "repeated":
+            stream.write("std::vector<%s> %s;" % (self.getTargetTypeName(field.typeid.name),field.name))
+        else:               
+            stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
+        self.writeComment(stream, field)        
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
         (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
-        headerProtectMacroName = "%s__HH" % headerProtectMacroName.upper()
+        headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
         stream.write("#ifndef %s\n"%headerProtectMacroName)
         stream.write("#define %s\n"%headerProtectMacroName)        
+        # add necessary standard includes
+        stream.write("#include <vector>\n")
+        stream.write("#include <string>\n")
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1151,9 +1185,7 @@ class CXXGenerator(CodeGenerator):
                 stream.write(self.getIndent()+"protected:\n")
                 self.indent()
                 for field in msg.fields:
-                    stream.write(self.getIndent())                
-                    stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
-                    self.writeComment(stream, field)
+                    self.writeDeclarationFieldStatement(stream,field)                    
                 self.unIndent()
                 # end protected  
                 
@@ -1217,6 +1249,9 @@ class CXXGenerator(CodeGenerator):
         """
         Generate the body.
         """
+        # add necessary standard includes
+        stream.write("#include <vector>\n")
+        stream.write("#include <string>\n")
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1391,29 +1426,7 @@ mainlogger.info("Generate %s from AST, Done." % language)
 
 sys.exit()
 for l in msgFile:
-    cname = l.strip('_ \n')    
-
-    if (gentype.lower()=="body"):
-        print "/*<BEGIN>---------- %s ------------<BEGIN>*/" % cname.title()
-        print "NM_%s::NM_%s() {"  % (cname.title(),cname.title())
-        print "    this->name = \"%s\";" % cname
-        print "    this->type = NetworkMessage::%s;" % cname
-        print "    /* specific field init */"
-        print "}"
-        print "NM_%s::~NM_%s() {"  % (cname.title(), cname.title())
-        print "}"       
-        print "void NM_%s::serialize() {"  % cname.title()
-        print "  /* call mother class */      "
-        print "  NetworkMessage::serialize(); "
-        print "  /* specific code (if any) goes here */"
-        print "} /* end of serialize */ "
-        print "void NM_%s::deserialize() {" % cname.title()
-        print "  /* call mother class */      "
-        print "  NetworkMessage::deserialize(); "
-        print "  /* specific code (if any) goes here */"
-        print "} /* end of deserialize */"
-        print "/*<END>---------- %s ------------<END>*/\n" % cname.title()
-
+    cname = l.strip('_ \n')        
 
     if (gentype.lower()=="factory"):
         print "case NetworkMessage::%s:" % cname
