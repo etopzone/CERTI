@@ -64,11 +64,23 @@ message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {}
 
-message NM_Create_Federation_Execution : merge NetworkMessage {}
+message NM_Create_Federation_Execution : merge NetworkMessage {
+	required string federationName
+	required string FEDid
+}
 
-message NM_Destroy_Federation_Execution : merge NetworkMessage {}
+message NM_Destroy_Federation_Execution : merge NetworkMessage {
+	required string federationName
+}
 
-message NM_Join_Federation_Execution : merge NetworkMessage {}
+message NM_Join_Federation_Execution : merge NetworkMessage {
+	required  int32  numberOfRegulators
+	required uint32  multicastAddress
+	required uint32  bestEffortAddress
+	required uint32  bestEffortPeer
+	required string  federationName
+	required string  federateName
+}
 
 message NM_Resign_Federation_Execution : merge NetworkMessage {}
 
@@ -93,6 +105,7 @@ message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
 }
 
 message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
+	required ObjectClassHandle objectClass
 }
 
 message NM_Set_Class_Relevance_Advisory_Switch : merge NetworkMessage {    

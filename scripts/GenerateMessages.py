@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.19 2009/09/06 13:25:13 erk Exp $
+## $Id: GenerateMessages.py,v 1.20 2009/09/06 13:47:49 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -1297,9 +1297,12 @@ class CXXGenerator(CodeGenerator):
         else:
             stream.write(self.getIndent())
             stream.write(self.commentLineBeginWith)
-            stream.write(field.name+"= <no default value>\n")
+            stream.write(field.name+"= <no default value in message spec using builtin>\n")
+            # FIXME find a default value for every type beside natives
+            
             
     def writeSerializeFieldStatement(self,stream,field):
+        
         pass
     
     def writeDeSerializeFieldStatement(self,stream,field):
