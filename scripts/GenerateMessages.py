@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.18 2009/09/06 10:02:02 erk Exp $
+## $Id: GenerateMessages.py,v 1.19 2009/09/06 13:25:13 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -101,7 +101,8 @@ reserved = {
    'factory'        : 'FACTORY',
    'factoryCreator' : 'FACTORY_CREATOR',
    'factoryReceiver': 'FACTORY_RECEIVER',   
-   'native'   : 'NATIVE',            
+   'native'   : 'NATIVE',
+   'language' : 'LANGUAGE',            
    'message'  : 'MESSAGE',
    'merge'    : 'MERGE',
    'enum'     : 'ENUM',
@@ -126,7 +127,7 @@ reserved = {
 }
 
 # List of token names.   This is always required
-tokens = ['ID',                 
+tokens = ['ID',                          
           'COMMENT',
           'INTEGER_VALUE',
           'FLOAT_VALUE',
@@ -139,6 +140,7 @@ tokens = ['ID',
           'COLON',
           'PERIOD',
           'NEWLINE',
+          'LANGLINE',
           ] + list(reserved.values())
 
 # This is a message of field or name identifier          
@@ -199,6 +201,10 @@ t_PERIOD = r'\.'
 def t_NEWLINE(t):
     r'\n'
     t.lexer.lineno += 1
+    
+def t_LANGLINE(t):
+    r'\[.*\]'
+    return t
     
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \t'
@@ -498,14 +504,30 @@ class NativeType(ASTElement):
     """ 
     Represents a native message type.
     
-    A C{NaptiveMessageType} is a simple C{ASTElement} whose
+    A C{NaptiveType} is a simple C{ASTElement} whose
     name is the name the native type.
     """
-    def __init__(self,name):
-        super(NativeType,self).__init__(name=name)        
+    def __init__(self,name,languages):
+        super(NativeType,self).__init__(name=name)
+        # store language line list in a dictionnary
+        # in order to ease retrieval
+        self.languages = dict()
+        for l in languages:
+            self.languages[l.name] = l        
         
     def __repr__(self):
-        return "native %s" % self.name 
+        return "native %s" % self.name
+    
+    def getLanguage(self,language):
+        if language in self.languages.keys():
+            return self.languages[language]
+     
+    class LanguageLine(ASTElement):
+        """ Represents a Language Line Value
+        """
+        def __init__(self,name,value):
+            super(NativeType.LanguageLine,self).__init__(name=name)    
+            self.statement = value.strip("[]")                
                     
 class MessageType(ASTElement):
     """ 
@@ -636,9 +658,29 @@ def p_message(p):
     p[0].linespan = (p.linespan(1)[0],p.linespan(len(p)-1)[1]) 
     
 def p_native(p): 
-    'native : NATIVE ID'
-    p[0]=NativeType(p[2])    
-    p[0].linespan = p.linespan(1)
+    'native : NATIVE ID LBRACE language_list RBRACE'
+    # we should reverse the language list
+    # because the parse build it the other way around (recursive way)
+    p[4].reverse()
+    p[0]=NativeType(p[2],p[4])    
+    p[0].linespan = (p.linespan(1)[0],p.linespan(5)[1])
+    
+def p_language_list(p):
+    '''language_list : language_line eol_comment
+                     | language_line eol_comment language_list'''
+    # Create or append the list (of pair)
+    if len(p)==3:
+        p[1].comment = p[2]
+        p[0]=[p[1]]    
+    else:
+        p[1].comment = p[2]
+        p[3].append(p[1])
+        p[0]=p[3]
+
+def p_language_line(p):
+    '''language_line : LANGUAGE ID LANGLINE'''
+    p[0]=NativeType.LanguageLine(p[2],p[3])
+    
         
 def p_enum(p):
     'enum : ENUM ID LBRACE enum_value_list RBRACE'
@@ -701,7 +743,7 @@ def p_field_list(p):
 
 def p_field_spec(p):
     '''field_spec : qualifier typeid ID eol_comment
-                  | qualifier typeid ID LBRACKET DEFAULT EQUAL value RBRACKET eol_comment'''
+                  | qualifier typeid ID LBRACE DEFAULT EQUAL value RBRACE eol_comment'''
     
     if len(p)==5:
         p[0] = MessageType.MessageField(p[1],p[2],p[3],None)
@@ -1013,6 +1055,8 @@ class CXXGenerator(CodeGenerator):
         self.logger = logging.Logger("CXXGenerator")
         self.logger.setLevel(logging.ERROR)
         self.logger.addHandler(stdoutHandler)
+        self.included = dict()
+        self.typedefed = dict()
         self.builtinTypeMap = {'onoff'    : 'bool',
                                'bool'     : 'bool',
                                'string'   : 'std::string',
@@ -1110,9 +1154,21 @@ class CXXGenerator(CodeGenerator):
         headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
         stream.write("#ifndef %s\n"%headerProtectMacroName)
         stream.write("#define %s\n"%headerProtectMacroName)        
-        # add necessary standard includes
+        # add necessary standard and global includes
+        stream.write(self.commentLineBeginWith+" ****-**** Global System includes ****-****\n")
         stream.write("#include <vector>\n")
-        stream.write("#include <string>\n")
+        self.included["#include <vector>"]=1
+        stream.write("#include <string>\n")        
+        self.included["#include <string>"]=1
+        # add include coming from native type specification 
+        stream.write(self.commentLineBeginWith+" ****-**** Includes coming from native types ****-****\n")
+        for native in self.AST.natives:
+            line = native.getLanguage("CXX").statement
+            # we are only interested in native "include" statement
+            if line.find("#include")>=0 and (not line in self.included.keys()):
+                self.writeComment(stream, native)
+                stream.write(line+"\n")
+                self.included[line]=1
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
@@ -1120,11 +1176,15 @@ class CXXGenerator(CodeGenerator):
         if not factoryOnly:
             # Native type should be defined in included header
             stream.write(self.getIndent()+self.commentLineBeginWith)
-            stream.write("Native types should be defined by included headers\n")
-            for native in self.AST.natives:                        
-                self.writeComment(stream, native)
-                stream.write(self.getIndent()+self.commentLineBeginWith)
-                stream.write("native %s\n" % native.name)
+            stream.write("Native types has been defined by included headers (or here with typedef)\n")
+            for native in self.AST.natives:    
+                line = native.getLanguage("CXX").statement
+                # we are only interested in native statement
+                # which are not #include
+                if line.find("typedef")>=0 and (not line in self.typedefed.keys()):
+                    self.writeComment(stream, native)
+                    stream.write(self.getIndent()+line+"\n")
+                    self.typedefed[line]=1                                    
             
             # Generate enum
             for enum in self.AST.enums:            
@@ -1280,7 +1340,7 @@ class CXXGenerator(CodeGenerator):
                 # if we have some specific field
                 if len(msg.fields)>0:
                     # begin serialize method 
-                    stream.write(self.getIndent()+"void serialize(MessageBuffer& msgBuffer) {\n")
+                    stream.write(self.getIndent()+"void %s::serialize(MessageBuffer& msgBuffer) {\n" % msg.name)
                     self.indent()
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Call mother class\n")
@@ -1294,7 +1354,7 @@ class CXXGenerator(CodeGenerator):
                     # end serialize method
                     
                     # begin deserialize method
-                    stream.write(self.getIndent()+"void deserialize(MessageBuffer& msgBuffer) {\n")
+                    stream.write(self.getIndent()+"void %s::deserialize(MessageBuffer& msgBuffer) {\n" % msg.name)
                     self.indent()
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Call mother class\n")

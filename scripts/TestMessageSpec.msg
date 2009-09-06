@@ -18,11 +18,17 @@ enum EType {
 message MyMessage {} 
 
 // blah
-native ANativeType 
+native ANativeType {
+    language CXX [typedef int ANativeType]
+}
 
-native AnotherNativeType 
+native AnotherNativeType {
+     language CXX [#include "AnotherNativeType.hh"]
+}
 
-native MessageType
+native MessageType {
+     language CXX []
+}
 
 message MyMessage2 { 
     repeated int32 whatever
@@ -31,5 +37,5 @@ message MyMessage2 {
 message MyOtherMessage : merge MyMessage {
     required bool              constrained  // constrain 
 	optional MessageType       mytype
-	required uint32            a [ default=1 ]
+	required uint32            a { default=1 }
 }

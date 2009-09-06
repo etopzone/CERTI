@@ -25,32 +25,39 @@
 package certi
 
 // Basic Message is the base class message for CERTI
-native BasicMessage
-//native BasicMessage {
-//    language C++    [#include BasicMessage.hh]
-//    language Python [import certi.BasicMessage]
-//    language Java   [import certi.BasicMessage]
-//}
+native BasicMessage {
+    language CXX    [#include "BasicMessage.hh"]
+    language Python [import certi.BasicMessage]
+    language Java   [import certi.BasicMessage]
+}
 
 // Network message is the base class
 // for message exchanged between RTIA and RTIG
 // AKA CERTI Network Message
-native NetworkMessage
-native NM_Type
+native NetworkMessage {
+    language CXX [#include "NetworkMessage.hh"]
+}
+native NM_Type {
+    language CXX [typedef NetworkMessage::Type NM_Type]
+}
 
 // Message is the base class 
 // for message exchanged between Federate and RTIA
 // AKA CERTI Message
-native Message
+native Message {
+    language CXX [#include "Message.hh"]
+}
 
-native AttributeHandle
+native AttributeHandle {
+    language CXX [#include "certi.hh"]
+}
 
 message NM_WithHandleArray : merge  NetworkMessage {
 	repeated AttributeHandle handle 
 }
 
 message NM_DDM_Base : merge  NM_WithHandleArray {
-	required bool DDM_bool [ default=false ]
+	required bool DDM_bool { default=false }
 }
 
 message NM_Close_Connexion : merge NetworkMessage {}
@@ -77,7 +84,10 @@ message NM_Time_Regulation_Enabled : merge NetworkMessage {}
 
 message NM_Time_Constrained_Enabled : merge NetworkMessage {}
 
-native ObjectClassHandle
+native ObjectClassHandle {
+	language CXX [#include "certi.hh"]
+}
+
 message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
 	required ObjectClassHandle objectClass
 }
@@ -149,7 +159,10 @@ message NM_Publish_Object_Class : merge NM_WithHandleArray {}
 
 message NM_Unpublish_Object_Class : merge NetworkMessage {}
 
-native InteractionClassHandle
+native InteractionClassHandle {
+	language CXX [#include "certi.hh"]
+}
+
 message NM_Publish_Interaction_Class : merge NetworkMessage {
 	required InteractionClassHandle interactionClass // the interaction class
 }
@@ -194,7 +207,10 @@ message NM_Change_Interaction_Order_Type : merge NetworkMessage {}
 
 message NM_Request_Class_Attribute_Value_Update : merge NetworkMessage {}
 
-native ObjectHandle
+native ObjectHandle {
+	language CXX [#include "certi.hh"]
+}
+
 message NM_Request_Object_Attribute_Value_Update : merge NM_WithHandleArray {
 	required ObjectHandle object
 }
@@ -233,7 +249,10 @@ message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Request_Object_Attr
 
 message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Request_Object_Attribute_Value_Update {}
 
-native SpaceHandle
+native SpaceHandle {
+	language CXX [#include "certi.hh"]
+}
+
 message NM_DDM_Create_Region : merge NM_DDM_Base {
 	required SpaceHandle space
 	required int32 region
