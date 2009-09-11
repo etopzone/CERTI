@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.20 2009/09/06 13:47:49 erk Exp $
+## $Id: GenerateMessages.py,v 1.21 2009/09/11 18:02:23 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -134,12 +134,12 @@ tokens = ['ID',
           'BOOL_VALUE',          
           'RBRACE','LBRACE',
           'RPAREN','LPAREN',
-          'RBRACKET','LBRACKET',
+#          'RBRACKET','LBRACKET',
           'COMMA',
           'EQUAL',
           'COLON',
           'PERIOD',
-          'NEWLINE',
+#          'NEWLINE',
           'LANGLINE',
           ] + list(reserved.values())
 
@@ -188,8 +188,8 @@ def t_BOOL_VALUE(t):
     
 t_LBRACE = r'{'
 t_RBRACE = r'}'
-t_LBRACKET = r'\['
-t_RBRACKET = r'\]'
+#t_LBRACKET = r'\['
+#t_RBRACKET = r'\]'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_COMMA = r','
@@ -631,6 +631,7 @@ def p_package_id(p):
 def p_factory(p):
     '''factory : FACTORY ID LBRACE factory_creator factory_receiver RBRACE'''
     p[0] = Factory(p[2],p[4],p[5])
+    p[0].linespan = (p.linespan(1)[0],p.linespan(6)[1])
 
 def p_factory_creator(p):
     '''factory_creator : FACTORY_CREATOR ID ID LPAREN ID RPAREN'''
@@ -839,7 +840,10 @@ class ASTChecker(object):
            return
        
         # check if all field used in message have known types
+        # At the same time build the enum values for MessageTypes
+        msgTypeEnumVals = [EnumType.EnumValue("NOT_USED",None)]
         for msg in AST.messages:
+            msgTypeEnumVals.append(EnumType.EnumValue(msg.name.upper(),None))
             for f in msg.fields:
                 if not AST.isDefined(f.typeid):
                     self.logger.fatal("The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)" % (f.typeid,msg.name,f.name))
@@ -847,7 +851,9 @@ class ASTChecker(object):
                     AST.checked = False
                     return
                 else:                   
-                   f.typeid = AST.getType(f.typeid)
+                   f.typeid = AST.getType(f.typeid)                   
+        msgTypeEnumVals.append(EnumType.EnumValue("LAST",None))
+        AST.add(EnumType(AST.name.split(".")[0]+"_MessageType",msgTypeEnumVals))
 
         # @todo
         # Should check if the default value of a field
@@ -866,6 +872,30 @@ class ASTChecker(object):
                     return
                 else:
                     msg.merge = AST.getType(msg.merge)
+                    
+        # check the factory methods
+        if AST.hasFactory():                        
+            if not AST.isDefined(AST.factory.creator[0]):
+                self.logger.fatal("The return type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.creator[0])
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
+                AST.checked = False
+                return
+            if not AST.isDefined(AST.factory.creator[2]):
+                self.logger.fatal("The parameter type <%s> of the creator factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.creator[2])
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
+                AST.checked = False
+                return
+            if not AST.isDefined(AST.factory.receiver[0]):
+                self.logger.fatal("The return type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.receiver[0])
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
+                AST.checked = False
+                return
+            if not AST.isDefined(AST.factory.receiver[2]):
+                self.logger.fatal("The parameter type <%s> of the receiver factory method is unknown (not a builtin, nor native, nor message)" % AST.factory.receiver[2])
+                self.logger.fatal(" --> Check lines (%d,%d)" % (AST.factory.linespan) + " of <%s>" % AST.name )
+                AST.checked = False
+                return
+                
         AST.checked = True                  
     
 class CodeGenerator(object):
@@ -1079,7 +1109,7 @@ class CXXGenerator(CodeGenerator):
             # we may have nested namespace
             nameSpaceList = self.AST.package.name.split(".")            
             for ns in nameSpaceList:
-                stream.write(self.getIndent()+"namespace %s {\n" % ns)
+                stream.write(self.getIndent()+"namespace %s {\n\n" % ns)
                 self.indent()
                 
     def closeNamespaces(self, stream):        
@@ -1176,7 +1206,11 @@ class CXXGenerator(CodeGenerator):
         if not factoryOnly:
             # Native type should be defined in included header
             stream.write(self.getIndent()+self.commentLineBeginWith)
-            stream.write("Native types has been defined by included headers (or here with typedef)\n")
+            stream.write(" Native types has been defined:\n");
+            stream.write(self.getIndent()+self.commentLineBeginWith)
+            stream.write("     - by included headers (see above)\n")
+            stream.write(self.getIndent()+self.commentLineBeginWith)
+            stream.write("     - with typedef (see below [if any])\n")
             for native in self.AST.natives:    
                 line = native.getLanguage("CXX").statement
                 # we are only interested in native statement
@@ -1190,7 +1224,7 @@ class CXXGenerator(CodeGenerator):
             for enum in self.AST.enums:            
                 self.writeComment(stream, enum)
                 stream.write(self.getIndent())
-                stream.write("enum %s {\n" % enum.name)
+                stream.write("typedef enum %s {\n" % enum.name)
                 self.indent()
                 first = True
                 for enumval in enum.values:
@@ -1204,7 +1238,8 @@ class CXXGenerator(CodeGenerator):
                     self.writeComment(stream, enumval)
                 self.unIndent()      
                 stream.write(self.getIndent())          
-                stream.write("}"+ self.commentLineBeginWith + "end of enum %s \n" % enum.name)
+                stream.write("} %s_t; " %  enum.name) 
+                stream.write(self.commentLineBeginWith + "end of enum %s \n" % enum.name)
              
             # Generate message type
             for msg in self.AST.messages:
@@ -1267,8 +1302,8 @@ class CXXGenerator(CodeGenerator):
             # begin public
             stream.write(self.getIndent()+"public:\n")            
             self.indent()            
-            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.creator)
-            stream.write(self.getIndent()+"static %s* %s(%s) throw (RTIinternalError);\n"% self.AST.factory.receiver)
+            stream.write(self.getIndent()+"static %s* %s(%s type) throw (RTIinternalError);\n"% self.AST.factory.creator)
+            stream.write(self.getIndent()+"static %s* %s(%s stream) throw (RTIinternalError);\n"% self.AST.factory.receiver)
             self.unIndent()
             #end public
             #begin protected
@@ -1293,7 +1328,7 @@ class CXXGenerator(CodeGenerator):
     def writeInitFieldStatement(self,stream,field):
         if field.hasDefaultValue():            
             stream.write(self.getIndent())
-            stream.write(field.name+"="+field.defaultValue+";\n")
+            stream.write(field.name+"="+str(field.defaultValue)+";\n")
         else:
             stream.write(self.getIndent())
             stream.write(self.commentLineBeginWith)
