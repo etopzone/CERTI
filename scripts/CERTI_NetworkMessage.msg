@@ -24,28 +24,13 @@
 // The messages related classes will be placed in the certi package
 package certi
 
-// Basic Message is the base class message for CERTI
-native BasicMessage {
-    language CXX    [#include "BasicMessage.hh"]
-    language Python [import certi.BasicMessage]
-    language Java   [import certi.BasicMessage]
-}
-
 // Network message is the base class
 // for message exchanged between RTIA and RTIG
 // AKA CERTI Network Message
 native NetworkMessage {
     language CXX [#include "NetworkMessage.hh"]
-}
-native NM_Type {
-    language CXX [typedef NetworkMessage::Type NM_Type]
-}
-
-// Message is the base class 
-// for message exchanged between Federate and RTIA
-// AKA CERTI Message
-native Message {
-    language CXX [#include "Message.hh"]
+    language Python [import certi.NetworkMessage]
+    language Java   [import certi.NetworkMessage]
 }
 
 native AttributeHandle {
@@ -300,6 +285,14 @@ message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Va
 message NM_Get_FED_File : merge NetworkMessage {
 	required string FEDid // the FED identifier
 	required string line  // one line of the FED file
+}
+
+native StreamType {
+    language CXX [typedef Socket* StreamType;]
+}
+
+native NM_Type {
+    language CXX [typedef NetworkMessage::Type NM_Type;]
 }
 
 factory NM_Factory {
