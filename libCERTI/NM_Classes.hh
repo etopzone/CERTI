@@ -1089,7 +1089,7 @@ public:
 protected:
 	/* specific field */
 	//	ObjectHandle    object;
-	//	AttributeHandle attribute;
+	AttributeHandle attribute;
 private:
 };
 

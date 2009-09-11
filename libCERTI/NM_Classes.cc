@@ -333,7 +333,7 @@ NM_Factory::receive(Socket* socket) throw (NetworkError, RTIinternalError) {
 
 NM_WithHandleArray::NM_WithHandleArray() {
 	this->name = "NM_WithHandleArray";
-	this->type = NetworkMessage::NOT_USED;
+	this->type = NOT_USED;
 	/* specific field init */
 	this->handleArraySize = 0;
 }
@@ -412,7 +412,7 @@ NM_Close_Connexion::~NM_Close_Connexion() {
 /*<BEGIN>---------- Message_Null ------------<BEGIN>*/
 NM_Message_Null::NM_Message_Null() {
 	this->name = "MESSAGE_NULL";
-	this->type = NetworkMessage::MESSAGE_NULL;
+	this->type = MESSAGE_NULL;
 	/* specific field init */	
 }
 NM_Message_Null::~NM_Message_Null() {	

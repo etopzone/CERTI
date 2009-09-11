@@ -33,6 +33,20 @@ native NetworkMessage {
     language Java   [import certi.NetworkMessage]
 }
 
+native FederationTime {
+    language CXX    [#include "FedTimeD.hh"]
+    language Python [import certi.FedTimeD]
+    language Java   [import certi.FedTimeD]
+}
+
+message NewNetworkMessage {
+    required uint32          type
+    required string          name
+    optional FederationTime  date
+    optional string          label
+    optional string          tag
+}
+
 native AttributeHandle {
     language CXX [#include "certi.hh"]
 }
@@ -213,7 +227,9 @@ message NM_Request_Object_Attribute_Value_Update : merge NM_WithHandleArray {
 	required ObjectHandle object
 }
 
-message NM_Is_Attribute_Owned_By_Federate : merge NetworkMessage {}
+message NM_Is_Attribute_Owned_By_Federate : merge NetworkMessage {
+      required AttributeHandle attribute
+}
 
 message NM_Query_Attribute_Ownership : merge NM_Is_Attribute_Owned_By_Federate {}
 

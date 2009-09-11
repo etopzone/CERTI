@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.46 2009/04/08 10:47:19 approx Exp $
+// $Id: NetworkMessage.hh,v 3.47 2009/09/11 18:45:34 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -280,10 +280,7 @@ public:
 	/**
 	 * The exception reason (if the message carry one)
 	 */
-	std::string exceptionReason;	
-
-	/* used by some sub-classes */
-	int32_t attribute;
+	std::string exceptionReason;
 
 protected:
 	/** 
@@ -350,4 +347,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.46 2009/04/08 10:47:19 approx Exp $
+// $Id: NetworkMessage.hh,v 3.47 2009/09/11 18:45:34 erk Exp $

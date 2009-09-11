@@ -26,7 +26,7 @@ native AnotherNativeType {
      language CXX [#include "AnotherNativeType.hh"]
 }
 
-native MessageType {
+native MessageType2 {
      language CXX []
 }
 
@@ -36,6 +36,6 @@ message MyMessage2 {
 
 message MyOtherMessage : merge MyMessage {
     required bool              constrained  // constrain 
-	optional MessageType       mytype
+	optional MessageType2       mytype
 	required uint32            a { default=1 }
 }
