@@ -1533,16 +1533,15 @@ public:
     void setFederateName(std::string newFederateName) {federateName=newFederateName;};
 	void setFEDid(std::string newFEDid) {FEDid=newFEDid;};
 	const std::string getFEDid() const {return FEDid;};
-	//	void setLineFollows() {lineFollows=true;};
-	//	void unsetLineFollows() {lineFollows=true;};
-	//const bool getLineFollows() {return lineFollows;};
+	uint32_t getLineno() {return lineno;};
+	void setLineno(uint32_t newLineno) {lineno=newLineno;};
 	void setFEDLine(std::string newLine) {line=newLine;};
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
 	std::string federateName;// the Federate name
 	std::string FEDid;
-	//	bool lineFollows;
+	uint32_t    lineno;
 	std::string line;
 
 private:

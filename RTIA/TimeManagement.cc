@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.49 2009/06/04 11:31:50 erk Exp $
+// $Id: TimeManagement.cc,v 3.50 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -168,7 +168,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                msg.getLabel().c_str(),
                                msg.getDate(),
                                msg.eventRetraction,
-                               msg.exception);
+                               msg.getRefException());
 
         }
         catch (RTIinternalError &e) {
@@ -189,14 +189,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                         msg.getDate(),
                                         msg.getLabel().c_str(),
                                         msg.eventRetraction,
-                                        msg.exception);
+                                        msg.getRefException());
           else
             om->reflectAttributeValues(msg.object,
                                         msg.handleArray,
                                         ValueArray,
                                         msg.handleArraySize,
                                         msg.getLabel().c_str(),
-                                        msg.exception);
+                                        msg.getRefException());
           ValueArray.empty();
           break ;
       }
@@ -206,7 +206,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       om->provideAttributeValueUpdate(msg.object,
                                       msg.handleArray,
                                       msg.handleArraySize,
-                                      msg.exception);
+                                      msg.getRefException());
       break;
       }
 
@@ -223,14 +223,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                      msg.getDate(),
                                      msg.getLabel().c_str(),
                                      msg.eventRetraction,
-                                     msg.exception);
+                                     msg.getRefException());
           else
               om->receiveInteraction(msg.interactionClass,
                                      msg.handleArray,
                                      ValueArray,
                                      msg.handleArraySize,
                                      msg.getLabel().c_str(),
-                                     msg.exception);
+                                     msg.getRefException());
           ValueArray.empty();
 
           break ;
@@ -243,13 +243,13 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 				             msg.getDate(),
                          	 msg.getLabel().c_str(),
                          	 msg.eventRetraction,
-                         	 msg.exception);
+                         	 msg.getRefException());
 	  }
 	  else {
         	om->removeObject(msg.object,
                 		     msg.federate,
                          	 msg.getLabel().c_str(),
-                         	 msg.exception);
+                         	 msg.getRefException());
 	  }
         break ;
 
@@ -260,14 +260,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->informAttributeOwnership(msg.object,
                                       msg.handleArray[0],
                                       msg.federate,
-                                      msg.exception);
+                                      msg.getRefException());
         break ;
 
       case NetworkMessage::ATTRIBUTE_IS_NOT_OWNED:
         owm->attributeIsNotOwned(msg.object,
                                  msg.handleArray[0],
                                  msg.federate,
-                                 msg.exception);
+                                 msg.getRefException());
         break ;
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION:
@@ -277,7 +277,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                                  msg.handleArraySize,
                                                  msg.federate,
                                                  const_cast<char*>(msg.getLabel().c_str()),
-                                                 msg.exception);
+                                                 msg.getRefException());
         break ;
            }
 
@@ -287,7 +287,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                            msg.handleArray,
                                            msg.handleArraySize,
                                            msg.federate,
-                                           msg.exception);
+                                           msg.getRefException());
         break ;
         }
 
@@ -297,7 +297,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                                        msg.handleArray,
                                                        msg.handleArraySize,
                                                        msg.federate,
-                                                       msg.exception);
+                                                       msg.getRefException());
         break ;
         }
 
@@ -306,7 +306,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->attributeOwnershipDivestitureNotification(msg.object,
                                                        msg.handleArray,
                                                        msg.handleArraySize,
-                                                       msg.exception);
+                                                       msg.getRefException());
         break ;
         }
 
@@ -316,7 +316,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                               msg.handleArray,
                                               msg.handleArraySize,
                                               const_cast<char*>(msg.getLabel().c_str()),
-                                              msg.exception);
+                                              msg.getRefException());
         break ;
         }
 
@@ -325,7 +325,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->confirmAttributeOwnershipAcquisitionCancellation(msg.object,
                                                               msg.handleArray,
                                                               msg.handleArraySize,
-                                                              msg.exception);
+                                                              msg.getRefException());
         break ;
         }
 
@@ -363,13 +363,13 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       }
         break ;
       case NetworkMessage::TIME_REGULATION_ENABLED:
-        this->timeRegulationEnabled(msg.getDate(), msg.exception);
+        this->timeRegulationEnabled(msg.getDate(), msg.getRefException());
         break;
       case NetworkMessage::TIME_CONSTRAINED_ENABLED:
-        this->timeConstrainedEnabled(msg.getDate(), msg.exception);
+        this->timeConstrainedEnabled(msg.getDate(), msg.getRefException());
         break;
       case NetworkMessage::START_REGISTRATION_FOR_OBJECT_CLASS:
-	dm->startRegistrationForObjectClass(msg.objectClass, msg.exception);
+	dm->startRegistrationForObjectClass(msg.objectClass, msg.getRefException());
         break;
 
       default:
@@ -496,7 +496,9 @@ TimeManagement::nextEventRequest(FederationTime heure_logique,
     if (heure_logique < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-// Fix bug #25497
+//    This is check may be overkill because
+//    if we consider that advancing in time is NOT a timestamped event
+//    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (heure_logique < _heure_courante + _lookahead_courant)
 //       e = e_InvalidFederationTime ;
 
@@ -533,7 +535,9 @@ TimeManagement::nextEventRequestAvailable(FederationTime heure_logique,
     if (heure_logique < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-// Fix bug #25497
+//    This is check may be overkill because
+//    if we consider that advancing in time is NOT a timestamped event
+//    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (heure_logique < _heure_courante + _lookahead_courant)
 //       e = e_InvalidFederationTime ;
 
@@ -922,7 +926,9 @@ TimeManagement::timeAdvanceRequest(FederationTime logical_time,
     if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-// Fix bug #25497
+    //    This is check may be overkill because
+    //    if we consider that advancing in time is NOT a timestamped event
+    //    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (logical_time < _heure_courante + _lookahead_courant) {
 //
 //    D.Out(pdDebug,"InvalidFederation time lkahead=%f, current=%f, requested=%f",
@@ -968,7 +974,9 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
     if (logical_time < _heure_courante)
         e = e_FederationTimeAlreadyPassed ;
 
-//  Fix bug #25497
+    //    This is check may be overkill because
+    //    if we consider that advancing in time is NOT a timestamped event
+    //    see bug #25497 : https://savannah.nongnu.org/bugs/?25497
 //    if (logical_time < _heure_courante + _lookahead_courant)
 //       e = e_InvalidFederationTime ;
 
@@ -993,4 +1001,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.49 2009/06/04 11:31:50 erk Exp $
+// $Id: TimeManagement.cc,v 3.50 2009/09/14 21:21:32 erk Exp $

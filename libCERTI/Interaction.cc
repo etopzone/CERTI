@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.51 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: Interaction.cc,v 3.52 2009/09/14 21:21:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -424,7 +424,7 @@ throw (FederateNotPublishing,
 	InteractionBroadcastList *ibList = NULL ;
 	if (server != NULL) {
 		NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
-		answer->exception = e_NO_EXCEPTION ;
+		answer->setException (e_NO_EXCEPTION);
 		answer->federation = server->federation();
 		answer->federate = federate_handle ;
 		answer->interactionClass = handle ; // Interaction Class Handle
@@ -484,7 +484,7 @@ throw (FederateNotPublishing,
 	InteractionBroadcastList *ibList = NULL ;
 	if (server != NULL) {
 		NetworkMessage *answer = NM_Factory::create(NetworkMessage::RECEIVE_INTERACTION) ;
-		answer->exception = e_NO_EXCEPTION ;
+		answer->setException(e_NO_EXCEPTION);
 		answer->federation = server->federation();
 		answer->federate = federate_handle ;
 		answer->interactionClass = handle ; // Interaction Class Handle
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.51 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: Interaction.cc,v 3.52 2009/09/14 21:21:31 erk Exp $

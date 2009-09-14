@@ -197,7 +197,6 @@ ObjectSet::killFederate(FederateHandle the_federate)
     throw (RTIinternalError)
 {
 	std::map<ObjectHandle, Object *>::iterator i = begin();
-
 	while( i != end() ) {
 		if ((i->second)->getOwner() == the_federate) {
 			std::map<ObjectHandle, Object *>::erase(i);
@@ -252,7 +251,7 @@ ObjectSet::queryAttributeOwnership(FederateHandle the_federate,
         }
 
         answer->federation = server->federation();
-        answer->exception = e_NO_EXCEPTION ;
+        answer->setException(e_NO_EXCEPTION);
         answer->object = the_object ;
         answer->handleArray.resize(1) ;
         answer->handleArray[0] = the_attribute ;
@@ -463,4 +462,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.23 2009/06/04 11:57:19 erk Exp $
+// $Id: ObjectSet.cc,v 3.24 2009/09/14 21:21:31 erk Exp $

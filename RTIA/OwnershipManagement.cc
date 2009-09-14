@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.17 2008/12/07 20:16:09 gotthardp Exp $
+// $Id: OwnershipManagement.cc,v 3.18 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -87,7 +87,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
                       NetworkMessage::IS_ATTRIBUTE_OWNED_BY_FEDERATE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION)
         return(rep->getLabel().c_str());
@@ -122,7 +122,7 @@ OwnershipManagement::queryAttributeOwnership(ObjectHandle theObject,
     //AttendreMsg ne sert que pour verifier que la transmission a ete OK
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::QUERY_ATTRIBUTE_OWNERSHIP, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -188,7 +188,7 @@ cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                       NetworkMessage::CANCEL_NEGOTIATED_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -218,7 +218,7 @@ attributeOwnershipAcquisitionIfAvailable(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_IF_AVAILABLE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ unconditionalAttributeOwnershipDivestiture(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::UNCONDITIONAL_ATTRIBUTE_OWNERSHIP_DIVESTITURE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ attributeOwnershipAcquisition(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -315,7 +315,7 @@ attributeOwnershipRealeaseResponse(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::ATTRIBUTE_OWNERSHIP_RELEASE_RESPONSE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         AttributeHandleSet *AttributeSet ;
@@ -358,7 +358,7 @@ cancelattributeOwnershipAcquisition(ObjectHandle theObject,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CANCEL_ATTRIBUTE_OWNERSHIP_ACQUISITION,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 }
 
 // ----------------------------------------------------------------------------
@@ -514,4 +514,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.17 2008/12/07 20:16:09 gotthardp Exp $
+// $Id: OwnershipManagement.cc,v 3.18 2009/09/14 21:21:32 erk Exp $

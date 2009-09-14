@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.64 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClass.cc,v 3.65 2009/09/14 21:21:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -360,7 +360,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
         NetworkMessage *answer = NM_Factory::create(NetworkMessage::REMOVE_OBJECT);
         answer->federation = server->federation();
         answer->federate = the_federate ;
-        answer->exception = e_NO_EXCEPTION ;
+        answer->setException(e_NO_EXCEPTION);
         answer->objectClass = handle ; // Class Handle
         answer->object = the_object ;
 
@@ -752,7 +752,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         NM_Discover_Object *answer = new NM_Discover_Object();
         answer->federation  = server->federation();
         answer->federate    = the_federate ;
-        answer->exception   = e_NO_EXCEPTION ;
+        answer->setException(e_NO_EXCEPTION) ;
         answer->objectClass = handle ; // Class Handle
         answer->object      = the_object->getHandle();
         answer->setLabel(the_object->getName().c_str());
@@ -802,7 +802,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 
 	    message.federation  = server->federation();
 	    message.federate    = federate ;
-	    message.exception   = e_NO_EXCEPTION ;
+	    message.setException(e_NO_EXCEPTION) ;
 	    message.objectClass = super_handle ;
 	    message.object      = (*o)->getHandle();
 	    message.setLabel((*o)->getName().c_str());
@@ -909,7 +909,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES);
         answer->federation = server->federation();
         answer->federate = the_federate ;
-        answer->exception = e_NO_EXCEPTION ;
+        answer->setException(e_NO_EXCEPTION) ;
         answer->object = object->getHandle();
         // with time
         answer->setDate(the_time);
@@ -972,7 +972,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
         NetworkMessage *answer = NM_Factory::create(NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ;
         answer->federation = server->federation();
         answer->federate = the_federate ;
-        answer->exception = e_NO_EXCEPTION ;
+        answer->setException(e_NO_EXCEPTION) ;
         answer->object = object->getHandle();
         // without time
 
@@ -1128,7 +1128,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         if (compteur_assumption !=0) {
             AnswerAssumption->federation = server->federation();
             AnswerAssumption->federate = theFederateHandle ;
-            AnswerAssumption->exception = e_NO_EXCEPTION ;
+            AnswerAssumption->setException(e_NO_EXCEPTION) ;
             AnswerAssumption->object = theObjectHandle ;
             AnswerAssumption->setLabel(theTag);
             AnswerAssumption->handleArraySize = compteur_assumption ;
@@ -1210,14 +1210,14 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
         NetworkMessage *Answer_notification = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_ACQUISITION_NOTIFICATION);
         Answer_notification->federation = server->federation();
         Answer_notification->federate = the_federate ;
-        Answer_notification->exception = e_NO_EXCEPTION ;
+        Answer_notification->setException(e_NO_EXCEPTION) ;
         Answer_notification->object = the_object ;
         Answer_notification->handleArray.resize(theListSize) ;
 
         NetworkMessage *Answer_unavailable = NM_Factory::create(NetworkMessage::ATTRIBUTE_OWNERSHIP_UNAVAILABLE) ;
         Answer_unavailable->federation = server->federation();
         Answer_unavailable->federate = the_federate ;
-        Answer_unavailable->exception = e_NO_EXCEPTION ;
+        Answer_unavailable->setException(e_NO_EXCEPTION) ;
         Answer_unavailable->object = the_object ;
         Answer_unavailable->handleArray.resize(theListSize) ;
 
@@ -1385,7 +1385,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
         if (compteur_assumption != 0) {
             AnswerAssumption->federation = server->federation();
             AnswerAssumption->federate = theFederateHandle ;
-            AnswerAssumption->exception = e_NO_EXCEPTION ;
+            AnswerAssumption->setException(e_NO_EXCEPTION) ;
             AnswerAssumption->object = theObjectHandle ;
             AnswerAssumption->setLabel(std::string(""));
             AnswerAssumption->handleArraySize = compteur_assumption ;
@@ -1476,7 +1476,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
         AnswerNotification->federation = server->federation();
         AnswerNotification->federate = theFederateHandle ;
-        AnswerNotification->exception = e_NO_EXCEPTION ;
+        AnswerNotification->setException(e_NO_EXCEPTION) ;
         AnswerNotification->object = theObjectHandle ;
         AnswerNotification->handleArray.resize(theListSize) ;
 
@@ -1699,7 +1699,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
         NetworkMessage *answer_confirmation = NM_Factory::create(NetworkMessage::CONFIRM_ATTRIBUTE_OWNERSHIP_ACQUISITION_CANCELLATION);
         answer_confirmation->federation = server->federation();
         answer_confirmation->federate = federate_handle ;
-        answer_confirmation->exception = e_NO_EXCEPTION ;
+        answer_confirmation->setException(e_NO_EXCEPTION) ;
         answer_confirmation->object = object_handle ;
         answer_confirmation->handleArray.resize(list_size) ;
 
@@ -1835,4 +1835,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.64 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClass.cc,v 3.65 2009/09/14 21:21:31 erk Exp $

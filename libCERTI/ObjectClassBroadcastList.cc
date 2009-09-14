@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.25 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.26 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -66,7 +66,7 @@ ObjectClassBroadcastList::adaptMessage(ObjectBroadcastLine *line)
 
     // Copy static informations.
     NetworkMessage *reducedMessage = NM_Factory::create(message->getType());    
-    reducedMessage->exception = message->exception ;
+    reducedMessage->setException(message->getException());
     reducedMessage->federation = message->federation ;
     reducedMessage->federate = message->federate ;
     reducedMessage->object = message->object ;
@@ -401,4 +401,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.25 2008/09/18 14:41:29 gotthardp Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.26 2009/09/14 21:21:32 erk Exp $

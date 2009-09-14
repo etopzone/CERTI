@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.27 2008/11/08 11:36:05 erk Exp $
+// $Id: DataDistribution.cc,v 3.28 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -133,7 +133,7 @@ DataDistribution::createRegion(SpaceHandle space,
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_CREATE_REGION, req.federate));
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
 	D[pdDebug] << "Create region " << rep->region << endl ;
@@ -173,7 +173,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_MODIFY_REGION, req.federate));
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
 	region->replaceExtents(extents);
@@ -202,7 +202,7 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_DELETE_REGION, req.federate));
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteRegion(handle);
@@ -242,7 +242,7 @@ DataDistribution::associateRegion(ObjectHandle object,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_ASSOCIATE_REGION,req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
 } /* end of associateRegion */
 
@@ -270,7 +270,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_REGISTER_OBJECT,req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, class_handle, rep->object,
@@ -312,7 +312,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNASSOCIATE_REGION,
 		      req.federate));
 
-   e = rep->exception ;
+   e = rep->getException() ;
 } /* end of unassociateRegion */
 
 // ----------------------------------------------------------------------------
@@ -339,7 +339,7 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES,
 		      req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 } /* end of subscribe */
 
 // ----------------------------------------------------------------------------
@@ -364,7 +364,7 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES,
 		      req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 } /* end of unsubscribeAttributes */
 
 // ----------------------------------------------------------------------------
@@ -386,7 +386,7 @@ DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DDM_SUBSCRIBE_INTERACTION,
 		      req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 } /* end of subscribeInteraction */
 
 // ----------------------------------------------------------------------------
@@ -408,9 +408,9 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
     std::auto_ptr<NetworkMessage>  rep(comm->waitMessage(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION,
 		      req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 } /* end of unsubscribeInteraction */
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.27 2008/11/08 11:36:05 erk Exp $
+// $Id: DataDistribution.cc,v 3.28 2009/09/14 21:21:32 erk Exp $

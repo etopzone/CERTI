@@ -1793,8 +1793,8 @@ void NM_Get_FED_File::serialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	msgBuffer.write_string(federateName);
 	msgBuffer.write_string(FEDid);
-	msgBuffer.write_int16(number);	
-	if (number) {
+	msgBuffer.write_int16(lineno);
+	if (lineno>0) {
 		msgBuffer.write_string(line);
 	}
 } /* end of serialize */ 
@@ -1804,8 +1804,8 @@ void NM_Get_FED_File::deserialize(MessageBuffer& msgBuffer) {
 	/* specific code (if any) goes here */
 	federateName = msgBuffer.read_string();
 	FEDid        = msgBuffer.read_string();
-	number       = msgBuffer.read_int16();
-	if (number) {
+	lineno       = msgBuffer.read_int16();
+	if (lineno>0) {
 		line = msgBuffer.read_string();
 	}
 } /* end of deserialize */

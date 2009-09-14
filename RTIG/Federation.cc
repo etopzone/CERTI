@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.108 2009/08/12 13:48:36 erk Exp $
+// $Id: Federation.cc,v 3.109 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -715,7 +715,7 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
           handle, federate_handle, time.getTime());
 
     NM_Set_Time_Regulating msg ;
-    msg.exception = e_NO_EXCEPTION ;
+    msg.setException(e_NO_EXCEPTION);
     msg.federation = handle ;
     msg.federate = federate_handle ;
     msg.regulatorOn();
@@ -2582,5 +2582,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.108 2009/08/12 13:48:36 erk Exp $
+// $Id: Federation.cc,v 3.109 2009/09/14 21:21:32 erk Exp $
 

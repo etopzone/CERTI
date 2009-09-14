@@ -96,7 +96,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REGISTER_OBJECT, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, the_class, rep->object,
@@ -156,7 +156,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 
        	comm->sendMessage(&req);
     	std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
-    	e = rep->exception ;
+    	e = rep->getException() ;
     	evtrHandle = rep->eventRetraction;
     }
     else {
@@ -216,7 +216,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(req.getType(), req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
     G.Out(pdGendoc,"exit  ObjectManagement::updateAttributeValues without time");
 }
 
@@ -359,7 +359,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
        // Send network message and then wait for answer.
        comm->sendMessage(&req);
        std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.federate));
-       e = rep->exception ;
+       e = rep->getException() ;
        evtrHandle = rep->eventRetraction;
     }
     else {
@@ -409,7 +409,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::SEND_INTERACTION, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
 } /* end of sendInteraction */
 
@@ -476,7 +476,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
@@ -502,7 +502,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::DELETE_OBJECT, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteObjectInstance(fm->federate, theObjectHandle, theTag);
@@ -581,7 +581,7 @@ ObjectManagement::changeAttributeTransportType(ObjectHandle theObjectHandle,
                       NetworkMessage::CHANGE_ATTRIBUTE_TRANSPORT_TYPE,
                       req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     return rep->eventRetraction ;
 }
@@ -613,7 +613,7 @@ ObjectManagement::changeAttributeOrderType(ObjectHandle theObjectHandle,
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_ATTRIBUTE_ORDER_TYPE, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     return rep->eventRetraction ;
 }
@@ -634,7 +634,7 @@ ObjectManagement::changeInteractionTransportType(InteractionClassHandle id,
 
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_TRANSPORT_TYPE, req.federate));
-    e = rep->exception ;
+    e = rep->getException() ;
 
     return rep->eventRetraction ;
 }
@@ -657,7 +657,7 @@ ObjectManagement::changeInteractionOrderType(InteractionClassHandle id,
 
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::CHANGE_INTERACTION_ORDER_TYPE, req.federate));
 
-    e = rep->exception ;
+    e = rep->getException() ;
 
     return rep->eventRetraction ;
 } /* end of changeInteractionOrderType */
@@ -687,7 +687,7 @@ ObjectManagement::requestObjectAttributeValueUpdate(ObjectHandle handle,
     comm->sendMessage(&req);
     std::auto_ptr<NetworkMessage> rep(comm->waitMessage(NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE,
                       req.federate));
-    e = rep->exception ;
+    e = rep->getException() ;
     G.Out(pdGendoc,"exit  ObjectManagement::requestObjectAttributeValueUpdate");
 
 } /* end of requestObjectAttributeValueUpdate */

@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.48 2009/09/14 17:54:08 erk Exp $
+// $Id: NetworkMessage.hh,v 3.49 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -153,6 +153,8 @@ public:
 
 	const NetworkMessage::Message_T getType() const {return type;};
 	const TypeException getException() const {return exception;};
+	TypeException& getRefException() {return exception;};
+	void setException(const TypeException except) {exception=except;};
 
 	/**
 	 * Serialize the message into a buffer
@@ -193,8 +195,6 @@ public:
 	void setAHS(const std::vector <AttributeHandle> &, int);
 
         void displayValueArray(char *);
-
-	UShort number ;
 
 	int bestEffortPeer ;
 	unsigned long bestEffortAddress ;
@@ -257,11 +257,7 @@ public:
 	/** The name corresponding to message type */
 	const std::string getName() const {return name;}
 
-	/** 
-	 * The exception type 
-	 * if the message is carrying an exception
-	 */
-	TypeException exception ;
+
 	/**
 	 * The federation handle 
 	 * the message is part of this federation activity
@@ -279,6 +275,7 @@ public:
 	std::string exceptionReason;
 
 protected:
+
 	/** 
 	 * The message name.
 	 * should be initialized by the specialized
@@ -293,6 +290,12 @@ protected:
 	 *   - getter should be used to get it. 
 	 */
 	Message_T type;
+
+	/**
+	 * The exception type
+	 * if the message is carrying an exception
+	 */
+	TypeException exception ;
 
 private:
 	/** 
@@ -343,4 +346,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.48 2009/09/14 17:54:08 erk Exp $
+// $Id: NetworkMessage.hh,v 3.49 2009/09/14 21:21:32 erk Exp $

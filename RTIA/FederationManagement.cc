@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.70 2009/09/14 17:54:09 erk Exp $
+// $Id: FederationManagement.cc,v 3.71 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -144,37 +144,37 @@ createFederationExecution(std::string theName,
 
         // We have to see if C_F_E is OK.
 
-        if (reponse->exception == e_NO_EXCEPTION)
+        if (reponse->getException() == e_NO_EXCEPTION)
             {
             _nom_federation = std::string(theName);            
             _numero_federation = reponse->federation ;
             D.Out(pdInit, "est createur");
             }
-        else if (reponse->exception == e_CouldNotOpenFED)
+        else if (reponse->getException() == e_CouldNotOpenFED)
             // RTIG encounters a problem creating federation execution
             {
-            e = reponse->exception;
+            e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
             throw CouldNotOpenFED (reponse->exceptionReason.c_str()) ;
             }           
-        else if (reponse->exception == e_FederationExecutionAlreadyExists)
+        else if (reponse->getException() == e_FederationExecutionAlreadyExists)
             {
-            e = reponse->exception;
+            e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception");
             throw FederationExecutionAlreadyExists (reponse->exceptionReason.c_str()) ;
             }
-        else if (reponse->exception == e_ErrorReadingFED)
+        else if (reponse->getException() == e_ErrorReadingFED)
             {
-            e = reponse->exception;
+            e = reponse->getException();
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception ErrorReadingFED");
             throw ErrorReadingFED (reponse->exceptionReason.c_str()) ;
             }
         else
             {
-            e = reponse->exception ;
+            e = reponse->getException() ;
             G.Out(pdGendoc,"exit FederationManagement::"
                            "createFederationExecution on exception RTIinternalError");
             throw RTIinternalError (reponse->exceptionReason.c_str()) ;
@@ -219,7 +219,7 @@ destroyFederationExecution(std::string theName,
                           NetworkMessage::DESTROY_FEDERATION_EXECUTION,
                           federate));
 
-        if (reponse->exception == e_NO_EXCEPTION) {
+        if (reponse->getException() == e_NO_EXCEPTION) {
             _nom_federation    = "" ;
             _numero_federation = 0 ;
             _fin_execution     = true ;
@@ -246,7 +246,7 @@ destroyFederationExecution(std::string theName,
         else
             {
             // There is an exception so destroy may be not done on RTIG
-            e = reponse->exception ;
+            e = reponse->getException() ;
             }
     }
 
@@ -294,10 +294,10 @@ joinFederationExecution(std::string Federate,
         std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
         NM_Get_FED_File*  getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
 
-        if ( reponse->exception != e_NO_EXCEPTION)
+        if ( reponse->getException() != e_NO_EXCEPTION)
             {
             // Bad answer from RTIG
-            e = reponse->exception ;
+            e = reponse->getException() ;
             }
         else
             {
@@ -347,9 +347,9 @@ joinFederationExecution(std::string Federate,
             requeteFED.setFederateName(Federate);
             requeteFED.setFEDid(filename);
             if ( e == e_NO_EXCEPTION)
-                requeteFED.number = 0 ;  // OK for open
+                requeteFED.setLineno(0);  // OK for open
             else
-                requeteFED.number = 1 ; 
+                requeteFED.setLineno(1);
 
             G.Out(pdGendoc,"joinFederationExecution====> begin FED file get from RTIG");
 
@@ -361,7 +361,7 @@ joinFederationExecution(std::string Federate,
                 {            	
                 reponse.reset(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
                 getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
-                if ( reponse->exception != e_NO_EXCEPTION)
+                if ( reponse->getException() != e_NO_EXCEPTION)
                     {
                     cout << "Bad answer from RTIG" << endl ;
                     e = e_RTIinternalError ;
@@ -371,14 +371,14 @@ joinFederationExecution(std::string Federate,
                 // Line read
                 num_line++ ;
                 // Check for EOF
-                if ( reponse->number == 0 ) break;
+                if ( getFedMsg->getLineno() == 0 ) break;
                  
-                assert ( num_line == reponse->number ) ;
+                assert ( num_line == getFedMsg->getLineno() ) ;
                 reponse->handleArraySize = 1 ;                
                 fedWorkFile << getFedMsg->getFEDLine();
                 // RTIA says OK to RTIG                
                 requeteFED.setFederateName(Federate);
-                requeteFED.number = num_line ; 
+                requeteFED.setLineno(num_line);
                 requeteFED.setFEDid(filename);
                 comm->sendMessage(&requeteFED);            
                 }
@@ -393,7 +393,7 @@ joinFederationExecution(std::string Federate,
 
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
-        if (reponse->exception == e_NO_EXCEPTION) {
+        if (reponse->getException() == e_NO_EXCEPTION) {
             _nom_federation = std::string(Federation);            
             _nom_federe =  std::string(Federate);
             _numero_federation = reponse->federation ;
@@ -417,7 +417,7 @@ joinFederationExecution(std::string Federate,
             return(federate);
         }
         else
-            e = reponse->exception ;
+            e = reponse->getException() ;
     }
     G.Out(pdGendoc,"exit(0) FederationManagement::joinFederationExecution");
     return(0);

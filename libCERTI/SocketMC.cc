@@ -191,7 +191,8 @@ SocketMC::sendMC(NetworkMessage *message)
 {
     int cnt ;
 
-    message->number=_num_msg ;
+    //message->number=_num_msg ;
+    // FIXME EN: SocketMC is now broken for several release
     _num_msg++ ;
     assert(_est_init_mc);
     assert(message != NULL);

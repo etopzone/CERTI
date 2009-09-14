@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.84 2009/09/14 17:54:09 erk Exp $
+// $Id: RTIG_processing.cc,v 3.85 2009/09/14 21:21:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -88,22 +88,22 @@ RTIG::processCreateFederation(Socket *link, NM_Create_Federation_Execution *req)
         }
     catch (CouldNotOpenFED e)
         {
-        rep.exception = e_CouldNotOpenFED ;
+        rep.setException(e_CouldNotOpenFED);
         rep.exceptionReason=e._reason;
         }
     catch (ErrorReadingFED e)
         {
-        rep.exception = e_ErrorReadingFED ;
+        rep.setException(e_ErrorReadingFED);
         rep.exceptionReason = e._reason ;
         }
     catch (FederationExecutionAlreadyExists e)
         {
-        rep.exception = e_FederationExecutionAlreadyExists ;
+        rep.setException(e_FederationExecutionAlreadyExists);
         rep.exceptionReason =e._reason ;
         }
 #endif
     // Prepare answer for RTIA : store NetworkMessage rep
-    if ( rep.exception == e_NO_EXCEPTION )
+    if ( rep.getException() == e_NO_EXCEPTION )
         {
         rep.federation = h ;
         rep.setFEDid(FEDid);
@@ -166,7 +166,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
         // RTIA waits a GET_FED_FILE message
         // RTIG says not OK to RTIA in a GET_FED_FILE message
         NM_Get_FED_File repFED ;
-       repFED.exception = e_FederateAlreadyExecutionMember ;
+       repFED.setException(e_FederateAlreadyExecutionMember);
        repFED.exceptionReason="Federate with same name has yet joined the federation";
        G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA GFF ERROR %s",repFED.exceptionReason.c_str());
        repFED.send(link,NM_msgBufSend);
@@ -176,7 +176,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
        // FIXME strange to send 2 messages?
        // Prepare answer about JoinFederationExecution
        NM_Join_Federation_Execution rep ;
-       rep.exception = e_FederateAlreadyExecutionMember ;
+       rep.setException(e_FederateAlreadyExecutionMember);
        rep.exceptionReason = "Federate with same name has yet joined the federation";
 
        G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA JFE ERROR %s",rep.exceptionReason.c_str());
@@ -230,9 +230,9 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     NM_Get_FED_File repFED ;
     repFED.federate = num_federe ;
     repFED.federation = num_federation ;
-    repFED.number = 0 ;
+    repFED.setLineno(0);
     repFED.setFEDid(filename);
-    repFED.exception = e ;
+    repFED.setException(e);
     // Send answer
     D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
           repFED.getType(),repFED.getFEDid().c_str());
@@ -246,7 +246,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     	NM_Get_FED_File msg ;
         D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.getType());
         msg.receive(link,NM_msgBufReceive);
-        assert ( msg.number == 0 );
+        assert ( msg.getLineno() == 0 );
         // RTIA has opened working file then RTIG has to transfer file contents
         // line by line
         std::string fileLine;
@@ -258,10 +258,10 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
             std::getline(fedFile,fileLine);
             fileLine = fileLine+"\n";
             // RTIG sends line to RTIA and number gives line number
-            repFED.exception = e_NO_EXCEPTION ;
+            repFED.setException(e_NO_EXCEPTION);
             repFED.federate = num_federe ;
             repFED.federation = num_federation ;
-            repFED.number = num_line ;
+            repFED.setLineno(num_line);
             repFED.setFEDid(filename);
             // line transfered
             repFED.setFEDLine(fileLine);
@@ -270,15 +270,15 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 
             // Wait for OK from RTIA
             msg.receive(link,NM_msgBufReceive);
-            assert ( msg.number == num_line );
+            assert ( msg.getLineno() == num_line );
             }
 
 	    // close
 	    fedFile.close();
-        repFED.exception = e_NO_EXCEPTION ;
+        repFED.setException(e_NO_EXCEPTION);
         repFED.federate = num_federe ;
         repFED.federation = num_federation ;
-        repFED.number = 0 ;
+        repFED.setLineno(0) ;
         repFED.setFEDid(filename);
         // Send answer
 
@@ -362,24 +362,24 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
       { printf("ERROR : %s  reason : %s\n",e._name,e._reason.c_str());
         if (strcmp(e._name,"RTIinternalError")==0 )
           {
-          rep.exception = e_RTIinternalError;
+          rep.setException(e_RTIinternalError);
           rep.exceptionReason = e._reason;
           }
         else if (strcmp(e._name,"FederationExecutionDoesNotExist")==0 )
           {
-          rep.exception = e_FederationExecutionDoesNotExist;
+          rep.setException(e_FederationExecutionDoesNotExist);
           rep.exceptionReason =e._reason;
           }
         else if (strcmp(e._name,"FederatesCurrentlyJoined")==0 )
           {
-          rep.exception = e_FederatesCurrentlyJoined;
+          rep.setException(e_FederatesCurrentlyJoined);
           rep.exceptionReason = "at least one federate joined";
           }
       }
 
     rep.federate = req->federate ;
     rep.setFederationName(req->getFederationName());
-    if ( rep.exception == e_NO_EXCEPTION )
+    if ( rep.getException() == e_NO_EXCEPTION )
        {
        auditServer << "Federation Name \"" << federation.c_str() << "\"("<<num_federation<<") destroyed." ;
        }
@@ -1517,7 +1517,7 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
     auditServer << "ObjID = " << request->object ;
 
     // We have to do verifications about this object and we need owner
-    answer.exception = e_NO_EXCEPTION ;
+    answer.setException(e_NO_EXCEPTION);
     try
       {
       federateOwner = federations.requestObjectOwner(request->federation,
@@ -1528,17 +1528,17 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
       }
      catch (ObjectNotKnown e)
         {
-        answer.exception = e_ObjectNotKnown ;
+        answer.setException(e_ObjectNotKnown);
         answer.exceptionReason = e._reason ;
         }
      catch (FederationExecutionDoesNotExist e)
         {
-        answer.exception = e_FederationExecutionDoesNotExist ;
+        answer.setException(e_FederationExecutionDoesNotExist);
         answer.exceptionReason = e._reason ;
         }
      catch (RTIinternalError e)
         {
-        answer.exception = e_RTIinternalError ;
+        answer.setException(e_RTIinternalError);
         answer.exceptionReason = e._reason ;
         }
 
@@ -1552,4 +1552,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.84 2009/09/14 17:54:09 erk Exp $
+// $Id: RTIG_processing.cc,v 3.85 2009/09/14 21:21:32 erk Exp $
