@@ -133,10 +133,14 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	std::string getFederationName() {return federationName;};
+	void setFederationName(std::string newFederationName) {federationName=newFederationName;};
+	std::string getFEDid() {return FEDid;};
+	void setFEDid(std::string newFEDid) {FEDid=newFEDid;};
 protected:
 	/* specific field */	  
-	//	std::string federationName ;
-	//	std::string FEDid ;
+	std::string federationName ;
+	std::string FEDid ;
 private:
 };
 
@@ -151,9 +155,11 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	std::string getFederationName() {return federationName;};
+		void setFederationName(std::string newFederationName) {federationName=newFederationName;};
 protected:
 	/* specific field */	 
-	//	std::string federationName;
+	std::string federationName;
 private:
 };
 
@@ -167,6 +173,10 @@ public:
 	virtual ~NM_Join_Federation_Execution();
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
+	std::string getFederateName() {return federateName;};
+	void setFederateName(std::string newFederateName) {federateName=newFederateName;};
+	std::string getFederationName() {return federationName;};
+	void setFederationName(std::string newFederationName) {federationName=newFederationName;};
 	/* specific Getter/Setter */
 protected:
 	/* specific field */
@@ -174,8 +184,8 @@ protected:
 	//	uint32_t multicastAddress;
 	//	uint32_t bestEffortAddress;
 	//	uint32_t bestEffortPeer;
-	//	std::string federationName;
-	//	std::string federateName;
+	std::string federationName;
+	std::string federateName;
 private:
 };
 
@@ -1519,6 +1529,8 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	std::string getFederateName() {return federateName;};
+    void setFederateName(std::string newFederateName) {federateName=newFederateName;};
 	void setFEDid(std::string newFEDid) {FEDid=newFEDid;};
 	const std::string getFEDid() const {return FEDid;};
 	//	void setLineFollows() {lineFollows=true;};
@@ -1528,9 +1540,11 @@ public:
 	std::string getFEDLine() {return line;};
 protected:
 	/* specific field */
-	//	std::string FEDid;
+	std::string federateName;// the Federate name
+	std::string FEDid;
 	//	bool lineFollows;
 	std::string line;
+
 private:
 };
 

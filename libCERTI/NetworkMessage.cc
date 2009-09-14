@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.38 2008/09/21 16:46:25 gotthardp Exp $
+// $Id: NetworkMessage.cc,v 3.39 2009/09/14 17:54:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -48,12 +48,8 @@ NetworkMessage::NetworkMessage()
 
     federation         = 0 ;
     federate           = 0 ;
-
-    federationName = std::string("") ;
-    federateName   = std::string("") ;
         
     label          = std::string("") ;
-    FEDid          = std::string("") ;
 
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
@@ -166,4 +162,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.38 2008/09/21 16:46:25 gotthardp Exp $
+// $Id: NetworkMessage.cc,v 3.39 2009/09/14 17:54:08 erk Exp $

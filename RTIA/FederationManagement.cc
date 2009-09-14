@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.69 2008/10/22 14:24:34 jmm Exp $
+// $Id: FederationManagement.cc,v 3.70 2009/09/14 17:54:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,8 +130,8 @@ createFederationExecution(std::string theName,
 
     if (e == e_NO_EXCEPTION)
         {               
-        requete.federationName = theName;
-        requete.FEDid = _FEDid;        
+        requete.setFederationName(theName);
+        requete.setFEDid(_FEDid);
 
         G.Out(pdGendoc,"createFederationExecution====>   send Message to RTIG");
 
@@ -209,7 +209,7 @@ destroyFederationExecution(std::string theName,
         {
         requete.federation = _numero_federation ;
         requete.federate = federate ;
-        requete.federationName = theName;
+        requete.setFederationName(theName);
 
         G.Out(pdGendoc,"destroyFederationExecution====>send Message to RTIG");
 
@@ -280,8 +280,8 @@ joinFederationExecution(std::string Federate,
 
     if (e == e_NO_EXCEPTION)
         {
-        requete.federationName = Federation;        
-        requete.federateName   = Federate;
+        requete.setFederationName(Federation);
+        requete.setFederateName(Federate);
 
         requete.bestEffortAddress = comm->getAddress();
         requete.bestEffortPeer = comm->getPort();
@@ -322,7 +322,7 @@ joinFederationExecution(std::string Federate,
             filename+= Federation ;
             // Last file type : fed or xml ?
    
-            string filename_RTIG = reponse->FEDid ;
+            string filename_RTIG = getFedMsg->getFEDid();
             int nbcar_filename_RTIG=filename_RTIG.length();        
             string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
               if ( !strcasecmp(extension.c_str(),"fed") )
@@ -344,8 +344,8 @@ joinFederationExecution(std::string Federate,
             }
               
             // RTIA says RTIG OK for file transfer            
-            requeteFED.federateName = Federate;
-            requeteFED.FEDid = filename;            
+            requeteFED.setFederateName(Federate);
+            requeteFED.setFEDid(filename);
             if ( e == e_NO_EXCEPTION)
                 requeteFED.number = 0 ;  // OK for open
             else
@@ -377,9 +377,9 @@ joinFederationExecution(std::string Federate,
                 reponse->handleArraySize = 1 ;                
                 fedWorkFile << getFedMsg->getFEDLine();
                 // RTIA says OK to RTIG                
-                requeteFED.federateName =Federate;
+                requeteFED.setFederateName(Federate);
                 requeteFED.number = num_line ; 
-                requeteFED.FEDid = filename;
+                requeteFED.setFEDid(filename);
                 comm->sendMessage(&requeteFED);            
                 }
             // close working file

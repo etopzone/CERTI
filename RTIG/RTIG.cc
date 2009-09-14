@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.55 2009/04/02 19:58:10 erk Exp $
+// $Id: RTIG.cc,v 3.56 2009/09/14 17:54:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -121,22 +121,18 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::CREATE_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Create federation \"%s\".", msg->federationName.c_str());
         auditServer.setLevel(9);
-        processCreateFederation(link, msg);
+        processCreateFederation(link, static_cast<NM_Create_Federation_Execution*>(msg));
         break ;
 
       case NetworkMessage::DESTROY_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "Destroy federation \"%s\".", msg->federationName.c_str());
         auditServer.setLevel(9);
-        processDestroyFederation(link, msg);
+        processDestroyFederation(link, static_cast<NM_Destroy_Federation_Execution*>(msg));
         break ;
 
       case NetworkMessage::JOIN_FEDERATION_EXECUTION:
-        D.Out(pdTrace, "federate \"%s\" joins federation \"%s\".",
-              msg->federateName.c_str(), msg->federationName.c_str());
         auditServer.setLevel(9);
-        processJoinFederation(link, msg);
+        processJoinFederation(link, static_cast<NM_Join_Federation_Execution*>(msg));
         break ;
 
       case NetworkMessage::RESIGN_FEDERATION_EXECUTION:
@@ -1039,4 +1035,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.55 2009/04/02 19:58:10 erk Exp $
+// $Id: RTIG.cc,v 3.56 2009/09/14 17:54:09 erk Exp $

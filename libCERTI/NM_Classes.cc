@@ -469,6 +469,7 @@ void NM_Destroy_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 NM_Join_Federation_Execution::NM_Join_Federation_Execution() {
 	this->name = "JOIN_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::JOIN_FEDERATION_EXECUTION;
+	federateName = std::string("");
 	/* specific field init */
 }
 NM_Join_Federation_Execution::~NM_Join_Federation_Execution() {
@@ -1790,6 +1791,7 @@ void NM_Get_FED_File::serialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::serialize(msgBuffer); 
 	/* specific code (if any) goes here */
+	msgBuffer.write_string(federateName);
 	msgBuffer.write_string(FEDid);
 	msgBuffer.write_int16(number);	
 	if (number) {
@@ -1800,8 +1802,9 @@ void NM_Get_FED_File::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	FEDid       = msgBuffer.read_string();
-	number      = msgBuffer.read_int16();
+	federateName = msgBuffer.read_string();
+	FEDid        = msgBuffer.read_string();
+	number       = msgBuffer.read_int16();
 	if (number) {
 		line = msgBuffer.read_string();
 	}

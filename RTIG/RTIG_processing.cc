@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.83 2009/06/07 15:08:45 gotthardp Exp $
+// $Id: RTIG_processing.cc,v 3.84 2009/09/14 17:54:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,10 +41,10 @@ static PrettyDebug G("GENDOC",__FILE__);
 // ----------------------------------------------------------------------------
 //! Creates a new federation.
 void
-RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
+RTIG::processCreateFederation(Socket *link, NM_Create_Federation_Execution *req)
 {
-    std::string federation = req->federationName;
-    std::string FEDid      = req->FEDid;
+    std::string federation = req->getFederationName();
+    std::string FEDid      = req->getFEDid();
     NM_Create_Federation_Execution  rep;   // rep for answer to RTIA
 
     G.Out(pdGendoc,"enter RTIG::processCreateFederation");
@@ -106,8 +106,8 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
     if ( rep.exception == e_NO_EXCEPTION )
         {
         rep.federation = h ;
-        rep.FEDid = FEDid;
-        rep.federationName = federation;
+        rep.setFEDid(FEDid);
+        rep.setFederationName(federation);
         auditServer <<" created.";
 
         }
@@ -126,10 +126,10 @@ RTIG::processCreateFederation(Socket *link, NetworkMessage *req)
 // ----------------------------------------------------------------------------
 //! Add a new federate to federation.
 void
-RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
+RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 {
-    std::string federation = req->federationName ;
-    std::string federate   = req->federateName ;
+    std::string federation = req->getFederationName();
+    std::string federate   = req->getFederateName();
     std::string filename ;
 
     unsigned int peer     = req->bestEffortPeer ;
@@ -208,7 +208,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     // Prepare answer about JoinFederationExecution
     // This answer wille be made AFTER FED file processing
     NM_Join_Federation_Execution rep ;
-    rep.federationName = federation;
+    rep.setFederationName(federation);
     rep.federate = num_federe ;
     rep.federation = num_federation ;
     rep.numberOfRegulators = nb_regulateurs ;
@@ -231,11 +231,11 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
     repFED.federate = num_federe ;
     repFED.federation = num_federation ;
     repFED.number = 0 ;
-    repFED.FEDid = filename ;
+    repFED.setFEDid(filename);
     repFED.exception = e ;
     // Send answer
     D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
-          repFED.getType(),repFED.FEDid.c_str());
+          repFED.getType(),repFED.getFEDid().c_str());
     G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
 
     repFED.send(link,NM_msgBufSend);
@@ -262,7 +262,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
             repFED.federate = num_federe ;
             repFED.federation = num_federation ;
             repFED.number = num_line ;
-            repFED.FEDid = filename;
+            repFED.setFEDid(filename);
             // line transfered
             repFED.setFEDLine(fileLine);
             // Send answer
@@ -279,7 +279,7 @@ RTIG::processJoinFederation(Socket *link, NetworkMessage *req)
         repFED.federate = num_federe ;
         repFED.federation = num_federation ;
         repFED.number = 0 ;
-        repFED.FEDid = filename;
+        repFED.setFEDid(filename);
         // Send answer
 
         G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
@@ -336,12 +336,12 @@ RTIG::processResignFederation(Socket *link,Handle federation,
 // ----------------------------------------------------------------------------
 //! Removes a federation.
 void
-RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
+RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *req)
 {
     NM_Destroy_Federation_Execution rep ;
     Handle num_federation ;
 
-    std::string federation = req->federationName ;
+    std::string federation = req->getFederationName();
 
     G.Out(pdGendoc,"enter RTIG::processDestroyFederation");
     G.Out(pdGendoc,"BEGIN ** DESTROY FEDERATION SERVICE **");
@@ -378,7 +378,7 @@ RTIG::processDestroyFederation(Socket *link, NetworkMessage *req)
       }
 
     rep.federate = req->federate ;
-    rep.federationName = req->federationName;
+    rep.setFederationName(req->getFederationName());
     if ( rep.exception == e_NO_EXCEPTION )
        {
        auditServer << "Federation Name \"" << federation.c_str() << "\"("<<num_federation<<") destroyed." ;
@@ -1552,4 +1552,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.83 2009/06/07 15:08:45 gotthardp Exp $
+// $Id: RTIG_processing.cc,v 3.84 2009/09/14 17:54:09 erk Exp $
