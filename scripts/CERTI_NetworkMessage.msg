@@ -51,36 +51,32 @@ native AttributeHandle {
     language CXX [#include "certi.hh"]
 }
 
-message NM_WithHandleArray : merge  NetworkMessage {
-	repeated AttributeHandle handle 
-}
-
-message NM_DDM_Base : merge  NM_WithHandleArray {
-	required bool DDM_bool { default=false }
-}
-
 message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {}
 
+// Create the federation execution
 message NM_Create_Federation_Execution : merge NetworkMessage {
-	required string federationName
-	required string FEDid
+	required string federationName // the federation name
+	required string FEDid          // the Federation ID which is in fact a filename
 }
 
+// Destroy the federation execution
 message NM_Destroy_Federation_Execution : merge NetworkMessage {
 	required string federationName
 }
 
+// Join the federation
 message NM_Join_Federation_Execution : merge NetworkMessage {
 	required  int32  numberOfRegulators
 	required uint32  multicastAddress
 	required uint32  bestEffortAddress
 	required uint32  bestEffortPeer
-	required string  federationName
-	required string  federateName
+	required string  federationName // the federation name
+	required string  federateName   // the federate name (should be unique within a federation)
 }
 
+// Resign from federation
 message NM_Resign_Federation_Execution : merge NetworkMessage {}
 
 message NM_Set_Time_Regulating : merge NetworkMessage {
@@ -296,12 +292,20 @@ message NM_DDM_Unsubscribe_Interaction : merge NM_DDM_Subscribe_Interaction {}
 
 message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Value_Update {}
 
-
-
 message NM_Get_FED_File : merge NetworkMessage {
+        required string federateName // the Federate name
 	required string FEDid // the FED identifier
 	required string line  // one line of the FED file
 }
+
+message NM_WithHandleArray : merge  NetworkMessage {
+	repeated AttributeHandle handle 
+}
+
+message NM_DDM_Base : merge  NM_WithHandleArray {
+	required bool DDM_bool { default=false }
+}
+
 
 native StreamType {
     language CXX [typedef Socket* StreamType;]
