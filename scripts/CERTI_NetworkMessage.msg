@@ -95,13 +95,6 @@ native ObjectClassHandle {
 	language CXX [#include "certi.hh"]
 }
 
-message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
-	required ObjectClassHandle objectClass
-}
-
-message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
-	required ObjectClassHandle objectClass
-}
 
 message NM_Set_Class_Relevance_Advisory_Switch : merge NetworkMessage {    
 	required onoff classRelevanceAdvisorySwitch // value of CRA switch 	
@@ -294,8 +287,17 @@ message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Va
 
 message NM_Get_FED_File : merge NetworkMessage {
         required string federateName // the Federate name
-	required string FEDid // the FED identifier
-	required string line  // one line of the FED file
+	required string FEDid        // the FED identifier
+        required uint32 lineno       // the line number, 0 means open the file
+	required string line         // one line of the FED file
+}
+
+message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
+	required ObjectClassHandle objectClass
+}
+
+message NM_Stop_Registration_For_Object_Class : merge NetworkMessage {
+	required ObjectClassHandle objectClass
 }
 
 message NM_WithHandleArray : merge  NetworkMessage {
