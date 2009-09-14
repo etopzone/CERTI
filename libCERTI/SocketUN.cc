@@ -21,20 +21,21 @@
 #include "certi.hh"
 #include "SocketUN.hh"
 
-#if defined(RTIA_USE_TCP)
-	#include "SocketTCP.hh"
-	#if not defined(_WIN32)
-		#include <cstring>
-		#include <cerrno>
-	#endif
-#else
-#include <unistd.h>
-#include <strings.h>
+#include "SocketTCP.hh"
+
+#include <cstring>
+#include <cerrno>
 #include <sstream>
 #include <string>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/un.h>
+
+#ifdef WIN32
+# include <windows.h>
+# include <io.h>
+#else
+# include <unistd.h>
+# include <sys/un.h>
+# include <sys/types.h>
+# include <sys/socket.h>
 #endif
 
 #include <iostream>
@@ -45,212 +46,148 @@ using std::string ;
 using std::cout ;
 using std::endl ;
 
+#ifdef WIN32
+extern "C" int socketpair_win32(SOCKET socks[2], int make_overlapped);
+#endif
+
 namespace certi {
 static PrettyDebug G("GENDOC",__FILE__);
-#define MAX_ATTEMPTS 3
 
-// ----------------------------------------------------------------------------
-//! Called by server to open the socket and wait for the connection.
-void
-SocketUN::acceptUN(int RTIA_port)
+#ifndef WIN32
+static void closesocket(int fd)
 {
-#if defined(RTIA_USE_TCP)
-	struct sockaddr_in nom_client, nom_serveur;
-	int lg_nom;
-	int result;
-
-#if defined(_WIN32)
-	assert(SocketTCP::winsockInitialized());
-	int socklen;
-#else
-	socklen_t socklen;
+  close(fd);
+}
 #endif
 
-	if((sock_connect=socket(AF_INET,SOCK_STREAM,0)) < 0)
-		error("socket");
-
-	memset(&nom_serveur, 0, sizeof(nom_serveur));
-
-	nom_serveur.sin_family      = AF_INET;
-	nom_serveur.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-
-	// TEMPO : UNIX socket emulation with TCP/IP sockets
-	int tcpport;
-	if (RTIA_port>0) {
-		tcpport = RTIA_port;
-	} else {
-	    tcpport = getpid();
-	}
-
-	// make sure it is contained in a short
-	if (tcpport > 65535)
-		throw RTIinternalError("TCP Port too big.");
-
-	nom_serveur.sin_port = htons(tcpport);
-
-	lg_nom = sizeof(nom_serveur);
-
-	result = ::bind(sock_connect,(sockaddr *)&nom_serveur, lg_nom);
-
-	if(result <0)
-		{// Error on Bind. If the error is "Address already in use", allow
-		// the user to choose to "reuse address" and then try again.
-		error("bind");
-		}
-	pD->Out(pdInit, "Server: Bind succeeded, now listening.");
+int
+SocketUN::listenUN()
+{
+  struct sockaddr_in addr;
+#ifdef _WIN32
+  int  addrlen = sizeof(addr);
 #else
-
-    struct sockaddr_un nom_client, nom_serveur ;
-    socklen_t socklen ;
-
-    pD->Out(pdInit, "Opening Server UNIX Socket.");
-
-    // Socket
-    if ((sock_connect = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-		{
-		pD->Out(pdError, "Cannot open Server UNIX Socket.");
-		error("socket");
-		}
-
-    pD->Out(pdInit, "Server has got UNIX Socket FpD->");
-
-    // Set Server address
-    memset(&nom_serveur, 0, sizeof(nom_serveur));
-
-    nom_serveur.sun_family = AF_UNIX ;
-
-    if (strlen(NOM_FICHIER_SOCKET) > 90)
-        throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-
-    char buffer[256] ;
-    sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, getpid() ) ;
-    name = buffer ;
-    strcpy( nom_serveur.sun_path, name.c_str() );
-
-
-    // Bind
-    if (bind(sock_connect, (struct sockaddr*)&nom_serveur,
-             sizeof(struct sockaddr_un)) < 0)
-        error("bind");
-
-    pD->Out(pdInit, "Server: Bind succeeded, now listening.");
+  socklen_t addrlen = sizeof(addr);
 #endif
 
-// Listen
-if (listen(sock_connect, 10) == -1)
-  error("listen");
+  if ((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    return -1;
+  pD->Out(pdInit, "Server: Created IPV4 socket.");
 
-pD->Out(pdInit, "Server: Listen returned, now accepting.");
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  addr.sin_port = 0;
 
-// Accept
-socklen = sizeof(struct sockaddr_in);
-if ((_socket_un = accept(sock_connect,
-                       (struct sockaddr*)&nom_client,
-                       &socklen)) < 0)
-  // HPUX:(int*) &lg_nom)) < 0)
-  error("accept");
+  if (bind(_socket_un, (const struct sockaddr*) &addr, sizeof(addr)) == -1) {
+    closesocket(_socket_un);
+    _socket_un = -1;
+    return -1;
+  }
+  pD->Out(pdInit, "Server: Bound to anonymous IPV4 address.");
 
-pD->Out(pdInit, "Server: Accept OK, server running.");
+  if (getsockname(_socket_un, (struct sockaddr*) &addr, &addrlen) == -1) {
+    closesocket(_socket_un);
+    _socket_un = -1;
+    return -1;
+  }
+  pD->Out(pdInit, "Server: Got server port address %d.", ntohs(addr.sin_port));
 
-_est_init_un = true ;
-_est_serveur = true ;
+  if (listen(_socket_un, 1) == -1) {
+    closesocket(_socket_un);
+    _socket_un = -1;
+    return -1;
+  }
+  pD->Out(pdInit, "Server: Now listening.");
+
+  return ntohs(addr.sin_port);
 }
 
 // ----------------------------------------------------------------------------
 //! Called by client to connect.
-#ifdef RTIA_USE_TCP
-	void SocketUN::connectUN(int Server_pid)
-#else
-	int SocketUN::connectUN(pid_t Server_pid)
-#endif
+int
+SocketUN::connectUN(int port)
 {
-int Attempt = 0 ;
-int Result = 0 ;
+  if ((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    return -1;
+  pD->Out(pdInit, "Client: Created IPV4 socket.");
 
-#if defined(RTIA_USE_TCP)
-	struct sockaddr_in nom_serveur;
-	int lg_nom;
-#ifdef _WIN32
-	struct hostent *hptr = NULL;
-	assert(SocketTCP::winsockInitialized());
-#endif
-#else
-	struct sockaddr_un nom_serveur;
-#endif
+  struct sockaddr_in addr;
+  memset(&addr, 0, sizeof(addr));
+  addr.sin_family = AF_INET;
+  addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  addr.sin_port = htons(port);
+  if (connect(_socket_un, (const struct sockaddr*) &addr, sizeof(addr)) == -1)
+    return -1;
+  pD->Out(pdInit, "Client: Connected to IPV4 address at port %d.", port);
 
-char buffer[256] ;
-sprintf( buffer, "%s.%d", NOM_FICHIER_SOCKET, Server_pid ) ;
-name = buffer ;
-
-while (Attempt < MAX_ATTEMPTS)
-	{
-	pD->Out(pdInit, "Opening Client UNIX Socket.");
-
-// TCP Socket case--------------------------------------------------
-#if defined(RTIA_USE_TCP)
-	if((_socket_un = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-		error("socket");
-
-	pD->Out(pdInit, "Client has got UNIX Socket FpD->");
-
-	// Clear and set Server adress
-	memset(&nom_serveur, 0, sizeof(nom_serveur));
-
-	nom_serveur.sin_family      = AF_INET;
-	nom_serveur.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-
-	if (Server_pid > 65535)
-		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-	nom_serveur.sin_port= htons(Server_pid);
-
-	lg_nom = sizeof(nom_serveur);
-	Result = ::connect(_socket_un,(sockaddr *)&nom_serveur, lg_nom);
-
-	//pD->Out(pdInit, "Client: Connect returned %d.", Result);
-#else
-	if ((_socket_un = socket(AF_UNIX, SOCK_STREAM, 0)) == -1)
-		error("socket");
-
-	pD->Out(pdInit, "Client has got UNIX Socket FpD->");
-
-	memset(&nom_serveur, 0, sizeof(nom_serveur));	// Clear and set Server adress
-	nom_serveur.sun_family = AF_UNIX ;
-
-	if (strlen(NOM_FICHIER_SOCKET) > 90)
-		throw RTIinternalError("NOM_FICHIER_SOCKET too long.");
-	strcpy( nom_serveur.sun_path, name.c_str() );
-	Result = connect(_socket_un,
-						 (struct sockaddr*) &nom_serveur,
-						 sizeof(struct sockaddr_un));
-	pD->Out(pdInit, "Client: Connect returned %d.", Result);
-#endif
-
-	if (Result == 0)		// Success ? Yes->break
-		break ;
-
-	// Failure
-	pD->Out(pdError, "SocketUN: Connect, attempt #%d out of %d failed",
-			Attempt + 1, MAX_ATTEMPTS);
-	sleep(1);
-	Attempt ++ ;
-	}
-
-pD->Out(pdInit, "Client: Done.");
-
-if( Result == 0 )
-	_est_init_un = true ;
-
-#ifdef _WIN32
-return ; //Result ;
-#else
-return Result ;
-#endif
+  return 0;
 }
+
+// ----------------------------------------------------------------------------
+//! Called by server to open the socket and wait for the connection.
+int
+SocketUN::acceptUN(unsigned msec)
+{
+  fd_set fdset ;
+  FD_ZERO(&fdset);
+  FD_SET(_socket_un, &fdset);
+
+  struct timeval timeout;
+  timeout.tv_sec = msec/1000;
+  timeout.tv_usec = 1000*(msec%1000);
+
+  pD->Out(pdInit, "Server: Waiting for a connection to accept.");
+  if (select(_socket_un + 1, &fdset, NULL, NULL, &timeout) <= 0) {
+    closesocket(_socket_un);
+    _socket_un = -1;
+    return -1;
+  }
+
+  pD->Out(pdInit, "Server: Accepting connection.");
+  SOCKET accepted;
+  if ((accepted = accept(_socket_un, NULL, NULL)) == -1) {
+    closesocket(_socket_un);
+    _socket_un = -1;
+    return -1;
+  }
+  pD->Out(pdInit, "Server: Accepted IPV4 connection.");
+
+  closesocket(_socket_un);
+  _socket_un = accepted;
+  return 0;
+}
+
+#ifdef _WIN32
+SOCKET
+SocketUN::socketpair()
+{
+  SOCKET fd[2];
+  if (::socketpair_win32(fd, 0) == -1) {
+    perror("socketpair");
+    return -1;
+  }
+  _socket_un = fd[0];
+  return fd[1];
+}
+#else
+int
+SocketUN::socketpair()
+{
+  SOCKET fd[2];
+  if (::socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == -1) {
+    perror("socketpair");
+    return -1;
+  }
+  _socket_un = fd[0];
+  return fd[1];
+}
+#endif
 
 // ----------------------------------------------------------------------------
 //! Does not open the socket, see Init methods.
 SocketUN::SocketUN(SignalHandlerType theType)
-    : _socket_un(0), _est_serveur(false), _est_init_un(false),
+    : _socket_un(-1),
       HandlerType(theType), SentBytesCount(0), RcvdBytesCount(0)
 {
 #ifdef _WIN32
@@ -269,31 +206,17 @@ SocketUN::SocketUN(SignalHandlerType theType)
 //! Close the socket.
 SocketUN::~SocketUN()
 {
-if (_est_init_un)
-	{
-	#ifdef _WIN32
-		closesocket(_socket_un);
-		if (_est_serveur)
-			closesocket(sock_connect);
-	#else
-		close(_socket_un);
-		if (_est_serveur)
-			close(sock_connect);
-		unlink(name.c_str());
-	#endif
+  if (0 <= _socket_un)
+    closesocket(_socket_un);
 
-	if (_est_serveur)
-		pD->Out(pdTerm, "Server: Closed all sockets.");
-	else
-		pD->Out(pdTerm, "Client: Closed all sockets.");
-	}
+  pD->Out(pdTerm, "SocketUN: Closed all sockets.");
 
 #ifdef _WIN32
   SocketTCP::winsockShutdown();
 #endif
 
-pD->Out(pdCom, "Unix Socket %2d : total = %9d Bytes sent", _socket_un, SentBytesCount ) ;
-pD->Out(pdCom, "Unix Socket %2d : total = %9d Bytes received", _socket_un, RcvdBytesCount ) ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9db sent", _socket_un, SentBytesCount ) ;
+pD->Out(pdCom, "Unix Socket %2d : total = %9db received", _socket_un, RcvdBytesCount ) ;
 
 delete pD ;
 }
@@ -311,7 +234,7 @@ long sent = 0 ;
 unsigned long total_sent = 0 ;
 
 // G.Out(pdGendoc,"enter SocketUN::send");
-assert(_est_init_un);
+assert(0 <= _socket_un);
 
 pD->Out(pdTrace, "Beginning to send UN message...");
 
@@ -405,7 +328,7 @@ SocketUN::receive(const unsigned char *buffer, size_t Size)
 {
 // G.Out(pdGendoc,"enter SocketUN::receive");
 
-assert(_est_init_un);
+assert(0 <= _socket_un);
 
 long nReceived = 0 ;
 

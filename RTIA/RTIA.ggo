@@ -9,5 +9,6 @@ description	"Launched by the federate in order to handle RTI<-->Federate communi
 args "-F RTIA_cmdline -G"
 
 # Options
+option "fd"  		f "file descriptor number to be used to communicate with FederateAmbassador" 	int     optional
 option "port"  		p "tcp port to be used to communicate with FederateAmbassador" 	int     optional
 option "verbose"  	v "verbose mode" 			short   optional

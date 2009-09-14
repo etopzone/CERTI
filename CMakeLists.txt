@@ -56,19 +56,14 @@ OPTION(BUILD_DOC
 OPTION(FORCE_NO_X11 
               "Force not to use X11 (i.e. no Billard GUI)" OFF)   
         
-# On Win32 platform RTIA must use TCP Socket for RTIA <-->FedAmbd
-# On other platform TCP socket is an option               
-IF(WIN32)
-    SET(RTIA_USE_TCP ON)
-ELSE(WIN32)
-    OPTION(RTIA_USE_TCP 
+# The communication channel to RTIA
+OPTION(RTIA_USE_TCP 
            "Force TCP socket usage between RTIA and FederateAmbassador (default is Unix Socket)" OFF)
-ENDIF(WIN32) 
-
-SET(CMAKE_BUILD_TYPE "Debug")
 IF(RTIA_USE_TCP) 
     ADD_DEFINITIONS(-DRTIA_USE_TCP)
 ENDIF(RTIA_USE_TCP)
+
+SET(CMAKE_BUILD_TYPE "Debug")
 
 # Force CMAKE_COMPILER_IS_GNUCC even if gcc used with ccache
 IF("${CMAKE_C_COMPILER}" MATCHES "ccache")

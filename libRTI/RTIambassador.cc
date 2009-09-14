@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.105 2009/08/31 13:25:45 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.106 2009/09/14 20:51:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -130,7 +130,21 @@ RTI::RTIambassador::RTIambassador()
     const char *rtiacall ;
     if (rtiaenv) rtiacall = rtiaenv ;
     else rtiacall = rtiaexec ;
-    
+
+#if defined(RTIA_USE_TCP)
+    int port = privateRefs->socketUn->listenUN();
+    if (port == -1) {
+      D.Out( pdError, "Cannot listen to RTIA connection. Abort." );
+      throw RTI::RTIinternalError( "Cannot listen to RTIA connection" );
+    }
+#else
+    int pipeFd = privateRefs->socketUn->socketpair();
+    if (pipeFd == -1) {
+      D.Out( pdError, "Cannot get socketpair to RTIA connection. Abort." );
+      throw RTI::RTIinternalError( "Cannot get socketpair to RTIA connection" );
+    }
+#endif
+
 #ifdef _WIN32
   STARTUPINFO si;
   PROCESS_INFORMATION pi;
@@ -139,12 +153,31 @@ RTI::RTIambassador::RTIambassador()
   si.cb = sizeof(si);
   ZeroMemory( &pi, sizeof(pi) );
 
+  std::stringstream stream;
+#if defined(RTIA_USE_TCP)
+  stream << rtiacall << " -p " << port;
+#else
+  SOCKET newPipeFd;
+  if (!DuplicateHandle(GetCurrentProcess(),
+                       (HANDLE)pipeFd,
+                       GetCurrentProcess(),
+                       (HANDLE*)&newPipeFd,
+                       0,
+                       TRUE, // Inheritable
+                       DUPLICATE_SAME_ACCESS)) {
+    D.Out( pdError, "Cannot duplicate socket for RTIA connection. Abort." );
+    throw RTI::RTIinternalError( "Cannot duplicate socket for RTIA connection. Abort." );
+  }
+
+  stream << rtiacall << " -f " << newPipeFd;
+#endif
+
   // Start the child process. 
   if( !CreateProcess( NULL, // No module name (use command line). 
-        (char*)rtiacall,	// Command line. 
+        (char*)stream.str().c_str(),	// Command line. 
         NULL,					// Process handle not inheritable. 
         NULL,					// Thread handle not inheritable. 
-        FALSE,					// Set handle inheritance to FALSE. 
+        TRUE,					// Set handle inheritance to TRUE.
         0,   					// No creation flags. 
         NULL,					// Use parent's environment block. 
         NULL,					// Use parent's starting directory. 
@@ -162,9 +195,13 @@ RTI::RTIambassador::RTIambassador()
    privateRefs->handle_RTIA = pi.hProcess;
    privateRefs->pid_RTIA = pi.dwProcessId;
 
-  sleep(1);
-  privateRefs->socketUn->connectUN(privateRefs->pid_RTIA);
+#if !defined(RTIA_USE_TCP)
+   closesocket(pipeFd);
+   closesocket(newPipeFd);
+#endif
+
 #else
+
     sigset_t nset, oset;
     // temporarily block termination signals
     // note: this is to prevent child processes from receiving termination signals
@@ -175,11 +212,35 @@ RTI::RTIambassador::RTIambassador()
     switch((privateRefs->pid_RTIA = fork())) {
       case -1: // fork failed.
         perror("fork");
+        // unbock the above blocked signals
+        sigprocmask(SIG_SETMASK, &oset, NULL);
+#if !defined(RTIA_USE_TCP)
+        close(pipeFd);
+#endif
         throw RTI::RTIinternalError("fork failed in RTIambassador constructor");
         break ;
 
       case 0: // child process (RTIA).
-        execlp(rtiacall, NULL);
+        // close all open filedescriptors except the pipe one
+        for (int fdmax = sysconf(_SC_OPEN_MAX), fd = 3; fd < fdmax; ++fd) {
+#if !defined(RTIA_USE_TCP)
+          if (fd == pipeFd)
+            continue;
+#endif
+          close(fd);
+        }
+        {
+          std::stringstream stream;
+#if defined(RTIA_USE_TCP)
+          stream << port;
+          execlp(rtiacall, rtiacall, "-p", stream.str().c_str(), NULL);
+#else
+          stream << pipeFd;
+          execlp(rtiacall, rtiacall, "-f", stream.str().c_str(), NULL);
+#endif
+        }
+        // unbock the above blocked signals
+        sigprocmask(SIG_SETMASK, &oset, NULL);
         msg << "Could not launch RTIA process (execlp): "
             << strerror(errno)
             << endl
@@ -187,25 +248,26 @@ RTI::RTIambassador::RTIambassador()
         throw RTI::RTIinternalError(msg.str().c_str());
         
       default: // father process (Federe).
-    	// We sleep before trying to connect to the socket
-    	// our child RTIA process should have open
-    	// FIXME EN: this is poorly designed because
-    	//           we don't know if the child ever get a chance
-    	//           to be schedule by the Operating System
-        sleep(1);
-
-        if( privateRefs->socketUn->connectUN(privateRefs->pid_RTIA) )
-        {
-           D.Out( pdError, "Cannot connect to RTIA. Abort." ) ;
-           kill( privateRefs->pid_RTIA, SIGINT ) ;
-           throw RTI::RTIinternalError( "Cannot connect to RTIA" );
-        };
+        // unbock the above blocked signals
+        sigprocmask(SIG_SETMASK, &oset, NULL);
+#if !defined(RTIA_USE_TCP)
+        close(pipeFd);
+#endif
         break ;
     }
-
-    // unbock the above blocked signals
-    sigprocmask(SIG_SETMASK, &oset, NULL);
 #endif
+
+#if defined(RTIA_USE_TCP)
+    if (privateRefs->socketUn->acceptUN(10*1000) == -1) {
+#ifdef WIN32
+      TerminateProcess(privateRefs->pid_RTIA, 0);
+#else
+      kill( privateRefs->pid_RTIA, SIGINT );
+#endif
+      throw RTI::RTIinternalError( "Cannot connect to RTIA" );
+    }
+#endif
+
     G.Out(pdGendoc,"exit  RTIambassador::RTIambassador");
 }
 
@@ -2955,4 +3017,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.105 2009/08/31 13:25:45 gotthardp Exp $
+// $Id: RTIambassador.cc,v 3.106 2009/09/14 20:51:51 erk Exp $

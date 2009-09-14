@@ -120,6 +120,9 @@ Socket.hh
 )
 
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
+IF (WIN32)
+    SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} socketpair_win32.c)
+ENDIF (WIN32)
 
 SOURCE_GROUP("Source Files\\Socket" FILES ${CERTI_SOCKET_SRCS})
 SOURCE_GROUP("Source Files\\Federation" FILES ${CERTI_FEDERATION_SRCS})

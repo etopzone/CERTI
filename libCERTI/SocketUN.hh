@@ -20,14 +20,12 @@
 #ifndef CERTI_SOCKET_UN_HH
 #define CERTI_SOCKET_UN_HH
 
-#if defined(RTIA_USE_TCP)
-	#include "SocketTCP.hh"
-#else
+#include "SocketTCP.hh"
+#ifndef WIN32
 	#include <netdb.h>
 	#include <sys/socket.h>
 #endif
 
-#define NOM_FICHIER_SOCKET ".comFedRTI"
 #include "Socket.hh"
 #include "PrettyDebug.hh"
 
@@ -65,20 +63,20 @@ public:
 	SocketUN(SignalHandlerType theType = stSignalInterrupt);
 	~SocketUN();
 
-	#ifdef _WIN32
-		void connectUN(int Server_pid);			// Called by client to connect
-	#else
-		int connectUN(pid_t Server_pid);
-	#endif
-	void acceptUN(int RTIA_port);									//Called by server
+#ifndef _WIN32
+        typedef int SOCKET;
+#endif
+
+        int listenUN();
+        int connectUN(int port);
+        int acceptUN(unsigned msec);
+
+        SOCKET socketpair();
+        void setSocketFD(SOCKET fd) { _socket_un = fd; }
 
 	bool isDataReady();
 
-    #ifdef _WIN32
         SOCKET returnSocket();
-    #else
-        int returnSocket();
-    #endif
 
 	void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
 	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
@@ -86,14 +84,7 @@ public:
 protected:
 	void error(const char *) throw (NetworkError);
 
-	#ifdef _WIN32
-		SOCKET _socket_un;
-	#else
-		int _socket_un;
-	#endif
-
-	bool _est_serveur ;
-	bool _est_init_un ;
+        SOCKET _socket_un;
 
 	SignalHandlerType HandlerType ;
 
@@ -103,9 +94,6 @@ private:
 
 	Socket::ByteCount_t SentBytesCount ;
 	Socket::ByteCount_t RcvdBytesCount ;
-
-	// la socket du serveur RTIA qui a ete cree par le federe-client
-	int sock_connect ;
 
 	pdCDebug *pD ;
 

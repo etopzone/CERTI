@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.25 2009/04/08 10:47:17 approx Exp $
+// $Id: RTIA.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -39,12 +39,12 @@ static pdCDebug D("RTIA", "(RTIA) ");
 
 // ----------------------------------------------------------------------------
 //! RTIA constructor.
-RTIA::RTIA(int RTIA_port)
+RTIA::RTIA(int RTIA_port, int RTIA_fd)
 {
     // No SocketServer is passed to the RootObject.
     rootObject = new RootObject(NULL);
 
-    comm   = new Communications(RTIA_port);
+    comm   = new Communications(RTIA_port, RTIA_fd);
     queues = new Queues ;
     fm     = new FederationManagement(comm,&stat);
     om     = new ObjectManagement(comm, fm, rootObject);
@@ -202,4 +202,4 @@ RTIA::execute()
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.25 2009/04/08 10:47:17 approx Exp $
+// $Id: RTIA.cc,v 3.26 2009/09/14 20:51:51 erk Exp $

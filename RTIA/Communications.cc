@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.33 2008/10/12 11:46:39 gotthardp Exp $
+// $Id: Communications.cc,v 3.34 2009/09/14 20:51:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -93,7 +93,7 @@ NetworkMessage* Communications::waitMessage(
 
 // ----------------------------------------------------------------------------
 //! Communications.
-Communications::Communications(int RTIA_port)
+Communications::Communications(int RTIA_port, int RTIA_fd)
 {
     char nom_serveur_RTIG[200] ;
     const char *default_host = "localhost" ;
@@ -113,7 +113,14 @@ Communications::Communications(int RTIA_port)
     socketUDP = new SocketUDP();
 
     // Federate/RTIA link creation.
-    socketUN->acceptUN(RTIA_port);
+    if (0 <= RTIA_fd) {
+      socketUN->setSocketFD(RTIA_fd);
+    } else if (0 <= RTIA_port) {
+      if (socketUN->connectUN(RTIA_port) == -1)
+        exit(EXIT_FAILURE);
+    } else {
+      exit(EXIT_FAILURE);
+    }
 
     // RTIG TCP link creation.
     const char *certihost = NULL ;
@@ -362,4 +369,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.33 2008/10/12 11:46:39 gotthardp Exp $
+// $Id: Communications.cc,v 3.34 2009/09/14 20:51:52 erk Exp $

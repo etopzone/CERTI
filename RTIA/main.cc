@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.25 2008/12/07 20:16:10 gotthardp Exp $
+// $Id: main.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -79,8 +79,12 @@ main(int argc, char **argv) {
 		if (args.port_given) {
 			rtia_port = args.port_arg;
 		}
+		int rtia_fd = -1;
+		if (args.fd_given) {
+			rtia_fd = args.fd_arg;
+		}
 
-		RTIA rtia(rtia_port);
+		RTIA rtia(rtia_port, rtia_fd);
 
 		try {
 			rtia.execute();
@@ -128,4 +132,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.25 2008/12/07 20:16:10 gotthardp Exp $
+// EOF $Id: main.cc,v 3.26 2009/09/14 20:51:51 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.hh,v 3.17 2008/10/12 11:46:39 gotthardp Exp $
+// $Id: Communications.hh,v 3.18 2009/09/14 20:51:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_COMMUNICATIONS_HH
@@ -42,7 +42,7 @@ namespace rtia {
 class Communications
 {
 public:
-    Communications(int RTIA_port);
+    Communications(int RTIA_port, int RTIA_fd);
     ~Communications();
 
     //! Send a message to RTIG.
@@ -91,4 +91,4 @@ private:
 
 #endif // _CERTI_COMMUNICATIONS_HH
 
-// $Id: Communications.hh,v 3.17 2008/10/12 11:46:39 gotthardp Exp $
+// $Id: Communications.hh,v 3.18 2009/09/14 20:51:52 erk Exp $

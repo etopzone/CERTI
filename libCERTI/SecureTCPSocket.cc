@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.11 2008/10/13 11:27:51 gotthardp Exp $
+// $Id: SecureTCPSocket.cc,v 3.12 2009/09/14 20:51:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -26,7 +26,9 @@
 #include "PrettyDebug.hh"
 
 #include <sys/types.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 #include <cstdlib>
 //#include <pwd.h>
 
@@ -248,4 +250,4 @@ SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.11 2008/10/13 11:27:51 gotthardp Exp $
+// $Id: SecureTCPSocket.cc,v 3.12 2009/09/14 20:51:52 erk Exp $
