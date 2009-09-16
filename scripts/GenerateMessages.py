@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.21 2009/09/11 18:02:23 erk Exp $
+## $Id: GenerateMessages.py,v 1.22 2009/09/16 09:57:29 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -131,7 +131,8 @@ tokens = ['ID',
           'COMMENT',
           'INTEGER_VALUE',
           'FLOAT_VALUE',
-          'BOOL_VALUE',          
+          'BOOL_VALUE',      
+          'STRING_VALUE',    
           'RBRACE','LBRACE',
           'RPAREN','LPAREN',
 #          'RBRACKET','LBRACKET',
@@ -184,6 +185,10 @@ def t_BOOL_VALUE(t):
     else:                
         t.lexer.logger.error("Invalid Boolean value too large", t.value) 
         t.value = False 
+    return t
+
+def t_STRING_VALUE(t):
+    r'\".*\"'
     return t
     
 t_LBRACE = r'{'
@@ -790,7 +795,8 @@ def p_defined_type(p):
 def p_value(p):
     '''value : INTEGER_VALUE 
              | FLOAT_VALUE 
-             | BOOL_VALUE'''    
+             | BOOL_VALUE
+             | STRING_VALUE'''    
     p[0]=p[1]
     
 # Compute column. 
@@ -841,9 +847,13 @@ class ASTChecker(object):
        
         # check if all field used in message have known types
         # At the same time build the enum values for MessageTypes
-        msgTypeEnumVals = [EnumType.EnumValue("NOT_USED",None)]
+        enumval = EnumType.EnumValue("NOT_USED",None)
+        enumval.type = None
+        msgTypeEnumVals = [enumval]
         for msg in AST.messages:
-            msgTypeEnumVals.append(EnumType.EnumValue(msg.name.upper(),None))
+            enumval      = EnumType.EnumValue(msg.name.upper(),None)
+            enumval.type = msg.name
+            msgTypeEnumVals.append(enumval)
             for f in msg.fields:
                 if not AST.isDefined(f.typeid):
                     self.logger.fatal("The type <%s> used for field <%s.%s> is unknown (not a builtin, nor native, nor message)" % (f.typeid,msg.name,f.name))
@@ -851,9 +861,13 @@ class ASTChecker(object):
                     AST.checked = False
                     return
                 else:                   
-                   f.typeid = AST.getType(f.typeid)                   
-        msgTypeEnumVals.append(EnumType.EnumValue("LAST",None))
-        AST.add(EnumType(AST.name.split(".")[0]+"_MessageType",msgTypeEnumVals))
+                   f.typeid = AST.getType(f.typeid)
+        enumval      = EnumType.EnumValue("LAST",None)
+        enumval.type = None                                    
+        msgTypeEnumVals.append(enumval)
+        AST.eMessageType = EnumType(AST.name.split(".")[0]+"_MessageType",msgTypeEnumVals) 
+        AST.add(AST.eMessageType)
+         
 
         # @todo
         # Should check if the default value of a field
@@ -1101,8 +1115,47 @@ class CXXGenerator(CodeGenerator):
                                'uint64'   : 'uint64_t',
                                'float'    : 'float_t',
                                'double'   : 'double_t',}
+        self.serializeTypeMap = {'onoff'    : 'write_bool',
+                               'bool'     : 'write_bool',
+                               'string'   : 'write_string',
+                               'byte'     : 'write_byte',
+                               'int8'     : 'write_int8',
+                               'uint8'    : 'write_uint8',
+                               'int16'    : 'write_int16',
+                               'uint16'   : 'write_uint16',
+                               'int32'    : 'write_int32',
+                               'uint32'   : 'write_uint32',   
+                               'int64'    : 'write_int64',
+                               'uint64'   : 'write_uint64',
+                               'float'    : 'write_float',
+                               'double'   : 'write_double',}
+        self.deserializeTypeMap = {'onoff'    : 'read_bool',
+                               'bool'     : 'read_bool',
+                               'string'   : 'read_string',
+                               'byte'     : 'read_byte',
+                               'int8'     : 'read_int8',
+                               'uint8'    : 'read_uint8',
+                               'int16'    : 'read_int16',
+                               'uint16'   : 'read_uint16',
+                               'int32'    : 'read_int32',
+                               'uint32'   : 'read_uint32',   
+                               'int64'    : 'read_int64',
+                               'uint64'   : 'read_uint64',
+                               'float'    : 'read_float',
+                               'double'   : 'read_double',}
 
+    def getSerializeMethodName(self,name):
+        if name in self.serializeTypeMap.keys():
+            return self.serializeTypeMap[name]
+        else:
+            return None
         
+    def getDeSerializeMethodName(self,name):
+        if name in self.deserializeTypeMap.keys():
+            return self.deserializeTypeMap[name]
+        else:
+            return None    
+            
     def openNamespaces(self,stream):
         if self.AST.hasPackage():
             self.writeComment(stream, self.AST.package)
@@ -1167,16 +1220,30 @@ class CXXGenerator(CodeGenerator):
             
                 stream.write(self.getIndent())
                 stream.write("void set"+self.upperFirst(field.name)+"(")
-                stream.write(targetTypeName+" new"+self.upperFirst(field.name)+")")
-                stream.write(" {"+field.name+"=new"+self.upperFirst(field.name)+";};\n")
+                stream.write(targetTypeName+" new"+self.upperFirst(field.name)+") {")
+                if field.qualifier == "optional":                                        
+                    stream.write("\n")
+                    self.indent();                    
+                    stream.write(self.getIndent()+"has%s=true;\n"%self.upperFirst(field.name))
+                    stream.write(self.getIndent()+field.name+"=new"+self.upperFirst(field.name)+";\n")                    
+                    self.unIndent()
+                    stream.write(self.getIndent())                    
+                else:
+                    stream.write(field.name+"=new"+self.upperFirst(field.name)+";")
+                stream.write("};\n")
             
     def writeDeclarationFieldStatement(self,stream,field):
         stream.write(self.getIndent())     
         if field.qualifier == "repeated":
-            stream.write("std::vector<%s> %s;" % (self.getTargetTypeName(field.typeid.name),field.name))
+            stream.write("std::vector<%s> %s;" % (self.getTargetTypeName(field.typeid.name),field.name))        
         else:               
-            stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                        
-        self.writeComment(stream, field)        
+            stream.write("%s %s;" % (self.getTargetTypeName(field.typeid.name),field.name))                                                
+        self.writeComment(stream, field)     
+        # optional field generate another boolean field 
+        # used to detect whether if the optional field has
+        # been given or not.
+        if field.qualifier == "optional":
+            stream.write(self.getIndent()+"bool has%s;\n" % self.upperFirst(field.name))
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
@@ -1337,11 +1404,90 @@ class CXXGenerator(CodeGenerator):
             
             
     def writeSerializeFieldStatement(self,stream,field):
+        if field.qualifier == "optional":
+            stream.write(self.getIndent())
+            stream.write("msgBuffer.write_bool(has%s);\n" % self.upperFirst(field.name))
+            stream.write(self.getIndent())
+            stream.write("if (has%s) {\n" % self.upperFirst(field.name))
+            self.indent()
+            
+        stream.write(self.getIndent())
+        methodName = self.getSerializeMethodName(field.typeid.name)
+        if None == methodName:
+            stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
+            stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to serialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
+        else:
+            stream.write("msgBuffer."+methodName)
+            stream.write("(%s);\n"%field.name)
         
-        pass
+        if field.qualifier == "optional":
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n")
     
     def writeDeSerializeFieldStatement(self,stream,field):
-        pass
+        if field.qualifier == "optional":
+            stream.write(self.getIndent())
+            stream.write("has%s = msgBuffer.read_bool();\n" % self.upperFirst(field.name))
+            stream.write(self.getIndent())
+            stream.write("if (has%s) {\n" % self.upperFirst(field.name))
+            self.indent()
+            
+        stream.write(self.getIndent())
+        methodName = self.getDeSerializeMethodName(field.typeid.name)
+        if None == methodName:
+            stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
+            stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to deserialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
+        else:
+            stream.write("%s = "%field.name)
+            stream.write("msgBuffer."+methodName+"();\n")
+            
+        
+        if field.qualifier == "optional":
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n")
+            
+    def writeFactoryCreator(self,stream):
+        creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
+        stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (RTIinternalError) {\n"% creator)
+        self.indent()
+        stream.write(self.getIndent()+"%s* msg;\n\n" % creator[0])
+        stream.write(self.getIndent() + "switch (type) {\n")
+        self.indent()
+        for e in self.AST.eMessageType.values:            
+            stream.write(self.getIndent()+"case NetworkMessage::%s:\n" % e.name)
+            self.indent()
+            if None==e.type:
+                stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
+            else:
+                stream.write(self.getIndent()+"msg = new %s();\n" % e.type)
+            stream.write(self.getIndent()+"break;\n")
+            self.unIndent()        
+        self.unIndent()
+        stream.write(self.getIndent()+ "} "+self.commentLineBeginWith+" end if switch (type)\n")
+        self.unIndent()
+        stream.write(self.getIndent()+"}\n\n")
+    
+    def writeFactoryReceiver(self,stream):
+        receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
+        stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (RTIinternalError) {\n"% receiver)
+        self.indent()
+        stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
+        stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
+        stream.write(self.getIndent()+"NetworkMessage  msgGen;\n")
+        stream.write(self.getIndent()+"NetworkMessage* msg;\n\n")
+        stream.write(self.getIndent()+self.commentLineBeginWith+" receive generic message \n")
+        stream.write(self.getIndent()+"msgGen.receive(socket,msgBuffer);\n")
+        stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
+        
+        stream.write(self.getIndent()+"msg = ");
+        stream.write(self.AST.factory.name+"::"+self.AST.factory.creator[1]+"(msgGen.getType());\n")
+        
+        stream.write(self.getIndent()+"msgBuffer.assumeSizeFromReservedBytes();\n")    
+        stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")
+        stream.write(self.getIndent()+"return msg;\n")
+        self.unIndent()
+        stream.write(self.getIndent()+"}\n\n")
+    
         
     def generateBody(self,stream,factoryOnly=False):
         """
@@ -1408,33 +1554,10 @@ class CXXGenerator(CodeGenerator):
         # Generate Factory (if any)
         # @todo
         if self.AST.hasFactory():                                                             
-            # begin creator                                           
-            creator = (self.AST.factory.creator[0],self.AST.factory.name)+self.AST.factory.creator[1:]            
-            stream.write(self.getIndent()+"%s* %s::%s(%s type) throw (RTIinternalError) {\n"% creator)
-            self.indent()
-            # FIXME put creator code here
-            self.unIndent()
-            stream.write(self.getIndent()+"}\n\n")
+            # begin creator                                                      
+            self.writeFactoryCreator(stream)
             # begin receiver
-            receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
-            stream.write(self.getIndent()+"%s* %s::%s(%s stream) throw (RTIinternalError) {\n"% receiver)
-            self.indent()
-            stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
-            stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
-            stream.write(self.getIndent()+"NetworkMessage  msgGen;\n")
-            stream.write(self.getIndent()+"NetworkMessage* msg;\n\n")
-            stream.write(self.getIndent()+self.commentLineBeginWith+" receive generic message \n")
-            stream.write(self.getIndent()+"msgGen.receive(socket,msgBuffer);\n")
-            stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
-            
-            stream.write(self.getIndent()+"msg = ");
-            stream.write(self.AST.factory.name+self.AST.factory.creator[1]+"(msgGen.getType());")
-            
-            stream.write(self.getIndent()+"msgBuffer.assumeSizeFromReservedBytes();\n")    
-            stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")
-            stream.write(self.getIndent()+"return msg;\n")
-            self.unIndent()
-            stream.write(self.getIndent()+"}\n\n")                                    
+            self.writeFactoryReceiver(stream)                                                            
                         
         self.closeNamespaces(stream)                        
 

@@ -39,14 +39,6 @@ native FederationTime {
     language Java   [import certi.FedTimeD]
 }
 
-message NewNetworkMessage {
-    required uint32          type
-    required string          name
-    optional FederationTime  date
-    optional string          label
-    optional string          tag
-}
-
 native AttributeHandle {
     language CXX [#include "certi.hh"]
 }
@@ -307,6 +299,15 @@ message NM_WithHandleArray : merge  NetworkMessage {
 message NM_DDM_Base : merge  NM_WithHandleArray {
 	required bool DDM_bool { default=false }
 }
+
+message New_NetworkMessage {
+    required uint32          type  {default=0}
+    //required string          name  {default="MessageBaseClass"}
+    optional FederationTime  date  
+    optional string          label 
+    optional string          tag
+}
+
 
 
 native StreamType {
