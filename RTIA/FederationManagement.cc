@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.71 2009/09/14 21:21:32 erk Exp $
+// $Id: FederationManagement.cc,v 3.72 2009/09/16 07:56:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -356,7 +356,7 @@ joinFederationExecution(std::string Federate,
             comm->sendMessage(&requeteFED);
     
             // Now read loop from RTIG to get line contents and then write it into file            
-            int num_line = 0 ; // no line read            
+            unsigned int num_line = 0 ; // no line read
             for (;;)
                 {            	
                 reponse.reset(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));

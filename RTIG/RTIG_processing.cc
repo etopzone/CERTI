@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.85 2009/09/14 21:21:32 erk Exp $
+// $Id: RTIG_processing.cc,v 3.86 2009/09/16 07:56:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -250,7 +250,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
         // RTIA has opened working file then RTIG has to transfer file contents
         // line by line
         std::string fileLine;
-        int num_line = 0 ;
+        unsigned int num_line = 0 ;
         while (!fedFile.eof())
             {
             num_line++;
@@ -1552,4 +1552,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.85 2009/09/14 21:21:32 erk Exp $
+// $Id: RTIG_processing.cc,v 3.86 2009/09/16 07:56:31 erk Exp $
