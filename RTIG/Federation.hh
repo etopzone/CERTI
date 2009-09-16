@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.57 2008/12/16 07:08:29 approx Exp $
+// $Id: Federation.hh,v 3.58 2009/09/16 07:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -135,6 +135,13 @@ public:
     bool empty() const
         throw (FederatesCurrentlyJoined);
 
+    /**
+     * Check whether if the federate is part of the federation.
+     * @param[in] theHandle
+     * @return true if the federate is part of the Federation,
+     *              else throw an exception.
+     * @throws FederateNotExecutionMember
+     */
     bool check(FederateHandle theHandle) const
         throw (FederateNotExecutionMember);
 
@@ -677,4 +684,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.57 2008/12/16 07:08:29 approx Exp $
+// $Id: Federation.hh,v 3.58 2009/09/16 07:55:58 erk Exp $

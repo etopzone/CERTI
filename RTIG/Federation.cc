@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.109 2009/09/14 21:21:32 erk Exp $
+// $Id: Federation.cc,v 3.110 2009/09/16 07:55:58 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1455,10 +1455,8 @@ Federation::empty() const
 }
 
 // ----------------------------------------------------------------------------
-//! Return true if federate is in federation.
-/*! Return true if the Federate is part of the Federation, else throw an
-  exception.
-*/
+// Return true if federate is in federation.
+
 bool
 Federation::check(FederateHandle federate_handle) const
     throw (FederateNotExecutionMember)
@@ -2582,5 +2580,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.109 2009/09/14 21:21:32 erk Exp $
+// $Id: Federation.cc,v 3.110 2009/09/16 07:55:58 erk Exp $
 
