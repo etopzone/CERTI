@@ -10,7 +10,7 @@ SET(CERTI_FEDERATION_SRCS
     FederateLevelList.cc FederateLevelList.hh
     FedRegion.cc FedRegion.hh
 )
- 
+
 SET(CERTI_DECLARATION_SRCS
     InteractionBroadcastList.cc
     Interaction.cc
@@ -19,7 +19,7 @@ SET(CERTI_DECLARATION_SRCS
     Interaction.hh
     InteractionSet.hh
 )
- 
+
 SET(CERTI_OBJECT_SRCS
     ObjectAttribute.cc
     Object.cc
@@ -86,22 +86,22 @@ TreeNamedAndHandledSet.hh
 )
 
 IF (HAVE_POSIX_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
+    SET(CERTI_SUPPORT_SRCS
            ${CERTI_SUPPORT_SRCS}
-           PosixClock.cc PosixClock.hh)              
+           PosixClock.cc PosixClock.hh)
 ENDIF(HAVE_POSIX_CLOCK)
 
 IF (HAVE_TSC_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
+    SET(CERTI_SUPPORT_SRCS
            ${CERTI_SUPPORT_SRCS}
-           TSCClock.cc TSCClock.hh)              
+           TSCClock.cc TSCClock.hh)
 ENDIF(HAVE_TSC_CLOCK)
 
 IF (HAVE_WIN_CLOCK)
-    SET(CERTI_SUPPORT_SRCS 
+    SET(CERTI_SUPPORT_SRCS
            ${CERTI_SUPPORT_SRCS}
-           WinClock.cc WinClock.hh 
-           WinPerfClock.cc WinPerfClock.hh)              
+           WinClock.cc WinClock.hh
+           WinPerfClock.cc WinPerfClock.hh)
 ENDIF(HAVE_WIN_CLOCK)
 
 SET(CERTI_SOCKET_SRCS
@@ -120,30 +120,40 @@ Socket.hh
 )
 
 if (WIN32)
-    message(STATUS "Shared Memory communication is currently unsupported on Windows")
+    include_directories(${CERTI_SOURCE_DIR}/libHLA)
+    ADD_DEFINITIONS(-DDEBUG)
+    SET(CERTI_SHM_SRCS
+        SHM.hh)
+
+    SET(CERTI_SEMAPHORE_SRCS
+        Semaphore.hh)
+
+    SET(CERTI_SOCKET_SHM_SRC
+        SocketSHM.cc SocketSHM.hh)
+
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
 else(WIN32)
     include_directories(${CERTI_SOURCE_DIR}/libHLA)
+    ADD_DEFINITIONS(-DDEBUG)
 
-ADD_DEFINITIONS(-DDEBUG)
-
-    SET(CERTI_SHM_SRCS 
+    SET(CERTI_SHM_SRCS
         SHM.hh
         SHMPosix.cc SHMPosix.hh
         SHMSysV.cc SHMSysV.hh)
-        
+
     SET(CERTI_SEMAPHORE_SRCS
         Semaphore.hh
         SemaphorePosix.cc SemaphorePosix.hh
         SemaphoreSysV.cc SemaphoreSysV.hh
         )
-        
-    SET(CERTI_SOCKET_SHM_SRC 
+
+    SET(CERTI_SOCKET_SHM_SRC
         SocketSHM.cc SocketSHM.hh
         SocketSHMPosix.cc SocketSHMPosix.hh
         SocketSHMSysV.cc SocketSHMSysV.hh
         )
 
-    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC}) 
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
 endif(WIN32)
 
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
@@ -184,18 +194,18 @@ ADD_CUSTOM_COMMAND(
    COMMAND ${CMAKE_COMMAND} -E copy ${YACC_OUT_PREFIX}.c  ${YACC_WANTED_OUT_PREFIX}.cc
    DEPENDS ${YACC_SRC}
    )
-   
+
 # Inhibit compiler warning for LEX/YACC generated files
 # Note that the inhibition is COMPILER dependent ...
 # GNU CC specific warning stop
-IF (CMAKE_COMPILER_IS_GNUCC) 
+IF (CMAKE_COMPILER_IS_GNUCC)
    MESSAGE(STATUS "INHIBIT Compiler warning for LEX/YACC generated files")
    SET_SOURCE_FILES_PROPERTIES(${YACC_WANTED_OUT_PREFIX}.cc ${YACC_WANTED_OUT_PREFIX}.h
 	                           PROPERTIES COMPILE_FLAGS "-w")
-	                            
+
    SET_SOURCE_FILES_PROPERTIES(${LEX_WANTED_OUT_PREFIX}.cc
-	                           PROPERTIES COMPILE_FLAGS "-w") 
-ENDIF(CMAKE_COMPILER_IS_GNUCC) 	     
+	                           PROPERTIES COMPILE_FLAGS "-w")
+ENDIF(CMAKE_COMPILER_IS_GNUCC)
 SET(CERTI_GENERATED_SRCS ${CERTI_GENERATED_SRCS} ${YACC_WANTED_OUT_PREFIX}.cc)
 SET(CERTI_GENERATED_SRCS ${CERTI_GENERATED_SRCS} ${PROJECT_BINARY_DIR}/config.h)
 SOURCE_GROUP("Source Files\\Generated" FILES ${CERTI_GENERATED_SRCS})
@@ -216,7 +226,7 @@ ADD_LIBRARY(CERTI
     ${CERTI_TIME_SRCS}
     ${CERTI_SUPPORT_SRCS}
     ${CERTI_SOCKET_SRCS}
-    ${CERTI_GENERATED_SRCS}    
+    ${CERTI_GENERATED_SRCS}
 )
 
 SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)

@@ -1,9 +1,9 @@
 INCLUDE_DIRECTORIES(
-  ${CMAKE_SOURCE_DIR}/libCERTI 
+  ${CMAKE_SOURCE_DIR}/libCERTI
   )
 
 SET(CertiUtil_SRCS
-  CertiUtilTests.cc 
+  CertiUtilTests.cc
   )
 
 ADD_EXECUTABLE(CertiUtilTests ${CertiUtil_SRCS})
@@ -14,17 +14,27 @@ INSTALL(TARGETS CertiUtilTests
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib)
-    
+
 ADD_TEST(CertiUtilTests CertiUtilTests)
 
 ADD_EXECUTABLE(CertiProcessus_A Main_SocketSHM.cc SharedStruct.hh)
-TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI rt)
+IF(WIN32)
+    TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI)
+ELSE(WIN32)
+    TARGET_LINK_LIBRARIES(CertiProcessus_A CERTI rt)
+ENDIF(WIN32)
+
 SET_TARGET_PROPERTIES(CertiProcessus_A PROPERTIES COMPILE_FLAGS -DSIDE_SC)
 
 ADD_EXECUTABLE(CertiProcessus_B Main_SocketSHM.cc SharedStruct.hh)
-TARGET_LINK_LIBRARIES(CertiProcessus_B CERTI rt)
+
+IF(WIN32)
+    TARGET_LINK_LIBRARIES(CertiProcessus_B CERTI)
+ELSE(WIN32)
+    TARGET_LINK_LIBRARIES(CertiProcessus_B CERTI rt)
+ENDIF(WIN32)
 
 INSTALL(TARGETS CertiProcessus_A CertiProcessus_B
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib)    
+    ARCHIVE DESTINATION lib)
