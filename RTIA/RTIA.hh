@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.hh,v 3.16 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIA.hh,v 3.17 2009/09/21 15:42:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_HH
@@ -37,12 +37,36 @@
 namespace certi {
 namespace rtia {
 
+/**
+ * The RTI Ambassador class.
+ * This class is the Federate to RTI proxy class which is used
+ * to communication to/from the RTI.
+ * In current CERTI implementation RTIA is a seperate process
+ * which is created (forked) when the RTIambassador's federate
+ * constructor is called.
+ * RTIA is a reactive process which process Message from federate
+ * and NetworkMessage from RTIG.
+ */
 class RTIA
 {
 public:
+	/**
+	 * RTIA constructor.
+	 * @param[in] RTIA_port the TCP port used
+	 * @param[in] RTIA_fd the file descriptor
+	 */
     RTIA(int RTIA_port, int RTIA_fd);
+
+    /**
+     * RTIA destructor.
+     */
     ~RTIA();
 
+    /**
+     * The RTIA reactive [endless] main loop.
+     * Messages allocated for reading data exchange between RTIA and federate/RTIG
+     * are freed by 'processFederateRequest' or 'processNetworkMessage'.
+     */
     void execute();
     void displayStatistics();
 
@@ -62,9 +86,33 @@ private:
     void saveAndRestoreStatus(Message::Type type)
         throw (SaveInProgress, RestoreInProgress);
 
-    void processNetworkMessage(NetworkMessage *);
-    void processFederateRequest(Message *);
-    void chooseFederateProcessing(Message *, Message &, TypeException &);
+    /**
+     * Process one message from RTIG (i.e. a NetworkMessage).
+     * @param[in] request
+     */
+    void processNetworkMessage(NetworkMessage * request);
+
+    /**
+     * Process a service request coming from the Federate (i.e. a Message).
+     * An answer in sent inside the call.
+     * @param[in,out] request the message request coming from the federate
+     *                the message is destroyed before return
+     */
+    void processFederateRequest(Message *request);
+
+    /**
+     * The method called by processFederateRequest in order to
+     * effectively process the request and build the appropriate
+     * answer.
+     * @param[in] request the federate request message
+     * @param[out] answer answer message to be sent back to the federate
+     * @param[out] e exception raised (if any).
+     */
+    void chooseFederateProcessing(Message *request, Message &answer, TypeException &e);
+
+    /**
+     * RTIA processes the TICK_REQUEST.
+     */
     void processOngoingTick();
 };
 
@@ -72,4 +120,4 @@ private:
 
 #endif // _CERTI_RTIA_HH
 
-// $Id: RTIA.hh,v 3.16 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIA.hh,v 3.17 2009/09/21 15:42:11 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.72 2009/09/16 07:56:31 erk Exp $
+// $Id: FederationManagement.cc,v 3.73 2009/09/21 15:42:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -222,7 +222,6 @@ destroyFederationExecution(std::string theName,
         if (reponse->getException() == e_NO_EXCEPTION) {
             _nom_federation    = "" ;
             _numero_federation = 0 ;
-            _fin_execution     = true ;
             // Now, remove temporary file (if not yet done)
             if ( _FEDid.c_str() != NULL )
                {

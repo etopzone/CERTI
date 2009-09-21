@@ -1092,10 +1092,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
     }
     stat.federateService(req->type);
     G.Out(pdGendoc,"exit  chooseFederateProcessing");
-}
+} /* end of RTIA::chooseFederateProcessing */
 
-// ----------------------------------------------------------------------------
-//! RTIA processes the TICK_REQUEST
 void
 RTIA::processOngoingTick()
 {
@@ -1156,10 +1154,8 @@ RTIA::processOngoingTick()
             assert(false);
         }
     }
-}
+} /* RTIA::processOngoingTick() */
 
-// ----------------------------------------------------------------------------
-//! RTIA processes a service request coming from federate.
 void
 RTIA::processFederateRequest(Message *req)
 {
@@ -1514,7 +1510,7 @@ RTIA::processFederateRequest(Message *req)
        D.Out(pdDebug, "Reply send to Unix socket.");
     }
     G.Out(pdGendoc,"exit  RTIA::processFederateRequest");
-}
+} /* end of RTIA::processFederateRequest(Message *req) */
 
 }} // namespace certi/rtia
 

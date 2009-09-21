@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIA.cc,v 3.27 2009/09/21 15:42:11 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,15 +33,9 @@ namespace rtia {
 
 static pdCDebug D("RTIA", "(RTIA) ");
 
-// Tableau des messages pouvant etre recus du RTIG
-
-#define MSG_RTIG_MAX 18
-
-// ----------------------------------------------------------------------------
-//! RTIA constructor.
-RTIA::RTIA(int RTIA_port, int RTIA_fd)
-{
-    // No SocketServer is passed to the RootObject.
+RTIA::RTIA(int RTIA_port, int RTIA_fd) {
+    // No SocketServer is passed to the RootObject (RTIA use case)
+	// socket server are passed to RootObject iff we are in RTIG.
     rootObject = new RootObject(NULL);
 
     comm   = new Communications(RTIA_port, RTIA_fd);
@@ -57,14 +51,10 @@ RTIA::RTIA(int RTIA_port, int RTIA_fd)
     queues->fm = fm ;
     queues->dm = dm ;
     om->tm     = tm ;
-}
+} /* end of RTIA(int RTIA_port, int RTIA_fd) */
 
-// ----------------------------------------------------------------------------
-// RTIA Destructor
-RTIA::~RTIA()
-{
-    // BUG: TCP link destroyed ?
 
+RTIA::~RTIA() {
      // Remove temporary file (if not yet done)
      if ( fm->_FEDid.c_str() != NULL)
         {
@@ -95,7 +85,7 @@ RTIA::~RTIA()
     delete queues ;
     delete comm ;    
     delete rootObject ;
-}
+} /* end of ~RTIA() */
 
 // ----------------------------------------------------------------------------
 // displayStatistics
@@ -108,13 +98,8 @@ RTIA::displayStatistics()
 }
 
 // ----------------------------------------------------------------------------
-//! RTIA mainloop.
-/*! Messages allocated for reading data exchange between RTIA and federate/RTIG
-  are freed by 'processFederateRequest' or 'processNetworkMessage'.
-*/
 void
-RTIA::execute()
-{
+RTIA::execute() {
     Message        *msg_un;
     NetworkMessage *msg_tcp_udp;
     int n ;
@@ -198,8 +183,8 @@ RTIA::execute()
             assert(false);
         }
     }   
-}
+} /* end of execute() */
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIA.cc,v 3.27 2009/09/21 15:42:11 erk Exp $
