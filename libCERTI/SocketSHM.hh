@@ -4,29 +4,30 @@
 #include <iostream>
 
 // Specifics includes
+#include "certi.hh"
 #include "Semaphore.hh"
 #include "SHM.hh"
 
-class SocketSHM {
+class CERTI_EXPORT SocketSHM {
 public :
     // Typedef Side
-    typedef enum{SHM_SC,SHM_CS} SHM_SIDE_t ; 
+    typedef enum{SHM_SC,SHM_CS} SHM_SIDE_t ;
 
     // Constructor
-    SocketSHM (const std::string& Socket_Name, 
+    SocketSHM (const std::string& Socket_Name,
                const SHM_SIDE_t& Socket_Side,
-               const int Socket_Size ) { _Name = Socket_Name ; _Side = Socket_Side ; _Size_Side = Socket_Size ; } 
+               const int Socket_Size ) { _Name = Socket_Name ; _Side = Socket_Side ; _Size_Side = Socket_Size ; }
     // Destructor
     virtual ~SocketSHM ();
 
     virtual void Connect() ;
 
     virtual void Send(void *Buffer) ; // To send Data on a memory segment
-    virtual void Receive(void *Buffer) ; // To receive Data on a memory segment 
+    virtual void Receive(void *Buffer) ; // To receive Data on a memory segment
 
     virtual void Close(); // To Close the two SHMs
 
-protected :   
+protected :
     std::string _Name ;
     SHM_SIDE_t _Side ;
     size_t _Size_Side ;
@@ -36,8 +37,8 @@ protected :
     Semaphore *_Sem_full_SC, *_Sem_empty_SC ;
 
     /***** Customer -->>> Server ******/
-    SHM *_Shm_CS ; 
-    Semaphore *_Sem_full_CS, *_Sem_empty_CS ;  
+    SHM *_Shm_CS ;
+    Semaphore *_Sem_full_CS, *_Sem_empty_CS ;
 
 }; // End of --> class SocketSHM
 

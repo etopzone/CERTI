@@ -123,13 +123,15 @@ if (WIN32)
     include_directories(${CERTI_SOURCE_DIR}/libHLA)
     ADD_DEFINITIONS(-DDEBUG)
     SET(CERTI_SHM_SRCS
-        SHM.hh)
+        SHM.hh SHMWin32.hh SHMWin32.cc)
 
     SET(CERTI_SEMAPHORE_SRCS
-        Semaphore.hh)
+        Semaphore.hh SemaphoreWin32.hh SemaphoreWin32.cc)
 
     SET(CERTI_SOCKET_SHM_SRC
-        SocketSHM.cc SocketSHM.hh)
+        SocketSHM.cc SocketSHM.hh
+        SocketSHMWin32.cc SocketSHMWin32.hh
+        )
 
     LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
 else(WIN32)

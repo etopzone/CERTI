@@ -1,10 +1,11 @@
 #ifndef SEMAPHORE_H
 #define SEMAPHORE_H
 
+#include "certi.hh"
 // Systems includes
 #include <string>
 
-class Semaphore {
+class CERTI_EXPORT Semaphore {
 
 protected:
 
@@ -16,7 +17,7 @@ protected:
     virtual void P() = 0 ;
     virtual void V() = 0 ;
     virtual void Delete() = 0 ;
-   
+
 
    	/**
 	 * Build a proper Semaphore name from a user provided name.

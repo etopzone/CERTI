@@ -1,6 +1,6 @@
 // *****************************************************************************
 // To Compile without cmake :
-// g++ Main_SocketSHM_A.cc SocketSHMPosix.cc SemaphorePosix.cc SocketSHMSysV.cc SHMSysV.cc SemaphoreSysV.cc -o Processus_A -lrt
+// g++ Main_SocketSHM_A.cc SocketSHMPosix.cc SemaphorePosix.cc SemaphoreWin32.cc SocketSHMSysV.cc SocketSHMWin32.cc SHMSysV.cc SemaphoreSysV.cc SemaphoreWin32.cc -o Processus_A -lrt
 // *****************************************************************************
 // For SysV use :
 // Before Use : --> #ipcs
@@ -10,18 +10,18 @@
 
 // Systems includes
 #include <limits>
-
-// Specifics includes
-#ifdef _WIN32
-// FIXME Martin code win32
-//#include "SocketSHMWin32.hh"
 #include "SocketSHM.hh"
-#include <windows.h>
-#include <process.h>
+// Specifics includes
+
+#ifdef _WIN32
+  #include <windows.h>
+  #include <process.h>
+  #include "SocketSHMWin32.hh"
 #else
-#include "SocketSHMPosix.hh"
-#include "SocketSHMSysV.hh"
+  #include "SocketSHMPosix.hh"
+  #include "SocketSHMSysV.hh"
 #endif
+
 #include "SharedStruct.hh"
 
 
@@ -43,8 +43,10 @@ shared_struct Data_Write ; // Data write in the Socket
 
 #ifdef SIDE_SC
 SocketSHM::SHM_SIDE_t Socket_Side = SocketSHM::SHM_SC ; // which side am I?
+std::cout << "I am side : " << Socket_Side << std::endl ;
 #else
 SocketSHM::SHM_SIDE_t Socket_Side = SocketSHM::SHM_CS ; // which side am I?
+std::cout << "I am side : " << Socket_Side << std::endl ;
 #endif
 
 std::string command;
@@ -62,8 +64,7 @@ Data_Write.Header = 0 ; Data_Write.Body =0.0 ;
 // ************
 
 #ifdef _WIN32
-// FIXME Martin code win32
-//SocketSHMWin32 Socket_Win32(NAME_AB,Socket_Side,size) ;
+SocketSHMWin32 Socket_Win32_AB(NAME_AB,Socket_Side,size) ;
 #else
 // Posix Socket SHM
 SocketSHMPosix Socket_Posix_AB(NAME_AB,Socket_Side,size) ;
@@ -84,12 +85,12 @@ std::cout << "************************************************************" << s
 std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
 #ifdef _WIN32
-//Socket_Win32.connect();
+Socket_Win32_AB.Connect();
 #else
 Socket_Posix_AB.Connect() ; // Connect to created Semaphores
-Socket_SysV_AB.Connect() ; // Connect to created Semaphores
+Socket_SysV_AB.Connect() ;  // Connect to created Semaphores
 #endif
-
+#ifndef _WIN32
 // Wainting for User Command n2
 std::cout << "*******************************************************" << std::endl ;
 std::cout << "*********** END OF INITIALIZATION PHASE 2 : ***********" << std::endl ;
@@ -98,9 +99,10 @@ std::cout << "*** Click \"SysV\" to Open Systeme V Socket SHM *******" << std::e
 std::cout << "*******************************************************" << std::endl ;
 std::cin >> command;
 std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
+#endif
 
 #ifdef _WIN32
-//Socket_Win32.Open() ;
+Socket_Win32_AB.Open() ;
 #else
 // Open the Socket
 if (command=="Posix") Socket_Posix_AB.Open() ;
@@ -109,17 +111,20 @@ if (command=="SysV") Socket_SysV_AB.Open() ;
 
 // Wainting for User Command n3
 std::cout << "************************************************************" << std::endl ;
+#ifdef _WIN32
+std::cout << "******* END OF INITIALIZATION PHASE 2 : ********************" << std::endl ;
+#else
 std::cout << "******* END OF INITIALIZATION PHASE 3 : ********************" << std::endl ;
+#endif
 std::cout << "****** Click \"ENTER\" to RunInter Process Exchange... *****" << std::endl ;
 std::cout << "************************************************************" << std::endl ;
 std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
-
 
 #ifdef SIDE_SC
 // Send to B For the First Time (INITIALIZE)
 // Send to B
 #ifdef _WIN32
-//Socket_Win32.Send(&Data_Write);
+Socket_Win32_AB.Send(&Data_Write);
 #else
 if (command=="Posix") Socket_Posix_AB.Send(&Data_Write) ;
 if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;
@@ -133,7 +138,7 @@ if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;
     /************* RECEIVING **************/
     /**************************************/
     #ifdef _WIN32
-    // Socket_Win32.Receive(&Data_Read) ;
+     Socket_Win32_AB.Receive(&Data_Read) ;
     #else
     // Read from B
     if (command=="Posix") Socket_Posix_AB.Receive(&Data_Read) ;
@@ -164,7 +169,7 @@ if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;
     /**************************************/
     // Send to B
     #ifdef _WIN32
-    // Socket_Win32.Send(&Data_Write) ;
+     Socket_Win32_AB.Send(&Data_Write) ;
     #else
     if (command=="Posix") Socket_Posix_AB.Send(&Data_Write) ;
     if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;
@@ -184,10 +189,9 @@ sleep(1) ;
 
 // Close the socket
 #ifdef _WIN32
-// Socket_Win32.Close();
+Socket_Win32_AB.Close();
 #else
 if (command=="Posix") Socket_Posix_AB.Close() ;
 if (command=="SysV") Socket_SysV_AB.Close() ;
 #endif
-
 } // End of Main Program

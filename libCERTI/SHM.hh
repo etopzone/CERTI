@@ -2,6 +2,7 @@
 #define SHM_H
 
 #include <string>
+#include "certi.hh"
 
 /**
  * A Shared Memory class.
@@ -9,7 +10,7 @@
  * segment. A shared memory segment is identified by its name and
  * has a size and a creator process.
  */
-class SHM {
+class CERTI_EXPORT SHM {
 protected :
 	std::string _Name ;
 	int  _Size ;
@@ -32,7 +33,7 @@ public :
 		{_Name=SHMName;
 		 _Size=SHMSize;
 		 _IsCreator=false;
-		 }       
+		 }
 	virtual ~SHM() {};
 	const std::string getName() const {return _Name ; } ;
 	inline void* GetShm(){return _Shm ; } ;

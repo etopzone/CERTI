@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SecurityLevel.hh,v 3.11.8.1 2009/09/22 09:56:45 adele Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -69,4 +69,4 @@ public:
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SecurityLevel.hh,v 3.11.8.1 2009/09/22 09:56:45 adele Exp $
