@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.50 2009/09/14 21:21:32 erk Exp $
+// $Id: TimeManagement.cc,v 3.51 2009/10/04 15:46:39 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -837,7 +837,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
 
     if (_est_contraint) {
         // give a TSO message.
-        if (_LBTS == std::numeric_limits<double>::infinity())
+        if (_LBTS.isPositiveInfinity())
            D.Out(pdDebug, "Logical time : %f, LBTS : infini.", date_avancee.getTime());
         else
            D.Out(pdDebug, "Logical time : %f, LBTS : %lf.", date_avancee.getTime(), _LBTS.getTime());
@@ -847,7 +847,7 @@ TimeManagement::timeAdvance(bool &msg_restant, TypeException &e)
         // otherwise
         if (!msg_donne) {
             // if LBTS allows to give a timeAdvanceGrant.
-            if (_LBTS == std::numeric_limits<double>::infinity())
+            if (_LBTS.isPositiveInfinity())
                D.Out(pdDebug, "Logical time : %f, LBTS : infini, lookahead : %f.",
                      date_avancee.getTime(), _lookahead_courant.getTime());
             else
@@ -1001,4 +1001,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.50 2009/09/14 21:21:32 erk Exp $
+// $Id: TimeManagement.cc,v 3.51 2009/10/04 15:46:39 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.13 2009/04/02 19:58:07 erk Exp $
+// $Id: LBTS.cc,v 3.14 2009/10/04 15:46:38 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -48,9 +48,9 @@ static pdCDebug D("LBTS", __FILE__);
   federate without any regulating federate.
 */
 LBTS::LBTS()
-    : _LBTS(std::numeric_limits<double>::infinity()),
-      MyFederateNumber(0)
+    : MyFederateNumber(0)
 {
+  _LBTS.setPositiveInfinity();
 }
 
 // ----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ LBTS::compute()
     FederationTime hl ;
 
     // LBTS = + l'infini
-    _LBTS = std::numeric_limits<double>::infinity();
+    _LBTS.setPositiveInfinity();
 
     ClockSet::iterator i ;
     for (i = clocks.begin(); i != clocks.end(); ++i) {
@@ -160,4 +160,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.13 2009/04/02 19:58:07 erk Exp $
+// $Id: LBTS.cc,v 3.14 2009/10/04 15:46:38 erk Exp $
