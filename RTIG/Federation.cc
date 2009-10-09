@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.110 2009/09/16 07:55:58 erk Exp $
+// $Id: Federation.cc,v 3.111 2009/10/09 21:13:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -91,8 +91,8 @@ static PrettyDebug G("GENDOC",__FILE__);
  *
  * -# bare filename considered as a path provided through FEDid_name
  * -# getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
- * -# default (unix) installation place plus FEDid_name
- *     "/usr/local/share/federation/" + FEDid_name
+ * -# installation place plus FEDid_name
+ *     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
  */
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -163,8 +163,8 @@ Federation::Federation(const char *federation_name,
     //
     // 2 - getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
     //
-    // 3 - default (unix) installation place plus FEDid_name
-    //     "/usr/local/share/federation/" + FEDid_name
+    // 3 - Installation place plus FEDid_name
+    //     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
     //
     string filename   = FEDid;
     bool   filefound  = false;
@@ -200,23 +200,34 @@ Federation::Federation(const char *federation_name,
       }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
-#else
+
     if (!filefound) {
       if (verboseLevel>0) {
          cout << " --> cannot access." <<endl;
       }
-      filename = "/usr/local/share/federations/"+string(FEDid_name);
+      filename = PACKAGE_INSTALL_PREFIX "\\share\\federations\\"+string(FEDid_name);
+      if (verboseLevel>0) {
+         cout << "   Now trying..." << filename;
+      }
+      filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+    }
+#else
+    if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
+      if (verboseLevel>0) {
+         cout << " --> cannot access." <<endl;
+      }
+      filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
       if (verboseLevel>0) {
          cout << "   Now trying..." << filename;
       }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 
-    if (!filefound && (NULL!=getenv("CERTI_HOME"))) {
+    if (!filefound) {
       if (verboseLevel>0) {
          cout << " --> cannot access." <<endl;
       }
-      filename = string(getenv("CERTI_HOME"))+"/share/federations/"+FEDid_name;
+      filename = PACKAGE_INSTALL_PREFIX "/share/federations/"+string(FEDid_name);
       if (verboseLevel>0) {
          cout << "   Now trying..." << filename;
       }
@@ -2455,7 +2466,7 @@ Federation::restoreXmlData()
 
     cur = cur->xmlChildrenNode ;
 
-    bool status ;
+    bool status = false;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
             for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
@@ -2580,5 +2591,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.110 2009/09/16 07:55:58 erk Exp $
+// $Id: Federation.cc,v 3.111 2009/10/09 21:13:56 erk Exp $
 

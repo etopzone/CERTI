@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.106 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIambassador.cc,v 3.107 2009/10/09 21:13:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -31,8 +31,9 @@
 #include "Message.hh"
 #include "PrettyDebug.hh"
 
+#include "config.h"
+
 #ifdef _WIN32
-#include <config.h>
 #include <stdio.h>
 #include <string.h>
 #else 
@@ -125,11 +126,16 @@ RTI::RTIambassador::RTIambassador()
     privateRefs->socketUn = new SocketUN(stIgnoreSignal);
 	
     privateRefs->is_reentrant = false ;
-    const char *rtiaexec = "rtia" ;
-    const char *rtiaenv = getenv("CERTI_RTIA");
-    const char *rtiacall ;
-    if (rtiaenv) rtiacall = rtiaenv ;
-    else rtiacall = rtiaexec ;
+
+    std::vector<std::string> rtiaList;
+    const char* env = getenv("CERTI_RTIA");
+    if (env && strlen(env))
+      rtiaList.push_back(std::string(env));
+    env = getenv("CERTI_HOME");
+    if (env && strlen(env))
+      rtiaList.push_back(std::string(env) + "/bin/rtia");
+    rtiaList.push_back(PACKAGE_INSTALL_PREFIX "/bin/rtia");
+    rtiaList.push_back("rtia");
 
 #if defined(RTIA_USE_TCP)
     int port = privateRefs->socketUn->listenUN();
@@ -153,10 +159,7 @@ RTI::RTIambassador::RTIambassador()
   si.cb = sizeof(si);
   ZeroMemory( &pi, sizeof(pi) );
 
-  std::stringstream stream;
-#if defined(RTIA_USE_TCP)
-  stream << rtiacall << " -p " << port;
-#else
+#if !defined(RTIA_USE_TCP)
   SOCKET newPipeFd;
   if (!DuplicateHandle(GetCurrentProcess(),
                        (HANDLE)pipeFd,
@@ -168,29 +171,39 @@ RTI::RTIambassador::RTIambassador()
     D.Out( pdError, "Cannot duplicate socket for RTIA connection. Abort." );
     throw RTI::RTIinternalError( "Cannot duplicate socket for RTIA connection. Abort." );
   }
-
-  stream << rtiacall << " -f " << newPipeFd;
 #endif
 
-  // Start the child process. 
-  if( !CreateProcess( NULL, // No module name (use command line). 
-        (char*)stream.str().c_str(),	// Command line. 
-        NULL,					// Process handle not inheritable. 
-        NULL,					// Thread handle not inheritable. 
-        TRUE,					// Set handle inheritance to TRUE.
-        0,   					// No creation flags. 
-        NULL,					// Use parent's environment block. 
-        NULL,					// Use parent's starting directory. 
-        &si,					// Pointer to STARTUPINFO structure.
-        &pi ))					// Pointer to PROCESS_INFORMATION structure.
-				 
-		{
-	     msg << "CreateProcess - GetLastError()=<"
-	         << GetLastError() <<"> "
-	         << "Cannot connect to RTIA.exe";		
-		//perror("CreateProcess");
-		 throw RTI::RTIinternalError( msg.str().c_str());
-		}
+  bool success = false;
+  for (unsigned i = 0; i < rtiaList.size(); ++i) {
+    std::stringstream stream;
+#if defined(RTIA_USE_TCP)
+    stream << rtiaList[i] << ".exe -p " << port;
+#else
+    stream << rtiaList[i] << ".exe -f " << newPipeFd;
+#endif
+
+    // Start the child process. 
+    if (CreateProcess( NULL, // No module name (use command line). 
+                       (char*)stream.str().c_str(),	// Command line. 
+                       NULL,					// Process handle not inheritable. 
+                       NULL,					// Thread handle not inheritable. 
+                       TRUE,					// Set handle inheritance to TRUE.
+                       0,   					// No creation flags. 
+                       NULL,					// Use parent's environment block. 
+                       NULL,					// Use parent's starting directory. 
+                       &si,					// Pointer to STARTUPINFO structure.
+                       &pi ))					// Pointer to PROCESS_INFORMATION structure.
+      {
+        success = true;
+        break;
+      }
+  }
+  if (!success) {
+    msg << "CreateProcess - GetLastError()=<"
+        << GetLastError() <<"> "
+        << "Cannot connect to RTIA.exe";		
+    throw RTI::RTIinternalError( msg.str().c_str());
+  }
     
    privateRefs->handle_RTIA = pi.hProcess;
    privateRefs->pid_RTIA = pi.dwProcessId;
@@ -229,14 +242,15 @@ RTI::RTIambassador::RTIambassador()
 #endif
           close(fd);
         }
+        for (unsigned i = 0; i < rtiaList.size(); ++i)
         {
           std::stringstream stream;
 #if defined(RTIA_USE_TCP)
           stream << port;
-          execlp(rtiacall, rtiacall, "-p", stream.str().c_str(), NULL);
+          execlp(rtiaList[i].c_str(), rtiaList[i].c_str(), "-p", stream.str().c_str(), NULL);
 #else
           stream << pipeFd;
-          execlp(rtiacall, rtiacall, "-f", stream.str().c_str(), NULL);
+          execlp(rtiaList[i].c_str(), rtiaList[i].c_str(), "-f", stream.str().c_str(), NULL);
 #endif
         }
         // unbock the above blocked signals
@@ -3017,4 +3031,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.106 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIambassador.cc,v 3.107 2009/10/09 21:13:56 erk Exp $

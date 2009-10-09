@@ -75,6 +75,9 @@
 /* Define to the one symbol short name of this package. */
 #cmakedefine PACKAGE_TARNAME "@CPACK_PACKAGE_NAME@"
 
+/* Define to the install prefix. */
+#cmakedefine PACKAGE_INSTALL_PREFIX "@PACKAGE_INSTALL_PREFIX@"
+
 /* Define to the version of this package. */
 #cmakedefine PACKAGE_VERSION @PACKAGE_VERSION@
 
