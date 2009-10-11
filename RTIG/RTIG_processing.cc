@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.86 2009/09/16 07:56:31 erk Exp $
+// $Id: RTIG_processing.cc,v 3.87 2009/10/11 11:13:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1085,26 +1085,28 @@ RTIG::processQueryAttributeOwnership(Socket *link, NetworkMessage *req)
 void
 RTIG::processAttributeOwnedByFederate(Socket *link, NetworkMessage *req)
 {
+    NM_Is_Attribute_Owned_By_Federate* ownedReq = static_cast<NM_Is_Attribute_Owned_By_Federate*>(req);
     NM_Is_Attribute_Owned_By_Federate rep ;
 
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
-          req->handleArray[0], req->object);
+          ownedReq->getAttribute(), ownedReq->object);
 
-    auditServer << "AttributeHandle = " << req->handleArray[0] ;
+    auditServer << "AttributeHandle = " << ownedReq->getAttribute() ;
 
-    if (federations.isOwner(req->federation,
-                             req->federate,
-                             req->object,
-                             req->handleArray[0]))
+    if (federations.isOwner(ownedReq->federation,
+                             ownedReq->federate,
+                             ownedReq->object,
+                             ownedReq->getAttribute()))
         rep.setLabel("RTI_TRUE");
     else
         rep.setLabel("RTI_FALSE");
 
     D.Out(pdDebug, "Owner of Attribute %u of Object %u .",
-          req->handleArray[0], req->object);
+          ownedReq->getAttribute(), ownedReq->object);
 
-    rep.federate = req->federate ;
-    rep.object = req->object ;
+    rep.federate = ownedReq->federate ;
+    rep.object = ownedReq->object ;
+    rep.setAttribute(ownedReq->getAttribute()) ;
 
     rep.send(link,NM_msgBufSend); // send answer to RTIA
 }
@@ -1552,4 +1554,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.86 2009/09/16 07:56:31 erk Exp $
+// $Id: RTIG_processing.cc,v 3.87 2009/10/11 11:13:15 erk Exp $

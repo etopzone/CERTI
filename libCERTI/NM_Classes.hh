@@ -1096,6 +1096,8 @@ public:
 	virtual void serialize(MessageBuffer& msgBuffer);
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	/* specific Getter/Setter */
+	AttributeHandle getAttribute() const {return attribute;};
+	void setAttribute(AttributeHandle newAttribute) {attribute=newAttribute;};
 protected:
 	/* specific field */
 	//	ObjectHandle    object;

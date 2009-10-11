@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.18 2009/09/14 21:21:32 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.19 2009/10/11 11:13:15 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -74,9 +74,7 @@ OwnershipManagement::attributeOwnedByFederate(ObjectHandle theObject,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.object = theObject ;
-    req.handleArray.resize(1) ;
-    req.handleArray[0] = theAttribute ;
-    req.handleArraySize = 1 ;
+    req.setAttribute(theAttribute);
 
     D.Out(pdDebug, "Federate %u ", fm->federate);
 
@@ -514,4 +512,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.18 2009/09/14 21:21:32 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.19 2009/10/11 11:13:15 erk Exp $
