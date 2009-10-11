@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.25 2009/10/11 14:55:01 erk Exp $
+// $Id: Object.cc,v 3.26 2009/10/11 17:04:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -28,42 +28,30 @@
 #include "ObjectAttribute.hh"
 #include "RTIRegion.hh"
 
+#include <sstream>
 #include <iostream>
-#include <cstring>
-#include <algorithm>
-#include <functional>
 
 using std::cout ;
 using std::endl ;
-using std::deque ;
-using std::list ;
 
 namespace certi {
 
 // ----------------------------------------------------------------------------
 //! Constructor.
-Object::Object(FederateHandle the_owner, const char *the_name)
-    : Owner(the_owner), handle(0)
+Object::Object(FederateHandle the_owner)
+    : Owner(the_owner)
 {
-    setName(the_name);
 }
-
-template <class T>
-struct delme : public std::unary_function<T, void> {
-  void operator() (T& x) {
-    delete x;
-  }
-};
 
 // ----------------------------------------------------------------------------
 //! Destructor.
 Object::~Object()
 {
     // We should delete the pointee because it belongs to the object.
-    for (std::deque<ObjectAttribute *>::iterator i = attributeState.begin(); i!=attributeState.end();++i) {
-    	delete (*i);
+    AttributeMap::const_iterator i;
+    for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {
+    	delete i->second;
     }
-    attributeState.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -73,7 +61,7 @@ Object::display() const
 {
     cout << " Instance: handle =" << handle ;
 
-    if (name.length() > 0)
+    if (!name.empty())
         cout << ", name=\"" << name << "\"" << endl ;
     else
         cout << ", (No name)." << endl ;
@@ -83,29 +71,25 @@ Object::display() const
 void
 Object::addAttribute(ObjectAttribute * new_attribute)
 {
-    attributeState.push_front(new_attribute);
+    AttributeHandle attributeHandle = new_attribute->getHandle();
+    if (_attributeMap.find(attributeHandle) != _attributeMap.end())
+        throw RTIinternalError("Attribute already defined");
+    _attributeMap[attributeHandle] = new_attribute;
 }
 
 // ----------------------------------------------------------------------------
 //! getAttribute.
 ObjectAttribute *
-Object::getAttribute(AttributeHandle the_attribute) const
+Object::getAttribute(AttributeHandle attributeHandle) const
     throw (AttributeNotDefined)
 {
-    deque<ObjectAttribute *>::const_iterator i ;
-    for (i = attributeState.begin(); i != attributeState.end(); i++) {
-        if ((*i)->getHandle() == the_attribute)
-            return (*i);
+    AttributeMap::const_iterator i = _attributeMap.find(attributeHandle);
+    if (i == _attributeMap.end()) {
+        std::stringstream stream;
+        stream << "Unknown attribute handle " << attributeHandle;
+        throw AttributeNotDefined(stream.str());
     }
-
-    throw AttributeNotDefined("");
-}
-
-// ----------------------------------------------------------------------------
-ObjectClassHandle
-Object::getClass() const
-{
-    return classHandle ;
+    return i->second;
 }
 
 // ----------------------------------------------------------------------------
@@ -113,13 +97,6 @@ void
 Object::setClass(ObjectClassHandle h)
 {
     classHandle = h ;
-}
-
-// ----------------------------------------------------------------------------
-FederateHandle
-Object::getOwner() const
-{
-    return Owner ;
 }
 
 // ----------------------------------------------------------------------------
@@ -136,14 +113,7 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
                                    AttributeHandle the_attribute) const
     throw (AttributeNotDefined, RTIinternalError)
 {
-    deque<ObjectAttribute *>::const_iterator i ;
-    for (i = attributeState.begin(); i != attributeState.end(); i++) {
-        if ((*i)->getHandle() == the_attribute) {
-            return (*i)->getOwner() == the_federate ;
-        }
-    }
-
-    throw AttributeNotDefined("Instance doesn't have this attribute handle");
+    return getAttribute(the_attribute)->getOwner() == the_federate;
 }
 
 // ----------------------------------------------------------------------------
@@ -151,12 +121,12 @@ Object::isAttributeOwnedByFederate(FederateHandle the_federate,
 void
 Object::unassociate(RTIRegion *region)
 {
-    deque<ObjectAttribute *>::const_iterator i ;
-    for (i = attributeState.begin(); i != attributeState.end(); i++) {
-	(*i)->unassociate(region);
+    AttributeMap::const_iterator i;
+    for (i = _attributeMap.begin(); i != _attributeMap.end(); ++i) {
+	i->second->unassociate(region);
     }
 }
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.25 2009/10/11 14:55:01 erk Exp $
+// $Id: Object.cc,v 3.26 2009/10/11 17:04:17 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.21 2009/10/11 14:55:01 erk Exp $
+// $Id: Object.hh,v 3.22 2009/10/11 17:04:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -36,19 +36,14 @@ namespace certi {
 #include "Handled.hh"
 #include "Exception.hh"
 
-#include <deque>
-#include <list>
+#include <map>
 
 namespace certi {
 
 class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle>
 {
 public:
-    Object(FederateHandle the_owner)
-        : Owner(the_owner) { handle = 0 ; };
-
-    Object(FederateHandle the_owner, const char *the_name);
-
+    Object(FederateHandle the_owner);
     virtual ~Object();
 
     void display() const ;
@@ -60,27 +55,24 @@ public:
     bool isAttributeOwnedByFederate(FederateHandle, AttributeHandle) const
         throw (AttributeNotDefined, RTIinternalError);
 
-    ObjectClassHandle getClass() const ;
+    ObjectClassHandle getClass() const { return classHandle; }
     void setClass(ObjectClassHandle h);
 
-    FederateHandle getOwner() const ;
+    FederateHandle getOwner() const { return Owner; }
     void setOwner(FederateHandle);
 
     void unassociate(RTIRegion *);
 
-    // -----------------------
-    // -- Public Attributes --
-    // ----------------------
+private:
     /*! Owner Handle
       BUG: Should be handled at the attribute level, not instance level.
     */
     FederateHandle Owner ;
 
-private:
-    //! Attribute list from object class instance (private).
-    std::deque<ObjectAttribute *> attributeState ;
+    typedef std::map<AttributeHandle,ObjectAttribute*> AttributeMap;
+    //! Attribute list from object class instance.
+    AttributeMap _attributeMap;
 
-    ObjectHandle handle ; //!< Object Instance ID
     ObjectClassHandle classHandle ; //! Object Class
 };
 
@@ -88,4 +80,4 @@ private:
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.21 2009/10/11 14:55:01 erk Exp $
+// $Id: Object.hh,v 3.22 2009/10/11 17:04:17 erk Exp $
