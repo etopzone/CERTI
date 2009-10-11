@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.8 2008/11/08 00:59:38 erk Exp $
+// $Id: Named.cc,v 3.9 2009/10/11 14:55:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -28,13 +28,13 @@ namespace certi {
 
 Named::Named() { }
 
-Named::Named(std::string newName)
+Named::Named(const std::string& newName)
     : name(newName) { }
 
 Named::~Named() {}
 
 void
-Named::setName(std::string newName)
+Named::setName(const std::string& newName)
 {
     name = newName ;
 }
@@ -103,4 +103,4 @@ Named::getLeafClassName(std::string qualifiedClassName) {
 
 } // certi
 
-// $Id: Named.cc,v 3.8 2008/11/08 00:59:38 erk Exp $
+// $Id: Named.cc,v 3.9 2009/10/11 14:55:01 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.hh,v 3.20 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: Object.hh,v 3.21 2009/10/11 14:55:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_HH
@@ -45,7 +45,7 @@ class CERTI_EXPORT Object : public Named, public Handled<ObjectHandle>
 {
 public:
     Object(FederateHandle the_owner)
-        : Owner(the_owner), name("") { handle = 0 ; };
+        : Owner(the_owner) { handle = 0 ; };
 
     Object(FederateHandle the_owner, const char *the_name);
 
@@ -82,16 +82,10 @@ private:
 
     ObjectHandle handle ; //!< Object Instance ID
     ObjectClassHandle classHandle ; //! Object Class
-    ObjectName_t name ; //!< Instance name.
-
-    /*! federate list subscribed to this class and with subscription region
-      intersect with UR.
-    */
-    std::list<FederateHandle *> sf ;
 };
 
 }
 
 #endif // _CERTI_OBJECT_HH
 
-// $Id: Object.hh,v 3.20 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: Object.hh,v 3.21 2009/10/11 14:55:01 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Object.cc,v 3.24 2008/09/24 12:53:11 erk Exp $
+// $Id: Object.cc,v 3.25 2009/10/11 14:55:01 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -59,7 +59,6 @@ struct delme : public std::unary_function<T, void> {
 //! Destructor.
 Object::~Object()
 {
-    sf.clear();
     // We should delete the pointee because it belongs to the object.
     for (std::deque<ObjectAttribute *>::iterator i = attributeState.begin(); i!=attributeState.end();++i) {
     	delete (*i);
@@ -160,4 +159,4 @@ Object::unassociate(RTIRegion *region)
 
 } // namespace certi
 
-// $Id: Object.cc,v 3.24 2008/09/24 12:53:11 erk Exp $
+// $Id: Object.cc,v 3.25 2009/10/11 14:55:01 erk Exp $
