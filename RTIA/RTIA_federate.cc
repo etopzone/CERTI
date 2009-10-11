@@ -23,14 +23,11 @@
 #include <config.h>
 #include "RTIA.hh"
 
+#include "Clock.hh"
 #include "fed.hh"
 #include "RoutingSpace.hh"
 #include "XmlParser.hh"
 #include <assert.h>
-#ifdef _WIN32
-#include <time.h>
-#include <sys/timeb.h>
-#endif
 
 using std::string ;
 using std::ifstream ;
@@ -40,22 +37,6 @@ namespace rtia {
 
 static pdCDebug D("RTIA", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
-
-// ----------------------------------------------------------------------------
-static RTI::TickTime currentTickTime()
-{
-    RTI::TickTime result;
-#ifdef _WIN32
-    _timeb timev;
-    _ftime(&timev);
-    result = static_cast<RTI::TickTime>(timev.time + timev.millitm/1000);
-#else
-    struct timeval timev;
-    gettimeofday(&timev, NULL);
-    result = timev.tv_sec + timev.tv_usec/1000000;
-#endif
-    return result;
-}
 
 // ----------------------------------------------------------------------------
 //! Verify that federate is not in saving or restoring state.
@@ -1011,7 +992,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         if (req->getMinTickTime() > 0.0)
         {
             tm->_tick_timeout = req->getMinTickTime();
-            tm->_tick_stop_time = currentTickTime() + req->getMaxTickTime();
+            tm->_tick_max_tick = req->getMaxTickTime();
+            tm->_tick_clock_start = clock->getCurrentTicksValue();
             tm->_tick_state = TimeManagement::TICK_BLOCKING;
         }
         else
@@ -1117,7 +1099,8 @@ RTIA::processOngoingTick()
              *   decide how to continue
              */
             if (tm->_tick_result &&
-                tm->_tick_multiple && currentTickTime() < tm->_tick_stop_time)
+                tm->_tick_multiple &&
+                1e-9*clock->getDeltaNanoSecond(tm->_tick_clock_start) < tm->_tick_max_tick)
                 tm->_tick_state = TimeManagement::TICK_CALLBACK;
             else
                 tm->_tick_state = TimeManagement::TICK_RETURN;

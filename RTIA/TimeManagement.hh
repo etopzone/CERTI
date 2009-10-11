@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.hh,v 3.19 2009/04/08 10:47:18 approx Exp $
+// $Id: TimeManagement.hh,v 3.20 2009/10/11 17:12:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIA_TIME_MANAGEMENT_HH
@@ -118,7 +118,8 @@ public:
     bool _tick_multiple;  // process multiple callbacks
     bool _tick_result;  // tick() return value
     RTI::TickTime _tick_timeout;
-    RTI::TickTime _tick_stop_time;
+    RTI::TickTime _tick_max_tick;
+    uint64_t _tick_clock_start;
     bool _asynchronous_delivery ;
 
 private:
@@ -161,4 +162,4 @@ private:
 
 #endif // CERTI_RTIA_TIME_MANAGEMENT_HH
 
-// $Id: TimeManagement.hh,v 3.19 2009/04/08 10:47:18 approx Exp $
+// $Id: TimeManagement.hh,v 3.20 2009/10/11 17:12:06 erk Exp $

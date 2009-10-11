@@ -18,11 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.28 2009/10/11 11:22:55 erk Exp $
+// $Id: RTIA.cc,v 3.29 2009/10/11 17:12:06 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "RTIA.hh"
+
+#include "Clock.hh"
 
 #include <assert.h>
 #include <math.h>
@@ -34,6 +36,9 @@ namespace rtia {
 static pdCDebug D("RTIA", "(RTIA) ");
 
 RTIA::RTIA(int RTIA_port, int RTIA_fd) {
+
+    clock = Clock::getBestClock();
+
     // No SocketServer is passed to the RootObject (RTIA use case)
 	// socket server are passed to RootObject iff we are in RTIG.
     rootObject = new RootObject(NULL);
@@ -92,6 +97,7 @@ RTIA::~RTIA() {
     delete queues ;
     delete comm ;    
     delete rootObject ;
+    delete clock ;
 } /* end of ~RTIA() */
 
 // ----------------------------------------------------------------------------
@@ -194,4 +200,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.28 2009/10/11 11:22:55 erk Exp $
+// $Id: RTIA.cc,v 3.29 2009/10/11 17:12:06 erk Exp $
