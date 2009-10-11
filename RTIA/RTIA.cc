@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.27 2009/09/21 15:42:11 erk Exp $
+// $Id: RTIA.cc,v 3.28 2009/10/11 11:22:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -74,6 +74,13 @@ RTIA::~RTIA() {
            fm->_FEDid[0] = '\0' ;
            }
         }
+
+    /* 
+     * FIXME Erk
+     * this is may be a design issue
+     * see  https://savannah.nongnu.org/patch/?6937
+     */
+    fm->resignFederationExecutionForTermination();
      
      /* delete objects in reverse order just like generated destructor would have done */
     delete ddm ;
@@ -187,4 +194,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.27 2009/09/21 15:42:11 erk Exp $
+// $Id: RTIA.cc,v 3.28 2009/10/11 11:22:55 erk Exp $

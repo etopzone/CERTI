@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.24 2008/06/10 13:41:44 rousse Exp $
+// $Id: FederationManagement.hh,v 3.25 2009/10/11 11:22:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -57,6 +57,7 @@ public:
 
     void resignFederationExecution(RTI::ResignAction action,
                                    TypeException &e);
+    void resignFederationExecutionForTermination();
 
     // Synchronization.
     void registerSynchronization(std::string label,
@@ -123,4 +124,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.24 2008/06/10 13:41:44 rousse Exp $
+// $Id: FederationManagement.hh,v 3.25 2009/10/11 11:22:55 erk Exp $

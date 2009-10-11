@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.73 2009/09/21 15:42:11 erk Exp $
+// $Id: FederationManagement.cc,v 3.74 2009/10/11 11:22:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -78,12 +78,7 @@ static PrettyDebug G("GENDOC",__FILE__);
 //! Destructor.
 FederationManagement::~FederationManagement()
 {
-    TypeException e ;
     G.Out(pdGendoc,"enter ~FederationManagement");
-
-    if (_est_membre_federation) {
-        resignFederationExecution(RTI::DELETE_OBJECTS, e);
-    }
 
     // BUG: On devrait pouvoir quitter une federation que l'on a cree
     // sans la detruire en partant.
@@ -476,6 +471,20 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         {    
         G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution on exception");
         }
+}
+
+// Resigns if we are still member, call this before we throw away all the rtia members
+void
+FederationManagement::resignFederationExecutionForTermination()
+{
+    G.Out(pdGendoc,"enter FederationManagement::resignFederationExecutionForTermination");
+
+    if (_est_membre_federation) {
+        TypeException e ;
+        resignFederationExecution(RTI::DELETE_OBJECTS, e);
+    }
+
+    G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecutionForTermination");
 }
 
 // ----------------------------------------------------------------------------
