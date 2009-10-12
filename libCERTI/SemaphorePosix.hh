@@ -16,6 +16,7 @@
 
 // Specifics includes
 #include "Semaphore.hh"
+#include <semaphore.h>
 
 class SemaphorePosix : public Semaphore {
     private :
