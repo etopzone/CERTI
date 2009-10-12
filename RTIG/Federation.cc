@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.111 2009/10/09 21:13:56 erk Exp $
+// $Id: Federation.cc,v 3.112 2009/10/12 07:09:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1439,15 +1439,14 @@ Federate &
 Federation::getFederate(const char *federate_name)
     throw (FederateNotExecutionMember)
 {
-	std::stringstream msg;
-
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
         if (strcmp(i->getName(), federate_name) == 0)
             return *i ;
     }
 
+    std::stringstream msg;
     msg << "Federate <"<<federate_name<<"> not [yet] member of Federation <" << getName() <<">.";
-    throw FederateNotExecutionMember(msg.str().c_str());
+    throw FederateNotExecutionMember(msg.str());
 }
 
 // ----------------------------------------------------------------------------
@@ -2591,5 +2590,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.111 2009/10/09 21:13:56 erk Exp $
+// $Id: Federation.cc,v 3.112 2009/10/12 07:09:32 erk Exp $
 

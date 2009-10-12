@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.45 2008/11/08 11:36:05 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.46 2009/10/12 07:09:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -32,12 +32,10 @@
 #include "Named.hh"
 
 // Standard
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
-#include <assert.h>
 
 using std::list ;
-using std::cout ;
 using std::endl ;
 using std::string ;
 
@@ -218,17 +216,16 @@ ObjectClass *
 ObjectClassSet::getInstanceClass(ObjectHandle theObjectHandle) const
     throw (ObjectNotKnown)
 {
-	std::stringstream msg;
-
-	handled_const_iterator i ;
+    handled_const_iterator i ;
     for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
         if (i->second->isInstanceInClass(theObjectHandle) == true)
             return (i->second);
     }
 
-	msg << "ObjectHandle <" << theObjectHandle <<"> not found in any object class.";
+    std::stringstream msg;
+    msg << "ObjectHandle <" << theObjectHandle <<"> not found in any object class.";
     D.Out(pdExcept, msg.str().c_str());
-    throw ObjectNotKnown(msg.str().c_str());
+    throw ObjectNotKnown(msg.str());
 }
 
 // ----------------------------------------------------------------------------
@@ -238,7 +235,6 @@ Object *
 ObjectClassSet::getObject(ObjectHandle h) const
     throw (ObjectNotKnown)
 {
-
 	handled_const_iterator i ;
 
 	for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
@@ -696,4 +692,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.45 2008/11/08 11:36:05 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.46 2009/10/12 07:09:32 erk Exp $

@@ -97,16 +97,15 @@ ObjectHandle
 ObjectSet::getObjectInstanceHandle(std::string the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
-	std::stringstream msg;
-
     std::map<ObjectHandle, Object *>::const_iterator i ;
     for (i = begin(); i != end(); i++) {
         if (i->second->getName() == the_name)
             return i->second->getHandle();
     }
 
-	msg << "No object instance with name <" << the_name;
-    throw ObjectNotKnown(msg.str().c_str());
+    std::stringstream msg;
+    msg << "No object instance with name <" << the_name;
+    throw ObjectNotKnown(msg.str());
 }
 
 // ----------------------------------------------------------------------------
@@ -462,4 +461,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.24 2009/09/14 21:21:31 erk Exp $
+// $Id: ObjectSet.cc,v 3.25 2009/10/12 07:09:32 erk Exp $

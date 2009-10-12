@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.8 2008/11/15 14:54:26 gotthardp Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.9 2009/10/12 07:09:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -207,7 +207,6 @@ void
 TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
 	throw (RTIinternalError) {
 	typename Name2ObjectMap_t::iterator findit;
-	std::stringstream             msg;
 
 	/* build hierarchical name if a parent is given */
 	if (NULL!=parent) {
@@ -237,13 +236,14 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
      */
     findit = fromName.find(child->getName());
     if (findit != fromName.end()) {
+	std::stringstream msg;
     	msg << "Name collision another object class named <"
     	    << child->getName()
     	    << "> with handle <"
     	    << findit->second->getHandle()
     	    << "> was found when trying to add identically named object class with handle <"
     	    << child->getHandle();
-    	throw RTIinternalError(msg.str().c_str());
+    	throw RTIinternalError(msg.str());
     }
     /* store ref to new object in Object from Handle Map */
     fromHandle[child->getHandle()] = child;
@@ -303,7 +303,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
 	}
 
 	/* every search has failed */
-	throw NameNotFound(name.c_str());
+	throw NameNotFound(name);
 } /* end of getObjectClassHandle */
 
 template <typename ObjectType>
@@ -319,7 +319,6 @@ ObjectType*
 TreeNamedAndHandledSet<ObjectType>::getObjectFromHandle(HandleType handle) const
 	throw (ObjectNotDefinedException) {
 
-	std::stringstream       msg;
 	handled_const_iterator iter;
 
 	iter = fromHandle.find(handle);
@@ -327,8 +326,9 @@ TreeNamedAndHandledSet<ObjectType>::getObjectFromHandle(HandleType handle) const
 	if (iter != fromHandle.end()) {
 		return iter->second;
 	} else {
+        std::stringstream msg;
         msg << "Unknown Object Handle <" << handle << ">";
-		throw ObjectNotDefinedException(msg.str().c_str());
+		throw ObjectNotDefinedException(msg.str());
 	}
 } /* end of getObjectFromHandle */
 

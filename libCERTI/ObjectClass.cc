@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.65 2009/09/14 21:21:31 erk Exp $
+// $Id: ObjectClass.cc,v 3.66 2009/10/12 07:09:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -540,21 +540,20 @@ Object *
 ObjectClass::getInstanceWithID(ObjectHandle the_id) const
     throw (ObjectNotKnown)
 {
-	std::stringstream msg;
-
     list<Object *>::const_iterator o ;
     for (o = objectSet.begin(); o != objectSet.end(); o++) {
         if ((*o)->getHandle() == the_id)
             return (*o);
     }
 
+    std::stringstream msg;
     msg << "Could not find ObjectHandle <" << the_id << "> among <"
 	       << objectSet.size() << "> objects of ObjectClass "
 	       << handle;
 
     D[pdError] << msg.str().c_str() << std::endl ;
 
-    throw ObjectNotKnown(msg.str().c_str());
+    throw ObjectNotKnown(msg.str());
 }
 
 // ----------------------------------------------------------------------------
@@ -1835,4 +1834,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.65 2009/09/14 21:21:31 erk Exp $
+// $Id: ObjectClass.cc,v 3.66 2009/10/12 07:09:32 erk Exp $

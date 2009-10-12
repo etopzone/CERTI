@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.28 2009/06/04 11:58:51 erk Exp $
+// $Id: SocketTCP.cc,v 3.29 2009/10/12 07:09:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -180,7 +180,6 @@ else
 // ----------------------------------------------------------------------------
 int SocketTCP::accept(SocketTCP *serveur) throw (NetworkError)
 {
-	std::stringstream msg;
 struct protoent *TCPent ;
 int optval = 1 ;
 
@@ -198,9 +197,10 @@ l = sizeof(_sockIn);
 _socket_tcp = ::accept(serveur->_socket_tcp, (sockaddr*)&_sockIn, &l);
 if (_socket_tcp < 0)
 	{
+          std::stringstream msg;
 	  msg << "SocketTCP: Accept Failed"
 	      << "<" << strerror(errno) <<">";
-	  throw NetworkError(msg.str().c_str());
+	  throw NetworkError(msg.str());
 	}
 
 // Set the TCP_NODELAY option(Server Side)
@@ -264,18 +264,18 @@ void
 SocketTCP::createConnection(const char *server_name, unsigned int port)
     throw (NetworkError)
 {
-	std::stringstream msg;
 	// get host information from server name
 	// this may perform DNS query
 	struct hostent *hptr = gethostbyname(server_name);
 	if (NULL == hptr)
 	{
+                std::stringstream msg;
 		msg << "gethostbyname gave NULL answer for hostname <"
 		<< server_name
 		<< "> with error <"
 		<< strerror(errno)
 		<< ">";
-		throw NetworkError(msg.str().c_str());
+		throw NetworkError(msg.str());
 	}
 
 	in_addr_t addr = 0;
@@ -290,21 +290,22 @@ SocketTCP::createTCPClient(in_port_t port, in_addr_t addr)
 throw (NetworkError)
 {
 assert(!_est_init_tcp);
-std::stringstream msg;
 if (!open())
 	{
+                std::stringstream msg;
 		msg << "Cannot open port <" << port
 			<< "> on addr <" << addr2string(addr)
 			<< "> : error =" << strerror(errno);
-		throw NetworkError(msg.str().c_str());
+		throw NetworkError(msg.str());
 	}
 
 if (!connect(port, addr))
 	{
+                std::stringstream msg;
 		msg << "Cannot connect port <" << port
 		    << "> on addr <" << addr2string(addr)
 			<< "> : error =" << strerror(errno);
-		throw NetworkError(msg.str().c_str());
+		throw NetworkError(msg.str());
 	}
 
 _est_init_tcp = true ;
@@ -315,32 +316,34 @@ void
 SocketTCP::createTCPServer(in_port_t port, in_addr_t addr)
 throw (NetworkError)
 {
-	std::stringstream msg;
 	assert(!_est_init_tcp);
 
 
 if (!open())
 	{
+	std::stringstream msg;
 	msg << "Cannot open port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
-	throw NetworkError(msg.str().c_str());
+	throw NetworkError(msg.str());
 	}
 
 if (!bind(port, addr))
 	{
+	std::stringstream msg;
 	msg << "Cannot bind port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
-	throw NetworkError(msg.str().c_str());
+	throw NetworkError(msg.str());
 	}
 
 if (!listen(MAX_BACKLOG))
 	{
+	std::stringstream msg;
 	msg << "Cannot listen port <" << port
 		<< "> on addr <" << addr2string(addr)
 		<< "> : error =" << strerror(errno);
-	throw NetworkError(msg.str().c_str());
+	throw NetworkError(msg.str());
 	}
 
 _est_init_tcp = true ;
@@ -596,4 +599,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.28 2009/06/04 11:58:51 erk Exp $
+// $Id: SocketTCP.cc,v 3.29 2009/10/12 07:09:32 erk Exp $
