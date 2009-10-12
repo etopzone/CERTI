@@ -131,7 +131,7 @@ if (WIN32)
     SET(CERTI_SOCKET_SHM_SRC
         SocketSHM.cc SocketSHM.hh
         SocketSHMWin32.cc SocketSHMWin32.hh
-        )
+	RingBuffer.cc RingBuffer.hh)
 
     LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
 else(WIN32)
@@ -153,6 +153,7 @@ else(WIN32)
         SocketSHM.cc SocketSHM.hh
         SocketSHMPosix.cc SocketSHMPosix.hh
         SocketSHMSysV.cc SocketSHMSysV.hh
+	RingBuffer.cc RingBuffer.hh
         )
 
     LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})

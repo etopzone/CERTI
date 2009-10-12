@@ -4,7 +4,7 @@
 // Posix Semaphores systems includes
 // Don't forget to add "-lrt" to compilation line
 #include <sys/types.h>
-#include <semaphore.h>
+#include <Semaphore.hh>
 #include <fcntl.h>
 
 // Others Systems includes
