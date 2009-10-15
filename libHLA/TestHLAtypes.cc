@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: TestHLAtypes.cc,v 1.5 2009/10/15 15:33:51 erk Exp $
+// $Id: TestHLAtypes.cc,v 1.6 2009/10/15 15:50:09 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <memory>
@@ -21,6 +21,7 @@
 
 using namespace libhla;
 
+// IEEE 1516.2, Section 4.12.3, Table 23—Basic data representation table
 int test0() {
 	int retval=0;
 	std::stringstream result2b;
@@ -151,7 +152,33 @@ int test0() {
 		retval+= 1;
 	}
 
-	/* FIXME need to add test for OPLE/OPBE */
+	/* FIXME Erk --> Petr
+	 * Looks like a bug
+	 * OPLE and OPLE are stored in a wchar_t whose
+	 * size may 4 octets on unix */
+#if  BUGGY
+	(*OPLE) = 0xABCD;
+	expected = "0000:  cd ab\n";
+	result2b.seekp(0);
+	OPLE.print(result2b);
+	if(result2b.str()!=expected) {
+		std::cerr << "test0: <output> does not match expected result" << std::endl
+				<< "result="   << result2b.str() << std::endl
+				<< "expected=" << expected << std::endl;
+		retval+= 1;
+	}
+
+	(*OPBE) = 0xABCD;
+	expected = "0000:  ab cd\n";
+	result2b.seekp(0);
+	OPBE.print(result2b);
+	if(result2b.str()!=expected) {
+		std::cerr << "test0: <output> does not match expected result" << std::endl
+				<< "result="   << result2b.str() << std::endl
+				<< "expected=" << expected << std::endl;
+		retval+= 1;
+	}
+#endif
 	return retval;
 } /* end of test0 */
 
@@ -366,4 +393,4 @@ int main(int argc, char* argv[])
 	return result;
 }
 
-// $Id: TestHLAtypes.cc,v 1.5 2009/10/15 15:33:51 erk Exp $
+// $Id: TestHLAtypes.cc,v 1.6 2009/10/15 15:50:09 erk Exp $
