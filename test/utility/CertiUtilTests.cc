@@ -50,6 +50,9 @@ void clockTests(certi::Clock& aClock) {
 #ifdef HAVE_POSIX_CLOCK
 #include "PosixClock.hh"
 #endif
+#ifdef HAVE_GETTIMEOFDAY
+#include "GettimeofdayClock.hh"
+#endif
 
 #ifdef HAVE_WIN_CLOCK
 #include "WinClock.hh"
@@ -246,6 +249,9 @@ main(int argc, char **argv)
 #ifdef HAVE_POSIX_CLOCK
 	certi::PosixClock posixClk;
 #endif
+#ifdef HAVE_GETTIMEOFDAY
+        certi::GettimeofdayClock gettimeofdayClock;
+#endif
 #ifdef HAVE_TSC_CLOCK
 	certi::TSCClock   tscClk;
 #endif
@@ -273,6 +279,9 @@ main(int argc, char **argv)
 #endif
 #ifdef HAVE_POSIX_CLOCK
 	clockTests(posixClk);
+#endif
+#ifdef HAVE_GETTIMEOFDAY
+	clockTests(gettimeofdayClock);
 #endif
 #ifdef HAVE_WIN_CLOCK
 	clockTests(WinClk);

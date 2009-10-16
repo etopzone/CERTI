@@ -109,6 +109,9 @@
 /* Define to 1 if you have clock_xxxx API */
 #cmakedefine HAVE_POSIX_CLOCK 1
 
+/* Define to 1 if you have gettimeofday API */
+#cmakedefine HAVE_GETTIMEOFDAY 1
+
 /* Define to 1 if the processor have TSC support */
 #cmakedefine HAVE_TSC_CLOCK 1
 

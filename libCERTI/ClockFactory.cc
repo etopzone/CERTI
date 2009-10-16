@@ -26,6 +26,9 @@
 #ifdef HAVE_POSIX_CLOCK
 #include "PosixClock.hh"
 #endif
+#ifdef HAVE_GETTIMEOFDAY
+#include "GettimeofdayClock.hh"
+#endif
 
 #ifdef HAVE_WIN_CLOCK
 #include "WinClock.hh"
@@ -48,8 +51,13 @@ namespace certi {
 
 #ifdef HAVE_POSIX_CLOCK
     return new PosixClock () ;
+
+#else
+#ifdef HAVE_GETTIMEOFDAY
+    return new GettimeofdayClock () ;
 #else
     return NULL ;
+#endif
 #endif
 #endif
 #endif

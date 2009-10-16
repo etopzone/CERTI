@@ -91,6 +91,12 @@ IF (HAVE_POSIX_CLOCK)
            PosixClock.cc PosixClock.hh)              
 ENDIF(HAVE_POSIX_CLOCK)
 
+IF (HAVE_GETTIMEOFDAY)
+    SET(CERTI_SUPPORT_SRCS 
+           ${CERTI_SUPPORT_SRCS}
+           GettimeofdayClock.cc GettimeofdayClock.hh)              
+ENDIF(HAVE_GETTIMEOFDAY)
+
 IF (HAVE_TSC_CLOCK)
     SET(CERTI_SUPPORT_SRCS 
            ${CERTI_SUPPORT_SRCS}
