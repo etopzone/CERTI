@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.112 2009/10/12 07:09:32 erk Exp $
+// $Id: Federation.cc,v 3.113 2009/10/16 21:48:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -93,6 +93,8 @@ static PrettyDebug G("GENDOC",__FILE__);
  * -# getenv(CERTI_HOME)+"/share/federations"+ FEDid_name
  * -# installation place plus FEDid_name
  *     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
+ * -# on Unix "/usr/local/share/federation/" + FEDid_name
+ *    for backward compatibility reason.
  */
 
 #ifdef FEDERATION_USES_MULTICAST
@@ -165,6 +167,9 @@ Federation::Federation(const char *federation_name,
     //
     // 3 - Installation place plus FEDid_name
     //     PACKAGE_INSTALL_PREFIX + "/share/federation/" + FEDid_name
+	//
+	// 4 - "/usr/local/share/federation/" +  FEDid_name
+	//     last resort Unix-only case [for backward compatibility]
     //
     string filename   = FEDid;
     bool   filefound  = false;
@@ -225,13 +230,24 @@ Federation::Federation(const char *federation_name,
 
     if (!filefound) {
       if (verboseLevel>0) {
-         cout << " --> cannot access." <<endl;
+         cout << " --> cannot access." << endl;
       }
       filename = PACKAGE_INSTALL_PREFIX "/share/federations/"+string(FEDid_name);
       if (verboseLevel>0) {
          cout << "   Now trying..." << filename;
       }
       filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
+    }
+
+    if (!filefound) {
+    	if (verboseLevel>0) {
+    		cout << " --> cannot access." << endl;
+    	}
+    	filename = "/usr/local/share/federations/"+string(FEDid_name);
+    	if (verboseLevel>0) {
+    		cout << "   Now trying..." << filename;
+    	}
+    	filefound = (0==STAT_FUNCTION(filename.c_str(),&file_stat));
     }
 #endif
 
@@ -2590,5 +2606,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.112 2009/10/12 07:09:32 erk Exp $
+// $Id: Federation.cc,v 3.113 2009/10/16 21:48:28 erk Exp $
 
