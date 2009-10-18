@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: HLAbasicType.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.6 2009/10/18 19:54:08 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _HLATYPES_BASICTYPE_HH
@@ -187,14 +187,14 @@ typedef HLAbasicType<long, int32_t, BigEndian> HLAinteger32BE;
 typedef HLAbasicType<long long, int64_t, BigEndian> HLAinteger64BE;
 typedef HLAbasicType<float, float, BigEndian> HLAfloat32BE;
 typedef HLAbasicType<double, double, BigEndian> HLAfloat64BE;
-typedef HLAbasicType<wchar_t, wchar_t, BigEndian> HLAoctetPairBE;
+typedef HLAbasicType<uint16_t, uint16_t, BigEndian> HLAoctetPairBE;
 
 typedef HLAbasicType<short, int16_t, LittleEndian> HLAinteger16LE;
 typedef HLAbasicType<long, int32_t, LittleEndian> HLAinteger32LE;
 typedef HLAbasicType<long long, int64_t, LittleEndian> HLAinteger64LE;
 typedef HLAbasicType<float, float, LittleEndian> HLAfloat32LE;
 typedef HLAbasicType<double, double, LittleEndian> HLAfloat64LE;
-typedef HLAbasicType<wchar_t, wchar_t, LittleEndian> HLAoctetPairLE;
+typedef HLAbasicType<uint16_t, uint16_t, LittleEndian> HLAoctetPairLE;
 
 typedef HLAbasicType<char, char, BigEndian> HLAoctet;
 
@@ -215,5 +215,5 @@ typedef HLAbasicType<unsigned long, uint64_t, BigEndian> Unsignedinteger64BE;
 
 #endif // _HLATYPES_BASICTYPE_HH
 
-// $Id: HLAbasicType.hh,v 1.5 2009/06/24 12:33:31 gotthardp Exp $
+// $Id: HLAbasicType.hh,v 1.6 2009/10/18 19:54:08 gotthardp Exp $
 

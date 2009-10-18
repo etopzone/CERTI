@@ -11,7 +11,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
 //
-// $Id: TestHLAtypes.cc,v 1.6 2009/10/15 15:50:09 erk Exp $
+// $Id: TestHLAtypes.cc,v 1.7 2009/10/18 19:54:08 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #include <memory>
@@ -152,11 +152,6 @@ int test0() {
 		retval+= 1;
 	}
 
-	/* FIXME Erk --> Petr
-	 * Looks like a bug
-	 * OPLE and OPLE are stored in a wchar_t whose
-	 * size may 4 octets on unix */
-#if  BUGGY
 	(*OPLE) = 0xABCD;
 	expected = "0000:  cd ab\n";
 	result2b.seekp(0);
@@ -178,7 +173,7 @@ int test0() {
 				<< "expected=" << expected << std::endl;
 		retval+= 1;
 	}
-#endif
+
 	return retval;
 } /* end of test0 */
 
@@ -393,4 +388,4 @@ int main(int argc, char* argv[])
 	return result;
 }
 
-// $Id: TestHLAtypes.cc,v 1.6 2009/10/15 15:50:09 erk Exp $
+// $Id: TestHLAtypes.cc,v 1.7 2009/10/18 19:54:08 gotthardp Exp $
