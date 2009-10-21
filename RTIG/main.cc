@@ -30,6 +30,7 @@
 
 #include <new>
 #include <csignal>
+#include <iostream>
 
 using namespace certi ;
 using namespace certi::rtig ;

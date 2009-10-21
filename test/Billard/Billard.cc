@@ -30,6 +30,7 @@
 #endif
 
 #include <memory>
+#include <iostream>
 #include <cstdlib>
 #include <cassert>
 
@@ -120,7 +121,7 @@ Billard::join(std::string federation_name, std::string fdd_name)
             break ;
         }
         catch (RTI::FederateAlreadyExecutionMember& e) {
-            D[pdExcept] << "Federate " << federateName.c_str()
+            Debug(D, pdExcept) << "Federate " << federateName.c_str()
                         << "already exists." << endl ;
 
             throw ;
@@ -151,7 +152,7 @@ Billard::pause()
             rtiamb.registerFederationSynchronizationPoint("Init", "Waiting all players.");
         }
         catch (RTI::Exception& e) {
-            D[pdExcept] << "Federate " << federateName.c_str()
+            Debug(D, pdExcept) << "Federate " << federateName
                         << " : Register Synchronization Point failed : %d"
                         << endl ;
         }
@@ -190,7 +191,7 @@ Billard::pause_friend()
                  }
         }
         catch (RTI::Exception& e) {
-            D[pdExcept] << "Federate " << federateName.c_str()
+            Debug(D, pdExcept) << "Federate " << federateName
                         << " : Register Synchronization Point failed : %d"
                         << endl ;
         }
@@ -578,10 +579,10 @@ Billard::publishAndSubscribe()
     attributes->add(AttrYID);
 
     // Subscribe to Bille objects.
-    D[pdDebug] << "subscribe: class " << BilleClassID << ", attributes "
+    Debug(D, pdDebug) << "subscribe: class " << BilleClassID << ", attributes "
 	       << AttrXID << " and " << AttrYID << "... " << endl ;
     rtiamb.subscribeObjectClassAttributes(BilleClassID, *attributes, RTI::RTI_TRUE);
-    D[pdDebug] << "done." << endl ;
+    Debug(D, pdDebug) << "done." << endl ;
 
     // Publish Boule Objects.
     attributes->add(AttrColorID);
@@ -600,7 +601,7 @@ Billard::publishAndSubscribe()
 void
 Billard::getHandles()
 {
-    D[pdDebug] << "Get handles..." << endl ;
+    Debug(D, pdDebug) << "Get handles..." << endl ;
     BilleClassID = rtiamb.getObjectClassHandle(CLA_BILLE);
     BouleClassID = rtiamb.getObjectClassHandle(CLA_BOULE);
     D.Out(pdInit, "BilleClassID = %d, BouleClassID = %d.",

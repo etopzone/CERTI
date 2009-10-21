@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: BillardDDM.cc,v 3.21 2008/06/12 07:39:50 erk Exp $
+// $Id: BillardDDM.cc,v 3.22 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "BillardDDM.hh"
@@ -28,6 +28,7 @@
 #include "graph_c.hh"
 #endif
 
+#include <iostream>
 #include <cmath>
 
 #ifdef _WIN32
@@ -117,7 +118,7 @@ BillardStaticDDM::declare()
     std::cout << " done." << std::endl ;
 
     local.ID = registerBallInstance(federateName.c_str());
-    D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
+    Debug(D, pdDebug) << "Object created (handle " << local.ID << ")" << std::endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -215,7 +216,7 @@ BillardDynamicDDM::declare()
     region = rtiamb.createRegion(GeoID, 1);
 
     local.ID = registerBallInstance(federateName.c_str());
-    D[pdDebug] << "Object created (handle " << local.ID << ")" << std::endl ;
+    Debug(D, pdDebug) << "Object created (handle " << local.ID << ")" << std::endl ;
 
     auto_ptr<RTI::AttributeHandleSet> attributes(RTI::AttributeHandleSetFactory::create(3));
     attributes->add(AttrXID);

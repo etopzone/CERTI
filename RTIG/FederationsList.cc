@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.63 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: FederationsList.cc,v 3.64 2009/10/21 20:04:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -26,7 +26,6 @@
 
 using std::list ;
 using std::endl ;
-using std::cout ;
 
 namespace certi {
 namespace rtig {
@@ -1417,7 +1416,7 @@ FederationsList::createRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Create " << nb_extents << "-extent Region "
+    Debug(D, pdDebug) << "Create " << nb_extents << "-extent Region "
                << "in space " << space << endl ;
 
     return f->createRegion(federate, space, nb_extents);
@@ -1437,7 +1436,7 @@ FederationsList::modifyRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Modify region #" << region << endl ;
+    Debug(D, pdDebug) << "Modify region #" << region << endl ;
     f->modifyRegion(federate, region, extents);
 }
 
@@ -1455,7 +1454,7 @@ FederationsList::deleteRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Delete region " << region << endl ;
+    Debug(D, pdDebug) << "Delete region " << region << endl ;
 
     f->deleteRegion(federate, region);
 }
@@ -1471,8 +1470,8 @@ FederationsList::associateRegion(Handle federation,
 	throw (RegionInUse, FederateNotExecutionMember, SaveInProgress,
 	       RestoreInProgress, RTIinternalError)
 {
-    D[pdDebug] << "Associate region " << region << " for updates." << endl ;
-    D[pdDebug] << "F�:" << federation << ", F:" << federate << endl ;
+    Debug(D, pdDebug) << "Associate region " << region << " for updates." << endl ;
+    Debug(D, pdDebug) << "F�:" << federation << ", F:" << federate << endl ;
 
     Federation *f = 0 ;
 
@@ -1499,7 +1498,7 @@ FederationsList::unassociateRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Unassociate region for updates " << region << endl ;
+    Debug(D, pdDebug) << "Unassociate region for updates " << region << endl ;
 
     f->unassociateRegion(federate, object, region);
 }
@@ -1521,7 +1520,7 @@ FederationsList::subscribeAttributesWR(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << " Subscribe attributes with region " << region << endl ;
+    Debug(D, pdDebug) << " Subscribe attributes with region " << region << endl ;
 
     f->subscribeAttributesWR(federate, object_class, region, nb, attributes);
 }
@@ -1541,7 +1540,7 @@ FederationsList::unsubscribeAttributesWR(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Unsubscribe attributes with region " << region << endl ;
+    Debug(D, pdDebug) << "Unsubscribe attributes with region " << region << endl ;
 
     f->unsubscribeAttributesWR(federate, object_class, region);
 }
@@ -1561,7 +1560,7 @@ FederationsList::subscribeInteractionWR(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Subscribe interaction with region " << region << endl ;
+    Debug(D, pdDebug) << "Subscribe interaction with region " << region << endl ;
 
     f->subscribeInteractionWR(federate, ic, region);
 }
@@ -1581,7 +1580,7 @@ FederationsList::unsubscribeInteractionWR(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    D[pdDebug] << "Unsubscribe interaction with region " << region << endl ;
+    Debug(D, pdDebug) << "Unsubscribe interaction with region " << region << endl ;
 
     f->unsubscribeInteractionWR(federate, ic, region);
 }
@@ -1750,5 +1749,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.63 2008/12/07 20:16:11 gotthardp Exp $
+// EOF $Id: FederationsList.cc,v 3.64 2009/10/21 20:04:45 erk Exp $
 

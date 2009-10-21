@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTItypes.cc,v 1.4 2009/04/04 13:30:54 gotthardp Exp $
+// $Id: RTItypes.cc,v 1.5 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -245,7 +245,7 @@ const std::string RTI::Exception::displayMe() const
     msg << std::endl;
     msg << std::flush;
 
-    PD_RTIException[pdExcept] << msg.str().c_str();
+    Debug(PD_RTIException, pdExcept) << msg.str();
     return msg.str();
 }
 
@@ -263,4 +263,4 @@ operator<<(RTI_STD::ostream &os, RTI::Exception *ex)
     return os<<(*ex);
 }
 
-// $Id: RTItypes.cc,v 1.4 2009/04/04 13:30:54 gotthardp Exp $
+// $Id: RTItypes.cc,v 1.5 2009/10/21 20:04:46 erk Exp $

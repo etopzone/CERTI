@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.46 2009/10/12 07:09:32 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.47 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -381,7 +381,7 @@ ObjectClassSet::registerObjectInstance(FederateHandle the_federate,
         delete ocbList ;
     }
 
-    D[pdRegister] << "Instance " << the_object << " has been registered."
+    Debug(D, pdRegister) << "Instance " << the_object << " has been registered."
                   << endl ;
 }
 
@@ -692,4 +692,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.46 2009/10/12 07:09:32 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.47 2009/10/21 20:04:46 erk Exp $

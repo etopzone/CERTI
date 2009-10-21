@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.58 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIG.cc,v 3.59 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -194,7 +194,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::REQUEST_OBJECT_ATTRIBUTE_VALUE_UPDATE:
-	D[pdTrace] << "requestAttributeValueUpdate" << endl ;
+	Debug(D, pdTrace) << "requestAttributeValueUpdate" << endl ;
         auditServer.setLevel(6);
         processRequestObjectAttributeValueUpdate(link, msg);
         break ;
@@ -336,61 +336,61 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
         break ;
 
       case NetworkMessage::DDM_CREATE_REGION:
-        D[pdTrace] << "createRegion" << endl ;
+        Debug(D, pdTrace) << "createRegion" << endl ;
         auditServer.setLevel(6);
         processCreateRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_MODIFY_REGION:
-		D[pdTrace] << "modifyRegion" << endl ;
+		Debug(D, pdTrace) << "modifyRegion" << endl ;
 		auditServer.setLevel(6);
         processModifyRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_DELETE_REGION:
-        D[pdTrace] << "deleteRegion" << endl ;
+        Debug(D, pdTrace) << "deleteRegion" << endl ;
         auditServer.setLevel(6);
         processDeleteRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_REGISTER_OBJECT:
-        D[pdTrace] << "registerObjectWithRegion" << endl ;
+        Debug(D, pdTrace) << "registerObjectWithRegion" << endl ;
         auditServer.setLevel(6);
         processRegisterObjectWithRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_ASSOCIATE_REGION:
-	D[pdTrace] << "associateRegionForUpdates" << endl ;
+	Debug(D, pdTrace) << "associateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
         processAssociateRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_UNASSOCIATE_REGION:
-	D[pdTrace] << "unassociateRegionForUpdates" << endl ;
+	Debug(D, pdTrace) << "unassociateRegionForUpdates" << endl ;
         auditServer.setLevel(6);
         processUnassociateRegion(link, msg);
         break ;
 
       case NetworkMessage::DDM_SUBSCRIBE_ATTRIBUTES:
-	D[pdTrace] << "subscribeObjectClassAttributes (DDM)" << endl ;
+	Debug(D, pdTrace) << "subscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
         processSubscribeAttributesWR(link, msg);
         break ;
 
       case NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES:
-	D[pdTrace] << "unsubscribeObjectClassAttributes (DDM)" << endl ;
+	Debug(D, pdTrace) << "unsubscribeObjectClassAttributes (DDM)" << endl ;
         auditServer.setLevel(6);
         processUnsubscribeAttributesWR(link, msg);
         break ;
 
       case NetworkMessage::DDM_SUBSCRIBE_INTERACTION:
-	D[pdTrace] << "subscribeInteraction (DDM)" << endl ;
+	Debug(D, pdTrace) << "subscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
         processSubscribeInteractionWR(link, msg);
         break ;
 
       case NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION:
-	D[pdTrace] << "unsubscribeInteraction (DDM)" << endl ;
+	Debug(D, pdTrace) << "unsubscribeInteraction (DDM)" << endl ;
         auditServer.setLevel(6);
         processUnsubscribeInteractionWR(link, msg);
         break ;
@@ -1035,4 +1035,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.58 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIG.cc,v 3.59 2009/10/21 20:04:46 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.113 2009/10/16 21:48:28 erk Exp $
+// $Id: Federation.cc,v 3.114 2009/10/21 20:04:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -772,7 +772,7 @@ Federation::broadcastAnyMessage(NetworkMessage *msg,
                 msg->send(socket,NM_msgBufSend);
             }
             catch (RTIinternalError &e) {
-                D[pdExcept] << "Reference to a killed Federate while "
+                Debug(D, pdExcept) << "Reference to a killed Federate while "
                             << "broadcasting." << endl ;
             }
             catch (NetworkError &e) {
@@ -821,7 +821,7 @@ Federation::broadcastSomeMessage(NetworkMessage *msg,
                             }
                         catch (RTIinternalError &e)
                             {
-                            D[pdExcept] << "Reference to a killed Federate while "
+                            Debug(D, pdExcept) << "Reference to a killed Federate while "
                                         << "broadcasting." << endl ;
                             }
                         catch (NetworkError &e)
@@ -1029,7 +1029,7 @@ Federation::registerSynchronization(FederateHandle federate,
         j->addSynchronizationLabel(label);
     }
 
-    D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
+    Debug(D, pdTerm) << "Federation " << handle << " is now synchronizing for label "
               << label << endl ;
 
     G.Out(pdGendoc,"exit  Federation::registerSynchronization for all federates");
@@ -1083,7 +1083,7 @@ Federation::registerSynchronization(FederateHandle federate,
             }
         }
 
-    D[pdTerm] << "Federation " << handle << " is now synchronizing for label "
+    Debug(D, pdTerm) << "Federation " << handle << " is now synchronizing for label "
               << label << endl ;
 
     G.Out(pdGendoc,"exit  Federation::registerSynchronization for federate set");
@@ -1522,7 +1522,7 @@ Federation::kill(FederateHandle federate)
 
     // Remove references to this federate in root object
     root->killFederate(federate);
-    D[pdTrace] << "Federate " << federate << " removed from the Root Object "
+    Debug(D, pdTrace) << "Federate " << federate << " removed from the Root Object "
                << endl ;
 
     // delete from federations list
@@ -2420,7 +2420,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 
     // Register object
     ObjectHandle object = objectHandles.provide();
-    D[pdDebug] << "Register object with region : Object " << object
+    Debug(D, pdDebug) << "Register object with region : Object " << object
 	       << ", class " << class_handle << ", region " << region_handle
 	       << std::endl ;
     string strname = "" ;    // create a name if necessary
@@ -2429,7 +2429,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
     root->registerObjectInstance(federate, class_handle, object,
 				 strname.c_str());
 
-    D[pdDebug] << "- object \"" << strname.c_str()
+    Debug(D, pdDebug) << "- object \"" << strname
 	       << "\" registered" << std::endl ;
 
     // Associate region
@@ -2440,7 +2440,7 @@ Federation::registerObjectWithRegion(FederateHandle federate,
 	root->getObjectAttribute(object, attributes[i])->associate(region);
     }
 
-    D[pdDebug] << "- " << nb << " attribute(s) associated with region "
+    Debug(D, pdDebug) << "- " << nb << " attribute(s) associated with region "
 	       << region_handle << std::endl ;
     G.Out(pdGendoc,"exit  Federation::registerObjectWithRegion");
     return object ;
@@ -2606,5 +2606,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.113 2009/10/16 21:48:28 erk Exp $
+// $Id: Federation.cc,v 3.114 2009/10/21 20:04:45 erk Exp $
 

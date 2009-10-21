@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.16 2009/10/21 18:56:28 erk Exp $
+// $Id: SecurityServer.cc,v 3.17 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -145,12 +145,12 @@ SecurityLevelID
 SecurityServer::getLevelIDWithName(const char *theName)
 {
     if (empty()) {
-	D[pdDebug] << "Empty list: added default (public) level" << endl ;
+	Debug(D, pdDebug) << "Empty list: added default (public) level" << endl ;
         insertPublicLevel();
     }
 
     if ((theName == NULL) || (strlen(theName) > MAX_SECURITYLEVELNAME)) {
-	D[pdDebug] << "Security Level Name null or too long." << endl ;
+	Debug(D, pdDebug) << "Security Level Name null or too long." << endl ;
         throw RTIinternalError("Security Level Name null or too long.");
     }
 
@@ -161,7 +161,7 @@ SecurityServer::getLevelIDWithName(const char *theName)
     }
 
     // Level not Found
-    D[pdDebug] << "Level " << theName << " not found. Adding it to the list."
+    Debug(D, pdDebug) << "Level " << theName << " not found. Adding it to the list."
 	       << endl ;
     LastLevelID ++ ;
     SecurityLevel *StoredLevel = new SecurityLevel(theName, LastLevelID);
@@ -196,4 +196,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.16 2009/10/21 18:56:28 erk Exp $
+// $Id: SecurityServer.cc,v 3.17 2009/10/21 20:04:46 erk Exp $

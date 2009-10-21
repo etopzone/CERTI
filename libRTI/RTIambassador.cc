@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.108 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIambassador.cc,v 3.109 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -2008,7 +2008,7 @@ RTI::RTIambassador::notifyAboutRegionModification(Region &r)
 {
     try {
 	RegionImp &region = dynamic_cast<RegionImp &>(r);
-	D[pdDebug] << "Notify About Region " << region.getHandle()
+	Debug(D, pdDebug) << "Notify About Region " << region.getHandle()
 		   << " Modification" << endl ;
 	Message req, rep ;
 	
@@ -2149,7 +2149,7 @@ RTI::RTIambassador::associateRegionForUpdates(Region &region,
            RTI::RestoreInProgress,
            RTI::RTIinternalError)
 {
-    D[pdDebug] << "+ Associate Region for Updates" << endl ;
+    Debug(D, pdDebug) << "+ Associate Region for Updates" << endl ;
 
     Message req, rep ;
     
@@ -2159,7 +2159,7 @@ RTI::RTIambassador::associateRegionForUpdates(Region &region,
     req.setAHS(certi_cast<AttributeHandleSetImp>()(attributes).getAttributeHandles());
 
     privateRefs->executeService(&req, &rep);
-    D[pdDebug] << "- Associate Region for Updates" << endl ;
+    Debug(D, pdDebug) << "- Associate Region for Updates" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2181,7 +2181,7 @@ RTI::RTIambassador::unassociateRegionForUpdates(Region &region,
            RTI::RestoreInProgress,
            RTI::RTIinternalError)
 {
-    D[pdDebug] << "+ Unassociate Region for Updates" << endl ;
+    Debug(D, pdDebug) << "+ Unassociate Region for Updates" << endl ;
     Message req, rep ;
 
     req.type = Message::DDM_UNASSOCIATE_REGION ;
@@ -2189,7 +2189,7 @@ RTI::RTIambassador::unassociateRegionForUpdates(Region &region,
     req.setRegion(get_handle(region));
 
     privateRefs->executeService(&req, &rep);
-    D[pdDebug] << "- Unassociate Region for Updates" << endl ;
+    Debug(D, pdDebug) << "- Unassociate Region for Updates" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2216,7 +2216,7 @@ RTI::RTIambassador::subscribeObjectClassAttributesWithRegion(
            RTI::RestoreInProgress,
            RTI::RTIinternalError)
 {
-    D[pdDebug] << "+ Subscribe Object Class Attributes with Region" << endl ;
+    Debug(D, pdDebug) << "+ Subscribe Object Class Attributes with Region" << endl ;
     Message req, rep ;
 
     req.type = Message::DDM_SUBSCRIBE_ATTRIBUTES ;
@@ -2226,7 +2226,7 @@ RTI::RTIambassador::subscribeObjectClassAttributesWithRegion(
     req.setBoolean(passive);
 
     privateRefs->executeService(&req, &rep);
-    D[pdDebug] << "- Subscribe Object Class Attributes with Region" << endl ;
+    Debug(D, pdDebug) << "- Subscribe Object Class Attributes with Region" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2247,7 +2247,7 @@ RTI::RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_cl
            RTI::RestoreInProgress,
            RTI::RTIinternalError)
 {
-    D[pdDebug] << "+ Unsubscribe Object Class " << object_class
+    Debug(D, pdDebug) << "+ Unsubscribe Object Class " << object_class
 	       << " with Region" << endl ;
     Message req, rep ;
 
@@ -2256,7 +2256,7 @@ RTI::RTIambassador::unsubscribeObjectClassWithRegion(ObjectClassHandle object_cl
     req.setRegion(get_handle(region));
 
     privateRefs->executeService(&req, &rep);
-    D[pdDebug] << "- Unsubscribe Object Class with Region" << endl ;
+    Debug(D, pdDebug) << "- Unsubscribe Object Class with Region" << endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -2615,7 +2615,7 @@ RTI::RTIambassador::getRoutingSpaceHandle(const char *rs_name)
            RTI::ConcurrentAccessAttempted,
            RTI::RTIinternalError)
 {
-    D[pdDebug] << "Get routing space handle: " << rs_name << endl ;
+    Debug(D, pdDebug) << "Get routing space handle: " << rs_name << endl ;
     Message req, rep ;
     req.type = Message::GET_SPACE_HANDLE ;
     req.setName(rs_name);
@@ -3031,4 +3031,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.108 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIambassador.cc,v 3.109 2009/10/21 20:04:46 erk Exp $

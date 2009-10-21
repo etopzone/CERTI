@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.88 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIG_processing.cc,v 3.89 2009/10/21 20:04:45 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1316,7 +1316,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
                                            req->space,
                                            req->nbExtents);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " creates region " << rep.region
                << endl ;
 
@@ -1329,7 +1329,7 @@ RTIG::processCreateRegion(Socket *link, NetworkMessage *req)
 void
 RTIG::processModifyRegion(Socket *link, NetworkMessage *req)
 {
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " modifies region " << req->region
                << endl ;
 
@@ -1348,7 +1348,7 @@ RTIG::processDeleteRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " deletes region " << req->region
                << endl ;
 
@@ -1367,7 +1367,7 @@ RTIG::processAssociateRegion(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " associates region " << req->region
                << " to some attributes of object " << req->object << endl ;
 
@@ -1390,7 +1390,7 @@ RTIG::processUnassociateRegion(Socket *link, NetworkMessage *req)
     federations.unassociateRegion(req->federation, req->federate,
 				   req->object, req->region);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " associates region " << req->region
                << " from object " << req->object << endl ;
 
@@ -1405,7 +1405,7 @@ void
 RTIG::processSubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " subscribes with region " << req->region
                << " to some attributes of class " << req->objectClass << endl ;
 
@@ -1426,7 +1426,7 @@ void
 RTIG::processUnsubscribeAttributesWR(Socket *link, NetworkMessage *req)
 {
     // TODO: audit...
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " unsubscribes with region " << req->region
                << " from object class " << req->objectClass << endl ;
 
@@ -1448,7 +1448,7 @@ RTIG::processSubscribeInteractionWR(Socket *link, NetworkMessage *req)
     federations.subscribeInteractionWR(req->federation, req->federate,
 					req->interactionClass, req->region);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " subscribes with region " << req->region
                << " to interaction class " << req->interactionClass << endl ;
 
@@ -1467,7 +1467,7 @@ RTIG::processUnsubscribeInteractionWR(Socket *link, NetworkMessage *req)
     federations.unsubscribeInteractionWR(req->federation, req->federate,
 				   req->interactionClass, req->region);
 
-    D[pdDebug] << "Federate " << req->federate << " of Federation "
+    Debug(D, pdDebug) << "Federate " << req->federate << " of Federation "
                << req->federation << " unsubscribes with region " << req->region
                << " from interaction class " << req->interactionClass << endl ;
 
@@ -1554,4 +1554,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.88 2009/10/21 18:56:29 erk Exp $
+// $Id: RTIG_processing.cc,v 3.89 2009/10/21 20:04:45 erk Exp $

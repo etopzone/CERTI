@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.32 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.33 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -133,12 +133,12 @@ ObjectClassAttribute::publish(FederateHandle fed)
 {
     if (!isPublishing(fed)) {
         checkFederateAccess(fed, "Publish");
-        D[pdInit] << "Attribute " << handle << ": Added Federate " << fed
+        Debug(D, pdInit) << "Attribute " << handle << ": Added Federate " << fed
 		  << " to publishers list." << endl ;
 	publishers.insert(fed);
     }
     else
-        D[pdError] << "Attribute " << handle
+        Debug(D, pdError) << "Attribute " << handle
 		   << ": Inconsistent publish request from Federate "
 		   << fed << endl ;
 }
@@ -150,13 +150,13 @@ ObjectClassAttribute::unpublish(FederateHandle fed)
     throw (RTIinternalError, SecurityError)
 {
     if (isPublishing(fed)) {
-        D[pdTerm] << "Attribute " << handle << ": Removed Federate " << fed
+        Debug(D, pdTerm) << "Attribute " << handle << ": Removed Federate " << fed
 		  << " from publishers list." << endl ;
         deletePublisher(fed);
     }
 
     else
-        D[pdError] << "Attribute " << handle
+        Debug(D, pdError) << "Attribute " << handle
 		   << ": Inconsistent publish request from Federate "
 		   << fed << endl ;
 }
@@ -219,4 +219,4 @@ ObjectClassAttribute::getPublishers(void) {
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.32 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.33 2009/10/21 20:04:46 erk Exp $

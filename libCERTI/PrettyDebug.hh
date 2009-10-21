@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.7 2009/10/21 19:51:12 erk Exp $
+// $Id: PrettyDebug.hh,v 4.8 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -30,7 +30,6 @@
 #endif
 
 #include "certi.hh"
-#include "DebugOStream.hh"
 #include <iosfwd>
 #include <string>
 
@@ -71,7 +70,7 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 //
 //   Debug(D, pdDebug) << "This is a usual std::ostream shich could be used like that\n";
 //
-// Note that this is about the least runtim overhead you can have with dynamic debug messages
+// Note that this is about the least runtime overhead you can have with dynamic debug messages
 // as the only thing that happens exactly once is the check against the null pointer in
 // the stream return. That is even optimized into fast inline path and a more expensive part
 // in case we really need the some output.
@@ -110,15 +109,9 @@ public:
 
 #ifdef NDEBUG
     void Out(pdDebugLevel level, const char *format, ...) {}
-
-    DebugOStream operator[](pdDebugLevel level)
-    { return DebugOStream(0); }
 #else
     void Out(pdDebugLevel level, const char *format, ...);
     void Mes(pdDebugLevel level, const char type, const short testMess, const char *context);
-
-    DebugOStream operator[](pdDebugLevel level)
-    { return DebugOStream(getStreamPrintHeader(level)); }
 #endif
 
 private:
@@ -133,9 +126,6 @@ private:
     static std::string _federateName;
 };
 
-// Alias
-typedef PrettyDebug PrettyDebug ; ///< \deprecated PrettyDebug replaced by PrettyDebug
-
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.7 2009/10/21 19:51:12 erk Exp $
+// $Id: PrettyDebug.hh,v 4.8 2009/10/21 20:04:46 erk Exp $

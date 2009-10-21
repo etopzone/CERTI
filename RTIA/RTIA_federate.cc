@@ -874,55 +874,55 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         break ;
 
       case Message::GET_OBJECT_CLASS:
-        D[pdTrace] << "Message from Federate: getObjectClass" << endl ;
+        Debug(D, pdTrace) << "Message from Federate: getObjectClass" << endl ;
 	rep.setObjectClass(om->getObjectClass(req->getObject()));
 	break ;
 
       case Message::GET_TRANSPORTATION_HANDLE:
-        D[pdTrace] << "Message from Federate: getTransportationHandle" << endl ;
+        Debug(D, pdTrace) << "Message from Federate: getTransportationHandle" << endl ;
         rep.setTransportation(om->getTransportationHandle(req->getName().c_str()));
         break ;
 
       case Message::GET_TRANSPORTATION_NAME:
-        D[pdTrace] << "Message from Federate: getTransportationName" << endl ;
+        Debug(D, pdTrace) << "Message from Federate: getTransportationName" << endl ;
         rep.setName(om->getTransportationName(req->getTransportation()));
         break ;
 
       case Message::GET_ORDERING_HANDLE:
-        D[pdTrace] << "Message from Federate: getOrderingHandle" << endl ;
+        Debug(D, pdTrace) << "Message from Federate: getOrderingHandle" << endl ;
         rep.setOrdering(om->getOrderingHandle(req->getName().c_str()));
         break ;
 
       case Message::GET_ORDERING_NAME:
-        D[pdTrace] << "Message from Federate: getOrderingName" << endl ;
+        Debug(D, pdTrace) << "Message from Federate: getOrderingName" << endl ;
         rep.setName(om->getOrderingName(req->getOrdering()));
         break ;
 
       case Message::DDM_CREATE_REGION:
-        D[pdTrace] << "Receiving Message from Federate: CreateRegion" << endl ;
+        Debug(D, pdTrace) << "Receiving Message from Federate: CreateRegion" << endl ;
         rep.setRegion(ddm->createRegion(req->getSpace(), req->getNumber(), e));
 	rep.setNumber(rootObject->getRoutingSpace(req->getSpace()).size());
         break ;
 
       case Message::DDM_MODIFY_REGION:
-	D[pdTrace] << "Receiving Message from Federate: Modify Region" << endl ;
+	Debug(D, pdTrace) << "Receiving Message from Federate: Modify Region" << endl ;
 	ddm->modifyRegion(req->getRegion(), req->getExtents(), e);
 	break ;
 
       case Message::DDM_DELETE_REGION:
-        D[pdTrace] << "Receiving Message from Federate: DeleteRegion" << endl ;
+        Debug(D, pdTrace) << "Receiving Message from Federate: DeleteRegion" << endl ;
         ddm->deleteRegion(req->getRegion(), e);
         break ;
 
       case Message::DDM_ASSOCIATE_REGION:
-	D[pdTrace] << "Receiving Message from Federate: Associate Region"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Associate Region"
 		   << endl ;
 	ddm->associateRegion(req->getObject(), req->getRegion(),
 			     req->handleArray, req->handleArraySize, e);
 	break ;
 
       case Message::DDM_REGISTER_OBJECT:
-	D[pdTrace] << "Receiving Message from Federate: Register with Region"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Register with Region"
 		   << endl ;
 	rep.setObject(ddm->registerObject(req->getObjectClass(),
 					  req->getName(),
@@ -933,33 +933,33 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 	break ;
 
       case Message::DDM_UNASSOCIATE_REGION:
-	D[pdTrace] << "Receiving Message from Federate: Unassociate Region"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Unassociate Region"
 		   << endl ;
 	ddm->unassociateRegion(req->getObject(), req->getRegion(), e);
 	break ;
 
       case Message::DDM_SUBSCRIBE_ATTRIBUTES:
-	D[pdTrace] << "Receiving Message from Federate: Subscribe Attributes"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Subscribe Attributes"
 		   << endl ;
 	ddm->subscribe(req->getObjectClass(), req->getRegion(),
 		       req->handleArray, req->handleArraySize, e);
 	break ;
 
       case Message::DDM_UNSUBSCRIBE_ATTRIBUTES:
-	D[pdTrace] << "Receiving Message from Federate: Unsubscribe class "
+	Debug(D, pdTrace) << "Receiving Message from Federate: Unsubscribe class "
 		   << req->getObjectClass() << endl ;
 	ddm->unsubscribeAttributes(req->getObjectClass(), req->getRegion(), e);
 	break ;
 
       case Message::DDM_SUBSCRIBE_INTERACTION:
-	D[pdTrace] << "Receiving Message from Federate: Subscribe Interaction"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Subscribe Interaction"
 		   << endl ;
 	ddm->subscribeInteraction(req->getInteractionClass(),
 				  req->getRegion(), e);
 	break ;
 
       case Message::DDM_UNSUBSCRIBE_INTERACTION:
-	D[pdTrace] << "Receiving Message from Federate: Unsubscribe Interaction"
+	Debug(D, pdTrace) << "Receiving Message from Federate: Unsubscribe Interaction"
 		   << endl ;
 	ddm->unsubscribeInteraction(req->getInteractionClass(),
 				    req->getRegion(), e);

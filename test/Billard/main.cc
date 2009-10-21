@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.24 2009/10/21 18:56:28 erk Exp $
+// $Id: main.cc,v 3.25 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -132,7 +132,7 @@ main(int argc, char **argv)
 	int autostart = args.auto_given ? args.auto_arg : 0 ;
 
 	// Joins federation
-	D[pdDebug] << "Create or join federation" << endl ;
+	Debug(D, pdDebug) << "Create or join federation" << endl ;
 	billard->join(federation, fedfile);
 	RTI::FederateHandle handle = billard->getHandle();
 
@@ -144,9 +144,9 @@ main(int argc, char **argv)
 	    args.yoffset_given ? args.yoffset_arg : y_default);
 
 	// Continue initialisation...
-	D[pdDebug] << "Synchronization" << endl ;
+	Debug(D, pdDebug) << "Synchronization" << endl ;
 	billard->pause();
-	D[pdDebug] << "Publish and subscribe" << endl ;
+	Debug(D, pdDebug) << "Publish and subscribe" << endl ;
 	billard->publishAndSubscribe();
 	display->show();
 
@@ -315,7 +315,7 @@ Billard *
 createBillard(bool demo, const char *s_demo, string name)
 {
     if (demo) {
-	D[pdDebug] << "Create billard " << s_demo << endl ;
+	Debug(D, pdDebug) << "Create billard " << s_demo << endl ;
 
 	string s = s_demo ;
 

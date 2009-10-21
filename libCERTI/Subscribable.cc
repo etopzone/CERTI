@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.8 2008/06/23 13:25:04 erk Exp $
+// $Id: Subscribable.cc,v 3.9 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -88,7 +88,7 @@ Subscriber::equals(FederateHandle fed, const RTIRegion *r) const
 bool
 Subscriber::match(const RTIRegion *r) const
 {
-    D[pdTrace] << "Match test: " << (region ? region->getHandle() : 0) << " vs "
+    Debug(D, pdTrace) << "Match test: " << (region ? region->getHandle() : 0) << " vs "
 	       << (r ? r->getHandle() : 0) << std::endl ;
     return (region == 0) || (r == 0) || region->overlaps(*r);
 }
@@ -97,7 +97,7 @@ Subscriber::match(const RTIRegion *r) const
 Subscribable::~Subscribable()
 {
     if (!subscribers.empty())
-	D[pdError] << "Subscribers list not empty at termination." << std::endl ;
+	Debug(D, pdError) << "Subscribers list not empty at termination." << std::endl ;
 }
 
 // ----------------------------------------------------------------------------
@@ -164,7 +164,7 @@ Subscribable::subscribe(FederateHandle fed, const RTIRegion *region)
 	subscribers.push_back(Subscriber(fed, region));
     }
     else
-        D[pdError] << "Inconsistency in subscribe request from federate "
+        Debug(D, pdError) << "Inconsistency in subscribe request from federate "
 		   << fed << std::endl ;
 }
 
@@ -201,4 +201,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.8 2008/06/23 13:25:04 erk Exp $
+// $Id: Subscribable.cc,v 3.9 2009/10/21 20:04:46 erk Exp $

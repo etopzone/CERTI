@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.53 2009/10/21 18:56:28 erk Exp $
+// $Id: Interaction.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -102,9 +102,9 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 
 	parameterSet.push_front(the_parameter);
 
-	D[pdRegister] << "Interaction " << handle << "[" << name.c_str()
+	Debug(D, pdRegister) << "Interaction " << handle << "[" << name
 	<< "] has a new parameter "
-	<< the_parameter->getHandle() << "[" << the_parameter->getName().c_str() << "]"
+	<< the_parameter->getHandle() << "[" << the_parameter->getName() << "]"
 	<< std::flush;
 
 	return the_parameter->getHandle();
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.53 2009/10/21 18:56:28 erk Exp $
+// $Id: Interaction.cc,v 3.54 2009/10/21 20:04:46 erk Exp $

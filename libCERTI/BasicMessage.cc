@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.13 2009/10/21 18:56:28 erk Exp $
+// $Id: BasicMessage.cc,v 3.14 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -61,12 +61,12 @@ BasicMessage::getExtents() const
 void 
 BasicMessage::serialize(MessageBuffer& msgBuffer) {
 	/* Write Extent */
-	D[pdDebug] << "Serialize " << extents.size() << " extent(s)" << endl;
+	Debug(D, pdDebug) << "Serialize " << extents.size() << " extent(s)" << endl;
 	msgBuffer.write_int32(static_cast<int32_t>(extents.size()));
 	if (extents.size() > 0) {
 		int n = extents[0].size();
 		msgBuffer.write_int32(static_cast<int32_t>(n));
-		D[pdDebug] << "Extent with " << n << " range(s)" << endl;
+		Debug(D, pdDebug) << "Extent with " << n << " range(s)" << endl;
 		for (unsigned int i = 0; i < extents.size(); ++i) {
 			const Extent &e = extents[i];
 
@@ -90,14 +90,14 @@ BasicMessage::deserialize(MessageBuffer& msgBuffer) {
 	int32_t nb_extents;
 	int32_t temp;
 	msgBuffer.read_int32(&nb_extents);
-	D[pdDebug] << "Deserialize " << nb_extents << " extent(s)" << endl;
+	Debug(D, pdDebug) << "Deserialize " << nb_extents << " extent(s)" << endl;
 
 	extents.clear();
 	if (nb_extents > 0) {
 		extents.reserve(nb_extents);
 		int32_t nb_dimensions;
 		msgBuffer.read_int32(&nb_dimensions);
-		D[pdDebug] << "Extent with " << nb_dimensions << " range(s)" << endl;
+		Debug(D, pdDebug) << "Extent with " << nb_dimensions << " range(s)" << endl;
 		for (long i = 0; i < nb_extents; ++i) {
 			Extent e(nb_dimensions);
 
@@ -130,13 +130,13 @@ BasicMessage::deserialize(MessageBuffer& msgBuffer) {
 void
 BasicMessage::writeExtents(MessageBuffer& msgBuffer) const
 {
-    D[pdDebug] << "Write " << extents.size() << " extent(s)" << endl ;
+    Debug(D, pdDebug) << "Write " << extents.size() << " extent(s)" << endl ;
 
     msgBuffer.write_int64(extents.size());
     if (extents.size() > 0) {
 	int n = extents[0].size();
 	msgBuffer.write_int64(n);
-	D[pdDebug] << "Extent with " << n << " range(s)" << endl ;
+	Debug(D, pdDebug) << "Extent with " << n << " range(s)" << endl ;
 
 	for (unsigned int i = 0 ; i < extents.size(); ++i) {
 	    const Extent &e = extents[i] ;
@@ -158,13 +158,13 @@ void
 BasicMessage::readExtents(MessageBuffer& msgBuffer)
 {
     long nb_extents = msgBuffer.read_int64();
-    D[pdDebug] << "Read " << nb_extents << " extent(s)" << endl ;
+    Debug(D, pdDebug) << "Read " << nb_extents << " extent(s)" << endl ;
 
     extents.clear();    
     if (nb_extents > 0) {
 	extents.reserve(nb_extents);
 	long nb_dimensions = msgBuffer.read_int64();
-	D[pdDebug] << "Extent with " << nb_dimensions << " range(s)" << endl ;
+	Debug(D, pdDebug) << "Extent with " << nb_dimensions << " range(s)" << endl ;
 	for (long i = 0 ; i < nb_extents ; ++i) {
 	    Extent e(nb_dimensions);
 	    for (long h = 1 ; h <= nb_dimensions ; ++h) {
@@ -225,4 +225,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.13 2009/10/21 18:56:28 erk Exp $
+// $Id: BasicMessage.cc,v 3.14 2009/10/21 20:04:46 erk Exp $

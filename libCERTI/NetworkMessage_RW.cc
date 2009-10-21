@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.53 2009/04/02 19:58:08 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -24,7 +24,6 @@
 
 using std::vector;
 using std::endl;
-using std::cout;
 
 namespace certi {
 
@@ -73,7 +72,7 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	/* We serialize the common Network message part
 	 * ALL Network Messages will contain the following
 	 */
-	D[pdDebug] << "Deserialize <" << getName().c_str()<<">"<<endl;
+	Debug(D, pdDebug) << "Deserialize <" << getName() << ">" << endl;
 	/* deserialize common part */
 	type        = static_cast<NetworkMessage::Type>(msgBuffer.read_int32());
 	exception   = static_cast<TypeException>(msgBuffer.read_int32());
@@ -152,4 +151,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.53 2009/04/02 19:58:08 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.54 2009/10/21 20:04:46 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Extent.cc,v 3.10 2007/07/06 09:25:18 erk Exp $
+// $Id: Extent.cc,v 3.11 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -115,7 +115,7 @@ bool
 Extent::overlaps(const Extent &e) const
 {
     for (unsigned int i = 1 ; i <= size(); ++i) {
-	D[pdTrace] << e.getRangeLowerBound(i) << " < " << getRangeUpperBound(i)
+	Debug(D, pdTrace) << e.getRangeLowerBound(i) << " < " << getRangeUpperBound(i)
 		   << " or " << e.getRangeUpperBound(i) << " < "
 		   << getRangeLowerBound(i) << " ?" << std::endl ;
 	if (e.getRangeLowerBound(i) > getRangeUpperBound(i) ||
@@ -127,4 +127,4 @@ Extent::overlaps(const Extent &e) const
 
 } // namespace certi
 
-// $Id: Extent.cc,v 3.10 2007/07/06 09:25:18 erk Exp $
+// $Id: Extent.cc,v 3.11 2009/10/21 20:04:46 erk Exp $

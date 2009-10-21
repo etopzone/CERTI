@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.29 2009/10/21 18:56:29 erk Exp $
+// $Id: DataDistribution.cc,v 3.30 2009/10/21 20:04:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -123,7 +123,7 @@ DataDistribution::createRegion(SpaceHandle space,
                                TypeException &e)
     throw (SpaceNotDefined)
 {
-    D[pdDebug] << "Start creating region in space " << space << "..." << endl ;
+    Debug(D, pdDebug) << "Start creating region in space " << space << "..." << endl ;
     NM_DDM_Create_Region req;
 
     req.federation = fm->_numero_federation ;
@@ -136,7 +136,7 @@ DataDistribution::createRegion(SpaceHandle space,
     e = rep->getException() ;
 
     if (e == e_NO_EXCEPTION) {
-	D[pdDebug] << "Create region " << rep->region << endl ;
+	Debug(D, pdDebug) << "Create region " << rep->region << endl ;
         RTIRegion *region = new RTIRegion(rep->region,
 					  rootObject->getRoutingSpace(space),
 					  nb_extents);
@@ -158,7 +158,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 			       const std::vector<Extent> &extents,
 			       TypeException &e)
 {
-    D[pdDebug] << "Modify region " << handle << "..." << endl ;
+    Debug(D, pdDebug) << "Modify region " << handle << "..." << endl ;
 
     // check region
     RTIRegion *region = rootObject->getRegion(handle);
@@ -177,7 +177,7 @@ DataDistribution::modifyRegion(RegionHandle handle,
 
     if (e == e_NO_EXCEPTION) {
 	region->replaceExtents(extents);
-	D[pdDebug] << "Modified region " << handle << endl ;
+	Debug(D, pdDebug) << "Modified region " << handle << endl ;
     }
 } /* end of modifyRegion */
 
@@ -188,7 +188,7 @@ void
 DataDistribution::deleteRegion(long handle, TypeException &e)
     throw (RegionNotKnown, RegionInUse)
 {
-    D[pdDebug] << "Delete region " << handle << "..." << endl ;
+    Debug(D, pdDebug) << "Delete region " << handle << "..." << endl ;
 
     // check region
     rootObject->getRegion(handle);
@@ -206,7 +206,7 @@ DataDistribution::deleteRegion(long handle, TypeException &e)
 
     if (e == e_NO_EXCEPTION) {
         rootObject->deleteRegion(handle);
-        D[pdDebug] << "Deleted region " << handle << endl ;
+        Debug(D, pdDebug) << "Deleted region " << handle << endl ;
     }
 } /* end of deleteRegion */
 
@@ -219,14 +219,14 @@ DataDistribution::associateRegion(ObjectHandle object,
 				  TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Associate Region " << region << std::endl ;
+    Debug(D, pdDebug) << "Associate Region " << region << std::endl ;
 
     RTIRegion *r = rootObject->getRegion(region);
 
-    D[pdDebug] << "- unassociate object " << object << std::endl ;
+    Debug(D, pdDebug) << "- unassociate object " << object << std::endl ;
     rootObject->getObject(object)->unassociate(r);
     for (int i = 0 ; i < nb ; ++i) {
-	D[pdDebug] << "- associate attribute " << attr[i] << std::endl ;
+	Debug(D, pdDebug) << "- associate attribute " << attr[i] << std::endl ;
 	rootObject->getObjectAttribute(object, attr[i])->associate(r);
     }
 
@@ -255,7 +255,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 				 const std::vector<RegionHandle> regions,
 				 TypeException &e)
 {
-    D[pdDebug] << "Register object of class " << class_handle << " with "
+    Debug(D, pdDebug) << "Register object of class " << class_handle << " with "
 	       << regions.size() << " region(s)." << std::endl ;
 
     NM_DDM_Register_Object req;
@@ -276,7 +276,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
         rootObject->registerObjectInstance(fm->federate, class_handle, rep->object,
                                            rep->getLabel().c_str());
 	for (int i = 0 ; i < nb ; ++i) {
-	    D[pdDebug] << "Register attribute [" << i << "] Attr: " << attrs[i]
+	    Debug(D, pdDebug) << "Register attribute [" << i << "] Attr: " << attrs[i]
 		       << " Region: " << regions[i] << std::endl ;
 
 	    ObjectAttribute *attribute = rootObject->getObjectAttribute(rep->object, attrs[i]);
@@ -295,7 +295,7 @@ DataDistribution::unassociateRegion(ObjectHandle object,
 				    TypeException &e)
     throw (ObjectNotKnown, InvalidRegionContext, RegionNotKnown)
 {
-    D[pdDebug] << "Unassociate Region " << region << std::endl ;
+    Debug(D, pdDebug) << "Unassociate Region " << region << std::endl ;
 
     RTIRegion *r = rootObject->getRegion(region);
 
@@ -324,7 +324,7 @@ DataDistribution::subscribe(ObjectClassHandle obj_class,
 			    TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Subscribe attributes with region " << region << endl ;
+    Debug(D, pdDebug) << "Subscribe attributes with region " << region << endl ;
     rootObject->getRegion(region);
 
     NM_DDM_Subscribe_Attributes req;
@@ -349,7 +349,7 @@ DataDistribution::unsubscribeAttributes(ObjectClassHandle obj_class,
 					TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Unsubscribe class " << obj_class
+    Debug(D, pdDebug) << "Unsubscribe class " << obj_class
 	       << " with region " << region << endl ;
     rootObject->getRegion(region);
 
@@ -374,7 +374,7 @@ DataDistribution::subscribeInteraction(InteractionClassHandle int_class,
 				       TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Subscribe interaction with region " << region << endl ;
+    Debug(D, pdDebug) << "Subscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
     NM_DDM_Subscribe_Interaction req;
@@ -396,7 +396,7 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 					 TypeException &e)
     throw (RegionNotKnown)
 {
-    D[pdDebug] << "Unsubscribe interaction with region " << region << endl ;
+    Debug(D, pdDebug) << "Unsubscribe interaction with region " << region << endl ;
     rootObject->getRegion(region);
 
     NM_DDM_Unsubscribe_Interaction req;
@@ -413,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.29 2009/10/21 18:56:29 erk Exp $
+// $Id: DataDistribution.cc,v 3.30 2009/10/21 20:04:47 erk Exp $

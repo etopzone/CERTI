@@ -148,7 +148,7 @@ XmlParser::parse(string pathToXmlFile)
 
     xmlFreeDoc(doc);
 
-    D[pdTrace] << "XmlParser: finished parsing" << endl ;
+    Debug(D, pdTrace) << "XmlParser: finished parsing" << endl ;
     return root ;
 }
 
@@ -156,7 +156,7 @@ XmlParser::parse(string pathToXmlFile)
 void
 XmlParser::parseClass(ObjectClass* parent)
 {
-    D[pdTrace] << "New Object Class" << endl ;
+    Debug(D, pdTrace) << "New Object Class" << endl ;
 
     xmlNodePtr prev = cur ;
     /* note how objectHandle counter is incremented */
@@ -226,7 +226,7 @@ XmlParser::parseClass(ObjectClass* parent)
 void
 XmlParser::parseInteraction(Interaction* parent)
 {
-    D[pdTrace] << "New Interaction Class" << endl;
+    Debug(D, pdTrace) << "New Interaction Class" << endl;
     std::string name;
     TransportType transport;
     OrderType order;
@@ -300,7 +300,7 @@ XmlParser::parseInteraction(Interaction* parent)
 void
 XmlParser::parseRoutingSpace()
 {
-    D[pdTrace] << "New Routing Space" << endl ;
+    Debug(D, pdTrace) << "New Routing Space" << endl ;
 
     DimensionHandle freeDimensionHandle = 1 ;
     xmlNodePtr prev = cur ;

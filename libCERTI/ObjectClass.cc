@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.67 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClass.cc,v 3.68 2009/10/21 20:04:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -168,7 +168,7 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
               if (trouve) {
   	         ObjectAttribute *attr = source->getAttribute((*a)->getHandle());
        	         const RTIRegion *update_region = attr->getRegion();
- 	         D[pdTrace] << "RAV: attr " << (*a)->getHandle()
+ 	         Debug(D, pdTrace) << "RAV: attr " << (*a)->getHandle()
  			    << " / region " << (update_region ? update_region->getHandle() : 0)
  			    << std::endl ;
                  (*a)->updateBroadcastList(ocbList, update_region);
@@ -551,7 +551,7 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
 	       << objectSet.size() << "> objects of ObjectClass "
 	       << handle;
 
-    D[pdError] << msg.str().c_str() << std::endl ;
+    Debug(D, pdError) << msg.str() << std::endl ;
 
     throw ObjectNotKnown(msg.str());
 }
@@ -738,7 +738,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     }
 
     objectSet.push_front(the_object);
-    D[pdTrace] << "Added object " << the_object->getHandle() << "/"
+    Debug(D, pdTrace) << "Added object " << the_object->getHandle() << "/"
 	       << objectSet.size() << " to class " << handle << std::endl ;
 
     // Prepare and Broadcast message for this class
@@ -866,7 +866,7 @@ throw (AttributeNotDefined, RTIinternalError, SecurityError)
 	// FIXME what does this means?
 	unsubscribe(fed, region);
 
-	D[pdTrace] << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
+	Debug(D, pdTrace) << "ObjectClass::subscribe" << " : fed " << fed << ", class " << handle
 	<< ", " << nb_attributes << " attributes, region "
 	<< (region ? region->getHandle() : 0) << std::endl ;
 
@@ -1743,7 +1743,7 @@ ObjectClass::getHandle() const
 void
 ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 {
-    D[pdTrace] << "ObjectClass::unsubscribe" << ": fed " << fed << ", region "
+    Debug(D, pdTrace) << "ObjectClass::unsubscribe" << ": fed " << fed << ", region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
     list<ObjectClassAttribute *>::iterator i ;
@@ -1796,7 +1796,7 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 				  ObjectClassHandle subscription)
 	throw (ObjectClassNotDefined)
 {
-    D[pdInit] << "Recursive Discovering on class " << handle
+    Debug(D, pdInit) << "Recursive Discovering on class " << handle
 	      << " for Federate " << federate << "." << std::endl ;
 
     bool go_deeper = sendDiscoverMessages(federate, subscription);
@@ -1834,4 +1834,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.67 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectClass.cc,v 3.68 2009/10/21 20:04:46 erk Exp $
