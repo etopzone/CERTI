@@ -182,16 +182,15 @@ void MessageBuffer::setSizeInReservedBytes(uint32_t n) {
 	oldWR_Offset = writeOffset;
 	/* update size in reserved bytes */
 	writeOffset  = 1;
-	D.Out(pdTrace,"setSizeInReservedBytes(%u)",n);
+	Debug(D, pdTrace) << "setSizeInReservedBytes(" << n << ")" << std::endl;
 	write_uint32(n);
 	/* restore writeOffset */
 	writeOffset  = oldWR_Offset;
 } /* end of setSizeInReservedBytes */
 
 int32_t MessageBuffer::write_uint8s(const uint8_t* data, uint32_t n) {
-    D.Out(pdTrace,"write_uint8s(%p = [%u ...] , %d)",data,n>0?data[0]:0,n);
-    
-	if (n >= (bufferMaxSize - writeOffset)) {
+	Debug(D, pdTrace) << "write_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
+    	if (n >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
 		reallocate(bufferMaxSize+ (n-(bufferMaxSize-writeOffset))
 				+ DEFAULT_MESSAGE_BUFFER_SIZE);
@@ -215,14 +214,14 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 
 	memcpy(data, buffer+readOffset, n);
 	readOffset += n;
-	D.Out(pdTrace,"read_uint8s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "read_uint8s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-n);
 } /* end of MessageBuffer::read_uint8s(uint8_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint16s(const uint16_t* data, uint32_t n) {
 	uint32_t i;
 	uint16_t an_uint16;
-	D.Out(pdTrace,"write_uint16s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "write_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	
 	if ((2*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -269,14 +268,14 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 		}
 	}
 	
-	D.Out(pdTrace,"read_uint16s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "read_uint16s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-2*n);
 } /* end of MessageBuffer::read_uint16s(uint16_t*, uint32_t) */
 
 int32_t MessageBuffer::write_uint32s(const uint32_t* data, uint32_t n) {
 	uint32_t i;
 	uint32_t an_uint32;
-	D.Out(pdTrace,"write_uint32s(%p = [%u ...] , %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "write_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	
 	if ((4*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -322,7 +321,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 			readOffset += 4;
 		}
 	}
-	D.Out(pdTrace,"read_uint32s(%p = [%u ...], %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "read_uint32s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	return (readOffset-4*n);
 } /* end of read_uint32s */
 
@@ -334,7 +333,7 @@ int32_t MessageBuffer::write_uint64s(const uint64_t* data, uint32_t n) {
 	} a_deux32;
 	uint32_t an_uint32;
 
-	D.Out(pdTrace,"write_uint64s(%p , %d)",data,n);
+        Debug(D, pdTrace) << "write_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 
 	if ((8*n) >= (bufferMaxSize - writeOffset)) {
 		/* reallocate buffer on-demand */
@@ -367,7 +366,7 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 			uint64_t    ui64;
 	} a_deux32;
 	uint32_t an_uint32;
-	D.Out(pdTrace,"read_uint64s(%p , %d)",data,n);
+        Debug(D, pdTrace) << "read_uint64s(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 
 	if (8*n + readOffset > writeOffset) {
 		std::stringstream smsg;
@@ -400,28 +399,28 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 
 int32_t MessageBuffer::write_floats(const float* data, uint32_t n) {
 	const uint32_t* data32;
-	D.Out(pdTrace,"write_floats(%p = [%f ...], %d)",data,n>0?data[0]:0,n);
+        Debug(D, pdTrace) << "write_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data32 = reinterpret_cast<const uint32_t*>(data);	
 	return write_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::read_floats(float* data, uint32_t n) {
 	uint32_t* data32;
-	D.Out(pdTrace,"read_floats(%p , %d)",data,n);
+        Debug(D, pdTrace) << "read_floats(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data32 = reinterpret_cast<uint32_t*>(data);
 	return read_uint32s(data32,n);
 }
 
 int32_t MessageBuffer::write_doubles(const double* data, uint32_t n) {
 	const uint64_t* data64;
-	D.Out(pdTrace,"write_doubles(%p = [%f ...], %d)",data,n>0?data[0]:0,n);	
+        Debug(D, pdTrace) << "write_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data64 = reinterpret_cast<const uint64_t*>(data);	
 	return write_uint64s(data64,n);	
 }
 
 int32_t MessageBuffer::read_doubles(double* data, uint32_t n) {
 	uint64_t* data64;
-	D.Out(pdTrace,"read_doubles(%p , %d)",data,n);
+        Debug(D, pdTrace) << "read_doubles(" << data << " = [" << (n ? data[0] : 0) <<" ...], " << n << ")" << std::endl;
 	data64 = reinterpret_cast<uint64_t*>(data);
 	return read_uint64s(data64,n);
 }
