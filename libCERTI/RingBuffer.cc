@@ -38,9 +38,10 @@
 #include "RingBuffer.hh"
 
 RingBuffer::RingBuffer(const std::string& RingBuffer_Name,
-           	       const BUFFER_SIDE_t& RingBuffer_Side,
+           	           const BUFFER_SIDE_t& RingBuffer_Side,
                        const int RingBuffer_Size,
-                       const std::string& Shm_Sem_Type ) {
+                       const std::string& Shm_Sem_Type )
+                       throw (certi::RingBufferNotCreated) {
 
 #ifdef DEBUG
 std::cout << "-----------------------------------------------------------" << std::endl ;
@@ -82,10 +83,24 @@ else{
 
 
 if(_Side == BUFFER_SC){
-  _Sem_SC->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_SC")) ;
+    try {
+       _Sem_SC->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_SC")) ;
+    }
+    catch(certi::SemaphoreNotCreated& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
   }
 else{
-  _Sem_CS->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_CS")) ;
+    try {
+       _Sem_CS->Create_Init(1, Semaphore::buildSemName(RingBuffer_Name+"_BUFFER_CS")) ;
+    }
+    catch(certi::SemaphoreNotCreated& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
   }
 
 
@@ -135,10 +150,39 @@ else {
 }
 
 if(_Side == BUFFER_SC){
-     _Shm_SC->Open() ;
-     _Shm_SC->Attach() ;
-     _Pw_Pr_SC->Open() ;
-     _Pw_Pr_SC->Attach() ;
+    try {
+       _Shm_SC->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Shm_SC->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_SC->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_SC->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+
     #ifdef DEBUG
     std::cout << " The SHMs for RingBuffer from SERVER to CUSTOMER Exchange are Created and Attached " << std::endl ;
     std::cout << " -----> Adresse : _Shm_SC->GetShm() = " << _Shm_SC->GetShm() << std::endl ;
@@ -146,50 +190,154 @@ if(_Side == BUFFER_SC){
     #endif
      }
 else{
-     _Shm_CS->Open() ;
-     _Shm_CS->Attach() ;
-     _Pw_Pr_CS->Open() ;
-     _Pw_Pr_CS->Attach() ;
+    try {
+       _Shm_CS->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Shm_CS->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_CS->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_CS->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotCreated("RingBuffer() failed.")) ;;
+    }
+
      #ifdef DEBUG
      std::cout << " The SHMs for RingBuffer from CUSTOMER to SERVER Exchanges are Created and Attached" << std::endl ;
      std::cout << "  -----> Adresse : _Shm_CS->GetShm() = " << _Shm_CS->GetShm() << std::endl ;
      std::cout << "  -----> Adresse : _Pw_Pr_CS->GetShm() = " << _Pw_Pr_CS->GetShm() << std::endl ;
      #endif
+
      }
 }  // End of RingBuffer Constructor
 // ************************************************
 // Method : RingBuffer::Attach()
 // ************************************************
-void RingBuffer::Attach() {
+void RingBuffer::Attach() throw(certi::RingBufferNotAttached) {
 
 if(_Side == BUFFER_CS){
-  _Sem_SC->Attach(Semaphore::buildSemName(_Name+"_BUFFER_SC")) ;
+    try {
+       _Sem_SC->Attach(Semaphore::buildSemName(_Name+"_BUFFER_SC")) ;
+    }
+    catch(certi::SemaphoreNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
   }
 else{
-  _Sem_CS->Attach(Semaphore::buildSemName(_Name+"_BUFFER_CS")) ;
+    try {
+       _Sem_CS->Attach(Semaphore::buildSemName(_Name+"_BUFFER_CS")) ;
+    }
+    catch(certi::SemaphoreNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
   }
 
 if(_Side == BUFFER_CS){
-     _Shm_SC->Open() ;
-     _Shm_SC->Attach() ;
-     _Pw_Pr_SC->Open() ;
-     _Pw_Pr_SC->Attach() ;
+    try {
+       _Shm_SC->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Shm_SC->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_SC->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_SC->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+
      #ifdef DEBUG
      std::cout << " The SHMs for RingBuffer from SERVER to CUSTOMER Exchanges are Identified and Attached " << std::endl ;
      std::cout << " Adresse : _Shm_SC->GetShm() = " << _Shm_SC->GetShm() << std::endl ;
      std::cout << " Adresse : _Pw_Pr_SC->GetShm() = " << _Pw_Pr_SC->GetShm() << std::endl ;
      #endif
+
      }
 else{
-     _Shm_CS->Open() ;
-     _Shm_CS->Attach() ;
-     _Pw_Pr_CS->Open() ;
-     _Pw_Pr_CS->Attach() ;
+    try {
+       _Shm_CS->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Shm_CS->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_CS->Open() ;
+    }
+    catch(certi::SharedMemoryNotOpen& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+    try {
+       _Pw_Pr_CS->Attach() ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotAttached("Attach() failed.")) ;;
+    }
+
      #ifdef DEBUG
      std::cout << " The SHMs for RingBuffer from CUSTOMER to SERVER Exchanges are Identified and Attached " << std::endl ;
      std::cout << " Adresse : _Shm_CS->GetShm() = " << _Shm_CS->GetShm() << std::endl ;
      std::cout << " Adresse : _Pw_Pr_CS->GetShm() = " << _Pw_Pr_CS->GetShm() << std::endl ;
      #endif
+
      }
 
 if(_Side == BUFFER_CS){
@@ -204,12 +352,26 @@ else{
 // ************************************************
 // Destructor
 // ************************************************
-RingBuffer ::~RingBuffer (){
+RingBuffer ::~RingBuffer () throw(certi::RingBufferNotDeleted) {
 if(_Side == BUFFER_SC){
-   _Sem_SC->Delete() ;
+    try {
+       _Sem_SC->Delete() ;
+    }
+    catch(certi::HandleNotClosed& e)
+    {
+        std::cout << "RingBuffer::~RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotDeleted("~RingBuffer() failed.")) ;;
+    }
    }
 else{
-   _Sem_CS->Delete() ;
+    try {
+       _Sem_CS->Delete() ;
+    }
+    catch(certi::HandleNotClosed& e)
+    {
+        std::cout << "RingBuffer::~RingBuffer() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::RingBufferNotDeleted("~RingBuffer() failed.")) ;;
+    }
    }
 
 delete _Sem_SC  ;
@@ -223,29 +385,45 @@ delete _Pw_Pr_CS ;
 // ************************************************
 // Method : RingBuffer::Send(...)
 // ************************************************
-void RingBuffer::Send(void *Buffer, size_t Size) {
+void RingBuffer::Send(void *Buffer, size_t Size)
+                      throw (certi::MessageNotSent,
+                             certi::MessageTooLong,
+                             certi::BufferFull) {
 
 #ifdef DEBUG
 std::cout << "RingBuffer --> Try to Send..." << std::endl ;
 #endif
 
 if (Size > _Size) {
-   perror("RingBuffer::Send(...) : Size too big !! ") ;
-   exit(1);
+   throw(certi::MessageTooLong("RingBuffer::Send() failed.")) ;
    }
 
 if(_Side == BUFFER_SC){
+   try {
+      _Sem_SC->P() ;
+   }
+   catch(certi::SemaphoreHandlingError& e)
+   {
+        std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+   }
 
-    _Sem_SC->P() ;
-    memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int) ) ;
+   memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int) ) ;
 
     #ifdef DEBUG
     std::cout << "RingBuffer::Send(...) --> BEGIN Algorithm : Count_SC = " << _Tab_SC[0] << " | Write_SC = " << _Tab_SC[1] << "| Read_SC = " << _Tab_SC[2] << std::endl ;
     #endif
 
     if (Size > _Tab_SC[0]) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
-    perror("Probleme !! ") ;
-    exit(1);
+       try {
+        _Sem_SC->V() ;
+       }
+       catch(certi::SemaphoreHandlingError& e)
+       {
+          std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+          throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+       }
+       throw(certi::BufferFull("RingBuffer::Send() failed.")) ;
     }
 
     if ( (_Tab_SC[2] > _Tab_SC[1]) || ((_Tab_SC[1] >= _Tab_SC[2]) && (Size + _Tab_SC[1] <= _Size)) ) {
@@ -259,7 +437,6 @@ if(_Side == BUFFER_SC){
         memcpy((void *)((char *)(_Shm_SC->GetShm())+ (sizeof(void *) * _Tab_SC[1])) , Buffer, Size) ;
 
         _Tab_SC[0] -= Size ;
-        // _Tab_SC[1] += Size ;
         _Tab_SC[1] = (_Tab_SC[1] + Size) % _Size ;
         }
    else {
@@ -270,11 +447,11 @@ if(_Side == BUFFER_SC){
         int Rest_byte_in_SHM =  _Size - _Tab_SC[1] ;
 
         memcpy((void *)((char *)(_Shm_SC->GetShm())+ (sizeof(void *) * _Tab_SC[1])), Buffer, Rest_byte_in_SHM ) ;
+
         memcpy(_Shm_SC->GetShm(), (void *)((char *)(Buffer) + (sizeof(void *) * Rest_byte_in_SHM)), Size - Rest_byte_in_SHM ) ;
 
         _Tab_SC[1] = (_Tab_SC[1] + Size) % _Size ;
         _Tab_SC[0] -= Size ;
-        // _Tab_SC[0] = _Tab_SC[2] - _Tab_SC[1]  ;
 
         } // Fin du if ((_Tab_SC[2] >= _Tab_SC[1]) ...) /else
 
@@ -284,11 +461,25 @@ if(_Side == BUFFER_SC){
 
      memcpy(_Pw_Pr_SC->GetShm(), _Tab_SC, 3 * sizeof(int) ) ;
 
-     _Sem_SC->V() ;
+     try {
+        _Sem_SC->V() ;
+     }
+     catch(certi::SemaphoreHandlingError& e)
+     {
+        std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+     }
      }
 else{
+    try {
+       _Sem_CS->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+    }
 
-    _Sem_CS->P() ;
     memcpy(_Tab_CS, _Pw_Pr_CS->GetShm(), 3 * sizeof(int) ) ;
 
     #ifdef DEBUG
@@ -296,8 +487,15 @@ else{
     #endif
 
     if (Size > _Tab_CS[0]) { // Test si il y a assez de place disponible dans le buffer
-    perror("Probleme !! ") ;
-    exit(1);
+       try {
+          _Sem_CS->V() ;
+       }
+       catch(certi::SemaphoreHandlingError& e)
+       {
+          std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+          throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+       }
+       throw(certi::BufferFull("RingBuffer::Send() failed.")) ;
     }
 
     if ( (_Tab_CS[2] > _Tab_CS[1]) || ((_Tab_CS[1] >= _Tab_CS[2]) && (Size + _Tab_CS[1] <= _Size)) ) {
@@ -309,9 +507,9 @@ else{
         #endif
 
         memcpy((void *)((char *)(_Shm_CS->GetShm())+ (sizeof(void *) * _Tab_CS[1])) , Buffer, Size) ;
+
         _Tab_CS[0] -= Size ;
-       // _Tab_CS[1] += Size ;
-       _Tab_CS[1] = (_Tab_CS[1] + Size) % _Size ;
+        _Tab_CS[1] = (_Tab_CS[1] + Size) % _Size ;
         }
    else {
         #ifdef DEBUG
@@ -319,11 +517,13 @@ else{
         #endif
 
         int Rest_byte_in_SHM =  _Size - _Tab_CS[1] ;
+
         memcpy((void *)((char *)(_Shm_CS->GetShm())+ (sizeof(void *) * _Tab_CS[1])), Buffer, Rest_byte_in_SHM ) ;
+
         memcpy(_Shm_CS->GetShm(), (void *)((char *)(Buffer) + (sizeof(void *) * Rest_byte_in_SHM)), Size - Rest_byte_in_SHM ) ;
 
          _Tab_CS[1] = (_Tab_CS[1] + Size) % _Size ;
-         // _Tab_CS[0] = _Tab_CS[2] - _Tab_CS[1]  ;
+
          _Tab_CS[0] -= Size ;
 
        }
@@ -334,41 +534,68 @@ else{
 
      memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int) ) ;
 
-     _Sem_CS->V() ;
+     try {
+        _Sem_CS->V() ;
+     }
+     catch(certi::SemaphoreHandlingError& e)
+     {
+        std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("RingBuffer::Send() failed.")) ;;
+     }
      }
 
 #ifdef DEBUG
 std::cout << "RingBuffer --> Send Complete !!" << std::endl ;
 #endif
+
 } // End of RingBuffer::Send(...)
 
 // ************************************************
 // Method : RingBuffer::Receive(...)
 // ************************************************
-void RingBuffer::Receive(void *Buffer, size_t Size) {
+void RingBuffer::Receive(void *Buffer, size_t Size)
+                         throw (certi::MessageNotReceived,
+                                certi::MessageTooLong,
+                                certi::BufferEmpty) {
 
 #ifdef DEBUG
 std::cout << "RingBuffer -->  Try to Receive..." << std::endl ;
 #endif
 
 if (Size > _Size) {
-    perror("RingBuffer::Receive(...) : Size too big !! ") ;
-    exit(1);
-    }
+   throw(certi::MessageTooLong("RingBuffer::Receive() failed.")) ;
+   }
 
 if(_Side == BUFFER_SC){
-
-    _Sem_CS->P() ;
+    try {
+       _Sem_CS->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
+    }
 
     memcpy(_Tab_CS, _Pw_Pr_CS->GetShm(), 3 * sizeof(int) ) ;
 
     if (_Tab_CS[0] == _Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
+       try {
+          _Sem_CS->V() ;
+       }
+       catch(certi::SemaphoreHandlingError& e)
+       {
+          std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+          throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
+       }
+       throw(certi::BufferEmpty("RingBuffer::Receive() failed.")) ;
+
        #ifdef DEBUG
-       std::cout << "RingBuffer::Receive(...) --> Nothing to Read on _Shm_SC !!"<< std::endl ;
+       std::cout << "lllll RingBuffer::Receive(...) --> Nothing to Read on _Shm_SC !!"<< std::endl ;
        #endif
     }
     else {
-          #ifdef DEBUG
+
+         #ifdef DEBUG
          std::cout << "RingBuffer::Receive(...) --> BEGIN Algorithm : Count_CS = " << _Tab_CS[0] << " | Write_CS = " << _Tab_CS[1] << "| Read_CS = " << _Tab_CS[2] << std::endl ;
          #endif
 
@@ -382,44 +609,77 @@ if(_Side == BUFFER_SC){
 
             memcpy(Buffer, (void *)((char *)(_Shm_CS->GetShm())+ (sizeof(void *) * _Tab_CS[2])) ,Size) ;
 
-             _Tab_CS[0] += Size ;
-            // _Tab_CS[0] = (_Tab_CS[0] + Size) % _Size ;
+            _Tab_CS[0] += Size ;
             _Tab_CS[2] += Size ;
             }
        else {
+
             #ifdef DEBUG
             std::cout << "RingBuffer::Receive(...) --> Utilisation memcpy Double " << std::endl ;
             #endif
 
             int Rest_byte_in_SHM =  _Size - _Tab_CS[2] ;
+
             memcpy( Buffer, (void *)((char *)(_Shm_CS->GetShm())+ (sizeof(void *) * _Tab_CS[2])), Rest_byte_in_SHM ) ;
+
             memcpy( (void *)((char *)(Buffer) + (sizeof(void *) * Rest_byte_in_SHM)), _Shm_CS->GetShm(), Size - Rest_byte_in_SHM ) ;
 
-           _Tab_CS[2] = (_Tab_CS[2] + Size) % _Size ;
-           _Tab_CS[0] += Size ;
+            _Tab_CS[2] = (_Tab_CS[2] + Size) % _Size ;
+            _Tab_CS[0] += Size ;
            } // Fin du if ((_Tab_SC[2] >= _Tab_SC[1]) ...) /else
 
         #ifdef DEBUG
         std::cout << "RingBuffer::Receive(...) --> END Algorithm : Count_CS = " << _Tab_CS[0] << " | Write_CS = " << _Tab_CS[1] << "| Read_CS = " << _Tab_CS[2] << std::endl ;
-        #endif
         std::cout << "AVANT  memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int) ) ; !! " << std::endl ;
+        #endif
+
         memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int) ) ;
+
+        #ifdef DEBUG
         std::cout << "APRES  memcpy(_Pw_Pr_CS->GetShm(), _Tab_CS, 3 * sizeof(int) ) ; !! " << std::endl ;
+        #endif
+
         } // Fin du else for if (_Tab_SC[0] == _Size )
 
+     try {
      _Sem_CS->V() ;
      }
+     catch(certi::SemaphoreHandlingError& e)
+     {
+       std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
+     }
+     }
 else{
+    try {
+       _Sem_SC->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
+    }
 
-    _Sem_SC->P() ;
-       memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int) ) ;
+    memcpy(_Tab_SC, _Pw_Pr_SC->GetShm(), 3 * sizeof(int) ) ;
 
     if (_Tab_SC[0] == _Size ) { // Test si il y a assez de place disponible dans le buffer (Exeption Ã  envoyer)
+       try {
+         _Sem_SC->V() ;
+       }
+       catch(certi::SemaphoreHandlingError& e)
+       {
+          std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+          throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;
+       }
+       throw(certi::BufferEmpty("RingBuffer::Receive() failed.")) ;
+
          #ifdef DEBUG
          std::cout << "RingBuffer::Receive(...) --> Nothing to Read on _Shm_CS !!"<< std::endl ;
          #endif
+
          }
     else {
+
          #ifdef DEBUG
          std::cout << "RingBuffer::Receive(...) --> Adresse _Tab_SC = " << _Tab_SC << " Adresse _Pw_Pr_SC = " << _Pw_Pr_SC << std::endl ;
          std::cout << "RingBuffer::Receive(...) --> Begin of Algorithm : Count_SC = " << _Tab_SC[0] << " | Write_SC = " << _Tab_SC[1] << "| Read_SC = " << _Tab_SC[2] << std::endl ;
@@ -436,20 +696,21 @@ else{
             memcpy( Buffer, (void *)((char *)(_Shm_SC->GetShm())+ (sizeof(void *) * _Tab_SC[2])) , Size) ;
 
             _Tab_SC[0] += Size ;
-           //  _Tab_SC[0] = (_Tab_SC[0] + Size) % _Size ;
             _Tab_SC[2] += Size ;
             }
        else {
+
             #ifdef DEBUG
             std::cout << "RingBuffer::Receive(...) --> Utilisation memcpy Double " << std::endl ;
             #endif
 
             int Rest_byte_in_SHM =  _Size - _Tab_SC[2] ;
+
             memcpy(Buffer, (void *)((char *)(_Shm_SC->GetShm())+ (sizeof(void *) * _Tab_SC[2])), Rest_byte_in_SHM ) ;
+
             memcpy((void *)((char *)(Buffer) + (sizeof(void *) * Rest_byte_in_SHM)), _Shm_SC->GetShm(), Size - Rest_byte_in_SHM ) ;
 
             _Tab_SC[2] = (_Tab_SC[2] + Size) % _Size ;
-            // _Tab_CS[0] = _Tab_CS[2] - _Tab_CS[1]  ;
             _Tab_SC[0] += Size ;
             }
 
@@ -458,25 +719,81 @@ else{
          #endif
 
          memcpy(_Pw_Pr_SC->GetShm(), _Tab_SC, 3 * sizeof(int) ) ;
-         }  // Fin du else for if (_Tab_CS[0] == _Size )
 
-     _Sem_SC->V() ;
+         }  // Fin du else for if (_Tab_CS[0] == _Size )
+     try {
+        _Sem_SC->V() ;
+     }
+     catch(certi::SemaphoreHandlingError& e)
+     {
+       std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("RingBuffer::Receive() failed.")) ;;
+     }
      }
 
 #ifdef DEBUG
 std::cout << "RingBuffer --> Receive complete!!!" << std::endl ;
 #endif
+
 } // End of RingBuffer::Receive(...)
 
 // ************************************************
 // Method : RingBuffer::Close()
 // ************************************************
-void RingBuffer::Close() {
-
-_Shm_SC->Close() ;
-_Shm_CS->Close() ;
-_Pw_Pr_SC->Close() ;
-_Pw_Pr_CS->Close() ;
+void RingBuffer::Close()
+                throw (certi::RingBufferNotClosed) {
+try {
+   _Shm_SC->Close() ;
+}
+catch(certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+catch(certi::HandleNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+try {
+   _Shm_CS->Close() ;
+}
+catch(certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+catch(certi::HandleNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+try {
+   _Pw_Pr_SC->Close() ;
+}
+catch(certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+catch(certi::HandleNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+try {
+   _Pw_Pr_CS->Close() ;
+}
+catch(certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
+catch(certi::HandleNotClosed& e)
+{
+    std::cout << "RingBuffer::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::RingBufferNotClosed("RingBuffer::Close() failed.")) ;;
+}
 
 } // End of RingBuffer::Close()
 

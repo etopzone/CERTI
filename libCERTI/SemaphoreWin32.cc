@@ -15,7 +15,8 @@ SemaphoreWin32::~SemaphoreWin32() {}
 // ************************************************
 // Method : SemaphoreWin32::Create_Init(...)
 // ************************************************
-void SemaphoreWin32::Create_Init(const int initval, const std::string& New_Semname) {
+void SemaphoreWin32::Create_Init(const int initval, const std::string& New_Semname)
+                                 throw(certi::SemaphoreNotCreated) {
 
 _hSemaphore = CreateSemaphore(
                       (LPSECURITY_ATTRIBUTES)NULL,             // security attributes
@@ -24,9 +25,7 @@ _hSemaphore = CreateSemaphore(
                       (LPCTSTR)(New_Semname.c_str()));         // named semaphore
 
  if (_hSemaphore == NULL){
-      _tprintf(TEXT("CreateSemaphore() in SemaphoreWin32::Create_Init(...) (%d).n"),
-             GetLastError());
-      exit(1) ;
+      throw(certi::SemaphoreNotCreated("CreateSemaphore() failed.")) ;
  }
  #ifdef DEBUG
  std::cout << "We create the semaphore identified by handle : " << _hSemaphore << " and name : " << New_Semname << std::endl ;
@@ -37,9 +36,8 @@ _hSemaphore = CreateSemaphore(
 // ************************************************
 // Method : SemaphoreWin32::Attach(...)
 // ************************************************
-void SemaphoreWin32::Attach(const std::string& New_Semname) {
-
-
+void SemaphoreWin32::Attach(const std::string& New_Semname)
+                            throw(certi::SemaphoreNotOpen){
 
 // Open the semaphore
 
@@ -54,9 +52,7 @@ void SemaphoreWin32::Attach(const std::string& New_Semname) {
 
    if (_hSemaphore == NULL)
    {
-      _tprintf(TEXT("Could not open semaphore object (%d).n"),
-             GetLastError());
-      exit (1);
+        throw(certi::SemaphoreNotOpen("OpenSemaphore() failed.")) ;
    }
 
 } // End of method : Attach(...)
@@ -65,7 +61,8 @@ void SemaphoreWin32::Attach(const std::string& New_Semname) {
 // Method : SemaphoreWin32::P
 // ************************************************
 
-void SemaphoreWin32::P() {
+void SemaphoreWin32::P()
+                    throw(certi::SemaphoreHandlingError) {
 
 #ifdef DEBUG
 std::cout << "Begin of Operation P for the semaphore identified by handle : " << _hSemaphore << std::endl ;
@@ -87,9 +84,7 @@ switch (dwRetCode)
 
           default:
              // Handle errors
-             _tprintf(TEXT("Error with WaitForSingleObject() in SemaphoreWin32::P() (%d).n"),
-             GetLastError());
-             exit(1);
+             throw(certi::SemaphoreHandlingError("WaitForSingleObject() failed.")) ;
       }
 
 #ifdef DEBUG
@@ -103,7 +98,8 @@ std::cout << "End of Operation P for the semaphore identified by handle : " << _
 // Method : SemaphoreWin32::V
 // ************************************************
 
-void SemaphoreWin32::V() {
+void SemaphoreWin32::V()
+                    throw(certi::SemaphoreHandlingError) {
 
 #ifdef DEBUG
 std::cout << "Begin of Operation V for the semaphore identified by handle : " << _hSemaphore << std::endl ;
@@ -117,9 +113,7 @@ BOOL WINAPI retcode ;
         NULL) ;       // not interested in previous count
 
   if (retcode == 0) {
-    _tprintf(TEXT("Error with ReleaseSemaphore() in SemaphoreWin32::V() (%d).n"),
-             GetLastError());
-    exit(1);
+      throw(certi::SemaphoreHandlingError("ReleaseSemaphore() failed.")) ;
     }
 
 #ifdef DEBUG
@@ -131,7 +125,8 @@ std::cout << "End of Operation V for the semaphore identified by handle : " << _
 // ************************************************
 // Method : SemaphoreWin32::Delete
 // ************************************************
-void SemaphoreWin32::Delete(){
+void SemaphoreWin32::Delete()
+                    throw(certi::HandleNotClosed) {
 
 BOOL WINAPI retcode ;
 
@@ -142,7 +137,6 @@ std::cout << "Destroy the semaphore identified by handle : " << _hSemaphore << s
 retcode = CloseHandle(_hSemaphore);
 
 if(retcode == 0)
-    _tprintf(TEXT("Error with CloseHandle() in SemaphoreWin32::Delete() (%d).n"),
-             GetLastError());
+   throw(certi::HandleNotClosed("CloseHandle() failed.")) ;
 } // End of Delete()
 

@@ -94,6 +94,7 @@ SocketSHMSysV Socket_SysV_AB(NAME_AB,
                              Size) ;
 #endif
 // RingBuffer Socket SHM
+
 RingBuffer RingBuffer_AB(NAME_AB,
                          Buffer_Side,
                          MAX_SIZE,
@@ -112,12 +113,27 @@ std::cout << "************************************************************" << s
 std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
 
 #ifdef _WIN32
-Socket_Win32_AB.Connect();
+try {
+   Socket_Win32_AB.Connect();
+}
+catch (certi::SocketNotConnected& e)
+{
+    std::cout << "Catch Exception SocketNotConnected" << std::endl ;
+    std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+}
 #else
 Socket_Posix_AB.Connect() ; // Connect to created Semaphores
 Socket_SysV_AB.Connect() ; // Connect to created Semaphores
 #endif
-RingBuffer_AB.Attach() ;
+
+try {
+    RingBuffer_AB.Attach() ;
+}
+catch (certi::RingBufferNotAttached& e)
+{
+    std::cout << "Catch Exception RingBufferNotAttached" << std::endl ;
+    std::cout << "RingBuffer::Attach() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+}
 
 // ****************************
 // Wainting for User Command n2
@@ -142,7 +158,17 @@ while (command !="Win32" && command != "Posix" && command != "SysV" && command !
 
 // Open the Socket
 #ifdef _WIN32
-if (command=="Win32") Socket_Win32_AB.Open() ;
+if (command=="Win32")
+{
+    try {
+       Socket_Win32_AB.Open() ;
+    }
+    catch (certi::SocketSHMNotOpen& e)
+    {
+        std::cout << "Catch Exception SocketSHMNotOpen" << std::endl ;
+        std::cout << "SocketSHMWin32::Open() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    }
+}
 #else
 if (command=="Posix") Socket_Posix_AB.Open() ;
 if (command=="SysV") Socket_SysV_AB.Open() ;
@@ -180,20 +206,35 @@ if (command=="RB"){
      std::cin >> command_RB ;
      std::cin.ignore( std::numeric_limits<std::streamsize>::max(), '\n' );
      if (command_RB=="S"){
-         RingBuffer_AB.Send(&Data_Write_RB,Size) ;
-         std::cout << " ******** SEND ********" << std ::endl ;
-         #ifdef SIDE_SC
-         std::cout << "Processus A :: DataWrite_RB.Header = " << Data_Write_RB.Header << std ::endl ;
-         std::cout << "Processus A :: DataWrite_RB.Body = " << Data_Write_RB.Body << std ::endl ;
-         #else
-         std::cout << "Processus B :: DataWrite_RB.Header = " << Data_Write_RB.Header << std ::endl ;
-         std::cout << "Processus B :: DataWrite_RB.Body = " << Data_Write_RB.Body << std ::endl ;
-         #endif
-         std::cout << " ************************ " <<  std ::endl ;
+         try {
+            RingBuffer_AB.Send(&Data_Write_RB,Size) ;
+            std::cout << " ******** SEND ********" << std ::endl ;
+            #ifdef SIDE_SC
+            std::cout << "Processus A :: DataWrite_RB.Header = " << Data_Write_RB.Header << std ::endl ;
+            std::cout << "Processus A :: DataWrite_RB.Body = " << Data_Write_RB.Body << std ::endl ;
+            #else
+            std::cout << "Processus B :: DataWrite_RB.Header = " << Data_Write_RB.Header << std ::endl ;
+            std::cout << "Processus B :: DataWrite_RB.Body = " << Data_Write_RB.Body << std ::endl ;
+            #endif
+            std::cout << " ************************ " <<  std ::endl ;
+         }
+         catch (certi::BufferFull& e)
+         {
+            std::cout << "Catch Exception BufferFull" << std::endl ;
+            std::cout << "RingBuffer::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+         }
          i++ ;
          }
      else if (command_RB=="R"){
-         RingBuffer_AB.Receive(&Data_Read_RB,Size) ;
+         try {
+            RingBuffer_AB.Receive(&Data_Read_RB,Size) ;
+         }
+         catch(certi::BufferEmpty& e)
+         {
+             std::cout << "Catch Exception BufferEmpty" << std::endl ;
+             std::cout << "RingBuffer::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+         }
+
          std::cout << " ****** RECEIVE ******" << std ::endl ;
          #ifdef SIDE_SC
          std::cout << "Processus A :: DataRead_RB.Header = " << Data_Read_RB.Header << std ::endl ;
@@ -213,7 +254,17 @@ else{ // else SocketSHM (SysV and Posix) Use
     // Send to B For the First Time (INITIALIZE)
     // Send to B
         #ifdef _WIN32
-        if (command=="Win32") Socket_Win32_AB.Send(&Data_Write) ;
+        if (command=="Win32")
+        {
+            try {
+                Socket_Win32_AB.Send(&Data_Write) ;
+            }
+            catch (certi::MessageNotSent& e)
+            {
+               std::cout << "Catch Exception MessageNotSent" << std::endl ;
+               std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+            }
+        }
         #else
         if (command=="Posix") Socket_Posix_AB.Send(&Data_Write) ;
         if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;
@@ -230,7 +281,17 @@ else{ // else SocketSHM (SysV and Posix) Use
        /**************************************/
        // Read from B
        #ifdef _WIN32
-       if (command=="Win32") Socket_Win32_AB.Receive(&Data_Read) ;
+       if (command=="Win32")
+       {
+           try {
+              Socket_Win32_AB.Receive(&Data_Read) ;
+           }
+           catch (certi::MessageNotReceived& e)
+           {
+               std::cout << "Catch Exception MessageNotReceived" << std::endl ;
+               std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+           }
+       }
        #else
        if (command=="Posix") Socket_Posix_AB.Receive(&Data_Read) ;
        if (command=="SysV") Socket_SysV_AB.Receive(&Data_Read) ;
@@ -270,7 +331,17 @@ else{ // else SocketSHM (SysV and Posix) Use
        /**************************************/
        // Send to B
        #ifdef _WIN32
-       if (command=="Win32") Socket_Win32_AB.Send(&Data_Write) ;
+       if (command=="Win32")
+       {
+           try {
+               Socket_Win32_AB.Send(&Data_Write) ;
+           }
+           catch (certi::MessageNotSent& e)
+           {
+               std::cout << "Catch Exception MessageNotSent" << std::endl ;
+               std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+           }
+       }
        #else
        if (command=="Posix") Socket_Posix_AB.Send(&Data_Write) ;
        if (command=="SysV") Socket_SysV_AB.Send(&Data_Write) ;

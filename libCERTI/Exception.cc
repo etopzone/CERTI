@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Exception.cc,v 3.17 2008/12/07 20:16:12 gotthardp Exp $
+// $Id: Exception.cc,v 3.17.8.1 2009/10/21 09:28:20 adele Exp $
 // ----------------------------------------------------------------------------
 
 #include "Exception.hh"
@@ -133,6 +133,27 @@ long certi::UnimplementedService::_type = certi::e_UnimplementedService ;
 long certi::UnknownLabel::_type = certi::e_UnknownLabel ;
 long certi::NetworkError::_type = certi::e_NetworkError ;
 long certi::NetworkSignal::_type = certi::e_NetworkSignal ;
+long certi::SharedMemoryNotOpen::_type = certi::e_SharedMemoryNotOpen ;
+long certi::SharedMemoryNotAttached::_type = certi::e_SharedMemoryNotAttached ;
+long certi::SharedMemoryNotClosed::_type = certi::e_SharedMemoryNotClosed ;
+long certi::HandleNotClosed::_type = certi::e_HandleNotClosed ;
+long certi::SemaphoreNotCreated::_type = certi::e_SemaphoreNotCreated ;
+long certi::SemaphoreNotOpen::_type = certi::e_SemaphoreNotOpen ;
+long certi::SemaphoreHandlingError::_type = certi::e_SemaphoreHandlingError ;
+long certi::SocketNotConnected::_type = certi::e_SocketNotConnected ;
+long certi::MessageNotSent::_type = certi::e_MessageNotSent ;
+long certi::MessageNotReceived::_type = certi::e_MessageNotReceived ;
+long certi::SocketNotClosed::_type = certi::e_SocketNotClosed ;
+long certi::RingBufferNotCreated::_type = certi::e_RingBufferNotCreated ;
+long certi::RingBufferNotClosed::_type = certi::e_RingBufferNotClosed ;
+long certi::RingBufferNotDeleted::_type = certi::e_RingBufferNotDeleted ;
+long certi::RingBufferNotAttached::_type = certi::e_RingBufferNotAttached ;
+long certi::MessageTooLong::_type = certi::e_MessageTooLong ;
+long certi::BufferFull::_type = certi::e_BufferFull ;
+long certi::BufferEmpty::_type = certi::e_BufferEmpty ;
+long certi::SocketSHMNotCreated::_type = certi::e_SocketSHMNotCreated ;
+long certi::SocketSHMNotOpen::_type = certi::e_SocketSHMNotOpen ;
+long certi::SocketSHMNotDeleted::_type = certi::e_SocketSHMNotDeleted ;
 
 static PrettyDebug PD_Exception("CERTI_EXCEPTION",__FILE__);
 
@@ -158,4 +179,4 @@ const std::string certi::Exception::displayMe() const
     PD_Exception[pdExcept] << msg.str().c_str();
     return msg.str();
 }
-// $Id: Exception.cc,v 3.17 2008/12/07 20:16:12 gotthardp Exp $
+// $Id: Exception.cc,v 3.17.8.1 2009/10/21 09:28:20 adele Exp $

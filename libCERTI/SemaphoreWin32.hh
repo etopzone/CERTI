@@ -24,11 +24,16 @@ class CERTI_EXPORT SemaphoreWin32 : public Semaphore {
     public :
     SemaphoreWin32() ;
     virtual ~SemaphoreWin32() ;
-    void Create_Init(const int initval, const std::string& New_Semname) ;
-    void Attach(const std::string& New_Semname ) ;
-    void P() ;
-    void V() ;
-    void Delete() ;
+    void Create_Init(const int initval, const std::string& New_Semname)
+                     throw(certi::SemaphoreNotCreated) ;
+    void Attach(const std::string& New_Semname )
+                throw(certi::SemaphoreNotOpen) ;
+    void P()
+         throw(certi::SemaphoreHandlingError) ;
+    void V()
+         throw(certi::SemaphoreHandlingError) ;
+    void Delete()
+         throw(certi::HandleNotClosed) ;
 
 } ;
 

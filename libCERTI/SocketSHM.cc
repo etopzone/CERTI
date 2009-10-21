@@ -9,15 +9,47 @@ SocketSHM ::~SocketSHM (){}
 // ************************************************
 // Method : SocketSHM::Connect()
 // ************************************************
-void SocketSHM::Connect() {
+void SocketSHM::Connect() throw (certi::SocketNotConnected) {
+
+#ifdef DEBUG
+std::cout << "Try to Connect..." << std::endl ;
+#endif
 
 if(_Side == SHM_CS){
-  _Sem_full_SC->Attach(Semaphore::buildSemName(_Name+"_FULL_SC")) ;
-  _Sem_empty_SC->Attach(Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
+    try {
+       _Sem_full_SC->Attach(Semaphore::buildSemName(_Name+"_FULL_SC")) ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::SocketNotConnected("Connect() failed."));
+    }
+    try {
+       _Sem_empty_SC->Attach(Semaphore::buildSemName(_Name+"_EMPTY_SC")) ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::SocketNotConnected("Connect() failed."));
+    }
   }
 else{
-  _Sem_full_CS->Attach(Semaphore::buildSemName(_Name+"_FULL_CS")) ;
-  _Sem_empty_CS->Attach(Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
+    try {
+       _Sem_full_CS->Attach(Semaphore::buildSemName(_Name+"_FULL_CS")) ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::SocketNotConnected("Connect() failed."));
+    }
+    try {
+       _Sem_empty_CS->Attach(Semaphore::buildSemName(_Name+"_EMPTY_CS")) ;
+    }
+    catch(certi::SharedMemoryNotAttached& e)
+    {
+        std::cout << "SocketSHM::Connect() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::SocketNotConnected("Connect() failed."));
+    }
   }
 
 }
@@ -25,22 +57,54 @@ else{
 // ************************************************
 // Method : SocketSHM::Send(...)
 // ************************************************
-void SocketSHM::Send(void *Buffer) {
+void SocketSHM::Send(void *Buffer) throw (certi::MessageNotSent) {
 
 #ifdef DEBUG
 std::cout << "Try to Send..." << std::endl ;
 #endif
 
 if(_Side == SHM_SC){
-     _Sem_empty_SC->P() ;     
+    try {
+       _Sem_empty_SC->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+        std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("Send() failed.")) ;
+    }
+
     memcpy(_Shm_SC->GetShm(), Buffer, _Shm_SC->GetSize());
-     _Sem_full_SC->V() ;
-     } 
+
+    try {
+       _Sem_full_SC->V() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+        std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("Send() failed.")) ;
+    }
+    }
 else{
-     _Sem_empty_CS->P() ;  
+    try {
+       _Sem_empty_CS->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+        std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("Send() failed.")) ;
+    }
+
      memcpy(_Shm_CS->GetShm(), Buffer, _Shm_CS->GetSize());
-     _Sem_full_CS->V() ;
-     } 
+
+     try {
+        _Sem_full_CS->V() ;
+     }
+     catch(certi::SemaphoreHandlingError& e)
+     {
+        std::cout << "SocketSHM::Send() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+        throw (certi::MessageNotSent("Send() failed.")) ;
+     }
+    }
 
 #ifdef DEBUG
 std::cout << "Send Complete !!" << std::endl ;
@@ -51,22 +115,54 @@ std::cout << "Send Complete !!" << std::endl ;
 // ************************************************
 // Method : SocketSHMS::Receive(...)
 // ************************************************
-void SocketSHM::Receive(void *Buffer) {
+void SocketSHM::Receive(void *Buffer) throw (certi::MessageNotReceived) {
 
 #ifdef DEBUG
 std::cout << "Try to Receive..." << std::endl ;
 #endif
 
 if(_Side == SHM_SC){
-     _Sem_full_CS->P() ; 
+    try {
+       _Sem_full_CS->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("Receive() failed.")) ;
+    }
+
     memcpy(Buffer, _Shm_CS->GetShm(), _Shm_CS->GetSize());
-     _Sem_empty_CS->V() ;
-     } 
+
+    try {
+       _Sem_empty_CS->V() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("Receive() failed.")) ;
+    }
+    }
 else{
-     _Sem_full_SC->P() ;  
-     memcpy( Buffer, _Shm_SC->GetShm(), _Shm_SC->GetSize());
-    _Sem_empty_SC->V() ;
-     } 
+    try {
+       _Sem_full_SC->P() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("Receive() failed.")) ;
+    }
+
+    memcpy( Buffer, _Shm_SC->GetShm(), _Shm_SC->GetSize());
+
+    try {
+       _Sem_empty_SC->V() ;
+    }
+    catch(certi::SemaphoreHandlingError& e)
+    {
+       std::cout << "SocketSHM::Receive() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+       throw (certi::MessageNotReceived("Receive() failed.")) ;
+    }
+    }
 
 #ifdef DEBUG
 std::cout << "Receive complete!!!" << std::endl ;
@@ -77,10 +173,38 @@ std::cout << "Receive complete!!!" << std::endl ;
 // ************************************************
 // Method : SocketSHM::Close()
 // ************************************************
-void SocketSHM::Close() {
+void SocketSHM::Close() throw(certi::SocketNotClosed) {
 
-_Shm_SC->Close() ;
-_Shm_CS->Close() ;
+#ifdef DEBUG
+std::cout << "Try to Close..." << std::endl ;
+#endif
+
+try {
+   _Shm_SC->Close() ;
+}
+catch (certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::SocketNotClosed("Close() failed.")) ;
+}
+catch (certi::HandleNotClosed& e)
+{
+    std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::SocketNotClosed("Close() failed.")) ;
+}
+try {
+   _Shm_CS->Close() ;
+}
+catch (certi::SharedMemoryNotClosed& e)
+{
+    std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::SocketNotClosed("Close() failed.")) ;
+}
+catch (certi::HandleNotClosed& e)
+{
+    std::cout << "SocketSHM::Close() Exception. " <<  "Name is : " << e._name << " Reason is : " << e._reason << std::endl ;
+    throw (certi::SocketNotClosed("Close() failed.")) ;
+}
 
 } // End of --> SocketSHM::Close()
 

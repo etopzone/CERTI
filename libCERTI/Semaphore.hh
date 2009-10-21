@@ -2,6 +2,7 @@
 #define SEMAPHORE_H
 
 #include "certi.hh"
+#include "Exception.hh"
 // Systems includes
 #include <string>
 
