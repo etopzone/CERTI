@@ -83,8 +83,12 @@ CERTI releases should be done with the following steps:
 
     gpg -b certi-3.2.5.tar.gz
 
-11) Check is the download area has been properly updated
+11) Check if the download area has been properly updated
      http://download.savannah.nongnu.org/releases/certi/
+     
+     Beware the automatic mirror selection, go to 
+     the "noredirect" link: 
+     http://download.savannah.gnu.org/releases-noredirect/certi/
 
 12) Post the appropriate news on Savannah CERTI pages
     https://savannah.nongnu.org/news/submit.php?group=certi
