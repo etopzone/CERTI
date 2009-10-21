@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.6 2008/11/20 18:21:56 approx Exp $
+// $Id: PrettyDebEx.cc,v 4.7 2009/10/21 19:51:13 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -47,20 +47,21 @@ using std::endl ;
 #ifndef NDEBUG
 
 //***************************************************************************************
-//type: 'M'	Message 
-//type: 'N'	NetWork Message 
+//type: 'M'	Message
+//type: 'N'	NetWork Message
 void PrettyDebug::Mes(pdDebugLevel Level, const char type, const short testMess, const char *context)
 {
+    std::ostream* stream = getStreamPrintHeader(Level);
+    if (!stream)
+        return;
+
 char theMessage[100];
 
-DebugOStream* theOutputStreamPtr = Level_Map[Level];
-if (theOutputStreamPtr == PrettyDebug::nullOutputStreamPtr) return;	//----------------->>
-
 strcpy(theMessage,context);
-	
+
 if (type == 'M')
 	{///Message.hh
-	
+
 	switch (testMess)
 		{
 		case certi::Message::CLOSE_CONNEXION : strcat(theMessage,"CLOSE_CONNEXION"); break;
@@ -201,11 +202,11 @@ if (type == 'M')
 		case certi::Message::GET_TRANSPORTATION_NAME :								strcat(theMessage,"GET_TRANSPORTATION_NAME"); break;
 		case certi::Message::GET_ORDERING_HANDLE :									strcat(theMessage,"GET_ORDERING_HANDLE"); break;
 		case certi::Message::GET_ORDERING_NAME :										strcat(theMessage,"GET_ORDERING_NAME"); break;
-		case certi::Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH :			
+		case certi::Message::ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH :
 			strcat(theMessage,"ENABLE_CLASS_RELEVANCE_ADVISORY_SWITCH"); break;
-		case certi::Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH :			
+		case certi::Message::DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH :
 			strcat(theMessage,"DISABLE_CLASS_RELEVANCE_ADVISORY_SWITCH"); break;
-		case certi::Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH :		
+		case certi::Message::ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH :
 			strcat(theMessage,"ENABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH"); break;
 		case certi::Message::DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH :
 			strcat(theMessage,"DISABLE_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH"); break;
@@ -213,17 +214,17 @@ if (type == 'M')
 			strcat(theMessage,"ENABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH"); break;
 		case certi::Message::DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH :
 			strcat(theMessage,"DISABLE_ATTRIBUTE_SCOPE_ADVISORY_SWITCH"); break;
-		case certi::Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH :	
+		case certi::Message::ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH :
 			strcat(theMessage,"ENABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH"); break;
 		case certi::Message::DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH:
 			strcat(theMessage,"DISABLE_INTERACTION_RELEVANCE_ADVISORY_SWITCH"); break;
 		case certi::Message::TICK_REQUEST :												strcat(theMessage,"TICK_REQUEST"); break;
 		default:
 			sprintf(theMessage,"LOCAL UNKNOWED MESSAGE %hd",testMess);
-		}		
+		}
 	}
 else if (type == 'N')
-	{	
+	{
 	switch (testMess)
 		{//NetworkMessage.h
 		case certi::NetworkMessage::CLOSE_CONNEXION :										strcat(theMessage,"CLOSE_CONNEXION"); break;
@@ -313,8 +314,8 @@ else if (type == 'N')
 		}
 	}
 strcat(theMessage, "\n"); // Add trailing \n
-PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, theMessage);
+ *stream << theMessage;
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.6 2008/11/20 18:21:56 approx Exp $
+// $Id: PrettyDebEx.cc,v 4.7 2009/10/21 19:51:13 erk Exp $

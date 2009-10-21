@@ -19,174 +19,73 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.cc,v 4.9 2008/05/27 12:26:54 jmm Exp $
+// $Id: PrettyDebug.cc,v 4.10 2009/10/21 19:51:12 erk Exp $
 // ----------------------------------------------------------------------------
-
 
 #include "PrettyDebug.hh"
-#include "Message.hh"
-#include "NetworkMessage.hh"
 
-#include <stdlib.h>
-#include <stdarg.h>
 #include <iostream>
-#include <cstring>
-#ifdef _WIN32
-	#include <time.h>
-	#include <sys/timeb.h>
-#else
-	#include <sys/types.h>
-	#include <sys/time.h>
-	#include <unistd.h>
-	#include <string>
-	#include <libgen.h>
-#endif
+#include <iomanip>
 
-using std::cout ;
-using std::cerr ;
-using std::endl ;
-
-DebugOStream DebugOStream::nullOutputStream(cout);
-DebugOStream PrettyDebug::defaultOutputStream(cerr);
-
-//Fix this pointer to the default initialisation of pointers for your compiler
-DebugOStream* PrettyDebug::nullOutputStreamPtr = 0 ; 
-DebugOStream& PrettyDebug::nullOutputStream = DebugOStream::nullOutputStream;
-
-#ifdef _WIN32		//Mutex switch ON
-	HANDLE PrettyDebug::g_hMutex= CreateMutex(NULL,FALSE,"HLA");	
-#endif
-
-std::string PrettyDebug::federateName_ = "" ;
-
-// ----------------------------------------------------------------------------
-/** Print the message to the default output ostream.
- *  This function does NOT add any trailing \n. */
-void
-PrettyDebug::Print(DebugOStream& theOutputStream,
-                   const char* theHeaderMessage, const char * Message)
-{
-char buffer[256] ;
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef _WIN32
-	if (WaitForSingleObject(g_hMutex,INFINITE) == WAIT_OBJECT_0)
-		{//Wait for Mutex
-		struct _timeb timebuffer;_ftime(&timebuffer );
-		sprintf(buffer,"HLALOG - %I64d.%03hd s - %s", timebuffer.time,timebuffer.millitm,federateName_.c_str());
-
-		if (Message != NULL)
-			theOutputStream << buffer << " - " << theHeaderMessage << "> " << Message;
-		else
-			theOutputStream << buffer << " - " << theHeaderMessage << pdSEmptyMessage;
-			
-		theOutputStream.flush();
-		ReleaseMutex(g_hMutex);
-		}
+# include <time.h>
+# include <sys/timeb.h>
 #else
-	struct timeval tv;
-	gettimeofday( &tv, NULL );
-	sprintf( buffer, "HLALOG - %ld.%06ld - %s",tv.tv_sec,tv.tv_usec,federateName_.c_str() ) ;
-
-	if (Message != NULL)
-		theOutputStream << buffer << " - " << basename((char *)theHeaderMessage) << "> " << Message;
-	else
-		theOutputStream << buffer << " - " << basename((char *)theHeaderMessage) << pdSEmptyMessage;
-	theOutputStream.flush();	
+# include <sys/time.h>
 #endif
-}
+
+std::ostream PrettyDebug::_defaultOutputStream(std::cerr.rdbuf());
+std::string PrettyDebug::_federateName;
 
 // ----------------------------------------------------------------------------
-/** Parse the environment variable value to find debug keys and enable
- *  debug levels.  The internal LEnvVar and LMessage variables must
- *  already have been set. */
-void
-PrettyDebug::ParseEnvString(const char *Name)
-{
-unsigned int i;
-char *Value = getenv(Name); // The value of the variable Name
-char  Key; // A character from the value compared to keys.
-char *Pos; // The position of Key in pdDebugKeys
-char *DebugKeys = (char *) pdDebugKeysString ; // needs a non const string
-
-for (i = pdUnused; i < pdLast + 1; i++) // Clear current level map
-	Level_Map[i] = PrettyDebug::nullOutputStreamPtr;
-
-if (Value != 0) 
-	{ // Print Debug Init Message
-	const char *pdInitMessage = " variable read, content = ";
-	const char *pdTooLongInitMessage = "Env Var read(string too long).";
-	
-	int length = strlen(LEnvVar) + strlen(pdInitMessage) + strlen(Value);
-	if (length < pdMaxMessageSize)
-		cout << LEnvVar << pdInitMessage << Value << endl;
-	else
-		cout << LEnvVar << pdTooLongInitMessage << endl;
-
-	// Compare each char of Value to content of the pgDebugKeys 
-	// string, to enable matching debug levels.
-	for (i = 0; i < strlen(Value); i++) 
-		{
-		Key = Value[i];
-		Pos = strchr(DebugKeys, Key);
-		if (Pos != 0)
-			 Level_Map[Pos - DebugKeys] = &(PrettyDebug::defaultOutputStream);
-		}
-	}
-return;
-}
-
-// ---------------------------------------------------------------------------- 
 /** Constructor. Initialize the debug process according to the value
- *  of the 'Name' environment variable.  The 'Header' message is put
+ *  of the 'name' environment variable.  The 'header' message is put
  *  in front of all printed debug messages. It can be a module name or
  *  whatever you need. */
-PrettyDebug::PrettyDebug(const char *Name, const char *Header)
+PrettyDebug::PrettyDebug(const char* name, const char* header)
 {
-if (NULL == Name) 
-	{
-	PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
-	"Error in pgCDebug constructor, no Name specified.\n");
-	 Name = "NoName";
-	}
+    if (header)
+        _header = header;
 
-LEnvVar = strdup(Name);
-if (Header != 0)
-	HeaderMessage = strdup(Header);
-else
-	HeaderMessage = strdup("");
+    for (unsigned i = pdUnused; i < unsigned(pdLast); ++i)
+	_streams[i] = 0;
 
-//Initialisation de LMessage a 0. Il est alloue la premiere fois
-//dans la methode Out.
-LMessage = 0;
-
-if ((LEnvVar == 0) || (HeaderMessage == 0)) 
-	{
-	PrettyDebug::Print(PrettyDebug::defaultOutputStream, "", 
-	"Error in pgCDebug constructor memory allocation.\n");
-	exit(EXIT_FAILURE);
-	}
-ParseEnvString(Name);
+    // note that if we do not have a name, we cannot enable any debug message ...
+    if (name) {
+        const char *value = getenv(name);
+        if (value) {
+            // Compare each char of Value to content of the pgDebugKeys
+            // string, to enable matching debug levels.
+            char debugKeys[] = pdDebugKeysString;
+            unsigned valueLen = strlen(value);
+            for (unsigned i = 0; i < valueLen; ++i) {
+		const char* pos = strchr(debugKeys, value[i]);
+		if (pos)
+                    _streams[pos - debugKeys] = &_defaultOutputStream;
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
 /** Destructor. */
 PrettyDebug::~PrettyDebug()
 {
-    free(LEnvVar);
-    if (LMessage != 0) {
-        free(LMessage);
-    }
-    if (HeaderMessage != 0) {
-        free(HeaderMessage);
-    }
 }
 
 // ----------------------------------------------------------------------------
-/** Return true if Level is enabled, else return false. */
-bool
-PrettyDebug::Mode(pdDebugLevel Level)
+/** Enable the echoing of the given debug level with the default
+ *  ostream or modify the ostream if the debug level was already
+ *  enabled. */
+void
+PrettyDebug::enableDebugLevel(pdDebugLevel level)
 {
-    return (Level_Map[Level] != PrettyDebug::nullOutputStreamPtr);
+    enableDebugLevel(level, std::cerr);
 }
 
 // ----------------------------------------------------------------------------
@@ -196,83 +95,85 @@ PrettyDebug::Mode(pdDebugLevel Level)
  *  stored, it is not copied so the ostream MUST exist until the
  *  destruction of the PrettyDebug or until the level is disabled */
 void
-PrettyDebug::enableDebugLevel(pdDebugLevel Level, DebugOStream& theOutputStream)
+PrettyDebug::enableDebugLevel(pdDebugLevel level, std::ostream& stream)
 {
-    Level_Map[Level] = &(theOutputStream);
-    return;
+    if (unsigned(pdLast) <= unsigned(level))
+        return;
+    _streams[level] = &stream;
 }
 
 // ----------------------------------------------------------------------------
 /** Disable the echoing of the given debug level. */
 void
-PrettyDebug::disableDebugLevel(pdDebugLevel Level)
+PrettyDebug::disableDebugLevel(pdDebugLevel level)
 {
-    Level_Map[Level] = PrettyDebug::nullOutputStreamPtr;
-    return;
+    if (unsigned(pdLast) <= unsigned(level))
+        return;
+    _streams[level] = 0;
 }
-     
-// ----------------------------------------------------------------------------
+
 #ifndef NDEBUG
-/** If Level is enabled, Message is sent to the DebugServer, preceded
+// ----------------------------------------------------------------------------
+/** If level is enabled, Message is sent to the DebugServer, preceded
    with the Header specified in the Constructor.  If the NDEBUG
    constant is defined, the Out method has beed declared inline, and
    its body set to {} (see PrettyDebug.hh).
-
-   \attention: Probleme, rien ne garantit qu'on ne depassera pas le
-   nombre max de char dans le vsprintf. Mieux vaut utiliser la syntaxe C++ 
 */
 void
-PrettyDebug::Out(pdDebugLevel Level, const char * Format, ...)
+PrettyDebug::Out(pdDebugLevel level, const char *format, ...)
 {
-DebugOStream* theOutputStreamPtr = Level_Map[Level];
+    // Fast return if streams are not enabled for this level.
+    std::ostream* stream = getStreamPrintHeader(level);
+    if (!stream)
+        return;
 
-//Warnings messages
-//if (LEnvVar == 0) cout << endl << "ENV VAR NULL CALLING OUT METHOD ";
-//if (HeaderMessage == 0) cout << "HEADER NULL CALLING OUT METHOD" << endl;
+    if (!format) {
+        *stream << "Pretty Debug received an empty Message.\n";
+    } else {
+        char buffer[512];
 
-if (theOutputStreamPtr != PrettyDebug::nullOutputStreamPtr) 
-	{
-	if (Format != 0) 
-		{ // Cat Header and Message strings 
-		if (LMessage == 0) 
-			{ // A final printed message is
-						// Header+Message+\n(+\0) 
-			//Optimisation, on pourrait peut-etre mettre LMessage
-			//en static.  Mais il ne faudra pas que dans un D.Out
-			//qu'on appelle un autre D.Out car autrement, seul un
-			//message serait affiche.
+        va_list argptr;
+        va_start(argptr, format);
+        vsnprintf(buffer, sizeof(buffer), format, argptr);
+        va_end(argptr);
 
-			LMessage = (char *) malloc((pdMaxMessageSize+2) * sizeof(char));
+        *stream << buffer << '\n';
+    }
+}
+#endif
 
-			if (LMessage == 0)
-				{ 
-				PrettyDebug::Print(PrettyDebug::defaultOutputStream,
-								HeaderMessage, 
-								"Error in pgCDebug Out method while "
-								"allocating initial memory for messages\n");
-				exit(EXIT_FAILURE);
-				}
-		//                else
-		//                    PrettyDebug::Print(PrettyDebug::defaultOutputStream, 
-		//                                    HeaderMessage, "Allocated initial memory "
-		//                                    "for Message buffer.\n");
-			}
-		va_list argptr; // Variable Argument list, see stdarg.h
-		va_start(argptr, Format);
-		//Probleme, rien ne garantit qu'on ne depassera pas le
-		//nombre max de char dans le vsprintf.
-		vsprintf(LMessage, Format, argptr); 
-		va_end(argptr);
-		}
-	else
-		strcpy(LMessage, "Pretty Debug received an empty Message.");
-		
-	strcat(LMessage, "\n"); // Add trailing \n
-	PrettyDebug::Print(*theOutputStreamPtr, HeaderMessage, LMessage);
-	}
-return;
+// ----------------------------------------------------------------------------
+/** If level is enabled, print the debug header for this level and return
+    a std::ostream pointer to print debug messates to. If the given level is not
+    active returns a null pointer.
+*/
+std::ostream*
+PrettyDebug::getStreamPrintHeader(pdDebugLevel level)
+{
+    // Print a standard message header and return the stream where the rest should go.
+
+    std::ostream* stream = _streams[level];
+    if (!stream)
+        return 0;
+
+    *stream << "HLALOG - ";
+
+    // System dependent timestamp
+#ifdef _WIN32
+    struct _timeb timebuffer;
+    _ftime(&timebuffer);
+    *stream << timebuffer.time << '.' << std::setw(3) << std::right
+            << std::setfill('0') << timebuffer.millitm;
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    *stream << tv.tv_sec << '.' << std::setw(6) << std::right
+            << std::setfill('0') << tv.tv_usec;
+#endif
+
+    *stream << ' ' << _federateName << " - " << _header << "> ";
+
+    return stream;
 }
 
-#endif // NDEBUG
-
-// $Id: PrettyDebug.cc,v 4.9 2008/05/27 12:26:54 jmm Exp $
+// $Id: PrettyDebug.cc,v 4.10 2009/10/21 19:51:12 erk Exp $

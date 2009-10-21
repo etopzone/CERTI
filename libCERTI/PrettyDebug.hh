@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.6 2009/10/21 18:56:28 erk Exp $
+// $Id: PrettyDebug.hh,v 4.7 2009/10/21 19:51:12 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -29,18 +29,10 @@
 #define NDEBUG
 #endif
 
+#include "certi.hh"
 #include "DebugOStream.hh"
+#include <iosfwd>
 #include <string>
-#include "RTI.hh"
-
-#define pdSEmptyMessage "Pretty Debug Server empty Message."
-
-// Pretty Debug Basic types
-typedef unsigned TDebugLevel;
-
-
-// Pretty Debug Constants
-#define pdMaxMessageSize 255  // greater then pdTooLongInitMessage length!
 
 /** Do not use the pdUnused and pdLast Levels!!! Do not also specify
  *  any value for the elements, because order is used and missing
@@ -68,79 +60,82 @@ enum pdDebugLevel  {pdUnused, /**< Do not use! : */
 // debug level are enabled, and all others are not enabled.
 
 // KEEP THE SAME ORDER AS IN THE pdDebugLevel ENUM!
-#define pdDebugKeysString ":ACDEGIMPRSTWXZ\0"
+#define pdDebugKeysString ":ACDEGIMPRSTWXZ"
+
+// This is the standard way to issue debug messages into the debug streams.
+// Use that as follows:
+//
+// static PrettyDebug D("Name", "Header");
+//
+// [...]
+//
+//   Debug(D, pdDebug) << "This is a usual std::ostream shich could be used like that\n";
+//
+// Note that this is about the least runtim overhead you can have with dynamic debug messages
+// as the only thing that happens exactly once is the check against the null pointer in
+// the stream return. That is even optimized into fast inline path and a more expensive part
+// in case we really need the some output.
+// The next thing is that it can be used with *everything* that could be output to
+// an std::ostream without the need to maintain an extra debug stream type.
+// In the current case this make certi compile on win64 :)
+#define Debug(pd, level) \
+if (std::ostream* os = pd.getStream(level)) *os
 
 //---------------------------------------------------------------------------
 class CERTI_EXPORT PrettyDebug {
-    
-    public :
-       static void setFederateName( const std::string &inName )
-          { federateName_ = inName ; }
-       static void setFederateName( const char *inName )
-          { federateName_ = inName ; }
-protected :
-       static std::string federateName_ ;
-private:
-    char* LEnvVar;			/**< Name of the environment variable to look for. */
-    char* LMessage;			/**< The container of all printed debug messages. 
-					Start with the Header specified at construction time */
-    char* HeaderMessage;	/**< The header message specified at construction time. */
- 
-    static DebugOStream defaultOutputStream;
-    static DebugOStream* nullOutputStreamPtr;
-    static DebugOStream& nullOutputStream;
-    
-    #ifdef _WIN32				//Mutex : Print Control
-		 static HANDLE	g_hMutex;
-    #endif
- 
-    /** If Level_Map[Level] != &PrettyDebug::nullOutputStream, then the
-       debug message must be printed in the ostream addressed. */
-    DebugOStream* Level_Map [pdLast + 1];
-
-    void Print(DebugOStream& theOutputStream, 
-                      const char* theHeaderMessage, 
-                      const char * Message);
-
-    // Parse the environment variable value to find debug keys and
-    // enable debug levels
-    void ParseEnvString(const char * Name);
-
-public:  
-    PrettyDebug(const char * Name, const char * Header);
+public:
+    PrettyDebug(const char* name, const char* header);
     ~PrettyDebug();
-  
-  
-    bool Mode(pdDebugLevel Level);
 
-    void enableDebugLevel(pdDebugLevel Level, 
-                          DebugOStream& theOutputStream = PrettyDebug::defaultOutputStream);
+    void enableDebugLevel(pdDebugLevel Level);
+    void enableDebugLevel(pdDebugLevel Level, std::ostream& stream);
     void disableDebugLevel(pdDebugLevel Level);
-  
-    DebugOStream& operator[](pdDebugLevel Level) //Inline method
-    {
-        DebugOStream* theReturnedOutputStreamPtr = (Level_Map[Level]);
-        if (theReturnedOutputStreamPtr == PrettyDebug::nullOutputStreamPtr) {
-            return(PrettyDebug::nullOutputStream);
-        }
-        Print( *theReturnedOutputStreamPtr, HeaderMessage, "" );
-        return(*theReturnedOutputStreamPtr);
-    }
- 
-#ifdef NDEBUG
-    inline void Out(pdDebugLevel Level, const char *Format, ...) {};
-#else
-	void Out(pdDebugLevel Level, const char *Format, ...);
-	void Mes(pdDebugLevel Level, const char type, const short testMess, const char *context);
 
+    // Get the ostream to print debug messages to.
+    // Returns zero if debugging is not enabled for the given level.
+    std::ostream* getStream(pdDebugLevel level)
+    {
+        // make sure this is an unsigned value to so just one check is sufficient
+        if (unsigned(pdLast) <= unsigned(level))
+            return 0;
+        if (!_streams[level])
+            return 0;
+        return getStreamPrintHeader(level);
+    }
+
+    static void setFederateName(const std::string& inName)
+    { _federateName = inName; }
+    static void setFederateName(const char* inName)
+    { if (inName) _federateName = inName; }
+
+#ifdef NDEBUG
+    void Out(pdDebugLevel level, const char *format, ...) {}
+
+    DebugOStream operator[](pdDebugLevel level)
+    { return DebugOStream(0); }
+#else
+    void Out(pdDebugLevel level, const char *format, ...);
+    void Mes(pdDebugLevel level, const char type, const short testMess, const char *context);
+
+    DebugOStream operator[](pdDebugLevel level)
+    { return DebugOStream(getStreamPrintHeader(level)); }
 #endif
 
-};
+private:
+    // Print the message header for the given level and return the apropriate stream
+    std::ostream* getStreamPrintHeader(pdDebugLevel level);
 
+    std::string _name;
+    std::string _header;
+    std::ostream* _streams[pdLast];
+
+    static std::ostream _defaultOutputStream;
+    static std::string _federateName;
+};
 
 // Alias
 typedef PrettyDebug PrettyDebug ; ///< \deprecated PrettyDebug replaced by PrettyDebug
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.6 2009/10/21 18:56:28 erk Exp $
+// $Id: PrettyDebug.hh,v 4.7 2009/10/21 19:51:12 erk Exp $
