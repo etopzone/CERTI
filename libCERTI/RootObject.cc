@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.41 2009/08/12 13:48:37 erk Exp $
+// $Id: RootObject.cc,v 3.42 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -51,7 +51,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("ROOTOBJECT", "(RootObject) ");
+static PrettyDebug D("ROOTOBJECT", "(RootObject) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 
@@ -360,4 +360,4 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.41 2009/08/12 13:48:37 erk Exp $
+// $Id: RootObject.cc,v 3.42 2009/10/21 18:56:28 erk Exp $

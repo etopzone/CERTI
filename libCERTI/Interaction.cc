@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.52 2009/09/14 21:21:31 erk Exp $
+// $Id: Interaction.cc,v 3.53 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -40,7 +40,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("INTERACTION", "(Interact) - ");
+static PrettyDebug D("INTERACTION", "(Interact) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 Interaction::Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder)
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.52 2009/09/14 21:21:31 erk Exp $
+// $Id: Interaction.cc,v 3.53 2009/10/21 18:56:28 erk Exp $

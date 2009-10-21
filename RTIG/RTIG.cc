@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG.cc,v 3.57 2009/09/14 21:21:32 erk Exp $
+// $Id: RTIG.cc,v 3.58 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -31,8 +31,8 @@
 #include <signal.h>
 #else
 #include <unistd.h>
-#include <iostream>
 #endif
+#include <iostream>
 #include <cerrno>
 #include <csignal>
 #include <memory>
@@ -115,7 +115,7 @@ RTIG::chooseProcessingMethod(Socket *link, NetworkMessage *msg)
       case NetworkMessage::CLOSE_CONNEXION:
         D.Out(pdTrace, "Close connection %ld.", link->returnSocket());
         auditServer.setLevel(9);
-        auditServer << "Socket " << link->returnSocket();
+        auditServer << "Socket " << int(link->returnSocket());
         closeConnection(link, false);
         link = NULL ;
         break ;
@@ -1035,4 +1035,4 @@ if (sig == SIGINT) terminate = true ;
 
 }} // namespace certi/rtig
 
-// $Id: RTIG.cc,v 3.57 2009/09/14 21:21:32 erk Exp $
+// $Id: RTIG.cc,v 3.58 2009/10/21 18:56:29 erk Exp $

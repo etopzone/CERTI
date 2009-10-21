@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.28 2009/09/14 21:21:32 erk Exp $
+// $Id: DataDistribution.cc,v 3.29 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -44,7 +44,7 @@ using std::endl ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_DDM", __FILE__);
+static PrettyDebug D("RTIA_DDM", __FILE__);
 
 // ----------------------------------------------------------------------------
 DataDistribution::DataDistribution(RootObject *root_object,
@@ -413,4 +413,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.28 2009/09/14 21:21:32 erk Exp $
+// $Id: DataDistribution.cc,v 3.29 2009/10/21 18:56:29 erk Exp $

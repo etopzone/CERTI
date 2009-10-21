@@ -32,11 +32,11 @@
 #ifdef _WIN32
 #include "SocketTCP.hh"
 #else
-#include <iostream>
 #include <sstream>
 #include <unistd.h>
 #include <strings.h>
 #endif
+#include <iostream>
 #include <assert.h>
 #include <errno.h>
 
@@ -45,7 +45,7 @@ using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("SOCKUDP", "(SocketUDP) - ");
+static PrettyDebug D("SOCKUDP", "(SocketUDP) - ");
 
 // ----------------------------------------------------------------------------
 void

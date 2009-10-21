@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassBroadcastList.cc,v 3.26 2009/09/14 21:21:32 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.27 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -33,7 +33,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("BROADCAST", __FILE__);
+static PrettyDebug D("BROADCAST", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -401,4 +401,4 @@ ObjectClassBroadcastList::sendPendingRAVMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: ObjectClassBroadcastList.cc,v 3.26 2009/09/14 21:21:32 erk Exp $
+// $Id: ObjectClassBroadcastList.cc,v 3.27 2009/10/21 18:56:28 erk Exp $

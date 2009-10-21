@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.107 2009/10/09 21:13:56 erk Exp $
+// $Id: RTIambassador.cc,v 3.108 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -51,7 +51,7 @@ using std::endl ;
 
 namespace {
 
-static pdCDebug D("LIBRTI", __FILE__);
+static PrettyDebug D("LIBRTI", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 using namespace certi ;
@@ -3031,4 +3031,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.107 2009/10/09 21:13:56 erk Exp $
+// $Id: RTIambassador.cc,v 3.108 2009/10/21 18:56:29 erk Exp $

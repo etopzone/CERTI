@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: GAV.cc,v 3.20 2009/04/04 13:53:25 gotthardp Exp $
+// $Id: GAV.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "GAV.hh"
@@ -36,7 +36,7 @@ using namespace certi ;
 
 namespace certi {
 
-static pdCDebug D("GAV", "(gav) - ");
+static PrettyDebug D("GAV", "(gav) - ");
 
 // ----------------------------------------------------------------------------
 AttributeHandleValuePair::AttributeHandleValuePair(Handle handle,
@@ -565,5 +565,5 @@ ParameterHandleValuePairSet::next(ULong) const
 
 } // namespace certi
 
-// $Id: GAV.cc,v 3.20 2009/04/04 13:53:25 gotthardp Exp $
+// $Id: GAV.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
 

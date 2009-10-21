@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebug.hh,v 4.5 2009/04/02 19:58:07 erk Exp $
+// $Id: PrettyDebug.hh,v 4.6 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef PRETTYDEBUG_HH
@@ -139,8 +139,8 @@ public:
 
 
 // Alias
-typedef PrettyDebug pdCDebug ; ///< \deprecated pdCDebug replaced by PrettyDebug
+typedef PrettyDebug PrettyDebug ; ///< \deprecated PrettyDebug replaced by PrettyDebug
 
 #endif // PRETTYDEBUG_HH
 
-// $Id: PrettyDebug.hh,v 4.5 2009/04/02 19:58:07 erk Exp $
+// $Id: PrettyDebug.hh,v 4.6 2009/10/21 18:56:28 erk Exp $

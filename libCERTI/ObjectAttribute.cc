@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.17 2007/07/06 09:25:19 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.18 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -36,7 +36,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
+static PrettyDebug D("OBJECTATTRIBUTE", "(Obj_Attr) - ");
 
 // ----------------------------------------------------------------------------
 //! Constructor that sets handle and attribute owner.
@@ -199,4 +199,4 @@ ObjectAttribute::unassociate(RTIRegion *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.17 2007/07/06 09:25:19 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.18 2009/10/21 18:56:28 erk Exp $

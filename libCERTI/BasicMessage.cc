@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: BasicMessage.cc,v 3.12 2008/05/29 12:20:35 rousse Exp $
+// $Id: BasicMessage.cc,v 3.13 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,7 +31,7 @@
 using std::vector ;
 using std::endl ;
 
-static pdCDebug D("MESSAGE", __FILE__);
+static PrettyDebug D("MESSAGE", __FILE__);
 
 namespace certi {
 
@@ -225,4 +225,4 @@ BasicMessage::getRegions() const
 
 } // namespace certi
 
-// $Id: BasicMessage.cc,v 3.12 2008/05/29 12:20:35 rousse Exp $
+// $Id: BasicMessage.cc,v 3.13 2009/10/21 18:56:28 erk Exp $

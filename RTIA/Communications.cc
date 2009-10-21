@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.34 2009/09/14 20:51:52 erk Exp $
+// $Id: Communications.cc,v 3.35 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -36,12 +36,12 @@
 		#undef max
 	#endif
 #else
-    #include <fstream>
-    #include <iostream>
     #include <unistd.h>
 	#include <errno.h>
 #endif
 
+#include <fstream>
+#include <iostream>
 #include <cstdlib>
 
 
@@ -55,7 +55,7 @@ using std::list ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_COMM", "(RTIA Comm) ");
+static PrettyDebug D("RTIA_COMM", "(RTIA Comm) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -369,4 +369,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.34 2009/09/14 20:51:52 erk Exp $
+// $Id: Communications.cc,v 3.35 2009/10/21 18:56:28 erk Exp $

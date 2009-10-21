@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA_network.cc,v 3.32 2009/04/08 10:47:18 approx Exp $
+// $Id: RTIA_network.cc,v 3.33 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -34,7 +34,7 @@
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA", "(RTIA net) ");
+static PrettyDebug D("RTIA", "(RTIA net) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -373,4 +373,4 @@ NetworkMessage::Type msgType = msg->getType();
 
 }} // namespace certi/rtia
 
-// $Id: RTIA_network.cc,v 3.32 2009/04/08 10:47:18 approx Exp $
+// $Id: RTIA_network.cc,v 3.33 2009/10/21 18:56:29 erk Exp $

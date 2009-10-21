@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.74 2009/10/11 11:22:55 erk Exp $
+// $Id: FederationManagement.cc,v 3.75 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -47,7 +47,7 @@ using std::string ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_FM", "(RTIA FM) ");
+static PrettyDebug D("RTIA_FM", "(RTIA FM) ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------

@@ -42,7 +42,7 @@ using std::string ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTSET", "(ObjectSet) - ");
+static PrettyDebug D("OBJECTSET", "(ObjectSet) - ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -461,4 +461,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.25 2009/10/12 07:09:32 erk Exp $
+// $Id: ObjectSet.cc,v 3.26 2009/10/21 18:56:28 erk Exp $

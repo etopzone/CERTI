@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.cc,v 3.12 2009/09/14 20:51:52 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.13 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -34,7 +34,7 @@
 
 namespace certi {
 
-static pdCDebug D("STCPSOCK", __FILE__);
+static PrettyDebug D("STCPSOCK", __FILE__);
 
 // ----------------------------------------------------------------------------
 SecureTCPSocket::SecureTCPSocket()
@@ -250,4 +250,4 @@ SecureTCPSocket::sendMessage(void *Buffer, unsigned long Size)
 
 }
 
-// $Id: SecureTCPSocket.cc,v 3.12 2009/09/14 20:51:52 erk Exp $
+// $Id: SecureTCPSocket.cc,v 3.13 2009/10/21 18:56:28 erk Exp $

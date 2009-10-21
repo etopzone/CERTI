@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionBroadcastList.cc,v 3.13 2008/05/30 14:01:05 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.14 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -31,7 +31,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("INTBROADCASTLIST", "(broadcas) - ");
+static PrettyDebug D("INTBROADCASTLIST", "(broadcas) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
@@ -177,4 +177,4 @@ InteractionBroadcastList::sendPendingMessage(SecurityServer *server)
 
 } // namespace certi
 
-// $Id: InteractionBroadcastList.cc,v 3.13 2008/05/30 14:01:05 erk Exp $
+// $Id: InteractionBroadcastList.cc,v 3.14 2009/10/21 18:56:28 erk Exp $

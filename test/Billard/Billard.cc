@@ -39,7 +39,7 @@ using std::endl ;
 using std::cout ;
 using std::vector ;
 
-static pdCDebug D("BILLARD", __FILE__);
+static PrettyDebug D("BILLARD", __FILE__);
 
 // ----------------------------------------------------------------------------
 /** Constructor

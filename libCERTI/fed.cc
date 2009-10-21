@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.20 2008/11/02 00:26:40 erk Exp $
+// $Id: fed.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -58,7 +58,7 @@ extern std::string arg ;
 extern OrderType order ;
 extern TransportType transport ;
 extern int line_number ;
-static pdCDebug D("FEDPARSER", __FILE__);
+static PrettyDebug D("FEDPARSER", __FILE__);
 
 static RootObject *root_object = 0 ;
 static bool verbose = false ;
@@ -452,4 +452,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.20 2008/11/02 00:26:40 erk Exp $
+// $Id: fed.cc,v 3.21 2009/10/21 18:56:28 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.87 2009/10/11 11:13:15 erk Exp $
+// $Id: RTIG_processing.cc,v 3.88 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -203,7 +203,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
                                 peer);
 
     auditServer << "(" << num_federation << ")with handle " << num_federe
-		<< ". Socket " << link->returnSocket();
+		<< ". Socket " << int(link->returnSocket());
 
     // Prepare answer about JoinFederationExecution
     // This answer wille be made AFTER FED file processing
@@ -1554,4 +1554,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.87 2009/10/11 11:13:15 erk Exp $
+// $Id: RTIG_processing.cc,v 3.88 2009/10/21 18:56:29 erk Exp $

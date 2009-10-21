@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.29 2009/10/11 17:12:06 erk Exp $
+// $Id: RTIA.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -33,7 +33,7 @@
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA", "(RTIA) ");
+static PrettyDebug D("RTIA", "(RTIA) ");
 
 RTIA::RTIA(int RTIA_port, int RTIA_fd) {
 
@@ -200,4 +200,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.29 2009/10/11 17:12:06 erk Exp $
+// $Id: RTIA.cc,v 3.30 2009/10/21 18:56:28 erk Exp $

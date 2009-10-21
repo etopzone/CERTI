@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.28 2008/11/08 01:11:23 erk Exp $
+// $Id: InteractionSet.cc,v 3.29 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -35,7 +35,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("INTERACTIONSET", "(InterSet) - ");
+static PrettyDebug D("INTERACTIONSET", "(InterSet) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 
@@ -275,4 +275,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.28 2008/11/08 01:11:23 erk Exp $
+// $Id: InteractionSet.cc,v 3.29 2009/10/21 18:56:28 erk Exp $

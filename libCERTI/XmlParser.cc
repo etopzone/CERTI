@@ -55,7 +55,7 @@ using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("XMLPARSER", "(XmlParser) ");
+static PrettyDebug D("XMLPARSER", "(XmlParser) ");
 
 XmlParser::XmlParser(RootObject* r)
 {

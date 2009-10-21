@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.19 2009/10/11 11:13:15 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.20 2009/10/21 18:56:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_OWM", "(RTIA OwM) ");
+static PrettyDebug D("RTIA_OWM", "(RTIA OwM) ");
 
 // ----------------------------------------------------------------------------
 //! Constructor.
@@ -512,4 +512,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.19 2009/10/11 11:13:15 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.20 2009/10/21 18:56:29 erk Exp $

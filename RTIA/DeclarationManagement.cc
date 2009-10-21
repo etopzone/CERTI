@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.27 2009/09/14 21:21:32 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.28 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -42,7 +42,7 @@
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA_DM", "(RTIA DM) ");
+static PrettyDebug D("RTIA_DM", "(RTIA DM) ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------
@@ -499,4 +499,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.27 2009/09/14 21:21:32 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.28 2009/10/21 18:56:28 erk Exp $

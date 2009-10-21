@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.15 2008/10/13 10:06:48 erk Exp $
+// $Id: SecurityServer.cc,v 3.16 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,7 +32,7 @@
 using std::list ;
 using std::endl ;
 
-static pdCDebug D("SECURITY_SERVER", __FILE__);
+static PrettyDebug D("SECURITY_SERVER", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
 namespace certi {
@@ -196,4 +196,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.15 2008/10/13 10:06:48 erk Exp $
+// $Id: SecurityServer.cc,v 3.16 2009/10/21 18:56:28 erk Exp $

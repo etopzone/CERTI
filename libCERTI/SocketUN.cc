@@ -197,7 +197,7 @@ SocketUN::SocketUN(SignalHandlerType theType)
 	RBLength = 0 ;
 #endif
 
- pD = new pdCDebug("SOCKUN", "SocketUN");
+ pD = new PrettyDebug("SOCKUN", "SocketUN");
  pD->Out(pdInit, "UNIX Socket created.");
 }
 

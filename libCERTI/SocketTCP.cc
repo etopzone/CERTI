@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.29 2009/10/12 07:09:32 erk Exp $
+// $Id: SocketTCP.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef _WIN32
@@ -27,12 +27,12 @@
 	#include <netdb.h>
 	#include <unistd.h>
 	#include <netinet/tcp.h>
-	#include <iostream>
 #endif
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
 
+#include <iostream>
 #include <cassert>
 #include <cerrno>
 #include <cstdlib>
@@ -43,7 +43,7 @@ using std::endl ;
 
 namespace certi {
 
-static pdCDebug D("SOCKTCP", "(SocketTCP) - ");
+static PrettyDebug D("SOCKTCP", "(SocketTCP) - ");
 static PrettyDebug G("GENDOC",__FILE__);
 
 #ifdef _WIN32
@@ -599,4 +599,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.29 2009/10/12 07:09:32 erk Exp $
+// $Id: SocketTCP.cc,v 3.30 2009/10/21 18:56:28 erk Exp $

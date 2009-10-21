@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: GSSAPIHandler.cc,v 3.7 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: GSSAPIHandler.cc,v 3.8 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifdef WITH_GSSAPI
@@ -30,7 +30,7 @@
 
 namespace certi {
 
-static pdCDebug D("HLAGSSAPI", "(H-GSSAPI) - ");
+static PrettyDebug D("HLAGSSAPI", "(H-GSSAPI) - ");
 
 // ----------------------------------------------------------------------------
 /*! Retrieve credential for Local principal.
@@ -688,4 +688,4 @@ void GSSAPIHandler::setRemoteName(char *PrincipalName)
 
 #endif // WITH_GSSAPI
 
-// $Id: GSSAPIHandler.cc,v 3.7 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: GSSAPIHandler.cc,v 3.8 2009/10/21 18:56:28 erk Exp $

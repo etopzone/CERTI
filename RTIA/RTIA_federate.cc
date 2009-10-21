@@ -35,7 +35,7 @@ using std::ifstream ;
 namespace certi {
 namespace rtia {
 
-static pdCDebug D("RTIA", __FILE__);
+static PrettyDebug D("RTIA", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 // ----------------------------------------------------------------------------

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: LBTS.cc,v 3.14 2009/10/04 15:46:38 erk Exp $
+// $Id: LBTS.cc,v 3.15 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -41,7 +41,7 @@ using std::vector ;
 
 namespace certi {
 
-static pdCDebug D("LBTS", __FILE__);
+static PrettyDebug D("LBTS", __FILE__);
 
 // ----------------------------------------------------------------------------
 /** Constructor.  LBTS is set to infinite in case of constrained
@@ -160,4 +160,4 @@ LBTS::remove(FederateHandle num_fed)
 
 } // namespace certi
 
-// $Id: LBTS.cc,v 3.14 2009/10/04 15:46:38 erk Exp $
+// $Id: LBTS.cc,v 3.15 2009/10/21 18:56:28 erk Exp $

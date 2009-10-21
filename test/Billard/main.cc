@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.23 2008/06/23 19:02:03 erk Exp $
+// $Id: main.cc,v 3.24 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -43,6 +43,7 @@
 #include <memory>
 #include <math.h>
 #include <iostream>
+#include <string>
 #include <signal.h>
 #include <exception>
 
@@ -55,7 +56,7 @@ using std::cout ;
 using std::endl ;
 using std::cerr ;
 
-static pdCDebug D("BILLARD", __FILE__);
+static PrettyDebug D("BILLARD", __FILE__);
 
 #ifdef _WIN32
 extern "C" void WINAPI WaitForEnd_Win(int *delai);

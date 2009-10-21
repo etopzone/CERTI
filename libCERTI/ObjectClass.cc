@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.66 2009/10/12 07:09:32 erk Exp $
+// $Id: ObjectClass.cc,v 3.67 2009/10/21 18:56:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -53,7 +53,7 @@ using std::list ;
 
 namespace certi {
 
-static pdCDebug D("OBJECTCLASS", __FILE__);
+static PrettyDebug D("OBJECTCLASS", __FILE__);
 static PrettyDebug G("GENDOC",__FILE__);
 
 // ----------------------------------------------------------------------------
@@ -1834,4 +1834,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.66 2009/10/12 07:09:32 erk Exp $
+// $Id: ObjectClass.cc,v 3.67 2009/10/21 18:56:28 erk Exp $
