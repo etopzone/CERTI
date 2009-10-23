@@ -1,0 +1,7 @@
+#!/bin/sh
+
+CERTI_NIGHTLY_BUILD_DIR=/LOCAL/ERIC/CertiNightly
+cd ${CERTI_NIGHTLY_BUILD_DIR}
+runuser enoulard ${CERTI_NIGHTLY_BUILD_DIR}/runtest.sh
+
+exit 0
