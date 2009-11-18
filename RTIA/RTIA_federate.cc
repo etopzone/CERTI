@@ -117,8 +117,8 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type CreateFederation.");
         // Store FEDid for future usage (JOIN_FEDERATION_EXECUTION) into fm
-        fm->_FEDid = req->getFEDid() ;
-        fm->createFederationExecution(req->getFederationName(), e);
+        fm->createFederationExecution(req->getFederationName(),
+                                      req->getFEDid(), e);
         if ( e == e_RTIinternalError )
             {
             rep.setException(e,"Federate is yet a creator or a member !");
@@ -126,7 +126,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace, "Receiving Message from Federate, "
               "type CreateFederation done.");
         // RTIA needs FEDid into the answer (rep Message) to federate
-        rep.setFEDid(fm->_FEDid) ;
+        rep.setFEDid(req->getFEDid()) ;
         // RTIA needs federation name into the answer (rep Message) to federate
         rep.setFederationName(req->getFederationName());
         break ;
@@ -144,73 +144,25 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         rep.setFederationName(req->getFederationName());
         break ;
 
-      case Message::JOIN_FEDERATION_EXECUTION: {
+      case Message::JOIN_FEDERATION_EXECUTION:
           D.Out(pdTrace,
                 "Receiving Message from Federate, type JoinFederation.");
           rep.setFederate(fm->joinFederationExecution(req->getFederateName(),
                                                       req->getFederationName(),
-                                                      e));
+                                                      rootObject, e));
           if ( e == e_NO_EXCEPTION )
               {
               /// Set RTIA PrettyDebug federate name
               PrettyDebug::setFederateName(req->getFederateName());
               // Set federation name for the answer message (rep)
               rep.setFederationName(req->getFederationName());
-
-              string filename = fm->_FEDid ;
-              int nbcar_filename=filename.length();
-              bool is_a_fed = false ;
-              bool is_an_xml = false ;
-
-              // Hope there is a . before fed or xml
-              if ( filename.at(nbcar_filename-4) != '.' )
-                  throw CouldNotOpenFED(". missing or not in place");
-
-              string extension = filename.substr(nbcar_filename-3,3) ;
-              if ( !strcasecmp(extension.c_str(),"fed") )
-                  {
-                  is_a_fed = true ;
-                  D.Out(pdTrace, "Trying to use .fed file");
-                  }
-              else if  ( !strcasecmp(extension.c_str(),"xml") )
-                  {
-                  is_an_xml = true ;
-                  D.Out(pdTrace, "Trying to use .xml file");
-                  }
-              else
-                  throw CouldNotOpenFED("nor .fed nor .xml");
-
-              ifstream fdd(filename.c_str());
-              if (fdd.is_open())
-                  {
-                  if ( is_a_fed )
-                      {
-	              int result = certi::fedparser::build(filename.c_str(),
-		        				   rootObject, false);
-                      if (result != 0 ) throw ErrorReadingFED("invalid .fed");
-                      }
-                  else if ( is_an_xml )
-                      {
-                      if (XmlParser::exists())
-                          {
-                          XmlParser parser(rootObject);
-                          parser.parse(filename);
-                          }
-		       else
-                          throw CouldNotOpenFED("no XmlParser");
-                      }
-                  }
-              else
-                  throw CouldNotOpenFED("File not found");
-              break ;
               }
           else
               {
               // JOIN FAILED
               throw FederateAlreadyExecutionMember("Federate yet joined or same name");
-              break;
               }
-      }
+          break;
       case Message::RESIGN_FEDERATION_EXECUTION:
         D.Out(pdTrace,
               "Receiving Message from Federate, type ResignFederation.");

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.32 2008/11/08 11:08:03 erk Exp $
+// $Id: RootObject.hh,v 3.33 2009/11/18 18:50:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -37,6 +37,7 @@ namespace certi {
 	class InteractionSet;
 	class RTIRegion;
 	class RoutingSpace;
+        class NM_Join_Federation_Execution;
 }  // namespace certi
 
 #include "certi.hh"
@@ -166,6 +167,16 @@ public:
      */
     ObjectSet      *objects;
 
+    /**
+     * Serialize the federate object model into a message buffer.
+     */
+    void getFOM(NM_Join_Federation_Execution& message);
+
+    /**
+     * Deserialize the federate object model from a message buffer.
+     */
+    void setFOM(const NM_Join_Federation_Execution& message);
+
 private:
 
     std::vector<RoutingSpace> spaces;
@@ -183,4 +194,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.32 2008/11/08 11:08:03 erk Exp $
+// $Id: RootObject.hh,v 3.33 2009/11/18 18:50:49 erk Exp $

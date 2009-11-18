@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.114 2009/10/21 20:04:45 erk Exp $
+// $Id: Federation.cc,v 3.115 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -749,6 +749,12 @@ Federation::addRegulator(FederateHandle federate_handle, FederationTime time)
     msg.setDate(time);
 
     this->broadcastAnyMessage(&msg, 0);
+}
+
+void
+Federation::getFOM(NM_Join_Federation_Execution& objectModelData)
+{
+    root->getFOM(objectModelData);
 }
 
 // ----------------------------------------------------------------------------
@@ -2606,5 +2612,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.114 2009/10/21 20:04:45 erk Exp $
+// $Id: Federation.cc,v 3.115 2009/11/18 18:50:48 erk Exp $
 

@@ -124,6 +124,168 @@ private:
 
 /*<END>---------- Message_Null ------------<END>*/
 
+/*<BEGIN>---------- FOM_Dimension ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Dimension {
+public:
+        NM_FOM_Dimension() : _handle(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const DimensionHandle& getHandle() const {return _handle;}
+	void setHandle(const DimensionHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+protected:
+	/* specific field */
+        DimensionHandle _handle;
+        std::string _name;
+private:
+};
+
+/*<END>---------- FOM_Dimension ------------<END>*/
+
+/*<BEGIN>---------- FOM_Routing_Space ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Routing_Space {
+public:
+        NM_FOM_Routing_Space() : _handle(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const SpaceHandle& getHandle() const {return _handle;}
+	void setHandle(const SpaceHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+        uint32_t getNumDimensions() const { return _dimensions.size(); }
+        void setNumDimensions(uint32_t num) { _dimensions.resize(num); }
+        const NM_FOM_Dimension& getDimension(uint32_t index) const { return _dimensions[index]; }
+        NM_FOM_Dimension& getDimension(uint32_t index) { return _dimensions[index]; }
+        void setDimension(uint32_t index, const NM_FOM_Dimension& dimension) { _dimensions[index] = dimension; }
+protected:
+	/* specific field */
+        SpaceHandle _handle;
+        std::string _name;
+        std::vector<NM_FOM_Dimension> _dimensions;
+private:
+};
+
+/*<END>---------- FOM_Routing_Space ------------<END>*/
+
+/*<BEGIN>---------- FOM_Attribute ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Attribute {
+public:
+        NM_FOM_Attribute() : _handle(0), _spaceHandle(0), _order(0), _transport(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const AttributeHandle& getHandle() const {return _handle;}
+	void setHandle(const AttributeHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+	const SpaceHandle& getSpaceHandle() const {return _spaceHandle;}
+	void setSpaceHandle(const SpaceHandle& spaceHandle) {_spaceHandle=spaceHandle;}
+	const OrderType& getOrder() const {return _order;}
+	void setOrder(const OrderType& order) {_order=order;}
+	const TransportType& getTransport() const {return _transport;}
+	void setTransport(const TransportType& transport) {_transport=transport;}
+protected:
+	/* specific field */
+        AttributeHandle _handle;
+        std::string _name;
+        SpaceHandle _spaceHandle;
+        OrderType _order;
+        TransportType _transport;
+private:
+};
+
+/*<END>---------- FOM_Attribute ------------<END>*/
+
+/*<BEGIN>---------- FOM_Object_Class ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Object_Class {
+public:
+        NM_FOM_Object_Class() : _handle(0), _superclassHandle(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const ObjectClassHandle& getHandle() const {return _handle;}
+	void setHandle(const ObjectClassHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+	const ObjectClassHandle& getSuperclassHandle() const {return _superclassHandle;}
+	void setSuperclassHandle(const ObjectClassHandle& superclassHandle) {_superclassHandle=superclassHandle;}
+        uint32_t getNumAttributes() const { return _attributes.size(); }
+        void setNumAttributes(uint32_t num) { _attributes.resize(num); }
+        const NM_FOM_Attribute& getAttribute(uint32_t index) const { return _attributes[index]; }
+        NM_FOM_Attribute& getAttribute(uint32_t index) { return _attributes[index]; }
+        void setAttribute(uint32_t index, const NM_FOM_Attribute& attribute) { _attributes[index] = attribute; }
+protected:
+	/* specific field */
+        ObjectClassHandle _handle;
+        std::string _name;
+        ObjectClassHandle _superclassHandle;
+        std::vector<NM_FOM_Attribute> _attributes;
+private:
+};
+
+/*<END>---------- FOM_Object_Class ------------<END>*/
+
+/*<BEGIN>---------- FOM_Parameter ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Parameter {
+public:
+        NM_FOM_Parameter() : _handle(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const ParameterHandle& getHandle() const {return _handle;}
+	void setHandle(const ParameterHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+protected:
+	/* specific field */
+        ParameterHandle _handle;
+        std::string _name;
+private:
+};
+
+/*<END>---------- FOM_Parameter ------------<END>*/
+
+/*<BEGIN>---------- FOM_Interaction_Class ------------<BEGIN>*/
+class CERTI_EXPORT NM_FOM_Interaction_Class {
+public:
+        NM_FOM_Interaction_Class() : _handle(0), _superclassHandle(0), _spaceHandle(0), _order(0), _transport(0) {}
+	void serialize(MessageBuffer& msgBuffer);
+	void deserialize(MessageBuffer& msgBuffer);
+	/* specific Getter/Setter */
+	const InteractionClassHandle& getHandle() const {return _handle;}
+	void setHandle(const InteractionClassHandle& handle) {_handle=handle;}
+	const std::string& getName() const {return _name;}
+	void setName(const std::string& name) {_name=name;}
+	const InteractionClassHandle& getSuperclassHandle() const {return _superclassHandle;}
+	void setSuperclassHandle(const InteractionClassHandle& superclassHandle) {_superclassHandle=superclassHandle;}
+	const SpaceHandle& getSpaceHandle() const {return _spaceHandle;}
+	void setSpaceHandle(const SpaceHandle& spaceHandle) {_spaceHandle=spaceHandle;}
+	const OrderType& getOrder() const {return _order;}
+	void setOrder(const OrderType& order) {_order=order;}
+	const TransportType& getTransport() const {return _transport;}
+	void setTransport(const TransportType& transport) {_transport=transport;}
+        uint32_t getNumParameters() const { return _parameters.size(); }
+        void setNumParameters(uint32_t num) { _parameters.resize(num); }
+        const NM_FOM_Parameter& getParameter(uint32_t index) const { return _parameters[index]; }
+        NM_FOM_Parameter& getParameter(uint32_t index) { return _parameters[index]; }
+        void setParameter(uint32_t index, const NM_FOM_Parameter& parameter) { _parameters[index] = parameter; }
+protected:
+	/* specific field */
+        InteractionClassHandle _handle;
+        std::string _name;
+        InteractionClassHandle _superclassHandle;
+        SpaceHandle _spaceHandle;
+        OrderType _order;
+        TransportType _transport;
+        std::vector<NM_FOM_Parameter> _parameters;
+private:
+};
+
+/*<END>---------- FOM_Interaction_Class ------------<END>*/
+
 /*<BEGIN>---------- Create_Federation_Execution ------------<BEGIN>*/
 class CERTI_EXPORT NM_Create_Federation_Execution : public NetworkMessage {
 public:
@@ -178,6 +340,21 @@ public:
 	std::string getFederationName() {return federationName;};
 	void setFederationName(std::string newFederationName) {federationName=newFederationName;};
 	/* specific Getter/Setter */
+        uint32_t getNumRoutingSpaces() const { return _routingSpaces.size(); }
+        void setNumRoutingSpaces(uint32_t num) { _routingSpaces.resize(num); }
+        const NM_FOM_Routing_Space& getRoutingSpace(uint32_t index) const { return _routingSpaces[index]; }
+        NM_FOM_Routing_Space& getRoutingSpace(uint32_t index) { return _routingSpaces[index]; }
+        void setRoutingSpace(uint32_t index, const NM_FOM_Routing_Space& routingSpace) { _routingSpaces[index] = routingSpace; }
+        uint32_t getNumObjectClasses() const { return _objectClasses.size(); }
+        void setNumObjectClasses(uint32_t num) { _objectClasses.resize(num); }
+        const NM_FOM_Object_Class& getObjectClass(uint32_t index) const { return _objectClasses[index]; }
+        NM_FOM_Object_Class& getObjectClass(uint32_t index) { return _objectClasses[index]; }
+        void setObjectClass(uint32_t index, const NM_FOM_Object_Class& objectClass) { _objectClasses[index] = objectClass; }
+        uint32_t getNumInteractionClasses() const { return _interactionClasses.size(); }
+        void setNumInteractionClasses(uint32_t num) { _interactionClasses.resize(num); }
+        const NM_FOM_Interaction_Class& getInteractionClass(uint32_t index) const { return _interactionClasses[index]; }
+        NM_FOM_Interaction_Class& getInteractionClass(uint32_t index) { return _interactionClasses[index]; }
+        void setInteractionClass(uint32_t index, const NM_FOM_Interaction_Class& interactionClass) { _interactionClasses[index] = interactionClass; }
 protected:
 	/* specific field */
 	//	int32_t  numberOfRegulators;
@@ -186,6 +363,9 @@ protected:
 	//	uint32_t bestEffortPeer;
 	std::string federationName;
 	std::string federateName;
+        std::vector<NM_FOM_Routing_Space> _routingSpaces;
+        std::vector<NM_FOM_Object_Class> _objectClasses;
+        std::vector<NM_FOM_Interaction_Class> _interactionClasses;
 private:
 };
 
@@ -1521,35 +1701,6 @@ private:
 };
 
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
-
-/*<BEGIN>---------- Get_Fed_File ------------<BEGIN>*/
-class CERTI_EXPORT NM_Get_FED_File : public NetworkMessage {
-public:
-	typedef NetworkMessage Super;
-	NM_Get_FED_File();
-	virtual ~NM_Get_FED_File();
-	virtual void serialize(MessageBuffer& msgBuffer);
-	virtual void deserialize(MessageBuffer& msgBuffer);
-	/* specific Getter/Setter */
-	std::string getFederateName() {return federateName;};
-    void setFederateName(std::string newFederateName) {federateName=newFederateName;};
-	void setFEDid(std::string newFEDid) {FEDid=newFEDid;};
-	const std::string getFEDid() const {return FEDid;};
-	uint32_t getLineno() {return lineno;};
-	void setLineno(uint32_t newLineno) {lineno=newLineno;};
-	void setFEDLine(std::string newLine) {line=newLine;};
-	std::string getFEDLine() {return line;};
-protected:
-	/* specific field */
-	std::string federateName;// the Federate name
-	std::string FEDid;
-	uint32_t    lineno;
-	std::string line;
-
-private:
-};
-
-/*<END>---------- Get_Fed_File ------------<END>*/
 
 /*<BEGIN>---------- Last ------------<BEGIN>*/
 class CERTI_EXPORT NM_Last : public NetworkMessage {

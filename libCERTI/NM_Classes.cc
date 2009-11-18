@@ -301,9 +301,6 @@ NetworkMessage* NM_Factory::create(NetworkMessage::Message_T type) throw (RTIint
 	case NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE:
 		msg = new NM_Provide_Attribute_Value_Update(); 
 		break;
-	case NetworkMessage::GET_FED_FILE:
-		msg = new NM_Get_FED_File(); 
-		break;
 	case NetworkMessage::LAST:
 		throw RTIinternalError("LAST message type should not be used!!");
 		msg = new NM_Last(); 
@@ -419,6 +416,112 @@ NM_Message_Null::~NM_Message_Null() {
 }
 /*<END>---------- Message_Null ------------<END>*/
 
+/*<BEGIN>---------- FOM_Dimension ------------<BEGIN>*/
+void NM_FOM_Dimension::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+}
+void NM_FOM_Dimension::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+}
+/*<END>---------- FOM_Dimension ------------<END>*/
+
+/*<BEGIN>---------- FOM_Routing_Space ------------<BEGIN>*/
+void NM_FOM_Routing_Space::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+        uint32_t size = _dimensions.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _dimensions[i].serialize(msgBuffer);
+} /* end of serialize */ 
+void NM_FOM_Routing_Space::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+	uint32_t size = msgBuffer.read_uint32();
+        _dimensions.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _dimensions[i].deserialize(msgBuffer);
+} /* end of deserialize */
+/*<END>---------- FOM_Routing_Space ------------<END>*/
+
+/*<BEGIN>---------- FOM_Attribute ------------<BEGIN>*/
+void NM_FOM_Attribute::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+	msgBuffer.write_uint32(_spaceHandle);
+	msgBuffer.write_uint8(_order);
+	msgBuffer.write_uint8(_transport);
+}
+void NM_FOM_Attribute::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+        _spaceHandle = msgBuffer.read_uint32();
+	_order = msgBuffer.read_uint8();
+	_transport = msgBuffer.read_uint8();
+}
+/*<END>---------- FOM_Attribute ------------<END>*/
+
+/*<BEGIN>---------- FOM_Object_Class ------------<BEGIN>*/
+void NM_FOM_Object_Class::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+	msgBuffer.write_uint32(_superclassHandle);
+        uint32_t size = _attributes.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _attributes[i].serialize(msgBuffer);
+} /* end of serialize */ 
+void NM_FOM_Object_Class::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+        _superclassHandle = msgBuffer.read_uint32();
+	uint32_t size = msgBuffer.read_uint32();
+        _attributes.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _attributes[i].deserialize(msgBuffer);
+} /* end of deserialize */
+/*<END>---------- FOM_Object_Class ------------<END>*/
+
+/*<BEGIN>---------- FOM_FOM_Parameter ------------<BEGIN>*/
+void NM_FOM_Parameter::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+}
+void NM_FOM_Parameter::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+}
+/*<END>---------- FOM_FOM_Parameter ------------<END>*/
+
+/*<BEGIN>---------- FOM_Interaction_Class ------------<BEGIN>*/
+void NM_FOM_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
+	msgBuffer.write_uint32(_handle);
+	msgBuffer.write_string(_name);
+	msgBuffer.write_uint32(_superclassHandle);
+	msgBuffer.write_uint32(_spaceHandle);
+	msgBuffer.write_uint8(_order);
+	msgBuffer.write_uint8(_transport);
+        uint32_t size = _parameters.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _parameters[i].serialize(msgBuffer);
+} /* end of serialize */ 
+void NM_FOM_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
+	_handle = msgBuffer.read_uint32();
+	_name = msgBuffer.read_string();
+        _superclassHandle = msgBuffer.read_uint32();
+        _spaceHandle = msgBuffer.read_uint32();
+	_order = msgBuffer.read_uint8();
+	_transport = msgBuffer.read_uint8();
+	uint32_t size = msgBuffer.read_uint32();
+        _parameters.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _parameters[i].deserialize(msgBuffer);
+} /* end of deserialize */
+/*<END>---------- FOM_Interaction_Class ------------<END>*/
+
 /*<BEGIN>---------- Create_Federation_Execution ------------<BEGIN>*/
 NM_Create_Federation_Execution::NM_Create_Federation_Execution() {
 	this->name = "CREATE_FEDERATION_EXECUTION";
@@ -469,7 +572,6 @@ void NM_Destroy_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 NM_Join_Federation_Execution::NM_Join_Federation_Execution() {
 	this->name = "JOIN_FEDERATION_EXECUTION";
 	this->type = NetworkMessage::JOIN_FEDERATION_EXECUTION;
-	federateName = std::string("");
 	/* specific field init */
 }
 NM_Join_Federation_Execution::~NM_Join_Federation_Execution() {
@@ -484,6 +586,18 @@ void NM_Join_Federation_Execution::serialize(MessageBuffer& msgBuffer) {
 	msgBuffer.write_uint32(bestEffortPeer);
 	msgBuffer.write_string(federationName);
 	msgBuffer.write_string(federateName);
+        uint32_t size = _routingSpaces.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _routingSpaces[i].serialize(msgBuffer);
+        size = _objectClasses.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _objectClasses[i].serialize(msgBuffer);
+        size = _interactionClasses.size();
+	msgBuffer.write_uint32(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _interactionClasses[i].serialize(msgBuffer);
 } /* end of serialize */ 
 void NM_Join_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
@@ -495,6 +609,18 @@ void NM_Join_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	bestEffortPeer     = msgBuffer.read_uint32();
 	federationName     = msgBuffer.read_string();
 	federateName       = msgBuffer.read_string();
+	uint32_t size = msgBuffer.read_uint32();
+        _routingSpaces.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _routingSpaces[i].deserialize(msgBuffer);
+	size = msgBuffer.read_uint32();
+        _objectClasses.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _objectClasses[i].deserialize(msgBuffer);
+	size = msgBuffer.read_uint32();
+        _interactionClasses.resize(size);
+        for (uint32_t i = 0; i < size; ++i)
+          _interactionClasses[i].deserialize(msgBuffer);
 } /* end of deserialize */
 /*<END>---------- Join_Federation_Execution ------------<END>*/
 
@@ -1778,38 +1904,6 @@ NM_Provide_Attribute_Value_Update::NM_Provide_Attribute_Value_Update() {
 NM_Provide_Attribute_Value_Update::~NM_Provide_Attribute_Value_Update() {
 }
 /*<END>---------- Provide_Attribute_Value_Update ------------<END>*/
-
-/*<BEGIN>---------- Get_FED_File ------------<BEGIN>*/
-NM_Get_FED_File::NM_Get_FED_File() {
-	this->name = "GET_FED_FILE";
-	this->type = NetworkMessage::GET_FED_FILE;
-	/* specific field init */
-}
-NM_Get_FED_File::~NM_Get_FED_File() {
-}
-void NM_Get_FED_File::serialize(MessageBuffer& msgBuffer) {
-	/* call mother class */      
-	Super::serialize(msgBuffer); 
-	/* specific code (if any) goes here */
-	msgBuffer.write_string(federateName);
-	msgBuffer.write_string(FEDid);
-	msgBuffer.write_int16(lineno);
-	if (lineno>0) {
-		msgBuffer.write_string(line);
-	}
-} /* end of serialize */ 
-void NM_Get_FED_File::deserialize(MessageBuffer& msgBuffer) {
-	/* call mother class */      
-	Super::deserialize(msgBuffer); 
-	/* specific code (if any) goes here */
-	federateName = msgBuffer.read_string();
-	FEDid        = msgBuffer.read_string();
-	lineno       = msgBuffer.read_int16();
-	if (lineno>0) {
-		line = msgBuffer.read_string();
-	}
-} /* end of deserialize */
-/*<END>---------- Get_FED_File ------------<END>*/
 
 /*<BEGIN>---------- Last ------------<BEGIN>*/
 NM_Last::NM_Last() {

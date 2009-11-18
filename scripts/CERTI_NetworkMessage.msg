@@ -43,6 +43,73 @@ native AttributeHandle {
     language CXX [#include "certi.hh"]
 }
 
+native DimensionHandle {
+    language CXX [#include "certi.hh"]
+}
+
+native InteractionClassHandle {
+    language CXX [#include "certi.hh"]
+}
+
+native ObjectClassHandle {
+    language CXX [#include "certi.hh"]
+}
+
+native ParameterHandle {
+    language CXX [#include "certi.hh"]
+}
+
+native SpaceHandle {
+    language CXX [#include "certi.hh"]
+}
+
+native TransportType {
+    language CXX [#include "certi.hh"]
+}
+
+native OrderType {
+    language CXX [#include "certi.hh"]
+}
+
+message NM_FOM_Dimension {
+        required DimensionHandle handle
+        required string name
+}
+
+message NM_FOM_Rounting_Space {
+	required SpaceHandle space
+	required string name
+        repeated NM_FOM_Dimension dimensions
+}
+
+message NM_FOM_Attribute {
+        required AttributeHandle handle
+        required string name
+	required SpaceHandle spaceHandle
+	required OrderType order
+	required TransportType transport
+}
+
+message NM_FOM_Object_Class {
+	required ObjectClassHandle handle
+	required ObjectClassHandle superClass
+	required string name
+        repeated NM_FOM_Attribute attributes
+}
+
+message NM_FOM_Parameter {
+        required ParameterHandle handle
+        required string name
+}
+
+message NM_FOM_Interaction_Class {
+	required InteractionClassHandle handle
+	required SpaceHandle space
+	required OrderType order
+	required TransportType transport
+        repeated NM_FOM_Parameter parameters
+}
+
 message NM_Close_Connexion : merge NetworkMessage {}
 
 message NM_Message_Null : merge NetworkMessage {}
@@ -66,6 +133,9 @@ message NM_Join_Federation_Execution : merge NetworkMessage {
 	required uint32  bestEffortPeer
 	required string  federationName // the federation name
 	required string  federateName   // the federate name (should be unique within a federation)
+        repeated NM_FOM_Rounting_Space routingSpaces
+        repeated NM_FOM_Object_Class objectClasses
+        repeated NM_FOM_Interaction_Class interactionClasses
 }
 
 // Resign from federation
@@ -82,11 +152,6 @@ message NM_Set_Time_Constrained : merge NetworkMessage {
 message NM_Time_Regulation_Enabled : merge NetworkMessage {}
 
 message NM_Time_Constrained_Enabled : merge NetworkMessage {}
-
-native ObjectClassHandle {
-	language CXX [#include "certi.hh"]
-}
-
 
 message NM_Set_Class_Relevance_Advisory_Switch : merge NetworkMessage {    
 	required onoff classRelevanceAdvisorySwitch // value of CRA switch 	
@@ -151,10 +216,6 @@ message NM_Federation_Not_Restored : merge NetworkMessage {}
 message NM_Publish_Object_Class : merge NM_WithHandleArray {}
 
 message NM_Unpublish_Object_Class : merge NetworkMessage {}
-
-native InteractionClassHandle {
-	language CXX [#include "certi.hh"]
-}
 
 message NM_Publish_Interaction_Class : merge NetworkMessage {
 	required InteractionClassHandle interactionClass // the interaction class
@@ -244,10 +305,6 @@ message NM_Cancel_Attribute_Ownership_Acquisition : merge NM_Request_Object_Attr
 
 message NM_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge NM_Request_Object_Attribute_Value_Update {}
 
-native SpaceHandle {
-	language CXX [#include "certi.hh"]
-}
-
 message NM_DDM_Create_Region : merge NM_DDM_Base {
 	required SpaceHandle space
 	required int32 region
@@ -276,13 +333,6 @@ message NM_DDM_Subscribe_Interaction : merge NM_DDM_Base {}
 message NM_DDM_Unsubscribe_Interaction : merge NM_DDM_Subscribe_Interaction {}
 
 message NM_Provide_Attribute_Value_Update : merge NM_Request_Object_Attribute_Value_Update {}
-
-message NM_Get_FED_File : merge NetworkMessage {
-        required string federateName // the Federate name
-	required string FEDid        // the FED identifier
-        required uint32 lineno       // the line number, 0 means open the file
-	required string line         // one line of the FED file
-}
 
 message NM_Start_Registration_For_Object_Class : merge NetworkMessage {
 	required ObjectClassHandle objectClass

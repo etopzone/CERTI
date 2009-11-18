@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.75 2009/10/21 18:56:28 erk Exp $
+// $Id: FederationManagement.cc,v 3.76 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -70,7 +70,6 @@ static PrettyDebug G("GENDOC",__FILE__);
 
     _nom_federation = "";
     _nom_federe     = "";
-    //_FEDid          = NULL;is now a string then...
     G.Out(pdGendoc,"exit  FederationManagement::FederationManagement");
 }
 
@@ -96,7 +95,6 @@ FederationManagement::~FederationManagement()
         cout << "RTIA: Federate destroyed" << endl ;
     //}
     
-    //delete[] _FEDid ;
     G.Out(pdGendoc,"exit  ~FederationManagement");
 }
 
@@ -104,7 +102,8 @@ FederationManagement::~FederationManagement()
 //! createFederationExecution.
 void
 FederationManagement::
-createFederationExecution(std::string theName,
+createFederationExecution(const std::string& theName,
+                          const std::string& fedId,
                           TypeException &e)
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
@@ -126,7 +125,7 @@ createFederationExecution(std::string theName,
     if (e == e_NO_EXCEPTION)
         {               
         requete.setFederationName(theName);
-        requete.setFEDid(_FEDid);
+        requete.setFEDid(fedId);
 
         G.Out(pdGendoc,"createFederationExecution====>   send Message to RTIG");
 
@@ -217,25 +216,6 @@ destroyFederationExecution(std::string theName,
         if (reponse->getException() == e_NO_EXCEPTION) {
             _nom_federation    = "" ;
             _numero_federation = 0 ;
-            // Now, remove temporary file (if not yet done)
-            if ( _FEDid.c_str() != NULL )
-               {
-               if ( _FEDid[0] != '\0' )
-                   {
-                   // If RTIA end (abort ?) before join don't remove file if not temporary
-                   // temporary file name begins with _RT ( yes, but...)
-                   if ( _FEDid[0] == '_' || _FEDid[1] == 'R' || _FEDid[2] == 'T')
-                      {
-                      std::cout<<"Removing temporary file "<<_FEDid<<" on destroy federation."<<std::endl;
-                      std::remove(_FEDid.c_str());
-                      _FEDid[0] = '\0' ;
-                      }
-                   else
-                      {
-                      std::cout<<"** W ** I don't remove file "<<_FEDid<<std::endl;
-                      }                   
-                   }
-               }
             }
         else
             {
@@ -253,13 +233,11 @@ FederateHandle
 FederationManagement::
 joinFederationExecution(std::string Federate,
                         std::string Federation,
+                        RootObject* rootObject,
                         TypeException &e)
 {
     NM_Join_Federation_Execution requete;
-    NM_Get_FED_File              requeteFED;
-    
     int i, nb ;
-    string filename ; // Needed for working file name
 
     G.Out(pdGendoc,"enter FederationManagement::joinFederationExecution");
     D.Out(pdInit, "Join Federation %s as %s.", Federation.c_str(), Federate.c_str());
@@ -284,110 +262,15 @@ joinFederationExecution(std::string Federate,
 
         comm->sendMessage(&requete);
 
-        // Waiting RTIG answer for FED file opened
-        std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
-        NM_Get_FED_File*  getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
-
-        if ( reponse->getException() != e_NO_EXCEPTION)
-            {
-            // Bad answer from RTIG
-            e = reponse->getException() ;
-            }
-        else
-            {
-	    stat->rtiService(NetworkMessage::GET_FED_FILE);
-            // RTIA have to open a new file for working
-            // We have to build a name for working file, name begins by _RTIA_ (6 char)
-            // First pid converted in char and added
-            // Then federation name
-            // File type (4)
-            char pid_name[10];
-            sprintf(pid_name,"%d_",getpid());
-
-            #ifdef _WIN32	//Write the file into 
-            char	*theDir; 
-            
-            theDir= getenv("TMP"); if (theDir == NULL) theDir= getenv("TEMP");          
-            if (theDir) { filename+= theDir; filename+= "\\";}      
-            #endif
-            
-            filename+= "_RTIA_";
-            filename+= pid_name ;
-            filename+= Federation ;
-            // Last file type : fed or xml ?
-   
-            string filename_RTIG = getFedMsg->getFEDid();
-            int nbcar_filename_RTIG=filename_RTIG.length();        
-            string extension = filename_RTIG.substr(nbcar_filename_RTIG-3,3) ;
-              if ( !strcasecmp(extension.c_str(),"fed") )
-                  {
-                  filename += ".fed";
-                  }
-              else if  ( !strcasecmp(extension.c_str(),"xml") )
-                  {
-                  filename += ".xml";
-                  } 
-              else 
-                  throw CouldNotOpenFED("nor .fed nor .xml"); 
-            // FED filename for working must be stored
-            _FEDid = filename ;              
-            // RTIA opens working file
-            std::ofstream fedWorkFile(filename.c_str());
-            if ( !fedWorkFile.is_open()) {
-                throw RTIinternalError("FED file has vanished.") ;
-            }
-              
-            // RTIA says RTIG OK for file transfer            
-            requeteFED.setFederateName(Federate);
-            requeteFED.setFEDid(filename);
-            if ( e == e_NO_EXCEPTION)
-                requeteFED.setLineno(0);  // OK for open
-            else
-                requeteFED.setLineno(1);
-
-            G.Out(pdGendoc,"joinFederationExecution====> begin FED file get from RTIG");
-
-            comm->sendMessage(&requeteFED);
-    
-            // Now read loop from RTIG to get line contents and then write it into file            
-            unsigned int num_line = 0 ; // no line read
-            for (;;)
-                {            	
-                reponse.reset(comm->waitMessage(NetworkMessage::GET_FED_FILE, 0));
-                getFedMsg = static_cast<NM_Get_FED_File*>(reponse.get());
-                if ( reponse->getException() != e_NO_EXCEPTION)
-                    {
-                    cout << "Bad answer from RTIG" << endl ;
-                    e = e_RTIinternalError ;
-                    break ;
-                    }
-                stat->rtiService(NetworkMessage::GET_FED_FILE);
-                // Line read
-                num_line++ ;
-                // Check for EOF
-                if ( getFedMsg->getLineno() == 0 ) break;
-                 
-                assert ( num_line == getFedMsg->getLineno() ) ;
-                reponse->handleArraySize = 1 ;                
-                fedWorkFile << getFedMsg->getFEDLine();
-                // RTIA says OK to RTIG                
-                requeteFED.setFederateName(Federate);
-                requeteFED.setLineno(num_line);
-                requeteFED.setFEDid(filename);
-                comm->sendMessage(&requeteFED);            
-                }
-            // close working file
-            fedWorkFile.close(); 
-            }                          
- 
-        G.Out(pdGendoc,"joinFederationExecution====> end FED file get from RTIG"); 
-          
-         // Waiting RTIG answer (from any federate)
-        reponse.reset(comm->waitMessage(NetworkMessage::JOIN_FEDERATION_EXECUTION, 0));
+        // Waiting RTIG answer
+        std::auto_ptr<NetworkMessage> reponse(comm->waitMessage(NetworkMessage::JOIN_FEDERATION_EXECUTION, 0));
 
         // If OK, regulators number is inside the answer.
         // Then we except a NULL message from each.
         if (reponse->getException() == e_NO_EXCEPTION) {
+            NM_Join_Federation_Execution* joinResponse = static_cast<NM_Join_Federation_Execution*>(reponse.get());
+            rootObject->setFOM(*joinResponse);
+
             _nom_federation = std::string(Federation);            
             _nom_federe =  std::string(Federate);
             _numero_federation = reponse->federation ;
@@ -455,16 +338,6 @@ FederationManagement::resignFederationExecution(RTI::ResignAction,
         _est_membre_federation = false ;
         _numero_federation = 0 ;
         federate = 0 ;
-        // Now, remove temporary file (if not yet done)
-        if ( _FEDid.c_str() != NULL)
-            {
-            if ( _FEDid[0] != '\0' )
-                {
-                std::cout<<"Removing temporary file "<<_FEDid<<" on resign federation."<<std::endl;
-                std::remove(_FEDid.c_str());
-                _FEDid[0] = '\0' ;
-                }
-            }
         G.Out(pdGendoc,"exit  FederationManagement::resignFederationExecution");
         }
     else

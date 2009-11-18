@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIA.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
+// $Id: RTIA.cc,v 3.31 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -60,26 +60,6 @@ RTIA::RTIA(int RTIA_port, int RTIA_fd) {
 
 
 RTIA::~RTIA() {
-     // Remove temporary file (if not yet done)
-     if ( fm->_FEDid.c_str() != NULL)
-        {
-        if ( fm->_FEDid[0] != '\0' )
-           {
-           // If RTIA end (abort ?) before join don't remove file if not temporary
-           // temporary file name begins with _RT ( yes, but...)
-           if ( fm->_FEDid[0] != '_' || fm->_FEDid[1] != 'R' || fm->_FEDid[2] != 'T')
-              {
-               std::cout<<"** W ** I don't remove file "<<fm->_FEDid<<std::endl;
-              }
-           else
-              {
-              std::cout<<"*** W ** Removing temporary file "<<fm->_FEDid<<" on RTIA stop."<<std::endl;
-              std::remove(fm->_FEDid.c_str());
-              }
-           fm->_FEDid[0] = '\0' ;
-           }
-        }
-
     /* 
      * FIXME Erk
      * this is may be a design issue
@@ -200,4 +180,4 @@ RTIA::execute() {
 
 }} // namespace certi/rtia
 
-// $Id: RTIA.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
+// $Id: RTIA.cc,v 3.31 2009/11/18 18:50:48 erk Exp $

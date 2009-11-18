@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.36 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: Interaction.hh,v 3.37 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -70,6 +70,12 @@ public:
 	 * @param[in] transport the transport type
 	 * @param[in] order the receive order type
 	 */
+
+	/**
+	 * The type for the parameter list.
+	 */
+	typedef std::list<Parameter*> ParameterList_t;
+
     Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder);
     /**
      * Destructor.
@@ -184,6 +190,12 @@ public:
 
     void broadcastInteractionMessage(InteractionBroadcastList *, const RTIRegion *);
 
+    /**
+     * Getter for the parameter list of the interaction class.
+     * param[out] ParameterList_t @see Interaction::ParameterList_t
+     */
+    const ParameterList_t& getParameterList(void) const { return parameterSet; }
+
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
     /**
@@ -236,7 +248,7 @@ private:
     SpaceHandle space ;
 
     //! List of this Interaction Class' Parameters.
-    std::list<Parameter *> parameterSet ;
+    ParameterList_t parameterSet ;
 
     typedef std::set<FederateHandle> PublishersList ;
     PublishersList publishers ;
@@ -246,4 +258,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.36 2008/11/09 12:41:40 gotthardp Exp $
+// $Id: Interaction.hh,v 3.37 2009/11/18 18:50:48 erk Exp $

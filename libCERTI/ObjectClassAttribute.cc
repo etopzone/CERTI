@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.33 2009/10/21 20:04:46 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.34 2009/11/18 18:50:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -41,7 +41,7 @@ namespace certi {
 static PrettyDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 
 ObjectClassAttribute::ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder)
- : order(theOrder), transport(theTransport) {
+  : level(PublicLevelID), order(theOrder), transport(theTransport), server(0), handle(0), space(0) {
 	setName(theName);
 
 }
@@ -219,4 +219,4 @@ ObjectClassAttribute::getPublishers(void) {
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.33 2009/10/21 20:04:46 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.34 2009/11/18 18:50:49 erk Exp $

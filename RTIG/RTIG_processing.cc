@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.89 2009/10/21 20:04:45 erk Exp $
+// $Id: RTIG_processing.cc,v 3.90 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,7 +130,6 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 {
     std::string federation = req->getFederationName();
     std::string federate   = req->getFederateName();
-    std::string filename ;
 
     unsigned int peer     = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
@@ -145,7 +144,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     G.Out(pdGendoc,"BEGIN ** JOIN FEDERATION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processJoinFederation");
 
-    if ((federation.length()==0) || (federate.length() == 0))
+    if (federation.empty() || federate.empty())
         throw RTIinternalError("Invalid Federation/Federate Name.");
 
     auditServer << "Federate \"" << federate.c_str() << "\" joins Federation \""
@@ -153,27 +152,19 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 
     federations.exists(federation.c_str(), num_federation);
 
+    // Need to dump the fom into that
+    NM_Join_Federation_Execution rep ;
     try
        {
         num_federe = federations.addFederate(num_federation,
                                           federate.c_str(),
-                                          static_cast<SocketTCP*>(link));
+                                          static_cast<SocketTCP*>(link),
+                                          rep);
         }
     catch (FederateAlreadyExecutionMember &e)
         {
-        // Federate yet has joined this federation(same or another with same name)
-        // RTIG has to return something to RTIA
-        // RTIA waits a GET_FED_FILE message
-        // RTIG says not OK to RTIA in a GET_FED_FILE message
-        NM_Get_FED_File repFED ;
-       repFED.setException(e_FederateAlreadyExecutionMember);
-       repFED.exceptionReason="Federate with same name has yet joined the federation";
-       G.Out(pdGendoc,"processJoinFederation==>Answer to RTIA GFF ERROR %s",repFED.exceptionReason.c_str());
-       repFED.send(link,NM_msgBufSend);
-
        G.Out(pdGendoc,"exit RTIG::processJoinFederation on Error");
        G.Out(pdGendoc,"END ** JOIN FEDERATION (BAD) SERVICE **");
-       // FIXME strange to send 2 messages?
        // Prepare answer about JoinFederationExecution
        NM_Join_Federation_Execution rep ;
        rep.setException(e_FederateAlreadyExecutionMember);
@@ -192,7 +183,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
                       pause, com_mc);
      assert(com_mc != NULL);
 #else
-     filename = federations.info(num_federation, nb_federes, nb_regulateurs, pause);
+     federations.info(num_federation, nb_federes, nb_regulateurs, pause);
 #endif
 
     // Store Federate <->Socket reference.
@@ -206,8 +197,6 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
 		<< ". Socket " << int(link->returnSocket());
 
     // Prepare answer about JoinFederationExecution
-    // This answer wille be made AFTER FED file processing
-    NM_Join_Federation_Execution rep ;
     rep.setFederationName(federation);
     rep.federate = num_federe ;
     rep.federation = num_federation ;
@@ -215,81 +204,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     rep.bestEffortPeer = peer ;
     rep.bestEffortAddress = address ;
 
-    // Here begin FED file processing i.e. RTIG gives FED file contents to RTIA
-    TypeException e = e_NO_EXCEPTION ;
-    // Open FED file and says to RTIA if success
-    std::ifstream fedFile(filename.c_str());
-    if ( !fedFile.is_open()) {
-        // Problem : file has been opened during create federation and now we can't
-        // May be file has been deleted
-        cout << "processJoinFederation : FED file " << filename << " has vanished." << endl;
-        e = e_RTIinternalError ;
-    }
-
-    // RTIG says OK or not to RTIA
-    NM_Get_FED_File repFED ;
-    repFED.federate = num_federe ;
-    repFED.federation = num_federation ;
-    repFED.setLineno(0);
-    repFED.setFEDid(filename);
-    repFED.setException(e);
-    // Send answer
-    D.Out(pdTrace,"send NetworkMessage of Type %d after open \"%s\"",
-          repFED.getType(),repFED.getFEDid().c_str());
-    G.Out(pdGendoc,"processJoinFederation====>Begin FED file transfer");
-
-    repFED.send(link,NM_msgBufSend);
-
-    if ( e ==  e_NO_EXCEPTION )
-        {
-        // Wait for OK from RTIA
-    	NM_Get_FED_File msg ;
-        D.Out(pdTrace,"wait NetworkMessage of Type %d",msg.getType());
-        msg.receive(link,NM_msgBufReceive);
-        assert ( msg.getLineno() == 0 );
-        // RTIA has opened working file then RTIG has to transfer file contents
-        // line by line
-        std::string fileLine;
-        unsigned int num_line = 0 ;
-        while (!fedFile.eof())
-            {
-            num_line++;
-            // Read a line
-            std::getline(fedFile,fileLine);
-            fileLine = fileLine+"\n";
-            // RTIG sends line to RTIA and number gives line number
-            repFED.setException(e_NO_EXCEPTION);
-            repFED.federate = num_federe ;
-            repFED.federation = num_federation ;
-            repFED.setLineno(num_line);
-            repFED.setFEDid(filename);
-            // line transfered
-            repFED.setFEDLine(fileLine);
-            // Send answer
-            repFED.send(link,NM_msgBufSend);
-
-            // Wait for OK from RTIA
-            msg.receive(link,NM_msgBufReceive);
-            assert ( msg.getLineno() == num_line );
-            }
-
-	    // close
-	    fedFile.close();
-        repFED.setException(e_NO_EXCEPTION);
-        repFED.federate = num_federe ;
-        repFED.federation = num_federation ;
-        repFED.setLineno(0) ;
-        repFED.setFEDid(filename);
-        // Send answer
-
-        G.Out(pdGendoc,"processJoinFederation====>End  FED file transfer");
-
-        repFED.send(link,NM_msgBufSend);
-        }
-    // END of FED file processing
-
     // Now we have to answer about JoinFederationExecution
-
 #ifdef FEDERATION_USES_MULTICAST
     rep.AdresseMulticast = com_mc->returnAdress();
 #endif
@@ -1554,4 +1469,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.89 2009/10/21 20:04:45 erk Exp $
+// $Id: RTIG_processing.cc,v 3.90 2009/11/18 18:50:48 erk Exp $

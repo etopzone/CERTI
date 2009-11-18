@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.10 2007/10/31 10:30:22 erk Exp $
+// $Id: RoutingSpace.hh,v 3.11 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -86,6 +86,8 @@ public:
     
     Extent createExtent() const ;
 
+    const std::vector<Dimension>& getDimensions() const { return dimensions; }
+
 private:
     std::vector<Dimension> dimensions ;
 };
@@ -94,5 +96,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.10 2007/10/31 10:30:22 erk Exp $
+// $Id: RoutingSpace.hh,v 3.11 2009/11/18 18:50:48 erk Exp $
 

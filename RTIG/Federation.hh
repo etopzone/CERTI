@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.58 2009/09/16 07:55:58 erk Exp $
+// $Id: Federation.hh,v 3.59 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -649,6 +649,9 @@ public:
                RestoreInProgress,
                RTIinternalError); 
 
+    void getFOM(NM_Join_Federation_Execution& objectModelData);
+
+
 private:
     // Private methods
     void broadcastAnyMessage(NetworkMessage *msg, FederateHandle Except);
@@ -684,4 +687,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.58 2009/09/16 07:55:58 erk Exp $
+// $Id: Federation.hh,v 3.59 2009/11/18 18:50:48 erk Exp $

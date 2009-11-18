@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.64 2009/10/21 20:04:45 erk Exp $
+// $Id: FederationsList.cc,v 3.65 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -281,7 +281,8 @@ FederationsList::addConstrained(Handle handle,
 FederateHandle
 FederationsList::addFederate(Handle handle,
                              const char *name,
-                             SocketTCP *tcp_link)
+                             SocketTCP *tcp_link,
+                             NM_Join_Federation_Execution& objectModelData)
     throw (FederationExecutionDoesNotExist,
            FederateAlreadyExecutionMember,
            MemoryExhausted,
@@ -302,6 +303,8 @@ FederationsList::addFederate(Handle handle,
     // It may raise a bunch of exceptions
     // adding the federate and return its handle
     FederateHandle federate = federation->add(name, tcp_link);
+
+    federation->getFOM(objectModelData);
 
     G.Out(pdGendoc,"exit FederationsList::addFederate");
 
@@ -526,7 +529,7 @@ void FederationsList::info(Handle handle,
                            bool &is_syncing,
                            SocketMC* &comm_mc)
 #else
-    std::string FederationsList::info(Handle handle,
+    void FederationsList::info(Handle handle,
                                int &nb_federates,
                                int &nb_regulators,
                                bool &is_syncing)
@@ -551,8 +554,6 @@ void FederationsList::info(Handle handle,
     comm_mc = federation->MCLink ;
 #endif
     G.Out(pdGendoc,"exit  FederationsList::info");
-    // Return FEDid
-    return FED_Filename ;
 }
 
 // ----------------------------------------------------------------------------
@@ -1749,5 +1750,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.64 2009/10/21 20:04:45 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.65 2009/11/18 18:50:48 erk Exp $
 

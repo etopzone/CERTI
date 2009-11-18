@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.25 2009/10/11 11:22:55 erk Exp $
+// $Id: FederationManagement.hh,v 3.26 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -30,6 +30,9 @@
 #include "Statistics.hh"
 
 namespace certi {
+
+class RootObject;
+
 namespace rtia {
 
 class TimeManagement ;
@@ -44,7 +47,8 @@ public:
     void checkFederationRestoring(void) throw (RestoreInProgress);
 
     // -- Create/Destroy --
-    void createFederationExecution(std::string theName, TypeException &e)
+    void createFederationExecution(const std::string& theName,
+                                   const std::string& fedId, TypeException &e)
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError);
@@ -53,6 +57,7 @@ public:
     // -- Join/Resign --
     FederateHandle joinFederationExecution(std::string Federate,
                                            std::string Federation,
+                                           RootObject* rootObject,
                                            TypeException &e);
 
     void resignFederationExecution(RTI::ResignAction action,
@@ -101,7 +106,6 @@ public:
     Handle _numero_federation ;
     FederateHandle federate ;
     bool _fin_execution ;
-    std::string  _FEDid ;
 
 private:
     Communications *comm ;
@@ -124,4 +128,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.25 2009/10/11 11:22:55 erk Exp $
+// $Id: FederationManagement.hh,v 3.26 2009/11/18 18:50:48 erk Exp $

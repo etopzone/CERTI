@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.45 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClass.hh,v 3.46 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -269,7 +269,7 @@ public:
          * Getter for the attribute list of the object class.
          * param[out] AttributeList_t @see ObjectClass::AttributeList_t
          */
-	AttributeList_t getAttributeList(void);
+	const AttributeList_t& getAttributeList(void);
 
 	//! This Object help to find a TCPLink from a Federate Handle.
 	SecurityServer *server ;
@@ -334,4 +334,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.45 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClass.hh,v 3.46 2009/11/18 18:50:48 erk Exp $

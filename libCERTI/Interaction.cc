@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
+// $Id: Interaction.cc,v 3.55 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -45,7 +45,7 @@ static PrettyDebug G("GENDOC",__FILE__) ;
 
 Interaction::Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder)
 : parent(0), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
-id(PublicLevelID)
+  superClass(0), id(PublicLevelID), space(0)
 {
 	setName(theName);
 	/*
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
+// $Id: Interaction.cc,v 3.55 2009/11/18 18:50:48 erk Exp $

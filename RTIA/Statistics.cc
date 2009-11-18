@@ -297,7 +297,6 @@ Statistics::Statistics()
 	RTI_MSG_NAME(NetworkMessage::DDM_SUBSCRIBE_INTERACTION);
 	RTI_MSG_NAME(NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION);
         RTI_MSG_NAME(NetworkMessage::PROVIDE_ATTRIBUTE_VALUE_UPDATE);
-        RTI_MSG_NAME(NetworkMessage::GET_FED_FILE);
 	RTI_MSG_NAME(NetworkMessage::SET_CLASS_RELEVANCE_ADVISORY_SWITCH);
 	RTI_MSG_NAME(NetworkMessage::SET_INTERACTION_RELEVANCE_ADVISORY_SWITCH);
 	RTI_MSG_NAME(NetworkMessage::SET_ATTRIBUTE_RELEVANCE_ADVISORY_SWITCH);
@@ -374,4 +373,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.19 2009/04/08 10:47:18 approx Exp $
+// $Id: Statistics.cc,v 3.20 2009/11/18 18:50:48 erk Exp $

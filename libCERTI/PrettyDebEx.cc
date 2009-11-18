@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: PrettyDebEx.cc,v 4.7 2009/10/21 19:51:13 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.8 2009/11/18 18:50:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -309,7 +309,6 @@ else if (type == 'N')
 		case certi::NetworkMessage::DDM_UNSUBSCRIBE_ATTRIBUTES : 						strcat(theMessage,"DDM_UNSUBSCRIBE_ATTRIBUTES"); break;
 		case certi::NetworkMessage::DDM_SUBSCRIBE_INTERACTION : 							strcat(theMessage,"DDM_SUBSCRIBE_INTERACTION"); break;
 		case certi::NetworkMessage::DDM_UNSUBSCRIBE_INTERACTION : 						strcat(theMessage,"DDM_UNSUBSCRIBE_INTERACTION"); break;
-		case certi::NetworkMessage::GET_FED_FILE : 											strcat(theMessage,"GET_FED_FILE"); break;
 		default:																							sprintf(theMessage,"NETWORK UNKNOWED MESSAGE %hd",testMess);
 		}
 	}
@@ -318,4 +317,4 @@ strcat(theMessage, "\n"); // Add trailing \n
 }
 #endif // NDEBUG
 
-// $Id: PrettyDebEx.cc,v 4.7 2009/10/21 19:51:13 erk Exp $
+// $Id: PrettyDebEx.cc,v 4.8 2009/11/18 18:50:49 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.48 2008/11/20 18:21:56 approx Exp $
+// $Id: FederationsList.hh,v 3.49 2009/11/18 18:50:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -79,7 +79,7 @@ public:
               bool &is_syncing,
               SocketMC* &comm_mc)
 #else
-        std::string info(Handle theHandle,
+        void info(Handle theHandle,
                   int &nb_federes,
                   int &nb_regulateurs,
                   bool &is_syncing)
@@ -154,7 +154,8 @@ public:
     // -------------------------
     FederateHandle addFederate(Handle theHandle,
                                const char *theFederateName,
-                               SocketTCP *theTCPLink)
+                               SocketTCP *theTCPLink,
+                               NM_Join_Federation_Execution& objectModelData)
         throw (FederationExecutionDoesNotExist,
                FederateAlreadyExecutionMember,
                MemoryExhausted,
@@ -649,4 +650,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.48 2008/11/20 18:21:56 approx Exp $
+// $Id: FederationsList.hh,v 3.49 2009/11/18 18:50:48 erk Exp $
