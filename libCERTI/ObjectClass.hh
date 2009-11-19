@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.46 2009/11/18 18:50:48 erk Exp $
+// $Id: ObjectClass.hh,v 3.47 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -94,7 +94,7 @@ public:
 	 * @param[in] name the object class name
 	 * @param[in] handle the object class handle value
 	 */
-	ObjectClass(const std::string name, ObjectClassHandle handle);
+	ObjectClass(const std::string& name, ObjectClassHandle handle);
 
 	/**
 	 * Destroy an object class.
@@ -126,14 +126,14 @@ public:
 	 * @param[in] subClassName the name of the subclass
 	 * @return the sub class object class.
 	 */
-	ObjectClass* getSubClassByName(const std::string subClassName);
+	ObjectClass* getSubClassByName(const std::string& subClassName);
 	/**
 	 * Get the whole set of subclasses.
 	 */
 	ObjectClassSet* getSubClasses() {return subClasses;};
 
 	// Security Methods
-	void checkFederateAccess(FederateHandle, const char *)
+	void checkFederateAccess(FederateHandle, const std::string&)
 	throw (SecurityError);
 
 	SecurityLevelID getSecurityLevelId() const { return securityLevelId ; };
@@ -162,7 +162,7 @@ public:
 			ObjectHandle theObjectHandle,
 			std::vector <AttributeHandle> &theAttributeList,
 			UShort theListSize,
-			const char *theTag)
+			const std::string& theTag)
 			throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 					AttributeAlreadyBeingDivested, RTIinternalError);
 
@@ -189,7 +189,7 @@ public:
 			ObjectHandle theObjectHandle,
 			std::vector <AttributeHandle> &theAttributeList,
 			UShort theListSize,
-			const char *theTag)
+			const std::string& theTag)
 	throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 
@@ -209,10 +209,10 @@ public:
 			AttributeAcquisitionWasNotRequested, RTIinternalError);
 
 	// RTI Support Services
-	AttributeHandle getAttributeHandle(const char *theName) const
+	AttributeHandle getAttributeHandle(const std::string& theName) const
 	throw (NameNotFound, RTIinternalError);
 
-	const char *getAttributeName(AttributeHandle theHandle) const
+	const std::string& getAttributeName(AttributeHandle theHandle) const
 	throw (AttributeNotDefined, RTIinternalError);
 
 	ObjectClassBroadcastList *killFederate(FederateHandle theFederate)
@@ -225,14 +225,14 @@ public:
 	ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 			ObjectHandle theObjectHandle,
 			FederationTime theTime,
-			std::string theUserTag)
+			const std::string& theUserTag)
 	throw (DeletePrivilegeNotHeld,
 			ObjectNotKnown,
 			RTIinternalError);
 
 	ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 			ObjectHandle theObjectHandle,
-			std::string theUserTag)
+			const std::string& theUserTag)
 	throw (DeletePrivilegeNotHeld,
 			ObjectNotKnown,
 			RTIinternalError);
@@ -249,13 +249,13 @@ public:
 
 	ObjectClassBroadcastList *
 	updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-			std::vector <AttributeValue_t> &, int, FederationTime, const char *)
+			std::vector <AttributeValue_t> &, int, FederationTime, const std::string&)
 			throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 					RTIinternalError, InvalidObjectHandle);
 
 	ObjectClassBroadcastList *
 	updateAttributeValues(FederateHandle, Object *, std::vector <AttributeHandle> &,
-			std::vector <AttributeValue_t> &, int, const char *)
+			std::vector <AttributeValue_t> &, int, const std::string&)
 			throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 					RTIinternalError, InvalidObjectHandle);
 
@@ -288,7 +288,7 @@ private:
 	void sendToOwners(CDiffusion *diffusionList,
 			ObjectHandle theObjectHandle,
 			FederateHandle theFederate,
-			const char *theTag,
+			const std::string& theTag,
 			NetworkMessage::Type type);
 
 	void sendMessage(NetworkMessage *msg, FederateHandle theDest);
@@ -334,4 +334,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.46 2009/11/18 18:50:48 erk Exp $
+// $Id: ObjectClass.hh,v 3.47 2009/11/19 18:15:30 erk Exp $

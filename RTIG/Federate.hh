@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.hh,v 3.15 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: Federate.hh,v 3.16 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_RTIG_FEDERATE_HH
@@ -36,12 +36,12 @@ namespace rtig {
 class Federate
 {
 public:
-    Federate(const char *the_name, FederateHandle) throw (RTIinternalError);
+    Federate(const std::string& the_name, FederateHandle) throw (RTIinternalError);
 
     FederateHandle getHandle() const { return handle ; };
     void setHandle(FederateHandle h) { handle = h ; };
 
-    const char *getName() const { return name.c_str(); };
+    const std::string& getName() const { return name; };
     bool isConstrained() const { return constrained ; };
     bool isRegulator() const { return regulator ; };
     void setConstrained(bool c) { constrained = c ; };
@@ -112,9 +112,9 @@ public:
     void setSaving(bool s) { saving = s ; };
     void setRestoring(bool r) { restoring = r ; };
 
-    void addSynchronizationLabel(const char *) throw (RTIinternalError);
-    void removeSynchronizationLabel(const char *) throw (RTIinternalError);
-    bool isSynchronizationLabel(const char *) const ;
+    void addSynchronizationLabel(const std::string&) throw (RTIinternalError);
+    void removeSynchronizationLabel(const std::string&) throw (RTIinternalError);
+    bool isSynchronizationLabel(const std::string&) const ;
 
 private:
     FederateHandle handle ; //!< Federate ID.
@@ -141,4 +141,4 @@ private:
 
 #endif // CERTI_RTIG_FEDERATE_HH
 
-// $Id: Federate.hh,v 3.15 2008/12/07 20:16:11 gotthardp Exp $
+// $Id: Federate.hh,v 3.16 2009/11/19 18:15:29 erk Exp $

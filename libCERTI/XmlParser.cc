@@ -283,7 +283,7 @@ XmlParser::parseInteraction(Interaction* parent)
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
             Parameter *param = new Parameter();
-            param->setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+            param->setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
             param->setHandle(freeParameterHandle++);
             current->addParameter(param);
         }
@@ -306,14 +306,14 @@ XmlParser::parseRoutingSpace()
     xmlNodePtr prev = cur ;
     RoutingSpace current ;
     current.setHandle(freeSpaceHandle++);
-    current.setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+    current.setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
 
     // Dimensions
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_DIMENSION))) {
             Dimension dimension(freeDimensionHandle++);
-            dimension.setName(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+            dimension.setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
             current.addDimension(dimension);
         }
         cur = cur->next ;

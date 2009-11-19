@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.21 2009/10/21 20:04:46 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.22 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -52,8 +52,8 @@ RTIambPrivateRefs::~RTIambPrivateRefs()
 void
 RTIambPrivateRefs::leave(const char *msg) throw (RTI::RTIinternalError)
 {
-	std::stringstream smsg;
-	smsg << "RTI called leave because <" <<msg<<">";
+    std::stringstream smsg;
+    smsg << "RTI called leave because <" <<msg<<">";
     throw RTI::RTIinternalError(smsg.str().c_str());
 }
 
@@ -913,4 +913,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.21 2009/10/21 20:04:46 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.22 2009/11/19 18:15:32 erk Exp $

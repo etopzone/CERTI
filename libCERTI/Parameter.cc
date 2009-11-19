@@ -19,14 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.cc,v 3.10 2007/08/31 12:47:40 erk Exp $
+// $Id: Parameter.cc,v 3.11 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
 #include "Parameter.hh"
 
 #include <stdio.h>
-#include <cstring>
 #include <iostream>
 
 namespace certi {
@@ -36,7 +35,7 @@ Parameter::Parameter()
 {
 }
 
-Parameter::Parameter(std::string s)
+Parameter::Parameter(const std::string& s)
     : Named(s), LevelID(PublicLevelID), handle(0)
 {
 }
@@ -51,4 +50,4 @@ Parameter::display(void)
 
 } // namespace certi
 
-// $Id: Parameter.cc,v 3.10 2007/08/31 12:47:40 erk Exp $
+// $Id: Parameter.cc,v 3.11 2009/11/19 18:15:30 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.49 2009/11/18 18:50:48 erk Exp $
+// $Id: FederationsList.hh,v 3.50 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -54,9 +54,9 @@ public:
 
     // MAX_FEDERATION is the maximum number of federations.
 #ifdef FEDERATION_USES_MULTICAST
-    void createFederation(const char *, FederationHandle, SocketMC*)
+    void createFederation(const std::string&, FederationHandle, SocketMC*)
 #else
-        void createFederation(const char *, Handle, const char *FEDid)
+        void createFederation(const std::string&, Handle, const std::string& FEDid)
 #endif
         throw (FederationExecutionAlreadyExists,
                CouldNotOpenFED,
@@ -65,7 +65,7 @@ public:
                SecurityError,
                RTIinternalError);
 
-    void exists(const char *name, Handle &handle)
+  void exists(const std::string& name, Handle &handle)
         throw (FederationExecutionDoesNotExist, RTIinternalError);
 
     void destroyFederation(Handle)
@@ -90,8 +90,8 @@ public:
     void manageSynchronization(Handle theHandle,
                                FederateHandle theFederate,
                                bool state,
-                               const char *the_label,
-                               const char *the_tag)
+                               const std::string& the_label,
+                               const std::string& the_tag)
         throw (FederationAlreadyPaused,
                FederationNotPaused,
                FederateNotExecutionMember,
@@ -102,8 +102,8 @@ public:
     void manageSynchronization(Handle theHandle,
                                FederateHandle theFederate,
                                bool state,
-                               const char *the_label,
-                               const char *the_tag,
+                               const std::string& the_label,
+                               const std::string& the_tag,
                                unsigned short federate_setSize,
                                std::vector <FederateHandle> &federate_set)
         throw (FederationAlreadyPaused,
@@ -115,15 +115,15 @@ public:
 
     void broadcastSynchronization(Handle handle,
                                   FederateHandle federate,
-                                  const char *label,
-                                  const char *tag)
+                                  const std::string& label,
+                                  const std::string& tag)
         throw (FederationExecutionDoesNotExist,
                RTIinternalError);
 
     void broadcastSynchronization(Handle handle,
                                   FederateHandle federate,
-                                  const char *label,
-                                  const char *tag,
+                                  const std::string& label,
+                                  const std::string& tag,
                                   unsigned short federate_setSize,
                                   std::vector <FederateHandle> &federate_set)
         throw (FederationExecutionDoesNotExist,
@@ -131,19 +131,19 @@ public:
 
     void requestFederationSave(Handle the_federation,
                                FederateHandle the_federate,
-                               const char *the_label,
+                               const std::string& the_label,
                                FederationTime the_time);
 
     void requestFederationSave(Handle the_federation,
                                FederateHandle the_federate,
-                               const char *the_label);
+                               const std::string& the_label);
 
     void federateSaveBegun(Handle, FederateHandle);
     void federateSaveStatus(Handle, FederateHandle, bool);
 
     void requestFederationRestore(Handle the_federation,
                                   FederateHandle the_federate,
-                                  const char *the_label);
+                                  const std::string& the_label);
 
     void federateRestoreStatus(Handle the_federation,
                                FederateHandle the_federate,
@@ -153,7 +153,7 @@ public:
     // -- Federate Management --
     // -------------------------
     FederateHandle addFederate(Handle theHandle,
-                               const char *theFederateName,
+                               const std::string& theFederateName,
                                SocketTCP *theTCPLink,
                                NM_Join_Federation_Execution& objectModelData)
         throw (FederationExecutionDoesNotExist,
@@ -337,7 +337,7 @@ public:
     		       FederateHandle theFederateHandle,
 		       ObjectHandle theObjectHandle,
 		       FederationTime theTime,
-		       const char *theUserTag)
+		       const std::string& theUserTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
                DeletePrivilegeNotHeld,
@@ -351,7 +351,7 @@ public:
     void destroyObject(Handle theHandle,
                        FederateHandle theFederateHandle,
                        ObjectHandle theObjectHandle,
-                       const char *theUserTag)
+                       const std::string& theUserTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
                DeletePrivilegeNotHeld,
@@ -367,7 +367,7 @@ public:
                          std::vector <AttributeValue_t> &theValueList,
                          UShort theListSize,
                          FederationTime theTime,
-                         const char *theTag)
+                         const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
                ObjectNotKnown,
@@ -383,7 +383,7 @@ public:
                          std::vector <AttributeHandle> &theAttributeList,
                          std::vector <AttributeValue_t> &theValueList,
                          UShort theListSize,
-                         const char *theTag)
+                         const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederationExecutionDoesNotExist,
                ObjectNotKnown,
@@ -429,7 +429,7 @@ public:
                          UShort theListSize,
                          FederationTime theTime,
 			 RegionHandle,
-                         const char *theTag)
+                         const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                FederationExecutionDoesNotExist,
@@ -446,7 +446,7 @@ public:
                          std::vector <ParameterValue_t> &theValueList,
                          UShort theListSize,
 			 RegionHandle,
-                         const char *theTag)
+                         const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                FederationExecutionDoesNotExist,
@@ -486,7 +486,7 @@ public:
                               ObjectHandle,
                               std::vector <AttributeHandle>&,
                               UShort,
-                              const char *)
+                              const std::string& )
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
                AttributeNotDefined,
@@ -530,7 +530,7 @@ public:
                  ObjectHandle theObjectHandle,
                  std::vector <AttributeHandle> &theAttributeList,
                  UShort theListSize,
-                 const char *theTag)
+                 const std::string& theTag)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
                AttributeNotDefined,
@@ -650,4 +650,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.49 2009/11/18 18:50:48 erk Exp $
+// $Id: FederationsList.hh,v 3.50 2009/11/19 18:15:29 erk Exp $

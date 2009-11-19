@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.51 2009/10/04 15:46:39 erk Exp $
+// $Id: TimeManagement.cc,v 3.52 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -132,7 +132,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::FEDERATION_SYNCHRONIZED:
         try {
-            fm->federationSynchronized(msg.getLabel().c_str());
+            fm->federationSynchronized(msg.getLabel());
         }
         catch (RTIinternalError &e) {
             cout << "RTIA:RTIinternalError in federationSynchronized." << endl ;
@@ -142,7 +142,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::SYNCHRONIZATION_POINT_REGISTRATION_SUCCEEDED:
         try {
-            fm->synchronizationPointRegistrationSucceeded(msg.getLabel().c_str());
+            fm->synchronizationPointRegistrationSucceeded(msg.getLabel());
         }
         catch (RTIinternalError &e) {
             cout << "RTIA:RTIinternalError in synchronizationPointRegistration"
@@ -153,7 +153,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::ANNOUNCE_SYNCHRONIZATION_POINT:
         try {
-            fm->announceSynchronizationPoint(msg.getLabel().c_str(), msg.getTag().c_str());
+            fm->announceSynchronizationPoint(msg.getLabel(), msg.getTag());
         }
         catch (RTIinternalError &e) {
             cout << "RTIA:RTIinternalError in announceSynchronizationPoint." << endl ;
@@ -165,7 +165,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         try {
             om->discoverObject(msg.object,
                                msg.objectClass,
-                               msg.getLabel().c_str(),
+                               msg.getLabel(),
                                msg.getDate(),
                                msg.eventRetraction,
                                msg.getRefException());
@@ -187,7 +187,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                         ValueArray,
                                         msg.handleArraySize,
                                         msg.getDate(),
-                                        msg.getLabel().c_str(),
+                                        msg.getLabel(),
                                         msg.eventRetraction,
                                         msg.getRefException());
           else
@@ -195,7 +195,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                         msg.handleArray,
                                         ValueArray,
                                         msg.handleArraySize,
-                                        msg.getLabel().c_str(),
+                                        msg.getLabel(),
                                         msg.getRefException());
           ValueArray.empty();
           break ;
@@ -221,7 +221,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                      ValueArray,
                                      msg.handleArraySize,
                                      msg.getDate(),
-                                     msg.getLabel().c_str(),
+                                     msg.getLabel(),
                                      msg.eventRetraction,
                                      msg.getRefException());
           else
@@ -229,7 +229,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                      msg.handleArray,
                                      ValueArray,
                                      msg.handleArraySize,
-                                     msg.getLabel().c_str(),
+                                     msg.getLabel(),
                                      msg.getRefException());
           ValueArray.empty();
 
@@ -241,14 +241,14 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         	om->removeObject(msg.object,
                 		     msg.federate,
 				             msg.getDate(),
-                         	 msg.getLabel().c_str(),
+                         	 msg.getLabel(),
                          	 msg.eventRetraction,
                          	 msg.getRefException());
 	  }
 	  else {
         	om->removeObject(msg.object,
                 		     msg.federate,
-                         	 msg.getLabel().c_str(),
+                         	 msg.getLabel(),
                          	 msg.getRefException());
 	  }
         break ;
@@ -276,7 +276,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
                                                  msg.handleArray,
                                                  msg.handleArraySize,
                                                  msg.federate,
-                                                 const_cast<char*>(msg.getLabel().c_str()),
+                                                 msg.getLabel(),
                                                  msg.getRefException());
         break ;
            }
@@ -315,7 +315,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         owm->requestAttributeOwnershipRelease(msg.object,
                                               msg.handleArray,
                                               msg.handleArraySize,
-                                              const_cast<char*>(msg.getLabel().c_str()),
+                                              msg.getLabel(),
                                               msg.getRefException());
         break ;
         }
@@ -330,7 +330,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         }
 
       case NetworkMessage::INITIATE_FEDERATE_SAVE:
-        fm->initiateFederateSave(msg.getLabel().c_str());
+        fm->initiateFederateSave(msg.getLabel());
         break ;
 
       case NetworkMessage::FEDERATION_SAVED:
@@ -344,7 +344,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
       case NetworkMessage::REQUEST_FEDERATION_RESTORE_FAILED: {
           bool status = (msg.getType() == NetworkMessage::REQUEST_FEDERATION_RESTORE_SUCCEEDED)
               ? true : false ;
-          fm->requestFederationRestoreStatus(status, msg.getLabel().c_str(), msg.getTag().c_str());
+          fm->requestFederationRestoreStatus(status, msg.getLabel(), msg.getTag());
       }
         break ;
 
@@ -353,7 +353,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
         break ;
 
       case NetworkMessage::INITIATE_FEDERATE_RESTORE:
-        fm->initiateFederateRestore(msg.getLabel().c_str(), msg.federate);
+        fm->initiateFederateRestore(msg.getLabel(), msg.federate);
         break ;
 
       case NetworkMessage::FEDERATION_RESTORED:
@@ -376,7 +376,7 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 	std::stringstream errorMsg;
         D.Out(pdExcept, "Unknown message type in executeFederateService.");
 	errorMsg << "Unknown message <" <<  msg.getName() << " in executeFederateService.";
-        throw RTIinternalError(errorMsg.str().c_str());
+        throw RTIinternalError(errorMsg.str());
     }
     G.Out(pdGendoc,"exit  TimeManagement::executeFederateService");
     return true ;
@@ -1001,4 +1001,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.51 2009/10/04 15:46:39 erk Exp $
+// $Id: TimeManagement.cc,v 3.52 2009/11/19 18:15:30 erk Exp $

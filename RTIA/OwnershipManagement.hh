@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
+// $Id: OwnershipManagement.hh,v 3.9 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OWM
@@ -74,7 +74,7 @@ public:
     negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                             std::vector <AttributeHandle> &attribArray,
                                             UShort attribArraySize,
-                                            std::string theTag,
+                                            const std::string& theTag,
                                             TypeException &e);
     void
     cancelnegotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
@@ -112,7 +112,7 @@ public:
                                         std::vector <AttributeHandle> &attribArray,
                                         UShort attribArraySize,
                                         FederateHandle theOwner,
-                                        std::string theTag,
+                                        const std::string& theTag,
                                         TypeException &e);
 
     void
@@ -125,14 +125,14 @@ public:
     attributeOwnershipAcquisition(ObjectHandle theObject,
                                   std::vector <AttributeHandle> &attribArray,
                                   UShort attribArraySize,
-                                  std::string theTag,
+                                  const std::string& theTag,
                                   TypeException &e);
 
     void
     requestAttributeOwnershipRelease(ObjectHandle theObject,
                                      std::vector <AttributeHandle> &attribArray,
                                      UShort attribArraySize,
-                                     std::string theTag,
+                                     const std::string& theTag,
                                      TypeException &e);
 
     void
@@ -162,4 +162,4 @@ protected:
 
 #endif // _CERTI_RTIA_OWM
 
-// $Id: OwnershipManagement.hh,v 3.8 2008/06/10 13:41:44 rousse Exp $
+// $Id: OwnershipManagement.hh,v 3.9 2009/11/19 18:15:30 erk Exp $

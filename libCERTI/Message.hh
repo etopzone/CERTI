@@ -272,24 +272,24 @@ public:
     // containing the actual Attrib/Param values.
     std::vector <AttributeValue_t> getValueArray();
 
-    std::string getLabel() const { return label ; };
-    void setLabel(std::string new_label);
+    const std::string& getLabel() const { return label ; };
+    void setLabel(const std::string& new_label);
 
     //const char *getName() const { return name ; };
-    const std::string getName() const {return name;}
-    void setName(const char *new_name);
+    const std::string& getName() const {return name;}
+    void setName(const std::string& new_name);
 
     DimensionHandle getDimension() const { return dimension ; };
     void setDimension(DimensionHandle);
 
-    std::string getFederationName() const { return federationName ; };
-    void setFederationName(std::string federation_name);
+    const std::string& getFederationName() const { return federationName ; };
+    void setFederationName(const std::string& federation_name);
 
-    std::string getFederateName() const { return federateName ; };
-    void setFederateName(std::string federate_name);
+    const std::string& getFederateName() const { return federateName ; };
+    void setFederateName(const std::string& federate_name);
 
-    std::string getTag() const { return tag ; };
-    void setTag(std::string new_tag);
+    const std::string& getTag() const { return tag ; };
+    void setTag(const std::string& new_tag);
 
     SpaceHandle getSpace() const { return space ; };
     void setSpace(SpaceHandle);
@@ -377,8 +377,8 @@ public:
     TypeException getExceptionType() const { return exception ; };
     const char *getExceptionReason() const { return exceptionReason.c_str() ; };
 
-    std::string getFEDid() const { return FEDid ; };
-    void setFEDid(std::string FEDid);
+    const std::string& getFEDid() const { return FEDid ; };
+    void setFEDid(const std::string& FEDid);
 
         void displayvalueArray(char *);
 

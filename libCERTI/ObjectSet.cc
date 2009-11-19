@@ -94,7 +94,7 @@ ObjectSet::changeAttributeOrderType(ObjectHandle,
 
 // ----------------------------------------------------------------------------
 ObjectHandle
-ObjectSet::getObjectInstanceHandle(std::string the_name) const
+ObjectSet::getObjectInstanceHandle(const std::string& the_name) const
     throw (ObjectNotKnown, RTIinternalError)
 {
     std::map<ObjectHandle, Object *>::const_iterator i ;
@@ -109,13 +109,13 @@ ObjectSet::getObjectInstanceHandle(std::string the_name) const
 }
 
 // ----------------------------------------------------------------------------
-const char *
+const std::string&
 ObjectSet::getObjectInstanceName(ObjectHandle the_object) const
     throw (ObjectNotKnown, RTIinternalError)
 {
     Object *object = getObject(the_object);
 
-    return object->getName().c_str();
+    return object->getName();
 }
 
 // ----------------------------------------------------------------------------
@@ -132,7 +132,7 @@ Object *
 ObjectSet::registerObjectInstance(FederateHandle the_federate,
 				  ObjectClassHandle the_class,
                                   ObjectHandle the_object,
-                                  std::string the_name)
+                                  const std::string& the_name)
     throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
            SaveInProgress, RestoreInProgress, RTIinternalError)
 {
@@ -174,7 +174,7 @@ ObjectSet::registerObjectInstance(FederateHandle the_federate,
 void
 ObjectSet::deleteObjectInstance(FederateHandle,
                                 ObjectHandle the_object,
-                                std::string the_tag)
+                                const std::string& the_tag)
     throw (ObjectNotKnown,
            DeletePrivilegeNotHeld,
            FederateNotExecutionMember,
@@ -269,7 +269,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle,
                                         ObjectHandle,
                                         AttributeHandle *,
                                         UShort,
-                                        const char *)
+                                        const std::string&)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -316,7 +316,7 @@ ObjectSet::attributeOwnershipAcquisition(FederateHandle,
                                          ObjectHandle,
                                          AttributeHandle *,
                                          UShort,
-                                         const char *)
+                                         const std::string&)
 
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
@@ -461,4 +461,4 @@ ObjectSet::requestObjectOwner(FederateHandle the_federate,
 }
 } // namespace certi
 
-// $Id: ObjectSet.cc,v 3.26 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectSet.cc,v 3.27 2009/11/19 18:15:31 erk Exp $

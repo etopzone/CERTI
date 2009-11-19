@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.hh,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditFile.hh,v 3.11 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_FILE_HH
@@ -57,17 +57,18 @@ namespace certi {
 class CERTI_EXPORT AuditFile
 {
 public:
-    AuditFile(const std::string); // Open LogFileName for writing.
+    AuditFile(const std::string&); // Open LogFileName for writing.
     ~AuditFile();
 
     void startLine(Handle, FederateHandle, unsigned short EventType);
     void setLevel(unsigned short EventLevel);
     //    void addToLine(const std::string);
     //    void addToLinef(const char *Format, ...);
-    void endLine(unsigned short, std::string);
-    void putLine(unsigned short, unsigned short, unsigned short, std::string);
+    void endLine(unsigned short, const std::string&);
+    void putLine(unsigned short, unsigned short, unsigned short, const std::string&);
 
     AuditFile &operator<<(const char *);
+    AuditFile &operator<<(const std::string& s);
     AuditFile &operator<<(int);
     AuditFile &operator<<(unsigned int);
     AuditFile &operator<<(long);
@@ -84,4 +85,4 @@ protected:
 
 #endif // _CERTI_AUDIT_FILE_HH
 
-// $Id: AuditFile.hh,v 3.10 2007/06/22 08:51:36 erk Exp $
+// $Id: AuditFile.hh,v 3.11 2009/11/19 18:15:32 erk Exp $

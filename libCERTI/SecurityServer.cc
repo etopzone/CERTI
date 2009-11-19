@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.cc,v 3.17 2009/10/21 20:04:46 erk Exp $
+// $Id: SecurityServer.cc,v 3.18 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -76,7 +76,6 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
     Socket          *FederateSocket=NULL;
     SecureTCPSocket *SecureSocket=NULL;
 
-    const char *FederateName ;
     SecurityLevelID FederateLevel ;
 
     // 1- Get the socket of this federate
@@ -99,7 +98,7 @@ SecurityServer::canFederateAccessData(FederateHandle theFederate,
     }
 
     // 3- If yes, retrieve federate principal name.
-    FederateName = SecureSocket->getPeerName();
+    const char *FederateName = SecureSocket->getPeerName();
 
     // 4- Retrieve Federate level
     FederateLevel = getLevel(FederateName);
@@ -134,7 +133,7 @@ SecurityServer::~SecurityServer()
 // ----------------------------------------------------------------------------
 //! Returns the federate level id stored in a FederateLevelList.
 SecurityLevelID
-SecurityServer::getLevel(const char *theFederate) const
+SecurityServer::getLevel(const std::string& theFederate) const
 {
     return FedLevelList.getLevel(theFederate);
 }
@@ -142,21 +141,21 @@ SecurityServer::getLevel(const char *theFederate) const
 // ----------------------------------------------------------------------------
 //! Returns the level ID associated with name otherwise creates a new one.
 SecurityLevelID
-SecurityServer::getLevelIDWithName(const char *theName)
+SecurityServer::getLevelIDWithName(const std::string& theName)
 {
     if (empty()) {
 	Debug(D, pdDebug) << "Empty list: added default (public) level" << endl ;
         insertPublicLevel();
     }
 
-    if ((theName == NULL) || (strlen(theName) > MAX_SECURITYLEVELNAME)) {
-	Debug(D, pdDebug) << "Security Level Name null or too long." << endl ;
-        throw RTIinternalError("Security Level Name null or too long.");
+    if (theName.empty()) {
+	Debug(D, pdDebug) << "Security Level Name empty." << endl ;
+        throw RTIinternalError("Security Level Name empty.");
     }
 
     list<SecurityLevel *>::const_iterator i = begin();
     for (; i != end(); i++) {
-        if (strcmp((*i)->Name, theName) == 0)
+        if ((*i)->Name == theName)
             return (*i)->LevelID ;
     }
 
@@ -188,7 +187,7 @@ SecurityServer::insertPublicLevel()
 // ----------------------------------------------------------------------------
 //! Register a new federate with security level id.
 void
-SecurityServer::registerFederate(const char *the_federate,
+SecurityServer::registerFederate(const std::string& the_federate,
                                  SecurityLevelID the_level_id)
 {
     FedLevelList.addFederate(the_federate, the_level_id);
@@ -196,4 +195,4 @@ SecurityServer::registerFederate(const char *the_federate,
 
 }
 
-// $Id: SecurityServer.cc,v 3.17 2009/10/21 20:04:46 erk Exp $
+// $Id: SecurityServer.cc,v 3.18 2009/11/19 18:15:30 erk Exp $

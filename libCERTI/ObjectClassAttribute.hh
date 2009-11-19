@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.26 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClassAttribute.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -54,7 +54,7 @@ public:
      */
     typedef std::set<FederateHandle> PublishersList_t;
 
-    ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder);
+    ObjectClassAttribute(const std::string& theName, TransportType theTransport, OrderType theOrder);
     ObjectClassAttribute(ObjectClassAttribute *source);
     virtual ~ObjectClassAttribute();
 
@@ -67,7 +67,7 @@ public:
     SpaceHandle getSpace() const ;
 
     // Security methods
-    virtual void checkFederateAccess(FederateHandle the_federate, const char *reason) const ;
+    virtual void checkFederateAccess(FederateHandle the_federate, const std::string& reason) const ;
 
     // Publish methods
     bool isPublishing(FederateHandle) const ;
@@ -108,4 +108,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.26 2008/12/16 07:08:29 approx Exp $
+// $Id: ObjectClassAttribute.hh,v 3.27 2009/11/19 18:15:30 erk Exp $

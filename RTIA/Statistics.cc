@@ -340,7 +340,7 @@ operator<<(ostream &s, Statistics &stat)
 	int nb = stat.federateServiceSet[i] ;
 	if (nb > 0 || stat.displayZero()) {
 	    s.width(8);
-	    s << nb << ' ' << Statistics::fedMessageName[i].c_str() << " (MSG#"
+	    s << nb << ' ' << Statistics::fedMessageName[i] << " (MSG#"
 	      << i << ")" << endl ;
         }
         sentFederateMessages += nb ;
@@ -355,7 +355,7 @@ operator<<(ostream &s, Statistics &stat)
         int nb = stat.rtiServiceSet[i] ;
         if (nb > 0 || stat.displayZero()) {
             s.width(8);
-            s << nb << ' ' << Statistics::rtiMessageName[i].c_str() << " (MSG#"
+            s << nb << ' ' << Statistics::rtiMessageName[i] << " (MSG#"
 	      << i << ")" << endl ;
         }
         sentRtiMessages += nb ;
@@ -373,4 +373,4 @@ operator<<(ostream &s, Statistics &stat)
 #undef FED_MSG_NAME
 #undef RTI_MSG_NAME
 
-// $Id: Statistics.cc,v 3.20 2009/11/18 18:50:48 erk Exp $
+// $Id: Statistics.cc,v 3.21 2009/11/19 18:15:30 erk Exp $

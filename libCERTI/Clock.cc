@@ -20,7 +20,7 @@
 #include "Clock.hh"
 namespace certi {
 
-Clock::Clock(const std::string newName)
+Clock::Clock(const std::string& newName)
 {
 	name = newName;
 }

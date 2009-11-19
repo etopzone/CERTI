@@ -329,7 +329,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 		"Receiving Message from Federate, type RegisterObject.");
 
           rep.setObject(om->registerObject(req->getObjectClass(),
-                                           req->getName().c_str(),
+                                           req->getName(),
                                            date, heure, e));
           break ;
       }
@@ -699,7 +699,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetObjectClassHandle.");
         try {
-            rep.setObjectClass(om->getObjectClassHandle(req->getName().c_str()));
+            rep.setObjectClass(om->getObjectClassHandle(req->getName()));
             }
         catch (Exception &egoch)
             {
@@ -712,7 +712,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetObjectClassName.");
 
         try {
-            rep.setName(om->getObjectClassName(req->getObjectClass()).c_str());
+            rep.setName(om->getObjectClassName(req->getObjectClass()));
         }
         catch (ObjectClassNotDefined) {
             rep.setException(e_ObjectClassNotDefined);
@@ -725,7 +725,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
       case Message::GET_OBJECT_INSTANCE_HANDLE:
         D.Out(pdTrace,
               "Receiving Message from Federate, type getObjectInstanceHandle.");
-        rep.setObject(om->getObjectInstanceHandle(req->getName().c_str()));
+        rep.setObject(om->getObjectInstanceHandle(req->getName()));
         break ;
 
       case Message::GET_OBJECT_INSTANCE_NAME:
@@ -741,7 +741,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetAttributeHandle.");
         try {
-            rep.setAttribute(om->getAttributeHandle(req->getName().c_str(),
+            rep.setAttribute(om->getAttributeHandle(req->getName(),
                                                 req->getObjectClass()));
             }
         catch (Exception &egah)
@@ -762,21 +762,21 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetInteractionHandle.");
 
-        rep.setInteractionClass(om->getInteractionClassHandle(req->getName().c_str()));
+        rep.setInteractionClass(om->getInteractionClassHandle(req->getName()));
         break ;
 
       case Message::GET_INTERACTION_CLASS_NAME:
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetInteractionName.");
 
-        rep.setName(om->getInteractionClassName(req->getInteractionClass()).c_str());
+        rep.setName(om->getInteractionClassName(req->getInteractionClass()));
         break ;
 
       case Message::GET_PARAMETER_HANDLE:
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetParameterHandle.");
 
-        rep.setParameter(om->getParameterHandle(req->getName().c_str(),
+        rep.setParameter(om->getParameterHandle(req->getName(),
                                                 req->getInteractionClass()));
         break ;
 
@@ -785,7 +785,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
               "Receiving Message from Federate, type GetParameterName.");
 
         rep.setName(om->getParameterName(req->getParameter(),
-                                         req->getInteractionClass()).c_str());
+                                         req->getInteractionClass()));
         break ;
 
       case Message::GET_SPACE_HANDLE:
@@ -795,7 +795,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::GET_SPACE_NAME:
         D.Out(pdTrace, "Receiving Message from Federate, type GetSpaceName.");
-        rep.setName(ddm->getRoutingSpaceName(req->getSpace()).c_str());
+        rep.setName(ddm->getRoutingSpaceName(req->getSpace()));
         break ;
 
       case Message::GET_DIMENSION_HANDLE:
@@ -809,7 +809,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
         D.Out(pdTrace,
               "Receiving Message from Federate, type GetDimensionName");
         rep.setName(ddm->getDimensionName(req->getDimension(),
-                                          req->getSpace()).c_str());
+                                          req->getSpace()));
         break ;
 
       case Message::GET_ATTRIBUTE_SPACE_HANDLE:
@@ -832,7 +832,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::GET_TRANSPORTATION_HANDLE:
         Debug(D, pdTrace) << "Message from Federate: getTransportationHandle" << endl ;
-        rep.setTransportation(om->getTransportationHandle(req->getName().c_str()));
+        rep.setTransportation(om->getTransportationHandle(req->getName()));
         break ;
 
       case Message::GET_TRANSPORTATION_NAME:
@@ -842,7 +842,7 @@ RTIA::chooseFederateProcessing(Message *req, Message &rep, TypeException &e)
 
       case Message::GET_ORDERING_HANDLE:
         Debug(D, pdTrace) << "Message from Federate: getOrderingHandle" << endl ;
-        rep.setOrdering(om->getOrderingHandle(req->getName().c_str()));
+        rep.setOrdering(om->getOrderingHandle(req->getName()));
         break ;
 
       case Message::GET_ORDERING_NAME:

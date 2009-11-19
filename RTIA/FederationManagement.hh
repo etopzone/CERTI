@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.26 2009/11/18 18:50:48 erk Exp $
+// $Id: FederationManagement.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
@@ -52,11 +52,11 @@ public:
          throw ( FederationExecutionAlreadyExists,
                  CouldNotOpenFED,ErrorReadingFED,
                  RTIinternalError);
-    void destroyFederationExecution(std::string theName, TypeException &e);
+    void destroyFederationExecution(const std::string& theName, TypeException &e);
 
     // -- Join/Resign --
-    FederateHandle joinFederationExecution(std::string Federate,
-                                           std::string Federation,
+    FederateHandle joinFederationExecution(const std::string& Federate,
+                                           const std::string& Federation,
                                            RootObject* rootObject,
                                            TypeException &e);
 
@@ -65,39 +65,39 @@ public:
     void resignFederationExecutionForTermination();
 
     // Synchronization.
-    void registerSynchronization(std::string label,
-                                 std::string tag,
+    void registerSynchronization(const std::string& label,
+                                 const std::string& tag,
                                  TypeException &e);
-    void registerSynchronization(std::string label,
-                                 std::string tag,
+    void registerSynchronization(const std::string& label,
+                                 const std::string& tag,
                                  unsigned short array_size,
                                  std::vector <FederateHandle> &fed_array,
                                  TypeException &e);
-    void unregisterSynchronization(std::string label,
+    void unregisterSynchronization(const std::string& label,
                                    TypeException &e);
-    void synchronizationPointRegistrationFailed(const char *label);
-    void synchronizationPointRegistrationSucceeded(const char *label);
-    void federationSynchronized(const char *label);
-    void announceSynchronizationPoint(const char *label,
-                                      const char *tag);
+    void synchronizationPointRegistrationFailed(const std::string& label);
+    void synchronizationPointRegistrationSucceeded(const std::string& label);
+    void federationSynchronized(const std::string& label);
+    void announceSynchronizationPoint(const std::string& label,
+                                      const std::string& tag);
 
     // Saving.
-    void requestFederationSave(std::string label, FederationTime the_time, TypeException &e);
-    void requestFederationSave(std::string label, TypeException &e);
+    void requestFederationSave(const std::string& label, FederationTime the_time, TypeException &e);
+    void requestFederationSave(const std::string& label, TypeException &e);
     void federateSaveBegun(TypeException &);
     void federateSaveStatus(bool, TypeException &);
-    void initiateFederateSave(const char *label);
+    void initiateFederateSave(const std::string& label);
     void federationSavedStatus(bool);
 
     // Restoring.
-    void requestFederationRestore(std::string label,
+    void requestFederationRestore(const std::string& label,
                                   TypeException &e);
     void federateRestoreStatus(bool status, TypeException &e);
     void requestFederationRestoreStatus(bool status,
-                                        const char *label,
-                                        const char *reason);
+                                        const std::string& label,
+                                        const std::string& reason);
     void federationRestoreBegun(void);
-    void initiateFederateRestore(const char *label,
+    void initiateFederateRestore(const std::string& label,
                                  FederateHandle handle);
     void federationRestoredStatus(bool status);
 
@@ -117,7 +117,7 @@ private:
     bool savingState ;
     bool restoringState ;
 
-    std::list<char *> synchronizationLabels ; //!< Labels being synchronized.
+    std::list<std::string> synchronizationLabels ; //!< Labels being synchronized.
 
     std::string _nom_federation ;
     std::string _nom_federe;
@@ -128,4 +128,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.26 2009/11/18 18:50:48 erk Exp $
+// $Id: FederationManagement.hh,v 3.27 2009/11/19 18:15:30 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.109 2009/10/21 20:04:46 erk Exp $
+// $Id: RTIambassador.cc,v 3.110 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -39,6 +39,7 @@
 #else 
 #include <unistd.h>
 #endif
+#include <cstdlib>
 #include <iostream>
 #include <signal.h>
 #include <cassert>
@@ -202,7 +203,7 @@ RTI::RTIambassador::RTIambassador()
     msg << "CreateProcess - GetLastError()=<"
         << GetLastError() <<"> "
         << "Cannot connect to RTIA.exe";		
-    throw RTI::RTIinternalError( msg.str().c_str());
+    throw RTI::RTIinternalError(msg.str().c_str());
   }
     
    privateRefs->handle_RTIA = pi.hProcess;
@@ -1160,7 +1161,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
        {
        throw RTI::RTIinternalError ("Calling sendInteraction with Tag NULL") ;
        }
-    req.setTag((std::string)theTag);
+    req.setTag(std::string(theTag));
     req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
     req.setRegion(0);
     req.setBoolean(true);
@@ -1196,7 +1197,7 @@ RTI::RTIambassador::sendInteraction(InteractionClassHandle theInteraction,
        {
        throw RTI::RTIinternalError ("Calling sendIntercation with Tag NULL") ;
        }
-    req.setTag((std::string)theTag);
+    req.setTag(std::string(theTag));
     req.setPHVPS(certi_cast<ParameterHandleValuePairSetImp>()(theParameters).getParameterHandleValuePairs());
     req.setRegion(0);
     req.setBoolean(false);
@@ -1607,7 +1608,7 @@ RTI::RTIambassador::isAttributeOwnedByFederate(ObjectHandle theObject,
 
     privateRefs->executeService(&req, &rep);
 
-    return ((strcmp((rep.getTag()).c_str(), "RTI_TRUE") == 0) ? RTI_TRUE : RTI_FALSE); 
+    return (rep.getTag() == "RTI_TRUE") ? RTI_TRUE : RTI_FALSE; 
 }
 
 // ----------------------------------------------------------------------------
@@ -3031,4 +3032,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.109 2009/10/21 20:04:46 erk Exp $
+// $Id: RTIambassador.cc,v 3.110 2009/11/19 18:15:32 erk Exp $

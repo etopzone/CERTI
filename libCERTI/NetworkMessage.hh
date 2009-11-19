@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.50 2009/11/18 18:50:49 erk Exp $
+// $Id: NetworkMessage.hh,v 3.51 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -225,17 +225,15 @@ public:
 	 * Indicate if the message is Labelled or not
 	 */
 	bool isLabelled() {return _isLabelled;};	
-	void setLabel(const std::string new_label) {_isLabelled = true; label = new_label;};
-	void setLabel(const char *new_label) {_isLabelled = true; label = std::string(new_label); }
-	const std::string getLabel() const {return this->label;};
+	void setLabel(const std::string& new_label) {_isLabelled = true; label = new_label;}
+	const std::string& getLabel() const {return this->label;};
 
 	/**
 	 * Indicate if the message is Tagged or not
 	 */
 	bool isTagged() {return _isTagged;};
-	void setTag(const std::string new_tag) {_isTagged = true; tag = new_tag;};
-	void setTag(const char *new_tag) {_isTagged = true; tag = std::string(new_tag); }
-	const std::string getTag() const {return this->tag;};
+	void setTag(const std::string& new_tag) {_isTagged = true; tag = new_tag;};
+	const std::string& getTag() const {return this->tag;};
 
         void sizeValueArray(int size) ;
 
@@ -254,7 +252,7 @@ public:
 	OrderType order ;
 
 	/** The name corresponding to message type */
-	const std::string getName() const {return name;}
+	const std::string& getName() const {return name;}
 
 
 	/**
@@ -345,4 +343,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.50 2009/11/18 18:50:49 erk Exp $
+// $Id: NetworkMessage.hh,v 3.51 2009/11/19 18:15:31 erk Exp $

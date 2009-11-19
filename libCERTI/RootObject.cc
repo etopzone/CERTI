@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.43 2009/11/18 18:50:49 erk Exp $
+// $Id: RootObject.cc,v 3.44 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -39,14 +39,12 @@
 
 #include <string>
 #include <stdio.h>
-#include <cstring>
 #include <cassert>
 #include <algorithm>
 
 using std::vector ;
 using std::cout ;
 using std::endl ;
-using std::string ;
 using std::list ;
 
 
@@ -93,7 +91,7 @@ RootObject::display() const
 SecurityLevelID
 RootObject::getSecurityLevelID(const std::string& levelName)
 {
-    return server ? server->getLevelIDWithName(levelName.c_str()) : PublicLevelID;
+    return server ? server->getLevelIDWithName(levelName) : PublicLevelID;
 }
 
 // ----------------------------------------------------------------------------
@@ -103,7 +101,7 @@ RootObject::registerFederate(const std::string& the_federate,
                              SecurityLevelID the_level_id)
 {
     if (server != NULL)
-        server->registerFederate(the_federate.c_str(), the_level_id);
+        server->registerFederate(the_federate, the_level_id);
 }
 
 // ----------------------------------------------------------------------------
@@ -121,7 +119,7 @@ RootObject::addRoutingSpace(const RoutingSpace &rs)
 // ----------------------------------------------------------------------------
 //! get a routing space handle
 SpaceHandle
-RootObject::getRoutingSpaceHandle(std::string rs)
+RootObject::getRoutingSpaceHandle(const std::string& rs)
     throw (NameNotFound)
 {
     vector<RoutingSpace>::const_iterator i = std::find_if(
@@ -135,7 +133,7 @@ RootObject::getRoutingSpaceHandle(std::string rs)
 
 // ----------------------------------------------------------------------------
 //! get a routing space name
-string
+const std::string&
 RootObject::getRoutingSpaceName(SpaceHandle handle)
     throw (SpaceNotDefined)
 {
@@ -235,7 +233,7 @@ void
 RootObject::registerObjectInstance(FederateHandle the_federate,
                                    ObjectClassHandle the_class,
                                    ObjectHandle the_object,
-                                   const char *the_object_name)
+                                   const std::string& the_object_name)
     throw (InvalidObjectHandle,
            ObjectClassNotDefined,
            ObjectClassNotPublished,
@@ -267,7 +265,7 @@ void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
                                  ObjectHandle the_object,
 				 FederationTime theTime,
-                                 std::string the_tag)
+                                 const std::string& the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     ObjectClasses->deleteObject(the_federate, the_object, theTime, the_tag);
@@ -278,7 +276,7 @@ RootObject::deleteObjectInstance(FederateHandle the_federate,
 void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
                                  ObjectHandle the_object,
-                                 std::string the_tag)
+                                 const std::string& the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     ObjectClasses->deleteObject(the_federate, the_object, the_tag);
@@ -563,7 +561,7 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
                 if (parent) {
                         const Interaction::ParameterList_t& parameterList = parent->getParameterList();
-                        for (Interaction::Interaction::ParameterList_t::const_iterator j = parameterList.begin();
+                        for (Interaction::ParameterList_t::const_iterator j = parameterList.begin();
                              j != parameterList.end(); ++j) {
                                   current->addParameter(new Parameter(**j));
                         }
@@ -583,4 +581,4 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.43 2009/11/18 18:50:49 erk Exp $
+// $Id: RootObject.cc,v 3.44 2009/11/19 18:15:32 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.47 2009/10/21 20:04:46 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.48 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -37,7 +37,6 @@
 
 using std::list ;
 using std::endl ;
-using std::string ;
 
 namespace certi {
 
@@ -74,7 +73,7 @@ void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              ObjectHandle object,
 			     FederationTime theTime,
-                             std::string tag)
+                             const std::string& tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
@@ -116,7 +115,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
 void
 ObjectClassSet::deleteObject(FederateHandle federate,
                              ObjectHandle object,
-                             std::string tag)
+                             const std::string& tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
     // It may throw ObjectNotKnown
@@ -158,7 +157,7 @@ ObjectClassSet::deleteObject(FederateHandle federate,
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
-ObjectClassSet::getAttributeHandle(const char *the_name,
+ObjectClassSet::getAttributeHandle(const std::string& the_name,
                                    ObjectClassHandle the_class) const
     throw (NameNotFound, ObjectClassNotDefined, RTIinternalError)
 {
@@ -167,11 +166,11 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
     ObjectClass *objectClass = 0 ;
     AttributeHandle handle ;
 
-    if (the_name == 0)
+    if (the_name.empty())
         throw RTIinternalError("name is null");
 
     D.Out(pdRequest, "Looking for attribute \"%s\" of class %u...",
-          the_name, the_class);
+          the_name.c_str(), the_class);
 
     // It may throw ObjectClassNotDefined.
     objectClass = getObjectFromHandle(the_class);
@@ -192,7 +191,7 @@ ObjectClassSet::getAttributeHandle(const char *the_name,
 
 // ----------------------------------------------------------------------------
 //! getAttributeName.
-const char *
+const std::string&
 ObjectClassSet::getAttributeName(AttributeHandle the_handle,
                                  ObjectClassHandle the_class) const
     throw (AttributeNotDefined,
@@ -251,14 +250,14 @@ ObjectClassSet::getObject(ObjectHandle h) const
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectClassSet::getObjectClassHandle(std::string class_name) const
+ObjectClassSet::getObjectClassHandle(const std::string& class_name) const
 throw (NameNotFound){
 	return getHandleFromName(class_name);
 } /* end of getObjectClassHandle */
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
-string
+const std::string&
 ObjectClassSet::getObjectClassName(ObjectClassHandle the_handle) const
     throw (ObjectClassNotDefined)
 {
@@ -420,7 +419,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       std::vector <AttributeValue_t> &values,
                                       UShort nb,
                                       FederationTime time,
-                                      const char *tag)
+                                      const std::string& tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -465,7 +464,7 @@ ObjectClassSet::updateAttributeValues(FederateHandle federate,
                                       std::vector <AttributeHandle> &attributes,
                                       std::vector <AttributeValue_t> &values,
                                       UShort nb,
-                                      const char *tag)
+                                      const std::string& tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -510,7 +509,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         ObjectHandle theObjectHandle,
                                         std::vector <AttributeHandle> &theAttributeList,
                                         UShort theListSize,
-                                        const char *theTag)
+                                        const std::string& theTag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -625,7 +624,7 @@ attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                               ObjectHandle theObjectHandle,
                               std::vector <AttributeHandle> &theAttributeList,
                               UShort theListSize,
-                              const char *theTag)
+                              const std::string& theTag)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -692,4 +691,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.47 2009/10/21 20:04:46 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.48 2009/11/19 18:15:31 erk Exp $

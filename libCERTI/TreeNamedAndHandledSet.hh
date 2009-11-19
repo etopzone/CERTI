@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: TreeNamedAndHandledSet.hh,v 1.9 2009/10/12 07:09:32 erk Exp $
+// $Id: TreeNamedAndHandledSet.hh,v 1.10 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _TreeNamedAndHandledSet_HH
@@ -75,10 +75,10 @@ public:
 	 */
 	typedef typename ObjectType::ObjectNotDefinedException ObjectNotDefinedException;
 
-	TreeNamedAndHandledSet(std::string setName,bool isRootSet=false);
+	TreeNamedAndHandledSet(const std::string& setName,bool isRootSet=false);
 	~TreeNamedAndHandledSet();
 
-	std::string getSetName() const {return setName;};
+	const std::string& getSetName() const {return setName;};
 
 	/**
 	 * Add an object to the set and build parent <--> child relationship.
@@ -98,7 +98,7 @@ public:
 	 * @return the handle corresponding to the given name
 	 * @throw NameNotFound the name was not found in the set
 	 */
-	HandleType getHandleFromName(const std::string name) const
+	HandleType getHandleFromName(const std::string& name) const
 	throw (NameNotFound);
 
 	/**
@@ -107,7 +107,7 @@ public:
 	 * @return the name corresponding to the given handle
 	 * @throw NameNotFound the handle was not found in the set
 	 */
-	std::string getNameFromHandle(HandleType handle) const
+	const std::string& getNameFromHandle(HandleType handle) const
 	throw (ObjectNotDefinedException);
 
 	/**
@@ -154,7 +154,7 @@ public:
 	 * the number of object in the set.
 	 * @return the size of the set
 	 */
-	const size_t size() {return fromName.size();}
+	size_t size() const {return fromName.size();}
 
 protected:
 	Handle2ObjectMap_t fromHandle;
@@ -175,7 +175,7 @@ private:
 };
 
 template <typename ObjectType>
-TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(std::string theSetName, bool theIsRootSet) {
+TreeNamedAndHandledSet<ObjectType>::TreeNamedAndHandledSet(const std::string& theSetName, bool theIsRootSet) {
    this->setName   = theSetName;
    this->isRootSet = theIsRootSet;
 } /* end of TreeNamedAndHandledSet (constructor) */
@@ -253,10 +253,9 @@ TreeNamedAndHandledSet<ObjectType>::add(ObjectType *child, ObjectType *parent)
 
 template <typename ObjectType>
 typename TreeNamedAndHandledSet<ObjectType>::HandleType
-TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
+TreeNamedAndHandledSet<ObjectType>::getHandleFromName(const std::string& name) const
     throw (NameNotFound) {
 
-	named_const_iterator   findit;
 	std::string            sname;
 	std::string            prefix;
 
@@ -279,7 +278,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
 	 * First try to find the named object
 	 * This should be an efficient binary_search
 	 */
-	findit = fromName.find(sname);
+	named_const_iterator findit = fromName.find(sname);
 	//std::cout << "Looking for " << sname << std::endl;
 	/* If found return the handle */
 	if (findit != fromName.end()) {
@@ -307,7 +306,7 @@ TreeNamedAndHandledSet<ObjectType>::getHandleFromName(std::string name) const
 } /* end of getObjectClassHandle */
 
 template <typename ObjectType>
-std::string
+const std::string&
 TreeNamedAndHandledSet<ObjectType>::getNameFromHandle(HandleType handle) const
 throw (ObjectNotDefinedException) {
 

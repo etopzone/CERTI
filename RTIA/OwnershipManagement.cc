@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: OwnershipManagement.cc,v 3.20 2009/10/21 18:56:29 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.21 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -130,7 +130,7 @@ OwnershipManagement::
 negotiatedAttributeOwnershipDivestiture(ObjectHandle theObject,
                                         std::vector <AttributeHandle> &attribArray,
                                         UShort attribArraySize,
-                                        std::string theTag,
+                                        const std::string& theTag,
                                         TypeException &e)
 
 {
@@ -257,7 +257,7 @@ OwnershipManagement::
 attributeOwnershipAcquisition(ObjectHandle theObject,
                               std::vector <AttributeHandle> &attribArray,
                               UShort attribArraySize,
-                              std::string theTag,
+                              const std::string& theTag,
                               TypeException &e)
 {
     NM_Attribute_Ownership_Acquisition req;
@@ -441,7 +441,7 @@ requestAttributeOwnershipAssumption(ObjectHandle the_object,
                                     std::vector <AttributeHandle> &the_attributes,
                                     UShort the_size,
                                     FederateHandle,
-                                    std::string the_tag,
+                                    const std::string& the_tag,
                                     TypeException &)
 {
     Message req;
@@ -461,7 +461,7 @@ OwnershipManagement::
 requestAttributeOwnershipRelease(ObjectHandle the_object,
                                  std::vector <AttributeHandle> &the_attributes,
                                  UShort the_size,
-                                 std::string the_tag,
+                                 const std::string& the_tag,
                                  TypeException &)
 {
     Message req;
@@ -512,4 +512,4 @@ confirmAttributeOwnershipAcquisitionCancellation(ObjectHandle the_object,
 
 }} // namespace certi/rtia
 
-// $Id: OwnershipManagement.cc,v 3.20 2009/10/21 18:56:29 erk Exp $
+// $Id: OwnershipManagement.cc,v 3.21 2009/11/19 18:15:30 erk Exp $

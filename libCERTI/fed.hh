@@ -19,15 +19,13 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.hh,v 3.6 2008/10/30 10:49:29 erk Exp $
+// $Id: fed.hh,v 3.7 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _FED_HH
 #define _FED_HH
 
 #include "RootObject.hh"
-
-#include <string>
 
 namespace certi {
 namespace fedparser {
@@ -76,4 +74,4 @@ void endSpace();
 }
 
 #endif // _FED_HH
-// $Id: fed.hh,v 3.6 2008/10/30 10:49:29 erk Exp $
+// $Id: fed.hh,v 3.7 2009/11/19 18:15:30 erk Exp $

@@ -18,16 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: ObjectManagement.hh,v 3.30 2008/11/21 13:41:52 approx Exp $
+// $Id: ObjectManagement.hh,v 3.31 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_OM
 #define _CERTI_RTIA_OM
 
 #include "RootObject.hh"
-
-#define IDRESERVED 4294000000
-#define NOTLINKED -1
 
 namespace certi {
 namespace rtia {
@@ -46,7 +43,7 @@ public:
 
     // Object Management services
     ObjectHandle registerObject(ObjectClassHandle theClassHandle,
-                                const char *theObjectName,
+                                const std::string& theObjectName,
                                 FederationTime date,
                                 FederationTime heure,
                                 TypeException &e);
@@ -57,19 +54,19 @@ public:
                           std::vector<AttributeValue_t> &valueArray,
                           UShort attribArraySize,
                           FederationTime theTime,
-                          std::string theTag,
+                          const std::string& theTag,
                           TypeException &e);
 
     void updateAttributeValues(ObjectHandle theObjectHandle,
                           std::vector<AttributeHandle> &attribArray,
                           std::vector<AttributeValue_t> &valueArray,
                           UShort attribArraySize,
-                          std::string theTag,
+                          const std::string& theTag,
                           TypeException &e);
 
     void discoverObject(ObjectHandle theObjectHandle,
                         ObjectClassHandle theObjectClassHandle,
-                        const char *theObjectName,
+                        const std::string& theObjectName,
                         FederationTime theTime,
                         EventRetractionHandle theHandle,
                         TypeException &e);
@@ -79,7 +76,7 @@ public:
                                 std::vector <AttributeValue_t> &valueArray,
                                 UShort attribArraySize,
                                 FederationTime theTime,
-                                const char *theTag,
+                                const std::string& theTag,
                                 EventRetractionHandle theHandle,
                                 TypeException &e);
 
@@ -87,7 +84,7 @@ public:
                                 std::vector <AttributeHandle> &attribArray,
                                 std::vector <AttributeValue_t> &valueArray,
                                 UShort attribArraySize,
-                                const char *theTag,
+                                const std::string& theTag,
                                 TypeException &e);
 
     EventRetractionHandle
@@ -96,7 +93,7 @@ public:
                     std::vector <ParameterValue_t> &valueArray,
                     UShort paramArraySize,
                     FederationTime theTime,
-                    std::string theTag,
+                    const std::string& theTag,
 		    RegionHandle,
                     TypeException &e);
 
@@ -105,7 +102,7 @@ public:
                     std::vector <ParameterHandle> &paramArray,
                     std::vector <ParameterValue_t> &valueArray,
                     UShort paramArraySize,
-                    std::string theTag,
+                    const std::string& theTag,
 		    RegionHandle,
                     TypeException &e);
 
@@ -114,7 +111,7 @@ public:
                             std::vector <ParameterValue_t> &valueArray,
                             UShort paramArraySize,
                             FederationTime theTime,
-                            const char *theTag,
+                            const std::string& theTag,
                             EventRetractionHandle theHandle,
                             TypeException &e);
 
@@ -122,28 +119,28 @@ public:
                             std::vector <ParameterHandle> &paramArray,
                             std::vector <ParameterValue_t> &valueArray,
                             UShort paramArraySize,
-                            const char *theTag,
+                            const std::string& theTag,
                             TypeException &e);
 
     EventRetractionHandle deleteObject(ObjectHandle theObjectHandle,
     				       FederationTime theTime,
-                                       std::string theTag,
+                                       const std::string& theTag,
                                        TypeException &e);
 
     void deleteObject(ObjectHandle theObjectHandle,
-    		      std::string theTag,
+    		      const std::string& theTag,
 		      TypeException &e);
 
     void removeObject(ObjectHandle theObjectHandle,
                       FederateHandle theFederateHandle,
 		      FederationTime theTime,
-                      const char *theTag,
+                      const std::string& theTag,
                       EventRetractionHandle theHandle,
                       TypeException &e);
 
     void removeObject(ObjectHandle theObjectHandle,
                       FederateHandle theFederateHandle,
-                      const char *theTag,
+                      const std::string& theTag,
                       TypeException &e);
 
     void removeObject(ObjectHandle theObject,
@@ -245,23 +242,23 @@ public:
                       TypeException &e);
 
     // RTI Support Services
-    ObjectClassHandle getObjectClassHandle(const char *theName);
-    std::string getObjectClassName(ObjectClassHandle);
+    ObjectClassHandle getObjectClassHandle(const std::string& theName);
+    const std::string& getObjectClassName(ObjectClassHandle);
 
-    ObjectHandle getObjectInstanceHandle(const char *);
-    const char *getObjectInstanceName(ObjectHandle);
+    ObjectHandle getObjectInstanceHandle(const std::string&);
+    const std::string& getObjectInstanceName(ObjectHandle);
 
-    AttributeHandle getAttributeHandle(const char *theName,
+    AttributeHandle getAttributeHandle(const std::string& theName,
                                        ObjectClassHandle theClassHandle);
 
-    const char *getAttributeName(AttributeHandle theHandle,
+    const std::string& getAttributeName(AttributeHandle theHandle,
                                  ObjectClassHandle theClassHandle);
 
-    InteractionClassHandle getInteractionClassHandle(const char *theName);
+    InteractionClassHandle getInteractionClassHandle(const std::string& theName);
 
-    const std::string getInteractionClassName(InteractionClassHandle theClassHandle);
+    const std::string& getInteractionClassName(InteractionClassHandle theClassHandle);
 
-    ParameterHandle getParameterHandle(const char *theParameterName,
+    ParameterHandle getParameterHandle(const std::string& theParameterName,
                                        InteractionClassHandle theClassHandle);
 
     const std::string& getParameterName(ParameterHandle theParameterHandle,
@@ -269,11 +266,11 @@ public:
 
     ObjectClassHandle getObjectClass(ObjectHandle);
 
-    TransportType getTransportationHandle(const char *theName);
-    const char *getTransportationName(TransportType theType);
+    TransportType getTransportationHandle(const std::string& theName);
+    const std::string& getTransportationName(TransportType theType);
 
-    OrderType getOrderingHandle(const char *theName);
-    const char *getOrderingName(OrderType theType);
+    OrderType getOrderingHandle(const std::string& theName);
+    const std::string& getOrderingName(OrderType theType);
 
     TimeManagement *tm ;
 
@@ -285,13 +282,13 @@ protected:
 
 private:
     struct TransportTypeList {
-        const char *name;
+        std::string name;
         TransportType type;
     };
     static const TransportTypeList transportTypeList[];
 
     struct OrderTypeList {
-        const char *name;
+        std::string name;
         OrderType type;
     };
     static const OrderTypeList orderTypeList[];
@@ -301,4 +298,4 @@ private:
 
 #endif // _CERTI_RTIA_OM
 
-// $Id: ObjectManagement.hh,v 3.30 2008/11/21 13:41:52 approx Exp $
+// $Id: ObjectManagement.hh,v 3.31 2009/11/19 18:15:30 erk Exp $

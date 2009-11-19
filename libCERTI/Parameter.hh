@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Parameter.hh,v 3.7 2007/08/31 12:47:40 erk Exp $
+// $Id: Parameter.hh,v 3.8 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_PARAMETER_HH
@@ -37,7 +37,7 @@ class Parameter : public Named
 {
 public:
     Parameter();
-    Parameter(std::string);
+    Parameter(const std::string&);
 
     void display();
     
@@ -54,4 +54,4 @@ private:
 
 #endif // CERTI_PARAMETER_HH
 
-// $Id: Parameter.hh,v 3.7 2007/08/31 12:47:40 erk Exp $
+// $Id: Parameter.hh,v 3.8 2009/11/19 18:15:31 erk Exp $

@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditFile.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
+// $Id: AuditFile.cc,v 3.12 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -33,7 +33,6 @@ using std::ofstream ;
 using std::ios ;
 using std::cerr ;
 using std::endl ;
-using std::string ;
 
 namespace certi {
 
@@ -41,11 +40,11 @@ namespace certi {
 //! AuditFile constructor to write to file
 /*! Audit file is used to store information about actions taken by the RTIG
  */
-AuditFile::AuditFile(const std::string logfile)
+AuditFile::AuditFile(const std::string& logfile)
     : auditFile(logfile.c_str(), ios::app)
 {
     if (!auditFile.is_open()) {
-        cerr << "Could not open Audit file � " << logfile.c_str() 
+        cerr << "Could not open Audit file � " << logfile 
 	     << " �." << endl ;
         throw RTIinternalError("Could not open Audit file.");
     }
@@ -72,7 +71,7 @@ AuditFile::~AuditFile()
   current status and a comment. Then write line to file.
 */
 void
-AuditFile::endLine(unsigned short event_status, std::string reason)
+AuditFile::endLine(unsigned short event_status, const std::string& reason)
 {
     if (currentLine.started())
 	currentLine.end(event_status, reason);
@@ -120,7 +119,7 @@ void
 AuditFile::putLine(unsigned short event_type,
                    unsigned short event_level,
                    unsigned short event_status,
-                   std::string reason)
+                   const std::string& reason)
 {
     if (event_level >= AUDIT_CURRENT_LEVEL) {
 	AuditLine line(event_type, event_level, event_status, reason);
@@ -165,6 +164,13 @@ AuditFile::operator<<(const char *s)
 {
     if (s != 0)
 	currentLine.addComment(s);
+    return *this ;
+}
+
+AuditFile &
+AuditFile::operator<<(const std::string& s)
+{
+    currentLine.addComment(s);
     return *this ;
 }
 
@@ -215,4 +221,4 @@ AuditFile::operator<<(double n)
 
 }
 
-// $Id: AuditFile.cc,v 3.11 2007/07/06 09:25:18 erk Exp $
+// $Id: AuditFile.cc,v 3.12 2009/11/19 18:15:31 erk Exp $

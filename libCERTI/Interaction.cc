@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.55 2009/11/18 18:50:48 erk Exp $
+// $Id: Interaction.cc,v 3.56 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -221,7 +221,7 @@ throw (FederateNotPublishing,
  */
 void
 Interaction::checkFederateAccess(FederateHandle the_federate,
-		const char *reason) const
+		const std::string& reason) const
 		throw (SecurityError)
 		{
 	// BUG: Should at least but a line in Audit
@@ -233,7 +233,7 @@ Interaction::checkFederateAccess(FederateHandle the_federate,
 	// BUG: Should use Audit.
 	if (!result) {
 		cout << "Interaction " << handle << " : SecurityError for federate "
-		<< the_federate << '(' << reason << ")." << endl ;
+                     << the_federate << '(' << reason << ")." << endl ;
 		throw SecurityError("Federate should not access Interaction.");
 	}
 		}
@@ -293,7 +293,7 @@ throw (InteractionParameterNotDefined, RTIinternalError)
 // ----------------------------------------------------------------------------
 //! Returns the parameter handle obtained by its name.
 ParameterHandle
-Interaction::getParameterHandle(const char *the_name) const
+Interaction::getParameterHandle(const std::string& the_name) const
 throw (NameNotFound, RTIinternalError)
 {
 	list<Parameter *>::const_iterator p ;
@@ -407,7 +407,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 		UShort list_size,
 		FederationTime time,
 		const RTIRegion *region,
-		const char *the_tag)
+		const std::string& the_tag)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
 		InteractionParameterNotDefined,
@@ -467,7 +467,7 @@ Interaction::sendInteraction(FederateHandle federate_handle,
 		std::vector <ParameterValue_t> &value_list,
 		UShort list_size,
 		const RTIRegion *region,
-		const char *the_tag)
+		const std::string& the_tag)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
 		InteractionParameterNotDefined,
@@ -547,4 +547,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.55 2009/11/18 18:50:48 erk Exp $
+// $Id: Interaction.cc,v 3.56 2009/11/19 18:15:30 erk Exp $

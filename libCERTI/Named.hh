@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.hh,v 3.9 2009/10/11 14:55:01 erk Exp $
+// $Id: Named.hh,v 3.10 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_NAMED_HH
@@ -66,22 +66,10 @@ public:
     virtual void setName(const std::string& newName);
 
     /**
-     *  Set name (char* version)
-     *  @param[in] name the new name
-     */
-    virtual void setName(const char* newName);
-
-    /**
      * Get name.
      * @return name value
      */
     virtual const std::string& getName() const ;
-
-    /**
-     * Get C-style name.
-     * @return pointer on name, as const char *
-     */
-    virtual const char *getCName() const ;
 
     /**
      * Check if the name matches the provided parameter.
@@ -121,11 +109,11 @@ public:
 	 * @param[in] qualifiedClassName
 	 * @return the leaf class name
 	 */
-	static std::string getLeafClassName(std::string qualifiedClassName);
+	static std::string getLeafClassName(const std::string& qualifiedClassName);
 
 	class IsNamed {
 		public:
-			IsNamed(const std::string named) : named(named) {};
+			IsNamed(const std::string& named) : named(named) {};
 			bool operator()(const Named& namedObject) {
 				return (namedObject.getName() == named);
 			}
@@ -142,4 +130,4 @@ protected:
 
 #endif // LIBCERTI_NAMED_HH
 
-// $Id: Named.hh,v 3.9 2009/10/11 14:55:01 erk Exp $
+// $Id: Named.hh,v 3.10 2009/11/19 18:15:31 erk Exp $

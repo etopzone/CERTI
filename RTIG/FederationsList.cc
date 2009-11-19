@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.cc,v 3.65 2009/11/18 18:50:48 erk Exp $
+// $Id: FederationsList.cc,v 3.66 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -280,7 +280,7 @@ FederationsList::addConstrained(Handle handle,
 */
 FederateHandle
 FederationsList::addFederate(Handle handle,
-                             const char *name,
+                             const std::string& name,
                              SocketTCP *tcp_link,
                              NM_Join_Federation_Execution& objectModelData)
     throw (FederationExecutionDoesNotExist,
@@ -342,7 +342,7 @@ FederationsList::searchFederation(Handle handle,
     @param handle Federation handle
     @param mc_link
 */
-void FederationsList::createFederation(const char *name,
+void FederationsList::createFederation(const std::string& name,
                                        Handle handle,
                                        SocketMC *mc_link)
 #else
@@ -351,9 +351,9 @@ void FederationsList::createFederation(const char *name,
     @param handle Federation handle
     @param FEDid execution id. of the federation (i.e. file name)
 */
-    void FederationsList::createFederation(const char *name,
+    void FederationsList::createFederation(const std::string& name,
                                            Handle handle,
-                                           const char *FEDid)
+                                           const std::string& FEDid)
 #endif
     throw (FederationExecutionAlreadyExists,
            CouldNotOpenFED,
@@ -369,12 +369,12 @@ void FederationsList::createFederation(const char *name,
     // It may throw RTIinternalError
     checkHandle(handle);
     auditFile << ", Handle : " << (long) handle ;
-    if (name == NULL) throw RTIinternalError("Invalid Federation Name.");
+    if (name.empty()) throw RTIinternalError("Invalid Federation Name.");
 
     // It should throw FederationExecutionDoesNotExist.
     try {
         exists(name, unused);
-        D.Out(pdExcept, "Federation %s already present.", name);
+        D.Out(pdExcept, "Federation %s already present.", name.c_str());
         G.Out(pdGendoc,"exit  FederationsList::createFederation on exception");
         throw FederationExecutionAlreadyExists(name);
     }
@@ -444,7 +444,7 @@ FederationsList::destroyObject(Handle handle,
 			       FederateHandle federate,
 			       ObjectHandle id,
 			       FederationTime theTime,
-			       const char *tag)
+			       const std::string& tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            DeletePrivilegeNotHeld,
@@ -473,7 +473,7 @@ void
 FederationsList::destroyObject(Handle handle,
                                FederateHandle federate,
                                ObjectHandle id,
-                               const char *tag)
+                               const std::string& tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            DeletePrivilegeNotHeld,
@@ -499,16 +499,14 @@ FederationsList::destroyObject(Handle handle,
   FederationList, else throw FederationExecutionDoesNotExist.
 */
 void
-FederationsList::exists(const char *name,
+FederationsList::exists(const std::string& name,
                         Handle &handle)
     throw (FederationExecutionDoesNotExist, RTIinternalError)
 {
     G.Out(pdGendoc,"enter FederationsList::exists");
 
-    if (name == NULL) throw RTIinternalError("Null Federation Name.");
-
     for (list<Federation *>::iterator i = begin(); i != end(); i++) {
-        if (!strcmp((*i)->getName(), name)) {
+        if ((*i)->getName() == name) {
             handle = (*i)->getHandle();
             G.Out(pdGendoc,"exit  FederationsList::exists");
             return ;
@@ -583,7 +581,7 @@ FederationsList::registerObject(Handle handle,
     searchFederation(handle, federation);
 
     D.Out(pdTrace, "theObjectClass = %d, name = %s.", object_class, name.c_str());
-    return(federation->registerObject(federate, object_class, name.c_str()));
+    return(federation->registerObject(federate, object_class, name));
 }
 
 // ----------------------------------------------------------------------------
@@ -633,7 +631,7 @@ FederationsList::updateAttribute(Handle handle,
                                  std::vector <AttributeValue_t> &values,
                                  UShort list_size,
                                  FederationTime time,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            ObjectNotKnown,
@@ -665,7 +663,7 @@ FederationsList::updateAttribute(Handle handle,
                                  std::vector <AttributeHandle> &attributes,
                                  std::vector <AttributeValue_t> &values,
                                  UShort list_size,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederationExecutionDoesNotExist,
            ObjectNotKnown,
@@ -698,7 +696,7 @@ FederationsList::updateParameter(Handle handle,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            FederationExecutionDoesNotExist,
@@ -736,7 +734,7 @@ FederationsList::updateParameter(Handle handle,
                                  std::vector <ParameterValue_t> &values,
                                  UShort list_size,
 				 RegionHandle region,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            FederationExecutionDoesNotExist,
@@ -770,8 +768,8 @@ void
 FederationsList::manageSynchronization(Handle handle,
                                        FederateHandle federate,
                                        bool state,
-                                       const char *label,
-                                       const char *tag)
+                                       const std::string& label,
+                                       const std::string& tag)
     throw (FederationAlreadyPaused,
            FederationNotPaused,
            FederateNotExecutionMember,
@@ -803,8 +801,8 @@ void
 FederationsList::manageSynchronization(Handle handle,
                                        FederateHandle federate,
                                        bool state,
-                                       const char *label,
-                                       const char *tag,
+                                       const std::string& label,
+                                       const std::string& tag,
                                        unsigned short federate_setSize,
                                        std::vector <FederateHandle> &federate_set)
     throw (FederationAlreadyPaused,
@@ -840,8 +838,8 @@ FederationsList::manageSynchronization(Handle handle,
 void
 FederationsList::broadcastSynchronization(Handle handle,
                                           FederateHandle federate,
-                                          const char *label,
-                                          const char *tag)
+                                          const std::string& label,
+                                          const std::string& tag)
     throw (FederationExecutionDoesNotExist,
            RTIinternalError)
 {
@@ -866,8 +864,8 @@ FederationsList::broadcastSynchronization(Handle handle,
 void
 FederationsList::broadcastSynchronization(Handle handle,
                                           FederateHandle federate,
-                                          const char *label,
-                                          const char *tag,
+                                          const std::string& label,
+                                          const std::string& tag,
                                           unsigned short federate_setSize,
                                           std::vector <FederateHandle> &federate_set)
     throw (FederationExecutionDoesNotExist,
@@ -1197,7 +1195,7 @@ FederationsList::negotiateDivestiture(Handle handle,
                                       ObjectHandle id,
                                       std::vector <AttributeHandle> &attributes,
                                       UShort list_size,
-                                      const char *tag)
+                                      const std::string& tag)
     throw (FederateNotExecutionMember,
            ObjectNotKnown,
            AttributeNotDefined,
@@ -1288,7 +1286,7 @@ FederationsList::acquire(Handle handle,
                          ObjectHandle id,
                          std::vector <AttributeHandle> &attributes,
                          UShort list_size,
-                         const char *tag)
+                         const std::string& tag)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1607,7 +1605,7 @@ ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
     checkHandle(federation);
     checkHandle(federate);
 
-    return f->registerObjectWithRegion(federate, handle, tag.c_str(), region, nb, attrs);
+    return f->registerObjectWithRegion(federate, handle, tag, region, nb, attrs);
 }
 
 // ----------------------------------------------------------------------------
@@ -1615,7 +1613,7 @@ ObjectHandle FederationsList::registerObjectWithRegion(Handle federation,
 void
 FederationsList::requestFederationSave(Handle the_federation,
                                        FederateHandle the_federate,
-                                       const char *the_label,
+                                       const std::string& the_label,
                                        FederationTime the_time)
 {
     G.Out(pdGendoc,"enter FederationsList::requestFederationSave with time");
@@ -1636,7 +1634,7 @@ FederationsList::requestFederationSave(Handle the_federation,
 void
 FederationsList::requestFederationSave(Handle the_federation,
                                        FederateHandle the_federate,
-                                       const char *the_label)
+                                       const std::string& the_label)
 {
     G.Out(pdGendoc,"enter FederationsList::requestFederationSave without time");
 
@@ -1691,7 +1689,7 @@ FederationsList::federateSaveStatus(Handle the_federation,
 void
 FederationsList::requestFederationRestore(Handle the_federation,
                                           FederateHandle the_federate,
-                                          const char *the_label)
+                                          const std::string& the_label)
 {
     G.Out(pdGendoc,"enter FederationsList::requestFederationRestore");
     checkHandle(the_federation);
@@ -1750,5 +1748,5 @@ FederationsList::requestObjectOwner(Handle handle,
 
 }} // certi::rtig
 
-// EOF $Id: FederationsList.cc,v 3.65 2009/11/18 18:50:48 erk Exp $
+// EOF $Id: FederationsList.cc,v 3.66 2009/11/19 18:15:29 erk Exp $
 

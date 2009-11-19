@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SecurityLevel.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_LEVEL_HH
@@ -28,12 +28,9 @@
 #include "certi.hh"
 #include "Exception.hh"
 
-#include <stdlib.h>
-#include <string.h>
+#include <string>
 
-#define MAX_SECURITYLEVELNAME 500
-
-typedef char *SecurityLevelName ;
+typedef std::string SecurityLevelName ;
 typedef unsigned short SecurityLevelID ;
 
 #define PublicLevelID 0
@@ -47,26 +44,18 @@ public:
     SecurityLevelName Name ;
     SecurityLevelID LevelID ;
 
-    SecurityLevel(const char *InitName,
+  SecurityLevel(const std::string& InitName,
                   SecurityLevelID InitLevelID)
     {
-/*#ifdef _WIN32
-    if((InitName == NULL) ||(strlen(InitName) > MAX_SECURITYLEVELNAME))
-#else
-    if((InitName == NULL) ||(std::strlen(InitName) > MAX_SECURITYLEVELNAME))
-#endif*/
-
-       if ((InitName == NULL) || (strlen(InitName) > MAX_SECURITYLEVELNAME))
+      if (InitName.empty())
             throw RTIinternalError("Bad Security Level Name.");
-        Name = strdup(InitName);
+        Name = InitName;
         LevelID = InitLevelID ;
     }
-
-    ~SecurityLevel() { if (Name != NULL) free(Name); };
 };
 
 }
 
 #endif // _CERTI_SECURITY_LEVEL_HH
 
-// $Id: SecurityLevel.hh,v 3.11 2008/12/07 20:16:15 gotthardp Exp $
+// $Id: SecurityLevel.hh,v 3.12 2009/11/19 18:15:30 erk Exp $

@@ -209,7 +209,7 @@ int32_t MessageBuffer::read_uint8s(uint8_t* data, uint32_t n) {
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
-		throw RTIinternalError(smsg.str().c_str());
+		throw RTIinternalError(smsg.str());
 	}
 
 	memcpy(data, buffer+readOffset, n);
@@ -253,7 +253,7 @@ int32_t MessageBuffer::read_uint16s(uint16_t* data, uint32_t n) {
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
-		throw RTIinternalError(smsg.str().c_str());
+		throw RTIinternalError(smsg.str());
 	}
 
 	/* do not swap byte if it is not necessary */
@@ -307,7 +307,7 @@ int32_t MessageBuffer::read_uint32s(uint32_t* data, uint32_t n) {
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
-		throw RTIinternalError(smsg.str().c_str());
+		throw RTIinternalError(smsg.str());
 	}
 
 	/* do not swap byte if it is not necessary */
@@ -374,7 +374,7 @@ int32_t MessageBuffer::read_uint64s(uint64_t* data, uint32_t n) {
 				<< "> inside a buffer of readable size <"
 				<< (int32_t)writeOffset-readOffset << "> (writeOffset="
 				<<writeOffset << ",readOffset="<<readOffset <<").";
-		throw RTIinternalError(smsg.str().c_str());
+		throw RTIinternalError(smsg.str());
 	}
 
 	/* do not swap byte if it is not necessary */

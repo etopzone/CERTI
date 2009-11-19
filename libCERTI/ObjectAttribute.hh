@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.17 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: ObjectAttribute.hh,v 3.18 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
@@ -49,7 +49,6 @@ public:
     // Public Methods
 
     // Constructors & Destructors
-    ObjectAttribute(); //!< Declared by not defined (Don't call it).
     ObjectAttribute(AttributeHandle, FederateHandle, ObjectClassAttribute *);
     ~ObjectAttribute();
 
@@ -81,6 +80,8 @@ public:
     const RTIRegion *getRegion() const { return region ; };
     
 private:
+    ObjectAttribute(); //!< Declared by not defined (Don't call it).
+
     // Private Attributes
     AttributeHandle handle ; //!< The object attribute handle.
     FederateHandle owner ; //!< Federate who owns the attribute.
@@ -95,4 +96,4 @@ private:
 
 #endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.17 2008/12/07 20:16:14 gotthardp Exp $
+// $Id: ObjectAttribute.hh,v 3.18 2009/11/19 18:15:30 erk Exp $

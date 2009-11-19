@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.40 2009/09/14 21:21:31 erk Exp $
+// $Id: NetworkMessage.cc,v 3.41 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -43,13 +43,10 @@ NetworkMessage::NetworkMessage()
       _isTagged(false)
 {
     name               = std::string("NetworkMessage (generic)");
-    exceptionReason    = std::string("") ;
 
     federation         = 0 ;
     federate           = 0 ;
         
-    label          = std::string("") ;
-
     bestEffortPeer = -1 ;
     bestEffortAddress = 0 ;
     numberOfRegulators = 0;
@@ -161,4 +158,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.40 2009/09/14 21:21:31 erk Exp $
+// $Id: NetworkMessage.cc,v 3.41 2009/11/19 18:15:30 erk Exp $

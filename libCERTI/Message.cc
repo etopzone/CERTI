@@ -97,14 +97,14 @@ Message::getValueArray()
     @param NewLabel copied (strcpy) into Message label (NULL label is stored as an empty string)
 */
 void
-Message::setLabel(std::string NewLabel)
+Message::setLabel(const std::string& NewLabel)
 {
     label = NewLabel ;
 }
 
 // ----------------------------------------------------------------------------
 void
-Message::setName(const char *NewName)
+Message::setName(const std::string& NewName)
 {
    name = NewName ;
 }
@@ -447,7 +447,7 @@ Message::setParameters(std::vector <ParameterHandle> & the_parameters,
 
 // ----------------------------------------------------------------------------
 //! Sets the federation name.
-void Message::setFederationName(std::string NewNomFederation)
+void Message::setFederationName(const std::string& NewNomFederation)
 {
     federationName = NewNomFederation ;
 }
@@ -457,7 +457,7 @@ void Message::setFederationName(std::string NewNomFederation)
 // setFederateName
 //
 void
-Message::setFederateName(std::string NewNomFedere)
+Message::setFederateName(const std::string& NewNomFedere)
 {
     federateName = NewNomFedere ;
 }
@@ -468,7 +468,7 @@ Message::setFederateName(std::string NewNomFedere)
     @param new_tag tag
 */
 void
-Message::setTag(std::string new_tag)
+Message::setTag(const std::string& new_tag)
 {
     tag = new_tag ;
 }
@@ -477,7 +477,7 @@ Message::setTag(std::string new_tag)
 // setFEDid
 //
 void
-Message::setFEDid(std::string NewFEDid)
+Message::setFEDid(const std::string& NewFEDid)
 {
     FEDid = NewFEDid;
 }

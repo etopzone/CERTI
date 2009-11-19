@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.37 2009/11/18 18:50:48 erk Exp $
+// $Id: Interaction.hh,v 3.38 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -105,7 +105,7 @@ public:
 	 * @param[in] subClassName the name of the subclass
 	 * @return the sub class object class.
 	 */
-	Interaction* getSubClassByName(const std::string subClassName);
+	Interaction* getSubClassByName(const std::string& subClassName);
 	/**
 	 * Get the whole set of subclasses.
 	 */
@@ -119,7 +119,7 @@ public:
 
     // -- Security Methods --
     void checkFederateAccess(FederateHandle the_federate,
-                             const char *reason) const
+                             const std::string& reason) const
         throw (SecurityError);
 
     SecurityLevelID getSecurityLevelId() const { return id ; };
@@ -133,7 +133,7 @@ public:
         throw (FederateNotPublishing, RTIinternalError, SecurityError);
 
     // -- RTI Support Services --
-    ParameterHandle getParameterHandle(const char *) const
+    ParameterHandle getParameterHandle(const std::string&) const
         throw (NameNotFound, RTIinternalError);
 
     /**
@@ -170,7 +170,7 @@ public:
                     UShort list_size,
                     FederationTime the_time,
 		    const RTIRegion *,
-                    const char *the_tag)
+                    const std::string& the_tag)
         throw (FederateNotPublishing,
                InteractionClassNotDefined,
                InteractionParameterNotDefined,
@@ -182,7 +182,7 @@ public:
                     std::vector <ParameterValue_t> &value_list,
                     UShort list_size,
 		    const RTIRegion *,
-                    const char *the_tag)
+                    const std::string& the_tag)
         throw (FederateNotPublishing,
                InteractionClassNotDefined,
                InteractionParameterNotDefined,
@@ -258,4 +258,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.37 2009/11/18 18:50:48 erk Exp $
+// $Id: Interaction.hh,v 3.38 2009/11/19 18:15:30 erk Exp $

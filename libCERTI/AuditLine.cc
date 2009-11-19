@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.cc,v 3.11 2007/07/06 09:25:17 erk Exp $
+// $Id: AuditLine.cc,v 3.12 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -28,11 +28,9 @@
 #include "certi.hh"
 
 #include <string>
-#include <time.h>
 
 using std::ofstream ;
 using std::endl ;
-using std::string ;
 
 namespace certi {
 
@@ -51,7 +49,7 @@ AuditLine::AuditLine()
 /*! 
  */
 AuditLine::AuditLine(unsigned short event_type, unsigned short event_level,
-		     unsigned short event_status, std::string reason)
+		     unsigned short event_status, const std::string& reason)
     : federation(0), federate(0),
       type(event_type), level(event_level), status(event_status),
       modified(false), date(0), comment(reason)
@@ -76,7 +74,7 @@ AuditLine::addComment(const std::string &str)
 // ----------------------------------------------------------------------------
 //! Finish the line with a status and reason
 void
-AuditLine::end(unsigned short event_status, const std::string reason)
+AuditLine::end(unsigned short event_status, const std::string& reason)
 {
     status = event_status ;    
     addComment(reason);
@@ -127,5 +125,5 @@ AuditLine::setLevel(unsigned short l)
 
 } // namespace certi
 
-// $Id: AuditLine.cc,v 3.11 2007/07/06 09:25:17 erk Exp $
+// $Id: AuditLine.cc,v 3.12 2009/11/19 18:15:32 erk Exp $
 

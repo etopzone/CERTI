@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecurityServer.hh,v 3.11 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityServer.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_SECURITY_SERVER_HH
@@ -65,9 +65,9 @@ public:
     bool canFederateAccessData(FederateHandle theFederate,
                                   SecurityLevelID theDataLevelID);
 
-    SecurityLevelID getLevelIDWithName(const char *theName);
+    SecurityLevelID getLevelIDWithName(const std::string& theName);
 
-    void registerFederate(const char *the_federate,
+    void registerFederate(const std::string& the_federate,
                           SecurityLevelID the_level_id);
 
 private:
@@ -76,7 +76,7 @@ private:
 
     SecurityLevelID LastLevelID ; //!< Last Level ID attributed.
     FederateLevelList FedLevelList ;
-    SecurityLevelID getLevel(const char *theFederate) const ;
+    SecurityLevelID getLevel(const std::string& theFederate) const ;
 
     void insertPublicLevel();
 };
@@ -85,4 +85,4 @@ private:
 
 #endif // _CERTI_SECURITY_SERVER_HH
 
-// $Id: SecurityServer.hh,v 3.11 2007/06/22 08:51:39 erk Exp $
+// $Id: SecurityServer.hh,v 3.12 2009/11/19 18:15:30 erk Exp $

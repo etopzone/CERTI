@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.69 2009/11/18 18:50:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.70 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -225,7 +225,7 @@ void
 ObjectClass::sendToOwners(CDiffusion *diffusionList,
                           ObjectHandle theObjectHandle,
                           FederateHandle theFederate,
-                          const char *theTag,
+                          const std::string& theTag,
                           NetworkMessage::Type type)
 {
     int nbAttributes = diffusionList->size ;
@@ -265,7 +265,7 @@ ObjectClass::sendToOwners(CDiffusion *diffusionList,
 */
 void
 ObjectClass::checkFederateAccess(FederateHandle the_federate,
-                                 const char *reason)
+                                 const std::string& reason)
     throw (SecurityError)
 {
     D.Out(pdInit, "Beginning of CheckFederateAccess for the federate %d",
@@ -286,7 +286,7 @@ ObjectClass::checkFederateAccess(FederateHandle the_federate,
 }
 
 // ----------------------------------------------------------------------------
-ObjectClass::ObjectClass(std::string name, ObjectClassHandle handle)
+ObjectClass::ObjectClass(const std::string& name, ObjectClassHandle handle)
     : Named(name), server(NULL), handle(handle), maxSubscriberHandle(0), securityLevelId(PublicLevelID),
       superClass(0), subClasses(NULL)
 {
@@ -325,7 +325,7 @@ ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
                             ObjectHandle the_object,
 			    FederationTime theTime,
-                            std::string the_tag)
+                            const std::string& the_tag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -393,7 +393,7 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
 ObjectClassBroadcastList *
 ObjectClass::deleteInstance(FederateHandle the_federate,
                             ObjectHandle the_object,
-                            std::string the_tag)
+                            const std::string& the_tag)
     throw (DeletePrivilegeNotHeld,
            ObjectNotKnown,
            RTIinternalError)
@@ -483,33 +483,33 @@ void ObjectClass::display() const
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
-ObjectClass::getAttributeHandle(const char *the_name) const
+ObjectClass::getAttributeHandle(const std::string& the_name) const
     throw (NameNotFound, RTIinternalError)
 {
     G.Out(pdGendoc,"enter ObjectClass::getAttributeHandle");
 
     list<ObjectClassAttribute *>::const_iterator a ;
     for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isNamed(std::string(the_name))) {
+        if ((*a)->isNamed(the_name)) {
             G.Out(pdGendoc,"exit  ObjectClass::getAttributeHandle");
             return (*a)->getHandle();
         }
     }
 
     D.Out(pdExcept, "ObjectClass %u: Attribute \"%s\" not defined.",
-          handle, the_name);
+          handle, the_name.c_str());
     G.Out(pdGendoc,"exit  ObjectClass::getAttributeHandle on NameNotFound");
     throw NameNotFound(the_name);
 }
 
 // ----------------------------------------------------------------------------
 //! getAttributeName.
-const char *
+const std::string&
 ObjectClass::getAttributeName(AttributeHandle the_handle) const
     throw (AttributeNotDefined,
            RTIinternalError)
 {
-    return getAttribute(the_handle)->getCName();
+    return getAttribute(the_handle)->getName();
 }
 
 
@@ -710,7 +710,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     // Pre-conditions checking
     if (isInstanceInClass(the_object->getHandle())) {
         D.Out(pdExcept, "exception : ObjectAlreadyRegistered.");
-        throw ObjectAlreadyRegistered(the_object->getName().c_str());
+        throw ObjectAlreadyRegistered(the_object->getName());
     }
 
     // This condition is only to be checked on the RTIG
@@ -754,7 +754,7 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         answer->setException(e_NO_EXCEPTION) ;
         answer->objectClass = handle ; // Class Handle
         answer->object      = the_object->getHandle();
-        answer->setLabel(the_object->getName().c_str());
+        answer->setLabel(the_object->getName());
 	// BUG FIXME strange!!
 	//answer->setDate(0.0);
 
@@ -804,7 +804,7 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
 	    message.setException(e_NO_EXCEPTION) ;
 	    message.objectClass = super_handle ;
 	    message.object      = (*o)->getHandle();
-	    message.setLabel((*o)->getName().c_str());
+	    message.setLabel((*o)->getName());
 	    //BUG FIXME strange!!
 	    //message.setDate(0.0);
 
@@ -886,7 +886,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    std::vector <AttributeValue_t> &the_values,
                                    int the_size,
                                    FederationTime the_time,
-                                   const char *the_tag)
+                                   const std::string& the_tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -949,7 +949,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
                                    std::vector <AttributeHandle> &the_attributes,
                                    std::vector <AttributeValue_t> &the_values,
                                    int the_size,
-                                   const char *the_tag)
+                                   const std::string& the_tag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -1012,7 +1012,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                                         ObjectHandle theObjectHandle,
                                         std::vector <AttributeHandle> &theAttributeList,
                                         UShort theListSize,
-                                        const char *theTag)
+                                        const std::string& theTag)
     throw (ObjectNotKnown,
            AttributeNotDefined,
            AttributeNotOwned,
@@ -1118,7 +1118,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerDivestiture.federation = server->federation();
             AnswerDivestiture.federate = theFederateHandle ;
             AnswerDivestiture.object = theObjectHandle ;
-            AnswerDivestiture.setLabel(std::string(""));
+            AnswerDivestiture.setLabel(std::string());
             AnswerDivestiture.handleArraySize = compteur_divestiture ;
 
             sendToFederate(&AnswerDivestiture, theFederateHandle);
@@ -1386,7 +1386,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->federate = theFederateHandle ;
             AnswerAssumption->setException(e_NO_EXCEPTION) ;
             AnswerAssumption->object = theObjectHandle ;
-            AnswerAssumption->setLabel(std::string(""));
+            AnswerAssumption->setLabel(std::string());
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
@@ -1428,7 +1428,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                                            ObjectHandle theObjectHandle,
                                            std::vector <AttributeHandle> &theAttributeList,
                                            UShort theListSize,
-                                           const char *theTag)
+                                           const std::string& theTag)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -1834,4 +1834,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.69 2009/11/18 18:50:48 erk Exp $
+// $Id: ObjectClass.cc,v 3.70 2009/11/19 18:15:30 erk Exp $

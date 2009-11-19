@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.35 2009/10/21 20:04:46 erk Exp $
+// $Id: Message_R.cc,v 3.36 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -63,7 +63,7 @@ void Message::deserialize(MessageBuffer& msgBuffer) {
 	/* We serialize the common Message part 
 	 * ALL Messages will contain the following
 	 */	
-	Debug(D, pdDebug) << "Deserialize <" << getName().c_str()<<">"<<std::endl;	
+	Debug(D, pdDebug) << "Deserialize <" << getName()<<">"<<std::endl;	
         readHeader(msgBuffer);
         readBody(msgBuffer) ;
 	G.Out(pdGendoc,"exit Message::deserialize");
@@ -649,4 +649,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.35 2009/10/21 20:04:46 erk Exp $
+// $Id: Message_R.cc,v 3.36 2009/11/19 18:15:32 erk Exp $

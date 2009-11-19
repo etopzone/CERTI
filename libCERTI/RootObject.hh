@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.33 2009/11/18 18:50:49 erk Exp $
+// $Id: RootObject.hh,v 3.34 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -95,8 +95,8 @@ public:
     // Data Distribution Management
     void addRoutingSpace(const RoutingSpace &);
     RoutingSpace &getRoutingSpace(SpaceHandle) throw (SpaceNotDefined);
-    SpaceHandle getRoutingSpaceHandle(std::string) throw (NameNotFound);
-    std::string getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
+    SpaceHandle getRoutingSpaceHandle(const std::string&) throw (NameNotFound);
+    const std::string& getRoutingSpaceName(SpaceHandle) throw (SpaceNotDefined);
 
     void addRegion(RTIRegion *);
     RegionHandle createRegion(SpaceHandle, unsigned long) throw (SpaceNotDefined);
@@ -107,7 +107,7 @@ public:
 
     // Object Management
     void registerObjectInstance(FederateHandle, ObjectClassHandle, ObjectHandle,
-                                const char *)
+                                const std::string&)
         throw (InvalidObjectHandle,
                ObjectClassNotDefined,
                ObjectClassNotPublished,
@@ -118,10 +118,10 @@ public:
         throw (ObjectNotKnown);
 
     void deleteObjectInstance(FederateHandle, ObjectHandle,
-    			      FederationTime theTime, std::string theTag)
+    			      FederationTime theTime, const std::string& theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, std::string theTag)
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& theTag)
         throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
     void killFederate(FederateHandle) throw (RTIinternalError);
@@ -194,4 +194,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.33 2009/11/18 18:50:49 erk Exp $
+// $Id: RootObject.hh,v 3.34 2009/11/19 18:15:32 erk Exp $

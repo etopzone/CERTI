@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.36 2008/11/08 11:36:04 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.37 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -61,18 +61,18 @@ public:
 	void addClass(ObjectClass *theClass,ObjectClass *parentClass) throw (RTIinternalError);
 
 	// RTI Support Services
-	AttributeHandle getAttributeHandle(const char *the_name,
+	AttributeHandle getAttributeHandle(const std::string& the_name,
 			ObjectClassHandle the_class) const
 			throw (NameNotFound, ObjectClassNotDefined, RTIinternalError);
 
-	const char *getAttributeName(AttributeHandle the_handle,
+	const std::string& getAttributeName(AttributeHandle the_handle,
 			ObjectClassHandle the_class) const
 			throw (AttributeNotDefined, ObjectClassNotDefined, RTIinternalError);
 
-	ObjectClassHandle getObjectClassHandle(std::string) const
+	ObjectClassHandle getObjectClassHandle(const std::string&) const
 	throw (NameNotFound);
 
-	std::string getObjectClassName(ObjectClassHandle the_handle) const
+	const std::string& getObjectClassName(ObjectClassHandle the_handle) const
 	throw (ObjectClassNotDefined);
 
 	void killFederate(FederateHandle theFederate)
@@ -96,12 +96,12 @@ public:
 	void deleteObject(FederateHandle theFederateHandle,
 			ObjectHandle theObjectHandle,
 			FederationTime theTime,
-			std::string theTag)
+			const std::string& theTag)
 	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
 	void deleteObject(FederateHandle theFederateHandle,
 			ObjectHandle theObjectHandle,
-			std::string theTag)
+			const std::string& theTag)
 	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
 	void registerObjectInstance(FederateHandle, Object *, ObjectClassHandle)
@@ -115,7 +115,7 @@ public:
 			std::vector <AttributeValue_t> &theValueArray,
 			UShort theArraySize,
 			FederationTime theTime,
-			const char *theUserTag)
+			const std::string& theUserTag)
 	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError, InvalidObjectHandle);
 
@@ -124,7 +124,7 @@ public:
 			std::vector <AttributeHandle> &theAttribArray,
 			std::vector <AttributeValue_t> &theValueArray,
 			UShort theArraySize,
-			const char *theUserTag)
+			const std::string& theUserTag)
 	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError, InvalidObjectHandle);
 
@@ -134,7 +134,7 @@ public:
 			ObjectHandle theObjectHandle,
 			std::vector <AttributeHandle> &,
 			UShort theListSize,
-			const char *theTag)
+			const std::string& theTag)
 	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
 			AttributeAlreadyBeingDivested, RTIinternalError);
 
@@ -158,7 +158,7 @@ public:
 			ObjectHandle theObjectHandle,
 			std::vector <AttributeHandle> &theAttributeList,
 			UShort theListSize,
-			const char *theTag)
+			const std::string& theTag)
 	throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 
@@ -194,4 +194,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.36 2008/11/08 11:36:04 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.37 2009/11/19 18:15:31 erk Exp $

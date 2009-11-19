@@ -44,12 +44,12 @@ public:
 	 * The Clock default constructor.
 	 * @param[in] newName the clock name
 	 */
-	Clock(const std::string newName);
+	Clock(const std::string& newName);
 	/**
 	 * Get the clock name.
 	 * @return the clock name
 	 */
-	const std::string getName() const {return name;};
+	const std::string& getName() const {return name;};
 	/**
 	 * Get the clock resolution in nano-seconds.
 	 * @return the clock resolution in nano-seconds

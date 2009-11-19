@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: AuditLine.hh,v 3.9 2005/04/30 16:48:25 breholee Exp $
+// $Id: AuditLine.hh,v 3.10 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_AUDIT_LINE_HH
@@ -37,13 +37,13 @@ class AuditLine {
 
 public:
     AuditLine();
-    AuditLine(unsigned short, unsigned short, unsigned short, std::string);
+    AuditLine(unsigned short, unsigned short, unsigned short, const std::string&);
     ~AuditLine();
 
     void write(std::ofstream &); //!< Write data to file
     void addComment(const std::string &); //!< Add str at the end of comment.
     void end(unsigned short event_status = e_NO_EXCEPTION,
-	     std::string reason = "");
+	     const std::string& reason = "");
     unsigned short getLevel() const { return level ; };
     unsigned short getStatus() const { return status ; };
     bool started() const { return modified ; };
@@ -67,4 +67,4 @@ private:
 
 #endif // _CERTI_AUDIT_LINE_HH
 
-// $Id: AuditLine.hh,v 3.9 2005/04/30 16:48:25 breholee Exp $
+// $Id: AuditLine.hh,v 3.10 2009/11/19 18:15:31 erk Exp $

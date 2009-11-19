@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.16 2008/11/20 18:21:55 approx Exp $
+// $Id: Federate.cc,v 3.17 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -41,7 +41,7 @@ namespace rtig {
 
 // ----------------------------------------------------------------------------
 //! A new FederateName is allocated. theLink must have been opened before.
-Federate::Federate(const char *the_name, FederateHandle the_handle)
+Federate::Federate(const std::string& the_name, FederateHandle the_handle)
     throw (RTIinternalError)
     : handle(the_handle), name(the_name), regulator(false), constrained(false),
       cras(true), iras(true), aras(false), asas(false), 
@@ -54,15 +54,14 @@ Federate::Federate(const char *the_name, FederateHandle the_handle)
 // ----------------------------------------------------------------------------
 //! Add a synchronization label to federate.
 void
-Federate::addSynchronizationLabel(const char *label)
+Federate::addSynchronizationLabel(const std::string& label)
     throw (RTIinternalError)
 {
     G.Out(pdGendoc,"enter Federate::addSynchronizationLabel");
 
-    string s = label ;
-    SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), s);
+    SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), label);
     if (it == syncLabels.end())
-	syncLabels.push_back(s);
+	syncLabels.push_back(label);
     else
 	throw RTIinternalError("Synchronization label pending in federate.");
 
@@ -73,11 +72,10 @@ Federate::addSynchronizationLabel(const char *label)
 // ----------------------------------------------------------------------------
 //! Removes a synchronization label from federate.
 void
-Federate::removeSynchronizationLabel(const char *label)
+Federate::removeSynchronizationLabel(const std::string& label)
     throw (RTIinternalError)
 {
-    string s = label ;
-    SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), s);
+    SyncList::iterator it = std::find(syncLabels.begin(), syncLabels.end(), label);
     if (it == syncLabels.end())
 	throw RTIinternalError("Synch. label not in federate.");
     else
@@ -87,11 +85,11 @@ Federate::removeSynchronizationLabel(const char *label)
 // ----------------------------------------------------------------------------
 //! Returns whether the federate is already synchronized with this label.
 bool
-Federate::isSynchronizationLabel(const char *label) const
+Federate::isSynchronizationLabel(const std::string& label) const
 {
-    return std::find(syncLabels.begin(), syncLabels.end(), string(label)) != syncLabels.end();
+    return std::find(syncLabels.begin(), syncLabels.end(), label) != syncLabels.end();
 }
 
 }}
 
-// $Id: Federate.cc,v 3.16 2008/11/20 18:21:55 approx Exp $
+// $Id: Federate.cc,v 3.17 2009/11/19 18:15:29 erk Exp $

@@ -44,7 +44,6 @@
 #endif
 using std::cout ;
 using std::endl ;
-using std::string ;
 
 namespace certi {
 namespace rtia {
@@ -55,15 +54,13 @@ static PrettyDebug G("GENDOC",__FILE__);
 const ObjectManagement::TransportTypeList
 ObjectManagement::transportTypeList[] = {
     { "HLAreliable", RELIABLE },
-    { "HLAbestEffort", BEST_EFFORT },
-    { NULL }
+    { "HLAbestEffort", BEST_EFFORT }
 };
 
 const ObjectManagement::OrderTypeList
 ObjectManagement::orderTypeList[] = {
     { "Receive", RECEIVE },
-    { "Timestamp", TIMESTAMP },
-    { NULL }
+    { "Timestamp", TIMESTAMP }
 };
 
 ObjectManagement::ObjectManagement(Communications *GC,
@@ -80,7 +77,7 @@ ObjectManagement::~ObjectManagement() { }
 //! registerObject
 ObjectHandle
 ObjectManagement::registerObject(ObjectClassHandle the_class,
-                                 const char *theObjectName,
+                                 const std::string& theObjectName,
                                  FederationTime,
                                  FederationTime,
                                  TypeException & e)
@@ -100,7 +97,7 @@ ObjectManagement::registerObject(ObjectClassHandle the_class,
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, the_class, rep->object,
-                                           rep->getLabel().c_str());
+                                           rep->getLabel());
         return rep->object ;
     }
     else {
@@ -125,7 +122,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         std::vector<AttributeValue_t> &valueArray,
                                         UShort attribArraySize,
                                         FederationTime theTime,
-                                        std::string theTag,
+                                        const std::string& theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
@@ -190,7 +187,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
                                         std::vector<AttributeHandle> &attribArray,
                                         std::vector<AttributeValue_t> &valueArray,
                                         UShort attribArraySize,
-                                        std::string theTag,
+                                        const std::string& theTag,
                                         TypeException &e)
 {
     NM_Update_Attribute_Values req;
@@ -225,7 +222,7 @@ ObjectManagement::updateAttributeValues(ObjectHandle theObjectHandle,
 void
 ObjectManagement::discoverObject(ObjectHandle the_object,
                                  ObjectClassHandle the_class,
-                                 const char *the_name,
+                                 const std::string& the_name,
                                  FederationTime the_time,
                                  EventRetractionHandle the_event,
                                  TypeException &)
@@ -254,7 +251,7 @@ ObjectManagement::discoverObject(ObjectHandle the_object,
     try {
       // Adding discovered object in federate internal object list.
       rootObject->registerObjectInstance(fm->federate, the_class, the_object,
-                                         req.getName().c_str());
+                                         req.getName());
     } 
     catch (ObjectAlreadyRegistered) {
     }
@@ -268,7 +265,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeValue_t> &the_values,
                                          UShort the_size,
                                          FederationTime the_time,
-                                         const char *the_tag,
+                                         const std::string& the_tag,
                                          EventRetractionHandle the_event,
                                          TypeException &)
 {
@@ -295,7 +292,7 @@ ObjectManagement::reflectAttributeValues(ObjectHandle the_object,
                                          std::vector <AttributeHandle> &the_attributes,
                                          std::vector <AttributeValue_t> &the_values,
                                          UShort the_size,
-                                         const char *the_tag,
+                                         const std::string& the_tag,
                                          TypeException &)
 {
     Message req;
@@ -320,7 +317,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   std::vector <ParameterValue_t> &valueArray,
                                   UShort paramArraySize,
                                   FederationTime theTime,
-                                  std::string theTag,
+                                  const std::string& theTag,
 				  RegionHandle region,
                                   TypeException &e)
 {
@@ -377,7 +374,7 @@ ObjectManagement::sendInteraction(InteractionClassHandle theInteraction,
                                   std::vector <ParameterHandle> &paramArray,
                                   std::vector <ParameterValue_t> &valueArray,
                                   UShort paramArraySize,
-                                  std::string theTag,
+                                  const std::string& theTag,
 				  RegionHandle region,
                                   TypeException &e)
 {
@@ -421,7 +418,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterValue_t> &the_values,
                                      UShort the_size,
                                      FederationTime the_time,
-                                     const char *the_tag,
+                                     const std::string& the_tag,
                                      EventRetractionHandle the_event,
                                      TypeException &)
 {
@@ -444,7 +441,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
                                      std::vector <ParameterHandle> &the_parameters,
                                      std::vector <ParameterValue_t> &the_values,
                                      UShort the_size,
-                                     const char *the_tag,
+                                     const std::string& the_tag,
                                      TypeException &)
 {
     Message req;
@@ -462,7 +459,7 @@ ObjectManagement::receiveInteraction(InteractionClassHandle the_interaction,
 EventRetractionHandle
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 			       FederationTime theTime,
-                               std::string theTag,
+                               const std::string& theTag,
                                TypeException &e)
 {
     NM_Delete_Object req;
@@ -489,7 +486,7 @@ ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
 //! deleteObject without time
 void
 ObjectManagement::deleteObject(ObjectHandle theObjectHandle,
-                               std::string theTag,
+                               const std::string& theTag,
                                TypeException &e)
 {
     NM_Delete_Object req;
@@ -515,7 +512,7 @@ void
 ObjectManagement::removeObject(ObjectHandle the_object,
                                FederateHandle the_federate,
 			                   FederationTime theTime,
-                               const char *the_tag,
+                               const std::string& the_tag,
                                EventRetractionHandle the_event,
                                TypeException &)
 
@@ -539,7 +536,7 @@ ObjectManagement::removeObject(ObjectHandle the_object,
 void
 ObjectManagement::removeObject(ObjectHandle the_object,
                                FederateHandle the_federate,
-                               const char *the_tag,
+                               const std::string& the_tag,
                                TypeException &)
 {
     Message req;
@@ -743,7 +740,7 @@ ObjectManagement::reflectRetraction(EventRetractionHandle,
 // ----------------------------------------------------------------------------
 //! getObjectClassHandle.
 ObjectClassHandle
-ObjectManagement::getObjectClassHandle(const char *theName)
+ObjectManagement::getObjectClassHandle(const std::string& theName)
 {
     ObjectClassHandle handle ;
     G.Out(pdGendoc,"enter ObjectManagement::getObjectClassHandle");
@@ -761,7 +758,7 @@ ObjectManagement::getObjectClassHandle(const char *theName)
 
 // ----------------------------------------------------------------------------
 //! getObjectClassName.
-string
+const std::string&
 ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 {
     return rootObject->ObjectClasses->getObjectClassName(theHandle);
@@ -770,14 +767,14 @@ ObjectManagement::getObjectClassName(ObjectClassHandle theHandle)
 // ----------------------------------------------------------------------------
 //! Returns the object instance handle.
 ObjectHandle
-ObjectManagement::getObjectInstanceHandle(const char *the_name)
+ObjectManagement::getObjectInstanceHandle(const std::string& the_name)
 {
     return rootObject->objects->getObjectInstanceHandle(the_name);
 }
 
 // ----------------------------------------------------------------------------
 //! Returns the object instance name.
-const char *
+const std::string&
 ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
 {
     return rootObject->objects->getObjectInstanceName(the_object);
@@ -786,7 +783,7 @@ ObjectManagement::getObjectInstanceName(ObjectHandle the_object)
 // ----------------------------------------------------------------------------
 //! getAttributeHandle.
 AttributeHandle
-ObjectManagement::getAttributeHandle(const char *theName,
+ObjectManagement::getAttributeHandle(const std::string& theName,
                                      ObjectClassHandle theClassHandle)
 {
     AttributeHandle handle ;
@@ -805,7 +802,7 @@ ObjectManagement::getAttributeHandle(const char *theName,
 
 // ----------------------------------------------------------------------------
 //! getAttributeName.
-const char *
+const std::string&
 ObjectManagement::getAttributeName(AttributeHandle theHandle,
                                    ObjectClassHandle theClassHandle)
 {
@@ -816,14 +813,14 @@ ObjectManagement::getAttributeName(AttributeHandle theHandle,
 // ----------------------------------------------------------------------------
 //! getInteractionClassHandle.
 InteractionClassHandle
-ObjectManagement::getInteractionClassHandle(const char *theName)
+ObjectManagement::getInteractionClassHandle(const std::string& theName)
 {
     return rootObject->Interactions->getInteractionClassHandle(theName);
 }
 
 // ----------------------------------------------------------------------------
 //! getInteractionClassName.
-const std::string
+const std::string&
 ObjectManagement::
 getInteractionClassName(InteractionClassHandle theClassHandle)
 {
@@ -834,7 +831,7 @@ getInteractionClassName(InteractionClassHandle theClassHandle)
 // ----------------------------------------------------------------------------
 //! getParameterHandle.
 ParameterHandle
-ObjectManagement::getParameterHandle(const char *theParameterName,
+ObjectManagement::getParameterHandle(const std::string& theParameterName,
                                      InteractionClassHandle theClassHandle)
 {
     return rootObject->Interactions->getParameterHandle(theParameterName,
@@ -862,11 +859,11 @@ ObjectManagement::getObjectClass(ObjectHandle object)
 // ----------------------------------------------------------------------------
 //! getTransportationHandle
 TransportType
-ObjectManagement::getTransportationHandle(const char *theName)
+ObjectManagement::getTransportationHandle(const std::string& theName)
 {
-    for(const TransportTypeList *item = transportTypeList; item->name != NULL; item++) {
-        if(strcmp(theName, item->name) == 0)
-            return item->type;
+    for(unsigned i = 0; i < sizeof(transportTypeList)/sizeof(transportTypeList[0]); ++i) {
+        if(theName == transportTypeList[i].name)
+            return transportTypeList[i].type;
     }
 
     throw NameNotFound(theName);
@@ -874,12 +871,12 @@ ObjectManagement::getTransportationHandle(const char *theName)
 
 // ----------------------------------------------------------------------------
 //! getTransportationName
-const char *
+const std::string&
 ObjectManagement::getTransportationName(TransportType theType)
 {
-    for(const TransportTypeList *item = transportTypeList; item->name != NULL; item++) {
-        if(theType == item->type)
-            return item->name;
+    for(unsigned i = 0; i < sizeof(transportTypeList)/sizeof(transportTypeList[0]); ++i) {
+        if(theType == transportTypeList[i].type)
+            return transportTypeList[i].name;
     }
 
     throw InvalidTransportationHandle("");
@@ -888,11 +885,11 @@ ObjectManagement::getTransportationName(TransportType theType)
 // ----------------------------------------------------------------------------
 //! getOrderingHandle
 OrderType
-ObjectManagement::getOrderingHandle(const char *theName)
+ObjectManagement::getOrderingHandle(const std::string& theName)
 {
-    for(const OrderTypeList *item = orderTypeList; item->name != NULL; item++) {
-        if(strcmp(theName, item->name) == 0)
-            return item->type;
+    for(unsigned i = 0; i < sizeof(orderTypeList)/sizeof(orderTypeList[0]); ++i) {
+        if(theName == orderTypeList[i].name)
+            return orderTypeList[i].type;
     }
 
     throw NameNotFound(theName);
@@ -900,12 +897,12 @@ ObjectManagement::getOrderingHandle(const char *theName)
 
 // ----------------------------------------------------------------------------
 //! getOrderingName
-const char *
+const std::string&
 ObjectManagement::getOrderingName(OrderType theType)
 {
-    for(const OrderTypeList *item = orderTypeList; item->name != NULL; item++) {
-        if(theType == item->type)
-            return item->name;
+    for(unsigned i = 0; i < sizeof(orderTypeList)/sizeof(orderTypeList[0]); ++i) {
+        if(theType == orderTypeList[i].type)
+            return orderTypeList[i].name;
     }
 
     throw InvalidOrderingHandle("");

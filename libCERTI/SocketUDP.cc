@@ -115,7 +115,7 @@ if ((hp_local = gethostbyname(localhost)) == NULL)
 			<< "> with error <"
 			<< strerror(errno)
 			<< ">";
-	   throw NetworkError(msg.str().c_str());
+	   throw NetworkError(msg.str());
 	}
 
 #ifdef _WIN32
@@ -133,7 +133,7 @@ if (!open())
 	msg << "Cannot Open Socket open gave error < "
 	    << 	strerror(errno)
 	    << ">";
-	throw NetworkError(msg.str().c_str());
+	throw NetworkError(msg.str());
 	}
 
 if (!bind())
@@ -141,7 +141,7 @@ if (!bind())
 	msg << "Cannot Bind Socket bind gave error < "
 		    << 	strerror(errno)
 		    << ">";
-	throw NetworkError(msg.str().c_str());
+	throw NetworkError(msg.str());
 	}
 
 // recuperation du port lie au socket _socket_udp
@@ -177,7 +177,7 @@ SocketUDP::createUDPServer(unsigned int port)
 	 			<< strerror(errno)
 	 			<< ">";
 	 		//perror("SocketUDP: gethostbyname");
-	 	   throw NetworkError(msg.str().c_str());
+	 	   throw NetworkError(msg.str());
 	}
 
    memcpy((char *) &sock_local.sin_addr,(char *)hp_local->h_addr, hp_local->h_length);

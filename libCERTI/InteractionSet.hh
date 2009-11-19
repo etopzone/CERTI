@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.hh,v 3.24 2008/11/08 11:08:03 erk Exp $
+// $Id: InteractionSet.hh,v 3.25 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_SET_HH
@@ -70,12 +70,12 @@ public:
 	 * @param[in] the_handle the handle of the interaction whose name is requested
 	 * @return the interaction class name
 	 */
-	std::string
+	const std::string&
 	getInteractionClassName(InteractionClassHandle the_handle) const
 	throw (InteractionClassNotDefined);
 
 	ParameterHandle
-	getParameterHandle(const char *the_name,
+          getParameterHandle(const std::string& the_name,
 			InteractionClassHandle the_class)
 	throw (NameNotFound,
 			InteractionClassNotDefined,
@@ -130,7 +130,7 @@ public:
 			UShort theListSize,
 			FederationTime theTime,
 			const RTIRegion *,
-			const char *theTag)
+                        const std::string& theTag)
 	throw (FederateNotPublishing,
 			InteractionClassNotDefined,
 			InteractionParameterNotDefined,
@@ -142,7 +142,7 @@ public:
 			std::vector <ParameterValue_t> &theValueList,
 			UShort theListSize,
 			const RTIRegion *,
-			const char *theTag)
+			const std::string& theTag)
 	throw (FederateNotPublishing,
 			InteractionClassNotDefined,
 			InteractionParameterNotDefined,
@@ -157,4 +157,4 @@ private:
 
 #endif // _CERTI_INTERACTION_SET_HH
 
-// $Id: InteractionSet.hh,v 3.24 2008/11/08 11:08:03 erk Exp $
+// $Id: InteractionSet.hh,v 3.25 2009/11/19 18:15:30 erk Exp $

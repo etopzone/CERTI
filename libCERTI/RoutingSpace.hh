@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.hh,v 3.11 2009/11/18 18:50:48 erk Exp $
+// $Id: RoutingSpace.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_ROUTING_SPACE
@@ -56,14 +56,14 @@ public:
      * @param dimension_name Dimension name
      * @return Dimension handle
      */
-    DimensionHandle getDimensionHandle(std::string dimension_name) const throw (NameNotFound);
+    DimensionHandle getDimensionHandle(const std::string& dimension_name) const throw (NameNotFound);
     
     /** 
      * Get the name of the specified dimension
      * @param dimension_handle Dimension handle
      * @return the Dimension name
      */
-    std::string getDimensionName(DimensionHandle dimension_handle) const
+    const std::string& getDimensionName(DimensionHandle dimension_handle) const
 	throw (DimensionNotDefined);
     
     /** 
@@ -96,5 +96,5 @@ private:
 
 #endif // _CERTI_ROUTING_SPACE
 
-// $Id: RoutingSpace.hh,v 3.11 2009/11/18 18:50:48 erk Exp $
+// $Id: RoutingSpace.hh,v 3.12 2009/11/19 18:15:30 erk Exp $
 

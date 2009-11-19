@@ -18,14 +18,13 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.115 2009/11/18 18:50:48 erk Exp $
+// $Id: Federation.cc,v 3.116 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 #include "NM_Classes.hh"
 #include <sstream>
-#include <cassert>
 #include <memory>
 
 #include "fed.hh"
@@ -99,18 +98,18 @@ static PrettyDebug G("GENDOC",__FILE__);
 
 #ifdef FEDERATION_USES_MULTICAST
 
-Federation::Federation(const char *federation_name,
+Federation::Federation(const std::string& federation_name,
                        FederationHandle federation_handle,
                        SocketServer &socket_server,
                        AuditFile &audit_server,
                        SocketMC *mc_link,
                        int theVerboseLevel)
 #else
-    Federation::Federation(const char *federation_name,
+    Federation::Federation(const std::string& federation_name,
                            Handle federation_handle,
                            SocketServer &socket_server,
                            AuditFile &audit_server,
-                           const char *FEDid_name,
+                           const std::string& FEDid_name,
                            int theVerboseLevel)
 #endif
     throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
@@ -136,14 +135,14 @@ Federation::Federation(const char *federation_name,
 
     G.Out(pdGendoc,"enter Federation::Federation");
     // Allocates Name
-    if ((federation_name == NULL) || (federation_handle == 0))
+    if (federation_name.empty() || (federation_handle == 0))
         throw RTIinternalError("Null init parameter in Federation creation.");
 
-    name = std::string(federation_name);
+    name = federation_name;
 
     // Default Attribute values
     handle = federation_handle;
-    FEDid  = std::string(FEDid_name);
+    FEDid  = FEDid_name;
 
     D.Out(pdInit, "New Federation created with Handle %d, now reading FOM.",
           handle);
@@ -188,7 +187,7 @@ Federation::Federation(const char *federation_name,
       }
       GetCurrentDirectory(260,temp);
       filename = string(temp);
-      filename = filename + "\\share\\federations\\"+string(FEDid_name);
+      filename = filename + "\\share\\federations\\"+FEDid_name;
       if (verboseLevel>0) {
     	  cout << "   Now trying..." << filename;
       }
@@ -210,7 +209,7 @@ Federation::Federation(const char *federation_name,
       if (verboseLevel>0) {
          cout << " --> cannot access." <<endl;
       }
-      filename = PACKAGE_INSTALL_PREFIX "\\share\\federations\\"+string(FEDid_name);
+      filename = PACKAGE_INSTALL_PREFIX "\\share\\federations\\"+FEDid_name;
       if (verboseLevel>0) {
          cout << "   Now trying..." << filename;
       }
@@ -232,7 +231,7 @@ Federation::Federation(const char *federation_name,
       if (verboseLevel>0) {
          cout << " --> cannot access." << endl;
       }
-      filename = PACKAGE_INSTALL_PREFIX "/share/federations/"+string(FEDid_name);
+      filename = PACKAGE_INSTALL_PREFIX "/share/federations/"+FEDid_name;
       if (verboseLevel>0) {
          cout << "   Now trying..." << filename;
       }
@@ -243,7 +242,7 @@ Federation::Federation(const char *federation_name,
     	if (verboseLevel>0) {
     		cout << " --> cannot access." << endl;
     	}
-    	filename = "/usr/local/share/federations/"+string(FEDid_name);
+    	filename = "/usr/local/share/federations/"+FEDid_name;
     	if (verboseLevel>0) {
     		cout << "   Now trying..." << filename;
     	}
@@ -349,7 +348,7 @@ Federation::Federation(const char *federation_name,
             {
             if (XmlParser::exists()) {
                 XmlParser *parser = new XmlParser(root);
-                server->audit << ", XML File : " << filename.c_str() ;
+                server->audit << ", XML File : " << filename ;
 
                 try {
                     parser->parse(filename);
@@ -425,10 +424,10 @@ Federation::getHandle() const
 
 // ----------------------------------------------------------------------------
 //! Returns the federation name given in 'Create Federation Execution'.
-const char *
+const std::string&
 Federation::getName() const
 {
-    return name.c_str() ;
+    return name;
 }
 
 // ----------------------------------------------------------------------------
@@ -441,10 +440,10 @@ Federation::getNbRegulators() const
 
 // ----------------------------------------------------------------------------
 //! Returns the FEDid name given in 'Create Federation Execution'.
-const char *
+const std::string&
 Federation::getFEDid() const
 {
-    return FEDid.c_str() ;
+    return FEDid;
 }
 
 // ----------------------------------------------------------------------------
@@ -454,14 +453,9 @@ Federation::getFEDid() const
   finally a RequestPause message if the Federation is already paused.
 */
 FederateHandle
-Federation::add(const char *federate_name, SocketTCP *tcp_link)
+Federation::add(const std::string& federate_name, SocketTCP *tcp_link)
     throw (FederateAlreadyExecutionMember, MemoryExhausted, RTIinternalError)
 {
-    if (federate_name == 0) {
-        D.Out(pdExcept, "Tried to add a NULL named federate.");
-        throw RTIinternalError("Tried to add NULL federate to federation.");
-    }
-
     try {
         getFederate(federate_name);
         throw FederateAlreadyExecutionMember("");
@@ -499,13 +493,13 @@ Federation::add(const char *federate_name, SocketTCP *tcp_link)
             ASPMessage.federate = federate_handle ;
             ASPMessage.federation = handle ;
 
-            std::map<const char *, const char *>::const_iterator i ;
+            std::map<std::string, std::string>::const_iterator i ;
             i = synchronizationLabels.begin();
             for (; i != synchronizationLabels.end(); i++) {
                 ASPMessage.setLabel((*i).first);
                 ASPMessage.setTag((*i).second);
                 D.Out(pdTerm, "Sending synchronization message %s (type %d)"
-                      " to the new Federate.", (*i).first, ASPMessage.getType());
+                      " to the new Federate.", (*i).first.c_str(), ASPMessage.getType());
 
                 ASPMessage.send(tcp_link,NM_msgBufSend);
                 federates.back().addSynchronizationLabel((*i).first);
@@ -854,7 +848,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
                                  UShort list_size,
                                  FederationTime time,
 				 RegionHandle region_handle,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            InteractionClassNotDefined,
@@ -902,7 +896,7 @@ Federation::broadcastInteraction(FederateHandle federate_handle,
                                  std::vector <ParameterValue_t> &parameter_values,
                                  UShort list_size,
 				 RegionHandle region_handle,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            InteractionClassNotDefined,
@@ -951,7 +945,7 @@ void
 Federation::deleteObject(FederateHandle federate,
                          ObjectHandle id,
 			 FederationTime theTime,
-                         const char *tag)
+                         const std::string& tag)
     throw (FederateNotExecutionMember,
            DeletePrivilegeNotHeld,
            ObjectNotKnown,
@@ -978,7 +972,7 @@ Federation::deleteObject(FederateHandle federate,
 void
 Federation::deleteObject(FederateHandle federate,
                          ObjectHandle id,
-                         const char *tag)
+                         const std::string& tag)
     throw (FederateNotExecutionMember,
            DeletePrivilegeNotHeld,
            ObjectNotKnown,
@@ -1000,8 +994,8 @@ Federation::deleteObject(FederateHandle federate,
 //! Add a new synchronization point to federation.
 void
 Federation::registerSynchronization(FederateHandle federate,
-                                    const char *label,
-                                    const char *tag)
+                                    const std::string& label,
+                                    const std::string& tag)
     throw (FederateNotExecutionMember,
            FederationAlreadyPaused,
            SaveInProgress,
@@ -1013,21 +1007,20 @@ Federation::registerSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if (label == NULL )
+    if (label.empty())
         throw RTIinternalError("Bad pause label(null).");
 
     // Verify label does not already exists
-    std::map<const char *, const char *>::const_iterator i ;
+    std::map<std::string, std::string>::const_iterator i ;
     i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
-        if (!strcmp((*i).first, label)) {
+        if (i->first == label) {
             throw FederationAlreadyPaused(""); // Label already pending.
         }
     }
 
     // If not already in pending labels, insert to list.
-    synchronizationLabels.insert(pair<const char *, const char *>(strdup(label),
-                                                                  strdup(tag)));
+    synchronizationLabels.insert(pair<const std::string, std::string>(label, tag));
 
     // Add label to each federate (may throw RTIinternalError).
     FederateList::iterator j ;
@@ -1047,8 +1040,8 @@ Federation::registerSynchronization(FederateHandle federate,
 //! Add a new synchronization point (with federates set) to federation.
 void
 Federation::registerSynchronization(FederateHandle federate,
-                                    const char *label,
-                                    const char *tag,
+                                    const std::string& label,
+                                    const std::string& tag,
                                     unsigned short federate_setSize,
                                     std::vector <FederateHandle> &federate_set)
     throw (FederateNotExecutionMember,
@@ -1062,21 +1055,20 @@ Federation::registerSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if (label == NULL)
+    if (label.empty())
         throw RTIinternalError("Bad pause label(null).");
 
     // Verify label does not already exists
-    std::map<const char *, const char *>::const_iterator i ;
+    std::map<std::string, std::string>::const_iterator i ;
     i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
-        if (!strcmp((*i).first, label)) {
+        if (i->first == label) {
             throw FederationAlreadyPaused(""); // Label already pending.
         }
     }
 
     // If not already in pending labels, insert to list.
-    synchronizationLabels.insert(pair<const char *, const char *>(strdup(label),
-                                                                  strdup(tag)));
+    synchronizationLabels.insert(pair<const std::string, std::string>(label, tag));
 
     // Add label to each federate into the set only (may throw RTIinternalError).
     FederateList::iterator j ;
@@ -1103,8 +1095,8 @@ Federation::registerSynchronization(FederateHandle federate,
 */
 void
 Federation::broadcastSynchronization(FederateHandle federate,
-                                     const char *label,
-                                     const char *tag)
+                                     const std::string& label,
+                                     const std::string& tag)
     throw (RTIinternalError)
 {
 
@@ -1112,7 +1104,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if (label == NULL)
+    if (label.empty())
         throw RTIinternalError("Bad pause label(null).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
@@ -1136,8 +1128,8 @@ Federation::broadcastSynchronization(FederateHandle federate,
 */
 void
 Federation::broadcastSynchronization(FederateHandle federate,
-                                     const char *label,
-                                     const char *tag,
+                                     const std::string& label,
+                                     const std::string& tag,
                                      unsigned short federate_setSize,
                                      std::vector <FederateHandle> &federate_set)
     throw (RTIinternalError)
@@ -1147,7 +1139,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
 
     this->check(federate); // It may throw FederateNotExecutionMember.
 
-    if (label == NULL)
+    if (label.empty())
         throw RTIinternalError("Bad pause label(null or too long).");
 
     // broadcast announceSynchronizationPoint() to all federates in federation.
@@ -1173,7 +1165,7 @@ Federation::broadcastSynchronization(FederateHandle federate,
 */
 void
 Federation::requestFederationSave(FederateHandle the_federate,
-                                  const char *the_label,
+                                  const std::string& the_label,
                                   FederationTime time )
     throw (FederateNotExecutionMember, SaveInProgress)
 {
@@ -1213,7 +1205,7 @@ Federation::requestFederationSave(FederateHandle the_federate,
 */
 void
 Federation::requestFederationSave(FederateHandle the_federate,
-                                  const char *the_label)
+                                  const std::string& the_label)
     throw (FederateNotExecutionMember, SaveInProgress)
 {
     G.Out(pdGendoc,"enter Federation::requestFederationSave without time");
@@ -1306,7 +1298,7 @@ Federation::federateSaveStatus(FederateHandle the_federate, bool the_status)
 //! Informs that a federate is requesting a save.
 void
 Federation::requestFederationRestore(FederateHandle the_federate,
-                                     const char *the_label)
+                                     const std::string& the_label)
     throw (FederateNotExecutionMember)
 {
     G.Out(pdGendoc,"enter Federation::requestFederationRestore");
@@ -1324,7 +1316,7 @@ Federation::requestFederationRestore(FederateHandle the_federate,
     // At this point, only verify that file is present.
     bool success = true ;
 #ifdef HAVE_XML
-    string filename = string(name) + "_" + string(the_label) + ".xcs" ;
+    string filename = name + "_" + the_label + ".xcs" ;
     doc = xmlParseFile(filename.c_str());
 
     // Did libXML manage to parse the file ?
@@ -1458,11 +1450,11 @@ Federation::getFederate(FederateHandle federate_handle)
 // ----------------------------------------------------------------------------
 //! Return the Federate whose Name is theName, if found.
 Federate &
-Federation::getFederate(const char *federate_name)
+Federation::getFederate(const std::string& federate_name)
     throw (FederateNotExecutionMember)
 {
     for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
-        if (strcmp(i->getName(), federate_name) == 0)
+        if (i->getName() == federate_name)
             return *i ;
     }
 
@@ -1597,7 +1589,7 @@ Federation::publishObject(FederateHandle federate,
 ObjectHandle
 Federation::registerObject(FederateHandle federate,
                            ObjectClassHandle class_handle,
-                           const char *object_name)
+                           const std::string& object_name)
     throw (FederateNotExecutionMember,
            FederateNotPublishing,
            ObjectAlreadyRegistered,
@@ -1615,15 +1607,20 @@ Federation::registerObject(FederateHandle federate,
           "Federation %d: Federate %d registering Object %d of Class %d.",
           handle, federate, new_id, class_handle);
 
-    // create a name if necessary
-    string strname = "" ;
-    strname += object_name ? string(object_name) : "HLA" + new_id ;
+    string strname;
+    if (!object_name.empty()) {
+        strname = object_name;
+    } else {
+        // create a name if necessary
+        std::stringstream ss;
+        ss << "HLAObject_" << new_id;
+        strname = ss.str();
+    }
 
     // Register Object.
     try
     {
-        root->registerObjectInstance(federate, class_handle, new_id,
-                                     strname.c_str());
+        root->registerObjectInstance(federate, class_handle, new_id, strname);
     }
     catch(...)
     {   //If an exception was thrown, the object instance was not added
@@ -1717,7 +1714,7 @@ Federation::removeRegulator(FederateHandle federate_handle)
 //! unregisterSynchronization.
 void
 Federation::unregisterSynchronization(FederateHandle federate_handle,
-                                      const char *label)
+                                      const std::string& label)
     throw (FederateNotExecutionMember,
            FederationNotPaused,
            SaveInProgress,
@@ -1729,7 +1726,7 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
 
     this->check(federate_handle); // It may throw FederateNotExecutionMember.
 
-    if (label == NULL)
+    if (label.empty())
         throw RTIinternalError("Bad pause label(null).");
 
     // Set federate synchronized on this label.
@@ -1746,13 +1743,10 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
 
     D.Out(pdTerm, "Federation %d is not Paused anymore.", handle);
     // Remove label from federation list.
-    std::map<const char *, const char *>::iterator i ;
+    std::map<std::string, std::string>::iterator i ;
     i = synchronizationLabels.begin();
     for (; i != synchronizationLabels.end(); i++) {
-        if (!strcmp((*i).first, label)) {
-            // Allocated by strdup().
-            free(const_cast<char *>((*i).first));
-            free(const_cast<char *>((*i).second));
+        if (i->first == label) {
             synchronizationLabels.erase(i);
             break ;
         }
@@ -1766,7 +1760,7 @@ Federation::unregisterSynchronization(FederateHandle federate_handle,
 
     broadcastAnyMessage(&msg, 0);
 
-    D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label);
+    D.Out(pdTerm, "Federation %d is synchronized on %s.", handle, label.c_str());
 
     G.Out(pdGendoc,"exit  Federation::unregisterSynchronization");
 
@@ -1925,7 +1919,7 @@ Federation::updateAttributeValues(FederateHandle federate,
                                   std::vector <AttributeValue_t> &values,
                                   UShort list_size,
                                   FederationTime time,
-                                  const char *tag)
+                                  const std::string& tag)
     throw (FederateNotExecutionMember,
            ObjectNotKnown,
            AttributeNotDefined,
@@ -1957,7 +1951,7 @@ Federation::updateAttributeValues(FederateHandle federate,
                                   std::vector <AttributeHandle> &attributes,
                                   std::vector <AttributeValue_t> &values,
                                   UShort list_size,
-                                  const char *tag)
+                                  const std::string& tag)
     throw (FederateNotExecutionMember,
            ObjectNotKnown,
            AttributeNotDefined,
@@ -2061,7 +2055,7 @@ Federation::negotiateDivestiture(FederateHandle federate,
                                  ObjectHandle id,
                                  std::vector <AttributeHandle> &attribs,
                                  UShort list_size,
-                                 const char *tag)
+                                 const std::string& tag)
     throw (FederateNotExecutionMember,
            ObjectNotKnown,
            AttributeNotDefined,
@@ -2145,7 +2139,7 @@ Federation::acquire(FederateHandle federate,
                     ObjectHandle id,
                     std::vector <AttributeHandle> &attributes,
                     UShort list_size,
-                    const char *tag)
+                    const std::string& tag)
     throw (ObjectNotKnown,
            ObjectClassNotPublished,
            AttributeNotDefined,
@@ -2411,7 +2405,7 @@ Federation::unsubscribeInteractionWR(FederateHandle federate,
 ObjectHandle
 Federation::registerObjectWithRegion(FederateHandle federate,
 				     ObjectClassHandle class_handle,
-				     const char *object_name,
+				     const std::string& object_name,
 				     RegionHandle region_handle,
 				     int nb,
 				     std::vector <AttributeHandle> &attributes)
@@ -2429,11 +2423,17 @@ Federation::registerObjectWithRegion(FederateHandle federate,
     Debug(D, pdDebug) << "Register object with region : Object " << object
 	       << ", class " << class_handle << ", region " << region_handle
 	       << std::endl ;
-    string strname = "" ;    // create a name if necessary
-    strname += object_name ? string(object_name) : "HLA" + object ;
+    string strname;
+    if (!object_name.empty()) {
+        strname = object_name;
+    } else {
+        // create a name if necessary
+        std::stringstream ss;
+        ss << "HLAObject_" << object;
+        strname = ss.str();
+    }
 
-    root->registerObjectInstance(federate, class_handle, object,
-				 strname.c_str());
+    root->registerObjectInstance(federate, class_handle, object, strname);
 
     Debug(D, pdDebug) << "- object \"" << strname
 	       << "\" registered" << std::endl ;
@@ -2491,7 +2491,7 @@ Federation::restoreXmlData()
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_FEDERATE))) {
             for (FederateList::iterator i = federates.begin(); i != federates.end(); ++i) {
-                if (!strcmp(i->getName(),XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
+                if (!strcmp(i->getName().c_str(),XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "name"))) {
                     // Set federate constrained status
                     if (!strcmp("true", XmlParser::CleanXmlGetProp(cur, (const xmlChar*) "constrained"))) {
                         status = true ;
@@ -2545,7 +2545,7 @@ Federation::saveXmlData()
 
         xmlSetProp(federate,
                    (const xmlChar *) "name",
-                   (const xmlChar *) i->getName());
+                   (const xmlChar *) i->getName().c_str());
 
         sprintf(t, "%ld", i->getHandle());
         xmlSetProp(federate, (const xmlChar *) "handle", (const xmlChar *) t);
@@ -2559,7 +2559,7 @@ Federation::saveXmlData()
 
     xmlSetDocCompressMode(doc, 9);
 
-    string filename = string(name) + "_" + string(saveLabel) + ".xcs" ;
+    string filename = name + "_" + saveLabel + ".xcs" ;
     xmlSaveFile(filename.c_str(), doc);
 
     // TODO: tests
@@ -2612,5 +2612,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.115 2009/11/18 18:50:48 erk Exp $
+// $Id: Federation.cc,v 3.116 2009/11/19 18:15:29 erk Exp $
 

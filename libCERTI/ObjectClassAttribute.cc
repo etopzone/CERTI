@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.34 2009/11/18 18:50:49 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.35 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
@@ -40,7 +40,7 @@ namespace certi {
 
 static PrettyDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 
-ObjectClassAttribute::ObjectClassAttribute(const std::string theName, TransportType theTransport, OrderType theOrder)
+ObjectClassAttribute::ObjectClassAttribute(const std::string& theName, TransportType theTransport, OrderType theOrder)
   : level(PublicLevelID), order(theOrder), transport(theTransport), server(0), handle(0), space(0) {
 	setName(theName);
 
@@ -83,7 +83,7 @@ ObjectClassAttribute::~ObjectClassAttribute()
 */
 void
 ObjectClassAttribute::checkFederateAccess(FederateHandle fed,
-					  const char *reason) const
+					  const std::string& reason) const
 {
     if (server && !server->canFederateAccessData(fed, level)) {
         cout << "Attribute " << handle << " : SecurityError for federate "
@@ -219,4 +219,4 @@ ObjectClassAttribute::getPublishers(void) {
 
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.34 2009/11/18 18:50:49 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.35 2009/11/19 18:15:32 erk Exp $

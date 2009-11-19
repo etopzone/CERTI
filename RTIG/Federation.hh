@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.59 2009/11/18 18:50:48 erk Exp $
+// $Id: Federation.hh,v 3.60 2009/11/19 18:15:29 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -60,7 +60,7 @@ private:
     std::string FEDid ;
 
     //! Labels and Tags not on synchronization.
-    std::map<const char *, const char *> synchronizationLabels ;
+    std::map<std::string, std::string> synchronizationLabels ;
 
     HandleManager<FederateHandle> federateHandles ;
     HandleManager<ObjectHandle> objectHandles ;
@@ -93,7 +93,7 @@ public:
 	 *  @param audit_server
 	 *  @param mc_link
 	 */
-    Federation(const char *,
+  Federation(const std::string&,
                FederationHandle,
                SocketServer &,
                AuditFile &,
@@ -110,7 +110,7 @@ public:
                 * @param audit_server
                 * @param FEDid_name i.e. FED file name (may be a .fed or a .xml file)
                 */
-        Federation(const char *, Handle, SocketServer &, AuditFile &, const char *, int theVerboseLevel)
+        Federation(const std::string&, Handle, SocketServer &, AuditFile &, const std::string&, int theVerboseLevel)
 #endif
         throw (CouldNotOpenFED, ErrorReadingFED, MemoryExhausted, SecurityError,
                RTIinternalError);
@@ -121,13 +121,13 @@ public:
     int getNbRegulators() const ;
     bool isSynchronizing() const ;
     Handle getHandle() const ;
-    const char *getName() const ;
-    const char *getFEDid() const ;
+    const std::string& getName() const ;
+    const std::string& getFEDid() const ;
 
     // -------------------------
     // -- Federate Management --
     // -------------------------
-    FederateHandle add(const char *theName, SocketTCP *theTCPLink)
+    FederateHandle add(const std::string& theName, SocketTCP *theTCPLink)
         throw (FederateAlreadyExecutionMember,
                MemoryExhausted,
                RTIinternalError);
@@ -184,8 +184,8 @@ public:
 
     // Synchronization Management.
     void registerSynchronization(FederateHandle the_federate,
-                                 const char *the_label,
-                                 const char *the_tag)
+                                 const std::string& the_label,
+                                 const std::string& the_tag)
         throw (FederateNotExecutionMember,
                FederationAlreadyPaused,
                SaveInProgress,
@@ -193,8 +193,8 @@ public:
                RTIinternalError);
 
     void registerSynchronization(FederateHandle the_federate,
-                                 const char *the_label,
-                                 const char *the_tag,
+                                 const std::string& the_label,
+                                 const std::string& the_tag,
                                  unsigned short federate_setSize,
                                  std::vector <FederateHandle> &federate_set)
         throw (FederateNotExecutionMember,
@@ -204,7 +204,7 @@ public:
                RTIinternalError);
 
     void unregisterSynchronization(FederateHandle theFederate,
-                                   const char *theLabel)
+                                   const std::string& theLabel)
         throw (FederateNotExecutionMember,
                FederationNotPaused,
                SaveInProgress,
@@ -212,22 +212,22 @@ public:
                RTIinternalError);
 
     void broadcastSynchronization(FederateHandle federate,
-                                  const char *label,
-                                  const char *tag)
+                                  const std::string& label,
+                                  const std::string& tag)
         throw (RTIinternalError);
 
     void broadcastSynchronization(FederateHandle federate,
-                                  const char *label,
-                                  const char *tag,
+                                  const std::string& label,
+                                  const std::string& tag,
                                   unsigned short federate_setSize,
                                   std::vector <FederateHandle> &federate_set)
         throw (RTIinternalError);
 
 
     // Save Management.
-    void requestFederationSave(FederateHandle, const char *, FederationTime)
+    void requestFederationSave(FederateHandle, const std::string&, FederationTime)
         throw (FederateNotExecutionMember, SaveInProgress);
-    void requestFederationSave(FederateHandle, const char *)
+    void requestFederationSave(FederateHandle, const std::string&)
         throw (FederateNotExecutionMember, SaveInProgress);
 
 
@@ -238,7 +238,7 @@ public:
         throw (FederateNotExecutionMember);
 
     void requestFederationRestore(FederateHandle the_federate,
-                                  const char *the_label)
+                                  const std::string& the_label)
         throw (FederateNotExecutionMember);
 
     void federateRestoreStatus(FederateHandle the_federate,
@@ -252,7 +252,7 @@ public:
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
 		      FederationTime theTime,
-                      const char *theUserTag)
+                      const std::string& theUserTag)
         throw (FederateNotExecutionMember,
                DeletePrivilegeNotHeld,
                ObjectNotKnown,
@@ -263,7 +263,7 @@ public:
 
     void deleteObject(FederateHandle theFederateHandle,
                       ObjectHandle theObjectHandle,
-                      const char *theUserTag)
+                      const std::string& theUserTag)
         throw (FederateNotExecutionMember,
                DeletePrivilegeNotHeld,
                ObjectNotKnown,
@@ -286,7 +286,7 @@ public:
 
     ObjectHandle registerObject(FederateHandle theFederateHandle,
                                 ObjectClassHandle theClass,
-                                const char *theName)
+                                const std::string& theName)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                ObjectAlreadyRegistered,
@@ -329,7 +329,7 @@ public:
                                std::vector <AttributeValue_t> &theValueList,
                                UShort theListSize,
                                FederationTime theTime,
-                               const char *theTag)
+                               const std::string& theTag)
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
                AttributeNotDefined,
@@ -343,7 +343,7 @@ public:
                                std::vector <AttributeHandle> &theAttributeList,
                                std::vector <AttributeValue_t> &theValueList,
                                UShort theListSize,
-                               const char *theTag)
+                               const std::string& theTag)
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
                AttributeNotDefined,
@@ -363,7 +363,7 @@ public:
                               UShort theListSize,
                               FederationTime theTime,
 			      RegionHandle,
-                              const char *theTag)
+                              const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                InteractionClassNotDefined,
@@ -378,7 +378,7 @@ public:
                               std::vector <ParameterValue_t> &theValueList,
                               UShort theListSize,
 			      RegionHandle,
-                              const char *theTag)
+                              const std::string& theTag)
         throw (FederateNotExecutionMember,
                FederateNotPublishing,
                InteractionClassNotDefined,
@@ -436,7 +436,7 @@ public:
                               ObjectHandle theObjectHandle,
                               std::vector <AttributeHandle> &theAttributeList,
                               UShort theListSize,
-                              const char *theTag)
+                              const std::string& theTag)
         throw (FederateNotExecutionMember,
                ObjectNotKnown,
                AttributeNotDefined,
@@ -477,7 +477,7 @@ public:
                  ObjectHandle theObjectHandle,
                  std::vector <AttributeHandle> &theAttributeList,
                  UShort theListSize,
-                 const char *theTag)
+                 const std::string& theTag)
         throw (ObjectNotKnown,
                ObjectClassNotPublished,
                AttributeNotDefined,
@@ -592,7 +592,7 @@ public:
 	       RTIinternalError);
 
     ObjectHandle registerObjectWithRegion(FederateHandle,ObjectClassHandle,
-					  const char *, RegionHandle, int,
+					  const std::string&, RegionHandle, int,
 					  std::vector <AttributeHandle> &)
 	throw (ObjectClassNotDefined, ObjectClassNotPublished,
 	       AttributeNotDefined, AttributeNotPublished, RegionNotKnown,
@@ -659,7 +659,7 @@ private:
     void broadcastSomeMessage(NetworkMessage *msg, FederateHandle Except,
                        std::vector <FederateHandle> &fede_array, int nbfed);
 
-    Federate &getFederate(const char *theName)
+    Federate &getFederate(const std::string& theName)
         throw (FederateNotExecutionMember);
 
     Federate &getFederate(FederateHandle theHandle)
@@ -687,4 +687,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.59 2009/11/18 18:50:48 erk Exp $
+// $Id: Federation.hh,v 3.60 2009/11/19 18:15:29 erk Exp $

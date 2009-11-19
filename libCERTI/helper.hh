@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: helper.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: helper.hh,v 3.2 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HELPER_HH
@@ -50,7 +50,7 @@ template<class T>
 class NameComparator
 {
 public:
-    NameComparator(std::string h) : name(h) { };
+    NameComparator(const std::string& h) : name(h) { };
     bool operator()(const T *op) const { return name == op->getName(); };
     bool operator()(const T &op) const { return name == op.getName(); };
 private:
@@ -61,4 +61,4 @@ private:
 
 #endif // LIBCERTI_HELPER_HH
 
-// $Id: helper.hh,v 3.1 2006/03/09 19:54:28 breholee Exp $
+// $Id: helper.hh,v 3.2 2009/11/19 18:15:30 erk Exp $

@@ -45,10 +45,10 @@ public:
     ~ObjectSet();
 
     ObjectHandle
-    getObjectInstanceHandle(std::string) const
+    getObjectInstanceHandle(const std::string&) const
         throw (ObjectNotKnown, RTIinternalError);
 
-    const char *
+    const std::string&
     getObjectInstanceName(ObjectHandle the_object) const
         throw (ObjectNotKnown, RTIinternalError);
 
@@ -72,11 +72,11 @@ public:
                RTIinternalError, InvalidObjectHandle);
 
     Object *registerObjectInstance(FederateHandle, ObjectClassHandle,
-				   ObjectHandle, std::string)
+				   ObjectHandle, const std::string&)
         throw (ObjectAlreadyRegistered, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
 
-    void deleteObjectInstance(FederateHandle, ObjectHandle, std::string tag)
+    void deleteObjectInstance(FederateHandle, ObjectHandle, const std::string& tag)
         throw (ObjectNotKnown, DeletePrivilegeNotHeld,
                FederateNotExecutionMember, ConcurrentAccessAttempted,
                SaveInProgress, RestoreInProgress, RTIinternalError);
@@ -105,7 +105,7 @@ public:
                                             ObjectHandle the_object,
                                             AttributeHandle *the_attributes,
                                             UShort the_size,
-                                            const char *the_tag)
+                                            const std::string& the_tag)
         throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
                AttributeAlreadyBeingDivested, RTIinternalError);
 
@@ -131,7 +131,7 @@ public:
                                   ObjectHandle the_object,
                                   AttributeHandle *the_attributes,
                                   UShort the_size,
-                                  const char *the_tag)
+                                  const std::string& the_tag)
         throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
                AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 

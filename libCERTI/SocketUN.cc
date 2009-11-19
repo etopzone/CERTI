@@ -292,7 +292,7 @@ void SocketUN::error(const char *msg) throw (NetworkError)
  	  << strerror(errno)
  	  << "> msg = <"
  	  << msg <<">";
- throw NetworkError(smsg.str().c_str());
+ throw NetworkError(smsg.str());
 }
 
 // ----------------------------------------------------------------------------

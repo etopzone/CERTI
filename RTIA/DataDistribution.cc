@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.cc,v 3.30 2009/10/21 20:04:47 erk Exp $
+// $Id: DataDistribution.cc,v 3.31 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -38,7 +38,6 @@
 #include <cassert>
 #include <memory>
 
-using std::string ;
 using std::endl ;
 
 namespace certi {
@@ -56,7 +55,7 @@ DataDistribution::DataDistribution(RootObject *root_object,
 
 // ----------------------------------------------------------------------------
 SpaceHandle
-DataDistribution::getRoutingSpaceHandle(std::string name) const
+DataDistribution::getRoutingSpaceHandle(const std::string& name) const
 {
     return rootObject->getRoutingSpaceHandle(name);
 }
@@ -64,7 +63,7 @@ DataDistribution::getRoutingSpaceHandle(std::string name) const
 // ----------------------------------------------------------------------------
 // getRoutingSpaceName
 //
-string
+const std::string&
 DataDistribution::getRoutingSpaceName(SpaceHandle handle) const
 {
     return rootObject->getRoutingSpaceName(handle);
@@ -74,7 +73,7 @@ DataDistribution::getRoutingSpaceName(SpaceHandle handle) const
 // getDimensionHandle
 //
 DimensionHandle
-DataDistribution::getDimensionHandle(std::string dimension, SpaceHandle space) const
+DataDistribution::getDimensionHandle(const std::string& dimension, SpaceHandle space) const
     throw (SpaceNotDefined, NameNotFound)
 {
     return rootObject->getRoutingSpace(space).getDimensionHandle(dimension);
@@ -83,7 +82,7 @@ DataDistribution::getDimensionHandle(std::string dimension, SpaceHandle space) c
 // ----------------------------------------------------------------------------
 // getDimensionName
 //
-string
+const std::string&
 DataDistribution::getDimensionName(DimensionHandle dimension,
 				   SpaceHandle space) const
     throw (SpaceNotDefined, DimensionNotDefined)
@@ -249,7 +248,7 @@ DataDistribution::associateRegion(ObjectHandle object,
 // ----------------------------------------------------------------------------
 ObjectHandle
 DataDistribution::registerObject(ObjectClassHandle class_handle,
-				 const std::string name,
+				 const std::string& name,
 				 const std::vector <AttributeHandle> &attrs,
 				 int nb,
 				 const std::vector<RegionHandle> regions,
@@ -263,7 +262,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
     req.federation = fm->_numero_federation ;
     req.federate = fm->federate ;
     req.objectClass = class_handle ;
-    req.setTag(name.c_str());
+    req.setTag(name);
     req.setAHS(attrs, nb);
     req.setRegions(regions);
 
@@ -274,7 +273,7 @@ DataDistribution::registerObject(ObjectClassHandle class_handle,
 
     if (e == e_NO_EXCEPTION) {
         rootObject->registerObjectInstance(fm->federate, class_handle, rep->object,
-                                           rep->getLabel().c_str());
+                                           rep->getLabel());
 	for (int i = 0 ; i < nb ; ++i) {
 	    Debug(D, pdDebug) << "Register attribute [" << i << "] Attr: " << attrs[i]
 		       << " Region: " << regions[i] << std::endl ;
@@ -413,4 +412,4 @@ DataDistribution::unsubscribeInteraction(InteractionClassHandle int_class,
 
 }} // namespace certi::rtia
 
-// $Id: DataDistribution.cc,v 3.30 2009/10/21 20:04:47 erk Exp $
+// $Id: DataDistribution.cc,v 3.31 2009/11/19 18:15:30 erk Exp $

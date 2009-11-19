@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Named.cc,v 3.9 2009/10/11 14:55:01 erk Exp $
+// $Id: Named.cc,v 3.10 2009/11/19 18:15:32 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Named.hh"
@@ -39,23 +39,12 @@ Named::setName(const std::string& newName)
     name = newName ;
 }
 
-void
-Named::setName(const char* newName) {
-    name = newName;
-}
-
 const std::string&
 Named::getName() const
 {
     return name ;
 }
 
-
-const char *
-Named::getCName() const
-{
-    return name.c_str();
-}
 
 bool
 Named::isNamed(const std::string &newName) const
@@ -94,7 +83,7 @@ Named::getNextClassName(std::string& qualifiedClassName) {
 } /* end of getNextClassName */
 
 std::string
-Named::getLeafClassName(std::string qualifiedClassName) {
+Named::getLeafClassName(const std::string& qualifiedClassName) {
 	size_t idx = 0;
 	/* take the substring from '.' (excluded) until the end */
 	idx    = qualifiedClassName.find_last_of('.');
@@ -103,4 +92,4 @@ Named::getLeafClassName(std::string qualifiedClassName) {
 
 } // certi
 
-// $Id: Named.cc,v 3.9 2009/10/11 14:55:01 erk Exp $
+// $Id: Named.cc,v 3.10 2009/11/19 18:15:32 erk Exp $

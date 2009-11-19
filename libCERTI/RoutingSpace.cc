@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RoutingSpace.cc,v 3.15 2008/06/12 07:39:49 erk Exp $
+// $Id: RoutingSpace.cc,v 3.16 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -33,7 +33,6 @@
 using std::vector ;
 using std::cout ;
 using std::endl ;
-using std::string ;
 
 namespace certi {
 
@@ -62,7 +61,7 @@ RoutingSpace::display() const
 
 // ----------------------------------------------------------------------------
 DimensionHandle
-RoutingSpace::getDimensionHandle(std::string dimension_name) const
+RoutingSpace::getDimensionHandle(const std::string& dimension_name) const
     throw (NameNotFound)
 {
     vector<Dimension>::const_iterator it = std::find_if(
@@ -77,7 +76,7 @@ RoutingSpace::getDimensionHandle(std::string dimension_name) const
 }
 
 // ----------------------------------------------------------------------------
-string
+const std::string&
 RoutingSpace::getDimensionName(DimensionHandle dimension_handle) const
     throw (DimensionNotDefined)
 {
@@ -117,4 +116,4 @@ RoutingSpace::createExtent() const
 
 } // namespace certi
 
-// $Id: RoutingSpace.cc,v 3.15 2008/06/12 07:39:49 erk Exp $
+// $Id: RoutingSpace.cc,v 3.16 2009/11/19 18:15:30 erk Exp $

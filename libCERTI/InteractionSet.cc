@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: InteractionSet.cc,v 3.29 2009/10/21 18:56:28 erk Exp $
+// $Id: InteractionSet.cc,v 3.30 2009/11/19 18:15:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Interaction.hh"
@@ -68,7 +68,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 		UShort list_size,
 		FederationTime the_time,
 		const RTIRegion *region,
-		const char *the_tag)
+		const std::string& the_tag)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
 		InteractionParameterNotDefined,
@@ -116,7 +116,7 @@ InteractionSet::broadcastInteraction(FederateHandle federate_handle,
 		std::vector <ParameterValue_t> &value_list,
 		UShort list_size,
 		const RTIRegion *region,
-		const char *the_tag)
+		const std::string& the_tag)
 throw (FederateNotPublishing,
 		InteractionClassNotDefined,
 		InteractionParameterNotDefined,
@@ -163,25 +163,22 @@ throw (NameNotFound)  {
 
 // ----------------------------------------------------------------------------
 //! Return the interaction name associated to handle.
-std::string
+const std::string&
 InteractionSet::getInteractionClassName(InteractionClassHandle the_handle) const
 throw (InteractionClassNotDefined)
 {
-	return getNameFromHandle(+the_handle);
+	return getNameFromHandle(the_handle);
 } /* end of getInteractionClassName */
 
 // ----------------------------------------------------------------------------
 //! Return the parameter handle associated to name and class handle.
 ParameterHandle
-InteractionSet::getParameterHandle(const char *the_name,
+InteractionSet::getParameterHandle(const std::string& the_name,
 		InteractionClassHandle the_class)
 throw (NameNotFound,
 		InteractionClassNotDefined,
 		RTIinternalError)
 		{
-	if (the_name == NULL)
-		throw RTIinternalError("");
-
 	// It may throw InteractionClassNotDefined
 	Interaction *interaction = getObjectFromHandle(the_class);
 	return interaction->getParameterHandle(the_name);
@@ -275,4 +272,4 @@ throw (FederateNotSubscribing,
 
 } // namespace certi
 
-// $Id: InteractionSet.cc,v 3.29 2009/10/21 18:56:28 erk Exp $
+// $Id: InteractionSet.cc,v 3.30 2009/11/19 18:15:31 erk Exp $

@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DataDistribution.hh,v 3.16 2008/06/10 13:41:44 rousse Exp $
+// $Id: DataDistribution.hh,v 3.17 2009/11/19 18:15:30 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_DATA_DISTRIBUTION
@@ -37,14 +37,14 @@ class DataDistribution
 public:
     DataDistribution(RootObject *, FederationManagement *, Communications *);
 
-    SpaceHandle getRoutingSpaceHandle(std::string) const ;
+    SpaceHandle getRoutingSpaceHandle(const std::string&) const ;
 
-    std::string getRoutingSpaceName(SpaceHandle) const ;
+    const std::string& getRoutingSpaceName(SpaceHandle) const ;
 
-    DimensionHandle getDimensionHandle(std::string, SpaceHandle) const
+    DimensionHandle getDimensionHandle(const std::string&, SpaceHandle) const
         throw (SpaceNotDefined, NameNotFound);
 
-    std::string getDimensionName(DimensionHandle, SpaceHandle) const
+    const std::string& getDimensionName(DimensionHandle, SpaceHandle) const
         throw (SpaceNotDefined, DimensionNotDefined);
 
     SpaceHandle getAttributeSpace(AttributeHandle, ObjectClassHandle) const
@@ -66,7 +66,7 @@ public:
 			 int, TypeException &)
 	throw (RegionNotKnown);
 
-    ObjectHandle registerObject(ObjectClassHandle, const std::string,
+    ObjectHandle registerObject(ObjectClassHandle, const std::string&,
 				const std::vector <AttributeHandle> &, int,
 				const std::vector<RegionHandle>,
 				TypeException &);
@@ -99,4 +99,4 @@ private:
 
 #endif // _CERTI_DATA_DISTRIBUTION
 
-// $Id: DataDistribution.hh,v 3.16 2008/06/10 13:41:44 rousse Exp $
+// $Id: DataDistribution.hh,v 3.17 2009/11/19 18:15:30 erk Exp $
