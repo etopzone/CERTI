@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.50 2009/11/19 18:15:29 erk Exp $
+// $Id: FederationsList.hh,v 3.51 2009/11/20 19:43:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -30,14 +30,15 @@
 #include "AuditFile.hh"
 #include "PrettyDebug.hh"
 
-#include <list>
+#include <map>
+#include <string>
 
 namespace certi {
 namespace rtig {
 
 /*! FederationsList keep track on federation operations.
  */
-class FederationsList : private std::list<Federation *>
+class FederationsList
 {
 private:
     SocketServer &socketServer ;
@@ -65,8 +66,8 @@ public:
                SecurityError,
                RTIinternalError);
 
-  void exists(const std::string& name, Handle &handle)
-        throw (FederationExecutionDoesNotExist, RTIinternalError);
+    Handle getFederationHandle(const std::string& name)
+        throw (FederationExecutionDoesNotExist);
 
     void destroyFederation(Handle)
         throw (FederatesCurrentlyJoined, FederationExecutionDoesNotExist,
@@ -640,14 +641,17 @@ public:
 private:
     // Private methods
     void checkHandle(Handle theHandle) throw (RTIinternalError);
-    int searchFederation(Handle the_handle, Federation* &federation)
-        throw (FederationExecutionDoesNotExist, RTIinternalError);
+    Federation* searchFederation(Handle handle)
+        throw (FederationExecutionDoesNotExist);
 
     int verboseLevel;
+
+    typedef std::map<Handle, Federation*> HandleFederationMap;
+    HandleFederationMap _handleFederationMap;
 };
 
 }} // namespace certi/rtig
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.50 2009/11/19 18:15:29 erk Exp $
+// $Id: FederationsList.hh,v 3.51 2009/11/20 19:43:40 erk Exp $

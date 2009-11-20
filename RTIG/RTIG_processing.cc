@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.91 2009/11/19 18:15:29 erk Exp $
+// $Id: RTIG_processing.cc,v 3.92 2009/11/20 19:43:40 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -135,7 +135,6 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     unsigned int peer     = req->bestEffortPeer ;
     unsigned long address = req->bestEffortAddress ;
 
-    Handle num_federation ;
     FederateHandle num_federe ;
 
     int nb_regulateurs ;
@@ -151,7 +150,7 @@ RTIG::processJoinFederation(Socket *link, NM_Join_Federation_Execution *req)
     auditServer << "Federate \"" << federate << "\" joins Federation \""
 		<< federation << "\"" ;
 
-    federations.exists(federation, num_federation);
+    Handle num_federation = federations.getFederationHandle(federation);
 
     // Need to dump the fom into that
     NM_Join_Federation_Execution rep ;
@@ -255,7 +254,6 @@ void
 RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *req)
 {
     NM_Destroy_Federation_Execution rep ;
-    Handle num_federation ;
 
     std::string federation = req->getFederationName();
 
@@ -264,7 +262,7 @@ RTIG::processDestroyFederation(Socket *link, NM_Destroy_Federation_Execution *re
 
     if (federation.length() == 0) throw RTIinternalError("Invalid Federation Name.");
 
-    federations.exists(federation, num_federation);
+    Handle num_federation = federations.getFederationHandle(federation);
     // May throw RTIinternalError
     //           FederatesCurrentlyJoined
     //           FederationExecutionDoesNotExist
@@ -1470,4 +1468,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.91 2009/11/19 18:15:29 erk Exp $
+// $Id: RTIG_processing.cc,v 3.92 2009/11/20 19:43:40 erk Exp $
