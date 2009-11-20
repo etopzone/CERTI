@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.70 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClass.cc,v 3.71 2009/11/20 17:33:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -1075,7 +1075,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // with this attribute.
 
                 // Le demandeur le plus recent devient proprietaire
-                NewOwner = oa->getCandidate(1);
+                NewOwner = oa->getFirstCandidate();
 
                 oa->setOwner(NewOwner);
 
@@ -1352,7 +1352,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
                 // on this attribute.
 
                 // Le demandeur le plus recent devient proprietaire
-                NewOwner = oa->getCandidate(1);
+                NewOwner = oa->getFirstCandidate();
 
                 oa->setOwner(NewOwner);
 
@@ -1500,7 +1500,7 @@ ObjectClass::attributeOwnershipAcquisition(FederateHandle theFederateHandle,
                     compteur_divestiture++ ;
                 }
                 //Qu'il soit offert ou libre
-                if (oa->isCandidate(theFederateHandle) != 0)
+                if (oa->isCandidate(theFederateHandle))
                     oa->removeCandidate(theFederateHandle);
                 AnswerNotification->handleArray[compteur_notification]
                     = theAttributeList[i] ;
@@ -1610,7 +1610,7 @@ attributeOwnershipReleaseResponse(FederateHandle the_federate,
             oa = object->getAttribute(the_attributes[i]);
 
             //Le demandeur le plus r�cent devient propri�taire
-            newOwner = oa->getCandidate(1);
+            newOwner = oa->getFirstCandidate();
 
             oa->setOwner(newOwner);
 
@@ -1691,7 +1691,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
             if (oa->getOwner() == federate_handle)
                 throw AttributeAlreadyOwned("");
             // Does federate is already doing an acquisition ?
-            if (oa->isCandidate(federate_handle) == 0)
+            if (!oa->isCandidate(federate_handle))
                 throw AttributeAcquisitionWasNotRequested("");
         }
 
@@ -1834,4 +1834,4 @@ ObjectClass::getAttributeList(void) {
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.70 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClass.cc,v 3.71 2009/11/20 17:33:57 erk Exp $

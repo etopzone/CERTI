@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.hh,v 3.18 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectAttribute.hh,v 3.19 2009/11/20 17:33:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_ATTRIBUTE_HH
@@ -28,7 +28,7 @@
 #include "certi.hh"
 #include "Exception.hh"
 
-#include <list>
+#include <set>
 
 namespace certi {
 
@@ -60,10 +60,10 @@ public:
     void setDivesting(bool divesting_state);
     bool beingDivested() const ;
 
-    int isCandidate(FederateHandle candidate) const ;
+    bool isCandidate(FederateHandle candidate) const ;
     void addCandidate(FederateHandle candidate);
     void removeCandidate(FederateHandle candidate);
-    FederateHandle getCandidate(unsigned int) const throw (RTIinternalError);
+    FederateHandle getFirstCandidate() const throw (RTIinternalError);
     bool hasCandidates() const ;
 
     AttributeHandle getHandle() const ;
@@ -86,7 +86,7 @@ private:
     AttributeHandle handle ; //!< The object attribute handle.
     FederateHandle owner ; //!< Federate who owns the attribute.
     bool divesting ; //!< Divesting state.
-    std::list<FederateHandle> ownerCandidates ; //!< Federates candidate.
+    std::set<FederateHandle> ownerCandidates ; //!< Federates candidate.
     SpaceHandle space ; //!< Associated routing space
     ObjectClassAttribute *source ; //!< The associated class attribute.
     RTIRegion *region ;
@@ -96,4 +96,4 @@ private:
 
 #endif // CERTI_OBJECT_ATTRIBUTE_HH
 
-// $Id: ObjectAttribute.hh,v 3.18 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectAttribute.hh,v 3.19 2009/11/20 17:33:57 erk Exp $

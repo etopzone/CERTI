@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectAttribute.cc,v 3.18 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.19 2009/11/20 17:33:57 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -32,7 +32,6 @@
 
 using std::cout ;
 using std::endl ;
-using std::list ;
 
 namespace certi {
 
@@ -97,16 +96,10 @@ ObjectAttribute::setDivesting(bool divestingState)
 
 // ----------------------------------------------------------------------------
 //! Return the candidate position in list, null otherwise.
-int
+bool
 ObjectAttribute::isCandidate(FederateHandle candidate) const
 {
-    list<FederateHandle>::const_iterator i = ownerCandidates.begin();
-    for (int j = 1 ; i != ownerCandidates.end(); i++, j++) {
-        if ((*i) == candidate)
-            return j ;
-    }
-
-    return 0 ;
+    return ownerCandidates.find(candidate) != ownerCandidates.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -114,7 +107,7 @@ ObjectAttribute::isCandidate(FederateHandle candidate) const
 void
 ObjectAttribute::addCandidate(FederateHandle candidate)
 {
-    ownerCandidates.push_front(candidate);
+    ownerCandidates.insert(candidate);
 }
 
 // ----------------------------------------------------------------------------
@@ -122,31 +115,26 @@ ObjectAttribute::addCandidate(FederateHandle candidate)
 void
 ObjectAttribute::removeCandidate(FederateHandle candidate)
 {
-    ownerCandidates.remove(candidate);
+    ownerCandidates.erase(candidate);
 }
 
 // ----------------------------------------------------------------------------
 // Returns the federate candidate at position in list.
 FederateHandle
-ObjectAttribute::getCandidate(unsigned int indice) const
+ObjectAttribute::getFirstCandidate() const
     throw (RTIinternalError)
 {
-    if ((indice <= 0) || (indice > ownerCandidates.size()))
+    if (ownerCandidates.empty())
         throw RTIinternalError("");
 
-    list<FederateHandle>::const_iterator i = ownerCandidates.begin();
-    for (unsigned int j = 1 ; i != ownerCandidates.end(); i++, j++) {
-        if (j == indice)
-            return (*i);
-    }
-    throw RTIinternalError("");
+    return *ownerCandidates.begin();
 }
 
 // ----------------------------------------------------------------------------
 bool
 ObjectAttribute::hasCandidates() const
 {
-    return (!ownerCandidates.empty());
+    return !ownerCandidates.empty();
 }
 
 // ----------------------------------------------------------------------------
@@ -199,4 +187,4 @@ ObjectAttribute::unassociate(RTIRegion *r)
 
 } //namespace certi
 
-// $Id: ObjectAttribute.cc,v 3.18 2009/10/21 18:56:28 erk Exp $
+// $Id: ObjectAttribute.cc,v 3.19 2009/11/20 17:33:57 erk Exp $
