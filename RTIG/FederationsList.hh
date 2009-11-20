@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationsList.hh,v 3.51 2009/11/20 19:43:40 erk Exp $
+// $Id: FederationsList.hh,v 3.52 2009/11/20 22:43:46 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATIONS_LIST_HH
@@ -36,7 +36,10 @@
 namespace certi {
 namespace rtig {
 
-/*! FederationsList keep track on federation operations.
+/**
+ * FederationsList keeps track on federation operations.
+ * There is one federation list in each RTIG instance.
+ * You usually have only one RTIG instance.
  */
 class FederationsList
 {
@@ -639,9 +642,13 @@ public:
     void setVerboseLevel(int theVerboseLevel) { this->verboseLevel = theVerboseLevel ; }
 
 private:
-    // Private methods
-    void checkHandle(Handle theHandle) throw (RTIinternalError);
-    Federation* searchFederation(Handle handle)
+    /**
+     * Search federation from handle.
+     * @param[in] federationHandle, the handle of the search federation
+     * @throw FederationExecutionDoesNotExist if the provided federation handle
+     *        does not match any created federation.
+     */
+    Federation* searchFederation(Handle federationHandle)
         throw (FederationExecutionDoesNotExist);
 
     int verboseLevel;
@@ -654,4 +661,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATIONS_LIST_HH
 
-// $Id: FederationsList.hh,v 3.51 2009/11/20 19:43:40 erk Exp $
+// $Id: FederationsList.hh,v 3.52 2009/11/20 22:43:46 erk Exp $
