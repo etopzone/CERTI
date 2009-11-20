@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.77 2009/11/19 18:15:30 erk Exp $
+// $Id: FederationManagement.cc,v 3.78 2009/11/20 16:31:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -28,21 +28,10 @@
 #include "PrettyDebug.hh"
 #include "NM_Classes.hh"
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <list>
 #include <cstring>
 #include <cstdio>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <cstdlib>
-#endif
 #include <cassert>
 #include <memory>
-
-using std::list ;
 
 namespace certi {
 namespace rtia {
@@ -65,11 +54,8 @@ static PrettyDebug G("GENDOC",__FILE__);
 
     _fin_execution = false ;
 
-    //_est_createur_federation = false ;
     _est_membre_federation = false ;
 
-    _nom_federation = "";
-    _nom_federe     = "";
     G.Out(pdGendoc,"exit  FederationManagement::FederationManagement");
 }
 
@@ -370,22 +356,12 @@ FederationManagement::registerSynchronization(const std::string& label,
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization");
 
-    //assert(label != NULL);
-
     e = e_NO_EXCEPTION ;
 
-    list<std::string>::const_iterator i = synchronizationLabels.begin();
-    bool exists = false ;
-    for (; i != synchronizationLabels.end(); i++) {
-        if ((*i) == label) {
-            e = e_FederationAlreadyPaused ; // Label already pending.
-            exists = true ;
-            break ;
-        }
-    }
+    if (_synchronizationLabels.find(label) != _synchronizationLabels.end())
+        e = e_FederationAlreadyPaused ; // Label already pending.
 
-    if (!exists)
-        synchronizationLabels.push_back(label);
+    _synchronizationLabels.insert(label);
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
@@ -420,22 +396,12 @@ FederationManagement::registerSynchronization(const std::string& label,
     D.Out(pdProtocol, "RegisterSynchronization.");
     G.Out(pdGendoc,"enter FederationManagement::registerSynchronization with federate set");
 
-    //assert(label != NULL);
-
     e = e_NO_EXCEPTION ;
 
-    list<std::string>::const_iterator i = synchronizationLabels.begin();
-    bool exists = false ;
-    for (; i != synchronizationLabels.end(); i++) {
-        if (*i == label) {
-            e = e_FederationAlreadyPaused ; // Label already pending.
-            exists = true ;
-            break ;
-        }
-    }
+    if (_synchronizationLabels.find(label) != _synchronizationLabels.end())
+        e = e_FederationAlreadyPaused ; // Label already pending.
 
-    if (!exists)
-        synchronizationLabels.push_back(label);
+    _synchronizationLabels.insert(label);
 
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
@@ -469,29 +435,14 @@ FederationManagement::unregisterSynchronization(const std::string& label,
 {
     D.Out(pdProtocol, "unregisterSynchronization.");
 
-    //assert(label != NULL);
-
     e = e_NO_EXCEPTION ;
 
     // Find if this label has been requested by federate or RTIG.
-    list<std::string>::iterator i = synchronizationLabels.begin();
-    bool exists = false ;
-    for (; i != synchronizationLabels.end(); ++i) {
-        if (*i == label) {
-            // Label already pending.
-            exists = true ;
-            break ;
-        }
-    }
-    if (!exists)
+    std::set<std::string>::iterator i = _synchronizationLabels.find(label);
+    if (i == _synchronizationLabels.end())
         e = e_UnknownLabel ;
-    else {
-      /* delete[] *i ;
-       * the label has been allocated using strdup (i.e. malloc-like)
-       * so that we MUST use free (and not delete[]) to free it :))
-       */
-      synchronizationLabels.erase(i);
-    }
+    else
+      _synchronizationLabels.erase(i);
     
     if (!_est_membre_federation)
         e = e_FederateNotExecutionMember ;
@@ -521,17 +472,7 @@ FederationManagement::announceSynchronizationPoint(const std::string& label,
     req.setTag(tag);
 
     // adding label to list of synchronizations to be done.
-    list<std::string>::const_iterator i = synchronizationLabels.begin();
-    bool exists = false ;
-    for (; i != synchronizationLabels.end(); i++) {
-        if ((*i) == label) {
-            // label exists (only if initiator).
-            exists = true ;
-            break ;
-        }
-    }
-    if (!exists)
-        synchronizationLabels.push_back(label);
+    _synchronizationLabels.insert(label);
 
     comm->requestFederateService(&req);
 }

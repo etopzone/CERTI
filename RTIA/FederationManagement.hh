@@ -18,11 +18,14 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
+// $Id: FederationManagement.hh,v 3.28 2009/11/20 16:31:31 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIA_FEDERATION_MANAGEMENT
 #define _CERTI_RTIA_FEDERATION_MANAGEMENT
+
+#include <set>
+#include <string>
 
 #include "certi.hh"
 #include "NetworkMessage.hh"
@@ -111,13 +114,12 @@ private:
     Communications *comm ;
     Statistics     *stat;
 
-    bool _est_createur_federation ;
     bool _est_membre_federation ;
 
     bool savingState ;
     bool restoringState ;
 
-    std::list<std::string> synchronizationLabels ; //!< Labels being synchronized.
+    std::set<std::string> _synchronizationLabels ; //!< Labels being synchronized.
 
     std::string _nom_federation ;
     std::string _nom_federe;
@@ -128,4 +130,4 @@ private:
 
 #endif // _CERTI_RTIA_FEDERATION_MANAGEMENT
 
-// $Id: FederationManagement.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
+// $Id: FederationManagement.hh,v 3.28 2009/11/20 16:31:31 erk Exp $
