@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.51 2009/11/19 18:15:31 erk Exp $
+// $Id: NetworkMessage.hh,v 3.52 2009/11/21 21:00:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -183,14 +183,6 @@ public:
 
 	// Value Array Management
 
-	// Return a newly allocated ValueArray, exactly of size AttribArraySize.
-	// containing the actual Attribute values. You must FREE this structure.
-	std::vector <AttributeValue_t> getAttribValueArray();
-
-	// Return a newly allocated ValueArray, exactly of size ParamArraySize,
-	// containing the actual Parameter values. You must FREE this structure.
-	std::vector <ParameterValue_t> getParamValueArray();
-
 	void setAHS(const std::vector <AttributeHandle> &, int);
 
         void displayValueArray(char *);
@@ -343,4 +335,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.51 2009/11/19 18:15:31 erk Exp $
+// $Id: NetworkMessage.hh,v 3.52 2009/11/21 21:00:56 erk Exp $

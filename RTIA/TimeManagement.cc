@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: TimeManagement.cc,v 3.52 2009/11/19 18:15:30 erk Exp $
+// $Id: TimeManagement.cc,v 3.53 2009/11/21 21:00:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -179,12 +179,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES:
       {
-          std::vector<AttributeValue_t> ValueArray = msg.getAttribValueArray();
-
           if (msg.isDated())
              om->reflectAttributeValues(msg.object,
                                         msg.handleArray,
-                                        ValueArray,
+                                        msg.valueArray,
                                         msg.handleArraySize,
                                         msg.getDate(),
                                         msg.getLabel(),
@@ -193,11 +191,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           else
             om->reflectAttributeValues(msg.object,
                                         msg.handleArray,
-                                        ValueArray,
+                                        msg.valueArray,
                                         msg.handleArraySize,
                                         msg.getLabel(),
                                         msg.getRefException());
-          ValueArray.empty();
           break ;
       }
 
@@ -213,12 +210,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
 
       case NetworkMessage::RECEIVE_INTERACTION:
       {
-          std::vector<ParameterValue_t> ValueArray = msg.getParamValueArray();
-
           if (msg.isDated())
               om->receiveInteraction(msg.interactionClass,
                                      msg.handleArray,
-                                     ValueArray,
+                                     msg.valueArray,
                                      msg.handleArraySize,
                                      msg.getDate(),
                                      msg.getLabel(),
@@ -227,11 +222,10 @@ TimeManagement::executeFederateService(NetworkMessage &msg)
           else
               om->receiveInteraction(msg.interactionClass,
                                      msg.handleArray,
-                                     ValueArray,
+                                     msg.valueArray,
                                      msg.handleArraySize,
                                      msg.getLabel(),
                                      msg.getRefException());
-          ValueArray.empty();
 
           break ;
       }
@@ -1001,4 +995,4 @@ TimeManagement::timeAdvanceRequestAvailable(FederationTime logical_time,
 
 }} // namespaces
 
-// $Id: TimeManagement.cc,v 3.52 2009/11/19 18:15:30 erk Exp $
+// $Id: TimeManagement.cc,v 3.53 2009/11/21 21:00:56 erk Exp $

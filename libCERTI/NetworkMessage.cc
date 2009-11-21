@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.41 2009/11/19 18:15:30 erk Exp $
+// $Id: NetworkMessage.cc,v 3.42 2009/11/21 21:00:56 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -65,34 +65,6 @@ NetworkMessage::NetworkMessage()
 
 NetworkMessage::~NetworkMessage() {
 	
-}
-
-// ----------------------------------------------------------------------------
-std::vector <AttributeValue_t> 
-NetworkMessage::getAttribValueArray()
-{
-    std::vector <std::string> NewValueArray ;
-
-    NewValueArray.resize(handleArraySize) ;
-
-    for (int i = 0 ; i <handleArraySize ; i++)
-        NewValueArray[i] = valueArray[i] ;
-
-    return NewValueArray ;
-}
-
-// ----------------------------------------------------------------------------
-std::vector <ParameterValue_t>
-NetworkMessage::getParamValueArray()
-{
-    std::vector <std::string> NewValueArray ;
-
-    NewValueArray.resize(handleArraySize) ;
-
-    for (int i = 0 ; i < handleArraySize ; i++)
-        NewValueArray[i] = valueArray[i] ;
-
-    return NewValueArray ;
 }
 
 // ----------------------------------------------------------------------------
@@ -158,4 +130,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.41 2009/11/19 18:15:30 erk Exp $
+// $Id: NetworkMessage.cc,v 3.42 2009/11/21 21:00:56 erk Exp $

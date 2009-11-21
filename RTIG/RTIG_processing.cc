@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: RTIG_processing.cc,v 3.92 2009/11/20 19:43:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.93 2009/11/21 21:00:55 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -716,7 +716,6 @@ RTIG::processSubscribeObjectClass(Socket *link, NetworkMessage *req)
     G.Out(pdGendoc,"BEGIN **  SUBSCRIBE OBJECT CLASS SERVICE **");
 
     std::vector <AttributeHandle> arrayVide ;
-    arrayVide.empty() ;
     bool sub = (req->getType() == NetworkMessage::SUBSCRIBE_OBJECT_CLASS);
 
     auditServer << "Subscribe Object Class = " << req->objectClass
@@ -827,13 +826,9 @@ void
 RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 {
     G.Out(pdGendoc,"enter RTIG::processUpdateAttributeValues");
-    std::vector <AttributeValue_t> ValueArray ;
 
     auditServer << "ObjID = " << req->object
 		<< ", Date = " << req->getDate().getTime();
-
-    // Get Value Array
-    ValueArray = req->getAttribValueArray();
 
     // Forward the call
     if ( req->isDated() )
@@ -843,7 +838,7 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->federate,
                                  req->object,
                                  req->handleArray,
-                                 ValueArray,
+                                 req->valueArray,
                                  req->handleArraySize,
                                  req->getDate(),
                                  req->getLabel());
@@ -855,11 +850,10 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
                                  req->federate,
                                  req->object,
                                  req->handleArray,
-                                 ValueArray,
+                                 req->valueArray,
                                  req->handleArraySize,
                                  req->getLabel());
         }
-    ValueArray.empty();
 
     // Building answer (Network Message re)
     NM_Update_Attribute_Values rep ;
@@ -880,24 +874,20 @@ RTIG::processUpdateAttributeValues(Socket *link, NetworkMessage *req)
 void
 RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 {
-    std::vector <ParameterValue_t> values ;
-
     G.Out(pdGendoc,"BEGIN ** SEND INTERACTION SERVICE **");
     G.Out(pdGendoc,"enter RTIG::processSendInteraction");
 
     // Building Value Array
     auditServer << "IntID = " << req->interactionClass
 		<< ", date = " << req->getDate().getTime();
-    values = req->getParamValueArray();
-
     if ( req->isDated() )
         {
         federations.updateParameter(req->federation,
 				req->federate,
 				req->interactionClass,
 				req->handleArray,
-				values,
-				req->handleArraySize,
+				req->valueArray,
+                                req->handleArraySize,
 				req->getDate(),
 				req->region,
 				req->getLabel());
@@ -908,12 +898,11 @@ RTIG::processSendInteraction(Socket *link, NetworkMessage *req)
 				req->federate,
 				req->interactionClass,
 				req->handleArray,
-				values,
-				req->handleArraySize,
+				req->valueArray,
+                                req->handleArraySize,
 				req->region,
 				req->getLabel());
         }
-    values.empty();
 
     D.Out(pdDebug, "Interaction %d parameters update completed",
           req->interactionClass);
@@ -1468,4 +1457,4 @@ RTIG::processRequestObjectAttributeValueUpdate(Socket *link, NetworkMessage *req
 
 }} // namespace certi/rtig
 
-// $Id: RTIG_processing.cc,v 3.92 2009/11/20 19:43:40 erk Exp $
+// $Id: RTIG_processing.cc,v 3.93 2009/11/21 21:00:55 erk Exp $
