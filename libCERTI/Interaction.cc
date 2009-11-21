@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.56 2009/11/19 18:15:30 erk Exp $
+// $Id: Interaction.cc,v 3.57 2009/11/21 15:13:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -56,10 +56,9 @@ Interaction::Interaction(const std::string& theName, InteractionClassHandle theH
 
 Interaction::~Interaction()
 {
-	while (!parameterSet.empty()) {
-		delete parameterSet.front();
-		parameterSet.pop_front();
-	}
+        for (HandleParameterMap::iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
+                delete i->second;
+        }
 
 	if (!publishers.empty())
 		D.Out(pdError, "Interaction %d: publishers list not empty at termination.", handle);
@@ -100,7 +99,7 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 	if (!is_inherited)
 		the_parameter->LevelID = id ;
 
-	parameterSet.push_front(the_parameter);
+        _handleParameterMap[the_parameter->getHandle()] = the_parameter;
 
 	Debug(D, pdRegister) << "Interaction " << handle << "[" << name
 	<< "] has a new parameter "
@@ -113,24 +112,20 @@ Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 void
 Interaction::addInheritedClassParameter(Interaction *the_child)
 {
-	// The Parameter List is read backward to respect the same attribute order
-	// for the child (Parameters are inserted at the beginning of the list)
-	Parameter *child = NULL ;
-	list<Parameter *>::reverse_iterator it ;
-	for (it = parameterSet.rbegin(); it != parameterSet.rend(); it++) {
-		assert((*it) != NULL);
+        for (HandleParameterMap::iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
+		assert(i->second != NULL);
 
-		child = new Parameter(**it);
+                Parameter *child = new Parameter(*(i->second));
 		assert(child != NULL);
 
 		D.Out(pdProtocol,
 				"ObjectClass %u adding new parameter %d to child class %u.",
-				handle, (*it)->getHandle(), the_child->handle);
+				handle, i->second->getHandle(), the_child->handle);
 
 		the_child->addParameter(child, true);
 
 		/* FIXME EN: what is the purpose of the check ?? */
-		if (child->getHandle() != (*it)->getHandle()) {
+		if (child->getHandle() != i->second->getHandle()) {
 			throw RTIinternalError("Error while copying child's attributes.");
 		} else {
 			;
@@ -157,13 +152,11 @@ Interaction::broadcastInteractionMessage(InteractionBroadcastList *ibList,
 	// 2. Update message Parameters list by removing child's Parameters.
 	for (int i = 0 ; i < ibList->message->handleArraySize ;) {
 		// If the Parameter is not in that class, remove it from the message.
-		try {
-			getParameterByHandle(ibList->message->handleArray[i]);
-			i++ ;
-		}
-		catch (InteractionParameterNotDefined) {
+                if (hasParameter(ibList->message->handleArray[i])) {
+			++i;
+                } else {
 			ibList->message->removeParameter(i);
-		}
+                }
 	}
 
 	// 3. Add Interaction subscribers to the list.
@@ -267,11 +260,10 @@ Interaction::display() const
 
 	// Display parameters
 
-	cout << " " << parameterSet.size() << " Parameters:" << endl ;
+	cout << " " << _handleParameterMap.size() << " Parameters:" << endl ;
 
-	list<Parameter *>::const_iterator p = parameterSet.begin();
-	for (; p != parameterSet.end(); p++) {
-		(*p)->display();
+        for (HandleParameterMap::const_iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
+		i->second->display();
 	}
 }
 
@@ -281,11 +273,10 @@ Parameter*
 Interaction::getParameterByHandle(ParameterHandle the_handle) const
 throw (InteractionParameterNotDefined, RTIinternalError)
 {
-	list<Parameter *>::const_iterator p ;
-	for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
-		if ((*p)->getHandle() == the_handle)
-			return (*p);
-	}
+        HandleParameterMap::const_iterator i = _handleParameterMap.find(the_handle);
+        if (i != _handleParameterMap.end()) {
+                return i->second;
+        }
 
 	throw InteractionParameterNotDefined("");
 }
@@ -296,13 +287,13 @@ ParameterHandle
 Interaction::getParameterHandle(const std::string& the_name) const
 throw (NameNotFound, RTIinternalError)
 {
-	list<Parameter *>::const_iterator p ;
-	for (p = parameterSet.begin(); p != parameterSet.end(); p++) {
-		if ((*p)->getName() == the_name)
-			return (*p)->getHandle();
+        for (HandleParameterMap::const_iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
+                if (i->second->getName() == the_name) {
+ 			return i->second->getHandle();
+                }
 	}
 
-	throw NameNotFound("");
+	throw NameNotFound(the_name);
 }
 
 // ----------------------------------------------------------------------------
@@ -314,6 +305,16 @@ throw (InteractionParameterNotDefined,
 		{
 	return getParameterByHandle(the_handle)->getName();
 		}
+
+
+// ----------------------------------------------------------------------------
+//! Return true if the interaction contains the given parameter
+bool
+Interaction::hasParameter(ParameterHandle parameterHandle) const
+{
+        return _handleParameterMap.find(parameterHandle) != _handleParameterMap.end();
+}
+
 
 // ----------------------------------------------------------------------------
 //! Return true if federate is publishing the attribute.
@@ -547,4 +548,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.56 2009/11/19 18:15:30 erk Exp $
+// $Id: Interaction.cc,v 3.57 2009/11/21 15:13:08 erk Exp $

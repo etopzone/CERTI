@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.45 2009/11/21 14:46:17 erk Exp $
+// $Id: RootObject.cc,v 3.46 2009/11/21 15:13:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -446,38 +446,30 @@ RootObject::getFOM(NM_Join_Federation_Execution& message)
                 mic.setTransport(interactionClass->transport);
 
                 // Dump only those attributes from the list that are not alreay in the parent
-                Interaction::ParameterList_t parameterList = i->second->getParameterList();
+                Interaction* parent = 0;
                 if (0 < superclassHandle) {
-                        Interaction* parent = getInteractionClass(superclassHandle);
+                        parent = getInteractionClass(superclassHandle);
 
                         // strip the common substring from the parents name.
                         if (name.find(parent->getName() + ".") == 0)
                                 name = name.substr(parent->getName().size() + 1);
-
-                        // remove the parents attributes from the transfered list
-                        Interaction::ParameterList_t parentParameterList = parent->getParameterList();
-                        Interaction::ParameterList_t::const_iterator j = parentParameterList.begin();
-                        for (; j != parentParameterList.end(); ++j) {
-                                Interaction::ParameterList_t::iterator k = parameterList.begin();
-                                for (; k != parameterList.end(); ++k) {
-                                        if ((*k)->getHandle() != (*j)->getHandle())
-                                                continue;
-                                        parameterList.erase(k);
-                                        break;
-                                }
-                        }
                 }
 
                 // Transfer the simple name
                 mic.setName(name);
 
                 // Transfer the new parameters
-                mic.setNumParameters(parameterList.size());
-                Interaction::ParameterList_t::const_reverse_iterator j = parameterList.rbegin();
                 uint32_t jdx = 0;
-                for (; j != parameterList.rend(); ++j, ++jdx) {
-                        const Parameter* parameter = *j;
-                        NM_FOM_Parameter& mp = mic.getParameter(jdx);
+                const Interaction::HandleParameterMap& parameterMap = i->second->getHandleParameterMap();
+                Interaction::HandleParameterMap::const_iterator j = parameterMap.begin();
+                for (; j != parameterMap.end(); ++j) {
+                        // Dump only those attributes from the list that are not alreay in the parent
+                        const Parameter* parameter = j->second;
+                        if (parent && parent->hasParameter(parameter->getHandle()))
+                                continue;
+
+                        mic.setNumParameters(++jdx);
+                        NM_FOM_Parameter& mp = mic.getParameter(jdx - 1);
 
                         mp.setHandle(parameter->getHandle());
                         mp.setName(parameter->getName());
@@ -551,14 +543,6 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
                 addInteractionClass(current, parent);
 
-                if (parent) {
-                        const Interaction::ParameterList_t& parameterList = parent->getParameterList();
-                        for (Interaction::ParameterList_t::const_iterator j = parameterList.begin();
-                             j != parameterList.end(); ++j) {
-                                  current->addParameter(new Parameter(**j));
-                        }
-                }
- 
                 uint32_t parameterCount = mic.getNumParameters();
                 for (uint32_t j = 0; j < parameterCount; ++j) {
                         const NM_FOM_Parameter& mp = mic.getParameter(j);
@@ -573,4 +557,4 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.45 2009/11/21 14:46:17 erk Exp $
+// $Id: RootObject.cc,v 3.46 2009/11/21 15:13:08 erk Exp $

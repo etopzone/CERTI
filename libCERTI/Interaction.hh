@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.hh,v 3.38 2009/11/19 18:15:30 erk Exp $
+// $Id: Interaction.hh,v 3.39 2009/11/21 15:13:08 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_INTERACTION_HH
@@ -37,7 +37,7 @@ namespace certi {
 #include "Parameter.hh"
 #include "Subscribable.hh"
 
-#include <list>
+#include <map>
 #include <set>
 #include <string>
 
@@ -74,7 +74,7 @@ public:
 	/**
 	 * The type for the parameter list.
 	 */
-	typedef std::list<Parameter*> ParameterList_t;
+	typedef std::map<ParameterHandle, Parameter*> HandleParameterMap;
 
     Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder);
     /**
@@ -144,6 +144,13 @@ public:
     const std::string& getParameterName(ParameterHandle the_handle) const
         throw (InteractionParameterNotDefined, RTIinternalError);
 
+    /**
+     * Returns true if the Interaction has the parameter with the given handle.
+     * @param[in] parameterHandle the parameter handle
+     * @return if the Interaction has the parameter
+     */
+    bool hasParameter(ParameterHandle parameterHandle) const;
+
     void killFederate(FederateHandle theFederate)
         throw ();
 
@@ -192,9 +199,9 @@ public:
 
     /**
      * Getter for the parameter list of the interaction class.
-     * param[out] ParameterList_t @see Interaction::ParameterList_t
+     * param[out] ParameterList_t @see Interaction::HandleParameterMap
      */
-    const ParameterList_t& getParameterList(void) const { return parameterSet; }
+    const HandleParameterMap& getHandleParameterMap(void) const { return _handleParameterMap; }
 
     //! This Object helps to find a TCPLink given a Federate Handle.
     SecurityServer *server ;
@@ -248,7 +255,7 @@ private:
     SpaceHandle space ;
 
     //! List of this Interaction Class' Parameters.
-    ParameterList_t parameterSet ;
+    HandleParameterMap _handleParameterMap;
 
     typedef std::set<FederateHandle> PublishersList ;
     PublishersList publishers ;
@@ -258,4 +265,4 @@ private:
 
 #endif // _CERTI_INTERACTION.HH
 
-// $Id: Interaction.hh,v 3.38 2009/11/19 18:15:30 erk Exp $
+// $Id: Interaction.hh,v 3.39 2009/11/21 15:13:08 erk Exp $
