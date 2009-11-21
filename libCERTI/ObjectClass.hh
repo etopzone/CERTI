@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.47 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClass.hh,v 3.48 2009/11/21 14:46:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -85,9 +85,9 @@ public:
 	typedef ObjectClassNotDefined ObjectNotDefinedException;
 
 	/**
-	 * The type fot the attribute list.
+	 * The type for the attribute by handle map.
 	 */
-	typedef std::list<ObjectClassAttribute*> AttributeList_t;
+	typedef std::map<AttributeHandle, ObjectClassAttribute*> HandleClassAttributeMap;
 
 	/**
 	 * Create an objectClass.
@@ -221,6 +221,8 @@ public:
 	ObjectClassAttribute *getAttribute(AttributeHandle the_handle) const
 	throw (AttributeNotDefined);
 
+	bool hasAttribute(AttributeHandle theHandle) const;
+
 	// Instance Management
 	ObjectClassBroadcastList *deleteInstance(FederateHandle theFederateHandle,
 			ObjectHandle theObjectHandle,
@@ -269,7 +271,8 @@ public:
          * Getter for the attribute list of the object class.
          * param[out] AttributeList_t @see ObjectClass::AttributeList_t
          */
-	const AttributeList_t& getAttributeList(void);
+	const HandleClassAttributeMap& getHandleClassAttributeMap(void) const
+        { return _handleClassAttributeMap; }
 
 	//! This Object help to find a TCPLink from a Federate Handle.
 	SecurityServer *server ;
@@ -315,8 +318,17 @@ private:
 	 * default level for non inherited attributes.
 	 */
 	SecurityLevelID securityLevelId ;
-	std::list<ObjectClassAttribute *> attributeSet ;
+
+        /**
+         * All attributes, indexed by handle.
+         */
+        HandleClassAttributeMap _handleClassAttributeMap;        
+
+        /**
+         * All objects of this class, indexed by handle.
+         */
 	std::list<Object *> objectSet ;
+
 	/**
 	 * The super class handle.
 	 * 0 if they aren't any.
@@ -334,4 +346,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.47 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClass.hh,v 3.48 2009/11/21 14:46:17 erk Exp $

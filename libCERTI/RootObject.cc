@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.44 2009/11/19 18:15:32 erk Exp $
+// $Id: RootObject.cc,v 3.45 2009/11/21 14:46:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -394,40 +394,32 @@ RootObject::getFOM(NM_Join_Federation_Execution& message)
                 ObjectClassHandle superclassHandle = objectClass->getSuperclass();
                 moc.setSuperclassHandle(superclassHandle);
 
-                // Dump only those attributes from the list that are not alreay in the parent
-                ObjectClass::AttributeList_t attributeList = i->second->getAttributeList();
+                ObjectClass* parent = 0;
                 if (0 < superclassHandle) {
-                        ObjectClass* parent = getObjectClass(superclassHandle);
+                        parent = getObjectClass(superclassHandle);
 
                         // strip the common substring from the parents name.
                         if (name.find(parent->getName() + ".") == 0)
                                 name = name.substr(parent->getName().size() + 1);
-
-                        // remove the parents attributes from the transfered list
-                        ObjectClass::AttributeList_t parentAttributeList = parent->getAttributeList();
-                        ObjectClass::AttributeList_t::const_iterator j = parentAttributeList.begin();
-                        for (; j != parentAttributeList.end(); ++j) {
-                                ObjectClass::AttributeList_t::iterator k = attributeList.begin();
-                                for (; k != attributeList.end(); ++k) {
-                                        if ((*k)->getHandle() != (*j)->getHandle())
-                                                continue;
-                                        attributeList.erase(k);
-                                        break;
-                                }
-                        }
                 }
 
                 // Transfer the short name
                 moc.setName(name);
 
                 // Transfer the attributes that are not inheritted
-                moc.setNumAttributes(attributeList.size());
                 uint32_t jdx = 0;
-                ObjectClass::AttributeList_t::const_reverse_iterator j = attributeList.rbegin();
-                for (; j != attributeList.rend(); ++j, ++jdx) {
-                        const ObjectClassAttribute* attribute = *j;
+                const ObjectClass::HandleClassAttributeMap& attributeMap = i->second->getHandleClassAttributeMap();
+                ObjectClass::HandleClassAttributeMap::const_iterator j = attributeMap.begin();
+                for (; j != attributeMap.end(); ++j) {
+                        // Dump only those attributes from the list that are not alreay in the parent
+                        if (parent && parent->hasAttribute(j->second->getHandle()))
+                                continue;
 
-                        NM_FOM_Attribute& ma = moc.getAttribute(jdx);
+                        const ObjectClassAttribute* attribute = j->second;
+
+                        moc.setNumAttributes(++jdx);
+                        NM_FOM_Attribute& ma = moc.getAttribute(jdx - 1);
+
                         ma.setHandle(attribute->getHandle());
                         ma.setName(attribute->getName());
                         ma.setSpaceHandle(attribute->getSpace());
@@ -581,4 +573,4 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.44 2009/11/19 18:15:32 erk Exp $
+// $Id: RootObject.cc,v 3.45 2009/11/21 14:46:17 erk Exp $

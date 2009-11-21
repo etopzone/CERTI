@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.71 2009/11/20 17:33:57 erk Exp $
+// $Id: ObjectClass.cc,v 3.72 2009/11/21 14:46:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -35,17 +35,14 @@
 #include "helper.hh"
 #include <sstream>
 #include <memory>
+#include <iostream>
+#include <cassert>
 
 #ifdef _WIN32
-	#include <windows.h>
-	#include <algorithm>
-	#ifdef max
-		#undef max
-	#endif
-#else
-	#include <iostream>
+#ifdef max
+#undef max
 #endif
-#include <assert.h>
+#endif
 
 using std::cout ;
 using std::endl ;
@@ -65,7 +62,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     if (theAttribute == NULL)
         throw RTIinternalError("Tried to add NULL attribute.");
 
-    theAttribute->setHandle(attributeSet.size() + 1);
+    theAttribute->setHandle(_handleClassAttributeMap.size() + 1);
     theAttribute->server = server ;
 
     // If the attribute is inherited, it keeps its security level.
@@ -73,7 +70,7 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     if (!is_inherited)
         theAttribute->level = securityLevelId ;
 
-    attributeSet.push_front(theAttribute);
+    _handleClassAttributeMap[theAttribute->getHandle()] = theAttribute;
 
     D.Out(pdProtocol, "ObjectClass %u has a new attribute %u.",
           handle, theAttribute->getHandle());
@@ -86,23 +83,19 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
 void
 ObjectClass::addInheritedClassAttributes(ObjectClass *the_child)
 {
-    // The Attribute List is read backwards to respect the same attribute order
-    // for the child(Attributes are inserted at the beginning of the list).
-    ObjectClassAttribute *childAttribute = NULL ;
-    list<ObjectClassAttribute *>::reverse_iterator a ;
-    for (a = attributeSet.rbegin(); a != attributeSet.rend(); a++) {
-        assert((*a) != NULL);
+    for (HandleClassAttributeMap::iterator a = _handleClassAttributeMap.begin(); a != _handleClassAttributeMap.end(); ++a) {
+        assert(a->second != NULL);
 
-        childAttribute = new ObjectClassAttribute(*a);
+        ObjectClassAttribute *childAttribute = new ObjectClassAttribute(*a->second);
         assert(childAttribute != NULL);
 
         D.Out(pdProtocol,
               "ObjectClass %u adding new attribute %d to child class %u.",
-              handle, (*a)->getHandle(), the_child->getHandle());
+              handle, a->second->getHandle(), the_child->getHandle());
 
         the_child->addAttribute(childAttribute);
 
-        if (childAttribute->getHandle() != (*a)->getHandle())
+        if (childAttribute->getHandle() != a->second->getHandle())
             throw RTIinternalError("Error while copying child's attributes.");
     }
 } /* end of addInheritedClassAttributes */
@@ -116,7 +109,6 @@ void
 ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
 				   const Object *source)
 {
-    int i, trouve;
     G.Out(pdGendoc,"enter ObjectClass::broadcastClassMessage");
     // 1. Set ObjectHandle to local class Handle.
     ocbList->message->objectClass = handle ;
@@ -126,17 +118,13 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
     // 2. Update message attribute list by removing child's attributes.
     if ((ocbList->message->getType() == NetworkMessage::REFLECT_ATTRIBUTE_VALUES) ||
         (ocbList->message->getType() == NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION)) {
-        int attr = 0 ;
-        while (attr < ocbList->message->handleArraySize) {
+        for (int attr = 0; attr < ocbList->message->handleArraySize;) {
             // If the attribute is not in that class, remove it from
             // the message.
-            try {
-                getAttribute(ocbList->message->handleArray[attr]);
-                attr++ ;
-            }
-            catch (AttributeNotDefined &e) {
+            if (hasAttribute(ocbList->message->handleArray[attr]))
+                ++attr;
+            else
                 ocbList->message->removeAttribute(attr);
-            }
         }
     }
 
@@ -157,31 +145,29 @@ ObjectClass::broadcastClassMessage(ObjectClassBroadcastList *ocbList,
       case NetworkMessage::REFLECT_ATTRIBUTE_VALUES: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
-          list<ObjectClassAttribute *>::const_iterator a ;
-          for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-              // Do not consider attributes that are not updated
-              trouve = 0;
-              for (i=0 ; i< ocbList->message->handleArraySize ; i++) {
-                  if ((*a)->getHandle() == ocbList->message->handleArray[i])
-                     trouve = 1;
+          for (int i = 0 ; i < ocbList->message->handleArraySize ; ++i) {
+              AttributeHandle attributeHandle = ocbList->message->handleArray[i];
+
+              HandleClassAttributeMap::iterator a = _handleClassAttributeMap.find(attributeHandle);
+              // May be this is a hard error?
+              if (a == _handleClassAttributeMap.end()) {
+                  continue;
               }
-              if (trouve) {
-  	         ObjectAttribute *attr = source->getAttribute((*a)->getHandle());
-       	         const RTIRegion *update_region = attr->getRegion();
- 	         Debug(D, pdTrace) << "RAV: attr " << (*a)->getHandle()
- 			    << " / region " << (update_region ? update_region->getHandle() : 0)
- 			    << std::endl ;
-                 (*a)->updateBroadcastList(ocbList, update_region);
-              }
+
+              ObjectAttribute *attr = source->getAttribute(attributeHandle);
+              const RTIRegion *update_region = attr->getRegion();
+              Debug(D, pdTrace) << "RAV: attr " << attributeHandle
+                                << " / region " << (update_region ? update_region->getHandle() : 0)
+                                << std::endl ;
+              a->second->updateBroadcastList(ocbList, update_region);
           }
       } break ;
 
       case NetworkMessage::REQUEST_ATTRIBUTE_OWNERSHIP_ASSUMPTION: {
           // For each class attribute, update the list be adding federates who
           // subscribed to the attribute.
-          list<ObjectClassAttribute *>::const_iterator a ;
-          for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-              (*a)->updateBroadcastList(ocbList);
+          for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+              i->second->updateBroadcastList(ocbList);
           }
       } break ;
 
@@ -303,14 +289,13 @@ ObjectClass::~ObjectClass()
               "ObjectClass %d : Instances remaining while exiting...", handle);
 
     // Deleting Class Attributes
-    while (!attributeSet.empty()) {
-        delete attributeSet.front();
-        attributeSet.pop_front();
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        delete i->second;
     }
+    _handleClassAttributeMap.clear();
+
     // Deleting subclasses
-    if (NULL!=subClasses) {
-    	delete subClasses;
-    }
+    delete subClasses;
 } /* end of ObjectClass destructor */
 
 // ----------------------------------------------------------------------------
@@ -466,10 +451,9 @@ void ObjectClass::display() const
 
 
     // Display Attributes
-    cout << " " << attributeSet.size() << " Attribute(s):" << endl ;
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        (*a)->display();
+    cout << " " << _handleClassAttributeMap.size() << " Attribute(s):" << endl ;
+    for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        i->second->display();
     }
 
     // Display Instances
@@ -488,11 +472,10 @@ ObjectClass::getAttributeHandle(const std::string& the_name) const
 {
     G.Out(pdGendoc,"enter ObjectClass::getAttributeHandle");
 
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isNamed(the_name)) {
+    for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        if (the_name == i->second->getName()) {
             G.Out(pdGendoc,"exit  ObjectClass::getAttributeHandle");
-            return (*a)->getHandle();
+            return i->second->getHandle();
         }
     }
 
@@ -512,7 +495,6 @@ ObjectClass::getAttributeName(AttributeHandle the_handle) const
     return getAttribute(the_handle)->getName();
 }
 
-
 // ----------------------------------------------------------------------------
 /** Get attribute
     @param the_handle Attribute's handle
@@ -522,16 +504,23 @@ ObjectClassAttribute *
 ObjectClass::getAttribute(AttributeHandle the_handle) const
     throw (AttributeNotDefined)
 {
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->getHandle() == the_handle)
-            return (*a);
+    HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.find(the_handle);
+    if (i != _handleClassAttributeMap.end()) {
+        return i->second;
     }
 
     D.Out(pdExcept, "ObjectClass %d: Attribute %d not defined.",
           handle, the_handle);
 
     throw AttributeNotDefined("");
+}
+
+// ----------------------------------------------------------------------------
+//! Return true if the attribute with the given handle is an attribute of this object class
+bool
+ObjectClass::hasAttribute(AttributeHandle attributeHandle) const
+{
+    return _handleClassAttributeMap.find(attributeHandle) != _handleClassAttributeMap.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -561,12 +550,12 @@ ObjectClass::getInstanceWithID(ObjectHandle the_id) const
 bool
 ObjectClass::isFederatePublisher(FederateHandle the_federate) const
 {
-    D.Out(pdRegister, "attributeSet.size() = %d.", attributeSet.size());
+    D.Out(pdRegister, "_handleClassAttributeMap.size() = %d.", _handleClassAttributeMap.size());
 
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isPublishing(the_federate))
+    for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        if (i->second->isPublishing(the_federate)) {
             return true ;
+        }
     }
     return false ;
 }
@@ -580,10 +569,10 @@ ObjectClass::isFederatePublisher(FederateHandle the_federate) const
 bool
 ObjectClass::isSubscribed(FederateHandle fed) const
 {
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isSubscribed(fed))
+    for (HandleClassAttributeMap::const_iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        if (i->second->isSubscribed(fed)) {
             return true ;
+        }
     }
     return false ;
 }
@@ -674,10 +663,10 @@ ObjectClass::publish(FederateHandle theFederateHandle,
     D.Out(pdInit, "ObjectClass %d: Reset publish info of Federate %d.",
           handle, theFederateHandle);
 
-    list<ObjectClassAttribute *>::const_iterator a ;
-    for (a = attributeSet.begin(); a != attributeSet.end(); a++) {
-        if ((*a)->isPublishing(theFederateHandle))
-            (*a)->unpublish(theFederateHandle);
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        if (i->second->isPublishing(theFederateHandle)) {
+            i->second->unpublish(theFederateHandle);
+        }
     }
 
     // Publish attributes one by one.
@@ -722,15 +711,14 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
     // Ownership management :
     // Copy instance attributes
     // Federate only owns attributes it publishes.
-    ObjectAttribute * oa ;
-    list<ObjectClassAttribute *>::reverse_iterator a ;
-    for (a = attributeSet.rbegin(); a != attributeSet.rend(); a++) {
-	oa = new ObjectAttribute((*a)->getHandle(),
-				 (*a)->isPublishing(the_federate) ? the_federate : 0,
-				 *a);
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+        ObjectAttribute * oa ;
+	oa = new ObjectAttribute(i->second->getHandle(),
+				 i->second->isPublishing(the_federate) ? the_federate : 0,
+				 i->second);
 
         // privilegeToDelete is owned by federate even not published.
-        if ((*a)->isNamed("privilegeToDelete")) {
+        if (i->second->isNamed("privilegeToDelete")) {
             oa->setOwner(the_federate);
         }
 
@@ -922,7 +910,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
             answer->valueArray[i] = the_values[i] ;
         }
 
-        ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
+        ocbList = new ObjectClassBroadcastList(answer, _handleClassAttributeMap.size());
 
         D.Out(pdProtocol,
               "Object %u updated in class %u, now broadcasting...",
@@ -986,7 +974,7 @@ ObjectClass::updateAttributeValues(FederateHandle the_federate,
             answer->valueArray[i] = the_values[i];
         }
 
-        ocbList = new ObjectClassBroadcastList(answer, attributeSet.size());
+        ocbList = new ObjectClassBroadcastList(answer, _handleClassAttributeMap.size());
 
         D.Out(pdProtocol,
               "Object %u updated in class %u, now broadcasting...",
@@ -1133,7 +1121,7 @@ negotiatedAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
-                                                attributeSet.size());
+                                                _handleClassAttributeMap.size());
 
             D.Out(pdProtocol,
                   "Object %u divestiture in class %u, now broadcasting...",
@@ -1186,7 +1174,7 @@ attributeOwnershipAcquisitionIfAvailable(FederateHandle the_federate,
             throw ObjectClassNotPublished("");
         }
 
-        //rem attributeSet.size()=attributeState.size()
+        //rem _handleClassAttributeMap.size()=attributeState.size()
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
         for (int i = 0 ; i < theListSize ; i++) {
@@ -1390,7 +1378,7 @@ unconditionalAttributeOwnershipDivestiture(FederateHandle theFederateHandle,
             AnswerAssumption->handleArraySize = compteur_assumption ;
 
             List = new ObjectClassBroadcastList(AnswerAssumption,
-                                                attributeSet.size());
+                                                _handleClassAttributeMap.size());
 
             D.Out(pdProtocol,
                   "Object %u updated in class %u, now broadcasting...",
@@ -1678,7 +1666,7 @@ cancelAttributeOwnershipAcquisition(FederateHandle federate_handle,
               object_handle, attribute_list[i]);
 
     if (server != NULL) {
-        //rem attributeSet.size()=attributeState.size()
+        //rem _handleClassAttributeMap.size()=attributeState.size()
         ObjectAttribute * oa ;
         ObjectClassAttribute * oca ;
 
@@ -1746,10 +1734,9 @@ ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
     Debug(D, pdTrace) << "ObjectClass::unsubscribe" << ": fed " << fed << ", region "
 	       << (region ? region->getHandle() : 0) << std::endl ;
 
-    list<ObjectClassAttribute *>::iterator i ;
-    for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
-	if ((*i)->isSubscribed(fed, region)) {
-	    (*i)->unsubscribe(fed, region);
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+	if (i->second->isSubscribed(fed, region)) {
+	    i->second->unsubscribe(fed, region);
 	}
     }
 }
@@ -1760,10 +1747,9 @@ ObjectClass::unsubscribe(FederateHandle fed, const RTIRegion *region)
 void
 ObjectClass::unsubscribe(FederateHandle fed)
 {
-    list<ObjectClassAttribute *>::iterator i ;
-    for (i = attributeSet.begin(); i != attributeSet.end(); ++i) {
-	if ((*i)->isSubscribed(fed)) {
-	    (*i)->unsubscribe(fed);
+    for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
+	if (i->second->isSubscribed(fed)) {
+	    i->second->unsubscribe(fed);
 	}
     }
 } /* end of unsubscribe */
@@ -1827,11 +1813,6 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 //     }
 // }
 
-const ObjectClass::AttributeList_t&
-ObjectClass::getAttributeList(void) {
-	    return attributeSet;
-}
-
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.71 2009/11/20 17:33:57 erk Exp $
+// $Id: ObjectClass.cc,v 3.72 2009/11/21 14:46:17 erk Exp $

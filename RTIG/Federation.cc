@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.116 2009/11/19 18:15:29 erk Exp $
+// $Id: Federation.cc,v 3.117 2009/11/21 14:46:17 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1837,10 +1837,7 @@ Federation::subscribeObject(FederateHandle federate,
         ObjectClass *objectClass = root->ObjectClasses->getObjectFromHandle(object);
 
         // get attributes of object class
-        ObjectClass::AttributeList_t attrForObjClass = objectClass->getAttributeList();
-
         ObjectClassAttribute::PublishersList_t publishers;
-        publishers.clear();
 
         // get publishers of attributes	
         // first for: iterate through the attribute list and get publishers of 
@@ -1848,12 +1845,11 @@ Federation::subscribeObject(FederateHandle federate,
         // second for: iterate through the temporal publishers list and store 
         //             non-duplicate entries in publishers
         ObjectClassAttribute::PublishersList_t tmp_publishers;
-        tmp_publishers.clear();
-        for (ObjectClass::AttributeList_t::const_iterator 
-            i=attrForObjClass.begin();
-	    i!=attrForObjClass.end(); 
-	    i++) {
-    	    tmp_publishers = (*i)->getPublishers();
+
+        const ObjectClass::HandleClassAttributeMap& attributeMap = objectClass->getHandleClassAttributeMap();
+        for (ObjectClass::HandleClassAttributeMap::const_iterator i = attributeMap.begin();
+             i != attributeMap.end(); ++i) {
+    	    tmp_publishers = i->second->getPublishers();
             for (ObjectClassAttribute::PublishersList_t::const_iterator
                 j=tmp_publishers.begin(); 
 	        j!=tmp_publishers.end(); 
@@ -2612,5 +2608,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.116 2009/11/19 18:15:29 erk Exp $
+// $Id: Federation.cc,v 3.117 2009/11/21 14:46:17 erk Exp $
 
