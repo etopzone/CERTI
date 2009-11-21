@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.72 2009/11/21 14:46:17 erk Exp $
+// $Id: ObjectClass.cc,v 3.73 2009/11/21 21:18:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -46,7 +46,6 @@
 
 using std::cout ;
 using std::endl ;
-using std::list ;
 
 namespace certi {
 
@@ -284,9 +283,10 @@ ObjectClass::ObjectClass(const std::string& name, ObjectClassHandle handle)
 ObjectClass::~ObjectClass()
 {
     // Deleting instances
-    if (!objectSet.empty())
+    if (!_handleObjectMap.empty()) {
         D.Out(pdError,
               "ObjectClass %d : Instances remaining while exiting...", handle);
+    }
 
     // Deleting Class Attributes
     for (HandleClassAttributeMap::iterator i = _handleClassAttributeMap.begin(); i != _handleClassAttributeMap.end(); ++i) {
@@ -327,12 +327,9 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
     }
 
     // 2. Remove Instance from list.
-    list<Object *>::iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
-        if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.
-            break ;
-        }
+    HandleObjectMap::iterator o = _handleObjectMap.find(the_object);
+    if (o != _handleObjectMap.end()) {
+        _handleObjectMap.erase(o);
     }
 
     // 3. Prepare and broadcast message.
@@ -394,12 +391,9 @@ ObjectClass::deleteInstance(FederateHandle the_federate,
     }
 
     // 2. Remove Instance from list.
-    list<Object *>::iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
-        if ((*o)->getHandle() == the_object) {
-            objectSet.erase(o); // i is dereferenced.
-            break ;
-        }
+    HandleObjectMap::iterator o = _handleObjectMap.find(the_object);
+    if (o != _handleObjectMap.end()) {
+        _handleObjectMap.erase(o);
     }
 
     // 3. Prepare and broadcast message.
@@ -457,10 +451,9 @@ void ObjectClass::display() const
     }
 
     // Display Instances
-    cout << " " << objectSet.size() << " Instances(s):" << endl ;
-    list<Object *>::const_iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
-        (*o)->display();
+    cout << " " << _handleObjectMap.size() << " Instances(s):" << endl ;
+    for (HandleObjectMap::const_iterator i = _handleObjectMap.begin(); i != _handleObjectMap.end(); ++i) {
+        i->second->display();
     }
 }
 
@@ -526,18 +519,17 @@ ObjectClass::hasAttribute(AttributeHandle attributeHandle) const
 // ----------------------------------------------------------------------------
 //! Get Object
 Object *
-ObjectClass::getInstanceWithID(ObjectHandle the_id) const
+ObjectClass::getInstanceWithID(ObjectHandle objectHandle) const
     throw (ObjectNotKnown)
 {
-    list<Object *>::const_iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
-        if ((*o)->getHandle() == the_id)
-            return (*o);
+    HandleObjectMap::const_iterator i = _handleObjectMap.find(objectHandle);
+    if (i != _handleObjectMap.end()) {
+        return i->second;
     }
 
     std::stringstream msg;
-    msg << "Could not find ObjectHandle <" << the_id << "> among <"
-	       << objectSet.size() << "> objects of ObjectClass "
+    msg << "Could not find ObjectHandle <" << objectHandle << "> among <"
+	       << _handleObjectMap.size() << "> objects of ObjectClass "
 	       << handle;
 
     Debug(D, pdError) << msg.str() << std::endl ;
@@ -582,15 +574,9 @@ ObjectClass::isSubscribed(FederateHandle fed) const
   present in that class.
 */
 bool
-ObjectClass::isInstanceInClass(ObjectHandle theID)
+ObjectClass::isInstanceInClass(ObjectHandle objectHandle)
 {
-    try {
-        getInstanceWithID(theID);
-    }
-    catch (ObjectNotKnown &e) {
-        return false ;
-    }
-    return true ;
+    return _handleObjectMap.find(objectHandle) != _handleObjectMap.end();
 }
 
 // ----------------------------------------------------------------------------
@@ -602,7 +588,6 @@ ObjectClass::killFederate(FederateHandle the_federate)
     D.Out(pdRegister, "Object Class %d: Killing Federate %d.",
           handle, the_federate);
     std::vector <AttributeHandle> liste_vide ;
-    liste_vide.empty();
     try {
         // Does federate is publishing something ? (not important)
         if (isFederatePublisher(the_federate)) {
@@ -618,16 +603,15 @@ ObjectClass::killFederate(FederateHandle the_federate)
     catch (SecurityError &e) {}
 
     // Does federate owns instances ?
-    list<Object *>::iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); o++) {
-        if ((*o)->getOwner() == the_federate) {
+    for (HandleObjectMap::const_iterator i = _handleObjectMap.begin(); i != _handleObjectMap.end(); ++i) {
+        if (i->second->getOwner() == the_federate) {
             // Return non-NULL to indicate that :
             // 1- A RemoveObject message should be broadcasted through parent
             // class
             // 2- The federate may own another instance, and this function
             // must be called again.
             // BUG: String \/
-            return deleteInstance(the_federate, (*o)->getHandle(), "Killed");
+            return deleteInstance(the_federate, i->second->getHandle(), "Killed");
         }
     }
 
@@ -725,9 +709,9 @@ ObjectClass::registerObjectInstance(FederateHandle the_federate,
         the_object->addAttribute(oa);
     }
 
-    objectSet.push_front(the_object);
+    _handleObjectMap[the_object->getHandle()] = the_object;
     Debug(D, pdTrace) << "Added object " << the_object->getHandle() << "/"
-	       << objectSet.size() << " to class " << handle << std::endl ;
+	       << _handleObjectMap.size() << " to class " << handle << std::endl ;
 
     // Prepare and Broadcast message for this class
     ObjectClassBroadcastList *ocbList = NULL ;
@@ -779,20 +763,19 @@ ObjectClass::sendDiscoverMessages(FederateHandle federate,
         return false ;
 
     // Else, send message for each object
-    list<Object *>::const_iterator o ;
-    for (o = objectSet.begin(); o != objectSet.end(); ++o) {
-	if ((*o)->getOwner() != federate) {
+    for (HandleObjectMap::const_iterator i = _handleObjectMap.begin(); i != _handleObjectMap.end(); ++i) {
+	if (i->second->getOwner() != federate) {
 	    NM_Discover_Object message;
 	    D.Out(pdInit,
 		  "Sending DiscoverObj to Federate %d for Object %u in class %u ",
-		  federate, (*o)->getHandle(), handle, message.getLabel().c_str());
+		  federate, i->second->getHandle(), handle, message.getLabel().c_str());
 
 	    message.federation  = server->federation();
 	    message.federate    = federate ;
 	    message.setException(e_NO_EXCEPTION) ;
 	    message.objectClass = super_handle ;
-	    message.object      = (*o)->getHandle();
-	    message.setLabel((*o)->getName());
+	    message.object      = i->second->getHandle();
+	    message.setLabel(i->second->getName());
 	    //BUG FIXME strange!!
 	    //message.setDate(0.0);
 
@@ -1815,4 +1798,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.72 2009/11/21 14:46:17 erk Exp $
+// $Id: ObjectClass.cc,v 3.73 2009/11/21 21:18:28 erk Exp $

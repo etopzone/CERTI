@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.48 2009/11/21 14:46:17 erk Exp $
+// $Id: ObjectClass.hh,v 3.49 2009/11/21 21:18:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -42,7 +42,7 @@ class    ObjectClassBroadcastList;
 #include "GAV.hh"
 
 // Standard
-#include <list>
+#include <map>
 #include <string>
 
 namespace certi {
@@ -88,6 +88,11 @@ public:
 	 * The type for the attribute by handle map.
 	 */
 	typedef std::map<AttributeHandle, ObjectClassAttribute*> HandleClassAttributeMap;
+
+	/**
+	 * The type for the object instance by handle map.
+	 */
+	typedef std::map<ObjectHandle, Object*> HandleObjectMap;
 
 	/**
 	 * Create an objectClass.
@@ -327,7 +332,7 @@ private:
         /**
          * All objects of this class, indexed by handle.
          */
-	std::list<Object *> objectSet ;
+	HandleObjectMap _handleObjectMap;
 
 	/**
 	 * The super class handle.
@@ -346,4 +351,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.48 2009/11/21 14:46:17 erk Exp $
+// $Id: ObjectClass.hh,v 3.49 2009/11/21 21:18:28 erk Exp $

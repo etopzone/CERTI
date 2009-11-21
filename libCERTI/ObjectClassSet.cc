@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.cc,v 3.48 2009/11/19 18:15:31 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.49 2009/11/21 21:18:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 // Project
@@ -35,7 +35,6 @@
 #include <iosfwd>
 #include <sstream>
 
-using std::list ;
 using std::endl ;
 
 namespace certi {
@@ -237,12 +236,10 @@ ObjectClassSet::getObject(ObjectHandle h) const
 	handled_const_iterator i ;
 
 	for (i = fromHandle.begin(); i != fromHandle.end(); ++i) {
-		try {
-			Object *object = i->second->getInstanceWithID(h);
-			return object ;
-		}
-		catch (ObjectNotKnown &e) {
-		}
+                if (!i->second->isInstanceInClass(h)) {
+                        continue;
+                }
+                return i->second->getInstanceWithID(h);
 	}
 	throw ObjectNotKnown("");
 }
@@ -691,4 +688,4 @@ cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
 
 } // namespace certi
 
-// $Id: ObjectClassSet.cc,v 3.48 2009/11/19 18:15:31 erk Exp $
+// $Id: ObjectClassSet.cc,v 3.49 2009/11/21 21:18:28 erk Exp $
