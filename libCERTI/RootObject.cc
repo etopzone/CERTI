@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.46 2009/11/21 15:13:08 erk Exp $
+// $Id: RootObject.cc,v 3.47 2009/11/23 07:34:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -263,24 +263,26 @@ RootObject::registerObjectInstance(FederateHandle the_federate,
 // ----------------------------------------------------------------------------
 void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
-                                 ObjectHandle the_object,
+                                 ObjectHandle objectHandle,
 				 FederationTime theTime,
                                  const std::string& the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
-    ObjectClasses->deleteObject(the_federate, the_object, theTime, the_tag);
-    objects->deleteObjectInstance(the_federate, the_object, the_tag);
+    Object *object = objects->getObject(objectHandle);
+    ObjectClasses->deleteObject(the_federate, object, theTime, the_tag);
+    objects->deleteObjectInstance(the_federate, objectHandle, the_tag);
 }
 
 // ----------------------------------------------------------------------------
 void
 RootObject::deleteObjectInstance(FederateHandle the_federate,
-                                 ObjectHandle the_object,
+                                 ObjectHandle objectHandle,
                                  const std::string& the_tag)
     throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError)
 {
-    ObjectClasses->deleteObject(the_federate, the_object, the_tag);
-    objects->deleteObjectInstance(the_federate, the_object, the_tag);
+    Object *object = objects->getObject(objectHandle);
+    ObjectClasses->deleteObject(the_federate, object, the_tag);
+    objects->deleteObjectInstance(the_federate, objectHandle, the_tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -557,4 +559,4 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.46 2009/11/21 15:13:08 erk Exp $
+// $Id: RootObject.cc,v 3.47 2009/11/23 07:34:28 erk Exp $

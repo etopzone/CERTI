@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassSet.hh,v 3.37 2009/11/19 18:15:31 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.38 2009/11/23 07:34:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_SET_HH
@@ -37,9 +37,7 @@ class SecurityServer;
 #include "TreeNamedAndHandledSet.hh"
 
 // System headers
-#include <list>
 #include <string>
-#include <map>
 
 namespace certi {
 
@@ -94,13 +92,13 @@ public:
 
 	// Object Instance Management
 	void deleteObject(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
+			Object* object,
 			FederationTime theTime,
 			const std::string& theTag)
 	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
 	void deleteObject(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
+			Object* object,
 			const std::string& theTag)
 	throw (DeletePrivilegeNotHeld, ObjectNotKnown, RTIinternalError);
 
@@ -110,73 +108,63 @@ public:
 			RTIinternalError);
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
+                        Object* object,
 			std::vector <AttributeHandle> &theAttribArray,
 			std::vector <AttributeValue_t> &theValueArray,
-			UShort theArraySize,
-			FederationTime theTime,
+			const FederationTime& theTime,
 			const std::string& theUserTag)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+	throw (AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError, InvalidObjectHandle);
 
 	void updateAttributeValues(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
+                        Object* object,
 			std::vector <AttributeHandle> &theAttribArray,
 			std::vector <AttributeValue_t> &theValueArray,
-			UShort theArraySize,
 			const std::string& theUserTag)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+	throw (AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError, InvalidObjectHandle);
 
 
 	// Ownership Management
 	void negotiatedAttributeOwnershipDivestiture(FederateHandle,
-			ObjectHandle theObjectHandle,
+			Object* object,
 			std::vector <AttributeHandle> &,
-			UShort theListSize,
 			const std::string& theTag)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+	throw (AttributeNotDefined, AttributeNotOwned,
 			AttributeAlreadyBeingDivested, RTIinternalError);
 
 
 	void attributeOwnershipAcquisitionIfAvailable(FederateHandle,
-			ObjectHandle theObjectHandle,
-			std::vector <AttributeHandle>&,
-			UShort theListSize)
-	throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
+			Object* object,
+			std::vector <AttributeHandle>&)
+	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes,
 			AttributeAlreadyBeingAcquired, RTIinternalError);
 
 	void unconditionalAttributeOwnershipDivestiture(FederateHandle,
-			ObjectHandle,
-			std::vector <AttributeHandle>&,
-			UShort theListSize)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+			Object* object,
+			std::vector <AttributeHandle>&)
+	throw (AttributeNotDefined, AttributeNotOwned,
 			RTIinternalError);
 
 	void attributeOwnershipAcquisition(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
+			Object* object,
 			std::vector <AttributeHandle> &theAttributeList,
-			UShort theListSize,
 			const std::string& theTag)
-	throw (ObjectNotKnown, ObjectClassNotPublished, AttributeNotDefined,
+	throw (ObjectClassNotPublished, AttributeNotDefined,
 			AttributeNotPublished, FederateOwnsAttributes, RTIinternalError);
 
 	AttributeHandleSet *attributeOwnershipReleaseResponse(FederateHandle,
-			ObjectHandle,
-			std::vector <AttributeHandle> &,
-			UShort)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeNotOwned,
+			Object* object,
+			std::vector <AttributeHandle> &)
+	throw (AttributeNotDefined, AttributeNotOwned,
 			FederateWasNotAskedToReleaseAttribute, RTIinternalError);
 
 	void cancelAttributeOwnershipAcquisition(FederateHandle theFederateHandle,
-			ObjectHandle theObjectHandle,
-			std::vector <AttributeHandle> &theAttributeList,
-			UShort theListSize)
-	throw (ObjectNotKnown, AttributeNotDefined, AttributeAlreadyOwned,
+			Object* object,
+			std::vector <AttributeHandle> &theAttributeList)
+	throw (AttributeNotDefined, AttributeAlreadyOwned,
 			AttributeAcquisitionWasNotRequested, RTIinternalError);
-
-	Object *getObject(ObjectHandle) const throw (ObjectNotKnown);
 
 private:
 
@@ -194,4 +182,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_SET_HH
 
-// $Id: ObjectClassSet.hh,v 3.37 2009/11/19 18:15:31 erk Exp $
+// $Id: ObjectClassSet.hh,v 3.38 2009/11/23 07:34:28 erk Exp $

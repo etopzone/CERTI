@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.117 2009/11/21 14:46:17 erk Exp $
+// $Id: Federation.cc,v 3.118 2009/11/23 07:34:28 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -1910,7 +1910,7 @@ Federation::subscribeObject(FederateHandle federate,
 
 void
 Federation::updateAttributeValues(FederateHandle federate,
-                                  ObjectHandle id,
+                                  ObjectHandle objectHandle,
                                   std::vector <AttributeHandle> &attributes,
                                   std::vector <AttributeValue_t> &values,
                                   UShort list_size,
@@ -1928,13 +1928,15 @@ Federation::updateAttributeValues(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
+
     // It may throw *NotDefined
-    root->ObjectClasses->updateAttributeValues(federate, id, attributes, values,
-                                               list_size, time, tag);
+    root->ObjectClasses->updateAttributeValues(federate, object, attributes, values, time, tag);
 
     D.Out(pdRegister,
           "Federation %d: Federate %d updated attributes of Object %d.",
-          handle, federate, id);
+          handle, federate, objectHandle);
     G.Out(pdGendoc,"exit  Federation::updateAttributeValues with time");
 }
 
@@ -1943,7 +1945,7 @@ Federation::updateAttributeValues(FederateHandle federate,
 
 void
 Federation::updateAttributeValues(FederateHandle federate,
-                                  ObjectHandle id,
+                                  ObjectHandle objectHandle,
                                   std::vector <AttributeHandle> &attributes,
                                   std::vector <AttributeValue_t> &values,
                                   UShort list_size,
@@ -1960,13 +1962,15 @@ Federation::updateAttributeValues(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
+
     // It may throw *NotDefined
-    root->ObjectClasses->updateAttributeValues(federate, id, attributes, values,
-                                               list_size, tag);
+    root->ObjectClasses->updateAttributeValues(federate, object, attributes, values, tag);
 
     D.Out(pdRegister,
           "Federation %d: Federate %d updated attributes of Object %d.",
-          handle, federate, id);
+          handle, federate, objectHandle);
     G.Out(pdGendoc,"exit  Federation::updateAttributeValues without time");
 }
 // ----------------------------------------------------------------------------
@@ -2048,7 +2052,7 @@ Federation::queryAttributeOwnership(FederateHandle federate,
 
 void
 Federation::negotiateDivestiture(FederateHandle federate,
-                                 ObjectHandle id,
+                                 ObjectHandle objectHandle,
                                  std::vector <AttributeHandle> &attribs,
                                  UShort list_size,
                                  const std::string& tag)
@@ -2064,12 +2068,11 @@ Federation::negotiateDivestiture(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
+
     // It may throw *NotDefined
-    root->ObjectClasses->negotiatedAttributeOwnershipDivestiture(federate,
-                                                                 id,
-                                                                 attribs,
-                                                                 list_size,
-                                                                 tag);
+    root->ObjectClasses->negotiatedAttributeOwnershipDivestiture(federate, object, attribs, tag);
 }
 
 // ----------------------------------------------------------------------------
@@ -2077,7 +2080,7 @@ Federation::negotiateDivestiture(FederateHandle federate,
 
 void
 Federation::acquireIfAvailable(FederateHandle federate,
-                               ObjectHandle id,
+                               ObjectHandle objectHandle,
                                std::vector <AttributeHandle> &attribs,
                                UShort list_size)
     throw (ObjectNotKnown,
@@ -2094,11 +2097,11 @@ Federation::acquireIfAvailable(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
+
     // It may throw *NotDefined
-    root->ObjectClasses->attributeOwnershipAcquisitionIfAvailable(federate,
-                                                                  id,
-                                                                  attribs,
-                                                                  list_size);
+    root->ObjectClasses->attributeOwnershipAcquisitionIfAvailable(federate, object, attribs);
 }
 
 // ----------------------------------------------------------------------------
@@ -2106,7 +2109,7 @@ Federation::acquireIfAvailable(FederateHandle federate,
 
 void
 Federation::divest(FederateHandle federate,
-                   ObjectHandle id,
+                   ObjectHandle objectHandle,
                    std::vector <AttributeHandle> &attrs,
                    UShort list_size)
     throw (ObjectNotKnown,
@@ -2120,11 +2123,11 @@ Federation::divest(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
+
     // It may throw *NotDefined
-    root->ObjectClasses->unconditionalAttributeOwnershipDivestiture(federate,
-                                                                    id,
-                                                                    attrs,
-                                                                    list_size);
+    root->ObjectClasses->unconditionalAttributeOwnershipDivestiture(federate, object, attrs);
 }
 
 // ----------------------------------------------------------------------------
@@ -2132,7 +2135,7 @@ Federation::divest(FederateHandle federate,
 
 void
 Federation::acquire(FederateHandle federate,
-                    ObjectHandle id,
+                    ObjectHandle objectHandle,
                     std::vector <AttributeHandle> &attributes,
                     UShort list_size,
                     const std::string& tag)
@@ -2149,14 +2152,13 @@ Federation::acquire(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    // It may throw *NotDefined
-    root->ObjectClasses->attributeOwnershipAcquisition(federate,
-                                                       id,
-                                                       attributes,
-                                                       list_size,
-                                                       tag);
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
 
-    D.Out(pdDebug, "Acquisition on Object %u ", id);
+    // It may throw *NotDefined
+    root->ObjectClasses->attributeOwnershipAcquisition(federate, object, attributes, tag);
+
+    D.Out(pdDebug, "Acquisition on Object %u ", objectHandle);
 }
 
 // ----------------------------------------------------------------------------
@@ -2193,7 +2195,7 @@ Federation::cancelDivestiture(FederateHandle federate,
 
 AttributeHandleSet*
 Federation::respondRelease(FederateHandle federate,
-                           ObjectHandle id,
+                           ObjectHandle objectHandle,
                            std::vector <AttributeHandle> &attributes,
                            UShort list_size)
     throw (ObjectNotKnown,
@@ -2208,13 +2210,13 @@ Federation::respondRelease(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "RespondRelease on Object %u.", id);
+    D.Out(pdDebug, "RespondRelease on Object %u.", objectHandle);
+
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
 
     // It may throw *NotDefined
-    return(root->ObjectClasses->attributeOwnershipReleaseResponse(federate,
-                                                                  id,
-                                                                  attributes,
-                                                                  list_size));
+    return root->ObjectClasses->attributeOwnershipReleaseResponse(federate, object, attributes);
 }
 
 // ----------------------------------------------------------------------------
@@ -2222,7 +2224,7 @@ Federation::respondRelease(FederateHandle federate,
 
 void
 Federation::cancelAcquisition(FederateHandle federate,
-                              ObjectHandle id,
+                              ObjectHandle objectHandle,
                               std::vector <AttributeHandle> &attributes,
                               UShort list_size)
     throw (ObjectNotKnown,
@@ -2237,13 +2239,13 @@ Federation::cancelAcquisition(FederateHandle federate,
     // It may throw FederateNotExecutionMember.
     this->check(federate);
 
-    D.Out(pdDebug, "CancelAcquisition sur Objet %u ", id);
+    D.Out(pdDebug, "CancelAcquisition sur Objet %u ", objectHandle);
+
+    // Get the object pointer by id from the root object
+    Object *object = root->objects->getObject(objectHandle);
 
     // It may throw *NotDefined
-    root->ObjectClasses->cancelAttributeOwnershipAcquisition(federate,
-                                                             id,
-                                                             attributes,
-                                                             list_size);
+    root->ObjectClasses->cancelAttributeOwnershipAcquisition(federate, object, attributes);
 }
 
 // ----------------------------------------------------------------------------
@@ -2608,5 +2610,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.117 2009/11/21 14:46:17 erk Exp $
+// $Id: Federation.cc,v 3.118 2009/11/23 07:34:28 erk Exp $
 
