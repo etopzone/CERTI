@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: HandleManager.hh,v 3.6 2008/11/01 21:39:53 erk Exp $
+// $Id: HandleManager.hh,v 3.7 2009/11/23 12:16:49 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_HANDLE_MANAGER
@@ -57,11 +57,17 @@ public:
 	 */
 	HandleManager(T init, size_t hmax);
 	/**
-	 * Get a new handle.
+	 * Provide a new unique federation execution-wide handle.
+	 * IEEE-1516.1-2000 - 10.1.1 Names says:
+	 *   "Each name in an FDD (object classes, interactions, attributes,
+	 *    parameters, dimensions, transportation types, order types)
+	 *    shall have a unique, and unpredictable, federation execution-wide handle."
+	 *
 	 * @return the new handle
 	 * @throw RTIinternalError if all handles between first and maximal are used
 	 */
 	T provide() throw (RTIinternalError);
+
 	/**
 	 * Free a handle.
 	 * @pre handle is a previously-provided handle
