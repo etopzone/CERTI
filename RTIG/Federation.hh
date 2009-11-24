@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.60 2009/11/19 18:15:29 erk Exp $
+// $Id: Federation.hh,v 3.61 2009/11/24 18:54:52 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -666,9 +666,9 @@ private:
         throw (FederateNotExecutionMember);
 
     // Private attributes
-    typedef std::vector<Federate> FederateList ;
+    typedef std::map<FederateHandle, Federate> HandleFederateMap;
 
-    FederateList federates ;
+    HandleFederateMap _handleFederateMap;
     bool saveInProgress ;
     bool restoreInProgress ;
     bool saveStatus ; //!< True if saving was correctly done, false otherwise.
@@ -687,4 +687,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.60 2009/11/19 18:15:29 erk Exp $
+// $Id: Federation.hh,v 3.61 2009/11/24 18:54:52 erk Exp $
