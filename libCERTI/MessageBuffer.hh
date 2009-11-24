@@ -256,6 +256,9 @@ datatype read_##type() {\
 
 	std::string
 	read_string();
+
+        void
+	read_string(std::string&);
 	
 	int32_t
 	write_bool(const bool toggle) {

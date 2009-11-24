@@ -423,7 +423,7 @@ void NM_FOM_Dimension::serialize(MessageBuffer& msgBuffer) {
 }
 void NM_FOM_Dimension::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
 }
 /*<END>---------- FOM_Dimension ------------<END>*/
 
@@ -438,7 +438,7 @@ void NM_FOM_Routing_Space::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_FOM_Routing_Space::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
 	uint32_t size = msgBuffer.read_uint32();
         _dimensions.resize(size);
         for (uint32_t i = 0; i < size; ++i)
@@ -456,7 +456,7 @@ void NM_FOM_Attribute::serialize(MessageBuffer& msgBuffer) {
 }
 void NM_FOM_Attribute::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
         _spaceHandle = msgBuffer.read_uint32();
 	_order = msgBuffer.read_uint8();
 	_transport = msgBuffer.read_uint8();
@@ -475,7 +475,7 @@ void NM_FOM_Object_Class::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_FOM_Object_Class::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
         _superclassHandle = msgBuffer.read_uint32();
 	uint32_t size = msgBuffer.read_uint32();
         _attributes.resize(size);
@@ -491,7 +491,7 @@ void NM_FOM_Parameter::serialize(MessageBuffer& msgBuffer) {
 }
 void NM_FOM_Parameter::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
 }
 /*<END>---------- FOM_FOM_Parameter ------------<END>*/
 
@@ -510,7 +510,7 @@ void NM_FOM_Interaction_Class::serialize(MessageBuffer& msgBuffer) {
 } /* end of serialize */ 
 void NM_FOM_Interaction_Class::deserialize(MessageBuffer& msgBuffer) {
 	_handle = msgBuffer.read_uint32();
-	_name = msgBuffer.read_string();
+	msgBuffer.read_string(_name);
         _superclassHandle = msgBuffer.read_uint32();
         _spaceHandle = msgBuffer.read_uint32();
 	_order = msgBuffer.read_uint8();
@@ -541,8 +541,8 @@ void NM_Create_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	federationName = msgBuffer.read_string();
-	FEDid          = msgBuffer.read_string();
+	msgBuffer.read_string(federationName);
+	msgBuffer.read_string(FEDid);
 } /* end of deserialize */
 /*<END>---------- Create_Federation_Execution ------------<END>*/
 
@@ -564,7 +564,7 @@ void NM_Destroy_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	/* call mother class */      
 	Super::deserialize(msgBuffer); 
 	/* specific code (if any) goes here */
-	federationName = msgBuffer.read_string();    
+	msgBuffer.read_string(federationName);
 } /* end of deserialize */
 /*<END>---------- Destroy_Federation_Execution ------------<END>*/
 
@@ -607,8 +607,8 @@ void NM_Join_Federation_Execution::deserialize(MessageBuffer& msgBuffer) {
 	multicastAddress   = msgBuffer.read_uint32();
 	bestEffortAddress  = msgBuffer.read_uint32();
 	bestEffortPeer     = msgBuffer.read_uint32();
-	federationName     = msgBuffer.read_string();
-	federateName       = msgBuffer.read_string();
+	msgBuffer.read_string(federationName);
+	msgBuffer.read_string(federateName);
 	uint32_t size = msgBuffer.read_uint32();
         _routingSpaces.resize(size);
         for (uint32_t i = 0; i < size; ++i)
@@ -1268,7 +1268,7 @@ void NM_Update_Attribute_Values::deserialize(MessageBuffer& msgBuffer) {
 	objectClass     = msgBuffer.read_int32();
     valueArray.resize(handleArraySize) ;	
     for (i = 0; i < handleArraySize; i++)
-        valueArray[i] = msgBuffer.read_string();
+        msgBuffer.read_string(valueArray[i]);
 } /* end of deserialize */
 /*<END>---------- Update_Attribute_Values ------------<END>*/
 
@@ -1310,7 +1310,7 @@ void NM_Send_Interaction::deserialize(MessageBuffer& msgBuffer) {
 	interactionClass = msgBuffer.read_int32();
     valueArray.resize(handleArraySize);
     for (i = 0; i < handleArraySize; i++)
-        valueArray[i] = msgBuffer.read_string();
+        msgBuffer.read_string(valueArray[i]);
 } /* end of deserialize */
 /*<END>---------- Send_Interaction ------------<END>*/
 

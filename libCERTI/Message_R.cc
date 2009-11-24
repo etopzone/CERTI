@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.36 2009/11/19 18:15:32 erk Exp $
+// $Id: Message_R.cc,v 3.37 2009/11/24 19:11:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -85,7 +85,7 @@ Message::readBody(MessageBuffer &msgBuffer)
 	
     // 3. Read informations from Message Body according to message type.
     if (exception != e_NO_EXCEPTION) {
-        exceptionReason = msgBuffer.read_string();
+        msgBuffer.read_string(exceptionReason);
     }
     else {
  
@@ -582,28 +582,28 @@ Message::readHandleArray(MessageBuffer &msgBuffer)
 void
 Message::readLabel(MessageBuffer &msgBuffer)
 {
-    label = msgBuffer.read_string() ;
+    msgBuffer.read_string(label);
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::readName(MessageBuffer &msgBuffer)
 {
-    name = msgBuffer.read_string();
+    msgBuffer.read_string(name);
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::readFederationName(MessageBuffer &msgBuffer)
 {
-    federationName = msgBuffer.read_string() ;  
+    msgBuffer.read_string(federationName);
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::readFederateName(MessageBuffer &msgBuffer)
 {
-    federateName = msgBuffer.read_string() ;
+    msgBuffer.read_string(federateName);
 }
 
 // ----------------------------------------------------------------------------
@@ -617,14 +617,14 @@ Message::readResignAction(MessageBuffer &msgBuffer)
 void
 Message::readTag(MessageBuffer &msgBuffer)
 {
-    tag = msgBuffer.read_string();
+    msgBuffer.read_string(tag);
 }
 
 // ----------------------------------------------------------------------------
 void
 Message::readFEDid(MessageBuffer &msgBuffer)
 {
-    FEDid = msgBuffer.read_string();
+    msgBuffer.read_string(FEDid);
 }
 
 // ----------------------------------------------------------------------------
@@ -636,7 +636,7 @@ Message::readValueArray(MessageBuffer &msgBuffer)
 
     valueArray.resize(handleArraySize) ;
     for (int i = 0 ; i < handleArraySize ; i ++)
-        valueArray[i] = msgBuffer.read_string();
+        msgBuffer.read_string(valueArray[i]);
 }
 
 // ----------------------------------------------------------------------------
@@ -649,4 +649,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.36 2009/11/19 18:15:32 erk Exp $
+// $Id: Message_R.cc,v 3.37 2009/11/24 19:11:37 erk Exp $

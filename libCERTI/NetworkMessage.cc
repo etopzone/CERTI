@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage.cc,v 3.42 2009/11/21 21:00:56 erk Exp $
+// $Id: NetworkMessage.cc,v 3.43 2009/11/24 19:11:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -42,7 +42,7 @@ NetworkMessage::NetworkMessage()
       _isLabelled(false), 
       _isTagged(false)
 {
-    name               = std::string("NetworkMessage (generic)");
+    name               = "NetworkMessage (generic)";
 
     federation         = 0 ;
     federate           = 0 ;
@@ -130,4 +130,4 @@ NetworkMessage::displayValueArray(char *titre)
 
 } // namespace certi
 
-// $Id: NetworkMessage.cc,v 3.42 2009/11/21 21:00:56 erk Exp $
+// $Id: NetworkMessage.cc,v 3.43 2009/11/24 19:11:37 erk Exp $

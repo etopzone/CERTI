@@ -434,15 +434,26 @@ MessageBuffer::write_string(const std::string& str) {
 std::string
 MessageBuffer::read_string() {
     std::string retval;
-    int32_t len;
-    char* buf;
-
-    read_int32(&len);
-    buf = new char[len];
-    read_chars(buf,len);
-    retval.assign(buf,len);
-    delete[] buf;
+    read_string(retval);
     return retval;
+} /* end of read_string */
+
+void
+MessageBuffer::read_string(std::string& s)
+{
+    int32_t len = read_int32();
+
+    if (len + readOffset > writeOffset) {
+        std::stringstream smsg;
+        smsg << "read_string::invalid read of size <" << len
+             << "> inside a buffer of readable size <"
+             << (int32_t)writeOffset-readOffset << "> (writeOffset="
+             <<writeOffset << ",readOffset="<<readOffset <<").";
+        throw RTIinternalError(smsg.str());
+    }
+
+    s.assign(reinterpret_cast<const char*>(buffer + readOffset), len);
+    readOffset += len;
 } /* end of read_string */
 
 void MessageBuffer::updateReservedBytes() {

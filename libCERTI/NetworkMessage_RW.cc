@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: NetworkMessage_RW.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.55 2009/11/24 19:11:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "NetworkMessage.hh"
@@ -39,7 +39,7 @@ void NetworkMessage::serialize(MessageBuffer& msgBuffer) {
 	if ((type==NOT_USED) || (type==LAST)) {
 		throw RTIinternalError("Invalid network type (not a valid type);");
 	}
-	D.Out(pdDebug, "Serialize <%s>", getName().c_str());
+	D.Out(pdDebug, "Serialize <%s>", getName());
 	/* type of message */
 	msgBuffer.write_int32(type);
 	msgBuffer.write_int32(exception);
@@ -91,11 +91,11 @@ void NetworkMessage::deserialize(MessageBuffer& msgBuffer) {
 	}
 	_isLabelled = msgBuffer.read_bool();
 	if (_isLabelled) {
-		label = msgBuffer.read_string();
+		msgBuffer.read_string(label);
 	}
 	_isTagged = msgBuffer.read_bool();
 	if (_isTagged) {
-		tag = msgBuffer.read_string();
+		msgBuffer.read_string(tag);
 	}
 	G.Out(pdGendoc,"exit NetworkMessage::deserialize");
 } /* end of deserialize */
@@ -112,7 +112,7 @@ NetworkMessage::send(Socket *socket, MessageBuffer& msgBuffer) throw (NetworkErr
 	serialize(msgBuffer);
 	/* 2- update message buffer 'reserved bytes' header */
 	msgBuffer.updateReservedBytes();
-	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName().c_str(),msgBuffer.size());
+	D.Out(pdDebug,"Sending <%s> whose buffer has <%u> bytes",getName(),msgBuffer.size());
 	//msgBuffer.show(msgBuf(0),5);
 	/* 3- effectively send the raw message to socket */
 
@@ -151,4 +151,4 @@ NetworkMessage::receive(Socket* socket, MessageBuffer& msgBuffer) throw (Network
 
 } // namespace certi
 
-// $Id: NetworkMessage_RW.cc,v 3.54 2009/10/21 20:04:46 erk Exp $
+// $Id: NetworkMessage_RW.cc,v 3.55 2009/11/24 19:11:37 erk Exp $

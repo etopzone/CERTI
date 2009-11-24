@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.52 2009/11/21 21:00:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.53 2009/11/24 19:11:37 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -244,7 +244,7 @@ public:
 	OrderType order ;
 
 	/** The name corresponding to message type */
-	const std::string& getName() const {return name;}
+	const char* getName() const {return name;}
 
 
 	/**
@@ -270,7 +270,7 @@ protected:
 	 * should be initialized by the specialized
 	 * network message constructor
 	 */
-	std::string name;	
+	const char* name;	
 
 	/** 
 	 * The network message type
@@ -335,4 +335,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.52 2009/11/21 21:00:56 erk Exp $
+// $Id: NetworkMessage.hh,v 3.53 2009/11/24 19:11:37 erk Exp $
