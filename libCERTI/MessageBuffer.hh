@@ -157,19 +157,27 @@ read_##type##s(type##_t* data, uint32_t n) {		\
 	return read_u##type##s(reinterpret_cast<u##type##_t*>(data),n);	\
 }   							\
 
+
 #define DECLARE_SINGLE_READ_WRITE(type,suffix)     \
+DECLARE_SINGLE_READ_WRITE_(type,type##suffix)
+
+#define DECLARE_SINGLE_READ_WRITE2(type)     \
+DECLARE_SINGLE_READ_WRITE_(type,type)
+
+
+#define DECLARE_SINGLE_READ_WRITE_(type,datatype)     \
 	int32_t						\
-	write_##type(const type##suffix data) {		\
+	write_##type(const datatype data) {		\
 	return write_##type##s(&data,1);	\
 }							\
 \
 int32_t						\
-read_##type(type##suffix* data) {		\
+read_##type(datatype* data) {		\
 	return read_##type##s(data,1);	\
 }                                    \
 \
-type##suffix read_##type() {\
-	type##suffix retval;     \
+datatype read_##type() {\
+	datatype retval;     \
 	read_##type##s(&retval,1);\
 	return retval; \
 } 
@@ -194,7 +202,7 @@ type##suffix read_##type() {\
 	read_chars(char* data, uint32_t n) {
 		return read_uint8s(reinterpret_cast<uint8_t*>(data),n);
 	}
-	DECLARE_SINGLE_READ_WRITE(char,)
+	DECLARE_SINGLE_READ_WRITE2(char)
 
 #define write_bytes  write_chars
 #define read_bytes   read_chars
@@ -234,14 +242,14 @@ type##suffix read_##type() {\
 	int32_t
 	read_floats(float* data, uint32_t n);
 
-	DECLARE_SINGLE_READ_WRITE(float,)
+	DECLARE_SINGLE_READ_WRITE2(float)
 
 	int32_t
 	write_doubles(const double* data, uint32_t n);
 	int32_t
 	read_doubles(double* data, uint32_t n);
 
-	DECLARE_SINGLE_READ_WRITE(double,)
+	DECLARE_SINGLE_READ_WRITE2(double)
 
 	int32_t
 	write_string(const std::string& str);
