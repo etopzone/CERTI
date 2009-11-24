@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.74 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClass.cc,v 3.75 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -60,8 +60,12 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
 {
     if (theAttribute == NULL)
         throw RTIinternalError("Tried to add NULL attribute.");
+    
+    AttributeHandle attributeHandle = theAttribute->getHandle();
+    if (_handleClassAttributeMap.find(attributeHandle) != _handleClassAttributeMap.end()) {
+        throw RTIinternalError("ObjectClass::addAttribute: Tried to add attribute with duplicate handle.");
+    }
 
-    theAttribute->setHandle(_handleClassAttributeMap.size() + 1);
     theAttribute->server = server ;
 
     // If the attribute is inherited, it keeps its security level.
@@ -69,12 +73,12 @@ ObjectClass::addAttribute(ObjectClassAttribute *theAttribute,
     if (!is_inherited)
         theAttribute->level = securityLevelId ;
 
-    _handleClassAttributeMap[theAttribute->getHandle()] = theAttribute;
+    _handleClassAttributeMap[attributeHandle] = theAttribute;
 
     D.Out(pdProtocol, "ObjectClass %u has a new attribute %u.",
-          handle, theAttribute->getHandle());
+          handle, attributeHandle);
 
-    return theAttribute->getHandle();
+    return attributeHandle;
 }
 
 // ----------------------------------------------------------------------------
@@ -92,10 +96,7 @@ ObjectClass::addInheritedClassAttributes(ObjectClass *the_child)
               "ObjectClass %u adding new attribute %d to child class %u.",
               handle, a->second->getHandle(), the_child->getHandle());
 
-        the_child->addAttribute(childAttribute);
-
-        if (childAttribute->getHandle() != a->second->getHandle())
-            throw RTIinternalError("Error while copying child's attributes.");
+        the_child->addAttribute(childAttribute, true);
     }
 } /* end of addInheritedClassAttributes */
 
@@ -1725,4 +1726,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.74 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClass.cc,v 3.75 2009/11/24 16:39:20 erk Exp $

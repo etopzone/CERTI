@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.28 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_OBJECT_CLASS_ATTRIBUTE_HH
@@ -54,13 +54,12 @@ public:
      */
     typedef std::set<FederateHandle> PublishersList_t;
 
-    ObjectClassAttribute(const std::string& theName, TransportType theTransport, OrderType theOrder);
-    ObjectClassAttribute(ObjectClassAttribute *source);
+    ObjectClassAttribute(const std::string& name, AttributeHandle attributeHandle);
+    ObjectClassAttribute(const ObjectClassAttribute& objectClassAttribute);
     virtual ~ObjectClassAttribute();
 
     void display() const ;
 
-    void setHandle(AttributeHandle h);
     AttributeHandle getHandle() const ;
 
     void setSpace(SpaceHandle);
@@ -82,7 +81,7 @@ public:
      * Getter for the attributes publisher list.
      * param[out] PublishersList_t @see ObjectClassAttribute::PublisherList_t
      */
-    PublishersList_t getPublishers(void);
+    const PublishersList_t& getPublishers(void) const { return publishers; }
 
     // Attributes
     SecurityLevelID level ;
@@ -96,9 +95,10 @@ private:
 	 * one should not call it.
 	 */
 	ObjectClassAttribute();
+
     void deletePublisher(FederateHandle);
 
-    AttributeHandle handle ; //!< The attribute handle.
+    const AttributeHandle handle ; //!< The attribute handle.
     SpaceHandle space ; //!< Routing space
 
     PublishersList_t publishers ; //!< The publisher's list.
@@ -108,4 +108,4 @@ private:
 
 #endif // CERTI_OBJECT_CLASS_ATTRIBUTE_HH
 
-// $Id: ObjectClassAttribute.hh,v 3.27 2009/11/19 18:15:30 erk Exp $
+// $Id: ObjectClassAttribute.hh,v 3.28 2009/11/24 16:39:20 erk Exp $

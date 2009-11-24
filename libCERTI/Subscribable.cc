@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.cc,v 3.9 2009/10/21 20:04:46 erk Exp $
+// $Id: Subscribable.cc,v 3.10 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -91,6 +91,13 @@ Subscriber::match(const RTIRegion *r) const
     Debug(D, pdTrace) << "Match test: " << (region ? region->getHandle() : 0) << " vs "
 	       << (r ? r->getHandle() : 0) << std::endl ;
     return (region == 0) || (r == 0) || region->overlaps(*r);
+}
+
+// ----------------------------------------------------------------------------
+// Constructor
+Subscribable::Subscribable(const std::string& name)
+    : Named(name)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -201,4 +208,4 @@ Subscribable::addFederatesIfOverlap(InteractionBroadcastList &lst, const RTIRegi
 
 } // namespace certi
 
-// $Id: Subscribable.cc,v 3.9 2009/10/21 20:04:46 erk Exp $
+// $Id: Subscribable.cc,v 3.10 2009/11/24 16:39:20 erk Exp $

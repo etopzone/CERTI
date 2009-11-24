@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.47 2009/11/23 07:34:28 erk Exp $
+// $Id: RootObject.cc,v 3.48 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -521,12 +521,15 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
                 for (uint32_t j = 0; j < attributeCount; ++j) {
                         const NM_FOM_Attribute& ma = moc.getAttribute(j);
 
-                        OrderType order = ma.getOrder();
-                        TransportType transport = ma.getTransport();
-                        ObjectClassAttribute *attribute = new ObjectClassAttribute(ma.getName(), transport, order);
-                        current->addAttribute(attribute);
+                        // OrderType order = ma.getOrder();
+                        // TransportType transport = ma.getTransport();
+                        ObjectClassAttribute *attribute = new ObjectClassAttribute(ma.getName(), ma.getHandle());
+                        // attribute->setTransport(ma.getTransport());
+                        attribute->transport = ma.getTransport();
+                        // attribute->setOrder(ma.getOrder());
+                        attribute->order = ma.getOrder();
                         attribute->setSpace(ma.getSpaceHandle());
-                        assert(attribute->getHandle() == ma.getHandle());
+                        current->addAttribute(attribute);
                 }
         }
 
@@ -549,9 +552,7 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
                 for (uint32_t j = 0; j < parameterCount; ++j) {
                         const NM_FOM_Parameter& mp = mic.getParameter(j);
 
-                        Parameter *parameter = new Parameter;
-                        parameter->setName(mp.getName());
-                        parameter->setHandle(mp.getHandle());
+                        Parameter *parameter = new Parameter(mp.getName(), mp.getHandle());
                         current->addParameter(parameter);
                 }
         }
@@ -559,4 +560,4 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.47 2009/11/23 07:34:28 erk Exp $
+// $Id: RootObject.cc,v 3.48 2009/11/24 16:39:20 erk Exp $

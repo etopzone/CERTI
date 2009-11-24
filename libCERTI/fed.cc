@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: fed.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
+// $Id: fed.cc,v 3.22 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 // CERTI header
@@ -277,7 +277,10 @@ addObjectSecLevel(string name)
 void
 addAttribute()
 {
-	attribute = new ObjectClassAttribute(arg,transport,order);
+        AttributeHandle attributeHandle = objects.back()->getHandleClassAttributeMap().size() + 1;
+	attribute = new ObjectClassAttribute(arg, attributeHandle);
+        attribute->transport = transport;
+        attribute->order = order;
 	objects.back()->addAttribute(attribute);
 
 	indent();
@@ -358,9 +361,7 @@ addObjectSecurityLevel()
 void
 addParameter()
 {
-	parameter = new Parameter();
-	parameter->setHandle(parameterHandle++);
-	parameter->setName(arg);
+        parameter = new Parameter(arg, parameterHandle++);
 	interactions.back()->addParameter(parameter);
 
 	indent();
@@ -452,4 +453,4 @@ addDimension()
 
 }} // namespaces
 
-// $Id: fed.cc,v 3.21 2009/10/21 18:56:28 erk Exp $
+// $Id: fed.cc,v 3.22 2009/11/24 16:39:20 erk Exp $

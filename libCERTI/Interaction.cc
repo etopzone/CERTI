@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Interaction.cc,v 3.57 2009/11/21 15:13:08 erk Exp $
+// $Id: Interaction.cc,v 3.58 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -44,10 +44,9 @@ static PrettyDebug D("INTERACTION", "(Interact) - ");
 static PrettyDebug G("GENDOC",__FILE__) ;
 
 Interaction::Interaction(const std::string& theName, InteractionClassHandle theHandle, TransportType theTransport, OrderType theOrder)
-: parent(0), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
+  : Subscribable(theName), parent(0), depth(0), transport(theTransport), order(theOrder), handle(theHandle),
   superClass(0), id(PublicLevelID), space(0)
 {
-	setName(theName);
 	/*
 	 * The set of interaction subclass has no security server
 	 */
@@ -89,24 +88,27 @@ void Interaction::addSubClass(Interaction *child) {
 ParameterHandle
 Interaction::addParameter(Parameter *the_parameter, bool is_inherited)
 {
-	// FIXME: the parameter handle has already been set
-	// in fed.cc::addParameter() why should it be set again
-	// here
-	//the_parameter->setHandle(parameterSet.size() + 1);
+        if (the_parameter == NULL)
+                throw RTIinternalError("Tried to add NULL parameter.");
+    
+        ParameterHandle parameterHandle = the_parameter->getHandle();
+        if (_handleParameterMap.find(parameterHandle) != _handleParameterMap.end()) {
+                throw RTIinternalError("Interaction::addParameter: Tried to add parameter with duplicate handle.");
+        }
 
 	// An inherited parameter keeps its security level, any other get the
 	// default security level of the class.
 	if (!is_inherited)
 		the_parameter->LevelID = id ;
 
-        _handleParameterMap[the_parameter->getHandle()] = the_parameter;
+        _handleParameterMap[parameterHandle] = the_parameter;
 
 	Debug(D, pdRegister) << "Interaction " << handle << "[" << name
 	<< "] has a new parameter "
-	<< the_parameter->getHandle() << "[" << the_parameter->getName() << "]"
+	<< parameterHandle << "[" << the_parameter->getName() << "]"
 	<< std::flush;
 
-	return the_parameter->getHandle();
+	return parameterHandle;
 } /* end of addParameter */
 
 void
@@ -115,7 +117,7 @@ Interaction::addInheritedClassParameter(Interaction *the_child)
         for (HandleParameterMap::iterator i = _handleParameterMap.begin(); i != _handleParameterMap.end(); ++i) {
 		assert(i->second != NULL);
 
-                Parameter *child = new Parameter(*(i->second));
+                Parameter *child = new Parameter(*i->second);
 		assert(child != NULL);
 
 		D.Out(pdProtocol,
@@ -123,13 +125,6 @@ Interaction::addInheritedClassParameter(Interaction *the_child)
 				handle, i->second->getHandle(), the_child->handle);
 
 		the_child->addParameter(child, true);
-
-		/* FIXME EN: what is the purpose of the check ?? */
-		if (child->getHandle() != i->second->getHandle()) {
-			throw RTIinternalError("Error while copying child's attributes.");
-		} else {
-			;
-		}
 	}
 } /* end of addInheritedClassParameter */
 
@@ -548,4 +543,4 @@ Interaction::getSpace()
 
 } // namespace certi
 
-// $Id: Interaction.cc,v 3.57 2009/11/21 15:13:08 erk Exp $
+// $Id: Interaction.cc,v 3.58 2009/11/24 16:39:20 erk Exp $

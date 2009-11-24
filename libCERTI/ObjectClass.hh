@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.hh,v 3.50 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClass.hh,v 3.51 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_OBJECT_CLASS_HH
@@ -118,7 +118,7 @@ public:
 	 * Get the super class handle.
 	 * @return the super class handle
 	 */
-	ObjectClassHandle getSuperclass() const { return superClass ; };
+	ObjectClassHandle getSuperclass() const { return superClass ; }
 
 	/**
 	 * Add a subclass to this object class.
@@ -135,13 +135,13 @@ public:
 	/**
 	 * Get the whole set of subclasses.
 	 */
-	ObjectClassSet* getSubClasses() {return subClasses;};
+	ObjectClassSet* getSubClasses() {return subClasses;}
 
 	// Security Methods
 	void checkFederateAccess(FederateHandle, const std::string&)
 	throw (SecurityError);
 
-	SecurityLevelID getSecurityLevelId() const { return securityLevelId ; };
+	SecurityLevelID getSecurityLevelId() const { return securityLevelId ; }
 
 	void setSecurityLevelId(SecurityLevelID newLevelID) throw (SecurityError);
 
@@ -307,7 +307,7 @@ private:
 	bool sendDiscoverMessages(FederateHandle, ObjectClassHandle);
 
 	// Attributes
-	ObjectClassHandle handle ;
+	const ObjectClassHandle handle ;
 	FederateHandle maxSubscriberHandle ; //! greatest subscriber handle
 	/**
 	 * The security level ID attached to this object class.
@@ -342,4 +342,4 @@ private:
 
 #endif // _CERTI_OBJECT_CLASS_HH
 
-// $Id: ObjectClass.hh,v 3.50 2009/11/23 07:34:28 erk Exp $
+// $Id: ObjectClass.hh,v 3.51 2009/11/24 16:39:20 erk Exp $

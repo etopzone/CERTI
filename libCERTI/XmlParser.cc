@@ -167,18 +167,19 @@ XmlParser::parseClass(ObjectClass* parent)
     while (cur != NULL) {
         // Attributes
         if ((!xmlStrcmp(cur->name, NODE_ATTRIBUTE))) {
-        	std::string name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
-        	TransportType transport;
-        	OrderType order;
+            std::string name = std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+            AttributeHandle attributeHandle = current->getHandleClassAttributeMap().size() + 1;
+
+            ObjectClassAttribute *attr = new ObjectClassAttribute(name, attributeHandle);
 
             // Transportation
             xmlChar* xtransport = xmlGetProp(cur, ATTRIBUTE_TRANSPORTATION);
             if (!xmlStrcmp(xtransport,VALUE_RELIABLE)) {
-                transport = RELIABLE ;
+                attr->transport = RELIABLE ;
             }
             else {
             	if (!xmlStrcmp(xtransport,VALUE_BESTEFFORT)) {
-            		transport = BEST_EFFORT ;
+            		attr->transport = BEST_EFFORT ;
             	}
             }
             xmlFree(xtransport);
@@ -186,15 +187,15 @@ XmlParser::parseClass(ObjectClass* parent)
             // Order
             xmlChar* xorder = xmlGetProp(cur, ATTRIBUTE_ORDER);
             if (!xmlStrcmp(xorder, VALUE_TSO)) {
-                order = TIMESTAMP ;
+                attr->order = TIMESTAMP ;
             }
             else {
             	if (!xmlStrcmp(xorder, VALUE_RO)) {
-            		order = RECEIVE ;
+            		attr->order = RECEIVE ;
             	}
             }
             xmlFree(xorder);
-            ObjectClassAttribute *attr = new ObjectClassAttribute(name,transport,order);
+
             // Routing space
             char *space = (char *) xmlGetProp(cur, ATTRIBUTE_SPACE);
             if (space) {
@@ -282,9 +283,8 @@ XmlParser::parseInteraction(Interaction* parent)
     cur = cur->xmlChildrenNode ;
     while (cur != NULL) {
         if ((!xmlStrcmp(cur->name, NODE_PARAMETER))) {
-            Parameter *param = new Parameter();
-            param->setName(std::string(CleanXmlGetProp(cur,ATTRIBUTE_NAME)));
-            param->setHandle(freeParameterHandle++);
+            std::string name(CleanXmlGetProp(cur,ATTRIBUTE_NAME));
+            Parameter *param = new Parameter(name, freeParameterHandle++);
             current->addParameter(param);
         }
         // Subinteraction

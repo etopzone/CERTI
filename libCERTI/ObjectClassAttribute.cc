@@ -19,20 +19,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClassAttribute.cc,v 3.35 2009/11/19 18:15:32 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.36 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "ObjectClassAttribute.hh"
 #include "ObjectClassBroadcastList.hh"
 #include "SecurityServer.hh"
 #include "PrettyDebug.hh"
-#include "helper.hh"
 
 #include <iostream>
-#include <list>
-#include <assert.h>
 
-using std::list ;
 using std::cout ;
 using std::endl ;
 
@@ -40,35 +36,24 @@ namespace certi {
 
 static PrettyDebug D("OBJECTCLASSATTRIBUTE", "(Obj.Cl.Attr) ");
 
-ObjectClassAttribute::ObjectClassAttribute(const std::string& theName, TransportType theTransport, OrderType theOrder)
-  : level(PublicLevelID), order(theOrder), transport(theTransport), server(0), handle(0), space(0) {
-	setName(theName);
-
-}
 // ----------------------------------------------------------------------------
-//! No parameters constructor.
-/*! This constructor initialize the attribute with default parameters.
- */
-ObjectClassAttribute::ObjectClassAttribute()
-    : level(PublicLevelID), order(RECEIVE),
-      transport(BEST_EFFORT), server(0), handle(0), space(0)
+//! Constructor : Set const attribute handle and name
+ObjectClassAttribute::ObjectClassAttribute(const std::string& name, AttributeHandle attributeHandle)
+  : Subscribable(name), level(PublicLevelID), order(0), transport(0), server(0), handle(attributeHandle), space(0)
 {
 }
 
 // ----------------------------------------------------------------------------
 //! Constructor : Copy Handle, Name, Space, Order and Transport
-ObjectClassAttribute::ObjectClassAttribute(ObjectClassAttribute *source)
+ObjectClassAttribute::ObjectClassAttribute(const ObjectClassAttribute& objectClassAttribute)
+  : Subscribable(objectClassAttribute.getName()),
+    level(objectClassAttribute.level),
+    order(objectClassAttribute.order),
+    transport(objectClassAttribute.transport),
+    server(objectClassAttribute.server),
+    handle(objectClassAttribute.handle),
+    space(objectClassAttribute.space)
 {
-    if (source == 0)
-        throw RTIinternalError("NULL Attribute when copying it.");
-
-    handle = source->getHandle();
-    level = source->level ;
-    space = source->getSpace();
-    setName(source->getName());
-    order = source->order ;
-    transport = source->transport ;
-    server = source->server ;
 }
 
 // ----------------------------------------------------------------------------
@@ -162,13 +147,6 @@ ObjectClassAttribute::unpublish(FederateHandle fed)
 }
 
 // ----------------------------------------------------------------------------
-void
-ObjectClassAttribute::setHandle(AttributeHandle h)
-{
-    handle = h ;
-}
-
-// ----------------------------------------------------------------------------
 AttributeHandle
 ObjectClassAttribute::getHandle() const
 {
@@ -212,11 +190,6 @@ ObjectClassAttribute::updateBroadcastList(ObjectClassBroadcastList *ocblist,
     }
 }
 
-ObjectClassAttribute::PublishersList_t
-ObjectClassAttribute::getPublishers(void) {
-    return publishers;
-}
-
 } // namespace
 
-// $Id: ObjectClassAttribute.cc,v 3.35 2009/11/19 18:15:32 erk Exp $
+// $Id: ObjectClassAttribute.cc,v 3.36 2009/11/24 16:39:20 erk Exp $

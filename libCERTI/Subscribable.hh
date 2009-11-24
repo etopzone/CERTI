@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Subscribable.hh,v 3.8 2009/11/19 18:15:31 erk Exp $
+// $Id: Subscribable.hh,v 3.9 2009/11/24 16:39:20 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SUBSCRIBABLE_HH
@@ -61,6 +61,7 @@ protected:
 class CERTI_EXPORT Subscribable : public Named
 {
 public:
+    Subscribable(const std::string& name);
     virtual ~Subscribable();
 
     virtual void checkFederateAccess(FederateHandle, const std::string&) const = 0 ;
@@ -85,4 +86,4 @@ private:
 
 #endif // CERTI_SUBSCRIBABLE_HH
 
-// $Id: Subscribable.hh,v 3.8 2009/11/19 18:15:31 erk Exp $
+// $Id: Subscribable.hh,v 3.9 2009/11/24 16:39:20 erk Exp $
