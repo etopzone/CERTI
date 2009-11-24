@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
+// $Id: main.cc,v 3.27 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -62,12 +62,6 @@ main(int argc, char **argv) {
 
 	set_new_handler(NewHandler);
     normal_end = 0;
-
-	if (NULL!=getenv("RTIA_DEBUG")) {
-		cerr << "RTIA:: RTIA_DEBUG is set: Waiting <"<< getenv("RTIA_DEBUG")
-				<< " seconds> before starting RTIA"<<endl;
-		sleep(atoi(getenv("RTIA_DEBUG")));
-	}
 
 	// Command line
 	gengetopt_args_info args ;
@@ -132,4 +126,4 @@ void NewHandler() {
 	throw MemoryExhausted("RTIA has exhausted memory error");
 }
 
-// EOF $Id: main.cc,v 3.26 2009/09/14 20:51:51 erk Exp $
+// EOF $Id: main.cc,v 3.27 2009/11/24 21:44:48 erk Exp $

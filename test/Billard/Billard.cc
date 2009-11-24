@@ -29,6 +29,12 @@
 #include <unistd.h>
 #endif
 
+#ifdef _WIN32
+#include <windows.h>
+#define    sleep(a)              Sleep(a * 1000)
+#define    usleep(a)             Sleep(a / 1000)
+#endif
+
 #include <memory>
 #include <iostream>
 #include <cstdlib>

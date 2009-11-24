@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: main.cc,v 3.25 2009/10/21 20:04:46 erk Exp $
+// $Id: main.cc,v 3.26 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -49,6 +49,12 @@
 
 #ifndef _WIN32
 #include <unistd.h>
+#endif
+
+#ifdef _WIN32
+#include <windows.h>
+#define    sleep(a)              Sleep(a * 1000)
+#define    usleep(a)             Sleep(a / 1000)
 #endif
 
 using std::string ;

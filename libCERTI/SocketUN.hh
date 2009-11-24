@@ -21,11 +21,6 @@
 #define CERTI_SOCKET_UN_HH
 
 #include "SocketTCP.hh"
-#ifndef WIN32
-	#include <netdb.h>
-	#include <sys/socket.h>
-#endif
-
 #include "Socket.hh"
 #include "PrettyDebug.hh"
 
@@ -62,10 +57,6 @@ class CERTI_EXPORT SocketUN
 public:
 	SocketUN(SignalHandlerType theType = stSignalInterrupt);
 	~SocketUN();
-
-#ifndef _WIN32
-        typedef int SOCKET;
-#endif
 
         int listenUN();
         int connectUN(int port);

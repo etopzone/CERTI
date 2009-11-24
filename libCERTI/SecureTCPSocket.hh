@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SecureTCPSocket.hh,v 3.9 2008/10/13 11:27:51 gotthardp Exp $
+// $Id: SecureTCPSocket.hh,v 3.10 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_SECURE_TCP_SOCKET_HH
@@ -26,11 +26,6 @@
 #include "SocketTCP.hh"
 #include "GSSAPIHandler.hh"
 #include "certi.hh"
-
-#ifndef _WIN32		     
-  #include <unistd.h>  
-  #include <pwd.h>
-#endif
 
 namespace certi {
 
@@ -94,5 +89,5 @@ private:
 
 #endif // CERTI_SECURE_TCP_SOCKET_HH
 
-// $Id: SecureTCPSocket.hh,v 3.9 2008/10/13 11:27:51 gotthardp Exp $
+// $Id: SecureTCPSocket.hh,v 3.10 2009/11/24 21:44:47 erk Exp $
 

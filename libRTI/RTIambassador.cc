@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambassador.cc,v 3.110 2009/11/19 18:15:32 erk Exp $
+// $Id: RTIambassador.cc,v 3.111 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -207,7 +207,6 @@ RTI::RTIambassador::RTIambassador()
   }
     
    privateRefs->handle_RTIA = pi.hProcess;
-   privateRefs->pid_RTIA = pi.dwProcessId;
 
 #if !defined(RTIA_USE_TCP)
    closesocket(pipeFd);
@@ -274,8 +273,8 @@ RTI::RTIambassador::RTIambassador()
 
 #if defined(RTIA_USE_TCP)
     if (privateRefs->socketUn->acceptUN(10*1000) == -1) {
-#ifdef WIN32
-      TerminateProcess(privateRefs->pid_RTIA, 0);
+#ifdef _WIN32
+      TerminateProcess(privateRefs->handle_RTIA, 0);
 #else
       kill( privateRefs->pid_RTIA, SIGINT );
 #endif
@@ -3032,4 +3031,4 @@ RTI::RTIambassador::disableInteractionRelevanceAdvisorySwitch()
     privateRefs->executeService(&req, &rep);
 }
 
-// $Id: RTIambassador.cc,v 3.110 2009/11/19 18:15:32 erk Exp $
+// $Id: RTIambassador.cc,v 3.111 2009/11/24 21:44:48 erk Exp $

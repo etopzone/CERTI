@@ -16,7 +16,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federate.cc,v 3.17 2009/11/19 18:15:29 erk Exp $
+// $Id: Federate.cc,v 3.18 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -24,17 +24,9 @@
 #include "PrettyDebug.hh"
 
 #include <algorithm>
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <cstring>
 #include <string>
-#endif
 
 static PrettyDebug G("GENDOC",__FILE__);
-
-using std::string ;
 
 namespace certi {
 namespace rtig {
@@ -92,4 +84,4 @@ Federate::isSynchronizationLabel(const std::string& label) const
 
 }}
 
-// $Id: Federate.cc,v 3.17 2009/11/19 18:15:29 erk Exp $
+// $Id: Federate.cc,v 3.18 2009/11/24 21:44:47 erk Exp $

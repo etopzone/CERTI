@@ -18,14 +18,18 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.cc,v 3.119 2009/11/24 18:54:51 erk Exp $
+// $Id: Federation.cc,v 3.120 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
 #include "Federation.hh"
 #include "NM_Classes.hh"
 #include <sstream>
+#include <cstring>
+#include <cerrno>
 #include <memory>
+#include <sys/stat.h>
+#include <time.h>
 
 #include "fed.hh"
 #include "XmlParser.hh"
@@ -39,23 +43,6 @@
 #include "PrettyDebug.hh"
 #include "LBTS.hh"
 #include "NM_Classes.hh"
-
-#ifdef _WIN32
-#include <windows.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <stdio.h>
-#else
-#include <map>
-#include <fstream>
-#include <iostream>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <errno.h>
-#endif
 
 using std::pair ;
 using std::ifstream ;
@@ -73,6 +60,10 @@ using std::vector ;
 #define NODE_FEDERATION (const xmlChar*) "federation"
 #define NODE_FEDERATE (const xmlChar*) "federate"
 #endif // HAVE_XML
+
+#ifdef _WIN32
+# define strcasecmp stricmp
+#endif
 
 namespace certi {
 
@@ -2594,5 +2585,5 @@ NM_Provide_Attribute_Value_Update mess ;
 
 }} // namespace certi/rtig
 
-// $Id: Federation.cc,v 3.119 2009/11/24 18:54:51 erk Exp $
+// $Id: Federation.cc,v 3.120 2009/11/24 21:44:47 erk Exp $
 

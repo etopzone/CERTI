@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: DeclarationManagement.cc,v 3.28 2009/10/21 18:56:28 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.29 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -27,15 +27,6 @@
 #include "ObjectClassSet.hh"
 #include "DeclarationManagement.hh"
 #include "NM_Classes.hh"
-
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#endif
 
 #include <memory>
 
@@ -499,4 +490,4 @@ turnInteractionsOff(InteractionClassHandle interaction,
 
 }} // namespace certi/rtia
 
-// $Id: DeclarationManagement.cc,v 3.28 2009/10/21 18:56:28 erk Exp $
+// $Id: DeclarationManagement.cc,v 3.29 2009/11/24 21:44:48 erk Exp $

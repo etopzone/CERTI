@@ -22,11 +22,19 @@
 
 #include "certi.hh"
 #include "Exception.hh"
-#ifndef _WIN32
-	#include <sys/time.h>
-	#include <sys/types.h>
-	#include <netinet/in.h>
-	#include <netdb.h>
+#ifdef _WIN32
+# define NOMINMAX
+# include <winsock2.h>
+# include <Ws2tcpip.h>
+typedef u_long         in_addr_t;
+typedef unsigned short in_port_t;
+#else
+# include <sys/types.h>
+# include <sys/socket.h>
+# include <netinet/in.h>
+# include <netinet/tcp.h>
+# include <netdb.h>
+typedef int SOCKET;
 #endif
 
 #include <string>
@@ -53,11 +61,7 @@ public:
 
 	virtual unsigned long returnAdress() const = 0 ;
 
-	#ifdef _WIN32
 		virtual SOCKET returnSocket() = 0;
-	#else
-		virtual int returnSocket() = 0;
-	#endif
 
 	/**
 	 * This function build a string which represents

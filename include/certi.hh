@@ -16,31 +16,14 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.40 2009/04/02 19:58:11 erk Exp $
+// $Id: certi.hh,v 3.41 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
-#include <vector>
 
 #ifndef CERTI_HH_INCLUDED
 #define CERTI_HH_INCLUDED
 #if defined(_WIN32)
-    #include <windows.h>
-    #include <algorithm>
-    #include <process.h>
-    #define	sleep(a)	      Sleep(a * 1000)
-    #define	usleep(a)	      Sleep(a / 1000)
-    typedef unsigned short        ushort;
-    typedef	int	              pid_t;
-    #define  strcasecmp           strcmp
     #define	STAT_FUNCTION         _stat
     #define	STAT_STRUCT           struct _stat
-    /* TCP/IP related typedef and includes */
-    #ifndef _WINSOCK2API_
-        #ifndef _WINSOCKAPI_
-	   #include <winsock2.h>
-	#endif
-    #endif
-    typedef u_long			in_addr_t;
-    typedef unsigned short		in_port_t;
     #ifdef _MSC_VER
         typedef unsigned __int64        uint64_t;
         typedef __int64			 int64_t;
@@ -246,4 +229,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.40 2009/04/02 19:58:11 erk Exp $
+// $Id: certi.hh,v 3.41 2009/11/24 21:44:48 erk Exp $

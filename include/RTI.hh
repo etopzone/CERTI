@@ -1,11 +1,10 @@
 // HLA 1.3 Header "RTI.hh"
-// $Id: RTI.hh,v 3.16 2009/04/02 19:58:11 erk Exp $
+// $Id: RTI.hh,v 3.17 2009/11/24 21:44:48 erk Exp $
 
 #ifndef RTI_hh
 #define RTI_hh
 
 #if defined(_WIN32)
-	#include <windows.h>
 	#pragma warning(disable: 4290)
 	#pragma warning(disable: 4275)
 	#pragma warning(disable: 4251)

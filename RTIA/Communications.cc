@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Communications.cc,v 3.35 2009/10/21 18:56:28 erk Exp $
+// $Id: Communications.cc,v 3.36 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -30,21 +30,10 @@
 #include "SocketHTTPProxy.hh"
 #include "SecureTCPSocket.hh"
 
-#ifdef _WIN32
-    #include <windows.h>
-	#ifdef max
-		#undef max
-	#endif
-#else
-    #include <unistd.h>
-	#include <errno.h>
-#endif
-
+#include <cerrno>
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-
-
 
 using std::ifstream ;
 using std::ios ;
@@ -369,4 +358,4 @@ Communications::receiveUN(Message *Msg)
 
 }} // namespace certi/rtia
 
-// $Id: Communications.cc,v 3.35 2009/10/21 18:56:28 erk Exp $
+// $Id: Communications.cc,v 3.36 2009/11/24 21:44:48 erk Exp $

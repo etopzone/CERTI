@@ -50,7 +50,7 @@
 #endif // BUILDING_FEDTIME
 #endif // STATIC_FEDTIME
 
-#else // !WIN32
+#else // !_WIN32
 // no special qualfifers are necessary on non-WIN32 platforms
 #define RTI_EXPORT
 #define RTI_EXPORT_FEDTIME

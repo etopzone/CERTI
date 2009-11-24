@@ -31,11 +31,8 @@
 
 #ifdef _WIN32
 #include "SocketTCP.hh"
-#else
-#include <sstream>
-#include <unistd.h>
-#include <strings.h>
 #endif
+
 #include <iostream>
 #include <assert.h>
 #include <errno.h>
@@ -88,7 +85,6 @@ void
 SocketUDP::createConnection(const char *server_name, unsigned int port)
     throw (NetworkError)
 {
-// unsigned long addr = 0 ;
 struct sockaddr_in sock_temp ;
 char localhost[4096] ;
 std::stringstream msg;
@@ -118,11 +114,7 @@ if ((hp_local = gethostbyname(localhost)) == NULL)
 	   throw NetworkError(msg.str());
 	}
 
-#ifdef _WIN32
 	memcpy((char*)&sock_local.sin_addr,(char *)hp_local->h_addr,	hp_local->h_length);
-#else
-	bcopy((char*)hp_local->h_addr, (char *) &sock_local.sin_addr,hp_local->h_length);
-#endif
 
 // lors du BIND, le systeme alloue un port libre au socket _sock_udp
 sock_local.sin_family = AF_INET;

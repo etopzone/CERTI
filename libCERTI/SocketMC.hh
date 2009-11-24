@@ -24,11 +24,6 @@
 #include "NetworkMessage.hh"
 
 #ifdef _WIN32
-	#ifndef _WINSOCK2API_
-	#ifndef _WINSOCKAPI_
-	#include <winsock.h>
-	#endif
-	#endif
 #if __MINGW32__
  	#define IP_ADD_MEMBERSHIP	5
 	struct ip_mreq {
@@ -36,10 +31,8 @@
 		struct in_addr imr_interface;
 	};
 #endif
-#else
-	#include <sys/socket.h>
-	#include <netinet/in.h>
 #endif
+
 namespace certi {
 
 class SocketMC : public Socket
@@ -59,11 +52,7 @@ public:
 	virtual void receive(void *Buffer, unsigned long Size)
 	  throw (NetworkError, NetworkSignal);
 
-	#ifdef _WIN32
                 SOCKET returnSocket();
-	#else
-		virtual int returnSocket();
-	#endif
 
 	virtual unsigned long returnAdress() const ;
 	virtual void close();
@@ -74,13 +63,12 @@ public:
 private:
 	struct sockaddr_in _sin ;
 	struct sockaddr_in _sin_e ;
-	#ifdef _WIN32
+#ifdef _WIN32
 		int _sinlen;
-		SOCKET _socket_emetteur;
-	#else
+#else
 		socklen_t _sinlen;
-		int _socket_emetteur;
-	#endif    
+#endif
+		SOCKET _socket_emetteur;
 	int _sinlen_e ;
 
 	int timeoutMC(int, int);

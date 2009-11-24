@@ -20,13 +20,8 @@
 #ifndef CERTI_SOCKET_TCP_HH
 #define CERTI_SOCKET_TCP_HH
 
-#include "Socket.hh"
 #include "certi.hh"
-
-#ifndef _WIN32
-	#include <sys/socket.h>
-	#include <netinet/in.h>
-#endif
+#include "Socket.hh"
 
 // This is the read buffer of TCP sockets. It must be at least as long
 // as the longest data ever received by a socket.
@@ -67,13 +62,12 @@ public :
 	
 	SocketTCP &operator=(SocketTCP &theSocket);
 
+	virtual SOCKET returnSocket();
+
 	#ifdef _WIN32
-		SOCKET returnSocket();
 		static bool winsockStartup();
 		static void winsockShutdown();
 		static bool winsockInitialized()	{ return (winsockInits > 0);}
-	#else
-                virtual int returnSocket() ;
 	#endif
 
 protected:
@@ -91,11 +85,9 @@ private:
 	in_port_t getPort() const ;
 	in_addr_t getAddr() const ;
 
+        SOCKET _socket_tcp;
 	#ifdef _WIN32
-	  SOCKET _socket_tcp;
 	  static int winsockInits;
-	#else
-	  long _socket_tcp;
 	#endif
 bool	_est_init_tcp;
 struct sockaddr_in _sockIn;

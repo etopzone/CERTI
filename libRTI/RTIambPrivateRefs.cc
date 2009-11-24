@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.cc,v 3.22 2009/11/19 18:15:32 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.23 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -37,7 +37,11 @@ static PrettyDebug G("GENDOC",__FILE__);
 RTIambPrivateRefs::RTIambPrivateRefs()
 {
 	fed_amb      = NULL;
+#ifdef _WIN32
+	handle_RTIA  = (HANDLE)-1;
+#else
 	pid_RTIA     = (pid_t)-1;
+#endif
 	is_reentrant = false;
 	_theRootObj  = NULL;
 	socketUn     = NULL;
@@ -913,4 +917,4 @@ RTIambPrivateRefs::callFederateAmbassador(Message *msg)
     }
 }
 
-// $Id: RTIambPrivateRefs.cc,v 3.22 2009/11/19 18:15:32 erk Exp $
+// $Id: RTIambPrivateRefs.cc,v 3.23 2009/11/24 21:44:48 erk Exp $

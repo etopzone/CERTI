@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RTIambPrivateRefs.hh,v 3.9 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.10 2009/11/24 21:44:48 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "RTI.hh"
@@ -42,11 +42,11 @@ public:
     void callFederateAmbassador(Message *msg) throw (RTI::RTIinternalError);
     void leave(const char *msg) throw (RTI::RTIinternalError);
 
-	#ifdef _WIN32
+#ifdef _WIN32
 	  HANDLE	handle_RTIA;
-	#endif
-
+#else
     pid_t pid_RTIA ; //!< pid associated with rtia fork (private).
+#endif
 
     //! Federate Ambassador reference for module calls.
     RTI::FederateAmbassador *fed_amb ;
@@ -60,4 +60,4 @@ public:
     MessageBuffer msgBufSend,msgBufReceive ;
 };
 
-// $Id: RTIambPrivateRefs.hh,v 3.9 2009/09/14 20:51:51 erk Exp $
+// $Id: RTIambPrivateRefs.hh,v 3.10 2009/11/24 21:44:48 erk Exp $

@@ -23,6 +23,7 @@
 #include <config.h>
 #include <cassert>
 #include <memory>
+#include <iostream>
 
 #include "InteractionSet.hh"
 #include "ObjectSet.hh"
@@ -33,15 +34,6 @@
 #include "TimeManagement.hh"
 #include "NM_Classes.hh"
 
-#ifdef _WIN32
-#include <windows.h>
-#else
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <iostream>
-#endif
 using std::cout ;
 using std::endl ;
 

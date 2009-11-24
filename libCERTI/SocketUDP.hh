@@ -22,17 +22,6 @@
 
 #include "Socket.hh"
 
-#ifdef _WIN32
-	#ifndef _WINSOCK2API_
-		#ifndef _WINSOCKAPI_
-			#include <winsock2.h>
-		#endif
-	#endif
-#else
-  #include <sys/socket.h>
-  #include <netdb.h>
-#endif
-
 #define BUFFER_MAXSIZE 2000
 
 namespace certi {
@@ -52,11 +41,7 @@ public :
 
 	virtual bool isDataReady() const ;
 
-	#ifdef _WIN32
 		SOCKET returnSocket();
-	#else
-		int returnSocket();
-	#endif
 	virtual unsigned long returnAdress() const ;
 
 	virtual void close();
@@ -82,11 +67,7 @@ private:
 
 	bool PhysicalLink ; ///< tak indicating physical or logical link
 
-	#ifdef _WIN32
 		SOCKET _socket_udp;
-	#else
-		long _socket_udp;
-	#endif
 	struct sockaddr_in sock_local ;
 
 	struct sockaddr_in sock_source ;

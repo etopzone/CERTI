@@ -1,8 +1,5 @@
 #include "WinPerfClock.hh"
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
+#include <windows.h>
 
 namespace certi {
 
@@ -11,7 +8,6 @@ WinPerfClock::WinPerfClock() : Clock("WinPerfClock")
 LARGE_INTEGER freq;
 if (QueryPerformanceFrequency(&freq))
 	{
-	std::cout << "Perffreq = " << freq.QuadPart <<std::endl;	
 	resolution = 1.0e9 / static_cast<double>(freq.QuadPart);
 	} 
 else 	resolution = 0.0 ;

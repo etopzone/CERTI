@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: ObjectClass.cc,v 3.75 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClass.cc,v 3.76 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include  "Object.hh"
@@ -37,12 +37,6 @@
 #include <memory>
 #include <iostream>
 #include <cassert>
-
-#ifdef _WIN32
-#ifdef max
-#undef max
-#endif
-#endif
 
 using std::cout ;
 using std::endl ;
@@ -1726,4 +1720,4 @@ ObjectClass::recursiveDiscovering(FederateHandle federate,
 
 } // namespace certi
 
-// $Id: ObjectClass.cc,v 3.75 2009/11/24 16:39:20 erk Exp $
+// $Id: ObjectClass.cc,v 3.76 2009/11/24 21:44:47 erk Exp $

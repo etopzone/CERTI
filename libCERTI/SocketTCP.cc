@@ -17,17 +17,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: SocketTCP.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
+// $Id: SocketTCP.cc,v 3.31 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
-
-#ifdef _WIN32
-	#define	EADDRINUSE		WSAEADDRINUSE
-	#include <winsock2.h>
-#else
-	#include <netdb.h>
-	#include <unistd.h>
-	#include <netinet/tcp.h>
-#endif
 
 #include "SocketTCP.hh"
 #include "PrettyDebug.hh"
@@ -546,11 +537,7 @@ return getAddr();
 }
 
 // ----------------------------------------------------------------------------
-#ifdef _WIN32
 SOCKET SocketTCP::returnSocket()	{ return _socket_tcp ;}
-#else
-int SocketTCP::returnSocket()		{ return _socket_tcp ;}
-#endif
 
 // ----------------------------------------------------------------------------
 //! Change the port value.
@@ -599,4 +586,4 @@ else
 
 } // namespace
 
-// $Id: SocketTCP.cc,v 3.30 2009/10/21 18:56:28 erk Exp $
+// $Id: SocketTCP.cc,v 3.31 2009/11/24 21:44:47 erk Exp $

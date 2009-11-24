@@ -23,16 +23,15 @@
 #include "config.h"
 
 #ifdef _WIN32
-	#include "SocketTCP.hh"
+# include "SocketTCP.hh"
 #else
-	#include <arpa/inet.h>
-	#include <unistd.h>
-	#include <errno.h>
-	#include <sys/time.h>
+# include <arpa/inet.h>
 #endif
+
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
+#include <cerrno>
 
 namespace certi {
 

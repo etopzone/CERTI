@@ -369,9 +369,9 @@ public:
     std::vector<std::pair<ParameterHandle, ParameterValue_t> > getPHVPS() const ;
     void setPHVPS(const std::vector<std::pair<ParameterHandle, ParameterValue_t> > &);
 
-    void setAttributes(std::vector <AttributeHandle> &, ushort);
-    void setAttributes(std::vector <AttributeHandle> &, std::vector <AttributeValue_t> &, ushort);
-    void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterValue_t> &, ushort);
+    void setAttributes(std::vector <AttributeHandle> &, UShort);
+    void setAttributes(std::vector <AttributeHandle> &, std::vector <AttributeValue_t> &, UShort);
+    void setParameters(std::vector <ParameterHandle> &, std::vector <ParameterValue_t> &, UShort);
 
     void setException(TypeException, const std::string& the_reason = "");
     TypeException getExceptionType() const { return exception ; };

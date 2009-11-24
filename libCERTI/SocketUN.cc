@@ -28,16 +28,6 @@
 #include <sstream>
 #include <string>
 
-#ifdef WIN32
-# include <windows.h>
-# include <io.h>
-#else
-# include <unistd.h>
-# include <sys/un.h>
-# include <sys/types.h>
-# include <sys/socket.h>
-#endif
-
 #include <iostream>
 #include <assert.h>
 
@@ -45,14 +35,14 @@ using std::string ;
 using std::cout ;
 using std::endl ;
 
-#ifdef WIN32
+#ifdef _WIN32
 extern "C" int socketpair_win32(SOCKET socks[2], int make_overlapped);
 #endif
 
 namespace certi {
 static PrettyDebug G("GENDOC",__FILE__);
 
-#ifndef WIN32
+#ifndef _WIN32
 static void closesocket(int fd)
 {
   close(fd);
@@ -310,11 +300,7 @@ SocketUN::isDataReady()
 }
 
 // ----------------------------------------------------------------------------
-#ifdef _WIN32
 SOCKET
-#else
-int
-#endif
 SocketUN::returnSocket()
 {
     return _socket_un;

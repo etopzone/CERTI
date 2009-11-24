@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: Federation.hh,v 3.61 2009/11/24 18:54:52 erk Exp $
+// $Id: Federation.hh,v 3.62 2009/11/24 21:44:47 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef _CERTI_RTIG_FEDERATION_HH
@@ -31,11 +31,6 @@
 #include "SecurityServer.hh"
 #include "HandleManager.hh"
 #include "certi.hh"
-
-#ifndef WIN32
-#include <unistd.h>
-#include <stdlib.h>
-#endif
 
 #ifdef FEDERATION_USES_MULTICAST
 #include "SocketMC.hh"
@@ -687,4 +682,4 @@ private:
 
 #endif // _CERTI_RTIG_FEDERATION_HH
 
-// $Id: Federation.hh,v 3.61 2009/11/24 18:54:52 erk Exp $
+// $Id: Federation.hh,v 3.62 2009/11/24 21:44:47 erk Exp $

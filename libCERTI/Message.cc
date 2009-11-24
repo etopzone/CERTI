@@ -394,7 +394,7 @@ Message::setPHVPS(const std::vector<std::pair<ParameterHandle, ParameterValue_t>
 
 // ----------------------------------------------------------------------------
 void
-Message::setAttributes(std::vector <AttributeHandle> &the_attributes, ushort the_size)
+Message::setAttributes(std::vector <AttributeHandle> &the_attributes, UShort the_size)
 {
     handleArraySize = the_size ;
     handleArray.resize(handleArraySize);
@@ -411,7 +411,7 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes, ushort the
 void
 Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
                        std::vector <AttributeValue_t> &the_values,
-                       ushort the_size)
+                       UShort the_size)
 {
     G.Out(pdGendoc,"enter Message::setAttributes");
     handleArraySize = the_size ;
@@ -432,7 +432,7 @@ Message::setAttributes(std::vector <AttributeHandle> &the_attributes,
 void
 Message::setParameters(std::vector <ParameterHandle> & the_parameters,
                        std::vector <ParameterValue_t> & the_values,
-                       ushort the_size)
+                       UShort the_size)
 
 {
     handleArraySize = the_size ;
