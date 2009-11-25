@@ -18,7 +18,7 @@
 // along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: FederationManagement.cc,v 3.78 2009/11/20 16:31:31 erk Exp $
+// $Id: FederationManagement.cc,v 3.79 2009/11/25 22:05:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include <config.h>
@@ -255,7 +255,7 @@ joinFederationExecution(const std::string& Federate,
         // Then we except a NULL message from each.
         if (reponse->getException() == e_NO_EXCEPTION) {
             NM_Join_Federation_Execution* joinResponse = static_cast<NM_Join_Federation_Execution*>(reponse.get());
-            rootObject->setFOM(*joinResponse);
+            rootObject->rebuildFromSerializedFOM(*joinResponse);
 
             _nom_federation = Federation;
             _nom_federe = Federate;

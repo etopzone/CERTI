@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.cc,v 3.48 2009/11/24 16:39:20 erk Exp $
+// $Id: RootObject.cc,v 3.49 2009/11/25 22:05:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "Object.hh"
@@ -360,7 +360,7 @@ RootObject::addInteractionClass(Interaction* currentIC, Interaction* parentIC) {
 } /* end of addInteractionClass */
 
 void
-RootObject::getFOM(NM_Join_Federation_Execution& message)
+RootObject::convertToSerializedFOM(NM_Join_Federation_Execution& message)
 {
         // The rounting spaces
         uint32_t routingSpaceCount = spaces.size();
@@ -480,7 +480,7 @@ RootObject::getFOM(NM_Join_Federation_Execution& message)
 }
 
 void
-RootObject::setFOM(const NM_Join_Federation_Execution& message)
+RootObject::rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message)
 {
         // The number of routing space records to read
         uint32_t routingSpaceCount = message.getNumRoutingSpaces();
@@ -556,8 +556,8 @@ RootObject::setFOM(const NM_Join_Federation_Execution& message)
                         current->addParameter(parameter);
                 }
         }
-} /* end of setFOM */
+} /* end of rebuildFromSerializedFOM */
 
 } // namespace certi
 
-// $Id: RootObject.cc,v 3.48 2009/11/24 16:39:20 erk Exp $
+// $Id: RootObject.cc,v 3.49 2009/11/25 22:05:19 erk Exp $

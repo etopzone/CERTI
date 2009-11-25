@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: RootObject.hh,v 3.34 2009/11/19 18:15:32 erk Exp $
+// $Id: RootObject.hh,v 3.35 2009/11/25 22:05:19 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef LIBCERTI_ROOT_OBJECT
@@ -170,12 +170,12 @@ public:
     /**
      * Serialize the federate object model into a message buffer.
      */
-    void getFOM(NM_Join_Federation_Execution& message);
+    void convertToSerializedFOM(NM_Join_Federation_Execution& message);
 
     /**
      * Deserialize the federate object model from a message buffer.
      */
-    void setFOM(const NM_Join_Federation_Execution& message);
+    void rebuildFromSerializedFOM(const NM_Join_Federation_Execution& message);
 
 private:
 
@@ -194,4 +194,4 @@ private:
 
 #endif // LIBCERTI_ROOT_OBJECT
 
-// $Id: RootObject.hh,v 3.34 2009/11/19 18:15:32 erk Exp $
+// $Id: RootObject.hh,v 3.35 2009/11/25 22:05:19 erk Exp $
