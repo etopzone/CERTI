@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.23 2009/11/18 18:50:48 erk Exp $
+## $Id: GenerateMessages.py,v 1.24 2009/11/25 21:07:51 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -107,6 +107,7 @@ reserved = {
    'merge'    : 'MERGE',
    'enum'     : 'ENUM',
    'default'  : 'DEFAULT',
+   'representation' : 'REPRESENTATION',            
    'required' : 'REQUIRED',
    'optional' : 'OPTIONAL',
    'repeated' : 'REPEATED',
@@ -512,13 +513,17 @@ class NativeType(ASTElement):
     A C{NaptiveType} is a simple C{ASTElement} whose
     name is the name the native type.
     """
-    def __init__(self,name,languages):
+    def __init__(self,name,lines):
         super(NativeType,self).__init__(name=name)
         # store language line list in a dictionnary
         # in order to ease retrieval
         self.languages = dict()
-        for l in languages:
-            self.languages[l.name] = l        
+        self.representation = None
+        for l in lines:
+            if isinstance(l,NativeType.LanguageLine):
+                self.languages[l.name] = l
+            else:
+                self.representation = l.representation
         
     def __repr__(self):
         return "native %s" % self.name
@@ -526,6 +531,9 @@ class NativeType(ASTElement):
     def getLanguage(self,language):
         if language in self.languages.keys():
             return self.languages[language]
+
+    def getRepresentation(self):
+        return self.representation
      
     class LanguageLine(ASTElement):
         """ Represents a Language Line Value
@@ -533,6 +541,13 @@ class NativeType(ASTElement):
         def __init__(self,name,value):
             super(NativeType.LanguageLine,self).__init__(name=name)    
             self.statement = value.strip("[]")                
+
+    class RepresentationLine(ASTElement):
+        """ Represents a Representation Line Value
+        """
+        def __init__(self,value):
+            super(NativeType.RepresentationLine,self).__init__(name='representation')
+            self.representation = value
                     
 class MessageType(ASTElement):
     """ 
@@ -664,16 +679,16 @@ def p_message(p):
     p[0].linespan = (p.linespan(1)[0],p.linespan(len(p)-1)[1]) 
     
 def p_native(p): 
-    'native : NATIVE ID LBRACE language_list RBRACE'
+    'native : NATIVE ID LBRACE native_line_list RBRACE'
     # we should reverse the language list
     # because the parse build it the other way around (recursive way)
     p[4].reverse()
     p[0]=NativeType(p[2],p[4])    
     p[0].linespan = (p.linespan(1)[0],p.linespan(5)[1])
     
-def p_language_list(p):
-    '''language_list : language_line eol_comment
-                     | language_line eol_comment language_list'''
+def p_native_line_list(p):
+    '''native_line_list : native_line eol_comment
+                        | native_line eol_comment native_line_list'''
     # Create or append the list (of pair)
     if len(p)==3:
         p[1].comment = p[2]
@@ -683,10 +698,18 @@ def p_language_list(p):
         p[3].append(p[1])
         p[0]=p[3]
 
+def p_native_line(p):
+    '''native_line : language_line
+                   | representation_line'''
+    p[0]=p[1]
+
 def p_language_line(p):
     '''language_line : LANGUAGE ID LANGLINE'''
     p[0]=NativeType.LanguageLine(p[2],p[3])
     
+def p_representation_line(p):
+    '''representation_line : REPRESENTATION typeid'''
+    p[0]=NativeType.RepresentationLine(p[2])
         
 def p_enum(p):
     'enum : ENUM ID LBRACE enum_value_list RBRACE'
@@ -1144,17 +1167,32 @@ class CXXGenerator(CodeGenerator):
                                'float'    : 'read_float',
                                'double'   : 'read_double',}
 
+    def getRepresentationFor(self,name):
+        for native in self.AST.natives:
+            if name == native.name:
+                representation = native.getRepresentation()
+                if representation:
+                    return representation
+        return None
+
+
     def getSerializeMethodName(self,name):
         if name in self.serializeTypeMap.keys():
             return self.serializeTypeMap[name]
         else:
-            return None
+            representation = self.getRepresentationFor(name)
+            if representation:
+                return self.getSerializeMethodName(representation)
+        return None
         
     def getDeSerializeMethodName(self,name):
         if name in self.deserializeTypeMap.keys():
             return self.deserializeTypeMap[name]
         else:
-            return None    
+            representation = self.getRepresentationFor(name)
+            if representation:
+                return self.getDeSerializeMethodName(representation)
+        return None    
             
     def openNamespaces(self,stream):
         if self.AST.hasPackage():
@@ -1426,45 +1464,79 @@ class CXXGenerator(CodeGenerator):
             
             
     def writeSerializeFieldStatement(self,stream,field):
+        indexField = ''
         if field.qualifier == "optional":
             stream.write(self.getIndent())
             stream.write("msgBuffer.write_bool(has%s);\n" % self.upperFirst(field.name))
             stream.write(self.getIndent())
             stream.write("if (has%s) {\n" % self.upperFirst(field.name))
             self.indent()
+        elif field.qualifier == "repeated":
+            indexField = '[i]'
+            stream.write(self.getIndent())
+            stream.write("uint32_t "+field.name+"Size = "+field.name+".size();\n")
+            stream.write(self.getIndent())
+            stream.write("msgBuffer.write_uint32("+field.name+"Size);\n")
+            stream.write(self.getIndent())
+            stream.write("for (uint32_t i = 0; i < "+field.name+"Size; ++i) {\n")
+            self.indent()
             
         stream.write(self.getIndent())
         methodName = self.getSerializeMethodName(field.typeid.name)
         if None == methodName:
-            stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
-            stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to serialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
+            if field.typeid.name in [m.name for m in self.AST.messages]:
+                stream.write(field.name+indexField+".serialize(msgBuffer);\n")
+            else:
+                stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
+                stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to serialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
         else:
             stream.write("msgBuffer."+methodName)
-            stream.write("(%s);\n"%field.name)
+            stream.write("("+field.name+indexField+");\n")
         
         if field.qualifier == "optional":
             self.unIndent()
             stream.write(self.getIndent()+"}\n")
+        elif field.qualifier == "repeated":
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n")
     
     def writeDeSerializeFieldStatement(self,stream,field):
+        indexField = ''
         if field.qualifier == "optional":
             stream.write(self.getIndent())
             stream.write("has%s = msgBuffer.read_bool();\n" % self.upperFirst(field.name))
             stream.write(self.getIndent())
             stream.write("if (has%s) {\n" % self.upperFirst(field.name))
             self.indent()
+        elif field.qualifier == "repeated":
+            indexField = '[i]'
+            stream.write(self.getIndent())
+            stream.write("uint32_t "+field.name+"Size = msgBuffer.read_uint32();\n")
+            stream.write(self.getIndent())
+            stream.write(field.name+".resize("+field.name+"Size);\n")
+            stream.write(self.getIndent())
+            stream.write("for (uint32_t i = 0; i < "+field.name+"Size; ++i) {\n")
+            self.indent()
             
         stream.write(self.getIndent())
         methodName = self.getDeSerializeMethodName(field.typeid.name)
         if None == methodName:
-            stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
-            stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to deserialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
+            if field.typeid.name in [m.name for m in self.AST.messages]:
+                stream.write(field.name+indexField+".deserialize(msgBuffer);\n")
+            else:
+                stream.write(self.commentLineBeginWith+" FIXME FIXME FIXME\n")
+                stream.write(self.getIndent()+self.commentLineBeginWith+" don't know how to deserialize native field <%s> of type <%s>\n"%(field.name,field.typeid.name))            
         else:
-            stream.write("%s = "%field.name)
-            stream.write("msgBuffer."+methodName+"();\n")
+            if methodName == 'read_string':
+                stream.write("msgBuffer."+methodName+"("+field.name+indexField+");\n")
+            else:
+                stream.write(field.name+indexField+" = msgBuffer."+methodName+"();\n")
             
         
         if field.qualifier == "optional":
+            self.unIndent()
+            stream.write(self.getIndent()+"}\n")
+        elif field.qualifier == "repeated":
             self.unIndent()
             stream.write(self.getIndent()+"}\n")
             
@@ -1548,9 +1620,10 @@ class CXXGenerator(CodeGenerator):
                     # begin serialize method 
                     stream.write(self.getIndent()+"void %s::serialize(MessageBuffer& msgBuffer) {\n" % msg.name)
                     self.indent()
-                    stream.write(self.getIndent()+self.commentLineBeginWith)
-                    stream.write("Call mother class\n")
-                    stream.write(self.getIndent()+"Super::serialize(msgBuffer);\n")
+                    if msg.hasMerge():
+                        stream.write(self.getIndent()+self.commentLineBeginWith)
+                        stream.write("Call mother class\n")
+                        stream.write(self.getIndent()+"Super::serialize(msgBuffer);\n")
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific serialization code\n")
                     for field in msg.fields:
@@ -1562,9 +1635,10 @@ class CXXGenerator(CodeGenerator):
                     # begin deserialize method
                     stream.write(self.getIndent()+"void %s::deserialize(MessageBuffer& msgBuffer) {\n" % msg.name)
                     self.indent()
-                    stream.write(self.getIndent()+self.commentLineBeginWith)
-                    stream.write("Call mother class\n")
-                    stream.write(self.getIndent()+"Super::deserialize(msgBuffer);\n")
+                    if msg.hasMerge():
+                        stream.write(self.getIndent()+self.commentLineBeginWith)
+                        stream.write("Call mother class\n")
+                        stream.write(self.getIndent()+"Super::deserialize(msgBuffer);\n")
                     stream.write(self.getIndent()+self.commentLineBeginWith)
                     stream.write("Specific deserialization code\n")
                     for field in msg.fields:

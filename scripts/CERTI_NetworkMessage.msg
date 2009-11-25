@@ -40,34 +40,47 @@ native FederationTime {
 }
 
 native AttributeHandle {
+    representation uint16
     language CXX [#include "certi.hh"]
 }
 
 native DimensionHandle {
+    representation uint16
     language CXX [#include "certi.hh"]
 }
 
 native InteractionClassHandle {
+    representation uint16
     language CXX [#include "certi.hh"]
 }
 
 native ObjectClassHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native ObjectHandle {
+    representation uint32
     language CXX [#include "certi.hh"]
 }
 
 native ParameterHandle {
+    representation uint16
     language CXX [#include "certi.hh"]
 }
 
 native SpaceHandle {
+    representation uint16
     language CXX [#include "certi.hh"]
 }
 
 native TransportType {
+    representation uint8
     language CXX [#include "certi.hh"]
 }
 
 native OrderType {
+    representation uint8
     language CXX [#include "certi.hh"]
 }
 
@@ -260,10 +273,6 @@ message NM_Change_Interaction_Transport_Type : merge NetworkMessage {}
 message NM_Change_Interaction_Order_Type : merge NetworkMessage {}
 
 message NM_Request_Class_Attribute_Value_Update : merge NetworkMessage {}
-
-native ObjectHandle {
-	language CXX [#include "certi.hh"]
-}
 
 message NM_Request_Object_Attribute_Value_Update : merge NM_WithHandleArray {
 	required ObjectHandle object
