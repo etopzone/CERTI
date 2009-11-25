@@ -23,16 +23,6 @@
 #include "Socket.hh"
 #include "NetworkMessage.hh"
 
-#ifdef _WIN32
-#if __MINGW32__
- 	#define IP_ADD_MEMBERSHIP	5
-	struct ip_mreq {
-		struct in_addr imr_multiaddr;
-		struct in_addr imr_interface;
-	};
-#endif
-#endif
-
 namespace certi {
 
 class SocketMC : public Socket
