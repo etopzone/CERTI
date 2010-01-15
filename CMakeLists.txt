@@ -19,29 +19,29 @@ INCLUDE(CheckLibraryExists)
 
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(BIG_ENDIAN)
-IF(BIG_ENDIAN) 
+IF(BIG_ENDIAN)
    ADD_DEFINITIONS(-DHOST_IS_BIG_ENDIAN)
 ENDIF(BIG_ENDIAN)
 
 # default behaviour is to build library as shared on all platform
 OPTION(BUILD_SHARED
              "Build libraries as shared library" ON)
-             
+
 OPTION(USE_FULL_RPATH
              "Use the full RPATH" OFF)
-             
-IF (USE_FULL_RPATH)       
+
+IF (USE_FULL_RPATH)
     # see http://www.cmake.org/Wiki/CMake_RPATH_handling#Always_full_RPATH
     # use, i.e. don't skip the full RPATH for the build tree
     SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-    
+
     # when building, don't use the install RPATH already
     # (but later on when installing)
-    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE) 
-    
+    SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
     # the RPATH to be used when installing
     SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-    
+
     # add the automatically determined parts of the RPATH
     # which point to directories outside the build tree to the install RPATH
     SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -51,19 +51,19 @@ OPTION(BUILD_LEGACY_LIBRTI
              "Build CERTI legacy libRTI" OFF)
 
 OPTION(BUILD_DOC
-             "Build documentation (using doxygen)" OFF)         
-             
-OPTION(FORCE_NO_X11 
-              "Force not to use X11 (i.e. no Billard GUI)" OFF)   
-        
+             "Build documentation (using doxygen)" OFF)
+
+OPTION(FORCE_NO_X11
+              "Force not to use X11 (i.e. no Billard GUI)" OFF)
+
 # On demand of Eric Noulard, the unsafe tsc clocksource
 OPTION(ENABLE_TSC_CLOCK
              "Enable the usage of the timestamp counter as clock source (use with care)" OFF)
 
 # The communication channel to RTIA
-OPTION(RTIA_USE_TCP 
+OPTION(RTIA_USE_TCP
            "Force TCP socket usage between RTIA and FederateAmbassador (default is Unix Socket)" OFF)
-IF(RTIA_USE_TCP) 
+IF(RTIA_USE_TCP)
     ADD_DEFINITIONS(-DRTIA_USE_TCP)
 ENDIF(RTIA_USE_TCP)
 
@@ -107,7 +107,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(NOT MINGW)
 
-IF (WIN32)    
+IF (WIN32)
     IF (MINGW)
         SET(CMAKE_SHARED_LIBRARY_PREFIX "")
         SET(CMAKE_STATIC_LIBRARY_PREFIX "")
@@ -115,7 +115,7 @@ IF (WIN32)
 	SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 	SET(LIBRARY_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH})
 ENDIF(WIN32)
-	
+
 IF (BUILD_SHARED)
   SET(BUILD_SHARED_LIBS ON)
 ELSE (BUILD_SHARED)
@@ -170,13 +170,13 @@ SET(ZERO "0")
 IF (NOT WIN32)
 ################ Check for PosixClock Support ###########
 INCLUDE(CheckIncludeFile)
-CHECK_INCLUDE_FILE(time.h HAVE_TIME_H)  
+CHECK_INCLUDE_FILE(time.h HAVE_TIME_H)
 INCLUDE(CheckFunctionExists)
 SET(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS}")
 SET(CMAKE_REQUIRED_DEFINITIONS "${CMAKE_REQUIRED_DEFINITIONS}")
 SET(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
 FIND_LIBRARY(RT_LIBRARY rt)
-SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${RT_LIBRARY}) 
+SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${RT_LIBRARY})
 
 CHECK_FUNCTION_EXISTS(clock_gettime HAVE_CLOCK_GETTIME)
 CHECK_FUNCTION_EXISTS(clock_settime HAVE_CLOCK_SETTIME)
@@ -218,14 +218,14 @@ ENDIF (GEN_LIBRARY_HAS_BASENAME)
 CHECK_LIBRARY_EXISTS("socket" "connect" "/usr/lib" SOCKET_LIBRARY_HAS_CONNECT)
 IF (SOCKET_LIBRARY_HAS_CONNECT)
     MESSAGE(STATUS "Socket library needed for system ${CMAKE_SYSTEM_NAME}")
-    FIND_LIBRARY(SOCKET_LIBRARY 
+    FIND_LIBRARY(SOCKET_LIBRARY
 	                          NAMES socket)
 ELSE (SOCKET_LIBRARY_HAS_CONNECT)
     SET(SOCKET_LIBRARY)
 ENDIF (SOCKET_LIBRARY_HAS_CONNECT)
 
 IF (WIN32)
-    #FIND_LIBRARY(SOCKET_LIBRARY 
+    #FIND_LIBRARY(SOCKET_LIBRARY
 	#                          NAMES Ws2_32
 	#			DOC "The Winsock2 library")
 	SET(SOCKET_LIBRARY Ws2_32)
@@ -254,8 +254,8 @@ IF (X11_FOUND)
     NAMES cntr_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_CNTR_PTR) 
+
+  IF(NOT HAVE_X11_BITMAPS_CNTR_PTR)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/cntr_ptr not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_CNTR_PTR)
@@ -264,18 +264,18 @@ IF (X11_FOUND)
     NAMES dot
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_DOT) 
+
+  IF(NOT HAVE_X11_BITMAPS_DOT)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/dot not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_DOT)
-      
+
   FIND_FILE(HAVE_X11_BITMAPS_DROPBAR8
     NAMES dropbar8
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_DROPBAR8) 
+
+  IF(NOT HAVE_X11_BITMAPS_DROPBAR8)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/dropbar8 not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_DROPBAR8)
@@ -284,8 +284,8 @@ IF (X11_FOUND)
     NAMES left_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_LEFT_PTR) 
+
+  IF(NOT HAVE_X11_BITMAPS_LEFT_PTR)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/left_ptr not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_LEFT_PTR)
@@ -294,8 +294,8 @@ IF (X11_FOUND)
     NAMES menu16
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_MENU16) 
+
+  IF(NOT HAVE_X11_BITMAPS_MENU16)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/menu16 not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_MENU16)
@@ -304,13 +304,13 @@ IF (X11_FOUND)
     NAMES right_ptr
     PATH_SUFFIXES X11/bitmaps
     DOC "X11 bitmaps header")
-    
-  IF(NOT HAVE_X11_BITMAPS_RIGHT_PTR) 
+
+  IF(NOT HAVE_X11_BITMAPS_RIGHT_PTR)
     SET(X_DISPLAY_MISSING 1)
     MESSAGE(STATUS "X11 header: X11/bitmaps/right_ptr not found.")
   ENDIF(NOT HAVE_X11_BITMAPS_RIGHT_PTR)
-   
-ELSE (X11_FOUND)  
+
+ELSE (X11_FOUND)
   SET(X_DISPLAY_MISSING 1)
 ENDIF (X11_FOUND)
 
@@ -332,13 +332,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 # Globally used compiler flags
 ADD_DEFINITIONS(-DRTI_USES_STD_FSTREAM)
 
-ADD_SUBDIRECTORY( include ) 
-ADD_SUBDIRECTORY( libHLA ) 
-ADD_SUBDIRECTORY( libCERTI ) 
-ADD_SUBDIRECTORY( RTIG ) 
-ADD_SUBDIRECTORY( RTIA ) 
-ADD_SUBDIRECTORY( libRTI ) 
-ADD_SUBDIRECTORY( test ) 
+ADD_SUBDIRECTORY( include )
+ADD_SUBDIRECTORY( libHLA )
+ADD_SUBDIRECTORY( libCERTI )
+ADD_SUBDIRECTORY( RTIG )
+ADD_SUBDIRECTORY( RTIA )
+ADD_SUBDIRECTORY( libRTI )
+ADD_SUBDIRECTORY( test )
 ADD_SUBDIRECTORY( doc )
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "CERTI An efficient Open Source HLA RunTime Infrastructure")
@@ -358,7 +358,7 @@ IF (WIN32)
     ADD_CUSTOM_TARGET(PACKAGE_SOURCE_ZIP
               COMMAND ${CPACK_COMMAND} -G ZIP --config CPackSourceConfig.cmake
               COMMENTS "Build a ZIP file containing the source")
-              
+
     # NSIS installer specific part
     INCLUDE(InstallRequiredSystemLibraries)
     SET(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/doc/\\\\certi.bmp")
@@ -375,22 +375,22 @@ IF (WIN32)
     SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\savannah.nongnu.org\\\\projects\\\\certi")
     SET(CPACK_NSIS_CONTACT "certi-devel@nongnu.org")
     SET(CPACK_NSIS_MODIFY_PATH ON)
-	
+
     SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
 		CopyFiles \\\"$INSTDIR\\\\bin\\\\CERTI.dll\\\" \\\"$SYSDIR\\\"
 		CopyFiles \\\"$INSTDIR\\\\bin\\\\RTI.dll\\\" \\\"$SYSDIR\\\"
     ")
-	
-	
+
+
 #	SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} "
 #		MessageBox MB_OK \\\"Copy Libraries to the system directory\\\"
 #	")
-	
+
 	SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS ${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS} "
 		Delete \\\"$SYSDIR\\\\CERTI.dll\\\"
 		Delete \\\"$SYSDIR\\\\RTI.dll\\\"
 	")
-	
+
 #	SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS ${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS} "
 #		MessageBox MB_OK \\\"Delete Libraries from the system directory\\\"
 #	")
@@ -399,23 +399,13 @@ ELSE (WIN32)
   SET(CPACK_GENERATOR "TGZ;ZIP;RPM")
 ENDIF (WIN32)
 
-IF (NOT WIN32)
-  EXECUTE_PROCESS(COMMAND uname -m
-    OUTPUT_VARIABLE MACHINE)
-  STRING(REPLACE "\n" "" 
-    MACHINE
-    ${MACHINE})
-ELSE (NOT WIN32)
-  SET(MACHINE "UnknownCompiler")
-  IF (MINGW) 
-     SET(MACHINE "MinGW")
-  ENDIF (MINGW)
-  IF (MSVC)
-     SET(MACHINE "MSVC")
-  ENDIF (MSVC)  
-ENDIF (NOT WIN32)
+include(SystemSpecificInformations)
 
-SET(CPACK_SYSTEM_NAME ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_VERSION}-${MACHINE})
+IF (SPECIFIC_COMPILER_NAME)
+    SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME}-${SPECIFIC_COMPILER_NAME})
+ELSE (SPECIFIC_COMPILER_NAME)
+    SET(CPACK_SYSTEM_NAME ${SPECIFIC_SYSTEM_VERSION_NAME})
+ENDIF(SPECIFIC_COMPILER_NAME)
 
 # Avoid putting BUILDIR inside source package (simple case)
 IF ("${CMAKE_BINARY_DIR}" STREQUAL "${CMAKE_SOURCE_DIR}")
@@ -449,20 +439,20 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/myCERTI_env.sh.in
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/myCERTI_env.csh.in
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.csh @ONLY)
 
-INSTALL(FILES 
+INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.sh
   ${CMAKE_CURRENT_BINARY_DIR}/myCERTI_env.csh
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindCERTI.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/UseCERTI.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/FindRTI.cmake
   DESTINATION share/scripts)
-  
+
  ## Patch generating target
 # The custom target is using a cmake script which in turn
-# use execute_process, 
+# use execute_process,
 # this way we may find a flexible way to build the patch
-ADD_CUSTOM_TARGET(patch 
-                  COMMAND ${CMAKE_COMMAND} -DWDIR:PATH=${CMAKE_SOURCE_DIR} -DODIR:PATH=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/scripts/CreatePatchCVS.cmake                                                      
+ADD_CUSTOM_TARGET(patch
+                  COMMAND ${CMAKE_COMMAND} -DWDIR:PATH=${CMAKE_SOURCE_DIR} -DODIR:PATH=${CMAKE_BINARY_DIR} -P ${CMAKE_SOURCE_DIR}/scripts/CreatePatchCVS.cmake
                   COMMENT "Generating patch file ready for review at certi-devel@nongnu.org")
 
 ENABLE_TESTING()
