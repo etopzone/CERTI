@@ -86,7 +86,7 @@ if(UNIX)
       endif(LINUX_ISSUE MATCHES "Fedora")
       # Ubuntu case
       if(LINUX_ISSUE MATCHES "Ubuntu")
-        string(REGEX MATCH "buntu ([0-9\]+\.[0-9]+)" UBUNTU "${LINUX_ISSUE}")
+        string(REGEX MATCH "buntu ([0-9]+\\.[0-9]+)" UBUNTU "${LINUX_ISSUE}")
         set(LINUX_NAME "Ubuntu_${CMAKE_MATCH_1}")        
       endif(LINUX_ISSUE MATCHES "Ubuntu")
       # Debian case
