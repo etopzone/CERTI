@@ -23,7 +23,9 @@
 #include "certi.hh"
 #include "Exception.hh"
 #ifdef _WIN32
+# ifndef NOMINMAX
 # define NOMINMAX
+# endif
 # include <winsock2.h>
 # include <Ws2tcpip.h>
 typedef u_long         in_addr_t;
@@ -73,9 +75,9 @@ public:
 		typedef union {
 			uint32_t    addr;
 		    uint8_t     parts[4];
-		} addr_union_t;	
+		} addr_union_t;
 		std::stringstream msg;
-		
+
         addr_union_t uaddr;
 		uaddr.addr = (uint32_t)ntohl((uint32_t)(addr));
 		msg << ""  << static_cast<int>(uaddr.parts[3])
