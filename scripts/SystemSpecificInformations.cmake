@@ -95,8 +95,12 @@ if(UNIX)
         set(LINUX_NAME "Debian_${CMAKE_MATCH_1}")
         string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})        
       endif(LINUX_ISSUE MATCHES "Debian")      
-      # SuSE case
-      # TODO
+      # Open SuSE case
+      if(LINUX_ISSUE MATCHES "SUSE")
+        string(REGEX MATCH "SUSE  ([0-9]+\\.[0-9]+)" SUSE "${LINUX_ISSUE}")
+        set(LINUX_NAME "openSUSE_${CMAKE_MATCH_1}")
+        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})        
+      endif(LINUX_ISSUE MATCHES "SUSE")
       # Mandriva case
       # TODO      
       if(LINUX_NAME) 
