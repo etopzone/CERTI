@@ -90,7 +90,11 @@ if(UNIX)
         set(LINUX_NAME "Ubuntu_${CMAKE_MATCH_1}")        
       endif(LINUX_ISSUE MATCHES "Ubuntu")
       # Debian case
-      # TODO
+      if(LINUX_ISSUE MATCHES "Debian")
+        string(REGEX MATCH "Debian .*ux ([a-zA-Z]*/?[a-zA-Z]*) .*" DEBIAN "${LINUX_ISSUE}")
+        set(LINUX_NAME "Debian_${CMAKE_MATCH_1}")
+        string(REPLACE "/" "_" LINUX_NAME ${LINUX_NAME})        
+      endif(LINUX_ISSUE MATCHES "Debian")      
       # SuSE case
       # TODO
       # Mandriva case
