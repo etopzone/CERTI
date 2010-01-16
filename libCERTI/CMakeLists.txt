@@ -125,6 +125,46 @@ GSSAPIHandler.hh
 Socket.hh
 )
 
+if (WIN32)
+    include_directories(${CERTI_SOURCE_DIR}/libHLA)
+    ADD_DEFINITIONS(-DDEBUG)
+    SET(CERTI_SHM_SRCS
+        SHM.hh SHMWin32.hh SHMWin32.cc)
+
+    SET(CERTI_SEMAPHORE_SRCS
+        Semaphore.hh SemaphoreWin32.hh SemaphoreWin32.cc)
+
+    SET(CERTI_SOCKET_SHM_SRC
+        SocketSHM.cc SocketSHM.hh
+        SocketSHMWin32.cc SocketSHMWin32.hh
+	RingBuffer.cc RingBuffer.hh)
+
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
+else(WIN32)
+    include_directories(${CERTI_SOURCE_DIR}/libHLA)
+    ADD_DEFINITIONS(-DDEBUG)
+
+    SET(CERTI_SHM_SRCS
+        SHM.hh
+        SHMPosix.cc SHMPosix.hh
+        SHMSysV.cc SHMSysV.hh)
+
+    SET(CERTI_SEMAPHORE_SRCS
+        Semaphore.hh
+        SemaphorePosix.cc SemaphorePosix.hh
+        SemaphoreSysV.cc SemaphoreSysV.hh
+        )
+
+    SET(CERTI_SOCKET_SHM_SRC
+        SocketSHM.cc SocketSHM.hh
+        SocketSHMPosix.cc SocketSHMPosix.hh
+        SocketSHMSysV.cc SocketSHMSysV.hh
+	RingBuffer.cc RingBuffer.hh
+        )
+
+    LIST(APPEND CERTI_SOCKET_SRCS ${CERTI_SHM_SRCS} ${CERTI_SEMAPHORE_SRCS} ${CERTI_SOCKET_SHM_SRC})
+endif(WIN32)
+
 SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} SocketUDP.cc SocketMC.cc SocketUN.cc SocketUDP.hh SocketMC.hh SocketUN.hh)
 IF (WIN32)
     SET(CERTI_SOCKET_SRCS ${CERTI_SOCKET_SRCS} socketpair_win32.c)
@@ -206,7 +246,7 @@ SET_TARGET_PROPERTIES(CERTI PROPERTIES PROJECT_LABEL LibCERTI)
 TARGET_LINK_LIBRARIES(CERTI
     ${LIBXML2_LIBRARIES}
     ${GEN_LIBRARY}
-    ${SOCKET_LIBRARY})
+    ${SOCKET_LIBRARY} HLA)
 IF (MINGW)
     SET_TARGET_PROPERTIES(CERTI PROPERTIES LINK_FLAGS "-Wl,--output-def,${LIBRARY_OUTPUT_PATH}/libCERTI.def")
     INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/libCERTI.def
