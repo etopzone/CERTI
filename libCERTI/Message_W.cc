@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.40 2009/04/02 19:58:08 erk Exp $
+// $Id: Message_W.cc,v 3.41 2010/01/18 09:41:30 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -511,8 +511,8 @@ Message::writeBody(MessageBuffer &msgBuffer)
           // Body contains boolean, TickTime, TickTime
           case TICK_REQUEST:
             msgBuffer.write_bool(boolean);
-            msgBuffer.write_bytes((char *)&minTickTime, sizeof(minTickTime));
-            msgBuffer.write_bytes((char *)&maxTickTime, sizeof(maxTickTime));
+            msgBuffer.write_double(minTickTime);
+            msgBuffer.write_double(maxTickTime);
             break ;
 
           // Body contains objectClass, handleArray
@@ -609,4 +609,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.40 2009/04/02 19:58:08 erk Exp $
+// $Id: Message_W.cc,v 3.41 2010/01/18 09:41:30 gotthardp Exp $

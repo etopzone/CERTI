@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.37 2009/11/24 19:11:37 erk Exp $
+// $Id: Message_R.cc,v 3.38 2010/01/18 09:41:30 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -495,8 +495,8 @@ Message::readBody(MessageBuffer &msgBuffer)
           // Body contains boolean, TickTime, TickTime
           case TICK_REQUEST:
             boolean = msgBuffer.read_bool();
-            msgBuffer.read_bytes((char *)&minTickTime, sizeof(minTickTime));
-            msgBuffer.read_bytes((char *)&maxTickTime, sizeof(maxTickTime));
+            minTickTime = msgBuffer.read_double();
+            maxTickTime = msgBuffer.read_double();
             break ;
 
           // Body contains objectClass, handleArraySize,
@@ -649,4 +649,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.37 2009/11/24 19:11:37 erk Exp $
+// $Id: Message_R.cc,v 3.38 2010/01/18 09:41:30 gotthardp Exp $
