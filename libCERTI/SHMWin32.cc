@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <iostream.h>
-#include <string.h>
+#include <iostream>
+#include <string>
 
 #include "SHMWin32.hh"
 
