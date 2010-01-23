@@ -29,6 +29,9 @@
 
 // Specifics includes
 #ifdef _WIN32
+  #ifndef NOMINMAX
+  #define NOMINMAX
+  #endif
   #include <windows.h>
   #include <process.h>
   #include "SocketSHMWin32.hh"
