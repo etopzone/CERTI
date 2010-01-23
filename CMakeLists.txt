@@ -74,6 +74,7 @@ IF (NOT CMAKE_BUILD_TYPE)
    SET(CMAKE_BUILD_TYPE "Debug")               
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "debug library postfix, usually d on windows")
 
 # Force CMAKE_COMPILER_IS_GNUCC even if gcc used with ccache
 IF("${CMAKE_C_COMPILER}" MATCHES "ccache")
