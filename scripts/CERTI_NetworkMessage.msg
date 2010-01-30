@@ -28,7 +28,7 @@ package certi
 // for message exchanged between RTIA and RTIG
 // AKA CERTI Network Message
 native NetworkMessage {
-    language CXX [#include "NetworkMessage.hh"]
+    language CXX    [#include "NetworkMessage.hh"]
     language Python [import certi.NetworkMessage]
     language Java   [import certi.NetworkMessage]
 }
@@ -120,7 +120,7 @@ message NM_FOM_Interaction_Class {
 	required SpaceHandle space
 	required OrderType order
 	required TransportType transport
-        repeated NM_FOM_Parameter parameters
+    repeated NM_FOM_Parameter parameters
 }
 
 message NM_Close_Connexion : merge NetworkMessage {}

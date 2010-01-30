@@ -19,11 +19,22 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.24 2009/11/25 21:07:51 erk Exp $
+## $Id: GenerateMessages.py,v 1.25 2010/01/30 18:19:41 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
-The CERTI Message Generator
+The CERTI Message Generator.
+CERTI is an HLA RTI (High Level Architecture RunTime Infrastructure)
+which uses in its internal a lot of message based communication.
+Those messages:
+   should be as compact as possible in terms of memory consumption
+   should be easy to implement.
+
+The CERTI developer team did develop a message specification language
+inspired from Google Protocol buffer. CERTI message have several
+specifities which make Google Protocol buffer unusable for CERTI.
+
+
 """
 
 import os
@@ -1305,7 +1316,13 @@ class CXXGenerator(CodeGenerator):
                                                     
     def generateHeader(self,stream,factoryOnly=False):
         # write the usual header protecting MACRO
-        (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
+	supposedHeaderName=stream.name
+	if supposedHeaderName != "<stdout>":
+	   supposedHeaderName=os.path.basename(supposedHeaderName)
+           supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
+	   headerProtectMacroName = supposedHeaderName
+	else:
+           (headerProtectMacroName,ext) = os.path.splitext(self.AST.name)
         headerProtectMacroName = "%s_HH" % headerProtectMacroName.upper()
         stream.write("#ifndef %s\n"%headerProtectMacroName)
         stream.write("#define %s\n"%headerProtectMacroName)        
@@ -1352,6 +1369,7 @@ class CXXGenerator(CodeGenerator):
                 stream.write("typedef enum %s {\n" % enum.name)
                 self.indent()
                 first = True
+		lastname = (enum.values[len(enum.values)-1]).name
                 for enumval in enum.values:
                     if first:
                         stream.write(self.getIndent())
@@ -1359,7 +1377,10 @@ class CXXGenerator(CodeGenerator):
                         first=False
                     else:
                         stream.write(self.getIndent())
-                        stream.write("%s, " % enumval.name)
+			if (enumval.name==lastname):
+                            stream.write("%s " % enumval.name)		    
+			else:
+                            stream.write("%s, " % enumval.name)		    
                     self.writeComment(stream, enumval)
                 self.unIndent()      
                 stream.write(self.getIndent())          
@@ -1418,7 +1439,7 @@ class CXXGenerator(CodeGenerator):
                 # end private
                 
                 self.unIndent()
-                stream.write(self.getIndent() + "}\n")
+                stream.write(self.getIndent() + "};\n")
 
         # Generate Factory (if any)
         # @todo
@@ -1444,7 +1465,7 @@ class CXXGenerator(CodeGenerator):
             self.unIndent()
             #end private
             self.unIndent()
-            stream.write(self.getIndent()+"}\n\n")            
+            stream.write(self.getIndent()+"};\n\n")            
                         
         # may close any open namespaces 
         self.closeNamespaces(stream)
@@ -1567,10 +1588,10 @@ class CXXGenerator(CodeGenerator):
         self.indent()
         stream.write(self.getIndent()+self.commentLineBeginWith+" FIXME This is not thread safe\n")
         stream.write(self.getIndent()+"static MessageBuffer msgBuffer;\n")
-        stream.write(self.getIndent()+"NetworkMessage  msgGen;\n")
-        stream.write(self.getIndent()+"NetworkMessage* msg;\n\n")
+        stream.write(self.getIndent()+"%s  msgGen;\n" % receiver[0])
+        stream.write(self.getIndent()+"%s* msg;\n\n" % receiver[0])
         stream.write(self.getIndent()+self.commentLineBeginWith+" receive generic message \n")
-        stream.write(self.getIndent()+"msgGen.receive(socket,msgBuffer);\n")
+        stream.write(self.getIndent()+"msgGen.receive(stream,msgBuffer);\n")
         stream.write(self.getIndent()+self.commentLineBeginWith+" create specific message from type \n")
         
         stream.write(self.getIndent()+"msg = ");
@@ -1590,6 +1611,13 @@ class CXXGenerator(CodeGenerator):
         # add necessary standard includes
         stream.write("#include <vector>\n")
         stream.write("#include <string>\n")
+
+	# [Try to] add corresponding header include
+	supposedHeaderName=stream.name
+	if supposedHeaderName != "<stdout>":
+	   supposedHeaderName=os.path.basename(supposedHeaderName)
+           supposedHeaderName=os.path.splitext(supposedHeaderName)[0]
+	stream.write("#include \""+supposedHeaderName+".hh\"\n")
         # Generate namespace for specified package package 
         # we may have nested namespace
         self.openNamespaces(stream)
