@@ -221,9 +221,19 @@ public:
 	 */
 	virtual void deserialize(MessageBuffer& msgBuffer);
 
+	/**
+	 * Send a serialized message on a socket.
+	 * @param[in] socket the socket that should be used to send the message
+	 * @param[in] msgBuffer the buffer containing the serialized message
+	 */
 	void send(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
-	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
+	/**
+	 * Receive a serialized message from a socket.
+	 * @param[in] socket the socket used to received the message from
+	 * @param[out] msgBuffer the buffer were the read message will be written
+	 */
+	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 	void trace(const char* context);
 
     // Return a newly allocated ValueArray, exactly of size HandleArraySize.
@@ -383,6 +393,9 @@ public:
 
     void display(char *);
 
+protected:
+    std::string name ;
+
 private:
 
     // Read a Message Body from a Socket. Should be called after
@@ -421,12 +434,9 @@ private:
     void writeFEDid(MessageBuffer &msgBuffer);
     void writeFederationName(MessageBuffer &msgBuffer);
 
-    std::string label ;
-    std::string name ;
     std::string federateName ;
     std::string federationName ;
 
-    std::string tag ;
     std::string FEDid ;
 };
 

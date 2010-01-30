@@ -58,16 +58,16 @@ public:
 	SocketUN(SignalHandlerType theType = stSignalInterrupt);
 	~SocketUN();
 
-        int listenUN();
-        int connectUN(int port);
-        int acceptUN(unsigned msec);
+	int listenUN();
+	int connectUN(int port);
+	int acceptUN(unsigned msec);
 
-        SOCKET socketpair();
-        void setSocketFD(SOCKET fd) { _socket_un = fd; }
+	SOCKET socketpair();
+	void setSocketFD(SOCKET fd) { _socket_un = fd; }
 
 	bool isDataReady();
 
-        SOCKET returnSocket();
+	SOCKET returnSocket();
 
 	void send(const unsigned char *, size_t)		throw (NetworkError, NetworkSignal);
 	void receive(const unsigned char *, size_t)	throw (NetworkError, NetworkSignal);
@@ -75,7 +75,7 @@ public:
 protected:
 	void error(const char *) throw (NetworkError);
 
-        SOCKET _socket_un;
+	SOCKET _socket_un;
 
 	SignalHandlerType HandlerType ;
 
@@ -88,14 +88,14 @@ private:
 
 	PrettyDebug *pD ;
 
-	#ifdef SOCKUN_BUFFER_LENGTH
-		// This class can use a buffer to reduce the number of systems
-		// calls when reading a lot of small amouts of data. Each time a
-		// Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
+#ifdef SOCKUN_BUFFER_LENGTH
+// This class can use a buffer to reduce the number of systems
+	// calls when reading a lot of small amouts of data. Each time a
+	// Receive is made, it will try to read SOCKUN_BUFFER_LENGTH
 
-		char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
-		unsigned long RBLength ;
-	#endif
+	char ReadBuffer[SOCKUN_BUFFER_LENGTH] ;
+	unsigned long RBLength ;
+#endif
 };
 
 } // namespace certi
