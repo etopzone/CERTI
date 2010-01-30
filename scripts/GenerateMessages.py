@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.25 2010/01/30 18:19:41 erk Exp $
+## $Id: GenerateMessages.py,v 1.26 2010/01/30 23:13:48 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -33,8 +33,6 @@ Those messages:
 The CERTI developer team did develop a message specification language
 inspired from Google Protocol buffer. CERTI message have several
 specifities which make Google Protocol buffer unusable for CERTI.
-
-
 """
 
 import os

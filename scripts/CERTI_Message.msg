@@ -33,24 +33,82 @@ native Message {
     language Java   [import certi.Message]
 }
 
-message M_Create_Federation_Execution : merge Message {
+native ResignAction  {
+    representation uint16
+    language CXX [#include "RTItypes.hh"]	
+}
 
+native Handle {
+    representation uint32
+    language CXX [#include "certi.hh"]
+}
+
+native AttributeHandle {
+    representation uint32
+    language CXX [#include "certi.hh"]
+}
+
+native DimensionHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native InteractionClassHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native ObjectClassHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native ObjectHandle {
+    representation uint32
+    language CXX [#include "certi.hh"]
+}
+
+native ParameterHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native SpaceHandle {
+    representation uint16
+    language CXX [#include "certi.hh"]
+}
+
+native TransportType {
+    representation uint8
+    language CXX [#include "certi.hh"]
+}
+
+native OrderType {
+    representation uint8
+    language CXX [#include "certi.hh"]
+}
+
+message M_Create_Federation_Execution : merge Message {
+	required string federationName // the federation name
+	required string FEDid          // the Federation ID which is in fact a filename
 }
 
 message M_Destroy_Federation_Execution : merge Message {
-
+	required string federationName
 }
 
 message M_Join_Federation_Execution : merge Message {
-
+	required FederateHandle 
+	required string federationName
+	required string federateName
 }
 
 message M_Resign_Federation_Execution : merge Message {
-
+	required ResignAction resignAction;
 }
 
 message M_Register_Federation_Synchronization_Point : merge Message {
-
+        
 }
 message M_Synchronization_Point_Registration_Failed : merge Message {}
 message M_Synchronization_Point_Registration_Succeeded : merge Message {}
