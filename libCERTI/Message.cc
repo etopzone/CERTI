@@ -35,15 +35,12 @@ namespace certi {
 
 static PrettyDebug G("GENDOC",__FILE__) ;
 
-#define NONE -1
-
 Message::Message()
 {
     fed_time.setZero();
     exception = e_NO_EXCEPTION ;
     exceptionReason[0] = '\0' ;
     federateName[0] = '\0' ;
-    //federationName = NULL ;is now a string then...
     tag = "" ;
     name[0] = '\0' ;
     label[0] = '\0' ;
@@ -67,9 +64,8 @@ Message::Message()
     dimension = 0 ;
     number = 0 ;
     region = 0 ;
-    //FEDid = NULL ;now string
     valueArray.empty() ;
-}
+} /* end of Message default constructor */
 
 // ----------------------------------------------------------------------------
 /** Return a newly allocated ValueArray, exactly of size HandleArraySize.

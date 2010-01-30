@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: NetworkMessage.hh,v 3.54 2009/11/25 22:05:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.55 2010/01/30 15:24:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_NETWORK_MESSAGE_HH
@@ -158,13 +158,19 @@ public:
 
 	/**
 	 * Serialize the message into a buffer
+	 * @param[in] msgBuffer the serialization buffer
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
+
 	/**
 	 * DeSerialize the message from a buffer
+	 * @param[in] msgBuffer the deserialization buffer
 	 */
 	virtual void deserialize(MessageBuffer& msgBuffer);
 	
+	/**
+	 * Send a message buffer to the socket
+	 */
 	void send(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 	void receive(Socket* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
@@ -336,4 +342,4 @@ private:
 
 #endif // CERTI_NETWORK_MESSAGE_HH
 
-// $Id: NetworkMessage.hh,v 3.54 2009/11/25 22:05:19 erk Exp $
+// $Id: NetworkMessage.hh,v 3.55 2010/01/30 15:24:44 erk Exp $

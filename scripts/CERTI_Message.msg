@@ -28,10 +28,28 @@ package certi
 // for message exchanged between RTIA and Federate (libRTI)
 // AKA CERTI Message
 native Message {
-    language CXX [#include "Message.hh"]
+    language CXX    [#include "Message.hh"]
     language Python [import certi.Message]
     language Java   [import certi.Message]
 }
+
+message M_Create_Federation_Execution : merge Message {
+
+}
+
+message M_Destroy_Federation_Execution : merge Message {
+
+}
+
+message M_Join_Federation_Execution : merge Message {
+
+}
+
+message M_Resign_Federation_Execution : merge Message {
+
+}
+
+
 
 message M_Enable_Time_Regulation {
     required double fedTime

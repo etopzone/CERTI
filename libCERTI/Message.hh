@@ -20,8 +20,6 @@
 #ifndef CERTI_MESSAGE_HH
 #define CERTI_MESSAGE_HH
 
-
-
 #include "Exception.hh"
 #include "SocketUN.hh"
 #include "BasicMessage.hh"
@@ -35,49 +33,15 @@ namespace certi {
 
 /**
  * The Message class is used to formalize messages that are going to be
- * exchanged between the RTI and the federate.
+ * exchanged between the RTI and the federate. In fact with current
+ * CERTI architecture those messages are exchanged between the federate
+ * process (though libRTI call) and the RTIA process.
+ * In turn RTIA exchange messages with RTIG process.
  * @ingroup libCERTI
  */
 class CERTI_EXPORT Message : public BasicMessage
 {
 public:
-    struct MessageTimeStruct {
-        FederationTime date ; // Date, Logical Time, Lookahead, etc.
-        bool mode ; // IsRegulator or IsConstrained
-    };
-
-    struct MessageT_O_Struct {
-        ObjectClassHandle handle ;
-        UShort size ;
-        TransportType transport ;
-        OrderType order ;
-    };
-
-    struct MessageJ_R_Struct {
-        FederateHandle federate ; // Join
-        RTI::ResignAction action ; // Resign
-    };
-
-    struct MessageO_I_Struct {
-        ObjectClassHandle handle ;
-        UShort size ;
-        FederationTime date ;
-    };
-
-    struct Message_DDM {
-        SpaceHandle space ;
-        DimensionHandle dimension ;
-        RegionHandle region ;
-    };
-
-    // MessageHeaderUnion  deprecated
-    //union MessageHeaderUnion {
-    //    MessageTimeStruct time ;
-    //    MessageT_O_Struct T_O ;
-    //    MessageJ_R_Struct J_R ;
-    //    MessageO_I_Struct O_I ;
-    //    Message_DDM ddm ;
-    //};
 
     enum Type {
         NOT_USED = 0,
@@ -242,31 +206,25 @@ public:
 	LAST // should be the "last" (not used)
     };
 
-    // -- Structure de l'entete --
-    struct MessageHeader {
-        Type type ;
-        TypeException exception ;
-        UShort bodySize ;
-        FederationTime date ;
-        //MessageHeaderUnion VP ; // Variable Part deprecated
-    };
-
 public:
     Message();
 
 	/**
 	 * Serialize the message into a buffer
+	 * @param[in] msgBuffer the serialization buffer
 	 */
 	virtual void serialize(MessageBuffer& msgBuffer);
+
 	/**
 	 * DeSerialize the message from a buffer
+	 * @param[in] msgBuffer the deserialization buffer
 	 */
 	virtual void deserialize(MessageBuffer& msgBuffer);
 
 	void send(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 	void receive(SocketUN* socket, MessageBuffer& msgBuffer) throw (NetworkError, NetworkSignal);
 
-	 void trace(const char* context);
+	void trace(const char* context);
 
     // Return a newly allocated ValueArray, exactly of size HandleArraySize.
     // containing the actual Attrib/Param values.
@@ -463,10 +421,9 @@ private:
     void writeFEDid(MessageBuffer &msgBuffer);
     void writeFederationName(MessageBuffer &msgBuffer);
 
-    MessageHeader header ;
     std::string label ;
     std::string name ;
-    std::string  federateName ;
+    std::string federateName ;
     std::string federationName ;
 
     std::string tag ;
