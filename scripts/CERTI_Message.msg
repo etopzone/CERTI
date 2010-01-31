@@ -24,9 +24,10 @@
 // The messages related classes will be placed in the certi package
 package certi
 
-// Message is the base class
-// for message exchanged between RTIA and Federate (libRTI)
-// AKA CERTI Message
+// Message is the base class for
+// message exchanged between RTIA and Federate (libRTI) AKA CERTI Message. 
+// Every message which is a merge from Message will first include the content 
+// of a Message
 native Message {
     language CXX    [#include "Message.hh"]
     language Python [import certi.Message]
@@ -68,6 +69,11 @@ native ObjectHandle {
     language CXX [#include "certi.hh"]
 }
 
+native FederateHandle {
+    representation uint32
+    language CXX [#include "RTItypes.hh"]
+}
+
 native ParameterHandle {
     representation uint16
     language CXX [#include "certi.hh"]
@@ -98,17 +104,17 @@ message M_Destroy_Federation_Execution : merge Message {
 }
 
 message M_Join_Federation_Execution : merge Message {
-	required FederateHandle 
+	required FederateHandle federate
 	required string federationName
 	required string federateName
 }
 
 message M_Resign_Federation_Execution : merge Message {
-	required ResignAction resignAction;
+	required ResignAction resignAction
 }
 
-message M_Register_Federation_Synchronization_Point : merge Message {
-        
+message M_Register_Federation_Synchronization_Point : merge Message {        
+	repeated FederateHandle federateSet // the set of Federate which will participate to this sync point.
 }
 message M_Synchronization_Point_Registration_Failed : merge Message {}
 message M_Synchronization_Point_Registration_Succeeded : merge Message {}
@@ -125,28 +131,45 @@ message M_Federation_Not_Saved : merge Message {}
 message M_Request_Federation_Restore : merge Message {}
 message M_Request_Federation_Restore_Failed : merge Message {}
 message M_Request_Federation_Restore_Succeeded : merge Message {}
-message M_Initiate_Federate_Restore : merge Message {}
+
+message M_Initiate_Federate_Restore : merge Message {
+	required FederateHandle federate
+}
 message M_Federate_Restore_Complete : merge Message {}
 message M_Federate_Restore_Not_Complete : merge Message {}
 message M_Federation_Restored : merge Message {}
 message M_Federation_Not_Restored : merge Message {}
 message M_Federation_Restore_Begun : merge Message {}
 
- // Declaration
+// Declaration
 message M_Publish_Object_Class : merge Message {}
-message M_Unpublish_Object_Class : merge Message {}
+
+message M_Unpublish_Object_Class : merge Message {
+	required ObjectClassHandle objectClass
+}
 message M_Publish_Interaction_Class : merge Message {}
 message M_Unpublish_Interaction_Class : merge Message {}
 message M_Subscribe_Object_Class_Attributes : merge Message {}
-message M_Unsubscribe_Object_Class : merge Message {}
+
+message M_Unsubscribe_Object_Class : merge Message {
+	required ObjectClassHandle objectClass
+}
+
 message M_Subscribe_Interaction_Class : merge Message {}
 message M_Unsubscribe_Interaction_Class : merge Message {}
-message M_Start_Registration_For_Object_Class : merge Message {}
-message M_Stop_Registration_For_Object_Class : merge Message {}
+
+message M_Start_Registration_For_Object_Class : merge Message {
+	required ObjectClassHandle objectClass
+}
+
+message M_Stop_Registration_For_Object_Class : merge Message {
+	required ObjectClassHandle objectClass
+}
+
 message M_Turn_Interactions_On : merge Message {}
 message M_Turn_Interactions_Off : merge Message {}
 
-        // Object
+// Object
 message M_Register_Object_Instance : merge Message {}
 message M_Update_Attribute_Values : merge Message {}
 message M_Discover_Object_Instance : merge Message {}
@@ -166,18 +189,35 @@ message M_Attributes_Out_Of_Scope : merge Message {}
 message M_Turn_Updates_On_For_Object_Instance : merge Message {}
 message M_Turn_Updates_Off_For_Object_Instance : merge Message {}
 
-        // Ownership
+// Ownership management
 message M_Request_Attribute_Ownership_Divestiture : merge Message {}
 message M_Request_Attribute_Ownership_Assumption : merge Message {}
-message M_Negotiated_Attribute_Ownership_Divestiture : merge Message {}
+
+message M_Negotiated_Attribute_Ownership_Divestiture : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+
 message M_Attribute_Ownership_Divestiture_Notification : merge Message {}
 message M_Attribute_Ownership_Acquisition_Notification : merge Message {}
 message M_Request_Attribute_Ownership_Acquisition : merge Message {}
 message M_Request_Attribute_Ownership_Release : merge Message {}
-message M_Query_Attribute_Ownership : merge Message {}
+
+message M_Query_Attribute_Ownership : merge Message {
+	required ObjectHandle object
+	required AttributeHandle attribute
+	required FederateHandle federate
+}
+
 message M_Inform_Attribute_Ownership : merge Message {}
 message M_Is_Attribute_Owned_By_Federate : merge Message {}
-message M_Attribute_Is_Not_Owned : merge Message {}
+
+message M_Attribute_Is_Not_Owned : merge Message {
+	required ObjectHandle object
+	required AttributeHandle attribute
+	required FederateHandle federate
+}
+
 message M_Attribute_Owned_By_Rti : merge Message {}
 message M_Attribute_Ownership_Acquisition_If_Available : merge Message {}
 message M_Attribute_Ownership_Unavailable : merge Message {}
