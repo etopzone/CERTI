@@ -17,7 +17,7 @@ SET(RTI_LIB_INCLUDE
    ../include/NullFederateAmbassador.hh
    ../include/RTI.hh
    ../include/RTIambServices.hh
-   ../include/RTItypes.hh
+   ${CMAKE_BINARY_DIR}/include/RTItypes.hh
 )
 
 #SOURCE_GROUP("RTI\\Header" FILES ${RTI_LIB_INCLUDE})
