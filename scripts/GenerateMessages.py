@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.26 2010/01/30 23:13:48 erk Exp $
+## $Id: GenerateMessages.py,v 1.27 2010/02/02 22:14:58 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -33,6 +33,16 @@ Those messages:
 The CERTI developer team did develop a message specification language
 inspired from Google Protocol buffer. CERTI message have several
 specifities which make Google Protocol buffer unusable for CERTI.
+
+The present module is meant to take a message specification language
+input and produce various language specific output (C++, Java, Python).
+The generator uses the Python PLY module (http://www.dabeaz.com/ply/)
+for parsing the message specification language. The definition
+of the language itself should be easy to understand from the PLY
+grammar but here comes some introduction:
+
+TBD
+
 """
 
 import os

@@ -191,7 +191,10 @@ message M_Turn_Updates_Off_For_Object_Instance : merge Message {}
 
 // Ownership management
 message M_Request_Attribute_Ownership_Divestiture : merge Message {}
-message M_Request_Attribute_Ownership_Assumption : merge Message {}
+message M_Request_Attribute_Ownership_Assumption : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
 
 message M_Negotiated_Attribute_Ownership_Divestiture : merge Message {
 	required ObjectHandle object
@@ -200,17 +203,30 @@ message M_Negotiated_Attribute_Ownership_Divestiture : merge Message {
 
 message M_Attribute_Ownership_Divestiture_Notification : merge Message {}
 message M_Attribute_Ownership_Acquisition_Notification : merge Message {}
-message M_Request_Attribute_Ownership_Acquisition : merge Message {}
-message M_Request_Attribute_Ownership_Release : merge Message {}
+message M_Request_Attribute_Ownership_Acquisition : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
+message M_Request_Attribute_Ownership_Release : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
 
 message M_Query_Attribute_Ownership : merge Message {
+	required ObjectHandle object
+	required AttributeHandle attribute	
+}
+
+message M_Inform_Attribute_Ownership : merge Message {
 	required ObjectHandle object
 	required AttributeHandle attribute
 	required FederateHandle federate
 }
 
-message M_Inform_Attribute_Ownership : merge Message {}
-message M_Is_Attribute_Owned_By_Federate : merge Message {}
+message M_Is_Attribute_Owned_By_Federate : merge Message {
+	required ObjectHandle object
+	required AttributeHandle attribute
+}
 
 message M_Attribute_Is_Not_Owned : merge Message {
 	required ObjectHandle object
@@ -223,7 +239,10 @@ message M_Attribute_Ownership_Acquisition_If_Available : merge Message {}
 message M_Attribute_Ownership_Unavailable : merge Message {}
 message M_Unconditional_Attribute_Ownership_Divestiture : merge Message {}
 message M_Attribute_Ownership_Acquisition : merge Message {}
-message M_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge Message {}
+message M_Cancel_Negotiated_Attribute_Ownership_Divestiture : merge Message {
+	required ObjectHandle object
+	repeated AttributeHandle attributes
+}
 message M_Attribute_Ownership_Release_Response : merge Message {}
 message M_Cancel_Attribute_Ownership_Acquisition : merge Message {}
 message M_Confirm_Attribute_Ownership_Acquisition_Cancellation : merge Message {}
