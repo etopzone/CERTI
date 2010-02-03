@@ -160,8 +160,15 @@ message M_Publish_Object_Class : merge Message {
 message M_Unpublish_Object_Class : merge Message {
 	required ObjectClassHandle objectClass
 }
-message M_Publish_Interaction_Class : merge Message {}
-message M_Unpublish_Interaction_Class : merge Message {}
+
+message M_Publish_Interaction_Class : merge Message {
+	required InteractionClassHandle  interactionClass
+}
+
+message M_Unpublish_Interaction_Class : merge Message {
+	required InteractionClassHandle  interactionClass
+}
+
 message M_Subscribe_Object_Class_Attributes : merge Message {
 	required ObjectClassHandle objectClass
         repeated Handle handles
@@ -171,8 +178,13 @@ message M_Unsubscribe_Object_Class : merge Message {
 	required ObjectClassHandle objectClass
 }
 
-message M_Subscribe_Interaction_Class : merge Message {}
-message M_Unsubscribe_Interaction_Class : merge Message {}
+message M_Subscribe_Interaction_Class : merge Message {
+	required InteractionClassHandle  interactionClass
+}
+
+message M_Unsubscribe_Interaction_Class : merge Message {
+	required InteractionClassHandle  interactionClass
+}
 
 message M_Start_Registration_For_Object_Class : merge Message {
 	required ObjectClassHandle objectClass
@@ -182,8 +194,13 @@ message M_Stop_Registration_For_Object_Class : merge Message {
 	required ObjectClassHandle objectClass
 }
 
-message M_Turn_Interactions_On : merge Message {}
-message M_Turn_Interactions_Off : merge Message {}
+message M_Turn_Interactions_On : merge Message {
+	required InteractionClassHandle  interactionClass
+}
+
+message M_Turn_Interactions_Off : merge Message {
+	required InteractionClassHandle  interactionClass
+}
 
 // Object
 message M_Register_Object_Instance : merge Message {
@@ -260,9 +277,21 @@ message M_Change_Interaction_Transportation_Type : merge Message {
         required OrderType         order
 }
 
-message M_Request_Object_Attribute_Value_Update : merge Message {}
-message M_Request_Class_Attribute_Value_Update : merge Message {}
-message M_Provide_Attribute_Value_Update : merge Message {}
+message M_Request_Object_Attribute_Value_Update : merge Message {
+	required ObjectHandle object
+        repeated Handle       handles
+}
+
+message M_Request_Class_Attribute_Value_Update : merge Message {
+	required ObjectClassHandle objectClass
+        repeated Handle            handles
+}
+
+message M_Provide_Attribute_Value_Update : merge Message {
+	required ObjectHandle object
+        repeated Handle       handles	
+}
+
 message M_Attributes_In_Scope : merge Message {}
 message M_Attributes_Out_Of_Scope : merge Message {}
 message M_Turn_Updates_On_For_Object_Instance : merge Message {}
@@ -341,17 +370,37 @@ message M_Change_Interaction_Order_Type : merge Message {
 }
 
 message M_Enable_Time_Regulation : merge Message {
-    required double fedTime
+    required onoff  enable
     required double lookahead
 }
-message M_Disable_Time_Regulation : merge Message {}
-message M_Enable_Time_Constrained : merge Message {}
-message M_Disable_Time_Constrained : merge Message {}
+
+message M_Disable_Time_Regulation : merge Message {
+    required onoff  enable
+    required double lookahead
+}
+
+message M_Enable_Time_Constrained : merge Message {
+    required onoff  enable
+    required double lookahead
+}
+
+message M_Disable_Time_Constrained : merge Message {
+    required onoff  enable
+    required double lookahead
+}
+
 message M_Query_Lbts : merge Message {}
 message M_Query_Federate_Time : merge Message {}
 message M_Query_Min_Next_Event_Time : merge Message {}
-message M_Modify_Lookahead : merge Message {}
-message M_Query_Lookahead : merge Message {}
+
+message M_Modify_Lookahead : merge Message {
+	required double lookahead
+}
+
+message M_Query_Lookahead : merge Message {
+	required double lookahead
+}
+
 message M_Retract : merge Message {}
 message M_Request_Retraction : merge Message {}
 message M_Time_Advance_Request : merge Message {}
@@ -372,8 +421,14 @@ message M_Ddm_Create_Region : merge Message {
         required RegionHandle region
 }
 
-message M_Ddm_Modify_Region : merge Message {}
-message M_Ddm_Delete_Region : merge Message {}
+message M_Ddm_Modify_Region : merge Message {
+	required RegionHandle region
+	//repeated M_Extents extent    readExtents(msgBuffer);
+}
+
+message M_Ddm_Delete_Region : merge Message {
+	required RegionHandle region
+}
 
 message M_Ddm_Register_Object : merge Message {
 	required ObjectClassHandle objectClass
@@ -467,8 +522,15 @@ message M_Get_Parameter_Name : merge Message {
         required ParameterHandle        parameter
 }
 
-message M_Get_Object_Instance_Handle : merge Message {}
-message M_Get_Object_Instance_Name : merge Message {}
+message M_Get_Object_Instance_Handle : merge Message {
+	required ObjectHandle object
+	required string       name
+}
+
+message M_Get_Object_Instance_Name : merge Message {
+	required ObjectHandle object
+	required string       name
+}
 
 message M_Get_Space_Handle : merge Message {
 	required string      name
@@ -535,7 +597,13 @@ message M_Enable_Attribute_Scope_Advisory_Switch : merge Message {}
 message M_Disable_Attribute_Scope_Advisory_Switch : merge Message {}
 message M_Enable_Interaction_Relevance_Advisory_Switch : merge Message {}
 message M_Disable_Interaction_Relevance_Advisory_Switch : merge Message {}
-message M_Tick_Request : merge Message {}
+
+message M_Tick_Request : merge Message {
+	required bool    multiple
+        required double  minTickTime
+        required double  maxTickTime
+}
+
 message M_Tick_Request_Next : merge Message {}
 message M_Tick_Request_Stop : merge Message {}
 
