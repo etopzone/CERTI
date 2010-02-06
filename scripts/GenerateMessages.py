@@ -19,7 +19,7 @@
 ## Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ## USA
 ##
-## $Id: GenerateMessages.py,v 1.28 2010/02/04 08:16:13 erk Exp $
+## $Id: GenerateMessages.py,v 1.29 2010/02/06 19:01:03 erk Exp $
 ## ----------------------------------------------------------------------------
 
 """
@@ -453,7 +453,7 @@ class MessageAST(ASTElement):
         @param typename: the name of the type
         @type typename: C{string}  
         """
-        return self.getType(typename)!=None
+        return self.getType(typename)!=None        
     
     def getType(self,typename):
         if isinstance(typename,type("")):
@@ -573,7 +573,9 @@ class MessageType(ASTElement):
     Represents a message type.
     
     @param fields: the fields of this C{MessageType}
-    @type fields: C{list} of C{MessageType.MessageField}  
+    @type fields: C{list} of C{MessageType.MessageField}
+    @param merge: the merger of this C{MessageType}
+    @type merge: a C{MessageType}  
     """
     def __init__(self,name,fields,merge):
         super(MessageType,self).__init__(name=name)
@@ -583,19 +585,27 @@ class MessageType(ASTElement):
     def __repr__(self):
         res = "message %s " % self.name
         return res
-    
-    
+        
     def hasMerge(self):
         return self.merge != None
     
     class MessageField(ASTElement):
-        """ Represents a message type
+        """ Represents a message field            
         """
         def __init__(self,qualifier,typeid,name,defaultValue=None):
             super(MessageType.MessageField,self).__init__(name=name)
             self.qualifier    = qualifier
+            """ The field qualifier, which may be
+                 - repeated
+                 - optional
+                 - required 
+            """
             self.typeid       = typeid
+            """ The type of the field
+            """
             self.defaultValue = defaultValue
+            """ The default value for this field
+            """
             
         def hasDefaultValue(self):
             return self.defaultValue != None
@@ -1559,9 +1569,12 @@ class CXXGenerator(CodeGenerator):
             if methodName == 'read_string':
                 stream.write("msgBuffer."+methodName+"("+field.name+indexField+");\n")
             else:
-                stream.write(field.name+indexField+" = msgBuffer."+methodName+"();\n")
-            
-        
+                # We may have to vast in order to enforce conversion
+                if isinstance(field.typeid,NativeType):
+                   stream.write(field.name+indexField+" = static_cast<"+field.typeid.name+">(msgBuffer."+methodName+"());\n")
+                else:
+                   stream.write(field.name+indexField+" = msgBuffer."+methodName+"();\n")
+                    
         if field.qualifier == "optional":
             self.unIndent()
             stream.write(self.getIndent()+"}\n")
@@ -1577,7 +1590,7 @@ class CXXGenerator(CodeGenerator):
         stream.write(self.getIndent() + "switch (type) {\n")
         self.indent()
         for e in self.AST.eMessageType.values:            
-            stream.write(self.getIndent()+"case NetworkMessage::%s:\n" % e.name)
+            stream.write(self.getIndent()+"case %s::%s:\n" % (creator[0],e.name))
             self.indent()
             if None==e.type:
                 stream.write(self.getIndent()+"throw RTIinternalError(\"%s message type should not be used!!\");\n"%e.name)
@@ -1586,9 +1599,10 @@ class CXXGenerator(CodeGenerator):
             stream.write(self.getIndent()+"break;\n")
             self.unIndent()        
         self.unIndent()
-        stream.write(self.getIndent()+ "} "+self.commentLineBeginWith+" end if switch (type)\n")
+        stream.write(self.getIndent()+ "} "+self.commentLineBeginWith+" end if switch (type)\n")        
+        stream.write(self.getIndent()+ "return msg;\n")
         self.unIndent()
-        stream.write(self.getIndent()+"}\n\n")
+        stream.write(self.getIndent()+("} /* end of %s::%s */\n\n" % (creator[1],creator[2])))
     
     def writeFactoryReceiver(self,stream):
         receiver = (self.AST.factory.receiver[0],self.AST.factory.name)+self.AST.factory.receiver[1:]
@@ -1609,7 +1623,7 @@ class CXXGenerator(CodeGenerator):
         stream.write(self.getIndent()+"msg->deserialize(msgBuffer);\n")
         stream.write(self.getIndent()+"return msg;\n")
         self.unIndent()
-        stream.write(self.getIndent()+"}\n\n")
+        stream.write(self.getIndent()+("} /* end of %s::%s */ \n\n" % (receiver[1],receiver[2])))
     
         
     def generateBody(self,stream,factoryOnly=False):

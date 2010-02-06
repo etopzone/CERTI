@@ -34,9 +34,45 @@ native Message {
     language Java   [import certi.Message]
 }
 
+native AttributeHandleSet {
+    language CXX  [include "RTItypes.hh"]
+    language Java [import hla.rti.AttributeHandleSet;]
+}
+
+native LogicalTimeInterval {
+    language CXX  [//unimplemented]
+    language Java [import hla.rti.AttributeHandleSet;]
+}
+
+native SuppliedAttributes {
+    language CXX  [//unimplemented]
+    language Java [import hla.rti.SuppliedAttributes;]
+}
+
+native FederateHandleSet {
+    language CXX  [#include "RTItypes.hh"]
+    language Java [import hla.rti.FederateHandleSet;]
+}
+
+native SuppliedParameters {
+    language CXX  [//unimplemented]
+    language Java [import hla.rti.SuppliedParameters;]
+}
+
+native Regions {
+    language CXX  [#include "RTItypes.hh"]
+    language Java [import hla.rti.Regions;]
+}
+
+native Extents {
+    language CXX  [//unimplemented]
+    language Java [import hla.rti.Extents;]
+}
+
 native ResignAction  {
     representation uint16
     language CXX [#include "RTItypes.hh"]	
+    language CXX [typedef RTI::ResignAction ResignAction;]	
 }
 
 native Handle {
@@ -89,11 +125,6 @@ native SpaceHandle {
     language CXX [#include "certi.hh"]
 }
 
-native InteractionHandle {
-    representation uint32
-    language CXX [#include "certi.hh"]
-}
-
 native TransportType {
     representation uint8
     language CXX [#include "certi.hh"]
@@ -102,6 +133,10 @@ native TransportType {
 native OrderType {
     representation uint8
     language CXX [#include "certi.hh"]
+}
+
+// Closing connexion message
+message M_Close_Connexion : merge Message {
 }
 
 message M_Create_Federation_Execution : merge Message {
@@ -272,9 +307,9 @@ message M_Change_Attribute_Transportation_Type : merge Message {
 }
 
 message M_Change_Interaction_Transportation_Type : merge Message {
-	required InteractionHandle interactionClass
-        required TransportType     transport
-        required OrderType         order
+	required InteractionClassHandle interactionClass
+        required TransportType          transport
+        required OrderType              order
 }
 
 message M_Request_Object_Attribute_Value_Update : merge Message {
@@ -364,9 +399,9 @@ message M_Change_Attribute_Order_Type : merge Message {
 }
 
 message M_Change_Interaction_Order_Type : merge Message {
-	required InteractionHandle interactionClass
-        required TransportType     transport
-        required OrderType         order
+	required InteractionClassHandle interactionClass
+        required TransportType          transport
+        required OrderType              order
 }
 
 message M_Enable_Time_Regulation : merge Message {
