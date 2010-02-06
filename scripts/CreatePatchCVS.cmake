@@ -24,6 +24,5 @@ EXECUTE_PROCESS(COMMAND ${CVS_COMMAND} diff -u
 IF(PATCHOK)                
     MESSAGE(STATUS "CVS Patch:: Patch file is : ${ODIR}/patch.diff")
 ELSE(PATCHOK)   
-    MESSAGE(STATUS "Possible Error: ${PATCH_OK}")
-    MESSAGE(SEND_ERROR "CVS Patch:: FAILED")
+    MESSAGE(STATUS "Probably void patch content or diff failed: NO PATCH.")
 ENDIF(PATCHOK)          
