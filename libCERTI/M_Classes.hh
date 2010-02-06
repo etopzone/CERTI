@@ -1,14 +1,19 @@
-// Generated on 2010 January Sat, 30 at 19:11:55 by the CERTI message generator
+// Generated on 2010 February Sat, 06 at 19:51:15 by the CERTI message generator
 #ifndef M_CLASSES_HH
 #define M_CLASSES_HH
 // ****-**** Global System includes ****-****
 #include <vector>
 #include <string>
 // ****-**** Includes coming from native types ****-****
-// Message is the base class
-// for message exchanged between RTIA and Federate (libRTI)
-// AKA CERTI Message
+// Message is the base class for
+// message exchanged between RTIA and Federate (libRTI) AKA CERTI Message. 
+// Every message which is a merge from Message will first include the content 
+// of a Message
 #include "Message.hh"
+
+#include "RTItypes.hh"
+
+#include "certi.hh"
 
 #include "SocketUN.hh"
 // ----------------------------------------------------------------------------
@@ -40,12 +45,15 @@ namespace certi {
    //     - by included headers (see above)
    //     - with typedef (see below [if any])
 
+   typedef RTI::ResignAction ResignAction;
+
    typedef SocketUN* StreamType;
 
    typedef Message::Type M_Type;
 
    typedef enum CERTI_Message_MessageType {
       NOT_USED = 0, 
+      M_CLOSE_CONNEXION, 
       M_CREATE_FEDERATION_EXECUTION, 
       M_DESTROY_FEDERATION_EXECUTION, 
       M_JOIN_FEDERATION_EXECUTION, 
@@ -190,13 +198,31 @@ namespace certi {
       M_TICK_REQUEST_STOP, 
       LAST 
    } CERTI_Message_MessageType_t; //end of enum CERTI_Message_MessageType 
+   // Closing connexion message
+   class CERTI_EXPORT M_Close_Connexion : public Message {
+      public:
+         typedef Message Super;
+         M_Close_Connexion();
+         virtual ~M_Close_Connexion();
+      protected:
+      private:
+   };
 
    class CERTI_EXPORT M_Create_Federation_Execution : public Message {
       public:
          typedef Message Super;
          M_Create_Federation_Execution();
          virtual ~M_Create_Federation_Execution();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getFederationName() const {return federationName;}
+         void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
+         const std::string& getFEDid() const {return FEDid;}
+         void setFEDid(const std::string& newFEDid) {FEDid=newFEDid;}
       protected:
+         std::string federationName;// the federation name
+         std::string FEDid;// the Federation ID which is in fact a filename
       private:
    };
 
@@ -205,7 +231,13 @@ namespace certi {
          typedef Message Super;
          M_Destroy_Federation_Execution();
          virtual ~M_Destroy_Federation_Execution();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getFederationName() const {return federationName;}
+         void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
       protected:
+         std::string federationName;
       private:
    };
 
@@ -214,7 +246,19 @@ namespace certi {
          typedef Message Super;
          M_Join_Federation_Execution();
          virtual ~M_Join_Federation_Execution();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const FederateHandle& getFederate() const {return federate;}
+         void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
+         const std::string& getFederationName() const {return federationName;}
+         void setFederationName(const std::string& newFederationName) {federationName=newFederationName;}
+         const std::string& getFederateName() const {return federateName;}
+         void setFederateName(const std::string& newFederateName) {federateName=newFederateName;}
       protected:
+         FederateHandle federate;
+         std::string federationName;
+         std::string federateName;
       private:
    };
 
@@ -223,7 +267,13 @@ namespace certi {
          typedef Message Super;
          M_Resign_Federation_Execution();
          virtual ~M_Resign_Federation_Execution();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ResignAction resignAction;
       private:
    };
 
@@ -232,7 +282,16 @@ namespace certi {
          typedef Message Super;
          M_Register_Federation_Synchronization_Point();
          virtual ~M_Register_Federation_Synchronization_Point();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         uint32_t getNumFederateSet() const {return federateSet.size();}
+         void setNumFederateSet(uint32_t num) {federateSet.resize(num);}
+         const FederateHandle& getFederateSet(uint32_t rank) const {return federateSet[rank];}
+         FederateHandle& getFederateSet(uint32_t rank) {return federateSet[rank];}
+         void setFederateSet(const FederateHandle& newFederateSet, uint32_t rank) {federateSet[rank]=newFederateSet;}
       protected:
+         std::vector<FederateHandle> federateSet;// the set of Federate which will participate to this sync point.
       private:
    };
 
@@ -376,7 +435,13 @@ namespace certi {
          typedef Message Super;
          M_Initiate_Federate_Restore();
          virtual ~M_Initiate_Federate_Restore();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const FederateHandle& getFederate() const {return federate;}
+         void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
       protected:
+         FederateHandle federate;
       private:
    };
 
@@ -430,7 +495,19 @@ namespace certi {
          typedef Message Super;
          M_Publish_Object_Class();
          virtual ~M_Publish_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectClassHandle objectClass;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -439,7 +516,13 @@ namespace certi {
          typedef Message Super;
          M_Unpublish_Object_Class();
          virtual ~M_Unpublish_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
       protected:
+         ObjectClassHandle objectClass;
       private:
    };
 
@@ -448,7 +531,13 @@ namespace certi {
          typedef Message Super;
          M_Publish_Interaction_Class();
          virtual ~M_Publish_Interaction_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
 
@@ -457,7 +546,13 @@ namespace certi {
          typedef Message Super;
          M_Unpublish_Interaction_Class();
          virtual ~M_Unpublish_Interaction_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
 
@@ -466,7 +561,19 @@ namespace certi {
          typedef Message Super;
          M_Subscribe_Object_Class_Attributes();
          virtual ~M_Subscribe_Object_Class_Attributes();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectClassHandle objectClass;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -475,7 +582,13 @@ namespace certi {
          typedef Message Super;
          M_Unsubscribe_Object_Class();
          virtual ~M_Unsubscribe_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
       protected:
+         ObjectClassHandle objectClass;
       private:
    };
 
@@ -484,7 +597,13 @@ namespace certi {
          typedef Message Super;
          M_Subscribe_Interaction_Class();
          virtual ~M_Subscribe_Interaction_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
 
@@ -493,7 +612,13 @@ namespace certi {
          typedef Message Super;
          M_Unsubscribe_Interaction_Class();
          virtual ~M_Unsubscribe_Interaction_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
 
@@ -502,7 +627,13 @@ namespace certi {
          typedef Message Super;
          M_Start_Registration_For_Object_Class();
          virtual ~M_Start_Registration_For_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
       protected:
+         ObjectClassHandle objectClass;
       private:
    };
 
@@ -511,7 +642,13 @@ namespace certi {
          typedef Message Super;
          M_Stop_Registration_For_Object_Class();
          virtual ~M_Stop_Registration_For_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
       protected:
+         ObjectClassHandle objectClass;
       private:
    };
 
@@ -520,7 +657,13 @@ namespace certi {
          typedef Message Super;
          M_Turn_Interactions_On();
          virtual ~M_Turn_Interactions_On();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
 
@@ -529,7 +672,13 @@ namespace certi {
          typedef Message Super;
          M_Turn_Interactions_Off();
          virtual ~M_Turn_Interactions_Off();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
       protected:
+         InteractionClassHandle interactionClass;
       private:
    };
    // Object
@@ -538,7 +687,19 @@ namespace certi {
          typedef Message Super;
          M_Register_Object_Instance();
          virtual ~M_Register_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::string objectName;
       private:
    };
 
@@ -547,7 +708,31 @@ namespace certi {
          typedef Message Super;
          M_Update_Attribute_Values();
          virtual ~M_Update_Attribute_Values();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandle() const {return handle.size();}
+         void setNumHandle(uint32_t num) {handle.resize(num);}
+         const Handle& getHandle(uint32_t rank) const {return handle[rank];}
+         Handle& getHandle(uint32_t rank) {return handle[rank];}
+         void setHandle(const Handle& newHandle, uint32_t rank) {handle[rank]=newHandle;}
+         uint32_t getNumAttributeValues() const {return attributeValues.size();}
+         void setNumAttributeValues(uint32_t num) {attributeValues.resize(num);}
+         const std::string& getAttributeValues(uint32_t rank) const {return attributeValues[rank];}
+         std::string& getAttributeValues(uint32_t rank) {return attributeValues[rank];}
+         void setAttributeValues(const std::string& newAttributeValues, uint32_t rank) {attributeValues[rank]=newAttributeValues;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::vector<Handle> handle;
+         std::vector<std::string> attributeValues;// FIXME check this one
+         ResignAction resignAction;
       private:
    };
 
@@ -556,7 +741,22 @@ namespace certi {
          typedef Message Super;
          M_Discover_Object_Instance();
          virtual ~M_Discover_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::string objectName;
+         ResignAction resignAction;
       private:
    };
 
@@ -565,7 +765,31 @@ namespace certi {
          typedef Message Super;
          M_Reflect_Attribute_Values();
          virtual ~M_Reflect_Attribute_Values();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandle() const {return handle.size();}
+         void setNumHandle(uint32_t num) {handle.resize(num);}
+         const Handle& getHandle(uint32_t rank) const {return handle[rank];}
+         Handle& getHandle(uint32_t rank) {return handle[rank];}
+         void setHandle(const Handle& newHandle, uint32_t rank) {handle[rank]=newHandle;}
+         uint32_t getNumAttributeValues() const {return attributeValues.size();}
+         void setNumAttributeValues(uint32_t num) {attributeValues.resize(num);}
+         const std::string& getAttributeValues(uint32_t rank) const {return attributeValues[rank];}
+         std::string& getAttributeValues(uint32_t rank) {return attributeValues[rank];}
+         void setAttributeValues(const std::string& newAttributeValues, uint32_t rank) {attributeValues[rank]=newAttributeValues;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::vector<Handle> handle;
+         std::vector<std::string> attributeValues;// FIXME check this one
+         ResignAction resignAction;
       private:
    };
 
@@ -574,7 +798,31 @@ namespace certi {
          typedef Message Super;
          M_Send_Interaction();
          virtual ~M_Send_Interaction();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getNumValues() const {return values.size();}
+         void setNumValues(uint32_t num) {values.resize(num);}
+         const std::string& getValues(uint32_t rank) const {return values[rank];}
+         std::string& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const std::string& newValues, uint32_t rank) {values[rank]=newValues;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::vector<Handle> handles;
+         std::vector<std::string> values;
+         RegionHandle region;
+         ResignAction resignAction;
       private:
    };
 
@@ -583,7 +831,31 @@ namespace certi {
          typedef Message Super;
          M_Receive_Interaction();
          virtual ~M_Receive_Interaction();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
+         uint32_t getNumValues() const {return values.size();}
+         void setNumValues(uint32_t num) {values.resize(num);}
+         const std::string& getValues(uint32_t rank) const {return values[rank];}
+         std::string& getValues(uint32_t rank) {return values[rank];}
+         void setValues(const std::string& newValues, uint32_t rank) {values[rank]=newValues;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::vector<Handle> handles;
+         std::vector<std::string> values;
+         RegionHandle region;
+         ResignAction resignAction;
       private:
    };
 
@@ -592,7 +864,22 @@ namespace certi {
          typedef Message Super;
          M_Delete_Object_Instance();
          virtual ~M_Delete_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::string objectName;
+         ResignAction resignAction;
       private:
    };
 
@@ -610,7 +897,22 @@ namespace certi {
          typedef Message Super;
          M_Remove_Object_Instance();
          virtual ~M_Remove_Object_Instance();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getObjectName() const {return objectName;}
+         void setObjectName(const std::string& newObjectName) {objectName=newObjectName;}
+         const ResignAction& getResignAction() const {return resignAction;}
+         void setResignAction(const ResignAction& newResignAction) {resignAction=newResignAction;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::string objectName;
+         ResignAction resignAction;
       private:
    };
 
@@ -619,7 +921,25 @@ namespace certi {
          typedef Message Super;
          M_Change_Attribute_Transportation_Type();
          virtual ~M_Change_Attribute_Transportation_Type();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         TransportType transport;
+         OrderType order;
+         ObjectHandle object;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -628,7 +948,19 @@ namespace certi {
          typedef Message Super;
          M_Change_Interaction_Transportation_Type();
          virtual ~M_Change_Interaction_Transportation_Type();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
       protected:
+         InteractionClassHandle interactionClass;
+         TransportType transport;
+         OrderType order;
       private:
    };
 
@@ -637,7 +969,19 @@ namespace certi {
          typedef Message Super;
          M_Request_Object_Attribute_Value_Update();
          virtual ~M_Request_Object_Attribute_Value_Update();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectHandle object;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -646,7 +990,19 @@ namespace certi {
          typedef Message Super;
          M_Request_Class_Attribute_Value_Update();
          virtual ~M_Request_Class_Attribute_Value_Update();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectClassHandle objectClass;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -655,7 +1011,19 @@ namespace certi {
          typedef Message Super;
          M_Provide_Attribute_Value_Update();
          virtual ~M_Provide_Attribute_Value_Update();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectHandle object;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -694,7 +1062,7 @@ namespace certi {
       protected:
       private:
    };
-   // Ownership
+   // Ownership management
    class CERTI_EXPORT M_Request_Attribute_Ownership_Divestiture : public Message {
       public:
          typedef Message Super;
@@ -709,7 +1077,19 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Assumption();
          virtual ~M_Request_Attribute_Ownership_Assumption();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumAttributes() const {return attributes.size();}
+         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -718,7 +1098,19 @@ namespace certi {
          typedef Message Super;
          M_Negotiated_Attribute_Ownership_Divestiture();
          virtual ~M_Negotiated_Attribute_Ownership_Divestiture();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumAttributes() const {return attributes.size();}
+         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -745,7 +1137,19 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Acquisition();
          virtual ~M_Request_Attribute_Ownership_Acquisition();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumAttributes() const {return attributes.size();}
+         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -754,7 +1158,19 @@ namespace certi {
          typedef Message Super;
          M_Request_Attribute_Ownership_Release();
          virtual ~M_Request_Attribute_Ownership_Release();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumAttributes() const {return attributes.size();}
+         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -763,7 +1179,16 @@ namespace certi {
          typedef Message Super;
          M_Query_Attribute_Ownership();
          virtual ~M_Query_Attribute_Ownership();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectHandle object;
+         AttributeHandle attribute;
       private:
    };
 
@@ -772,7 +1197,19 @@ namespace certi {
          typedef Message Super;
          M_Inform_Attribute_Ownership();
          virtual ~M_Inform_Attribute_Ownership();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         const FederateHandle& getFederate() const {return federate;}
+         void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
       protected:
+         ObjectHandle object;
+         AttributeHandle attribute;
+         FederateHandle federate;
       private:
    };
 
@@ -781,7 +1218,16 @@ namespace certi {
          typedef Message Super;
          M_Is_Attribute_Owned_By_Federate();
          virtual ~M_Is_Attribute_Owned_By_Federate();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectHandle object;
+         AttributeHandle attribute;
       private:
    };
 
@@ -790,7 +1236,19 @@ namespace certi {
          typedef Message Super;
          M_Attribute_Is_Not_Owned();
          virtual ~M_Attribute_Is_Not_Owned();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         const FederateHandle& getFederate() const {return federate;}
+         void setFederate(const FederateHandle& newFederate) {federate=newFederate;}
       protected:
+         ObjectHandle object;
+         AttributeHandle attribute;
+         FederateHandle federate;
       private:
    };
 
@@ -844,7 +1302,19 @@ namespace certi {
          typedef Message Super;
          M_Cancel_Negotiated_Attribute_Ownership_Divestiture();
          virtual ~M_Cancel_Negotiated_Attribute_Ownership_Divestiture();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumAttributes() const {return attributes.size();}
+         void setNumAttributes(uint32_t num) {attributes.resize(num);}
+         const AttributeHandle& getAttributes(uint32_t rank) const {return attributes[rank];}
+         AttributeHandle& getAttributes(uint32_t rank) {return attributes[rank];}
+         void setAttributes(const AttributeHandle& newAttributes, uint32_t rank) {attributes[rank]=newAttributes;}
       protected:
+         ObjectHandle object;
+         std::vector<AttributeHandle> attributes;
       private:
    };
 
@@ -880,7 +1350,25 @@ namespace certi {
          typedef Message Super;
          M_Change_Attribute_Order_Type();
          virtual ~M_Change_Attribute_Order_Type();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const Handle& getHandles(uint32_t rank) const {return handles[rank];}
+         Handle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const Handle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         TransportType transport;
+         OrderType order;
+         ObjectHandle object;
+         std::vector<Handle> handles;
       private:
    };
 
@@ -889,7 +1377,19 @@ namespace certi {
          typedef Message Super;
          M_Change_Interaction_Order_Type();
          virtual ~M_Change_Interaction_Order_Type();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
       protected:
+         InteractionClassHandle interactionClass;
+         TransportType transport;
+         OrderType order;
       private:
    };
 
@@ -901,12 +1401,13 @@ namespace certi {
          virtual void serialize(MessageBuffer& msgBuffer);
          virtual void deserialize(MessageBuffer& msgBuffer);
          // specific Getter(s)/Setter(s)
-         const double_t& getFedTime() const {return fedTime;}
-         void setFedTime(const double_t& newFedTime) {fedTime=newFedTime;}
+         void enableOn() {enable = true;}
+         void enableOff() {enable = false;}
+         bool isEnableOn() const {return enable;}
          const double_t& getLookahead() const {return lookahead;}
          void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
-         double_t fedTime;
+         bool enable;
          double_t lookahead;
       private:
    };
@@ -916,7 +1417,17 @@ namespace certi {
          typedef Message Super;
          M_Disable_Time_Regulation();
          virtual ~M_Disable_Time_Regulation();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         void enableOn() {enable = true;}
+         void enableOff() {enable = false;}
+         bool isEnableOn() const {return enable;}
+         const double_t& getLookahead() const {return lookahead;}
+         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
+         bool enable;
+         double_t lookahead;
       private:
    };
 
@@ -925,7 +1436,17 @@ namespace certi {
          typedef Message Super;
          M_Enable_Time_Constrained();
          virtual ~M_Enable_Time_Constrained();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         void enableOn() {enable = true;}
+         void enableOff() {enable = false;}
+         bool isEnableOn() const {return enable;}
+         const double_t& getLookahead() const {return lookahead;}
+         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
+         bool enable;
+         double_t lookahead;
       private:
    };
 
@@ -934,7 +1455,17 @@ namespace certi {
          typedef Message Super;
          M_Disable_Time_Constrained();
          virtual ~M_Disable_Time_Constrained();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         void enableOn() {enable = true;}
+         void enableOff() {enable = false;}
+         bool isEnableOn() const {return enable;}
+         const double_t& getLookahead() const {return lookahead;}
+         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
+         bool enable;
+         double_t lookahead;
       private:
    };
 
@@ -970,7 +1501,13 @@ namespace certi {
          typedef Message Super;
          M_Modify_Lookahead();
          virtual ~M_Modify_Lookahead();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const double_t& getLookahead() const {return lookahead;}
+         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
+         double_t lookahead;
       private:
    };
 
@@ -979,7 +1516,13 @@ namespace certi {
          typedef Message Super;
          M_Query_Lookahead();
          virtual ~M_Query_Lookahead();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const double_t& getLookahead() const {return lookahead;}
+         void setLookahead(const double_t& newLookahead) {lookahead=newLookahead;}
       protected:
+         double_t lookahead;
       private:
    };
 
@@ -1096,7 +1639,19 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Create_Region();
          virtual ~M_Ddm_Create_Region();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         const uint32_t& getNbExtent() const {return nbExtent;}
+         void setNbExtent(const uint32_t& newNbExtent) {nbExtent=newNbExtent;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         SpaceHandle space;
+         uint32_t nbExtent;
+         RegionHandle region;
       private:
    };
 
@@ -1105,7 +1660,13 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Modify_Region();
          virtual ~M_Ddm_Modify_Region();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         RegionHandle region;//repeated M_Extents extent    readExtents(msgBuffer);
       private:
    };
 
@@ -1114,7 +1675,13 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Delete_Region();
          virtual ~M_Ddm_Delete_Region();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         RegionHandle region;
       private:
    };
 
@@ -1123,7 +1690,22 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Register_Object();
          virtual ~M_Ddm_Register_Object();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const AttributeHandle& getHandles(uint32_t rank) const {return handles[rank];}
+         AttributeHandle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const AttributeHandle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
+         std::vector<AttributeHandle> handles;// repeated M_Regions   regions 
       private:
    };
 
@@ -1132,7 +1714,16 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Associate_Region();
          virtual ~M_Ddm_Associate_Region();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         ObjectHandle object;
+         RegionHandle region;
       private:
    };
 
@@ -1141,7 +1732,16 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unassociate_Region();
          virtual ~M_Ddm_Unassociate_Region();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         ObjectHandle object;
+         RegionHandle region;
       private:
    };
 
@@ -1150,7 +1750,26 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Subscribe_Attributes();
          virtual ~M_Ddm_Subscribe_Attributes();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         void passiveOn() {passive = true;}
+         void passiveOff() {passive = false;}
+         bool isPassiveOn() const {return passive;}
+         uint32_t getNumHandles() const {return handles.size();}
+         void setNumHandles(uint32_t num) {handles.resize(num);}
+         const AttributeHandle& getHandles(uint32_t rank) const {return handles[rank];}
+         AttributeHandle& getHandles(uint32_t rank) {return handles[rank];}
+         void setHandles(const AttributeHandle& newHandles, uint32_t rank) {handles[rank]=newHandles;}
       protected:
+         ObjectClassHandle objectClass;
+         RegionHandle region;
+         bool passive;
+         std::vector<AttributeHandle> handles;
       private:
    };
 
@@ -1159,7 +1778,16 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unsubscribe_Attributes();
          virtual ~M_Ddm_Unsubscribe_Attributes();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
       protected:
+         ObjectClassHandle objectClass;
+         RegionHandle region;
       private:
    };
 
@@ -1168,7 +1796,20 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Subscribe_Interaction();
          virtual ~M_Ddm_Subscribe_Interaction();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         void passiveOn() {passive = true;}
+         void passiveOff() {passive = false;}
+         bool isPassiveOn() const {return passive;}
       protected:
+         InteractionClassHandle interactionClass;
+         RegionHandle region;
+         bool passive;
       private:
    };
 
@@ -1177,7 +1818,20 @@ namespace certi {
          typedef Message Super;
          M_Ddm_Unsubscribe_Interaction();
          virtual ~M_Ddm_Unsubscribe_Interaction();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const RegionHandle& getRegion() const {return region;}
+         void setRegion(const RegionHandle& newRegion) {region=newRegion;}
+         void passiveOn() {passive = true;}
+         void passiveOff() {passive = false;}
+         bool isPassiveOn() const {return passive;}
       protected:
+         InteractionClassHandle interactionClass;
+         RegionHandle region;
+         bool passive;
       private:
    };
 
@@ -1195,7 +1849,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class_Handle();
          virtual ~M_Get_Object_Class_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectClassHandle objectClass;
+         std::string name;
+         AttributeHandle attribute;
       private:
    };
 
@@ -1204,7 +1870,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class_Name();
          virtual ~M_Get_Object_Class_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectClassHandle objectClass;
+         std::string name;
+         AttributeHandle attribute;
       private:
    };
 
@@ -1213,7 +1891,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Handle();
          virtual ~M_Get_Attribute_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectClassHandle objectClass;
+         std::string name;
+         AttributeHandle attribute;
       private:
    };
 
@@ -1222,7 +1912,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Name();
          virtual ~M_Get_Attribute_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
       protected:
+         ObjectClassHandle objectClass;
+         std::string name;
+         AttributeHandle attribute;
       private:
    };
 
@@ -1231,7 +1933,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Class_Handle();
          virtual ~M_Get_Interaction_Class_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const ParameterHandle& getParameter() const {return parameter;}
+         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::string name;
+         ParameterHandle parameter;
       private:
    };
 
@@ -1240,7 +1954,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Class_Name();
          virtual ~M_Get_Interaction_Class_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const ParameterHandle& getParameter() const {return parameter;}
+         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::string name;
+         ParameterHandle parameter;
       private:
    };
 
@@ -1249,7 +1975,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Parameter_Handle();
          virtual ~M_Get_Parameter_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const ParameterHandle& getParameter() const {return parameter;}
+         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::string name;
+         ParameterHandle parameter;
       private:
    };
 
@@ -1258,7 +1996,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Parameter_Name();
          virtual ~M_Get_Parameter_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const ParameterHandle& getParameter() const {return parameter;}
+         void setParameter(const ParameterHandle& newParameter) {parameter=newParameter;}
       protected:
+         InteractionClassHandle interactionClass;
+         std::string name;
+         ParameterHandle parameter;
       private:
    };
 
@@ -1267,7 +2017,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Instance_Handle();
          virtual ~M_Get_Object_Instance_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
       protected:
+         ObjectHandle object;
+         std::string name;
       private:
    };
 
@@ -1276,7 +2035,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Instance_Name();
          virtual ~M_Get_Object_Instance_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
       protected:
+         ObjectHandle object;
+         std::string name;
       private:
    };
 
@@ -1285,7 +2053,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Space_Handle();
          virtual ~M_Get_Space_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
       protected:
+         std::string name;
+         SpaceHandle space;
       private:
    };
 
@@ -1294,7 +2071,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Space_Name();
          virtual ~M_Get_Space_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
       protected:
+         std::string name;
+         SpaceHandle space;
       private:
    };
 
@@ -1303,7 +2089,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Dimension_Handle();
          virtual ~M_Get_Dimension_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         const DimensionHandle& getDimension() const {return dimension;}
+         void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
       protected:
+         std::string name;
+         SpaceHandle space;
+         DimensionHandle dimension;
       private:
    };
 
@@ -1312,7 +2110,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Dimension_Name();
          virtual ~M_Get_Dimension_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
+         const DimensionHandle& getDimension() const {return dimension;}
+         void setDimension(const DimensionHandle& newDimension) {dimension=newDimension;}
       protected:
+         std::string name;
+         SpaceHandle space;
+         DimensionHandle dimension;
       private:
    };
 
@@ -1321,7 +2131,19 @@ namespace certi {
          typedef Message Super;
          M_Get_Attribute_Space_Handle();
          virtual ~M_Get_Attribute_Space_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const AttributeHandle& getAttribute() const {return attribute;}
+         void setAttribute(const AttributeHandle& newAttribute) {attribute=newAttribute;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
       protected:
+         ObjectClassHandle objectClass;
+         AttributeHandle attribute;
+         SpaceHandle space;
       private:
    };
 
@@ -1330,7 +2152,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Object_Class();
          virtual ~M_Get_Object_Class();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const ObjectClassHandle& getObjectClass() const {return objectClass;}
+         void setObjectClass(const ObjectClassHandle& newObjectClass) {objectClass=newObjectClass;}
+         const ObjectHandle& getObject() const {return object;}
+         void setObject(const ObjectHandle& newObject) {object=newObject;}
       protected:
+         ObjectClassHandle objectClass;
+         ObjectHandle object;
       private:
    };
 
@@ -1339,7 +2170,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Interaction_Space_Handle();
          virtual ~M_Get_Interaction_Space_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const InteractionClassHandle& getInteractionClass() const {return interactionClass;}
+         void setInteractionClass(const InteractionClassHandle& newInteractionClass) {interactionClass=newInteractionClass;}
+         const SpaceHandle& getSpace() const {return space;}
+         void setSpace(const SpaceHandle& newSpace) {space=newSpace;}
       protected:
+         InteractionClassHandle interactionClass;
+         SpaceHandle space;
       private:
    };
 
@@ -1348,7 +2188,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Transportation_Handle();
          virtual ~M_Get_Transportation_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
       protected:
+         std::string name;
+         TransportType transport;
       private:
    };
 
@@ -1357,7 +2206,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Transportation_Name();
          virtual ~M_Get_Transportation_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const TransportType& getTransport() const {return transport;}
+         void setTransport(const TransportType& newTransport) {transport=newTransport;}
       protected:
+         std::string name;
+         TransportType transport;
       private:
    };
 
@@ -1366,7 +2224,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Ordering_Handle();
          virtual ~M_Get_Ordering_Handle();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
       protected:
+         std::string name;
+         OrderType order;
       private:
    };
 
@@ -1375,7 +2242,16 @@ namespace certi {
          typedef Message Super;
          M_Get_Ordering_Name();
          virtual ~M_Get_Ordering_Name();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const std::string& getName() const {return name;}
+         void setName(const std::string& newName) {name=newName;}
+         const OrderType& getOrder() const {return order;}
+         void setOrder(const OrderType& newOrder) {order=newOrder;}
       protected:
+         std::string name;
+         OrderType order;
       private:
    };
 
@@ -1456,7 +2332,19 @@ namespace certi {
          typedef Message Super;
          M_Tick_Request();
          virtual ~M_Tick_Request();
+         virtual void serialize(MessageBuffer& msgBuffer);
+         virtual void deserialize(MessageBuffer& msgBuffer);
+         // specific Getter(s)/Setter(s)
+         const bool& getMultiple() const {return multiple;}
+         void setMultiple(const bool& newMultiple) {multiple=newMultiple;}
+         const double_t& getMinTickTime() const {return minTickTime;}
+         void setMinTickTime(const double_t& newMinTickTime) {minTickTime=newMinTickTime;}
+         const double_t& getMaxTickTime() const {return maxTickTime;}
+         void setMaxTickTime(const double_t& newMaxTickTime) {maxTickTime=newMaxTickTime;}
       protected:
+         bool multiple;
+         double_t minTickTime;
+         double_t maxTickTime;
       private:
    };
 
