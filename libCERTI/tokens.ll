@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: tokens.ll,v 3.7 2009/11/24 21:44:47 erk Exp $
+// $Id: tokens.ll,v 3.8 2010/02/07 01:00:44 erk Exp $
 // ----------------------------------------------------------------------------
 
 #include "syntax.h"
@@ -54,7 +54,7 @@ std::string timestamp_arg;
 int yyerror(const char *);
 %}
 
-ident   [A-Za-z_][A-Za-z0-9_\.]*
+ident   [A-Za-z_][-A-Za-z0-9_\.]*
 
 %%
 
