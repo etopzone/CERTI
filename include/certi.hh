@@ -16,7 +16,7 @@
 // License along with this program ; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-// $Id: certi.hh,v 3.41 2009/11/24 21:44:48 erk Exp $
+// $Id: certi.hh,v 3.42 2010/02/07 10:39:50 gotthardp Exp $
 // ----------------------------------------------------------------------------
 
 #ifndef CERTI_HH_INCLUDED
@@ -40,6 +40,8 @@
            #define  CERTI_INT64_CONSTANT(val)  (val##LL)
            #define  CERTI_INT64_FORMAT         "ll"
         #endif
+        typedef float			float_t;
+        typedef double			double_t;
         #ifndef __func__
         #define __func__ "<unknown>"
         #endif
@@ -229,4 +231,4 @@ const int MAX_BACKLOG = 256 ;
 	(uint64_t) CERTI_INT64_CONSTANT(0xff00000000000000U)) >> 56)))
 #endif // CERTI_HH_INCLUDED
 
-// $Id: certi.hh,v 3.41 2009/11/24 21:44:48 erk Exp $
+// $Id: certi.hh,v 3.42 2010/02/07 10:39:50 gotthardp Exp $
