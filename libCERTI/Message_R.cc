@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_R.cc,v 3.38 2010/01/18 09:41:30 gotthardp Exp $
+// $Id: Message_R.cc,v 3.39 2010/02/07 00:19:12 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -312,9 +312,9 @@ Message::readBody(MessageBuffer &msgBuffer)
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
             objectClass = msgBuffer.read_int64();
-            handleArraySize = msgBuffer.read_int16();
             object = msgBuffer.read_int64();
             readTag(msgBuffer);
+            handleArraySize = msgBuffer.read_int16();
             readHandleArray(msgBuffer);
             readValueArray(msgBuffer);
             readResignAction(msgBuffer);
@@ -388,8 +388,8 @@ Message::readBody(MessageBuffer &msgBuffer)
             // valueArray,region,resignAction,boolean
             // boolean true means with time, false without time
             interactionClass = msgBuffer.read_int64();
-            handleArraySize = msgBuffer.read_int16();
             readTag(msgBuffer);
+            handleArraySize = msgBuffer.read_int16();
             readHandleArray(msgBuffer);
             readValueArray(msgBuffer);
 	    region = msgBuffer.read_int64();
@@ -410,10 +410,10 @@ Message::readBody(MessageBuffer &msgBuffer)
           // Body contains handleArraySize,transport,order,object,HandleArray
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
-            handleArraySize = msgBuffer.read_int64();
             transport = msgBuffer.read_int64();
             order = msgBuffer.read_int64();
             object = msgBuffer.read_int64();
+            handleArraySize = msgBuffer.read_int16();
             readHandleArray(msgBuffer);
             break ;
 
@@ -610,6 +610,7 @@ Message::readFederateName(MessageBuffer &msgBuffer)
 void
 Message::readResignAction(MessageBuffer &msgBuffer)
 {
+   msgBuffer.read_int32();
     // BUG: Should do something.
 }
 
@@ -649,4 +650,4 @@ D.Mes(pdMessage,'M',this->type,context);
 
 } // namespace certi
 
-// $Id: Message_R.cc,v 3.38 2010/01/18 09:41:30 gotthardp Exp $
+// $Id: Message_R.cc,v 3.39 2010/02/07 00:19:12 erk Exp $

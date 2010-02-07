@@ -17,7 +17,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
 //
-// $Id: Message_W.cc,v 3.41 2010/01/18 09:41:30 gotthardp Exp $
+// $Id: Message_W.cc,v 3.42 2010/02/07 00:19:12 erk Exp $
 // ----------------------------------------------------------------------------
 
 
@@ -327,9 +327,9 @@ Message::writeBody(MessageBuffer &msgBuffer)
           case UPDATE_ATTRIBUTE_VALUES:
           case REFLECT_ATTRIBUTE_VALUES:
             msgBuffer.write_int64(objectClass);
-            msgBuffer.write_int16(handleArraySize);
             msgBuffer.write_int64(object);
             msgBuffer.write_string(tag);
+            msgBuffer.write_int16(handleArraySize);
             writeHandleArray(msgBuffer);
             writeValueArray(msgBuffer);
             writeResignAction(msgBuffer);
@@ -404,8 +404,8 @@ Message::writeBody(MessageBuffer &msgBuffer)
           case SEND_INTERACTION:
           case RECEIVE_INTERACTION:
             msgBuffer.write_int64(interactionClass);
-            msgBuffer.write_int16(handleArraySize);
             msgBuffer.write_string(tag);
+            msgBuffer.write_int16(handleArraySize);
             writeHandleArray(msgBuffer);
             writeValueArray(msgBuffer);
 	    msgBuffer.write_int64(region);
@@ -426,10 +426,10 @@ Message::writeBody(MessageBuffer &msgBuffer)
           // Body contains handleArraySize,transport,order,object,HandleArray
           case CHANGE_ATTRIBUTE_TRANSPORTATION_TYPE:
           case CHANGE_ATTRIBUTE_ORDER_TYPE:
-            msgBuffer.write_int16(handleArraySize);
             msgBuffer.write_int64(transport);
             msgBuffer.write_int64(order);           
             msgBuffer.write_int64(object);
+            msgBuffer.write_int16(handleArraySize);
             writeHandleArray(msgBuffer);
             break ;
 
@@ -580,7 +580,7 @@ Message::writeHeader(MessageBuffer &msgBuffer)
 void
 Message::writeResignAction(MessageBuffer &msgBuffer)
 {
-    //assert(false);
+   msgBuffer.write_int32(0);
 }
 
 // ---------------------------------------------------------------
@@ -609,4 +609,4 @@ Message::writeValueArray(MessageBuffer &msgBuffer)
 
 } // namespace certi
 
-// $Id: Message_W.cc,v 3.41 2010/01/18 09:41:30 gotthardp Exp $
+// $Id: Message_W.cc,v 3.42 2010/02/07 00:19:12 erk Exp $
